@@ -192,7 +192,6 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2)
     semantic_range (3.0.0)
-    sqlite3 (1.4.2)
     tailwindcss-rails (0.5.4)
       railties (>= 6.0.0)
     thor (1.1.0)
@@ -223,12 +222,14 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   bootsnap (>= 1.4.4)
   capybara (>= 3.26)
   debug (>= 1.0.0)
   jbuilder (~> 2.11)
+  pg
   puma (~> 5.0)
   rails (~> 7.0.0.rc1)
   react-rails
@@ -238,7 +239,6 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   selenium-webdriver (>= 4.0.0)
-  sqlite3 (~> 1.4)
   tailwindcss-rails (>= 0.5.3)
   tzinfo-data
   web-console (>= 4.1.0)
