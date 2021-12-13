@@ -36,7 +36,7 @@
     "webpack-dev-server": "~3"
   },
   "lint-staged": {
-    "app/javascript/**/*.{js,jsx,json}": [
+    "app/javascript/**/*.{js,jsx,json,ts,tsx}": [
       "prettier --write",
       "eslint --fix",
       "git add"
