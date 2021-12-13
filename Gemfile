@@ -59,6 +59,9 @@ gem "webpacker"
 # React hook for rails
 gem "react-rails"
 
+# Use SCSS for stylesheets
+gem 'sass-rails'
+
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
