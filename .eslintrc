@@ -1,0 +1,64 @@
+{
+    "root": true,
+    "parser": "@babel/eslint-parser",
+    "env": {
+        "es6": true,
+        "node": true,
+        "jest": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended"
+    ],
+    "settings": {
+      "react": {
+          "pragma": "React",
+          "fragment": "Fragment",
+          "version": "detect"
+        }
+    },
+    "plugins": ["react", "import"],
+    "globals": {
+        "fetch": false,
+        "document": false,
+        "Promise": true,
+        "log": true,
+        "sessionStorage": true,
+        "localStorage": true,
+        "FileReader": true,
+        "window": true
+    },
+    "rules": {
+      "comma-dangle": ["error", "never"],
+      "indent": ["warn", 2, { "SwitchCase": 1 }],
+      "key-spacing": 1,
+      "keyword-spacing": 2,
+      "object-curly-spacing": [1, "always"],
+      "semi": 2,
+      "array-bracket-spacing": [2, "never"],
+      "space-before-function-paren": 2,
+      "no-multiple-empty-lines": ["warn", { "max": 1, "maxEOF": 1 }],
+      "quotes": ["warn", "double"],
+      "prefer-const": ["warn", { "destructuring": "any", "ignoreReadBeforeAssign": false }],
+      "no-var": 1,
+      "no-extra-boolean-cast": 1,
+      "no-unneeded-ternary": 1,
+      "react/no-unescaped-entities": 0,
+      "react/prop-types": 0,
+      "react/jsx-key": 0,
+      "arrow-body-style": ["error", "as-needed"],
+      "import/order": ["error", {
+        "groups": ["external", "builtin", "internal", "sibling", "parent", "index"],
+        "pathGroups": [
+          { "pattern": "prop-types", "group": "external", "position": "before"},
+          { "pattern": "react-*", "group": "external", "position": "before"},
+          { "pattern": "react", "group": "external", "position": "before"},
+          { "pattern": "components", "group": "internal" },
+          { "pattern": "assets/**", "group": "internal", "position": "after" }
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "alphabetize": { "order": "asc", "caseInsensitive": true }
+      }]
+    }
+  }
+  
