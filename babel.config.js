@@ -46,7 +46,6 @@ module.exports = function(api) {
       ]
     ].filter(Boolean),
     plugins: [
-      ["@babel/plugin-proposal-private-methods", { "loose": true }],
       'babel-plugin-macros',
       '@babel/plugin-syntax-dynamic-import',
       isTestEnv && 'babel-plugin-dynamic-import-node',
