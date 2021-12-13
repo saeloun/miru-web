@@ -9,7 +9,7 @@ ruby "3.0.3"
 gem "rails", "~> 7.0.0.rc1"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-gem "sprockets-rails", ">= 3.4.1"
+# gem "sprockets-rails", ">= 3.4.1"
 
 # Use postgresql as the database for Active Record
 gem "pg"
