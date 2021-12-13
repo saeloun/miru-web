@@ -11,8 +11,8 @@ gem "rails", "~> 7.0.0.rc1"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 # gem "sprockets-rails", ">= 3.4.1"
 
-# Use sqlite3 as the database for Active Record
-gem "sqlite3", "~> 1.4"
+# Use postgresql as the database for Active Record
+gem "pg"
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 5.0"
@@ -58,6 +58,13 @@ gem "webpacker"
 
 # React hook for rails
 gem "react-rails"
+
+# Use SCSS for stylesheets
+gem 'sass-rails'
+
+##--- gems for server & infra configuration ---##
+gem 'dotenv-rails'
+gem 'foreman'
 
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

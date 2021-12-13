@@ -6,14 +6,10 @@
     "lib": ["es6", "dom"],
     "module": "es6",
     "moduleResolution": "node",
-    "baseUrl": ".",
-    "paths": {
-        "*": ["node_modules/*", "app/javascript/*"]
-    },
     "sourceMap": true,
     "target": "es5",
-    "noEmit": true,
-    "jsx": "react"
+    "jsx": "react",
+    "noEmit": true
   },
   "exclude": [
     "**/*.spec.ts",
