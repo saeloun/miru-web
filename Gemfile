@@ -32,6 +32,9 @@ gem "tailwindcss-rails", ">= 0.5.3"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder", "~> 2.11"
 
+# Use devise for authentication
+gem "devise", git: "https://github.com/heartcombo/devise", branch: "main"
+
 # Use Redis adapter to run Action Cable in production
 gem "redis", "~> 4.0"
 
@@ -75,6 +78,12 @@ group :development, :test do
   gem "rubocop-packaging", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rails", require: false
+
+  # Use factory-bot to replace fixtures
+  gem "factory_bot_rails"
+
+  # Use Faker for fake data
+  gem "faker"
 end
 
 group :development do
