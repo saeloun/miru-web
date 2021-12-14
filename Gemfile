@@ -60,11 +60,11 @@ gem "webpacker"
 gem "react-rails"
 
 # Use SCSS for stylesheets
-gem 'sass-rails'
+gem "sass-rails"
 
 ##--- gems for server & infra configuration ---##
-gem 'dotenv-rails'
-gem 'foreman'
+gem "dotenv-rails"
+gem "foreman"
 
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
