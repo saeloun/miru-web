@@ -1,0 +1,83 @@
+name: CI Test Suite
+on: [push]
+
+jobs:
+  tests:
+    name: Running tests
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup PostgreSQL
+        uses: Harmon758/postgresql-action@v1.0.0
+        with:
+          postgresql version: 9.6.2-alpine
+          postgresql db: judis_team_portal_test
+          postgresql user: root
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+      - name: Ruby gem cache
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+      - name: Install bundle dependencies
+        run: |
+          sudo apt-get install libjpeg-dev libpng-dev libtiff-dev libwebp-dev
+          gem install webp-ffi -v '0.3.1' --source 'https://rubygems.org/'
+          gem install mimemagic -v '0.3.10' --source 'https://rubygems.org/'
+      - name: Install gems
+        run: |
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.17.0
+      - name: Find yarn cache location
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: JS package cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install packages
+        run: |
+          yarn install --pure-lockfile
+      - name: Setup kernel for guard, increase watchers
+        run: |
+          echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - name: Setup Env's
+        run: |
+          cp .env.example .env
+      - name: Setup test database
+        env:
+          RAILS_ENV: test
+          PGHOST: 127.0.0.1
+          PGUSER: root
+        run: |
+          bundle exec rails db:create
+          bundle exec rails db:migrate
+          bundle exec rails db:schema:load
+      - name: Run Rubocop
+        run: |
+          bundle exec rubocop
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+          PGHOST: 127.0.0.1
+          PGUSER: root
+        run: bundle exec rails test
+      - name: Run Eslint
+        run: |
+          npx eslint --fix
+      - name: Run Prettier
+        run: |
+          npx prettier --write app/javascript/**/*.{js,tsx}
+
