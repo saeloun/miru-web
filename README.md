@@ -18,15 +18,23 @@ rvm install $(cat .ruby-version)
 ```
 nvm install $(cat .nvmrc)
 ```
-* Step 4: Install gem 
+* Step 4: Install Postgres
+```
+brew install postgresql
+```
+* Step 5: Install gem 
 ```
 bundle install
 ```
-* Step 5: Install node packages
+* Step 6: Install node packages
 ```
 yarn install
 ```
-* Step 6: Running app in local
+* Step 7: Setup ENV's
+```
+cp .env.example .env
+```
+* Step 8: Running app in local
 ```
 foreman start -f Procfile.dev
 ```
