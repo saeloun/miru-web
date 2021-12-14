@@ -75,6 +75,9 @@ group :development, :test do
   gem "rubocop-packaging", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rails", require: false
+
+  # Add rspec-rails for unit testing
+  gem "rspec-rails", "~> 5.0", ">= 5.0.2"
 end
 
 group :development do
