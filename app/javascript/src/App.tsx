@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import { setAuthHeaders } from "apis/axios";
+import { initializeLogger } from "common/logger";
 
 const App = () => {
-  return (
-    <div className="bg-gray-100">
-      <h1>Hello, world!</h1>
-    </div>
-  );
-}
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    initializeLogger();
+    setAuthHeaders(setLoading);
+  }, []);
+
+  if (loading) {
+    return <h1>Loading...</h1>;
+  }
+
+  return <div className="bg-gray-100">Hello World</div>;
+};
 
 export default App;

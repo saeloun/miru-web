@@ -1,6 +1,6 @@
 {
     "root": true,
-    "parser": "@babel/eslint-parser",
+    "parser": "@typescript-eslint/parser",
     "env": {
         "es6": true,
         "node": true,
@@ -8,7 +8,9 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:react/recommended"
+        "plugin:react/recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
     ],
     "settings": {
       "react": {
