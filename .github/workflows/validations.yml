@@ -73,11 +73,11 @@ jobs:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
           PGUSER: root
-        run: bundle exec rspec
+        run: bundle exec rails test
       - name: Run Eslint
         run: |
           npx eslint --fix
       - name: Run Prettier
         run: |
-          npx prettier --write app/javascript/**/*.{js,ts,tsx}
+          npx prettier --write app/javascript/**/*.{js,tsx}
 
