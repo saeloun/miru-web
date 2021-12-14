@@ -76,5 +76,5 @@ jobs:
           npx eslint --fix
       - name: Run Prettier
         run: |
-          npx prettier --write app/javascript/**/*.js
+          npx prettier --write app/javascript/**/*.{js,ts,tsx}
 
