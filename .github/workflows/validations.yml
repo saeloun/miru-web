@@ -53,6 +53,9 @@ jobs:
       - name: Setup kernel for guard, increase watchers
         run: |
           echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+      - name: Setup Env's
+        run: |
+          cp .env.example .env
       - name: Setup test database
         env:
           RAILS_ENV: test
