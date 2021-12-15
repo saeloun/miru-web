@@ -45,3 +45,6 @@ yarn-debug.log*
 
 # Ignore the test folder since the app is using RSpec
 /test
+
+# Avoid code coverage report to be pushed to GitHub
+/coverage
