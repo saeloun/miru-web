@@ -105,4 +105,7 @@ group :test do
   gem "capybara", ">= 3.26"
   gem "selenium-webdriver", ">= 4.0.0"
   gem "webdrivers"
+
+  # Use Codecov for code coverage analysis
+  gem "simplecov", require: false
 end
