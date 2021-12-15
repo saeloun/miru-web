@@ -42,3 +42,6 @@ yarn-debug.log*
 .yarn-integrity
 
 .env
+
+# Ignore the test folder since the app is using RSpec
+/test
