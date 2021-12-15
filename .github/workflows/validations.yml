@@ -76,8 +76,7 @@ jobs:
         run: bundle exec rspec
       - name: Run Eslint
         run: |
-          npx eslint --fix
+          npx eslint --fix app/javascript/**/*.{js,jsx,json,ts,tsx}
       - name: Run Prettier
         run: |
           npx prettier --write app/javascript/**/*.{js,tsx}
-

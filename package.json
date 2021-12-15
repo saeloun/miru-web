@@ -12,6 +12,7 @@
     "@typescript-eslint/parser": "^5.7.0",
     "axios": "^0.24.0",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "fork-ts-checker-webpack-plugin": "^6.5.0",
     "js-logger": "^1.6.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
@@ -40,7 +41,6 @@
     "husky": "^7.0.0",
     "lint-staged": "^12.1.2",
     "prettier": "^2.5.1",
-    "ts-loader": "^9.2.6",
     "webpack-dev-server": "3.11.2"
   },
   "lint-staged": {

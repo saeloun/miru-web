@@ -3,6 +3,7 @@
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
     "lib": ["es6", "dom"],
     "module": "es6",
     "moduleResolution": "node",
@@ -11,6 +12,9 @@
     "jsx": "react",
     "noEmit": true,
     "allowJs": true,
+    "rootDir": "app/javascript/src",
+    "baseUrl": ".",
+    "esModuleInterop": true
   },
   "exclude": [
     "**/*.spec.ts",
@@ -18,6 +22,6 @@
     "vendor",
     "public"
   ],
-  "include": ["app/javascript/src/**/*.ts", "tests/**/*.ts"],
+  "include": ["app/javascript/src/**/*.ts", "tests/**/*.ts", "app/javascript/src/**/*.tsx"],
   "compileOnSave": false
 }
