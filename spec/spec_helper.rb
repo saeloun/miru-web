@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 require "simplecov"
-SimpleCov.start do
-  add_filter "spec/"
+
+if ENV.fetch("COVERAGE", false)
+  SimpleCov.start do
+    minimum_coverage 90
+    maximum_coverage_drop 2
+    add_filter "spec/"
+  end
 end
 
 # frozen_string_literal: true
