@@ -2,7 +2,7 @@
 
 require "simplecov"
 SimpleCov.start do
-  add_filter "spec/rails_helper.rb"
+  add_filter "spec/"
 end
 
 # frozen_string_literal: true
