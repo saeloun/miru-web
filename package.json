@@ -8,7 +8,12 @@
     "@rails/webpacker": "5.4.0",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.7.0",
+    "@typescript-eslint/parser": "^5.7.0",
+    "axios": "^0.24.0",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "fork-ts-checker-webpack-plugin": "^6.5.0",
+    "js-logger": "^1.6.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -16,7 +21,8 @@
     "react_ujs": "^2.6.1",
     "typescript": "^4.5.3",
     "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.12"
+    "webpack-cli": "^3.3.12",
+    "babel-plugin-js-logger": "^1.0.17"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.16.3",
@@ -38,7 +44,7 @@
     "webpack-dev-server": "3.11.2"
   },
   "lint-staged": {
-    "app/javascript/**/*.{js,jsx,json,ts,tsx}": [
+    "app/javascript/**/*.{js,json,ts,tsx}": [
       "prettier --write",
       "eslint --fix",
       "git add"
