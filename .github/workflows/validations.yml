@@ -73,7 +73,7 @@ jobs:
           RAILS_ENV: test
           PGHOST: 127.0.0.1
           PGUSER: root
-        run: bundle exec rails test
+        run: bundle exec rspec
       - name: Run Eslint
         run: |
           npx eslint --fix
