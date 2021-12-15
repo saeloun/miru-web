@@ -43,9 +43,12 @@ module.exports = function(api) {
           development: isDevelopmentEnv || isTestEnv,
           useBuiltIns: true
         }
-      ]
+      ],
+      '@babel/preset-typescript',
     ].filter(Boolean),
     plugins: [
+      ["@babel/plugin-proposal-private-methods", { "loose": true }],
+      "js-logger",
       'babel-plugin-macros',
       '@babel/plugin-syntax-dynamic-import',
       isTestEnv && 'babel-plugin-dynamic-import-node',
