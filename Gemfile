@@ -79,6 +79,9 @@ group :development, :test do
   gem "rubocop-performance", require: false
   gem "rubocop-rails", require: false
 
+  # Use RSpec as the testing framework
+  gem "rspec-rails", "~> 5.0", ">= 5.0.2"
+
   # Use factory-bot to replace fixtures
   gem "factory_bot_rails"
 
