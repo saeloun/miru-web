@@ -13,7 +13,7 @@ jobs:
         uses: Harmon758/postgresql-action@v1.0.0
         with:
           postgresql version: 9.6.2-alpine
-          postgresql db: judis_team_portal_test
+          postgresql db: miru_web_test
           postgresql user: root
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -24,11 +24,6 @@ jobs:
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-gems-
-      - name: Install bundle dependencies
-        run: |
-          sudo apt-get install libjpeg-dev libpng-dev libtiff-dev libwebp-dev
-          gem install webp-ffi -v '0.3.1' --source 'https://rubygems.org/'
-          gem install mimemagic -v '0.3.10' --source 'https://rubygems.org/'
       - name: Install gems
         run: |
           bundle config path vendor/bundle
@@ -36,7 +31,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 14.17.0
+          node-version: 16.4.2
       - name: Find yarn cache location
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"

@@ -6,15 +6,36 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup PostgreSQL
+        uses: Harmon758/postgresql-action@v1.0.0
+        with:
+          postgresql version: 9.6.2-alpine
+          postgresql db: miru_web_test
+          postgresql user: root
       - name: Set up Ruby 3.0.3
         uses: actions/setup-ruby@v1
         with:
           ruby-version: 3.0.x
-      - name: Build and test with Rake
+      - name: Install gems
         run: |
-          gem install bundler -v '2.2.32'
+          bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
+      - name: Setup Env's
+        run: |
+          cp .env.example .env
+      - name: Setup test database
+        env:
+          RAILS_ENV: test
+          PGHOST: 127.0.0.1
+          PGUSER: root
+        run: |
+          bundle exec rails db:create
+          bundle exec rails db:migrate
+          bundle exec rails db:schema:load
+      - name: Run the coverage test
+        run: |
           COVERAGE=true bundle exec rspec
       - name: Upload coverage results
         uses: actions/upload-artifact@master
