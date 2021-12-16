@@ -9,6 +9,16 @@ RSpec.describe User, type: :model do
     expect(user).to be_valid
   end
 
+  it "checks if it is an admin" do
+    user.role = 0
+    expect(user).to be_admin
+  end
+
+  it "checks if it is an employee" do
+    user.role = 1
+    expect(user).to be_employee
+  end
+
   context "checking the presence of each attribute" do
     it "is not valid without a first_name" do
       user.first_name = nil
