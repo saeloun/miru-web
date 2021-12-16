@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "@babel/preset-react": "^7.16.0",
-    "@babel/preset-typescript": "^7.16.0",
+    "@babel/preset-react": "^7.16.5",
+    "@babel/preset-typescript": "^7.16.5",
     "@rails/actioncable": "^7.0.0.rc1",
     "@rails/activestorage": "^7.0.0.rc1",
     "@rails/ujs": "^7.0.0.rc1",
@@ -10,7 +10,7 @@
     "@types/react-dom": "^17.0.11",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
-    "axios": "^0.24.0",
+    "babel-plugin-js-logger": "^1.0.17",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
     "js-logger": "^1.6.1",
@@ -19,10 +19,9 @@
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.1.1",
     "react_ujs": "^2.6.1",
-    "typescript": "^4.5.3",
+    "typescript": "^4.5.4",
     "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.12",
-    "babel-plugin-js-logger": "^1.0.17"
+    "webpack-cli": "^3.3.12"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.16.3",
