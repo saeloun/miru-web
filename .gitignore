@@ -48,3 +48,5 @@ yarn-debug.log*
 
 # Avoid code coverage report to be pushed to GitHub
 /coverage
+
+.idea
