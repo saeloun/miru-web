@@ -56,7 +56,7 @@ gem "bootsnap", ">= 1.4.4", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
-# Weback bundler for rails
+# Webpack bundler for rails
 gem "webpacker"
 
 # React hook for rails
@@ -94,10 +94,10 @@ group :development do
   gem "web-console", ">= 4.1.0"
 
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
-  # gem "rack-mini-profiler", ">= 2.3.3"
+  gem "rack-mini-profiler", ">= 2.3.3"
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
-  # gem "spring"
+  gem "spring"
 
   # Annotate gem for showing schema information
   gem "annotate"

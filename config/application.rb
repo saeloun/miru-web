@@ -24,5 +24,7 @@ module MiruWeb
     config.generators do |g|
       g.test_framework :rspec, fixture: false
     end
+
+    config.react.server_renderer_extensions = ["jsx", "js", "tsx", "ts"]
   end
 end
