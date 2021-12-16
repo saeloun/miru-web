@@ -76,7 +76,7 @@ jobs:
         run: bundle exec rspec
       - name: Run Eslint
         run: |
-          npx eslint "./app/javascript/src/**/*.{ts,tsx,js,jsx,json}"
+          npx eslint "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
       - name: Run Prettier
         run: |
-          npx prettier "./app/javascript/src/**/*.{ts,tsx,js,jsx,json}"
+          npx prettier "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
