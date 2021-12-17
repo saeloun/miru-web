@@ -7,7 +7,10 @@ module.exports = {
         'miru-bg-gray': '#E5E5E5',
         'miru-cell-gray': '#F5F4F4',
         'miru-btn-gray': '#C4C4C4',
-      }
+      },
+      fontFamily :{
+        jakartasans: "'Plus Jakarta Sans', serif",
+      },
     },
   },
   variants: {
