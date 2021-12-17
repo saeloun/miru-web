@@ -273,8 +273,6 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    tailwindcss-rails (0.5.4)
-      railties (>= 6.0.0)
     thor (1.1.0)
     tilt (2.0.10)
     tzinfo (2.0.4)
@@ -333,7 +331,6 @@ DEPENDENCIES
   selenium-webdriver (>= 4.0.0)
   simplecov
   spring
-  tailwindcss-rails (>= 0.5.3)
   tzinfo-data
   web-console (>= 4.1.0)
   webdrivers

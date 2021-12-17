@@ -1,7 +1,13 @@
 import * as React from "react";
+import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
+import Login from "./Authentication/Login";
 
 const App = () => (
-  <div className="bg-gray-100 text-center">Welcome to Miru Web!</div>
+  <Router>
+    <Routes>
+      <Route path="login" element={<Login />} />
+    </Routes>
+  </Router>
 );
 
 export default App;
