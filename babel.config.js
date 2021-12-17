@@ -47,7 +47,7 @@ module.exports = function(api) {
       ['@babel/preset-typescript', { 'allExtensions': true, 'isTSX': true }]
     ].filter(Boolean),
     plugins: [
-      ["@babel/plugin-proposal-private-methods", { "loose": true }],
+      ['@babel/plugin-proposal-private-methods', { "loose": true }],
       "js-logger",
       'babel-plugin-macros',
       '@babel/plugin-syntax-dynamic-import',
