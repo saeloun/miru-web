@@ -4,6 +4,8 @@ import * as ActiveStorage from "@rails/activestorage";
 import Rails from "@rails/ujs";
 import * as ReactRailsUJS from "react_ujs";
 
+import "@fontsource/plus-jakarta-sans";
+
 Rails.start();
 ActiveStorage.start();
 
