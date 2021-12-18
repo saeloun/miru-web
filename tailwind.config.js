@@ -4,13 +4,18 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'miru-bg-gray': '#E5E5E5',
-        'miru-cell-gray': '#F5F4F4',
-        'miru-btn-gray': '#C4C4C4',
+        miru: {
+          200: "#F5F4F4",
+          400: "#C4C4C4",
+          1000: "#303A4B",
+        },
       },
       fontFamily :{
         jakartasans: "'Plus Jakarta Sans', serif",
       },
+      spacing: {
+        112: "28rem",
+      }
     },
   },
   variants: {

@@ -1,32 +1,41 @@
-<div class="font-jakartasans">
+<div class="lg:mt-44">
+  <div class="font-jakartasans container mx-auto lg:px-112">
 
-  <div class="container">
-    <h2>Sign In</h2>
+    <div class="">
+      <h2 class="lg:text-5xl text-miru-1000 text-center mb-5">Miru</h2>
+    </div>
+    <div class="lg:p-5 2xl:p-10 shadow-xl rounded-lg">
+      <h2 class="text-miru-1000 lg:mb-3 text-base">Sign In</h2>
 
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-      <div class="field">
-        <%= f.label :email %><br />
-        <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-      </div>
-
-      <div class="field">
-        <%= f.label :password %><br />
-        <%= f.password_field :password, autocomplete: "current-password" %>
-      </div>
-
-      <% if devise_mapping.rememberable? %>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
         <div class="field">
-          <%= f.check_box :remember_me %>
-          <%= f.label :remember_me %>
+          <%= f.label :email, class: "text-xs text-miru-1000" %><br />
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "h-8 w-full focus:outline-none bg-miru-200 text-sm" %>
+        </div>
+
+        <div class="mt-3">
+          <div class="field">
+            <%= f.label :password, class: "text-xs text-miru-1000" %><br />
+            <%= f.password_field :password, autocomplete: "current-password", class: "h-8 w-full focus:outline-none bg-miru-200 text-sm" %>
+          </div>
+        </div>
+
+        <div class="invisible">
+          <% if devise_mapping.rememberable? %>
+            <div class="field">
+              <%= f.check_box :remember_me %>
+              <%= f.label :remember_me %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="actions">
+          <%= f.submit "LOGIN", class: "h-8 w-full bg-miru-400 font-bold text-white text-base hover:bg-miru-1000" %>
         </div>
       <% end %>
 
-      <div class="actions">
-        <%= f.submit "Log in" %>
-      </div>
-    <% end %>
+      <%= render "devise/shared/links" %>
+    </div>
 
-    <%= render "devise/shared/links" %>
   </div>
-
 </div>

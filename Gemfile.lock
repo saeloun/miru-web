@@ -157,8 +157,6 @@ GEM
       nio4r (~> 2.0)
     racc (1.6.0)
     rack (2.2.3)
-    rack-mini-profiler (2.3.3)
-      rack (>= 1.2.0)
     rack-proxy (0.7.0)
       rack
     rack-test (1.1.0)
@@ -318,7 +316,6 @@ DEPENDENCIES
   jbuilder (~> 2.11)
   pg
   puma (~> 5.0)
-  rack-mini-profiler (>= 2.3.3)
   rails (~> 7.0)
   react-rails
   redis (~> 4.0)
