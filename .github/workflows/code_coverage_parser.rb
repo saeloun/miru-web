@@ -23,7 +23,7 @@ begin
   def coverage_missing_files_percentage
     a = ""
     for i in 0..@coverage_missing_files.keys.count - 1
-      a += "| #{@coverage_missing_files.keys[i].split('trial-manager').last} |"\
+      a += "| #{@coverage_missing_files.keys[i].split('miru-web').last} |"\
             " #{@file_coverage_percent[i]} % |\n"
     end
     a
