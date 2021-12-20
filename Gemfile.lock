@@ -129,6 +129,7 @@ GEM
       reline (>= 0.2.7)
     jbuilder (2.11.3)
       activesupport (>= 5.0.0)
+    jwt (2.3.0)
     loofah (2.13.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -314,6 +315,7 @@ DEPENDENCIES
   faker
   foreman
   jbuilder (~> 2.11)
+  jwt
   pg
   puma (~> 5.0)
   rack-mini-profiler (>= 2.3.3)
