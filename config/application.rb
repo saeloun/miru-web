@@ -25,6 +25,10 @@ module MiruWeb
       g.test_framework :rspec, fixture: false
     end
 
+    config.api_only = false
+
+    config.autoload_paths << Rails.root.join("lib")
+
     config.react.server_renderer_extensions = ["jsx", "js", "tsx", "ts"]
   end
 end

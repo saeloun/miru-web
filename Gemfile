@@ -69,8 +69,9 @@ gem "sass-rails"
 gem "dotenv-rails"
 gem "foreman"
 
-# JWT authentication
-gem "jwt"
+# Devise-JWT authentication
+gem "devise-jwt"
+gem "rack-cors"
 
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
