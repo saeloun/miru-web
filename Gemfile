@@ -27,7 +27,7 @@ gem "puma", "~> 5.0"
 # gem "stimulus-rails", ">= 0.7.3"
 
 # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
-gem "tailwindcss-rails", ">= 0.5.3"
+# gem "tailwindcss-rails", ">= 0.5.3"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder", "~> 2.11"
