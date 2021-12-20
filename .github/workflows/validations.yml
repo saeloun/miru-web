@@ -69,6 +69,23 @@ jobs:
           PGHOST: 127.0.0.1
           PGUSER: root
         run: bundle exec rspec
+      - name: Parse codecoverage output and generate comment body
+        id: parse_output
+        run: |
+          ruby ./.github/workflows/code_coverage_parser.rb
+      - name: Read parsed Code Coverage Comment Body
+        id: summary
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./code-coverage-comment.txt
+          trim: true
+      - name: Add comment to PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: CodeCoverage
+          message: |
+            ${{ steps.summary.outputs.content }}
       - name: Run Eslint
         run: |
           npx eslint "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
