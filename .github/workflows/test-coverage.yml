@@ -37,9 +37,20 @@ jobs:
       - name: Run the coverage test
         run: |
           COVERAGE=true bundle exec rspec
-      - name: Upload coverage results
-        uses: actions/upload-artifact@master
-        if: always()
+      - name: Parse codecoverage output and generate comment body
+        id: parse_output
+        run: |
+          ruby ./.github/workflows/code_coverage_parser.rb
+      - name: Read parsed Code Coverage Comment Body
+        id: summary
+        uses: juliangruber/read-file-action@v1
         with:
-          name: coverage-report
-          path: coverage
+          path: ./code-coverage-comment.txt
+          trim: true
+      - name: Add comment to PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: CodeCoverage
+          message: |
+            ${{ steps.summary.outputs.content }}
