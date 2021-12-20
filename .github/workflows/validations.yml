@@ -79,11 +79,14 @@ jobs:
         with:
           path: ./code-coverage-comment.txt
           trim: true
+      - uses: jwalton/gh-find-current-pr@v1
+          id: finder
       - name: Add comment to PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           header: CodeCoverage
+          number: ${{ steps.finder.outputs.pr }}
           message: |
             ${{ steps.summary.outputs.content }}
       - name: Run Eslint
