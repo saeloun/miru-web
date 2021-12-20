@@ -145,8 +145,6 @@ GEM
     nokogiri (1.12.5)
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
-    nokogiri (1.12.5-x86_64-linux)
-      racc (~> 1.4)
     orm_adapter (0.5.0)
     parallel (1.21.0)
     parser (3.0.3.2)
@@ -273,8 +271,6 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    tailwindcss-rails (0.5.4)
-      railties (>= 6.0.0)
     thor (1.1.0)
     tilt (2.0.10)
     tzinfo (2.0.4)
@@ -333,7 +329,6 @@ DEPENDENCIES
   selenium-webdriver (>= 4.0.0)
   simplecov
   spring
-  tailwindcss-rails (>= 0.5.3)
   tzinfo-data
   web-console (>= 4.1.0)
   webdrivers
