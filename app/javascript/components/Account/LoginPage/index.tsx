@@ -14,7 +14,7 @@ const LoginPage = () => {
       const response = await authApi.login({ email, password });
       setToLocalStorage({
         isLoggedIn: true,
-        token: "sample",
+        token: response.data.token,
         email
       });
       setAuthHeaders();
