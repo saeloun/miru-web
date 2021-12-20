@@ -79,7 +79,7 @@ jobs:
         with:
           path: ./code-coverage-comment.txt
           trim: true
-      - PR number finder
+      - name: PR number finder
         uses: jwalton/gh-find-current-pr@v1
         id: finder
       - name: Add comment to PR
