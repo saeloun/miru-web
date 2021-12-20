@@ -6,7 +6,6 @@ axios.defaults.baseURL = "/";
 
 interface CommonHeaderProperties extends HeadersDefaults {
   Authorization: string;
-  Accept: string;
   "Content-Type": string;
   "X-CSRF-TOKEN": string;
 }
@@ -14,7 +13,6 @@ interface CommonHeaderProperties extends HeadersDefaults {
 export const setAuthHeaders = (setLoading = (value: boolean): any => null) => {
   axios.defaults.headers = {
     Authorization: `Bearer ${getFromLocalStorage("authToken")}`,
-    Accept: "application/json",
     "Content-Type": "application/json",
     "X-CSRF-TOKEN": document
       .querySelector("[name=\"csrf-token\"]")

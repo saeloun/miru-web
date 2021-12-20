@@ -11,7 +11,7 @@ const LoginPage = () => {
   const handleSubmit = async event => {
     event.preventDefault();
     try {
-      const response = await authApi.login({ email, password });
+      const response = await authApi.login({ user: { email, password } });
       setToLocalStorage({
         isLoggedIn: true,
         token: response.data.token,
