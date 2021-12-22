@@ -2,6 +2,7 @@ import * as React from "react";
 import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
+import ForgotPasswordPage from "./Account/ForgotPasswordPage";
 import LoginPage from "./Account/LoginPage";
 import SignupPage from "./Account/SignupPage";
 
@@ -22,6 +23,7 @@ const App = () => {
       <Routes>
         <Route path="login" element={<LoginPage />} />
         <Route path="signup" element={<SignupPage />} />
+        <Route path="forgotpassword" element={<ForgotPasswordPage />} />
       </Routes>
     </Router>
   );
