@@ -19,6 +19,9 @@ module.exports = {
           200: "#F5F4F4",
           400: "#C4C4C4",
         },
+        miruwhite: {
+          400: "#FFFFFF",
+        },
       },
       fontFamily :{
         jakartasans: "'Plus Jakarta Sans', serif",
