@@ -5,21 +5,20 @@ class Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
   def create
-    @user = User.new
-
-    @user.first_name = params[:first_name]
-    @user.last_name = params[:last_name]
-    @user.email = params[:email]
-    @user.password = params[:password]
+    @user = User.new(user_params)
 
     if @user.save
-      render json: @user
+      render :create
     else
-      head(:unprocessable_entity)
+      render :errors
     end
   end
 
   private
+    def user_params
+      params.permit(:first_name, :last_name, :email, :password)
+    end
+
     def respond_with(resource, _opts = {})
       register_success && return if resource.persisted?
 
