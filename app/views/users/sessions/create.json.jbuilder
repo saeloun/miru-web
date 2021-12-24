@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-json.data do
-  json.user do
-    json.email params[:email]
-  end
-  json.notice "You are logged in."
+json.user do
+  json.call(
+    @user,
+    :email
+  )
+  json.notice "You have logged in."
 end

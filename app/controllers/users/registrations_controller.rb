@@ -8,15 +8,15 @@ class Users::RegistrationsController < Devise::RegistrationsController
     @user = User.new(user_params)
 
     if @user.save
-      render :create
+      render :create, formats: [:json], status: :created
     else
-      render :errors
+      render :errors, formats: [:json], status: :unprocessable_entity
     end
   end
 
   private
     def user_params
-      params.permit(:first_name, :last_name, :email, :password)
+      params.require(:user).permit(:first_name, :last_name, :email, :password)
     end
 
     def respond_with(resource, _opts = {})
