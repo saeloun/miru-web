@@ -4,18 +4,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protect_from_forgery with: :null_session
   respond_to :json
 
-  def create
-    @user = User.new(user_params)
-
-    if @user.save
-      render :create, formats: [:json], status: :created
-    else
-      render :errors, formats: [:json], status: :unprocessable_entity
-    end
-  end
-
   private
-    def user_params
+    def sign_up_params
       params.require(:user).permit(:first_name, :last_name, :email, :password)
     end
 
