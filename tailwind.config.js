@@ -12,10 +12,15 @@ module.exports = {
     },
     extend: {
       colors: {
-        miru: {
+        'miru-black': {
+          1000: "#303A4B",
+        },
+        'miru-grey': {
           200: "#F5F4F4",
           400: "#C4C4C4",
-          1000: "#303A4B",
+        },
+        'miru-white': {
+          400: "#FFFFFF",
         },
       },
       fontFamily :{

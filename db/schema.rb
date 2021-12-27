@@ -30,6 +30,15 @@ ActiveRecord::Schema.define(version: 2021_12_20_105121) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at", precision: 6
     t.datetime "remember_created_at", precision: 6
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at", precision: 6
+    t.datetime "last_sign_in_at", precision: 6
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
+    t.string "confirmation_token"
+    t.datetime "confirmed_at", precision: 6
+    t.datetime "confirmation_sent_at", precision: 6
+    t.string "unconfirmed_email"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "role", null: false
