@@ -30,11 +30,11 @@ const Login = () => {
 
   return (
     <Container>
-      <h2 className="font-medium text-center text-3xl lg:text-4xl text-miru-1000 mb-5">
+      <h2 className="font-medium text-center text-3xl lg:text-4xl text-miru-black-1000 mb-5">
         Miru
       </h2>
       <div className="p-5 2xl:p-10 shadow-xl rounded-lg">
-        <h2 className="text-miru-1000 lg:mb-3 text-base font-medium">
+        <h2 className="text-miru-black-1000 lg:mb-3 text-base font-medium">
           Sign In
         </h2>
         <LoginForm
@@ -45,15 +45,18 @@ const Login = () => {
         <div className="mt-3 text-center">
           <Link
             to="/users/password/reset"
-            className="text-center text-miru-400 text-xs hover:text-miru-1000"
+            className="text-center text-miru-grey-400 text-xs hover:text-miru-black-1000"
           >
             Forgot Password?
           </Link>
         </div>
         <div className="text-center">
-          <p className="text-center text-miru-400 text-xs">
+          <p className="text-center text-miru-grey-400 text-xs">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-miru-800 hover:text-miru-1000">
+            <Link
+              to="/signup"
+              className="text-miru-grey-400 hover:text-miru-black-1000"
+            >
               Sign Up
             </Link>
           </p>
