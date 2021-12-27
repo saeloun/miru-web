@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 
 import ForgotPasswordPage from "./Account/ForgotPasswordPage";
 import LoginPage from "./Account/LoginPage";
+import SetPasswordPage from "./Account/SetPasswordPage";
 import SignupPage from "./Account/SignupPage";
 
 import { setAuthHeaders, registerIntercepts } from "./apis/axios";
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="login" element={<LoginPage />} />
         <Route path="signup" element={<SignupPage />} />
         <Route path="users/password/reset" element={<ForgotPasswordPage />} />
+        <Route path="users/password/set" element={<SetPasswordPage />} />
       </Routes>
     </Router>
   );
