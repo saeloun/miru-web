@@ -29,7 +29,7 @@ const SetPassword = () => {
         Miru
       </h2>
       <div className="p-5 2xl:p-10 shadow-xl rounded-lg">
-        <h2 className="text-miru-1000 lg:mb-3 text-base font-medium">
+        <h2 className="text-miru-black-1000 lg:mb-3 text-base font-medium">
           Set Password
         </h2>
         <SetPasswordForm
