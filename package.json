@@ -4,6 +4,8 @@
     "@babel/preset-react": "^7.16.5",
     "@babel/preset-typescript": "^7.16.5",
     "@fontsource/plus-jakarta-sans": "^4.5.0",
+    "@headlessui/react": "^1.4.2",
+    "@heroicons/react": "^1.0.5",
     "@rails/actioncable": "^7.0.0",
     "@rails/activestorage": "^7.0.0",
     "@rails/ujs": "^7.0.0",

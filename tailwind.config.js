@@ -12,14 +12,14 @@ module.exports = {
     },
     extend: {
       colors: {
-        mirublack: {
+        'miru-black': {
           1000: "#303A4B",
         },
-        mirugrey: {
+        'miru-grey': {
           200: "#F5F4F4",
           400: "#C4C4C4",
         },
-        miruwhite: {
+        'miru-white': {
           400: "#FFFFFF",
         },
       },
