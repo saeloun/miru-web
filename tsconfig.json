@@ -9,7 +9,12 @@
     "sourceMap": true,
     "target": "es5",
     "jsx": "react",
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "components/*": ["./app/javascript/components/*"],
+      "apis/*": ["./app/javascript/components/apis/*"],
+      "helpers/*": ["./app/javascript/components/helpers/*"],
+    }
   },
   "exclude": [
     "**/*.spec.ts",
