@@ -11,13 +11,13 @@ const ForgotPasswordForm = ({
 }: ForgotPasswordFormProps) => (
   <form>
     <div className="field">
-      <label htmlFor="email" className="text-xs text-miru-1000">
+      <label htmlFor="email" className="text-xs text-miru-black-1000">
         Email
       </label>
       <br />
       <input
         type="email"
-        className="h-8 w-full focus:outline-none bg-miru-200 text-sm"
+        className="h-8 w-full focus:outline-none bg-miru-grey-200 text-sm"
         onChange={e => setEmail(e.target.value)}
       />
     </div>
@@ -25,7 +25,7 @@ const ForgotPasswordForm = ({
     <div className="actions">
       <button
         type="submit"
-        className="mt-5 h-8 w-full bg-miru-400 font-bold text-white text-base hover:bg-miru-1000"
+        className="mt-5 h-8 w-full bg-miru-grey-400 font-bold text-white text-base hover:bg-miru-black-1000"
         onClick={handleSubmit}
       >
         RESET PASSWORD
