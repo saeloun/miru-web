@@ -5,6 +5,10 @@ class Users::SessionsController < Devise::SessionsController
   respond_to :json
 
   private
+    def respond_with(resource, _opts = {})
+      render json: :create, status: :ok
+    end
+
     def respond_to_on_destroy
       log_out_success && return if current_user
 

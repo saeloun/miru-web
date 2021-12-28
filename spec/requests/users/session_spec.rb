@@ -1,13 +1,21 @@
 # frozen_string_literal: true
 
 RSpec.describe "Users::SessionController", type: :request do
-  let(:user) { build(:user) }
+  let (:user) { create(:user) }
+  let (:login_url) { "/users/sign_in" }
+  let (:logout_url) { "/users/sign_out" }
 
-  describe "POST /users/sign_in" do
-    it "signs up a user" do
-      post "/users/sign_in", params: { user: { email: user.email, password: user.password } }
+  context "When logging in" do
+    before do
+      post login_url, params: { user: { email: user.email, password: user.password } }
+    end
 
-      expect(response).to have_http_status(200)
+    it "returns a token" do
+      expect(response.headers["Authorization"]).to be_present
+    end
+
+    it "returns 200" do
+      expect(response.status).to eq(200)
     end
   end
 end
