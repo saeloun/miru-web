@@ -34,4 +34,19 @@ RSpec.describe "Users::SessionController", type: :request do
       expect(response.status).to eq(401)
     end
   end
+
+  context "When email is missing" do
+    before do
+      post login_url, as: :json, params: {
+        user: {
+          email: nil,
+          password: user.password
+        }
+      }
+    end
+
+    it "returns 401" do
+      expect(response.status).to eq(401)
+    end
+  end
 end
