@@ -3,10 +3,20 @@
 class Users::SessionsController < Devise::SessionsController
   protect_from_forgery with: :null_session
   respond_to :json
+  before_action :authenticate_user
 
   private
+    def authenticate_user
+      user = User.find_by(email: params[:user][:email])
+      @resource = user && user&.valid_password?(params[:user][:password])
+    end
+
     def respond_with(resource, _opts = {})
-      render json: :create, status: :ok
+      if @resource
+        render :create, status: :ok
+      else
+        render :errors, status: :unauthorized
+      end
     end
 
     def respond_to_on_destroy

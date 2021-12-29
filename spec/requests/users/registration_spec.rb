@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require "rails_helper"
+
 RSpec.describe "Users::RegistrationsController", type: :request do
   let (:user) { build(:user) }
-  let (:create_user) { create(:user) }
+  let (:existing_user) { create(:user) }
   let (:signup_url) { "/users" }
 
   context "When creating a new user" do
