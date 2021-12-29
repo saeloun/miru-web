@@ -1,15 +1,39 @@
 <%- if controller_name != 'sessions' %>
-  <%= link_to "Log in", new_session_path(resource_name) %><br />
-<% end %>
-<%- if devise_mapping.registerable? && controller_name != 'registrations' %>
-  <%= link_to "Sign up", new_registration_path(resource_name) %><br />
+  <% if controller_name == 'registrations' %>
+    <div class="text-center m-2">
+      <p class="text-center text-miru-grey-400 text-xs">
+        Already have an account?
+        <%= link_to "Sign in", new_session_path(resource_name), class: "text-miru-grey-400 hover:text-miru-black-1000" %><br />
+      </p>
+    </div>
+  <% else %>
+    <div class="text-center m-2">
+      <p class="text-center text-miru-grey-400 text-xs hover:text-miru-black-1000">
+        <%= link_to "Sign in", new_session_path(resource_name), class: "text-miru-grey-400 hover:text-miru-black-1000" %><br />
+      </p>
+    </div>
+  <%end%>
 <% end %>
 <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
-  <%= link_to "Forgot your password?", new_password_path(resource_name) %><br />
+  <div class="mt-3 text-center">
+    <%= link_to "Forgot Password?", new_password_path(resource_name), class: "text-center text-miru-grey-400 text-xs hover:text-miru-black-1000" %><br />
+  </div>
 <% end %>
+<%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+  <div class="text-center">
+    <p class="text-center text-miru-grey-400 text-xs">
+      Don't have an account?
+      <%= link_to "Sign up", new_registration_path(resource_name), class: "text-miru-grey-400 hover:text-miru-black-1000" %><br />
+    </p>
+  </div>
+<% end %>
+<%
+=begin%>
 <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
   <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br />
 <% end %>
+<%
+=end%>
 <%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
   <%= link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name) %><br />
 <% end %>

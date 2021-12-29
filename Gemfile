@@ -101,6 +101,8 @@ group :development do
 
   # Annotate gem for showing schema information
   gem "annotate"
+
+  gem "letter_opener"
 end
 
 group :test do
