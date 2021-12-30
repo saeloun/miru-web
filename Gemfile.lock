@@ -129,6 +129,10 @@ GEM
       reline (>= 0.2.7)
     jbuilder (2.11.3)
       activesupport (>= 5.0.0)
+    launchy (2.5.0)
+      addressable (~> 2.7)
+    letter_opener (1.7.0)
+      launchy (~> 2.2)
     loofah (2.13.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -144,6 +148,8 @@ GEM
     nio4r (2.5.8)
     nokogiri (1.12.5)
       mini_portile2 (~> 2.6.1)
+      racc (~> 1.4)
+    nokogiri (1.12.5-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     parallel (1.21.0)
@@ -314,6 +320,7 @@ DEPENDENCIES
   faker
   foreman
   jbuilder (~> 2.11)
+  letter_opener
   pg
   puma (~> 5.0)
   rack-mini-profiler (>= 2.3.3)
