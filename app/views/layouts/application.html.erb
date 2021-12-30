@@ -6,13 +6,17 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%#= stylesheet_link_tag "inter-font", "data-turbo-track": "reload" %>
-
     <%= stylesheet_pack_tag "application" %>
     <%= javascript_pack_tag 'application' %>
   </head>
-
   <body>
     <main class="min-h-screen bg-miru-white-400">
+      <script type="text/javascript">
+        <% flash.each do |key, value| %>
+          <% type = key.to_s.gsub('alert', 'error').gsub('notice', 'success') %>
+          toastr.<%= type %>('<%= value %>')
+        <% end %>
+      </script>
       <%= yield %>
     </main>
   </body>

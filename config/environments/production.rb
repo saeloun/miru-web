@@ -120,4 +120,9 @@ Rails.application.configure do
   # in a proc. See guides for an example.
   # config.active_record.shard_selector = { lock: true }
   # config.active_record.shard_resolver = ->(request) { Tenant.find_by!(host: request.host).shard }
+
+  # Action Mailer Configuration
+  host = ENV.fetch("APP_BASE_URL", "localhost")
+  config.action_mailer.default_url_options = { host: host }
+  config.action_mailer.asset_host = host
 end

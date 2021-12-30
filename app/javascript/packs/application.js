@@ -6,6 +6,7 @@ import * as ReactRailsUJS from "react_ujs";
 
 import "@fontsource/plus-jakarta-sans";
 
+global.toastr = require("toastr");
 Rails.start();
 ActiveStorage.start();
 
