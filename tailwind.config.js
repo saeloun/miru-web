@@ -16,11 +16,62 @@ module.exports = {
           1000: "#303A4B",
         },
         'miru-grey': {
-          200: "#F5F4F4",
-          400: "#C4C4C4",
+          1000: "#CDD6DF",
+          600: "#D7DEE5",
+          400: "#E1E6EC",
+          200: "#EBEFF2",
+          100: "#F5F7F9",
         },
         'miru-white': {
-          400: "#FFFFFF",
+          1000: "#FFFFFF",
+        },
+        'miru-darkpurple': {
+          1000: "#1D1A31",
+          600: "#4A485A",
+          400: "#777683",
+          200: "#A5A3AD",
+          100: "#D2D1D6"
+        },
+        'miru-hanpurple': {
+          1000: "#5B34EA",
+          600: "#7C5DEE",
+          400: "#9D85F2",
+          200: "#BDAEF7",
+          100: "#DED6FB",
+        },
+        'miru-alertgreen': {
+          1000: "#564210",
+          800: "#10562C",
+          400: "#A9EFC5",
+        },
+        'miru-alertpink': {
+          400: "#EFA9A9"
+        },
+        'miru-alertblue': {
+          1000: "#104556",
+          400: "#A9DEEF",
+        },
+        'miru-alertyellow': {
+          400: "#EFDBA9",
+        },
+        'miru-alertred': {
+          1000: "#561010",
+        },
+        'miru-chartgreen':{
+          600: "#058C42",
+          400: "#0DA163",
+        },
+        'miru-chartblue': {
+          600: "#0E79B2",
+        },
+        'miru-chartpink': {
+          600: "#BF1363",
+        },
+        'miru-chartorange': {
+          600: "#F39237",
+        },
+        'miru-chartpurple': {
+          600: "#7768AE",
         },
       },
       fontFamily :{
