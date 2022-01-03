@@ -1,0 +1,31 @@
+
+<h1>Setup Org</h1>
+
+Company Details<br>
+
+Financial Details<br>
+
+<%= form_with url: company_index_path, method: :post do |form| %>
+  <%= form.label :company %>
+  <%= form.text_field :company %><br>
+ 
+  <%= form.label :address %>
+  <%= form.text_field :address %><br>
+
+  <%= form.label :business_phone %>
+  <%= form.text_field :business_phone %><br>
+
+  <%= form.label :base_currency %>
+  <%= form.text_field :base_currency %><br>
+  
+  <%= form.label :standard_price %>
+  <%= form.text_field :standard_rate %><br>
+
+  <%= form.label :fiscal_year_end %>
+  <%= form.text_field :fiscal_year_end %><br>
+
+  <%= form.label :date %>
+  <%= form.date_field :date %><br>
+
+  <%= form.submit %>
+<% end %>

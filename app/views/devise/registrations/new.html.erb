@@ -30,7 +30,7 @@
           <%= f.label :password_confirmation, class: "text-xs text-miru-black-1000" %><br />
           <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "p-2 w-full bg-miru-grey-200 text-sm" %>
         </div>
-        <%= f.hidden_field :role, value: "admin" %>
+        <%= f.hidden_field :role, value: "owner" %>
         <div class="actions">
           <%= f.submit "Sign up", class: "mt-5 p-2 w-full bg-miru-grey-400 font-bold text-white text-base hover:bg-miru-black-1000 cursor-pointer" %>
         </div>
