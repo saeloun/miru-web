@@ -2,6 +2,5 @@
 
 class TimeTrackingsController < ApplicationController
   def index
-    render
   end
 end

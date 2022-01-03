@@ -2,6 +2,7 @@
 
 Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: "users/registrations" }
-  root "time_trackings#index"
+  root "path#index"
   resources :dashboard, only: [:index]
+  resources :time_trackings, only: [:index]
 end
