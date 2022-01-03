@@ -1,3 +1,5 @@
-<div class="" id="root-page">
-  <%= render "partial/navbar" %>
-</div>
+<% if user_signed_in? %>
+  <div class="" id="root-page">
+    <%= render "partial/navbar" %>
+  </div>
+<% end %>
