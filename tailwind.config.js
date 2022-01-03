@@ -25,52 +25,52 @@ module.exports = {
         'miru-white': {
           1000: "#FFFFFF",
         },
-        'miru-darkpurple': {
+        'miru-dark-purple': {
           1000: "#1D1A31",
           600: "#4A485A",
           400: "#777683",
           200: "#A5A3AD",
           100: "#D2D1D6"
         },
-        'miru-hanpurple': {
+        'miru-han-purple': {
           1000: "#5B34EA",
           600: "#7C5DEE",
           400: "#9D85F2",
           200: "#BDAEF7",
           100: "#DED6FB",
         },
-        'miru-alertgreen': {
+        'miru-alert-green': {
           1000: "#564210",
           800: "#10562C",
           400: "#A9EFC5",
         },
-        'miru-alertpink': {
+        'miru-alert-pink': {
           400: "#EFA9A9"
         },
-        'miru-alertblue': {
+        'miru-alert-blue': {
           1000: "#104556",
           400: "#A9DEEF",
         },
-        'miru-alertyellow': {
+        'miru-alert-yellow': {
           400: "#EFDBA9",
         },
-        'miru-alertred': {
+        'miru-alert-red': {
           1000: "#561010",
         },
-        'miru-chartgreen':{
+        'miru-chart-green':{
           600: "#058C42",
           400: "#0DA163",
         },
-        'miru-chartblue': {
+        'miru-chart-blue': {
           600: "#0E79B2",
         },
-        'miru-chartpink': {
+        'miru-chart-pink': {
           600: "#BF1363",
         },
-        'miru-chartorange': {
+        'miru-chart-orange': {
           600: "#F39237",
         },
-        'miru-chartpurple': {
+        'miru-chart-purple': {
           600: "#7768AE",
         },
       },
