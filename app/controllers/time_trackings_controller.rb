@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class HomeController < ApplicationController
+class TimeTrackingsController < ApplicationController
   def index
     render
   end
