@@ -30,57 +30,47 @@
         </button>
       </div>
       <div class="flex-1 flex items-center justify-center md:items-stretch md:justify-start">
-
+        <!-- Logo -->
         <div class="flex-shrink-0 flex items-center">
-          <svg class="block lg:hidden h-8 w-auto md:mr-12" width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="60.5" cy="98" r="12" transform="rotate(90 60.5 98)" fill="#5B34EA"/>
-            <circle cx="60.5" cy="22" r="12" transform="rotate(90 60.5 22)" fill="#5B34EA"/>
-            <path d="M15.5 40C15.5 43.3062 16.8371 46.3001 19 48.4705C21.1629 50.6409 21.1629 69.3591 19 71.5295C16.8371 73.6999 15.5 76.6938 15.5 80C15.5 86.6274 20.8726 92 27.5 92C34.1274 92 39.5 86.6274 39.5 80C39.5 76.2104 37.7434 72.8311 35 70.6319C32.2566 68.4328 28.2593 50.7358 35 52.1768C41.7407 53.6179 47.831 58.2029 48.7714 62.5494C49.9402 67.9522 54.7474 72 60.5 72C66.3604 72 71.2396 67.799 72.2905 62.2442C73.146 57.7222 79.2882 53.2927 86 52.0073C92.7118 50.722 88.7434 68.4328 86 70.6319C83.2566 72.8311 81.5 76.2104 81.5 80C81.5 86.6274 86.8726 92 93.5 92C100.127 92 105.5 86.6274 105.5 80C105.5 76.6938 104.163 73.6999 102 71.5295C99.8371 69.3591 99.8371 50.6409 102 48.4705C104.163 46.3001 105.5 43.3062 105.5 40C105.5 33.3726 100.127 28 93.5 28C87.4185 28 82.3936 32.5239 81.6071 38.3901C80.8205 44.2563 71.9518 48.9473 64.042 48.5313C61.4006 48.3924 59.2936 48.4832 56.6588 48.628C48.9005 49.0542 40.0855 44.6862 39.4282 38.6799C38.771 32.6736 33.6813 28 27.5 28C20.8726 28 15.5 33.3726 15.5 40Z" fill="#5B34EA"/>
-          </svg>
-          <svg class="hidden lg:block h-8 w-auto lg:mr-32" width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="60.5" cy="98" r="12" transform="rotate(90 60.5 98)" fill="#5B34EA"/>
-            <circle cx="60.5" cy="22" r="12" transform="rotate(90 60.5 22)" fill="#5B34EA"/>
-            <path d="M15.5 40C15.5 43.3062 16.8371 46.3001 19 48.4705C21.1629 50.6409 21.1629 69.3591 19 71.5295C16.8371 73.6999 15.5 76.6938 15.5 80C15.5 86.6274 20.8726 92 27.5 92C34.1274 92 39.5 86.6274 39.5 80C39.5 76.2104 37.7434 72.8311 35 70.6319C32.2566 68.4328 28.2593 50.7358 35 52.1768C41.7407 53.6179 47.831 58.2029 48.7714 62.5494C49.9402 67.9522 54.7474 72 60.5 72C66.3604 72 71.2396 67.799 72.2905 62.2442C73.146 57.7222 79.2882 53.2927 86 52.0073C92.7118 50.722 88.7434 68.4328 86 70.6319C83.2566 72.8311 81.5 76.2104 81.5 80C81.5 86.6274 86.8726 92 93.5 92C100.127 92 105.5 86.6274 105.5 80C105.5 76.6938 104.163 73.6999 102 71.5295C99.8371 69.3591 99.8371 50.6409 102 48.4705C104.163 46.3001 105.5 43.3062 105.5 40C105.5 33.3726 100.127 28 93.5 28C87.4185 28 82.3936 32.5239 81.6071 38.3901C80.8205 44.2563 71.9518 48.9473 64.042 48.5313C61.4006 48.3924 59.2936 48.4832 56.6588 48.628C48.9005 49.0542 40.0855 44.6862 39.4282 38.6799C38.771 32.6736 33.6813 28 27.5 28C20.8726 28 15.5 33.3726 15.5 40Z" fill="#5B34EA"/>
-          </svg>
+          <a href="/" class="font-semibold text-xl tracking-tight">
+            <img class="block lg:hidden h-8 w-auto md:mr-12" src="/miru-logo.svg" alt="miru web">
+            <img class="hidden lg:block h-8 w-auto lg:mr-32" src="/miru-logo.svg" alt="miru web">
+          </a>
         </div>
-
         <div class="hidden md:mx-3 md:flex md:space-x-2 lg:space-x-8">
           <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
           <% if (current_user.admin? || current_user.owner?) %>
-            <a href="#" class="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
+            <a href="/dashboard" class="<%= request.path == "/dashboard" ? "text-miru-han-purple-1000" : "border-transparent text-gray-500 hover:text-gray-700" %> inline-flex items-center px-1 pt-1 text-sm font-medium">
               Dashboard
             </a>
           <% end %>
-          <a href="#" class="text-miru-han-purple-1000 inline-flex items-center px-1 pt-1 text-sm font-medium">
+          <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "text-miru-han-purple-1000" : "border-transparent text-gray-500 hover:text-gray-700" %> inline-flex items-center px-1 pt-1 text-sm font-medium">
             Time Tracking
           </a>
           <% if (current_user.admin? || current_user.owner?) %>
-            <a href="#" class="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
+            <a href="/team" class="<%= request.path == "/team" ? "text-miru-han-purple-1000" : "border-transparent text-gray-500 hover:text-gray-700" %> inline-flex items-center px-1 pt-1 text-sm font-medium">
               Team
             </a>
           <% end %>
-          <a href="#" class="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
+          <a href="/clients" class="<%= request.path == "/clients" ? "text-miru-han-purple-1000" : "border-transparent text-gray-500 hover:text-gray-700" %> inline-flex items-center px-1 pt-1 text-sm font-medium">
             Clients
           </a>
-          <a href="#" class="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
+          <a href="/projects" class="<%= request.path == "/project" ? "text-miru-han-purple-1000" : "border-transparent text-gray-500 hover:text-gray-700" %> inline-flex items-center px-1 pt-1 text-sm font-medium">
             Projects
           </a>
           <% if (current_user.admin? || current_user.owner?) %>
-            <a href="#" class="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
+            <a href="/invoice" class="<%= request.path == "/invoice" ? "text-miru-han-purple-1000" : "border-transparent text-gray-500 hover:text-gray-700" %> inline-flex items-center px-1 pt-1 text-sm font-medium">
               Invoice
             </a>
           <% end %>
           <% if (current_user.admin? || current_user.owner?) %>
-            <a href="#" class="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
+            <a href="/report" class="<%= request.path == "/report" ? "text-miru-han-purple-1000" : "border-transparent text-gray-500 hover:text-gray-700" %> inline-flex items-center px-1 pt-1 text-sm font-medium">
               Report
             </a>
           <% end %>
         </div>
-
       </div>
-
       <div class="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0">
-
         <button type="button" class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
           <span class="sr-only">View notifications</span>
           <!-- Heroicon name: outline/bell -->
@@ -88,16 +78,14 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
         </button>
-
         <!-- Profile dropdown -->
         <div class="ml-3 relative" x-data="{ isOpen: false}">
           <div>
             <button type="button" class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="user-menu-button" aria-expanded="false" aria-haspopup="true" @click="isOpen = !isOpen" @keydown.escape="isOpen = false">
               <span class="sr-only">Open user menu</span>
-              <img class="h-8 w-8 rounded-full" src="" alt="profile">
+              <img class="h-8 w-8 rounded-full" src="/avtar.svg" alt="profile">
             </button>
           </div>
-
           <!--
             Dropdown menu, show/hide based on menu state.
 
@@ -111,8 +99,8 @@
           <div x-show="isOpen" @click.away="isOpen = false">
             <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
               <!-- Active: "bg-gray-100", Not Active: "" -->
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
+              <a href="/profile" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
+              <a href="/settings" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
               <%= button_to "logout", destroy_user_session_path, method: :delete, class: "block px-4 py-2 text-sm text-gray-700", role: "menuitem", tabindex: "-1", id: "user-menu-item-2"%>
             </div>
           </div>
@@ -120,24 +108,23 @@
       </div>
     </div>
   </div>
-
   <!-- Mobile menu, show/hide based on menu state. -->
   <div class="flex">
     <div class="md:hidden">
       <div class="pt-2 pb-4 space-y-1" x-show="isOpen" @click.away="isOpen = false">
         <!-- Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
         <% if (current_user.admin? || current_user.owner?) %>
-          <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Dashboard</a>
+          <a href="/dashboard" class="<%= request.path == "/dashboard" ? "bg-indigo-50 border-indigo-500 text-indigo-700" : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Dashboard</a>
         <% end %>
-        <a href="#" class="bg-indigo-50 border-indigo-500 text-indigo-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Time Tracking</a>
+        <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "bg-indigo-50 border-indigo-500 text-indigo-700" : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Time Tracking</a>
         <% if (current_user.admin? || current_user.owner?) %>
-          <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Team</a>
+          <a href="/team" class="<%= request.path == "/team" ? "bg-indigo-50 border-indigo-500 text-indigo-700" : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Team</a>
         <% end %>
-        <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Clients</a>
-        <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Projects</a>
+        <a href="/clients" class="<%= request.path == "/clients" ? "bg-indigo-50 border-indigo-500 text-indigo-700" : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Clients</a>
+        <a href="/projects" class="<%= request.path == "/projects" ? "bg-indigo-50 border-indigo-500 text-indigo-700" : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Projects</a>
         <% if (current_user.admin? || current_user.owner?) %>
-          <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Invoice</a>
-          <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Report</a>
+          <a href="/invoice" class="<%= request.path == "/invoice" ? "bg-indigo-50 border-indigo-500 text-indigo-700" : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Invoice</a>
+          <a href="/report" class="<%= request.path == "/report" ? "bg-indigo-50 border-indigo-500 text-indigo-700" : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Report</a>
         <% end %>
       </div>
     </div>
