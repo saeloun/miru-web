@@ -75,7 +75,7 @@ module.exports = {
         },
       },
       fontFamily :{
-        jakartasans: "'Plus Jakarta Sans', serif",
+        manrope: "'Manrope', serif",
       },
       spacing: {
         112: "28rem",
