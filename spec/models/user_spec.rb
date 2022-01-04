@@ -9,13 +9,18 @@ RSpec.describe User, type: :model do
     expect(user).to be_valid
   end
 
-  it "checks if it is an admin" do
+  it "checks if it is an owner" do
     user.role = 0
+    expect(user).to be_owner
+  end
+
+  it "checks if it is an admin" do
+    user.role = 1
     expect(user).to be_admin
   end
 
   it "checks if it is an employee" do
-    user.role = 1
+    user.role = 2
     expect(user).to be_employee
   end
 
