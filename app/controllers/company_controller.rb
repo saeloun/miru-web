@@ -10,6 +10,8 @@ class CompanyController < ApplicationController
     current_user.save!
 
     redirect_to root_path
+  rescue
+    logger.errors "DEBUG::COMPANY_CONTROLLER::CREATE"
   end
 
   private
