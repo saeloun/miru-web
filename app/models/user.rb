@@ -34,7 +34,6 @@
 
 class User < ApplicationRecord
   belongs_to :company
-
   enum role: { owner: 0, admin: 1, employee: 2 }, _default: "employee"
 
   validates :first_name, :last_name, :email, :encrypted_password, presence: true
