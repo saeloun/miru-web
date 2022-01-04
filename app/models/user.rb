@@ -32,7 +32,7 @@
 #
 
 class User < ApplicationRecord
-  enum role: { admin: 0, employee: 1 }, _default: "employee"
+  enum role: { owner: 0, admin: 1, employee: 2 }, _default: "employee"
 
   validates :first_name, :last_name, :email, :encrypted_password, presence: true
   validates :first_name, :last_name, length: { maximum: 50 }
