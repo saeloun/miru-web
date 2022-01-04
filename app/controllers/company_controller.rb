@@ -5,7 +5,11 @@ class CompanyController < ApplicationController
   end
 
   def create
-    User
+    company = Company.create!(company_params)
+    current_user.company_id = company.id
+    current_user.save!
+
+    redirect_to root_path
   end
 
   private
