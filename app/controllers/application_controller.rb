@@ -3,11 +3,9 @@
 class ApplicationController < ActionController::Base
   before_action :authenticate_user!
 
-  def index
+  def redirect_path
     path = case current_user.role
-           when "owner"
-             dashboard_index_path
-           when "admin"
+           when "owner" || "admin"
              dashboard_index_path
            else
              time_trackings_path
