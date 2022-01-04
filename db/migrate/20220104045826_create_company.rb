@@ -3,7 +3,7 @@
 class CreateCompany < ActiveRecord::Migration[7.0]
   def change
     create_table :companies do |t|
-      t.string "company"
+      t.string "name"
       t.text "address"
       t.integer "business_phone"
       t.decimal "base_currency"

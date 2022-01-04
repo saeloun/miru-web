@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   root to: "root#index"
   resources :dashboard, only: [:index]
 
-  get "*path", to: "home#index", via: :all
-  resources :time_trackings, only: [:index], path: "time-tracking"
+  # get "*path", to: "home#index", via: :all
+  resources :time_tracking, only: [:index], path: "time-tracking"
   resources :company, only: [:new, :create]
 end

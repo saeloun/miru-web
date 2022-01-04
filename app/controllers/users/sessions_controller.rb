@@ -8,7 +8,7 @@ class Users::SessionsController < Devise::SessionsController
       if resource.admin? || resource.owner?
         dashboard_index_path
       else
-        dashboard_path
+        time_tracking_index_path
       end
     else
       super

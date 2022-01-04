@@ -14,6 +14,6 @@ class CompanyController < ApplicationController
 
   private
     def company_params
-      params.permit(:company, :address, :business_phone, :base_currency, :standard_price, :fiscal_year_end, :date)
+      params.permit(:name, :address, :business_phone, :base_currency, :standard_price, :fiscal_year_end, :date)
     end
 end
