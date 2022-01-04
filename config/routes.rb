@@ -6,8 +6,8 @@ Rails.application.routes.draw do
 
   root to: "application#redirect_path"
   resources :dashboard, only: [:index]
-  resources :company, only: [:new, :create]
 
   get "*path", to: "home#index", via: :all
   resources :time_trackings, only: [:index], path: "time-tracking"
+  resources :company, only: [:new, :create]
 end
