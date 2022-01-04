@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="pt-10/100 px-10 xsm:px-20/100 sm:px-26/100 md:px-30/100 lg:px-32/100 xl:px-36/100">
   <div class="font-jakartasans">
     <div class="p-5 2xl:p-10 shadow-xl rounded-lg">
@@ -50,3 +51,36 @@
     </div>
   </div>
 </div>
+=======
+
+<h1>Setup Org</h1>
+
+Company Details<br>
+
+Financial Details<br>
+
+<%= form_with url: company_index_path, method: :post do |form| %>
+  <%= form.label :company %>
+  <%= form.text_field :company %><br>
+ 
+  <%= form.label :address %>
+  <%= form.text_area :address %><br>
+
+  <%= form.label :business_phone %>
+  <%= form.number_field :business_phone %><br>
+
+  <%= form.label :base_currency %>
+  <%= form.number_field :base_currency %><br>
+  
+  <%= form.label :standard_price %>
+  <%= form.number_field :standard_rate %><br>
+
+  <%= form.label :fiscal_year_end %>
+  <%= form.text_field :fiscal_year_end %><br>
+
+  <%= form.label :date %>
+  <%= form.date_field :date %><br>
+
+  <%= form.submit %>
+<% end %>
+>>>>>>> ecd5596 (added controller)
