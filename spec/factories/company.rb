@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-months = ["JAN", "FEB", "MAR" "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
-
 FactoryBot.define do
   factory :company do
     name { "Saeloun" }
@@ -9,7 +7,7 @@ FactoryBot.define do
     business_phone { Faker::PhoneNumber.cell_phone_in_e164 }
     base_currency { Faker::Currency.code }
     standard_price { Faker::Number.number }
-    fiscal_year_end { months.sample }
+    fiscal_year_end { Date::MONTHNAMES.sample }
     date_format { 0 }
     country { "USA" }
     timezone { "EST" }

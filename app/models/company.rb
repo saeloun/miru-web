@@ -1,17 +1,18 @@
 # == Schema Information
-
+#
 # Table name: companies
 #
 #  id              :integer          not null, primary key
 #  name            :string           not null
 #  address         :text             not null
-#  business_phone  :string           not null
-#  base_currency   :string           not null
-#  standard_price  :decimal(6, 2)    default("0.0")
-#  fiscal_year_end :string           not null
-#  date_format     :integer          default("1")
+#  business_phone  :string
+#  base_currency   :string
+#  standard_price  :decimal(6, 2)    not null
+#  fiscal_year_end :string
+#  date_format     :string
 #  country         :string           not null
-#  timezone        :decimal(4, 2)    default("0.0"), not null
+#  timezone        :string
+#  logo_url        :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #
@@ -21,8 +22,7 @@
 class Company < ApplicationRecord
   has_many :users
 
-  enum month: ["JAN", "FEB", "MAR" "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
-  enum date_format: ["DD-MM-YYYY", "MM-DD-YYYY", "YYYY-MM-DD"]
-
-  validates :name, :address, :country, :standard_price, preserence: true
+  validates :name, :address, :standard_price, :country, preserence: true
+  validates :base_currency, default: "USD"
+  validates :standard_price, default: 0
 end
