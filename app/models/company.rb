@@ -5,8 +5,8 @@
 #  id              :integer          not null, primary key
 #  name            :string
 #  address         :text
-#  business_phone  :integer
-#  base_currency   :decimal(, )
+#  business_phone  :text
+#  base_currency   :text
 #  standard_price  :decimal(, )
 #  fiscal_year_end :string
 #  date            :date
