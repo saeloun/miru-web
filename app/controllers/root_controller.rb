@@ -6,7 +6,7 @@ class RootController < ApplicationController
            when "owner" || "admin"
              dashboard_index_path
            else
-             time_trackings_path
+             time_tracking_path
     end
     redirect_to path
   end
