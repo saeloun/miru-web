@@ -29,6 +29,6 @@
     }
   ],
   "scripts": {
-    "postdeploy": "bundle exec rails db:migrate && bundle exec rails db:seed && heroku config:set APP_BASE_URL=${HEROKU_APP_NAME}.herokuapp.com --app ${HEROKU_APP_NAME}"
+    "postdeploy": "bundle exec rails db:migrate && bundle exec rails db:seed"
   }
 }
