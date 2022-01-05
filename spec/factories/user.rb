@@ -7,6 +7,6 @@ FactoryBot.define do
     email { Faker::Internet.safe_email }
     password { Faker::Internet.password }
     role { User.roles.values.sample }
-    company_id { Company.first.id }
+    company_id { Faker::Number.number }
   end
 end

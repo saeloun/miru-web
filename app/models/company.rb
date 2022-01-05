@@ -3,7 +3,7 @@
 # Table name: companies
 #
 #  id              :integer          not null, primary key
-#  company         :string
+#  name            :string
 #  address         :text
 #  business_phone  :integer
 #  base_currency   :decimal(, )
@@ -12,6 +12,8 @@
 #  date            :date
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  country         :string
+#  timezone        :string
 #
 
 # frozen_string_literal: true
