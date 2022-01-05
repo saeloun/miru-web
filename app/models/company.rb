@@ -14,6 +14,8 @@
 #  timezone        :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  country         :string
+#  timezone        :string
 #
 
 # frozen_string_literal: true
