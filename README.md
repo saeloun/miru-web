@@ -38,3 +38,7 @@ cp .env.example .env
 ```
 foreman start -f Procfile.dev
 ```
+
+### To receive the emails in non-production apps.
+
+Go to `/sent_emails` for accessing the emails.
