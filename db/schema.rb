@@ -17,13 +17,13 @@ ActiveRecord::Schema.define(version: 2022_01_04_045826) do
   create_table "companies", force: :cascade do |t|
     t.string "name", null: false
     t.text "address", null: false
-    t.string "business_phone", null: false
+    t.string "business_phone"
     t.string "base_currency", null: false
     t.decimal "standard_price", precision: 6, scale: 2, default: "0.0"
     t.string "fiscal_year_end", null: false
-    t.integer "date_format", default: 1
+    t.integer "date_format", default: 0
     t.string "country", null: false
-    t.decimal "timezone", precision: 4, scale: 2, default: "0.0", null: false
+    t.string "timezone"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

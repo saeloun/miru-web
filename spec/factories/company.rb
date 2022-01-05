@@ -10,7 +10,7 @@ FactoryBot.define do
     base_currency { Faker::Currency.code }
     standard_price { Faker::Number.number }
     fiscal_year_end { months.sample }
-    date { Faker::Date.in_date_period }
+    date_format { 0 }
     country { "USA" }
     timezone { "EST" }
   end

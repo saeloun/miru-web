@@ -21,12 +21,8 @@
 class Company < ApplicationRecord
   has_many :users
 
-  validates :name, null: false
-  validates :address, null: false
-  validates :business_phone, null: false
-  validates :base_currency, null: false
-  validates :fiscal_year_end, null: false
-  validates :country, null: false
-  validates :standard_price, null: false, default: 0.0
-  validates :timezone, null: false, default: 0.0
+  enum month: ["JAN", "FEB", "MAR" "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+  enum date_format: ["DD-MM-YYYY", "MM-DD-YYYY", "YYYY-MM-DD"]
+
+  validates :name, :address, :country, :standard_price, preserence: true
 end
