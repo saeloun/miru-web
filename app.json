@@ -6,6 +6,20 @@
       "plan": "heroku-postgresql:hobby-dev"
     }
   ],
+  "env": {
+    "MAILER_SENDER": {
+      "description": "The email address to use as the sender",
+      "value": "miru-review@saeloun.com"
+    },
+    "EMAIL_DELIVERY_METHOD": {
+      "description": "The email delivery method to use",
+      "value": "letter_opener_web"
+    },
+    "JWT_SECRET_KEY": {
+      "description": "The secret key for the JWT",
+      "value": "fc68556be046e0972ccd4608d10aa36f01adf7fd9eeae05c792308f973be79c055f0a72f8b76cd5aa0740622d263a93c2b3f6e51ad2873afda81e6a0724884c2"
+    }
+  },
   "buildpacks": [
     {
       "url": "heroku/nodejs"
