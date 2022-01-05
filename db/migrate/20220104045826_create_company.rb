@@ -5,8 +5,8 @@ class CreateCompany < ActiveRecord::Migration[7.0]
     create_table :companies do |t|
       t.string "name"
       t.text "address"
-      t.integer "business_phone"
-      t.decimal "base_currency"
+      t.text "business_phone"
+      t.text "base_currency"
       t.decimal "standard_price"
       t.string "fiscal_year_end"
       t.date "date"
