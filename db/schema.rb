@@ -17,13 +17,15 @@ ActiveRecord::Schema.define(version: 2022_01_04_045826) do
   enable_extension "plpgsql"
 
   create_table "companies", force: :cascade do |t|
-    t.string "company"
-    t.text "address"
-    t.integer "business_phone"
-    t.decimal "base_currency"
-    t.decimal "standard_price"
-    t.string "fiscal_year_end"
-    t.date "date"
+    t.string "name", null: false
+    t.text "address", null: false
+    t.string "business_phone", null: false
+    t.string "base_currency", null: false
+    t.decimal "standard_price", precision: 6, scale: 2, default: "0.0"
+    t.string "fiscal_year_end", null: false
+    t.integer "date_format", default: 1
+    t.string "country", null: false
+    t.decimal "timezone", precision: 4, scale: 2, default: "0.0", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -33,6 +35,8 @@ ActiveRecord::Schema.define(version: 2022_01_04_045826) do
     t.string "last_name", default: "", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
+    t.integer "role", null: false
+    t.integer "company_id", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at", precision: 6
     t.datetime "remember_created_at", precision: 6
@@ -47,8 +51,6 @@ ActiveRecord::Schema.define(version: 2022_01_04_045826) do
     t.string "unconfirmed_email"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "role", null: false
-    t.integer "company_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
