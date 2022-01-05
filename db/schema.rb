@@ -18,10 +18,17 @@ ActiveRecord::Schema.define(version: 2022_01_06_141527) do
     t.string "name", null: false
     t.text "address", null: false
     t.string "business_phone"
+<<<<<<< HEAD
     t.string "base_currency", default: "USD", null: false
     t.decimal "standard_price", default: "0.0", null: false
     t.string "fiscal_year_end"
     t.string "date_format"
+=======
+    t.string "base_currency", null: false
+    t.decimal "standard_price", precision: 6, scale: 2, default: "0.0"
+    t.string "fiscal_year_end", null: false
+    t.integer "date_format", default: 0
+>>>>>>> 16575b6 (schema and validation updated)
     t.string "country", null: false
     t.string "timezone"
     t.datetime "created_at", precision: 6, null: false
