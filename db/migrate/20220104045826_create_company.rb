@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 class CreateCompany < ActiveRecord::Migration[7.0]
-  def change
+  def up
     create_table :companies do |t|
       t.string "name"
       t.text "address"
       t.text "business_phone"
       t.text "base_currency"
-      t.decimal "standard_price"
+      t.decimal "standard_price", precision: 6, scale: 2
       t.string "fiscal_year_end"
       t.date "date"
       t.string "country"
@@ -15,5 +15,9 @@ class CreateCompany < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
+  end
+
+  def down
+    drop_table :companies
   end
 end
