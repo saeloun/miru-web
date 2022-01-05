@@ -10,6 +10,8 @@ class CreateCompany < ActiveRecord::Migration[7.0]
       t.decimal "standard_price"
       t.string "fiscal_year_end"
       t.date "date"
+      t.string "country"
+      t.string "timezone"
 
       t.timestamps
     end
