@@ -1,5 +1,5 @@
 # == Schema Information
-
+#
 # Table name: companies
 #
 #  id              :integer          not null, primary key

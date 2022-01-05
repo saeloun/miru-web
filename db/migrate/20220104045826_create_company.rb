@@ -6,12 +6,13 @@ class CreateCompany < ActiveRecord::Migration[7.0]
       t.string "name", null: false
       t.text "address", null: false
       t.string "business_phone"
-      t.string "base_currency", null: false, default: "USD"
-      t.decimal "standard_price", precision: 6, scale: 2, default: 0.00
-      t.integer "fiscal_year_end", null: false, default: "JUN"
-      t.integer "date_format", default: "MM-DD-YYYY"
+      t.string "base_currency"
+      t.decimal "standard_price", null: false, precision: 6, scale: 2
+      t.string "fiscal_year_end"
+      t.string "date_format"
       t.string "country", null: false
-      t.string "timezone", default: "UTC"
+      t.string "timezone"
+      t.string "logo_url"
 
       t.timestamps
     end
