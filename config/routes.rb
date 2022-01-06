@@ -6,6 +6,9 @@ Rails.application.routes.draw do
 
   root to: "root#index"
   resources :dashboard, only: [:index]
+
+  # get "*path", to: "home#index", via: :all
+  resources :company, only: [:new, :create]
   resources :time_trackings, only: [:index], path: "time-tracking"
 
   # For opening the email in the web browser in non production environments
