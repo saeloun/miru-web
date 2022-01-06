@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 2022_01_06_141527) do
     t.string "unconfirmed_email"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "role"
+    t.integer "role", null: false
     t.bigint "company_id", null: false
     t.index ["company_id"], name: "index_users_on_company_id"
     t.index ["email"], name: "index_users_on_email", unique: true
