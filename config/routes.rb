@@ -6,8 +6,10 @@ Rails.application.routes.draw do
 
   root to: "root#index"
   resources :dashboard, only: [:index]
+  resources :time_trackings, only: [:index], path: "time-tracking"
 
-  # get "*path", to: "home#index", via: :all
-  resources :time_tracking, only: [:index], path: "time-tracking"
-  resources :company, only: [:new, :create]
+  # For opening the email in the web browser in non production environments
+  if ENV["EMAIL_DELIVERY_METHOD"] == "letter_opener_web"
+    mount LetterOpenerWeb::Engine, at: "/sent_emails"
+  end
 end
