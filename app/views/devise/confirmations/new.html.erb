@@ -13,7 +13,7 @@
                 <%= render "devise/shared/error_messages", resource: resource %>
 
                 <div class="field">
-                  <%= f.label :email, class: "block text-sm font-normal text-miru-dark-purple-1000" %>
+                  <%= f.label :email, class: "tracking-wider block text-sm font-normal text-miru-dark-purple-1000" %>
                   <div class="mt-1">
                   <%= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email), class: "block text-base font-bold text-miru-dark-purple-1000" %>
                   </div>

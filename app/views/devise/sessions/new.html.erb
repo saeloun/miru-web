@@ -12,7 +12,7 @@
               <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
                 <div>
                   <div class="field">
-                    <%= f.label :email, class: "block text-sm font-semibold text-miru-dark-purple-1000" %>
+                    <%= f.label :email, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
                     <div class="mt-1">
                       <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
                     </div>
@@ -21,7 +21,7 @@
                 <div>
                   <div class="field mt-4" x-data="{ show: true }">
                     <div class="field">
-                      <%= f.label :password, class: "block text-sm font-semibold text-miru-dark-purple-1000" %>
+                      <%= f.label :password, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
                       <div class="mt-1 relative">
                         <input name="user[password]" placeholder="" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
