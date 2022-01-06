@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe Company, type: :model do
-  let (:company) { build(:company) }
+  let(:company) { build(:company) }
 
   it "is valid with valid attributes" do
     expect(company).to be_valid
