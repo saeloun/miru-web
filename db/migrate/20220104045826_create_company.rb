@@ -12,7 +12,6 @@ class CreateCompany < ActiveRecord::Migration[7.0]
       t.string "date_format"
       t.string "country", null: false
       t.string "timezone"
-      t.string "logo_url"
 
       t.timestamps
     end
