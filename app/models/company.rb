@@ -6,8 +6,8 @@
 #  name            :string           not null
 #  address         :text             not null
 #  business_phone  :string
-#  base_currency   :string
-#  standard_price  :decimal(6, 2)    not null
+#  base_currency   :string           default("USD"), not null
+#  standard_price  :decimal(, )      default("0.0"), not null
 #  fiscal_year_end :string
 #  date_format     :string
 #  country         :string           not null
@@ -21,7 +21,5 @@
 class Company < ApplicationRecord
   has_many :users
 
-  validates :name, :address, :standard_price, :country, preserence: true
-  validates :base_currency, default: "USD"
-  validates :standard_price, default: 0
+  validates :name, :address, :standard_price, :country, presence: true
 end
