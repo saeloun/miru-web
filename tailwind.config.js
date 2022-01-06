@@ -15,7 +15,7 @@ module.exports = {
         'miru-black': {
           1000: "#303A4B",
         },
-        'miru-grey': {
+        'miru-gray': {
           1000: "#CDD6DF",
           600: "#D7DEE5",
           400: "#E1E6EC",

@@ -1,0 +1,44 @@
+<div class="pt-10/100 px-10 xsm:px-20/100 sm:px-26/100 md:px-30/100 lg:px-32/100 xl:px-36/100">
+  <div class="font-jakartasans">
+    <%= render "devise/shared/header"%>
+    <div class="p-5 2xl:p-10 shadow-xl rounded-lg">
+      <h2 class="text-miru-black-1000 lg:mb-3 text-base font-medium">
+        Sign up
+      </h2>
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+        <div class="field">
+          <%= f.label :first_name, class: "text-xs text-miru-black-1000" %><br />
+          <%= f.text_field :first_name, autofocus: true, class: "p-2 w-full bg-miru-grey-200 text-sm" %>
+        </div>
+        <div class="field">
+          <%= f.label :last_name, class: "text-xs text-miru-black-1000" %><br />
+          <%= f.text_field :last_name, autofocus: true, class: "p-2 w-full bg-miru-grey-200 text-sm" %>
+        </div>
+        <div class="field">
+          <%= f.label :email, class: "text-xs text-miru-black-1000" %><br />
+          <%= f.email_field :email, autofocus: true, class: "p-2 w-full bg-miru-grey-200 text-sm" %>
+        </div>
+        <div class="field">
+          <%= f.label :password, class: "text-xs text-miru-black-1000" %>
+          <% if @minimum_password_length %>
+            <em class="text-xs text-miru-black-1000">(<%= @minimum_password_length %> characters minimum)</em>
+          <% end %><br />
+          <%= f.password_field :password, autocomplete: "new-password", class: "p-2 w-full bg-miru-grey-200 text-sm" %>
+        </div>
+        <div class="field">
+          <%= f.label :password_confirmation, class: "text-xs text-miru-black-1000" %><br />
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "p-2 w-full bg-miru-grey-200 text-sm" %>
+        </div>
+        <%= f.hidden_field :role, value: "admin" %>
+        <div class="actions">
+          <%= f.submit "Sign up", class: "mt-5 p-2 w-full bg-miru-grey-400 font-bold text-white text-base hover:bg-miru-black-1000 cursor-pointer" %>
+        </div>
+      <% end %>
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>
+</div>
+
+
+<%= f.password_field :password, autocomplete: "new-password", class: "p-2 w-full bg-miru-grey-200 text-sm" %>

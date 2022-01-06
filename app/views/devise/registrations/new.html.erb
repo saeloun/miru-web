@@ -1,41 +1,99 @@
-<div class="pt-10/100 px-10 xsm:px-20/100 sm:px-26/100 md:px-30/100 lg:px-32/100 xl:px-36/100">
-  <div class="font-jakartasans">
-    <%= render "devise/shared/header"%>
-    <div class="p-5 2xl:p-10 shadow-xl rounded-lg">
-      <h2 class="text-miru-black-1000 lg:mb-3 text-base font-medium">
-        Sign up
-      </h2>
-      <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-        <%= render "devise/shared/error_messages", resource: resource %>
-        <div class="field">
-          <%= f.label :first_name, class: "text-xs text-miru-black-1000" %><br />
-          <%= f.text_field :first_name, autofocus: true, class: "p-2 w-full bg-miru-grey-200 text-sm" %>
+<div class="bg-miru-dark-purple-1000 h-screen font-manrope">
+  <div class="min-h-full flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <img class="mx-auto h-16 w-auto" src="/miru-logo.svg" alt="miru login page">
+        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+          <div class="bg-miru-white-1000 py-6 px-6 shadow sm:rounded-lg sm:px-10">
+            <div class="space-y-3">
+              <h2 class="text-xl font-sans font-medium tracking-normal text-miru-dark-purple-1000">
+                Sign Up
+              </h2>
+              <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+                <%= render "devise/shared/error_messages", resource: resource %>
+                <div>
+                  <div class="field">
+                    <label class="block text-sm font-semibold text-miru-dark-purple-1000">Name</label>
+                    <div class="mt-1 flex -space-x-px">
+                      <div class="mr-4 w-1/2 flex-1 min-w-0">
+                        <%= f.text_field :first_name, autofocus: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+                      </div>
+                      <div class="w-1/2 flex-1 min-w-0">
+                        <%= f.text_field :last_name, autofocus: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="field mt-4">
+                    <%= f.label :email, class: "block text-sm font-semibold text-miru-dark-purple-1000" %>
+                    <div class="mt-1">
+                      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <div class="field" x-data="{ show: true }">
+                    <%= f.label :password, class: "block text-sm font-semibold text-miru-dark-purple-1000" %>
+                    <% if @minimum_password_length %>
+                      <em class="text-xs text-miru-dark-purple-400">(<%= @minimum_password_length %> characters minimum)</em>
+                    <% end %>
+                    <div class="mt-1 relative">
+                      <input name="user[password]" placeholder="" id="user_password" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
+                      <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                        <img src="/assets/password_icon.svg" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000">
+                        <img src="/assets/password_icon_text.svg" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <div class="field" x-data="{ show: true }">
+                    <%= f.label :password, class: "block text-sm font-semibold text-miru-dark-purple-1000" %>
+                    <div class="mt-1 relative">
+                      <input name="user[password_confirmation]" placeholder="" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
+                      <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                        <img src="/assets/password_icon.svg" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000">
+                        <img src="/assets/password_icon_text.svg" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <%= f.hidden_field :role, value: "owner" %>
+                <div class="actions mt-4">
+                  <%= f.submit "Sign up", class: "h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-lg font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded" %>
+                </div>
+              <% end %>
+              <div class="my-2">
+                <div class="relative flex justify-center text-sm">
+                  <span class="px-2 bg-miru-white-1000 font-sans font-normal text-miru-dark-purple-1000">
+                    OR
+                  </span>
+                </div>
+              </div>
+              <div>
+                <div class="mt-4">
+                  <button type="button" class="inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-lg font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded">
+                    <img src="/assets/google.svg" class="-ml-0.5 mr-2 h-4 w-4 ">
+                    SIGN IN WITH GOOGLE
+                  </button>
+                </div>
+              </div>
+              <div>
+                <div class="mt-4">
+                  <button type="button" class="inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-lg font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded">
+                    <img src="/assets/apple.svg" class="-ml-0.5 mr-2 h-4 w-4 ">
+                    SIGN IN WITH APPLE
+                  </button>
+                </div>
+              </div>
+              <div>
+                <%= render "devise/shared/links" %>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="field">
-          <%= f.label :last_name, class: "text-xs text-miru-black-1000" %><br />
-          <%= f.text_field :last_name, autofocus: true, class: "p-2 w-full bg-miru-grey-200 text-sm" %>
-        </div>
-        <div class="field">
-          <%= f.label :email, class: "text-xs text-miru-black-1000" %><br />
-          <%= f.email_field :email, autofocus: true, class: "p-2 w-full bg-miru-grey-200 text-sm" %>
-        </div>
-        <div class="field">
-          <%= f.label :password, class: "text-xs text-miru-black-1000" %>
-          <% if @minimum_password_length %>
-            <em class="text-xs text-miru-black-1000">(<%= @minimum_password_length %> characters minimum)</em>
-          <% end %><br />
-          <%= f.password_field :password, autocomplete: "new-password", class: "p-2 w-full bg-miru-grey-200 text-sm" %>
-        </div>
-        <div class="field">
-          <%= f.label :password_confirmation, class: "text-xs text-miru-black-1000" %><br />
-          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "p-2 w-full bg-miru-grey-200 text-sm" %>
-        </div>
-        <%= f.hidden_field :role, value: "admin" %>
-        <div class="actions">
-          <%= f.submit "Sign up", class: "mt-5 p-2 w-full bg-miru-grey-400 font-bold text-white text-base hover:bg-miru-black-1000 cursor-pointer" %>
-        </div>
-      <% end %>
-      <%= render "devise/shared/links" %>
+      </div>
     </div>
   </div>
 </div>
