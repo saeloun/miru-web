@@ -2,7 +2,7 @@
 
 class AddCompanyIdToUser < ActiveRecord::Migration[7.0]
   def up
-    add_reference :users, :companies, null: false, foreign_key: true
+    add_reference :users, :company, null: false, foreign_key: true
   end
 
   def down
