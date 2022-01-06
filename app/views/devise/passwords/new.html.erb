@@ -1,21 +1,32 @@
-<div class="pt-10/100 px-10 xsm:px-20/100 sm:px-26/100 md:px-30/100 lg:px-32/100 xl:px-36/100">
-  <div class="font-jakartasans">
-    <%= render "devise/shared/header"%>
-    <div class="p-5 2xl:p-10 shadow-xl rounded-lg">
-      <h2 class="text-miru-black-1000 lg:mb-3 text-base font-medium">
-        Forgot Password
-      </h2>
-      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-        <%= render "devise/shared/error_messages", resource: resource %>
-        <div class="field">
-          <%= f.label :email, class: "text-xs text-miru-black-1000" %><br />
-          <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "p-2 w-full bg-miru-grey-200 text-sm" %>
+<div class="bg-miru-dark-purple-1000 h-screen font-manrope">
+  <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <img class="mx-auto h-16 w-auto" src="/miru-logo.svg" alt="miru login page">
+        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+          <div class="bg-miru-white-1000 py-6 px-6 shadow sm:rounded-lg sm:px-10">
+            <div class="space-y-3">
+              <h2 class="text-xl font-sans font-medium tracking-normal text-miru-dark-purple-1000">
+                Forgot Password
+              </h2>
+              <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+                <%= render "devise/shared/error_messages", resource: resource %>
+                <div class="field">
+                  <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000">Enter your Registered Email ID</label>
+                  <div class="mt-2">
+                    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+                  </div>
+                </div>
+                <div class="actions mt-4">
+                  <%= f.submit "SEND PASSWORD RESET LINK", class: "h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-lg font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded" %>
+                </div>
+              <% end %>
+              <%= render "devise/shared/links" %>
+            </div>
+          </div>
         </div>
-        <div class="actions">
-          <%= f.submit "RESET PASSWORD", class: "mt-5 p-2 w-full bg-miru-grey-400 font-bold text-white text-base hover:bg-miru-black-1000 cursor-pointer" %>
-        </div>
-      <% end %>
-      <%= render "devise/shared/links" %>
+      </div>
     </div>
   </div>
 </div>
+
