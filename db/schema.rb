@@ -24,7 +24,6 @@ ActiveRecord::Schema.define(version: 2022_01_04_045826) do
     t.string "date_format"
     t.string "country", null: false
     t.string "timezone"
-    t.string "logo_url"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

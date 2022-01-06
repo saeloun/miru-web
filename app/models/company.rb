@@ -12,7 +12,6 @@
 #  date_format     :string
 #  country         :string           not null
 #  timezone        :string
-#  logo_url        :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #
