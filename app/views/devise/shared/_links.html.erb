@@ -1,29 +1,27 @@
 <%- if controller_name != 'sessions' %>
   <% if controller_name == 'registrations' %>
-    <div class="text-center m-2">
-      <p class="text-center text-miru-grey-400 text-xs">
+    <div class="text-center mt-4">
+      <p class="text-center text-miru-dark-purple-1000 text-xs font-bold">
         Already have an account?
-        <%= link_to "Sign in", new_session_path(resource_name), class: "text-miru-grey-400 hover:text-miru-black-1000" %><br />
+        <%= link_to "Sign in", new_session_path(resource_name), class: "text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-wider" %><br />
       </p>
     </div>
   <% else %>
-    <div class="text-center m-2">
-      <p class="text-center text-miru-grey-400 text-xs hover:text-miru-black-1000">
-        <%= link_to "Sign in", new_session_path(resource_name), class: "text-miru-grey-400 hover:text-miru-black-1000" %><br />
-      </p>
+    <div class="text-center mt-2">
+        <%= link_to "BACK TO LOGIN", new_session_path(resource_name), class: "text-center text-miru-han-purple-1000 font-sans font-normal text-base hover:text-miru-han-purple-600" %>
     </div>
   <%end%>
 <% end %>
 <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
   <div class="mt-3 text-center">
-    <%= link_to "Forgot Password?", new_password_path(resource_name), class: "text-center text-miru-grey-400 text-xs hover:text-miru-black-1000" %><br />
+    <%= link_to "FORGOT PASSWORD ?", new_password_path(resource_name), class: "text-center text-miru-han-purple-1000 font-sans font-normal text-sm hover:text-miru-han-purple-600" %><br />
   </div>
 <% end %>
-<%- if devise_mapping.registerable? && controller_name != 'registrations' %>
-  <div class="text-center">
-    <p class="text-center text-miru-grey-400 text-xs">
+<%- if devise_mapping.registerable? && controller_name != 'registrations' && controller_name != 'passwords' %>
+  <div class="mt-2 text-center">
+    <p class="text-center text-miru-dark-purple-1000 text-xs font-bold">
       Don't have an account?
-      <%= link_to "Sign up", new_registration_path(resource_name), class: "text-miru-grey-400 hover:text-miru-black-1000" %><br />
+      <%= link_to "Sign up", new_registration_path(resource_name), class: "text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-wider" %><br />
     </p>
   </div>
 <% end %>
