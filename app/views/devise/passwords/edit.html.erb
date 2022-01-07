@@ -13,12 +13,12 @@
                 <%= render "devise/shared/error_messages", resource: resource %>
                 <%= f.hidden_field :reset_password_token %>
                 <div class="field" x-data="{ show: true }">
-                  <%= f.label :password, "New Password", class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+                  <%= f.label :password, "New Password", class: "tracking-widest block text-xs font-semibold text-miru-dark-purple-1000" %>
                   <% if @minimum_password_length %>
                     <em class="text-xs text-miru-black-1000">(<%= @minimum_password_length %> characters minimum)</em>
                   <% end %>
                   <div class="mt-1 relative">
-                    <input name="user[password]" placeholder="" id="user_password" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
+                    <input name="user[password]" placeholder="" id="user_password" :type="show ? 'password' : 'text'" class="rounded tracking-widest appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
                       <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
                       <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
@@ -29,7 +29,7 @@
                   <div class="field" x-data="{ show: true }">
                     <%= f.label :password_confirmation, "Confirm Password", class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
                     <div class="mt-1 relative">
-                      <input name="user[password_confirmation]" placeholder="" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
+                      <input name="user[password_confirmation]" placeholder="" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="rounded tracking-widest appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
                       <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
                         <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
                         <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
@@ -38,7 +38,7 @@
                   </div>
                 </div>
                 <div class="actions mt-4">
-                  <%= f.submit "SET PASSWORD", class: "h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer" %>
+                  <%= f.submit "SET PASSWORD", class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer" %>
                 </div>
               <% end %>
               <%= render "devise/shared/links" %>
