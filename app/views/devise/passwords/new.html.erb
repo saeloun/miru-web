@@ -12,7 +12,7 @@
               <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
                 <%= render "devise/shared/error_messages", resource: resource %>
                 <div class="field">
-                  <label class="tracking-widest block text-sm font-semibold text-miru-dark-purple-1000">Enter your Registered Email ID</label>
+                  <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000">Enter your Registered Email ID</label>
                   <div class="mt-2">
                     <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
                   </div>
