@@ -69,8 +69,14 @@ gem "sass-rails"
 gem "dotenv-rails"
 gem "foreman"
 
+# info of countries and state
+gem "city-state"
+
 # Letter opener can be configured to avoid sending sending actual emails whenever required.
 gem "letter_opener_web"
+
+# currency list and conversion
+gem "money"
 
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

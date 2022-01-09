@@ -4,6 +4,7 @@ class CompanyController < ApplicationController
   skip_before_action :validate_company!, only: [:create, :new]
 
   def new
+    render
   end
 
   def create
@@ -18,6 +19,6 @@ class CompanyController < ApplicationController
 
   private
     def company_params
-      params.permit(:name, :address, :business_phone, :base_currency, :standard_price, :fiscal_year_end, :date)
+      params.permit(:name, :address, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end, :date_format)
     end
 end
