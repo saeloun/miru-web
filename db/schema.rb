@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -26,6 +24,20 @@ ActiveRecord::Schema.define(version: 2022_01_10_113004) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
+  create_table "companies", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "address", null: false
+    t.string "business_phone"
+    t.string "base_currency", default: "USD", null: false
+    t.decimal "standard_price", default: "0.0", null: false
+    t.string "fiscal_year_end"
+    t.string "date_format"
+    t.string "country", null: false
+    t.string "timezone"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "first_name", default: "", null: false
     t.string "last_name", default: "", null: false
@@ -45,6 +57,8 @@ ActiveRecord::Schema.define(version: 2022_01_10_113004) do
     t.string "unconfirmed_email"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "company_id"
+    t.index ["company_id"], name: "index_users_on_company_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -56,4 +70,5 @@ ActiveRecord::Schema.define(version: 2022_01_10_113004) do
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
+  add_foreign_key "users", "companies"
 end

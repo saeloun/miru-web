@@ -158,6 +158,7 @@ Style/FrozenStringLiteralComment:
   Enabled: true
   EnforcedStyle: always
   Exclude:
+    - 'db/schema.rb'
     - 'actionview/test/**/*.builder'
     - 'actionview/test/**/*.ruby'
     - 'actionpack/test/**/*.builder'
