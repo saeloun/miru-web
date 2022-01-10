@@ -28,5 +28,6 @@ class CompanyController < ApplicationController
       if current_user.company.present?
         flash[:error] = "You already have a company"
         redirect_to root_path
-=======
+      end
+    end
 end
