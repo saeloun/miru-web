@@ -9,10 +9,10 @@
 #   Character.create(name: "Luke", movie: movies.first)
 
 # Create Owner user
-User.create(first_name: "Vipul", last_name: "A M", email: "vipul@example.com", password: "password", password_confirmation: "password", role: "owner", confirmed_at: DateTime.now)
+User.create(first_name: "Vipul", last_name: "A M", email: "vipul@example.com", password: "password", password_confirmation: "password", confirmed_at: DateTime.now)
 
 # Create Admin user
-User.create(first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", password: "password", password_confirmation: "password", role: "admin", confirmed_at: DateTime.now)
+User.create(first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", password: "password", password_confirmation: "password", confirmed_at: DateTime.now)
 
 # Create Employee User
-User.create(first_name: "Akhil", last_name: "G Krishnan", email: "akhil@example.com", password: "password", password_confirmation: "password", role: "employee", confirmed_at: DateTime.now)
+User.create(first_name: "Akhil", last_name: "G Krishnan", email: "akhil@example.com", password: "password", password_confirmation: "password", confirmed_at: DateTime.now)

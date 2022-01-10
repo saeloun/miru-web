@@ -23,7 +23,6 @@
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  role                   :integer          not null
 #
 # Indexes
 #
@@ -32,8 +31,6 @@
 #
 
 class User < ApplicationRecord
-  enum role: { owner: 0, admin: 1, employee: 2 }, _default: "employee"
-
   validates :first_name, :last_name, :email, :encrypted_password, presence: true
   validates :first_name, :last_name, length: { maximum: 50 }
   validates :email, format: { with: /^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, multiline: true }
