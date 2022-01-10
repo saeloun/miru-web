@@ -9,7 +9,7 @@ FactoryBot.define do
     standard_price { Faker::Number.decimal(l_digits: 3, r_digits: 2) }
     fiscal_year_end { Date::MONTHNAMES.sample }
     date_format { "DD-MM-YYYY" }
-    country { "USA" }
-    timezone { "EST" }
+    country { "US" }
+    timezone { Faker::Address.time_zone }
   end
 end
