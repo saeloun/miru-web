@@ -214,6 +214,7 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     rexml (3.2.5)
+    rolify (6.0.0)
     rspec-core (3.10.1)
       rspec-support (~> 3.10.0)
     rspec-expectations (3.10.1)
@@ -268,6 +269,8 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2)
     semantic_range (3.0.0)
+    shoulda-matchers (5.1.0)
+      activesupport (>= 5.2.0)
     simplecov (0.21.2)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -333,6 +336,7 @@ DEPENDENCIES
   rails (~> 7.0)
   react-rails
   redis (~> 4.0)
+  rolify (~> 6.0)
   rspec-rails (~> 5.0, >= 5.0.2)
   rubocop
   rubocop-packaging
@@ -340,6 +344,7 @@ DEPENDENCIES
   rubocop-rails
   sass-rails
   selenium-webdriver (>= 4.0.0)
+  shoulda-matchers (~> 5.1)
   simplecov
   spring
   tzinfo-data

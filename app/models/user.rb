@@ -43,4 +43,11 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :trackable, :confirmable
+
+  after_create :assign_default_role
+
+  private
+    def assign_default_role
+      self.add_role(:owner) if self.roles.blank?
+    end
 end

@@ -85,6 +85,9 @@ group :development, :test do
   # Use RSpec as the testing framework
   gem "rspec-rails", "~> 5.0", ">= 5.0.2"
 
+  # Simple one-liner tests for common Rails functionality
+  gem "shoulda-matchers", "~> 5.1"
+
   # Use factory-bot to replace fixtures
   gem "factory_bot_rails"
 
@@ -117,3 +120,6 @@ group :test do
   # Use Codecov for code coverage analysis
   gem "simplecov", require: false
 end
+
+# Role management library with resource scoping
+gem "rolify", "~> 6.0"
