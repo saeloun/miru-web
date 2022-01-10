@@ -6,7 +6,6 @@ Rails.application.routes.draw do
 
   root to: "root#index"
   resources :dashboard, only: [:index]
-  resources :company, only: [:new, :create]
 
   # get "*path", to: "home#index", via: :all
   resources :company, only: [:new, :create]
