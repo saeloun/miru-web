@@ -25,6 +25,7 @@
 #  updated_at             :datetime         not null
 #  role                   :integer          not null
 #  company_id             :integer
+#  position               :string
 #
 # Indexes
 #
