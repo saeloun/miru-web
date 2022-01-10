@@ -70,7 +70,7 @@ gem "dotenv-rails"
 gem "foreman"
 
 # info of countries and state
-gem "city-state"
+gem "countries"
 
 # Letter opener can be configured to avoid sending sending actual emails whenever required.
 gem "letter_opener_web"

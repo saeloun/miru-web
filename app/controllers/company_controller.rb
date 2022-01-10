@@ -14,7 +14,7 @@ class CompanyController < ApplicationController
 
     redirect_to root_path
   rescue
-    logger.errors "DEBUG::COMPANY_CONTROLLER::CREATE"
+    Rails.logger.errors "DEBUG::COMPANY_CONTROLLER::CREATE"
   end
 
   private
