@@ -3,3 +3,10 @@
 @import "tailwindcss/utilities";
 @import "react-toastify/dist/ReactToastify.min.css";
 @import "toastr/toastr";
+
+@layer base {
+  @font-face {
+    font-family: "Manrope";
+    src: url("../fonts/Manrope.woff2") format("woff2"), url("../fonts/Manrope.woff") format("woff");
+  }
+}
