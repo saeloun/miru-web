@@ -160,6 +160,7 @@
 
 class User < ApplicationRecord
   belongs_to :company, optional: true
+  has_many :entries
 
   enum role: { owner: 0, admin: 1, employee: 2 }, _default: "employee"
 

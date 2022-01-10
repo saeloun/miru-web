@@ -21,4 +21,5 @@
 class Project < ApplicationRecord
   belongs_to :client
   belongs_to :company
+  has_many :entries
 end

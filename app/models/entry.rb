@@ -1,0 +1,27 @@
+# frozen_string_literal: true
+
+# == Schema Information
+#
+# Table name: entries
+#
+#  id         :integer          not null, primary key
+#  user_id    :integer          not null
+#  project_id :integer          not null
+#  duration   :float            not null
+#  note       :text             not null
+#  work_date  :date             not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_entries_on_project_id  (project_id)
+#  index_entries_on_user_id     (user_id)
+#
+
+# frozen_string_literal: true
+
+class Entry < ApplicationRecord
+  belongs_to :user
+  belongs_to :project
+end
