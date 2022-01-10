@@ -15,10 +15,7 @@ class CompanyController < ApplicationController
 
     redirect_to root_path
   rescue
-<<<<<<< HEAD
     flash[:error] = "Company creation failed"
-=======
->>>>>>> a5887c1 (replaced city-state gem with countries gem)
     Rails.logger.errors "DEBUG::COMPANY_CONTROLLER::CREATE"
   end
 
