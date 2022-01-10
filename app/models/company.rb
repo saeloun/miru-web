@@ -19,7 +19,7 @@
 # frozen_string_literal: true
 
 class Company < ApplicationRecord
-  has_many :users
+  has_many :users, dependent: :destroy
 
   validates :name, :address, :standard_price, :country, presence: true
 end
