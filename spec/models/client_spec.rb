@@ -3,5 +3,21 @@
 require "rails_helper"
 
 RSpec.describe Client, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let(:client) { build(:client) }
+
+  it "is valid with valid attributes" do
+    expect(client).to be_valid
+  end
+
+  it "is not valid without a name" do
+    client.name = nil
+    expect(client).to_not be_valid
+  end
+
+  it "is not valid without an email" do
+    client.email = nil
+    expect(client).to_not be_valid
+  end
+
+  it
 end

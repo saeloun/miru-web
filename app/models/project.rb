@@ -6,7 +6,7 @@
 #  client_id   :integer          not null
 #  company_id  :integer          not null
 #  name        :string           not null
-#  description :string           not null
+#  description :text             not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
