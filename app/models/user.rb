@@ -38,8 +38,6 @@ class User < ApplicationRecord
   has_many :entries
   rolify
 
-  belongs_to :company, optional: true
-
   validates :first_name, :last_name, :email, :encrypted_password, presence: true
   validates :first_name, :last_name, length: { maximum: 50 }
   validates :email, format: { with: /^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, multiline: true }

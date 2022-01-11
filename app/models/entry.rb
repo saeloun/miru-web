@@ -24,4 +24,7 @@
 class Entry < ApplicationRecord
   belongs_to :user
   belongs_to :project
+
+  validates :duration, :note, :work_date, presence: true
+  validates :duration, numericality: { less_than_or_equal_to: 24.0 }
 end

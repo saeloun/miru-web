@@ -19,5 +19,14 @@ RSpec.describe Client, type: :model do
     expect(client).to_not be_valid
   end
 
-  it
+  it "is not valid without a invalid email" do
+    client.email = "invalid_email"
+    expect(client).to_not be_valid
+  end
+
+  it "is not valid if email is not unique" do
+    client.save
+    client2 = build(:client, email: client.email)
+    expect(client2).to_not be_valid
+  end
 end

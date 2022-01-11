@@ -2,8 +2,10 @@
 
 FactoryBot.define do
   factory :entry do
+    user
+    project
     duration { 8.0 }
-    note { "MyText" }
+    note { "Did that" }
     work_date { "2022-01-11" }
   end
 end
