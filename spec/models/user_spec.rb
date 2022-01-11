@@ -10,18 +10,18 @@ RSpec.describe User, type: :model do
   end
 
   it "checks if it is an owner" do
-    user.role = 0
-    expect(user).to be_owner
+    user.add_role :owner
+    expect(user.has_role?(:owner)).to be_truthy
   end
 
   it "checks if it is an admin" do
-    user.role = 1
-    expect(user).to be_admin
+    user.add_role :admin
+    expect(user.has_role?(:admin)).to be_truthy
   end
 
   it "checks if it is an employee" do
-    user.role = 2
-    expect(user).to be_employee
+    user.add_role :employee
+    expect(user.has_role?(:employee)).to be_truthy
   end
 
   context "checking the presence of each attribute" do
@@ -89,6 +89,15 @@ RSpec.describe User, type: :model do
     it "is not valid if email is invalid" do
       user.email = "judis@com"
       expect(user).to_not be_valid
+    end
+  end
+
+  describe "Callbacks" do
+    it "assigns_default role when roles are blank" do
+      new_user = create(:user)
+
+      expect(new_user.roles).not_to be_empty
+      expect(new_user.has_role?(:owner)).to be_truthy
     end
   end
 end
