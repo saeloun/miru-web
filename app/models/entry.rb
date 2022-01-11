@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: entries
@@ -12,6 +11,7 @@
 #  work_date  :date             not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  billed     :boolean          default("false")
 #
 # Indexes
 #
