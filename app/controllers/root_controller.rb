@@ -5,7 +5,7 @@ class RootController < ApplicationController
     path = if current_user.has_any_role?(:owner, :admin)
       dashboard_index_path
     else
-      time_trackings_path
+      time_tracking_index_path
     end
 
     redirect_to path
