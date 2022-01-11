@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   # get "*path", to: "home#index", via: :all
   resources :company, only: [:new, :create]
-  resources :time_trackings, only: [:index], path: "time-tracking"
+  resources :time_tracking, only: [:index], path: "time-tracking"
 
   # For opening the email in the web browser in non production environments
   if ENV["EMAIL_DELIVERY_METHOD"] == "letter_opener_web"
