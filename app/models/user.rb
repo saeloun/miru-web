@@ -23,7 +23,6 @@
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  role                   :integer          not null
 #  company_id             :integer
 #
 # Indexes
@@ -96,9 +95,9 @@
 #
 
 class User < ApplicationRecord
-  belongs_to :company, optional: true
+  rolify
 
-  enum role: { owner: 0, admin: 1, employee: 2 }, _default: "employee"
+  belongs_to :company, optional: true
 
   validates :first_name, :last_name, :email, :encrypted_password, presence: true
   validates :first_name, :last_name, length: { maximum: 50 }
@@ -110,4 +109,11 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :trackable, :confirmable
+
+  after_create :assign_default_role
+
+  private
+    def assign_default_role
+      self.add_role(:owner) if self.roles.blank?
+    end
 end
