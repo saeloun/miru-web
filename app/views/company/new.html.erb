@@ -1,59 +1,52 @@
 <div class="pt-10/100 px-10 xsm:px-20/100 sm:px-26/100 md:px-30/100 lg:px-32/100 xl:px-36/100">
   <div class="font-jakartasans">
-  <div class="p-5 2xl:p-10 shadow-xl rounded-lg">
+    <div class="p-5 2xl:p-10 shadow-xl rounded-lg">
       <h2 class="text-miru-black-1000 lg:mb-3 text-base font-black text-w 8">
         Setup Org
       </h2>
-
-<%= form_with url: company_index_path, method: :post do |form| %>
-  <%= form.label :company, class: "text-xs text-miru-black-1000" %>
-  <%= form.text_field :name, class: "p-2 w-full bg-miru-gray-200 text-sm" %><br>
- 
-  <%= form.label :address, class: "text-xs text-miru-black-1000" %>
-  <%= form.text_area :address, class: "p-2 w-full bg-miru-gray-200 text-sm" %><br>
-
-  <%= form.label :business_phone, class: "text-xs text-miru-black-1000" %>
-  <%= form.text_field :business_phone, class: "p-2 w-full bg-miru-gray-200 text-sm" %><br>
-
-  <%= form.label :country, class: "text-xs text-miru-black-1000" %>
-  <select name="country" id="country" class="p-2 w-full bg-miru-gray-200 text-sm">
-    <% ISO3166::Country.pluck(:alpha2, :name).each do |c| %>
-      <option value="<%= c.first %>"><%= c.second %></option>
-    <% end %>
-  </select>
-  
-  <%= form.label :timezone, class: "text-xs text-miru-black-1000" %>
-  <select name="timezone" id="time_zone" class="p-2 w-full bg-miru-gray-200 text-sm">
-    <% TZInfo::Timezone.all_country_zones.each do |t| %>
-      <option value="<%= t.to_s %>"><%= t.to_s %></option>
-    <% end %>
-  </select>
-
-  <%= form.label :base_currency, class: "text-xs text-miru-black-1000" %>
-  <select name="base_currency" id="base_currency" class="p-2 w-full bg-miru-gray-200 text-sm">
-    <% Money::Currency.table.each do |k, v| %>
-      <option value="<%=v[:iso_code] %>"> <%= v[:name] %> </option>
-    <% end %>
-  </select>
-  
-  <%= form.label :standard_price, class: "text-xs text-miru-black-1000" %>
-  <%= form.number_field :standard_price, class: "p-2 w-full bg-miru-gray-200 text-sm" %><br>
-
-  <%= form.label :fiscal_year_end, class: "text-xs text-miru-black-1000" %>
-  <select name="fiscal_year_end" id="fiscal_year_end" class="p-2 w-full bg-miru-gray-200 text-sm">
-    <% (1..12).each do |month| %>
-      <option value="<%= Date::MONTHNAMES[month] %>"><%= Date::MONTHNAMES[month] %></option>
-    <% end %>
-  </select>
-
-  <%= form.label :date_format, class: "text-xs text-miru-black-1000" %>
-  <select name="date_format" id="date_format" class="p-2 w-full bg-miru-gray-200 text-sm">
-    <option value="DD-MM-YYYY">DD-MM-YYYY</option>
-    <option value="MM-DD-YYYY">MM-DD-YYYY</option>
-    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-  </select>
-
-  <div class="actions">
-    <%= form.submit "SAVE ORG DETAILS", class: "mt-5 p-2 w-full bg-indigo-600 font-bold text-white text-base hover:bg-indigo-700 cursor-pointer" %>
+      <%= form_with url: company_index_path, method: :post do |form| %>
+        <%= form.label :company, class: "text-xs text-miru-black-1000" %>
+        <%= form.text_field :name, class: "p-2 w-full bg-miru-gray-200 text-sm" %><br>
+        <%= form.label :address, class: "text-xs text-miru-black-1000" %>
+        <%= form.text_area :address, class: "p-2 w-full bg-miru-gray-200 text-sm" %><br>
+        <%= form.label :business_phone, class: "text-xs text-miru-black-1000" %>
+        <%= form.text_field :business_phone, class: "p-2 w-full bg-miru-gray-200 text-sm" %><br>
+        <%= form.label :country, class: "text-xs text-miru-black-1000" %>
+        <select name="country" id="country" class="p-2 w-full bg-miru-gray-200 text-sm">
+          <% ISO3166::Country.pluck(:alpha2, :name).each do |c| %>
+            <option value="<%= c.first %>"><%= c.second %></option>
+          <% end %>
+        </select>
+        <%= form.label :timezone, class: "text-xs text-miru-black-1000" %>
+        <select name="timezone" id="time_zone" class="p-2 w-full bg-miru-gray-200 text-sm">
+          <% TZInfo::Timezone.all_country_zones.each do |t| %>
+            <option value="<%= t.to_s %>"><%= t.to_s %></option>
+          <% end %>
+        </select>
+        <%= form.label :base_currency, class: "text-xs text-miru-black-1000" %>
+        <select name="base_currency" id="base_currency" class="p-2 w-full bg-miru-gray-200 text-sm">
+          <% Money::Currency.table.each do |k, v| %>
+            <option value="<%=v[:iso_code] %>"> <%= v[:name] %> </option>
+          <% end %>
+        </select>
+        <%= form.label :standard_price, class: "text-xs text-miru-black-1000" %>
+        <%= form.number_field :standard_price, class: "p-2 w-full bg-miru-gray-200 text-sm" %><br>
+        <%= form.label :fiscal_year_end, class: "text-xs text-miru-black-1000" %>
+        <select name="fiscal_year_end" id="fiscal_year_end" class="p-2 w-full bg-miru-gray-200 text-sm">
+          <% (1..12).each do |month| %>
+            <option value="<%= Date::MONTHNAMES[month] %>"><%= Date::MONTHNAMES[month] %></option>
+          <% end %>
+        </select>
+        <%= form.label :date_format, class: "text-xs text-miru-black-1000" %>
+        <select name="date_format" id="date_format" class="p-2 w-full bg-miru-gray-200 text-sm">
+          <option value="DD-MM-YYYY">DD-MM-YYYY</option>
+          <option value="MM-DD-YYYY">MM-DD-YYYY</option>
+          <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+        </select>
+        <div class="actions">
+          <%= form.submit "SAVE ORG DETAILS", class: "mt-5 p-2 w-full bg-indigo-600 font-bold text-white text-base hover:bg-indigo-700 cursor-pointer" %>
+        </div>
+      <% end %>
+    </div>
   </div>
-<% end %>
+</div>

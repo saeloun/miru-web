@@ -81,14 +81,21 @@ RSpec.describe User, type: :model do
   end
 
   context "email validations" do
+    it "is not valid if email is invalid" do
+      user.email = "judis@com"
+      expect(user).to_not be_valid
+    end
+
     it "is valid if it is a valid email" do
       user.email = "judis@saeloun.com"
       expect(user).to be_valid
     end
 
-    it "is not valid if email is invalid" do
-      user.email = "judis@com"
-      expect(user).to_not be_valid
+    it "is not valid if email is not unique" do
+      user.email = "judis@saeloun.com"
+      user.save
+      user2 = build(:user, email: user.email)
+      expect(user2).to_not be_valid
     end
   end
 
