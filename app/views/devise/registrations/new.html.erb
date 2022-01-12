@@ -10,32 +10,43 @@
                 Sign Up
               </h2>
               <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-                <%= render "devise/shared/error_messages", resource: resource %>
                 <div>
                   <div class="field">
-                    <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000">Name</label>
+                    <div class="field_with_errors">
+                      <label class="tracking-wider block text-xs font-semibold text-miru-dark-purple-1000">Name</label>
+                      <%=
+                        if f.object.errors.include?(:first_name)
+                          error_message_on(f.object, :first_name)
+                        else
+                          error_message_on(f.object, :last_name)
+                        end
+                      %>
+                    </div>
                     <div class="mt-1 flex -space-x-px">
                       <div class="mr-4 w-1/2 flex-1 min-w-0">
-                        <%= f.text_field :first_name, autofocus: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+                        <%= f.text_field :first_name, autofocus: true, class: "#{error_message_class(f.object, :first_name)}" %>
                       </div>
                       <div class="w-1/2 flex-1 min-w-0">
-                        <%= f.text_field :last_name, autofocus: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+                        <%= f.text_field :last_name, autofocus: true, class: "#{error_message_class(f.object, :last_name)}" %>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div>
-                  <div class="field mt-4">
-                    <%= f.label :email, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                <div class="mt-4">
+                  <div class="field">
+                    <div class="field_with_errors">
+                      <%= f.label :email, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+                      <%= error_message_on(f.object, :email) %>
+                    </div>
                     <div class="mt-1">
-                      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+                      <%= f.text_field :email, autofocus: true, class: "#{error_message_class(f.object, :email)}" %>
                     </div>
                   </div>
                 </div>
                 <div class="mt-4">
                   <div class="field" x-data="{ show: true }">
                     <div class="field_with_errors">
-                      <%= f.label :password, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                      <%= f.label :password, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
                       <%= error_message_on(f.object, :password) %>
                     </div>
                     <div class="mt-1 relative">
@@ -50,7 +61,7 @@
                 <div class="mt-4">
                   <div class="field" x-data="{ show: true }">
                     <div class="field_with_errors">
-                      <%= f.label :password_confirmation, 'Confirm Password', class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                      <%= f.label :password_confirmation, 'Confirm Password', class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
                       <%= error_message_on(f.object, :password_confirmation) %>
                     </div>
                     <div class="mt-1 relative">

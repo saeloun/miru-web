@@ -3,9 +3,9 @@
 module Users::RegistrationsHelper
   def error_message_on(object, method)
     return unless object.respond_to?(:errors) && object.errors.include?(method)
-    errors = field_errors(object, method).join(", ")
+    error = field_error(object, method)
 
-    content_tag(:div, errors, class: "tracking-wider block text-sm font-semibold text-red-600")
+    content_tag(:div, error, class: "tracking-wider block text-xs font-semibold text-red-600")
   end
 
   def error_message_class(object, method)
@@ -17,7 +17,7 @@ module Users::RegistrationsHelper
   end
 
   private
-    def field_errors(object, method)
-      object.errors[method]
+    def field_error(object, method)
+      object.errors[method].first
     end
 end

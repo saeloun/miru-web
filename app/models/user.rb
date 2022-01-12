@@ -99,10 +99,10 @@ class User < ApplicationRecord
 
   belongs_to :company, optional: true
 
-  validates :first_name, :last_name, :email, :encrypted_password, presence: true
+  validates :first_name, :last_name,
+    presence: true,
+    format: { with: /\A[a-zA-Z]+\z/, message: "First and last name must only contain letters" }
   validates :first_name, :last_name, length: { maximum: 50 }
-  validates :email, format: { with: /^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, multiline: true }
-  validates :encrypted_password, length: { minimum: 6 }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable

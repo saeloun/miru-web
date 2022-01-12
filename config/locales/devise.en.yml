@@ -70,3 +70,14 @@ en:
           attributes:
             password:
               too_short: "Password must be at least %{count} characters long"
+              blank: "Password can't be blank"
+            password_confirmation:
+              confirmation: "Passwords dont' match"
+            first_name:
+              blank: "First and last name can't be blank"
+            last_name:
+              blank: "First and last name can't be blank"
+            email:
+              invalid: "Invalid Email ID"
+              blank: "Email can't be blank"
+              taken: "Email ID already exists"
