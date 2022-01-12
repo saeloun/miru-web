@@ -45,9 +45,7 @@
                       <%= image_tag resource.avatar, class: "rounded-full" %>
                     </div>
                   </div>
-                  <button class="font-medium text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000" alt="delete image">
-                    <img src="<%= image_url 'delete_image_button.svg' %>">
-                  </button>
+                  <%= link_to image_tag("#{image_url 'delete_image_button.svg'}"), profile_purge_avatar_path(id: resource), method: :delete, class: "font-medium text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000"%>
                 </div>
               <% else %>
                 <div x-data="showImage()">

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
+    delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
   end
 
   # For opening the email in the web browser in non production environments
