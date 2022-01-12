@@ -103,6 +103,7 @@ class User < ApplicationRecord
     presence: true,
     format: { with: /\A[a-zA-Z]+\z/, message: "First and last name must only contain letters" }
   validates :first_name, :last_name, length: { maximum: 50 }
+  validates :email, format: { with: /^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, multiline: true }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
