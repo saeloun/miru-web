@@ -21,7 +21,7 @@
 #
 
 class TimesheetEntry < ApplicationRecord
-  enum bill_status: [:non_billable, :billable, :billed]
+  enum bill_status: [:non_billable, :unbilled, :billed]
 
   belongs_to :user
   belongs_to :project
