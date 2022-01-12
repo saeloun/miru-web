@@ -39,6 +39,6 @@ puts "Client Created"
 project = client.projects.create!(
   name: "miru",
   description: "Timesheet app",
-  bill_status: "non_billable"
+  billable: false
 )
 puts "Project Created"

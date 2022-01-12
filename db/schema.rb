@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_100422) do
     t.bigint "client_id", null: false
     t.string "name", null: false
     t.text "description", null: false
-    t.integer "bill_status", null: false
+    t.boolean "billable", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["client_id"], name: "index_projects_on_client_id"
@@ -66,8 +66,8 @@ ActiveRecord::Schema.define(version: 2022_01_12_100422) do
     t.bigint "project_id", null: false
     t.float "duration", null: false
     t.text "note", null: false
-    t.boolean "billed"
     t.date "work_date", null: false
+    t.integer "bill_status", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"

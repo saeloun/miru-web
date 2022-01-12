@@ -5,6 +5,6 @@ FactoryBot.define do
     client
     name { "Conduit" }
     description { "Blog site." }
-    bill_status { "non_billable" }
+    billable { false }
   end
 end

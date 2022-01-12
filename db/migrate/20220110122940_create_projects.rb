@@ -6,7 +6,7 @@ class CreateProjects < ActiveRecord::Migration[7.0]
       t.references :client, null: false, foreign_key: true
       t.string :name, null: false
       t.text :description, null: false
-      t.integer :bill_status, null: false
+      t.boolean :billable, null: false
 
       t.timestamps
     end
