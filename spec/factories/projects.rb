@@ -6,5 +6,6 @@ FactoryBot.define do
     company
     name { "Conduit" }
     description { "Blog site." }
+    billable { false }
   end
 end

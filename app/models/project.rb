@@ -7,6 +7,7 @@
 #  company_id  :integer          not null
 #  name        :string           not null
 #  description :text             not null
+#  billable    :boolean          not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
@@ -24,4 +25,5 @@ class Project < ApplicationRecord
   has_many :timesheet_entries
 
   validates :name, :description, presence: true
+  validates :billable, inclusion: { in: [ true, false ] }
 end
