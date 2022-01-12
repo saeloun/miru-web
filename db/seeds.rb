@@ -30,14 +30,15 @@ users.each do |user|
 end
 puts "#{users.size} Users created"
 
-client = Client.create!(
+client = company.clients.create!(
   name: "Saeloun",
   email: "contact@saeloun.com"
 )
 puts "Client Created"
 
-project = Project.create!(
-  client: client,
-  company: company,
-
+project = client.projects.create!(
+  name: "miru",
+  description: "Timesheet app",
+  bill_status: "non_billable"
 )
+puts "Project Created"
