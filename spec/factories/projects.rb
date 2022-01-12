@@ -3,7 +3,6 @@
 FactoryBot.define do
   factory :project do
     client
-    company
     name { "Conduit" }
     description { "Blog site." }
     billable { false }

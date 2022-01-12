@@ -3,8 +3,9 @@
 class CreateClients < ActiveRecord::Migration[7.0]
   def up
     create_table :clients do |t|
+      t.references :company, null: false, foreign_key: true
       t.string :name, null: false
-      t.string :email, null: false, unique: true
+      t.string :email
       t.string :phone
       t.string :address
       t.string :country

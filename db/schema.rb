@@ -15,14 +15,16 @@ ActiveRecord::Schema.define(version: 2022_01_12_100422) do
   enable_extension "plpgsql"
 
   create_table "clients", force: :cascade do |t|
+    t.bigint "company_id", null: false
     t.string "name", null: false
-    t.string "email", null: false
+    t.string "email"
     t.string "phone"
     t.string "address"
     t.string "country"
     t.string "timezone"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["company_id"], name: "index_clients_on_company_id"
   end
 
   create_table "companies", force: :cascade do |t|
@@ -41,14 +43,12 @@ ActiveRecord::Schema.define(version: 2022_01_12_100422) do
 
   create_table "projects", force: :cascade do |t|
     t.bigint "client_id", null: false
-    t.bigint "company_id", null: false
     t.string "name", null: false
     t.text "description", null: false
     t.boolean "billable", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["client_id"], name: "index_projects_on_client_id"
-    t.index ["company_id"], name: "index_projects_on_company_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -108,8 +108,8 @@ ActiveRecord::Schema.define(version: 2022_01_12_100422) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  add_foreign_key "clients", "companies"
   add_foreign_key "projects", "clients"
-  add_foreign_key "projects", "companies"
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies"
