@@ -10,9 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_10_113004) do
+ActiveRecord::Schema.define(version: 2022_01_12_100422) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "clients", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.string "name", null: false
+    t.string "email"
+    t.string "phone"
+    t.string "address"
+    t.string "country"
+    t.string "timezone"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["company_id"], name: "index_clients_on_company_id"
+  end
 
   create_table "companies", force: :cascade do |t|
     t.string "name", null: false
@@ -28,6 +41,16 @@ ActiveRecord::Schema.define(version: 2022_01_10_113004) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "projects", force: :cascade do |t|
+    t.bigint "client_id", null: false
+    t.string "name", null: false
+    t.text "description", null: false
+    t.boolean "billable", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["client_id"], name: "index_projects_on_client_id"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string "name"
     t.string "resource_type"
@@ -36,6 +59,19 @@ ActiveRecord::Schema.define(version: 2022_01_10_113004) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
+  end
+
+  create_table "timesheet_entries", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
+    t.float "duration", null: false
+    t.text "note", null: false
+    t.date "work_date", null: false
+    t.integer "bill_status", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
+    t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -58,6 +94,7 @@ ActiveRecord::Schema.define(version: 2022_01_10_113004) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "company_id"
+    t.string "position"
     t.index ["company_id"], name: "index_users_on_company_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -71,5 +108,9 @@ ActiveRecord::Schema.define(version: 2022_01_10_113004) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  add_foreign_key "clients", "companies"
+  add_foreign_key "projects", "clients"
+  add_foreign_key "timesheet_entries", "projects"
+  add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies"
 end

@@ -29,3 +29,16 @@ users.each do |user|
   company_user.add_role(user[:role])
 end
 puts "#{users.size} Users created"
+
+client = company.clients.create!(
+  name: "Saeloun",
+  email: "contact@saeloun.com"
+)
+puts "Client Created"
+
+project = client.projects.create!(
+  name: "miru",
+  description: "Timesheet app",
+  billable: false
+)
+puts "Project Created"
