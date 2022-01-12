@@ -35,7 +35,7 @@
 
 class User < ApplicationRecord
   belongs_to :company, optional: true
-  has_many :entries
+  has_many :timesheet_entries
   rolify
 
   validates :first_name, :last_name, :email, :encrypted_password, presence: true

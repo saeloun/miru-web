@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :entry do
+  factory :timesheet_entry do
     user
     project
     duration { 8.0 }

@@ -21,7 +21,7 @@
 class Project < ApplicationRecord
   belongs_to :client
   belongs_to :company
-  has_many :entries
+  has_many :timesheet_entries
 
   validates :name, :description, presence: true
 end

@@ -1,27 +1,26 @@
 # frozen_string_literal: true
+
 # == Schema Information
 #
-# Table name: entries
+# Table name: timesheet_entries
 #
 #  id         :integer          not null, primary key
 #  user_id    :integer          not null
 #  project_id :integer          not null
 #  duration   :float            not null
 #  note       :text             not null
+#  billed     :boolean
 #  work_date  :date             not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  billed     :boolean          default("false")
 #
 # Indexes
 #
-#  index_entries_on_project_id  (project_id)
-#  index_entries_on_user_id     (user_id)
+#  index_timesheet_entries_on_project_id  (project_id)
+#  index_timesheet_entries_on_user_id     (user_id)
 #
 
-# frozen_string_literal: true
-
-class Entry < ApplicationRecord
+class TimesheetEntry < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
