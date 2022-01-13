@@ -75,10 +75,10 @@ en:
               confirmation: "Passwords dont' match"
             first_name:
               blank: "First and last name can't be blank"
-              invalid: "First and last name must only contain letters"
+              invalid: "Name must only contain letters or spaces"
             last_name:
               blank: "First and last name can't be blank"
-              invalid: "First and last name must only contain letters"
+              invalid: "Name must only contain letters or spaces"
             email:
               blank: "Email can't be blank"
               invalid: "Invalid Email ID"

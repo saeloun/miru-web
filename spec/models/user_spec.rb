@@ -80,6 +80,42 @@ RSpec.describe User, type: :model do
     end
   end
 
+  context "checking first and last name validations" do
+    it "is not valid if first_name contains chars other than letters" do
+      user.first_name = "first1_#%#$^&"
+      expect(user).to_not be_valid
+    end
+
+    it "is not valid if last_name contains chars other than letters" do
+      user.last_name = "last1*!@$)^#$*&@'"
+      expect(user).to_not be_valid
+    end
+
+    it "is valid if first_name contains spaces" do
+      user.first_name = "foo bar"
+      expect(user).to be_valid
+    end
+
+    it "is valid if last_name contains spaces" do
+      user.last_name = "foo bar"
+      expect(user).to be_valid
+    end
+
+    it "is not valid if first_name is blank" do
+      user.first_name = ""
+      expect(user).to_not be_valid
+      user.first_name = "    "
+      expect(user).to_not be_valid
+    end
+
+    it "is not valid if last_name is blank" do
+      user.last_name = ""
+      expect(user).to_not be_valid
+      user.last_name = "    "
+      expect(user).to_not be_valid
+    end
+  end
+
   context "email validations" do
     it "is not valid if email is invalid" do
       user.email = "judis@com"

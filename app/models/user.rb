@@ -46,7 +46,7 @@ class User < ApplicationRecord
 
   validates :first_name, :last_name,
     presence: true,
-    format: { with: /\A[a-zA-Z]+\z/ }
+    format: { with: /\A[a-zA-Z\s]+\z/ }
   validates :first_name, :last_name, length: { maximum: 50 }
 
   after_create :assign_default_role
