@@ -6,7 +6,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def purge_avatar
     user = User.find(params[:id])
     user.avatar.destroy
-    redirect_to edit_user_registration_path
+    redirect_to profile_path
   end
 
   protected
@@ -24,6 +24,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
 
     def after_update_path_for(resource)
-      edit_user_registration_path
+      profile_path
     end
 end
