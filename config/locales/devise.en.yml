@@ -63,3 +63,23 @@ en:
       not_saved:
         one: "1 error prohibited this %{resource} from being saved:"
         other: "%{count} errors prohibited this %{resource} from being saved:"
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            password:
+              too_short: "Password must be at least %{count} characters long"
+              blank: "Password can't be blank"
+            password_confirmation:
+              confirmation: "Passwords dont' match"
+            first_name:
+              blank: "First and last name can't be blank"
+              invalid: "First and last name must only contain letters"
+            last_name:
+              blank: "First and last name can't be blank"
+              invalid: "First and last name must only contain letters"
+            email:
+              blank: "Email can't be blank"
+              invalid: "Invalid Email ID"
+              taken: "Email ID already exists"
