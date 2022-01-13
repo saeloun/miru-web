@@ -51,6 +51,8 @@ class User < ApplicationRecord
 
   after_create :assign_default_role
 
+  has_one_attached :avatar
+
   private
     def assign_default_role
       self.add_role(:owner) if self.roles.blank?
