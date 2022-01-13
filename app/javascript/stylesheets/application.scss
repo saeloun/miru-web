@@ -9,4 +9,9 @@
     font-family: "Manrope";
     src: url("../fonts/Manrope.woff2") format("woff2"), url("../fonts/Manrope.woff") format("woff");
   }
+
+  .field_with_errors {
+    display: flex;
+    justify-content: space-between;
+  }
 }
