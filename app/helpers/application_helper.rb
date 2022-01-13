@@ -5,7 +5,7 @@ module ApplicationHelper
     if user.avatar.attached?
       user.avatar
     else
-      image_url "avtar.svg"
+      image_url "avatar.svg"
     end
   end
 end
