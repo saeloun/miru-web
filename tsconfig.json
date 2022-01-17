@@ -11,9 +11,9 @@
     "jsx": "react",
     "noEmit": true,
     "paths": {
-      "components/*": ["./app/javascript/components/*"],
-      "apis/*": ["./app/javascript/components/apis/*"],
-      "helpers/*": ["./app/javascript/components/helpers/*"],
+      "components/*": ["./app/javascript/src/components/*"],
+      "apis/*": ["./app/javascript/src/apis/*"],
+      "helpers/*": ["./app/javascript/src/helpers/*"],
     }
   },
   "exclude": [
