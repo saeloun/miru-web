@@ -4,29 +4,38 @@
       <h2 class="text-miru-black-1000 lg:mb-3 text-base font-black text-w 8">
         Setup Org
       </h2>
-      <%= form_with model: @company, url: company_index_path, method: :post, local: true do |form| %>
-
+      <%= form_with model: @company, url: company_path(@company), method: :patch, local: true do |form| %>
         <div class="field">
           <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000">Logo</label>
           <div class="mt-2">
-            <div x-data="showImage()">
-              <div class="relative w-24 h-24 rounded-md border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
-                <div class="flex items-center justify-center">
-                  <label>
-                    <div class="flex flex-col items-center">
-                      <img id="preview" class="absolute ml-1 mt-1 inset-0 w-20 h-20 rounded-md">
-                      <img src="<%= image_url 'plus_icon.svg' %>" class="mt-8">
-                      <div class="opacity-0" accept="image/*" @change="showPreview(event)">
-                        <%= form.file_field :companylogo %>
+            <% if @company.companylogo.attached? %>
+              <div class="flex items-center space-x-4 lg:space-x-6">
+                <div class="relative w-24 h-24 rounded-full border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
+                  <div class="flex items-center justify-center">
+                    <%= image_tag @company.companylogo, class: "rounded-full" %>
+                  </div>
+                </div>
+                <%= link_to image_tag("#{image_url 'delete_image_button.svg'}"), company_purge_companylogo_path(id: @company), method: :delete, class: "font-medium text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000"%>
+              </div>
+            <% else %>
+              <div x-data="showImage()">
+                <div class="relative w-24 h-24 rounded-md border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
+                  <div class="flex items-center justify-center">
+                    <label>
+                      <div class="flex flex-col items-center">
+                        <img id="preview" class="absolute ml-1 mt-1 inset-0 w-20 h-20 rounded-md">
+                        <img src="<%= image_url 'plus_icon.svg' %>" class="mt-8">
+                        <div class="opacity-0" accept="image/*" @change="showPreview(event)">
+                          <%= form.file_field :companylogo %>
+                        </div>
                       </div>
-                    </div>
-                  </label>
+                    </label>
+                  </div>
                 </div>
               </div>
-            </div>
+            <% end %>
           </div>
         </div>
-
         <%= form.label :company, class: "text-xs text-miru-black-1000" %>
         <%= form.text_field :name, class: "p-2 w-full bg-miru-gray-200 text-sm" %><br>
         <%= form.label :address, class: "text-xs text-miru-black-1000" %>

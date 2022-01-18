@@ -8,8 +8,11 @@ Rails.application.routes.draw do
   resources :dashboard, only: [:index]
 
   # get "*path", to: "home#index", via: :all
-  resources :company, only: [:new, :create]
+  resources :company, only: [:new, :create, :edit, :update]
   resources :time_tracking, only: [:index], path: "time-tracking"
+
+  get "company", to: "company#edit"
+  delete "company/purge_companylogo", to: "company#purge_companylogo"
 
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
