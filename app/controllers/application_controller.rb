@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  before_action :authenticate_user!, :validate_company!
+  before_action :authenticate_user! # , :validate_company!
 
   private
     def validate_company!

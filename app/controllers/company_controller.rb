@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class CompanyController < ApplicationController
-  skip_before_action :validate_company!, only: [:create, :new]
-  before_action :company_validation, only: [:new, :create]
+  # skip_before_action :validate_company!, only: [:create, :new]
+  # before_action :company_validation, only: [:new, :create]
 
   def new
     render :new

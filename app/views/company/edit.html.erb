@@ -2,7 +2,7 @@
 
 <div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
   <div class="px-5">
-    <%= form_with model: @company, url: company_path(@company), method: :patch, local: true do |form| %>
+    <%= form_with model: @company, url: company_path(@company), method: :put, local: true do |form| %>
 
       <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
         <div class="flex-1 min-w-0">
@@ -102,7 +102,7 @@
           <div class="mt-4">
             <div class="field">
               <%= form.label :country, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-              <select name="country" id="country" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000">
+              <select name="company[country]" id="company_country" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000">
                 <% ISO3166::Country.pluck(:alpha2, :name).each do |c| %>
                   <option value="<%= c.first %>"><%= c.second %></option>
                 <% end %>
@@ -113,7 +113,7 @@
           <div class="mt-4">
             <div class="field">
               <%= form.label :timezone, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-              <select name="timezone" id="time_zone" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000">
+              <select name="company[timezone]" id="company_timezone" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000">
                 <% TZInfo::Timezone.all_country_zones.each do |t| %>
                   <option value="<%= t.to_s %>"><%= t.to_s %></option>
                 <% end %>
@@ -124,7 +124,7 @@
           <div class="mt-4">
             <div class="field">
               <%= form.label :base_currency, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-              <select name="base_currency" id="base_currency" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000">
+              <select name="company[base_currency]" id="base_currency" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000">
                 <% Money::Currency.table.each do |k, v| %>
                   <option value="<%=v[:iso_code] %>"> <%= v[:name] %> </option>
                 <% end %>
@@ -144,7 +144,7 @@
           <div class="mt-4">
             <div class="field">
               <%= form.label :fiscal_year_end, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-              <select name="fiscal_year_end" id="fiscal_year_end" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000">
+              <select name="company[fiscal_year_end]" id="fiscal_year_end" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000">
                 <% (1..12).each do |month| %>
                   <option value="<%= Date::MONTHNAMES[month] %>"><%= Date::MONTHNAMES[month] %></option>
                 <% end %>
@@ -155,7 +155,8 @@
           <div class="mt-4">
             <div class="field">
               <%= form.label :date_format, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-              <select name="date_format" id="date_format" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000">
+
+              <select name="company[date_format]" id="date_format" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000" value="<%  %>">
                 <option value="DD-MM-YYYY">DD-MM-YYYY</option>
                 <option value="MM-DD-YYYY">MM-DD-YYYY</option>
                 <option value="YYYY-MM-DD">YYYY-MM-DD</option>
