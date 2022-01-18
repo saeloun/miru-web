@@ -27,7 +27,7 @@ class CompanyController < ApplicationController
   def update
     @company = Company.find(current_user.company_id)
     if @company.update(company_update_params)
-      redirect_to edit_company_path
+      redirect_to "/company"
     end
   end
 
