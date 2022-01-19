@@ -23,11 +23,22 @@
 #  updated_at             :datetime         not null
 #  company_id             :integer
 #  position               :string
+#  invitation_token       :string
+#  invitation_created_at  :datetime
+#  invitation_sent_at     :datetime
+#  invitation_accepted_at :datetime
+#  invitation_limit       :integer
+#  invited_by_type        :string
+#  invited_by_id          :integer
+#  invitations_count      :integer          default("0")
 #
 # Indexes
 #
 #  index_users_on_company_id            (company_id)
 #  index_users_on_email                 (email) UNIQUE
+#  index_users_on_invitation_token      (invitation_token) UNIQUE
+#  index_users_on_invited_by            (invited_by_type,invited_by_id)
+#  index_users_on_invited_by_id         (invited_by_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
 
@@ -36,22 +47,21 @@
 class User < ApplicationRecord
   belongs_to :company, optional: true
   has_many :timesheet_entries
+  has_one_attached :avatar
   rolify
-
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable,
-         :trackable, :confirmable
 
   validates :first_name, :last_name,
     presence: true,
-    format: { with: /\A[a-zA-Z\s]+\z/ }
-  validates :first_name, :last_name, length: { maximum: 50 }
+    format: { with: /\A[a-zA-Z]+\z/ },
+    length: { maximum: 50 }
 
   after_create :assign_default_role
 
-  has_one_attached :avatar
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :invitable, :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable,
+         :trackable, :confirmable
 
   private
     def assign_default_role

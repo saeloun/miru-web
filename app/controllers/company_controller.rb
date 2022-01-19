@@ -16,7 +16,7 @@ class CompanyController < ApplicationController
     redirect_to root_path
   rescue
     flash[:error] = "Company creation failed"
-    Rails.logger.errors "DEBUG::COMPANY_CONTROLLER::CREATE"
+    Rails.logger.error "DEBUG::COMPANY_CONTROLLER::CREATE"
   end
 
   private
