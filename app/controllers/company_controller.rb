@@ -35,6 +35,11 @@ class CompanyController < ApplicationController
     @company = Company.find(current_user.company_id)
     @company.logo.destroy
     redirect_to "/company"
+
+    redirect_to root_path
+  rescue
+    flash[:error] = "Company creation failed"
+    Rails.logger.error "DEBUG::COMPANY_CONTROLLER::CREATE"
   end
 
   private
