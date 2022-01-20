@@ -39,7 +39,7 @@ class CompanyController < ApplicationController
 
   private
     def company_params
-      params.require(:company).permit(:name, :address, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end, :date_format, :companylogo)
+      params.require(:company).permit(:name, :address, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end, :date_format, :logo)
     end
 
     def company_validation
