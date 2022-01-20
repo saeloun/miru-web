@@ -104,7 +104,7 @@
               <%= form.label :country, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
               <select name="company[country]" id="company_country" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000">
                 <% ISO3166::Country.pluck(:alpha2, :name).each do |c| %>
-                  <option value="<%= c.first %>"><%= c.second %></option>
+                  <option <%= @company.country == "#{c.first}" ? "selected" : "" %> value="<%= c.first %>"><%= c.second %></option>
                 <% end %>
               </select>
             </div>
@@ -115,7 +115,7 @@
               <%= form.label :timezone, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
               <select name="company[timezone]" id="company_timezone" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000">
                 <% TZInfo::Timezone.all_country_zones.each do |t| %>
-                  <option value="<%= t.to_s %>"><%= t.to_s %></option>
+                  <option <%= @company.timezone == "#{t.to_s}" ? "selected" : "" %> value="<%= t.to_s %>"><%= t.to_s %></option>
                 <% end %>
               </select>
             </div>
