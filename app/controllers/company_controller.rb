@@ -20,6 +20,11 @@ class CompanyController < ApplicationController
     end
   end
 
+  def show
+    @company = Company.find(current_user.company_id)
+    render :edit
+  end
+
   def edit
     @company = Company.find(current_user.company_id)
   end
@@ -31,7 +36,7 @@ class CompanyController < ApplicationController
     end
   end
 
-  def purge_companylogo
+  def purge_logo
     @company = Company.find(current_user.company_id)
     @company.logo.destroy
     redirect_to "/company"
