@@ -33,7 +33,7 @@ class CompanyController < ApplicationController
 
   def purge_companylogo
     @company = Company.find(current_user.company_id)
-    @company.companylogo.destroy
+    @company.logo.destroy
     redirect_to "/company"
   end
 

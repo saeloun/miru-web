@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   resources :dashboard, only: [:index]
 
   # get "*path", to: "home#index", via: :all
-  resources :company, only: [:new, :edit, :create, :update]
+  resources :company, only: [:new, :edit, :create, :update] do
+    delete :purge_avatar
+  end
   resources :time_tracking, only: [:index], path: "time-tracking"
 
   get "company", to: "company#edit"
