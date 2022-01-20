@@ -18,9 +18,7 @@
         <% end %>
       </script>
       <div class="">
-        <div class="" id="root-page">
-          <%= render "partial/navbar" %>
-        </div>
+          <%= render "partial/navbar" if user_signed_in? %>
         <%= yield %>
       </div>
     </main>
