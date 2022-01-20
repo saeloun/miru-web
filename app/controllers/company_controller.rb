@@ -20,7 +20,7 @@ class CompanyController < ApplicationController
     end
   end
 
-  def edit
+  def show
     @company = Company.find(current_user.company_id)
   end
 
