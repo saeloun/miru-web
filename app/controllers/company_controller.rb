@@ -20,11 +20,6 @@ class CompanyController < ApplicationController
     end
   end
 
-  def show
-    @company = Company.find(current_user.company_id)
-    render :edit
-  end
-
   def edit
     @company = Company.find(current_user.company_id)
   end
