@@ -22,7 +22,7 @@
 
   <div class="field">
     <%= f.label :role %>
-    <%= f.select :last_name, options_for_select([["Select Role", ""], "Admin", "Employee"]) %>
+    <%= f.select :roles, options_for_select([["Select Role", ""], "Admin", "Employee"]) %>
   </div>
 
   <%= f.hidden_field :company_id, value: current_user.company_id %>
