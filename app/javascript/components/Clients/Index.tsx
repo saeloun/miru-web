@@ -1,16 +1,21 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { registerIntercepts, setAuthHeaders } from "components/apis/axios";
-import { fetchClients } from "../apis/clients";
-import Client from "../Clients/Client";
+import Client from "./Client";
+import { fetchClients, IClient } from "../apis/clients";
 
 const Clients = () => {
-  const [clients, setClients] = useState([]);
+  const [clients, setClients] = useState<IClient[]>([]);
+
+  const fetchData = async () => {
+    const clients = await fetchClients();
+    setClients(clients);
+  };
 
   useEffect(() => {
     registerIntercepts();
     setAuthHeaders();
-    fetchClients(setClients);
+    fetchData();
   }, []);
 
   return (
@@ -81,7 +86,9 @@ const Clients = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {clients.map((client, index) => <Client key={index} client={client} />)}
+                {clients.map((client, index) => (
+                  <Client key={index} {...client} />
+                ))}
               </tbody>
             </table>
           </div>
