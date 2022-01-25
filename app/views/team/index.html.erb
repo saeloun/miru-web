@@ -1,6 +1,6 @@
 <div class="" id="root-page">
   <%= render "partial/navbar" %>
-  <div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
+  <div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope" x-data="{ 'isDialogOpen': false }" @keydown.escape="isDialogOpen = false">
     <div class="px-5">
       <div class="">
 
@@ -19,7 +19,7 @@
             </div>
           </div>
           <div class="mt-6 flex sm:mt-0 md:ml-4">
-            <button type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-sans font-medium text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer">
+            <button @click="isDialogOpen = true" type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-sans font-medium text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer">
               <img src="<%= image_url 'plus_icon.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
               NEW USER
             </button>
@@ -96,43 +96,21 @@
 
       </div>
 
-    <!--  <div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true" >-->
-    <!--    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0" >-->
+      <div class="overflow-auto" style="background-color: rgba(0,0,0,0.5)" x-show="isDialogOpen" :class="{ 'absolute inset-0 z-10 flex items-start justify-center': isDialogOpen }">
 
-    <!--      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>-->
+        <div class="bg-white shadow-2xl m-4 sm:m-8" x-show="isDialogOpen" @click.away="isDialogOpen = false">
+          <div class="flex justify-between items-center border-b p-2 text-xl">
+            <h6 class="text-xl font-bold">Simple modal dialog</h6>
+            <button type="button" @click="isDialogOpen = false"><img src="<%= image_url 'close_button.svg' %>"%></button>
+          </div>
+          <%= render "devise/invitations/new"%>
+        </div>
+      </div>
 
-          <!-- This element is to trick the browser into centering the modal contents. -->
-    <!--      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>-->
-
-    <!--      <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">-->
-    <!--        <div>-->
-    <!--          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">-->
-                <!-- Heroicon name: outline/check -->
-    <!--            <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">-->
-    <!--              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />-->
-    <!--            </svg>-->
-    <!--          </div>-->
-    <!--          <div class="mt-3 text-center sm:mt-5">-->
-    <!--            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">-->
-    <!--              Payment successful-->
-    <!--            </h3>-->
-    <!--            <div class="mt-2">-->
-    <!--              <p class="text-sm text-gray-500">-->
-    <!--                Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur amet labore.-->
-    <!--              </p>-->
-    <!--            </div>-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--        <div class="mt-5 sm:mt-6">-->
-    <!--          <button type="button" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">-->
-    <!--            Go back to dashboard-->
-    <!--          </button>-->
-    <!--        </div>-->
-    <!--      </div>-->
-    <!--    </div>-->
-    <!--  </div>-->
     </div>
   </div>
 </div>
 
 
+<!--# http://127.0.0.1:3000/users/invitation/accept?invitation_token=5J2QgxqWVwi4zCRtKWBh-->
+<!--http://miru.saeloun.com/users/invitation/accept?invitation_token=EpxkTqh91ecauJ6JFbbW-->
