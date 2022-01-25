@@ -96,21 +96,22 @@
 
       </div>
 
-      <div class="overflow-auto" style="background-color: rgba(0,0,0,0.5)" x-show="isDialogOpen" :class="{ 'absolute inset-0 z-10 flex items-start justify-center': isDialogOpen }">
-
-        <div class="bg-white shadow-2xl m-4 sm:m-8" x-show="isDialogOpen" @click.away="isDialogOpen = false">
-          <div class="flex justify-between items-center border-b p-2 text-xl">
-            <h6 class="text-xl font-bold">Simple modal dialog</h6>
-            <button type="button" @click="isDialogOpen = false"><img src="<%= image_url 'close_button.svg' %>"%></button>
+        <div class="px-4 min-h-screen flex items-center justify-center">
+          <div class="overflow-auto" style="background-color: rgba(0,0,0,0.5)" x-show="isDialogOpen" :class="{ 'absolute inset-0 z-10 flex items-start justify-center': isDialogOpen }">
+            <div class="relative px-4 min-h-screen md:flex md:items-center md:justify-center">
+            <div class="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md sm:w-full" x-show="isDialogOpen" @click.away="isDialogOpen = false">
+              <div class="flex justify-between items-center mt-6">
+                <h6 class="text-base font-extrabold">Create New User</h6>
+                <button type="button" @click="isDialogOpen = false"><img src="<%= image_url 'close_button.svg' %>"%></button>
+              </div>
+              <%= render "devise/invitations/new"%>
+            </div>
+            </div>
           </div>
-          <%= render "devise/invitations/new"%>
         </div>
-      </div>
 
     </div>
   </div>
 </div>
 
-
-<!--# http://127.0.0.1:3000/users/invitation/accept?invitation_token=5J2QgxqWVwi4zCRtKWBh-->
-<!--http://miru.saeloun.com/users/invitation/accept?invitation_token=EpxkTqh91ecauJ6JFbbW-->
+</div>
