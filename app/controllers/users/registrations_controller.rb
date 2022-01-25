@@ -26,4 +26,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
     def after_update_path_for(resource)
       profile_path
     end
+
+    def after_inactive_sign_up_path_for(resource)
+      set_flash_message! :notice, :signed_up_but_unconfirmed
+      new_user_session_path
+    end
 end
