@@ -28,25 +28,28 @@
 
         <!-- team table -->
         <div class="flex flex-col">
-          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 ">
             <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-              <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
+              <div class="overflow-hidden border-b-2 border-miru-gray-200 ">
+                <table class="min-w-full divide-y divide-gray-200 mt-4">
+                  <thead class="">
                     <tr>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Name
+                      <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
+                        PHOTO
                       </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Title
+                      <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
+                        NAME
                       </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
+                      <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
+                        EMAIL ID
                       </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Role
+                      <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
+                        ROLE
                       </th>
-                      <th scope="col" class="relative px-6 py-3">
+                      <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
+
+                      </th>
+                      <th scope="col" class="relative px-6 py-5">
                         <span class="sr-only">Edit</span>
                       </th>
                     </tr>
@@ -55,31 +58,27 @@
                     <% @teams.each do |member| %>
                       <tr>
                         <td class="px-6 py-4 whitespace-nowrap">
+                          <%= image_tag user_avatar(member), class: "h-10 w-10 rounded-full" %>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
                           <div class="flex items-center">
-                            <div class="flex-shrink-0 h-10 w-10">
-                              <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60" alt="">
-                            </div>
-                            <div class="ml-4">
-                              <div class="text-sm font-medium text-gray-900">
-                                <%= member.first_name %> <%= member.last_name %>
-                              </div>
-                              <div class="text-sm text-gray-500">
-                                <%= member.email %>
-                              </div>
+                            <div class="text-base font-semibold text-miru-dark-purple-1000">
+                              <%= member.first_name.capitalize %> <%= member.last_name.capitalize %>
                             </div>
                           </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                          <div class="text-sm text-gray-900">Regional Paradigm Technician</div>
-                          <div class="text-sm text-gray-500">Optimization</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            Active
-                          </span>
+                          <%= member.email %>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           <%= member.roles.first.name.titlecase %>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <% if member.invitation_accepted_at.blank? %>
+                            <span class="px-2 inline-flex text-xs leading-5 tracking-wider font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
+                              INVITATION PENDING
+                            </span>
+                          <% end %>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
@@ -97,7 +96,7 @@
       </div>
 
         <div class="px-4 min-h-screen flex items-center justify-center">
-          <div class="overflow-auto" style="background-color: rgba(0,0,0,0.5)" x-show="isDialogOpen" :class="{ 'absolute inset-0 z-10 flex items-start justify-center': isDialogOpen }">
+          <div class="overflow-auto" style="background-color: rgba(29, 26, 49,0.6)" x-show="isDialogOpen" :class="{ 'absolute inset-0 z-10 flex items-start justify-center': isDialogOpen }">
             <div class="relative px-4 min-h-screen md:flex md:items-center md:justify-center">
             <div class="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md sm:w-full" x-show="isDialogOpen" @click.away="isDialogOpen = false">
               <div class="flex justify-between items-center mt-6">

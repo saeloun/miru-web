@@ -15,10 +15,10 @@
       </div>
       <div class="mt-1 flex -space-x-px">
         <div class="mr-4 w-1/2 flex-1 min-w-0">
-          <%= f.text_field :first_name, autofocus: true, class: "#{error_message_class(f.object, :first_name)}" %>
+          <%= f.text_field :first_name, class: "#{error_message_class(f.object, :first_name)}" %>
         </div>
         <div class="w-1/2 flex-1 min-w-0">
-          <%= f.text_field :last_name, autofocus: true, class: "#{error_message_class(f.object, :last_name)}" %>
+          <%= f.text_field :last_name, class: "#{error_message_class(f.object, :last_name)}" %>
         </div>
       </div>
     </div>
@@ -31,7 +31,7 @@
           <%= error_message_on(f.object, field) %>
         </div>
         <div class="mt-1">
-          <%= f.text_field field, autofocus: true, class: "#{error_message_class(f.object, field)}" %>
+          <%= f.text_field field, class: "#{error_message_class(f.object, field)}" %>
         </div>
       </div>
     </div>
