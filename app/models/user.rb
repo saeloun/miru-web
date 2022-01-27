@@ -31,6 +31,7 @@
 #  invited_by_type        :string
 #  invited_by_id          :integer
 #  invitations_count      :integer          default("0")
+#  state                  :integer          default("0")
 #
 # Indexes
 #
@@ -55,6 +56,8 @@ class User < ApplicationRecord
     presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },
     length: { maximum: 50 }
+
+  enum state: { active: 0, inactive: 1 }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
