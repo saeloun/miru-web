@@ -76,9 +76,11 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                           <% unless member.invitation_accepted? %>
-                            <span class="px-2 inline-flex text-xs leading-5 tracking-wider font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
-                              INVITATION PENDING
-                            </span>
+                            <% if (member.id != current_user.id) %>
+                              <span class="px-2 inline-flex text-xs leading-5 tracking-wider font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
+                                INVITATION PENDING
+                              </span>
+                            <% end %>
                           <% end %>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
