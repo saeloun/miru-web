@@ -79,6 +79,7 @@ class User < ApplicationRecord
     self.has_role?(:admin) || self.has_role?(:owner)
   end
 
+  # check whether the user present is in active state or not
   def active_for_authentication?
     super and self.active?
   end

@@ -6,9 +6,10 @@ class TeamController < ApplicationController
   end
 
   def update
-  end
-
-  def destroy
+    @team =  User.find(params[:id])
+    @team.state = 1
+    @team.save!
+    redirect_to "/team"
   end
 
   private
