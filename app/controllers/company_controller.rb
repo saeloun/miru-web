@@ -5,13 +5,36 @@ class CompanyController < ApplicationController
   before_action :company_validation, only: [:new, :create]
 
   def new
-    render
+    render :new
   end
 
   def create
-    company = Company.create!(company_params)
+    company = Company.create(company_params)
     current_user.company_id = company.id
     current_user.save!
+    if company.save
+      redirect_to root_path
+    else
+      flash[:error] = "Company creation failed"
+      Rails.logger.error "DEBUG::COMPANY_CONTROLLER::CREATE"
+    end
+  end
+
+  def show
+    @company = Company.find(current_user.company_id)
+  end
+
+  def update
+    @company = Company.find(current_user.company_id)
+    if @company.update(company_params)
+      redirect_to "/company"
+    end
+  end
+
+  def purge_logo
+    @company = Company.find(current_user.company_id)
+    @company.logo.destroy
+    redirect_to "/company"
 
     redirect_to root_path
   rescue
@@ -21,7 +44,7 @@ class CompanyController < ApplicationController
 
   private
     def company_params
-      params.permit(:name, :address, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end, :date_format)
+      params.require(:company).permit(:name, :address, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end, :date_format, :logo)
     end
 
     def company_validation

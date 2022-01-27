@@ -1,139 +1,113 @@
-<div class="" id="root-page" x-data="{ 'showModal': false }" @keydown.escape="showModal = false">
+<div class="" id="root-page">
   <%= render "partial/navbar" %>
-  <div class="container mx-auto sm:px-6 lg:px-2">
-    <div class="px-4 py-5 sm:px-6">
-      <div class="flex justify-between">
-        <div><h1>Team</h1></div>
-        <div><h1>Team</h1></div>
-        <button type="button" @click="showModal = true" class="inline-flex items-center px-3 py-2 border border-miru-han-purple-600 shadow-sm text-sm leading-4 font-medium rounded-md text-miru-han-purple-600 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-          Add new staff
-        </button>
-      </div>
-    </div>
-    <div class="flex flex-col">
-      <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Title
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th scope="col" class="relative px-6 py-3">
-                    <span class="sr-only">Edit</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <% @teams.each do |member| %>
-                  <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="flex items-center">
-                        <div class="flex-shrink-0 h-10 w-10">
-                          <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60" alt="">
-                        </div>
-                        <div class="ml-4">
-                          <div class="text-sm font-medium text-gray-900">
-                            <%= member.first_name %> <%= member.last_name %>
-                          </div>
-                          <div class="text-sm text-gray-500">
-                            <%= member.email %>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-900">Regional Paradigm Technician</div>
-                      <div class="text-sm text-gray-500">Optimization</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        Active
-                      </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <%= member.roles.first.name.titlecase %>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                    </td>
-                  </tr>
-                <% end %>
+  <div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope" x-data="{ 'isDialogOpen': false }" @keydown.escape="isDialogOpen = false">
+    <div class="px-5">
+      <div class="">
 
-                <!-- More people... -->
-              </tbody>
-            </table>
+        <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
+          <div class="flex-1 min-w-0">
+            <h2 class="text-3xl font-extrabold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
+              Team
+            </h2>
+          </div>
+          <div class="mt-6 flex sm:mt-0 md:ml-4 items-center sm:w-4/6">
+            <div class="mt-1 relative rounded-md shadow-sm md:ml-10">
+              <input type="search" class="rounded tracking-wider appearance-none border border-gray-100 block w-72 sm:w-96 px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-sm" placeholder="Search">
+              <button class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
+                <img src="<%= image_url 'search_icon.svg' %>" class="h-3 w-3 text-miru-gray-400">
+              </button>
+            </div>
+          </div>
+          <div class="mt-6 flex sm:mt-0 md:ml-4">
+            <button @click="isDialogOpen = true" type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-sans font-medium text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer">
+              <img src="<%= image_url 'plus_icon.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
+              NEW USER
+            </button>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Add new staff modal -->
-  <div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-show="showModal">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0" @click.away="showModal = false">
-      <!--
-        Background overlay, show/hide based on modal state.
+        <!-- team table -->
+        <div class="flex flex-col">
+          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 ">
+            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+              <div class="overflow-hidden border-b-2 border-miru-gray-200 ">
+                <table class="min-w-full divide-y divide-gray-200 mt-4">
+                  <thead class="">
+                    <tr>
+                      <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
+                        PHOTO
+                      </th>
+                      <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
+                        NAME
+                      </th>
+                      <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
+                        EMAIL ID
+                      </th>
+                      <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
+                        ROLE
+                      </th>
+                      <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
 
-        Entering: "ease-out duration-300"
-          From: "opacity-0"
-          To: "opacity-100"
-        Leaving: "ease-in duration-200"
-          From: "opacity-100"
-          To: "opacity-0"
-      -->
-      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+                      </th>
+                      <th scope="col" class="relative px-6 py-5">
+                        <span class="sr-only">Edit</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <% @teams.each do |member| %>
+                      <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <%= image_tag user_avatar(member), class: "h-10 w-10 rounded-full" %>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <div class="flex items-center">
+                            <div class="text-base font-semibold text-miru-dark-purple-1000">
+                              <%= member.first_name.capitalize %> <%= member.last_name.capitalize %>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
+                          <%= member.email %>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
+                          <%= member.roles.first.name.titlecase %>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                          <% if member.invitation_accepted_at.blank? %>
+                            <span class="px-2 inline-flex text-xs leading-5 tracking-wider font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
+                              INVITATION PENDING
+                            </span>
+                          <% end %>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        </td>
+                      </tr>
+                    <% end %>
 
-      <!-- This element is to trick the browser into centering the modal contents. -->
-      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-      <!--
-        Modal panel, show/hide based on modal state.
-
-        Entering: "ease-out duration-300"
-          From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          To: "opacity-100 translate-y-0 sm:scale-100"
-        Leaving: "ease-in duration-200"
-          From: "opacity-100 translate-y-0 sm:scale-100"
-          To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-      -->
-      <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
-        <div>
-          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
-            <!-- Heroicon name: outline/check -->
-            <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <div class="mt-3 text-center sm:mt-5">
-            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-              Payment successful
-            </h3>
-            <div class="mt-2">
-              <p class="text-sm text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur amet labore.
-              </p>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
-        <div class="mt-5 sm:mt-6">
-          <button type="button" class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
-            Go back to dashboard
-          </button>
+
+      </div>
+
+      <div class="px-4 min-h-screen flex items-center justify-center">
+        <div class="overflow-auto" style="background-color: rgba(29, 26, 49,0.6)" x-show="isDialogOpen" :class="{ 'absolute inset-0 z-10 flex items-start justify-center': isDialogOpen }">
+          <div class="relative px-4 min-h-screen md:flex md:items-center md:justify-center">
+          <div class="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md sm:w-full" x-show="isDialogOpen" @click.away="isDialogOpen = false">
+            <div class="flex justify-between items-center mt-6">
+              <h6 class="text-base font-extrabold">Create New User</h6>
+              <button type="button" @click="isDialogOpen = false"><img src="<%= image_url 'close_button.svg' %>"%></button>
+            </div>
+            <%= render "devise/invitations/new"%>
+          </div>
+          </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>
-
-

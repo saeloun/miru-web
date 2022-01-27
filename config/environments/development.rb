@@ -75,6 +75,6 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: host }
   config.action_mailer.asset_host = host
 
-  config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.delivery_method = ENV.fetch("MAILER_DELIVERY_METHOD", "letter_opener").to_sym
   config.action_mailer.perform_deliveries = true
 end

@@ -15,7 +15,11 @@ Rails.application.routes.draw do
 
   root to: "root#index"
   resources :dashboard, only: [:index]
-  resources :company, only: [:new, :create]
+
+  # get "*path", to: "home#index", via: :all
+  resource :company, only: [:new, :show, :create, :update], controller: :company do
+    delete :purge_logo
+  end
   resources :time_tracking, only: [:index], path: "time-tracking"
   resources :team, only: [:index, :update, :destroy]
 
