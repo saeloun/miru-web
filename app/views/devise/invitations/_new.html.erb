@@ -1,0 +1,70 @@
+<%= form_for(resource, as: resource_name, url: invitation_path(resource_name), html: { method: :post }) do |f| %>
+  <%= render "devise/shared/error_messages", resource: resource %>
+
+  <div class="mt-4">
+    <div class="field">
+      <div class="field_with_errors">
+        <label class="tracking-wider block text-xs font-semibold text-miru-dark-purple-1000">Name</label>
+        <%=
+          if f.object.errors.include?(:first_name)
+            error_message_on(f.object, :first_name)
+          else
+            error_message_on(f.object, :last_name)
+          end
+        %>
+      </div>
+      <div class="mt-1 flex -space-x-px">
+        <div class="mr-4 w-1/2 flex-1 min-w-0">
+          <%= f.text_field :first_name, class: "#{error_message_class(f.object, :first_name)}" %>
+        </div>
+        <div class="w-1/2 flex-1 min-w-0">
+          <%= f.text_field :last_name, class: "#{error_message_class(f.object, :last_name)}" %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% resource.class.invite_key_fields.each do |field| -%>
+    <div class="mt-4">
+      <div class="field">
+        <div class="field_with_errors">
+          <%= f.label field, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+          <%= error_message_on(f.object, field) %>
+        </div>
+        <div class="mt-1">
+          <%= f.text_field field, class: "#{error_message_class(f.object, field)}" %>
+        </div>
+      </div>
+    </div>
+  <% end -%>
+
+  <div class="mt-4">
+    <div class="field">
+      <label class="tracking-wider block text-xs font-semibold text-miru-dark-purple-1000">Role</label>
+      <div class="mt-1">
+        <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+          <div class="flex items-center">
+            <%= f.radio_button :roles, 'Admin', class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000" %>
+            <label for="admin" class="ml-3 block text-sm  font-semibold text-miru-dark-purple-1000">
+              Admin
+            </label>
+          </div>
+
+          <div class="flex items-center">
+            <%= f.radio_button :roles, 'Employee', class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000" %>
+            <label for="Employee" class="ml-3 block text-sm  font-semibold text-miru-dark-purple-1000">
+              Employee
+            </label>
+          </div>
+        </div>
+      </div>
+      <%#= f.select :roles, options_for_select([["Select Role", ""], "Admin", "Employee"]) %>
+    </div>
+  </div>
+
+  <%= f.hidden_field :company_id, value: current_user.company_id %>
+
+  <div class="actions mt-4">
+    <%= f.submit "SEND INVITE", class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer"%>
+  </div>
+
+<% end %>
