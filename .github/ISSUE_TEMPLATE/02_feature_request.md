@@ -11,16 +11,10 @@ labels: "feature"
   For example, "I'm always frustrated when..."
 -->
 
-(Write your answer here.)
-
 ### Describe the solution you'd like
 
 <!--
   Provide a clear and concise description of what you want to happen.
 -->
 
-(Describe your proposed solution here.)
-
 ### Describe alternatives you've considered
-
-(Write your answer here.)
