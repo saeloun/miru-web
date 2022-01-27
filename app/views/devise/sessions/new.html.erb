@@ -62,10 +62,10 @@
               </div>
               <div>
                 <div class="mt-4">
-                  <button type="button" class="tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded">
+                  <%= button_to user_google_oauth2_omniauth_authorize_path, class: 'tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded' do %>
                     <img src="<%= image_url 'google.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
                     SIGN IN WITH GOOGLE
-                  </button>
+                  <% end %>
                 </div>
               </div>
               <div>

@@ -60,7 +60,8 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :invitable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
-         :trackable, :confirmable
+         :trackable, :confirmable,
+         :omniauthable, omniauth_providers: [:google_oauth2]
 
 
   def primary_role
