@@ -55,16 +55,14 @@ class User < ApplicationRecord
     format: { with: /\A[a-zA-Z\s]+\z/ },
     length: { maximum: 50 }
 
-  after_create :assign_default_role
-
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :invitable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :trackable, :confirmable
 
-  private
-    def assign_default_role
-      self.add_role(:owner) if self.roles.blank?
-    end
+
+  def primary_role
+    roles.first.name
+  end
 end

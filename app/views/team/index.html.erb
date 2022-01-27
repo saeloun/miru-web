@@ -71,10 +71,10 @@
                           <%= member.email %>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
-                          <%= member.roles.first.name.titlecase %>
+                          <%= member.primary_role.titlecase %>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                          <% if member.invitation_accepted_at.blank? %>
+                          <% unless member.invitation_accepted? %>
                             <span class="px-2 inline-flex text-xs leading-5 tracking-wider font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
                               INVITATION PENDING
                             </span>

@@ -15,4 +15,8 @@ class Users::InvitationsController < Devise::InvitationsController
         resource.add_role(params[:user][:roles].downcase.to_sym)
       end
     end
+
+    def after_invite_path_for(inviter)
+      team_index_path
+    end
 end
