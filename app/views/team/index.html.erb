@@ -57,37 +57,38 @@
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
                     <% @teams.each do |member| %>
-                      <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <%= image_tag user_avatar(member), class: "h-10 w-10 rounded-full" %>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <div class="flex items-center">
-                            <div class="text-base font-semibold text-miru-dark-purple-1000">
-                              <%= member.first_name.capitalize %> <%= member.last_name.capitalize %>
+                      <% if member.active? %>
+                        <tr>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <%= image_tag user_avatar(member), class: "h-10 w-10 rounded-full" %>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                              <div class="text-base font-semibold text-miru-dark-purple-1000">
+                                <%= member.first_name.capitalize %> <%= member.last_name.capitalize %>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
-                          <%= member.email %>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
-                          <%= member.primary_role.titlecase %>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                          <% unless member.invitation_accepted? %>
-                            <% if (member.id != current_user.id) %>
-                              <span class="px-2 inline-flex text-xs leading-5 tracking-wider font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
-                                INVITATION PENDING
-                              </span>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
+                            <%= member.email %>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
+                            <%= member.primary_role.titlecase %>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap">
+                            <% unless member.invitation_accepted? %>
+                              <% if (member.id != current_user.id) %>
+                                <span class="px-2 inline-flex text-xs leading-5 tracking-wider font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
+                                  INVITATION PENDING
+                                </span>
+                              <% end %>
                             <% end %>
-                          <% end %>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        </td>
-                      </tr>
+                          </td>
+                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          </td>
+                        </tr>
+                      <% end %>
                     <% end %>
-
                   </tbody>
                 </table>
               </div>
