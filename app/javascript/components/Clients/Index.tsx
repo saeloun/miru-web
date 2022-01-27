@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { registerIntercepts, setAuthHeaders } from "components/apis/axios";
+import { registerIntercepts, setAuthHeaders } from "apis/axios";
+import { fetchClients, IClient } from "apis/clients";
 import Client from "./Client";
-import { fetchClients, IClient } from "../apis/clients";
 
 const Clients = () => {
   const [clients, setClients] = useState<IClient[]>([]);

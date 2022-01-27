@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
 namespace :internal_api do
-  resources :clients, only: [:index]
+  namespace :v1 do
+    resources :clients, only: [:index]
+  end
 end
