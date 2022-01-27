@@ -134,13 +134,4 @@ RSpec.describe User, type: :model do
       expect(user2).to_not be_valid
     end
   end
-
-  describe "Callbacks" do
-    it "assigns_default role when roles are blank" do
-      new_user = create(:user)
-
-      expect(new_user.roles).not_to be_empty
-      expect(new_user.has_role?(:owner)).to be_truthy
-    end
-  end
 end

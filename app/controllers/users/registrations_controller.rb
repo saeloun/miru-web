@@ -2,6 +2,7 @@
 
 class Users::RegistrationsController < Devise::RegistrationsController
   before_action :configure_permitted_parameters
+  after_action :assign_role, only: [:create]
 
   def purge_avatar
     user = User.find(params[:id])
@@ -31,4 +32,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
       set_flash_message! :notice, :signed_up_but_unconfirmed
       new_user_session_path
     end
+
+  private
+    def assign_role
+      if resource.errors.empty? && resource.roles.blank?
+        resource.add_role(:owner)
+      end
+   end
 end
