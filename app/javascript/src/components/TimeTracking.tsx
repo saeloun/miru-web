@@ -3,6 +3,7 @@ import * as dayjs from "dayjs";
 import * as weekday from "dayjs/plugin/weekday";
 import AddEntry from "./AddEntry";
 import EntryCard from "./EntryCard";
+import { getNumberWithOrdinal } from "../helpers/ordinal";
 
 dayjs.extend(weekday);
 
@@ -144,7 +145,9 @@ const TimeTracking: React.FC<props> = ({ clients, projects }) => {
                   <p className="text-xs text-miru-dark-purple-1000 font-extrabold">
                     {d.day}
                   </p>
-                  <p className="text-xs">{d.date}th Dec </p>
+                  <p className="text-xs">
+                    {getNumberWithOrdinal(d.date)} {d.month}{" "}
+                  </p>
                 </button>
               ))}
             </div>
