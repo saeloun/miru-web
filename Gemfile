@@ -135,3 +135,7 @@ end
 
 # Role management library with resource scoping
 gem "rolify", "~> 6.0"
+
+# OAuth Gems
+gem "omniauth-google-oauth2", "~> 1.0"
+gem "omniauth-rails_csrf_protection", "~> 1.0"
