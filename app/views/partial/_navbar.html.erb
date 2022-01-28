@@ -1,4 +1,4 @@
-<nav class="bg-white shadow font-manrope" x-data="{ isOpen: false}">
+<nav class="bg-white shadow font-manrope mb-4" x-data="{ isOpen: false}">
   <div class="max-w-8xl mx-auto px-2 md:px-11">
     <div class="relative flex justify-between h-16">
       <div class="absolute inset-y-0 left-0 flex items-center md:hidden">
@@ -22,37 +22,37 @@
         <div class="flex-shrink-0 flex items-center">
           <a href="/" class="font-semibold text-xl tracking-tight">
             <img class="block lg:hidden h-10 w-auto md:mr-12" src="/miru-logo.svg" alt="miru web">
-            <img class="hidden lg:block h-10 w-auto lg:mr-32" src="/miru-logo.svg" alt="miru web">
+            <img class="hidden lg:block h-10 w-auto lg:mr-26" src="/miru-logo.svg" alt="miru web">
           </a>
         </div>
         <div class="hidden md:mx-3 md:flex md:space-x-2 lg:space-x-8">
           <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
           <% if current_user.has_any_role?(:owner, :admin) %>
-            <a href="/dashboard" class="<%= request.path == "/dashboard" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
+            <a href="/dashboard" class="<%= request.path == "/dashboard" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center md:px-1 pt-1 text-base font-extrabold">
               Dashboard
             </a>
           <% end %>
-          <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
+          <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center md:px-1 lg:px-0 pt-1 text-base font-extrabold">
             Time Tracking
           </a>
           <% if current_user.has_any_role?(:owner, :admin) %>
-            <a href="/team" class="<%= request.path == "/team" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-sm text-base font-extrabold">
+            <a href="/team" class="<%= request.path == "/team" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center md:px-1 pt-1 text-sm text-base font-extrabold">
               Team
             </a>
           <% end %>
-          <a href="/clients" class="<%= request.path == "/clients" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
+          <a href="/clients" class="<%= request.path == "/clients" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center md:px-1 pt-1 text-base font-extrabold">
             Clients
           </a>
-          <a href="/projects" class="<%= request.path == "/project" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
+          <a href="/projects" class="<%= request.path == "/project" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center md:px-1 pt-1 text-base font-extrabold">
             Projects
           </a>
           <% if current_user.has_any_role?(:owner, :admin) %>
-            <a href="/invoice" class="<%= request.path == "/invoice" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
+            <a href="/invoice" class="<%= request.path == "/invoice" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center md:px-1 pt-1 text-base font-extrabold">
               Invoice
             </a>
           <% end %>
           <% if current_user.has_any_role?(:owner, :admin) %>
-            <a href="/report" class="<%= request.path == "/report" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
+            <a href="/report" class="<%= request.path == "/report" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center md:px-1 pt-1 text-base font-extrabold">
               Report
             </a>
           <% end %>

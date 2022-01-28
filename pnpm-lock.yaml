@@ -23,6 +23,7 @@ specifiers:
   axios: ^0.24.0
   babel-plugin-js-logger: ^1.0.17
   babel-plugin-transform-react-remove-prop-types: ^0.4.24
+  dayjs: ^1.10.7
   eslint: ^8.4.1
   eslint-config-prettier: ^8.3.0
   eslint-plugin-cypress: ^2.12.1
@@ -74,6 +75,7 @@ dependencies:
   axios: 0.24.0
   babel-plugin-js-logger: 1.0.17
   babel-plugin-transform-react-remove-prop-types: 0.4.24
+  dayjs: 1.10.7
   fork-ts-checker-webpack-plugin: 6.5.0_089a1192179588954a0737f9ff6f3f50
   js-logger: 1.6.1
   postcss: 7.0.39
@@ -3247,6 +3249,10 @@ packages:
 
   /cyclist/1.0.1:
     resolution: {integrity: sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=}
+    dev: false
+
+  /dayjs/1.10.7:
+    resolution: {integrity: sha512-P6twpd70BcPK34K26uJ1KT3wlhpuOAPoMwJzpsIWUxHZ7wpmbdZL/hQqBDfz7hGurYSa5PhzdhDHtt319hL3ig==}
     dev: false
 
   /debug/2.6.9:

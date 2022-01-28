@@ -81,6 +81,14 @@ module.exports = {
         manrope: "'Manrope', serif"
       },
       spacing: {
+        13: "3.125rem",
+        18: "4.5rem",
+        19: "4.75rem",
+        22: "5.5rem",
+        25: "6.25rem",
+        26: "6.5rem",
+        38: "9.5rem",
+        50: "12.5rem",
         112: "28rem"
       },
       padding: {
@@ -92,6 +100,9 @@ module.exports = {
         "10/100": "10%"
       }
     }
+  },
+  fontSize: {
+    zxl: ["2.5rem", { letterSpacing: "0.05em", lineHeight: "1" }]
   },
   variants: {
     extend: {}

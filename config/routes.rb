@@ -11,6 +11,14 @@ Rails.application.routes.draw do
   resources :company, only: [:new, :create]
   resources :time_tracking, only: [:index], path: "time-tracking"
 
+  namespace :api, defaults: { format: "json" } do
+    namespace :v1 do
+      resources :clients, only: [:index]
+      resources :project, only: [:index]
+      resources :timesheet_entry, only: [:index, :create, :update, :destroy], path: "timesheet-entry"
+    end
+  end
+
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
