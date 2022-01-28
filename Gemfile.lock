@@ -249,6 +249,9 @@ GEM
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
       rack-protection
+    omniauth-apple (1.0.2)
+      jwt
+      omniauth-oauth2
     omniauth-google-oauth2 (1.0.0)
       jwt (>= 2.0)
       oauth2 (~> 1.1)
@@ -450,6 +453,7 @@ DEPENDENCIES
   letter_opener
   letter_opener_web
   money
+  omniauth-apple (~> 1.0)
   omniauth-google-oauth2 (~> 1.0)
   omniauth-rails_csrf_protection (~> 1.0)
   pg
