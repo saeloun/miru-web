@@ -7,6 +7,6 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
   private
     def clients
-      @clients ||= Client.where(company: current_user.company)
+      @_clients ||= Client.where(company: current_user.company)
     end
 end
