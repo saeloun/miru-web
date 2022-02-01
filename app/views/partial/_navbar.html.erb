@@ -29,36 +29,36 @@
           <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
           <% if current_user.has_any_role?(:owner, :admin) %>
             <a href="/dashboard" class="<%= request.path == "/dashboard" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
-              Dashboard
+              <%= t('navbar.dashboard') %>
             </a>
           <% end %>
           <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
-            Time Tracking
+            <%= t('navbar.time_tracking') %>
           </a>
           <a href="/team" class="<%= request.path == "/team" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-sm text-base font-extrabold">
-            Team
+            <%= t('navbar.team') %>
           </a>
           <a href="/clients" class="<%= request.path == "/clients" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
-            Clients
+            <%= t('navbar.clients') %>
           </a>
           <a href="/projects" class="<%= request.path == "/project" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
-            Projects
+            <%= t('navbar.projects') %>
           </a>
           <% if current_user.has_any_role?(:owner, :admin) %>
             <a href="/invoice" class="<%= request.path == "/invoice" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
-              Invoice
+              <%= t('navbar.invoice') %>
             </a>
           <% end %>
           <% if current_user.has_any_role?(:owner, :admin) %>
             <a href="/report" class="<%= request.path == "/report" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
-              Report
+              <%= t('navbar.report') %>
             </a>
           <% end %>
         </div>
       </div>
       <div class="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0">
         <button type="button" class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500">
-          <span class="sr-only">View notifications</span>
+          <span class="sr-only"><%= t('navbar.view_notifications') %></span>
           <!-- Heroicon name: outline/bell -->
           <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -81,7 +81,7 @@
 
                 <div class="pl-1 pr-2 py-5" role="none">
                   <p class="text-base font-sans font-medium text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" role="none">
-                    <%= current_user.first_name + " " + current_user.last_name %>
+                    <%= current_user.full_name %>
                   </p>
                   <p class="text-sm font-normal text-miru-dark-purple-400 hover:text-miru-han-purple-1000 truncate mr-10" role="none">
                     <%= current_user.email %>
@@ -91,11 +91,11 @@
 
               <div class="block font-bold hover:bg-gray-100 text-miru-dark-purple-600 hover:text-miru-han-purple-1000 flex items-center px-4 py-2 text-base" role="menuitem" tabindex="-1" id="menu-item-0">
                 <img src="<%= image_url 'setting_icon.svg' %>" class="mr-3 h-5 w-5">
-                <%= link_to "Settings", "/profile" %>
+                <%= link_to t('navbar.settings'), "/profile" %>
               </div>
               <div class="block font-bold hover:bg-gray-100 text-miru-dark-purple-600 hover:text-miru-han-purple-1000 group flex items-center px-4 py-2 text-base" role="menuitem" tabindex="-1" id="menu-item-0">
                 <img src="<%= image_url 'logout_icon.svg' %>" class="mr-3 h-5 w-5">
-                <%= link_to "Logout", destroy_user_session_path, method: :delete %>
+                <%= link_to t('navbar.logout'), destroy_user_session_path, method: :delete %>
               </div>
             </div>
           </div>
@@ -110,15 +110,15 @@
       <div class="pt-2 pb-4 space-y-1" x-show="isOpen" @click.away="isOpen = false">
         <!-- Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
         <% if current_user.has_any_role?(:owner, :admin) %>
-          <a href="/dashboard" class="<%= request.path == "/dashboard" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold">Dashboard</a>
+          <a href="/dashboard" class="<%= request.path == "/dashboard" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.dashboard') %></a>
         <% end %>
-        <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold">Time Tracking</a>
-        <a href="/team" class="<%= request.path == "/team" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold">Team</a>
-        <a href="/clients" class="<%= request.path == "/clients" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold">Clients</a>
-        <a href="/projects" class="<%= request.path == "/projects" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold">Projects</a>
+        <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.time_tracking') %></a>
+        <a href="/team" class="<%= request.path == "/team" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.team') %></a>
+        <a href="/clients" class="<%= request.path == "/clients" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.clients') %></a>
+        <a href="/projects" class="<%= request.path == "/projects" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.projects') %></a>
         <% if current_user.has_any_role?(:owner, :admin) %>
-          <a href="/invoice" class="<%= request.path == "/invoice" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold">Invoice</a>
-          <a href="/report" class="<%= request.path == "/report" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold">Report</a>
+          <a href="/invoice" class="<%= request.path == "/invoice" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.invoice') %></a>
+          <a href="/report" class="<%= request.path == "/report" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.report') %></a>
         <% end %>
       </div>
     </div>

@@ -10,9 +10,9 @@ class CompanyController < ApplicationController
 
   def create
     company = Company.create(company_params)
-    current_user.company_id = company.id
-    current_user.save!
     if company.save
+      current_user.company_id = company.id
+      current_user.save!
       redirect_to root_path
     else
       flash[:error] = "Company creation failed"

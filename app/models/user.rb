@@ -67,4 +67,8 @@ class User < ApplicationRecord
   def primary_role
     roles.first.name
   end
+
+  def full_name
+    first_name + " " + last_name
+  end
 end
