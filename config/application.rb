@@ -34,5 +34,7 @@ module MiruWeb
     if email_delivery_method = ENV["EMAIL_DELIVERY_METHOD"]
       config.action_mailer.delivery_method = email_delivery_method.to_sym
     end
+
+    config.action_controller.include_all_helpers = false
   end
 end

@@ -5,16 +5,19 @@ class CompanyController < ApplicationController
   before_action :company_validation, only: [:new, :create]
 
   def new
+    @company = Company.new
     render :new
   end
 
   def create
-    company = Company.create(company_params)
-    current_user.company_id = company.id
-    current_user.save!
-    if company.save
+    @company = Company.create(company_params)
+    if @company.save
+      current_user.company_id = @company.id
+      current_user.save!
+
       redirect_to root_path
     else
+      render :new, status: :bad_request
       flash[:error] = "Company creation failed"
       Rails.logger.error "DEBUG::COMPANY_CONTROLLER::CREATE"
     end

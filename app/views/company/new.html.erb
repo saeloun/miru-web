@@ -8,63 +8,132 @@
 
         <div class="field">
           <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000">Logo</label>
-          <div class="mt-2">
-            <div x-data="showImage()">
-              <div class="relative w-24 h-24 rounded-md border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
-                <div class="flex items-center justify-center">
-                  <label>
-                    <div class="flex flex-col items-center">
-                      <img id="preview" class="absolute ml-1 mt-1 inset-0 w-20 h-20 rounded-md">
-                      <img src="<%= image_url 'plus_icon.svg' %>" class="mt-8">
-                      <div class="opacity-0" accept="image/*" @change="showPreview(event)">
-                        <%= form.file_field "company[logo]" %>
-                      </div>
+          <div x-data="showImage()" class="mt-2 flex">
+            <div class="relative w-24 h-24 rounded-md border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
+              <div class="flex items-center justify-center">
+                <label>
+                  <div class="flex flex-col items-center">
+                    <img id="preview" class="absolute ml-1 mt-1 inset-0 w-20 h-20 rounded-md">
+                    <img id="add-logo" src="<%= image_url 'plus_icon.svg' %>" class="mt-8">
+                    <div class="opacity-0" accept="image/*" @change="showPreview(event)" >
+                      <%= form.file_field :logo, class: "w-full" %>
                     </div>
-                  </label>
-                </div>
+                  </div>
+                </label>
               </div>
+            </div>
+            <img id="clear-preview" src="<%= image_url 'delete_image_button.svg' %>" class="self-baseline hidden" @click="clearPreview(event)">
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="field">
+            <div class="field_with_errors">
+              <%= form.label :company, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+              <%= error_message_on(form.object, :name) %>
+            </div>
+            <div class="mt-1">
+              <%= form.text_field :name, autofocus: true, class: "#{error_message_class(form.object, :name)}" %>
             </div>
           </div>
         </div>
 
-        <%= form.label :company, class: "text-xs text-miru-black-1000" %>
-        <%= form.text_field "company[name]", class: "p-2 w-full bg-miru-gray-200 text-sm" %><br>
-        <%= form.label :address, class: "text-xs text-miru-black-1000" %>
-        <%= form.text_area "company[address]", class: "p-2 w-full bg-miru-gray-200 text-sm" %><br>
-        <%= form.label :business_phone, class: "text-xs text-miru-black-1000" %>
-        <%= form.text_field "company[business_phone]", class: "p-2 w-full bg-miru-gray-200 text-sm" %><br>
-        <%= form.label :country, class: "text-xs text-miru-black-1000" %>
-        <select name="company[country]" id="country" class="p-2 w-full bg-miru-gray-200 text-sm">
-          <% ISO3166::Country.pluck(:alpha2, :name).each do |c| %>
-            <option value="<%= c.first %>"><%= c.second %></option>
-          <% end %>
-        </select>
-        <%= form.label :timezone, class: "text-xs text-miru-black-1000" %>
-        <select name="company[timezone]" id="time_zone" class="p-2 w-full bg-miru-gray-200 text-sm">
-          <% TZInfo::Timezone.all_country_zones.each do |t| %>
-            <option value="<%= t.to_s %>"><%= t.to_s %></option>
-          <% end %>
-        </select>
-        <%= form.label :base_currency, class: "text-xs text-miru-black-1000" %>
-        <select name="company[base_currency]" id="base_currency" class="p-2 w-full bg-miru-gray-200 text-sm">
-          <% Money::Currency.table.each do |k, v| %>
-            <option value="<%=v[:iso_code] %>"> <%= v[:name] %> </option>
-          <% end %>
-        </select>
-        <%= form.label :standard_price, class: "text-xs text-miru-black-1000" %>
-        <%= form.number_field "company[standard_price]", class: "p-2 w-full bg-miru-gray-200 text-sm" %><br>
-        <%= form.label :fiscal_year_end, class: "text-xs text-miru-black-1000" %>
-        <select name="company[fiscal_year_end]" id="fiscal_year_end" class="p-2 w-full bg-miru-gray-200 text-sm">
-          <% (1..12).each do |month| %>
-            <option value="<%= Date::MONTHNAMES[month] %>"><%= Date::MONTHNAMES[month] %></option>
-          <% end %>
-        </select>
-        <%= form.label :date_format, class: "text-xs text-miru-black-1000" %>
-        <select name="company[date_format]" id="date_format" class="p-2 w-full bg-miru-gray-200 text-sm">
-          <option value="DD-MM-YYYY">DD-MM-YYYY</option>
-          <option value="MM-DD-YYYY">MM-DD-YYYY</option>
-          <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-        </select>
+        <div class="mt-4">
+          <div class="field">
+            <div class="field_with_errors">
+              <%= form.label :address, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+              <%= error_message_on(form.object, :address) %>
+            </div>
+            <div class="mt-1">
+              <%= form.text_area :address, autofocus: true, class: "#{error_message_class(form.object, :address)}" %>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="field">
+            <div class="field_with_errors">
+              <%= form.label :business_phone, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+              <%= error_message_on(form.object, :business_phone) %>
+            </div>
+            <div class="mt-1">
+              <%= form.text_field :business_phone, autofocus: true, class: "#{error_message_class(form.object, :business_phone)}" %>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="field">
+            <div class="field_with_errors">
+              <%= form.label :country, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+              <%= error_message_on(form.object, :country) %>
+            </div>
+            <div class="mt-1">
+              <%= form.select :country, [[ "Please select", "", { selected: true, disabled: true }]] + ISO3166::Country.pluck(:alpha2, :name).collect { |c| [ c.second, c.first ] }, {}, { autofocus: true, class: "#{error_message_class(form.object, :country)}" } %>
+           </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="field">
+            <div class="field_with_errors">
+              <%= form.label :timezone, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+              <%= error_message_on(form.object, :timezone) %>
+            </div>
+            <div class="mt-1">
+              <%= form.select :timezone, [[ "Please select", "", { selected: true, disabled: true }]] + TZInfo::Timezone.all_country_zones.collect { |t| [ t.to_s ] }, {}, { autofocus: true, class: "#{error_message_class(form.object, :timezone)}" } %>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="field">
+            <div class="field_with_errors">
+              <%= form.label :base_currency, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+              <%= error_message_on(form.object, :base_currency) %>
+            </div>
+            <div class="mt-1">
+              <%= form.select :base_currency, [[ "Please select", "", { selected: true, disabled: true }]] + Money::Currency.table.collect { |k, v| [ v[:name], v[:iso_code] ] }, {}, {autofocus: true, class: "#{error_message_class(form.object, :base_currency)}"} %>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="field">
+            <div class="field_with_errors">
+              <%= form.label :standard_price, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+              <%= error_message_on(form.object, :standard_price) %>
+            </div>
+            <div class="mt-1">
+              <%= form.number_field :standard_price, autofocus: true, class: "#{error_message_class(form.object, :standard_price)}" %>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="field">
+            <div class="field_with_errors">
+              <%= form.label :fiscal_year, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+              <%= error_message_on(form.object, :fiscal_year_end) %>
+            </div>
+            <div class="mt-1">
+              <%= form.select :fiscal_year_end, [[ "Please select", "", { selected: true, disabled: true }], ["January-December", "jan-dec",], ["April-March", "apr-mar"]], {}, {autofocus: true, class: "#{error_message_class(form.object, :fiscal_year_end)}"} %>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="field">
+            <div class="field_with_errors">
+              <%= form.label :date_format, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+              <%= error_message_on(form.object, :date_format) %>
+            </div>
+            <div class="mt-1">
+              <%= form.select :date_format, [[ "Please select", "", { selected: true, disabled: true }], ["DD-MM-YYYY"], ["MM-DD-YYYY"], ["YYYY-MM-DD"]], {}, {autofocus: true, class: "#{error_message_class(form.object, :date_format)}"} %>
+            </div>
+          </div>
+        </div>
+
         <div class="actions">
           <%= form.submit "SAVE ORG DETAILS", class: "mt-5 p-2 w-full bg-indigo-600 font-bold text-white text-base hover:bg-indigo-700 cursor-pointer" %>
         </div>
@@ -82,7 +151,17 @@
           var preview = document.getElementById("preview");
           preview.src = src;
           preview.style.display = "block";
+          document.getElementById("clear-preview").classList.remove("hidden");
+          document.getElementById("add-logo").classList.add("hidden");
         }
+      },
+      clearPreview(event) {
+        var preview = document.getElementById("preview")
+        preview.removeAttribute("src");
+        preview.style.display = 'none';
+        document.getElementById("clear-preview").classList.toggle("hidden");
+        document.getElementById("company_logo").value = "";
+        document.getElementById("add-logo").classList.remove("hidden");
       }
     }
   }
