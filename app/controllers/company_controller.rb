@@ -9,10 +9,10 @@ class CompanyController < ApplicationController
   end
 
   def create
-    company = Company.create(company_params)
-    current_user.company_id = company.id
-    current_user.save!
+    company = Company.new(company_params)
     if company.save
+      current_user.company_id = company.id
+      current_user.save!
       redirect_to root_path
     else
       flash[:error] = "Company creation failed"
@@ -21,18 +21,18 @@ class CompanyController < ApplicationController
   end
 
   def show
-    @company = Company.find(current_user.company_id)
+    @company = current_company
   end
 
   def update
-    @company = Company.find(current_user.company_id)
+    @company = current_company
     if @company.update(company_params)
       redirect_to "/company"
     end
   end
 
   def purge_logo
-    @company = Company.find(current_user.company_id)
+    @company = current_company
     @company.logo.destroy
     redirect_to "/company"
   end
