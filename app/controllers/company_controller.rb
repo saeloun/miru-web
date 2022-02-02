@@ -31,6 +31,8 @@ class CompanyController < ApplicationController
     @company = Company.find(current_user.company_id)
     if @company.update(company_params)
       redirect_to "/company"
+    else
+      render :show, status: :bad_request
     end
   end
 
