@@ -10,7 +10,6 @@
                 Reset Password
               </h2>
               <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
-                <%= render "devise/shared/error_messages", resource: resource %>
                 <%= f.hidden_field :reset_password_token %>
                 <div class="field" x-data="{ show: true }">
                   <%= f.label :password, "New Password", class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
