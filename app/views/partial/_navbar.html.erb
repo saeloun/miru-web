@@ -89,11 +89,11 @@
                 </div>
               </div>
 
-              <div class="block font-bold hover:bg-gray-100 text-miru-dark-purple-600 hover:text-miru-han-purple-1000 flex items-center px-4 py-2 text-base" role="menuitem" tabindex="-1" id="menu-item-0">
+              <div class="block font-bold hover:bg-gray-100 text-miru-dark-purple-600 hover:text-miru-han-purple-1000 flex items-center px-4 py-2 text-base cursor-pointer" role="menuitem" tabindex="-1" id="menu-item-0">
                 <img src="<%= image_url 'setting_icon.svg' %>" class="mr-3 h-5 w-5">
                 <%= link_to t('navbar.settings'), "/profile" %>
               </div>
-              <div class="block font-bold hover:bg-gray-100 text-miru-dark-purple-600 hover:text-miru-han-purple-1000 group flex items-center px-4 py-2 text-base" role="menuitem" tabindex="-1" id="menu-item-0">
+              <div class="block font-bold hover:bg-gray-100 text-miru-dark-purple-600 hover:text-miru-han-purple-1000 group flex items-center px-4 py-2 text-base cursor-pointer" role="menuitem" tabindex="-1" id="menu-item-0">
                 <img src="<%= image_url 'logout_icon.svg' %>" class="mr-3 h-5 w-5">
                 <%= link_to t('navbar.logout'), destroy_user_session_path, method: :delete %>
               </div>
