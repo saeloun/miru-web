@@ -10,7 +10,7 @@ class CompanyController < ApplicationController
   end
 
   def create
-    @company = Company.create(company_params)
+    @company = Company.new(company_params)
     if @company.save
       current_user.company_id = @company.id
       current_user.save!
