@@ -52,10 +52,10 @@ class User < ApplicationRecord
   has_one_attached :avatar
   rolify
 
-  validates :first_name, :last_name,
-    presence: true,
-    format: { with: /\A[a-zA-Z\s]+\z/ },
-    length: { maximum: 50 }
+  # validates :first_name, :last_name,
+  #   presence: true,
+  #   format: { with: /\A[a-zA-Z\s]+\z/ },
+  #   length: { maximum: 50 }
 
   enum state: { active: 0, inactive: 1 }
 

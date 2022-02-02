@@ -4,9 +4,6 @@ class Users::InvitationsController < Devise::InvitationsController
   before_action :configure_permitted_parameters
   after_action :assign_role, only: [:create]
 
-  def show
-  end
-
   protected
     # Permit the new params here.
     def configure_permitted_parameters

@@ -1,16 +1,53 @@
 # frozen_string_literal: true
 
 class TeamController < ApplicationController
+  # after_action :assign_role, only: [:update]
+
   def index
     @teams = current_company.users
   end
 
+  def show
+    @user = User.find(params[:id])
+  end
+
   def update
-    @team =  User.find(params[:id])
-    @team.state = 1
-    @team.save!
+    @user = User.find(params[:id])
+    if @user.invitation_accepted?
+      if @user.update(user_params)
+        redirect_to "/team"
+      end
+    else
+      @user.skip_reconfirmation!
+      if @user.email != (user_params[:email])
+        if @user.update(user_params)
+          @user.invite!
+          redirect_to "/team"
+        end
+      else
+        if @user.update(user_params)
+          redirect_to "/team"
+        end
+      end
+    end
+  end
+
+  def destory
+    @user = User.find(params[:id])
+    @user.state = User.states[:inactive]
+    @user.save!
     redirect_to "/team"
   end
 
   private
+    def user_params
+      params.require(:user).permit(:first_name, :last_name, :email, :confirmation_token)
+    end
+
+  # def assign_role
+  #   @user.remove_role
+  #   if @user.errors.empty?
+  #     @user.add_role(params[:user][:roles].downcase.to_sym)
+  #   end
+  # end
 end
