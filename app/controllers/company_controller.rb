@@ -3,13 +3,14 @@
 class CompanyController < ApplicationController
   skip_before_action :validate_company!, only: [:create, :new]
   before_action :company_validation, only: [:new, :create]
+  before_action :load_company!, only: [:show, :update, :purge_logo]
 
   def new
     render :new
   end
 
   def create
-    company = Company.create(company_params)
+    company = Company.new(company_params)
     if company.save
       current_user.company_id = company.id
       current_user.save!
@@ -21,18 +22,15 @@ class CompanyController < ApplicationController
   end
 
   def show
-    @company = Company.find(current_user.company_id)
   end
 
   def update
-    @company = Company.find(current_user.company_id)
     if @company.update(company_params)
       redirect_to "/company"
     end
   end
 
   def purge_logo
-    @company = Company.find(current_user.company_id)
     @company.logo.destroy
     redirect_to "/company"
   end
@@ -47,5 +45,9 @@ class CompanyController < ApplicationController
         flash[:error] = "You already have a company"
         redirect_to root_path
       end
+    end
+
+    def load_company!
+      @company = current_company
     end
 end
