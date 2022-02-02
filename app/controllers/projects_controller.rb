@@ -2,10 +2,7 @@
 
 class ProjectsController < ApplicationController
   def index
-    if params["query"]
-      @projects = Project.where("name LIKE ?", "%#{params['query']}%")
-    else
-      @projects = Project.all
-    end
+    @q = Project.ransack(params[:q])
+    @projects = @q.result(distinct: true)
   end
 end
