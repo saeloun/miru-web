@@ -5,6 +5,10 @@ require "rails_helper"
 RSpec.describe User, type: :model do
   let(:user) { build(:user) }
 
+  describe "Associations" do
+    it { is_expected.to have_many(:identities).dependent(:delete_all) }
+  end
+
   it "is valid with valid attributes" do
     expect(user).to be_valid
   end

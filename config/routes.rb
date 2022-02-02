@@ -1,10 +1,18 @@
 # frozen_string_literal: true
 
+class ActionDispatch::Routing::Mapper
+  def draw(routes_name)
+    instance_eval(File.read(Rails.root.join("config/routes/#{routes_name}.rb")))
+  end
+end
+
 Rails.application.routes.draw do
   devise_for :users, controllers: {
     registrations: "users/registrations",
     sessions: "users/sessions",
-    invitations: "users/invitations"
+    passwords: "users/passwords",
+    invitations: "users/invitations",
+    omniauth_callbacks: "users/omniauth_callbacks"
   }
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
@@ -14,6 +22,7 @@ Rails.application.routes.draw do
   end
 
   root to: "root#index"
+  draw(:internal_api)
   resources :dashboard, only: [:index]
 
   # get "*path", to: "home#index", via: :all
@@ -21,7 +30,9 @@ Rails.application.routes.draw do
     delete :purge_logo
   end
   resources :time_tracking, only: [:index], path: "time-tracking"
+  resources :clients, only: [:index]
   resources :team, only: [:index, :update, :destroy]
+  resources :projects, only: [:index]
 
   devise_scope :user do
     get "profile", to: "users/registrations#edit"

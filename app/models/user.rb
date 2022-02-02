@@ -47,6 +47,7 @@
 class User < ApplicationRecord
   belongs_to :company, optional: true
   has_many :timesheet_entries
+  has_many :identities, dependent: :delete_all
   has_one_attached :avatar
   rolify
 
@@ -59,10 +60,15 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :invitable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
-         :trackable, :confirmable
+         :trackable, :confirmable,
+         :omniauthable, omniauth_providers: [:google_oauth2]
 
 
   def primary_role
     roles.first.name
+  end
+
+  def full_name
+    "#{first_name} #{last_name}"
   end
 end

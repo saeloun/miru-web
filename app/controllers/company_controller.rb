@@ -24,11 +24,11 @@ class CompanyController < ApplicationController
   end
 
   def show
-    @company = Company.find(current_user.company_id)
+    @company = current_company
   end
 
   def update
-    @company = Company.find(current_user.company_id)
+    @company = current_company
     if @company.update(company_params)
       redirect_to "/company"
     else
@@ -37,7 +37,7 @@ class CompanyController < ApplicationController
   end
 
   def purge_logo
-    @company = Company.find(current_user.company_id)
+    @company = current_company
     @company.logo.destroy
     redirect_to "/company"
   end
