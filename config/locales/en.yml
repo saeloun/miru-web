@@ -30,4 +30,15 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  navbar:
+    clients: Clients
+    dashboard: Dashboard
+    invoice: Invoice
+    logout: Logout
+    profile: Profile
+    projects: Projects
+    report: Report
+    settings: Settings
+    team: Team
+    time_tracking: Time Tracking
+    view_notifications: View Notifications

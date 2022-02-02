@@ -2,7 +2,7 @@
 
 class TeamController < ApplicationController
   def index
-    @teams = current_user.company.users
+    @teams = current_company.users
   end
 
   def update

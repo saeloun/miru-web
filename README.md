@@ -98,6 +98,3 @@ add `EMAIL_DELIVERY_METHOD='letter_opener_web'` to `.env`)
 | Owner    | vipul@example.com   | password |
 | Admin    | supriya@example.com | password |
 | Employee | akhil@example.com   | password |
-
-### Temp change to trigger deployment
-Hi
