@@ -14,20 +14,22 @@
                   <div class="field">
                     <div class="field_with_errors">
                       <label class="tracking-wider block text-xs font-semibold text-miru-dark-purple-1000">Name</label>
-                      <%=
-                        if f.object.errors.include?(:first_name)
-                          error_message_on(f.object, :first_name)
-                        else
-                          error_message_on(f.object, :last_name)
-                        end
-                      %>
+                      <% if f.object.errors.include?(:first_name) %>
+                        <div class="tracking-wider block text-xs font-semibold text-red-600">
+                          <%= error_message_on(f.object, :first_name) %>
+                        </div>
+                      <% else %>
+                        <div class="tracking-wider block text-xs font-semibold text-red-600">
+                          <%= error_message_on(f.object, :last_name) %>
+                        </div>
+                      <% end %>
                     </div>
                     <div class="mt-1 flex -space-x-px">
                       <div class="mr-4 w-1/2 flex-1 min-w-0">
-                        <%= f.text_field :first_name, autofocus: true, class: "#{error_message_class(f.object, :first_name)}" %>
+                        <%= f.text_field :first_name, autofocus: true, class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :first_name)}" %>
                       </div>
                       <div class="w-1/2 flex-1 min-w-0">
-                        <%= f.text_field :last_name, autofocus: true, class: "#{error_message_class(f.object, :last_name)}" %>
+                        <%= f.text_field :last_name, autofocus: true, class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :last_name)}" %>
                       </div>
                     </div>
                   </div>
@@ -36,10 +38,12 @@
                   <div class="field">
                     <div class="field_with_errors">
                       <%= f.label :email, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
-                      <%= error_message_on(f.object, :email) %>
+                      <div class="tracking-wider block text-xs font-semibold text-red-600">
+                        <%= error_message_on(f.object, :email) %>
+                      </div>
                     </div>
                     <div class="mt-1">
-                      <%= f.text_field :email, autofocus: true, class: "#{error_message_class(f.object, :email)}" %>
+                        <%= f.text_field :email, autofocus: true, class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :email)}" %>
                     </div>
                   </div>
                 </div>
@@ -47,10 +51,12 @@
                   <div class="field" x-data="{ show: true }">
                     <div class="field_with_errors">
                       <%= f.label :password, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
-                      <%= error_message_on(f.object, :password) %>
+                      <div class="tracking-wider block text-xs font-semibold text-red-600">
+                        <%= error_message_on(f.object, :password) %>
+                      </div>
                     </div>
                     <div class="mt-1 relative">
-                      <input name="user[password]" placeholder="" id="user_password" :type="show ? 'password' : 'text'" class="<%= error_message_class(f.object, :password) %>" >
+                      <input name="user[password]" placeholder="" id="user_password" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base <%= error_message_class(f.object, :password) %>" >
                       <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
                         <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
                         <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
@@ -62,10 +68,12 @@
                   <div class="field" x-data="{ show: true }">
                     <div class="field_with_errors">
                       <%= f.label :password_confirmation, 'Confirm Password', class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
-                      <%= error_message_on(f.object, :password_confirmation) %>
+                      <div class="tracking-wider block text-xs font-semibold text-red-600">
+                        <%= error_message_on(f.object, :password_confirmation) %>
+                      </div>
                     </div>
                     <div class="mt-1 relative">
-                      <input name="user[password_confirmation]" placeholder="" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="<%= error_message_class(f.object, :password_confirmation) %>">
+                      <input name="user[password_confirmation]" placeholder="" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base <%= error_message_class(f.object, :password_confirmation) %>">
                       <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
                         <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
                         <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
