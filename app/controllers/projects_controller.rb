@@ -2,7 +2,7 @@
 
 class ProjectsController < ApplicationController
   def index
-    @q = Project.ransack(params[:q])
-    @projects = @q.result(distinct: true)
+    @query = Project.ransack(params[:q])
+    @projects = @query.result(distinct: true)
   end
 end
