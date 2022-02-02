@@ -11,6 +11,8 @@ class ApplicationController < ActionController::Base
 
   private
     def validate_company!
+      return if current_user.nil?
+
       redirect_to new_company_path unless current_company
     end
 end
