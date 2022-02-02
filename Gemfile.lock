@@ -306,6 +306,10 @@ GEM
       zeitwerk (~> 2.5)
     rainbow (3.0.0)
     rake (13.0.6)
+    ransack (2.5.0)
+      activerecord (>= 5.2.4)
+      activesupport (>= 5.2.4)
+      i18n
     react-rails (2.6.1)
       babel-transpiler (>= 0.7.0)
       connection_pool
@@ -456,6 +460,7 @@ DEPENDENCIES
   puma (~> 5.0)
   rack-mini-profiler (>= 2.3.3)
   rails (~> 7.0.1)
+  ransack
   react-rails
   redis (~> 4.0)
   rolify (~> 6.0)
