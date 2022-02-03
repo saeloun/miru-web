@@ -14,18 +14,18 @@ class TeamController < ApplicationController
   def update
     if @user.invitation_accepted?
       if @user.update(user_params)
-        redirect_to "/team"
+        redirect_to team_index_path
       end
     else
       @user.skip_reconfirmation!
       if @user.email != (user_params[:email])
         if @user.update(user_params)
           @user.invite!
-          redirect_to "/team"
+          redirect_to team_index_path
         end
       else
         if @user.update(user_params)
-          redirect_to "/team"
+          redirect_to team_index_path
         end
       end
     end
@@ -43,6 +43,9 @@ class TeamController < ApplicationController
       params.require(:user).permit(:first_name, :last_name, :email, :confirmation_token)
     end
 
+    # def user
+    #   @_user ||= User.find(params[:id])
+    # end
     # def assign_role
     #   @user.remove_role
     #   if @user.errors.empty?
