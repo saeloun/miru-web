@@ -15,10 +15,10 @@ class CompanyController < ApplicationController
       current_user.company_id = @company.id
       current_user.save!
 
-      redirect_to root_path
+      redirect_to root_path, notice: "Company succesfully created"
     else
+      flash.now[:error] = "Company creation failed"
       render :new, status: :bad_request
-      flash[:error] = "Company creation failed"
       Rails.logger.error "DEBUG::COMPANY_CONTROLLER::CREATE"
     end
   end
