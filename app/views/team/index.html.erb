@@ -71,7 +71,8 @@
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
                             <% if !member.unconfirmed_email.blank? %>
-                              <%= member.unconfirmed_email %>
+                              Current Email : <%= member.email %><br/>
+                              Changed Email : <%= member.unconfirmed_email %>
                             <% else %>
                               <%= member.email %>
                             <% end %>
