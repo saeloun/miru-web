@@ -32,7 +32,7 @@ class TeamController < ApplicationController
     end
   end
 
-  def destory
+  def destroy
     @user = User.find(params[:id])
     @user.state = User.states[:inactive]
     @user.save!
