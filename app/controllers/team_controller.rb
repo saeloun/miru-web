@@ -33,8 +33,7 @@ class TeamController < ApplicationController
 
   def destroy
     @user = User.find(params[:id])
-    @user.state = User.states[:inactive]
-    @user.save!
+    @user.discard
     redirect_to "/team"
   end
 

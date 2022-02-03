@@ -31,11 +31,12 @@
 #  invited_by_type        :string
 #  invited_by_id          :integer
 #  invitations_count      :integer          default("0")
-#  state                  :integer          default("0")
+#  discarded_at           :datetime
 #
 # Indexes
 #
 #  index_users_on_company_id            (company_id)
+#  index_users_on_discarded_at          (discarded_at)
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_invitation_token      (invitation_token) UNIQUE
 #  index_users_on_invited_by            (invited_by_type,invited_by_id)
@@ -46,6 +47,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  include Discard::Model
   belongs_to :company, optional: true
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all
@@ -56,8 +58,6 @@ class User < ApplicationRecord
     presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },
     length: { maximum: 50 }
-
-  enum state: { active: 0, inactive: 1 }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable

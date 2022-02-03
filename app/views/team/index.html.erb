@@ -56,8 +56,8 @@
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
-                    <% @teams.each do |member| %>
-                      <% if member.active? %>
+                    <% @teams.kept.each do |member| %>
+                      <%# if member.active? %>
                         <tr>
                           <td class="px-6 py-4 whitespace-nowrap">
                             <%= image_tag user_avatar(member), class: "h-10 w-10 rounded-full" %>
@@ -112,7 +112,7 @@
                           </td>
                         </tr>
                       <% end %>
-                    <% end %>
+                    <%# end %>
                   </tbody>
                 </table>
               </div>
