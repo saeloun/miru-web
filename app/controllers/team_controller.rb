@@ -2,17 +2,16 @@
 
 class TeamController < ApplicationController
   # after_action :assign_role, only: [:update]
+  before_action :set_user, only: %i[show update]
 
   def index
     @teams = current_company.users
   end
 
   def show
-    @user = User.find(params[:id])
   end
 
   def update
-    @user = User.find(params[:id])
     if @user.invitation_accepted?
       if @user.update(user_params)
         redirect_to "/team"
@@ -44,10 +43,14 @@ class TeamController < ApplicationController
       params.require(:user).permit(:first_name, :last_name, :email, :confirmation_token)
     end
 
-  # def assign_role
-  #   @user.remove_role
-  #   if @user.errors.empty?
-  #     @user.add_role(params[:user][:roles].downcase.to_sym)
-  #   end
-  # end
+    # def assign_role
+    #   @user.remove_role
+    #   if @user.errors.empty?
+    #     @user.add_role(params[:user][:roles].downcase.to_sym)
+    #   end
+    # end
+    #
+    def set_user
+      @user = User.find(params[:id])
+    end
 end
