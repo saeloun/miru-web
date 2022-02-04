@@ -57,7 +57,6 @@
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
                     <% @teams.kept.each do |member| %>
-                      <%# if member.active? %>
                         <tr>
                           <td class="px-6 py-4 whitespace-nowrap">
                             <%= image_tag user_avatar(member), class: "h-10 w-10 rounded-full" %>
@@ -65,12 +64,12 @@
                           <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
                               <div class="text-base font-semibold text-miru-dark-purple-1000">
-                                <%= member.first_name.capitalize %> <%= member.last_name.capitalize %>
+                                <%= member.full_name.capitalize %>
                               </div>
                             </div>
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
-                            <% if !member.unconfirmed_email.blank? %>
+                            <% if member.unconfirmed_email? %>
                               Current Email : <%= member.email %><br/>
                               Changed Email : <%= member.unconfirmed_email %>
                             <% else %>
@@ -82,7 +81,7 @@
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap">
                             <% if current_user.has_any_role?(:owner, :admin) %>
-                              <% if !member.unconfirmed_email.blank? %>
+                              <% if member.unconfirmed_email? %>
                                 <span class="px-2 inline-flex text-xs leading-5 tracking-wider font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
                                   RECONFIRMATION PENDING
                                 </span>
@@ -101,7 +100,6 @@
                             <% if current_user.has_any_role?(:owner, :admin) %>
                               <div type="button">
                                 <%= link_to image_tag("#{image_url 'edit_image_button.svg'}"), team_path(member), method: :get, class: "font-medium h-10 w-10 text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000"%>
-<!--                                <img type="button" src="<%#= image_url 'edit_image_button.svg' %>", team_path(member), method: :put, class="font-medium h-7 w-7 text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000">-->
                               </div>
                             <% end %>
                           </td>
@@ -135,20 +133,6 @@
           </div>
         </div>
       </div>
-
-<!--      <div class="px-4 min-h-screen flex items-center justify-center">-->
-<!--        <div class="overflow-auto" style="background-color: rgba(29, 26, 49,0.6)" x-show="isDialogOpen" :class="{ 'absolute inset-0 z-10 flex items-start justify-center': isDialogOpen }">-->
-<!--          <div class="relative px-4 min-h-screen md:flex md:items-center md:justify-center">-->
-<!--            <div class="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md sm:w-full" x-show="isDialogOpen" @click.away="isDialogOpen = false">-->
-<!--              <div class="flex justify-between items-center mt-6">-->
-<!--                <h6 class="text-base font-extrabold">Update User</h6>-->
-<!--                <button type="button"><img src="<%#= image_url 'close_button.svg' %>"%></button>-->
-<!--              </div>-->
-              <%#= render "team/show"%>
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
 
     </div>
   </div>
