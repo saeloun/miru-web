@@ -32,7 +32,6 @@ class TeamController < ApplicationController
   end
 
   def destroy
-    user = User.find(params[:id])
     user.discard
     redirect_to team_index_path
   end
