@@ -30,4 +30,9 @@ RSpec.describe Company, type: :model do
       expect(company).to_not be_valid
     end
   end
+
+  describe "validations" do
+    it { should validate_presence_of(:business_phone) }
+    it { should validate_presence_of(:base_currency) }
+  end
 end
