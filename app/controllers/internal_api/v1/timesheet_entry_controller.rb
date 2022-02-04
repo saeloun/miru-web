@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::TimesheetEntryController < ApplicationController
+class InternalApi::V1::TimesheetEntryController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index

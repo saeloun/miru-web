@@ -27,8 +27,14 @@ module MiruWeb
 
     config.react.server_renderer_extensions = ["jsx", "js", "tsx", "ts"]
 
+    config.action_view.field_error_proc = Proc.new { |html_tag, instance|
+      "#{html_tag}".html_safe
+    }
+
     if email_delivery_method = ENV["EMAIL_DELIVERY_METHOD"]
       config.action_mailer.delivery_method = email_delivery_method.to_sym
     end
+
+    config.autoload_paths << Rails.root.join("lib")
   end
 end

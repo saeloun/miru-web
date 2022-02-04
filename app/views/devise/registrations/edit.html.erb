@@ -1,5 +1,3 @@
-<%= render "partial/navbar" %>
-
 <div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
   <div class="px-5">
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
@@ -27,6 +25,11 @@
         <div class="flex-1 min-w-0">
           <h2 class="<%= request.path == "/profile" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
             <%= link_to "PROFILE SETTINGS", "/profile" %>
+          </h2>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h2 class="<%= request.path == "/company" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
+            <%= link_to "ORGANIZATION SETTINGS", "/company" %>
           </h2>
         </div>
       </div>
@@ -151,8 +154,8 @@
           </div>
 
     <% end %>
-    <!--      <h3>Cancel my account</h3>-->
-    <!--      <p>Unhappy? <%#= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>-->
+<!--          <h3>Cancel my account</h3>-->
+<!--          <p>Unhappy? <%#= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>-->
     </div>
     </div>
   </div>

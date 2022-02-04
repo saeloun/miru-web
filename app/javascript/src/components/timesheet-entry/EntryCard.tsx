@@ -1,5 +1,5 @@
 import * as React from "react";
-import { minutesToHHMM } from "../helpers/hhmm-parser";
+import { minutesToHHMM } from "../../helpers/hhmm-parser";
 
 interface props {
   id: number;

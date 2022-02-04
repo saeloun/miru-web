@@ -1,6 +1,6 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "api/v1/timesheet-entries";
+axios.defaults.baseURL = "internal_api/v1/timesheet_entry";
 
 const create = async params => axios.post("/", params);
 

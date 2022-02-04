@@ -1,4 +1,3 @@
 <div class="" id="root-page">
-  <%= render "partial/navbar" %>
-  <%= react_component("TimeTracking", clients: @clients, projects: @projects, entries: @entries, prerender: false) %>
+  <%= react_component("timesheet-entry/TimeTracking", clients: @clients, projects: @projects, entries: @entries, prerender: false) %>
 </div>

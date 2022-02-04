@@ -35,6 +35,9 @@ gem "jbuilder", "~> 2.11"
 # Use devise for authentication
 gem "devise", git: "https://github.com/heartcombo/devise", branch: "main"
 
+# Use devise_invitable for inviting users
+gem "devise_invitable", "~> 2.0", ">= 2.0.6"
+
 # Use Redis adapter to run Action Cable in production
 gem "redis", "~> 4.0"
 
@@ -54,7 +57,7 @@ gem "bootsnap", ">= 1.4.4", require: false
 # gem "sassc-rails", "~> 2.1"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+gem "image_processing", ">= 1.2"
 
 # Webpack bundler for rails
 gem "webpacker"
@@ -81,6 +84,9 @@ gem "money"
 # aws storage account
 gem "aws-sdk-s3", require: false
 
+# Ransack gem for advanced searching
+gem "ransack"
+
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
@@ -93,6 +99,7 @@ group :development, :test do
 
   # Use RSpec as the testing framework
   gem "rspec-rails", "~> 5.0", ">= 5.0.2"
+
 
   # Simple one-liner tests for common Rails functionality
   gem "shoulda-matchers", "~> 5.1"
@@ -132,3 +139,7 @@ end
 
 # Role management library with resource scoping
 gem "rolify", "~> 6.0"
+
+# OAuth Gems
+gem "omniauth-google-oauth2", "~> 1.0"
+gem "omniauth-rails_csrf_protection", "~> 1.0"

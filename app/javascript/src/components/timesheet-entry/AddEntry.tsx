@@ -1,8 +1,8 @@
 import * as React from "react";
-import timesheetEntryApi from "../apis/timesheet-entry";
-import { getMonthFromString } from "../helpers/date-parser";
-import { minutesFromHHMM, minutesToHHMM } from "../helpers/hhmm-parser";
-import { getNumberWithOrdinal } from "../helpers/ordinal";
+import timesheetEntryApi from "../../apis/timesheet-entry";
+import { getMonthFromString } from "../../helpers/date-parser";
+import { minutesFromHHMM, minutesToHHMM } from "../../helpers/hhmm-parser";
+import { getNumberWithOrdinal } from "../../helpers/ordinal";
 
 interface props {
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;

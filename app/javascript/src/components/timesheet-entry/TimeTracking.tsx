@@ -3,8 +3,8 @@ import * as dayjs from "dayjs";
 import * as weekday from "dayjs/plugin/weekday";
 import AddEntry from "./AddEntry";
 import EntryCard from "./EntryCard";
-import timesheetEntryApi from "../apis/timesheet-entry";
-import { getNumberWithOrdinal } from "../helpers/ordinal";
+import timesheetEntryApi from "../../apis/timesheet-entry";
+import { getNumberWithOrdinal } from "../../helpers/ordinal";
 
 dayjs.extend(weekday);
 
