@@ -3,6 +3,7 @@ import * as dayjs from "dayjs";
 import * as weekday from "dayjs/plugin/weekday";
 import AddEntry from "./AddEntry";
 import EntryCard from "./EntryCard";
+import timesheetEntryApi from "../apis/timesheet-entry";
 import { getNumberWithOrdinal } from "../helpers/ordinal";
 
 dayjs.extend(weekday);
@@ -13,6 +14,7 @@ dayjs.Ls.en.weekStart = 1;
 interface props {
   clients: client[];
   projects: object;
+  entries: object;
 }
 
 interface client {
@@ -20,28 +22,32 @@ interface client {
   email: string;
 }
 
-const TimeTracking: React.FC<props> = ({ clients, projects }) => {
+const TimeTracking: React.FC<props> = ({ clients, projects, entries }) => {
   const { useState, useEffect } = React;
   const [dayInfo, setDayInfo] = useState([]);
   const [view, setView] = useState("day");
   const [newEntryView, setNewEntryView] = useState(false);
   const [selectDate, setSelectDate] = useState(dayjs().weekday());
   const [weekDay, setWeekDay] = useState(0);
-  const [totalHours] = useState("00:00");
-  const [entryList] = useState([
-    {
-      id: 1,
-      duration: "06:30",
-      notes: "Build components",
-      client: "Saeloun LLC",
-      project: "Miru",
-      date: "Mon 20th Jan"
-    }
-  ]);
+  const [totalHours, setTotalHours] = useState("00:00");
+  const [entryList, setEntryList] = useState(entries);
+  const [selectedFullDate, setSelectedFullDate] = useState(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [editEntryId, setEditEntryId] = useState(0);
 
   useEffect(() => {
     handleWeekInfo();
+    fetchEntries();
   }, [weekDay]);
+
+  useEffect(() => {
+    setSelectedFullDate(
+      dayjs()
+        .weekday(weekDay + selectDate)
+        .format("YYYY-MM-DD")
+    );
+  }, [selectDate, weekDay]);
 
   const handleWeekInfo = () => {
     const weekArr = [];
@@ -50,10 +56,31 @@ const TimeTracking: React.FC<props> = ({ clients, projects }) => {
         .weekday(i + weekDay)
         ["$d"].toString()
         .split(" ");
-
       weekArr.push({ day: day, month: month, date: date, year: year });
     }
     setDayInfo(weekArr);
+  };
+
+  const fetchEntries = async () => {
+    const from = dayjs().weekday(weekDay).format("YYYY-MM-DD");
+    const to = dayjs()
+      .weekday(weekDay + 6)
+      .format("YYYY-MM-DD");
+    if (entryList[from]) return;
+    const res = await timesheetEntryApi.list(from, to);
+    if (res.status >= 200 && res.status < 300) {
+      setEntryList(prevState => ({ ...prevState, ...res.data.entries }));
+    }
+  };
+
+  const handleDeleteEntry = async id => {
+    const res = await timesheetEntryApi.destroy(id);
+    if (!res.data.success) return;
+    setEntryList(pv => {
+      const nv = { ...pv };
+      nv[selectedFullDate] = nv[selectedFullDate].filter(e => e.id !== id);
+      return nv;
+    });
   };
 
   const handleNextWeek = () => {
@@ -152,11 +179,19 @@ const TimeTracking: React.FC<props> = ({ clients, projects }) => {
               ))}
             </div>
           </div>
-          {newEntryView ? (
+          {editEntryId ? (
+            ""
+          ) : newEntryView ? (
             <AddEntry
               setNewEntryView={setNewEntryView}
               clients={clients}
               projects={projects}
+              selectedDateInfo={dayInfo[selectDate]}
+              selectedFullDate={selectedFullDate}
+              setEntryList={setEntryList}
+              entryList={entryList}
+              setEditEntryId={setEditEntryId}
+              editEntryId={editEntryId}
             />
           ) : (
             <button
@@ -172,9 +207,29 @@ const TimeTracking: React.FC<props> = ({ clients, projects }) => {
       ) : (
         <div></div>
       )}
-      {entryList.map(entry => (
-        <EntryCard {...entry} />
-      ))}
+      {entryList[selectedFullDate] &&
+        entryList[selectedFullDate].map((entry, i) =>
+          editEntryId === entry.id ? (
+            <AddEntry
+              setNewEntryView={setNewEntryView}
+              clients={clients}
+              projects={projects}
+              selectedDateInfo={dayInfo[selectDate]}
+              selectedFullDate={selectedFullDate}
+              setEntryList={setEntryList}
+              entryList={entryList}
+              setEditEntryId={setEditEntryId}
+              editEntryId={editEntryId}
+            />
+          ) : (
+            <EntryCard
+              key={i}
+              handleDeleteEntry={handleDeleteEntry}
+              setEditEntryId={setEditEntryId}
+              {...entry}
+            />
+          )
+        )}
     </main>
   );
 };

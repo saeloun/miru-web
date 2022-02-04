@@ -7,7 +7,9 @@ export function minutesFromHHMM(d: string) {
 
 export function minutesToHHMM(t: number) {
   if (isNaN(t)) return "00:00";
-  const h = t / 60;
-  const m = t % 60;
+  let h = (t / 60).toString().split(".")[0];
+  let m = (t % 60).toString();
+  if (h.length === 1) h = `0${h}`;
+  if (m.length === 1) m = `0${m}`;
   return `${h}:${m}`;
 }

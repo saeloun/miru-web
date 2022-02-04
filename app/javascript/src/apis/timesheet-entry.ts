@@ -1,11 +1,15 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "/timesheet-entries";
+axios.defaults.baseURL = "api/v1/timesheet-entries";
 
-const create = params => axios.post(params);
+const create = async params => axios.post("/", params);
 
-const destroy = id => axios.delete(id);
+const list = async (from, to) => axios.get(`?from=${from}&to=${to}`);
 
-const timesheetEntryApi = { create, destroy };
+const update = async (id, payload) => axios.put(`/${id}`, payload);
+
+const destroy = async id => axios.delete(`/${id}`);
+
+const timesheetEntryApi = { list, create, update, destroy };
 
 export default timesheetEntryApi;

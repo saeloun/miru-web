@@ -32,14 +32,14 @@ puts "#{users.size} Users created"
 
 clientData = [
   { name: "Saeloun LLC", email: "contact@saeloun.com" },
-  { name: "Angel Co", email: "hello@angel.co" }
+  { name: "Angel India", email: "hello@angel.co" }
 ]
 
 company.clients.create!(clientData)
 puts "Clients Created"
 
 miru = Client.first.projects.create!(
-  name: "miru",
+  name: "Miru",
   description: "Timesheet app",
   billable: false
 )
@@ -51,3 +51,13 @@ angel_india = Client.second.projects.create!(
 )
 
 puts "Projects Created"
+
+entry_info = {
+  user: User.first,
+  duration: 450,
+  note: "Worked on UI",
+  work_date: Date.today
+}
+miru.timesheet_entries.create!(entry_info,)
+angel_india.timesheet_entries.create!(entry_info)
+puts "Timesheet Entries Created"

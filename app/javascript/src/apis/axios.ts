@@ -5,7 +5,6 @@ import Toastr from "../components/common/Toastr";
 axios.defaults.baseURL = "/api/v1";
 
 interface CommonHeaderProperties extends HeadersDefaults {
-  Authorization: string;
   Accept: string;
   "Content-Type": string;
   "X-CSRF-TOKEN": string;

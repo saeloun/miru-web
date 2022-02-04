@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :clients, only: [:index]
       resources :project, only: [:index]
-      resources :timesheet_entry, only: [:index, :create, :update, :destroy], path: "timesheet-entry"
+      resources :timesheet_entry, only: [:index, :create, :update, :destroy], path: "timesheet-entries"
     end
   end
 
