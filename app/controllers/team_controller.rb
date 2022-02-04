@@ -13,22 +13,17 @@ class TeamController < ApplicationController
 
   def update
     if user.invitation_accepted?
-      if user.update(user_params)
-        redirect_to team_index_path
-      end
+      user.update(user_params)
     else
       user.skip_reconfirmation!
       if user.email != (user_params[:email])
-        if user.update(user_params)
-          user.invite!
-          redirect_to team_index_path
-        end
+        user.update(user_params)
+        user.invite!
       else
-        if user.update(user_params)
-          redirect_to team_index_path
-        end
+        user.update(user_params)
       end
     end
+    redirect_to team_index_path
   end
 
   def destroy
