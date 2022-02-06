@@ -58,60 +58,8 @@
                   </thead>
                   <tbody id="myTable" class="bg-white divide-y divide-gray-200">
                     <% @teams.kept.each do |member| %>
-                        <tr>
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            <%= image_tag user_avatar(member), class: "h-10 w-10 rounded-full" %>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                              <div class="text-base font-semibold text-miru-dark-purple-1000">
-                                <%= member.full_name.capitalize %>
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
-                            <% if member.unconfirmed_email? %>
-                              Current Email : <%= member.email %><br/>
-                              Changed Email : <%= member.unconfirmed_email %>
-                            <% else %>
-                              <%= member.email %>
-                            <% end %>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
-                            <%= member.primary_role.titlecase %>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap">
-                            <% if current_user.has_any_role?(:owner, :admin) %>
-                              <% if member.unconfirmed_email? %>
-                                <span class="px-2 inline-flex text-xs leading-5 tracking-wider font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
-                                  RECONFIRMATION PENDING
-                                </span>
-                              <% else %>
-                                <% unless member.invitation_accepted? %>
-                                  <% if (member.id != current_user.id) %>
-                                  <span class="px-2 inline-flex text-xs leading-5 tracking-wider font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
-                                    INVITATION PENDING
-                                  </span>
-                                  <% end %>
-                                <% end %>
-                              <% end %>
-                            <% end %>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <% if current_user.has_any_role?(:owner, :admin) %>
-<!--                              <div type="button">-->
-                                <%#= link_to image_tag("#{image_url 'edit_image_button.svg'}"), team_path(member), method: :get, class: "font-medium h-10 w-10 text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000"%>
-<!--                              </div>-->
-                              <button onclick="openModal('another-modal')">
-                                Edit
-                              </button>
-                            <% end %>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <% if current_user.has_any_role?(:owner, :admin) %>
-                              <%= link_to image_tag("#{image_url 'delete_image_button.svg'}"),team_path(member), method: :delete, class: "font-medium h-10 w-10 text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000"%>
-                            <% end %>
-                          </td>
+                        <tr id="member-<%= member.id %>">
+                          <%= render partial: "display", locals: { member: member } %>
                         </tr>
                     <% end %>
                   </tbody>
@@ -121,20 +69,6 @@
           </div>
         </div>
       </div>
-
-<!--      <div class="px-4 min-h-screen flex items-center justify-center">-->
-<!--        <div class="overflow-auto" style="background-color: rgba(29, 26, 49,0.6)" x-show="isDialogOpen" :class="{ 'absolute inset-0 z-10 flex items-start justify-center': isDialogOpen }">-->
-<!--          <div class="relative px-4 min-h-screen md:flex md:items-center md:justify-center">-->
-<!--          <div class="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md sm:w-full" x-show="isDialogOpen" @click.away="isDialogOpen = false">-->
-<!--            <div class="flex justify-between items-center mt-6">-->
-<!--              <h6 class="text-base font-extrabold">Create New User</h6>-->
-<!--              <button type="button" @click="isDialogOpen = false"><img src="<%#= image_url 'close_button.svg' %>"%></button>-->
-<!--            </div>-->
-            <%#= render "devise/invitations/new"%>
-<!--          </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
 
       <!--Modal 1-->
       <div onclick="modalClose('main-modal')">
@@ -157,7 +91,6 @@
       <!--Modal 1 End-->
 
       <!--Modal 2-->
-      <div onclick="modalClose('another-modal')">
         <div class="px-5 another-modal fixed w-full inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster" style="background-color: rgba(29, 26, 49,0.6)">
           <div class="shadow-lg modal-container bg-white w-full sm:w-4/12 md:max-w-11/12 mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
             <div class="modal-content py-4 text-left px-3">
@@ -167,13 +100,11 @@
                   <img src="<%= image_url 'close_button.svg' %>">
                 </div>
               </div>
-              <div class="mb-3 mx-3 flex justify-center">
-                <%= render "devise/invitations/new"%>
+              <div id="status-modal" class="mb-3 mx-3 flex justify-center">
               </div>
             </div>
           </div>
         </div>
-      </div>
       <!--Modal 2 End-->
 
     </div>

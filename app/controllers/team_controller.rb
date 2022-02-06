@@ -7,7 +7,7 @@ class TeamController < ApplicationController
     @teams = current_company.users
   end
 
-  def show
+  def edit
     @user = user
   end
 
