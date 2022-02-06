@@ -66,7 +66,6 @@ class User < ApplicationRecord
          :trackable, :confirmable,
          :omniauthable, omniauth_providers: [:google_oauth2]
 
-
   def primary_role
     roles.first.name
   end
