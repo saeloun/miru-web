@@ -7,4 +7,11 @@ $(document).ready(function () {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
     });
   });
+  $("#clearSearch").click(function () {
+    $("#myInput").val("");
+    const value = $("#myInput").val();
+    $("#myTable tr").filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    });
+  });
 });
