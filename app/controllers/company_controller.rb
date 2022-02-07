@@ -31,7 +31,7 @@ class CompanyController < ApplicationController
     @company = current_company
     if @company.update(company_params)
       redirect_to "/company"
-      flash[:notice] = "Company successfully updated"
+      flash[:notice] = "Changes saved successfully"
     else
       render :show, status: :bad_request
     end
