@@ -50,6 +50,6 @@ en:
   company:
     create:
       failure: "Company creation failed"
-      success: "Company successfully created"
+      success: "Company created successfully"
     update:
       success: "Changes saved successfully"
