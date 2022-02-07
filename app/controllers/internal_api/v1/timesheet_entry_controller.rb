@@ -25,7 +25,6 @@ class InternalApi::V1::TimesheetEntryController < ApplicationController
   end
 
   def update
-    timesheet_entry = TimesheetEntry.find(params[:id])
     project = Project.find_by(name: params[:project_name])
     timesheet_entry.project = project
     if timesheet_entry.update(timesheet_entry_params)
@@ -36,7 +35,6 @@ class InternalApi::V1::TimesheetEntryController < ApplicationController
   end
 
   def destroy
-    timesheet_entry = TimesheetEntry.find(params[:id])
     if timesheet_entry.destroy
       render json: { success: true }
     else
@@ -46,6 +44,10 @@ class InternalApi::V1::TimesheetEntryController < ApplicationController
 
 
   private
+    def timesheet_entry
+      @timesheet_entry ||= TimesheetEntry.find(params[:id])
+    end
+
     def timesheet_entry_params
       params.require(:timesheet_entry).permit(:duration, :work_date, :note)
     end
