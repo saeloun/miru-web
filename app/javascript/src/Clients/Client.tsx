@@ -1,5 +1,5 @@
 import * as React from "react";
-import { IClient } from "apis/clients";
+import { IClient } from "../apis/clients";
 
 const Client = ({
   id,
