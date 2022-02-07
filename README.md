@@ -60,15 +60,16 @@ cp .env.example .env
    the user is `root` and password is `password`, change the variable as
    `DATABASE_URL="postgres://root:password@localhost/miru_web?encoding=utf8&pool=5&timeout=5000"`
 
-10. Run `bin/rails db:create RAILS_ENV=development` to create the database
-11. Run `bin/rails db:migrate RAILS_ENV=development` for migrations
-12. Run app in local env
+10. Update `APP_BASE_URL` in `.env` to `localhost:3000`
+11. Run `bin/rails db:create RAILS_ENV=development` to create the database
+12. Run `bin/rails db:migrate RAILS_ENV=development` for migrations
+13. Run app in local env
 
 ```
 foreman start -f Procfile.dev
 ```
 
-13. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
+14. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
 
 ### To receive the emails in non-production apps.
 
