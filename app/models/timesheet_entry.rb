@@ -31,6 +31,14 @@ class TimesheetEntry < ApplicationRecord
   validates :duration, :note, :work_date, :bill_status, presence: true
   validates :duration, numericality: { less_than_or_equal_to: 1440.0, greater_than_or_equal_to: 0.0 }
 
+  def is_admin?
+    current_user.has_role?(:admin) || current_user.has_role?(:owner)
+  end
+
+  def self.during(from, to)
+    where(work_date: from..to).order(work_date: :desc)
+  end
+
   def formatted_entry
     {
       id: id,
