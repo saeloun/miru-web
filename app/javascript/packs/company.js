@@ -2,15 +2,14 @@ window.showImage = function () {
   return {
     showPreview (event) {
       if (event.target.files.length > 0) {
-        const src = URL.createObjectURL(event.target.files[0]);
         const preview = document.getElementById("preview");
-        preview.src = src;
+        preview.src = URL.createObjectURL(event.target.files[0]);
         preview.style.display = "block";
         document.getElementById("clear-preview").classList.remove("hidden");
         document.getElementById("add-logo").classList.add("hidden");
       }
     },
-    clearPreview (event) {
+    clearPreview () {
       const preview = document.getElementById("preview");
       preview.removeAttribute("src");
       preview.style.display = "none";
