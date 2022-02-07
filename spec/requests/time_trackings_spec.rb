@@ -12,14 +12,14 @@ timesheet_entry = {
 }
 
 RSpec.describe "TimesheetEntry", type: :request do
-  let (:company)  { create(:company) }
-  let (:user) { create(:user, company: company) }
-  user.add_role(:admin)
-  let (:client)  { create(:client, company: company) }
-  let (:project)  { create(:project, client: client) }
+  let! (:company)  { create(:company) }
+  let! (:user) { create(:user, company: company) }
+  let! (:client)  { create(:client, company: company) }
+  let! (:project)  { create(:project, client: client) }
 
   context "when user is authenticated" do
     it "creates a timesheet entry" do
+      user.add_role(:admin)
       sign_in user
       post PATH, params: { project_name: "Miru",
         timesheet_entry: timesheet_entry

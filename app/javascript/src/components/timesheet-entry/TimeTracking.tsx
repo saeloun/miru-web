@@ -46,8 +46,11 @@ const TimeTracking: React.FC<props> = ({
   useEffect(() => {
     handleWeekInfo();
     fetchEntries();
-    calculateTotalHours();
   }, [weekDay]);
+
+  useEffect(() => {
+    calculateTotalHours();
+  }, [weekDay, entryList]);
 
   useEffect(() => {
     setSelectedFullDate(
@@ -93,11 +96,16 @@ const TimeTracking: React.FC<props> = ({
 
   const calculateTotalHours = () => {
     let total = 0;
-    Object.keys(entryList).forEach(date => {
-      entryList[date].forEach(entry => {
-        total += entry.duration;
-      });
-    });
+    for (let i = 0; i < 7; i++) {
+      const day = dayjs()
+        .weekday(i + weekDay)
+        .format("YYYY-MM-DD");
+      if (entryList[day]) {
+        entryList[day].forEach(e => {
+          total += e.duration;
+        });
+      }
+    }
     setTotalHours(minutesToHHMM(total));
   };
 
