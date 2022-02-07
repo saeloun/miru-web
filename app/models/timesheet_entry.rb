@@ -29,7 +29,7 @@ class TimesheetEntry < ApplicationRecord
   before_validation :insure_bill_status_is_set
 
   validates :duration, :note, :work_date, :bill_status, presence: true
-  validates :duration, numericality: { less_than_or_equal_to: 1440.0, greater_than_or_equal_to: 0.0 }
+  validates :duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
 
   def is_admin?
     current_user.has_role?(:admin) || current_user.has_role?(:owner)
