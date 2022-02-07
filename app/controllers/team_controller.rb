@@ -6,7 +6,6 @@ class TeamController < ApplicationController
   def index
     @query = current_company.users.ransack(params[:q])
     @teams = @query.result(distinct: true)
-    # @teams = current_company.users
   end
 
   def edit
@@ -17,7 +16,7 @@ class TeamController < ApplicationController
     user.skip_reconfirmation! unless user.invitation_accepted?
     user_email = user.email
     user.update(user_params)
-    user.invite! if user_email != (user_params[:email])
+    user.invite! if user_email != (user_params[:email]) && !user.invitation_accepted?
     redirect_to team_index_path
   end
 
