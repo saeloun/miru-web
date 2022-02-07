@@ -1,3 +1,4 @@
+/* eslint-disable space-before-function-paren */
 export function minutesFromHHMM(d: string) {
   if (!d) return "";
   const [h, m] = d.split(":");

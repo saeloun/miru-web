@@ -1,3 +1,4 @@
+/* eslint-disable space-before-function-paren */
 export function getMonthFromString(mon) {
   const d = Date.parse(mon + "1, 2012");
   if (!isNaN(d)) {

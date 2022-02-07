@@ -1,3 +1,4 @@
+/* eslint-disable space-before-function-paren */
 function getNumberWithOrdinal(n: number) {
   const s = ["th", "st", "nd", "rd"],
     v = n % 100;
