@@ -4,6 +4,7 @@ import * as weekday from "dayjs/plugin/weekday";
 import AddEntry from "./AddEntry";
 import EntryCard from "./EntryCard";
 import timesheetEntryApi from "../../apis/timesheet-entry";
+import { minutesToHHMM } from "../../helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "../../helpers/ordinal";
 
 dayjs.extend(weekday);
@@ -39,7 +40,8 @@ const TimeTracking: React.FC<props> = ({ clients, projects, entries }) => {
   useEffect(() => {
     handleWeekInfo();
     fetchEntries();
-  }, [weekDay]);
+    calculateTotalHours();
+  }, [weekDay, entryList]);
 
   useEffect(() => {
     setSelectedFullDate(
@@ -81,6 +83,16 @@ const TimeTracking: React.FC<props> = ({ clients, projects, entries }) => {
       nv[selectedFullDate] = nv[selectedFullDate].filter(e => e.id !== id);
       return nv;
     });
+  };
+
+  const calculateTotalHours = () => {
+    let total = 0;
+    Object.keys(entryList).forEach(date => {
+      entryList[date].forEach(entry => {
+        total += entry.duration;
+      });
+    });
+    setTotalHours(minutesToHHMM(total));
   };
 
   const handleNextWeek = () => {

@@ -10,10 +10,11 @@
     "target": "es5",
     "jsx": "react",
     "noEmit": true,
+    "baseUrl": "./",
     "paths": {
-      "components/*": ["./app/javascript/src/components/*"],
-      "apis/*": ["./app/javascript/src/apis/*"],
-      "helpers/*": ["./app/javascript/src/helpers/*"],
+      "@components/*": ["app/javascript/src/components/*"],
+      "@apis/*": ["./app/javascript/src/apis/*"],
+      "@helpers/*": ["./app/javascript/src/helpers/*"],
     }
   },
   "exclude": [
