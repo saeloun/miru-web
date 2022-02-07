@@ -16,6 +16,7 @@ interface props {
   clients: client[];
   projects: object;
   entries: object;
+  isAdmin: boolean;
 }
 
 interface client {
@@ -23,7 +24,12 @@ interface client {
   email: string;
 }
 
-const TimeTracking: React.FC<props> = ({ clients, projects, entries }) => {
+const TimeTracking: React.FC<props> = ({
+  clients,
+  projects,
+  entries,
+  isAdmin
+}) => {
   const { useState, useEffect } = React;
   const [dayInfo, setDayInfo] = useState([]);
   const [view, setView] = useState("day");
@@ -120,11 +126,15 @@ const TimeTracking: React.FC<props> = ({ clients, projects, entries }) => {
             </button>
           ))}
         </nav>
-        <select className="lg:w-25 lg:h-4 items-center">
-          <option className="text-miru-han-purple-1000" value="Jon Smith">
-            Jon Smith
-          </option>
-        </select>
+        <div>
+          {isAdmin && (
+            <select className="lg:w-25 lg:h-4 items-center ">
+              <option className="text-miru-han-purple-1000" value="Jon Smith">
+                Jon Smith
+              </option>
+            </select>
+          )}
+        </div>
       </div>
       {view === "day" ? (
         <div>
