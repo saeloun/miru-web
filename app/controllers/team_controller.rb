@@ -4,7 +4,9 @@ class TeamController < ApplicationController
   after_action :assign_role, only: [:update]
 
   def index
-    @teams = current_company.users
+    @query = current_company.users.ransack(params[:q])
+    @teams = @query.result(distinct: true)
+    # @teams = current_company.users
   end
 
   def edit
@@ -12,17 +14,10 @@ class TeamController < ApplicationController
   end
 
   def update
-    if user.invitation_accepted?
-      user.update(user_params)
-    else
-      user.skip_reconfirmation!
-      if user.email != (user_params[:email])
-        user.update(user_params)
-        user.invite!
-      else
-        user.update(user_params)
-      end
-    end
+    user.skip_reconfirmation! unless user.invitation_accepted?
+    user_email = user.email
+    user.update(user_params)
+    user.invite! if user_email != (user_params[:email])
     redirect_to team_index_path
   end
 
