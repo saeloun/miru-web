@@ -53,12 +53,9 @@ const AddEntry: React.FC<props> = ({
 
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let v = e.target.value;
-    if (v.length > 5) v = v.slice(0, 5);
     let [hh, mm] = v.split(":");
     if (Number(hh) > 24) hh = "00";
     if (Number(mm) > 59) mm = "00";
-    if (hh.length === 1) hh = `0${hh}`;
-    if (mm.length === 1) mm = `0${mm}`;
     v = `${hh}:${mm}`;
     setDuration(v);
   };

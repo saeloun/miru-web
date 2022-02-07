@@ -3,11 +3,7 @@
 class InternalApi::V1::TimesheetEntryController < ApplicationController
   include Timesheet
 
-  attr_accessor :timesheet_entry, :project
   skip_before_action :verify_authenticity_token
-  before_action :set_timesheet_entry, only: [:update, :destroy]
-  before_action :set_project, only: [:create, :update]
-  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   def index
     timesheet_entries = current_user.timesheet_entries.during(params[:from], params[:to])
@@ -43,19 +39,15 @@ class InternalApi::V1::TimesheetEntryController < ApplicationController
   end
 
   private
-    def set_project
-      @project = Project.find_by(name: params[:project_name])
+    def project
+      project ||= Project.find_by!(name: params[:project_name])
     end
 
-    def set_timesheet_entry
-      @timesheet_entry ||= TimesheetEntry.find(params[:id])
+    def timesheet_entry
+      timesheet_entry ||= TimesheetEntry.find(params[:id])
     end
 
     def timesheet_entry_params
       params.require(:timesheet_entry).permit(:project_id, :duration, :work_date, :note)
-    end
-
-    def record_not_found
-      render json: { success: false, message: "Record not found" }
     end
 end

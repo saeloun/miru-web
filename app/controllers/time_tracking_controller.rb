@@ -16,6 +16,5 @@ class TimeTrackingController < ApplicationController
       Date.today.end_of_week
     )
     @entries = formatted_entries_by_date(timesheet_entries)
-    render
   end
 end
