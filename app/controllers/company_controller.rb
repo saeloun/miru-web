@@ -15,9 +15,9 @@ class CompanyController < ApplicationController
       current_user.company_id = @company.id
       current_user.save!
 
-      redirect_to root_path, notice: "Company succesfully created"
+      redirect_to root_path, notice: t(".success")
     else
-      flash.now[:error] = "Company creation failed"
+      flash.now[:error] = t(".failure")
       render :new, status: :bad_request
       Rails.logger.error "DEBUG::COMPANY_CONTROLLER::CREATE"
     end
@@ -31,7 +31,7 @@ class CompanyController < ApplicationController
     @company = current_company
     if @company.update(company_params)
       redirect_to "/company"
-      flash[:notice] = "Changes saved successfully"
+      flash[:notice] = t(".success")
     else
       render :show, status: :bad_request
     end
