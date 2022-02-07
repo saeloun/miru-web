@@ -7,6 +7,7 @@ class InternalApi::V1::TimesheetEntryController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :set_timesheet_entry, only: [:update, :destroy]
   before_action :set_project, only: [:create, :update]
+  before_action :print_params
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   def index
@@ -43,6 +44,10 @@ class InternalApi::V1::TimesheetEntryController < ApplicationController
   end
 
   private
+    def print_params
+      puts params
+    end
+
     def set_project
       @project = Project.find_by(name: params[:project_name])
     end
