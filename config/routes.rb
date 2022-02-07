@@ -34,11 +34,6 @@ Rails.application.routes.draw do
   resources :team, only: [:index, :update, :destroy]
   resources :projects, only: [:index]
 
-  namespace :api, defaults: { format: "json" } do
-    namespace :v1 do
-    end
-  end
-
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
