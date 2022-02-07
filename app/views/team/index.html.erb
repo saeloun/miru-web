@@ -71,19 +71,17 @@
       </div>
 
       <!--Modal 1-->
-      <div onclick="modalClose('main-modal')">
-        <div class="px-5 main-modal fixed w-full inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster" style="background-color: rgba(29, 26, 49,0.6)">
-          <div class="shadow-lg modal-container bg-white w-full sm:w-4/12 md:max-w-11/12 mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
-            <div class="modal-content py-4 text-left px-3">
-              <div class="flex justify-between items-center mx-3">
-                <h6 class="text-base font-extrabold">Create New User</h6>
-                <div class="modal-close cursor-pointer z-50" onclick="modalClose('main-modal')">
-                  <img src="<%= image_url 'close_button.svg' %>">
-                </div>
+      <div class="px-5 main-modal fixed w-full inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster" style="background-color: rgba(29, 26, 49,0.6)">
+        <div class="shadow-lg modal-container bg-white w-full sm:w-4/12 md:max-w-11/12 mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
+          <div class="modal-content py-4 text-left px-3">
+            <div class="flex justify-between items-center mx-3">
+              <h6 class="text-base font-extrabold">Create New User</h6>
+              <div class="modal-close cursor-pointer z-50" onclick="modalClose('main-modal')">
+                <img src="<%= image_url 'close_button.svg' %>">
               </div>
-              <div class="mb-3 mx-3 flex justify-center">
-                <%= render "devise/invitations/new"%>
-              </div>
+            </div>
+            <div class="mb-3 mx-3 flex justify-center">
+              <%= render "devise/invitations/new"%>
             </div>
           </div>
         </div>
