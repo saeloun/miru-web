@@ -58,7 +58,6 @@
   "lint-staged": {
     "app/javascript/**/*.{js,json,ts,tsx}": [
       "prettier --write",
-      "eslint --fix",
       "git add"
     ],
     "./**/*.rb": [

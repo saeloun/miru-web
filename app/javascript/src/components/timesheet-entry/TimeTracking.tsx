@@ -47,7 +47,7 @@ const TimeTracking: React.FC<props> = ({
     handleWeekInfo();
     fetchEntries();
     calculateTotalHours();
-  }, [weekDay, entryList]);
+  }, [weekDay]);
 
   useEffect(() => {
     setSelectedFullDate(

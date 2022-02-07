@@ -14,6 +14,7 @@ timesheet_entry = {
 RSpec.describe "TimesheetEntry", type: :request do
   let (:company)  { create(:company) }
   let (:user) { create(:user, company: company) }
+  user.add_role(:admin)
   let (:client)  { create(:client, company: company) }
   let (:project)  { create(:project, client: client) }
 
