@@ -1,3 +1,4 @@
+/* eslint-disable no-unexpected-multiline */
 import * as React from "react";
 import * as dayjs from "dayjs";
 import * as weekday from "dayjs/plugin/weekday";
@@ -65,10 +66,7 @@ const TimeTracking: React.FC<props> = ({
     for (let i = 0; i < 7; i++) {
       const [day, month, date, year] = dayjs()
         .weekday(i + weekDay)
-        [
-          // eslint-disable-next-line no-unexpected-multiline
-          "$d"
-        ].toString()
+        ["$d"].toString()
         .split(" ");
       weekArr.push({ day: day, month: month, date: date, year: year });
     }
