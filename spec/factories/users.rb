@@ -6,5 +6,6 @@ FactoryBot.define do
     last_name { Faker::Name.last_name.gsub(/\W/, "") }
     email { Faker::Internet.safe_email }
     password { Faker::Internet.password }
+    confirmed_at { Date.today }
   end
 end

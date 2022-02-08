@@ -16,6 +16,7 @@ class CompanyController < ApplicationController
       redirect_to root_path
     else
       flash[:error] = "Company creation failed"
+      render :new, status: :unprocessable_entity
       Rails.logger.error "DEBUG::COMPANY_CONTROLLER::CREATE"
     end
   end
