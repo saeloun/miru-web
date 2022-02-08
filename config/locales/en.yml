@@ -39,7 +39,7 @@ en:
     projects: Projects
     report: Report
     settings: Settings
-    team: Teamenvi
+    team: Team
     time_tracking: Time Tracking
     view_notifications: View Notifications
   project:
@@ -47,3 +47,12 @@ en:
     hours_logged: HOURS LOGGED
     new_project: NEW PROJECT
     project_client: PROJECT/CLIENT
+  team:
+    team: Team
+    new_user: NEW USER
+    profile_picture: PHOTO
+    name: NAME
+    email_id: EMAIL ID
+    role: ROLE
+    create_new_user: Create New User
+    update_user: Update User

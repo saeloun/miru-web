@@ -6,7 +6,7 @@
         <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
           <div class="flex-1 min-w-0">
             <h2 class="text-3xl font-extrabold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
-              Team
+              <%= t('team.team') %>
             </h2>
           </div>
           <div class="mt-6 flex sm:mt-0 md:ml-4 items-center sm:w-4/6">
@@ -21,7 +21,7 @@
             <div class="mt-6 flex sm:mt-0 md:ml-4">
               <button onclick="openModal('main-modal')" type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-sans font-medium text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer">
                 <img src="<%= image_url 'plus_icon.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-                NEW USER
+                <%= t('team.new_user') %>
               </button>
             </div>
           <% end %>
@@ -36,22 +36,22 @@
                   <thead class="">
                     <tr>
                       <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
-                        PHOTO
+                        <%= t('team.profile_picture') %>
                       </th>
                       <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
-                        NAME
+                        <%= t('team.name') %>
                       </th>
                       <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
-                        EMAIL ID
+                        <%= t('team.email_id') %>
                       </th>
                       <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
-                        ROLE
+                        <%= t('team.role') %>
                       </th>
                       <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
 
                       </th>
                       <th scope="col" class="relative px-6 py-5">
-                        <span class="sr-only">Edit</span>
+
                       </th>
                     </tr>
                   </thead>
@@ -74,7 +74,7 @@
         <div class="shadow-lg modal-container bg-white w-full sm:w-4/12 md:max-w-11/12 mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
           <div class="modal-content py-4 text-left px-3">
             <div class="flex justify-between items-center mx-3">
-              <h6 class="text-base font-extrabold">Create New User</h6>
+              <h6 class="text-base font-extrabold"><%= t('team.create_new_user') %></h6>
               <div class="modal-close cursor-pointer z-50" onclick="modalClose('main-modal')">
                 <img src="<%= image_url 'close_button.svg' %>">
               </div>
@@ -92,7 +92,7 @@
           <div class="shadow-lg modal-container bg-white w-full sm:w-4/12 md:max-w-11/12 mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
             <div class="modal-content py-4 text-left px-3">
               <div class="mx-3 flex justify-between items-center">
-                <h6 class="text-base font-extrabold">Update User</h6>
+                <h6 class="text-base font-extrabold"><%= t('team.update_user') %></h6>
                 <div class="modal-close cursor-pointer z-50 ml-" onclick="modalClose('another-modal')">
                   <img src="<%= image_url 'close_button.svg' %>">
                 </div>
