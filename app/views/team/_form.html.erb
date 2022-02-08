@@ -4,10 +4,10 @@
       <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000"><%= t('team.form_name') %></label>
       <div class="mt-2 flex -space-x-px">
         <div class="mr-4 w-1/2 flex-1 min-w-0">
-          <%= f.text_field :first_name, autofocus: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+          <%= f.text_field :first_name, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
         </div>
         <div class="w-1/2 flex-1 min-w-0">
-          <%= f.text_field :last_name, autofocus: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+          <%= f.text_field :last_name, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
         </div>
       </div>
     </div>
@@ -19,7 +19,7 @@
         <%= t('team.form_email') %>
       </label>
       <div class="mt-2">
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+        <%= f.email_field :email, autocomplete: "email", class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
       </div>
     </div>
   </div>

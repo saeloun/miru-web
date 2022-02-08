@@ -4,9 +4,9 @@ class TeamController < ApplicationController
   after_action :assign_role, only: [:update]
 
   def index
-    @query = current_company.users.ransack(params[:q])
-    @teams = @query.result(distinct: true)
-    render :index, locals: { query: @query, teams: @teams }
+    query = current_company.users.ransack(params[:q])
+    teams = query.result(distinct: true)
+    render :index, locals: { query: query, teams: teams }
   end
 
   def edit
@@ -28,11 +28,11 @@ class TeamController < ApplicationController
 
   private
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :confirmation_token)
+      params.require(:user).permit(:first_name, :last_name, :email)
     end
 
     def user
-      @_user ||= User.find(params[:id])
+      @_user ||= User.kept.find(params[:id])
     end
 
     def assign_role
