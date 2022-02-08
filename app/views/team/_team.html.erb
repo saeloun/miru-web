@@ -11,7 +11,7 @@
 <td id="email-<%= member.id %>" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
   <% if member.unconfirmed_email? %>
     <%= t('team.current_email') %> : <%= member.email %><br/>
-    Changed Email : <%= member.unconfirmed_email %>
+    <%= t('team.changed_email') %>: <%= member.unconfirmed_email %>
   <% else %>
     <%= member.email %>
   <% end %>
