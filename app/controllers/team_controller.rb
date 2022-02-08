@@ -6,6 +6,7 @@ class TeamController < ApplicationController
   def index
     @query = current_company.users.ransack(params[:q])
     @teams = @query.result(distinct: true)
+    render :index, locals: { query: @query, teams: @teams }
   end
 
   def edit

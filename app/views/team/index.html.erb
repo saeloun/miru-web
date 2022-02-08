@@ -11,7 +11,7 @@
           </div>
           <div class="mt-6 flex sm:mt-0 md:ml-4 items-center sm:w-4/6">
             <div class="mt-1 relative rounded-md shadow-sm md:ml-10">
-              <%= search_form_for @query, url: team_index_path do |f| %>
+              <%= search_form_for query, url: team_index_path do |f| %>
                 <%= f.text_field :first_name_or_last_name_or_email_cont, class: 'rounded tracking-wider appearance-none border border-gray-100 block w-72 sm:w-96 px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-sm', placeholder: 'Search' %>
                 <%= image_submit_tag 'search_icon.svg', class: "h-3 text-miru-gray-400 absolute inset-y-2 right-0 pr-3 flex items-center cursor-pointer" %>
               <% end %>
@@ -56,7 +56,7 @@
                     </tr>
                   </thead>
                   <tbody id="teamstable" class="bg-white divide-y divide-gray-200">
-                    <% @teams.kept.each do |member| %>
+                    <% teams.kept.each do |member| %>
                         <tr id="member-<%= member.id %>">
                           <%= render partial: "team", locals: { member: member } %>
                         </tr>
