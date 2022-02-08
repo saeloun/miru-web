@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   helper_method :current_company
   before_action :authenticate_user!, :validate_company!
 
-
   def current_company
     @_current_company ||= current_user&.company
   end

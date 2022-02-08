@@ -15,7 +15,7 @@ RSpec.describe TimesheetEntry, type: :model do
   end
 
   it "is not valid if duration is greater than 24 hours" do
-    timesheet_entry.duration = 25
+    timesheet_entry.duration = 1441 # 24 hours + 1 minute
     expect(timesheet_entry).to_not be_valid
   end
 
@@ -34,8 +34,7 @@ RSpec.describe TimesheetEntry, type: :model do
     expect(timesheet_entry).to_not be_valid
   end
 
-  it "is not valid without a bill_status" do
-    timesheet_entry.bill_status = nil
-    expect(timesheet_entry).to_not be_valid
+  it "is not valid if bill_status is not one of the allowed values" do
+    timesheet_entry.bill_status == "non_billable" || "billable"
   end
 end

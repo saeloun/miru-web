@@ -61,6 +61,7 @@
         "window": true
     },
     "rules": {
+      "object-curly-newline": "off",
       "comma-dangle": ["error", "never"],
       "indent": ["warn", 2, { "SwitchCase": 1 }],
       "key-spacing": 1,

@@ -30,15 +30,34 @@ users.each do |user|
 end
 puts "#{users.size} Users created"
 
-client = company.clients.create!(
-  name: "Saeloun",
-  email: "contact@saeloun.com"
-)
-puts "Client Created"
+clientData = [
+  { name: "Saeloun LLC", email: "contact@saeloun.com" },
+  { name: "Angel India", email: "hello@angel.co" }
+]
 
-project = client.projects.create!(
-  name: "miru",
+company.clients.create!(clientData)
+puts "Clients Created"
+
+miru = Client.first.projects.create!(
+  name: "Miru",
   description: "Timesheet app",
   billable: false
 )
-puts "Project Created"
+
+angel_india = Client.second.projects.create!(
+  name: "Crypto Note",
+  description: "1₹ = 1 Crypto Note",
+  billable: true
+)
+
+puts "Projects Created"
+
+entry_info = {
+  user: User.first,
+  duration: 450,
+  note: "Worked on UI",
+  work_date: Date.today
+}
+miru.timesheet_entries.create!(entry_info,)
+angel_india.timesheet_entries.create!(entry_info)
+puts "Timesheet Entries Created"

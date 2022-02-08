@@ -26,6 +26,33 @@ class TimesheetEntry < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
+  before_validation :insure_bill_status_is_set
+
   validates :duration, :note, :work_date, :bill_status, presence: true
-  validates :duration, numericality: { less_than_or_equal_to: 24.0, greater_than_or_equal_to: 0.0 }
+  validates :duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
+
+  def self.during(from, to)
+    where(work_date: from..to).order(work_date: :desc)
+  end
+
+  def formatted_entry
+    {
+      id: id,
+      project: project.name,
+      client: project.client.name,
+      duration: duration,
+      note: note,
+      work_date: work_date,
+      bill_status: bill_status
+    }
+  end
+
+  private
+    def insure_bill_status_is_set
+      if project.billable?
+        self.bill_status = :unbilled
+      else
+        self.bill_status = :non_billable
+      end
+    end
 end

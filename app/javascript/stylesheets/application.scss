@@ -7,11 +7,15 @@
 @layer base {
   @font-face {
     font-family: "Manrope";
-    src: url("../fonts/Manrope.woff2") format("woff2"), url("../fonts/Manrope.woff") format("woff");
+    src: url("../fonts/Manrope/Manrope-VariableFont_wght.ttf");
   }
 
   .field_with_errors {
     display: flex;
     justify-content: space-between;
   }
+}
+
+body {
+  font-family: "Manrope", "sans-serif";
 }

@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import Client from "./Client";
 
 const Clients = ({ clients, editIcon, deleteIcon }) => (
@@ -14,19 +13,19 @@ const Clients = ({ clients, editIcon, deleteIcon }) => (
                   scope="col"
                   className="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider"
                 >
-                    CLIENT
+                  CLIENT
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider"
                 >
-                    EMAIL ID
+                  EMAIL ID
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-5 text-right text-sm font-semibold text-miru-dark-purple-600 tracking-wider"
                 >
-                    HOURS LOGGED
+                  HOURS LOGGED
                 </th>
                 <th scope="col" className="relative px-6 py-3"></th>
                 <th scope="col" className="relative px-6 py-3"></th>
