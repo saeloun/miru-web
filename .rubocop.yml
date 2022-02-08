@@ -2,6 +2,7 @@ require:
   - rubocop-packaging
   - rubocop-performance
   - rubocop-rails
+  - rubocop-rspec
 
 AllCops:
   TargetRubyVersion: 2.7
@@ -302,3 +303,37 @@ Performance/DeletePrefix:
 Performance/DeleteSuffix:
   Enabled: true
 
+# RSpec cops from rubocop-rspec
+# https://github.com/rubocop-hq/rubocop-rspec/blob/master/config/default.yml
+
+RSpec/ExampleLength:
+  Description: Checks for long examples.
+  Enabled: true
+  Max: 15
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
+
+RSpec/MultipleExpectations:
+  Max: 2
+  Exclude:
+    - "spec/system/**/*"
+    - "spec/features/**/*"
+    - "spec/requests/**/*"
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleExpectations
+
+RSpec/DescribeClass:
+  Description: Check that the first argument to the top level describe is a constant.
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribeClass
+  Exclude:
+    - spec/features/**/*
+    - spec/requests/*
+
+RSpec/EmptyExampleGroup:
+  Description: 'Checks if an example group does not include any tests.'
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 6
+
+RSpec/MessageChain:
+  Description: Avoid stubbing using `receive_message_chain`.
+  StyleGuide: http://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MessageChain
