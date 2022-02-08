@@ -10,8 +10,6 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-# frozen_string_literal: true
-
 ActiveRecord::Schema.define(version: 2022_02_03_124722) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
