@@ -87,6 +87,8 @@ gem "aws-sdk-s3", require: false
 # Ransack gem for advanced searching
 gem "ransack"
 
+gem "simple_form"
+
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
