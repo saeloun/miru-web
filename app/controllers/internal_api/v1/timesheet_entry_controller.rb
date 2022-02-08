@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::TimesheetEntryController < ApplicationController
+class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationController
   include Timesheet
-
-  skip_before_action :verify_authenticity_token
 
   def index
     timesheet_entries = current_user.timesheet_entries.during(params[:from], params[:to])

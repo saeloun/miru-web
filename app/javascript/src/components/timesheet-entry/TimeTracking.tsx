@@ -4,6 +4,7 @@ import * as dayjs from "dayjs";
 import * as weekday from "dayjs/plugin/weekday";
 import AddEntry from "./AddEntry";
 import EntryCard from "./EntryCard";
+import { setAuthHeaders } from "../../apis/axios";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "../../helpers/ordinal";
@@ -43,6 +44,10 @@ const TimeTracking: React.FC<props> = ({
     dayjs().format("YYYY-MM-DD")
   );
   const [editEntryId, setEditEntryId] = useState(0);
+
+  useEffect(() => {
+    setAuthHeaders();
+  }, []);
 
   useEffect(() => {
     handleWeekInfo();

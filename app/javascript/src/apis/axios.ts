@@ -2,7 +2,7 @@
 import axios, { HeadersDefaults } from "axios";
 import Toastr from "../components/common/Toastr";
 
-axios.defaults.baseURL = "/api/v1";
+axios.defaults.baseURL = "/internal_api/v1";
 
 interface CommonHeaderProperties extends HeadersDefaults {
   Accept: string;
@@ -10,9 +10,7 @@ interface CommonHeaderProperties extends HeadersDefaults {
   "X-CSRF-TOKEN": string;
 }
 
-export const setAuthHeaders = (
-  setLoading = (value: boolean): boolean => null
-) => {
+export const setAuthHeaders = () => {
   axios.defaults.headers = {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -20,7 +18,6 @@ export const setAuthHeaders = (
       .querySelector('[name="csrf-token"]')
       .getAttribute("content")
   } as CommonHeaderProperties;
-  setLoading(false);
 };
 
 const handleSuccessResponse = response => {
@@ -54,8 +51,4 @@ export const registerIntercepts = () => {
   axios.interceptors.response.use(handleSuccessResponse, error =>
     handleErrorResponse(error)
   );
-};
-
-export const resetAuthTokens = () => {
-  delete axios.defaults.headers["Authorization"];
 };
