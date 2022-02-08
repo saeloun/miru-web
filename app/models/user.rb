@@ -71,4 +71,8 @@ class User < ApplicationRecord
   def full_name
     "#{first_name} #{last_name}"
   end
+
+  def admin?
+    self.has_role?(:admin) || self.has_role?(:owner)
+  end
 end
