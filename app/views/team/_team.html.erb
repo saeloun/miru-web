@@ -10,7 +10,7 @@
 </td>
 <td id="email-<%= member.id %>" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
   <% if member.unconfirmed_email? %>
-    Current Email : <%= member.email %><br/>
+    <%= t('team.current_email') %> : <%= member.email %><br/>
     Changed Email : <%= member.unconfirmed_email %>
   <% else %>
     <%= member.email %>
@@ -23,13 +23,13 @@
   <% if current_user.has_any_role?(:owner, :admin) %>
     <% if member.unconfirmed_email? %>
       <span class="px-2 inline-flex text-xs leading-5 tracking-wider font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
-        RECONFIRMATION PENDING
+        <%= t('team.reconfirmation') %>
       </span>
     <% else %>
       <% unless member.invitation_accepted? %>
         <% if (member.id != current_user.id) %>
           <span class="px-2 inline-flex text-xs leading-5 tracking-wider font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
-            INVITATION PENDING
+            <%= t('team.invitation') %>
           </span>
         <% end %>
       <% end %>
