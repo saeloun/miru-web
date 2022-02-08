@@ -30,7 +30,7 @@ Rails.application.routes.draw do
     delete :purge_logo
   end
   resources :time_tracking, only: [:index], path: "time-tracking"
-  resources :clients, only: [:index]
+  resources :clients, only: [:index, :create]
   resources :team, only: [:index, :update, :destroy]
   resources :projects, only: [:index]
 
