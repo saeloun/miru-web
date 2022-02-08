@@ -100,7 +100,6 @@ group :development, :test do
   # Use RSpec as the testing framework
   gem "rspec-rails", "~> 5.0", ">= 5.0.2"
 
-
   # Simple one-liner tests for common Rails functionality
   gem "shoulda-matchers", "~> 5.1"
 

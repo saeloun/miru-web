@@ -4,7 +4,7 @@ class TimeTrackingController < ApplicationController
   include Timesheet
 
   def index
-    @is_admin = current_user.is_admin?
+    @is_admin = current_user.admin?
     @clients = current_company.clients.includes(:projects)
     @projects = {}
     @clients.map do |c|
