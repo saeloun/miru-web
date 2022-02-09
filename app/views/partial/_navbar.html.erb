@@ -28,29 +28,29 @@
         <div class="hidden md:mx-3 md:flex md:space-x-2 lg:space-x-8">
           <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
           <% if current_user.has_any_role?(:owner, :admin) %>
-            <a href="/dashboard" class="<%= request.path == "/dashboard" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
+            <a href="/dashboard" class="<%= request.path == "/dashboard" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
               <%= t('navbar.dashboard') %>
             </a>
           <% end %>
-          <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
+          <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
             <%= t('navbar.time_tracking') %>
           </a>
-          <a href="/team" class="<%= request.path == "/team" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-sm text-base font-extrabold">
+          <a href="/team" class="<%= request.path == "/team" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-sm text-base">
             <%= t('navbar.team') %>
           </a>
-          <a href="/clients" class="<%= request.path == "/clients" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
+          <a href="/clients" class="<%= request.path == "/clients" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
             <%= t('navbar.clients') %>
           </a>
-          <a href="/projects" class="<%= request.path == "/project" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
+          <a href="/projects" class="<%= request.path == "/project" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
             <%= t('navbar.projects') %>
           </a>
           <% if current_user.has_any_role?(:owner, :admin) %>
-            <a href="/invoice" class="<%= request.path == "/invoice" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
+            <a href="/invoice" class="<%= request.path == "/invoice" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
               <%= t('navbar.invoice') %>
             </a>
           <% end %>
           <% if current_user.has_any_role?(:owner, :admin) %>
-            <a href="/report" class="<%= request.path == "/report" ? "text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" %> inline-flex items-center px-1 pt-1 text-base font-extrabold">
+            <a href="/report" class="<%= request.path == "/report" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
               <%= t('navbar.report') %>
             </a>
           <% end %>
