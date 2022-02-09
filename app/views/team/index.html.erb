@@ -35,19 +35,19 @@
                 <table class="min-w-full divide-y divide-gray-200 mt-4">
                   <thead class="">
                     <tr>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-wider">
+                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
                         <%= t('team.profile_picture') %>
                       </th>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-wider">
+                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
                         <%= t('team.name') %>
                       </th>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-wider">
+                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
                         <%= t('team.email_id') %>
                       </th>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-wider">
+                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
                         <%= t('team.role') %>
                       </th>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-wider">
+                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
 
                       </th>
                       <th scope="col" class="relative px-3 py-5">
@@ -71,12 +71,12 @@
 
       <!--Modal 1-->
       <div class="px-5 main-modal fixed w-full inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster" style="background-color: rgba(29, 26, 49,0.6)">
-        <div class="shadow-lg modal-container bg-white w-full sm:w-4/12 md:max-w-11/12 mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
+        <div class="shadow-lg modal-container bg-white w-full sm:max-w-md mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
           <div class="modal-content py-4 text-left px-3">
             <div class="flex justify-between items-center mx-3">
               <h6 class="text-base font-extrabold"><%= t('team.create_new_user') %></h6>
               <div class="modal-close cursor-pointer z-50" onclick="modalClose('main-modal')">
-                <img src="<%= image_url 'close_button.svg' %>">
+                <img src="<%= image_url 'close_button.svg' %>" class="p-2 rounded hover:bg-opacity-20 hover:bg-miru-gray-1000">
               </div>
             </div>
             <div class="mb-3 mx-3 flex justify-center">
@@ -89,12 +89,12 @@
 
       <!--Modal 2-->
         <div class="px-5 another-modal fixed w-full inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster" style="background-color: rgba(29, 26, 49,0.6)">
-          <div class="shadow-lg modal-container bg-white w-full sm:w-4/12 md:max-w-11/12 mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
+          <div class="shadow-lg modal-container bg-white w-full sm:max-w-md mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
             <div class="modal-content py-4 text-left px-3">
-              <div class="mx-3 flex justify-between items-center">
+              <div class="flex justify-between items-center mx-3">
                 <h6 class="text-base font-extrabold"><%= t('team.update_user') %></h6>
                 <div class="modal-close cursor-pointer z-50 ml-" onclick="modalClose('another-modal')">
-                  <img src="<%= image_url 'close_button.svg', class: "" %>" class="p-1 rounded-full	border-2 border-miru-white-1000 hover:border-miru-han-purple-1000">
+                  <img src="<%= image_url 'close_button.svg' %>" class="p-2 rounded hover:bg-opacity-20 hover:bg-miru-gray-1000">
                 </div>
               </div>
               <div id="team-modal" class="mb-3 mx-3 flex justify-center">
