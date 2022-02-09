@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CompanyController < ApplicationController
+class CompaniesController < ApplicationController
   skip_before_action :validate_company!, only: [:create, :new]
   before_action :company_validation, only: [:new, :create]
 
@@ -24,12 +24,10 @@ class CompanyController < ApplicationController
   end
 
   def show
-    @company = current_company
   end
 
   def update
-    @company = current_company
-    if @company.update(company_params)
+    if current_company.update(company_params)
       redirect_to company_path
       flash[:notice] = t(".success")
     else
@@ -38,9 +36,8 @@ class CompanyController < ApplicationController
   end
 
   def purge_logo
-    @company = current_company
-    @company.logo.destroy
-    redirect_to "/company"
+    current_company.logo.destroy
+    redirect_to company_path
   end
 
   private

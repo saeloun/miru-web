@@ -1,6 +1,6 @@
 window.showImage = function () {
   return {
-    showPreview (event) {
+    showPreview(event) {
       if (event.target.files.length > 0) {
         const preview = document.getElementById("preview");
         preview.src = URL.createObjectURL(event.target.files[0]);
@@ -9,7 +9,7 @@ window.showImage = function () {
         document.getElementById("add-logo").classList.add("hidden");
       }
     },
-    clearPreview () {
+    clearPreview() {
       const preview = document.getElementById("preview");
       preview.removeAttribute("src");
       preview.style.display = "none";

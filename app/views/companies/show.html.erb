@@ -1,6 +1,6 @@
 <div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
   <div class="px-5">
-    <%= form_with model: @company, url: company_path(@company), method: :put, local: true do |form| %>
+    <%= form_with model: current_company, url: company_path(current_company), method: :put, local: true do |form| %>
 
       <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
         <div class="flex-1 min-w-0">
@@ -40,11 +40,11 @@
           <div class="field">
             <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000">Logo</label>
             <div class="mt-1">
-              <% if @company.logo.attached? %>
+              <% if current_company.logo.attached? %>
                 <div class="flex items-center space-x-4 lg:space-x-6">
                   <div class="relative w-24 h-24 rounded-full border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
                     <div class="flex items-center justify-center">
-                      <%= image_tag @company.logo, class: "rounded-full" %>
+                      <%= image_tag current_company.logo, class: "rounded-full" %>
                     </div>
                   </div>
                   <%= link_to image_tag("#{image_url 'delete_image_button.svg'}"), purge_logo_company_path, method: :delete, class: "font-medium text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000"%>
