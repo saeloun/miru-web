@@ -85,10 +85,10 @@ class User < ApplicationRecord
     self.has_role?(:admin) || self.has_role?(:owner)
   end
 
-  # # check whether the user present is in active state or not
-  # def active_for_authentication?
-  #   super and self.active?
-  # end
+  def active_for_authentication?
+    super and self.kept?
+  end
+
   private
     def discard_project_members
       project_members.discard_all
