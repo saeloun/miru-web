@@ -5,6 +5,7 @@ puts "Creating company"
 company = Company.create!(
   name: "Saeloun Inc",
   address: "31R Providence Rd Westford MA, 01886",
+  business_phone: "1111111111",
   country: "US",
   timezone: "EST"
 )
