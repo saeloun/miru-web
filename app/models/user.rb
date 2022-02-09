@@ -77,4 +77,8 @@ class User < ApplicationRecord
   def admin?
     self.has_role?(:admin) || self.has_role?(:owner)
   end
+
+  def active_for_authentication?
+    super and self.kept?
+  end
 end
