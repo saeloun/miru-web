@@ -15,10 +15,10 @@
       </div>
       <div class="mt-1 flex -space-x-px">
         <div class="mr-4 w-1/2 flex-1 min-w-0">
-          <%= f.text_field :first_name, class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :first_name)}" %>
+          <%= f.text_field :first_name, placeholder: "First Name",  class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :first_name)}" %>
         </div>
         <div class="w-1/2 flex-1 min-w-0">
-          <%= f.text_field :last_name, class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :last_name)}" %>
+          <%= f.text_field :last_name, placeholder: "Last Name", class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :last_name)}" %>
         </div>
       </div>
     </div>
@@ -33,7 +33,7 @@
           <%= error_message_on(f.object, field) %>
         </div>
         <div class="mt-1">
-          <%= f.text_field field, class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, field)}" %>
+          <%= f.text_field field, placeholder: "Email", class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, field)}" %>
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@
           </div>
 
           <div class="flex items-center">
-            <%= f.radio_button :roles, 'Employee', class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000" %>
+            <%= f.radio_button :roles, 'Employee', :checked=>true , class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000" %>
             <label for="Employee" class="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
               <%= t('team.form_employee') %>
             </label>
