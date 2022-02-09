@@ -20,6 +20,7 @@
 class Project < ApplicationRecord
   belongs_to :client
   has_many :timesheet_entries
+  has_many :team_members
 
   validates :name, :description, presence: true
   validates :billable, inclusion: { in: [ true, false ] }
