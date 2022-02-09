@@ -53,3 +53,21 @@ en:
       success: "Company created successfully"
     update:
       success: "Changes saved successfully"
+  team:
+    team: Team
+    new_user: NEW USER
+    profile_picture: PHOTO
+    name: NAME
+    email_id: EMAIL ID
+    role: ROLE
+    create_new_user: Create New User
+    update_user: Update User
+    current_email: Current Email
+    changed_email: Changed Email
+    reconfirmation: RECONFIRMATION PENDING
+    invitation: INVITATION PENDING
+    form_name: Name
+    form_email: Email
+    form_role: Role
+    form_admin: Admin
+    form_employee: Employee

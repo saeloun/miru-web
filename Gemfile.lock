@@ -133,6 +133,8 @@ GEM
       devise (>= 4.6)
     diff-lcs (1.5.0)
     digest (3.1.0)
+    discard (1.2.1)
+      activerecord (>= 4.2, < 8)
     docile (1.4.0)
     dotenv (2.7.6)
     dotenv-rails (2.7.6)
@@ -447,6 +449,7 @@ DEPENDENCIES
   debug (>= 1.0.0)
   devise!
   devise_invitable (~> 2.0, >= 2.0.6)
+  discard (~> 1.2)
   dotenv-rails
   factory_bot_rails
   faker

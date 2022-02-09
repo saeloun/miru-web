@@ -1,0 +1,51 @@
+<%= form_with model: @user, url: team_path(@user), method: :put, remote: true do |f| %>
+  <div class="mt-4">
+    <div class="field">
+      <label class="tracking-wider block text-xs font-normal text-miru-dark-purple-1000"><%= t('team.form_name') %></label>
+      <div class="mt-2 flex -space-x-px">
+        <div class="mr-4 w-1/2 flex-1 min-w-0">
+          <%= f.text_field :first_name, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+        </div>
+        <div class="w-1/2 flex-1 min-w-0">
+          <%= f.text_field :last_name, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <div class="field">
+      <label class="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+        <%= t('team.form_email') %>
+      </label>
+      <div class="mt-2">
+        <%= f.email_field :email, autocomplete: "email", class: "rounded tracking-wider bg-miru-gray-100 appearance-none border border-gray-100 block w-full px-3 py-2 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4">
+    <div class="field">
+      <label class="tracking-wider block text-xs font-normal text-miru-dark-purple-1000"><%= t('team.form_role') %></label>
+      <div class="mt-1">
+        <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+          <div class="flex items-center">
+            <%= f.radio_button :roles, "admin", :checked=>(@user.primary_role.titlecase == "Admin"), class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000" %>
+            <label for="admin" class="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
+              <%= t('team.form_admin') %>
+            </label>
+          </div>
+
+          <div class="flex items-center">
+            <%= f.radio_button :roles, "employee", :checked=>(@user.primary_role.titlecase == "Employee"), class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000" %>
+            <label for="Employee" class="ml-3 block text-sm  font-medium text-miru-dark-purple-1000">
+              <%= t('team.form_employee') %>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="actions mt-4">
+    <%= f.submit "SAVE", class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer"%>
+  </div>
+<% end %>
