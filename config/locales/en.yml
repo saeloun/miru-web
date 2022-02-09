@@ -53,6 +53,10 @@ en:
       success: "Company created successfully"
     update:
       success: "Changes saved successfully"
+  clients:
+    create:
+      failure: "Client creation failed"
+      success: "Client added successfully"
   team:
     team: Team
     new_user: NEW USER
