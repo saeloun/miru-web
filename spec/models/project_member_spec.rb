@@ -3,14 +3,15 @@
 require "rails_helper"
 
 RSpec.describe ProjectMember, type: :model do
-  let(:project_member) { build(:project_member) }
+  describe "validations" do
+    subject { build(:project_member) }
 
-  it "is valid with valid attributes" do
-    expect(project_member).to be_valid
-  end
+    it { should validate_presence_of(:hourly_rate) }
+    it { should belong_to(:user) }
+    it { should belong_to(:project) }
 
-  it "is not valid without an hourly_rate" do
-    project_member.hourly_rate = nil
-    expect(project_member).to_not be_valid
+    it "is valid with valid attributes" do
+      expect(project_member).to be_valid
+    end
   end
 end

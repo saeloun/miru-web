@@ -8,5 +8,8 @@ class CreateProjectMembers < ActiveRecord::Migration[7.0]
       t.decimal :hourly_rate, null: false, default: 0.0
       t.timestamps
     end
+
+    add_column :project_members, :discarded_at, :datetime
+    add_index :project_members, :discarded_at
   end
 end

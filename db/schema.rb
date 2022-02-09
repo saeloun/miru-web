@@ -84,6 +84,8 @@ ActiveRecord::Schema.define(version: 2022_02_09_051345) do
     t.decimal "hourly_rate", default: "0.0", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "discarded_at", precision: 6
+    t.index ["discarded_at"], name: "index_project_members_on_discarded_at"
     t.index ["project_id"], name: "index_project_members_on_project_id"
     t.index ["user_id"], name: "index_project_members_on_user_id"
   end

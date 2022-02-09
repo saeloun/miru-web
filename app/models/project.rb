@@ -18,10 +18,20 @@
 # frozen_string_literal: true
 
 class Project < ApplicationRecord
+  # Associations
   belongs_to :client
   has_many :timesheet_entries
-  has_many :project_members
+  has_many :project_members, dependent: :destroy
 
+  # Validations
   validates :name, :description, presence: true
   validates :billable, inclusion: { in: [ true, false ] }
+
+  # Callbacks
+  after_discard :discard_project_members
+
+  private
+    def discard_project_members
+      project_members.discard_all
+    end
 end

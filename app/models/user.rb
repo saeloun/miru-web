@@ -48,13 +48,16 @@
 
 class User < ApplicationRecord
   include Discard::Model
+
+  # Associations
   belongs_to :company, optional: true
-  has_many :project_members
+  has_many :project_members, dependent: :destroy
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all
   has_one_attached :avatar
   rolify
 
+  # Validations
   validates :first_name, :last_name,
     presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },
@@ -66,6 +69,9 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :trackable, :confirmable,
          :omniauthable, omniauth_providers: [:google_oauth2]
+
+  # Callbacks
+  after_discard :discard_project_members
 
   def primary_role
     roles.first.name
@@ -83,4 +89,8 @@ class User < ApplicationRecord
   # def active_for_authentication?
   #   super and self.active?
   # end
+  private
+    def discard_project_members
+      project_members.discard_all
+    end
 end
