@@ -18,7 +18,7 @@ class CompanyController < ApplicationController
       redirect_to root_path, notice: t(".success")
     else
       flash.now[:error] = t(".failure")
-      render :new, status: :bad_request
+      render :new, status: :unprocessable_entity
       Rails.logger.error "DEBUG::COMPANY_CONTROLLER::CREATE"
     end
   end
@@ -30,10 +30,10 @@ class CompanyController < ApplicationController
   def update
     @company = current_company
     if @company.update(company_params)
-      redirect_to "/company"
+      redirect_to company_path
       flash[:notice] = t(".success")
     else
-      render :show, status: :bad_request
+      render :show, status: :unprocessable_entity
     end
   end
 

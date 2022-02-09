@@ -14,7 +14,7 @@ Rails.start();
 ActiveStorage.start();
 
 // Support component names relative to this directory:
-const componentRequireContext = require.context("components", true);
+const componentRequireContext = require.context("src/components", true);
 ReactRailsUJS.useContext(componentRequireContext);
 
 require("packs/company");
