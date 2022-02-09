@@ -2,7 +2,7 @@
 
 # == Schema Information
 #
-# Table name: team_members
+# Table name: project_members
 #
 #  id          :integer          not null, primary key
 #  user_id     :integer          not null
@@ -13,11 +13,11 @@
 #
 # Indexes
 #
-#  index_team_members_on_project_id  (project_id)
-#  index_team_members_on_user_id     (user_id)
+#  index_project_members_on_project_id  (project_id)
+#  index_project_members_on_user_id     (user_id)
 #
 
-class TeamMember < ApplicationRecord
+class ProjectMember < ApplicationRecord
   belongs_to :project
   belongs_to :user
 

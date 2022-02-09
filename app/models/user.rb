@@ -46,7 +46,7 @@
 
 class User < ApplicationRecord
   belongs_to :company, optional: true
-  has_many :team_members
+  has_many :project_members
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all
   has_one_attached :avatar
