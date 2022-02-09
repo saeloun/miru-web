@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     invitations: "users/invitations",
     omniauth_callbacks: "users/omniauth_callbacks"
   }
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   # For opening the email in the web browser in non production environments
@@ -30,8 +31,8 @@ Rails.application.routes.draw do
     delete :purge_logo
   end
   resources :time_tracking, only: [:index], path: "time-tracking"
+  resources :team, only: [:index, :update, :destroy, :edit]
   resources :clients, only: [:index]
-  resources :team, only: [:index, :update, :destroy]
   resources :projects, only: [:index]
 
   devise_scope :user do
