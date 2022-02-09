@@ -6,6 +6,7 @@ import * as ReactRailsUJS from "react_ujs";
 
 import "alpine-turbo-drive-adapter";
 require("alpinejs");
+require("jquery");
 
 import "@fontsource/plus-jakarta-sans";
 
