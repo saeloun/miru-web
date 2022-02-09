@@ -1,4 +1,4 @@
-<div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope" x-data="{ 'isDialogOpen': false }" @keydown.escape="isDialogOpen = false">
+<div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope" x-data="{ 'isDialogOpen': <%= keep_new_client_dialog_open %> }" @keydown.escape="isDialogOpen = false">
   <div class="px-5">
     <div>
       <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
@@ -34,6 +34,11 @@
         </div>
       </div>
 
+      <%= react_component("Clients",
+                          clients: clients,
+                          editIcon: image_url('edit_image_button.svg'),
+                          deleteIcon: image_url('delete_image_button.svg')) %>
+
       <div class="px-4 min-h-screen flex items-center justify-center">
         <div class="overflow-auto" style="background-color: rgba(29, 26, 49,0.6)" x-show="isDialogOpen" :class="{ 'absolute inset-0 z-10 flex items-start justify-center': isDialogOpen }">
           <div class="relative px-4 min-h-screen md:flex md:items-center md:justify-center">
@@ -42,16 +47,11 @@
               <h6 class="text-base font-extrabold">Add new client</h6>
               <button type="button" @click="isDialogOpen = false"><img src="<%= image_url 'close_button.svg' %>"%></button>
             </div>
-            <%= render template: "clients/new"%>
+            <%= render template: "clients/new", locals: { client: new_client } %>
           </div>
           </div>
         </div>
       </div>
-
-      <%= react_component("Clients", 
-                          clients: @clients,
-                          editIcon: image_url('edit_image_button.svg'),
-                          deleteIcon: image_url('delete_image_button.svg')) %>
     
     </div>
   </div>

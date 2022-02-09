@@ -2,7 +2,7 @@
 
 class ClientsController < ApplicationController
   def index
-    clients
+    render :index, locals: { clients: clients, new_client: client, keep_new_client_dialog_open: false }
   end
 
   def create
@@ -11,8 +11,8 @@ class ClientsController < ApplicationController
     if client.save
       redirect_to clients_path
     else
-      render :index, client: client, status: :unprocessable_entity
       flash.now[:error] = "Client creation failed"
+      render :index, locals: { clients: clients, new_client: client, keep_new_client_dialog_open: true }, status: :unprocessable_entity
     end
   end
 
@@ -20,6 +20,11 @@ class ClientsController < ApplicationController
     def clients
       @_clients ||= current_company.clients
     end
+
+    def client
+      @_client ||= Client.new
+    end
+
     def client_params
       params.require(:client).permit(:name, :email, :phone, :address, :country, :timezone)
     end
