@@ -5,17 +5,19 @@ class CompanyController < ApplicationController
   before_action :company_validation, only: [:new, :create]
 
   def new
+    @company = Company.new
     render :new
   end
 
   def create
-    company = Company.new(company_params)
-    if company.save
-      current_user.company_id = company.id
+    @company = Company.new(company_params)
+    if @company.save
+      current_user.company_id = @company.id
       current_user.save!
-      redirect_to root_path
+
+      redirect_to root_path, notice: t(".success")
     else
-      flash[:error] = "Company creation failed"
+      flash.now[:error] = t(".failure")
       render :new, status: :unprocessable_entity
       Rails.logger.error "DEBUG::COMPANY_CONTROLLER::CREATE"
     end
@@ -28,7 +30,10 @@ class CompanyController < ApplicationController
   def update
     @company = current_company
     if @company.update(company_params)
-      redirect_to "/company"
+      redirect_to company_path
+      flash[:notice] = t(".success")
+    else
+      render :show, status: :unprocessable_entity
     end
   end
 
