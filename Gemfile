@@ -87,6 +87,9 @@ gem "aws-sdk-s3", require: false
 # Ransack gem for advanced searching
 gem "ransack"
 
+# For Soft deletion
+gem "discard", "~> 1.2"
+
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
@@ -96,6 +99,7 @@ group :development, :test do
   gem "rubocop-packaging", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rails", require: false
+  gem "rubocop-rspec", "~> 2.8", require: false
 
   # Use RSpec as the testing framework
   gem "rspec-rails", "~> 5.0", ">= 5.0.2"

@@ -1,11 +1,19 @@
-const { environment } = require('@rails/webpacker')
+const { environment } = require("@rails/webpacker");
 const ForkTSCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
 environment.config.merge({
-  plugins: [new ForkTSCheckerWebpackPlugin()],
-})
+  plugins: [new ForkTSCheckerWebpackPlugin()]
+});
 
-const aliasConfig = require("./alias");
-environment.config.merge(aliasConfig);
+// const aliasConfig = require("./alias");
+// environment.config.merge(aliasConfig);
 
-module.exports = environment
+const webpack = require('webpack')
+environment.plugins.prepend('Provide',
+  new webpack.ProvidePlugin({
+    $: 'jquery/src/jquery',
+    jQuery: 'jquery/src/jquery'
+  })
+);
+
+module.exports = environment;
