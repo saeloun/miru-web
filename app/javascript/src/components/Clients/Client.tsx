@@ -7,6 +7,7 @@ export interface IClient {
   hours_logged: string;
   editIcon: string;
   deleteIcon: string;
+  isAdminUser: boolean;
 }
 
 const Client = ({
@@ -15,7 +16,8 @@ const Client = ({
   email,
   hours_logged,
   editIcon,
-  deleteIcon
+  deleteIcon,
+  isAdminUser
 }: IClient) => (
   <tr key={id}>
     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
@@ -27,16 +29,20 @@ const Client = ({
     <td className="px-6 py-4 whitespace-nowrap text-right font-black">
       {hours_logged}
     </td>
-    <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
-      <button>
-        <img src={editIcon} alt="" />
-      </button>
-    </td>
-    <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
-      <button>
-        <img src={deleteIcon} alt="" />
-      </button>
-    </td>
+    {isAdminUser && (
+      <>
+        <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
+          <button>
+            <img src={editIcon} alt="" />
+          </button>
+        </td>
+        <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
+          <button>
+            <img src={deleteIcon} alt="" />
+          </button>
+        </td>
+      </>
+    )}
   </tr>
 );
 
