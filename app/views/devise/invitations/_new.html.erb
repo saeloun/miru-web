@@ -15,10 +15,10 @@
       </div>
       <div class="mt-1 flex -space-x-px">
         <div class="mr-4 w-1/2 flex-1 min-w-0">
-          <%= f.text_field :first_name, placeholder: "First Name",  class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :first_name)}" %>
+          <%= f.text_field :first_name, placeholder: t('team.placeholder_firstname'),  class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :first_name)}" %>
         </div>
         <div class="w-1/2 flex-1 min-w-0">
-          <%= f.text_field :last_name, placeholder: "Last Name", class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :last_name)}" %>
+          <%= f.text_field :last_name, placeholder: t('team.placeholder_lastname'), class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :last_name)}" %>
         </div>
       </div>
     </div>
@@ -33,7 +33,7 @@
           <%= error_message_on(f.object, field) %>
         </div>
         <div class="mt-1">
-          <%= f.text_field field, placeholder: "Email", class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, field)}" %>
+          <%= f.text_field field, placeholder: t('team.placeholder_email'), class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, field)}" %>
         </div>
       </div>
     </div>

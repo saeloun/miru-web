@@ -71,3 +71,6 @@ en:
     form_role: Role
     form_admin: Admin
     form_employee: Employee
+    placeholder_firstname: First Name
+    placeholder_lastname: Last Name
+    placeholder_email: Email
