@@ -35,11 +35,6 @@ class CompaniesController < ApplicationController
     end
   end
 
-  def purge_logo
-    current_company.logo.destroy
-    redirect_to company_path
-  end
-
   private
     def company_params
       params.require(:company).permit(:name, :address, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end, :date_format, :logo)

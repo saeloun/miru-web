@@ -47,7 +47,7 @@
                       <%= image_tag current_company.logo, class: "rounded-full" %>
                     </div>
                   </div>
-                  <%= link_to image_tag("#{image_url 'delete_image_button.svg'}"), purge_logo_company_path, method: :delete, class: "font-medium text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000"%>
+                  <%= link_to image_tag("#{image_url 'delete_image_button.svg'}"), company_purge_logo_path, method: :delete, class: "font-medium text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000"%>
                 </div>
               <% else %>
                 <div x-data="showImage()">
