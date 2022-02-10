@@ -18,4 +18,4 @@ ActiveStorage.start();
 const componentRequireContext = require.context("src/components", true);
 ReactRailsUJS.useContext(componentRequireContext);
 
-require("packs/company");
+require("packs/companies");
