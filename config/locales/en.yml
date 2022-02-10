@@ -76,12 +76,16 @@ en:
     email: Email
   registration:
     signup: Sign Up
+    signin: Sign In
+    sign_up : SIGN UP
+    sign_in : SIGN IN
     name: Name
     first_name: First Name
     last_Name: Last Name
     password: Password
     confirm_password: Confirm Password
-    email_id: Email ID
+    email_id: Email
+    remember_me: Remember me
     or: OR
     signup_with_google: SIGN UP WITH GOOGLE
     signup_with_apple: SIGN UP WITH APPLE

@@ -17,6 +17,36 @@
   }
 }
 
+@layer components {
+  .miru_form_input {
+    @apply rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none;
+  }
+  .miru_form_label {
+    @apply tracking-wider block text-xs font-normal text-miru-dark-purple-1000;
+  }
+  .miru_form_title {
+    @apply text-base font-extrabold tracking-normal text-miru-dark-purple-1000;
+  }
+  .miru_form_button {
+    @apply tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-bold text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded;
+  }
+  .miru_password_eye_icon {
+    @apply h-4 w-4 text-miru-han-purple-1000 cursor-pointer;
+  }
+  .miru_password_eye_position {
+    @apply absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5
+  }
+  .miru_form_error {
+    @apply tracking-wider block text-xs font-semibold text-red-600;
+  }
+  .miru_form_error {
+    @apply tracking-wider block text-xs font-semibold text-red-600;
+  }
+  .miru_form_link {
+    @apply font-bold text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-wider;
+  }
+}
+
 body {
   font-family: "Manrope", "sans-serif";
 }
