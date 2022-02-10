@@ -386,6 +386,8 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2)
     semantic_range (3.0.0)
+    shoulda-callback-matchers (1.1.4)
+      activesupport (>= 3)
     shoulda-matchers (5.1.0)
       activesupport (>= 5.2.0)
     simple_po_parser (1.1.5)
@@ -477,6 +479,7 @@ DEPENDENCIES
   rubocop-rspec (~> 2.8)
   sass-rails
   selenium-webdriver (>= 4.0.0)
+  shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers (~> 5.1)
   simplecov
   spring

@@ -9,6 +9,10 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:identities).dependent(:delete_all) }
   end
 
+  describe "Callbacks" do
+    it { is_expected.to callback(:discard_project_members).after(:discard) }
+  end
+
   it "is valid with valid attributes" do
     expect(user).to be_valid
   end
