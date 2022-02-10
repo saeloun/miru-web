@@ -94,3 +94,20 @@ en:
     back_to_login: back to login
     confirmation_instruction: didn't receive confirmation instructions?
     unlock_instruction: didn't receive unlock instructions?
+  company:
+    settings: Settings
+    cancel: CANCEL
+    save: SAVE
+    profile_setting: PROFILE SETTINGS
+    organization_setting: ORGANIZATION SETTINGS
+    logo: Logo
+    company: Company
+    name: Name
+    address: Address
+    business_phone: Business Phone
+    country: Country
+    timezone: Timezone
+    base_currency: Base currency
+    standard_price: Standard price
+    fiscal_year: Fiscal year
+    date_format: Date Format

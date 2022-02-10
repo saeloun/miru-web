@@ -5,31 +5,31 @@
       <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
         <div class="flex-1 min-w-0">
           <h2 class="text-3xl font-extrabold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
-            Settings
+            <%= t('company.settings') %>
           </h2>
         </div>
         <div class="mt-6 flex sm:mt-0 md:ml-4">
 
           <div type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded">
             <img src="<%= image_url 'cancel_button.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-            <%= link_to "CANCEL", :back, class: "text-base font-sans font-medium text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer" %>
+            <%= link_to t('company.cancel'), :back, class: "text-base font-sans font-medium text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer" %>
           </div>
 
           <div type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded">
             <img src="<%= image_url 'save_button.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-            <%= form.submit "SAVE", class: "text-base font-sans font-medium text-miru-white-1000 bg-transparent cursor-pointer" %>
+            <%= form.submit t('company.save'), class: "text-base font-sans font-medium text-miru-white-1000 bg-transparent cursor-pointer" %>
           </div>
         </div>
       </div>
       <div class="sm:flex sm:items-center sm:justify-between mt-3 mb-3">
         <div class="flex-1 min-w-0">
           <h2 class="<%= request.path == "/profile" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
-            <%= link_to "PROFILE SETTINGS", "/profile" %>
+            <%= link_to t('company.profile_setting'), "/profile" %>
           </h2>
         </div>
         <div class="flex-1 min-w-0">
           <h2 class="<%= request.path == "/company" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
-            <%= link_to "ORGANIZATION SETTINGS", "/company" %>
+            <%= link_to t('company.organization_setting'), "/company" %>
           </h2>
         </div>
       </div>
@@ -38,7 +38,7 @@
         <div class="max-w-max sm:max-w-md">
 
           <div class="field">
-            <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000">Logo</label>
+            <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000"><%= t('company.logo') %></label>
             <div class="mt-1">
               <% if current_company.logo.attached? %>
                 <div class="flex items-center space-x-4 lg:space-x-6">
@@ -72,13 +72,13 @@
           <div class="mt-4">
             <div class="field">
               <div class="field_with_errors">
-                <%= form.label :company, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                <%= form.label t('company.company'), class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
                 <div class="tracking-wider block text-xs text-red-600">
                   <%= error_message_on(form.object, :name) %>
                 </div>
               </div>
               <div class="mt-1">
-                <%= form.text_field :name, autofocus: true, autocomplete: "name", class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(form.object, :name)}" %>
+                <%= form.text_field t('company.name'), autofocus: true, autocomplete: "name", class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(form.object, :name)}" %>
               </div>
             </div>
           </div>
@@ -86,7 +86,7 @@
           <div class="mt-4">
             <div class="field">
               <div class="field_with_errors">
-                <%= form.label :address, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                <%= form.label t('company.address'), class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
                 <div class="tracking-wider block text-xs text-red-600">
                   <%= error_message_on(form.object, :address) %>
                 </div>
@@ -100,7 +100,7 @@
           <div class="mt-4">
             <div class="field">
               <div class="field_with_errors">
-                <%= form.label :business_phone, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                <%= form.label t('company.business_phone'), class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
                 <div class="tracking-wider block text-xs text-red-600">
                   <%= error_message_on(form.object, :business_phone) %>
                 </div>
@@ -114,7 +114,7 @@
           <div class="mt-4">
             <div class="field">
               <div class="field_with_errors">
-                <%= form.label :country, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                <%= form.label t('company.country'), class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
                 <div class="tracking-wider block text-xs text-red-600">
                   <%= error_message_on(form.object, :country) %>
                 </div>
@@ -128,7 +128,7 @@
           <div class="mt-4">
             <div class="field">
               <div class="field_with_errors">
-                <%= form.label :timezone, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                <%= form.label t('company.timezone'), class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
                 <div class="tracking-wider block text-xs text-red-600">
                   <%= error_message_on(form.object, :timezone) %>
                 </div>
@@ -142,7 +142,7 @@
           <div class="mt-4">
             <div class="field">
               <div class="field_with_errors">
-                <%= form.label :base_currency, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                <%= form.label t('company.base_currency'), class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
                 <div class="tracking-wider block text-xs text-red-600">
                   <%= error_message_on(form.object, :base_currency) %>
                 </div>
@@ -157,7 +157,7 @@
           <div class="mt-4">
             <div class="field">
               <div class="field_with_errors">
-                <%= form.label :standard_price, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                <%= form.label t('company.standard_price'), class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
                 <div class="tracking-wider block text-xs text-red-600">
                   <%= error_message_on(form.object, :standard_price) %>
                 </div>
@@ -172,7 +172,7 @@
           <div class="mt-4">
             <div class="field">
               <div class="field_with_errors">
-                <%= form.label :fiscal_year, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+                <%= form.label t('company.fiscal_year'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
                 <div class="tracking-wider block text-xs text-red-600">
                   <%= error_message_on(form.object, :fiscal_year_end) %>
                 </div>
@@ -186,7 +186,7 @@
           <div class="mt-4">
             <div class="field">
               <div class="field_with_errors">
-                <%= form.label :date_format, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+                <%= form.label t('company.date_format'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
                 <div class="tracking-wider block text-xs text-red-600">
                   <%= error_message_on(form.object, :date_format) %>
                 </div>
