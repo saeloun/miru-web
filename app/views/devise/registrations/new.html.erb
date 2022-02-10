@@ -6,30 +6,30 @@
         <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div class="bg-miru-white-1000 py-6 px-6 shadow sm:rounded-lg sm:px-10">
             <div class="space-y-3">
-              <h2 class="miru_form_title">
+              <h2 class="form__title">
                 <%= t('registration.signup') %>
               </h2>
               <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
                 <div>
                   <div class="field">
                     <div class="field_with_errors">
-                      <label class="miru_form_label"> <%= t('registration.name') %></label>
+                      <label class="form__label"> <%= t('registration.name') %></label>
                       <% if f.object.errors.include?(:first_name) %>
-                        <div class="miru_form_error">
+                        <div class="form__error">
                           <%= error_message_on(f.object, :first_name) %>
                         </div>
                       <% else %>
-                        <div class="miru_form_error">
+                        <div class="form__error">
                           <%= error_message_on(f.object, :last_name) %>
                         </div>
                       <% end %>
                     </div>
                     <div class="mt-1 flex -space-x-px">
                       <div class="mr-4 w-1/2 flex-1 min-w-0">
-                        <%= f.text_field :first_name, placeholder: t('registration.first_name') , autofocus: true, class: "miru_form_input #{error_message_class(f.object, :first_name)}" %>
+                        <%= f.text_field :first_name, placeholder: t('registration.first_name') , autofocus: true, class: "form__input #{error_message_class(f.object, :first_name)}" %>
                       </div>
                       <div class="w-1/2 flex-1 min-w-0">
-                        <%= f.text_field :last_name, placeholder: t('registration.last_Name'), autofocus: true, class: "miru_form_input #{error_message_class(f.object, :last_name)}" %>
+                        <%= f.text_field :last_name, placeholder: t('registration.last_Name'), autofocus: true, class: "form__input #{error_message_class(f.object, :last_name)}" %>
                       </div>
                     </div>
                   </div>
@@ -37,29 +37,29 @@
                 <div class="mt-4">
                   <div class="field">
                     <div class="field_with_errors">
-                      <%= f.label t('registration.email_id'), class: "miru_form_label" %>
-                      <div class="miru_form_error">
+                      <%= f.label t('registration.email_id'), class: "form__label" %>
+                      <div class="form__error">
                         <%= error_message_on(f.object, :email) %>
                       </div>
                     </div>
                     <div class="mt-1">
-                        <%= f.text_field :email, placeholder: t('registration.email_id'), autofocus: true, class: "miru_form_input #{error_message_class(f.object, :email)}" %>
+                        <%= f.text_field :email, placeholder: t('registration.email_id'), autofocus: true, class: "form__input #{error_message_class(f.object, :email)}" %>
                     </div>
                   </div>
                 </div>
                 <div class="mt-4">
                   <div class="field" x-data="{ show: true }">
                     <div class="field_with_errors">
-                      <%= f.label t('registration.password'), class: "miru_form_label" %>
+                      <%= f.label t('registration.password'), class: "form__label" %>
                       <div class="miru_form_error">
                         <%= error_message_on(f.object, :password) %>
                       </div>
                     </div>
                     <div class="mt-1 relative">
-                      <input name="user[password]" placeholder="<%= t('registration.password') %>" id="user_password" :type="show ? 'password' : 'text'" class="miru_form_input <%= error_message_class(f.object, :password) %>" >
-                      <div class="miru_password_eye_position">
-                        <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="miru_password_eye_icon">
-                        <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="miru_password_eye_icon">
+                      <input name="user[password]" placeholder="<%= t('registration.password') %>" id="user_password" :type="show ? 'password' : 'text'" class="form__input <%= error_message_class(f.object, :password) %>" >
+                      <div class="password_eye__position">
+                        <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="password_eye__icon">
+                        <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="password_eye__icon">
                       </div>
                     </div>
                   </div>
@@ -67,34 +67,34 @@
                 <div class="mt-4">
                   <div class="field" x-data="{ show: true }">
                     <div class="field_with_errors">
-                      <%= f.label t('registration.confirm_password'), class: "miru_form_label" %>
-                      <div class="miru_form_error">
+                      <%= f.label t('registration.confirm_password'), class: "form__label" %>
+                      <div class="form__error">
                         <%= error_message_on(f.object, :password_confirmation) %>
                       </div>
                     </div>
                     <div class="mt-1 relative">
-                      <input name="user[password_confirmation]" placeholder="<%= t('registration.confirm_password') %>" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="miru_form_input <%= error_message_class(f.object, :password_confirmation) %>">
-                      <div class="miru_password_eye_position">
-                        <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="miru_password_eye_icon">
-                        <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="miru_password_eye_icon">
+                      <input name="user[password_confirmation]" placeholder="<%= t('registration.confirm_password') %>" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="form__input <%= error_message_class(f.object, :password_confirmation) %>">
+                      <div class="password_eye__position">
+                        <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="password_eye__icon">
+                        <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="password_eye__icon">
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="actions mt-4">
-                  <%= f.submit "SIGN UP", class: "miru_form_button"%>
+                  <%= f.submit "SIGN UP", class: "form__button"%>
                 </div>
               <% end %>
               <div class="my-2">
                 <div class="relative flex justify-center">
-                  <span class="px-2 miru_form_label">
+                  <span class="px-2 form__label">
                     <%= t('registration.or') %>
                   </span>
                 </div>
               </div>
               <div>
                 <div class="mt-4">
-                  <%= button_to user_google_oauth2_omniauth_authorize_path, class: "miru_form_button" do %>
+                  <%= button_to user_google_oauth2_omniauth_authorize_path, class: "form__button" do %>
                     <img src="<%= image_url 'google.svg' %>" class="-ml-0.5 mr-2 h-4 w-4">
                     <%= t('registration.signup_with_google') %>
                   <% end %>
@@ -102,7 +102,7 @@
               </div>
               <div>
                 <div class="mt-4">
-                  <button type="button" class="miru_form_button">
+                  <button type="button" class="form__button">
                     <img src="<%= image_url 'apple.svg' %>" class="-ml-0.5 mr-2 h-4 w-4">
                     <%= t('registration.signup_with_apple') %>
                   </button>

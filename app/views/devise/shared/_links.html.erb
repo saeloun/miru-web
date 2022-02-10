@@ -1,9 +1,9 @@
 <%- if controller_name != 'sessions' %>
   <% if controller_name == 'registrations' %>
     <div class="text-center mt-4">
-      <p class="miru_form_label">
+      <p class="form__label">
         <%= t('shared_links.already_have_an_account') %>
-        <%= link_to t('shared_links.sign_in'), new_session_path(resource_name), class: "miru_form_link" %><br />
+        <%= link_to t('shared_links.sign_in'), new_session_path(resource_name), class: "form__link" %><br />
       </p>
     </div>
   <% else %>
@@ -19,9 +19,9 @@
 <% end %>
 <%- if devise_mapping.registerable? && controller_name != 'registrations' && controller_name != 'passwords' %>
   <div class="mt-2 text-center">
-    <p class="miru_form_label">
+    <p class="form__label">
       <%= t('shared_links.dont_have_an_account') %>
-      <%= link_to t('shared_links.sign_up'), new_registration_path(resource_name), class: "miru_form_link" %><br />
+      <%= link_to t('shared_links.sign_up'), new_registration_path(resource_name), class: "form__link" %><br />
     </p>
   </div>
 <% end %>
