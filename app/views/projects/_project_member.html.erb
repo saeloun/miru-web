@@ -1,0 +1,8 @@
+<div class="nested-fields">
+    <div>
+        <%= f.collection_select :user_id, User.order(:first_name),:id,:first_name, {:prompt => "Select a team member"}, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000" %>
+    </div>
+    <div>
+        <%= f.number_field :hourly_rate, placeholder: 'Rate', class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000" %>
+    </div>
+</div>

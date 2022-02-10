@@ -1,12 +1,24 @@
-<%= simple_form_for @new_project do |f| %>
-    <%= f.association :client, include_blank: false %>
-    <%= f.input :name %>
-    <%= f.simple_fields_for @timesheet_entries do |form| %>
-        <%= form.input :user, list: 'first-name' %>
-        <datalist id="first-name">
-          <% User.all.each do |user| %>
-            <option value="<%= user.first_name %>"></option>
-          <% end %>
-        </datalist>
-    <% end %>
+<%= form_with model: Project.new do |f| %>
+    <%= f.label :client %>
+    <div class="mt-1">
+        <%= f.collection_select :client, Client.order(:name),:id,:name, {}, { class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000" } %>
+    </div>
+
+    <%= f.label :project_name %>
+    <div class="mt-1">
+        <%= f.text_field :name, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000" %>
+    </div>
+
+    <div class="flex items-center">
+        <%= f.radio_button :billable, true, class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000" %>
+        <%= f.label :billable, "Billable", class: "ml-3 block text-sm  font-semibold text-miru-dark-purple-1000" %>
+    
+        <%= f.radio_button :billable, false, class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000" %>
+        <%= f.label :billable, "Non-Billable", class: "ml-3 block text-sm  font-semibold text-miru-dark-purple-1000" %>
+    </div>
+
+    <div class="actions mt-4">
+        <%= f.submit "ADD PROJECT", class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer" %>
+    </div>
 <% end %>
+  

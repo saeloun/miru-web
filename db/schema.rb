@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_27_064310) do
+ActiveRecord::Schema.define(version: 2022_02_10_103446) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -78,10 +78,22 @@ ActiveRecord::Schema.define(version: 2022_01_27_064310) do
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
+  create_table "project_members", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
+    t.decimal "hourly_rate", default: "0.0", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "discarded_at", precision: 6
+    t.index ["discarded_at"], name: "index_project_members_on_discarded_at"
+    t.index ["project_id"], name: "index_project_members_on_project_id"
+    t.index ["user_id"], name: "index_project_members_on_user_id"
+  end
+
   create_table "projects", force: :cascade do |t|
     t.bigint "client_id", null: false
     t.string "name", null: false
-    t.text "description", null: false
+    t.text "description"
     t.boolean "billable", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -96,6 +108,16 @@ ActiveRecord::Schema.define(version: 2022_01_27_064310) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
+  end
+
+  create_table "team_members", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
+    t.decimal "hourly_rate", default: "0.0", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_id"], name: "index_team_members_on_project_id"
+    t.index ["user_id"], name: "index_team_members_on_user_id"
   end
 
   create_table "timesheet_entries", force: :cascade do |t|
@@ -140,7 +162,9 @@ ActiveRecord::Schema.define(version: 2022_01_27_064310) do
     t.string "invited_by_type"
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
+    t.datetime "discarded_at", precision: 6
     t.index ["company_id"], name: "index_users_on_company_id"
+    t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
@@ -161,6 +185,8 @@ ActiveRecord::Schema.define(version: 2022_01_27_064310) do
   add_foreign_key "clients", "companies"
   add_foreign_key "identities", "users"
   add_foreign_key "projects", "clients"
+  add_foreign_key "team_members", "projects"
+  add_foreign_key "team_members", "users"
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies"

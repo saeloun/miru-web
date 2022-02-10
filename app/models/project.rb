@@ -5,7 +5,11 @@
 #  id          :integer          not null, primary key
 #  client_id   :integer          not null
 #  name        :string           not null
+<<<<<<< HEAD
 #  description :text             not null
+=======
+#  description :text
+>>>>>>> 9592abb (added the new project functionality)
 #  billable    :boolean          not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
@@ -21,6 +25,7 @@ class Project < ApplicationRecord
   belongs_to :client
   has_many :timesheet_entries
 
-  validates :name, :description, presence: true
+  # Validations
+  validates :name, presence: true
   validates :billable, inclusion: { in: [ true, false ] }
 end
