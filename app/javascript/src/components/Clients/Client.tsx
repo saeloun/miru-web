@@ -4,7 +4,7 @@ export interface IClient {
   id: number;
   name: string;
   email: string;
-  hours_logged: string;
+  hoursLogged: string;
   editIcon: string;
   deleteIcon: string;
   isAdminUser: boolean;
@@ -14,7 +14,7 @@ const Client = ({
   id,
   name,
   email,
-  hours_logged,
+  hoursLogged,
   editIcon,
   deleteIcon,
   isAdminUser
@@ -27,7 +27,7 @@ const Client = ({
       {email}
     </td>
     <td className="px-6 py-4 whitespace-nowrap text-right font-black">
-      {hours_logged}
+      {hoursLogged}
     </td>
     {isAdminUser && (
       <>

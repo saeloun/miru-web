@@ -37,7 +37,7 @@
       </div>
 
       <%= react_component("Clients",
-                          clients: clients,
+                          clients: clients.map { |h| h.transform_keys { |k| k.to_s.camelize(:lower) } },
                           editIcon: image_url('edit_image_button.svg'),
                           deleteIcon: image_url('delete_image_button.svg'),
                           isAdminUser: current_user.admin?) %>
