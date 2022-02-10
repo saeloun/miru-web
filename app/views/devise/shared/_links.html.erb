@@ -2,36 +2,36 @@
   <% if controller_name == 'registrations' %>
     <div class="text-center mt-4">
       <p class="text-center text-miru-dark-purple-1000 text-xs font-bold">
-        Already have an account?
-        <%= link_to "Sign in", new_session_path(resource_name), class: "text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-wider" %><br />
+        <%= t('shared_links.already_have_an_account') %>
+        <%= link_to t('shared_links.sign_in'), new_session_path(resource_name), class: "text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-wider" %><br />
       </p>
     </div>
   <% else %>
     <div class="text-center mt-2">
-        <%= link_to "BACK TO LOGIN", new_session_path(resource_name), class: "text-center text-miru-han-purple-1000 font-sans font-normal text-base hover:text-miru-han-purple-600" %>
+        <%= link_to t('shared_links.back_to_login'), new_session_path(resource_name), class: "text-center text-miru-han-purple-1000 font-sans font-normal text-base hover:text-miru-han-purple-600" %>
     </div>
   <%end%>
 <% end %>
 <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
   <div class="mt-3 text-center">
-    <%= link_to "FORGOT PASSWORD ?", new_password_path(resource_name), class: "text-center text-miru-han-purple-1000 font-sans font-normal text-sm hover:text-miru-han-purple-600" %><br />
+    <%= link_to t('shared_links.forgot_password'), new_password_path(resource_name), class: "text-center text-miru-han-purple-1000 font-sans font-normal text-sm hover:text-miru-han-purple-600" %><br />
   </div>
 <% end %>
 <%- if devise_mapping.registerable? && controller_name != 'registrations' && controller_name != 'passwords' %>
   <div class="mt-2 text-center">
     <p class="text-center text-miru-dark-purple-1000 text-xs font-bold">
-      Don't have an account?
-      <%= link_to "Sign up", new_registration_path(resource_name), class: "text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-wider" %><br />
+      <%= t('shared_links.dont_have_an_account') %>
+      <%= link_to t('shared_links.sign_up'), new_registration_path(resource_name), class: "text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-wider" %><br />
     </p>
   </div>
 <% end %>
 <%
 =begin%>
 <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
-  <%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %><br />
+  <%= link_to t('shared_links.confirmation_instruction'), new_confirmation_path(resource_name) %><br />
 <% end %>
 <%
 =end%>
 <%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
-  <%= link_to "Didn't receive unlock instructions?", new_unlock_path(resource_name) %><br />
+  <%= link_to t('shared_links.unlock_instruction'), new_unlock_path(resource_name) %><br />
 <% end %>

@@ -74,3 +74,23 @@ en:
     first_name: First Name
     last_name: Last Name
     email: Email
+  registration:
+    signup: Sign Up
+    name: Name
+    first_name: First Name
+    last_Name: Last Name
+    password: Password
+    confirm_password: Confirm Password
+    email_id: Email ID
+    or: OR
+    signup_with_google: SIGN UP WITH GOOGLE
+    signup_with_apple: SIGN UP WITH APPLE
+  shared_links:
+    already_have_an_account: Already have an account?
+    sign_in: Sign In
+    dont_have_an_account: Don't have an account?
+    sign_up: Sign Up
+    forgot_password: FORGOT PASSWORD ?
+    back_to_login: BACK TO LOGIN
+    confirmation_instruction: Didn't receive confirmation instructions?
+    unlock_instruction: Didn't receive unlock instructions?
