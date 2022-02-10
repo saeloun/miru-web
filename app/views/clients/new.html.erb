@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="mt-1">
-        <%= f.text_field :email, autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :email)}" %>
+        <%= f.text_field :email, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :email)}" %>
       </div>
     </div>
   </div>
@@ -36,7 +36,7 @@
         </div>
       </div>
       <div class="mt-1">
-        <%= f.text_field :phone, autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :phone)}" %>
+        <%= f.text_field :phone, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :phone)}" %>
       </div>
     </div>
   </div>
@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="mt-1">
-        <%= f.text_area :address, autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :address)}" %>
+        <%= f.text_area :address, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :address)}" %>
       </div>
     </div>
   </div>
@@ -64,7 +64,7 @@
         </div>
       </div>
       <div class="mt-1">
-        <%= f.select :country, [[ "Please select", "", { selected: true, disabled: true }]] + ISO3166::Country.pluck(:alpha2, :name).collect { |c| [ c.second, c.first ] }, {}, { autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :country)}" } %>
+        <%= f.select :country, [[ "Please select", "", { selected: true, disabled: true }]] + ISO3166::Country.pluck(:alpha2, :name).collect { |c| [ c.second, c.first ] }, {}, { class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :country)}" } %>
       </div>
     </div>
   </div>
@@ -78,7 +78,7 @@
         </div>
       </div>
       <div class="mt-1">
-        <%= f.select :timezone, [[ "Please select", "", { selected: true, disabled: true }]] + TZInfo::Timezone.all_country_zones.collect { |t| [ t.to_s ] }, {}, { autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :timezone)}" } %>
+        <%= f.select :timezone, [[ "Please select", "", { selected: true, disabled: true }]] + TZInfo::Timezone.all_country_zones.collect { |t| [ t.to_s ] }, {}, { class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :timezone)}" } %>
       </div>
     </div>
   </div>
