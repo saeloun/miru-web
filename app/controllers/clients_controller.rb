@@ -2,7 +2,7 @@
 
 class ClientsController < ApplicationController
   def index
-    render :index, locals: { clients: clients.map { |c| c.attributes.merge({ hours_logged: c.timesheet_entries.sum(:duration) }) }, new_client: client, keep_new_client_dialog_open: false }
+    render :index, locals: { clients: clients.map { |c| c.attributes.merge({ hours_logged: c.timesheet_entries.sum(:duration) }) }, new_client: Client.new, keep_new_client_dialog_open: false }
   end
 
   def create
@@ -19,10 +19,6 @@ class ClientsController < ApplicationController
   private
     def clients
       @_clients ||= current_company.clients
-    end
-
-    def client
-      @_client ||= Client.new
     end
 
     def client_params
