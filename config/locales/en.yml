@@ -57,6 +57,14 @@ en:
     create:
       failure: "Client creation failed"
       success: "Client added successfully"
+    new:
+      name: Name
+      email: Email
+      phone: Phone
+      address: Address
+      country: Country
+      timezone: Timezone
+      add_client: ADD CLIENT
   team:
     team: Team
     new_user: NEW USER

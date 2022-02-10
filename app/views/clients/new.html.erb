@@ -2,7 +2,7 @@
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
-        <%= f.label :name, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+        <%= f.label t('clients.new.name'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
         <div class="tracking-wider block text-xs text-red-600">
           <%= error_message_on(f.object, :name) %>
         </div>
@@ -16,7 +16,7 @@
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
-        <%= f.label :email, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+        <%= f.label t('clients.new.email'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
         <div class="tracking-wider block text-xs text-red-600">
           <%= error_message_on(f.object, :email) %>
         </div>
@@ -30,7 +30,7 @@
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
-        <%= f.label :phone, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+        <%= f.label t('clients.new.phone'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
         <div class="tracking-wider block text-xs text-red-600">
           <%= error_message_on(f.object, :phone) %>
         </div>
@@ -44,7 +44,7 @@
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
-        <%= f.label :address, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+        <%= f.label t('clients.new.address'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
         <div class="tracking-wider block text-xs text-red-600">
           <%= error_message_on(f.object, :address) %>
         </div>
@@ -58,7 +58,7 @@
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
-        <%= f.label :country, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+        <%= f.label t('clients.new.country'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
         <div class="tracking-wider block text-xs text-red-600">
           <%= error_message_on(f.object, :country) %>
         </div>
@@ -72,7 +72,7 @@
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
-        <%= f.label :timezone, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+        <%= f.label t('clients.new.timezone'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
         <div class="tracking-wider block text-xs text-red-600">
           <%= error_message_on(f.object, :timezone) %>
         </div>
@@ -84,7 +84,7 @@
   </div>
 
   <div class="actions mt-4">
-    <%= f.submit "ADD CLIENT", class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer"%>
+    <%= f.submit t('clients.new.add_client'), class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer"%>
   </div>
 
 <% end %>
