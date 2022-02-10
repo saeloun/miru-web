@@ -61,6 +61,7 @@
         "window": true
     },
     "rules": {
+      "object-curly-newline": "off",
       "comma-dangle": ["error", "never"],
       "indent": ["warn", 2, { "SwitchCase": 1 }],
       "key-spacing": 1,
@@ -78,7 +79,6 @@
       "react/no-unescaped-entities": 0,
       "react/prop-types": 0,
       "react/jsx-key": 0,
-      "arrow-body-style": ["error", "as-needed"],
       "import/order": ["error", {
         "groups": ["external", "builtin", "internal", "sibling", "parent", "index"],
         "pathGroups": [

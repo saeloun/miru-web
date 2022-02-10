@@ -1,0 +1,48 @@
+<td id="profilepicture-<%= member.id %>" class="px-3 py-3 whitespace-nowrap">
+  <%= image_tag user_avatar(member), class: "h-10 w-10 rounded-full" %>
+</td>
+<td id="full_name-<%= member.id %>" class="px-3 py-3 whitespace-nowrap">
+  <div class="flex items-center">
+    <div class="text-base font-normal text-miru-dark-purple-1000">
+      <%= member.full_name.capitalize %>
+    </div>
+  </div>
+</td>
+<td id="email-<%= member.id %>" class="px-3 py-3 whitespace-nowrap text-xs font-normal text-miru-dark-purple-1000">
+  <% if member.unconfirmed_email? %>
+    <%= t('team.current_email') %> : <%= member.email %><br/>
+    <%= t('team.changed_email') %>: <%= member.unconfirmed_email %>
+  <% else %>
+    <%= member.email %>
+  <% end %>
+</td>
+<td id="role-<%= member.id %>" class="px-3 py-3 whitespace-nowrap text-xs font-normal text-miru-dark-purple-1000">
+  <%= member.primary_role.titlecase %>
+</td>
+<td id="pending-<%= member.id %>" class="px-3 py-3 whitespace-nowrap">
+  <% if current_user.has_any_role?(:owner, :admin) %>
+    <% if member.unconfirmed_email?  %>
+      <span class="px-2 inline-flex text-xs leading-5 tracking-widest font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
+        <%= t('team.reconfirmation') %>
+      </span>
+    <% elsif !member.invitation_accepted? && !member.has_any_role?(:owner) %>
+      <span class="px-2 inline-flex text-xs leading-5 tracking-widest font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
+       <%= t('team.invitation') %>
+      </span>
+    <% end %>
+  <% end %>
+</td>
+<td id="full_name-<%= member.id %>" class="px-3 py-3 whitespace-nowrap text-right text-sm font-medium">
+  <% if current_user.has_any_role?(:owner, :admin) %>
+    <%= link_to edit_team_path(member), remote: true do %>
+      <img id="mid-<%= member.id %>" class="bottom h-6 w-6p-2 rounded hover:bg-opacity-20 hover:bg-miru-gray-1000" src="<%= image_url 'edit_image_button.svg' %>" onclick="openModal('another-modal')">
+    <% end %>
+  <% end %>
+</td>
+<td class="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+  <% if current_user.has_any_role?(:owner, :admin) %>
+    <%= link_to team_path(member), method: :delete do %>
+      <img class="bottom h-6 w-6p-2 rounded hover:bg-opacity-20 hover:bg-miru-gray-1000" src="<%= image_url 'delete_image_button.svg' %>">
+    <% end %>
+  <% end %>
+</td>

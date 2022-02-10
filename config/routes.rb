@@ -10,9 +10,11 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     registrations: "users/registrations",
     sessions: "users/sessions",
+    passwords: "users/passwords",
     invitations: "users/invitations",
     omniauth_callbacks: "users/omniauth_callbacks"
   }
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   # For opening the email in the web browser in non production environments
@@ -25,10 +27,11 @@ Rails.application.routes.draw do
   resources :dashboard, only: [:index]
 
   # get "*path", to: "home#index", via: :all
-  resource :company, only: [:new, :show, :create, :update], controller: :company do
-    delete :purge_logo
+  resource :company, only: [:new, :show, :create, :update], controller: :companies do
+    resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
   end
   resources :time_tracking, only: [:index], path: "time-tracking"
+  resources :team, only: [:index, :update, :destroy, :edit]
   resources :clients, only: [:index]
   resources :team, only: [:index, :update, :destroy]
   resources :projects, only: [:index, :create]

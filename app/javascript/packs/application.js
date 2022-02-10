@@ -6,6 +6,7 @@ import * as ReactRailsUJS from "react_ujs";
 
 import "alpine-turbo-drive-adapter";
 require("alpinejs");
+require("jquery");
 
 import "@fontsource/plus-jakarta-sans";
 
@@ -14,5 +15,7 @@ Rails.start();
 ActiveStorage.start();
 
 // Support component names relative to this directory:
-const componentRequireContext = require.context("components", true);
+const componentRequireContext = require.context("src/components", true);
 ReactRailsUJS.useContext(componentRequireContext);
+
+require("packs/companies");
