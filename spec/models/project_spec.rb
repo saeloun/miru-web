@@ -14,11 +14,6 @@ RSpec.describe Project, type: :model do
     expect(project).to_not be_valid
   end
 
-  it "is not valid without a description" do
-    project.description = nil
-    expect(project).to_not be_valid
-  end
-
   it "is not valid without a billable" do
     project.billable = nil
     expect(project).to_not be_valid
