@@ -95,21 +95,21 @@ en:
     confirmation_instruction: didn't receive confirmation instructions?
     unlock_instruction: didn't receive unlock instructions?
   company:
-    settings: Settings
-    cancel: CANCEL
-    save: SAVE
-    profile_setting: PROFILE SETTINGS
-    organization_setting: ORGANIZATION SETTINGS
-    logo: Logo
-    company: Company
-    name: Name
-    address: Address
-    business_phone: Business Phone
-    country: Country
-    timezone: Timezone
-    base_currency: Base currency
-    standard_price: Standard price
-    fiscal_year: Fiscal year
-    date_format: Date Format
-    setup: Setup Org
-    save_org: SAVE ORG DETAILS
+    settings: settings
+    cancel: cancel
+    save: save
+    profile_setting: profile settings
+    organization_setting: organization settings
+    logo: logo
+    company: company
+    name: name
+    address: address
+    business_phone: business phone
+    country: country
+    timezone: timezone
+    base_currency: base currency
+    standard_price: standard price
+    fiscal_year: fiscal year
+    date_format: date Format
+    setup: setup org
+    save_org: save org details
