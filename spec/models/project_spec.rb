@@ -1,9 +1,16 @@
 # frozen_string_literal: true
 
 require "rails_helper"
-
 RSpec.describe Project, type: :model do
   let(:project) { build(:project) }
+
+  describe "Associations" do
+    it { is_expected.to have_many(:project_members).dependent(:destroy) }
+  end
+
+  describe "Callbacks" do
+    it { is_expected.to callback(:discard_project_members).after(:discard) }
+  end
 
   it "is valid with valid attributes" do
     expect(project).to be_valid

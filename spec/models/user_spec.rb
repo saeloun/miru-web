@@ -7,6 +7,11 @@ RSpec.describe User, type: :model do
 
   describe "Associations" do
     it { is_expected.to have_many(:identities).dependent(:delete_all) }
+    it { is_expected.to have_many(:project_members).dependent(:destroy) }
+  end
+
+  describe "Callbacks" do
+    it { is_expected.to callback(:discard_project_members).after(:discard) }
   end
 
   it "is valid with valid attributes" do
