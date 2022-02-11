@@ -6,30 +6,30 @@
         <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div class="bg-miru-white-1000 py-6 px-6 shadow sm:rounded-lg sm:px-10">
             <div class="space-y-3">
-              <h2 class="text-xl font-sans font-medium tracking-normal text-miru-dark-purple-1000">
-                Sign Up
+              <h2 class="form__title">
+                <%= t('registration.sign_up').titlecase %>
               </h2>
               <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
                 <div>
                   <div class="field">
                     <div class="field_with_errors">
-                      <label class="tracking-wider block text-xs font-semibold text-miru-dark-purple-1000">Name</label>
+                      <label class="form__label"> <%= t('registration.name').capitalize %></label>
                       <% if f.object.errors.include?(:first_name) %>
-                        <div class="tracking-wider block text-xs font-semibold text-red-600">
+                        <div class="form__error">
                           <%= error_message_on(f.object, :first_name) %>
                         </div>
                       <% else %>
-                        <div class="tracking-wider block text-xs font-semibold text-red-600">
+                        <div class="form__error">
                           <%= error_message_on(f.object, :last_name) %>
                         </div>
                       <% end %>
                     </div>
                     <div class="mt-1 flex -space-x-px">
                       <div class="mr-4 w-1/2 flex-1 min-w-0">
-                        <%= f.text_field :first_name, autofocus: true, class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :first_name)}" %>
+                        <%= f.text_field :first_name, placeholder: t('registration.first_name').titlecase , autofocus: true, class: "form__input #{error_message_class(f.object, :first_name)}" %>
                       </div>
                       <div class="w-1/2 flex-1 min-w-0">
-                        <%= f.text_field :last_name, autofocus: true, class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :last_name)}" %>
+                        <%= f.text_field :last_name, placeholder: t('registration.last_name').titlecase, autofocus: true, class: "form__input #{error_message_class(f.object, :last_name)}" %>
                       </div>
                     </div>
                   </div>
@@ -37,29 +37,29 @@
                 <div class="mt-4">
                   <div class="field">
                     <div class="field_with_errors">
-                      <%= f.label :email, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
-                      <div class="tracking-wider block text-xs font-semibold text-red-600">
+                      <%= f.label t('registration.email_id').capitalize, class: "form__label" %>
+                      <div class="form__error">
                         <%= error_message_on(f.object, :email) %>
                       </div>
                     </div>
                     <div class="mt-1">
-                        <%= f.text_field :email, autofocus: true, class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :email)}" %>
+                        <%= f.text_field :email, placeholder: t('registration.email_id').capitalize, autofocus: true, class: "form__input #{error_message_class(f.object, :email)}" %>
                     </div>
                   </div>
                 </div>
                 <div class="mt-4">
                   <div class="field" x-data="{ show: true }">
                     <div class="field_with_errors">
-                      <%= f.label :password, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
-                      <div class="tracking-wider block text-xs font-semibold text-red-600">
+                      <%= f.label t('registration.password').capitalize, class: "form__label" %>
+                      <div class="miru_form_error">
                         <%= error_message_on(f.object, :password) %>
                       </div>
                     </div>
                     <div class="mt-1 relative">
-                      <input name="user[password]" placeholder="" id="user_password" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base <%= error_message_class(f.object, :password) %>" >
-                      <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-                        <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
-                        <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
+                      <input name="user[password]" placeholder="<%= t('registration.password').capitalize %>" id="user_password" :type="show ? 'password' : 'text'" class="form__input <%= error_message_class(f.object, :password) %>" >
+                      <div class="password_eye__position">
+                        <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="password_eye__icon">
+                        <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="password_eye__icon">
                       </div>
                     </div>
                   </div>
@@ -67,44 +67,44 @@
                 <div class="mt-4">
                   <div class="field" x-data="{ show: true }">
                     <div class="field_with_errors">
-                      <%= f.label :password_confirmation, 'Confirm Password', class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
-                      <div class="tracking-wider block text-xs font-semibold text-red-600">
+                      <span class="form__label"><%= t('registration.confirm_password').titlecase %></span>
+                      <div class="form__error">
                         <%= error_message_on(f.object, :password_confirmation) %>
                       </div>
                     </div>
                     <div class="mt-1 relative">
-                      <input name="user[password_confirmation]" placeholder="" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base <%= error_message_class(f.object, :password_confirmation) %>">
-                      <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-                        <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
-                        <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
+                      <input name="user[password_confirmation]" placeholder="<%= t('registration.confirm_password').titlecase %>" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="form__input <%= error_message_class(f.object, :password_confirmation) %>">
+                      <div class="password_eye__position">
+                        <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="password_eye__icon">
+                        <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="password_eye__icon">
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="actions mt-4">
-                  <%= f.submit "SIGN UP", class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer"%>
+                  <%= f.submit t('registration.sign_up').upcase, class: "form__button"%>
                 </div>
               <% end %>
               <div class="my-2">
-                <div class="relative flex justify-center text-sm">
-                  <span class="px-2 bg-miru-white-1000 font-sans font-normal text-miru-dark-purple-1000">
-                    OR
+                <div class="relative flex justify-center">
+                  <span class="px-2 form__label">
+                    <%= t('registration.or').upcase %>
                   </span>
                 </div>
               </div>
               <div>
                 <div class="mt-4">
-                  <%= button_to user_google_oauth2_omniauth_authorize_path, class: 'tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded' do %>
-                    <img src="<%= image_url 'google.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-                    SIGN UP WITH GOOGLE
+                  <%= button_to user_google_oauth2_omniauth_authorize_path, class: "form__button" do %>
+                    <img src="<%= image_url 'google.svg' %>" class="-ml-0.5 mr-2 h-4 w-4">
+                    <%= t('registration.signup_with_google').upcase %>
                   <% end %>
                 </div>
               </div>
               <div>
                 <div class="mt-4">
-                  <button type="button" class="tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded">
-                    <img src="<%= image_url 'apple.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-                    SIGN UP WITH APPLE
+                  <button type="button" class="form__button">
+                    <img src="<%= image_url 'apple.svg' %>" class="-ml-0.5 mr-2 h-4 w-4">
+                    <%= t('registration.signup_with_apple').upcase %>
                   </button>
                 </div>
               </div>
