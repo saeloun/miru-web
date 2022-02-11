@@ -460,7 +460,7 @@ DEPENDENCIES
   letter_opener
   letter_opener_web
   money
-  newrelic_rpm
+  newrelic_rpm (~> 8.4)
   omniauth-google-oauth2 (~> 1.0)
   omniauth-rails_csrf_protection (~> 1.0)
   pg
