@@ -234,6 +234,7 @@ GEM
       digest
       net-protocol
       timeout
+    newrelic_rpm (8.4.0)
     nio4r (2.5.8)
     nokogiri (1.13.0-arm64-darwin)
       racc (~> 1.4)
@@ -461,6 +462,7 @@ DEPENDENCIES
   letter_opener
   letter_opener_web
   money
+  newrelic_rpm (~> 8.4)
   omniauth-google-oauth2 (~> 1.0)
   omniauth-rails_csrf_protection (~> 1.0)
   pg
