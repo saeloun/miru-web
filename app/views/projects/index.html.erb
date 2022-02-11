@@ -82,19 +82,6 @@
       </div>
       </div>
     </div>
-
-    <div class="px-4 min-h-screen flex items-center justify-center">
-    <div class="overflow-auto" style="background-color: rgba(29, 26, 49,0.6)" x-show="isDialogOpen" :class="{ 'absolute inset-0 z-10 flex items-start justify-center': isDialogOpen }">
-      <div class="relative px-4 min-h-screen md:flex md:items-center md:justify-center">
-      <div class="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md sm:w-full" x-show="isDialogOpen" @click.away="isDialogOpen = false">
-        <div class="flex justify-between items-center mt-6">
-          <h6 class="text-base font-extrabold">Add New Project</h6>
-          <button type="button" @click="isDialogOpen = false"><img src="<%= image_url 'close_button.svg' %>"%></button>
-        </div>
-        <%= render "projects/new"%>
-      </div>
-      </div>
-    </div>
   </div>
 </div>
 </div>
