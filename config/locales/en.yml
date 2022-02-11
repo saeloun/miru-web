@@ -75,8 +75,8 @@ en:
     last_name: Last Name
     email: Email
   registration:
-    signup: sign up
-    signin: sign in
+    sign_up: sign up
+    sign_in: sign in
     name: name
     first_name: first Name
     last_Name: last Name

@@ -7,7 +7,7 @@
           <div class="bg-miru-white-1000 py-6 px-6 shadow sm:rounded-lg sm:px-10">
             <div class="space-y-3">
               <h2 class="form__title">
-                <%= t('registration.signin').titlecase %>
+                <%= t('registration.sign_in').titlecase %>
               </h2>
               <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
                 <div>
@@ -52,7 +52,7 @@
                 </div>
                 <div>
                   <div class="actions mt-4">
-                    <%= f.submit t('registration.signin').titlecase, class: "form__button" %>
+                    <%= f.submit t('registration.sign_in').upcase, class: "form__button" %>
                   </div>
                 </div>
               <% end %>
