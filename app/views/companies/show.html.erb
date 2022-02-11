@@ -78,7 +78,7 @@
                 </div>
               </div>
               <div class="mt-1">
-                <%= form.text_field t('company.name').capitalize, autofocus: true, autocomplete: "name", class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(form.object, :name)}" %>
+                <%= form.text_field :name, autofocus: true, autocomplete: "name", class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(form.object, :name)}" %>
               </div>
             </div>
           </div>
