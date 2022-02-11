@@ -79,7 +79,7 @@ en:
     sign_in: sign in
     name: name
     first_name: first name
-    last_Name: last name
+    last_name: last name
     password: password
     confirm_password: confirm password
     email_id: email
