@@ -29,6 +29,7 @@ users.each do |user|
   )
   company_user.add_role(user[:role])
 end
+seed_users  = User.where(email: users.map { |user| user[:email] })
 puts "#{users.size} Users created"
 
 clientData = [
@@ -52,6 +53,23 @@ angel_india = Client.second.projects.create!(
 )
 
 puts "Projects Created"
+
+# Create project members
+seed_users.each do |user|
+  ProjectMember.create!(
+    user: user,
+    project: miru,
+    hourly_rate: 5000
+  )
+
+  ProjectMember.create!(
+    user: user,
+    project: angel_india,
+    hourly_rate: 6500
+  )
+end
+
+puts "Project Members Created"
 
 entry_info = {
   user: User.first,
