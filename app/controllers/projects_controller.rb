@@ -11,6 +11,7 @@ class ProjectsController < ApplicationController
 
     if project.save
       redirect_to projects_path
+      flash[:notice] = "Project added successfully."
     end
   end
 
