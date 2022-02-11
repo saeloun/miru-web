@@ -13,9 +13,9 @@ class ClientsController < ApplicationController
     client = Client.new(client_params)
     client.company_id = current_company.id
     if client.save
-      redirect_to clients_path, notice: t(".success")
+      redirect_to clients_path, notice: t("client.create.success")
     else
-      flash.now[:error] = t(".failure")
+      flash.now[:error] = t("client.create.failure")
       render :index, locals: {
         clients: clients,
         new_client: client,

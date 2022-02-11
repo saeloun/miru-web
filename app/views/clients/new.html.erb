@@ -2,13 +2,13 @@
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
-        <%= f.label t('clients.new.name'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+        <%= f.label t('client.name.label'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
         <div class="tracking-wider block text-xs text-red-600">
           <%= error_message_on(f.object, :name) %>
         </div>
       </div>
       <div class="mt-1">
-        <%= f.text_field :name, autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :name)}" %>
+        <%= f.text_field :name, placeholder: t('client.name.placeholder'), autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :name)}" %>
       </div>
     </div>
   </div>
@@ -16,13 +16,13 @@
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
-        <%= f.label t('clients.new.email'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+        <%= f.label t('client.email.label'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
         <div class="tracking-wider block text-xs text-red-600">
           <%= error_message_on(f.object, :email) %>
         </div>
       </div>
       <div class="mt-1">
-        <%= f.text_field :email, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :email)}" %>
+        <%= f.text_field :email, placeholder: t('client.email.placeholder'), class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :email)}" %>
       </div>
     </div>
   </div>
@@ -30,13 +30,13 @@
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
-        <%= f.label t('clients.new.phone'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+        <%= f.label t('client.phone.label'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
         <div class="tracking-wider block text-xs text-red-600">
           <%= error_message_on(f.object, :phone) %>
         </div>
       </div>
       <div class="mt-1">
-        <%= f.text_field :phone, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :phone)}" %>
+        <%= f.text_field :phone, placeholder: t('client.phone.placeholder'), class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :phone)}" %>
       </div>
     </div>
   </div>
@@ -44,13 +44,13 @@
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
-        <%= f.label t('clients.new.address'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+        <%= f.label t('client.address.label'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
         <div class="tracking-wider block text-xs text-red-600">
           <%= error_message_on(f.object, :address) %>
         </div>
       </div>
       <div class="mt-1">
-        <%= f.text_area :address, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :address)}" %>
+        <%= f.text_area :address, placeholder: t('client.address.placeholder'), class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(f.object, :address)}" %>
       </div>
     </div>
   </div>
@@ -58,7 +58,7 @@
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
-        <%= f.label t('clients.new.country'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+        <%= f.label t('client.country.label'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
         <div class="tracking-wider block text-xs text-red-600">
           <%= error_message_on(f.object, :country) %>
         </div>
@@ -72,7 +72,7 @@
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
-        <%= f.label t('clients.new.timezone'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+        <%= f.label t('client.timezone.label'), class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
         <div class="tracking-wider block text-xs text-red-600">
           <%= error_message_on(f.object, :timezone) %>
         </div>
@@ -84,7 +84,7 @@
   </div>
 
   <div class="actions mt-4">
-    <%= f.submit t('clients.new.add_client'), class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer"%>
+    <%= f.submit t('client.add'), class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer"%>
   </div>
 
 <% end %>
