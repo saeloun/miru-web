@@ -391,9 +391,6 @@ GEM
       activesupport (>= 3)
     shoulda-matchers (5.1.0)
       activesupport (>= 5.2.0)
-    simple_form (5.1.0)
-      actionpack (>= 5.2)
-      activemodel (>= 5.2)
     simple_po_parser (1.1.5)
     simplecov (0.21.2)
       docile (~> 1.1)
@@ -486,7 +483,6 @@ DEPENDENCIES
   selenium-webdriver (>= 4.0.0)
   shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers (~> 5.1)
-  simple_form
   simplecov
   spring
   tzinfo-data

@@ -4,20 +4,19 @@ class ProjectsController < ApplicationController
   def index
     @query = Project.ransack(params[:q])
     @projects = @query.result(distinct: true)
-
-    @new_project = Project.new
-    @timesheet_entries = TimesheetEntry.new
-    @clients = Client.select("name")
   end
 
   def create
-    client_id = params[:project][:client].to_i
-    name = params[:project][:name]
-    billable = params[:project][:billable]
-    project = Project.create!(client_id: client_id, name: name, billable: billable)
+    project = Project.new(project_params)
 
-    if project.valid?
+    if project.save
       redirect_to projects_path
     end
   end
+
+  private
+    def project_params
+      params[:project][:client] = params[:project][:client].to_i
+      params.require(:project).permit(:client_id, :name, :billable)
+    end
 end
