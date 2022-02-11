@@ -26,10 +26,10 @@
                     </div>
                     <div class="mt-1 flex -space-x-px">
                       <div class="mr-4 w-1/2 flex-1 min-w-0">
-                        <%= f.text_field :first_name, placeholder: t('registration.first_name').capitalize , autofocus: true, class: "form__input #{error_message_class(f.object, :first_name)}" %>
+                        <%= f.text_field :first_name, placeholder: t('registration.first_name').titlecase , autofocus: true, class: "form__input #{error_message_class(f.object, :first_name)}" %>
                       </div>
                       <div class="w-1/2 flex-1 min-w-0">
-                        <%= f.text_field :last_name, placeholder: t('registration.last_Name').capitalize, autofocus: true, class: "form__input #{error_message_class(f.object, :last_name)}" %>
+                        <%= f.text_field :last_name, placeholder: t('registration.last_Name').titlecase, autofocus: true, class: "form__input #{error_message_class(f.object, :last_name)}" %>
                       </div>
                     </div>
                   </div>
@@ -67,7 +67,7 @@
                 <div class="mt-4">
                   <div class="field" x-data="{ show: true }">
                     <div class="field_with_errors">
-                      <%= f.label t('registration.confirm_password').titlecase, class: "form__label" %>
+                      <span class="form__label"><%= t('registration.confirm_password').titlecase %></span>
                       <div class="form__error">
                         <%= error_message_on(f.object, :password_confirmation) %>
                       </div>

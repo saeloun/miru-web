@@ -78,10 +78,10 @@ en:
     sign_up: sign up
     sign_in: sign in
     name: name
-    first_name: first Name
-    last_Name: last Name
+    first_name: first name
+    last_Name: last name
     password: password
-    confirm_password: confirm Password
+    confirm_password: confirm password
     email_id: email
     remember_me: remember me
     or: or
