@@ -11,9 +11,6 @@ class ProjectsController < ApplicationController
   end
 
   def create
-  end
-
-  def create
     client_id = params[:project][:client].to_i
     name = params[:project][:name]
     billable = params[:project][:billable]

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <%= form_with model: Project.new do |f| %>
     <%= f.label :client %>
     <div class="mt-1">
@@ -22,3 +23,17 @@
     </div>
 <% end %>
   
+=======
+<%= simple_form_for @new_project do |f| %>
+    <%= f.association :client, include_blank: false %>
+    <%= f.input :name %>
+    <%= f.simple_fields_for @timesheet_entries do |form| %>
+        <%= form.input :user, list: 'first-name' %>
+        <datalist id="first-name">
+          <% User.all.each do |user| %>
+            <option value="<%= user.first_name %>"></option>
+          <% end %>
+        </datalist>
+    <% end %>
+<% end %>
+>>>>>>> 1a65040 (resolved the conflicts)
