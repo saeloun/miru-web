@@ -106,6 +106,7 @@ group :development, :test do
 
   # Simple one-liner tests for common Rails functionality
   gem "shoulda-matchers", "~> 5.1"
+  gem "shoulda-callback-matchers", "~> 1.1.1"
 
   # Use factory-bot to replace fixtures
   gem "factory_bot_rails"
