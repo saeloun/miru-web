@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_03_124722) do
+ActiveRecord::Schema.define(version: 2022_02_10_083025) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -78,6 +78,18 @@ ActiveRecord::Schema.define(version: 2022_02_03_124722) do
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
+  create_table "project_members", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
+    t.decimal "hourly_rate", default: "0.0", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "discarded_at", precision: 6
+    t.index ["discarded_at"], name: "index_project_members_on_discarded_at"
+    t.index ["project_id"], name: "index_project_members_on_project_id"
+    t.index ["user_id"], name: "index_project_members_on_user_id"
+  end
+
   create_table "projects", force: :cascade do |t|
     t.bigint "client_id", null: false
     t.string "name", null: false
@@ -85,7 +97,9 @@ ActiveRecord::Schema.define(version: 2022_02_03_124722) do
     t.boolean "billable", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "discarded_at", precision: 6
     t.index ["client_id"], name: "index_projects_on_client_id"
+    t.index ["discarded_at"], name: "index_projects_on_discarded_at"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -162,6 +176,8 @@ ActiveRecord::Schema.define(version: 2022_02_03_124722) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "clients", "companies"
   add_foreign_key "identities", "users"
+  add_foreign_key "project_members", "projects"
+  add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
