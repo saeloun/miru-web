@@ -24,5 +24,5 @@ class Company < ApplicationRecord
   has_many :projects, through: :clients, dependent: :destroy
   has_one_attached :logo
 
-  validates :name, :address, :business_phone, :standard_price, :country, :base_currency, presence: true
+  validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
 end
