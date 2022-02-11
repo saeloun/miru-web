@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="mt-1">
-        <%= f.text_area :address, placeholder: t('client.address.placeholder'), class: "form__input_text_area #{error_message_class(f.object, :address)}" %>
+        <%= f.text_area :address, placeholder: t('client.address.placeholder'), class: "form--input-textarea #{error_message_class(f.object, :address)}" %>
       </div>
     </div>
   </div>
@@ -64,7 +64,7 @@
         </div>
       </div>
       <div class="mt-1">
-        <%= f.select :country, [[ "Please select", "", { selected: true, disabled: true }]] + ISO3166::Country.pluck(:alpha2, :name).collect { |c| [ c.second, c.first ] }, {}, { class: "form__input_select #{error_message_class(f.object, :country)}" } %>
+        <%= f.select :country, [[ "Please select", "", { selected: true, disabled: true }]] + ISO3166::Country.pluck(:alpha2, :name).collect { |c| [ c.second, c.first ] }, {}, { class: "form--input-select #{error_message_class(f.object, :country)}" } %>
       </div>
     </div>
   </div>
@@ -78,7 +78,7 @@
         </div>
       </div>
       <div class="mt-1">
-        <%= f.select :timezone, [[ "Please select", "", { selected: true, disabled: true }]] + TZInfo::Timezone.all_country_zones.collect { |t| [ t.to_s ] }, {}, { class: "form__input_select #{error_message_class(f.object, :timezone)}" } %>
+        <%= f.select :timezone, [[ "Please select", "", { selected: true, disabled: true }]] + TZInfo::Timezone.all_country_zones.collect { |t| [ t.to_s ] }, {}, { class: "form--input-select #{error_message_class(f.object, :timezone)}" } %>
       </div>
     </div>
   </div>
