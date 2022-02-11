@@ -90,6 +90,9 @@ gem "ransack"
 # For Soft deletion
 gem "discard", "~> 1.2"
 
+# Use newrelic for monitoring
+gem "newrelic_rpm", "~> 8.4"
+
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
