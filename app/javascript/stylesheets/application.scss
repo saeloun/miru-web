@@ -20,7 +20,7 @@
 @layer components {
   .form {
     &__input {
-      @apply rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none;
+      @apply rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none;
     }
     &__label {
       @apply tracking-wider block text-xs font-normal text-miru-dark-purple-1000;
