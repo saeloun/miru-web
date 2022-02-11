@@ -2,7 +2,11 @@
 
 class ClientsController < ApplicationController
   def index
-    render :index, locals: { clients: clients.map { |c| c.attributes.merge({ hours_logged: c.timesheet_entries.sum(:duration) }) }, new_client: Client.new, keep_new_client_dialog_open: false }
+    render :index, locals: {
+      clients: clients,
+      new_client: Client.new,
+      keep_new_client_dialog_open: false
+    }
   end
 
   def create
@@ -12,13 +16,19 @@ class ClientsController < ApplicationController
       redirect_to clients_path, notice: t(".success")
     else
       flash.now[:error] = t(".failure")
-      render :index, locals: { clients: clients.map { |c| c.attributes.merge({ hours_logged: c.timesheet_entries.sum(:duration) }) }, new_client: client, keep_new_client_dialog_open: true }, status: :unprocessable_entity
+      render :index, locals: {
+        clients: clients,
+        new_client: client,
+        keep_new_client_dialog_open: true
+      }, status: :unprocessable_entity
     end
   end
 
   private
     def clients
-      @_clients ||= current_company.clients
+      @_clients ||= current_company.clients.map do |c|
+        c.attributes.merge({ hours_logged: c.timesheet_entries.sum(:duration) })
+      end
     end
 
     def client_params
