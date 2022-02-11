@@ -5,29 +5,18 @@ RSpec.describe Project, type: :model do
   let(:project) { build(:project) }
 
   describe "Associations" do
+    it { is_expected.to belong_to(:client) }
+    it { is_expected.to have_many(:timesheet_entries) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
+  end
+
+  describe "Validations" do
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_presence_of(:description) }
+    it { is_expected.to validate_inclusion_of(:billable).in_array([true, false]) }
   end
 
   describe "Callbacks" do
     it { is_expected.to callback(:discard_project_members).after(:discard) }
-  end
-
-  it "is valid with valid attributes" do
-    expect(project).to be_valid
-  end
-
-  it "is not valid without a name" do
-    project.name = nil
-    expect(project).to_not be_valid
-  end
-
-  it "is not valid without a description" do
-    project.description = nil
-    expect(project).to_not be_valid
-  end
-
-  it "is not valid without a billable" do
-    project.billable = nil
-    expect(project).to_not be_valid
   end
 end
