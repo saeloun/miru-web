@@ -49,6 +49,8 @@ class TimesheetEntry < ApplicationRecord
 
   private
     def insure_bill_status_is_set
+      return if project.nil?
+
       if project.billable?
         self.bill_status = :unbilled
       else
