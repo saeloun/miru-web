@@ -72,13 +72,30 @@ RSpec.describe User, type: :model do
   end
 
   describe "#active_for_authentication?" do
-    it "returns true if user is not discarded" do
-      expect(user.active_for_authentication?).to be_truthy
+    context "when user is an admin/owner" do
+      before { user.add_role :admin }
+
+      it "returns true if user is not discarded" do
+        expect(user.active_for_authentication?).to be_truthy
+      end
+
+      it "returns false if user is discarded" do
+        user.discard!
+        expect(user.active_for_authentication?).not_to be_truthy
+      end
     end
 
-    it "returns false if user does not have admin role or owner role" do
-      user.discard!
-      expect(user.admin?).not_to be_truthy
+    context "when user is not an admin/owner" do
+      before { user.remove_role :admin }
+
+      it "returns true if user is not discarded" do
+        expect(user.active_for_authentication?).to be_truthy
+      end
+
+      it "returns false if user is discarded" do
+        user.discard!
+        expect(user.active_for_authentication?).not_to be_truthy
+      end
     end
   end
 end
