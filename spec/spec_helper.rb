@@ -3,8 +3,11 @@
 require "simplecov"
 
 if ENV.fetch("COVERAGE", false)
-  SimpleCov.start do
-    add_filter "spec/"
+  SimpleCov.start "rails" do
+    add_filter "/bin/"
+    add_filter "/db/"
+    add_filter "/spec/"
+    add_filter "app/views"
   end
 end
 
