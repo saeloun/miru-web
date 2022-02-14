@@ -11,7 +11,6 @@ class ClientsController < ApplicationController
 
   def create
     client = Client.new(client_params)
-    client.company_id = current_company.id
     if client.save
       redirect_to clients_path, notice: t("client.create.success")
     else
@@ -32,6 +31,10 @@ class ClientsController < ApplicationController
     end
 
     def client_params
-      params.require(:client).permit(:name, :email, :phone, :address, :country, :timezone)
+      params.require(:client).permit(
+        :name, :email, :phone, :address, :country, :timezone
+      ).tap do |client_params|
+        client_params[:company_id] = current_company.id
+      end
     end
 end
