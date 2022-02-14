@@ -6,16 +6,26 @@ RSpec.describe User, type: :model do
   let(:user) { build(:user) }
 
   describe "Associations" do
+    it { is_expected.to belong_to(:company).optional }
     it { is_expected.to have_many(:identities).dependent(:delete_all) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
+    it { is_expected.to have_many(:timesheet_entries) }
+    it { is_expected.to have_one_attached(:avatar) }
+  end
+
+  describe "Validations" do
+    it { is_expected.to validate_presence_of(:first_name) }
+    it { is_expected.to validate_presence_of(:last_name) }
+    it { is_expected.to allow_value("foo").for(:first_name) }
+    it { is_expected.to_not allow_value("foo&23423").for(:first_name) }
+    it { is_expected.to allow_value("foo").for(:last_name) }
+    it { is_expected.to_not allow_value("foo&23423").for(:last_name) }
+    it { is_expected.to validate_length_of(:first_name).is_at_most(50) }
+    it { is_expected.to validate_length_of(:last_name).is_at_most(50) }
   end
 
   describe "Callbacks" do
     it { is_expected.to callback(:discard_project_members).after(:discard) }
-  end
-
-  it "is valid with valid attributes" do
-    expect(user).to be_valid
   end
 
   it "checks if it is an owner" do
@@ -33,114 +43,59 @@ RSpec.describe User, type: :model do
     expect(user.has_role?(:employee)).to be_truthy
   end
 
-  context "checking the presence of each attribute" do
-    it "is not valid without a first_name" do
-      user.first_name = nil
-      expect(user).to_not be_valid
-    end
-
-    it "is not valid without a last name" do
-      user.last_name = nil
-      expect(user).to_not be_valid
-    end
-
-    it "is not valid without an email" do
-      user.email = nil
-      expect(user).to_not be_valid
-    end
-
-    it "is not valid without a password" do
-      user.password = nil
-      expect(user).to_not be_valid
+  describe "#primary_role" do
+    it "shows the first role name" do
+      user.add_role :admin
+      user.add_role :owner
+      expect(user.primary_role).to eq("admin")
+      expect(user.primary_role).not_to eq("owner")
     end
   end
 
-  context "checking the length validations" do
-    it "is not valid if the length of first_name is above 50 chars" do
-      user.first_name = "j" * 55
-      expect(user).to_not be_valid
-    end
-
-    it "is valid if the length of first_name is below 50 chars" do
-      user.first_name = "j" * 45
-      expect(user).to be_valid
-    end
-
-    it "is not valid if the length of last_name is above 50 chars" do
-      user.last_name = "j" * 55
-      expect(user).to_not be_valid
-    end
-
-    it "is valid if the length of last_name is below 50 chars" do
-      user.last_name = "j" * 45
-      expect(user).to be_valid
-    end
-
-    it "is not valid if the password length is below 6 characters" do
-      user.password = "j" * 5
-      expect(user).to_not be_valid
-    end
-
-    it "is valid if the password length is 6 characters or above" do
-      user.password = "j" * 6
-      expect(user).to be_valid
-      user.password = "j" * 7
-      expect(user).to be_valid
+  describe "#full_name" do
+    it "shows the full name of user" do
+      user.first_name = "First"
+      user.last_name = "Last"
+      expect(user.full_name).to eq("First Last")
     end
   end
 
-  context "checking first and last name validations" do
-    it "is not valid if first_name contains chars other than letters" do
-      user.first_name = "first1_#%#$^&"
-      expect(user).to_not be_valid
+  describe "#admin?" do
+    it "returns true if user has admin role or owner role" do
+      user.add_role :admin
+      expect(user.admin?).to be_truthy
     end
 
-    it "is not valid if last_name contains chars other than letters" do
-      user.last_name = "last1*!@$)^#$*&@'"
-      expect(user).to_not be_valid
-    end
-
-    it "is valid if first_name contains spaces" do
-      user.first_name = "foo bar"
-      expect(user).to be_valid
-    end
-
-    it "is valid if last_name contains spaces" do
-      user.last_name = "foo bar"
-      expect(user).to be_valid
-    end
-
-    it "is not valid if first_name is blank" do
-      user.first_name = ""
-      expect(user).to_not be_valid
-      user.first_name = "    "
-      expect(user).to_not be_valid
-    end
-
-    it "is not valid if last_name is blank" do
-      user.last_name = ""
-      expect(user).to_not be_valid
-      user.last_name = "    "
-      expect(user).to_not be_valid
+    it "returns false if user does not have admin role or owner role" do
+      expect(user.admin?).not_to be_truthy
     end
   end
 
-  context "email validations" do
-    it "is not valid if email is invalid" do
-      user.email = "judis@com"
-      expect(user).to_not be_valid
+  describe "#active_for_authentication?" do
+    context "when user is an admin/owner" do
+      before { user.add_role :admin }
+
+      it "returns true if user is not discarded" do
+        expect(user.active_for_authentication?).to be_truthy
+      end
+
+      it "returns false if user is discarded" do
+        user.discard!
+        expect(user.active_for_authentication?).not_to be_truthy
+      end
     end
 
-    it "is valid if it is a valid email" do
-      user.email = "judis@saeloun.com"
-      expect(user).to be_valid
-    end
+    context "when user is not an admin/owner" do
+      before { user.remove_role :admin }
 
-    it "is not valid if email is not unique" do
-      user.email = "judis@saeloun.com"
-      user.save
-      user2 = build(:user, email: user.email)
-      expect(user2).to_not be_valid
+      it "returns true if user is not discarded" do
+        expect(user.active_for_authentication?).to be_truthy
+      end
+
+      it "returns false if user is discarded" do
+        user.discard!
+        expect(user.active_for_authentication?).not_to be_truthy
+      end
     end
   end
 end
