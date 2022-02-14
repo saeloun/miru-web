@@ -306,32 +306,54 @@ Performance/DeleteSuffix:
 # RSpec cops from rubocop-rspec
 # https://github.com/rubocop-hq/rubocop-rspec/blob/master/config/default.yml
 
+RSpec/DescribeClass:
+  Description: Check that the first argument to the top level describe is a constant.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribeClass
+  Exclude:
+    - 'spec/requests/**/*'
+
+RSpec/DescribedClassModuleWrapping:
+  Description: Avoid opening modules and defining specs within them.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribedClassModuleWrapping
+
 RSpec/ExampleLength:
   Description: Checks for long examples.
   Enabled: true
   Max: 15
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
 
+RSpec/IdenticalEqualityAssertion:
+  Description: Checks for equality assertions with identical expressions on both sides.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/IdenticalEqualityAssertion
+
+RSpec/MessageExpectation:
+  Description: Checks for consistent message expectation style.
+  Enabled: true
+  EnforcedStyle: allow
+
+RSpec/MultipleMemoizedHelpers:
+  Description: Checks if example groups contain too many `let` and `subject` calls.
+  Enabled: false
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleMemoizedHelpers
+
 RSpec/MultipleExpectations:
-  Max: 2
-  Exclude:
-    - "spec/system/**/*"
-    - "spec/requests/**/*"
+  Description: Checks if examples contain too many `expect` calls.
+  Enabled: true
+  Max: 8
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleExpectations
 
-RSpec/DescribeClass:
-  Description: Check that the first argument to the top level describe is a constant.
-  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribeClass
-  Exclude:
-    - spec/requests/*
+RSpec/Rails/AvoidSetupHook:
+  Description: Checks that tests use RSpec `before` hook over Rails `setup` method.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/AvoidSetupHook
 
-RSpec/EmptyExampleGroup:
-  Description: 'Checks if an example group does not include any tests.'
-  Enabled: false
-
-RSpec/NestedGroups:
-  Max: 6
-
-RSpec/MessageChain:
-  Description: Avoid stubbing using `receive_message_chain`.
-  StyleGuide: http://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MessageChain
+RSpec/ImplicitExpect:
+  Description: Check that a consist implict expectation style is used.
+  Enabled: true
+  EnforcedStyle: is_expected
+  SupportedStyles:
+  - is_expected
+  - should
