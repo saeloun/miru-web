@@ -8,8 +8,6 @@
 #  email      :string
 #  phone      :string
 #  address    :string
-#  country    :string
-#  timezone   :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

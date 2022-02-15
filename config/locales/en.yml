@@ -66,10 +66,6 @@ en:
     address:
       label: Address
       placeholder: Enter address
-    country:
-      label: Country
-    timezone:
-      label: Timezone
     create:
       failure: "Client creation failed"
       success: "Client added successfully"

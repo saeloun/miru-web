@@ -55,34 +55,6 @@
     </div>
   </div>
 
-  <div class="mt-4">
-    <div class="field">
-      <div class="field_with_errors">
-        <%= f.label t('client.country.label'), class: "form__label" %>
-        <div class="tracking-wider block text-xs text-red-600">
-          <%= error_message_on(f.object, :country) %>
-        </div>
-      </div>
-      <div class="mt-1">
-        <%= f.select :country, [[ "Please select", "", { selected: true, disabled: true }]] + ISO3166::Country.pluck(:alpha2, :name).collect { |c| [ c.second, c.first ] }, {}, { class: "form__select #{error_message_class(f.object, :country)}" } %>
-      </div>
-    </div>
-  </div>
-
-  <div class="mt-4">
-    <div class="field">
-      <div class="field_with_errors">
-        <%= f.label t('client.timezone.label'), class: "form__label" %>
-        <div class="tracking-wider block text-xs text-red-600">
-          <%= error_message_on(f.object, :timezone) %>
-        </div>
-      </div>
-      <div class="mt-1">
-        <%= f.select :timezone, [[ "Please select", "", { selected: true, disabled: true }]] + TZInfo::Timezone.all_country_zones.collect { |t| [ t.to_s ] }, {}, { class: "form__select #{error_message_class(f.object, :timezone)}" } %>
-      </div>
-    </div>
-  </div>
-
   <div class="actions mt-4">
     <%= f.submit t('client.add'), class: "form__input_submit"%>
   </div>
