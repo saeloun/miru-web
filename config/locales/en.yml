@@ -74,3 +74,42 @@ en:
     first_name: First Name
     last_name: Last Name
     email: Email
+  registration:
+    sign_up: sign up
+    sign_in: sign in
+    name: name
+    first_name: first name
+    last_name: last name
+    password: password
+    confirm_password: confirm password
+    email_id: email
+    remember_me: remember me
+    or: or
+    signup_with_google: sign up with google
+    signup_with_apple: sign up with apple
+  shared_links:
+    already_have_an_account: already have an account?
+    dont_have_an_account: don't have an account?
+    forgot_password: forgot password ?
+    back_to_login: back to login
+    confirmation_instruction: didn't receive confirmation instructions?
+    unlock_instruction: didn't receive unlock instructions?
+  company:
+    settings: settings
+    cancel: cancel
+    save: save
+    profile_setting: profile settings
+    organization_setting: organization settings
+    logo: logo
+    company: company
+    name: name
+    address: address
+    business_phone: business phone
+    country: country
+    timezone: timezone
+    base_currency: base currency
+    standard_price: standard price
+    fiscal_year: fiscal year
+    date_format: date Format
+    setup: setup org
+    save_org: save org details

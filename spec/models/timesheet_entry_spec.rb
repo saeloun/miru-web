@@ -3,38 +3,46 @@
 require "rails_helper"
 
 RSpec.describe TimesheetEntry, type: :model do
-  let(:timesheet_entry) { build(:timesheet_entry) }
+  let(:timesheet_entry) { create(:timesheet_entry) }
 
-  it "is valid with valid attributes" do
-    expect(timesheet_entry).to be_valid
+  describe "Associations" do
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:project) }
   end
 
-  it "is not valid without a duration" do
-    timesheet_entry.duration = nil
-    expect(timesheet_entry).to_not be_valid
+  describe "Validations" do
+    it { is_expected.to validate_presence_of(:duration) }
+    it { is_expected.to validate_presence_of(:note) }
+    it { is_expected.to validate_presence_of(:work_date) }
+    it { is_expected.to validate_presence_of(:bill_status) }
+    it do
+      is_expected.to validate_numericality_of(:duration).
+      is_less_than_or_equal_to(Minutes.in_a_day).
+      is_greater_than_or_equal_to(0.0)
+    end
   end
 
-  it "is not valid if duration is greater than 24 hours" do
-    timesheet_entry.duration = 1441 # 24 hours + 1 minute
-    expect(timesheet_entry).to_not be_valid
+  describe "Callbacks" do
+    it { is_expected.to callback(:insure_bill_status_is_set).before(:validation) }
   end
 
-  it "is not valid if duration is less than 0 hours" do
-    timesheet_entry.duration = -1
-    expect(timesheet_entry).to_not be_valid
+  describe ".during" do
+    pending("Will work on this")
   end
 
-  it "is not valid without a note" do
-    timesheet_entry.note = nil
-    expect(timesheet_entry).to_not be_valid
-  end
-
-  it "is not valid without a wotk_date" do
-    timesheet_entry.work_date = nil
-    expect(timesheet_entry).to_not be_valid
-  end
-
-  it "is not valid if bill_status is not one of the allowed values" do
-    timesheet_entry.bill_status == "non_billable" || "billable"
+  describe "#formatted_entry" do
+    it "returns proper data" do
+      expect(timesheet_entry.formatted_entry).to eq(
+        {
+          id: timesheet_entry.id,
+          project: timesheet_entry.project.name,
+          client: timesheet_entry.project.client.name,
+          duration: timesheet_entry.duration,
+          note: timesheet_entry.note,
+          work_date: timesheet_entry.work_date,
+          bill_status: timesheet_entry.bill_status
+        }
+      )
+    end
   end
 end
