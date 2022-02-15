@@ -10,9 +10,12 @@ class ProjectsController < ApplicationController
     project = Project.new(project_params)
 
     if project.save
-      redirect_to projects_path
       flash[:notice] = "Project added successfully."
+    else
+      flash[:alert] = "Project creation failed."
     end
+
+    redirect_to projects_path
   end
 
   private
