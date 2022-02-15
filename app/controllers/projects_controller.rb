@@ -10,9 +10,9 @@ class ProjectsController < ApplicationController
     project = Project.new(project_params)
 
     if project.save
-      flash[:notice] = "Project added successfully."
+      flash[:notice] = t("project.adding_success")
     else
-      flash[:alert] = "Project creation failed."
+      flash[:alert] = t("project.adding_failed")
     end
 
     redirect_to projects_path
@@ -20,7 +20,6 @@ class ProjectsController < ApplicationController
 
   private
     def project_params
-      params[:project][:client] = params[:project][:client].to_i
       params.require(:project).permit(:client_id, :name, :billable)
     end
 end
