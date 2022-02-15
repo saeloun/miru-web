@@ -15,6 +15,10 @@
     display: flex;
     justify-content: space-between;
   }
+
+  .modal-width {
+    min-width: 25rem;
+  }
 }
 
 @layer components {
