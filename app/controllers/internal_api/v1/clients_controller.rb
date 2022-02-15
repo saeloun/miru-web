@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationController
+  before_action :is_user_admin_or_owner?, only: [:update]
+
   def update
     current_client = Client.find_by(id: params[:id])
 
@@ -28,5 +30,11 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
       ).tap do |client_params|
         client_params[:company_id] = current_company.id
       end
+    end
+
+    def is_user_admin_or_owner?
+      render json: {
+        message: "Only owner or admin users are authorized to perform this action"
+      }, status: :forbidden unless current_user.has_any_role?(:owner, :admin)
     end
 end
