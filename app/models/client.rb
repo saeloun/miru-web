@@ -8,8 +8,6 @@
 #  email      :string
 #  phone      :string
 #  address    :string
-#  country    :string
-#  timezone   :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
@@ -22,6 +20,7 @@
 
 class Client < ApplicationRecord
   has_many :projects
+  has_many :timesheet_entries, through: :projects
   belongs_to :company
 
   validates :name, :email, presence: true

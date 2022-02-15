@@ -1,0 +1,62 @@
+<%= form_with model: client, scope: :client, url: clients_path, method: :post do |f| %>
+  <div class="mt-4">
+    <div class="field">
+      <div class="field_with_errors">
+        <%= f.label t('client.name.label'), class: "form__label" %>
+        <div class="tracking-wider block text-xs text-red-600">
+          <%= error_message_on(f.object, :name) %>
+        </div>
+      </div>
+      <div class="mt-1">
+        <%= f.text_field :name, placeholder: t('client.name.placeholder'), autofocus: true, class: "form__input #{error_message_class(f.object, :name)}" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <div class="field">
+      <div class="field_with_errors">
+        <%= f.label t('client.email.label'), class: "form__label" %>
+        <div class="tracking-wider block text-xs text-red-600">
+          <%= error_message_on(f.object, :email) %>
+        </div>
+      </div>
+      <div class="mt-1">
+        <%= f.text_field :email, placeholder: t('client.email.placeholder'), class: "form__input #{error_message_class(f.object, :email)}" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <div class="field">
+      <div class="field_with_errors">
+        <%= f.label t('client.phone.label'), class: "form__label" %>
+        <div class="tracking-wider block text-xs text-red-600">
+          <%= error_message_on(f.object, :phone) %>
+        </div>
+      </div>
+      <div class="mt-1">
+        <%= f.text_field :phone, placeholder: t('client.phone.placeholder'), class: "form__input #{error_message_class(f.object, :phone)}" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <div class="field">
+      <div class="field_with_errors">
+        <%= f.label t('client.address.label'), class: "form__label" %>
+        <div class="tracking-wider block text-xs text-red-600">
+          <%= error_message_on(f.object, :address) %>
+        </div>
+      </div>
+      <div class="mt-1">
+        <%= f.text_area :address, placeholder: t('client.address.placeholder'), class: "form__textarea #{error_message_class(f.object, :address)}" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions mt-4">
+    <%= f.submit t('client.add'), class: "form__input_submit"%>
+  </div>
+
+<% end %>
