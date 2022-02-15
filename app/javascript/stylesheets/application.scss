@@ -15,12 +15,22 @@
     display: flex;
     justify-content: space-between;
   }
+
+  .modal-width {
+    min-width: 25rem;
+  }
 }
 
 @layer components {
   .form {
+    &__textarea, &__select {
+      @apply rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none;
+    }
+    &__input_submit {
+      @apply tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer;
+    }
     &__input {
-      @apply rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none;
+      @apply rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none h-8;
     }
     &__label {
       @apply tracking-wider block text-xs font-normal text-miru-dark-purple-1000;
