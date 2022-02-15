@@ -37,6 +37,9 @@
     &__link {
       @apply font-bold text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-wider;
     }
+    &__radio {
+      @apply focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000;
+    }
   }
 
   .password_eye {
