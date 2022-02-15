@@ -103,6 +103,7 @@ en:
     update:
       failure: "Failed to switch workspace"
       success: "Workspace switched successfully"
+    add: ADD CLIENT
   team:
     team: Team
     new_user: NEW USER
