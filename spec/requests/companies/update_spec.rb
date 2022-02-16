@@ -8,10 +8,12 @@ RSpec.describe "Companies#create", type: :request do
 
   context "when authenticated" do
     before do
+      user.add_role :admin
       sign_in user
     end
 
     before(:each, :user_employee) do
+      user.remove_role :admin
       user.add_role :employee
     end
 

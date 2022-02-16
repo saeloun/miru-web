@@ -13,7 +13,7 @@ class TeamPolicy < ApplicationPolicy
     user.has_any_role?(:owner, :admin)
   end
 
-  def delete?
+  def destroy?
     user.has_any_role?(:owner, :admin)
   end
 end

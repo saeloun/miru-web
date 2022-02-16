@@ -2,24 +2,32 @@
 
 require "rails_helper"
 
-RSpec.describe CompanyPolicy, type: :policy do
+RSpec.describe CompanyPolicy, type: :policy, company_ploicy: true do
   let(:user) { User.new }
 
   subject { described_class }
 
-  permissions :show? do
-    pending "add some examples to (or delete) #{__FILE__}"
+  context "Admin" do
+    before do
+      user.add_role :admin
+    end
+
+    permissions :new?, :create?, :show?, :update? do
+      it "admin can access company" do
+        expect(subject).to permit(user, Company)
+      end
+    end
   end
 
-  permissions :create? do
-    pending "add some examples to (or delete) #{__FILE__}"
-  end
+  context "Employee" do
+    before do
+      user.add_role :employee
+    end
 
-  permissions :update? do
-    pending "add some examples to (or delete) #{__FILE__}"
-  end
-
-  permissions :destroy? do
-    pending "add some examples to (or delete) #{__FILE__}"
+    permissions :new?, :create?, :show?, :update? do
+      it "employee can't access company" do
+        expect(subject).not_to permit(user, Company)
+      end
+    end
   end
 end

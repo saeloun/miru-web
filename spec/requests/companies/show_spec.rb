@@ -8,12 +8,15 @@ RSpec.describe "Companies#show", type: :request do
 
   context "When authenticated" do
     before do
+      user.add_role :admin
       sign_in user
       get company_path
     end
 
     before(:each, :user_employee) do
+      user.remove_role :admin
       user.add_role :employee
+      get company_path
     end
 
     it "is successful " do

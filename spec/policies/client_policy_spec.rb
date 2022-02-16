@@ -7,23 +7,27 @@ RSpec.describe ClientPolicy, type: :policy do
 
   subject { described_class }
 
-  permissions ".scope" do
-    pending "add some examples to (or delete) #{__FILE__}"
+  context "Admin" do
+    before do
+      user.add_role :admin
+    end
+
+    permissions :create? do
+      it "admin can create" do
+        expect(subject).to permit(user, Client)
+      end
+    end
   end
 
-  permissions :show? do
-    pending "add some examples to (or delete) #{__FILE__}"
-  end
+  context "Employee" do
+    before do
+      user.add_role :employee
+    end
 
-  permissions :create? do
-    pending "add some examples to (or delete) #{__FILE__}"
-  end
-
-  permissions :update? do
-    pending "add some examples to (or delete) #{__FILE__}"
-  end
-
-  permissions :destroy? do
-    pending "add some examples to (or delete) #{__FILE__}"
+    permissions :create? do
+      it "employee can't create" do
+        expect(subject).not_to permit(user, Client)
+      end
+    end
   end
 end

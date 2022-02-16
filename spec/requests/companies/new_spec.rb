@@ -7,12 +7,15 @@ RSpec.describe "Companies#new", type: :request do
 
   context "When authenticated" do
     before do
+      user.add_role :admin
       sign_in user
       get new_company_path
     end
 
     before(:each, :user_employee) do
+      user.remove_role :admin
       user.add_role :employee
+      get new_company_path
     end
 
     it "is successful " do
