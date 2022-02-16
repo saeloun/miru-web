@@ -6,34 +6,31 @@ RSpec.describe "Teams", type: :request do
   let (:company) { create(:company) }
   let(:user) { create(:user, company_id: company.id) }
 
-  before(:each, :user_admin) do
-    user.add_role :admin
-  end
-
-  before(:each, :user_employee) do
-    user.add_role :employee
-  end
-
   context "when authenticated" do
     before do
+      user.add_role :admin
       sign_in user
+    end
+
+    before(:each, :user_employee) do
+      user.remove_role :admin
+      user.add_role :employee
     end
 
     describe "GET /index" do
       it "returns http success" do
         get("/team")
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:ok)
       end
 
       it "admin can access Team#index page" do
         get("/team")
-        expect(response).to have_http_status(:found)
+        expect(response).to have_http_status(:ok)
       end
 
-      it "employee can't access Team#index page", user_employee: true do
+      it "employee can access Team#index page", user_employee: true do
         get("/team")
-        expect(response).to have_http_status(:redirect)
-        expect(flash[:alert]).to eq("You are not authorized to perform this action.")
+        expect(response).to have_http_status(:ok)
       end
     end
 
@@ -43,24 +40,24 @@ RSpec.describe "Teams", type: :request do
       end
 
       it "returns http success" do
-        get edit_team_path(user)
-        expect(response).to have_http_status(:found)
+        get edit_team_path(user), xhr: true
+        expect(response).to have_http_status(:ok)
       end
 
       it "admin can access Team#edit page" do
-        get edit_team_path(user)
-        expect(response).to have_http_status(:found)
+        get edit_team_path(user), xhr: true
+        expect(response).to have_http_status(:ok)
       end
 
       it "employee can't access Team#edit page", user_employee: true do
-        get edit_team_path(user)
+        get edit_team_path(user), xhr: true
         expect(response).to have_http_status(:redirect)
         expect(flash[:alert]).to eq("You are not authorized to perform this action.")
       end
     end
 
     describe "PATCH /update" do
-      context "Admin user", user_admin: true do
+      context "Admin user" do
         before do
           send_request(:put, team_path(user), params: {
             user: {
@@ -96,7 +93,7 @@ RSpec.describe "Teams", type: :request do
           })
         end
 
-        it "can't update user" do
+        it "can't update user", test_employee: true do
           expect(response).to have_http_status(:redirect)
           expect(flash[:alert]).to eq("You are not authorized to perform this action.")
         end
@@ -104,7 +101,7 @@ RSpec.describe "Teams", type: :request do
     end
 
     describe "DELETE /destroy" do
-      context "Admin user", user_admin: true do
+      context "Admin user" do
         before do
           send_request(:delete, team_path(user))
         end

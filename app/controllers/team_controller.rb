@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 class TeamController < ApplicationController
-  after_action :verify_authorized
+  after_action :verify_authorized, except: :index
   after_action :assign_role, only: [:update]
 
   def index
-    authorize :team, :index?
     query = current_company.users.ransack(params[:q])
     teams = query.result(distinct: true)
     render :index, locals: { query: query, teams: teams }
