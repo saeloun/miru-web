@@ -25,7 +25,8 @@ users.each do |user|
     email: user[:email],
     password: "password",
     password_confirmation: "password",
-    confirmed_at: Time.current
+    confirmed_at: Time.current,
+    invitation_accepted_at: Time.current
   )
   company_user.add_role(user[:role])
 end
