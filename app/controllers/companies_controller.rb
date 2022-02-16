@@ -3,14 +3,17 @@
 class CompaniesController < ApplicationController
   skip_before_action :validate_company!, only: [:create, :new]
   before_action :company_validation, only: [:new, :create]
+  after_action :verify_authorized
 
   def new
     @company = Company.new
+    authorize @company
     render :new
   end
 
   def create
     @company = Company.new(company_params)
+    authorize @company
     if @company.save
       current_user.company_id = @company.id
       current_user.save!
@@ -24,9 +27,11 @@ class CompaniesController < ApplicationController
   end
 
   def show
+    authorize current_company
   end
 
   def update
+    authorize current_company
     if current_company.update(company_params)
       redirect_to company_path
       flash[:notice] = t(".success")
