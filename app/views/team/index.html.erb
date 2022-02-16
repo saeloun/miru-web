@@ -1,28 +1,30 @@
 <div class="" id="root-page">
-  <div class="lg:max-w-3xl xl:max-w-6xl mx-auto font-manrope">
-    <div class="px-3 sm:px-6 md:px-10 lg:px-6 xl:px-12">
-      <div class="xl:px-1">
+  <div class="lg:max-w-3xl xl:max-w-7xl mx-auto font-manrope">
+    <div class="px-3 sm:px-6 md:px-10 lg:px-0 xl:px-22">
+      <div class="xl:px-2">
 
-        <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
-          <div class="flex-1 min-w-0">
-            <h2 class="text-3xl font-bold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
+        <div class="sm:flex sm:items-center sm:justify-between px-1 sm:px-0 mt-6">
+          <div class="w-full sm:w-1/5">
+            <h2 class="text-3xl font-bold leading-7 text-gray-900 sm:text-4xl py-1">
               <%= t('team.team') %>
             </h2>
           </div>
-          <div class="mt-6 flex sm:mt-0 md:ml-4 items-center sm:w-4/6">
-            <div class="mt-1 relative rounded-md shadow-sm md:ml-10">
-              <%= search_form_for query, url: team_index_path do |f| %>
-                <%= f.text_field :first_name_or_last_name_or_email_cont, class: 'rounded tracking-wider appearance-none border border-gray-100 block w-72 sm:w-96 px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-sm', placeholder: 'Search' %>
-                <%= image_submit_tag 'search_icon.svg', class: "h-3 text-miru-gray-400 absolute inset-y-2 right-0 pr-3 flex items-center cursor-pointer" %>
-              <% end %>
-            </div>
-        </div>
+          <div class="w-full sm:w-3/5 mt-6 sm:mt-0">
+            <%= search_form_for query, url: team_index_path, class: "sm:pr-6 md:pr-10 lg:pr-6 xl:pr-48 xxl:pr-56"  do |f| %>
+              <div class="relative rounded">
+                <%= f.text_field :first_name_or_last_name_or_email_cont, class: 'block w-full pr-10 border border-gray-100 rounded px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-sm', placeholder: 'Search' %>
+                <%= image_submit_tag 'search_icon.svg', class: "h-4 absolute inset-y-0 right-0 pr-3 my-2 flex items-center cursor-pointer" %>
+              </div>
+            <% end %>
+          </div>
           <% if current_user.has_owner_or_admin_role?(current_company) %>
-            <div class="mt-6 flex sm:mt-0 md:ml-4">
-              <button onclick="openModal('main-modal')" type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-semibold text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer">
-                <img src="<%= image_url 'plus_icon.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-                <%= t('team.new_user') %>
-              </button>
+            <div class="w-full sm:w-1/4 mt-6 sm:mt-0">
+              <div class="md:ml-3 lg:ml-5 xl:ml-22">
+                <button onclick="openModal('main-modal')" type="button" class="sm:ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 md:px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-semibold text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer">
+                  <img src="<%= image_url 'plus_icon.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
+                  <%= t('team.new_user') %>
+                </button>
+              </div>
             </div>
           <% end %>
         </div>
@@ -71,7 +73,7 @@
 
       <!--Modal 1-->
       <div class="px-5 main-modal fixed w-full inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster" style="background-color: rgba(29, 26, 49,0.6)">
-        <div class="shadow-lg modal-container bg-white w-full sm:max-w-md mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
+        <div class="shadow-lg modal-container bg-white w-full max-w-md mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
           <div class="modal-content py-4 text-left px-3">
             <div class="flex justify-between items-center mx-3">
               <h6 class="text-base font-extrabold"><%= t('team.create_new_user') %></h6>
@@ -89,7 +91,7 @@
 
       <!--Modal 2-->
         <div class="px-5 another-modal fixed w-full inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster" style="background-color: rgba(29, 26, 49,0.6)">
-          <div class="shadow-lg modal-container bg-white w-full sm:max-w-md mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
+          <div class="shadow-lg modal-container bg-white w-full max-w-md mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
             <div class="modal-content py-4 text-left px-3">
               <div class="flex justify-between items-center mx-3">
                 <h6 class="text-base font-extrabold"><%= t('team.update_user') %></h6>
