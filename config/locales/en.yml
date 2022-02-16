@@ -56,6 +56,23 @@ en:
       success: "Company created successfully"
     update:
       success: "Changes saved successfully"
+  client:
+    name:
+      label: Name
+      placeholder: Enter name
+    email:
+      label: Email
+      placeholder: Enter email ID
+    phone:
+      label: Phone number
+      placeholder: Enter phone number
+    address:
+      label: Address
+      placeholder: Enter address
+    create:
+      failure: "Client creation failed"
+      success: "Client added successfully"
+    add: ADD CLIENT
   team:
     team: Team
     new_user: NEW USER
