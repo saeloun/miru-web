@@ -1,19 +1,23 @@
 # frozen_string_literal: true
 
 class TeamController < ApplicationController
+  after_action :verify_authorized
   after_action :assign_role, only: [:update]
 
   def index
+    authorize :team, :index?
     query = current_company.users.ransack(params[:q])
     teams = query.result(distinct: true)
     render :index, locals: { query: query, teams: teams }
   end
 
   def edit
+    authorize :team, :edit?
     @user = user
   end
 
   def update
+    authorize :team, :update?
     user.skip_reconfirmation! unless user.invitation_accepted?
     user_email = user.email
     user.update(user_params)
@@ -22,6 +26,7 @@ class TeamController < ApplicationController
   end
 
   def destroy
+    authorize :team, :destroy?
     user.discard
     redirect_to team_index_path
   end

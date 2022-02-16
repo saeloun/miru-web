@@ -12,6 +12,10 @@ RSpec.describe "Companies#show", type: :request do
       get company_path
     end
 
+    before(:each, :user_employee) do
+      user.add_role :employee
+    end
+
     it "is successful " do
       expect(response).to be_successful
     end
@@ -19,6 +23,11 @@ RSpec.describe "Companies#show", type: :request do
     it "renders Company#new page" do
       expect(response.body).to include("Settings")
       expect(response.body).to include("ORGANIZATION SETTINGS")
+    end
+
+    it "employee can't visit Company#show page", user_employee: true do
+      expect(response).to have_http_status(:redirect)
+      expect(flash[:alert]).to eq("You are not authorized to perform this action.")
     end
   end
 end

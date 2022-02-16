@@ -11,12 +11,21 @@ RSpec.describe "Companies#new", type: :request do
       get new_company_path
     end
 
+    before(:each, :user_employee) do
+      user.add_role :employee
+    end
+
     it "is successful " do
       expect(response).to be_successful
     end
 
     it "renders Company#new page" do
       expect(response.body).to include("Setup Org")
+    end
+
+    it "employee can't visit Company#new page", user_employee: true do
+      expect(response).to have_http_status(:redirect)
+      expect(flash[:alert]).to eq("You are not authorized to perform this action.")
     end
   end
 end
