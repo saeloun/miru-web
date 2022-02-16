@@ -7,13 +7,13 @@ class CompaniesController < ApplicationController
 
   def new
     @company = Company.new
-    authorize @company
+    authorize @company, :new?
     render :new
   end
 
   def create
     @company = Company.new(company_params)
-    authorize @company
+    authorize @company, :create?
     if @company.save
       current_user.company_id = @company.id
       current_user.save!
@@ -27,11 +27,11 @@ class CompaniesController < ApplicationController
   end
 
   def show
-    authorize current_company
+    authorize current_company, :show?
   end
 
   def update
-    authorize current_company
+    authorize current_company, :update?
     if current_company.update(company_params)
       redirect_to company_path
       flash[:notice] = t(".success")

@@ -22,7 +22,7 @@
             </button>
           </div>
         </div>
-        <% if current_user.admin? %>
+        <% if policy(new_client).create? %>
           <div class="mt-6 flex sm:mt-0 md:ml-4">
             <button
               type="button"
@@ -42,6 +42,7 @@
                           deleteIcon: image_url('delete_image_button.svg'),
                           isAdminUser: current_user.admin?) %>
 
+    <% if policy(new_client).create? %>
       <div class="px-4 min-h-screen flex items-center justify-center">
         <div class="overflow-auto" style="background-color: rgba(29, 26, 49,0.6)" x-show="isDialogOpen" :class="{ 'absolute inset-0 z-10 flex items-start justify-center': isDialogOpen }">
           <div class="relative px-4 min-h-screen md:flex md:items-center md:justify-center">
@@ -55,6 +56,7 @@
           </div>
         </div>
       </div>
+    <% end %>
     
     </div>
   </div>
