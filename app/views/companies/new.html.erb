@@ -35,7 +35,7 @@
               </div>
             </div>
             <div class="mt-1">
-              <%= form.text_field t('company.name').capitalize, autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :name)}" %>
+              <%= form.text_field :name, autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :name)}" %>
             </div>
           </div>
         </div>
