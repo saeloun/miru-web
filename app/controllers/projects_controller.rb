@@ -10,9 +10,9 @@ class ProjectsController < ApplicationController
     project = Project.new(project_params)
 
     if project.save
-      flash[:notice] = t("project.create.success")
+      flash[:notice] = t(".success")
     else
-      flash[:alert] = t("project.create.failure")
+      flash[:alert] = t(".failure")
     end
 
     redirect_to projects_path

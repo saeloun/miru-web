@@ -42,15 +42,17 @@ en:
     team: Team
     time_tracking: Time Tracking
     view_notifications: View Notifications
-  project:
+  projects:
     projects: Projects
     hours_logged: HOURS LOGGED
     new_project: NEW PROJECT
     project_client: PROJECT/CLIENT
+    edit: edit
     create:
       success: Project added successfully.
       failure: Project creation failed.
     add_project: ADD PROJECT
+    add_new_project: ADD NEW PROJECT
   companies:
     create:
       failure: "Company creation failed"
