@@ -4,7 +4,12 @@ const divStyle = {
   backgroundColor: "rgba(29, 26, 49, 0.6)"
 };
 
-const EditClient = () => (
+export interface IEditClient {
+  setShowEditDialog: any;
+  client: any;
+}
+
+const EditClient = ({ setShowEditDialog, client }: IEditClient) => (
   <div className="px-4 min-h-screen flex items-center justify-center">
     <div
       className="overflow-auto absolute inset-0 z-10 flex items-start justify-center"
@@ -15,7 +20,12 @@ const EditClient = () => (
           <div className="flex justify-between items-center mt-6">
             <h6 className="text-base font-extrabold">Add New Client</h6>
             <button type="button">
-              <img src="http://localhost:3000/assets/close_button-620ce255d4d2499e9732af0732c2945de213d68bda45dd7f7642f319df09b569.svg" />
+              <img
+                src="http://localhost:3000/assets/close_button-620ce255d4d2499e9732af0732c2945de213d68bda45dd7f7642f319df09b569.svg"
+                onClick={() => {
+                  setShowEditDialog(false);
+                }}
+              />
             </button>
           </div>
           <form action="/clients" acceptCharset="UTF-8" method="post">
@@ -37,6 +47,7 @@ const EditClient = () => (
                     type="text"
                     name="client[name]"
                     id="client_name"
+                    value={client.name}
                   />
                 </div>
               </div>
@@ -55,6 +66,7 @@ const EditClient = () => (
                     type="text"
                     name="client[email]"
                     id="client_email"
+                    value={client.email}
                   />
                 </div>
               </div>
@@ -73,6 +85,7 @@ const EditClient = () => (
                     type="text"
                     name="client[phone]"
                     id="client_phone"
+                    value={client.phone}
                   />
                 </div>
               </div>
@@ -90,6 +103,7 @@ const EditClient = () => (
                     className="form__textarea border-gray-100 focus:ring-miru-gray-1000 focus:border-miru-gray-1000"
                     name="client[address]"
                     id="client_address"
+                    value={client.address}
                   ></textarea>
                 </div>
               </div>

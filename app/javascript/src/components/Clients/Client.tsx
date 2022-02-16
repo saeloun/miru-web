@@ -4,22 +4,28 @@ export interface IClient {
   id: number;
   name: string;
   email: string;
+  phone: string;
+  address: string;
   hoursLogged: string;
   editIcon: string;
   deleteIcon: string;
   isAdminUser: boolean;
   setShowEditDialog: any;
+  setClientToEdit: any;
 }
 
 const Client = ({
   id,
   name,
   email,
+  phone,
+  address,
   hoursLogged,
   editIcon,
   deleteIcon,
   isAdminUser,
-  setShowEditDialog
+  setShowEditDialog,
+  setClientToEdit
 }: IClient) => {
   return (
     <tr key={id}>
@@ -38,6 +44,7 @@ const Client = ({
             <button
               onClick={() => {
                 setShowEditDialog(true);
+                setClientToEdit({ id, name, email, phone, address });
               }}
             >
               <img src={editIcon} alt="" />
