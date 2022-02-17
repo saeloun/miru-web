@@ -78,7 +78,7 @@
       <div class="relative px-4 min-h-screen md:flex md:items-center md:justify-center">
       <div class="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md sm:w-full" x-show="isDialogOpen" @click.away="isDialogOpen = false">
         <div class="flex justify-between items-center mt-6">
-          <h6 class="text-base font-extrabold"><%= t('projects.add_new_project') %></h6>
+          <h6 class="text-base font-extrabold">ADD NEW PROJECT</h6>
           <button type="button" @click="isDialogOpen = false"><%= image_tag('close_button.svg') %></button>
         </div>
         <%= render "projects/new"%>
