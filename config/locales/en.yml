@@ -138,6 +138,8 @@ en:
       create?: You are not authorized to create company.
       show?: You are not authorized to view company.
       update?: You are not authorized to update company.
+    current_company_policy:
+      company_not_present: Company not present.
     dashboard_policy:
       index?: You are not authorized to view dashboard.
     project_policy:

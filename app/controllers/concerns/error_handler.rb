@@ -19,11 +19,23 @@ module ErrorHandler
     end
 
     def user_not_authorized(exception)
-      policy_name = exception.policy.class.to_s.underscore
+      redirect_path = root_path
+      policy = exception.policy
+      policy_name = policy.class.to_s.underscore
+      error_key = if policy.respond_to?(:error_message_key) && policy.error_message_key
+        policy.error_message_key
+      else
+        exception.query
+      end
 
-      message = t "#{policy_name}.#{exception.query}", scope: "pundit", default: :default
+      if policy.respond_to?(:error_message_key) && policy.error_message_key == :company_not_present
+        redirect_path = new_company_path
+      end
+
+      message = t "#{policy_name}.#{error_key}", scope: "pundit", default: :default
+
       respond_to do |format|
-        format.html { redirect_to root_path, alert: message }
+        format.html { redirect_to redirect_path, alert: message }
         format.json { render json: { errors: message }, status: :forbidden  }
       end
     end

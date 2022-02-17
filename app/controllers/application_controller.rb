@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
     def validate_company!
       return if current_user.nil?
 
-      redirect_to new_company_path unless current_company
+      current_company_context = CurrentCompanyContext.new(current_user, current_company)
+      authorize current_company_context, :company_present?, policy_class: CurrentCompanyPolicy
     end
 end

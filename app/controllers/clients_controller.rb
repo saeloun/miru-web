@@ -35,7 +35,7 @@ class ClientsController < ApplicationController
 
     def client_params
       params.require(:client).permit(
-        :name, :email, :phone, :address
+        policy(Client).permitted_attributes
       ).tap do |client_params|
         client_params[:company_id] = current_company.id
       end

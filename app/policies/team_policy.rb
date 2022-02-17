@@ -12,4 +12,8 @@ class TeamPolicy < ApplicationPolicy
   def destroy?
     user_owner_or_admin?
   end
+
+  def permitted_attributes
+    [:first_name, :last_name, :email]
+  end
 end

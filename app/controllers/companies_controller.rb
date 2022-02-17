@@ -11,7 +11,7 @@ class CompaniesController < ApplicationController
   end
 
   def create
-    @company = Company.new(company_params)
+    @company = Company.new(permitted_attributes(Company))
     authorize @company
     if @company.save
       current_user.company_id = @company.id
@@ -31,7 +31,7 @@ class CompaniesController < ApplicationController
 
   def update
     authorize current_company
-    if current_company.update(company_params)
+    if current_company.update(permitted_attributes(current_company))
       redirect_to company_path
       flash[:notice] = t(".success")
     else
@@ -40,10 +40,6 @@ class CompaniesController < ApplicationController
   end
 
   private
-    def company_params
-      params.require(:company).permit(:name, :address, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end, :date_format, :logo)
-    end
-
     def company_validation
       if current_user.company.present?
         flash[:error] = "You already have a company"
