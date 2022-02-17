@@ -39,6 +39,7 @@ class TimesheetEntry < ApplicationRecord
     {
       id: id,
       project: project.name,
+      project_id: project_id,
       client: project.client.name,
       duration: duration,
       note: note,

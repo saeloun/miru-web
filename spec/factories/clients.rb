@@ -7,7 +7,5 @@ FactoryBot.define do
     email { Faker::Internet.safe_email }
     phone { Faker::PhoneNumber.phone_number_with_country_code }
     address { Faker::Address.street_address }
-    country { Faker::Address.country }
-    timezone { Faker::Address.time_zone }
   end
 end

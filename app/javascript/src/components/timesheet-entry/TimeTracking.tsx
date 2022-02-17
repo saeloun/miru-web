@@ -154,16 +154,14 @@ const TimeTracking: React.FC<props> = ({
         <div>
           <div className="mb-6">
             <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
-              <button className="items-center text-white tracking-widest border-2 rounded-lg h-6 w-20 text-base ml-4">
-                <button
-                  onClick={() => {
-                    setWeekDay(0);
-                    setSelectDate(dayjs().weekday());
-                  }}
-                  className="text-center"
-                >
-                  TODAY
-                </button>
+              <button
+                onClick={() => {
+                  setWeekDay(0);
+                  setSelectDate(dayjs().weekday());
+                }}
+                className="flex items-center justify-center text-white tracking-widest border-2 rounded-lg h-6 w-20 text-base ml-4"
+              >
+                TODAY
               </button>
               <div className="flex">
                 <button
