@@ -22,15 +22,9 @@ module ErrorHandler
       redirect_path = root_path
       policy = exception.policy
       policy_name = policy.class.to_s.underscore
-      error_key = if policy.respond_to?(:error_message_key) && policy.error_message_key
-        policy.error_message_key
-      else
-        exception.query
-      end
+      error_key = policy.try(:error_message_key) || exception.query
 
-      if policy.respond_to?(:error_message_key) && policy.error_message_key == :company_not_present
-        redirect_path = new_company_path
-      end
+      redirect_path = new_company_path if policy.try(:error_message_key) == :company_not_present
 
       message = t "#{policy_name}.#{error_key}", scope: "pundit", default: :default
 

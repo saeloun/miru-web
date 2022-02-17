@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ClientsController < ApplicationController
-  after_action :verify_authorized, only: :create
+  skip_after_action :verify_authorized, expect: :create
 
   def index
     render :index, locals: {

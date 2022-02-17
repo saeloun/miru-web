@@ -11,12 +11,12 @@ class TeamController < ApplicationController
   end
 
   def edit
-    authorize :team
+    authorize user, policy_class: TeamPolicy
     @user = user
   end
 
   def update
-    authorize :team
+    authorize user, policy_class: TeamPolicy
     user.skip_reconfirmation! unless user.invitation_accepted?
     user_email = user.email
     user.update(user_params)
@@ -25,7 +25,7 @@ class TeamController < ApplicationController
   end
 
   def destroy
-    authorize :team
+    authorize user, policy_class: TeamPolicy
     user.discard
     redirect_to team_index_path
   end
