@@ -44,6 +44,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
       });
 
       if (res.data?.success) {
+        window.sessionStorage.setItem("saved", "true");
         window.location.reload();
       }
     } catch (err) {

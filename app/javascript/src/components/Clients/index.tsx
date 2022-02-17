@@ -1,6 +1,8 @@
 import * as React from "react";
+import { ToastContainer } from "react-toastify";
 import Client from "./Client";
 import EditClient from "./EditClient";
+import Toastr from "../common/Toastr";
 
 const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
   const { useState } = React;
@@ -61,6 +63,13 @@ const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
           client={clientToEdit}
         />
       ) : null}
+      {window.sessionStorage.getItem("saved")
+        ? (() => {
+          Toastr.success("Changes saved successfully");
+          window.sessionStorage.removeItem("saved");
+        })()
+        : null}
+      <ToastContainer />
     </>
   );
 };
