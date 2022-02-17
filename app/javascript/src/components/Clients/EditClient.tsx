@@ -68,7 +68,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                 />
               </button>
             </div>
-            <form onSubmit={handleSubmit} action="/clients" method="get">
+            <form onSubmit={handleSubmit}>
               <div className="mt-4">
                 <div className="field">
                   <div className="field_with_errors">
