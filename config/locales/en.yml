@@ -51,6 +51,10 @@ en:
     create:
       success: Project added successfully.
       failure: Project creation failed.
+    add_project: ADD PROJECT
+    add_new_project: ADD NEW PROJECT
+    billable: Billable
+    non_billable: Non-Billable
   companies:
     create:
       failure: "Company creation failed"

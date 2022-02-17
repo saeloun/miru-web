@@ -11,14 +11,14 @@
 
     <div class="flex items-center">
         <%= f.radio_button :billable, true, class: "form__radio" %>
-        <%= f.label :billable, "Billable", class: "form__label" %>
+        <%= f.label :billable, t('projects.billable'), class: "form__label" %>
     
         <%= f.radio_button :billable, false, class: "form__radio" %>
-        <%= f.label :billable, "Non-Billable", class: "form__label" %>
+        <%= f.label :billable, t('projects.non_billable'), class: "form__label" %>
     </div>
 
     <div class="actions mt-4">
-        <%= f.submit "ADD PROJECT", class: "form__button" %>
+        <%= f.submit t('projects.add_project'), class: "form__button" %>
     </div>
 <% end %>
   
