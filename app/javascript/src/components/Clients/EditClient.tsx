@@ -1,10 +1,6 @@
 import * as React from "react";
 import clients from "../../apis/clients";
 
-const divStyle = {
-  backgroundColor: "rgba(29, 26, 49, 0.6)"
-};
-
 export interface IEditClient {
   setShowEditDialog: any;
   client: any;
@@ -63,7 +59,9 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
     <div className="px-4 min-h-screen flex items-center justify-center">
       <div
         className="overflow-auto absolute inset-0 z-10 flex items-start justify-center"
-        style={divStyle}
+        style={{
+          backgroundColor: "rgba(29, 26, 49, 0.6)"
+        }}
       >
         <div className="relative px-4 min-h-screen md:flex md:items-center md:justify-center">
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
