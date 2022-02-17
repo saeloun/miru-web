@@ -46,13 +46,15 @@ en:
     projects: Projects
     hours_logged: HOURS LOGGED
     new_project: NEW PROJECT
-    project_client: PROJECT/CLIENT
+    project: Project
+    client: Client
+    project_name: Project name
     edit: edit
     create:
       success: Project added successfully.
       failure: Project creation failed.
-    add_project: ADD PROJECT
-    add_new_project: ADD NEW PROJECT
+    add_project: Add project
+    add_new_project: Add new project
     billable: Billable
     non_billable: Non-Billable
   companies:

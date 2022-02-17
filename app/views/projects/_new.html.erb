@@ -1,10 +1,10 @@
 <%= form_with model: Project.new do |f| %>
-    <%= f.label :client %>
+    <%= f.label t('projects.client') %>
     <div class="mt-1">
         <%= f.collection_select :client_id, current_company.clients.order(:name),:id,:name, {}, { class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000" } %>
     </div>
 
-    <%= f.label :project_name %>
+    <%= f.label t('projects.project_name') %>
     <div class="mt-1">
         <%= f.text_field :name, class: "form__input" %>
     </div>
@@ -18,7 +18,7 @@
     </div>
 
     <div class="actions mt-4">
-        <%= f.submit t('projects.add_project'), class: "form__button" %>
+        <%= f.submit t('projects.add_project').upcase, class: "form__button" %>
     </div>
 <% end %>
   
