@@ -69,11 +69,6 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
               </button>
             </div>
             <form onSubmit={handleSubmit} action="/clients" method="get">
-              <input
-                type="hidden"
-                name="authenticity_token"
-                value="xBTEYrP4yUDrrlF_EX7rK7CrZoqVUANxvnxPCIH6t6E82Gc0sf_HClgaomRPHOWKcbuCI9a1_Xf7xmSvMqToiA"
-              />
               <div className="mt-4">
                 <div className="field">
                   <div className="field_with_errors">
