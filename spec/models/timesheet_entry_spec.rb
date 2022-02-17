@@ -36,6 +36,7 @@ RSpec.describe TimesheetEntry, type: :model do
         {
           id: timesheet_entry.id,
           project: timesheet_entry.project.name,
+          project_id: timesheet_entry.project.id,
           client: timesheet_entry.project.client.name,
           duration: timesheet_entry.duration,
           note: timesheet_entry.note,
