@@ -10,8 +10,9 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
   end
 
   def create
-    timesheet_entry = project.timesheet_entries.new(timesheet_entry_params)
+    timesheet_entry = current_project.timesheet_entries.new(timesheet_entry_params)
     timesheet_entry.user = current_user
+    timesheet_entry.bill_status = params[:billable] ? :unbilled : :non_billable
     if timesheet_entry.save
       render json: { success: true, entry: timesheet_entry.formatted_entry }
     else
@@ -20,16 +21,17 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
   end
 
   def update
-    timesheet_entry.project = project
-    if timesheet_entry.update(timesheet_entry_params)
-      render json: { success: true, entry: timesheet_entry.formatted_entry }
+    current_timesheet_entry.project = current_project
+    current_timesheet_entry.bill_status = params[:billable] ? :unbilled : :non_billable
+    if current_timesheet_entry.update(timesheet_entry_params)
+      render json: { success: true, entry: current_timesheet_entry.formatted_entry }
     else
       render json: timesheet_entry.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
-    if timesheet_entry.destroy
+    if current_timesheet_entry.destroy
       render json: { success: true }
     else
       render json: timesheet_entry.errors, status: :unprocessable_entity
@@ -37,12 +39,12 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
   end
 
   private
-    def project
-      project ||= Project.find_by!(name: params[:project_name])
+    def current_project
+      @_project ||= current_company.projects.find(params[:project_id])
     end
 
-    def timesheet_entry
-      timesheet_entry ||= TimesheetEntry.find(params[:id])
+    def current_timesheet_entry
+      @_timesheet_entry ||= current_user.timesheet_entries.find(params[:id])
     end
 
     def timesheet_entry_params

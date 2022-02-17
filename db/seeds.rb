@@ -25,10 +25,12 @@ users.each do |user|
     email: user[:email],
     password: "password",
     password_confirmation: "password",
-    confirmed_at: Time.current
+    confirmed_at: Time.current,
+    invitation_accepted_at: Time.current
   )
   company_user.add_role(user[:role])
 end
+seed_users  = User.where(email: users.map { |user| user[:email] })
 puts "#{users.size} Users created"
 
 clientData = [
@@ -45,6 +47,12 @@ miru = Client.first.projects.create!(
   billable: false
 )
 
+circle = Client.first.projects.create!(
+  name: "Circle",
+  description: "something round",
+  billable: true
+)
+
 angel_india = Client.second.projects.create!(
   name: "Crypto Note",
   description: "1₹ = 1 Crypto Note",
@@ -53,12 +61,29 @@ angel_india = Client.second.projects.create!(
 
 puts "Projects Created"
 
+# Create project members
+seed_users.each do |user|
+  ProjectMember.create!(
+    user: user,
+    project: miru,
+    hourly_rate: 5000
+  )
+
+  ProjectMember.create!(
+    user: user,
+    project: angel_india,
+    hourly_rate: 6500
+  )
+end
+
+puts "Project Members Created"
+
 entry_info = {
   user: User.first,
   duration: 450,
   note: "Worked on UI",
   work_date: Date.today
 }
-miru.timesheet_entries.create!(entry_info,)
+miru.timesheet_entries.create!(entry_info)
 angel_india.timesheet_entries.create!(entry_info)
 puts "Timesheet Entries Created"
