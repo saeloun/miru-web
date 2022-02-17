@@ -47,7 +47,7 @@ RSpec.describe "Companies#create", type: :request do
 
       it "employee can't create company", user_employee: true do
         expect(response).to have_http_status(:redirect)
-        expect(flash[:alert]).to eq("You are not authorized to perform this action.")
+        expect(flash[:alert]).to eq("You are not authorized to create company.")
       end
     end
     context "when company is invalid" do
@@ -78,7 +78,7 @@ RSpec.describe "Companies#create", type: :request do
 
       it "employee can't create company", user_employee: true do
         expect(response).to have_http_status(:redirect)
-        expect(flash[:alert]).to eq("You are not authorized to perform this action.")
+        expect(flash[:alert]).to eq("You are not authorized to create company.")
       end
     end
   end

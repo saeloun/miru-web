@@ -13,7 +13,7 @@ class ClientsController < ApplicationController
 
   def create
     client = Client.new(client_params)
-    authorize client, :create?
+    authorize client
     if client.save
       redirect_to clients_path, notice: t("client.create.success")
     else

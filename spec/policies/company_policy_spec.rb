@@ -2,30 +2,30 @@
 
 require "rails_helper"
 
-RSpec.describe CompanyPolicy, type: :policy, company_ploicy: true do
+RSpec.describe CompanyPolicy, type: :policy do
   let(:user) { User.new }
 
   subject { described_class }
 
-  context "Admin" do
+  context "when user is admin" do
     before do
       user.add_role :admin
     end
 
     permissions :new?, :create?, :show?, :update? do
-      it "admin can access company" do
+      it "is permitted to access company" do
         expect(subject).to permit(user, Company)
       end
     end
   end
 
-  context "Employee" do
+  context "when user is employee" do
     before do
       user.add_role :employee
     end
 
     permissions :new?, :create?, :show?, :update? do
-      it "employee can't access company" do
+      it "is not permitted to access company" do
         expect(subject).not_to permit(user, Company)
       end
     end

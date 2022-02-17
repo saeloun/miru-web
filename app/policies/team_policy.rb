@@ -2,14 +2,14 @@
 
 class TeamPolicy < ApplicationPolicy
   def edit?
-    update?
+    user_owner_or_admin?
   end
 
   def update?
-    user.has_any_role?(:owner, :admin)
+    user_owner_or_admin?
   end
 
   def destroy?
-    user.has_any_role?(:owner, :admin)
+    user_owner_or_admin?
   end
 end

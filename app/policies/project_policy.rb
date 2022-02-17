@@ -2,6 +2,6 @@
 
 class ProjectPolicy < ApplicationPolicy
   def create?
-    user.has_any_role?(:owner, :admin)
+    user_owner_or_admin?
   end
 end

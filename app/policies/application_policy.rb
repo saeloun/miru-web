@@ -7,4 +7,9 @@ class ApplicationPolicy
     @user = user
     @record = record
   end
+
+  private
+    def user_owner_or_admin?
+      user.has_any_role?(:owner, :admin)
+    end
 end

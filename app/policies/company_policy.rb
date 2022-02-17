@@ -2,18 +2,18 @@
 
 class CompanyPolicy < ApplicationPolicy
   def new?
-    create?
+    user_owner_or_admin?
   end
 
   def create?
-    user.has_any_role?(:owner, :admin)
+    user_owner_or_admin?
   end
 
   def show?
-    user.has_any_role?(:owner, :admin)
+    user_owner_or_admin?
   end
 
   def update?
-    user.has_any_role?(:owner, :admin)
+    user_owner_or_admin?
   end
 end

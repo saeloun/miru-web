@@ -30,7 +30,7 @@ RSpec.describe "Companies#show", type: :request do
 
     it "employee can't visit Company#show page", user_employee: true do
       expect(response).to have_http_status(:redirect)
-      expect(flash[:alert]).to eq("You are not authorized to perform this action.")
+      expect(flash[:alert]).to eq("You are not authorized to view company.")
     end
   end
 end

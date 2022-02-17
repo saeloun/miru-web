@@ -4,7 +4,7 @@ class DashboardController < ApplicationController
   after_action :verify_authorized
 
   def index
-    authorize :dashboard, :index?
+    authorize :dashboard
     render
   end
 end

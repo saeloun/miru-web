@@ -7,25 +7,25 @@ RSpec.describe DashboardPolicy, type: :policy do
 
   subject { described_class }
 
-  context "Admin" do
+  context "when user is admin" do
     before do
       user.add_role :admin
     end
 
     permissions :index? do
-      it "admin can access index" do
+      it "is permitted to access index" do
         expect(subject).to permit(user, :dashboard)
       end
     end
   end
 
-  context "Employee" do
+  context "when user is employee" do
     before do
       user.add_role :employee
     end
 
     permissions :index? do
-      it "employee can't access index" do
+      it "is not permitted to access index" do
         expect(subject).not_to permit(user, :dashboard)
       end
     end

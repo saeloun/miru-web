@@ -152,4 +152,4 @@ gem "omniauth-google-oauth2", "~> 1.0"
 gem "omniauth-rails_csrf_protection", "~> 1.0"
 
 # Pundit gem for user authorization
-gem "pundit"
+gem "pundit", "~> 2.2"

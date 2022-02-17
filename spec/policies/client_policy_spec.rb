@@ -7,25 +7,25 @@ RSpec.describe ClientPolicy, type: :policy do
 
   subject { described_class }
 
-  context "Admin" do
+  context "when user is admin" do
     before do
       user.add_role :admin
     end
 
     permissions :create? do
-      it "admin can create" do
+      it "is permitted to create client" do
         expect(subject).to permit(user, Client)
       end
     end
   end
 
-  context "Employee" do
+  context "when user is employee" do
     before do
       user.add_role :employee
     end
 
     permissions :create? do
-      it "employee can't create" do
+      it "is not permitted to create client" do
         expect(subject).not_to permit(user, Client)
       end
     end

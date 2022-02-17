@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Dashboard", type: :request do
+RSpec.describe "Dashboard#index", type: :request do
   let (:company) { create(:company) }
   let(:user) { create(:user, company_id: company.id) }
 
@@ -32,7 +32,7 @@ RSpec.describe "Dashboard", type: :request do
     it "employee can't access dashboard", user_employee: true do
       get("/dashboard")
       expect(response).to have_http_status(:redirect)
-      expect(flash[:alert]).to eq("You are not authorized to perform this action.")
+      expect(flash[:alert]).to eq("You are not authorized to view dashboard.")
     end
   end
 

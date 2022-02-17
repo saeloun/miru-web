@@ -469,7 +469,7 @@ DEPENDENCIES
   omniauth-rails_csrf_protection (~> 1.0)
   pg
   puma (~> 5.0)
-  pundit
+  pundit (~> 2.2)
   rack-mini-profiler (>= 2.3.3)
   rails (~> 7.0.1)
   ransack
