@@ -1,5 +1,6 @@
 import * as React from "react";
-import clients from "../../apis/clients";
+
+import clients from "apis/clients";
 
 export interface IEditClient {
   setShowEditDialog: any;
@@ -7,12 +8,11 @@ export interface IEditClient {
 }
 
 const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
-  const { useState } = React;
-  const [name, setName] = useState(client.name);
-  const [email, setEmail] = useState(client.email);
-  const [phone, setPhone] = useState(client.phone);
-  const [address, setAddress] = useState(client.address);
-  const [errors, setErrors] = useState({} as any);
+  const [name, setName] = React.useState<string>(client.name);
+  const [email, setEmail] = React.useState<string>(client.email);
+  const [phone, setPhone] = React.useState<string>(client.phone);
+  const [address, setAddress] = React.useState<string>(client.address);
+  const [errors, setErrors] = React.useState({} as any);
 
   const handleNameChange = e => {
     setName(e.target.value);
@@ -42,16 +42,20 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
           address
         }
       });
-
-      if (res.data?.success) {
-        window.sessionStorage.setItem("saved", "true");
-        window.location.reload();
-      }
+      setTimeout(() => {
+        if (res.data?.success) {
+          window.location.reload();
+        }
+      }, 500);
     } catch (err) {
       if (err.response.status == 422) {
         setErrors({
-          name: err.response.data.name ? err.response.data.name[0] : null,
-          email: err.response.data.email ? err.response.data.email[0] : null
+          name: err.response.data.errors.name
+            ? err.response.data.errors.name[0]
+            : null,
+          email: err.response.data.errors.email
+            ? err.response.data.errors.email[0]
+            : null
         });
       }
     }

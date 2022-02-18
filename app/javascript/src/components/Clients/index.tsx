@@ -1,15 +1,23 @@
 import * as React from "react";
 import { ToastContainer } from "react-toastify";
+
+import { setAuthHeaders, registerIntercepts } from "apis/axios";
+
 import Client from "./Client";
 import EditClient from "./EditClient";
-import Toastr from "../common/Toastr";
 
 const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
-  const { useState } = React;
-  const [showEditDialog, setShowEditDialog] = useState(false);
-  const [clientToEdit, setClientToEdit] = useState({});
+  const [showEditDialog, setShowEditDialog] = React.useState(false);
+  const [clientToEdit, setClientToEdit] = React.useState({});
+
+  React.useEffect(() => {
+    setAuthHeaders();
+    registerIntercepts();
+  }, []);
+
   return (
     <>
+      <ToastContainer />
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -63,13 +71,6 @@ const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
           client={clientToEdit}
         />
       ) : null}
-      {window.sessionStorage.getItem("saved")
-        ? (() => {
-          Toastr.success("Changes saved successfully");
-          window.sessionStorage.removeItem("saved");
-        })()
-        : null}
-      <ToastContainer />
     </>
   );
 };
