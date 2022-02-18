@@ -70,8 +70,10 @@ en:
       failure: "Client creation failed"
       success: "Client added successfully"
     update:
-      success: 
-        message: Client details successfully updated
+      success:
+        message: Changes saved successfully
+      failure:
+        message: Failed to saved changes
     add: ADD CLIENT
   team:
     team: Team
