@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios, { HeadersDefaults } from "axios";
-import Toastr from "../components/common/Toastr";
+
+import Toastr from "common/Toastr";
 
 axios.defaults.baseURL = "/internal_api/v1";
 
