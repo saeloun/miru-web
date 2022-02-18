@@ -4,22 +4,24 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
   before_action :is_user_admin_or_owner?, only: [:update]
 
   def update
-    current_client = Client.find(params[:id])
-
-    unless current_company.id == current_client.company_id
+    unless current_company.id == client.company_id
       return render json: {
         message: "User is unauthorized to modify this client's details"
       }, status: :forbidden
     end
 
-    if current_client.update(client_params)
-      render json: { success: true, client: current_client, notice: I18n.t("client.update.success.message") }, status: :ok
+    if client.update(client_params)
+      render json: { success: true, client: client, notice: I18n.t("client.update.success.message") }, status: :ok
     else
-      render json: { errors: current_client.errors, notice: "Client updation failed" }, status: :unprocessable_entity
+      render json: { errors: client.errors, notice: "Client updation failed" }, status: :unprocessable_entity
     end
   end
 
   private
+    def client
+      @_client ||= Client.find(params[:id])
+    end
+
     def client_params
       params.require(:client).permit(
         :name, :email, :phone, :address
