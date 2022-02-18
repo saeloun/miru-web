@@ -11,9 +11,16 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     end
 
     if client.update(client_params)
-      render json: { success: true, client: client, notice: I18n.t("client.update.success.message") }, status: :ok
+      render json: {
+        success: true,
+        client: client,
+        notice: I18n.t("client.update.success.message")
+      }, status: :ok
     else
-      render json: { errors: client.errors, notice: I18n.t("client.update.failure.message") }, status: :unprocessable_entity
+      render json: {
+        errors: client.errors,
+        notice: I18n.t("client.update.failure.message")
+      }, status: :unprocessable_entity
     end
   end
 
