@@ -14,7 +14,7 @@ export interface IClient {
   setClientToEdit: any;
 }
 
-const Client = ({
+export const Client = ({
   id,
   name,
   email,
@@ -60,5 +60,3 @@ const Client = ({
     </tr>
   );
 };
-
-export default Client;

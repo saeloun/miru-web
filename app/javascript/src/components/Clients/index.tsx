@@ -3,11 +3,11 @@ import { ToastContainer } from "react-toastify";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 
-import Client from "./Client";
+import { Client } from "./Client";
 import EditClient from "./EditClient";
 
 const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
-  const [showEditDialog, setShowEditDialog] = React.useState(false);
+  const [showEditDialog, setShowEditDialog] = React.useState<boolean>(false);
   const [clientToEdit, setClientToEdit] = React.useState({});
 
   React.useEffect(() => {

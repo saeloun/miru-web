@@ -2,6 +2,8 @@ import * as React from "react";
 
 import clients from "apis/clients";
 
+const closeButton = require("../../../../assets/images/close_button.svg"); // eslint-disable-line @typescript-eslint/no-var-requires
+
 export interface IEditClient {
   setShowEditDialog: any;
   client: any;
@@ -12,7 +14,10 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
   const [email, setEmail] = React.useState<string>(client.email);
   const [phone, setPhone] = React.useState<string>(client.phone);
   const [address, setAddress] = React.useState<string>(client.address);
-  const [errors, setErrors] = React.useState({} as any);
+  const [errors, setErrors] = React.useState<{ name: string; email: string }>({
+    name: "",
+    email: ""
+  });
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -58,7 +63,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
               <h6 className="text-base font-extrabold">Edit Client Details</h6>
               <button type="button">
                 <img
-                  src="http://localhost:3000/assets/close_button-620ce255d4d2499e9732af0732c2945de213d68bda45dd7f7642f319df09b569.svg"
+                  src={closeButton}
                   onClick={() => {
                     setShowEditDialog(false);
                   }}
