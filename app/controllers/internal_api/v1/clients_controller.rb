@@ -1,15 +1,9 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationController
-  before_action :is_user_admin_or_owner?, only: [:update]
+  before_action :is_user_admin_or_owner?, :is_user_authorized?, only: [:update, :destroy]
 
   def update
-    unless current_company.id == client.company_id
-      return render json: {
-        message: I18n.t("client.update.failure.unauthorized")
-      }, status: :forbidden
-    end
-
     if client.update(client_params)
       render json: {
         success: true,
@@ -24,6 +18,16 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     end
   end
 
+  def destroy
+    if client.discard
+      render json: { client: client }, status: :ok
+    else
+      render json: {
+        message: I18n.t("errors.internal_server_error")
+      }, status: :internal_server_error
+    end
+  end
+
   private
     def client
       @_client ||= Client.find(params[:id])
@@ -34,6 +38,14 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
         :name, :email, :phone, :address
       ).tap do |client_params|
         client_params[:company_id] = current_company.id
+      end
+    end
+
+    def is_user_authorized?
+      unless current_company.id == client.company_id
+        render json: {
+          message: I18n.t("client.update.failure.unauthorized")
+        }, status: :forbidden
       end
     end
 

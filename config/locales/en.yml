@@ -157,3 +157,4 @@ en:
   errors:
     not_found: The resource you're looking for is not available
     unauthorized: Only owner or admin users are authorized to perform this action
+    internal_server_error: Something went wrong
