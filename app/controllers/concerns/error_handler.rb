@@ -9,11 +9,11 @@ module ErrorHandler
   end
 
   private
-    def handle_not_found_error(_error)
-      message = exception.message || "The resource you're looking for is not available"
+    def handle_not_found_error(exception)
+      message = exception.message || I18n.t("errors.not_found")
 
       respond_to do |format|
-        format.json { render json: { errors: message }, status: :forbidden }
+        format.json { render json: { errors: message }, status: :not_found }
         format.html { render file: "public/401.html", status: :not_found, layout: false, alert: message }
       end
     end

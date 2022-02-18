@@ -5,8 +5,8 @@ environment.config.merge({
   plugins: [new ForkTSCheckerWebpackPlugin()]
 });
 
-// const aliasConfig = require("./alias");
-// environment.config.merge(aliasConfig);
+const aliasConfig = require("./alias");
+environment.config.merge(aliasConfig);
 
 const webpack = require('webpack')
 environment.plugins.prepend('Provide',

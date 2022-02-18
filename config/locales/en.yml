@@ -69,6 +69,12 @@ en:
     create:
       failure: "Client creation failed"
       success: "Client added successfully"
+    update:
+      success:
+        message: Changes saved successfully
+      failure:
+        unauthorized: User is unauthorized to modify this client's details
+        message: Failed to saved changes
     add: ADD CLIENT
   team:
     team: Team
@@ -148,5 +154,6 @@ en:
       edit?: You are not authorized to edit team.
       update?: You are not authorized to update team.
       destroy?: You are not authorized to destroy team. 
-    
-
+  errors:
+    not_found: The resource you're looking for is not available
+    unauthorized: Only owner or admin users are authorized to perform this action
