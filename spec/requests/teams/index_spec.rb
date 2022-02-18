@@ -4,13 +4,13 @@ require "rails_helper"
 
 RSpec.describe "Team#index", type: :request do
   let (:company) { create(:company) }
-  let(:user) { create(:user, company_id: company.id) }
+  let (:user) { create(:user, company_id: company.id) }
 
   context "when user is admin" do
     before do
       user.add_role :admin
       sign_in user
-      get("/team")
+      send_request :get, team_index_path
     end
 
     it "returns http success" do
@@ -26,7 +26,7 @@ RSpec.describe "Team#index", type: :request do
     before do
       user.add_role :employee
       sign_in user
-      get("/team")
+      send_request :get, team_index_path
     end
 
     it "is permitted to access Team#index page" do
@@ -36,7 +36,7 @@ RSpec.describe "Team#index", type: :request do
 
   context "when unauthenticated" do
     it "user will be redirects to sign in path" do
-      get("/team")
+      send_request :get, team_index_path
       expect(response).to redirect_to(user_session_path)
       expect(flash[:alert]).to eq("You need to sign in or sign up before continuing.")
     end

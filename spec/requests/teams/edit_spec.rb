@@ -10,7 +10,7 @@ RSpec.describe "Team#edit", type: :request do
     before do
       user.add_role :admin
       sign_in user
-      get edit_team_path(user), xhr: true
+      send_request(:get, edit_team_path(user), xhr: true)
     end
 
     it "returns http success" do
@@ -26,7 +26,7 @@ RSpec.describe "Team#edit", type: :request do
     before do
       user.add_role :employee
       sign_in user
-      get edit_team_path(user), xhr: true
+      send_request(:get, edit_team_path(user), xhr: true)
     end
 
     it "redirect to root_path" do
@@ -41,7 +41,7 @@ RSpec.describe "Team#edit", type: :request do
 
   context "when unauthenticated" do
     it "respond with unauthorized status" do
-      get edit_team_path(user), xhr: true
+      send_request(:get, edit_team_path(user), xhr: true)
       expect(response).to have_http_status(:unauthorized)
     end
   end

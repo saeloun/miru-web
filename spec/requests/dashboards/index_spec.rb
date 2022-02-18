@@ -10,7 +10,7 @@ RSpec.describe "Dashboard#index", type: :request do
     before do
       user.add_role :admin
       sign_in user
-      get("/dashboard")
+      send_request :get, dashboard_index_path
     end
 
     it "renders Dashboard#index page" do
@@ -22,7 +22,7 @@ RSpec.describe "Dashboard#index", type: :request do
     before do
       user.add_role :employee
       sign_in user
-      get("/dashboard")
+      send_request :get, dashboard_index_path
     end
 
     it "redirect to root path" do
@@ -36,7 +36,7 @@ RSpec.describe "Dashboard#index", type: :request do
 
   context "when unauthenticated" do
     it "user will be redirects to sign in path" do
-      get("/dashboard")
+      send_request :get, dashboard_index_path
       expect(response).to redirect_to(user_session_path)
       expect(flash[:alert]).to eq("You need to sign in or sign up before continuing.")
     end

@@ -10,7 +10,7 @@ RSpec.describe "Companies#show", type: :request do
     before do
       user.add_role :admin
       sign_in user
-      get company_path
+      send_request :get, company_path
     end
 
     it "is successful " do
@@ -27,7 +27,7 @@ RSpec.describe "Companies#show", type: :request do
     before do
       user.add_role :employee
       sign_in user
-      get company_path
+      send_request :get, company_path
     end
 
     it "is not permitted to visit Company#show page" do
@@ -38,7 +38,7 @@ RSpec.describe "Companies#show", type: :request do
 
   context "when unauthenticated" do
     it "user will be redirects to sign in path" do
-      get company_path
+      send_request :get, company_path
       expect(response).to redirect_to(user_session_path)
       expect(flash[:alert]).to eq("You need to sign in or sign up before continuing.")
     end
