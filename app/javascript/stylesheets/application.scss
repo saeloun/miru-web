@@ -23,6 +23,7 @@
 
 @layer components {
   @import "navbar";
+
   .align_page {
     &__one {
       @apply lg:max-w-3xl xl:max-w-7xl mx-auto font-manrope;
@@ -34,6 +35,7 @@
       @apply xl:px-2;
     }
   }
+
   .form {
     &__textarea, &__select {
       @apply rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none;
@@ -62,6 +64,12 @@
     &__link {
       @apply font-bold text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-wider;
     }
+    &__save {
+      @apply text-base font-semibold text-miru-white-1000 ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer;
+    }
+    &__cancel {
+      @apply text-base font-semibold text-miru-han-purple-1000 ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded cursor-pointer;
+    }
     &__radio {
       @apply focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000;
     }
@@ -73,6 +81,114 @@
     }
     &__position {
       @apply absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5
+    }
+  }
+
+  .page_content {
+    &__position {
+      @apply sm:flex sm:items-center sm:justify-between px-1 sm:px-0 mt-6;
+    }
+    &__title_width {
+      @apply w-full sm:w-1/5;
+    }
+    &__title {
+      @apply text-3xl font-bold leading-7 text-gray-900 sm:text-4xl py-1;
+    }
+    &__search_width {
+      @apply w-full sm:w-3/5 mt-6 sm:mt-0;
+    }
+    &__search {
+      @apply sm:pr-6 md:pr-10 lg:pr-6 xl:pr-48 xxl:pr-56;
+    }
+    &__search_input {
+      @apply block w-full pr-10 border border-gray-100 rounded px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-sm;
+    }
+    &__search_image {
+      @apply h-4 absolute inset-y-0 right-0 pr-3 my-2 flex items-center cursor-pointer;
+    }
+    &__newUser_width {
+      @apply w-full sm:w-1/4 mt-6 sm:mt-0;
+    }
+    &__newUser_position {
+      @apply md:ml-3 lg:ml-5 xl:ml-22;
+    }
+    &__newUser_button {
+      @apply sm:ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 md:px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-semibold text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer;
+    }
+    &__button_image {
+      @apply -ml-0.5 mr-2 h-4 w-4;
+    }
+  }
+
+  .table {
+    &__flex {
+      @apply flex flex-col;
+    }
+    &__position_one {
+      @apply -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8;
+    }
+    &__position_two {
+      @apply py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8;
+    }
+    &__border {
+      @apply overflow-hidden border-b-2 border-miru-gray-200
+    }
+    &__width {
+      @apply min-w-full divide-y divide-gray-200 mt-4;
+    }
+    &__header {
+      @apply px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest;
+    }
+    &__body {
+      @apply bg-white divide-y divide-gray-200;
+    }
+    &__data {
+      @apply px-3 py-3 whitespace-nowrap;
+    }
+    &__button {
+      @apply h-6 rounded hover:bg-opacity-20 hover:bg-miru-gray-1000;
+    }
+    &__button_design {
+      @apply text-right text-sm font-medium;
+    }
+    &__pending {
+      @apply px-2 inline-flex text-xs leading-5 tracking-widest font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000;
+    }
+    &__text {
+      @apply text-xs font-normal text-miru-dark-purple-1000;
+    }
+    &__name {
+      @apply text-base font-normal text-miru-dark-purple-1000;
+    }
+    &__avatar {
+      @apply h-6 w-6 rounded-full;
+    }
+  }
+
+  .modal {
+    &__modal {
+      @apply px-5 fixed w-full inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster;
+    }
+    &__container {
+      @apply shadow-lg bg-white w-full max-w-md mx-auto rounded-xl z-50 overflow-y-auto;
+    }
+    &__content {
+      @apply py-4 text-left px-3;
+    }
+    &__position {
+      @apply flex justify-between items-center mx-3;
+    }
+    &__title {
+      @apply text-base font-extrabold
+    }
+    &__close {
+      @apply cursor-pointer z-50;
+    }
+    &__button {
+      @apply p-2 rounded hover:bg-opacity-20 hover:bg-miru-gray-1000;
+    }
+    &__form {
+      @apply mb-3 mx-3 flex justify-center;
     }
   }
 }

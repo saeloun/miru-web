@@ -3,61 +3,63 @@
     <div class="align_page__two">
       <div class="align_page__three">
 
-        <div class="sm:flex sm:items-center sm:justify-between px-1 sm:px-0 mt-6">
-          <div class="w-full sm:w-1/5">
-            <h2 class="text-3xl font-bold leading-7 text-gray-900 sm:text-4xl py-1">
+        <!-- title search and new user button start -->
+        <div class="page_content__position">
+          <div class="page_content__title_width">
+            <h2 class="page_content__title">
               <%= t('team.team') %>
             </h2>
           </div>
-          <div class="w-full sm:w-3/5 mt-6 sm:mt-0">
-            <%= search_form_for query, url: team_index_path, class: "sm:pr-6 md:pr-10 lg:pr-6 xl:pr-48 xxl:pr-56"  do |f| %>
+          <div class="page_content__search_width">
+            <%= search_form_for query, url: team_index_path, class: "page_content__search"  do |f| %>
               <div class="relative rounded">
-                <%= f.text_field :first_name_or_last_name_or_email_cont, class: 'block w-full pr-10 border border-gray-100 rounded px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-sm', placeholder: 'Search' %>
-                <%= image_submit_tag 'search_icon.svg', class: "h-4 absolute inset-y-0 right-0 pr-3 my-2 flex items-center cursor-pointer" %>
+              <%= f.text_field :first_name_or_last_name_or_email_cont, class: "page_content__search_input", placeholder: 'Search' %>
+              <%= image_submit_tag 'search_icon.svg', class: "page_content__search_image" %>
               </div>
             <% end %>
           </div>
           <% if current_user.has_owner_or_admin_role?(current_company) %>
-            <div class="w-full sm:w-1/4 mt-6 sm:mt-0">
-              <div class="md:ml-3 lg:ml-5 xl:ml-22">
-                <button onclick="openModal('main-modal')" type="button" class="sm:ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 md:px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-semibold text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer">
-                  <img src="<%= image_url 'plus_icon.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
+            <div class="page_content__newUser_width">
+              <div class="page_content__newUser_position">
+                <button onclick="openModal('main-modal')" type="button" class="page_content__newUser_button">
+                  <img src="<%= image_url 'plus_icon.svg' %>" class="page_content__button_image">
                   <%= t('team.new_user') %>
                 </button>
               </div>
             </div>
           <% end %>
         </div>
+        <!-- title search and new user button end -->
 
         <!-- team table start -->
-        <div class="flex flex-col">
-          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 ">
-            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-              <div class="overflow-hidden border-b-2 border-miru-gray-200 ">
-                <table class="min-w-full divide-y divide-gray-200 mt-4">
+        <div class="table__flex">
+          <div class="table__position_one">
+            <div class="table__position_two">
+              <div class="table__border">
+                <table class="table__width">
                   <thead class="">
                     <tr>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
+                      <th scope="col" class="table__header">
                         <%= t('team.profile_picture') %>
                       </th>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
+                      <th scope="col" class="table__header">
                         <%= t('team.name') %>
                       </th>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
+                      <th scope="col" class="table__header">
                         <%= t('team.email_id') %>
                       </th>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
+                      <th scope="col" class="table__header">
                         <%= t('team.role') %>
                       </th>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
+                      <th scope="col" class="table__header">
 
                       </th>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
+                      <th scope="col" class="table__header">
 
                       </th>
                     </tr>
                   </thead>
-                  <tbody id="teamstable" class="bg-white divide-y divide-gray-200">
+                  <tbody id="teamstable" class="table__body">
                     <% teams.kept.each do |member| %>
                         <tr id="member-<%= member.id %>">
                           <%= render partial: "team", locals: { member: member } %>
@@ -74,16 +76,16 @@
       </div>
 
       <!--Modal 1 start-->
-      <div class="px-5 main-modal fixed w-full inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster" style="background-color: rgba(29, 26, 49,0.6)">
-        <div class="shadow-lg modal-container bg-white w-full max-w-md mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
-          <div class="modal-content py-4 text-left px-3">
-            <div class="flex justify-between items-center mx-3">
-              <h6 class="text-base font-extrabold"><%= t('team.create_new_user') %></h6>
-              <div class="modal-close cursor-pointer z-50" onclick="modalClose('main-modal')">
-                <img src="<%= image_url 'close_button.svg' %>" class="p-2 rounded hover:bg-opacity-20 hover:bg-miru-gray-1000">
+      <div class="modal__modal main-modal" style="background-color: rgba(29, 26, 49,0.6)">
+        <div class="modal__container modal-container">
+          <div class="modal__content modal-content">
+            <div class="modal__position">
+              <h6 class="modal__title"><%= t('team.create_new_user') %></h6>
+              <div class="modal__close modal-close" onclick="modalClose('main-modal')">
+                <img src="<%= image_url 'close_button.svg' %>" class="modal__button">
               </div>
             </div>
-            <div class="mb-3 mx-3 flex justify-center">
+            <div class="modal__form">
               <%= render "devise/invitations/new"%>
             </div>
           </div>
@@ -92,16 +94,16 @@
       <!--Modal 1 end-->
 
       <!--Modal 2 start-->
-        <div class="px-5 another-modal fixed w-full inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster" style="background-color: rgba(29, 26, 49,0.6)">
-          <div class="shadow-lg modal-container bg-white w-full max-w-md mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
-            <div class="modal-content py-4 text-left px-3">
-              <div class="flex justify-between items-center mx-3">
-                <h6 class="text-base font-extrabold"><%= t('team.update_user') %></h6>
-                <div class="modal-close cursor-pointer z-50 ml-" onclick="modalClose('another-modal')">
-                  <img src="<%= image_url 'close_button.svg' %>" class="p-2 rounded hover:bg-opacity-20 hover:bg-miru-gray-1000">
+        <div class="another-modal modal__modal" style="background-color: rgba(29, 26, 49,0.6)">
+          <div class="modal-container modal__container">
+            <div class="modal-content modal__content">
+              <div class="modal__position">
+                <h6 class="modal__title"><%= t('team.update_user') %></h6>
+                <div class="modal-close modal__close" onclick="modalClose('another-modal')">
+                  <img src="<%= image_url 'close_button.svg' %>" class="modal__button">
                 </div>
               </div>
-              <div id="team-modal" class="mb-3 mx-3 flex justify-center">
+              <div id="team-modal" class="modal__form">
               </div>
             </div>
           </div>
