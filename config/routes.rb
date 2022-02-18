@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   resources :time_tracking, only: [:index], path: "time-tracking"
   resources :team, only: [:index, :update, :destroy, :edit]
   resources :clients, only: [:index, :create]
-  resources :projects, only: [:index, :create]
+  resources :projects, only: [:index, :create, :show]
 
 
   devise_scope :user do
