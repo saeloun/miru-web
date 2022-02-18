@@ -6,32 +6,30 @@ RSpec.describe "Dashboard#index", type: :request do
   let (:company) { create(:company) }
   let(:user) { create(:user, company_id: company.id) }
 
-  before(:each, :user_admin) do
-    user.add_role :admin
-  end
-
-  before(:each, :user_employee) do
-    user.add_role :employee
-  end
-
-  context "when authenticated" do
+  context "when user is admin" do
     before do
+      user.add_role :admin
       sign_in user
+      get("/dashboard")
     end
 
-    it "returns http success" do
-      get("/dashboard")
-      expect(response).to have_http_status(:found)
-    end
-
-    it "admin can access dashboard", user_admin: true do
-      get("/dashboard")
+    it "renders Dashboard#index page" do
       expect(response).to have_http_status(:ok)
     end
+  end
 
-    it "employee can't access dashboard", user_employee: true do
+  context "when user is employee" do
+    before do
+      user.add_role :employee
+      sign_in user
       get("/dashboard")
+    end
+
+    it "redirect to root path" do
       expect(response).to have_http_status(:redirect)
+    end
+
+    it "is not permitted to visit dashboard#index page" do
       expect(flash[:alert]).to eq("You are not authorized to view dashboard.")
     end
   end

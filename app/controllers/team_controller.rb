@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TeamController < ApplicationController
-  after_action :verify_authorized, except: :index
+  skip_after_action :verify_authorized, only: :index
   after_action :assign_role, only: [:update]
 
   def index

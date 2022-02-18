@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe TeamPolicy, type: :policy, test_ploi: true do
-  let(:user) { User.new() }
+  let(:user) { build(:user) }
 
   subject { described_class }
 

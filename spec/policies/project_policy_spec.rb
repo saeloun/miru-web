@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe ProjectPolicy, type: :policy do
-  let(:user) { User.new }
+  let(:user) { build(:user) }
 
   subject { described_class }
 

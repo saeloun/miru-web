@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe CompanyPolicy, type: :policy do
-  let(:user) { User.new }
+  let(:user) { build(:user) }
 
   subject { described_class }
 
