@@ -1,165 +1,168 @@
-<div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
-  <div class="px-5">
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+<div class="align_page__one">
+  <div class="align_page__two">
+    <div class ="align_page__three">
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
 
-      <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
-        <div class="flex-1 min-w-0">
-          <h2 class="text-3xl font-extrabold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
-            Settings
-          </h2>
-        </div>
-        <div class="mt-6 flex sm:mt-0 md:ml-4">
-
-          <div type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded">
-            <img src="<%= image_url 'cancel_button.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-            <%= link_to "CANCEL", :back, class: "text-base font-sans font-medium text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer" %>
-          </div>
-
-          <div type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded">
-            <img src="<%= image_url 'save_button.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-            <%= f.submit "SAVE", class: "text-base font-sans font-medium text-miru-white-1000 bg-transparent cursor-pointer" %>
-          </div>
-        </div>
-      </div>
-      <div class="sm:flex sm:items-center sm:justify-between mt-3 mb-3">
-        <div class="flex-1 min-w-0">
-          <h2 class="<%= request.path == "/profile" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
-            <%= link_to "PROFILE SETTINGS", "/profile" %>
-          </h2>
-        </div>
-
-        <% if policy(Company).update? %>
+        <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
           <div class="flex-1 min-w-0">
-            <h2 class="<%= request.path == "/company" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
-              <%= link_to "ORGANIZATION SETTINGS", "/company" %>
+            <h2 class="text-3xl font-extrabold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
+              Settings
             </h2>
           </div>
-        <% end %>
-      </div>
+          <div class="mt-6 flex sm:mt-0 md:ml-4">
 
-      <div class="bg-miru-gray-100 p-10">
-        <div class="max-w-max sm:max-w-md">
-          <%= render "devise/shared/error_messages", resource: resource %>
-
-          <div class="field">
-            <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000">Profile Picture</label>
-            <div class="mt-2">
-              <% if resource.avatar.attached? %>
-                <div class="flex items-center space-x-4 lg:space-x-6">
-                  <div class="relative w-24 h-24 rounded-full border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
-                    <div class="flex items-center justify-center">
-                      <%= image_tag resource.avatar, class: "rounded-full" %>
-                    </div>
-                  </div>
-                  <%= link_to image_tag("#{image_url 'delete_image_button.svg'}"), profile_purge_avatar_path(id: resource), method: :delete, class: "font-medium text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000"%>
-                </div>
-              <% else %>
-                <div x-data="showImage()">
-                  <div class="relative w-24 h-24 rounded-md border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
-                    <div class="flex items-center justify-center">
-                      <label>
-                        <div class="flex flex-col items-center">
-                          <img id="preview" class="absolute ml-1 mt-1 inset-0 w-20 h-20 rounded-md">
-                          <img src="<%= image_url 'plus_icon.svg' %>" class="mt-8">
-                          <div class="opacity-0" accept="image/*" @change="showPreview(event)">
-                            <%= f.file_field :avatar %>
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              <% end %>
+            <div type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded">
+              <img src="<%= image_url 'cancel_button.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
+              <%= link_to "CANCEL", :back, class: "text-base font-sans font-medium text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer" %>
             </div>
+
+            <div type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded">
+              <img src="<%= image_url 'save_button.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
+              <%= f.submit "SAVE", class: "text-base font-sans font-medium text-miru-white-1000 bg-transparent cursor-pointer" %>
+            </div>
+
+          </div>
+        </div>
+        <div class="sm:flex sm:items-center sm:justify-between mt-3 mb-3">
+          <div class="flex-1 min-w-0">
+            <h2 class="<%= request.path == "/profile" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
+              <%= link_to "PROFILE SETTINGS", "/profile" %>
+            </h2>
           </div>
 
-          <div class="mt-4">
-            <div class="field">
-              <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000">Name</label>
-              <div class="mt-2 flex -space-x-px">
-                <div class="mr-4 w-1/2 flex-1 min-w-0">
-                  <%= f.text_field :first_name, autofocus: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
-                </div>
-                <div class="w-1/2 flex-1 min-w-0">
-                  <%= f.text_field :last_name, autofocus: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
-                </div>
-              </div>
+          <% if policy(Company).update? %>
+            <div class="flex-1 min-w-0">
+              <h2 class="<%= request.path == "/company" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
+                <%= link_to "ORGANIZATION SETTINGS", "/company" %>
+              </h2>
             </div>
-          </div>
+          <% end %>
+        </div>
 
-          <div class="mt-4">
+        <div class="bg-miru-gray-100 p-10">
+          <div class="max-w-max sm:max-w-md">
+            <%= render "devise/shared/error_messages", resource: resource %>
+
             <div class="field">
-              <%= f.label :email, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+              <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000">Profile Picture</label>
               <div class="mt-2">
-                <%= f.email_field :email, autofocus: true, autocomplete: "email", readonly: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-dark-purple-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-400 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+                <% if resource.avatar.attached? %>
+                  <div class="flex items-center space-x-4 lg:space-x-6">
+                    <div class="relative w-24 h-24 rounded-full border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
+                      <div class="flex items-center justify-center">
+                        <%= image_tag resource.avatar, class: "rounded-full" %>
+                      </div>
+                    </div>
+                    <%= link_to image_tag("#{image_url 'delete_image_button.svg'}"), profile_purge_avatar_path(id: resource), method: :delete, class: "font-medium text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000"%>
+                  </div>
+                <% else %>
+                  <div x-data="showImage()">
+                    <div class="relative w-24 h-24 rounded-md border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
+                      <div class="flex items-center justify-center">
+                        <label>
+                          <div class="flex flex-col items-center">
+                            <img id="preview" class="absolute ml-1 mt-1 inset-0 w-20 h-20 rounded-md">
+                            <img src="<%= image_url 'plus_icon.svg' %>" class="mt-8">
+                            <div class="opacity-0" accept="image/*" @change="showPreview(event)">
+                              <%= f.file_field :avatar %>
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
               </div>
             </div>
-          </div>
 
-          <%# if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-          <!--          <div>Currently waiting confirmation for: <%#= resource.unconfirmed_email %></div>-->
-          <%# end %>
-
-          <div x-data="{ password_show: true }">
-            <div>
-              <div @click="password_show = !password_show" :class="{'hidden': !password_show, 'block':password_show }" class="mt-7 text-left h-4 text-miru-han-purple-1000 font-sans font-normal text-base hover:text-miru-han-purple-600 cursor-pointer">
-                CHANGE PASSWORD
+            <div class="mt-4">
+              <div class="field">
+                <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000">Name</label>
+                <div class="mt-2 flex -space-x-px">
+                  <div class="mr-4 w-1/2 flex-1 min-w-0">
+                    <%= f.text_field :first_name, autofocus: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+                  </div>
+                  <div class="w-1/2 flex-1 min-w-0">
+                    <%= f.text_field :last_name, autofocus: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+                  </div>
+                </div>
               </div>
             </div>
-            <div>
-              <div :class="{'block': !password_show, 'hidden':password_show }">
-                <div class="field mt-4">
-                  <div class="field" x-data="{ show: true }">
-                    <%= f.label :current_password, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-                    <div class="mt-2 relative">
-                      <input name="user[current_password]" placeholder="" id="user_current_password" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
-                      <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-                        <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
-                        <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
+
+            <div class="mt-4">
+              <div class="field">
+                <%= f.label :email, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                <div class="mt-2">
+                  <%= f.email_field :email, autofocus: true, autocomplete: "email", readonly: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-dark-purple-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-400 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+                </div>
+              </div>
+            </div>
+
+            <%# if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+            <!--          <div>Currently waiting confirmation for: <%#= resource.unconfirmed_email %></div>-->
+            <%# end %>
+
+            <div x-data="{ password_show: true }">
+              <div>
+                <div @click="password_show = !password_show" :class="{'hidden': !password_show, 'block':password_show }" class="mt-7 text-left h-4 text-miru-han-purple-1000 font-sans font-normal text-base hover:text-miru-han-purple-600 cursor-pointer">
+                  CHANGE PASSWORD
+                </div>
+              </div>
+              <div>
+                <div :class="{'block': !password_show, 'hidden':password_show }">
+                  <div class="field mt-4">
+                    <div class="field" x-data="{ show: true }">
+                      <%= f.label :current_password, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                      <div class="mt-2 relative">
+                        <input name="user[current_password]" placeholder="" id="user_current_password" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                          <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
+                          <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-4">
+                    <div class="field" x-data="{ show: true }">
+                      <%= f.label :password, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                      <% if @minimum_password_length %>
+                        <em class="text-xs text-miru-dark-purple-400">( <%= @minimum_password_length %> characters minimum )</em>
+                      <% end %>
+                      <div class="mt-2 relative">
+                        <input name="user[password]" placeholder="" id="user_password" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                          <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
+                          <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-4">
+                    <div class="field" x-data="{ show: true }">
+                      <%= f.label :password_confirmation, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                      <div class="mt-2 relative">
+                        <input name="user[password_confirmation]" placeholder="" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                          <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
+                          <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-
-                <div class="mt-4">
-                  <div class="field" x-data="{ show: true }">
-                    <%= f.label :password, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-                    <% if @minimum_password_length %>
-                      <em class="text-xs text-miru-dark-purple-400">( <%= @minimum_password_length %> characters minimum )</em>
-                    <% end %>
-                    <div class="mt-2 relative">
-                      <input name="user[password]" placeholder="" id="user_password" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
-                      <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-                        <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
-                        <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
-                      </div>
-                    </div>
-                  </div>
+                <div @click="password_show = !password_show" :class="{'block': !password_show, 'hidden':password_show }" class="mt-7 text-left text-miru-han-purple-1000 font-sans font-normal text-base hover:text-miru-han-purple-600 cursor-pointer">
+                  CANCEL
                 </div>
-
-                <div class="mt-4">
-                  <div class="field" x-data="{ show: true }">
-                    <%= f.label :password_confirmation, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-                    <div class="mt-2 relative">
-                      <input name="user[password_confirmation]" placeholder="" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
-                      <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-                        <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
-                        <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="h-4 w-4 text-miru-han-purple-1000 cursor-pointer">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div @click="password_show = !password_show" :class="{'block': !password_show, 'hidden':password_show }" class="mt-7 text-left text-miru-han-purple-1000 font-sans font-normal text-base hover:text-miru-han-purple-600 cursor-pointer">
-                CANCEL
               </div>
             </div>
-          </div>
 
-    <% end %>
-<!--          <h3>Cancel my account</h3>-->
-<!--          <p>Unhappy? <%#= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>-->
-    </div>
+      <% end %>
+  <!--          <h3>Cancel my account</h3>-->
+  <!--          <p>Unhappy? <%#= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>-->
+      </div>
+      </div>
     </div>
   </div>
 </div>
