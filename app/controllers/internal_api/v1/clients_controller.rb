@@ -4,11 +4,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
   before_action :is_user_admin_or_owner?, only: [:update]
 
   def update
-    current_client = Client.find_by(id: params[:id])
-
-    if current_client.nil?
-      return render json: { message: "Client not found" }, status: :not_found
-    end
+    current_client = Client.find(params[:id])
 
     unless current_company.id == current_client.company_id
       return render json: {
