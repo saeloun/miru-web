@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ClientsController < ApplicationController
+  skip_after_action :verify_authorized, except: :create
+
   def index
     render :index, locals: {
       clients: clients,
@@ -11,6 +13,7 @@ class ClientsController < ApplicationController
 
   def create
     client = Client.new(client_params)
+    authorize client
     if client.save
       redirect_to clients_path, notice: t("client.create.success")
     else
@@ -32,7 +35,7 @@ class ClientsController < ApplicationController
 
     def client_params
       params.require(:client).permit(
-        :name, :email, :phone, :address
+        policy(Client).permitted_attributes
       ).tap do |client_params|
         client_params[:company_id] = current_company.id
       end
