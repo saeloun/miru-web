@@ -6,7 +6,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
   def update
     unless current_company.id == client.company_id
       return render json: {
-        message: "User is unauthorized to modify this client's details"
+        message: I18n.t("client.update.failure.unauthorized")
       }, status: :forbidden
     end
 
@@ -32,7 +32,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
     def is_user_admin_or_owner?
       render json: {
-        message: "Only owner or admin users are authorized to perform this action"
+        message: I18n.t("errors.unauthorized")
       }, status: :forbidden unless current_user.has_any_role?(:owner, :admin)
     end
 end
