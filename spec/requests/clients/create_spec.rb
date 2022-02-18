@@ -50,11 +50,11 @@ RSpec.describe "Client#index", type: :request do
         })
       end
 
-      it "client creation will fail" do
+      it "will fail" do
         expect(response.body).to include("Client creation failed")
       end
 
-      it "client record won't be created" do
+      it "will not be created" do
         expect(Client.count).to eq(0)
       end
 
@@ -78,7 +78,7 @@ RSpec.describe "Client#index", type: :request do
       })
     end
 
-    it "client won't be created" do
+    it "will not be created" do
       expect(Client.count).to eq(0)
     end
 

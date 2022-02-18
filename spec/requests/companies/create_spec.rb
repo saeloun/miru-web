@@ -55,11 +55,11 @@ RSpec.describe "Companies#create", type: :request do
         })
       end
 
-      it "company creation will fail" do
+      it "will fail" do
         expect(response.body).to include("Company creation failed")
       end
 
-      it "company record won't be created" do
+      it "will not be created" do
         expect(Company.count).to eq(0)
       end
 
@@ -92,7 +92,7 @@ RSpec.describe "Companies#create", type: :request do
         })
       end
 
-      it "company won't be created" do
+      it "will not be created" do
         expect(Company.count).to eq(0)
       end
 
@@ -118,7 +118,7 @@ RSpec.describe "Companies#create", type: :request do
           }
         })
       end
-      it "company won't be created" do
+      it "will not be created" do
         expect(Company.count).to eq(0)
       end
 
