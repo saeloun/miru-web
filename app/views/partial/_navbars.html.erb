@@ -122,7 +122,7 @@
 
           <!-- dashboard time_tracking team clients projects invoice report etc. start -->
           <div class="relative z-0 flex-auto flex items-center justify-center sm:absolute sm:inset-0">
-            <div class="hidden lg:block lg:flex lg:space-x-10 xl:pr-80">
+            <div class="hidden lg:block lg:flex lg:space-x-10 xl:pr-80 <%= "lg:mr-86" if current_user.primary_role == :employee.to_s%>">
               <% if current_user.has_any_role?(:owner, :admin) %>
                 <a href="/dashboard" class="<%= request.path == "/dashboard" ? "navbar__largeScreen_selected" : "navbar__largeScreen_unselected" %> navbar__largeScreen_title">
                   <%= t('navbar.dashboard') %>
