@@ -14,22 +14,6 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
   const [address, setAddress] = React.useState<string>(client.address);
   const [errors, setErrors] = React.useState({} as any);
 
-  const handleNameChange = e => {
-    setName(e.target.value);
-  };
-
-  const handleEmailChange = e => {
-    setEmail(e.target.value);
-  };
-
-  const handlePhoneChange = e => {
-    setPhone(e.target.value);
-  };
-
-  const handleAddressChange = e => {
-    setAddress(e.target.value);
-  };
-
   const handleSubmit = async e => {
     e.preventDefault();
 
@@ -102,7 +86,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                       name="client[name]"
                       id="client_name"
                       value={name}
-                      onChange={handleNameChange}
+                      onChange={e => setName(e.target.value)}
                     />
                   </div>
                 </div>
@@ -128,7 +112,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                       name="client[email]"
                       id="client_email"
                       value={email}
-                      onChange={handleEmailChange}
+                      onChange={e => setEmail(e.target.value)}
                     />
                   </div>
                 </div>
@@ -148,7 +132,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                       name="client[phone]"
                       id="client_phone"
                       value={phone}
-                      onChange={handlePhoneChange}
+                      onChange={e => setPhone(e.target.value)}
                     />
                   </div>
                 </div>
@@ -167,7 +151,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                       name="client[address]"
                       id="client_address"
                       value={address}
-                      onChange={handleAddressChange}
+                      onChange={e => setAddress(e.target.value)}
                     ></textarea>
                   </div>
                 </div>
