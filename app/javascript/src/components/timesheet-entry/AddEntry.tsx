@@ -73,16 +73,15 @@ const AddEntry: React.FC<props> = ({
 
   const handleSave = async () => {
     if (!note && !project) return;
-    const entry = {
-      work_date: selectedFullDate,
-      duration: minutesFromHHMM(duration),
-      note: note
-    };
 
     const res = await timesheetEntryApi.create({
       project_id: projectId,
-      billable: billable,
-      timesheet_entry: entry
+      timesheet_entry: {
+        work_date: selectedFullDate,
+        duration: minutesFromHHMM(duration),
+        note: note,
+        bill_status: billable ? "unbilled" : "billed"
+      }
     });
 
     if (res.data?.success) {
@@ -106,8 +105,8 @@ const AddEntry: React.FC<props> = ({
   const handleEdit = async () => {
     const res = await timesheetEntryApi.update(editEntryId, {
       project_id: projectId,
-      billable: billable,
       timesheet_entry: {
+        bill_status: billable ? "unbilled" : "billed",
         note: note,
         duration: minutesFromHHMM(duration),
         work_date: selectedFullDate
