@@ -82,7 +82,9 @@
             <div class="modal__position">
               <h6 class="modal__title"><%= t('team.create_new_user') %></h6>
               <div class="modal__close modal-close" onclick="modalClose('main-modal')">
-                <img src="<%= image_url 'close_button.svg' %>" class="modal__button">
+                <button onclick="ClearFields();">
+                  <img src="<%= image_url 'close_button.svg' %>" class="modal__button">
+                </button>
               </div>
             </div>
             <div class="modal__form">
@@ -135,5 +137,11 @@
     modalToOpen.classList.remove('fadeOut');
     modalToOpen.classList.add('fadeIn');
     modalToOpen.style.display = 'flex';
+  }
+
+  function ClearFields() {
+     document.getElementById("team_first_name").value = "";
+     document.getElementById("team_last_name").value = "";
+     document.getElementById("team_email").value = "";
   }
 </script>
