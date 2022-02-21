@@ -4,7 +4,7 @@ module ErrorHandler
   extend ActiveSupport::Concern
 
   included do
-    rescue_from ActionController::RoutingError, with: :handle_not_found_error
+    rescue_from ActionController::RoutingError, ActiveRecord::RecordNotFound, with: :handle_not_found_error
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   end
 
