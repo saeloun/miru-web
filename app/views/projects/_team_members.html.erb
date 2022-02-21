@@ -20,7 +20,7 @@
                 </div>
             </div>
 
-            <%= link_to "ADD ANOTHER TEAM MEMBER", id: "add_members"  %>
+            <%= link_to_add_row("ADD ANOTHER TEAM MEMBER", member, :user_id, class: "form__input") %>
 
             <div class="actions mt-4">
                 <%= member.submit "ADD TEAM MEMBERS TO PROJECT", class: "form__button" %>
@@ -28,9 +28,3 @@
         <% end %>
     </div>
 <% end %>
-
-<script>
-
-const addAnotherMember = document.getElementById("add_members");
-alert(addAnotherMember);
-</script>
