@@ -28,7 +28,7 @@ users.each do |user|
     confirmed_at: Time.current,
     invitation_accepted_at: Time.current
   )
-  company_user.add_role(user[:role])
+  company_user.add_role(user[:role], company)
 end
 seed_users  = User.where(email: users.map { |user| user[:email] })
 puts "#{users.size} Users created"

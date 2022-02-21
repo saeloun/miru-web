@@ -2,11 +2,11 @@
 
 class CompanyPolicy < ApplicationPolicy
   def new?
-    user_owner_or_admin?
+    has_no_company? || user_owner_or_admin?
   end
 
   def create?
-    user_owner_or_admin?
+    has_no_company? || user_owner_or_admin?
   end
 
   def show?
@@ -20,4 +20,9 @@ class CompanyPolicy < ApplicationPolicy
   def permitted_attributes
     [:name, :address, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end, :date_format, :logo]
   end
+
+  private
+    def has_no_company?
+      user.companies.none?
+    end
 end

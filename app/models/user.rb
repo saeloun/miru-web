@@ -57,7 +57,7 @@ class User < ApplicationRecord
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all
   has_one_attached :avatar
-  rolify
+  rolify strict: true
 
   # Validations
   validates :first_name, :last_name,
@@ -89,6 +89,12 @@ class User < ApplicationRecord
 
   def active_for_authentication?
     super and self.kept?
+  end
+
+  def has_owner_or_admin_role?(company)
+    return false if company.nil?
+
+    self.has_cached_role?(:owner, company) || self.has_cached_role?(:admin, company)
   end
 
   private

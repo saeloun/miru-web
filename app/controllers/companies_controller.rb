@@ -16,6 +16,7 @@ class CompaniesController < ApplicationController
     if @company.save
       current_user.companies << @company
       current_user.current_workspace_id = @company.id
+      current_user.add_role(:owner, @company)
       current_user.save!
 
       redirect_to root_path, notice: t(".success")
@@ -42,7 +43,7 @@ class CompaniesController < ApplicationController
 
   private
     def company_validation
-      if current_user.companies.present?
+      if current_user.companies.any?
         flash[:error] = "You already have a company"
         redirect_to root_path
       end

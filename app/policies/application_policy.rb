@@ -10,6 +10,6 @@ class ApplicationPolicy
 
   private
     def user_owner_or_admin?
-      user.has_any_role?(:owner, :admin)
+      user.has_owner_or_admin_role?(user.current_workspace)
     end
 end

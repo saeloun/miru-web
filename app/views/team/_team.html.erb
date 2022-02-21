@@ -20,12 +20,12 @@
   <%= member.primary_role.titlecase %>
 </td>
 <td id="pending-<%= member.id %>" class="px-3 py-3 whitespace-nowrap">
-  <% if current_user.has_any_role?(:owner, :admin) %>
+  <% if current_user.has_owner_or_admin_role?(current_company) %>
     <% if member.unconfirmed_email?  %>
       <span class="px-2 inline-flex text-xs leading-5 tracking-widest font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
         <%= t('team.reconfirmation') %>
       </span>
-    <% elsif !member.invitation_accepted? && !member.has_any_role?(:owner) %>
+    <% elsif !member.invitation_accepted? && !member.has_role?(:owner, current_company) %>
       <span class="px-2 inline-flex text-xs leading-5 tracking-widest font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000">
        <%= t('team.invitation') %>
       </span>

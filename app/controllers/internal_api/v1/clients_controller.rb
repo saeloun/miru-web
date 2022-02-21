@@ -40,6 +40,6 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     def is_user_admin_or_owner?
       render json: {
         message: I18n.t("errors.unauthorized")
-      }, status: :forbidden unless current_user.has_any_role?(:owner, :admin)
+      }, status: :forbidden unless current_user.has_owner_or_admin_role?(current_company)
     end
 end
