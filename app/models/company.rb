@@ -19,10 +19,15 @@
 # frozen_string_literal: true
 
 class Company < ApplicationRecord
-  has_many :users, dependent: :destroy
+  # Associations
+  has_many :company_users, dependent: :destroy
+  has_many :users, through: :company_users
   has_many :clients, dependent: :destroy
   has_many :projects, through: :clients, dependent: :destroy
+  has_many :current_workspace_users, foreign_key: "current_workspace_id", class_name: "User", dependent: :nullify
   has_one_attached :logo
+  resourcify
 
+  # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
 end

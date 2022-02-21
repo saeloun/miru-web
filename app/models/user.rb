@@ -35,7 +35,7 @@
 #
 # Indexes
 #
-#  index_users_on_company_id            (company_id)
+#  index_users_on_current_workspace_id  (current_workspace_id)
 #  index_users_on_discarded_at          (discarded_at)
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_invitation_token      (invitation_token) UNIQUE
@@ -50,7 +50,9 @@ class User < ApplicationRecord
   include Discard::Model
 
   # Associations
-  belongs_to :company, optional: true
+  belongs_to :current_workspace, class_name: "Company", foreign_key: :current_workspace_id, optional: true
+  has_many :company_users, dependent: :destroy
+  has_many :companies, through: :company_users
   has_many :project_members, dependent: :destroy
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all

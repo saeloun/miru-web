@@ -14,7 +14,8 @@ class CompaniesController < ApplicationController
     @company = Company.new(permitted_attributes(Company))
     authorize @company
     if @company.save
-      current_user.company_id = @company.id
+      current_user.companies << @company
+      current_user.current_workspace_id = @company.id
       current_user.save!
 
       redirect_to root_path, notice: t(".success")
@@ -41,7 +42,7 @@ class CompaniesController < ApplicationController
 
   private
     def company_validation
-      if current_user.company.present?
+      if current_user.companies.present?
         flash[:error] = "You already have a company"
         redirect_to root_path
       end
