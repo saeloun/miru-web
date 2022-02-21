@@ -29,7 +29,7 @@ export const Client = ({
   setClientToEdit
 }: IClient) => {
   const deleteClient = async id => {
-    await clients.deleteClient(id);
+    await clients.destroy(id);
     setTimeout(() => {
       window.location.reload();
     }, 500);
