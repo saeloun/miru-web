@@ -75,6 +75,9 @@ en:
       failure:
         unauthorized: User is unauthorized to modify this client's details
         message: Failed to saved changes
+    delete:
+      success:
+        message: Client removed successfully
     add: ADD CLIENT
   team:
     team: Team

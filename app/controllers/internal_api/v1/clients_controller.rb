@@ -20,10 +20,13 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
   def destroy
     if client.discard
-      render json: { client: client }, status: :ok
+      render json: {
+        client: client,
+        notice: I18n.t("client.delete.success.message")
+      }, status: :ok
     else
       render json: {
-        message: I18n.t("errors.internal_server_error")
+        notice: I18n.t("errors.internal_server_error")
       }, status: :internal_server_error
     end
   end
