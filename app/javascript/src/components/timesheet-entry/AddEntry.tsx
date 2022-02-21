@@ -203,7 +203,7 @@ const AddEntry: React.FC<props> = ({
             className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm mt-2 ml-1 text-sm"
           />
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center ">
           {billable ? (
             <img
               onClick={() => {

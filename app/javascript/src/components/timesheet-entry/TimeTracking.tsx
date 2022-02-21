@@ -4,6 +4,7 @@ import * as dayjs from "dayjs";
 import * as weekday from "dayjs/plugin/weekday";
 import AddEntry from "./AddEntry";
 import EntryCard from "./EntryCard";
+import WeeklyEntryCard from "./WeeklyEntryCard";
 import { setAuthHeaders } from "../../apis/axios";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";
@@ -36,6 +37,7 @@ const TimeTracking: React.FC<props> = ({
   const [dayInfo, setDayInfo] = useState([]);
   const [view, setView] = useState("day");
   const [newEntryView, setNewEntryView] = useState(false);
+  const [newRowView, setNewRowView] = useState(false);
   const [selectDate, setSelectDate] = useState(dayjs().weekday());
   const [weekDay, setWeekDay] = useState(0);
   const [totalHours, setTotalHours] = useState("00:00");
@@ -44,6 +46,8 @@ const TimeTracking: React.FC<props> = ({
     dayjs().format("YYYY-MM-DD")
   );
   const [editEntryId, setEditEntryId] = useState(0);
+  const [client, setClient] = useState("");
+  const [project, setProject] = useState("");
 
   useEffect(() => {
     setAuthHeaders();
@@ -123,6 +127,27 @@ const TimeTracking: React.FC<props> = ({
     setWeekDay(p => p - 7);
   };
 
+  const handleWeeklyViewData = () => {
+    const weekArr = [];
+    for (let i = 0; i < 7; i++) {
+      const entryInfo = {};
+      const date = dayjs()
+        .weekday(weekDay + i)
+        .format("YYYY-MM-DD");
+      if (!entryList[date]) {
+        // entryInfo.date = date;
+        // entryInfo.entries = [];
+        // weekArr.push(entryInfo);
+        // continue;
+      }
+      // entryInfo["date"].each(entry => {
+
+      // });
+
+      weekArr.push(entryInfo);
+    }
+  };
+
   return (
     <main className="mx-50">
       <div className="flex justify-between">
@@ -150,7 +175,7 @@ const TimeTracking: React.FC<props> = ({
           )}
         </div>
       </div>
-      {view === "day" ? (
+      {view == "day" || view == "week" ? (
         <div>
           <div className="mb-6">
             <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
@@ -189,33 +214,50 @@ const TimeTracking: React.FC<props> = ({
                 <p className="text-white font-extrabold">{totalHours}</p>
               </div>
             </div>
-            <div className="h-16 bg-miru-gray-100 flex justify-evenly">
-              {dayInfo.map((d, index) => (
-                <button
-                  onClick={() => {
-                    setSelectDate(index);
-                  }}
-                  key={index}
-                  className={
-                    "px-5 py-2 my-2 w-24 h-12 items-center rounded-xl border-2 border-transparent " +
-                    (index === selectDate
-                      ? "bg-white border-miru-han-purple-1000"
-                      : "")
-                  }
-                >
-                  <p className="text-xs text-miru-dark-purple-1000 font-extrabold">
-                    {d.day}
-                  </p>
-                  <p className="text-xs">
-                    {getNumberWithOrdinal(d.date)} {d.month}{" "}
-                  </p>
-                </button>
-              ))}
-            </div>
+            {view == "day" ? (
+              <div className="h-16 bg-miru-gray-100 flex justify-evenly">
+                {dayInfo.map((d, index) => (
+                  <button
+                    onClick={() => {
+                      setSelectDate(index);
+                    }}
+                    key={index}
+                    className={
+                      "px-5 py-2 my-2 w-24 h-12 items-center rounded-xl border-2 border-transparent " +
+                      (index === selectDate &&
+                        "bg-white border-miru-han-purple-1000")
+                    }
+                  >
+                    <p className="text-xs text-miru-dark-purple-1000 font-extrabold">
+                      {d.day}
+                    </p>
+                    <p className="text-xs">
+                      {getNumberWithOrdinal(d.date)} {d.month}{" "}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="h-16 px-60 bg-miru-gray-100 flex justify-items-stretch">
+                {dayInfo.map((d, index) => (
+                  <div
+                    key={index}
+                    className="py-2 my-2 w-24 h-12 items-center rounded-xl border-2 border-transparent"
+                  >
+                    <p className="text-xs text-miru-dark-purple-1000 font-extrabold">
+                      {d.day}
+                    </p>
+                    <p className="text-xs">
+                      {getNumberWithOrdinal(d.date)} {d.month}{" "}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           {editEntryId ? (
             ""
-          ) : newEntryView ? (
+          ) : newEntryView && view === "day" ? (
             <AddEntry
               setNewEntryView={setNewEntryView}
               clients={clients}
@@ -227,21 +269,88 @@ const TimeTracking: React.FC<props> = ({
               setEditEntryId={setEditEntryId}
               editEntryId={editEntryId}
             />
-          ) : (
-            <button
-              onClick={() => setNewEntryView(true)}
-              className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
-            >
-              + NEW ENTRY
-            </button>
-          )}
+          ) : // --- weekly view ---
+            newRowView && view === "week" ? (
+              <div className="flex justify-between p-4 rounded-md shadow-2xl content-center">
+                <select
+                  onChange={e => {
+                    setClient(e.target.value);
+                    setProject(projects[e.target.value][0].name);
+                  }}
+                  value={client || "Client"}
+                  name="client"
+                  id="client"
+                  className="w-80 bg-miru-gray-100 rounded-sm h-8"
+                >
+                  {!client && (
+                    <option disabled selected className="text-miru-gray-100">
+                    Client
+                    </option>
+                  )}
+                  {clients.map((c, i) => (
+                    <option key={i.toString()}>{c.name}</option>
+                  ))}
+                </select>
+                <select
+                  onChange={e => {
+                    setProject(e.target.value);
+                  }}
+                  value={project}
+                  name="project"
+                  id="project"
+                  className="w-80 bg-miru-gray-100 rounded-sm h-8"
+                >
+                  {!project && (
+                    <option disabled selected className="text-miru-gray-100">
+                    Project
+                    </option>
+                  )}
+                  {client &&
+                  projects[client].map((p, i) => (
+                    <option data-project-id={p.id} key={i.toString()}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  className={
+                    "mb-1 h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
+                  (client && project
+                    ? "bg-miru-han-purple-1000 hover:border-transparent"
+                    : "bg-miru-gray-1000")
+                  }
+                >
+                SAVE
+                </button>
+                <button
+                  onClick={() => {
+                    setNewRowView(false);
+                    setClient("");
+                    setProject("");
+                  }}
+                  className="h-8 w-38 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest"
+                >
+                CANCEL
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() =>
+                  view == "week" ? setNewRowView(true) : setNewEntryView(true)
+                }
+                className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
+              >
+              + NEW {view == "week" ? "ROW" : "ENTRY"}
+              </button>
+            )}
         </div>
-      ) : view === "week" ? (
-        <div></div>
       ) : (
         <div></div>
       )}
-      {entryList[selectedFullDate] &&
+
+      {view === "day" &&
+        entryList[selectedFullDate] &&
         entryList[selectedFullDate].map((entry, i) =>
           editEntryId === entry.id ? (
             <AddEntry
@@ -264,6 +373,12 @@ const TimeTracking: React.FC<props> = ({
             />
           )
         )}
+
+      {view === "week" && (
+        <div className="">
+          <WeeklyEntryCard />
+        </div>
+      )}
     </main>
   );
 };
