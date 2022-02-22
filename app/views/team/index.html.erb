@@ -1,28 +1,28 @@
 <div class="" id="root-page">
-  <div class="align_page__one">
-    <div class="align_page__two">
-      <div class="align_page__three">
+  <div class="align-page__one">
+    <div class="align-page__two">
+      <div class="align-page__three">
 
         <!-- title search and new user button start -->
-        <div class="page_content__position">
-          <div class="page_content__title_width">
-            <h2 class="page_content__title">
+        <div class="page-content__position">
+          <div class="page-content__title-width">
+            <h2 class="page-content__title">
               <%= t('team.team') %>
             </h2>
           </div>
-          <div class="page_content__search_width">
-            <%= search_form_for query, url: team_index_path, class: "page_content__search"  do |f| %>
+          <div class="page-content__search-width">
+            <%= search_form_for query, url: team_index_path, class: "page-content__search"  do |f| %>
               <div class="relative rounded">
-              <%= f.text_field :first_name_or_last_name_or_email_cont, class: "page_content__search_input", placeholder: 'Search' %>
-              <%= image_submit_tag 'search_icon.svg', class: "page_content__search_image" %>
+              <%= f.text_field :first_name_or_last_name_or_email_cont, class: "page-content__search-input", placeholder: 'Search' %>
+              <%= image_submit_tag 'search_icon.svg', class: "page-content__search-image" %>
               </div>
             <% end %>
           </div>
           <% if current_user.has_owner_or_admin_role?(current_company) %>
-            <div class="page_content__newUser_width">
-              <div class="page_content__newUser_position">
-                <button onclick="openModal('main-modal')" type="button" class="page_content__newUser_button">
-                  <img src="<%= image_url 'plus_icon.svg' %>" class="page_content__button_image">
+            <div class="page-content__new-user-width">
+              <div class="page-content__new-user-position">
+                <button onclick="openModal('main-modal')" type="button" class="page-content__new-user-button">
+                  <img src="<%= image_url 'plus_icon.svg' %>" class="page-content__button-image">
                   <%= t('team.new_user') %>
                 </button>
               </div>
@@ -33,8 +33,8 @@
 
         <!-- team table start -->
         <div class="table__flex">
-          <div class="table__position_one">
-            <div class="table__position_two">
+          <div class="table__position-one">
+            <div class="table__position-two">
               <div class="table__border">
                 <table class="table__width">
                   <thead class="">

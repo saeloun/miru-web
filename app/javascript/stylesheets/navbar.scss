@@ -69,10 +69,10 @@
     @apply block font-bold hover:bg-gray-100 flex items-center px-4 py-1 text-base;
   }
   &__profile-menu_name {
-    @apply text-base font-sans font-medium text-miru-dark-purple-1000 hover:text-miru-han-purple-1000;
+    @apply text-base font-semibold text-miru-dark-purple-1000 hover:text-miru-han-purple-1000;
   }
   &__profile-menu_email {
-    @apply text-sm font-normal text-miru-dark-purple-400 hover:text-miru-han-purple-1000 truncate mr-10;
+    @apply text-sm font-normal text-miru-dark-purple-400 hover:text-miru-han-purple-1000 truncate mr-4;
   }
   &__profile-menu_settings {
     @apply block font-bold hover:bg-gray-100 text-miru-dark-purple-600 hover:text-miru-han-purple-1000 w-full flex items-center px-4 py-2 text-base cursor-pointer;

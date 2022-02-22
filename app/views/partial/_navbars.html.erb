@@ -189,13 +189,14 @@
                 <div class="navbar__open-profile-menu" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
 
                   <div class="navbar__profile-menu_avatar" role="menuitem" tabindex="-1" id="menu-item-0">
-                    <%= image_tag user_avatar(current_user), class: "mr-2 h-12 w-12 rounded-full"  %>
-
+                    <div class="w-12 mr-4">
+                      <%= image_tag user_avatar(current_user), class: "h-12 w-12 rounded-full"  %>
+                    </div>
                     <div class="pl-1 pr-2 py-5" role="none">
                       <p class="navbar__profile-menu_name" role="none">
                         <%= current_user.full_name %>
                       </p>
-                      <p class="navbar__profilemenu_email" role="none">
+                      <p class="navbar__profile-menu_email" role="none">
                         <%= current_user.email %>
                       </p>
                     </div>
