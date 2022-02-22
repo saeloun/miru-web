@@ -1,5 +1,4 @@
 import * as React from "react";
-import clients from "apis/clients";
 
 export interface IClient {
   id: number;
@@ -13,6 +12,8 @@ export interface IClient {
   isAdminUser: boolean;
   setShowEditDialog: any;
   setClientToEdit: any;
+  setClientToDelete: any;
+  setShowDeleteDialog: any;
 }
 
 export const Client = ({
@@ -26,14 +27,10 @@ export const Client = ({
   deleteIcon,
   isAdminUser,
   setShowEditDialog,
-  setClientToEdit
+  setClientToEdit,
+  setClientToDelete,
+  setShowDeleteDialog
 }: IClient) => {
-  const deleteClient = async id => {
-    await clients.destroy(id);
-    setTimeout(() => {
-      window.location.reload();
-    }, 500);
-  };
   return (
     <tr key={id}>
       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
@@ -58,7 +55,12 @@ export const Client = ({
             </button>
           </td>
           <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
-            <button onClick={() => deleteClient(id)}>
+            <button
+              onClick={() => {
+                setShowDeleteDialog(true);
+                setClientToDelete(id);
+              }}
+            >
               <img src={deleteIcon} alt="" />
             </button>
           </td>

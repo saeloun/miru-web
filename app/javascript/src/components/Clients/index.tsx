@@ -3,12 +3,16 @@ import { ToastContainer } from "react-toastify";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 
+import DeleteClient from "components/Clients/DeleteClient";
 import { Client } from "./Client";
 import EditClient from "./EditClient";
 
 const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = React.useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] =
+    React.useState<boolean>(false);
   const [clientToEdit, setClientToEdit] = React.useState({});
+  const [clientToDelete, setClientToDelete] = React.useState(0);
 
   React.useEffect(() => {
     setAuthHeaders();
@@ -57,6 +61,8 @@ const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
                       isAdminUser={isAdminUser}
                       setShowEditDialog={setShowEditDialog}
                       setClientToEdit={setClientToEdit}
+                      setShowDeleteDialog={setShowDeleteDialog}
+                      setClientToDelete={setClientToDelete}
                     />
                   ))}
                 </tbody>
@@ -71,6 +77,12 @@ const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
           client={clientToEdit}
         />
       ) : null}
+      {showDeleteDialog && (
+        <DeleteClient
+          setShowDeleteDialog={setShowDeleteDialog}
+          client={clientToDelete}
+        />
+      )}
     </>
   );
 };
