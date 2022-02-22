@@ -1,29 +1,29 @@
 <%= form_with model: Project.new do |f| %>
     <div class="mt-4">
-        <%= f.fields_for :project_members do |member| %>
+        <%= f.fields_for :project_members do |member_form| %>
 
             <div class="field">
-                <%= member.label "Team Members" %>
+                <%= member_form.label "Team Members" %>
                 <div class="mt-2 flex -space-x-px">
                     <div class="mr-4 w-1/2 flex-1 min-w-0">
-                        <%= member.text_field :user_id, class: "form__input", list: 'first-name' %>
+                        <%= member_form.text_field :user_id, class: "form__input", list: 'first-name' %>
                     </div>
                     <datalist id="first-name">
-                        <% Project.all.each do |person| %>
-                            <option value="<%= person.name %>"></option>
+                        <% User.all.each do |user| %>
+                            <option value="<%= user.name %>"></option>
                         <% end %>
                     </datalist>
 
                     <div class="w-1/2 flex-1 min-w-0">
-                        <%= member.text_field :hourly_rate, class: "form__input", placeholder: "Rate" %>
+                        <%= member_form.text_field :hourly_rate, class: "form__input", placeholder: "Rate" %>
                     </div>
                 </div>
             </div>
 
-            <%= link_to_add_row("ADD ANOTHER TEAM MEMBER", member, :user_id, class: "form__input") %>
+            <%= link_to_add_row("ADD ANOTHER TEAM MEMBER", member_form, :user_id, class: "form__input") %>
 
             <div class="actions mt-4">
-                <%= member.submit "ADD TEAM MEMBERS TO PROJECT", class: "form__button" %>
+                <%= member_form.submit "ADD TEAM MEMBERS TO PROJECT", class: "form__button" %>
             </div>
         <% end %>
     </div>
