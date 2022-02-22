@@ -16,7 +16,7 @@ class Users::InvitationsController < Devise::InvitationsController
     end
 
     def assign_role
-      if resource.errors.empty? && current_company.present?
+      if resource.errors.empty? && current_company
         resource.add_role(params[:user][:roles].downcase.to_sym, current_company)
       end
     end

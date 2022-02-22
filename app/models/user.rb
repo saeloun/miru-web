@@ -75,6 +75,8 @@ class User < ApplicationRecord
   after_discard :discard_project_members
 
   def primary_role
+    return "Employee" if roles.empty?
+
     roles.first.name
   end
 
