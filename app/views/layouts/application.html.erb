@@ -20,9 +20,8 @@
       <div class="">
         <% if user_signed_in? && current_company %>
           <%= render "partial/navbars" %>
-        <% else %>
-          <%= yield %>
         <% end %>  
+        <%= yield %>
       </div>
     </main>
   </body>

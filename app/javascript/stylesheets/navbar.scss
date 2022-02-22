@@ -1,6 +1,6 @@
 .navbar {
   &__screen-height {
-    @apply antialiased min-h-screen lg:flex;
+    @apply antialiased lg:flex;
   }
   &__smaller-screen {
     @apply lg:hidden absolute inset-0 transform lg:transform-none lg:opacity-100 duration-200 lg:relative z-10 w-96 text-white h-screen p-3 bg-miru-gray-200;
