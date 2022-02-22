@@ -6,18 +6,18 @@
         <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
           <div class="flex-1 min-w-0">
             <h2 class="text-3xl font-extrabold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
-              Settings
+              <%= t('settings.settings').capitalize %>
             </h2>
           </div>
           <div class="mt-6 flex sm:mt-0 md:ml-4">
 
             <%= link_to profile_path, class:"form__cancel" do %>
               <%= image_tag("cancel_button.svg", class:"-ml-0.5 mr-2 h-4 w-4") %>
-              CANCEL
+              <%= t('settings.cancel').upcase %>
             <% end %>
             <button type="submit" class="form__save">
               <%= image_tag("save_button.svg", class:"-ml-0.5 mr-2 h-4 w-4") %>
-              SAVE
+              <%= t('settings.save').upcase %>
             </button>
             
           </div>
@@ -25,14 +25,14 @@
         <div class="sm:flex sm:items-center sm:justify-between mt-3 mb-3">
           <div class="flex-1 min-w-0">
             <h2 class="<%= request.path == "/profile" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
-              <%= link_to "PROFILE SETTINGS", "/profile" %>
+              <%= link_to t('settings.profile_setting').upcase, profile_path %>
             </h2>
           </div>
 
           <% if policy(Company).update? %>
             <div class="flex-1 min-w-0">
               <h2 class="<%= request.path == "/company" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
-                <%= link_to "ORGANIZATION SETTINGS", "/company" %>
+                <%= link_to t('settings.organization_setting').upcase, company_path %>
               </h2>
             </div>
           <% end %>
@@ -43,7 +43,7 @@
             <%= render "devise/shared/error_messages", resource: resource %>
 
             <div class="field">
-              <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000">Profile Picture</label>
+              <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000"><%= t('settings.profile_picture').titlecase %></label>
               <div class="mt-2">
                 <% if resource.avatar.attached? %>
                   <div class="flex items-center space-x-4 lg:space-x-6">
@@ -76,7 +76,7 @@
 
             <div class="mt-4">
               <div class="field">
-                <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000">Name</label>
+                <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000"><%= t('settings.name').upcase %></label>
                 <div class="mt-2 flex -space-x-px">
                   <div class="mr-4 w-1/2 flex-1 min-w-0">
                     <%= f.text_field :first_name, autofocus: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
@@ -90,7 +90,7 @@
 
             <div class="mt-4">
               <div class="field">
-                <%= f.label :email, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                <%= f.label t('settings.email').upcase, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
                 <div class="mt-2">
                   <%= f.email_field :email, autofocus: true, autocomplete: "email", readonly: true, class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-dark-purple-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-400 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
                 </div>
@@ -104,14 +104,14 @@
             <div x-data="{ password_show: true }">
               <div>
                 <div @click="password_show = !password_show" :class="{'hidden': !password_show, 'block':password_show }" class="mt-7 text-left h-4 text-miru-han-purple-1000 font-sans font-normal text-base hover:text-miru-han-purple-600 cursor-pointer">
-                  CHANGE PASSWORD
+                  <%= t('settings.change_password').upcase %>
                 </div>
               </div>
               <div>
                 <div :class="{'block': !password_show, 'hidden':password_show }">
                   <div class="field mt-4">
                     <div class="field" x-data="{ show: true }">
-                      <%= f.label :current_password, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                      <%= f.label t('settings.current_passowrd').titlecase, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
                       <div class="mt-2 relative">
                         <input name="user[current_password]" placeholder="" id="user_current_password" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
@@ -124,7 +124,7 @@
 
                   <div class="mt-4">
                     <div class="field" x-data="{ show: true }">
-                      <%= f.label :password, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                      <%= f.label t('settings.password').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
                       <% if @minimum_password_length %>
                         <em class="text-xs text-miru-dark-purple-400">( <%= @minimum_password_length %> characters minimum )</em>
                       <% end %>
@@ -140,7 +140,7 @@
 
                   <div class="mt-4">
                     <div class="field" x-data="{ show: true }">
-                      <%= f.label :password_confirmation, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                      <%= f.label t('settings.confirm_password').titlecase, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
                       <div class="mt-2 relative">
                         <input name="user[password_confirmation]" placeholder="" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
@@ -152,7 +152,7 @@
                   </div>
                 </div>
                 <div @click="password_show = !password_show" :class="{'block': !password_show, 'hidden':password_show }" class="mt-7 text-left text-miru-han-purple-1000 font-sans font-normal text-base hover:text-miru-han-purple-600 cursor-pointer">
-                  CANCEL
+                  <%= t('settings.cancel').upcase %>
                 </div>
               </div>
             </div>

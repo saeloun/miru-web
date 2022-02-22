@@ -7,29 +7,29 @@
         <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
           <div class="flex-1 min-w-0">
             <h2 class="text-3xl font-extrabold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
-              <%= t('company.settings').capitalize %>
+              <%= t('settings.settings').capitalize %>
             </h2>
           </div>
           <div class="mt-6 flex sm:mt-0 md:ml-4">
             <%= link_to company_path, class:"form__cancel" do %>
               <%= image_tag("cancel_button.svg", class:"-ml-0.5 mr-2 h-4 w-4") %>
-              CANCEL
+              <%= t('settings.cancel').upcase %>
             <% end %>
             <button type="submit" class="form__save">
               <%= image_tag("save_button.svg", class:"-ml-0.5 mr-2 h-4 w-4") %>
-              SAVE
+              <%= t('settings.save').upcase %>
             </button>
           </div>
         </div>
         <div class="sm:flex sm:items-center sm:justify-between mt-3 mb-3">
           <div class="flex-1 min-w-0">
             <h2 class="<%= request.path == "/profile" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
-              <%= link_to t('company.profile_setting').upcase, profile_path %>
+              <%= link_to t('settings.profile_setting').upcase, profile_path %>
             </h2>
           </div>
           <div class="flex-1 min-w-0">
             <h2 class="<%= request.path == "/company" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
-              <%= link_to t('company.organization_setting').upcase, company_path %>
+              <%= link_to t('settings.organization_setting').upcase, company_path %>
             </h2>
           </div>
         </div>
