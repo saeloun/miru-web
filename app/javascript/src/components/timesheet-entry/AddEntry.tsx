@@ -151,8 +151,8 @@ const AddEntry: React.FC<props> = ({
               Client
             </option>
           )}
-          {clients.map((c, i) => (
-            <option key={i.toString()}>{c.name}</option>
+          {clients.map((client, i) => (
+            <option key={i.toString()}>{client.name}</option>
           ))}
         </select>
 
@@ -171,9 +171,9 @@ const AddEntry: React.FC<props> = ({
             </option>
           )}
           {client &&
-            projects[client].map((p, i) => (
-              <option data-project-id={p.id} key={i.toString()}>
-                {p.name}
+            projects[client].map((project, i) => (
+              <option data-project-id={project.id} key={i.toString()}>
+                {project.name}
               </option>
             ))}
         </select>
