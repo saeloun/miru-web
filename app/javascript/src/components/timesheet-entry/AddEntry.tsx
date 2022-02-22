@@ -58,7 +58,9 @@ const AddEntry: React.FC<props> = ({
 
   useEffect(() => {
     if (!project) return;
-    const id = projects[client].filter(p => p.name === project)[0].id;
+    const id = projects[client].filter(
+      currentProject => currentProject.name === project
+    )[0].id;
     setProjectId(Number(id));
   }, [project]);
 
