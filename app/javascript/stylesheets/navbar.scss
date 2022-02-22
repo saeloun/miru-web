@@ -3,7 +3,7 @@
     @apply antialiased lg:flex;
   }
   &__smaller-screen {
-    @apply lg:hidden absolute inset-0 transform lg:transform-none lg:opacity-100 duration-200 lg:relative z-10 w-96 text-white h-screen p-3 bg-miru-gray-200;
+    @apply lg:hidden absolute inset-0 transform lg:transform-none lg:opacity-100 duration-200 lg:relative z-10 w-full xsm:w-96 text-white h-screen p-3 bg-miru-gray-200;
   }
   &__smaller-screen-logo {
     @apply h-10 w-auto pl-5;

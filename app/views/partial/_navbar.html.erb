@@ -1,129 +1,230 @@
-<nav class="bg-white shadow font-manrope mb-4" x-data="{ isOpen: false}">
-  <div class="max-w-8xl mx-auto px-2 md:px-10">
-    <div class="relative flex justify-between h-16">
+<div class="navbar__screen-height" x-data="{ isOpen: false}">
 
-      <div class="absolute inset-y-0 left-0 flex items-center md:hidden">
-        <!-- Mobile menu button -->
-        <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-controls="mobile-menu" aria-expanded="false" @click="isOpen = !isOpen" @keydown.escape="isOpen = false">
-          <span class="sr-only">Open main menu</span>
+  <!-- navbar for smaller screen less than 1024px start-->
+  <nav class="navbar__smaller-screen" :class="{'translate-x-0 ease-in opacity-100':isOpen === true, '-translate-x-full ease-out opacity-0': isOpen === false}" >
 
-          <div>
-            <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+    <!-- miru logo for smaller screen size Start -->
+    <div class="flex justify-between" x-show="isOpen" @click.away="isOpen = false">
+      <img class="navbar__smaller-screen-logo" src="/miru-logo.svg" alt="miru web">
+      <button class="navbar__smaller-screen_close-button" @click="isOpen = false">
+        <%= image_tag("cancel_button.svg", class:"block h-6 w-6") %>
+      </button>
+    </div>
+    <!-- miru logo for smaller screen size end -->
 
-            <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+    <!-- dashboard time_tracking team clients projects invoice report etc. Start -->
+    <div class="border-t border-gray-200 pt-4 pb-3 pl-3">
+      <% if policy(:dashboard).index? %>
+        <a href="/dashboard" class="<%= request.path == "/dashboard" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.dashboard') %></a>
+      <% end %>
+      <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.time_tracking') %></a>
+      <a href="/team" class="<%= request.path == "/team" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.team') %></a>
+      <a href="/clients" class="<%= request.path == "/clients" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.clients') %></a>
+      <a href="/projects" class="<%= request.path == "/projects" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.projects') %></a>
+      <% if current_user.has_owner_or_admin_role?(current_company) %>
+        <a href="/invoice" class="<%= request.path == "/invoice" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.invoice') %></a>
+        <a href="/report" class="<%= request.path == "/report" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.report') %></a>
+      <% end %>
+    </div>
+    <!-- dashboard time_tracking team clients projects invoice report etc. end -->
+
+    <!-- profile menu for smaller screen start-->
+    <div class="navbar__smaller-screen_profile-menu">
+
+      <!-- profile deatails start -->
+      <div class="px-4 flex items-center">
+        <div class="navbar__smaller-screen_user-details" role="menuitem" tabindex="-1" id="menu-item-0">
+          <%= image_tag user_avatar(current_user), class: "mr-2 h-12 w-12 rounded-full"  %>
+          <div class="pl-1 pr-2 py-5" role="none">
+            <p class="navbar__smaller-screen_name" role="none">
+              <%= current_user.full_name %>
+            </p>
+            <p class="navbar__smaller-screen_email" role="none">
+              <%= current_user.email %>
+            </p>
           </div>
-        </button>
-      </div>
-      
-      <div class="flex-1 flex items-center justify-center md:items-stretch md:justify-start">
-        <!-- Logo -->
-        <div class="flex-shrink-0 flex items-center">
-          <a href="/" class="font-semibold text-xl tracking-tight">
-            <img class="block lg:hidden h-10 w-auto md:mr-12" src="/miru-logo.svg" alt="miru web">
-            <img class="hidden lg:block h-10 w-auto lg:mr-26" src="/miru-logo.svg" alt="miru web">
-          </a>
         </div>
-        <div class="hidden md:mx-3 md:flex md:space-x-2 lg:space-x-8">
-          <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
-          <% if policy(:dashboard).index? %>
-            <a href="/dashboard" class="<%= request.path == "/dashboard" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
-              <%= t('navbar.dashboard') %>
-            </a>
-          <% end %>
-          <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
-            <%= t('navbar.time_tracking') %>
-          </a>
-          <a href="/team" class="<%= request.path == "/team" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-sm text-base">
-            <%= t('navbar.team') %>
-          </a>
-          <a href="/clients" class="<%= request.path == "/clients" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
-            <%= t('navbar.clients') %>
-          </a>
-          <a href="/projects" class="<%= request.path == "/project" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
-            <%= t('navbar.projects') %>
-          </a>
-          <% if current_user.has_owner_or_admin_role?(current_company) %>
-            <a href="/invoice" class="<%= request.path == "/invoice" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
-              <%= t('navbar.invoice') %>
-            </a>
-          <% end %>
-          <% if current_user.has_owner_or_admin_role?(current_company) %>
-            <a href="/report" class="<%= request.path == "/report" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
-              <%= t('navbar.report') %>
-            </a>
-          <% end %>
-        </div>
-      </div>
-      <div class="absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0">
-        <button type="button" class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500">
-          <span class="sr-only"><%= t('navbar.view_notifications') %></span>
-          <!-- Heroicon name: outline/bell -->
-          <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-          </svg>
+
+        <!-- notification icons start -->
+        <button type="button" class="navbar__smaller-screen_notification">
+          <span class="sr-only">View notifications</span>
+          <%= image_tag("notification.svg", class:"h-6 w-6") %>
         </button>
-        
-        <!-- Profile dropdown -->
-        <div class="ml-3 relative" x-data="{ isOpen: false}">
-          <div class="hover:border-miru-han-purple-1000 border-2 rounded-full border-miru-white-1000">
-            <button type="button" class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-miru-han-purple-1000" id="user-menu-button" aria-expanded="false" aria-haspopup="true" @click="isOpen = !isOpen" @keydown.escape="isOpen = false">
-              <span class="sr-only">Open user menu</span>
-              <img class="h-8 w-8 p-1 rounded-full" src="/avatar.svg" alt="profile">
-            </button>
-          </div>
+        <!-- notification icons end -->
 
-          <div x-show="isOpen" @click.away="isOpen = false">
-            <div class="origin-top-right absolute right-0 mt-2 w-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+      </div>
+      <!-- profile deatails end -->
 
-              <div class="block font-bold hover:bg-gray-100 flex items-center px-4 py-1 text-base" role="menuitem" tabindex="-1" id="menu-item-0">
-                <%= image_tag user_avatar(current_user), class: "mr-2 h-12 w-12 rounded-full"  %>
+      <div class="mt-3 px-4 space-y-1">
+        <%= button_to profile_path, method: :get, class: "navbar__smaller-screen_profile_logout", id:"menu-item-0", role:"menuitem", tabindex:"-1" do %>
+          <%= image_tag 'setting_icon.svg', class:"mr-3 h-5 w-5" %>
+          <%= t('navbar.settings') %>
+        <% end %>
+        <%= button_to destroy_user_session_path, method: :delete, class: "navbar__smaller-screen_profile_logout", id:"menu-item-0", role:"menuitem", tabindex:"-1" do %>
+          <%= image_tag 'logout_icon.svg', class:"mr-3 h-5 w-5" %>
+          <%= t('navbar.logout') %>
+        <% end %>
+      </div>
+    </div>
+    <!-- profile menu for smaller screen end-->
+  </nav>
+  <!-- navbar for smaller screen less than 1024px end-->
 
-                <div class="pl-1 pr-2 py-5" role="none">
-                  <p class="text-base font-sans font-medium text-miru-dark-purple-1000 hover:text-miru-han-purple-1000" role="none">
-                    <%= current_user.full_name %>
-                  </p>
-                  <p class="text-sm font-normal text-miru-dark-purple-400 hover:text-miru-han-purple-1000 truncate mr-10" role="none">
-                    <%= current_user.email %>
-                  </p>
-                </div>
-              </div>
+  <!-- navbar start -->
+  <nav class="relative z-0 lg:flex-grow" >
 
-              <div class="block font-bold hover:bg-gray-100 text-miru-dark-purple-600 hover:text-miru-han-purple-1000 flex items-center px-4 py-2 text-base cursor-pointer" role="menuitem" tabindex="-1" id="menu-item-0">
-                <img src="<%= image_url 'setting_icon.svg' %>" class="mr-3 h-5 w-5">
-                <%= link_to t('navbar.settings'), "/profile" %>
-              </div>
-              <div class="block font-bold hover:bg-gray-100 text-miru-dark-purple-600 hover:text-miru-han-purple-1000 group flex items-center px-4 py-2 text-base cursor-pointer" role="menuitem" tabindex="-1" id="menu-item-0">
-                <img src="<%= image_url 'logout_icon.svg' %>" class="mr-3 h-5 w-5">
-                <%= link_to t('navbar.logout'), destroy_user_session_path, method: :delete %>
-              </div>
+    <!-- navbar for larger screen greater than 1024px start-->
+    <div class="bg-white shadow">
+      <div class="max-w-8xl mx-auto lg:divide-y lg:divide-gray-200 md:px-10 sm:px-6 px-3">
+        <div class="relative h-16 flex justify-between">
+
+          <!-- miru logo start -->
+          <div class="relative z-10 flex">
+            <div class="flex-shrink-0 flex items-center">
+              <img class="block h-10 md:h-8 w-auto" src="/miru-logo.svg" alt="Workflow">
             </div>
           </div>
+          <!-- miru logo end -->
+
+          <!-- title smaller screen size -->
+          <div class="relative z-0 flex-1 flex items-center justify-center xsm:absolute xsm:inset-0">
+            <div class="block lg:hidden">
+              <% if policy(:dashboard).index? %>
+                <a href="/dashboard" class="<%= request.path == "/dashboard" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                  <%= t('navbar.dashboard') %>
+                </a>
+              <% end %>
+              <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                <%= t('navbar.time_tracking') %>
+              </a>
+              <a href="/team" class="<%= request.path == "/team" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                <%= t('navbar.team') %>
+              </a>
+              <a href="/clients" class="<%= request.path == "/clients" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                <%= t('navbar.clients') %>
+              </a>
+              <a href="/projects" class="<%= request.path == "/project" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                <%= t('navbar.projects') %>
+              </a>
+              <% if current_user.has_owner_or_admin_role?(current_company) %>
+                <a href="/invoice" class="<%= request.path == "/invoice" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                  <%= t('navbar.invoice') %>
+                </a>
+              <% end %>
+              <% if current_user.has_owner_or_admin_role?(current_company) %>
+                <a href="/report" class="<%= request.path == "/report" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                  <%= t('navbar.report') %>
+                </a>
+              <% end %>
+            </div>
+          </div>
+          <!-- title smaller screen end -->
+
+          <!-- dashboard time_tracking team clients projects invoice report etc. start -->
+          <div class="relative z-0 flex-auto flex items-center justify-center sm:absolute sm:inset-0">
+            <div class="hidden lg:block lg:flex lg:space-x-10 xl:pr-80 <%= "lg:mr-86" if current_user.has_any_role?(:employee) %>">
+              <% if policy(:dashboard).index? %>
+                <a href="/dashboard" class="<%= request.path == "/dashboard" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                  <%= t('navbar.dashboard') %>
+                </a>
+              <% end %>
+              <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                <%= t('navbar.time_tracking') %>
+              </a>
+              <a href="/team" class="<%= request.path == "/team" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                <%= t('navbar.team') %>
+              </a>
+              <a href="/clients" class="<%= request.path == "/clients" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                <%= t('navbar.clients') %>
+              </a>
+              <a href="/projects" class="<%= request.path == "/project" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                <%= t('navbar.projects') %>
+              </a>
+              <% if current_user.has_owner_or_admin_role?(current_company) %>
+                <a href="/invoice" class="<%= request.path == "/invoice" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                  <%= t('navbar.invoice') %>
+                </a>
+              <% end %>
+              <% if current_user.has_owner_or_admin_role?(current_company) %>
+                <a href="/report" class="<%= request.path == "/report" ? "navbar___large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                  <%= t('navbar.report') %>
+                </a>
+              <% end %>
+            </div>
+          </div>
+          <!-- dashboard time_tracking team clients projects invoice report etc. end -->
+
+          <!-- hamburger icons start -->
+          <div class="relative z-10 flex items-center lg:hidden">
+            <!-- Mobile menu button -->
+            <button type="button" class="navbar__hamburger" @click="isOpen = !isOpen" @keydown.escape="isOpen = false" aria-controls="mobile-menu" aria-expanded="false">
+              <span class="sr-only">Open menu</span>
+              <%= image_tag("mobile-menu.svg", class:"block h-6 w-6") %>
+            </button>
+          </div>
+          <!-- hamburger icons end -->
+
+          <!-- notification and profile icons start -->
+          <div class="hidden lg:relative lg:z-10 lg:ml-4 lg:flex lg:items-center">
+
+            <!-- notification button start -->
+            <button type="button" class="navbar__large-screen_notification">
+              <span class="sr-only">View notifications</span>
+              <%= image_tag("notification.svg", class:"h-6 w-6") %>
+            </button>
+            <!-- notification button end -->
+
+            <!-- profile dropdown start -->
+            <div class="ml-3 relative" x-data="{ isOpen: false}">
+
+              <div class="navbar__user-profile">
+                <button type="button" class="navbar__user-menu" id="user-menu-button" aria-expanded="false" aria-haspopup="true" @click="isOpen = !isOpen" @keydown.escape="isOpen = false">
+                  <span class="sr-only">Open user menu</span>
+                  <img class="h-8 w-8 p-1 rounded-full" src="/avatar.svg" alt="profile">
+                </button>
+              </div>
+
+              <!-- profile menu for large screen start-->
+              <div x-show="isOpen" @click.away="isOpen = false">
+                <div class="navbar__open-profile-menu" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+
+                  <div class="navbar__profile-menu_avatar" role="menuitem" tabindex="-1" id="menu-item-0">
+                    <div class="w-12 mr-4">
+                      <%= image_tag user_avatar(current_user), class: "h-12 w-12 rounded-full"  %>
+                    </div>
+                    <div class="pl-1 pr-2 py-5" role="none">
+                      <p class="navbar__profile-menu_name" role="none">
+                        <%= current_user.full_name %>
+                      </p>
+                      <p class="navbar__profile-menu_email" role="none">
+                        <%= current_user.email %>
+                      </p>
+                    </div>
+                  </div>
+
+                  <%= button_to profile_path, method: :get, class: "navbar__profile-menu_settings", id:"menu-item-0", role:"menuitem", tabindex:"-1" do %>
+                    <%= image_tag 'setting_icon.svg', class:"mr-3 h-5 w-5" %>
+                    <%= t('navbar.settings') %>
+                  <% end %>
+                  <%= button_to destroy_user_session_path, method: :delete, class: "navbar__profile-menu_logout", id:"menu-item-0", role:"menuitem", tabindex:"-1" do %>
+                    <%= image_tag 'logout_icon.svg', class:"mr-3 h-5 w-5" %>
+                    <%= t('navbar.logout') %>
+                  <% end %>
+                </div>
+              </div>
+              <!-- profile menu for large screen end-->
+
+            </div>
+            <!-- profile dropdown end -->
+
+          </div>
+          <!-- notification and profile icons end -->
 
         </div>
       </div>
     </div>
-  </div>
-  <!-- Mobile menu, show/hide based on menu state. -->
-  <div class="flex">
-    <div class="md:hidden">
-      <div class="pt-2 pb-4 space-y-1" x-show="isOpen" @click.away="isOpen = false">
-        <!-- Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
-        <% if policy(:dashboard).index? %>
-          <a href="/dashboard" class="<%= request.path == "/dashboard" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.dashboard') %></a>
-        <% end %>
-        <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.time_tracking') %></a>
-        <a href="/team" class="<%= request.path == "/team" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.team') %></a>
-        <a href="/clients" class="<%= request.path == "/clients" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.clients') %></a>
-        <a href="/projects" class="<%= request.path == "/projects" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.projects') %></a>
-        <% if current_user.has_owner_or_admin_role?(current_company) %>
-          <a href="/invoice" class="<%= request.path == "/invoice" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.invoice') %></a>
-          <a href="/report" class="<%= request.path == "/report" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.report') %></a>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</nav>
+    <!-- navbar for larger screen greater than 1024px end -->
+  </nav>
+  <!-- navbar start end -->
+
+</div>
