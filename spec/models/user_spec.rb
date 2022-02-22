@@ -6,7 +6,8 @@ RSpec.describe User, type: :model do
   let(:user) { build(:user) }
 
   describe "Associations" do
-    it { is_expected.to belong_to(:company).optional }
+    it { is_expected.to have_many(:companies).through(:company_users) }
+    it { is_expected.to have_many(:company_users).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:delete_all) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:timesheet_entries) }

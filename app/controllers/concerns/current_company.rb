@@ -6,7 +6,10 @@ module CurrentCompany
   def current_company
     @_current_company ||= current_user&.current_workspace || current_user.companies.first
 
-    if current_user.current_workspace_id.nil? && @_current_company.present?
+    # TODO: Once switch workspace feature is added the logic to set Current workspace for user will be moved to
+    # - Company#create action
+    # - Controller action that will Switch a users' workspace
+    if current_user.current_workspace_id? && @_current_company && current_user.current_workspace_id != @_current_company.id
       current_user.update(current_workspace_id: @_current_company.id)
     end
 

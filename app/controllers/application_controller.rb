@@ -13,7 +13,6 @@ class ApplicationController < ActionController::Base
     def validate_company!
       return if current_user.nil?
 
-      current_company_context = CurrentCompanyContext.new(current_user, current_company)
-      authorize current_company_context, :company_present?, policy_class: CurrentCompanyPolicy
+      authorize current_company, :company_present?, policy_class: CompanyPolicy
     end
 end

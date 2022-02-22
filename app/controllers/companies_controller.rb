@@ -2,7 +2,6 @@
 
 class CompaniesController < ApplicationController
   skip_before_action :validate_company!, only: [:create, :new]
-  before_action :company_validation, only: [:new, :create]
 
   def new
     @company = Company.new
@@ -40,12 +39,4 @@ class CompaniesController < ApplicationController
       render :show, status: :unprocessable_entity
     end
   end
-
-  private
-    def company_validation
-      if current_user.companies.any?
-        flash[:error] = "You already have a company"
-        redirect_to root_path
-      end
-    end
 end

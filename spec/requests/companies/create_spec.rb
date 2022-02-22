@@ -3,11 +3,13 @@
 require "rails_helper"
 
 RSpec.describe "Companies#create", type: :request do
-  let (:user) { create(:user) }
+  let (:company) { create(:company) }
+  let (:user) { create(:user, current_workspace_id: company.id) }
 
   context "when user is admin" do
     before do
-      user.add_role :admin
+      create(:company_user, company_id: company.id, user_id: user.id)
+      user.add_role :admin, company
       sign_in user
     end
 
@@ -29,11 +31,11 @@ RSpec.describe "Companies#create", type: :request do
       end
 
       it "creates a new company" do
-        expect(Company.count).to eq(1)
+        expect(Company.count).to eq(2)
       end
 
-      it "sets the company_id to current_user" do
-        expect(user.company_id).to eq(Company.first.id)
+      it "sets the current_workspace_id to current_user" do
+        expect(user.current_workspace_id).to eq(Company.last.id)
       end
 
       it "redirects to root_path " do
@@ -60,7 +62,7 @@ RSpec.describe "Companies#create", type: :request do
       end
 
       it "will not be created" do
-        expect(Company.count).to eq(0)
+        expect(Company.count).to eq(1)
       end
 
       it "redirects to root_path " do
@@ -71,7 +73,8 @@ RSpec.describe "Companies#create", type: :request do
 
   context "When user is employee" do
     before do
-      user.add_role :employee
+      create(:company_user, company_id: company.id, user_id: user.id)
+      user.add_role :employee, company
       sign_in user
     end
 
@@ -92,16 +95,16 @@ RSpec.describe "Companies#create", type: :request do
         })
       end
 
-      it "will not be created" do
-        expect(Company.count).to eq(0)
+      it "will be created" do
+        expect(Company.count).to eq(2)
       end
 
-      it "redirects to root_path" do
+      it "sets the current_workspace_id to current_user" do
+        expect(user.current_workspace_id).to eq(Company.last.id)
+      end
+
+      it "redirects to root_path " do
         expect(response).to have_http_status(:redirect)
-      end
-
-      it "is not permitted to create company" do
-        expect(flash[:alert]).to eq("You are not authorized to create company.")
       end
     end
 
@@ -118,16 +121,17 @@ RSpec.describe "Companies#create", type: :request do
           }
         })
       end
+
       it "will not be created" do
-        expect(Company.count).to eq(0)
+        expect(Company.count).to eq(1)
       end
 
-      it "redirects to root_path" do
-        expect(response).to have_http_status(:redirect)
+      it "will fail" do
+        expect(response.body).to include("Company creation failed")
       end
 
-      it "is not permitted to craete company" do
-        expect(flash[:alert]).to eq("You are not authorized to create company.")
+      it "redirects to root_path " do
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
