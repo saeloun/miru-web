@@ -10,7 +10,7 @@
                     </div>
                     <datalist id="first-name">
                         <% User.all.each do |user| %>
-                            <option value="<%= user.name %>"></option>
+                            <option value="<%= user.first_name %>"></option>
                         <% end %>
                     </datalist>
 
