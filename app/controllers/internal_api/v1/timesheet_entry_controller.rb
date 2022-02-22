@@ -34,7 +34,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
     if current_timesheet_entry.destroy
       render json: { success: true }
     else
-      render json: timesheet_entry.errors, status: :unprocessable_entity
+      render json: current_timesheet_entry.errors, status: :unprocessable_entity
     end
   end
 
@@ -53,7 +53,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
 
     def check_bill_status
       if timesheet_entry_params[:bill_status] == "billed"
-        render json: { success: false, error: "You cannot bill an entry that has already been billed" }, status: :unprocessable_entity
+        render json: { success: false, error: I18n.t(:errors)[:bill_status_billed] }, status: :unprocessable_entity
       end
     end
 end

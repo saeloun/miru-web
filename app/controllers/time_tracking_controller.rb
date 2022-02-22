@@ -8,9 +8,7 @@ class TimeTrackingController < ApplicationController
     is_admin = current_user.is_admin?
     clients = current_company.clients.includes(:projects)
     projects = {}
-    clients.map do |c|
-      projects[c.name] = c.projects
-    end
+    clients.map { |client| projects[client.name] = client.projects }
 
     timesheet_entries = current_user.timesheet_entries.during(
       Date.today.beginning_of_week,
