@@ -8,14 +8,14 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
   def index
     timesheet_entries = current_user.timesheet_entries.during(params[:from], params[:to])
     entries = formatted_entries_by_date(timesheet_entries)
-    render json: { success: true, entries: entries }
+    render json: { entries: entries }
   end
 
   def create
     timesheet_entry = current_project.timesheet_entries.new(timesheet_entry_params)
     timesheet_entry.user = current_user
     if timesheet_entry.save
-      render json: { success: true, entry: timesheet_entry.formatted_entry }
+      render json: { entry: timesheet_entry.formatted_entry }
     else
       render json: timesheet_entry.errors, status: :unprocessable_entity
     end
@@ -24,7 +24,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
   def update
     current_timesheet_entry.project = current_project
     if current_timesheet_entry.update(timesheet_entry_params)
-      render json: { success: true, entry: current_timesheet_entry.formatted_entry }
+      render json: { entry: current_timesheet_entry.formatted_entry }
     else
       render json: timesheet_entry.errors, status: :unprocessable_entity
     end
@@ -32,7 +32,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
 
   def destroy
     if current_timesheet_entry.destroy
-      render json: { success: true }
+      render json: { message: "Timesheet deleted" }
     else
       render json: current_timesheet_entry.errors, status: :unprocessable_entity
     end
@@ -53,7 +53,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
 
     def check_bill_status
       if timesheet_entry_params[:bill_status] == "billed"
-        render json: { success: false, error: I18n.t(:errors)[:bill_status_billed] }, status: :unprocessable_entity
+        render json: { error: I18n.t(:errors)[:bill_status_billed] }, status: :unprocessable_entity
       end
     end
 end

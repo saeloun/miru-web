@@ -92,7 +92,7 @@ const TimeTracking: React.FC<props> = ({
 
   const handleDeleteEntry = async id => {
     const res = await timesheetEntryApi.destroy(id);
-    if (!res.data.success) return;
+    if (!(res.status === 200)) return;
     setEntryList(pv => {
       const nv = { ...pv };
       nv[selectedFullDate] = nv[selectedFullDate].filter(e => e.id !== id);

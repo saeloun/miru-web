@@ -51,8 +51,7 @@ const AddEntry: React.FC<props> = ({
       setClient(entry.client);
       setProject(entry.project);
       setProjectId(entry.project_id);
-      if (entry.bill_status == "unbilled" || entry.bill_status == "billed")
-        setBillable(true);
+      if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
     }
   }, []);
 
@@ -86,7 +85,7 @@ const AddEntry: React.FC<props> = ({
       }
     });
 
-    if (res.data?.success) {
+    if (res.status === 200) {
       setEntryList(pv => {
         const newState = { ...pv };
         if (pv[selectedFullDate]) {
@@ -114,7 +113,7 @@ const AddEntry: React.FC<props> = ({
         work_date: selectedFullDate
       }
     });
-    if (res.data?.success) {
+    if (res.status === 200) {
       setEntryList(pv => {
         const newState = { ...pv };
         newState[selectedFullDate] = pv[selectedFullDate].map(entry => {
