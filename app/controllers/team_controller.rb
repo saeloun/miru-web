@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class TeamController < ApplicationController
+  skip_after_action :verify_authorized, only: :index
   after_action :assign_role, only: [:update]
 
   def index
@@ -10,10 +11,12 @@ class TeamController < ApplicationController
   end
 
   def edit
+    authorize user, policy_class: TeamPolicy
     @user = user
   end
 
   def update
+    authorize user, policy_class: TeamPolicy
     user.skip_reconfirmation! unless user.invitation_accepted?
     user_email = user.email
     user.update(user_params)
@@ -22,13 +25,14 @@ class TeamController < ApplicationController
   end
 
   def destroy
+    authorize user, policy_class: TeamPolicy
     user.discard
     redirect_to team_index_path
   end
 
   private
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email)
+      params.require(:user).permit(policy(:team).permitted_attributes)
     end
 
     def user
