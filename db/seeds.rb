@@ -26,7 +26,8 @@ users.each do |user|
     password: "password",
     password_confirmation: "password",
     confirmed_at: Time.current,
-    invitation_accepted_at: Time.current
+    invitation_accepted_at: Time.current,
+    current_workspace_id: company.id
   )
   company_user.add_role(user[:role], company)
 end

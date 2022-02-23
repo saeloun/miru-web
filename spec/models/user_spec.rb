@@ -57,6 +57,12 @@ RSpec.describe User, type: :model do
       expect(user.primary_role).to eq("admin")
       expect(user.primary_role).not_to eq("owner")
     end
+
+    it "returns employee as default role" do
+      expect(user.primary_role).to eq("employee")
+      expect(user.primary_role).not_to eq("admin")
+      expect(user.primary_role).not_to eq("owner")
+    end
   end
 
   describe "#full_name" do
@@ -64,17 +70,6 @@ RSpec.describe User, type: :model do
       user.first_name = "First"
       user.last_name = "Last"
       expect(user.full_name).to eq("First Last")
-    end
-  end
-
-  describe "#admin?" do
-    it "returns true if user has admin role or owner role" do
-      user.add_role :admin, company
-      expect(user.admin?).to be_truthy
-    end
-
-    it "returns false if user does not have admin role or owner role" do
-      expect(user.admin?).not_to be_truthy
     end
   end
 

@@ -75,17 +75,13 @@ class User < ApplicationRecord
   after_discard :discard_project_members
 
   def primary_role
-    return "Employee" if roles.empty?
+    return "employee" if roles.empty?
 
     roles.first.name
   end
 
   def full_name
     "#{first_name} #{last_name}"
-  end
-
-  def admin?
-    self.has_role?(:admin, self.current_workspace) || self.has_role?(:owner, self.current_workspace)
   end
 
   def active_for_authentication?
