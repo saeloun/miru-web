@@ -1,7 +1,6 @@
-<%= form_with model: Project.new do |f| %>
+<%= form_for Project.new do |f| %>
     <div class="mt-4">
         <%= f.fields_for :project_members do |member_form| %>
-
             <div class="field">
                 <%= member_form.label "Team Members" %>
                 <div class="mt-2 flex -space-x-px">
@@ -19,12 +18,12 @@
                     </div>
                 </div>
             </div>
+        <% end %>
 
-            <%= link_to_add_row("ADD ANOTHER TEAM MEMBER", member_form, :user_id, class: "form__input") %>
+            <%= link_to_add_row("ADD ANOTHER TEAM MEMBER", f, :project_members, class: "form__input") %>
 
             <div class="actions mt-4">
                 <%= member_form.submit "ADD TEAM MEMBERS TO PROJECT", class: "form__button" %>
             </div>
-        <% end %>
     </div>
 <% end %>
