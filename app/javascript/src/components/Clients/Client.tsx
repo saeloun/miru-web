@@ -58,7 +58,7 @@ export const Client = ({
             <button
               onClick={() => {
                 setShowDeleteDialog(true);
-                setClientToDelete(id);
+                setClientToDelete({ id, name });
               }}
             >
               <img src={deleteIcon} alt="" />

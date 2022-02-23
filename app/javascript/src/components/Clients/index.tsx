@@ -12,7 +12,7 @@ const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
   const [clientToEdit, setClientToEdit] = React.useState({});
-  const [clientToDelete, setClientToDelete] = React.useState(0);
+  const [clientToDelete, setClientToDelete] = React.useState({});
 
   React.useEffect(() => {
     setAuthHeaders();
