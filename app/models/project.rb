@@ -5,7 +5,7 @@
 #  id           :integer          not null, primary key
 #  client_id    :integer          not null
 #  name         :string           not null
-#  description  :text             not null
+#  description  :text
 #  billable     :boolean          not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
@@ -28,7 +28,7 @@ class Project < ApplicationRecord
   has_many :project_members, dependent: :destroy
 
   # Validations
-  validates :name, :description, presence: true
+  validates :name, presence: true
   validates :billable, inclusion: { in: [ true, false ] }
 
   # Callbacks
