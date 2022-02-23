@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 
-module CurrentCompany
+module CurrentCompanyConcern
   extend ActiveSupport::Concern
 
+  included do
+    helper_method :current_company
+  end
+
   def current_company
+    return if current_user.nil?
+
     @_current_company ||= current_user&.current_workspace || current_user.companies.first
 
     # TODO: Once switch workspace feature is added the logic to set Current workspace for user will be moved to

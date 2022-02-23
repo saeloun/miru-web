@@ -9,6 +9,7 @@ RSpec.describe Company, type: :model do
     it { is_expected.to have_many(:clients).dependent(:destroy) }
     it { is_expected.to have_many(:projects).through(:clients).dependent(:destroy) }
     it { is_expected.to have_one_attached(:logo) }
+    it { is_expected.to have_many(:current_workspace_users).dependent(:nullify) }
   end
 
   describe "Validations" do

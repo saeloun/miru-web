@@ -139,6 +139,7 @@ en:
     default: You are not authorized to perform this action.
     client_policy:
       create?: You are not authorized to create client.
+      update?: You are not authorized to update client.
     company_policy:
       new?: You are not authorized to create new company.
       create?: You are not authorized to create company.

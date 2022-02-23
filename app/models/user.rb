@@ -85,7 +85,7 @@ class User < ApplicationRecord
   end
 
   def admin?
-    self.has_role?(:admin) || self.has_role?(:owner)
+    self.has_role?(:admin, self.current_workspace) || self.has_role?(:owner, self.current_workspace)
   end
 
   def active_for_authentication?
