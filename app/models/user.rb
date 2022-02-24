@@ -21,8 +21,7 @@
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  company_id             :integer
-#  position               :string
+#  current_workspace_id   :integer
 #  invitation_token       :string
 #  invitation_created_at  :datetime
 #  invitation_sent_at     :datetime
@@ -35,7 +34,7 @@
 #
 # Indexes
 #
-#  index_users_on_company_id            (company_id)
+#  index_users_on_current_workspace_id  (current_workspace_id)
 #  index_users_on_discarded_at          (discarded_at)
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_invitation_token      (invitation_token) UNIQUE
@@ -50,12 +49,14 @@ class User < ApplicationRecord
   include Discard::Model
 
   # Associations
-  belongs_to :company, optional: true
+  belongs_to :current_workspace, class_name: "Company", foreign_key: :current_workspace_id, optional: true
+  has_many :company_users, dependent: :destroy
+  has_many :companies, through: :company_users
   has_many :project_members, dependent: :destroy
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all
   has_one_attached :avatar
-  rolify
+  rolify strict: true
 
   # Validations
   validates :first_name, :last_name,
@@ -74,6 +75,8 @@ class User < ApplicationRecord
   after_discard :discard_project_members
 
   def primary_role
+    return "employee" if roles.empty?
+
     roles.first.name
   end
 
@@ -81,12 +84,14 @@ class User < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
-  def admin?
-    self.has_role?(:admin) || self.has_role?(:owner)
-  end
-
   def active_for_authentication?
     super and self.kept?
+  end
+
+  def has_owner_or_admin_role?(company)
+    return false if company.nil?
+
+    self.has_cached_role?(:owner, company) || self.has_cached_role?(:admin, company)
   end
 
   private

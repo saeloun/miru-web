@@ -4,11 +4,12 @@ require "rails_helper"
 
 RSpec.describe "Client#index", type: :request do
   let (:company) { create(:company) }
-  let (:user) { create(:user, company_id: company.id) }
+  let (:user) { create(:user, current_workspace_id: company.id) }
 
   context "When user is admin" do
     before do
-      user.add_role :admin
+      create(:company_user, company_id: company.id, user_id: user.id)
+      user.add_role :admin, company
       sign_in user
       send_request :get, clients_path
     end
@@ -25,7 +26,8 @@ RSpec.describe "Client#index", type: :request do
 
   context "When user is employee" do
     before do
-      user.add_role :employee
+      create(:company_user, company_id: company.id, user_id: user.id)
+      user.add_role :employee, company
       sign_in user
       send_request :get, clients_path
     end
