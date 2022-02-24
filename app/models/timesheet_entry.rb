@@ -27,6 +27,7 @@ class TimesheetEntry < ApplicationRecord
   belongs_to :project
 
   before_validation :insure_bill_status_is_set
+  before_save :insure_bill_status_is_not_billed
 
   validates :duration, :note, :work_date, :bill_status, presence: true
   validates :duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
@@ -57,5 +58,9 @@ class TimesheetEntry < ApplicationRecord
       else
         self.bill_status = :non_billable
       end
+    end
+
+    def insure_bill_status_is_not_billed
+      error.add(:bill_status, "bill status can't be billed") if self.bill_status == "billed"
     end
 end

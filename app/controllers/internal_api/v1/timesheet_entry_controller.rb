@@ -3,8 +3,6 @@
 class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationController
   include Timesheet
 
-  before_action :check_bill_status, only: [:create, :update]
-
   def index
     timesheet_entries = current_user.timesheet_entries.during(params[:from], params[:to])
     entries = formatted_entries_by_date(timesheet_entries)
@@ -49,11 +47,5 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
 
     def timesheet_entry_params
       params.require(:timesheet_entry).permit(:project_id, :duration, :work_date, :note, :bill_status)
-    end
-
-    def check_bill_status
-      if timesheet_entry_params[:bill_status] == "billed"
-        render json: { error: I18n.t(:errors)[:bill_status_billed] }, status: :unprocessable_entity
-      end
     end
 end

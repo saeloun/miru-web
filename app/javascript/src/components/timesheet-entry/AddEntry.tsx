@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesFromHHMM, minutesToHHMM } from "../../helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "../../helpers/ordinal";
+const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
+const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 
 interface props {
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
@@ -211,7 +214,7 @@ const AddEntry: React.FC<props> = ({
                 setBillable(false);
               }}
               className="inline"
-              src="/checkbox-checked.svg"
+              src={checkedIcon}
               alt="checkbox"
             />
           ) : (
@@ -220,7 +223,7 @@ const AddEntry: React.FC<props> = ({
                 setBillable(true);
               }}
               className="inline"
-              src="/checkbox-unchecked.svg"
+              src={uncheckedIcon}
               alt="checkbox"
             />
           )}
