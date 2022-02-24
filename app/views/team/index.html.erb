@@ -21,7 +21,7 @@
           <% if current_user.has_owner_or_admin_role?(current_company) %>
             <div class="page-content__new-user-width">
               <div class="page-content__new-user-position">
-                <button onclick="openModal('main-modal')" type="button" class="page-content__new-user-button">
+                <button id="new-team-member-btn" type="button" class="page-content__new-user-button">
                   <img src="<%= image_url 'plus_icon.svg' %>" class="page-content__button-image">
                   <%= t('team.new_user') %>
                 </button>
@@ -81,8 +81,8 @@
           <div class="modal__content modal-content">
             <div class="modal__position">
               <h6 class="modal__title"><%= t('team.create_new_user') %></h6>
-              <div class="modal__close modal-close" onclick="modalClose('main-modal')">
-                <button onclick="ClearFields();">
+              <div id="team-invite-modal-close" class="modal__close modal-close">
+                <button id="team-invite-modal-close-btn">
                   <img src="<%= image_url 'close_button.svg' %>" class="modal__button">
                 </button>
               </div>
@@ -101,7 +101,7 @@
             <div class="modal-content modal__content">
               <div class="modal__position">
                 <h6 class="modal__title"><%= t('team.update_user') %></h6>
-                <div class="modal-close modal__close" onclick="modalClose('another-modal')">
+                <div id="team-modal-close" class="modal-close modal__close">
                   <img src="<%= image_url 'close_button.svg' %>" class="modal__button">
                 </div>
               </div>
@@ -115,33 +115,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  all_modals = ['main-modal', 'another-modal']
-  all_modals.forEach((modal)=>{
-    const modalSelected = document.querySelector('.'+modal);
-    modalSelected.classList.remove('fadeIn');
-    modalSelected.classList.add('fadeOut');
-    modalSelected.style.display = 'none';
-  })
-  const modalClose = (modal) => {
-    const modalToClose = document.querySelector('.'+modal);
-    modalToClose.classList.remove('fadeIn');
-    modalToClose.classList.add('fadeOut');
-    setTimeout(() => {
-      modalToClose.style.display = 'none';
-    }, 500);
-  }
-  const openModal = (modal) => {
-    const modalToOpen = document.querySelector('.'+modal);
-    modalToOpen.classList.remove('fadeOut');
-    modalToOpen.classList.add('fadeIn');
-    modalToOpen.style.display = 'flex';
-  }
-
-  function ClearFields() {
-     document.getElementById("team_first_name").value = "";
-     document.getElementById("team_last_name").value = "";
-     document.getElementById("team_email").value = "";
-  }
-</script>
