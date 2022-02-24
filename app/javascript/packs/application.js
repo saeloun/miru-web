@@ -36,9 +36,3 @@ const componentRequireContext = require.context("src/components", true);
 ReactRailsUJS.useContext(componentRequireContext);
 
 require("packs/settings");
-
-// Load all the js files in custom directory
-function requireAll (r) {
-  r.keys().forEach(r);
-}
-requireAll(require.context("custom", true, /\.js$/));

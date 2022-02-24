@@ -1,3 +1,5 @@
+<%= javascript_pack_tag "team/modal" %>
+
 <div class="" id="root-page">
   <div class="align-page__one">
     <div class="align-page__two">
@@ -21,7 +23,7 @@
           <% if current_user.has_owner_or_admin_role?(current_company) %>
             <div class="page-content__new-user-width">
               <div class="page-content__new-user-position">
-                <button id="new-team-member-btn" type="button" class="page-content__new-user-button">
+                <button data-team-element="new-user-btn" type="button" class="page-content__new-user-button">
                   <img src="<%= image_url 'plus_icon.svg' %>" class="page-content__button-image">
                   <%= t('team.new_user') %>
                 </button>
@@ -81,8 +83,8 @@
           <div class="modal__content modal-content">
             <div class="modal__position">
               <h6 class="modal__title"><%= t('team.create_new_user') %></h6>
-              <div id="team-invite-modal-close" class="modal__close modal-close">
-                <button id="team-invite-modal-close-btn">
+              <div class="modal__close modal-close" data-team-element="invite-modal-close">
+                <button data-team-element="invite-modal-close-btn">
                   <img src="<%= image_url 'close_button.svg' %>" class="modal__button">
                 </button>
               </div>
@@ -101,7 +103,7 @@
             <div class="modal-content modal__content">
               <div class="modal__position">
                 <h6 class="modal__title"><%= t('team.update_user') %></h6>
-                <div id="team-modal-close" class="modal-close modal__close">
+                <div data-team-element="modal-close" class="modal-close modal__close">
                   <img src="<%= image_url 'close_button.svg' %>" class="modal__button">
                 </div>
               </div>

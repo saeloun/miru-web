@@ -36,7 +36,7 @@
   <% if policy(:team).edit? %>
     <%= link_to edit_team_path(member), remote: true do %>
       <div class="w-6">
-        <img id="mid-<%= member.id %>" class="table__button edit-team-member" src="<%= image_url 'edit_image_button.svg' %>">
+        <img id="mid-<%= member.id %>" class="table__button" data-team-element="edit-member" src="<%= image_url 'edit_image_button.svg' %>">
       </div>
     <% end %>
   <% end %>

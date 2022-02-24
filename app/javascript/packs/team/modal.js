@@ -31,28 +31,32 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("team_email").value = "";
   }
 
-  const newTeamMemberBtn = document.getElementById("new-team-member-btn");
-  const teamInviteModalClose = document.getElementById(
-    "team-invite-modal-close"
+  const newUserBtn = document.querySelector(
+    "button[data-team-element=\"new-user-btn\"]"
   );
-  const teamInviteModalCloseBtn = document.getElementById(
-    "team-invite-modal-close-btn"
+  const inviteModalClose = document.querySelector(
+    "div[data-team-element=\"invite-modal-close\"]"
   );
-  const teamModalClose = document.getElementById("team-modal-close");
-  const editTeamMembers = document.querySelectorAll(".edit-team-member");
+  const inviteModalCloseBtn = document.querySelector(
+    "button[data-team-element=\"invite-modal-close-btn\"]"
+  );
+  const teamModalClose = document.querySelector(
+    "div[data-team-element=\"modal-close\"]"
+  );
+  const editMembers = document.querySelectorAll(
+    "img[data-team-element=\"edit-member\"]"
+  );
 
-  if (newTeamMemberBtn)
-    newTeamMemberBtn.addEventListener("click", () => openModal("main-modal"));
-  if (teamInviteModalClose)
-    teamInviteModalClose.addEventListener("click", () =>
-      modalClose("main-modal")
-    );
-  if (teamInviteModalCloseBtn)
-    teamInviteModalCloseBtn.addEventListener("click", () => ClearFields());
+  if (newUserBtn)
+    newUserBtn.addEventListener("click", () => openModal("main-modal"));
+  if (inviteModalClose)
+    inviteModalClose.addEventListener("click", () => modalClose("main-modal"));
+  if (inviteModalCloseBtn)
+    inviteModalCloseBtn.addEventListener("click", () => ClearFields());
   if (teamModalClose)
     teamModalClose.addEventListener("click", () => modalClose("another-modal"));
 
-  editTeamMembers.forEach(editTeamMember => {
-    editTeamMember.addEventListener("click", () => openModal("another-modal"));
+  editMembers.forEach(editMember => {
+    editMember.addEventListener("click", () => openModal("another-modal"));
   });
 });
