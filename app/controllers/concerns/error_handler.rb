@@ -7,6 +7,7 @@ module ErrorHandler
     rescue_from ActionController::RoutingError, ActiveRecord::RecordNotFound, with: :handle_not_found_error
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
     rescue_from Discard::RecordNotDiscarded, with: :record_not_discarded
+    rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
   end
 
   private
@@ -46,6 +47,13 @@ module ErrorHandler
       respond_to do |format|
         format.json { render json: { errors: message, notice: I18n.t("errors.internal_server_error") }, status: :internal_server_error }
         format.html { render file: "public/500.html", status: :internal_server_error, layout: false, alert: message }
+      end
+    end
+
+    def record_invalid(exception)
+      respond_to do |format|
+        format.json { render json: { errors: exception.record.errors, notice: I18n.t("client.update.failure.message") }, status: :unprocessable_entity }
+        format.html { render file: "public/422.html", status: :unprocessable_entity, layout: false, alert: message }
       end
     end
 end
