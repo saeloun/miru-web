@@ -3,13 +3,15 @@
 require "rails_helper"
 
 RSpec.describe TeamPolicy, type: :policy, test_ploi: true do
-  let(:user) { build(:user) }
+  let (:company) { create(:company) }
+  let (:user) { create(:user, current_workspace_id: company.id) }
 
   subject { described_class }
 
   context "when user is admin" do
     before do
-      user.add_role :admin
+      create(:company_user, company_id: company.id, user_id: user.id)
+      user.add_role :admin, company
     end
 
     permissions :edit?, :update?, :destroy? do
@@ -21,7 +23,8 @@ RSpec.describe TeamPolicy, type: :policy, test_ploi: true do
 
   context "when user is employee" do
     before do
-      user.add_role :employee
+      create(:company_user, company_id: company.id, user_id: user.id)
+      user.add_role :employee, company
     end
 
     permissions :edit?, :update?, :destroy? do
