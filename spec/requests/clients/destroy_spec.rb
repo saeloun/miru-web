@@ -4,12 +4,13 @@ require "rails_helper"
 
 RSpec.describe "Client#destroy", type: :request do
   let (:company) { create(:company) }
-  let (:user) { create(:user, company_id: company.id) }
+  let (:user) { create(:user, current_workspace_id: company.id) }
   let (:client) { create(:client, { id: 1, company_id: company.id }) }
 
   context "When user is admin" do
     before do
-      user.add_role :admin
+      create(:company_user, company_id: company.id, user_id: user.id)
+      user.add_role :admin, company
       sign_in user
     end
 
@@ -42,14 +43,16 @@ RSpec.describe "Client#destroy", type: :request do
 
   context "When user is employee" do
     before do
-      user.add_role :employee
+      create(:company_user, company_id: company.id, user_id: user.id)
+      user.add_role :employee, company
       sign_in user
       send_request(:delete, "/internal_api/v1/clients/#{client.id}")
     end
 
     it "should not be permitted to delete client" do
-      expect(JSON.parse(response.body, { object_class: OpenStruct }).message)
-        .to eq(I18n.t("errors.unauthorized"))
+      expect(response).to have_http_status(:forbidden)
+      expect(JSON.parse(response.body, { object_class: OpenStruct }).errors)
+        .to eq(I18n.t("pundit.default"))
     end
   end
 
