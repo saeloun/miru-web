@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationController
-  before_action :is_user_admin_or_owner?, only: [:update]
-
   def update
+    authorize client
     unless current_company.id == client.company_id
       return render json: {
         message: I18n.t("client.update.failure.unauthorized")
@@ -31,15 +30,9 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
     def client_params
       params.require(:client).permit(
-        :name, :email, :phone, :address
+        policy(Client).permitted_attributes
       ).tap do |client_params|
         client_params[:company_id] = current_company.id
       end
-    end
-
-    def is_user_admin_or_owner?
-      render json: {
-        message: I18n.t("errors.unauthorized")
-      }, status: :forbidden unless current_user.has_any_role?(:owner, :admin)
     end
 end
