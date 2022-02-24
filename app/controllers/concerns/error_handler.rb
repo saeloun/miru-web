@@ -24,9 +24,14 @@ module ErrorHandler
       policy_name = policy.class.to_s.underscore
       error_key = policy.try(:error_message_key) || exception.query
 
-      redirect_path = new_company_path if policy.try(:error_message_key) == :company_not_present
+      message = I18n.t("#{policy_name}.#{error_key}", scope: "pundit", default: :default)
 
-      message = t "#{policy_name}.#{error_key}", scope: "pundit", default: :default
+      case policy.try(:error_message_key)
+      when :company_not_present
+        redirect_path = new_company_path
+      when :different_workspace
+        message = I18n.t("client.update.failure.unauthorized")
+      end
 
       respond_to do |format|
         format.html { redirect_to redirect_path, alert: message }

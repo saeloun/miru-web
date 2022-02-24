@@ -44,12 +44,12 @@
           <a href="/projects" class="<%= request.path == "/project" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
             <%= t('navbar.projects') %>
           </a>
-          <% if current_user.has_any_role?(:owner, :admin) %>
+          <% if current_user.has_owner_or_admin_role?(current_company) %>
             <a href="/invoice" class="<%= request.path == "/invoice" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
               <%= t('navbar.invoice') %>
             </a>
           <% end %>
-          <% if current_user.has_any_role?(:owner, :admin) %>
+          <% if current_user.has_owner_or_admin_role?(current_company) %>
             <a href="/report" class="<%= request.path == "/report" ? "text-miru-han-purple-1000 font-extrabold" : "border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium" %> inline-flex items-center px-1 pt-1 text-base">
               <%= t('navbar.report') %>
             </a>
@@ -116,7 +116,7 @@
         <a href="/team" class="<%= request.path == "/team" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.team') %></a>
         <a href="/clients" class="<%= request.path == "/clients" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.clients') %></a>
         <a href="/projects" class="<%= request.path == "/projects" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.projects') %></a>
-        <% if current_user.has_any_role?(:owner, :admin) %>
+        <% if current_user.has_owner_or_admin_role?(current_company) %>
           <a href="/invoice" class="<%= request.path == "/invoice" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.invoice') %></a>
           <a href="/report" class="<%= request.path == "/report" ? "bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000" : "border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" %> block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold"><%= t('navbar.report') %></a>
         <% end %>

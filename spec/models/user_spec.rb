@@ -3,14 +3,21 @@
 require "rails_helper"
 
 RSpec.describe User, type: :model do
-  let(:user) { build(:user) }
+  let (:company) { create(:company) }
+  let (:user) { create(:user, current_workspace_id: company.id) }
+
+  before do
+    create(:company_user, company_id: company.id, user_id: user.id)
+  end
 
   describe "Associations" do
-    it { is_expected.to belong_to(:company).optional }
+    it { is_expected.to have_many(:companies).through(:company_users) }
+    it { is_expected.to have_many(:company_users).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:delete_all) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:timesheet_entries) }
     it { is_expected.to have_one_attached(:avatar) }
+    it { is_expected.to belong_to(:current_workspace).optional }
   end
 
   describe "Validations" do
@@ -29,25 +36,31 @@ RSpec.describe User, type: :model do
   end
 
   it "checks if it is an owner" do
-    user.add_role :owner
-    expect(user.has_role?(:owner)).to be_truthy
+    user.add_role :owner, company
+    expect(user.has_role?(:owner, company)).to be_truthy
   end
 
   it "checks if it is an admin" do
-    user.add_role :admin
-    expect(user.has_role?(:admin)).to be_truthy
+    user.add_role :admin, company
+    expect(user.has_role?(:admin, company)).to be_truthy
   end
 
   it "checks if it is an employee" do
-    user.add_role :employee
-    expect(user.has_role?(:employee)).to be_truthy
+    user.add_role :employee, company
+    expect(user.has_role?(:employee, company)).to be_truthy
   end
 
   describe "#primary_role" do
     it "shows the first role name" do
-      user.add_role :admin
-      user.add_role :owner
+      user.add_role :admin, company
+      user.add_role :owner, company
       expect(user.primary_role).to eq("admin")
+      expect(user.primary_role).not_to eq("owner")
+    end
+
+    it "returns employee as default role" do
+      expect(user.primary_role).to eq("employee")
+      expect(user.primary_role).not_to eq("admin")
       expect(user.primary_role).not_to eq("owner")
     end
   end
@@ -60,20 +73,25 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#admin?" do
-    it "returns true if user has admin role or owner role" do
-      user.add_role :admin
-      expect(user.admin?).to be_truthy
+  describe "#has_owner_or_admin_role?" do
+    it "returns true if user has admin role" do
+      user.add_role :admin, company
+      expect(user.has_owner_or_admin_role?(company)).to be_truthy
     end
 
-    it "returns false if user does not have admin role or owner role" do
-      expect(user.admin?).not_to be_truthy
+    it "returns true if user has owner role" do
+      user.add_role :owner, company
+      expect(user.has_owner_or_admin_role?(company)).to be_truthy
+    end
+
+    it "returns false if user has employee role" do
+      expect(user.has_owner_or_admin_role?(company)).to be_falsey
     end
   end
 
   describe "#active_for_authentication?" do
     context "when user is an admin/owner" do
-      before { user.add_role :admin }
+      before { user.add_role :admin, company }
 
       it "returns true if user is not discarded" do
         expect(user.active_for_authentication?).to be_truthy
@@ -86,7 +104,7 @@ RSpec.describe User, type: :model do
     end
 
     context "when user is not an admin/owner" do
-      before { user.remove_role :admin }
+      before { user.remove_role :admin, company }
 
       it "returns true if user is not discarded" do
         expect(user.active_for_authentication?).to be_truthy
