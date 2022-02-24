@@ -39,4 +39,15 @@ class CompaniesController < ApplicationController
       render :show, status: :unprocessable_entity
     end
   end
+
+  def switch
+    new_workspace = current_user.companies.find(params[:id])
+    if current_user.update(current_workspace_id: new_workspace.id)
+      flash[:notice] = t(".success")
+      redirect_to root_path
+    else
+      flash.now[:error] = t(".failure")
+      render root_path
+    end
+  end
 end

@@ -30,6 +30,13 @@ Rails.application.routes.draw do
   resource :company, only: [:new, :show, :create, :update], controller: :companies do
     resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
   end
+
+  resources :company, only: [], controller: :companies do
+    member do
+      get :switch
+    end
+  end
+
   resources :time_tracking, only: [:index], path: "time-tracking"
   resources :team, only: [:index, :update, :destroy, :edit]
   resources :clients, only: [:index, :create]

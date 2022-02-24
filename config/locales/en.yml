@@ -63,6 +63,9 @@ en:
       success: "Company created successfully"
     update:
       success: "Changes saved successfully"
+    switch:
+      failure: "Failed to switch workspace"
+      success: "Workspace switched successfully"
   client:
     name:
       label: Name
