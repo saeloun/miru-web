@@ -29,7 +29,6 @@ module Authentication
           )
           user.skip_confirmation!
           user.save
-          user.add_role :owner
           user.identities.create(provider: PROVIDER, uid: google_id)
         end
         user
