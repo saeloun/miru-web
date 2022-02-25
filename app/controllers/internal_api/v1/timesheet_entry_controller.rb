@@ -2,14 +2,18 @@
 
 class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationController
   include Timesheet
+  include Pundit
+  after_action :verify_authorized
 
   def index
+    authorize TimesheetEntry
     timesheet_entries = current_user.timesheet_entries.during(params[:from], params[:to])
     entries = formatted_entries_by_date(timesheet_entries)
     render json: { entries: entries }
   end
 
   def create
+    authorize TimesheetEntry
     timesheet_entry = current_project.timesheet_entries.new(timesheet_entry_params)
     timesheet_entry.user = current_user
     if timesheet_entry.save
@@ -20,15 +24,17 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
   end
 
   def update
+    authorize current_timesheet_entry
     current_timesheet_entry.project = current_project
     if current_timesheet_entry.update(timesheet_entry_params)
       render json: { entry: current_timesheet_entry.formatted_entry }
     else
-      render json: timesheet_entry.errors, status: :unprocessable_entity
+      render json: current_timesheet_entry.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
+    authorize current_timesheet_entry
     if current_timesheet_entry.destroy
       render json: { message: "Timesheet deleted" }
     else
