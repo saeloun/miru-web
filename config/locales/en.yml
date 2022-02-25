@@ -79,6 +79,12 @@ en:
     create:
       failure: "Client creation failed"
       success: "Client added successfully"
+    update:
+      success:
+        message: Changes saved successfully
+      failure:
+        unauthorized: User is unauthorized to modify this client's details
+        message: Failed to saved changes
     add: ADD CLIENT
   team:
     team: Team
@@ -129,7 +135,6 @@ en:
     organization_setting: organization settings
     logo: logo
     company: company
-    name: name
     address: address
     business_phone: business phone
     country: country
@@ -140,3 +145,26 @@ en:
     date_format: date Format
     setup: setup org
     save_org: save org details
+  pundit:
+    default: You are not authorized to perform this action.
+    client_policy:
+      create?: You are not authorized to create client.
+      update?: You are not authorized to update client.
+    company_policy:
+      new?: You are not authorized to create new company.
+      create?: You are not authorized to create company.
+      show?: You are not authorized to view company.
+      update?: You are not authorized to update company.
+    current_company_policy:
+      company_not_present: Company not present.
+    dashboard_policy:
+      index?: You are not authorized to view dashboard.
+    project_policy:
+      create?: You are not authorized to create project.
+    team_policy:
+      edit?: You are not authorized to edit team.
+      update?: You are not authorized to update team.
+      destroy?: You are not authorized to destroy team. 
+  errors:
+    not_found: The resource you're looking for is not available
+    unauthorized: Only owner or admin users are authorized to perform this action

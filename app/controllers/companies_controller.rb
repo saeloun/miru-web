@@ -2,17 +2,20 @@
 
 class CompaniesController < ApplicationController
   skip_before_action :validate_company!, only: [:create, :new]
-  before_action :company_validation, only: [:new, :create]
 
   def new
     @company = Company.new
+    authorize @company
     render :new
   end
 
   def create
-    @company = Company.new(company_params)
+    @company = Company.new(permitted_attributes(Company))
+    authorize @company
     if @company.save
-      current_user.company_id = @company.id
+      current_user.companies << @company
+      current_user.current_workspace_id = @company.id
+      current_user.add_role(:owner, @company)
       current_user.save!
 
       redirect_to root_path, notice: t(".success")
@@ -24,26 +27,16 @@ class CompaniesController < ApplicationController
   end
 
   def show
+    authorize current_company
   end
 
   def update
-    if current_company.update(company_params)
+    authorize current_company
+    if current_company.update(permitted_attributes(current_company))
       redirect_to company_path
       flash[:notice] = t(".success")
     else
       render :show, status: :unprocessable_entity
     end
   end
-
-  private
-    def company_params
-      params.require(:company).permit(:name, :address, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end, :date_format, :logo)
-    end
-
-    def company_validation
-      if current_user.company.present?
-        flash[:error] = "You already have a company"
-        redirect_to root_path
-      end
-    end
 end

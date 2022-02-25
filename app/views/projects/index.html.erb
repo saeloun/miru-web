@@ -18,11 +18,11 @@
             </div>
           </div>
 
-          <% if current_user.has_any_role?(:owner, :admin) %>
+          <% if policy(Project).create? %>
             <div class="mt-6 flex sm:mt-0 md:ml-4">
               <button @click="isDialogOpen = true" type="button" class="form__button_outline">
                   <img src="<%= image_url 'plus_icon.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-                      <%= t('projects.new_project') %>
+                      <%= t('project.new_project') %>
               </button>
             </div>
           <% end %>

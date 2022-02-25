@@ -35,7 +35,6 @@ Rails.application.routes.draw do
   resources :clients, only: [:index, :create]
   resources :projects, only: [:index, :create, :show]
 
-
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
