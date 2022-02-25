@@ -1,0 +1,83 @@
+.navbar {
+  &__screen-height {
+    @apply antialiased lg:flex;
+  }
+  &__smaller-screen {
+    @apply lg:hidden absolute inset-0 transform lg:transform-none lg:opacity-100 duration-200 lg:relative z-10 w-full sm:w-96 text-white h-screen p-3 bg-miru-gray-200;
+  }
+  &__smaller-screen-logo {
+    @apply h-10 w-auto pl-5;
+  }
+  &__smaller-screen_close-button {
+    @apply p-2 focus:outline-none focus:bg-indigo-800 hover:bg-indigo-800 rounded-md lg:hidden;
+  }
+  &__smaller-screen_profile-menu {
+    @apply pt-2 pb-3 px-2 space-y-1;
+  }
+  &__smaller-screen_titles {
+    @apply block pl-3 pr-4 py-2 border-l-4 text-base font-extrabold;
+  }
+  &__smaller-screen_selected {
+    @apply bg-indigo-50 border-miru-han-purple-600 text-miru-han-purple-1000;
+  }
+  &__smaller-screen_unselected {
+    @apply border-transparent text-miru-dark-purple-1000 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700;
+  }
+  &__smaller-screen_user-details {
+    @apply block font-bold hover:bg-gray-100 flex items-center py-1 text-base;
+  }
+  &__smaller-screen_name {
+    @apply text-base font-semibold text-miru-dark-purple-1000 hover:text-miru-han-purple-1000;
+  }
+  &__smaller-screen_email {
+    @apply text-sm font-normal text-miru-dark-purple-400 hover:text-miru-han-purple-1000 mr-10;
+  }
+  &__smaller-screen_notification {
+    @apply ml-auto flex-shrink-0 bg-white rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+  }
+  &__smaller-screen_profile_logout {
+    @apply block font-bold hover:bg-gray-100 text-miru-dark-purple-600 hover:text-miru-han-purple-1000 flex items-center px-4 py-2 text-base cursor-pointer w-full;
+  }
+  &__small-screen-second_titles {
+    @apply text-miru-han-purple-1000 font-extrabold inline-flex items-center px-1 pt-1 text-base tracking-widest;
+  }
+  &__large-screen_title {
+    @apply inline-flex items-center px-1 pt-1 text-base tracking-wider;
+  }
+  &__large-screen_selected {
+    @apply  text-miru-han-purple-1000 font-extrabold;
+  }
+  &__large-screen_unselected {
+    @apply border-transparent text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 font-medium;
+  }
+  &__hamburger {
+    @apply rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500;
+  }
+  &__large-screen_notification {
+    @apply flex-shrink-0 bg-white rounded-full p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+  }
+  &__user-profile {
+    @apply hover:border-miru-han-purple-1000 border-2 rounded-full border-miru-white-1000;
+  }
+  &__user-menu {
+    @apply bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-miru-han-purple-1000;
+  }
+  &__open-profile-menu {
+    @apply origin-top-right absolute right-0 mt-2 w-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none;
+  }
+  &__profile-menu_avatar {
+    @apply block font-bold hover:bg-gray-100 flex items-center px-4 py-1 text-base;
+  }
+  &__profile-menu_name {
+    @apply text-base font-semibold text-miru-dark-purple-1000 hover:text-miru-han-purple-1000;
+  }
+  &__profile-menu_email {
+    @apply text-sm font-normal text-miru-dark-purple-400 hover:text-miru-han-purple-1000 truncate mr-4;
+  }
+  &__profile-menu_settings {
+    @apply block font-bold hover:bg-gray-100 text-miru-dark-purple-600 hover:text-miru-han-purple-1000 w-full flex items-center px-4 py-2 text-base cursor-pointer;
+  }
+  &__profile-menu_logout {
+    @apply block font-bold hover:bg-gray-100 text-miru-dark-purple-600 hover:text-miru-han-purple-1000 w-full group flex items-center px-4 py-2 text-base cursor-pointer;
+  }
+}

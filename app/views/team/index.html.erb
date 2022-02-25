@@ -1,61 +1,67 @@
-<div class="" id="root-page">
-  <div class="max-w-6xl mx-auto px-2 md:px-5 font-manrope">
-    <div class="px-5">
-      <div class="">
+<%= javascript_pack_tag "team/modal" %>
 
-        <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
-          <div class="flex-1 min-w-0">
-            <h2 class="text-3xl font-bold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
+<div class="" id="root-page">
+  <div class="align-page__outer-wrapper">
+    <div class="align-page__middle-wrapper">
+      <div class="align-page__inner-wrapper">
+
+        <!-- title search and new user button start -->
+        <div class="page-content__position">
+          <div class="page-content__title-width">
+            <h2 class="page-content__title">
               <%= t('team.team') %>
             </h2>
           </div>
-          <div class="mt-6 flex sm:mt-0 md:ml-4 items-center sm:w-4/6">
-            <div class="mt-1 relative rounded-md shadow-sm md:ml-10">
-              <%= search_form_for query, url: team_index_path do |f| %>
-                <%= f.text_field :first_name_or_last_name_or_email_cont, class: 'rounded tracking-wider appearance-none border border-gray-100 block w-72 sm:w-96 px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-sm', placeholder: 'Search' %>
-                <%= image_submit_tag 'search_icon.svg', class: "h-3 text-miru-gray-400 absolute inset-y-2 right-0 pr-3 flex items-center cursor-pointer" %>
-              <% end %>
-            </div>
-        </div>
+          <div class="page-content__search-width">
+            <%= search_form_for query, url: team_index_path, class: "page-content__search"  do |f| %>
+              <div class="relative rounded">
+              <%= f.text_field :first_name_or_last_name_or_email_cont, class: "page-content__search-input", placeholder: 'Search' %>
+              <%= image_submit_tag 'search_icon.svg', class: "page-content__search-image" %>
+              </div>
+            <% end %>
+          </div>
           <% if current_user.has_owner_or_admin_role?(current_company) %>
-            <div class="mt-6 flex sm:mt-0 md:ml-4">
-              <button onclick="openModal('main-modal')" type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-semibold text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer">
-                <img src="<%= image_url 'plus_icon.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-                <%= t('team.new_user') %>
-              </button>
+            <div class="page-content__new-user-width">
+              <div class="page-content__new-user-position">
+                <button data-team-element="new-user-btn" type="button" class="page-content__new-user-button">
+                  <img src="<%= image_url 'plus_icon.svg' %>" class="page-content__button-image">
+                  <%= t('team.new_user') %>
+                </button>
+              </div>
             </div>
           <% end %>
         </div>
+        <!-- title search and new user button end -->
 
-        <!-- team table -->
-        <div class="flex flex-col">
-          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 ">
-            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-              <div class="overflow-hidden border-b-2 border-miru-gray-200 ">
-                <table class="min-w-full divide-y divide-gray-200 mt-4">
+        <!-- team table start -->
+        <div class="table__flex">
+          <div class="table__position-one">
+            <div class="table__position-two">
+              <div class="table__border">
+                <table class="table__width">
                   <thead class="">
                     <tr>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
+                      <th scope="col" class="table__header">
                         <%= t('team.profile_picture') %>
                       </th>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
+                      <th scope="col" class="table__header">
                         <%= t('team.name') %>
                       </th>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
+                      <th scope="col" class="table__header">
                         <%= t('team.email_id') %>
                       </th>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
+                      <th scope="col" class="table__header">
                         <%= t('team.role') %>
                       </th>
-                      <th scope="col" class="px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
+                      <th scope="col" class="table__header">
 
                       </th>
-                      <th scope="col" class="relative px-3 py-5">
+                      <th scope="col" class="table__header">
 
                       </th>
                     </tr>
                   </thead>
-                  <tbody id="teamstable" class="bg-white divide-y divide-gray-200">
+                  <tbody id="teamstable" class="table__body">
                     <% teams.kept.each do |member| %>
                         <tr id="member-<%= member.id %>">
                           <%= render partial: "team", locals: { member: member } %>
@@ -67,37 +73,41 @@
             </div>
           </div>
         </div>
+        <!-- team table end -->
+
       </div>
 
-      <!--Modal 1-->
-      <div class="px-5 main-modal fixed w-full inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster" style="background-color: rgba(29, 26, 49,0.6)">
-        <div class="shadow-lg modal-container bg-white w-full sm:max-w-md mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
-          <div class="modal-content py-4 text-left px-3">
-            <div class="flex justify-between items-center mx-3">
-              <h6 class="text-base font-extrabold"><%= t('team.create_new_user') %></h6>
-              <div class="modal-close cursor-pointer z-50" onclick="modalClose('main-modal')">
-                <img src="<%= image_url 'close_button.svg' %>" class="p-2 rounded hover:bg-opacity-20 hover:bg-miru-gray-1000">
+      <!--Modal 1 start-->
+      <div class="modal__modal main-modal" style="background-color: rgba(29, 26, 49,0.6)">
+        <div class="modal__container modal-container">
+          <div class="modal__content modal-content">
+            <div class="modal__position">
+              <h6 class="modal__title"><%= t('team.create_new_user') %></h6>
+              <div class="modal__close modal-close" data-team-element="invite-modal-close">
+                <button data-team-element="invite-modal-close-btn">
+                  <img src="<%= image_url 'close_button.svg' %>" class="modal__button">
+                </button>
               </div>
             </div>
-            <div class="mb-3 mx-3 flex justify-center">
+            <div class="modal__form">
               <%= render "devise/invitations/new"%>
             </div>
           </div>
         </div>
       </div>
-      <!--Modal 1 End-->
+      <!--Modal 1 end-->
 
-      <!--Modal 2-->
-        <div class="px-5 another-modal fixed w-full inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster" style="background-color: rgba(29, 26, 49,0.6)">
-          <div class="shadow-lg modal-container bg-white w-full sm:max-w-md mx-auto rounded-xl shadow-lg z-50 overflow-y-auto">
-            <div class="modal-content py-4 text-left px-3">
-              <div class="flex justify-between items-center mx-3">
-                <h6 class="text-base font-extrabold"><%= t('team.update_user') %></h6>
-                <div class="modal-close cursor-pointer z-50 ml-" onclick="modalClose('another-modal')">
-                  <img src="<%= image_url 'close_button.svg' %>" class="p-2 rounded hover:bg-opacity-20 hover:bg-miru-gray-1000">
+      <!--Modal 2 start-->
+        <div class="another-modal modal__modal" style="background-color: rgba(29, 26, 49,0.6)">
+          <div class="modal-container modal__container">
+            <div class="modal-content modal__content">
+              <div class="modal__position">
+                <h6 class="modal__title"><%= t('team.update_user') %></h6>
+                <div data-team-element="modal-close" class="modal-close modal__close">
+                  <img src="<%= image_url 'close_button.svg' %>" class="modal__button">
                 </div>
               </div>
-              <div id="team-modal" class="mb-3 mx-3 flex justify-center">
+              <div id="team-modal" class="modal__form">
               </div>
             </div>
           </div>
@@ -107,27 +117,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  all_modals = ['main-modal', 'another-modal']
-  all_modals.forEach((modal)=>{
-    const modalSelected = document.querySelector('.'+modal);
-    modalSelected.classList.remove('fadeIn');
-    modalSelected.classList.add('fadeOut');
-    modalSelected.style.display = 'none';
-  })
-  const modalClose = (modal) => {
-    const modalToClose = document.querySelector('.'+modal);
-    modalToClose.classList.remove('fadeIn');
-    modalToClose.classList.add('fadeOut');
-    setTimeout(() => {
-      modalToClose.style.display = 'none';
-    }, 500);
-  }
-  const openModal = (modal) => {
-    const modalToOpen = document.querySelector('.'+modal);
-    modalToOpen.classList.remove('fadeOut');
-    modalToOpen.classList.add('fadeIn');
-    modalToOpen.style.display = 'flex';
-  }
-</script>
