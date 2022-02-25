@@ -25,13 +25,13 @@
   @import "navbar";
 
   .align-page {
-    &__one {
+    &__outer-wrapper {
       @apply lg:max-w-3xl xl:max-w-7xl mx-auto font-manrope;
     }
-    &__two {
+    &__middle-wrapper {
       @apply px-3 sm:px-6 md:px-10 lg:px-0 xl:px-22;
     }
-    &__three {
+    &__inner-wrapper {
       @apply xl:px-2;
     }
   }
