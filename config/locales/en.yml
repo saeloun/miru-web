@@ -131,11 +131,8 @@ en:
     confirmation_instruction: didn't receive confirmation instructions?
     unlock_instruction: didn't receive unlock instructions?
   company:
-    settings: settings
     cancel: cancel
     save: save
-    profile_setting: profile settings
-    organization_setting: organization settings
     logo: logo
     company: company
     address: address
@@ -148,6 +145,19 @@ en:
     date_format: date Format
     setup: setup org
     save_org: save org details
+  settings:
+    settings: settings
+    cancel : cancel
+    save: save
+    profile_setting: profile settings
+    organization_setting: organization settings
+    profile_picture: profile picture
+    name: name
+    email: email
+    change_password: change password
+    current_passowrd: current password
+    password: password
+    confirm_password: confirm password
   pundit:
     default: You are not authorized to perform this action.
     client_policy:
