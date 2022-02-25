@@ -1,10 +1,11 @@
 <%= form_for Project.new do |f| %>
     <div class="mt-4">
         <%= f.fields_for :project_members do |member_form| %>
+        <% $var = member_form %>
             <%= render 'project_member', f: member_form %>
         <% end %>
 
-            <%= link_to_add_row("ADD ANOTHER TEAM MEMBER", f, :project_members, class: "form__input") %>
+            <%= link_to_add_row("ADD ANOTHER TEAM MEMBER", f, :project_members, class: "form__link") %>
 
             <div class="actions mt-4">
                 <%= f.submit "ADD TEAM MEMBERS TO PROJECT", class: "form__button" %>
@@ -14,12 +15,10 @@
 
 <script>
 
-$('form').on('click', '.add_fields', function(event) {
-  var regexp, time;
-  time = new Date().getTime();
-  regexp = new RegExp($(this).data('id'), 'g');
-  $('.fields').append($(this).data('fields').replace(regexp, time));
-  return event.preventDefault();
-});
+    let link = document.getElementsByClassName("add_fields");
+    link[0].onclick = "addNewFields()";
 
+    function addNewFields(){
+        $('.field').append("<%= escape_javascript render(:partial => 'projects/project_member', :locals => { :f => $var }) %>");
+    }
 </script>
