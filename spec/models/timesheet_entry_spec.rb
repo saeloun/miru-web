@@ -23,7 +23,9 @@ RSpec.describe TimesheetEntry, type: :model do
   end
 
   describe "Callbacks" do
-    it { is_expected.to callback(:insure_bill_status_is_set).before(:validation) }
+    it { is_expected.to callback(:ensure_bill_status_is_set).before(:validation) }
+    it { is_expected.to callback(:ensure_bill_status_is_not_billed).before(:validation) }
+    it { is_expected.to callback(:ensure_billed_status_should_not_be_changed).before(:validation) }
   end
 
   describe ".during" do
