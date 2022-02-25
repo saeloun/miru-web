@@ -1,3 +1,5 @@
+<%= javascript_pack_tag 'project_member' %>
+
 <%= form_for Project.new do |f| %>
     <div class="mt-4">
         <%= f.fields_for :project_members do |member_form| %>
@@ -12,13 +14,3 @@
             </div>
     </div>
 <% end %>
-
-<script>
-
-    let link = document.getElementsByClassName("add_fields");
-    link[0].onclick = "addNewFields()";
-
-    function addNewFields(){
-        $('.field').append("<%= escape_javascript render(:partial => 'projects/project_member', :locals => { :f => $var }) %>");
-    }
-</script>
