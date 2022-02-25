@@ -41,8 +41,8 @@ class CompaniesController < ApplicationController
   end
 
   def switch
-    new_workspace = current_user.companies.find(params[:id])
-    if current_user.update(current_workspace_id: new_workspace.id)
+    workspace = current_user.companies.find(params[:id])
+    if current_user.update(current_workspace_id: workspace.id)
       flash[:notice] = t(".success")
       redirect_to root_path
     else
