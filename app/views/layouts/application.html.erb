@@ -18,7 +18,7 @@
         <% end %>
       </script>
       <div class="">
-          <%= render "partial/navbar" if user_signed_in? && current_company %>
+        <%= render "partial/navbar" if user_signed_in? && current_company %>
         <%= yield %>
       </div>
     </main>
