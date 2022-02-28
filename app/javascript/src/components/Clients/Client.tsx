@@ -12,6 +12,8 @@ export interface IClient {
   isAdminUser: boolean;
   setShowEditDialog: any;
   setClientToEdit: any;
+  setClientToDelete: any;
+  setShowDeleteDialog: any;
 }
 
 export const Client = ({
@@ -25,7 +27,9 @@ export const Client = ({
   deleteIcon,
   isAdminUser,
   setShowEditDialog,
-  setClientToEdit
+  setClientToEdit,
+  setClientToDelete,
+  setShowDeleteDialog
 }: IClient) => {
   return (
     <tr key={id}>
@@ -51,7 +55,12 @@ export const Client = ({
             </button>
           </td>
           <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
-            <button>
+            <button
+              onClick={() => {
+                setShowDeleteDialog(true);
+                setClientToDelete({ id, name });
+              }}
+            >
               <img src={deleteIcon} alt="" />
             </button>
           </td>

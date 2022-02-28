@@ -85,6 +85,9 @@ en:
       failure:
         unauthorized: User is unauthorized to modify this client's details
         message: Failed to saved changes
+    delete:
+      success:
+        message: Client removed successfully
     add: ADD CLIENT
   team:
     team: Team
@@ -178,3 +181,4 @@ en:
   errors:
     not_found: The resource you're looking for is not available
     unauthorized: Only owner or admin users are authorized to perform this action
+    internal_server_error: Something went wrong
