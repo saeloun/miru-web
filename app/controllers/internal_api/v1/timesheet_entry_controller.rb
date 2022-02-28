@@ -2,7 +2,6 @@
 
 class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationController
   include Timesheet
-  include Pundit
   after_action :verify_authorized
 
   def index
