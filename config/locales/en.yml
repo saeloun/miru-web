@@ -42,11 +42,21 @@ en:
     team: Team
     time_tracking: Time Tracking
     view_notifications: View Notifications
-  project:
+  projects:
     projects: Projects
     hours_logged: HOURS LOGGED
     new_project: NEW PROJECT
-    project_client: PROJECT/CLIENT
+    project: Project
+    client: Client
+    project_name: Project name
+    edit: edit
+    create:
+      success: Project added successfully.
+      failure: Project creation failed.
+    add_project: Add project
+    add_new_project: Add new project
+    billable: Billable
+    non_billable: Non-Billable
   companies:
     create:
       failure: "Company creation failed"
@@ -69,6 +79,12 @@ en:
     create:
       failure: "Client creation failed"
       success: "Client added successfully"
+    update:
+      success:
+        message: Changes saved successfully
+      failure:
+        unauthorized: User is unauthorized to modify this client's details
+        message: Failed to saved changes
     add: ADD CLIENT
   team:
     team: Team
@@ -112,11 +128,8 @@ en:
     confirmation_instruction: didn't receive confirmation instructions?
     unlock_instruction: didn't receive unlock instructions?
   company:
-    settings: settings
     cancel: cancel
     save: save
-    profile_setting: profile settings
-    organization_setting: organization settings
     logo: logo
     company: company
     address: address
@@ -129,3 +142,39 @@ en:
     date_format: date Format
     setup: setup org
     save_org: save org details
+  settings:
+    settings: settings
+    cancel : cancel
+    save: save
+    profile_setting: profile settings
+    organization_setting: organization settings
+    profile_picture: profile picture
+    name: name
+    email: email
+    change_password: change password
+    current_passowrd: current password
+    password: password
+    confirm_password: confirm password
+  pundit:
+    default: You are not authorized to perform this action.
+    client_policy:
+      create?: You are not authorized to create client.
+      update?: You are not authorized to update client.
+    company_policy:
+      new?: You are not authorized to create new company.
+      create?: You are not authorized to create company.
+      show?: You are not authorized to view company.
+      update?: You are not authorized to update company.
+    current_company_policy:
+      company_not_present: Company not present.
+    dashboard_policy:
+      index?: You are not authorized to view dashboard.
+    project_policy:
+      create?: You are not authorized to create project.
+    team_policy:
+      edit?: You are not authorized to edit team.
+      update?: You are not authorized to update team.
+      destroy?: You are not authorized to destroy team. 
+  errors:
+    not_found: The resource you're looking for is not available
+    unauthorized: Only owner or admin users are authorized to perform this action

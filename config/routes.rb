@@ -33,7 +33,8 @@ Rails.application.routes.draw do
   resources :time_tracking, only: [:index], path: "time-tracking"
   resources :team, only: [:index, :update, :destroy, :edit]
   resources :clients, only: [:index, :create]
-  resources :projects, only: [:index]
+  resources :projects, only: [:index, :create]
+
 
   devise_scope :user do
     get "profile", to: "users/registrations#edit"

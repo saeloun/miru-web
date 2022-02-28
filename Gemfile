@@ -150,3 +150,9 @@ gem "rolify", "~> 6.0"
 # OAuth Gems
 gem "omniauth-google-oauth2", "~> 1.0"
 gem "omniauth-rails_csrf_protection", "~> 1.0"
+
+# Pundit gem for user authorization
+gem "pundit", "~> 2.2"
+
+# Data migration gem to migrate data alongside schema changes
+gem "data_migrate", "~> 8.0.0.rc2"

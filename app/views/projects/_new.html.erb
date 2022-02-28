@@ -1,0 +1,42 @@
+<%= form_with model: Project.new do |f| %>
+    <div class="mt-4">
+        <div class="field">
+            <%= f.label t('projects.client') %>
+            <div class="mt-2">
+                <%= f.collection_select :client_id, current_company.clients.order(:name),:id,:name, {}, { class: "rounded tracking-wider appearance-none border border-gray-100 block w-full px-3 py-2 bg-miru-white-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000" } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <div class="field">
+            <%= f.label t('projects.project_name') %>
+            <div class="mt-2">
+                <%= f.text_field :name, class: "form__input" %>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <div class="field">
+            <div class="mt-1">
+                <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+                    <div class="flex items-center">
+                        <%= f.radio_button :billable, true, class: "form__radio" %>
+                        <%= f.label :billable, t('projects.billable'), class: "form__label" %>
+                    </div>    
+        
+                    <div class="flex items-center">
+                        <%= f.radio_button :billable, false, class: "form__radio" %>
+                        <%= f.label :billable, t('projects.non_billable'), class: "form__label" %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions mt-4">
+        <%= f.submit t('projects.add_project').upcase, class: "form__button" %>
+    </div>
+<% end %>
+  

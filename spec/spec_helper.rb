@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "simplecov"
+require "pundit/rspec"
 
 if ENV.fetch("COVERAGE", false)
   SimpleCov.start "rails" do

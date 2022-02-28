@@ -2,8 +2,9 @@
 
 namespace :internal_api, defaults: { format: "json" } do
   namespace :v1 do
-    resources :clients, only: [:index]
+    resources :clients, only: [:index, :update]
     resources :project, only: [:index]
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
+    delete "timesheet_entry/many" => "timesheet_entry#destroy_many"
   end
 end

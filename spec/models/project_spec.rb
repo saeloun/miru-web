@@ -12,7 +12,6 @@ RSpec.describe Project, type: :model do
 
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_presence_of(:description) }
     it { is_expected.to validate_inclusion_of(:billable).in_array([true, false]) }
   end
 

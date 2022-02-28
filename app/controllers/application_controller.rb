@@ -1,17 +1,16 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  helper_method :current_company
-  before_action :authenticate_user!, :validate_company!
+  include PunditHelper
+  include ErrorHandler
+  include CurrentCompanyConcern
 
-  def current_company
-    @_current_company ||= current_user&.company
-  end
+  before_action :authenticate_user!, :validate_company!
 
   private
     def validate_company!
       return if current_user.nil?
 
-      redirect_to new_company_path unless current_company
+      authorize current_company, :company_present?, policy_class: CompanyPolicy
     end
 end

@@ -3,9 +3,9 @@
 class Users::SessionsController < Devise::SessionsController
   def after_sign_in_path_for(resource)
     if resource.is_a?(User)
-      return new_company_path if resource.company.nil? && resource.has_role?(:owner)
+      return new_company_path if resource.companies.empty? && resource.has_role?(:owner)
 
-      if resource.has_any_role?(:owner, :admin)
+      if resource.has_owner_or_admin_role?(current_company)
         dashboard_index_path
       else
         time_tracking_index_path

@@ -15,6 +15,7 @@
       "components/*": ["app/javascript/src/components/*"],
       "apis/*": ["./app/javascript/src/apis/*"],
       "helpers/*": ["./app/javascript/src/helpers/*"],
+      "common/*": ["./app/javascript/src/common/*"],
     }
   },
   "exclude": [

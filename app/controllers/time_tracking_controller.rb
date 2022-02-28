@@ -2,6 +2,7 @@
 
 class TimeTrackingController < ApplicationController
   include Timesheet
+  skip_after_action :verify_authorized
 
   def index
     is_admin = current_user.is_admin?
