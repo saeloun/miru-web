@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Companies#switch", type: :request, tt: true do
+RSpec.describe "InternalApi::V1::Workspaces#switch", type: :request, tt: true do
   let (:company) { create(:company) }
   let (:company_2) { create(:company) }
   let (:user) { create(:user, current_workspace_id: company.id) }
@@ -14,7 +14,7 @@ RSpec.describe "InternalApi::V1::Companies#switch", type: :request, tt: true do
       user.add_role :admin, company
       user.add_role :employee, company
       sign_in user
-      send_request :get, switch_internal_api_v1_company_path(company_2)
+      send_request :patch, internal_api_v1_workspace_path(company_2)
     end
 
     it "is successful" do
@@ -40,7 +40,7 @@ RSpec.describe "InternalApi::V1::Companies#switch", type: :request, tt: true do
       user.add_role :employee, company
       user.add_role :employee, company
       sign_in user
-      send_request :get, switch_internal_api_v1_company_path(company_2)
+      send_request :patch, internal_api_v1_workspace_path(company_2)
     end
 
     it "is successful" do
@@ -61,7 +61,7 @@ RSpec.describe "InternalApi::V1::Companies#switch", type: :request, tt: true do
 
   context "when unauthenticated" do
     it "user will be redirects to sign in path" do
-      send_request :get, switch_internal_api_v1_company_path(company)
+      send_request :patch, internal_api_v1_workspace_path(company)
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to match("You need to sign in or sign up before continuing.")
     end

@@ -12,7 +12,7 @@ class TimeTrackingController < ApplicationController
       @projects[c.name] = c.projects
     end
 
-    timesheet_entries = current_user.timesheet_entries.during(
+    timesheet_entries = current_user.timesheet_entries.company_based(current_company).during(
       Date.today.beginning_of_week,
       Date.today.end_of_week
     )

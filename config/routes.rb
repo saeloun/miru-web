@@ -31,16 +31,11 @@ Rails.application.routes.draw do
     resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
   end
 
-  resources :company, only: [], controller: :companies do
-    member do
-      get :switch
-    end
-  end
-
   resources :time_tracking, only: [:index], path: "time-tracking"
   resources :team, only: [:index, :update, :destroy, :edit]
   resources :clients, only: [:index, :create]
   resources :projects, only: [:index, :create]
+  resources :workspaces, only: [:update]
 
 
   devise_scope :user do

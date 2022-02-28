@@ -31,6 +31,8 @@ class TimesheetEntry < ApplicationRecord
   validates :duration, :note, :work_date, :bill_status, presence: true
   validates :duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
 
+  scope :company_based, -> (company) { where(project_id: company&.project_ids) }
+
   def self.during(from, to)
     where(work_date: from..to).order(work_date: :desc)
   end

@@ -63,9 +63,6 @@ en:
       success: "Company created successfully"
     update:
       success: "Changes saved successfully"
-    switch:
-      failure: "Failed to switch workspace"
-      success: "Workspace switched successfully"
   client:
     name:
       label: Name
@@ -89,6 +86,10 @@ en:
         unauthorized: User is unauthorized to modify this client's details
         message: Failed to saved changes
     add: ADD CLIENT
+  workspaces:
+    update:
+      failure: "Failed to switch workspace"
+      success: "Workspace switched successfully"
   team:
     team: Team
     new_user: NEW USER
