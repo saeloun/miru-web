@@ -85,6 +85,9 @@ en:
       failure:
         unauthorized: User is unauthorized to modify this client's details
         message: Failed to saved changes
+    delete:
+      success:
+        message: Client removed successfully
     add: ADD CLIENT
   team:
     team: Team
@@ -128,11 +131,8 @@ en:
     confirmation_instruction: didn't receive confirmation instructions?
     unlock_instruction: didn't receive unlock instructions?
   company:
-    settings: settings
     cancel: cancel
     save: save
-    profile_setting: profile settings
-    organization_setting: organization settings
     logo: logo
     company: company
     address: address
@@ -145,6 +145,19 @@ en:
     date_format: date Format
     setup: setup org
     save_org: save org details
+  settings:
+    settings: settings
+    cancel : cancel
+    save: save
+    profile_setting: profile settings
+    organization_setting: organization settings
+    profile_picture: profile picture
+    name: name
+    email: email
+    change_password: change password
+    current_passowrd: current password
+    password: password
+    confirm_password: confirm password
   pundit:
     default: You are not authorized to perform this action.
     client_policy:
@@ -170,3 +183,4 @@ en:
     unauthorized: Only owner or admin users are authorized to perform this action
     bill_status_billed: You can't bill an entry that has already been billed
     create_billed_entry: You can't create a billed timesheet entry
+    internal_server_error: Something went wrong

@@ -11,9 +11,12 @@ module.exports = {
       md: "768px",
       lg: "1024px",
       xl: "1280px",
-      "2xl": "1536px"
+      xxl: "1536px"
     },
     extend: {
+      margin: {
+        86: '342px',
+      },
       colors: {
         "miru-black": {
           1000: "#303A4B"

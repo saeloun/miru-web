@@ -3,23 +3,24 @@
 class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationController
   def update
     authorize client
-    unless current_company.id == client.company_id
-      return render json: {
-        message: I18n.t("client.update.failure.unauthorized")
-      }, status: :forbidden
-    end
 
-    if client.update(client_params)
+    if client.update!(client_params)
       render json: {
         success: true,
         client: client,
         notice: I18n.t("client.update.success.message")
       }, status: :ok
-    else
+    end
+  end
+
+  def destroy
+    authorize client
+
+    if client.discard!
       render json: {
-        errors: client.errors,
-        notice: I18n.t("client.update.failure.message")
-      }, status: :unprocessable_entity
+        client: client,
+        notice: I18n.t("client.delete.success.message")
+      }, status: :ok
     end
   end
 

@@ -50,7 +50,9 @@ ActiveRecord::Schema.define(version: 2022_02_21_133258) do
     t.string "address"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "discarded_at", precision: 6
     t.index ["company_id"], name: "index_clients_on_company_id"
+    t.index ["discarded_at"], name: "index_clients_on_discarded_at"
   end
 
   create_table "companies", force: :cascade do |t|

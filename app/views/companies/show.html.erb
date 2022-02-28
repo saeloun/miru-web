@@ -1,203 +1,205 @@
-<div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
-  <div class="px-5">
-    <%= form_with model: current_company, url: company_path(current_company), method: :put, local: true do |form| %>
+<div class="align-page__outer-wrapper">
+  <div class="align-page__middle-wrapper">
+    <div class="align-page__inner-wrapper">
 
-      <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
-        <div class="flex-1 min-w-0">
-          <h2 class="text-3xl font-extrabold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
-            <%= t('company.settings').capitalize %>
-          </h2>
-        </div>
-        <div class="mt-6 flex sm:mt-0 md:ml-4">
+      <%= form_with model: current_company, url: company_path(current_company), method: :put, local: true do |form| %>
 
-          <div type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded">
-            <img src="<%= image_url 'cancel_button.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-            <%= link_to t('company.cancel').upcase, :back, class: "text-base font-sans font-medium text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer" %>
+        <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
+          <div class="flex-1 min-w-0">
+            <h2 class="text-3xl font-extrabold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
+              <%= t('settings.settings').capitalize %>
+            </h2>
           </div>
-
-          <div type="button" class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded">
-            <img src="<%= image_url 'save_button.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-            <%= form.submit t('company.save').upcase, class: "text-base font-sans font-medium text-miru-white-1000 bg-transparent cursor-pointer" %>
+          <div class="mt-6 flex sm:mt-0 md:ml-4">
+            <%= link_to company_path, class:"form__cancel" do %>
+              <%= image_tag("cancel_button.svg", class:"-ml-0.5 mr-2 h-4 w-4") %>
+              <%= t('settings.cancel').upcase %>
+            <% end %>
+            <button type="submit" class="form__save">
+              <%= image_tag("save_button.svg", class:"-ml-0.5 mr-2 h-4 w-4") %>
+              <%= t('settings.save').upcase %>
+            </button>
           </div>
         </div>
-      </div>
-      <div class="sm:flex sm:items-center sm:justify-between mt-3 mb-3">
-        <div class="flex-1 min-w-0">
-          <h2 class="<%= request.path == "/profile" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
-            <%= link_to t('company.profile_setting').upcase, "/profile" %>
-          </h2>
+        <div class="sm:flex sm:items-center sm:justify-between mt-3 mb-3">
+          <div class="flex-1 min-w-0">
+            <h2 class="<%= request.path == "/profile" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
+              <%= link_to t('settings.profile_setting').upcase, profile_path %>
+            </h2>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h2 class="<%= request.path == "/company" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
+              <%= link_to t('settings.organization_setting').upcase, company_path %>
+            </h2>
+          </div>
         </div>
-        <div class="flex-1 min-w-0">
-          <h2 class="<%= request.path == "/company" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
-            <%= link_to t('company.organization_setting').upcase, "/company" %>
-          </h2>
-        </div>
-      </div>
 
-      <div class="bg-miru-gray-100 p-10 mb-10">
-        <div class="max-w-max sm:max-w-md">
+        <div class="bg-miru-gray-100 p-10 mb-10">
+          <div class="max-w-max sm:max-w-md">
 
-          <div class="field">
-            <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000"><%= t('company.logo').capitalize %></label>
-            <div class="mt-1">
-              <% if current_company.logo.attached? %>
-                <div class="flex items-center space-x-4 lg:space-x-6">
-                  <div class="relative w-24 h-24 rounded-full border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
-                    <div class="flex items-center justify-center">
-                      <%= image_tag current_company.logo, class: "rounded-full" %>
+            <div class="field">
+              <label class="tracking-wider block text-sm font-semibold text-miru-dark-purple-1000"><%= t('company.logo').capitalize %></label>
+              <div class="mt-1">
+                <% if current_company.logo.attached? %>
+                  <div class="flex items-center space-x-4 lg:space-x-6">
+                    <div class="relative w-24 h-24 rounded-full border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
+                      <div class="flex items-center justify-center">
+                        <%= image_tag current_company.logo, class: "rounded-full w-22 h-22" %>
+                      </div>
                     </div>
+                    <%= link_to image_tag("#{image_url 'delete_image_button.svg'}"), company_purge_logo_path, method: :delete, class: "font-medium text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000"%>
                   </div>
-                  <%= link_to image_tag("#{image_url 'delete_image_button.svg'}"), company_purge_logo_path, method: :delete, class: "font-medium text-lg leading-6 space-y-1 hover:border-2 hover:border-miru-han-purple-1000"%>
-                </div>
-              <% else %>
-                <div x-data="showImage()">
-                  <div class="relative w-24 h-24 rounded-md border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
-                    <div class="flex items-center justify-center">
-                      <label>
-                        <div class="flex flex-col items-center">
-                          <img id="preview" class="absolute ml-1 mt-1 inset-0 w-20 h-20 rounded-md">
-                          <img src="<%= image_url 'plus_icon.svg' %>" class="mt-8">
-                          <div class="opacity-0" accept="image/*" @change="showPreview(event)">
-                            <%= form.file_field :logo %>
+                <% else %>
+                  <div x-data="showImage()">
+                    <div class="relative w-24 h-24 rounded-md border-solid border-4 border-miru-han-purple-1000 bg-white flex justify-center items-center hover:cursor-pointer">
+                      <div class="flex items-center justify-center">
+                        <label>
+                          <div class="flex flex-col items-center">
+                            <img id="preview" class="absolute ml-1 mt-1 inset-0 w-20 h-20 rounded-md">
+                            <img src="<%= image_url 'plus_icon.svg' %>" class="mt-8">
+                            <div class="opacity-0" accept="image/*" @change="showPreview(event)">
+                              <%= form.file_field :logo %>
+                            </div>
                           </div>
-                        </div>
-                      </label>
+                        </label>
+                      </div>
                     </div>
                   </div>
-                </div>
-              <% end %>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <div class="field">
-              <div class="field_with_errors">
-                <%= form.label t('company.company').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-                <div class="tracking-wider block text-xs text-red-600">
-                  <%= error_message_on(form.object, :name) %>
-                </div>
-              </div>
-              <div class="mt-1">
-                <%= form.text_field :name, autofocus: true, autocomplete: "name", class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(form.object, :name)}" %>
+                <% end %>
               </div>
             </div>
-          </div>
 
-          <div class="mt-4">
-            <div class="field">
-              <div class="field_with_errors">
-                <%= form.label t('company.address').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-                <div class="tracking-wider block text-xs text-red-600">
-                  <%= error_message_on(form.object, :address) %>
+            <div class="mt-4">
+              <div class="field">
+                <div class="field_with_errors">
+                  <%= form.label t('company.company').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                  <div class="tracking-wider block text-xs text-red-600">
+                    <%= error_message_on(form.object, :name) %>
+                  </div>
+                </div>
+                <div class="mt-1">
+                  <%= form.text_field :name, autofocus: true, autocomplete: "name", class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(form.object, :name)}" %>
                 </div>
               </div>
-              <div class="mt-1">
-                <%= form.text_area :address, autofocus: true, autocomplete: "address", class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(form.object, :address)}" %>
+            </div>
+
+            <div class="mt-4">
+              <div class="field">
+                <div class="field_with_errors">
+                  <%= form.label t('company.address').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                  <div class="tracking-wider block text-xs text-red-600">
+                    <%= error_message_on(form.object, :address) %>
+                  </div>
+                </div>
+                <div class="mt-1">
+                  <%= form.text_area :address, autofocus: true, autocomplete: "address", class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(form.object, :address)}" %>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="field">
+                <div class="field_with_errors">
+                  <%= form.label t('company.business_phone').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                  <div class="tracking-wider block text-xs text-red-600">
+                    <%= error_message_on(form.object, :business_phone) %>
+                  </div>
+                </div>
+                <div class="mt-1">
+                  <%= form.text_field :business_phone, autofocus: true, autocomplete: "business-phone", class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(form.object, :business_phone)}" %>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="field">
+                <div class="field_with_errors">
+                  <%= form.label t('company.country').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                  <div class="tracking-wider block text-xs text-red-600">
+                    <%= error_message_on(form.object, :country) %>
+                  </div>
+                </div>
+                <div class="mt-1">
+                  <%= form.select :country, [[ "Please select", "", { selected: true, disabled: true }]] + ISO3166::Country.pluck(:alpha2, :name).collect { |c| [ c.second, c.first ] }, {}, { autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :country)}" } %>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="field">
+                <div class="field_with_errors">
+                  <%= form.label t('company.timezone').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                  <div class="tracking-wider block text-xs text-red-600">
+                    <%= error_message_on(form.object, :timezone) %>
+                  </div>
+                </div>
+                <div class="mt-1">
+                  <%= form.select :timezone, TZInfo::Timezone.all_country_zones.collect { |t| [ t.to_s ] }, {}, { autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :timezone)}" } %>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="field">
+                <div class="field_with_errors">
+                  <%= form.label t('company.base_currency').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                  <div class="tracking-wider block text-xs text-red-600">
+                    <%= error_message_on(form.object, :base_currency) %>
+                  </div>
+                </div>
+
+                <div class="mt-1">
+                  <%= form.select :base_currency, Money::Currency.table.collect { |k, v| [ v[:name], v[:iso_code] ] }, {}, {autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :base_currency)}"} %>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="field">
+                <div class="field_with_errors">
+                  <%= form.label t('company.standard_price').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
+                  <div class="tracking-wider block text-xs text-red-600">
+                    <%= error_message_on(form.object, :standard_price) %>
+                  </div>
+                </div>
+
+                <div class="mt-1">
+                  <%= form.number_field :standard_price, autofocus: true, autocomplete: "standard-price", class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(form.object, :standard_price)}" %>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="field">
+                <div class="field_with_errors">
+                  <%= form.label t('company.fiscal_year').capitalize, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+                  <div class="tracking-wider block text-xs text-red-600">
+                    <%= error_message_on(form.object, :fiscal_year_end) %>
+                  </div>
+                </div>
+                <div class="mt-1">
+                  <%= form.select :fiscal_year_end, [[ "Please select", "", { selected: true, disabled: true }], ["January-December", "jan-dec",], ["April-March", "apr-mar"]], {}, {autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :fiscal_year_end)}"} %>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="field">
+                <div class="field_with_errors">
+                  <%= form.label t('company.date_format').capitalize, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
+                  <div class="tracking-wider block text-xs text-red-600">
+                    <%= error_message_on(form.object, :date_format) %>
+                  </div>
+                </div>
+                <div class="mt-1">
+                  <%= form.select :date_format, [[ "Please select", "", { selected: true, disabled: true }], ["DD-MM-YYYY"], ["MM-DD-YYYY"], ["YYYY-MM-DD"]], {}, {autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :date_format)}"} %>
+                </div>
               </div>
             </div>
           </div>
-
-          <div class="mt-4">
-            <div class="field">
-              <div class="field_with_errors">
-                <%= form.label t('company.business_phone').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-                <div class="tracking-wider block text-xs text-red-600">
-                  <%= error_message_on(form.object, :business_phone) %>
-                </div>
-              </div>
-              <div class="mt-1">
-                <%= form.text_field :business_phone, autofocus: true, autocomplete: "business-phone", class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(form.object, :business_phone)}" %>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <div class="field">
-              <div class="field_with_errors">
-                <%= form.label t('company.country').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-                <div class="tracking-wider block text-xs text-red-600">
-                  <%= error_message_on(form.object, :country) %>
-                </div>
-              </div>
-              <div class="mt-1">
-                <%= form.select :country, [[ "Please select", "", { selected: true, disabled: true }]] + ISO3166::Country.pluck(:alpha2, :name).collect { |c| [ c.second, c.first ] }, {}, { autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :country)}" } %>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <div class="field">
-              <div class="field_with_errors">
-                <%= form.label t('company.timezone').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-                <div class="tracking-wider block text-xs text-red-600">
-                  <%= error_message_on(form.object, :timezone) %>
-                </div>
-              </div>
-              <div class="mt-1">
-                <%= form.select :timezone, TZInfo::Timezone.all_country_zones.collect { |t| [ t.to_s ] }, {}, { autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :timezone)}" } %>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <div class="field">
-              <div class="field_with_errors">
-                <%= form.label t('company.base_currency').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-                <div class="tracking-wider block text-xs text-red-600">
-                  <%= error_message_on(form.object, :base_currency) %>
-                </div>
-              </div>
-
-              <div class="mt-1">
-                <%= form.select :base_currency, Money::Currency.table.collect { |k, v| [ v[:name], v[:iso_code] ] }, {}, {autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :base_currency)}"} %>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <div class="field">
-              <div class="field_with_errors">
-                <%= form.label t('company.standard_price').capitalize, class: "tracking-wider block text-sm font-semibold text-miru-dark-purple-1000" %>
-                <div class="tracking-wider block text-xs text-red-600">
-                  <%= error_message_on(form.object, :standard_price) %>
-                </div>
-              </div>
-
-              <div class="mt-1">
-                <%= form.number_field :standard_price, autofocus: true, autocomplete: "standard-price", class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(form.object, :standard_price)}" %>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <div class="field">
-              <div class="field_with_errors">
-                <%= form.label t('company.fiscal_year').capitalize, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
-                <div class="tracking-wider block text-xs text-red-600">
-                  <%= error_message_on(form.object, :fiscal_year_end) %>
-                </div>
-              </div>
-              <div class="mt-1">
-                <%= form.select :fiscal_year_end, [[ "Please select", "", { selected: true, disabled: true }], ["January-December", "jan-dec",], ["April-March", "apr-mar"]], {}, {autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :fiscal_year_end)}"} %>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <div class="field">
-              <div class="field_with_errors">
-                <%= form.label t('company.date_format').capitalize, class: "tracking-wider block text-xs font-semibold text-miru-dark-purple-1000" %>
-                <div class="tracking-wider block text-xs text-red-600">
-                  <%= error_message_on(form.object, :date_format) %>
-                </div>
-              </div>
-              <div class="mt-1">
-                <%= form.select :date_format, [[ "Please select", "", { selected: true, disabled: true }], ["DD-MM-YYYY"], ["MM-DD-YYYY"], ["YYYY-MM-DD"]], {}, {autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :date_format)}"} %>
-              </div>
-            </div>
-          </div>
-        <% end %>
         </div>
-      </div>
+      <% end %>
+
+    </div>
   </div>
 </div>
