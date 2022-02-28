@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Workspaces#switch", type: :request, tt: true do
+RSpec.describe "InternalApi::V1::Workspaces#update", type: :request, tt: true do
   let (:company) { create(:company) }
   let (:company_2) { create(:company) }
   let (:user) { create(:user, current_workspace_id: company.id) }

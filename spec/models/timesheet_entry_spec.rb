@@ -39,15 +39,15 @@ RSpec.describe TimesheetEntry, type: :model do
       @timesheet_entry3 = create(:timesheet_entry, project_id: project2.id)
     end
 
-    describe ".company_based" do
+    describe ".in_workspace" do
       it "returns timesheet entries that are associated with project 1" do
-        expect(described_class.company_based(company)).to include(timesheet_entry, @timesheet_entry1)
-        expect(described_class.company_based(company)).not_to include(@timesheet_entry2, @timesheet_entry3)
+        expect(described_class.in_workspace(company)).to include(timesheet_entry, @timesheet_entry1)
+        expect(described_class.in_workspace(company)).not_to include(@timesheet_entry2, @timesheet_entry3)
       end
 
       it "excludes timesheet entries that are associated with project 1" do
-        expect(described_class.company_based(company2)).not_to include(timesheet_entry, @timesheet_entry1)
-        expect(described_class.company_based(company2)).to include(@timesheet_entry2, @timesheet_entry3)
+        expect(described_class.in_workspace(company2)).not_to include(timesheet_entry, @timesheet_entry1)
+        expect(described_class.in_workspace(company2)).to include(@timesheet_entry2, @timesheet_entry3)
       end
     end
   end
