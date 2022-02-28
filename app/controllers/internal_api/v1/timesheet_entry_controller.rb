@@ -38,6 +38,14 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
     end
   end
 
+  def destroy_many
+    if current_user.timesheet_entries.where(id: params[:ids]).destroy_all
+      render json: { message: "Successfully deleted #{params[:ids].count} entries" }
+    else
+      render json: { message: "Error deleting entries" }, status: :unprocessable_entity
+    end
+  end
+
   private
     def current_project
       @_current_project ||= current_company.projects.find(params[:project_id])

@@ -10,6 +10,17 @@ const update = async (id, payload) => axios.put(`${path}/${id}`, payload);
 
 const destroy = async id => axios.delete(`${path}/${id}`);
 
-const timesheetEntryApi = { list, create, update, destroy };
+const createMany = async payload => axios.post(`${path}/many`, payload);
+
+const updateMany = async payload => axios.delete(`${path}/many`, payload);
+
+const timesheetEntryApi = {
+  list,
+  create,
+  update,
+  destroy,
+  createMany,
+  updateMany
+};
 
 export default timesheetEntryApi;

@@ -11,9 +11,12 @@ module.exports = {
       md: "768px",
       lg: "1024px",
       xl: "1280px",
-      "2xl": "1536px"
+      xxl: "1536px"
     },
     extend: {
+      margin: {
+        86: "342px"
+      },
       colors: {
         "miru-black": {
           1000: "#303A4B"
@@ -91,7 +94,8 @@ module.exports = {
         29: "7.25rem",
         38: "9.5rem",
         50: "12.5rem",
-        112: "28rem"
+        112: "28rem",
+        138: "34.5rem"
       },
       padding: {
         "36/100": "36.66666%",

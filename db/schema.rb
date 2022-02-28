@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_15_071548) do
+ActiveRecord::Schema.define(version: 2022_02_21_133258) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -67,6 +67,18 @@ ActiveRecord::Schema.define(version: 2022_02_15_071548) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "company_users", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["company_id"], name: "index_company_users_on_company_id"
+    t.index ["user_id"], name: "index_company_users_on_user_id"
+  end
+
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
   create_table "identities", force: :cascade do |t|
     t.string "provider"
     t.string "uid"
@@ -91,7 +103,7 @@ ActiveRecord::Schema.define(version: 2022_02_15_071548) do
   create_table "projects", force: :cascade do |t|
     t.bigint "client_id", null: false
     t.string "name", null: false
-    t.text "description", null: false
+    t.text "description"
     t.boolean "billable", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -142,8 +154,7 @@ ActiveRecord::Schema.define(version: 2022_02_15_071548) do
     t.string "unconfirmed_email"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "company_id"
-    t.string "position"
+    t.bigint "current_workspace_id"
     t.string "invitation_token"
     t.datetime "invitation_created_at", precision: 6
     t.datetime "invitation_sent_at", precision: 6
@@ -153,7 +164,7 @@ ActiveRecord::Schema.define(version: 2022_02_15_071548) do
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
     t.datetime "discarded_at", precision: 6
-    t.index ["company_id"], name: "index_users_on_company_id"
+    t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
@@ -173,11 +184,13 @@ ActiveRecord::Schema.define(version: 2022_02_15_071548) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "clients", "companies"
+  add_foreign_key "company_users", "companies"
+  add_foreign_key "company_users", "users"
   add_foreign_key "identities", "users"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
-  add_foreign_key "users", "companies"
+  add_foreign_key "users", "companies", column: "current_workspace_id"
 end

@@ -9,10 +9,10 @@ const WeeklyEntryCard: React.FC<any> = () => {
           <p className="text-lg mx-2">•</p>
           <p className="text-lg">Project</p>
         </div>
-        <div className="flex w-2/3">
+        <div className="w-138">
           <input
             value={"08:00"}
-            className="mr-4 bold text-xl content-center px-1 py-4 w-18 h-15 border-2 rounded bg-miru-gray-100"
+            className="focus:outline-none focus:border-miru-han-purple-400 mr-4 bold text-xl content-center px-1 py-4 w-18 h-15 border-2 rounded bg-miru-gray-100"
           />
           <input
             value={"08:00"}
