@@ -75,6 +75,16 @@
     }
   }
 
+  .button {
+    @apply tracking-widest h-10 w-48 text-base font-bold focus:outline-none rounded;
+    &__bg_transparent {
+      @apply button border border-miru-han-purple-1000 bg-transparent text-miru-han-purple-1000 hover:text-miru-han-purple-600;
+    }
+    &__bg_purple {
+      @apply button text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600;
+    }
+  }
+
   .password_eye {
     &__icon {
       @apply h-4 w-4 text-miru-han-purple-1000 cursor-pointer;
