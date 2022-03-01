@@ -164,8 +164,37 @@
           </div>
           <!-- hamburger icons end -->
 
-          <!-- notification and profile icons start -->
+          <!-- switch workspace, notification and profile icons start -->
           <div class="hidden lg:relative lg:z-10 lg:ml-4 lg:flex lg:items-center">
+
+            <!-- switch workspace dropdown start -->
+            <div class="cursor-pointer" x-data="{ isOpen: false}">
+              <div class="flex p-1" @click="isOpen = !isOpen">
+                <%= image_tag company_logo(current_company), alt: "company_logo", class: "mr-1 h-6 w-6 rounded-md" %>
+                <p class="px-1 font-manrope font-bold tracking-widest">
+                  <%= current_company.name.upcase %>
+                </p>
+                <p class="py-1.5 px-1">
+                  <img src="<%= image_url 'down_arrow.svg' %>" class="mr-3 h-3 w-3" alt="down_arrow" />
+                </p>
+              </div>
+
+              <div x-show="isOpen" @click.away="isOpen = false">
+                <div class="flex flex-col absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                  <% current_user.companies.each do |company| %>
+                    <div class="<%= current_user.current_workspace == company ? 'bg-miru-gray-100' : '' %> items-center px-4 py-4 hover:bg-miru-gray-100 text-miru-dark-purple-1000 cursor-pointer rounded-sm" role="menuitem" tabindex="-1" id="menu-item-0">
+                      <%= link_to workspace_path(company), method: :patch, class: "flex" do %>
+                        <%= image_tag company_logo(company), alt: "company_logo", class: "mr-3 h-5 w-5 mt-1" %>
+                        <p class="font-manrope <%= current_user.current_workspace == company ? 'font-medium' : 'font-extrabold' %>">
+                          <%= company.name.capitalize %>
+                        </p>
+                      <% end %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <!-- switch workspace dropdown end -->
 
             <!-- notification button start -->
             <button type="button" class="navbar__large-screen_notification">
