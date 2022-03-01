@@ -21,6 +21,7 @@
       <a href="/team" class="<%= request.path == "/team" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.team') %></a>
       <a href="/clients" class="<%= request.path == "/clients" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.clients') %></a>
       <a href="/projects" class="<%= request.path == "/projects" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.projects') %></a>
+      <a href="/reports" class="<%= request.path == "/reports" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.reports') %></a>
       <% if current_user.has_owner_or_admin_role?(current_company) %>
         <a href="/invoice" class="<%= request.path == "/invoice" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.invoice') %></a>
         <a href="/report" class="<%= request.path == "/report" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.report') %></a>
@@ -106,6 +107,9 @@
               <a href="/projects" class="<%= request.path == "/project" ? "block" : "hidden" %> navbar__small-screen-second_titles">
                 <%= t('navbar.projects') %>
               </a>
+              <a href="/reports" class="<%= request.path == "/reports" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                <%= t('navbar.reports') %>
+              </a>
               <% if current_user.has_owner_or_admin_role?(current_company) %>
                 <a href="/invoice" class="<%= request.path == "/invoice" ? "block" : "hidden" %> navbar__small-screen-second_titles">
                   <%= t('navbar.invoice') %>
@@ -139,6 +143,9 @@
               </a>
               <a href="/projects" class="<%= request.path == "/project" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                 <%= t('navbar.projects') %>
+              </a>
+              <a href="/reports" class="<%= request.path == "/reports" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                <%= t('navbar.reports') %>
               </a>
               <% if current_user.has_owner_or_admin_role?(current_company) %>
                 <a href="/invoice" class="<%= request.path == "/invoice" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
