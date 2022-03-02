@@ -3,7 +3,13 @@
 require "rails_helper"
 
 RSpec.describe TimesheetEntry, type: :model do
-  let(:timesheet_entry) { create(:timesheet_entry) }
+  let (:company) { create(:company) }
+  let (:company2) { create(:company) }
+  let(:client) { create(:client, company_id: company.id) }
+  let(:client2) { create(:client, company_id: company2.id) }
+  let(:project) { create(:project, client_id: client.id) }
+  let(:project2) { create(:project, client_id: client2.id) }
+  let(:timesheet_entry) { create(:timesheet_entry, project_id: project.id) }
 
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
@@ -24,6 +30,26 @@ RSpec.describe TimesheetEntry, type: :model do
 
   describe "Callbacks" do
     it { is_expected.to callback(:insure_bill_status_is_set).before(:validation) }
+  end
+
+  describe "Scopes" do
+    before do
+      @timesheet_entry1 = create(:timesheet_entry, project_id: project.id)
+      @timesheet_entry2 = create(:timesheet_entry, project_id: project2.id)
+      @timesheet_entry3 = create(:timesheet_entry, project_id: project2.id)
+    end
+
+    describe ".in_workspace" do
+      it "returns timesheet entries that are associated with project 1" do
+        expect(described_class.in_workspace(company)).to include(timesheet_entry, @timesheet_entry1)
+        expect(described_class.in_workspace(company)).not_to include(@timesheet_entry2, @timesheet_entry3)
+      end
+
+      it "excludes timesheet entries that are associated with project 1" do
+        expect(described_class.in_workspace(company2)).not_to include(timesheet_entry, @timesheet_entry1)
+        expect(described_class.in_workspace(company2)).to include(@timesheet_entry2, @timesheet_entry3)
+      end
+    end
   end
 
   describe ".during" do
