@@ -66,7 +66,8 @@ RSpec.describe TimesheetEntry, type: :model do
           duration: timesheet_entry.duration,
           note: timesheet_entry.note,
           work_date: timesheet_entry.work_date,
-          bill_status: timesheet_entry.bill_status
+          bill_status: timesheet_entry.bill_status,
+          team_member: "#{timesheet_entry.user.first_name} #{timesheet_entry.user.last_name}"
         }
       )
     end
