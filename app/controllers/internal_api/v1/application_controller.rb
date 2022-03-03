@@ -7,4 +7,5 @@ class InternalApi::V1::ApplicationController < ActionController::API
   include CurrentCompanyConcern
 
   before_action :authenticate_user!
+  after_action :verify_authorized
 end

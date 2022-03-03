@@ -2,43 +2,33 @@
 
 class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationController
   include Timesheet
-  after_action :verify_authorized
+
+  skip_after_action :verify_authorized
+  after_action :verify_policy_scoped
 
   def index
-    authorize TimesheetEntry
-    timesheet_entries = current_user.timesheet_entries.during(params[:from], params[:to])
+    scope = policy_scope(TimesheetEntry)
+    timesheet_entries = scope.where(user_id: params[:user_id] || current_user.id).during(params[:from], params[:to])
     entries = formatted_entries_by_date(timesheet_entries)
     render json: { entries: entries }
   end
 
   def create
-    authorize TimesheetEntry
+    scope = policy_scope(TimesheetEntry)
     timesheet_entry = current_project.timesheet_entries.new(timesheet_entry_params)
     timesheet_entry.user = current_user
-    if timesheet_entry.save
-      render json: { entry: timesheet_entry.formatted_entry }
-    else
-      render json: timesheet_entry.errors, status: :unprocessable_entity
-    end
+    render json: { notice: "New entry added for #{timesheet_entry.work_date.to_date}", entry: timesheet_entry.formatted_entry } if timesheet_entry.save
   end
 
   def update
-    authorize current_timesheet_entry
+    scope = policy_scope(current_timesheet_entry)
     current_timesheet_entry.project = current_project
-    if current_timesheet_entry.update(timesheet_entry_params)
-      render json: { entry: current_timesheet_entry.formatted_entry }
-    else
-      render json: current_timesheet_entry.errors, status: :unprocessable_entity
-    end
+    render json: { notice: "Timesheet updated", entry: current_timesheet_entry.formatted_entry }, status: :ok if current_timesheet_entry.update(timesheet_entry_params)
   end
 
   def destroy
-    authorize current_timesheet_entry
-    if current_timesheet_entry.destroy
-      render json: { message: "Timesheet deleted" }
-    else
-      render json: current_timesheet_entry.errors, status: :unprocessable_entity
-    end
+    scope = policy_scope(current_timesheet_entry)
+    render json: { notice: "Timesheet deleted" } if current_timesheet_entry.destroy
   end
 
   private

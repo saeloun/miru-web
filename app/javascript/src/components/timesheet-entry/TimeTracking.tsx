@@ -1,10 +1,11 @@
 /* eslint-disable no-unexpected-multiline */
 import * as React from "react";
+import { ToastContainer } from "react-toastify";
 import * as dayjs from "dayjs";
 import * as weekday from "dayjs/plugin/weekday";
 import AddEntry from "./AddEntry";
 import EntryCard from "./EntryCard";
-import { setAuthHeaders } from "../../apis/axios";
+import { setAuthHeaders, registerIntercepts } from "../../apis/axios";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "../../helpers/ordinal";
@@ -47,6 +48,7 @@ const TimeTracking: React.FC<props> = ({
 
   useEffect(() => {
     setAuthHeaders();
+    registerIntercepts();
   }, []);
 
   useEffect(() => {
@@ -124,147 +126,150 @@ const TimeTracking: React.FC<props> = ({
   };
 
   return (
-    <main className="mx-50">
-      <div className="flex justify-between">
-        <nav className="flex mb-6">
-          {["day", "week", "month"].map(item => (
-            <button
-              onClick={() => setView(item)}
-              className={
-                item === view
-                  ? "mr-10 tracking-widest font-bold text-miru-han-purple-1000 border-b-2 border-miru-han-purple-1000"
-                  : "mr-10 tracking-widest font-medium text-miru-han-purple-600"
-              }
-            >
-              {item.toUpperCase()}
-            </button>
-          ))}
-        </nav>
-        <div>
-          {isAdmin && (
-            <select className="lg:w-25 lg:h-4 items-center ">
-              <option className="text-miru-han-purple-1000" value="Jon Smith">
-                Jon Smith
-              </option>
-            </select>
-          )}
-        </div>
-      </div>
-      {view === "day" ? (
-        <div>
-          <div className="mb-6">
-            <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
+    <>
+      <ToastContainer />
+      <main className="mx-50 mt-6">
+        <div className="flex justify-between">
+          <nav className="flex mb-6">
+            {["day", "week", "month"].map(item => (
               <button
-                onClick={() => {
-                  setWeekDay(0);
-                  setSelectDate(dayjs().weekday());
-                }}
-                className="flex items-center justify-center text-white tracking-widest border-2 rounded-lg h-6 w-20 text-base ml-4"
+                onClick={() => setView(item)}
+                className={
+                  item === view
+                    ? "mr-10 tracking-widest font-bold text-miru-han-purple-1000 border-b-2 border-miru-han-purple-1000"
+                    : "mr-10 tracking-widest font-medium text-miru-han-purple-600"
+                }
               >
-                TODAY
+                {item.toUpperCase()}
               </button>
-              <div className="flex">
-                <button
-                  onClick={handlePrevWeek}
-                  className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
-                >
-                  {"<"}
-                </button>
-                {!!dayInfo.length && (
-                  <p className="text-white mx-6 w-40">
-                    {dayInfo[0]["date"]} {dayInfo[0].month} -{" "}
-                    {dayInfo[6]["date"]} {dayInfo[6]["month"]}{" "}
-                    {dayInfo[6]["year"]}
-                  </p>
-                )}
-                <button
-                  onClick={handleNextWeek}
-                  className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
-                >
-                  {">"}
-                </button>
-              </div>
-              <div className="flex mr-12">
-                <p className="text-white mr-2">Total</p>
-                <p className="text-white font-extrabold">{totalHours}</p>
-              </div>
-            </div>
-            <div className="h-16 bg-miru-gray-100 flex justify-evenly">
-              {dayInfo.map((d, index) => (
+            ))}
+          </nav>
+          <div>
+            {isAdmin && (
+              <select className="lg:w-25 lg:h-4 items-center ">
+                <option className="text-miru-han-purple-1000" value="Jon Smith">
+                  Jon Smith
+                </option>
+              </select>
+            )}
+          </div>
+        </div>
+        {view === "day" ? (
+          <div>
+            <div className="mb-6">
+              <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
                 <button
                   onClick={() => {
-                    setSelectDate(index);
+                    setWeekDay(0);
+                    setSelectDate(dayjs().weekday());
                   }}
-                  key={index}
-                  className={
-                    "px-5 py-2 my-2 w-24 h-12 items-center rounded-xl border-2 border-transparent " +
-                    (index === selectDate
-                      ? "bg-white border-miru-han-purple-1000"
-                      : "")
-                  }
+                  className="flex items-center justify-center text-white tracking-widest border-2 rounded-lg h-6 w-20 text-base ml-4"
                 >
-                  <p className="text-xs text-miru-dark-purple-1000 font-extrabold">
-                    {d.day}
-                  </p>
-                  <p className="text-xs">
-                    {getNumberWithOrdinal(d.date)} {d.month}{" "}
-                  </p>
+                  TODAY
                 </button>
-              ))}
+                <div className="flex">
+                  <button
+                    onClick={handlePrevWeek}
+                    className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
+                  >
+                    {"<"}
+                  </button>
+                  {!!dayInfo.length && (
+                    <p className="text-white mx-6 w-40">
+                      {dayInfo[0]["date"]} {dayInfo[0].month} -{" "}
+                      {dayInfo[6]["date"]} {dayInfo[6]["month"]}{" "}
+                      {dayInfo[6]["year"]}
+                    </p>
+                  )}
+                  <button
+                    onClick={handleNextWeek}
+                    className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
+                  >
+                    {">"}
+                  </button>
+                </div>
+                <div className="flex mr-12">
+                  <p className="text-white mr-2">Total</p>
+                  <p className="text-white font-extrabold">{totalHours}</p>
+                </div>
+              </div>
+              <div className="h-16 bg-miru-gray-100 flex justify-evenly">
+                {dayInfo.map((d, index) => (
+                  <button
+                    onClick={() => {
+                      setSelectDate(index);
+                    }}
+                    key={index}
+                    className={
+                      "px-5 py-2 my-2 w-24 h-12 items-center rounded-xl border-2 border-transparent " +
+                      (index === selectDate
+                        ? "bg-white border-miru-han-purple-1000"
+                        : "")
+                    }
+                  >
+                    <p className="text-xs text-miru-dark-purple-1000 font-extrabold">
+                      {d.day}
+                    </p>
+                    <p className="text-xs">
+                      {getNumberWithOrdinal(d.date)} {d.month}{" "}
+                    </p>
+                  </button>
+                ))}
+              </div>
             </div>
+            {editEntryId ? (
+              ""
+            ) : newEntryView ? (
+              <AddEntry
+                setNewEntryView={setNewEntryView}
+                clients={clients}
+                projects={projects}
+                selectedDateInfo={dayInfo[selectDate]}
+                selectedFullDate={selectedFullDate}
+                setEntryList={setEntryList}
+                entryList={entryList}
+                setEditEntryId={setEditEntryId}
+                editEntryId={editEntryId}
+              />
+            ) : (
+              <button
+                onClick={() => setNewEntryView(true)}
+                className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
+              >
+                + NEW ENTRY
+              </button>
+            )}
           </div>
-          {editEntryId ? (
-            ""
-          ) : newEntryView ? (
-            <AddEntry
-              setNewEntryView={setNewEntryView}
-              clients={clients}
-              projects={projects}
-              selectedDateInfo={dayInfo[selectDate]}
-              selectedFullDate={selectedFullDate}
-              setEntryList={setEntryList}
-              entryList={entryList}
-              setEditEntryId={setEditEntryId}
-              editEntryId={editEntryId}
-            />
-          ) : (
-            <button
-              onClick={() => setNewEntryView(true)}
-              className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
-            >
-              + NEW ENTRY
-            </button>
-          )}
-        </div>
-      ) : view === "week" ? (
-        <div></div>
-      ) : (
-        <div></div>
-      )}
-      {entryList[selectedFullDate] &&
-        entryList[selectedFullDate].map((entry, i) =>
-          editEntryId === entry.id ? (
-            <AddEntry
-              setNewEntryView={setNewEntryView}
-              clients={clients}
-              projects={projects}
-              selectedDateInfo={dayInfo[selectDate]}
-              selectedFullDate={selectedFullDate}
-              setEntryList={setEntryList}
-              entryList={entryList}
-              setEditEntryId={setEditEntryId}
-              editEntryId={editEntryId}
-            />
-          ) : (
-            <EntryCard
-              key={i}
-              handleDeleteEntry={handleDeleteEntry}
-              setEditEntryId={setEditEntryId}
-              {...entry}
-            />
-          )
+        ) : view === "week" ? (
+          <div></div>
+        ) : (
+          <div></div>
         )}
-    </main>
+        {entryList[selectedFullDate] &&
+          entryList[selectedFullDate].map((entry, i) =>
+            editEntryId === entry.id ? (
+              <AddEntry
+                setNewEntryView={setNewEntryView}
+                clients={clients}
+                projects={projects}
+                selectedDateInfo={dayInfo[selectDate]}
+                selectedFullDate={selectedFullDate}
+                setEntryList={setEntryList}
+                entryList={entryList}
+                setEditEntryId={setEditEntryId}
+                editEntryId={editEntryId}
+              />
+            ) : (
+              <EntryCard
+                key={i}
+                handleDeleteEntry={handleDeleteEntry}
+                setEditEntryId={setEditEntryId}
+                {...entry}
+              />
+            )
+          )}
+      </main>
+    </>
   );
 };
 

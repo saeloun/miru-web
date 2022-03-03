@@ -1,11 +1,21 @@
 # frozen_string_literal: true
 
 class TimesheetEntryPolicy < ApplicationPolicy
-  attr_reader :user, :timesheet_entry
+  class Scope < ApplicationPolicy
+    attr_reader :user, :timesheet_entry, :company
 
-  def initialize(user, timesheet_entry)
-    @user = user
-    @timesheet_entry = timesheet_entry
+    def initialize(user, scope)
+      @user = user
+      @scope = scope
+    end
+
+    def resolve
+      if user_owner_or_admin?
+        scope = user.current_workspace.timesheet_entries
+      else
+        scope = user.timesheet_entries
+      end
+    end
   end
 
   def show?
@@ -21,7 +31,7 @@ class TimesheetEntryPolicy < ApplicationPolicy
   end
 
   def update?
-    timesheet_entry.user == user
+    timesheet_entry.user_id == user.id || user.has_owner_or_admin?
   end
 
   def destroy?
