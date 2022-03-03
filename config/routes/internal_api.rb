@@ -5,5 +5,6 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :clients, only: [:index, :update, :destroy]
     resources :project, only: [:index]
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
+    resources :workspaces, only: [:update]
   end
 end

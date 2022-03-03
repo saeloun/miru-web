@@ -8,6 +8,8 @@ def send_request(request_type, url, headers: {}, params: {}, xhr: false)
     post url, headers: headers, params: params
   when :put
     put url, headers: headers, params: params
+  when :patch
+    put url, headers: headers, params: params
   when :delete
     delete url, headers: headers, params: params
   end
