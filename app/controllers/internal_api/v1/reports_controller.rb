@@ -7,9 +7,14 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
     authorize :report
     render json: {
       success: true,
-      entries: current_company.timesheet_entries.map do |e|
-        e.formatted_entry.transform_keys { |k| k.to_s.camelize(:lower) }
-      end
+      entries: entries
     }
   end
+
+  private
+    def entries
+      current_company.timesheet_entries.map do |timesheet_entry|
+        timesheet_entry.formatted_entry.transform_keys { |key| key.to_s.camelize(:lower) }
+      end
+    end
 end

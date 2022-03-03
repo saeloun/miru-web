@@ -1,10 +1,10 @@
 import * as React from "react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import reports from "apis/reports";
-import { TimeEntry } from "./TimeEntry";
+import { TimeEntry, ITimeEntry } from "./TimeEntry";
 
 const Reports = () => {
-  const [timeEntries, setTimeEntries] = React.useState<any>([]);
+  const [timeEntries, setTimeEntries] = React.useState<Array<ITimeEntry>>([]);
 
   const fetchTimeEntries = async () => {
     const res = await reports.get();

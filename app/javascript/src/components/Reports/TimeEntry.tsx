@@ -1,7 +1,7 @@
 import * as React from "react";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";
 
-interface TimeEntryProps {
+export interface ITimeEntry {
   id: number;
   project: string;
   client: string;
@@ -19,7 +19,7 @@ export const TimeEntry = ({
   teamMember,
   workDate,
   duration
-}: TimeEntryProps) => {
+}: ITimeEntry) => {
   return (
     <tr key={id} className="flex flex-row items-center">
       <td className="w-full px-6 py-4 text-left whitespace-nowrap">

@@ -46,7 +46,7 @@ class TimesheetEntry < ApplicationRecord
       note: note,
       work_date: work_date,
       bill_status: bill_status,
-      team_member: "#{user.first_name} #{user.last_name}"
+      team_member: user.full_name
     }
   end
 

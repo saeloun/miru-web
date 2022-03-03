@@ -149,6 +149,8 @@ en:
     date_format: date Format
     setup: setup org
     save_org: save org details
+  reports:
+    heading: Team entry report
   settings:
     settings: settings
     cancel : cancel
