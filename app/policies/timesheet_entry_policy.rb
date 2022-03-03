@@ -1,6 +1,26 @@
 # frozen_string_literal: true
 
 class TimesheetEntryPolicy < ApplicationPolicy
+  def show?
+    true
+  end
+
+  def index?
+    show?
+  end
+
+  def create?
+    true
+  end
+
+  def update?
+    record.user_id == user.id || user.has_owner_or_admin?
+  end
+
+  def destroy?
+    update?
+  end
+
   class Scope < ApplicationPolicy
     attr_reader :user, :timesheet_entry, :company
 
@@ -16,25 +36,5 @@ class TimesheetEntryPolicy < ApplicationPolicy
         scope = user.timesheet_entries
       end
     end
-  end
-
-  def show?
-    true
-  end
-
-  def index?
-    show?
-  end
-
-  def create?
-    true
-  end
-
-  def update?
-    timesheet_entry.user_id == user.id || user.has_owner_or_admin?
-  end
-
-  def destroy?
-    update?
   end
 end
