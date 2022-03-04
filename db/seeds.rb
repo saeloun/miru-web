@@ -124,18 +124,9 @@ entry_info_two = {
 }
 5.times do
   miru.timesheet_entries.create!(entry_info,)
-end
-5.times do
-  miru.timesheet_entries.create!(entry_info_one,)
-end
-10.times do
-  miru_india.timesheet_entries.create!(entry_info_two,)
-end
-
-10.times do
+  miru.timesheet_entries.create!(entry_info_one)
+  miru_india.timesheet_entries.create!(entry_info_two)
   angel_india.timesheet_entries.create!(entry_info)
-end
-10.times do
   angel.timesheet_entries.create!(entry_info_one)
 end
 
