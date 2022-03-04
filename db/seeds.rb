@@ -123,7 +123,7 @@ entry_info_two = {
   work_date: Date.today + 2
 }
 5.times do
-  miru.timesheet_entries.create!(entry_info,)
+  miru.timesheet_entries.create!(entry_info)
   miru.timesheet_entries.create!(entry_info_one)
   miru_india.timesheet_entries.create!(entry_info_two)
   angel_india.timesheet_entries.create!(entry_info)
