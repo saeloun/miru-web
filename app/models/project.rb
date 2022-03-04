@@ -34,6 +34,8 @@ class Project < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
 
+
+
   private
     def discard_project_members
       project_members.discard_all
