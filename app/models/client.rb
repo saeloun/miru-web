@@ -32,6 +32,17 @@ class Client < ApplicationRecord
 
   after_discard :discard_projects
 
+  def hours_logged(from, to)
+    hour = []
+    projects.each do |project|
+      project_hash = {}
+      project_hash[:name] = project.name
+      project_hash[:hour_spend] = project.timesheet_entries.where(work_date: from..to).sum(:duration)
+      hour.push(project_hash)
+    end
+    hour
+  end
+
   private
     def discard_projects
       projects.discard_all
