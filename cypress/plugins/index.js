@@ -16,7 +16,18 @@
  * @type {Cypress.PluginConfig}
  */
 // eslint-disable-next-line no-unused-vars
+const fs = require("fs-extra");
+const path = require("path");
+
+const getConfigurationByFile = file => {
+  const pathToConfigFile = `config/cypress.${file}.json`;
+
+  return file && fs.readJson(path.join(__dirname, "../", pathToConfigFile));
+};
+
 module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
-}
+  const environment = config.env.configFile;
+  const configForEnvironment = getConfigurationByFile(environment);
+
+  return configForEnvironment || config;
+};
