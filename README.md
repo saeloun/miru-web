@@ -106,7 +106,7 @@ Install the cypress dependencies using the following command:
 
 ```sh
 cd cypress
-npm install
+yarn install
 ```
 
 ## Running Cypress tests
@@ -118,7 +118,7 @@ following command:
 
 ```sh
 cd cypress-tests
-npm run cy:run:dev
+yarn run cy:run:dev
 ```
 
 To run the tests on local environment and in chrome browser use the following
@@ -126,7 +126,7 @@ command:
 
 ```sh
 cd cypress-tests
-npm run cy:open:dev
+yarn run cy:open:dev
 ```
 
 To run the tests on staging environment and in headless mode use the following
@@ -134,7 +134,7 @@ command:
 
 ```sh
 cd cypress-tests
-npm run cy:run:staging
+yarn run cy:run:staging
 ```
 
 To run the tests on staging environment and in chrome browser use the following
@@ -142,5 +142,5 @@ command
 
 ```sh
 cd cypress-tests
-npm run cy:open:staging
+yarn run cy:open:staging
 ```
