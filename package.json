@@ -74,7 +74,11 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cy:open:dev": "cypress open --env configFile=development",
+    "cy:run:dev": "cypress run --browser chrome --headless --record --env configFile=development",
+    "cy:run:staging": "cypress run --browser chrome --headless --record --env configFile=staging",
+    "cy:open:staging": "cypress open --env configFile=staging",
+    "lint": "eslint ./cypress",
+    "lint:fix": "eslint --fix ./cypress"
   }
 }
