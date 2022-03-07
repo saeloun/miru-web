@@ -29,6 +29,18 @@ class Company < ApplicationRecord
   has_one_attached :logo
   resourcify
 
+  def client_hours_logged(time_frame)
+    hour = []
+    clients.each do |client|
+      client_hash = {}
+      client_hash[:name] = client.name
+      total_sum = client.project_total_hours(time_frame)
+      client_hash[:hours_spend] = total_sum
+      hour.push(client_hash)
+    end
+    hour
+  end
+
   # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
