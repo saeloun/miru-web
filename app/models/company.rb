@@ -31,7 +31,7 @@ class Company < ApplicationRecord
 
   def client_hours_logged(time_frame)
     hour = []
-    clients.each do |client|
+    clients.kept.each do |client|
       client_hash = {}
       client_hash[:name] = client.name
       total_sum = client.project_total_hours(time_frame)
