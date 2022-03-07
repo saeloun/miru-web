@@ -100,7 +100,7 @@ add `EMAIL_DELIVERY_METHOD='letter_opener_web'` to `.env`)
 | Admin    | supriya@example.com | password |
 | Employee | akhil@example.com   | password |
 
-## Installation of cypress dependencies
+## Installation of Cypress Dependencies
 
 Install the cypress dependencies using the following command:
 
