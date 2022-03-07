@@ -1,0 +1,22 @@
+{
+  "baseUrl": "https://miru-web-staging.herokuapp.com/",
+  "testFiles": "**/*.spec.js",
+  "execTimeout": 1800000,
+  "defaultCommandTimeout": 10000,
+  "requestTimeout": 30000,
+  "pageLoadTimeout": 120000,
+  "responseTimeout": 10000,
+  "viewportWidth": 1200,
+  "viewportHeight": 1200,
+  "videoUploadOnPasses": true,
+  "screenshotsFolder": "cypress/artifacts/screenshots",
+  "videosFolder": "cypress/artifacts/videos",
+  "trashAssetsBeforeRuns": false,
+  "retries": {
+    "runMode": 2,
+    "openMode": 2
+  },
+  "env": {
+    "apiUrl": ""
+  }
+}
