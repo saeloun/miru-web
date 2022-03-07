@@ -32,7 +32,36 @@ class Client < ApplicationRecord
 
   after_discard :discard_projects
 
-  def hours_logged(from, to)
+  def project_total_hours(time_frame)
+    if time_frame == "year"
+      from = Date.today.beginning_of_year
+      to = Date.today.end_of_year
+    elsif time_frame == "month"
+      from = Date.today.beginning_of_month
+      to = Date.today.end_of_month
+    else
+      from = Date.today.beginning_of_week
+      to = Date.today.end_of_week
+    end
+    hours = 0
+    projects.each do |project|
+      hours = project.timesheet_entries.where(work_date: from..to).sum(:duration)
+      hours += hours
+    end
+    hours
+  end
+
+  def hours_logged(time_frame)
+    if time_frame == "year"
+      from = Date.today.beginning_of_year
+      to = Date.today.end_of_year
+    elsif time_frame == "month"
+      from = Date.today.beginning_of_month
+      to = Date.today.end_of_month
+    else
+      from = Date.today.beginning_of_week
+      to = Date.today.end_of_week
+    end
     hour = []
     projects.each do |project|
       project_hash = {}
