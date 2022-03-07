@@ -4,9 +4,8 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
   skip_after_action :verify_authorized
 
   def show
-    default_client = Client.first
-    clients_hours = Client.find(params[:id]) || default_client
-    hours_logged = clients_hours.hours_logged(params[:from], params[:to])
+    current_client = client || default_client
+    hours_logged = current_client.hours_logged(params[:from], params[:to])
     render json: { success: true, client: client, hours_logged: hours_logged }
   end
 
@@ -36,6 +35,10 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
   private
     def client
       @_client ||= Client.find(params[:id])
+    end
+
+    def default_client
+      @_default_client ||= Client.first
     end
 
     def client_params
