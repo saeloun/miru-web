@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesFromHHMM, minutesToHHMM } from "../../helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "../../helpers/ordinal";
+const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
+const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 
 interface props {
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
-  clients: client[];
+  clients: Iclient[];
   projects: object;
   selectedDateInfo: object;
   setEntryList: React.Dispatch<React.SetStateAction<object[]>>;
@@ -15,7 +18,7 @@ interface props {
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
 }
 
-interface client {
+interface Iclient {
   name: string;
 }
 
@@ -36,20 +39,32 @@ const AddEntry: React.FC<props> = ({
   const [duration, setDuration] = useState("00:00");
   const [client, setClient] = useState("");
   const [project, setProject] = useState("");
+  const [projectId, setProjectId] = useState(0);
+  const [billable, setBillable] = useState(false);
 
   useEffect(() => {
-    if (editEntryId) {
-      const entry = entryList[selectedFullDate].filter(
-        entry => entry.id === editEntryId
-      )[0];
-      if (entry) {
-        setNote(entry.note);
-        setDuration(minutesToHHMM(entry.duration));
-        setClient(entry.client);
-        setProject(entry.project);
-      }
+    if (!editEntryId) return;
+    const entry = entryList[selectedFullDate].filter(
+      entry => entry.id === editEntryId
+    )[0];
+
+    if (entry) {
+      setNote(entry.note);
+      setDuration(minutesToHHMM(entry.duration));
+      setClient(entry.client);
+      setProject(entry.project);
+      setProjectId(entry.project_id);
+      if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!project) return;
+    const id = projects[client].filter(
+      currentProject => currentProject.name === project
+    )[0].id;
+    setProjectId(Number(id));
+  }, [project]);
 
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let v = e.target.value;
@@ -62,18 +77,18 @@ const AddEntry: React.FC<props> = ({
 
   const handleSave = async () => {
     if (!note && !project) return;
-    const entry = {
-      work_date: selectedFullDate,
-      duration: minutesFromHHMM(duration),
-      note: note
-    };
 
     const res = await timesheetEntryApi.create({
-      project_name: project,
-      timesheet_entry: entry
+      project_id: projectId,
+      timesheet_entry: {
+        work_date: selectedFullDate,
+        duration: minutesFromHHMM(duration),
+        note: note,
+        bill_status: billable ? "unbilled" : "non_billable"
+      }
     });
 
-    if (res.data?.success) {
+    if (res.status === 200) {
       setEntryList(pv => {
         const newState = { ...pv };
         if (pv[selectedFullDate]) {
@@ -93,14 +108,15 @@ const AddEntry: React.FC<props> = ({
 
   const handleEdit = async () => {
     const res = await timesheetEntryApi.update(editEntryId, {
-      project_name: project,
+      project_id: projectId,
       timesheet_entry: {
+        bill_status: billable ? "unbilled" : "non_billable",
         note: note,
         duration: minutesFromHHMM(duration),
         work_date: selectedFullDate
       }
     });
-    if (res.data?.success) {
+    if (res.status === 200) {
       setEntryList(pv => {
         const newState = { ...pv };
         newState[selectedFullDate] = pv[selectedFullDate].map(entry => {
@@ -129,6 +145,7 @@ const AddEntry: React.FC<props> = ({
             setClient(e.target.value);
             setProject(projects[e.target.value][0].name);
           }}
+          value={client || "Client"}
           name="client"
           id="client"
           className="w-60 bg-miru-gray-100 rounded-sm mt-2 h-8"
@@ -138,13 +155,16 @@ const AddEntry: React.FC<props> = ({
               Client
             </option>
           )}
-          {clients.map((c, i) => (
-            <option key={i.toString()}>{c.name}</option>
+          {clients.map((client, i) => (
+            <option key={i.toString()}>{client.name}</option>
           ))}
         </select>
 
         <select
-          onChange={e => setProject(e.target.value)}
+          onChange={e => {
+            setProject(e.target.value);
+          }}
+          value={project}
           name="project"
           id="project"
           className="w-60 bg-miru-gray-100 rounded-sm mt-2 h-8"
@@ -155,8 +175,10 @@ const AddEntry: React.FC<props> = ({
             </option>
           )}
           {client &&
-            projects[client].map((p, i) => (
-              <option key={i.toString()}>{p.name}</option>
+            projects[client].map((project, i) => (
+              <option data-project-id={project.id} key={i.toString()}>
+                {project.name}
+              </option>
             ))}
         </select>
       </span>
@@ -168,28 +190,52 @@ const AddEntry: React.FC<props> = ({
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className="w-60 h-18 rounded-sm bg-miru-gray-100 my-2"
+          className="p-1 w-60 h-18 rounded-sm bg-miru-gray-100 my-2"
         ></textarea>
       </div>
       <div className="w-60">
-        <div className="p-1 w-60 bg-miru-gray-100 rounded-sm mt-2 h-8">
-          {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${
-            selectedDateInfo["month"]
-          }, ${selectedDateInfo["year"]}`}
+        <div className="flex justify-between">
+          <div className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm mt-2 mr-1 text-sm flex justify-center items-center">
+            {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${
+              selectedDateInfo["month"]
+            }, ${selectedDateInfo["year"]}`}
+          </div>
+          <input
+            value={duration}
+            onChange={handleDurationChange}
+            type="text"
+            className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm mt-2 ml-1 text-sm"
+          />
         </div>
-        <input
-          value={duration}
-          onChange={handleDurationChange}
-          type="text"
-          className="w-60 bg-miru-gray-100 rounded-sm mt-2 h-8"
-        />
+        <div className="flex items-center">
+          {billable ? (
+            <img
+              onClick={() => {
+                setBillable(false);
+              }}
+              className="inline"
+              src={checkedIcon}
+              alt="checkbox"
+            />
+          ) : (
+            <img
+              onClick={() => {
+                setBillable(true);
+              }}
+              className="inline"
+              src={uncheckedIcon}
+              alt="checkbox"
+            />
+          )}
+          <h4>Billable</h4>
+        </div>
       </div>
       <div className="mr-4 my-2 ml-14">
         {editEntryId === 0 ? (
           <button
             onClick={handleSave}
             className={
-              "mb-1 h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold " +
+              "mb-1 h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
               (note && client && project
                 ? "bg-miru-han-purple-1000 hover:border-transparent"
                 : "bg-miru-gray-1000")
@@ -201,7 +247,7 @@ const AddEntry: React.FC<props> = ({
           <button
             onClick={() => handleEdit()}
             className={
-              "mb-1 h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold " +
+              "mb-1 h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
               (note && client && project
                 ? "bg-miru-han-purple-1000 hover:border-transparent"
                 : "bg-miru-gray-1000")
@@ -215,7 +261,7 @@ const AddEntry: React.FC<props> = ({
             setNewEntryView(false);
             setEditEntryId(0);
           }}
-          className="mt-1 h-8 w-38 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent"
+          className="mt-1 h-8 w-38 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest"
         >
           CANCEL
         </button>
