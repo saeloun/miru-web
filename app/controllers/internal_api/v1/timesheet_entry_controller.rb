@@ -39,6 +39,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
   end
 
   def destroy_many
+    # TODO: send user_id in params for checking permissions to delete
     if current_user.timesheet_entries.where(id: params[:ids]).destroy_all
       render json: { message: "Successfully deleted #{params[:ids].count} entries" }
     else
