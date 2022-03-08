@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationController
-  skip_after_action :verify_authorized
   include Timesheet
 
   skip_after_action :verify_authorized, only: [:index]
