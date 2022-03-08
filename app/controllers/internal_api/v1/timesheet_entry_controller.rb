@@ -17,18 +17,18 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
     authorize TimesheetEntry
     timesheet_entry = current_project.timesheet_entries.new(timesheet_entry_params)
     timesheet_entry.user = current_user
-    render json: { notice: "New entry added for #{timesheet_entry.work_date.to_date}", entry: timesheet_entry.formatted_entry } if timesheet_entry.save
+    render json: { notice: I18n.t("timesheet_entry.create.message"), entry: timesheet_entry.formatted_entry } if timesheet_entry.save
   end
 
   def update
     authorize current_timesheet_entry
     current_timesheet_entry.project = current_project
-    render json: { notice: "Timesheet updated", entry: current_timesheet_entry.formatted_entry }, status: :ok if current_timesheet_entry.update(timesheet_entry_params)
+    render json: { notice: I18n.t("timesheet_entry.update.message"), entry: current_timesheet_entry.formatted_entry }, status: :ok if current_timesheet_entry.update(timesheet_entry_params)
   end
 
   def destroy
     authorize current_timesheet_entry
-    render json: { notice: "Timesheet deleted" } if current_timesheet_entry.destroy
+    render json: { notice: I18n.t("timesheet_entry.destroy.message") } if current_timesheet_entry.destroy
   end
 
   private

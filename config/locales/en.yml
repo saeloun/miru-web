@@ -188,3 +188,10 @@ en:
     bill_status_billed: You can't bill an entry that has already been billed
     create_billed_entry: You can't create a billed timesheet entry
     internal_server_error: Something went wrong
+  timesheet_entry:
+    create: 
+      message: "Timesheet created"
+    update:
+      message: "Timesheet updated"
+    destroy: 
+      message: "Timesheet deleted"
