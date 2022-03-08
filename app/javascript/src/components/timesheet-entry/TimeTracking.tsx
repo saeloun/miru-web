@@ -134,11 +134,13 @@ const TimeTracking: React.FC<props> = ({
       const date = dayjs()
         .weekday(weekDay + i)
         .format("YYYY-MM-DD");
-      if (!entryList[date]) {
-        // entryInfo.date = date;
-        // entryInfo.entries = [];
-        // weekArr.push(entryInfo);
-        // continue;
+      if (entryList[date]) {
+        entryInfo["exist"] = true;
+        entryInfo["date"] = date;
+        entryInfo["entries"] = [];
+        weekArr.push(entryInfo);
+      } else {
+        entryInfo["exist"] = false;
       }
       // entryInfo["date"].each(entry => {
 
@@ -272,7 +274,7 @@ const TimeTracking: React.FC<props> = ({
               editEntryId={editEntryId}
             />
           )}
-          {view !== "week" && (
+          {view !== "week" && !newEntryView && (
             <button
               onClick={() => setNewEntryView(true)}
               className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
@@ -280,73 +282,8 @@ const TimeTracking: React.FC<props> = ({
               + NEW ENTRY
             </button>
           )}
-          {/* --- weekly view --- */}
-          {newRowView && view === "week" && (
-            <div className="flex justify-between p-4 rounded-md shadow-2xl content-center">
-              <select
-                onChange={e => {
-                  setClient(e.target.value);
-                  setProject(projects[e.target.value][0].name);
-                }}
-                value={client || "Client"}
-                name="client"
-                id="client"
-                className="w-80 bg-miru-gray-100 rounded-sm h-8"
-              >
-                {!client && (
-                  <option disabled selected className="text-miru-gray-100">
-                    Client
-                  </option>
-                )}
-                {clients.map((c, i) => (
-                  <option key={i.toString()}>{c.name}</option>
-                ))}
-              </select>
-              <select
-                onChange={e => {
-                  setProject(e.target.value);
-                }}
-                value={project}
-                name="project"
-                id="project"
-                className="w-80 bg-miru-gray-100 rounded-sm h-8"
-              >
-                {!project && (
-                  <option disabled selected className="text-miru-gray-100">
-                    Project
-                  </option>
-                )}
-                {client &&
-                  projects[client].map((p, i) => (
-                    <option data-project-id={p.id} key={i.toString()}>
-                      {p.name}
-                    </option>
-                  ))}
-              </select>
 
-              <button
-                className={
-                  "mb-1 h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-                  (client && project
-                    ? "bg-miru-han-purple-1000 hover:border-transparent"
-                    : "bg-miru-gray-1000")
-                }
-              >
-                SAVE
-              </button>
-              <button
-                onClick={() => {
-                  setNewRowView(false);
-                  setClient("");
-                  setProject("");
-                }}
-                className="h-8 w-38 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest"
-              >
-                CANCEL
-              </button>
-            </div>
-          )}
-          {/* new row button */}
+          {/* --- weekly view --- */}
           {view === "week" && !newRowView && (
             <button
               onClick={() => setNewRowView(true)}
@@ -354,6 +291,14 @@ const TimeTracking: React.FC<props> = ({
             >
               + NEW ROW
             </button>
+          )}
+          {view === "week" && newRowView && (
+            <WeeklyEntryCard
+              clients={clients}
+              projects={projects}
+              newRowView={newRowView}
+              setNewRowView={setNewRowView}
+            />
           )}
         </div>
       )}
@@ -385,7 +330,7 @@ const TimeTracking: React.FC<props> = ({
       {/* entry cards for week */}
       {view === "week" && (
         <div className="">
-          <WeeklyEntryCard />
+          {/* <WeeklyEntryCard clients={clients} projects={projects} newRowView={newRowView} setNewRowView={setNewRowView} /> */}
         </div>
       )}
     </main>
