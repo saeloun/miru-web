@@ -3,7 +3,7 @@
     <div class="text-center mt-4">
       <p class="form__label">
         <%= t('shared_links.already_have_an_account').capitalize %>
-        <%= link_to t('registration.sign_in').titlecase, new_session_path(resource_name), class: "form__link" , "data-cy" => "sign-in-link"%><br />
+        <%= link_to t('registration.sign_in').titlecase, new_session_path(resource_name), class: "form__link" ,  data: { cy:  "sign-in-link"} %><br />
       </p>
     </div>
   <% else %>

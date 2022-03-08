@@ -82,7 +82,7 @@
                   </div>
                 </div>
                 <div class="actions mt-4">
-                  <%= f.submit t('registration.sign_up').upcase, class: "form__button", "data-cy" => "sign-up-button"%>
+                  <%= f.submit t('registration.sign_up').upcase, class: "form__button", data: { cy: "sign-up-button"}%>
                 </div>
               <% end %>
               <div class="my-2">
@@ -94,7 +94,7 @@
               </div>
               <div>
                 <div class="mt-4">
-                  <%= button_to user_google_oauth2_omniauth_authorize_path, class: "form__button", "data-cy" => "sign-up-with-google-button" do %>
+                  <%= button_to user_google_oauth2_omniauth_authorize_path, class: "form__button",  data: { cy: "sign-up-with-google-button"} do %>
                     <img src="<%= image_url 'google.svg' %>" class="-ml-0.5 mr-2 h-4 w-4">
                     <%= t('registration.signup_with_google').upcase%>
                   <% end %>
