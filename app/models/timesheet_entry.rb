@@ -26,7 +26,9 @@ class TimesheetEntry < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
-  before_validation :insure_bill_status_is_set
+  before_validation :ensure_bill_status_is_set
+  before_validation :ensure_bill_status_is_not_billed, on: :create
+  before_validation :ensure_billed_status_should_not_be_changed, on: :update
 
   validates :duration, :note, :work_date, :bill_status, presence: true
   validates :duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
@@ -41,6 +43,7 @@ class TimesheetEntry < ApplicationRecord
     {
       id: id,
       project: project.name,
+      project_id: project_id,
       client: project.client.name,
       duration: duration,
       note: note,
@@ -51,13 +54,23 @@ class TimesheetEntry < ApplicationRecord
   end
 
   private
-    def insure_bill_status_is_set
-      return if project.nil?
+    def ensure_bill_status_is_set
+      return if bill_status.present? || project.nil?
 
-      if project.billable?
+      if project.billable
         self.bill_status = :unbilled
       else
         self.bill_status = :non_billable
       end
+    end
+
+    def ensure_bill_status_is_not_billed
+      errors.add(:timesheet_entry, I18n.t(:errors)[:create_billed_entry]) if
+      self.bill_status == "billed"
+    end
+
+    def ensure_billed_status_should_not_be_changed
+      errors.add(:timesheet_entry, I18n.t(:errors)[:bill_status_billed]) if
+      self.bill_status_changed? && self.bill_status_was == "billed"
     end
 end
