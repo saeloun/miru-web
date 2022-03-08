@@ -24,13 +24,13 @@ const Reports = () => {
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="overflow-hidden border-b-2 border-miru-gray-200">
+            <div className="overflow-hidden border-miru-gray-200">
               <table className="min-w-full divide-y divide-gray-200 mt-4">
                 <thead>
                   <tr className="flex flex-row items-center">
                     <th
                       scope="col"
-                      className="w-full px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider"
+                      className="w-full px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
                     >
                       PROJECT/
                       <br />
@@ -38,13 +38,13 @@ const Reports = () => {
                     </th>
                     <th
                       scope="col"
-                      className="w-full px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider"
+                      className="w-full px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
                     >
                       NOTE
                     </th>
                     <th
                       scope="col"
-                      className="w-full px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider"
+                      className="w-full px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
                     >
                       TEAM MEMBER/
                       <br />
@@ -52,7 +52,7 @@ const Reports = () => {
                     </th>
                     <th
                       scope="col"
-                      className="w-full px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider"
+                      className="w-full px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
                     >
                       HOURS
                       <br />
