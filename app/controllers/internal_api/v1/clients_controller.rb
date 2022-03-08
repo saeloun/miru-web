@@ -1,14 +1,20 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationController
-  skip_after_action :verify_authorized
-
-  def hours_logged
+  def index
+    authorize Client
     client_hours = current_user.current_workspace.client_hours_logged(params[:time_frame])
-    render json: { success: true, client_hours: client_hours }
+    total_hour = 0
+    client_hours.each do |a|
+      temp_hour = a[:hours_spend]
+      total_hour += temp_hour
+    end
+    total_hour
+    render json: { success: true, client_hours: client_hours, total_hour: total_hour }
   end
 
   def show
+    authorize client
     hours_logged = client.hours_logged(params[:time_frame])
     render json: { success: true, client: client, hours_logged: hours_logged }
   end

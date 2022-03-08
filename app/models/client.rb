@@ -45,8 +45,8 @@ class Client < ApplicationRecord
     end
     hours = 0
     projects.each do |project|
-      hours = project.timesheet_entries.where(work_date: from..to).sum(:duration)
-      hours += hours
+      temp_hours = project.timesheet_entries.where(work_date: from..to).sum(:duration)
+      hours += temp_hours
     end
     hours
   end
