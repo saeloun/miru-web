@@ -48,6 +48,7 @@ class Client < ApplicationRecord
     projects.each do |project|
       project_hash = {}
       project_hash[:name] = project.name
+      project_hash[:team] = project.project_team
       project_hash[:hour_spend] = project.timesheet_entries.where(work_date: @from..@to).sum(:duration)
       hour.push(project_hash)
     end
