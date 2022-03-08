@@ -34,6 +34,7 @@ class Company < ApplicationRecord
     clients.kept.each do |client|
       client_hash = {}
       client_hash[:name] = client.name
+      client_hash[:email] = client.email
       total_sum = client.project_total_hours(time_frame)
       client_hash[:hours_spend] = total_sum
       hour.push(client_hash)
