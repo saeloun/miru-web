@@ -16,7 +16,14 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
   def show
     authorize client
     hours_logged = client.hours_logged(params[:time_frame])
-    render json: { success: true, client: client, hours_logged: hours_logged }
+    client_details = { id: client.id, name: client.name, email: client.email }
+    total_hour = 0
+    hours_logged.each do |a|
+      temp_hour = a[:hour_spend]
+      total_hour += temp_hour
+    end
+    total_hour
+    render json: { success: true, client: client_details, hours_logged: hours_logged, total_hour: total_hour }
   end
 
   def update
