@@ -23,7 +23,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
       total_hour += temp_hour
     end
     total_hour
-    render json: { success: true, client: client_details, hours_logged: hours_logged, total_hour: total_hour }
+    render json: { success: true, client: client_details, project_details: hours_logged, total_hour: total_hour }
   end
 
   def update
