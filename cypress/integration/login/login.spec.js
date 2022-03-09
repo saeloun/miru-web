@@ -21,12 +21,17 @@ describe("sign in test", () => {
     cy.contains("Invalid Email or password");
   });
 
-  it("should login with correct credentials", function(){
-    cy.get(authSelectors.emailField).clear().type(this.data.email)
-    cy.get(authSelectors.passwordField).clear().type(this.data.password)
-    cy.get(authSelectors.signInButton).click()
-    cy.location('pathname').should('eq', '/dashboard')
-  })
+  it("should login as owner", function () {
+    cy.loginAsOwner();
+  });
+
+  it("should login as admin", function () {
+    cy.loginAsAdmin();
+  });
+
+  it("should login as employee", function () {
+    cy.loginAsEmployee();
+  });
 
   it("should contain forgot password link", function(){
     cy.get(authSelectors.forgotPasswordLink).should("be.visible");
