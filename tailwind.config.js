@@ -15,7 +15,7 @@ module.exports = {
     },
     extend: {
       margin: {
-        86: '342px',
+        86: "342px"
       },
       colors: {
         "miru-black": {
@@ -90,6 +90,7 @@ module.exports = {
         22: "5.5rem",
         25: "6.25rem",
         26: "6.5rem",
+        29: "7.25rem",
         38: "9.5rem",
         50: "12.5rem",
         112: "28rem"
@@ -107,6 +108,9 @@ module.exports = {
   fontSize: {
     zxl: ["2.5rem", { letterSpacing: "0.05em", lineHeight: "1" }],
     tabHeader : [ "0.75rem", { letterSpacing: "0.125" }]
+  },
+  boxShadow: {
+    c1: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);"
   },
   variants: {
     extend: {}

@@ -48,6 +48,12 @@ miru = Client.first.projects.create!(
   billable: false
 )
 
+circle = Client.first.projects.create!(
+  name: "Circle",
+  description: "something round",
+  billable: true
+)
+
 angel_india = Client.second.projects.create!(
   name: "Crypto Note",
   description: "1₹ = 1 Crypto Note",
@@ -79,6 +85,6 @@ entry_info = {
   note: "Worked on UI",
   work_date: Date.today
 }
-miru.timesheet_entries.create!(entry_info,)
+miru.timesheet_entries.create!(entry_info)
 angel_india.timesheet_entries.create!(entry_info)
 puts "Timesheet Entries Created"
