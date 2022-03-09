@@ -105,7 +105,8 @@ module.exports = {
     }
   },
   fontSize: {
-    zxl: ["2.5rem", { letterSpacing: "0.05em", lineHeight: "1" }]
+    zxl: ["2.5rem", { letterSpacing: "0.05em", lineHeight: "1" }],
+    'tabHeader' : [ "0.75rem", { letterSpacing: "0.125rem" }]
   },
   variants: {
     extend: {}
