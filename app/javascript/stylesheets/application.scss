@@ -9,6 +9,7 @@
   @font-face {
     font-family: "Manrope";
     src: url("../fonts/Manrope/Manrope-VariableFont_wght.ttf");
+    font-weight: 200 800;
   }
 
   .field_with_errors {
@@ -189,7 +190,7 @@
       @apply flex justify-between items-center mx-3;
     }
     &__title {
-      @apply text-base font-extrabold
+      @apply text-base font-extrabold;
     }
     &__close {
       @apply cursor-pointer z-50;
