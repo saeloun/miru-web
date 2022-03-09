@@ -6,8 +6,8 @@ class CreateInvoiceLineItems < ActiveRecord::Migration[7.0]
       t.string :name
       t.text :description
       t.date :date
-      t.float :rate
-      t.integer :quantity
+      t.decimal :rate, scale: 2, precision: 20, default: 0.0
+      t.integer :quantity, default: 1
       t.references :user, null: false, foreign_key: true
       t.references :invoice, null: false, foreign_key: true
       t.references :timesheet_entry, foreign_key: true

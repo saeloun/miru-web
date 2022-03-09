@@ -6,8 +6,8 @@
 #  name               :string
 #  description        :text
 #  date               :date
-#  rate               :float
-#  quantity           :integer
+#  rate               :decimal(20, 2)   default("0.0")
+#  quantity           :integer          default("1")
 #  user_id            :integer          not null
 #  invoice_id         :integer          not null
 #  timesheet_entry_id :integer
@@ -28,6 +28,7 @@ class InvoiceLineItem < ApplicationRecord
   belongs_to :invoice
   belongs_to :timesheet_entry, optional: true
 
-  validates :name, :description, :date, :rate, :quantity, presence: true
-  validates :rate, :quantity, numericality: { greater_than_or_equal_to: 0 }
+  validates :name, :date, :rate, :quantity, presence: true
+  validates :rate, numericality: { greater_than_or_equal_to: 0 }
+  validates :quantity, numericality: { only_integer: true, greater_than: 0 }
 end

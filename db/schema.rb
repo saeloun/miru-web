@@ -91,8 +91,8 @@ ActiveRecord::Schema.define(version: 2022_03_09_081111) do
     t.string "name"
     t.text "description"
     t.date "date"
-    t.float "rate"
-    t.integer "quantity"
+    t.decimal "rate", precision: 20, scale: 2, default: "0.0"
+    t.integer "quantity", default: 1
     t.bigint "user_id", null: false
     t.bigint "invoice_id", null: false
     t.bigint "timesheet_entry_id"
@@ -108,19 +108,19 @@ ActiveRecord::Schema.define(version: 2022_03_09_081111) do
     t.date "due_date"
     t.string "invoice_number"
     t.text "reference"
-    t.float "amount"
-    t.float "outstanding_amount"
-    t.float "sub_total"
-    t.float "tax"
-    t.float "amount_paid"
-    t.float "amount_due"
+    t.decimal "amount", precision: 20, scale: 2, default: "0.0"
+    t.decimal "outstanding_amount", precision: 20, scale: 2, default: "0.0"
+    t.decimal "tax", precision: 20, scale: 2, default: "0.0"
+    t.decimal "amount_paid", precision: 20, scale: 2, default: "0.0"
+    t.decimal "amount_due", precision: 20, scale: 2, default: "0.0"
+    t.decimal "discount", precision: 20, scale: 2, default: "0.0"
     t.bigint "company_id", null: false
     t.bigint "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["client_id"], name: "index_invoices_on_client_id"
-    t.index ["company_id", "client_id"], name: "index_invoices_on_company_id_and_client_id", unique: true
     t.index ["company_id"], name: "index_invoices_on_company_id"
+    t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
   end
 
   create_table "project_members", force: :cascade do |t|
