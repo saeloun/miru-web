@@ -38,7 +38,7 @@ const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
             { isAdminUser && <ClientBarGraph clients={clients} totalHours={totalHours} /> }
             <div className="overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200 mt-4">
-                <thead className="bg-gray-50">
+                <thead>
                   <tr>
                     <th
                       scope="col"

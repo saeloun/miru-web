@@ -39,13 +39,13 @@ const ClientBarGraph = ({ clients , totalHours }) => {
           ease-in-out
           m-0
           focus:outline-none
-          text-miru-han-purple-1000">
-          <option className="text-miru-dark-purple-1000" value="Jon Smith">
+          text-miru-dark-purple-600">
+          <option className="text-miru-dark-purple-600" value="Jon Smith">
             THIS WEEK
           </option>
         </select>
       </div>
-      <p className="mb-3">
+      <p className="mb-3 text-miru-dark-purple-600">
           TOTAL HOURS: <span>{totalHours}</span>
       </p>
       <div className="w-full bg-gray-200 flex h-1">
@@ -59,7 +59,7 @@ const ClientBarGraph = ({ clients , totalHours }) => {
         })
         }
       </div>
-      <div className="flex border-b-2 border-miru-gray-1000 border-b-miru-gray-1000 pb-6 justify-between mt-3">
+      <div className="flex miru-dark-purple-400 text-normal border-b-2 border-miru-gray-1000 border-b-miru-gray-1000 pb-6 justify-between mt-3">
         <span>
             0
         </span>
@@ -69,18 +69,18 @@ const ClientBarGraph = ({ clients , totalHours }) => {
       </div>
       <div className="flex pt-6">
         <div className="flex-auto border-r-2 py-2 border-miru-gray-1000 border-r-miru-gray-1000">
-          <p>
+          <p className="text-miru-dark-purple-600">
                 OVERDUE
           </p>
-          <h4 className="text-4xl mt-3">
+          <h4 className="text-4xl text-miru-dark-purple-600 mt-3">
                 $35.3K
           </h4>
         </div>
         <div className="flex-auto py-2 pl-5">
-          <p>
+          <p className="text-miru-dark-purple-600">
                 OUTSTANDING
           </p>
-          <h4 className="text-4xl mt-3">
+          <h4 className="text-4xl mt-3 text-miru-dark-purple-600">
                 $35.3K
           </h4>  
         </div>
