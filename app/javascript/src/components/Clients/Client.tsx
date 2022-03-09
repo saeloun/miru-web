@@ -31,18 +31,18 @@ export const Client = ({
   setClientToDelete,
   setShowDeleteDialog
 }: IClient) => {
-  const [ grayColor, setGrayColor ] = React.useState('');
-  const [ isHover, setHover ] = React.useState(false);
+  const [grayColor, setGrayColor] = React.useState("");
+  const [isHover, setHover] = React.useState(false);
   
   const handleMouseEnter = () => {
-    setGrayColor('bg-miru-gray-100');
-    setHover(true)
-  }
+    setGrayColor("bg-miru-gray-100");
+    setHover(true);
+  };
   
   const handleMouseLeave = () => {
-    setGrayColor('');
-    setHover(false)
-  }
+    setGrayColor("");
+    setHover(false);
+  };
 
   return (
     <tr key={id} className={`last:border-b-0 ${grayColor}`} onMouseLeave={handleMouseLeave} onMouseEnter={handleMouseEnter}>
@@ -55,28 +55,28 @@ export const Client = ({
       <td className="px-6 py-6 whitespace-nowrap text-right font-black">
         {hoursLogged}
       </td>
-        <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
-          {isAdminUser && isHover && <button
-              onClick={() => {
-                setShowEditDialog(true);
-                setClientToEdit({ id, name, email, phone, address });
-              }}
-            >
-              <img src={editIcon} alt="" />
-            </button>
-          }
-        </td>
-        <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
-        { isAdminUser && isHover && <button
-            onClick={() => {
-              setShowDeleteDialog(true);
-              setClientToDelete({ id, name });
-            }}
-          >
-            <img src={deleteIcon} alt="" />
-          </button>
+      <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
+        {isAdminUser && isHover && <button
+          onClick={() => {
+            setShowEditDialog(true);
+            setClientToEdit({ id, name, email, phone, address });
+          }}
+        >
+          <img src={editIcon} alt="" />
+        </button>
         }
-        </td>
+      </td>
+      <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
+        { isAdminUser && isHover && <button
+          onClick={() => {
+            setShowDeleteDialog(true);
+            setClientToDelete({ id, name });
+          }}
+        >
+          <img src={deleteIcon} alt="" />
+        </button>
+        }
+      </td>
     </tr>
   );
 };

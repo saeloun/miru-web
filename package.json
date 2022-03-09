@@ -80,6 +80,8 @@
     "cy:run:staging": "cypress run --browser chrome --headless --record --env configFile=staging",
     "cy:open:staging": "cypress open --env configFile=staging",
     "lint": "eslint ./cypress",
-    "lint:fix": "eslint --fix ./cypress"
+    "lint:fix": "eslint --fix ./cypress",
+    "lint:ui": "eslint ./app/javascript/src",
+    "lint:ui:fix": "eslint --fix ./app/javascript/src"
   }
 }

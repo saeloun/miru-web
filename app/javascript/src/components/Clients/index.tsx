@@ -5,16 +5,16 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 
 import DeleteClient from "components/Clients/DeleteClient";
 import { Client } from "./Client";
+import ClientBarGraph from "./ClientBarGraph";
 import EditClient from "./EditClient";
-import ClientBarGraph from './ClientBarGraph';
 
 const getTotalHours = (clients) => {
-  let hours:number = 0
+  let hours = 0;
   clients.forEach((item) => {
     hours = item.hoursLogged + hours;
   });
-  return hours
-}
+  return hours;
+};
 
 const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = React.useState<boolean>(false);
