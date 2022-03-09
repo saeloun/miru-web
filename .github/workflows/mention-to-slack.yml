@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run webhook to slack
-        uses: saeloun/actions-mention-to-slack@v3.1
+        uses: circleco/actions-mention-to-slack@v3
         with:
           repo-token: ${{ secrets.REPO_TOKEN }}
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
