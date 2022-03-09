@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_09_073708) do
+ActiveRecord::Schema.define(version: 2022_03_09_081111) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -85,6 +85,22 @@ ActiveRecord::Schema.define(version: 2022_03_09_073708) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_identities_on_user_id"
+  end
+
+  create_table "invoice_line_items", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.date "date"
+    t.float "rate"
+    t.integer "quantity"
+    t.bigint "user_id", null: false
+    t.bigint "invoice_id", null: false
+    t.bigint "timesheet_entry_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["invoice_id"], name: "index_invoice_line_items_on_invoice_id"
+    t.index ["timesheet_entry_id"], name: "index_invoice_line_items_on_timesheet_entry_id"
+    t.index ["user_id"], name: "index_invoice_line_items_on_user_id"
   end
 
   create_table "invoices", force: :cascade do |t|
@@ -206,6 +222,9 @@ ActiveRecord::Schema.define(version: 2022_03_09_073708) do
   add_foreign_key "company_users", "companies"
   add_foreign_key "company_users", "users"
   add_foreign_key "identities", "users"
+  add_foreign_key "invoice_line_items", "invoices"
+  add_foreign_key "invoice_line_items", "timesheet_entries"
+  add_foreign_key "invoice_line_items", "users"
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "companies"
   add_foreign_key "project_members", "projects"
