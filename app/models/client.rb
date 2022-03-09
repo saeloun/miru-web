@@ -34,25 +34,12 @@ class Client < ApplicationRecord
 
   def project_total_hours(time_frame)
     week_month_year(time_frame)
-    hours = 0
-    projects.each do |project|
-      temp_hours = project.timesheet_entries.where(work_date: @from..@to).sum(:duration)
-      hours += temp_hours
-    end
-    hours
+    (projects.map { |project| project.timesheet_entries.where(work_date: @from..@to).sum(:duration) }).sum
   end
 
   def hours_logged(time_frame)
     week_month_year(time_frame)
-    hour = []
-    projects.each do |project|
-      project_hash = {}
-      project_hash[:name] = project.name
-      project_hash[:team] = project.project_team
-      project_hash[:hour_spend] = project.timesheet_entries.where(work_date: @from..@to).sum(:duration)
-      hour.push(project_hash)
-    end
-    hour
+    projects.kept.map { | project | { name: project.name, team: project.project_team, hour_spend: project.timesheet_entries.where(work_date: @from..@to).sum(:duration) } }
   end
 
   def week_month_year (time_frame)

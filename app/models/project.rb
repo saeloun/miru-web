@@ -35,13 +35,7 @@ class Project < ApplicationRecord
   after_discard :discard_project_members
 
   def project_team
-    team_member_name = []
-    project_members.each do |member|
-      temp_variable = User.find(member.user_id)
-      member_name = (temp_variable.first_name + " " + temp_variable.last_name)
-      team_member_name.push(member_name)
-    end
-    team_member_name
+    project_members.map { | member | "#{User.find(member.user_id).first_name} #{User.find(member.user_id).last_name}" }
   end
 
   private

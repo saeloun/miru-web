@@ -4,12 +4,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
   def index
     authorize Client
     client_hours = current_user.current_workspace.client_hours_logged(params[:time_frame])
-    total_hour = 0
-    client_hours.each do |a|
-      temp_hour = a[:hours_spend]
-      total_hour += temp_hour
-    end
-    total_hour
+    total_hour = (client_hours.map { |a| a[:hours_spend] }).sum
     render json: { success: true, client_hours: client_hours, total_hour: total_hour }
   end
 
@@ -17,12 +12,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     authorize client
     hours_logged = client.hours_logged(params[:time_frame])
     client_details = { id: client.id, name: client.name, email: client.email }
-    total_hour = 0
-    hours_logged.each do |a|
-      temp_hour = a[:hour_spend]
-      total_hour += temp_hour
-    end
-    total_hour
+    total_hour = (hours_logged.map { |a| a[:hour_spend] }).sum
     render json: { success: true, client: client_details, project_details: hours_logged, total_hour: total_hour }
   end
 
