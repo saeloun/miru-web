@@ -31,4 +31,10 @@ class Invoice < ApplicationRecord
   belongs_to :company
   belongs_to :client
   has_many :invoice_line_items
+
+  validates :issue_date, :due_date, :invoice_number, presence: true
+  validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }
+  validates :amount, :outstanding_amount, :sub_total, :tax,
+    :amount_paid, :amount_due, numericality: { greater_than_or_equal_to: 0 }
+  validates :invoice_number, uniqueness: true
 end

@@ -27,4 +27,7 @@ class InvoiceLineItem < ApplicationRecord
   belongs_to :user
   belongs_to :invoice
   belongs_to :timesheet_entry, optional: true
+
+  validates :name, :description, :date, :rate, :quantity, presence: true
+  validates :rate, :quantity, numericality: { greater_than_or_equal_to: 0 }
 end
