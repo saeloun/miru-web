@@ -34,7 +34,7 @@ class Client < ApplicationRecord
 
   def project_total_hours(time_frame)
     from, to = week_month_year(time_frame)
-    (projects.map { |project| project.timesheet_entries.where(work_date: from..to).sum(:duration) }).sum
+    (projects.kept.map { |project| project.timesheet_entries.where(work_date: from..to).sum(:duration) }).sum
   end
 
   def hours_logged(time_frame)

@@ -35,7 +35,10 @@ class Project < ApplicationRecord
   after_discard :discard_project_members
 
   def project_team
-    project_members.map { | member | "#{User.find(member.user_id).first_name} #{User.find(member.user_id).last_name}" }
+    project_members.map do |member|
+      user_name = User.find(member.user_id)
+      "#{user_name.first_name} #{user_name.last_name}"
+    end
   end
 
   private
