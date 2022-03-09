@@ -2,11 +2,11 @@
 
 FactoryBot.define do
   factory :invoice_line_item do
-    name { "MyString" }
-    description { "MyText" }
-    date { "2022-03-09" }
-    rate { 1.5 }
-    quantity { 1 }
+    name { Faker::Name.name }
+    description { Faker::Alphanumeric.alpha(number: 20) }
+    date { Faker::Date.between(from: "2019-04-01", to: Date.today) }
+    rate { Faker::Number.between(from: 0, to: 1000) }
+    quantity { Faker::Number.between(from: 0, to: 10000) }
     user
     invoice
     timesheet_entry
