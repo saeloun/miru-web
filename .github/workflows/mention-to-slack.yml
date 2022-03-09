@@ -1,0 +1,24 @@
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+  pull_request:
+    types: [opened, review_requested]
+  pull_request_review:
+    types: [submitted]
+  pull_request_review_comment:
+    types: [created, edited]
+
+jobs:
+  mention-to-slack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run
+        uses: saeloun/actions-mention-to-slack@v3
+        with:
+          repo-token: ${{ secrets.REPO_TOKEN }}
+          slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          icon-url: https://img.icons8.com/color/256/000000/github-2.png
+          bot-name: "Github Mention Notifications"
+          run-id: ${{ github.run_id }}
