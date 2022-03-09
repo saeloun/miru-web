@@ -5,10 +5,7 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
 
   def index
     authorize :report
-    render json: {
-      success: true,
-      entries: entries
-    }
+    render json: { entries: entries }, status: :ok
   end
 
   private
