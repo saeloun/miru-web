@@ -33,25 +33,22 @@ class Client < ApplicationRecord
   after_discard :discard_projects
 
   def project_total_hours(time_frame)
-    week_month_year(time_frame)
-    (projects.map { |project| project.timesheet_entries.where(work_date: @from..@to).sum(:duration) }).sum
+    from, to = week_month_year(time_frame)
+    (projects.map { |project| project.timesheet_entries.where(work_date: from..to).sum(:duration) }).sum
   end
 
   def hours_logged(time_frame)
-    week_month_year(time_frame)
-    projects.kept.map { | project | { name: project.name, team: project.project_team, hour_spend: project.timesheet_entries.where(work_date: @from..@to).sum(:duration) } }
+    from, to = week_month_year(time_frame)
+    projects.kept.map { | project | { name: project.name, team: project.project_team, hour_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
   end
 
   def week_month_year (time_frame)
     if time_frame == "year"
-      @from = Date.today.beginning_of_year
-      @to = Date.today.end_of_year
+      return Date.today.beginning_of_year, Date.today.end_of_year
     elsif time_frame == "month"
-      @from = Date.today.beginning_of_month
-      @to = Date.today.end_of_month
+      return Date.today.beginning_of_month, Date.today.end_of_month
     else
-      @from = Date.today.beginning_of_week
-      @to = Date.today.end_of_week
+      return Date.today.beginning_of_week, Date.today.end_of_week
     end
   end
 
