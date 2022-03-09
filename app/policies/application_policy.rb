@@ -8,8 +8,7 @@ class ApplicationPolicy
     @record = record
   end
 
-  private
-    def user_owner_or_admin?(resource = user.current_workspace)
-      user.has_owner_or_admin_role?(resource)
-    end
+  def user_owner_or_admin?(resource = user.current_workspace)
+    user.has_owner_or_admin_role?(resource)
+  end
 end

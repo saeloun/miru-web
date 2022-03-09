@@ -48,11 +48,30 @@ miru = Client.first.projects.create!(
   billable: false
 )
 
+circle = Client.first.projects.create!(
+  name: "Circle",
+  description: "something round",
+  billable: true
+)
+
 angel_india = Client.second.projects.create!(
   name: "Crypto Note",
   description: "1₹ = 1 Crypto Note",
   billable: true
 )
+
+angel = Client.second.projects.create!(
+  name: "angellist",
+  description: "sa",
+  billable: true
+)
+
+miru_india = Client.first.projects.create!(
+  name: "Miru 2",
+  description: "An",
+  billable: true
+)
+
 
 puts "Projects Created"
 
@@ -66,7 +85,19 @@ seed_users.each do |user|
 
   ProjectMember.create!(
     user: user,
+    project: miru_india,
+    hourly_rate: 5000
+  )
+
+  ProjectMember.create!(
+    user: user,
     project: angel_india,
+    hourly_rate: 6500
+  )
+
+  ProjectMember.create!(
+    user: user,
+    project: angel,
     hourly_rate: 6500
   )
 end
@@ -79,6 +110,25 @@ entry_info = {
   note: "Worked on UI",
   work_date: Date.today
 }
-miru.timesheet_entries.create!(entry_info,)
-angel_india.timesheet_entries.create!(entry_info)
+entry_info_one = {
+  user: User.first,
+  duration: 450,
+  note: "Worked on UI",
+  work_date: Date.today + 1
+}
+entry_info_two = {
+  user: User.first,
+  duration: 450,
+  note: "Worked on UI",
+  work_date: Date.today + 2
+}
+
+5.times do
+  miru.timesheet_entries.create!(entry_info)
+  miru_india.timesheet_entries.create!(entry_info_one)
+  miru_india.timesheet_entries.create!(entry_info_two)
+  angel_india.timesheet_entries.create!(entry_info)
+  angel.timesheet_entries.create!(entry_info_one)
+end
+
 puts "Timesheet Entries Created"

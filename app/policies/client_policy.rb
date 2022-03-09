@@ -3,6 +3,18 @@
 class ClientPolicy < ApplicationPolicy
   attr_reader :error_message_key
 
+  def index?
+    user_owner_or_admin?
+  end
+
+  def show?
+    user_owner_or_admin?
+  end
+
+  def hours_logged?
+    user_owner_or_admin?
+  end
+
   def create?
     user_owner_or_admin?
   end
