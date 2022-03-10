@@ -7,16 +7,16 @@ const GetClientBar = ({ client, totalHours, index }:IChartBarGraph) => {
   const chartColorIndex = index%4;
   const randomColor = chartColor[chartColorIndex];
 
-  const hourPercentage = (client.hoursLogged * 100)/totalHours;
+  const hourPercentage = (client.hours_spend * 100)/totalHours;
 
   const divStyle = {
     width: `${hourPercentage}%`
   };
   return (
     <div style={divStyle}>
-      <ReactTooltip id={`registerTip-${index}`} effect="solid" backgroundColor="white" textColor="black" place="top">
-        <p>{client.name}</p>
-        <p className="text-center">{client.hoursLogged}</p>
+      <ReactTooltip id={`registerTip-${index}`} effect="solid" backgroundColor="white" textColor="#1D1A31" place="top">
+        <p className="text-xs">{client.name}</p>
+        <p className="text-2xl text-center">{client.hours_spend}</p>
       </ReactTooltip>
       <button data-tip data-for={`registerTip-${index}`} type="button" className={`bg-${randomColor}-600 w-full h-4 block border-b border-t hover:border-transparent`}></button>
     </div>

@@ -6,7 +6,7 @@ export interface IClient {
   email: string;
   phone: string;
   address: string;
-  hoursLogged: string;
+  hours_spend: number;
   editIcon: string;
   deleteIcon: string;
   isAdminUser: boolean;
@@ -22,7 +22,7 @@ export const Client = ({
   email,
   phone,
   address,
-  hoursLogged,
+  hours_spend,
   editIcon,
   deleteIcon,
   isAdminUser,
@@ -33,12 +33,12 @@ export const Client = ({
 }: IClient) => {
   const [grayColor, setGrayColor] = React.useState<string>("");
   const [isHover, setHover] = React.useState<boolean>(false);
-  
+
   const handleMouseEnter = () => {
     setGrayColor("bg-miru-gray-100");
     setHover(true);
   };
-  
+
   const handleMouseLeave = () => {
     setGrayColor("");
     setHover(false);
@@ -46,16 +46,16 @@ export const Client = ({
 
   return (
     <tr key={id} className={`last:border-b-0 ${grayColor}`} onMouseLeave={handleMouseLeave} onMouseEnter={handleMouseEnter}>
-      <td className="px-6 py-6 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
+      <td className="table__cell text-base">
         {name}
       </td>
-      <td className="px-6 py-6 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
+      <td className="table__cell text-xs">
         {email}
       </td>
-      <td className="px-6 py-6 whitespace-nowrap text-right font-black">
-        {hoursLogged}
+      <td className="table__cell text-xl text-right font-bold">
+        {hours_spend}
       </td>
-      <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
+      <td className="table__cell px-3 py-3">
         {isAdminUser && isHover && <button
           onClick={() => {
             setShowEditDialog(true);
@@ -66,7 +66,7 @@ export const Client = ({
         </button>
         }
       </td>
-      <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
+      <td className="table__cell px-3 py-3">
         { isAdminUser && isHover && <button
           onClick={() => {
             setShowDeleteDialog(true);
