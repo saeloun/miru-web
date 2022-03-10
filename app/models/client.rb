@@ -43,9 +43,10 @@ class Client < ApplicationRecord
   end
 
   def week_month_year (time_frame)
-    if time_frame == "year"
+    case time_frame
+    when "year"
       return Date.today.beginning_of_year, Date.today.end_of_year
-    elsif time_frame == "month"
+    when "month"
       return Date.today.beginning_of_month, Date.today.end_of_month
     else
       return Date.today.beginning_of_week, Date.today.end_of_week
