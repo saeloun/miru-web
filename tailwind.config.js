@@ -5,6 +5,25 @@ module.exports = {
     container: {
       center: true
     },
+    fontSize: {
+      'xs': '.75rem',
+      'sm': '.875rem',
+      'tiny': '.875rem',
+      'base': '1rem',
+      'lg': '1.125rem',
+      'xl': '1.25rem',
+      '2xl': '1.5rem',
+      '3xl': '1.875rem',
+      '4xl': '2.25rem',
+      '5xl': '3rem',
+      '6xl': '4rem',
+      '7xl': '5rem',
+    },
+    letterSpacing: {
+      widest: "0.125rem",
+      wider: ".05rem",
+      normal: "0"
+    },
     screens: {
       xsm: "380px",
       sm: "640px",
@@ -104,10 +123,6 @@ module.exports = {
         "10/100": "10%"
       }
     }
-  },
-  fontSize: {
-    zxl: ["2.5rem", { letterSpacing: "0.05em", lineHeight: "1" }],
-    tabHeader : [ "0.75rem", { letterSpacing: "0.125" }]
   },
   boxShadow: {
     c1: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); transition: all 0.3s cubic-bezier(.25,.8,.25,1);"
