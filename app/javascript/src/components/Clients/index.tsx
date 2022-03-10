@@ -8,14 +8,6 @@ import { Client } from "./Client";
 import ClientBarGraph from "./ClientBarGraph";
 import EditClient from "./EditClient";
 
-const getTotalHours = (clients) => {
-  let hours = 0;
-  clients.forEach((item) => {
-    hours = item.hoursLogged + hours;
-  });
-  return hours;
-};
-
 const Clients = ({ editIcon, deleteIcon, isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = React.useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
@@ -41,7 +33,7 @@ const Clients = ({ editIcon, deleteIcon, isAdminUser }) => {
       setTotalHours(res.data.total_hour)
     })
   }, []);
-  console.log("clients ---> ", clientData);
+
   return (
     <>
       <ToastContainer />
