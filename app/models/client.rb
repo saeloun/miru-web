@@ -44,7 +44,7 @@ class Client < ApplicationRecord
 
   def week_month_year(time_frame)
     if time_frame == "last_week"
-      return Date.today.(beginning_of_week - 7), (Date.today.end_of_week - 7)
+      return ((Date.today.beginning_of_week) - 7), ((Date.today.end_of_week) - 7)
     else
       return Date.today.send("beginning_of_#{time_frame}"), Date.today.send("end_of_#{time_frame}")
     end
