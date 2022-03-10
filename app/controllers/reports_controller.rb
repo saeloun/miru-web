@@ -3,6 +3,5 @@
 class ReportsController < ApplicationController
   def index
     authorize :report
-    render :index
   end
 end
