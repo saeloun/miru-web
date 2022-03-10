@@ -31,8 +31,8 @@ export const Client = ({
   setClientToDelete,
   setShowDeleteDialog
 }: IClient) => {
-  const [grayColor, setGrayColor] = React.useState("");
-  const [isHover, setHover] = React.useState(false);
+  const [grayColor, setGrayColor] = React.useState<string>("");
+  const [isHover, setHover] = React.useState<boolean>(false);
   
   const handleMouseEnter = () => {
     setGrayColor("bg-miru-gray-100");

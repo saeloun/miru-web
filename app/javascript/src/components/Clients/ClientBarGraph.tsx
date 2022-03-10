@@ -1,31 +1,8 @@
 import * as React from "react";
-import ReactTooltip from "react-tooltip";
+import GetClientBar from "./ChartBar";
+import { IChartBar } from './interface';
 
-const getRandomColor = (index) => {
-  const chartColor = ["miru-chart-green", "miru-chart-blue", "miru-chart-pink", "miru-chart-orange"];
-  const chartColorIndex = index%4;
-  return chartColor[chartColorIndex];
-};
-  
-const GetClientBar = ({ client, totalHours, index }) => {
-  const hourPercentage = (client.hoursLogged * 100)/totalHours;
-  const divStyle = {
-    width: `${hourPercentage}%`
-  };
-  const randomColor = getRandomColor(index);
-  
-  return (
-    <div style={divStyle}>
-      <ReactTooltip id={`registerTip-${index}`} effect="solid" backgroundColor="white" textColor="black" place="top">
-        <p>{client.name}</p>
-        <p className="text-center">{client.hoursLogged}</p>
-      </ReactTooltip>
-      <button data-tip data-for={`registerTip-${index}`} type="button" className={`bg-${randomColor}-600 w-full h-4 block border-b border-t hover:border-transparent`}></button>
-    </div>
-  );
-};
-
-const ClientBarGraph = ({ clients , totalHours }) => {
+const ClientBarGraph = ({ clients , totalHours }:IChartBar) => {
   return (
     <div className="bg-miru-gray-100 py-10 px-10">
       <div className="flex justify-end">
