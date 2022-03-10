@@ -16,7 +16,7 @@ describe("sign in test", () => {
 
   it("should give error with incorrect credentials", function () {
     cy.get(authSelectors.emailField).clear().type(this.data.email)
-    cy.get(authSelectors.passwordField).clear().type(this.data.incorrectPassowrd)
+    cy.get(authSelectors.passwordField).clear().type(this.data.incorrectPassword)
     cy.get(authSelectors.signInButton).click();
     cy.contains("Invalid Email or password");
   });
