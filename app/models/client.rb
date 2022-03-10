@@ -42,20 +42,12 @@ class Client < ApplicationRecord
     projects.kept.map { | project | { name: project.name, team: project.project_team, hour_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
   end
 
-  # def week_month_year (time_frame)
-  #   case time_frame
-  #   when "year"
-  #     return Date.today.beginning_of_year, Date.today.end_of_year
-  #   when "month"
-  #     return Date.today.beginning_of_month, Date.today.end_of_month
-  #   else
-  #     return Date.today.beginning_of_week, Date.today.end_of_week
-  #   end
-  # end
-  #
-
   def week_month_year(time_frame)
-    return Date.today.send("beginning_of_#{time_frame}"), Date.today.send(("end_of_#{time_frame}"))
+    if time_frame == "last_week"
+      return Date.today.(beginning_of_week - 7), (Date.today.end_of_week - 7)
+    else
+      return Date.today.send("beginning_of_#{time_frame}"), Date.today.send("end_of_#{time_frame}")
+    end
   end
 
   private
