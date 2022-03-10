@@ -48,7 +48,8 @@ class TimesheetEntry < ApplicationRecord
       duration: duration,
       note: note,
       work_date: work_date,
-      bill_status: bill_status
+      bill_status: bill_status,
+      team_member: user.full_name
     }
   end
 
