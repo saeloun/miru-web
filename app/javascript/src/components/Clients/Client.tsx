@@ -33,12 +33,12 @@ export const Client = ({
 }: IClient) => {
   const [grayColor, setGrayColor] = React.useState<string>("");
   const [isHover, setHover] = React.useState<boolean>(false);
-  
+
   const handleMouseEnter = () => {
     setGrayColor("bg-miru-gray-100");
     setHover(true);
   };
-  
+
   const handleMouseLeave = () => {
     setGrayColor("");
     setHover(false);

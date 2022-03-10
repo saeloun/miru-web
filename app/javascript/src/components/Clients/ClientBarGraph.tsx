@@ -27,11 +27,11 @@ const ClientBarGraph = ({ clients , totalHours }:IChartBar) => {
       </p>
       <div className="w-full bg-gray-200 flex h-1">
         {clients.map((client, index) => {
-          return <GetClientBar 
-            client={client} 
-            key={index} 
-            index={index} 
-            totalHours={totalHours} 
+          return <GetClientBar
+            client={client}
+            key={index}
+            index={index}
+            totalHours={totalHours}
           />;
         })
         }
@@ -59,7 +59,7 @@ const ClientBarGraph = ({ clients , totalHours }:IChartBar) => {
           </p>
           <h4 className="text-4xl mt-3 text-miru-dark-purple-600">
                 $35.3K
-          </h4>  
+          </h4>
         </div>
       </div>
     </div>
