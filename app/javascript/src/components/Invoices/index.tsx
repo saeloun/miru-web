@@ -10,18 +10,18 @@ const Invoices = () => {
 
   return (
     <>
-      <div className="bg-gray-50 p-5 mt-5 w-full flex items-stretch">
+      <div className="bg-gray-50 p-5 mt-5 w-full flex items-stretch text-miru-dark-purple-1000">
         <div className="flex flex-col justify-start my-5 pl-8 w-full border-r-2 border-gray-200">
-          <p className="font-light tracking-wider">OVERDUE</p>
-          <p className="text-5xl font-light mt-3 tracking-wider">$35.5k</p>
+          <p className="font-normal text-sm tracking-wider">OVERDUE</p>
+          <p className="text-5xl font-normal mt-3 tracking-wider">$35.5k</p>
         </div>
         <div className="flex flex-col justify-start my-5 pl-8 w-full border-r-2 border-gray-200">
-          <p className="font-light tracking-wider">OUTSTANDING</p>
-          <p className="text-5xl font-light mt-3 tracking-wider">$24.3k</p>
+          <p className="font-normal text-sm tracking-wider">OUTSTANDING</p>
+          <p className="text-5xl font-normal mt-3 tracking-wider ">$24.3k</p>
         </div>
         <div className="flex flex-col justify-start my-5 pl-8 w-full ">
-          <p className="font-light tracking-wider">AMOUNT IN DRAFT</p>
-          <p className="text-5xl font-light mt-3 tracking-wider">$24.5k</p>
+          <p className="font-normal text-sm tracking-wider">AMOUNT IN DRAFT</p>
+          <p className="text-5xl font-normal mt-3 tracking-wider ">$24.5k</p>
         </div>
       </div>
 
@@ -33,25 +33,25 @@ const Invoices = () => {
             </th>
             <th
               scope="col"
-              className="px-6 py-5 text-left text-sm font-light text-miru-dark-purple-600 tracking-wider"
+              className="px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-wider"
             >
               CLIENT/INVOICE NO.
             </th>
             <th
               scope="col"
-              className="px-6 py-5 text-left text-sm font-light text-miru-dark-purple-600 tracking-wider"
+              className="px-6 py-5 text-left font-normal text-xs text-miru-dark-purple-600 tracking-wider"
             >
               ISSUED DATE/DUE DATE
             </th>
             <th
               scope="col"
-              className="px-6 py-5 text-center text-sm font-light text-miru-dark-purple-600 tracking-wider"
+              className="px-6 py-5 text-center font-normal text-xs text-miru-dark-purple-600 tracking-wider"
             >
               AMOUNT
             </th>
             <th
               scope="col"
-              className="px-6 py-5 text-center text-sm font-light text-miru-dark-purple-600 tracking-wider"
+              className="px-6 py-5 text-center font-normal text-xs text-miru-dark-purple-600 tracking-wider"
             >
               STATUS
             </th>
@@ -67,18 +67,18 @@ const Invoices = () => {
               {/* <label htmlFor="check1" className="border-miru-han-purple-1000 border-2 rounded px-2"></label> */}
             </td>
             <td className="px-6 py-5 text-left font-medium w-2/4 ftracking-wider">
-              <h1 className="text-left font-bold">Amazon</h1>
-              <h3 className="text-left font-light">78388</h3>
+              <h1 className="text-left font-semibold">Amazon</h1>
+              <h3 className="text-left font-normal text-sm">78388</h3>
             </td>
             <td className="px-6 py-5 text-left font-medium w-1/4 tracking-wider">
-              <h1 className="text-left font-bold">Amazon</h1>
-              <h3 className="text-left font-light">78388</h3>
+              <h1 className="text-left font-semibold">Amazon</h1>
+              <h3 className="text-left font-normal text-sm">78388</h3>
             </td>
-            <td className="px-6 py-5 text-left font-bold text-lg tracking-wider">
+            <td className="px-6 py-5 text-left font-bold text-xl tracking-wider">
               $1975
             </td>
             <td className="px-6 py-5 text-left font-medium tracking-wider">
-              <span className="rounded-xl text-sm px-1 bg-miru-alert-yellow-400">
+              <span className="rounded-xl text-xs font-semibold px-1  bg-miru-alert-yellow-400 text-miru-alert-green-1000">
                 DRAFT
               </span>
             </td>
@@ -95,18 +95,18 @@ const Invoices = () => {
               <input type="checkbox" className="miru-dark-purpule-600" />
             </td>
             <td className="px-6 py-5 text-left font-medium   ftracking-wider">
-              <h1 className="text-left font-bold">Amazon</h1>
-              <h3 className="text-left font-light">78388</h3>
+              <h1 className="text-left font-semibold">Amazon</h1>
+              <h3 className="text-left font-normal text-sm">78388</h3>
             </td>
             <td className="px-6 py-5 text-left font-  tracking-wider">
-              <h1 className="text-left font-bold">Amazon</h1>
-              <h3 className="text-left font-light">78388</h3>
+              <h1 className="text-left font-semibold">Amazon</h1>
+              <h3 className="text-left font-normal text-sm">78388</h3>
             </td>
-            <td className="px-6 py-5 text-left font-bold text-lg tracking-wider">
+            <td className="px-6 py-5 text-left font-bold text-xl tracking-wider">
               $1975
             </td>
             <td className="px-6 py-5 text-left font-medium tracking-wider">
-              <span className="rounded-xl text-sm px-1 bg-miru-alert-pink-400">
+              <span className="rounded-xl text-xs font-semibold px-1 bg-miru-alert-pink-400  text-miru-alert-red-1000">
                 OVERDUE
               </span>
             </td>
@@ -123,18 +123,18 @@ const Invoices = () => {
               <input type="checkbox" className="bg-miru-han-purpule-600" />
             </td>
             <td className="px-6 py-5 text-left font-medium   ftracking-wider">
-              <h1 className="text-left font-bold">Amazon</h1>
-              <h3 className="text-left font-light">78388</h3>
+              <h1 className="text-left font-semibold">Amazon</h1>
+              <h3 className="text-left font-normal text-sm">78388</h3>
             </td>
             <td className="px-6 py-5 text-left font-medium  tracking-wider">
-              <h1 className="text-left font-bold">Amazon</h1>
-              <h3 className="text-left font-light">78388</h3>
+              <h1 className="text-left font-semibold">Amazon</h1>
+              <h3 className="text-left font-normal text-sm">78388</h3>
             </td>
-            <td className="px-6 py-5 text-left font-bold text-lg tracking-wider">
+            <td className="px-6 py-5 text-left font-bold text-xl tracking-wider">
               $1975
             </td>
             <td className="px-6 py-5 text-left font-medium tracking-wider">
-              <span className="rounded-xl text-sm px-1 bg-miru-alert-green-400">
+              <span className="rounded-xl text-xs font-semibold px-1 text-miru-alert-green-800 bg-miru-alert-green-400">
                 SENT
               </span>
             </td>
@@ -148,8 +148,8 @@ const Invoices = () => {
         </tbody>
       </table>
 
-      <div className="p-2 mt-2 flex justify-evenly w-full">
-        <div className="p-2 flex justify-center w-2/3">
+      <div className="p-2 mt-2 flex w-full">
+        <div className="p-2 flex justify-self-center bg-grey-400 justify-center w-2/3">
           <button className="m-1 p-1 font-bold text-miru-han-purple-400">
             previous
           </button>
@@ -172,11 +172,11 @@ const Invoices = () => {
             Next
           </button>
         </div>
-        <div className="p-2  flex justify-center w-1/3">
-          <span className="p-2 mt-1 text-miru-han-purple-1000 font-medium">
+        <div className="p-2  flex justify-self-end bg-rose-400 justify-center w-1/3">
+          <span className="p-2 text-miru-han-purple-1000 text-xs font-bold">
             30
-          </span>{" "}
-          <span className="p-2 text-sm">invoices per page</span>
+          </span>
+          <span className="p-2 text-xs">invoices per page</span>
         </div>
       </div>
     </>
