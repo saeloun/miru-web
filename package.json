@@ -26,6 +26,7 @@
     "fork-ts-checker-webpack-plugin": "^6.5.0",
     "jquery": "^3.6.0",
     "js-logger": "^1.6.1",
+    "phosphor-react": "^1.4.1",
     "postcss": "~7",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",

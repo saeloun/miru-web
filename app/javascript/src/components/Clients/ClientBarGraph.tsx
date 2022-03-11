@@ -1,6 +1,6 @@
 import * as React from "react";
 import GetClientBar from "./ChartBar";
-import { IChartBar } from './interface';
+import { IChartBar } from "./interface";
 
 const ClientBarGraph = ({ clients , totalHours }:IChartBar) => {
   return (

@@ -24,6 +24,23 @@
 
 @layer components {
   @import "navbar";
+  .header {
+    &__title {
+      @apply text-3xl font-extrabold leading-7 text-gray-900;
+    }
+    &__searchWrap {
+      @apply flex items-center
+    }
+    &__searchInnerWrapper {
+      @apply mt-1 relative rounded-md shadow-sm md:ml-5
+    }
+    &__searchInput {
+      @apply w-24 sm:w-40 md:w-64 lg:w-96 rounded tracking-wider appearance-none border border-gray-100 block  px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-sm
+    }
+    &__button {
+      @apply ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-sans font-medium text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer
+    }
+  }
 
   .align-page {
     &__outer-wrapper {
