@@ -5,7 +5,16 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 
 import DeleteClient from "components/Clients/DeleteClient";
 import { Client } from "./Client";
+import ClientBarGraph from "./ClientBarGraph";
 import EditClient from "./EditClient";
+
+const getTotalHours = (clients) => {
+  let hours = 0;
+  clients.forEach((item) => {
+    hours = item.hoursLogged + hours;
+  });
+  return hours;
+};
 
 const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = React.useState<boolean>(false);
@@ -13,6 +22,7 @@ const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
     React.useState<boolean>(false);
   const [clientToEdit, setClientToEdit] = React.useState({});
   const [clientToDelete, setClientToDelete] = React.useState({});
+  const totalHours:number = getTotalHours(clients);
 
   React.useEffect(() => {
     setAuthHeaders();
@@ -25,25 +35,26 @@ const Clients = ({ clients, editIcon, deleteIcon, isAdminUser }) => {
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="overflow-hidden border-b-2 border-miru-gray-200">
+            { isAdminUser && <ClientBarGraph clients={clients} totalHours={totalHours} /> }
+            <div className="overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200 mt-4">
-                <thead className="bg-gray-50">
+                <thead>
                   <tr>
                     <th
                       scope="col"
-                      className="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider"
+                      className="px-6 py-5 text-left text-tabHeader font-semibold text-miru-dark-purple-600 tracking-wider"
                     >
                       CLIENT
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider"
+                      className="px-6 py-5 text-left text-tabHeader font-semibold text-miru-dark-purple-600 tracking-wider"
                     >
                       EMAIL ID
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-5 text-right text-sm font-semibold text-miru-dark-purple-600 tracking-wider"
+                      className="px-6 py-5 text-right text-tabHeader font-semibold text-miru-dark-purple-600 tracking-wider"
                     >
                       HOURS LOGGED
                     </th>

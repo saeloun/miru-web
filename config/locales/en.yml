@@ -37,7 +37,7 @@ en:
     logout: Logout
     profile: Profile
     projects: Projects
-    report: Report
+    reports: Reports
     settings: Settings
     team: Team
     time_tracking: Time Tracking
@@ -150,6 +150,8 @@ en:
     date_format: date Format
     setup: setup org
     save_org: save org details
+  reports:
+    heading: Time entry report
   settings:
     settings: settings
     cancel : cancel

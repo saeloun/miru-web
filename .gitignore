@@ -50,3 +50,7 @@ yarn-debug.log*
 /coverage
 
 .idea
+
+# Ignore cypress screenshots and videos
+cypress/artifacts/screenshots
+cypress/artifacts/videos

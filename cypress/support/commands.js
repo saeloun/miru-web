@@ -1,25 +1,28 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+import { authSelectors } from "../constants/selectors/auth";
+
+Cypress.Commands.add("loginAsOwner", function () {
+  cy.get(authSelectors.emailField).clear().type(this.data.email);
+  cy.get(authSelectors.passwordField).clear().type(this.data.password);
+  cy.get(authSelectors.signInButton).click();
+  cy.location("pathname").should("eq", "/dashboard");
+});
+
+Cypress.Commands.add("loginAsAdmin", function () {
+  cy.fixture("credentials").then(function (data) {
+    this.data = data;
+  });
+  cy.get(authSelectors.emailField).clear().type(this.data.adminEmail);
+  cy.get(authSelectors.passwordField).clear().type(this.data.adminPassword);
+  cy.get(authSelectors.signInButton).click();
+  cy.location("pathname").should("eq", "/dashboard");
+});
+
+Cypress.Commands.add("loginAsEmployee", function () {
+  cy.fixture("credentials").then(function (data) {
+    this.data = data;
+  });
+  cy.get(authSelectors.emailField).clear().type(this.data.employeeEmail);
+  cy.get(authSelectors.passwordField).clear().type(this.data.employeePassword);
+  cy.get(authSelectors.signInButton).click();
+  cy.location("pathname").should("eq", "/time-tracking");
+});
