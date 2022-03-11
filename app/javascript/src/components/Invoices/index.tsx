@@ -1,19 +1,12 @@
 import * as React from "react";
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import Body from "./Body";
-import Header from "./Header";
+import Component from "./component";
+import PageLayout from "../../layout/PageLayout";
 
 const Invoices = () => {
-  React.useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
-  }, []);
-
   return (
-    <React.Fragment>
-      <Header/>
-      <Body/>
-    </React.Fragment>
+    <PageLayout>
+      <Component />
+    </PageLayout>
   );
 };
 

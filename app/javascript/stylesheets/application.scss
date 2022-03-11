@@ -42,6 +42,18 @@
     }
   }
 
+  .page-display {
+    &__wrap {
+      @apply bg-gray-50 p-5 mt-5 w-full flex items-stretch flex-col sm:flex-row text-miru-dark-purple-1000;
+    }
+    &__box {
+      @apply flex flex-col justify-start my-5 pl-8 w-full border-r-0 sm:border-r;
+    }
+    &__box:last-child {
+      @apply border-r-0;
+    }
+  }
+
   .align-page {
     &__outer-wrapper {
       @apply lg:max-w-3xl xl:max-w-7xl mx-auto font-manrope;
