@@ -35,7 +35,7 @@ Rails.application.routes.draw do
   resources :team, only: [:index, :update, :destroy, :edit]
   resources :clients, only: [:index, :create]
   resources :projects, only: [:index, :create]
-  resources :invoice, only: [:index, :create]
+  resources :invoices, only: [:index, :create]
   resources :workspaces, only: [:update]
 
 
