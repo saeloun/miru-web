@@ -64,22 +64,22 @@ RSpec.describe Client, type: :model do
       end
       it "when timeframe is week" do
         from, to = client.week_month_year("week")
-        result = [project_1, project_2].map { | project | { name: project.name, team: project.project_team, hour_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
+        result = [project_1, project_2].map { | project | { "name" => project.name, "team" => project.project_team, "hour_spend" => project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
         expect(client.hours_logged("week")).to eq(result)
       end
       it "when timeframe is month" do
         from, to = client.week_month_year("month")
-        result = [project_1, project_2].map { | project | { name: project.name, team: project.project_team, hour_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
+        result = [project_1, project_2].map { | project | { "name" => project.name, "team" => project.project_team, "hour_spend" => project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
         expect(client.hours_logged("month")).to eq(result)
       end
       it "when timeframe is year" do
         from, to = client.week_month_year("year")
-        result = [project_1, project_2].map { | project | { name: project.name, team: project.project_team, hour_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
+        result = [project_1, project_2].map { | project | { "name" => project.name, "team" => project.project_team, "hour_spend" => project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
         expect(client.hours_logged("year")).to eq(result)
       end
       it "when timeframe is last_week" do
         from, to = client.week_month_year("last_week")
-        result = [project_1, project_2].map { | project | { name: project.name, team: project.project_team, hour_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
+        result = [project_1, project_2].map { | project | { "name" => project.name, "team" => project.project_team,  "hour_spend" => project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
         expect(client.hours_logged("last_week")).to eq(result)
       end
     end

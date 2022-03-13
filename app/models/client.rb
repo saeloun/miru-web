@@ -39,14 +39,19 @@ class Client < ApplicationRecord
 
   def hours_logged(time_frame)
     from, to = week_month_year(time_frame)
-    projects.kept.map { | project | { name: project.name, team: project.project_team, hour_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
+    projects.kept.map { | project | { "name" => project.name, "team" => project.project_team, "hour_spend" => project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
   end
 
   def week_month_year(time_frame)
-    if time_frame == "last_week"
+    case time_frame
+    when "last_week"
       return ((Date.today.beginning_of_week) - 7), ((Date.today.end_of_week) - 7)
+    when "month"
+      return Date.today.beginning_of_month, Date.today.end_of_month
+    when "year"
+      return Date.today.beginning_of_year, Date.today.end_of_year
     else
-      return Date.today.send("beginning_of_#{time_frame}"), Date.today.send("end_of_#{time_frame}")
+      return Date.today.beginning_of_week, Date.today.end_of_week
     end
   end
 
