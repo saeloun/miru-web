@@ -72,7 +72,7 @@ RSpec.describe Client, type: :model do
       end
     end
 
-    describe "#project_deatils" do
+    describe "#project_details" do
       let (:company) { create(:company) }
       let (:user) { create(:user) }
       let (:client) { create(:client, company: company) }
