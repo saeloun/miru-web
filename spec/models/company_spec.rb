@@ -18,6 +18,7 @@ RSpec.describe Company, type: :model do
     it { is_expected.to validate_presence_of(:standard_price) }
     it { is_expected.to validate_presence_of(:country) }
     it { is_expected.to validate_presence_of(:base_currency) }
+
     it do
       is_expected.to validate_numericality_of(:standard_price).
       is_greater_than_or_equal_to(0)
