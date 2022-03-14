@@ -7,6 +7,7 @@ FactoryBot.define do
     email { Faker::Internet.safe_email }
     password { Faker::Internet.password }
     confirmed_at { Date.today }
+    current_workspace factory: :company
 
     trait :with_avatar do
       after :build do |user|
