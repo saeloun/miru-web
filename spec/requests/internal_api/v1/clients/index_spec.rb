@@ -9,11 +9,9 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   let!(:client_2) { create(:client, company: company) }
   let!(:project_1) { create(:project, client: client_1) }
   let!(:project_2) { create(:project, client: client_2) }
+  let!(:project_1_timesheet_entry) { create_list(:timesheet_entry, 5, user: user, project: project_1) }
+  let!(:project_2_timesheet_entry) { create_list(:timesheet_entry, 5, user: user, project: project_2) }
 
-  5.times do
-    let!(:project_1_timesheet_entry) { create(:timesheet_entry, user: user, project: project_1) }
-    let!(:project_2_timesheet_entry) { create(:timesheet_entry, user: user, project: project_2) }
-  end
 
   context "When user is admin" do
     before do

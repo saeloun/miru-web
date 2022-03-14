@@ -36,8 +36,8 @@ class Project < ApplicationRecord
 
   def project_team
     project_members.map do |member|
-      user_name = User.find(member.user_id)
-      "#{user_name.first_name} #{user_name.last_name}"
+      user = User.find(member.user_id)
+      "#{user.first_name} #{user.last_name}"
     end
   end
 

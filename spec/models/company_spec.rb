@@ -26,31 +26,31 @@ RSpec.describe Company, type: :model do
 
   describe "Public methods" do
     describe "#client_hours_logged" do
-      let!(:company) { create(:company) }
-      let!(:user) { create(:user) }
+      let (:company) { create(:company) }
+      let (:user) { create(:user) }
       let!(:client_1) { create(:client, company: company) }
       let!(:client_2) { create(:client, company: company) }
       let!(:project_1) { create(:project, client: client_1) }
       let!(:project_2) { create(:project, client: client_2) }
-      5.times do
-        let!(:project_1_timesheet_entry) { create(:timesheet_entry, user: user, project: project_1) }
-        let!(:project_2_timesheet_entry) { create(:timesheet_entry, user: user, project: project_2) }
-      end
-      it "when timeframe is week" do
-        result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.project_total_hours("week") } }
-        expect(company.client_hours_logged("week")).to eq(result)
-      end
-      it "when timeframe is month" do
-        result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.project_total_hours("month") } }
-        expect(company.client_hours_logged("month")).to eq(result)
-      end
-      it "when timeframe is year" do
-        result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.project_total_hours("year") } }
-        expect(company.client_hours_logged("year")).to eq(result)
-      end
-      it "when timeframe is last_week" do
-        result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.project_total_hours("last_week") } }
-        expect(company.client_hours_logged("last_week")).to eq(result)
+      let!(:project_1_timesheet_entry) { create_list(:timesheet_entry, 5, user: user, project: project_1) }
+      let!(:project_2_timesheet_entry) { create_list(:timesheet_entry, 5, user: user, project: project_2) }
+      context "When time_frame is last_week / week / month / year" do
+        it "returns the total hours logged for all the clients of a Company in that week" do
+          result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.project_total_hours("week") } }
+          expect(company.client_hours_logged("week")).to eq(result)
+        end
+        it "returns the total hours logged for all the clients of a Company in that month" do
+          result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.project_total_hours("month") } }
+          expect(company.client_hours_logged("month")).to eq(result)
+        end
+        it "returns the total hours logged for all the clients of a Company in that month" do
+          result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.project_total_hours("year") } }
+          expect(company.client_hours_logged("year")).to eq(result)
+        end
+        it "returns the total hours logged for all the clients of a Company in the last_week" do
+          result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.project_total_hours("last_week") } }
+          expect(company.client_hours_logged("last_week")).to eq(result)
+        end
       end
     end
   end
