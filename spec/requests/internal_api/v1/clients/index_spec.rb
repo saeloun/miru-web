@@ -5,12 +5,10 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   let (:company) { create(:company) }
   let (:user) { create(:user, current_workspace_id: company.id) }
-  let!(:client_1) { create(:client, company: company) }
-  let!(:client_2) { create(:client, company: company) }
-  let!(:project_1) { create(:project, client: client_1) }
-  let!(:project_2) { create(:project, client: client_2) }
-  let!(:project_1_timesheet_entry) { create_list(:timesheet_entry, 5, user: user, project: project_1) }
-  let!(:project_2_timesheet_entry) { create_list(:timesheet_entry, 5, user: user, project: project_2) }
+  let (:client_1) { create(:client, company: company) }
+  let (:client_2) { create(:client, company: company) }
+  let (:project_1) { create(:project, client: client_1) }
+  let (:project_2) { create(:project, client: client_2) }
 
 
   context "When user is admin" do
@@ -18,15 +16,19 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :admin, company
       sign_in user
+      create_list(:timesheet_entry, 5, user: user, project: project_1)
+      create_list(:timesheet_entry, 5, user: user, project: project_2)
       send_request :get, internal_api_v1_clients_path
     end
-
-    it "should return the total hours logged for each clients in a Company" do
-      client_hours = user.current_workspace.clients.kept.map { |client| { "id" => client.id, "name" => client.name, "email" => client.email, "hours_spend" => client.project_total_hours("week") } }
-      total_hours = (client_hours.map { |client| client["hours_spend"] }).sum
-      expect(response).to have_http_status(:ok)
-      expect(json_response["client_hours"]).to eq(client_hours)
-      expect(json_response["total_hours"]).to eq(total_hours)
+    context "When time_frame is week" do
+      let (:time_frame) { "last_week" }
+      it "should return the total hours logged for a Company in the last_week" do
+        client_hours = user.current_workspace.clients.kept.map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.project_total_hours(time_frame) } }
+        total_hours = (client_hours.map { |client| client[:hours_spend] }).sum
+        expect(response).to have_http_status(:ok)
+        expect(json_response["client_hours"]).to eq(JSON.parse(client_hours.to_json))
+        expect(json_response["total_hours"]).to eq(JSON.parse(total_hours.to_json))
+      end
     end
   end
 
