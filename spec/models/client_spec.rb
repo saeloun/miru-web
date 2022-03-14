@@ -31,36 +31,40 @@ RSpec.describe Client, type: :model do
         create_list(:timesheet_entry, 5, user: user, project: project_2)
       end
 
-      context "When time_frame is last week" do
+      context "when time_frame is last week" do
         let (:time_frame) { "last_week" }
-        it "Should return the total hours logged for a client in the last week" do
+
+        it "should return the total hours logged for a client in the last week" do
           from, to = client.week_month_year(time_frame)
           result = ([project_1, project_2].map { |project| project.timesheet_entries.where(work_date: from..to).sum(:duration) }).sum
           expect(client.total_hours_logged(time_frame)).to eq(result)
         end
       end
 
-      context "When time_frame in a week " do
+      context "when time_frame in a week " do
         let (:time_frame) { "week" }
-        it "Should return the total hours logged for a client in that week" do
+
+        it "should return the total hours logged for a client in that week" do
           from, to = client.week_month_year(time_frame)
           result = ([project_1, project_2].map { |project| project.timesheet_entries.where(work_date: from..to).sum(:duration) }).sum
           expect(client.total_hours_logged(time_frame)).to eq(result)
         end
       end
 
-      context "When time_frame in a month" do
+      context "when time_frame in a month" do
         let (:time_frame) { "month" }
-        it "Should return the total hours logged for a client in that month" do
+
+        it "should return the total hours logged for a client in that month" do
           from, to = client.week_month_year(time_frame)
           result = ([project_1, project_2].map { |project| project.timesheet_entries.where(work_date: from..to).sum(:duration) }).sum
           expect(client.total_hours_logged(time_frame)).to eq(result)
         end
       end
 
-      context "When time_frame in a year " do
+      context "when time_frame in a year " do
         let (:time_frame) { "year" }
-        it "Should return the total hours logged for a client in that year" do
+
+        it "should return the total hours logged for a client in that year" do
           from, to = client.week_month_year(time_frame)
           result = ([project_1, project_2].map { |project| project.timesheet_entries.where(work_date: from..to).sum(:duration) }).sum
           expect(client.total_hours_logged(time_frame)).to eq(result)
@@ -68,7 +72,7 @@ RSpec.describe Client, type: :model do
       end
     end
 
-    describe "#projects_deatils" do
+    describe "#project_deatils" do
       let (:company) { create(:company) }
       let (:user) { create(:user) }
       let (:client) { create(:client, company: company) }
@@ -79,27 +83,30 @@ RSpec.describe Client, type: :model do
         create_list(:timesheet_entry, 5, user: user, project: project_2)
       end
 
-      context "When time_frame is last_week" do
+      context "when time_frame is last_week" do
         let (:time_frame) { "last_week" }
-        it "Should return the hours_logged for a project in the last week" do
+
+        it "should return the hours_logged for a project in the last week" do
           from, to = client.week_month_year(time_frame)
           result = [project_1, project_2].map { | project | { name: project.name, team: project.project_member_full_names, hours_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
           expect(client.project_details(time_frame)).to eq(result)
         end
       end
 
-      context "When time_frame is week" do
+      context "when time_frame is week" do
         let (:time_frame) { "week" }
-        it "Should return the hours_logged for a project in that week" do
+
+        it "should return the hours_logged for a project in that week" do
           from, to = client.week_month_year(time_frame)
           result = [project_1, project_2].map { | project | { name: project.name, team: project.project_member_full_names, hours_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
           expect(client.project_details(time_frame)).to eq(result)
         end
       end
 
-      context "When time_frame is month" do
+      context "when time_frame is month" do
         let (:time_frame) { "month" }
-        it "Should return the hours_logged for a project in that month" do
+
+        it "should return the hours_logged for a project in that month" do
           from, to = client.week_month_year(time_frame)
           result = [project_1, project_2].map { | project | { name: project.name, team: project.project_member_full_names, hours_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
           expect(client.project_details(time_frame)).to eq(result)
@@ -108,7 +115,8 @@ RSpec.describe Client, type: :model do
 
       context "When time_frame is year" do
         let (:time_frame) { "year" }
-        it "Should return the hours_logged for a project in that year" do
+
+        it "should return the hours_logged for a project in that year" do
           from, to = client.week_month_year(time_frame)
           result = [project_1, project_2].map { | project | { name: project.name, team: project.project_member_full_names, hours_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
           expect(client.project_details(time_frame)).to eq(result)

@@ -8,7 +8,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
   let (:client_1) { create(:client, company: company) }
   let (:project_1) { create(:project, client: client_1) }
 
-  context "When user is admin" do
+  context "when user is admin" do
     before do
       create(:company_user, company_id: company.id, user_id: user.id)
       create(:project_member, user_id: user.id, project_id: project_1.id)
@@ -18,8 +18,9 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
       send_request :get, internal_api_v1_client_path(client_1)
     end
 
-    context "When time_frame is week" do
+    context "when time_frame is week" do
       let (:time_frame) { "week" }
+
       it "should return the total hours logged for a client in that week" do
         client_details = { id: client_1.id, name: client_1.name, email: client_1.email }
         project_details = client_1.project_details(time_frame)
@@ -32,7 +33,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
     end
   end
 
-  context "When user is employee" do
+  context "when user is employee" do
     before do
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :employee, company

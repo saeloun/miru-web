@@ -11,7 +11,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   let (:project_2) { create(:project, client: client_2) }
 
 
-  context "When user is admin" do
+  context "when user is admin" do
     before do
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :admin, company
@@ -20,8 +20,10 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       create_list(:timesheet_entry, 5, user: user, project: project_2)
       send_request :get, internal_api_v1_clients_path
     end
-    context "When time_frame is week" do
+
+    context "when time_frame is week" do
       let (:time_frame) { "last_week" }
+
       it "should return the total hours logged for a Company in the last_week" do
         client_details = user.current_workspace.clients.kept.map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.total_hours_logged(time_frame) } }
         total_hours = (client_details.map { |client| client[:hours_spend] }).sum
@@ -32,7 +34,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     end
   end
 
-  context "When user is employee" do
+  context "when user is employee" do
     before do
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :employee, company

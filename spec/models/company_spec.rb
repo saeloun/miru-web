@@ -37,30 +37,37 @@ RSpec.describe Company, type: :model do
         create_list(:timesheet_entry, 5, user: user, project: project_2)
       end
 
-      context "When time_frame is last_week" do
+      context "when time_frame is last_week" do
         let (:time_frame) { "last_week" }
-        it "Should return the total hours logged for all the clients of a Company in the last_week" do
+
+        it "should return the total hours logged for all the clients of a Company in the last_week" do
           result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.total_hours_logged(time_frame) } }
           expect(company.client_details(time_frame)).to eq(result)
         end
       end
-      context "When time_frame is week" do
+
+      context "when time_frame is week" do
         let (:time_frame) { "week" }
-        it "Should return the total hours logged for all the clients of a Company in that week" do
+
+        it "should return the total hours logged for all the clients of a Company in that week" do
           result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.total_hours_logged(time_frame) } }
           expect(company.client_details(time_frame)).to eq(result)
         end
       end
-      context "When time_frame is month" do
+
+      context "when time_frame is month" do
         let (:time_frame) { "month" }
-        it "Should return the total hours logged for all the clients of a Company in that week" do
+
+        it "should return the total hours logged for all the clients of a Company in that week" do
           result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.total_hours_logged(time_frame) } }
           expect(company.client_details(time_frame)).to eq(result)
         end
       end
-      context "When time_frame is year" do
+
+      context "when time_frame is year" do
         let (:time_frame) { "year" }
-        it "Should return the total hours logged for all the clients of a Company in that week" do
+
+        it "should return the total hours logged for all the clients of a Company in that week" do
           result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.total_hours_logged(time_frame) } }
           expect(company.client_details(time_frame)).to eq(result)
         end
