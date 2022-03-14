@@ -6,7 +6,6 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
   let (:company) { create(:company) }
   let (:user) { create(:user, current_workspace_id: company.id) }
   let (:client_1) { create(:client, company: company) }
-  let (:client_2) { create(:client, company: company) }
   let (:project_1) { create(:project, client: client_1) }
 
   context "When user is admin" do
