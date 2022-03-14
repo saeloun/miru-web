@@ -27,7 +27,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
         total_hours = (project_details.map { |project| project[:hours_spend] }).sum
         expect(response).to have_http_status(:ok)
         expect(json_response["project_details"]).to eq(JSON.parse(project_details.to_json))
-        expect(json_response["client_detail"]).to eq(JSON.parse(client_details.to_json))
+        expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
         expect(json_response["total_hours"]).to eq(total_hours)
       end
     end
