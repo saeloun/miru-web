@@ -10,7 +10,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
   def show
     authorize client
-    project_details = client.projects_deatils(params[:time_frame])
+    project_details = client.project_details(params[:time_frame])
     client_detail = { id: client.id, name: client.name, email: client.email }
     total_hours = (project_details.map { |project| project[:hours_spend] }).sum
     render json: { client_detail: client_detail, project_details: project_details, total_hours: total_hours }, status: :ok

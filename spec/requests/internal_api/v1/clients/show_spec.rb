@@ -22,11 +22,11 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
       let (:time_frame) { "week" }
       it "should return the total hours logged for a client in that week" do
         client_details = { id: client_1.id, name: client_1.name, email: client_1.email }
-        project_details = client_1.hours_logged(time_frame)
-        total_hours = (project_details.map { |project| project[:hour_spend] }).sum
+        project_details = client_1.project_details(time_frame)
+        total_hours = (project_details.map { |project| project[:hours_spend] }).sum
         expect(response).to have_http_status(:ok)
         expect(json_response["project_details"]).to eq(JSON.parse(project_details.to_json))
-        expect(json_response["client"]).to eq(JSON.parse(client_details.to_json))
+        expect(json_response["client_detail"]).to eq(JSON.parse(client_details.to_json))
         expect(json_response["total_hours"]).to eq(total_hours)
       end
     end

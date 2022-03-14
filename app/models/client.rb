@@ -37,7 +37,7 @@ class Client < ApplicationRecord
     (projects.kept.map { |project| project.timesheet_entries.where(work_date: from..to).sum(:duration) }).sum
   end
 
-  def projects_deatils(time_frame)
+  def project_details(time_frame)
     from, to = week_month_year(time_frame)
     projects.kept.map { | project | { name: project.name, team: project.project_member_full_names, hours_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
   end
