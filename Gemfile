@@ -116,6 +116,9 @@ group :development, :test do
 
   # Use Faker for fake data
   gem "faker"
+
+  # Added rails controller to use render_template
+  gem "rails-controller-testing", "~> 1.0", ">= 1.0.5"
 end
 
 group :development do
