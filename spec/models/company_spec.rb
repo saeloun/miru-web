@@ -41,7 +41,7 @@ RSpec.describe Company, type: :model do
         let (:time_frame) { "last_week" }
 
         it "should return the total hours logged for all the clients of a Company in the last_week" do
-          result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.total_hours_logged(time_frame) } }
+          result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, minutes_spent: client.total_hours_logged(time_frame) } }
           expect(company.client_details(time_frame)).to eq(result)
         end
       end
@@ -50,7 +50,7 @@ RSpec.describe Company, type: :model do
         let (:time_frame) { "week" }
 
         it "should return the total hours logged for all the clients of a Company in that week" do
-          result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.total_hours_logged(time_frame) } }
+          result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, minutes_spent: client.total_hours_logged(time_frame) } }
           expect(company.client_details(time_frame)).to eq(result)
         end
       end
@@ -59,7 +59,7 @@ RSpec.describe Company, type: :model do
         let (:time_frame) { "month" }
 
         it "should return the total hours logged for all the clients of a Company in that week" do
-          result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.total_hours_logged(time_frame) } }
+          result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, minutes_spent: client.total_hours_logged(time_frame) } }
           expect(company.client_details(time_frame)).to eq(result)
         end
       end
@@ -68,7 +68,7 @@ RSpec.describe Company, type: :model do
         let (:time_frame) { "year" }
 
         it "should return the total hours logged for all the clients of a Company in that week" do
-          result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, hours_spend: client.total_hours_logged(time_frame) } }
+          result = [client_1, client_2].map { |client| { id: client.id, name: client.name, email: client.email, minutes_spent: client.total_hours_logged(time_frame) } }
           expect(company.client_details(time_frame)).to eq(result)
         end
       end

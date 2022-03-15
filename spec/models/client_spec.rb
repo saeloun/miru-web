@@ -88,7 +88,7 @@ RSpec.describe Client, type: :model do
 
         it "should return the hours_logged for a project in the last week" do
           from, to = client.week_month_year(time_frame)
-          result = [project_1, project_2].map { | project | { name: project.name, team: project.project_member_full_names, hours_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
+          result = [project_1, project_2].map { | project | { name: project.name, team: project.project_member_full_names, minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
           expect(client.project_details(time_frame)).to eq(result)
         end
       end
@@ -98,7 +98,7 @@ RSpec.describe Client, type: :model do
 
         it "should return the hours_logged for a project in that week" do
           from, to = client.week_month_year(time_frame)
-          result = [project_1, project_2].map { | project | { name: project.name, team: project.project_member_full_names, hours_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
+          result = [project_1, project_2].map { | project | { name: project.name, team: project.project_member_full_names, minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
           expect(client.project_details(time_frame)).to eq(result)
         end
       end
@@ -108,7 +108,7 @@ RSpec.describe Client, type: :model do
 
         it "should return the hours_logged for a project in that month" do
           from, to = client.week_month_year(time_frame)
-          result = [project_1, project_2].map { | project | { name: project.name, team: project.project_member_full_names, hours_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
+          result = [project_1, project_2].map { | project | { name: project.name, team: project.project_member_full_names, minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
           expect(client.project_details(time_frame)).to eq(result)
         end
       end
@@ -118,7 +118,7 @@ RSpec.describe Client, type: :model do
 
         it "should return the hours_logged for a project in that year" do
           from, to = client.week_month_year(time_frame)
-          result = [project_1, project_2].map { | project | { name: project.name, team: project.project_member_full_names, hours_spend: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
+          result = [project_1, project_2].map { | project | { name: project.name, team: project.project_member_full_names, minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
           expect(client.project_details(time_frame)).to eq(result)
         end
       end
