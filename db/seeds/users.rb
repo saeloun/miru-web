@@ -5,8 +5,8 @@ company = Company.first
 users = [
   { first_name: "Vipul", last_name: "A M", email: "vipul@example.com" },
   { first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com" },
-  { first_name: "Akhil", last_name: "Biswa", email: "keshav@example.com" },
-  { first_name: "Keshav", last_name: "G Krishnan", email: "akhil@example.com" },
+  { first_name: "Akhil", last_name: "G Krishnan", email: "akhil@example.com" },
+  { first_name: "Keshav", last_name: "Biswa", email: "keshav@example.com" },
   { first_name: "Rohit", last_name: "Joshi", email: "rohit@example.com" }
 ]
 users.each do |user|
