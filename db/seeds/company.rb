@@ -2,7 +2,7 @@
 
 # Company Create Start
 company = [
-  { name: "Company India Pvt. Ltd",
+  { name: "Saeloun India Pvt. Ltd",
     address: "somewhere in India",
     business_phone: "+91 0000000000",
     base_currency: "INR",
@@ -12,7 +12,7 @@ company = [
     country: "IN",
     timezone: "Asia - Kolkata" },
 
-  { name: "Company USA INC.",
+  { name: "Saeloun USA INC.",
     address: "somewhere in USA",
     business_phone: "+1 111111111",
     base_currency: "USD",
