@@ -3,7 +3,7 @@
     <div class="text-center mt-4">
       <p class="form__label">
         <%= t('shared_links.already_have_an_account').capitalize %>
-        <%= link_to t('registration.sign_in').titlecase, new_session_path(resource_name), class: "form__link" %><br />
+        <%= link_to t('registration.sign_in').titlecase, new_session_path(resource_name), class: "form__link" ,  data: { cy:  "sign-in-link" } %><br />
       </p>
     </div>
   <% else %>
@@ -14,14 +14,14 @@
 <% end %>
 <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
   <div class="mt-3 text-center">
-    <%= link_to t('shared_links.forgot_password').upcase, new_password_path(resource_name), class: "text-center text-miru-han-purple-1000 font-sans font-normal text-sm hover:text-miru-han-purple-600" %><br />
+    <%= link_to t('shared_links.forgot_password').upcase, new_password_path(resource_name), class: "text-center text-miru-han-purple-1000 font-sans font-normal text-sm hover:text-miru-han-purple-600",  data: { cy: "forgot-password-link" } %><br />
   </div>
 <% end %>
 <%- if devise_mapping.registerable? && controller_name != 'registrations' && controller_name != 'passwords' %>
   <div class="mt-2 text-center">
     <p class="form__label">
       <%= t('shared_links.dont_have_an_account').capitalize %>
-      <%= link_to t('registration.sign_up').titlecase, new_registration_path(resource_name), class: "form__link" %><br />
+      <%= link_to t('registration.sign_up').titlecase, new_registration_path(resource_name), class: "form__link",  data: { cy: "sign-up-link" } %><br />
     </p>
   </div>
 <% end %>
