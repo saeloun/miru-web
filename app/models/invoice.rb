@@ -41,6 +41,6 @@ class Invoice < ApplicationRecord
   validates :invoice_number, uniqueness: true
 
   def sub_total
-    @sub_total ||= invoice_line_items.sum { |line_item| line_item[:rate] * line_item[:quantity] }
+    @_sub_total ||= invoice_line_items.sum { |line_item| line_item[:rate] * line_item[:quantity] }
   end
 end
