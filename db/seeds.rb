@@ -12,10 +12,10 @@ company = Company.create!(
 puts "Company Created"
 
 users = [
-          { first_name: "Vipul", last_name: "A M", email: "vipul@example.com", role: :owner },
-          { first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", role: :admin },
-          { first_name: "Akhil", last_name: "G Krishnan", email: "akhil@example.com", role: :employee }
-        ]
+  { first_name: "Vipul", last_name: "A M", email: "vipul@example.com", role: :owner },
+  { first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", role: :admin },
+  { first_name: "Akhil", last_name: "G Krishnan", email: "akhil@example.com", role: :employee }
+]
 
 puts "Creating users for #{company.name}"
 users.each do |user|

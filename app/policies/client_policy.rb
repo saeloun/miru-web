@@ -11,10 +11,6 @@ class ClientPolicy < ApplicationPolicy
     user_owner_or_admin?
   end
 
-  def hours_logged?
-    user_owner_or_admin?
-  end
-
   def create?
     user_owner_or_admin?
   end

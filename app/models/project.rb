@@ -34,10 +34,10 @@ class Project < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
 
-  def project_team
+  def project_member_full_names
     project_members.map do |member|
-      user_name = User.find(member.user_id)
-      "#{user_name.first_name} #{user_name.last_name}"
+      user = User.find(member.user_id)
+      user.full_name
     end
   end
 
