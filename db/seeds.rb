@@ -1,36 +1,13 @@
 # frozen_string_literal: true
 
-# Create company
-puts "Creating company"
-company = Company.create!(
-  name: "Saeloun Inc",
-  address: "31R Providence Rd Westford MA, 01886",
-  business_phone: "1111111111",
-  country: "US",
-  timezone: "EST"
-)
-puts "Company Created"
-
-users = [
-          { first_name: "Vipul", last_name: "A M", email: "vipul@example.com", role: :owner },
-          { first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", role: :admin },
-          { first_name: "Akhil", last_name: "G Krishnan", email: "akhil@example.com", role: :employee }
-        ]
-
-puts "Creating users for #{company.name}"
-users.each do |user|
-  company_user = company.users.create!(
-    first_name: user[:first_name],
-    last_name: user[:last_name],
-    email: user[:email],
-    password: "password",
-    password_confirmation: "password",
-    confirmed_at: Time.current,
-    invitation_accepted_at: Time.current,
-    current_workspace_id: company.id
-  )
-  company_user.add_role(user[:role], company)
-end
+load "db/seeds/company.rb"
+load "db/seeds/users.rb"
+load "db/seeds/users_roles.rb"
+load "db/seeds/company_user.rb"
+load "db/seeds/clients.rb"
+load "db/seeds/projects.rb"
+load "db/seeds/project_member.rb"
+# load 'db/seeds/timesheet_entry.rb'
 
 # # Company Create Start
 # company_India = Company.create!(name: "Company India Pvt. Ltd", address: "somewhere in India", business_phone: "+91 0000000000", base_currency: "INR", standard_price: 100000, fiscal_year_end: "apr-mar", date_format: "DD-MM-YYYY", country: "IN", timezone: "Asia - Kolkata")
