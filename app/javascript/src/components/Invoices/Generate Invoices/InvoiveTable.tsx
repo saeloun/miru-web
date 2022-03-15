@@ -2,7 +2,7 @@ import * as React from "react";
 
 const InvoiceTable = () => {
   return (
-    <table className="w-full py-2">
+    <table className="w-full table-fixed">
       <thead className="py-2">
         <th className="text-miru-dark-purple-600 font-normal text-xs text-left">
           NAME
