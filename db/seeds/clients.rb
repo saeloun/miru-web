@@ -5,8 +5,8 @@ saeloun_India, saeloun_US = Company.first(2)
 
 clients = [
     { name: "common client", email: "client@common.com", phone: "+91 9999999990", address: "Somewhere on Earth" },
-    { name: "client_one saeloun_India", email: "client_one@company_india.com", phone: "+91 9999999991", address: "Somewhere on Earth" },
-    { name: "client_one saeloun_US", email: "client_one@company_us.com", phone: "+91 9999999993", address: "Somewhere on Earth" }
+    { name: "client_one saeloun_India", email: "client_one@saeloun_india.com", phone: "+91 9999999991", address: "Somewhere on Earth" },
+    { name: "client_one saeloun_US", email: "client_one@saeloun_us.com", phone: "+91 9999999993", address: "Somewhere on Earth" }
 ]
 
 # Clients for Company India
