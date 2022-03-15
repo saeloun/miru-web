@@ -57,12 +57,10 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "husky": "^7.0.0",
     "lint-staged": "^12.1.2",
-    "prettier": "^2.5.1",
     "webpack-dev-server": "3.11.2"
   },
   "lint-staged": {
     "app/javascript/**/*.{js,json,ts,tsx}": [
-      "prettier --write",
       "eslint --fix",
       "git add"
     ],
@@ -81,7 +79,7 @@
     "cy:open:staging": "cypress open --env configFile=staging",
     "lint": "eslint ./cypress",
     "lint:fix": "eslint --fix ./cypress",
-    "lint:ui": "eslint ./app/javascript/src",
-    "lint:ui:fix": "eslint --fix ./app/javascript/src"
+    "lint:ui": "eslint ./app/javascript",
+    "lint:ui:fix": "eslint --fix ./app/javascript"
   }
 }
