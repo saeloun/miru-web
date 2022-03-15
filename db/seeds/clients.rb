@@ -9,8 +9,6 @@ clients = [
     { name: "client_one saeloun_US", email: "client_one@company_us.com", phone: "+91 9999999993", address: "Somewhere on Earth" }
 ]
 
-# company_India.clients.create!(client_seed_data[0])
-#
 # Clients for Company India
 [0, 1].each do |client_id|
   saeloun_India.clients.create!(clients[client_id])
