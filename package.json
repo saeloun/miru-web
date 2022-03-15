@@ -79,7 +79,7 @@
     "cy:open:staging": "cypress open --env configFile=staging",
     "lint": "eslint ./cypress",
     "lint:fix": "eslint --fix ./cypress",
-    "lint:ui": "eslint ./app/javascript/src",
-    "lint:ui:fix": "eslint --fix ./app/javascript/src"
+    "lint:ui": "eslint ./app/javascript",
+    "lint:ui:fix": "eslint --fix ./app/javascript"
   }
 }
