@@ -78,6 +78,9 @@ ActiveRecord::Schema.define(version: 2022_02_21_133258) do
     t.index ["user_id"], name: "index_company_users_on_user_id"
   end
 
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
   create_table "identities", force: :cascade do |t|
     t.string "provider"
     t.string "uid"
@@ -119,6 +122,16 @@ ActiveRecord::Schema.define(version: 2022_02_21_133258) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
+  end
+
+  create_table "team_members", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
+    t.decimal "hourly_rate", default: "0.0", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_id"], name: "index_team_members_on_project_id"
+    t.index ["user_id"], name: "index_team_members_on_user_id"
   end
 
   create_table "timesheet_entries", force: :cascade do |t|
@@ -189,6 +202,8 @@ ActiveRecord::Schema.define(version: 2022_02_21_133258) do
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
+  add_foreign_key "team_members", "projects"
+  add_foreign_key "team_members", "users"
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies", column: "current_workspace_id"
