@@ -4,11 +4,11 @@ interface ClientArray {
 
 export interface IChartBar extends ClientArray {
   handleSelectChange: any
-  totalHours: number;
+  totalMinutes: number;
 }
 
 export interface IChartBarGraph {
-  totalHours: number;
+  totalMinutes: number;
   index: number;
   client: any;
 }

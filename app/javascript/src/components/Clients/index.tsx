@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ToastContainer } from "react-toastify";
-import axios from "axios";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import axios from "axios";
 
 import DeleteClient from "components/Clients/DeleteClient";
 import { Client } from "./Client";
@@ -13,25 +13,25 @@ const Clients = ({ editIcon, deleteIcon, isAdminUser }) => {
   const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
   const [clientToEdit, setClientToEdit] = React.useState({});
   const [clientToDelete, setClientToDelete] = React.useState({});
-  const [ clientData, setClientData ] = React.useState([]);
-  const [ totalHours, setTotalHours ] = React.useState(null)
+  const [clientData, setClientData] = React.useState([]);
+  const [totalMinutes, setTotalMinutes] = React.useState(null);
 
   const handleSelectChange = (event) => {
     axios.get(`clients?time_frame=${event.target.value}`)
       .then((res) => {
-        setClientData(res.data.client_hours);
-        setTotalHours(res.data.total_hour)
-      })
-  }
+        setClientData(res.data.client_details);
+        setTotalMinutes(res.data.total_minutes);
+      });
+  };
 
   React.useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
-    axios.get(`clients?time_frame=week`)
-    .then((res) => {
-      setClientData(res.data.client_hours);
-      setTotalHours(res.data.total_hour)
-    })
+    axios.get("clients?time_frame=week")
+      .then((res) => {
+        setClientData(res.data.client_details);
+        setTotalMinutes(res.data.total_minutes);
+      });
   }, []);
 
   return (
@@ -43,7 +43,7 @@ const Clients = ({ editIcon, deleteIcon, isAdminUser }) => {
             { isAdminUser && <ClientBarGraph
               handleSelectChange={handleSelectChange}
               clients={clientData}
-              totalHours={totalHours} />
+              totalMinutes={totalMinutes} />
             }
             <div className="overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200 mt-4">

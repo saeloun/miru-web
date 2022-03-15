@@ -1,4 +1,5 @@
 import * as React from "react";
+import { minutesToHHMM } from "../../helpers/hhmm-parser";
 
 export interface IClient {
   id: number;
@@ -6,7 +7,7 @@ export interface IClient {
   email: string;
   phone: string;
   address: string;
-  hours_spend: number;
+  minutes_spent: number;
   editIcon: string;
   deleteIcon: string;
   isAdminUser: boolean;
@@ -22,7 +23,7 @@ export const Client = ({
   email,
   phone,
   address,
-  hours_spend,
+  minutes_spent,
   editIcon,
   deleteIcon,
   isAdminUser,
@@ -53,7 +54,7 @@ export const Client = ({
         {email}
       </td>
       <td className="table__cell text-xl text-right font-bold">
-        {hours_spend}
+        {minutesToHHMM(minutes_spent)}
       </td>
       <td className="table__cell px-3 py-3">
         {isAdminUser && isHover && <button

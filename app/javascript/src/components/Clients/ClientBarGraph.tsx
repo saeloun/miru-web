@@ -1,8 +1,9 @@
 import * as React from "react";
 import GetClientBar from "./ChartBar";
-import { IChartBar } from './interface';
+import { IChartBar } from "./interface";
+import { minutesToHHMM } from "../../helpers/hhmm-parser";
 
-const ClientBarGraph = ({ clients , totalHours, handleSelectChange }:IChartBar) => {
+const ClientBarGraph = ({ clients , totalMinutes, handleSelectChange }:IChartBar) => {
   return (
     <div className="bg-miru-gray-100 py-10 px-10">
       <div className="flex justify-end">
@@ -29,7 +30,7 @@ const ClientBarGraph = ({ clients , totalHours, handleSelectChange }:IChartBar) 
         </select>
       </div>
       <p className="mb-3 text-tiny text-miru-dark-purple-600 tracking-widest">
-          TOTAL HOURS: <span className="font-medium">{totalHours}</span>
+          TOTAL HOURS: <span className="font-medium">{minutesToHHMM(totalMinutes)}</span>
       </p>
       <div className="w-full bg-gray-200 flex h-1">
         {clients.map((client, index) => {
@@ -37,7 +38,7 @@ const ClientBarGraph = ({ clients , totalHours, handleSelectChange }:IChartBar) 
             client={client}
             key={index}
             index={index}
-            totalHours={totalHours}
+            totalMinutes={totalMinutes}
           />;
         })
         }
@@ -47,7 +48,7 @@ const ClientBarGraph = ({ clients , totalHours, handleSelectChange }:IChartBar) 
             0
         </span>
         <span>
-          {totalHours}
+          {minutesToHHMM(totalMinutes)}
         </span>
       </div>
       <div className="flex pt-6 tracking-widest">
