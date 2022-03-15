@@ -1,6 +1,6 @@
 import * as React from "react";
 import ReactTooltip from "react-tooltip";
-import { IChartBarGraph } from './interface';
+import { IChartBarGraph } from "./interface";
 
 const GetClientBar = ({ client, totalHours, index }:IChartBarGraph) => {
   const chartColor = ["miru-chart-green", "miru-chart-blue", "miru-chart-pink", "miru-chart-orange"];
