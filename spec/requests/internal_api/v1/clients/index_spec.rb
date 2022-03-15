@@ -26,10 +26,10 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
 
       it "should return the total hours logged for a Company in the last_week" do
         client_details = user.current_workspace.clients.kept.map { |client| { id: client.id, name: client.name, email: client.email, minutes_spent: client.total_hours_logged(time_frame) } }
-        total_hours = (client_details.map { |client| client[:minutes_spent] }).sum
+        total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
         expect(response).to have_http_status(:ok)
         expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
-        expect(json_response["total_hours"]).to eq(JSON.parse(total_hours.to_json))
+        expect(json_response["total_minutes"]).to eq(JSON.parse(total_minutes.to_json))
       end
     end
   end
