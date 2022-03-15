@@ -9,6 +9,14 @@ module ApplicationHelper
     end
   end
 
+  def company_logo(company)
+    if company.logo.attached?
+      company.logo
+    else
+      image_url "company.svg"
+    end
+  end
+
   def error_message_on(resource, attribute)
     return unless resource.respond_to?(:errors) && resource.errors.include?(attribute)
     field_error(resource, attribute)

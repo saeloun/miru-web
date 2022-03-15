@@ -37,7 +37,7 @@ en:
     logout: Logout
     profile: Profile
     projects: Projects
-    report: Report
+    reports: Reports
     settings: Settings
     team: Team
     time_tracking: Time Tracking
@@ -85,7 +85,14 @@ en:
       failure:
         unauthorized: User is unauthorized to modify this client's details
         message: Failed to saved changes
+    delete:
+      success:
+        message: Client removed successfully
     add: ADD CLIENT
+  workspaces:
+    update:
+      failure: "Failed to switch workspace"
+      success: "Workspace switched successfully"
   team:
     team: Team
     new_user: NEW USER
@@ -120,6 +127,7 @@ en:
     or: or
     signup_with_google: sign up with google
     signup_with_apple: sign up with apple
+    signin_with_google: sign in with google
   shared_links:
     already_have_an_account: already have an account?
     dont_have_an_account: don't have an account?
@@ -128,11 +136,8 @@ en:
     confirmation_instruction: didn't receive confirmation instructions?
     unlock_instruction: didn't receive unlock instructions?
   company:
-    settings: settings
     cancel: cancel
     save: save
-    profile_setting: profile settings
-    organization_setting: organization settings
     logo: logo
     company: company
     address: address
@@ -145,6 +150,21 @@ en:
     date_format: date Format
     setup: setup org
     save_org: save org details
+  reports:
+    heading: Time entry report
+  settings:
+    settings: settings
+    cancel : cancel
+    save: save
+    profile_setting: profile settings
+    organization_setting: organization settings
+    profile_picture: profile picture
+    name: name
+    email: email
+    change_password: change password
+    current_passowrd: current password
+    password: password
+    confirm_password: confirm password
   pundit:
     default: You are not authorized to perform this action.
     client_policy:
@@ -168,3 +188,13 @@ en:
   errors:
     not_found: The resource you're looking for is not available
     unauthorized: Only owner or admin users are authorized to perform this action
+    bill_status_billed: You can't bill an entry that has already been billed
+    create_billed_entry: You can't create a billed timesheet entry
+    internal_server_error: Something went wrong
+  timesheet_entry:
+    create: 
+      message: "Timesheet created"
+    update:
+      message: "Timesheet updated"
+    destroy: 
+      message: "Timesheet deleted"
