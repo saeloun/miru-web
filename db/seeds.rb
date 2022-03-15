@@ -12,10 +12,10 @@ company = Company.create!(
 puts "Company Created"
 
 users = [
-          { first_name: "Vipul", last_name: "A M", email: "vipul@example.com", role: :owner },
-          { first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", role: :admin },
-          { first_name: "Akhil", last_name: "G Krishnan", email: "akhil@example.com", role: :employee }
-        ]
+  { first_name: "Vipul", last_name: "A M", email: "vipul@example.com", role: :owner },
+  { first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", role: :admin },
+  { first_name: "Akhil", last_name: "G Krishnan", email: "akhil@example.com", role: :employee }
+]
 
 puts "Creating users for #{company.name}"
 users.each do |user|
@@ -60,6 +60,19 @@ angel_india = Client.second.projects.create!(
   billable: true
 )
 
+angel = Client.second.projects.create!(
+  name: "angellist",
+  description: "sa",
+  billable: true
+)
+
+miru_india = Client.first.projects.create!(
+  name: "Miru 2",
+  description: "An",
+  billable: true
+)
+
+
 puts "Projects Created"
 
 # Create project members
@@ -72,7 +85,19 @@ seed_users.each do |user|
 
   ProjectMember.create!(
     user: user,
+    project: miru_india,
+    hourly_rate: 5000
+  )
+
+  ProjectMember.create!(
+    user: user,
     project: angel_india,
+    hourly_rate: 6500
+  )
+
+  ProjectMember.create!(
+    user: user,
+    project: angel,
     hourly_rate: 6500
   )
 end
@@ -85,6 +110,25 @@ entry_info = {
   note: "Worked on UI",
   work_date: Date.today
 }
-miru.timesheet_entries.create!(entry_info)
-angel_india.timesheet_entries.create!(entry_info)
+entry_info_one = {
+  user: User.first,
+  duration: 450,
+  note: "Worked on UI",
+  work_date: Date.today + 1
+}
+entry_info_two = {
+  user: User.first,
+  duration: 450,
+  note: "Worked on UI",
+  work_date: Date.today + 2
+}
+
+5.times do
+  miru.timesheet_entries.create!(entry_info)
+  miru_india.timesheet_entries.create!(entry_info_one)
+  miru_india.timesheet_entries.create!(entry_info_two)
+  angel_india.timesheet_entries.create!(entry_info)
+  angel.timesheet_entries.create!(entry_info_one)
+end
+
 puts "Timesheet Entries Created"

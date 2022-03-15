@@ -34,6 +34,13 @@ class Project < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
 
+  def project_member_full_names
+    project_members.map do |member|
+      user = User.find(member.user_id)
+      user.full_name
+    end
+  end
+
   private
     def discard_project_members
       project_members.discard_all

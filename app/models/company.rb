@@ -33,4 +33,8 @@ class Company < ApplicationRecord
   # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
+
+  def client_details(time_frame = "week")
+    clients.kept.map { |client| { id: client.id, name: client.name, email: client.email, minutes_spent: client.total_hours_logged(time_frame) } }
+  end
 end
