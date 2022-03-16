@@ -1,4 +1,5 @@
 import * as React from "react";
+import BillTag from "./BillTag";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";
 
 interface props {
@@ -23,7 +24,7 @@ const EntryCard: React.FC<props> = ({
   bill_status
 }) => (
   <div className="flex justify-between items-center shadow-2xl w-full p-6 mt-10 rounded-lg">
-    <div className="">
+    <div>
       <div className="flex">
         <p className="text-lg">{client}</p>
         <p className="text-lg mx-2">•</p>
@@ -34,10 +35,12 @@ const EntryCard: React.FC<props> = ({
       </p>
     </div>
     <div className="flex items-center">
-      {bill_status !== "non_billable" && (
-        <p className="mr-6 text-xs w-20 h-4 flex justify-center font-semibold tracking-widest bg-miru-han-purple-200 rounded-lg text-miru-han-purple-1000">
-          BILLABLE
-        </p>
+      {bill_status === "unbilled" ? (
+        <BillTag color="miru-alert-yellow-400" text="unbilled" />
+      ) : bill_status === "non_billable" ? (
+        <BillTag color="miru-dark-purple-100" text="non billable" />
+      ) : (
+        <BillTag color="miru-alert-green-400" text="billed" />
       )}
       <p className="text-4xl">{minutesToHHMM(duration)}</p>
       <button onClick={() => setEditEntryId(id)} className="mx-10">

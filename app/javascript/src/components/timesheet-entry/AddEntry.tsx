@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesFromHHMM, minutesToHHMM } from "../../helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "../../helpers/ordinal";
+const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
+const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 
 interface props {
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
@@ -39,36 +42,40 @@ const AddEntry: React.FC<props> = ({
   const [projectId, setProjectId] = useState(0);
   const [billable, setBillable] = useState(false);
 
-  useEffect(() => {
+  const handleFillData = () => {
     if (!editEntryId) return;
-    const entry = entryList[selectedFullDate].filter(
+    const entry = entryList[selectedFullDate].find(
       entry => entry.id === editEntryId
-    )[0];
-
+    );
     if (entry) {
       setNote(entry.note);
       setDuration(minutesToHHMM(entry.duration));
       setClient(entry.client);
       setProject(entry.project);
       setProjectId(entry.project_id);
-      if (entry.bill_status == "unbilled" || entry.bill_status == "billed")
-        setBillable(true);
+      if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
     }
+  };
+
+  useEffect(() => {
+    handleFillData();
   }, []);
 
   useEffect(() => {
     if (!project) return;
-    const id = projects[client].filter(p => p.name === project)[0].id;
+    const id = projects[client].find(
+      currentProject => currentProject.name === project
+    ).id;
     setProjectId(Number(id));
   }, [project]);
 
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let v = e.target.value;
+    if (v === ":") v = "00:00";
     let [hh, mm] = v.split(":");
-    if (Number(hh) > 24) hh = "00";
-    if (Number(mm) > 59) mm = "00";
-    v = `${hh}:${mm}`;
-    setDuration(v);
+    hh = hh.length === 1 ? `0${hh}` : hh;
+    mm = mm.length === 1 ? `0${mm}` : mm;
+    setDuration(`${hh}:${mm}`);
   };
 
   const handleSave = async () => {
@@ -80,11 +87,11 @@ const AddEntry: React.FC<props> = ({
         work_date: selectedFullDate,
         duration: minutesFromHHMM(duration),
         note: note,
-        bill_status: billable ? "unbilled" : "billed"
+        bill_status: billable ? "unbilled" : "non_billable"
       }
     });
 
-    if (res.data?.success) {
+    if (res.status === 200) {
       setEntryList(pv => {
         const newState = { ...pv };
         if (pv[selectedFullDate]) {
@@ -98,7 +105,7 @@ const AddEntry: React.FC<props> = ({
         return newState;
       });
 
-      setNewEntryView(false);
+      // setNewEntryView(false);
     }
   };
 
@@ -106,13 +113,13 @@ const AddEntry: React.FC<props> = ({
     const res = await timesheetEntryApi.update(editEntryId, {
       project_id: projectId,
       timesheet_entry: {
-        bill_status: billable ? "unbilled" : "billed",
+        bill_status: billable ? "unbilled" : "non_billable",
         note: note,
         duration: minutesFromHHMM(duration),
         work_date: selectedFullDate
       }
     });
-    if (res.data?.success) {
+    if (res.status === 200) {
       setEntryList(pv => {
         const newState = { ...pv };
         newState[selectedFullDate] = pv[selectedFullDate].map(entry => {
@@ -135,7 +142,7 @@ const AddEntry: React.FC<props> = ({
         (editEntryId === 0 ? "" : "mt-10")
       }
     >
-      <span className="w-60 ml-4">
+      <div className="w-60 ml-4">
         <select
           onChange={e => {
             setClient(e.target.value);
@@ -151,8 +158,8 @@ const AddEntry: React.FC<props> = ({
               Client
             </option>
           )}
-          {clients.map((c, i) => (
-            <option key={i.toString()}>{c.name}</option>
+          {clients.map((client, i) => (
+            <option key={i.toString()}>{client.name}</option>
           ))}
         </select>
 
@@ -171,13 +178,13 @@ const AddEntry: React.FC<props> = ({
             </option>
           )}
           {client &&
-            projects[client].map((p, i) => (
-              <option data-project-id={p.id} key={i.toString()}>
-                {p.name}
+            projects[client].map((project, i) => (
+              <option data-project-id={project.id} key={i.toString()}>
+                {project.name}
               </option>
             ))}
         </select>
-      </span>
+      </div>
       <div className="mx-10">
         <textarea
           value={note}
@@ -203,14 +210,14 @@ const AddEntry: React.FC<props> = ({
             className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm mt-2 ml-1 text-sm"
           />
         </div>
-        <div className="flex items-center ">
+        <div className="flex items-center">
           {billable ? (
             <img
               onClick={() => {
                 setBillable(false);
               }}
               className="inline"
-              src="/checkbox-checked.svg"
+              src={checkedIcon}
               alt="checkbox"
             />
           ) : (
@@ -219,7 +226,7 @@ const AddEntry: React.FC<props> = ({
                 setBillable(true);
               }}
               className="inline"
-              src="/checkbox-unchecked.svg"
+              src={uncheckedIcon}
               alt="checkbox"
             />
           )}
