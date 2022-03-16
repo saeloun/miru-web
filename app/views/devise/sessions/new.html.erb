@@ -17,7 +17,7 @@
                       <%= error_message_on(f.object, :email) %>
                     </div>
                     <div class="mt-1">
-                      <%= f.email_field :email, placeholder: t('registration.email_id').capitalize, autofocus: true, autocomplete: "email", class: "form__input #{error_message_class(f.object, :email)}" %>
+                      <%= f.email_field :email, placeholder: t('registration.email_id').capitalize, autofocus: true, autocomplete: "email", class: "form__input #{error_message_class(f.object, :email)}", data: { cy: "email-field" } %>
                     </div>
                   </div>
                 </div>
@@ -26,7 +26,7 @@
                     <div class="field">
                       <%= f.label t('registration.password').capitalize, class: "form__label" %>
                       <div class="mt-1 relative">
-                        <input name="user[password]" placeholder="<%= t('registration.password').capitalize %>" :type="show ? 'password' : 'text'" class="form__input <%= error_message_class(f.object, :password) %>">
+                        <input name="user[password]" placeholder="<%= t('registration.password').capitalize %>" data-cy="passsword-field" :type="show ? 'password' : 'text'" class="form__input <%= error_message_class(f.object, :password) %>">
                         <div class="password_eye__position">
                           <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="password_eye__icon">
                           <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="password_eye__icon">
@@ -52,7 +52,7 @@
                 </div>
                 <div>
                   <div class="actions mt-4">
-                    <%= f.submit t('registration.sign_in').upcase, class: "form__button" %>
+                    <%= f.submit t('registration.sign_in').upcase, class: "form__button",  data: { cy: "sign-in-button" } %>
                   </div>
                 </div>
               <% end %>
@@ -65,18 +65,12 @@
               </div>
               <div>
                 <div class="mt-4">
-                  <%= button_to user_google_oauth2_omniauth_authorize_path, class: "form__button" do %>
-                    <img src="<%= image_url 'google.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-                    <%= t('registration.signup_with_google').upcase %>
+                  <% if devise_mapping.omniauthable? %>
+                    <%= button_to omniauth_authorize_path(resource_name, :google_oauth2), class: "form__button" do %>
+                      <img src="<%= image_url 'google.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
+                      <%= t('registration.signin_with_google').upcase %>
+                    <% end %>
                   <% end %>
-                </div>
-              </div>
-              <div>
-                <div class="mt-4">
-                  <button type="button" class="form__button">
-                    <img src="<%= image_url 'apple.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-                    <%= t('registration.signup_with_apple').upcase %>
-                  </button>
                 </div>
               </div>
               <div>
@@ -88,3 +82,11 @@
       </div>
     </div>
   </div>
+
+<script>
+  window.onpageshow = function(event) {
+    if(event.persisted) {
+      window.location.reload()
+    }
+  };
+</script>

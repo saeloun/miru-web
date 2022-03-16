@@ -9,6 +9,7 @@
   @font-face {
     font-family: "Manrope";
     src: url("../fonts/Manrope/Manrope-VariableFont_wght.ttf");
+    font-weight: 200 800;
   }
 
   .field_with_errors {
@@ -147,7 +148,10 @@
       @apply min-w-full divide-y divide-gray-200 mt-4;
     }
     &__header {
-      @apply px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest;
+      @apply px-6 py-5 text-left font-normal text-xs text-miru-dark-purple-600 tracking-widest;
+    }
+    &__cell {
+      @apply px-5 py-5 text-left text-xs font-normal text-miru-dark-purple-1000 tracking-normal;
     }
     &__body {
       @apply bg-white divide-y divide-gray-200;
@@ -189,7 +193,7 @@
       @apply flex justify-between items-center mx-3;
     }
     &__title {
-      @apply text-base font-extrabold
+      @apply text-base font-extrabold;
     }
     &__close {
       @apply cursor-pointer z-50;

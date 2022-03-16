@@ -7,5 +7,14 @@ FactoryBot.define do
     email { Faker::Internet.safe_email }
     password { Faker::Internet.password }
     confirmed_at { Date.today }
+    current_workspace factory: :company
+
+    trait :with_avatar do
+      after :build do |user|
+        file_name = "test-image.png"
+        file_path = Rails.root.join("spec", "support", "fixtures", file_name)
+        user.avatar.attach(io: File.open(file_path), filename: file_name, content_type: "image/png")
+      end
+    end
   end
 end

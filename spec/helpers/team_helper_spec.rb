@@ -2,15 +2,23 @@
 
 require "rails_helper"
 
-# Specs in this file have access to a helper object that includes
-# the TeamHelper. For example:
-#
-# describe TeamHelper do
-#   describe "string concat" do
-#     it "concats two strings with spaces" do
-#       expect(helper.concat_strings("this","that")).to eq("this that")
-#     end
-#   end
-# end
 RSpec.describe TeamHelper, type: :helper do
+  describe ".resource_name" do
+    it "returns resource_name as :user" do
+      expect(helper.resource_name).to eq(:user)
+    end
+  end
+
+  describe ".resource" do
+    it "returns an instance of User class" do
+      expect(helper.resource).to be_instance_of(User)
+    end
+  end
+
+  describe ".devise_mapping" do
+    it "returns an devise mappings of :user" do
+      expect(helper.devise_mapping).to be_instance_of(Devise::Mapping)
+      expect(helper.devise_mapping.class_name).to eq("User")
+    end
+  end
 end

@@ -383,5 +383,4 @@ const WeeklyEntryCard: React.FC<Props> = ({
     </div>
   );
 };
-
 export default WeeklyEntryCard;
