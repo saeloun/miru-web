@@ -85,7 +85,14 @@ en:
       failure:
         unauthorized: User is unauthorized to modify this client's details
         message: Failed to saved changes
+    delete:
+      success:
+        message: Client removed successfully
     add: ADD CLIENT
+  workspaces:
+    update:
+      failure: "Failed to switch workspace"
+      success: "Workspace switched successfully"
   team:
     team: Team
     new_user: NEW USER
@@ -178,3 +185,13 @@ en:
   errors:
     not_found: The resource you're looking for is not available
     unauthorized: Only owner or admin users are authorized to perform this action
+    bill_status_billed: You can't bill an entry that has already been billed
+    create_billed_entry: You can't create a billed timesheet entry
+    internal_server_error: Something went wrong
+  timesheet_entry:
+    create: 
+      message: "Timesheet created"
+    update:
+      message: "Timesheet updated"
+    destroy: 
+      message: "Timesheet deleted"

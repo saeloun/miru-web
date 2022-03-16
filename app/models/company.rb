@@ -22,6 +22,7 @@ class Company < ApplicationRecord
   # Associations
   has_many :company_users, dependent: :destroy
   has_many :users, through: :company_users
+  has_many :timesheet_entries, through: :users
   has_many :clients, dependent: :destroy
   has_many :projects, through: :clients, dependent: :destroy
   has_many :current_workspace_users, foreign_key: "current_workspace_id", class_name: "User", dependent: :nullify
@@ -30,4 +31,5 @@ class Company < ApplicationRecord
 
   # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
+  validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
 end
