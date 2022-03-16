@@ -11,23 +11,23 @@ describe("root page tests", () => {
 
   it("admin should have admin menus items", function () {
     cy.loginAsAdmin();
-    cy.get(navbarSelectors.dashboardLink).should("be.visible");
-    cy.get(navbarSelectors.clientsLink).should("be.visible");
-    cy.get(navbarSelectors.timeTrackingLink).should("be.visible");
-    cy.get(navbarSelectors.projectsLink).should("be.visible");
-    cy.get(navbarSelectors.invoiceLink).should("be.visible");
-    cy.get(navbarSelectors.reportsLink).should("be.visible");
-    cy.get(navbarSelectors.teamLink).should("be.visible");
+    cy.get(navbarSelectors.dashboardTab).should("be.visible");
+    cy.get(navbarSelectors.clientsTab).should("be.visible");
+    cy.get(navbarSelectors.timeTrackingTab).should("be.visible");
+    cy.get(navbarSelectors.projectsTab).should("be.visible");
+    cy.get(navbarSelectors.invoiceTab).should("be.visible");
+    cy.get(navbarSelectors.reportsTab).should("be.visible");
+    cy.get(navbarSelectors.teamTab).should("be.visible");
   });
 
   it("employees should have employee menu items", function () {
     cy.loginAsEmployee();
-    cy.get(navbarSelectors.timeTrackingLink).should("be.visible");
-    cy.get(navbarSelectors.clientsLink).should("be.visible");
-    cy.get(navbarSelectors.teamLink).should("be.visible");
-    cy.get(navbarSelectors.projectsLink).should("be.visible");
-    cy.get(navbarSelectors.invoiceLink).should("not.exist");
-    cy.get(navbarSelectors.dashboardLink).should("not.exist");
-    cy.get(navbarSelectors.reportsLink).should("not.exist");
+    cy.get(navbarSelectors.timeTrackingTab).should("be.visible");
+    cy.get(navbarSelectors.clientsTab).should("be.visible");
+    cy.get(navbarSelectors.teamTab).should("be.visible");
+    cy.get(navbarSelectors.projectsTab).should("be.visible");
+    cy.get(navbarSelectors.invoiceTab).should("not.exist");
+    cy.get(navbarSelectors.dashboardTab).should("not.exist");
+    cy.get(navbarSelectors.reportsTab).should("not.exist");
   });
 });
