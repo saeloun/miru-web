@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Company Create Start
-company = [
+companies = [
   { name: "Saeloun India Pvt. Ltd",
     address: "somewhere in India",
     business_phone: "+91 0000000000",
@@ -23,7 +23,7 @@ company = [
     timezone: "America - New York" }
 ]
 
-company.each do |company|
+companies.each do |company|
   Company.create!(name: company[:name],
                   address: company[:address],
                   business_phone: company[:business_phone],
