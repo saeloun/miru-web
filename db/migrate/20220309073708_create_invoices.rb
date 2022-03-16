@@ -13,6 +13,7 @@ class CreateInvoices < ActiveRecord::Migration[7.0]
       t.decimal :amount_paid, scale: 2, precision: 20, default: 0.0
       t.decimal :amount_due, scale: 2, precision: 20, default: 0.0
       t.decimal :discount, scale: 2, precision: 20, default: 0.0
+      t.integer :status, null: false, default: 0
       t.references :company, null: false, foreign_key: true
       t.references :client, null: false, foreign_key: true
 

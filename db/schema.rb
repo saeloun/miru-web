@@ -114,6 +114,7 @@ ActiveRecord::Schema.define(version: 2022_03_09_081111) do
     t.decimal "amount_paid", precision: 20, scale: 2, default: "0.0"
     t.decimal "amount_due", precision: 20, scale: 2, default: "0.0"
     t.decimal "discount", precision: 20, scale: 2, default: "0.0"
+    t.integer "status", default: 0, null: false
     t.bigint "company_id", null: false
     t.bigint "client_id", null: false
     t.datetime "created_at", precision: 6, null: false

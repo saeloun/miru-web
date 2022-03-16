@@ -14,6 +14,7 @@ FactoryBot.define do
     discount { Faker::Number.decimal(r_digits: 2) }
     company
     client
+    status { :draft }
     factory :invoice_with_invoice_line_items do
       invoice_line_items { Array.new(5) { association(:invoice_line_item) } }
     end

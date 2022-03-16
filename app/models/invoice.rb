@@ -13,6 +13,7 @@
 #  amount_paid        :decimal(20, 2)   default("0.0")
 #  amount_due         :decimal(20, 2)   default("0.0")
 #  discount           :decimal(20, 2)   default("0.0")
+#  status             :integer          default("0"), not null
 #  company_id         :integer          not null
 #  client_id          :integer          not null
 #  created_at         :datetime         not null
@@ -29,6 +30,15 @@
 
 class Invoice < ApplicationRecord
   attr_accessor :sub_total
+
+  enum status: [
+    :draft,
+    :sent,
+    :viewed,
+    :paid,
+    :declined,
+    :overdue
+  ]
 
   belongs_to :company
   belongs_to :client

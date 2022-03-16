@@ -30,19 +30,26 @@ RSpec.describe Invoice, type: :model do
       it { is_expected.to validate_numericality_of(:amount_due).is_greater_than_or_equal_to(0) }
       it { is_expected.to validate_numericality_of(:discount).is_greater_than_or_equal_to(0) }
     end
+
+    describe "validate enum" do
+      it do
+        is_expected.to define_enum_for(:status)
+          .with_values([:draft, :sent, :viewed, :paid, :declined, :overdue])
+      end
+    end
   end
 
   describe "Associations" do
-     describe "belongs to" do
-       it { is_expected.to belong_to(:company) }
-       it { is_expected.to belong_to(:client) }
-     end
+    describe "belongs to" do
+      it { is_expected.to belong_to(:company) }
+      it { is_expected.to belong_to(:client) }
+    end
 
-     describe "has many" do
-       it { is_expected.to have_many(:invoice_line_items) }
-       it "sub_total should tally with amount of all invoice line items combined" do
-         expect(invoice.sub_total).to eq(invoice.invoice_line_items.sum { |line_item| line_item[:rate] * line_item[:quantity] })
-       end
-     end
-   end
+    describe "has many" do
+      it { is_expected.to have_many(:invoice_line_items) }
+      it "sub_total should tally with amount of all invoice line items combined" do
+        expect(invoice.sub_total).to eq(invoice.invoice_line_items.sum { |line_item| line_item[:rate] * line_item[:quantity] })
+      end
+    end
+  end
 end
