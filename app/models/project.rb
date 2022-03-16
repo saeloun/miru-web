@@ -34,6 +34,30 @@ class Project < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
 
+  def project_users_details(time_frame)
+    from, to = week_month_year(time_frame)
+    project_team_members = project_members.map { |project| { project_id: project.project_id,  user_id: project.user_id } }
+    project_team_members.map do |project_team_member|
+      user = User.find(project_team_member[:user_id])
+      user_hourly_rate = (user.project_members.where(project_id: project_team_member[:project_id]))[0][:hourly_rate]
+      minutes_logged = (user.timesheet_entries.where(project_id: project_team_member[:project_id]).where(work_date: from..to)).sum(:duration)
+      { user_id: user.id,  user_name: user.full_name, user_hourly_rate: user_hourly_rate, minutes_logged: minutes_logged }
+    end
+  end
+
+  def week_month_year(time_frame)
+    case time_frame
+    when "last_week"
+      return ((Date.today.beginning_of_week) - 7), ((Date.today.end_of_week) - 7)
+    when "month"
+      return Date.today.beginning_of_month, Date.today.end_of_month
+    when "year"
+      return Date.today.beginning_of_year, Date.today.end_of_year
+    else
+      return Date.today.beginning_of_week, Date.today.end_of_week
+    end
+  end
+
   def project_member_full_names
     project_members.map do |member|
       user = User.find(member.user_id)
