@@ -1,3 +1,4 @@
+/* eslint-disable */
 window.showImage = function () {
   return {
     showPreview (event) {

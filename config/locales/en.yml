@@ -37,7 +37,7 @@ en:
     logout: Logout
     profile: Profile
     projects: Projects
-    report: Report
+    reports: Reports
     settings: Settings
     team: Team
     time_tracking: Time Tracking
@@ -127,6 +127,7 @@ en:
     or: or
     signup_with_google: sign up with google
     signup_with_apple: sign up with apple
+    signin_with_google: sign in with google
   shared_links:
     already_have_an_account: already have an account?
     dont_have_an_account: don't have an account?
@@ -149,6 +150,8 @@ en:
     date_format: date Format
     setup: setup org
     save_org: save org details
+  reports:
+    heading: Time entry report
   settings:
     settings: settings
     cancel : cancel
