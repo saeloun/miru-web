@@ -41,6 +41,25 @@ class Project < ApplicationRecord
     end
   end
 
+  def total_hours_logged(time_frame = "week")
+    from, to = week_month_year(time_frame)
+    timesheet_entries.where(work_date: from..to).sum(:duration)
+  end
+
+  # Move weeK_month_year method copied from client.rb to common place
+  def week_month_year(time_frame)
+    case time_frame
+    when "last_week"
+      return ((Date.today.beginning_of_week) - 7), ((Date.today.end_of_week) - 7)
+    when "month"
+      return Date.today.beginning_of_month, Date.today.end_of_month
+    when "year"
+      return Date.today.beginning_of_year, Date.today.end_of_year
+    else
+      return Date.today.beginning_of_week, Date.today.end_of_week
+    end
+  end
+
   private
     def discard_project_members
       project_members.discard_all
