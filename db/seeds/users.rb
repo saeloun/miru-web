@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # User Create Start
-company = Company.first
+company = Company.find_by(name: "Saeloun India Pvt. Ltd")
 users = [
   { first_name: "Vipul", last_name: "A M", email: "vipul@example.com" },
   { first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com" },

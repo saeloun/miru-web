@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # User Roles Start
-saeloun_India, saeloun_US = Company.first(2)
-vipul, supriya, akhil, keshav, rohit = User.first(5)
+saeloun_India, saeloun_US = ["Saeloun India Pvt. Ltd", "Saeloun USA INC."].map { |company| Company.find_by(name: company) }
+vipul, supriya, akhil, keshav, rohit = ["vipul@example.com", "supriya@example.com", "akhil@example.com", "keshav@example.com", "rohit@example.com"].map { |user| User.find_by(email: user) }
 
 vipul.add_role(:owner, saeloun_India)    # Vipul is Owner in Company India
 vipul.add_role(:owner, saeloun_US)       # Vipul is Owner in Company US

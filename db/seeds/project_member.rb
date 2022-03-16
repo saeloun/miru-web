@@ -1,8 +1,20 @@
 # frozen_string_literal: true
 
 # Projects Members Start
-project_1_common_client_saeloun_India, project_1_Client_1_saeloun_India, project_1_common_client_saeloun_US, project_1_Client_1_saeloun_US = Project.first(4)
-vipul, supriya, akhil, keshav, rohit = User.first(5)
+saeloun_India, saeloun_US = ["Saeloun India Pvt. Ltd", "Saeloun USA INC."].map { |company| Company.find_by(name: company) }
+vipul, supriya, akhil, keshav, rohit = ["vipul@example.com", "supriya@example.com", "akhil@example.com", "keshav@example.com", "rohit@example.com"].map { |user| User.find_by(email: user) }
+
+# Clients
+common_client_saeloun_India = Client.find_by_company_id_and_name(saeloun_India.id, "common client")
+client_one_saeloun_India = Client.find_by_company_id_and_name(saeloun_India, "client_one saeloun_India")
+common_client_saeloun_US = Client.find_by_company_id_and_name(saeloun_US, "common client")
+client_one_saeloun_US = Client.find_by_company_id_and_name(saeloun_US, "client_one saeloun_US")
+
+# Projects
+project_1_common_client_saeloun_India = Project.find_by_client_id_and_name(common_client_saeloun_India.id, "Project_1_common_client_saeloun_India")
+project_1_Client_1_saeloun_India = Project.find_by_client_id_and_name(client_one_saeloun_India.id, "Project_1_Client_1_saeloun_India")
+project_1_common_client_saeloun_US = Project.find_by_client_id_and_name(common_client_saeloun_US.id, "Project_1_common_client_saeloun_US")
+project_1_Client_1_saeloun_US = Project.find_by_client_id_and_name(client_one_saeloun_US.id, "Project_1_Client_1_saeloun_US")
 
 # vipul, supriya, akhil, keshav are working on project_1_Common_client_one, project_1_Common_client_two which belong to common client of Company_India and Company_US respectively
 [vipul, supriya, akhil, keshav].each do |user|
