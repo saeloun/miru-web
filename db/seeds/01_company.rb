@@ -24,16 +24,7 @@ companies = [
 ]
 
 companies.each do |company|
-  Company.create!(name: company[:name],
-                  address: company[:address],
-                  business_phone: company[:business_phone],
-                  base_currency: company[:base_currency],
-                  standard_price: company[:standard_price],
-                  fiscal_year_end: company[:fiscal_year_end],
-                  date_format: company[:date_format],
-                  country: company[:country],
-                  timezone: company[:timezone]
-                  )
+  Company.create!(company)
 end
 puts "Company Created"
 # Company Create End

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 # Projects Start
-saeloun_India, saeloun_US = ["Saeloun India Pvt. Ltd", "Saeloun USA INC."].map { |company| Company.find_by(name: company) }
+SAELOUN_INDIA, SAELOUN_US = ["Saeloun India Pvt. Ltd", "Saeloun USA INC."].map { |company| Company.find_by(name: company) }
 
 # Clients
-common_client_saeloun_India = Client.find_by_company_id_and_name(saeloun_India.id, "common client")
-client_one_saeloun_India = Client.find_by_company_id_and_name(saeloun_India, "client_one saeloun_India")
-common_client_saeloun_US = Client.find_by_company_id_and_name(saeloun_US, "common client")
-client_one_saeloun_US = Client.find_by_company_id_and_name(saeloun_US, "client_one saeloun_US")
+common_client_saeloun_India = Client.find_by_company_id_and_name(SAELOUN_INDIA.id, "common client")
+client_one_saeloun_India = Client.find_by_company_id_and_name(SAELOUN_INDIA, "client_one saeloun_India")
+common_client_saeloun_US = Client.find_by_company_id_and_name(SAELOUN_US, "common client")
+client_one_saeloun_US = Client.find_by_company_id_and_name(SAELOUN_US, "client_one saeloun_US")
 
 projects = [
   { client_id: common_client_saeloun_India.id, name: "Project_1_common_client_saeloun_India", description: "Timesheet app", billable: false },
@@ -17,12 +17,7 @@ projects = [
 ]
 
 projects.each do |project|
-  Project.create!(
-    client_id: project[:client_id],
-    name: project[:name],
-    description: project[:description],
-    billable: project[:billable]
-  )
+  Project.create!(project)
 end
 
 puts "Projects Created"
