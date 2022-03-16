@@ -1,45 +1,72 @@
 import * as React from "react";
 
 const InvoiceTable = () => {
-
   return (
     <table className="w-full table-fixed">
-      <thead className="py-2">
-        <th className="text-miru-dark-purple-600 font-normal text-xs text-left">NAME</th>
-        <th className="text-miru-dark-purple-600 font-normal text-xs text-left">DATE</th>
-        <th className="text-miru-dark-purple-600 font-normal text-xs text-left ">DESCRIPTION</th>
-        <th className="text-miru-dark-purple-600 font-normal text-xs text-left">RATE</th>
-        <th className="text-miru-dark-purple-600 font-normal text-xs text-left">QTY</th>
-        <th className="text-miru-dark-purple-600 font-normal text-xs text-right">LINE TOTAL</th>
-
+      <thead className="my-2">
+        <th className="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">
+          NAME
+        </th>
+        <th className="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">
+          DATE
+        </th>
+        <th className="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest w-2/5">
+          DESCRIPTION
+        </th>
+        <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">
+          RATE
+        </th>
+        <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest pr-2">
+          QTY
+        </th>
+        <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">
+          LINE TOTAL
+        </th>
       </thead>
       <tbody className="w-full ">
-        <tr className="w-full">
-          <td colSpan={6} >
-            <button className=" w-full bg-white font-bold text-base text-center text-miru-dark-purple-200 rounded-md border-2 border-miru-dark-purple-200 border-dashed">
+        <tr className="w-full ">
+          <td colSpan={6} className="py-4">
+            <button className=" py-1 tracking-widest w-full bg-white font-bold text-base text-center text-miru-dark-purple-200 rounded-md border-2 border-miru-dark-purple-200 border-dashed">
               + NEW LINE ITEM
             </button>
           </td>
         </tr>
-        <tr className="w-full">
-          <td className="p-2 pl-0 w-full">
-            <input type="text" className="bg-white rounded w-full " />
+        <tr className="w-full my-1">
+          <td className="p-1  w-full">
+            <input
+              type="text"
+              className=" p-1 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 "
+            />
           </td>
-          <td className="p-2 w-full">
-            <input type="date" className="bg-white rounded w-full" />
+          <td className="p-1 w-full">
+            <input
+              type="date"
+              placeholder="Date"
+              className=" p-1 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000"
+            />
           </td>
-          <td className="p-2 w-full">
-            <input type="text" className="bg-white rounded w-full" />
+          <td className="p-1 w-full">
+            <input
+              type="text"
+              className=" p-1 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000"
+            />
           </td>
-          <td className="p-2 w-full">
-            <input type="text" className="bg-white rounded w-full" />
+          <td className=" w-full">
+            <input
+              type="text"
+              className=" p-1 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000"
+            />
           </td>
-          <td className="p-2 w-full">
-            <input type="text" className="bg-white rounded w-full" />
+          <td className="p-1 w-full">
+            <input
+              type="text"
+              className=" p-1 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000"
+            />
           </td>
-          <td className="p-2 pr-0 text-right">$90</td>
+          <td className="text-right font-normal text-base text-miru-dark-purple-1000">
+            $90
+          </td>
         </tr>
-
       </tbody>
     </table>
   );
