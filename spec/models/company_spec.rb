@@ -18,6 +18,7 @@ RSpec.describe Company, type: :model do
     it { is_expected.to validate_presence_of(:standard_price) }
     it { is_expected.to validate_presence_of(:country) }
     it { is_expected.to validate_presence_of(:base_currency) }
+
     it do
       is_expected.to validate_numericality_of(:standard_price).
       is_greater_than_or_equal_to(0)
@@ -32,6 +33,7 @@ RSpec.describe Company, type: :model do
       let (:client_2) { create(:client, company: company) }
       let (:project_1) { create(:project, client: client_1) }
       let (:project_2) { create(:project, client: client_2) }
+
       before do
         create_list(:timesheet_entry, 5, user: user, project: project_1)
         create_list(:timesheet_entry, 5, user: user, project: project_2)

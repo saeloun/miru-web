@@ -306,6 +306,29 @@ Performance/DeleteSuffix:
 # RSpec cops from rubocop-rspec
 # https://github.com/rubocop-hq/rubocop-rspec/blob/master/config/default.yml
 
+
+RSpec/Be:
+  Description: Check for expectations where be is used without argument.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Be
+
+RSpec/ContextMethod:
+  Description: context should not be used for specifying methods.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ContextMethod
+
+RSpec/ContextWording:
+  Description: Checks that context docstring starts with an allowed prefix.
+  Enabled: false
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ContextWording
+  Prefixes:
+    - when
+    - with
+    - without
+    - if
+    - unless
+    - for
+
 RSpec/DescribeClass:
   Description: Check that the first argument to the top level describe is a constant.
   Enabled: true
@@ -318,11 +341,66 @@ RSpec/DescribedClassModuleWrapping:
   Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribedClassModuleWrapping
 
+RSpec/DescribeSymbol:
+  Description: Avoid describing symbols.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribeSymbol
+
+RSpec/EmptyExampleGroup:
+  Description: Checks if an example group does not include any tests.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/EmptyExampleGroup
+
+RSpec/EmptyHook:
+  Description: Checks for empty before and after hooks.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/EmptyHook
+
+RSpec/EmptyLineAfterExample:
+  Description: Checks if there is an empty line after example blocks.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/EmptyLineAfterExample
+
+RSpec/EmptyLineAfterExampleGroup:
+  Description: Checks if there is an empty line after example group blocks.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/EmptyLineAfterExampleGroup
+
+RSpec/EmptyLineAfterFinalLet:
+  Description: Checks if there is an empty line after the last let block.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/EmptyLineAfterFinalLet
+
+RSpec/EmptyLineAfterHook:
+  Description: Checks if there is an empty line after hook blocks.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/EmptyLineAfterHook
+
+RSpec/EmptyLineAfterSubject:
+  Description: Checks if there is an empty line after subject block.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/EmptyLineAfterSubject
+
 RSpec/ExampleLength:
   Description: Checks for long examples.
   Enabled: true
   Max: 15
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
+
+RSpec/ExampleWithoutDescription:
+  Description: Checks for examples without a description.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleWithoutDescription
+
+RSpec/ExampleWording:
+  Description: Checks for common mistakes in example descriptions.
+  Enabled: false
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleWording
+
+RSpec/HooksBeforeExamples:
+  Description: Checks for before/around/after hooks that come after an example.
+  Enabled: false
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/HooksBeforeExamples
 
 RSpec/IdenticalEqualityAssertion:
   Description: Checks for equality assertions with identical expressions on both sides.
@@ -345,11 +423,6 @@ RSpec/MultipleExpectations:
   Max: 8
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleExpectations
 
-RSpec/Rails/AvoidSetupHook:
-  Description: Checks that tests use RSpec `before` hook over Rails `setup` method.
-  Enabled: true
-  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/AvoidSetupHook
-
 RSpec/ImplicitExpect:
   Description: Check that a consist implict expectation style is used.
   Enabled: true
@@ -357,3 +430,35 @@ RSpec/ImplicitExpect:
   SupportedStyles:
   - is_expected
   - should
+
+# RSpec x Rails
+RSpec/Rails/AvoidSetupHook:
+  Description: Checks that tests use RSpec `before` hook over Rails `setup` method.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/AvoidSetupHook
+
+RSpec/Rails/HttpStatus:
+  Description: Enforces use of symbolic or numeric value to describe HTTP status.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/HttpStatus
+
+# RSpec x FactoryBot
+RSpec/FactoryBot/AttributeDefinedStatically:
+  Description: Always declare attribute values as blocks.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/FactoryBot/AttributeDefinedStatically
+
+RSpec/FactoryBot/CreateList:
+  Description: Checks for create_list usage.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/FactoryBot/CreateList
+
+RSpec/FactoryBot/FactoryClassName:
+  Description: Use string value when setting the class attribute explicitly.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/FactoryBot/FactoryClassName
+
+RSpec/FactoryBot/SyntaxMethods:
+  Description: Use shorthands from FactoryBot::Syntax::Methods in your specs.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/FactoryBot/SyntaxMethods

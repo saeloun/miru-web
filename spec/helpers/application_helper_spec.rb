@@ -71,6 +71,7 @@ RSpec.describe ApplicationHelper, type: :helper do
         expect(helper.error_message_class(resource, attribute)).to eq(no_error_class)
       end
     end
+
     context "when resource have errors on the attribute" do
       before do
         resource.errors.add(:first_name, "Custom error")

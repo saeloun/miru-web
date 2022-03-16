@@ -7,7 +7,7 @@ RSpec.describe "Workspaces#update", type: :request do
   let (:company_2) { create(:company) }
   let (:user) { create(:user, current_workspace_id: company.id) }
 
-  context "When user is admin" do
+  context "when user is admin" do
     before do
       create(:company_user, company_id: company.id, user_id: user.id)
       create(:company_user, company_id: company_2.id, user_id: user.id)
@@ -29,7 +29,7 @@ RSpec.describe "Workspaces#update", type: :request do
     end
   end
 
-  context "When user is employee" do
+  context "when user is employee" do
     before do
       create(:company_user, company_id: company.id, user_id: user.id)
       create(:company_user, company_id: company_2.id, user_id: user.id)

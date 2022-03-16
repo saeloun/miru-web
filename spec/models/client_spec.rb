@@ -26,6 +26,7 @@ RSpec.describe Client, type: :model do
       let (:client) { create(:client, company: company) }
       let (:project_1) { create(:project, client: client) }
       let (:project_2) { create(:project, client: client) }
+
       before do
         create_list(:timesheet_entry, 5, user: user, project: project_1)
         create_list(:timesheet_entry, 5, user: user, project: project_2)
@@ -78,6 +79,7 @@ RSpec.describe Client, type: :model do
       let (:client) { create(:client, company: company) }
       let (:project_1) { create(:project, client: client) }
       let (:project_2) { create(:project, client: client) }
+
       before do
         create_list(:timesheet_entry, 5, user: user, project: project_1)
         create_list(:timesheet_entry, 5, user: user, project: project_2)
