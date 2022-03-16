@@ -28,6 +28,7 @@ class Company < ApplicationRecord
   has_many :current_workspace_users, foreign_key: "current_workspace_id", class_name: "User", dependent: :nullify
   has_one_attached :logo
   has_many :timesheet_entries, through: :clients
+  has_many :invoices
   resourcify
 
   def client_hours_logged(time_frame)
