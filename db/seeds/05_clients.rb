@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Client Create Start
-SAELOUN_INDIA, SAELOUN_US = ["Saeloun India Pvt. Ltd", "Saeloun USA INC."].map { |company| Company.find_by(name: company) }
+require_relative "constant"
 
 client_common = { name: "common client", email: "client@common.com", phone: "+91 9999999990", address: "Somewhere on Earth" }
 client_India = { name: "client_one saeloun_India", email: "client_one@saeloun_india.com", phone: "+91 9999999991", address: "Somewhere on Earth" }

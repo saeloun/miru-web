@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Projects Start
-SAELOUN_INDIA, SAELOUN_US = ["Saeloun India Pvt. Ltd", "Saeloun USA INC."].map { |company| Company.find_by(name: company) }
+require_relative "constant"
 
 # Clients
 common_client_saeloun_India = Client.find_by_company_id_and_name(SAELOUN_INDIA.id, "common client")
