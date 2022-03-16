@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_21_133258) do
+ActiveRecord::Schema.define(version: 2022_03_09_081111) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -90,6 +90,43 @@ ActiveRecord::Schema.define(version: 2022_02_21_133258) do
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
+  create_table "invoice_line_items", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.date "date"
+    t.decimal "rate", precision: 20, scale: 2, default: "0.0"
+    t.integer "quantity", default: 1
+    t.bigint "user_id", null: false
+    t.bigint "invoice_id", null: false
+    t.bigint "timesheet_entry_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["invoice_id"], name: "index_invoice_line_items_on_invoice_id"
+    t.index ["timesheet_entry_id"], name: "index_invoice_line_items_on_timesheet_entry_id"
+    t.index ["user_id"], name: "index_invoice_line_items_on_user_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.date "issue_date"
+    t.date "due_date"
+    t.string "invoice_number"
+    t.text "reference"
+    t.decimal "amount", precision: 20, scale: 2, default: "0.0"
+    t.decimal "outstanding_amount", precision: 20, scale: 2, default: "0.0"
+    t.decimal "tax", precision: 20, scale: 2, default: "0.0"
+    t.decimal "amount_paid", precision: 20, scale: 2, default: "0.0"
+    t.decimal "amount_due", precision: 20, scale: 2, default: "0.0"
+    t.decimal "discount", precision: 20, scale: 2, default: "0.0"
+    t.integer "status", default: 0, null: false
+    t.bigint "company_id", null: false
+    t.bigint "client_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["client_id"], name: "index_invoices_on_client_id"
+    t.index ["company_id"], name: "index_invoices_on_company_id"
+    t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
+  end
+
   create_table "project_members", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
@@ -122,6 +159,16 @@ ActiveRecord::Schema.define(version: 2022_02_21_133258) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
+  end
+
+  create_table "team_members", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
+    t.decimal "hourly_rate", default: "0.0", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_id"], name: "index_team_members_on_project_id"
+    t.index ["user_id"], name: "index_team_members_on_user_id"
   end
 
   create_table "timesheet_entries", force: :cascade do |t|
@@ -189,9 +236,16 @@ ActiveRecord::Schema.define(version: 2022_02_21_133258) do
   add_foreign_key "company_users", "companies"
   add_foreign_key "company_users", "users"
   add_foreign_key "identities", "users"
+  add_foreign_key "invoice_line_items", "invoices"
+  add_foreign_key "invoice_line_items", "timesheet_entries"
+  add_foreign_key "invoice_line_items", "users"
+  add_foreign_key "invoices", "clients"
+  add_foreign_key "invoices", "companies"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
+  add_foreign_key "team_members", "projects"
+  add_foreign_key "team_members", "users"
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies", column: "current_workspace_id"
