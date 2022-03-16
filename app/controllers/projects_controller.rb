@@ -4,8 +4,7 @@ class ProjectsController < ApplicationController
   skip_after_action :verify_authorized
 
   def index
-    @query = Project.ransack(params[:q])
-    @projects = @query.result(distinct: true)
+    authorize :project
   end
 
   def create
