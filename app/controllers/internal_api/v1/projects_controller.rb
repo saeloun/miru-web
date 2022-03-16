@@ -9,6 +9,11 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
 
   def projects
     projects = current_user.current_workspace.projects
-    projects.kept.map { | project | { id: project.id, name: project.name,  minutes_spent: project.total_hours_logged } }
+    projects.kept.map { | project |
+                          { id: project.id,
+                            name: project.name,
+                            clientName: project.client.name,
+                            isBillable: project.billable,
+                            minutesSpent: project.total_hours_logged } }
   end
 end

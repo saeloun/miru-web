@@ -9,7 +9,10 @@
         </div>
       </div>
 
-      <%= react_component("Projects") %>
+      <%= react_component("Projects", {
+        isAdminUser: current_user.has_owner_or_admin_role?(current_user.current_workspace)
+      }) %>
+
 
     </div>
   </div>
