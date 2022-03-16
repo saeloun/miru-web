@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_09_081111) do
+ActiveRecord::Schema.define(version: 2022_03_16_140058) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,6 +55,7 @@ ActiveRecord::Schema.define(version: 2022_03_09_081111) do
     t.datetime "discarded_at", precision: 6
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
+    t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true
   end
 
   create_table "companies", force: :cascade do |t|
