@@ -15,8 +15,8 @@
           <div class="page-content__search-width">
             <%= search_form_for query, url: team_index_path, class: "page-content__search"  do |f| %>
               <div class="relative rounded">
-              <%= f.text_field :first_name_or_last_name_or_email_cont, class: "page-content__search-input", placeholder: 'Search' %>
-              <%= image_submit_tag 'search_icon.svg', class: "page-content__search-image" %>
+              <%= f.text_field :first_name_or_last_name_or_email_cont, class: "page-content__search-input", placeholder: 'Search' , "data-cy": "search_placeholder" %>
+              <%= image_submit_tag 'search_icon.svg', class: "page-content__search-image" , "data-cy": "search_icon" %>
               </div>
             <% end %>
           </div>
@@ -24,7 +24,7 @@
             <div class="page-content__new-user-width">
               <div class="page-content__new-user-position">
                 <button data-team-element="new-user-btn" type="button" class="page-content__new-user-button">
-                  <img src="<%= image_url 'plus_icon.svg' %>" class="page-content__button-image">
+                  <img src="<%= image_url 'plus_icon.svg' %>" class="page-content__button-image" data-cy="add-new-user-button">
                   <%= t('team.new_user') %>
                 </button>
               </div>
@@ -39,7 +39,7 @@
             <div class="table__position-two">
               <div class="table__border">
                 <table class="table__width">
-                  <thead class="">
+                  <thead class="" data-cy="team-table-header">
                     <tr>
                       <th scope="col" class="table__header">
                         <%= t('team.profile_picture') %>
@@ -63,7 +63,7 @@
                   </thead>
                   <tbody id="teamstable" class="table__body">
                     <% teams.kept.each do |member| %>
-                        <tr id="member-<%= member.id %>">
+                        <tr id="member-<%= member.id %>" data-cy="team-table-row">
                           <%= render partial: "team", locals: { member: member } %>
                         </tr>
                     <% end %>

@@ -131,7 +131,7 @@
               <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                 <%= t('navbar.time_tracking') %>
               </a>
-              <a href="/team" class="<%= request.path == "/team" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+             <a href="/team" data-cy="team-tab" class="<%= request.path == "/team" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                 <%= t('navbar.team') %>
               </a>
               <a href="/clients" class="<%= request.path == "/clients" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
