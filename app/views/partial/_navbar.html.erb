@@ -23,7 +23,7 @@
       <a href="/projects" class="<%= request.path == "/projects" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.projects') %></a>
       <% if current_user.has_owner_or_admin_role?(current_company) %>
         <a href="/invoice" class="<%= request.path == "/invoice" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.invoice') %></a>
-        <a href="/report" class="<%= request.path == "/report" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.report') %></a>
+        <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.reports') %></a>
       <% end %>
     </div>
     <!-- dashboard time_tracking team clients projects invoice report etc. end -->
@@ -112,8 +112,8 @@
                 </a>
               <% end %>
               <% if current_user.has_owner_or_admin_role?(current_company) %>
-                <a href="/report" class="<%= request.path == "/report" ? "block" : "hidden" %> navbar__small-screen-second_titles">
-                  <%= t('navbar.report') %>
+                <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                  <%= t('navbar.reports') %>
                 </a>
               <% end %>
             </div>
@@ -146,8 +146,8 @@
                 </a>
               <% end %>
               <% if current_user.has_owner_or_admin_role?(current_company) %>
-                <a href="/report" class="<%= request.path == "/report" ? "navbar___large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                  <%= t('navbar.report') %>
+                <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "navbar___large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                  <%= t('navbar.reports') %>
                 </a>
               <% end %>
             </div>
