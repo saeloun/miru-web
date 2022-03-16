@@ -20,6 +20,17 @@ describe("root page tests", () => {
     cy.get(navbarSelectors.teamTab).should("be.visible");
   });
 
+  it("owner should have owner menus items", function () {
+    cy.loginAsOwner();
+    cy.get(navbarSelectors.dashboardTab).should("be.visible");
+    cy.get(navbarSelectors.clientsTab).should("be.visible");
+    cy.get(navbarSelectors.timeTrackingTab).should("be.visible");
+    cy.get(navbarSelectors.projectsTab).should("be.visible");
+    cy.get(navbarSelectors.invoiceTab).should("be.visible");
+    cy.get(navbarSelectors.reportsTab).should("be.visible");
+    cy.get(navbarSelectors.teamTab).should("be.visible");
+  });
+
   it("employees should have employee menu items", function () {
     cy.loginAsEmployee();
     cy.get(navbarSelectors.timeTrackingTab).should("be.visible");
