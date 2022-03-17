@@ -14,5 +14,5 @@ export const teamTabSelector = {
   newMemberEmail: dataCy("new-member-email"),
   adminRadioButton: dataCy("admin-radio-button"),
   employeeRadioButton: dataCy("employee-radio-button"),
-  sendInviteButton: dataCy("send-invite-button")
+  sendInviteButton: dataCy("send-invite-button"),
 };

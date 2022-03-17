@@ -12,16 +12,14 @@ describe("Team page for Owner", () => {
     cy.visit(teamPath);
   });
 
-  it.only("should be able to add new Admin user", function () {
+  it("should be able to add new Admin user", function () {
     addNewUser("admin");
     cy.reload();
+    // deleteTestUser();  -- to be fixed
   });
   it("should be able to add new Emp user", function () {
     addNewUser();
-
-    //delete user
-    cy.get(teamTabSelector.searchTeamMemberPlaceholder).clear().type("dummy");
-    cy.get(teamTabSelector.deleteTeamMemberButton).first().click();
+    // deleteTestUser();  -- to be fixed
   });
   it("should display all column names", function () {
     cy.get(teamTabSelector.teamTableHeader).contains("PHOTO");
@@ -34,11 +32,5 @@ describe("Team page for Owner", () => {
       .find(teamTabSelector.editTeamMemberButton)
       .first()
       .click();
-  });
-  it("should be able to delete user", function () {
-    //Add a team member and delete.
-    cy.get(teamTabSelector.teamTableRow).find(
-      teamTabSelector.deleteTeamMemberButton
-    );
   });
 });

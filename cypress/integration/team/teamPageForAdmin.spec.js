@@ -1,5 +1,6 @@
-import { teamPath, signInPath } from "../../constants/routes/paths";
-import { navbarSelectors } from "../../constants/selectors/navbar";
+import { teamPath, signInPath, mailPath } from "../../constants/routes/paths";
+import { teamTabSelector } from "../../constants/selectors/team";
+import { addNewUser } from "../../support/utils/team";
 
 describe("Team page for Admin", () => {
   beforeEach(function () {
@@ -11,8 +12,25 @@ describe("Team page for Admin", () => {
     cy.visit(teamPath);
   });
 
-  it("should be able to add new user", function () {});
-  it("should display all column names", function () {});
-  it("should be able to update user details", function () {});
-  it("should be able to delete user", function () {});
+  it("should be able to add new Admin user", function () {
+    addNewUser("admin");
+    cy.reload();
+    // deleteTestUser();  -- to be fixed
+  });
+  it("should be able to add new Emp user", function () {
+    addNewUser();
+    // deleteTestUser();  -- to be fixed
+  });
+  it("should display all column names", function () {
+    cy.get(teamTabSelector.teamTableHeader).contains("PHOTO");
+    cy.get(teamTabSelector.teamTableHeader).contains("NAME");
+    cy.get(teamTabSelector.teamTableHeader).contains("EMAIL ID");
+    cy.get(teamTabSelector.teamTableHeader).contains("ROLE");
+  });
+  it("should be able to update user details", function () {
+    cy.get(teamTabSelector.teamTableRow)
+      .find(teamTabSelector.editTeamMemberButton)
+      .first()
+      .click();
+  });
 });
