@@ -5,11 +5,6 @@ require_relative "constant"
 
 companies = [SAELOUN_INDIA, SAELOUN_US]
 users = [VIPUL, SUPRIYA, AKHIL, KESHAV, ROHIT]
-companies.each do |company|
-  users.each do |user|
-    company.company_users.create!(user_id: user.id)
-  end
-end
-
+companies.each { |company| users.each { | user | company.company_users.create!(user_id: user.id) } }
 puts "Company User Created"
 # Company User End

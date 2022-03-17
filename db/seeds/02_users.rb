@@ -9,8 +9,6 @@ users = [
   { first_name: "Keshav", last_name: "Biswa", email: "keshav@example.com", password: "password", password_confirmation: "password", confirmed_at: Time.current, invitation_accepted_at: Time.current, current_workspace_id: company.id },
   { first_name: "Rohit", last_name: "Joshi", email: "rohit@example.com", password: "password", password_confirmation: "password", confirmed_at: Time.current, invitation_accepted_at: Time.current, current_workspace_id: company.id }
 ]
-users.each do |user|
-  User.create!(user)
-end
+users.each { |user| User.create!(user) }
 puts "Users Created"
 # User Create End

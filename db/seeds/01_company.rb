@@ -23,8 +23,6 @@ companies = [
     timezone: "America - New York" }
 ]
 
-companies.each do |company|
-  Company.create!(company)
-end
+companies.each { |company| Company.create!(company) }
 puts "Company Created"
 # Company Create End
