@@ -19,13 +19,4 @@ class InternalApi::V1::TimesheetEntry::BulkActionController < InternalApi::V1::A
       render json: { notice: I18n.t("timesheet_entry.destroy.message") }
     end
   end
-
-  def update_project
-    if params[:project_id]
-      project = Project.find(params[:project_id])
-      render json: { notice: I18n.t("timesheet_entry.update_project.message"), project: project.formatted_project } if current_timesheet_entry.update_project(project)
-    else
-      render json: { notice: I18n.t("timesheet_entry.update_project.message") }
-    end
-  end
 end
