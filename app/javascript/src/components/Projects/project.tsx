@@ -14,6 +14,7 @@ export interface IProject {
   setProjectToEdit: any;
   setProjectToDelete: any;
   setShowDeleteDialog: any;
+  projectClickHandler: any;
 }
 
 export const Project = ({
@@ -25,6 +26,7 @@ export const Project = ({
   editIcon,
   deleteIcon,
   isAdminUser,
+  projectClickHandler,
   setShowEditDialog,
   setProjectToEdit,
   setProjectToDelete,
@@ -44,7 +46,11 @@ export const Project = ({
   };
 
   return (
-    <tr key={id} className={`last:border-b-0 ${grayColor}`} onMouseLeave={handleMouseLeave} onMouseEnter={handleMouseEnter}>
+    <tr key={id}
+      className={`last:border-b-0 ${grayColor}`}
+      onMouseLeave={handleMouseLeave}
+      onMouseEnter={handleMouseEnter}
+      onClick={() => projectClickHandler(id)}>
       <td className="table__cell text-base">
         {name}"  "{clientName}
       </td>

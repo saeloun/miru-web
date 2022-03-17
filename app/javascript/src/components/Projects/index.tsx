@@ -3,11 +3,12 @@ import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projects from "apis/projects";
 import { Project } from "./project";
+import ProjectDetails from "./projectDetails";
 import ProjectList from "./projectList";
 
 const Projects = (isAdminUser) => {
   const [allProjects, setAllProjects] = React.useState([]);
-  const [showProjectDetails, setShowProjectDetails] = React.useState();
+  const [showProjectDetails, setShowProjectDetails] = React.useState(null);
 
   const fetchProjects = async () => {
     const res = await projects.get();
@@ -22,18 +23,14 @@ const Projects = (isAdminUser) => {
     fetchProjects();
   }, []);
 
-  const projectClickHandler = (pid) => {
-    setShowProjectDetails(pid);
+  const projectClickHandler = (id) => {
+    setShowProjectDetails(id);
   };
-
-  const renderProjectDetails = () => (
-    <></>
-    //{<ProjectDetails />}
-  );
 
   return (
     showProjectDetails ?
-      renderProjectDetails() :
+      <ProjectDetails
+        id={showProjectDetails}/> :
       <ProjectList
         allProjects={allProjects}
         isAdminUser={isAdminUser}

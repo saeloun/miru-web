@@ -40,7 +40,7 @@ export const ProjectList = ({ allProjects, isAdminUser, projectClickHandler }) =
                     key={index}
                     {...project}
                     isAdminUser={isAdminUser}
-                    onClick={projectClickHandler}
+                    projectClickHandler={projectClickHandler}
                     /* editIcon={editIcon}
                       deleteIcon={deleteIcon}
                       setShowEditDialog={setShowEditDialog}
