@@ -16,7 +16,7 @@ RSpec.describe "Companies::PurgeLogo#destroy", type: :request do
     expect(company.logo.attached?).to be_falsy
   end
 
-  it "redirects to company_path " do
+  it "redirects to company_path" do
     expect(response).to redirect_to(company_path)
   end
 end

@@ -14,7 +14,7 @@ RSpec.describe "Companies#new", type: :request do
       send_request :get, new_company_path
     end
 
-    it "is successful " do
+    it "is successful" do
       expect(response).to be_successful
     end
 
@@ -31,7 +31,7 @@ RSpec.describe "Companies#new", type: :request do
       send_request :get, new_company_path
     end
 
-    it "is successful " do
+    it "is successful" do
       expect(response).to be_successful
     end
 
