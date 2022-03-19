@@ -319,7 +319,7 @@ RSpec/ContextMethod:
 
 RSpec/ContextWording:
   Description: Checks that context docstring starts with an allowed prefix.
-  Enabled: false
+  Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ContextWording
   Prefixes:
     - when
@@ -475,8 +475,9 @@ RSpec/MessageExpectation:
 
 RSpec/MultipleMemoizedHelpers:
   Description: Checks if example groups contain too many `let` and `subject` calls.
-  Enabled: false
+  Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleMemoizedHelpers
+  Max: 10
 
 RSpec/MissingExampleGroupArgument:
   Description: Checks that the first argument to an example group is not empty.

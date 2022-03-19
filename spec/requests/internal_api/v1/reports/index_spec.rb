@@ -6,7 +6,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
   let (:company) { create(:company) }
   let (:user) { create(:user, current_workspace_id: company.id) }
 
-  context "When user is admin" do
+  context "when user is admin" do
     before do
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :admin, company
@@ -20,7 +20,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
     end
   end
 
-  context "When user is employee" do
+  context "when user is employee" do
     before do
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :employee, company

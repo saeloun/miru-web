@@ -115,7 +115,7 @@ RSpec.describe Client, type: :model do
         end
       end
 
-      context "When time_frame is year" do
+      context "when time_frame is year" do
         let (:time_frame) { "year" }
 
         it "should return the hours_logged for a project in that year" do
