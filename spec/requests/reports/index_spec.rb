@@ -14,7 +14,7 @@ RSpec.describe "Reports#index", type: :request do
       send_request :get, reports_path
     end
 
-    it "should render Reports#index page" do
+    it "renders Reports#index page" do
       expect(response).to be_successful
       expect(response.body).to include("Time entry report")
     end
@@ -28,7 +28,7 @@ RSpec.describe "Reports#index", type: :request do
       send_request :get, reports_path
     end
 
-    it "should not render Reports#index page" do
+    it "does not render Reports#index page" do
       expect(response).not_to be_successful
     end
   end

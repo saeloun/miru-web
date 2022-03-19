@@ -19,7 +19,7 @@ RSpec.describe "Client#destroy", type: :request do
         send_request(:delete, "/internal_api/v1/clients/#{client.id}")
       end
 
-      it "should delete the client" do
+      it "deletes the client" do
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body, { object_class: OpenStruct }).notice)
           .to eq(I18n.t("client.delete.success.message"))
@@ -33,7 +33,7 @@ RSpec.describe "Client#destroy", type: :request do
         send_request(:delete, "/internal_api/v1/clients/#{client_id}")
       end
 
-      it "should respond with client not found error" do
+      it "responds with client not found error" do
         expect(response).to have_http_status(:not_found)
         expect(JSON.parse(response.body, { object_class: OpenStruct }).errors)
           .to eq("Couldn't find Client with 'id'=#{client_id}")
@@ -49,7 +49,7 @@ RSpec.describe "Client#destroy", type: :request do
       send_request(:delete, "/internal_api/v1/clients/#{client.id}")
     end
 
-    it "should not be permitted to delete client" do
+    it "is not permitted to delete client" do
       expect(response).to have_http_status(:forbidden)
       expect(JSON.parse(response.body, { object_class: OpenStruct }).errors)
         .to eq(I18n.t("pundit.default"))
@@ -57,7 +57,7 @@ RSpec.describe "Client#destroy", type: :request do
   end
 
   context "when unauthenticated" do
-    it "should not be permitted to delete client" do
+    it "is not permitted to delete client" do
       send_request(:delete, "/internal_api/v1/clients/#{client.id}")
       expect(response).to have_http_status(:unauthorized)
       expect(JSON.parse(response.body, { object_class: OpenStruct }).error)

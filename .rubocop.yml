@@ -394,7 +394,7 @@ RSpec/ExampleWithoutDescription:
 
 RSpec/ExampleWording:
   Description: Checks for common mistakes in example descriptions.
-  Enabled: false
+  Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleWording
 
 RSpec/ExcessiveDocstringSpacing:
