@@ -9,6 +9,7 @@ RSpec.describe Client, type: :model do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:email) }
     it { is_expected.to validate_uniqueness_of(:email) }
+    it { is_expected.to validate_uniqueness_of(:client_code) }
     it { is_expected.to allow_value("valid@email.com").for(:email) }
     it { is_expected.not_to allow_value("invalid@email").for(:email) }
   end

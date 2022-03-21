@@ -11,9 +11,11 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  discarded_at :datetime
+#  client_code  :string
 #
 # Indexes
 #
+#  index_clients_on_client_code   (client_code) UNIQUE
 #  index_clients_on_company_id    (company_id)
 #  index_clients_on_discarded_at  (discarded_at)
 #
@@ -29,6 +31,7 @@ class Client < ApplicationRecord
 
   validates :name, :email, presence: true
   validates :email, uniqueness: true, format: { with: Devise.email_regexp }
+  validates :client_code, uniqueness: true
 
   after_discard :discard_projects
 

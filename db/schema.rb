@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_09_081111) do
+ActiveRecord::Schema.define(version: 2022_03_21_134958) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -51,6 +51,8 @@ ActiveRecord::Schema.define(version: 2022_03_09_081111) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "discarded_at", precision: 6
+    t.string "client_code"
+    t.index ["client_code"], name: "index_clients_on_client_code", unique: true
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
   end
@@ -76,9 +78,6 @@ ActiveRecord::Schema.define(version: 2022_03_09_081111) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["company_id"], name: "index_company_users_on_company_id"
     t.index ["user_id"], name: "index_company_users_on_user_id"
-  end
-
-  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
   create_table "identities", force: :cascade do |t|
@@ -161,16 +160,6 @@ ActiveRecord::Schema.define(version: 2022_03_09_081111) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
-  create_table "team_members", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "project_id", null: false
-    t.decimal "hourly_rate", default: "0.0", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["project_id"], name: "index_team_members_on_project_id"
-    t.index ["user_id"], name: "index_team_members_on_user_id"
-  end
-
   create_table "timesheet_entries", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
@@ -244,8 +233,6 @@ ActiveRecord::Schema.define(version: 2022_03_09_081111) do
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
-  add_foreign_key "team_members", "projects"
-  add_foreign_key "team_members", "users"
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies", column: "current_workspace_id"
