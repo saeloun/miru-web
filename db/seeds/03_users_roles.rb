@@ -1,17 +1,16 @@
 # frozen_string_literal: true
 
 # User Roles Start
-require_relative "constant"
 
-VIPUL.add_role(:owner, SAELOUN_INDIA)    # Vipul is Owner in Company India
-VIPUL.add_role(:owner, SAELOUN_US)       # Vipul is Owner in Company US
-SUPRIYA.add_role(:admin, SAELOUN_INDIA)  # Supriya is Admin in Company India
-SUPRIYA.add_role(:admin, SAELOUN_US)     # Supriya is Admin in Company US
-AKHIL.add_role(:employee, SAELOUN_INDIA) # Akhil is Employee is Company India
-AKHIL.add_role(:employee, SAELOUN_US)    # Akhil is Employee is Company US
-KESHAV.add_role(:admin, SAELOUN_INDIA)   # Keshav is Admin is Company India
-KESHAV.add_role(:employee, SAELOUN_US)   # Keshav is Employee is Company US
-ROHIT.add_role(:employee, SAELOUN_INDIA) # Rohit is Employee is Company India
-ROHIT.add_role(:admin, SAELOUN_US)       # Rohit is Admin is Company US
+@vipul.add_role(:owner, @saeloun_India)    # Vipul is Owner in Company India
+@vipul.add_role(:owner, @saeloun_us)       # Vipul is Owner in Company US
+@supriya.add_role(:admin, @saeloun_India)  # Supriya is Admin in Company India
+@supriya.add_role(:admin, @saeloun_us)     # Supriya is Admin in Company US
+@akhil.add_role(:employee, @saeloun_India) # Akhil is Employee is Company India
+@akhil.add_role(:employee, @saeloun_us)    # Akhil is Employee is Company US
+@keshav.add_role(:admin, @saeloun_India)   # Keshav is Admin is Company India
+@keshav.add_role(:employee, @saeloun_us)   # Keshav is Employee is Company US
+@rohit.add_role(:employee, @saeloun_India) # Rohit is Employee is Company India
+@rohit.add_role(:admin, @saeloun_us)       # Rohit is Admin is Company US
 puts "Users Roles Created"
 # User Roles End

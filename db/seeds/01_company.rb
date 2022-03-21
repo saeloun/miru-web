@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Company Create Start
-companies = [
+@companies = [
   { name: "Saeloun India Pvt. Ltd",
     address: "somewhere in India",
     business_phone: "+91 0000000000",
@@ -23,6 +23,7 @@ companies = [
     timezone: "America - New York" }
 ]
 
-companies.each { |company| Company.create!(company) }
+@companies.each { |company| Company.create!(company) }
 puts "Company Created"
+@saeloun_India, @saeloun_us = ["Saeloun India Pvt. Ltd", "Saeloun USA INC."].map { |company| Company.find_by(name: company) }
 # Company Create End
