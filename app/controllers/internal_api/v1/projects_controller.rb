@@ -11,6 +11,6 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
 
   private
     def project
-      @_project ||= Project.find(params[:id])
+      @_project ||= Project.includes(:project_members, project_members: [:user]).find(params[:id])
     end
 end
