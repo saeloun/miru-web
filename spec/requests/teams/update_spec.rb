@@ -28,7 +28,7 @@ RSpec.describe "Team#update", type: :request do
       expect(user.email).to eq("test@example.com")
     end
 
-    it "redirects to root_path " do
+    it "redirects to root_path" do
       expect(response).to have_http_status(:redirect)
     end
   end

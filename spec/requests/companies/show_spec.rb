@@ -14,7 +14,7 @@ RSpec.describe "Companies#show", type: :request do
       send_request :get, company_path
     end
 
-    it "is successful " do
+    it "is successful" do
       expect(response).to be_successful
     end
 
