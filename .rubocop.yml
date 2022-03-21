@@ -489,6 +489,16 @@ RSpec/MultipleDescribes:
   Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleDescribes
 
+RSpec/MissingExampleGroupArgument:
+  Description: Checks that the first argument to an example group is not empty.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MissingExampleGroupArgument
+
+RSpec/MultipleDescribes:
+  Description: Checks for multiple top-level example groups.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleDescribes
+
 RSpec/MultipleExpectations:
   Description: Checks if examples contain too many `expect` calls.
   Enabled: true
