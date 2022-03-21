@@ -4,6 +4,8 @@ const path = "/projects";
 
 const get = async () => axios.get(`${path}`);
 
-const projects = { get };
+const show = async id => axios.get(`${path}/${id}`);
+
+const projects = { get, show };
 
 export default projects;

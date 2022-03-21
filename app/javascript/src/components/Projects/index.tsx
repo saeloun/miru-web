@@ -10,11 +10,12 @@ const Projects = (isAdminUser) => {
   const [allProjects, setAllProjects] = React.useState([]);
   const [showProjectDetails, setShowProjectDetails] = React.useState(null);
 
-  const fetchProjects = async () => {
-    const res = await projects.get();
-    if (res.status == 200) {
-      setAllProjects(res.data.projects);
-    }
+  const fetchProjects = () => {
+
+    projects.get()
+      .then(res => setAllProjects(res.data.projects))
+      .catch(err => console.log(err));
+
   };
 
   React.useEffect(() => {

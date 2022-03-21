@@ -46,6 +46,15 @@ class Project < ApplicationRecord
     timesheet_entries.where(work_date: from..to).sum(:duration)
   end
 
+  def project_member_details
+    project_members.map do |member|
+      user = User.find(member.user_id)
+      { name: user.full_name,
+       hourly_rate: member.hourly_rate,
+       minutes_spent: user.timesheet_entries.where(project_id: self.id).sum(:duration) }
+    end
+  end
+
   # Move weeK_month_year method copied from client.rb to common place
   def week_month_year(time_frame)
     case time_frame
