@@ -5,7 +5,7 @@ import * as dayjs from "dayjs";
 import * as weekday from "dayjs/plugin/weekday";
 import AddEntry from "./AddEntry";
 import EntryCard from "./EntryCard";
-import WeeklyEntryCard from "./WeeklyEntryCard";
+import WeeklyEntries from "./WeeklyEntries";
 import { setAuthHeaders, registerIntercepts } from "../../apis/axios";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";
@@ -16,19 +16,7 @@ dayjs.extend(weekday);
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
 
-interface props {
-  clients: client[];
-  projects: object;
-  entries: object;
-  isAdmin: boolean;
-}
-
-interface client {
-  name: string;
-  email: string;
-}
-
-const TimeTracking: React.FC<props> = ({
+const TimeTracking: React.FC<Iprops> = ({
   clients,
   projects,
   entries,
@@ -219,7 +207,7 @@ const TimeTracking: React.FC<props> = ({
                     setWeekDay(0);
                     setSelectDate(dayjs().weekday());
                   }}
-                  className="flex items-center justify-center text-white tracking-widest border-2 rounded-md h-6 w-20 text-base ml-4"
+                  className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold ml-4"
                 >
                   TODAY
                 </button>
@@ -264,7 +252,7 @@ const TimeTracking: React.FC<props> = ({
                           "bg-white border-miru-han-purple-1000")
                       }
                     >
-                      <p className="text-xs text-miru-dark-purple-1000 font-extrabold">
+                      <p className="text-xs text-miru-dark-purple-1000 font-medium">
                         {d.day}
                       </p>
                       <p className="text-xs">
@@ -281,7 +269,7 @@ const TimeTracking: React.FC<props> = ({
                       key={index}
                       className="py-2 my-2 w-24 h-12 items-center rounded-xl border-2 border-transparent"
                     >
-                      <p className="text-xs text-miru-dark-purple-1000 font-extrabold">
+                      <p className="text-xs text-miru-dark-purple-1000 font-medium">
                         {d.day}
                       </p>
                       <p className="text-xs">
@@ -303,6 +291,7 @@ const TimeTracking: React.FC<props> = ({
                 entryList={entryList}
                 setEditEntryId={setEditEntryId}
                 editEntryId={editEntryId}
+                dayInfo={dayInfo}
               />
             )}
             {view !== "week" && !newEntryView && (
@@ -325,9 +314,8 @@ const TimeTracking: React.FC<props> = ({
             )}
 
             {view === "week" && newRowView && (
-              <WeeklyEntryCard
+              <WeeklyEntries
                 key={0}
-                dayInfo={dayInfo}
                 entries={[]}
                 clients={clients}
                 projects={projects}
@@ -336,6 +324,8 @@ const TimeTracking: React.FC<props> = ({
                 setNewRowView={setNewRowView}
                 clientName={""}
                 projectName={""}
+                dayInfo={dayInfo}
+                projectId={null}
               />
             )}
           </div>
@@ -350,13 +340,13 @@ const TimeTracking: React.FC<props> = ({
                 setNewEntryView={setNewEntryView}
                 clients={clients}
                 projects={projects}
-                dayInfo={dayInfo}
                 selectedDateInfo={dayInfo[selectDate]}
                 selectedFullDate={selectedFullDate}
                 setEntryList={setEntryList}
                 entryList={entryList}
                 setEditEntryId={setEditEntryId}
                 editEntryId={editEntryId}
+                dayInfo={dayInfo}
               />
             ) : (
               <EntryCard
@@ -372,15 +362,15 @@ const TimeTracking: React.FC<props> = ({
         {view === "week" && (
           <div className="">
             {weeklyData.map((entry, i) => (
-              <WeeklyEntryCard
+              <WeeklyEntries
                 key={i + 1}
                 {...entry}
-                dayInfo={dayInfo}
                 setEntryList={setEntryList}
                 clients={clients}
                 projects={projects}
                 newRowView={newRowView}
                 setNewRowView={setNewRowView}
+                dayInfo={dayInfo}
               />
             ))}
           </div>
@@ -389,5 +379,12 @@ const TimeTracking: React.FC<props> = ({
     </>
   );
 };
+
+interface Iprops {
+  clients: [];
+  projects: object;
+  entries: object;
+  isAdmin: boolean;
+}
 
 export default TimeTracking;

@@ -6,23 +6,7 @@ import { getNumberWithOrdinal } from "../../helpers/ordinal";
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 
-interface props {
-  setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
-  clients: Iclient[];
-  projects: object;
-  selectedDateInfo: object;
-  setEntryList: React.Dispatch<React.SetStateAction<object[]>>;
-  entryList: object;
-  selectedFullDate: string;
-  editEntryId: number;
-  setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
-}
-
-interface Iclient {
-  name: string;
-}
-
-const AddEntry: React.FC<props> = ({
+const AddEntry: React.FC<Iprops> = ({
   setNewEntryView,
   clients,
   projects,
@@ -34,7 +18,7 @@ const AddEntry: React.FC<props> = ({
   editEntryId
 }) => {
   const { useState, useEffect } = React;
-  clients = clients.sort((a, b) => (a.name < b.name ? -1 : 1));
+  clients = clients.sort((a, b) => (a["name"] < b["name"] ? -1 : 1));
   const [note, setNote] = useState("");
   const [duration, setDuration] = useState("00:00");
   const [client, setClient] = useState("");
@@ -104,8 +88,6 @@ const AddEntry: React.FC<props> = ({
         }
         return newState;
       });
-
-      // setNewEntryView(false);
     }
   };
 
@@ -159,7 +141,7 @@ const AddEntry: React.FC<props> = ({
             </option>
           )}
           {clients.map((client, i) => (
-            <option key={i.toString()}>{client.name}</option>
+            <option key={i.toString()}>{client["name"]}</option>
           ))}
         </select>
 
@@ -193,7 +175,7 @@ const AddEntry: React.FC<props> = ({
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className="p-1 w-60 h-18 rounded-sm bg-miru-gray-100 my-2"
+          className="p-1 w-60 h-18 rounded-sm bg-miru-gray-100 my-2 focus:miru-han-purple-1000 outline-none resize-none"
         ></textarea>
       </div>
       <div className="w-60">
@@ -272,5 +254,18 @@ const AddEntry: React.FC<props> = ({
     </div>
   );
 };
+
+interface Iprops {
+  setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
+  clients: [];
+  projects: object;
+  selectedDateInfo: object;
+  setEntryList: React.Dispatch<React.SetStateAction<object[]>>;
+  entryList: object;
+  selectedFullDate: string;
+  editEntryId: number;
+  setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
+  dayInfo: object;
+}
 
 export default AddEntry;

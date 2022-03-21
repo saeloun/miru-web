@@ -15,8 +15,13 @@ class InternalApi::V1::TimesheetEntry::BulkActionController < InternalApi::V1::A
 
   def destroy
     timesheet_entries = policy_scope(TimesheetEntry)
-    if timesheet_entries.where(id: params[:ids].split(",")).destroy_all
+    if timesheet_entries.where(id: ids_params).destroy_all
       render json: { notice: I18n.t("timesheet_entry.destroy.message") }
     end
   end
+
+  private
+    def ids_params
+      params.require(:source).require(:ids)
+    end
 end

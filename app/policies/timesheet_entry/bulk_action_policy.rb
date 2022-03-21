@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TimesheetEntry::BulkActionPolicy < TimesheetEntryPolicys
+class TimesheetEntry::BulkActionPolicy < TimesheetEntryPolicy
   class Scope < Scope
     def resolve
       if user.has_owner_or_admin?
