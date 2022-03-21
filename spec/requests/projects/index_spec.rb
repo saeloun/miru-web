@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Projects#index", type: :request do
-  context "When authenticated" do
+  context "when authenticated" do
     it "returns http success" do
       send_request :get, projects_path
       expect(response).to have_http_status(:found)

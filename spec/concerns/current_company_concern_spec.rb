@@ -22,13 +22,13 @@ RSpec.describe CurrentCompanyConcern do
     end
   end
 
-  describe "When current user has current workspace id" do
+  describe "when current user has current workspace id" do
     it "returns company record based on company id stored in current_workspace_id column" do
       expect(@stub_class.new(user).current_company).to eq(company)
     end
   end
 
-  describe "When current user doesn't have current workspace id" do
+  describe "when current user doesn't have current workspace id" do
     before do
       user.update(current_workspace_id: nil)
     end
@@ -38,7 +38,7 @@ RSpec.describe CurrentCompanyConcern do
     end
   end
 
-  describe "When current user doesn't have current workspace id and not associated with any company" do
+  describe "when current user doesn't have current workspace id and not associated with any company" do
     before do
       user.update(current_workspace_id: nil)
       user.company_users.destroy
@@ -49,7 +49,7 @@ RSpec.describe CurrentCompanyConcern do
     end
   end
 
-  describe "When current user is nil" do
+  describe "when current user is nil" do
     before do
       user.update(current_workspace_id: nil)
       user.company_users.destroy
