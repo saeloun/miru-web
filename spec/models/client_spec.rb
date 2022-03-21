@@ -42,7 +42,7 @@ RSpec.describe Client, type: :model do
         end
       end
 
-      context "when time_frame in a week " do
+      context "when time_frame in a week" do
         let (:time_frame) { "week" }
 
         it "should return the total hours logged for a client in that week" do
@@ -62,7 +62,7 @@ RSpec.describe Client, type: :model do
         end
       end
 
-      context "when time_frame in a year " do
+      context "when time_frame in a year" do
         let (:time_frame) { "year" }
 
         it "should return the total hours logged for a client in that year" do

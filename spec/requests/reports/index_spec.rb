@@ -29,7 +29,7 @@ RSpec.describe "Reports#index", type: :request do
     end
 
     it "should not render Reports#index page" do
-      expect(response).to_not be_successful
+      expect(response).not_to be_successful
     end
   end
 

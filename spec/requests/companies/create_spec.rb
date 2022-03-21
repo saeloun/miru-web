@@ -38,7 +38,7 @@ RSpec.describe "Companies#create", type: :request do
         expect(user.current_workspace_id).to eq(Company.last.id)
       end
 
-      it "redirects to root_path " do
+      it "redirects to root_path" do
         expect(response).to have_http_status(:redirect)
       end
     end
@@ -65,7 +65,7 @@ RSpec.describe "Companies#create", type: :request do
         expect(Company.count).to eq(1)
       end
 
-      it "redirects to root_path " do
+      it "redirects to root_path" do
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -103,7 +103,7 @@ RSpec.describe "Companies#create", type: :request do
         expect(user.current_workspace_id).to eq(Company.last.id)
       end
 
-      it "redirects to root_path " do
+      it "redirects to root_path" do
         expect(response).to have_http_status(:redirect)
       end
     end
@@ -130,7 +130,7 @@ RSpec.describe "Companies#create", type: :request do
         expect(response.body).to include("Company creation failed")
       end
 
-      it "redirects to root_path " do
+      it "redirects to root_path" do
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
