@@ -1,75 +1,32 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
-import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
+import { minutesToHHMM, minutesFromHHMM } from "helpers/hhmm-parser";
 import timesheetEntryApi from "../../apis/timesheet-entry";
-const { useState, useEffect, useRef } = React;
+
+const { useState, useEffect } = React;
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 
-interface Props {
-  clients: object;
-  projects: object;
-  newRowView: boolean;
-  setNewRowView: React.Dispatch<React.SetStateAction<boolean>>;
-  projectId: number;
-  clientName: string;
-  projectName: string;
-  entries: [];
-  setEntryList: React.Dispatch<React.SetStateAction<[]>>;
-  dayInfo: [];
-}
-
-const WeeklyEntryCard: React.FC<Props> = ({
-  clients,
-  projects,
+const WeeklyEntriesCard = ({
+  client,
+  project,
+  currentEntries,
+  setProjectSelected,
+  handleDeleteEntries,
+  currentProjectId,
+  setEntryList,
+  setCurrentEntries,
   newRowView,
   setNewRowView,
-  projectId,
-  clientName,
-  projectName,
-  entries,
-  setEntryList,
   dayInfo
-}) => {
+}: Iprops) => {
   const [selectedInputBox, setSelectedInputBox] = useState(-1);
-  const [client, setClient] = useState("");
-  const [project, setProject] = useState("");
-  const [currentProjectId, setCurrentProjectId] = useState(-1);
   const [note, setNote] = useState("");
   const [duration, setDuration] = useState("00:00");
-  const [projectSelected, setProjectSelected] = useState(false);
   const [showNote, setShowNote] = useState(false);
   const [weeklyTotalHours, setWeeklyTotalHours] = useState(0);
   const [billable, setBillable] = useState(false);
   const [dataChanged, setDataChanged] = useState(false);
-  const [currentEntries, setCurrentEntries] = useState([]);
-  const durationInputBox = useRef("00:00");
-
-  const handleEditProject: React.ChangeEventHandler<HTMLSelectElement> = e => {
-    setProject(e.target.value);
-    setProjectSelected(true);
-  };
-
-  const calculateTotalWeeklyDuration = () => {
-    setWeeklyTotalHours(
-      currentEntries.reduce((acc, cv) => (cv ? cv["duration"] + acc : 0), 0)
-    );
-  };
-
-  const setProjectId = () => {
-    setCurrentProjectId(projects[client].find(p => p.name === project).id);
-  };
-
-  const handleSetData = () => {
-    if (projectId) {
-      setCurrentProjectId(projectId);
-      setProject(projectName);
-      setClient(clientName);
-      setProjectSelected(true);
-      calculateTotalWeeklyDuration();
-      setCurrentEntries(entries);
-    }
-  };
 
   const handleSaveEntry = async () => {
     if (!dataChanged && note && duration) return;
@@ -124,61 +81,34 @@ const WeeklyEntryCard: React.FC<Props> = ({
     }
   };
 
-  const handleCancelButton = () => {
-    () => {
-      if (newRowView) setNewRowView(false);
-      if (!newRowView) {
-        setProjectSelected(true);
-        setClient(clientName);
-        setProject(projectName);
-      }
-    };
+  const calculateTotalWeeklyDuration = () => {
+    setWeeklyTotalHours(
+      currentEntries.reduce((acc, cv) => (cv ? cv["duration"] + acc : 0), 0)
+    );
   };
 
-  const handleEditEntries = async () => {
-    const ids = currentEntries.map(entry => entry["id"]);
-    const res = await timesheetEntryApi.updateBulk({
-      project_id: currentProjectId,
-      ids: ids
-    });
-    // eslint-disable-next-line no-empty
-    if (res.status === 200) {
-      setEntryList(prevState => {
-        const newState = { ...prevState, ...res.data.entries };
-        return newState;
-      });
-    }
-  };
-
-  const handleDeleEntries = async () => {
-    const ids = currentEntries.map(entry => entry["id"]);
-    const res = await timesheetEntryApi.destroyBulk(ids);
-    if (res.status === 200) {
-      setEntryList(prevState => {
-        const newState = { ...prevState };
-        dayInfo.forEach(day => {
-          newState[day["fullDate"]] = newState[day["fullDate"]]?.filter(
-            entry => !ids.includes(entry["id"])
-          );
-        });
-        return newState;
-      });
-    }
+  const handleSetFocus = () => {
+    if (selectedInputBox === -1) return;
+    document.getElementById("selectedInput").focus();
   };
 
   useEffect(() => {
-    handleSetData();
-  }, []);
+    handleSetFocus();
+  }, [selectedInputBox]);
 
   useEffect(() => {
     calculateTotalWeeklyDuration();
   }, [currentEntries]);
 
-  // useEffect(() => {
-  //   durationInputBox.current.focus();
-  // }, [selectedInputBox]);
+  useEffect(() => {
+    handleSetFocus();
+  }, [selectedInputBox]);
 
-  return projectSelected ? (
+  useEffect(() => {
+    handleSetFocus();
+  }, []);
+
+  return (
     <div className="p-6 w-full mt-4 shadow-xl rounded-lg">
       <div className="flex items-center">
         <div className="flex mr-10 w-44">
@@ -191,13 +121,13 @@ const WeeklyEntryCard: React.FC<Props> = ({
             num === selectedInputBox ? (
               <input
                 key={num}
+                id="selectedInput"
                 value={duration}
                 onChange={e => {
                   setDataChanged(true);
                   setDuration(e.target.value);
                 }}
-                // ref={durationInputBox}
-                className=" focus:outline-none focus:border-miru-han-purple-400 bold text-xl content-center px-1 py-4 w-18 h-15 border-2 rounded bg-miru-gray-100"
+                className=" focus:outline-none focus:border-miru-han-purple-400 bold text-xl content-center px-1 py-4 w-18 h-15 border-2 border-miru-han-purple-400 rounded bg-miru-gray-100"
               />
             ) : (
               <div
@@ -241,7 +171,7 @@ const WeeklyEntryCard: React.FC<Props> = ({
             className="ml-8"
           />
           <img
-            onClick={handleDeleEntries}
+            onClick={handleDeleteEntries}
             src="/delete.svg"
             alt="delete"
             className="ml-8"
@@ -289,14 +219,13 @@ const WeeklyEntryCard: React.FC<Props> = ({
               <button
                 className={
                   "m-2 mb-1 inline-block h-6 w-30 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-                  // eslint-disable-next-line no-constant-condition
                   (dataChanged && note && duration
                     ? "bg-miru-han-purple-1000 hover:border-transparent"
                     : "bg-miru-gray-1000")
                 }
                 onClick={handleSaveEntry}
               >
-                SAVE
+                {currentEntries[selectedInputBox] ? "UPDATE" : "SAVE"}
               </button>
               <button
                 onClick={() => {
@@ -306,7 +235,7 @@ const WeeklyEntryCard: React.FC<Props> = ({
                   setSelectedInputBox(-1);
                   setBillable(false);
                 }}
-                className="m-2 inline-block h-6 w-30 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest"
+                className="m-2 inline-block h-6 w-30 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest  text-center justify-center align-middle"
               >
                 CANCEL
               </button>
@@ -315,72 +244,23 @@ const WeeklyEntryCard: React.FC<Props> = ({
         </div>
       )}
     </div>
-  ) : (
-    <div className="flex justify-between p-4 rounded-md shadow-2xl content-center">
-      <select
-        onChange={e => {
-          setClient(e.target.value);
-          setProject(projects[e.target.value][0].name);
-        }}
-        value={client || "Client"}
-        name="client"
-        id="client"
-        className="w-80 bg-miru-gray-100 rounded-sm h-8"
-      >
-        {!client && (
-          <option disabled selected className="text-miru-gray-100">
-            Client
-          </option>
-        )}
-        {clients["map"]((c, i) => (
-          <option key={i.toString()}>{c.name}</option>
-        ))}
-      </select>
-      <select
-        onChange={e => {
-          setProject(e.target.value);
-          setProjectId();
-        }}
-        value={project}
-        name="project"
-        id="project"
-        className="w-80 bg-miru-gray-100 rounded-sm h-8"
-      >
-        {!project && (
-          <option disabled selected className="text-miru-gray-100">
-            Project
-          </option>
-        )}
-        {client &&
-          projects[client].map((p, i) => (
-            <option data-project-id={p.id} key={i.toString()}>
-              {p.name}
-            </option>
-          ))}
-      </select>
-
-      <button
-        onClick={() => {
-          setProjectSelected(true);
-          setProjectId();
-          if (!newRowView) handleEditEntries();
-        }}
-        className={
-          "h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-          (client && project
-            ? "bg-miru-han-purple-1000 hover:border-transparent"
-            : "bg-miru-gray-1000")
-        }
-      >
-        SAVE
-      </button>
-      <button
-        onClick={handleCancelButton}
-        className="h-8 w-38 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest"
-      >
-        CANCEL
-      </button>
-    </div>
   );
 };
-export default WeeklyEntryCard;
+
+interface Iprops {
+  client: string;
+  project: string;
+  currentEntries: Array<any>;
+  setCurrentEntries: React.Dispatch<React.SetStateAction<[]>>;
+  currentProjectId: number;
+  setProjectSelected: React.Dispatch<React.SetStateAction<boolean>>;
+  projectSelected: boolean;
+  newRowView: boolean;
+  setNewRowView: React.Dispatch<React.SetStateAction<boolean>>;
+  setEntryList: React.Dispatch<React.SetStateAction<[]>>;
+  handleDeleteEntries: () => any;
+  handleEditEntries: () => any;
+  dayInfo: Array<any>;
+}
+
+export default WeeklyEntriesCard;
