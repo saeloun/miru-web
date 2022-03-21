@@ -1,5 +1,5 @@
 import * as React from "react";
-import { minutesToHHMM } from "../../helpers/hhmm-parser";
+import { minutesToHHMM } from "helpers/hhmm-parser";
 
 export interface IProject {
   id: number;

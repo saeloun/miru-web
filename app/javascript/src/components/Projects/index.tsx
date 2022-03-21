@@ -6,7 +6,7 @@ import { Project } from "./project";
 import ProjectDetails from "./projectDetails";
 import ProjectList from "./projectList";
 
-const Projects = (isAdminUser) => {
+const Projects = ({ editIcon, deleteIcon, isAdminUser }) => {
   const [allProjects, setAllProjects] = React.useState([]);
   const [showProjectDetails, setShowProjectDetails] = React.useState(null);
 
@@ -31,7 +31,10 @@ const Projects = (isAdminUser) => {
   return (
     showProjectDetails ?
       <ProjectDetails
-        id={showProjectDetails}/> :
+        id={showProjectDetails}
+        isAdminUser={isAdminUser}
+        editIcon={editIcon}
+        deleteIcon={deleteIcon}/> :
       <ProjectList
         allProjects={allProjects}
         isAdminUser={isAdminUser}
