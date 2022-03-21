@@ -6,7 +6,7 @@ RSpec.describe "Reports#index", type: :request do
   let (:company) { create(:company) }
   let (:user) { create(:user, current_workspace_id: company.id) }
 
-  context "When user is admin" do
+  context "when user is admin" do
     before do
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :admin, company
@@ -14,13 +14,13 @@ RSpec.describe "Reports#index", type: :request do
       send_request :get, reports_path
     end
 
-    it "should render Reports#index page" do
+    it "renders Reports#index page" do
       expect(response).to be_successful
       expect(response.body).to include("Time entry report")
     end
   end
 
-  context "When user is employee" do
+  context "when user is employee" do
     before do
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :employee, company
@@ -28,7 +28,7 @@ RSpec.describe "Reports#index", type: :request do
       send_request :get, reports_path
     end
 
-    it "should not render Reports#index page" do
+    it "does not render Reports#index page" do
       expect(response).not_to be_successful
     end
   end
