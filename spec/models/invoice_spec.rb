@@ -53,4 +53,59 @@ RSpec.describe Invoice, type: :model do
       end
     end
   end
+
+  describe "Scopes" do
+    let(:company) do
+      create(:company,
+             clients: create_list(:client, 30) { |client, i| client.id = i + 1 },
+             invoices: create_list(:invoice, 30) do |invoice, i|
+               invoice.status = i % 6
+               invoice.client.id = i + 1
+             end)
+    end
+
+    describe "with statuses" do
+      it "returns all invoices if statuses are not specified" do
+        expect(company.invoices.with_statuses(nil).size).to eq(30)
+      end
+
+      it "returns draft and paid invoices" do
+        expect(company.invoices.with_statuses([:draft, :paid]).size).to eq(10)
+      end
+
+      it "returns draft, overdue and paid invoices" do
+        expect(company.invoices.with_statuses([:draft, :overdue, :paid]).size).to eq(15)
+      end
+    end
+
+    describe "from date" do
+      it "returns all invoices if from date is not specified" do
+        expect(company.invoices.from_date(nil).size).to eq(30)
+      end
+
+      it "returns invoices issued on or after a given date" do
+        expect(company.invoices.from_date("2019-04-01").size).to eq(30)
+      end
+    end
+
+    describe "to date" do
+      it "returns all invoices if to date is not specified" do
+        expect(company.invoices.to_date(nil).size).to eq(30)
+      end
+
+      it "returns invoices issued on or before a given date" do
+        expect(company.invoices.to_date(Date.today.to_s).size).to eq(30)
+      end
+    end
+
+    describe "for clients" do
+      it "returns all invoices if clients are not specified" do
+        expect(company.invoices.for_clients(nil).size).to eq(30)
+      end
+
+      it "returns invoices for specific clients" do
+        expect(company.invoices.for_clients([1, 2, 3]).size).to eq(3)
+      end
+    end
+  end
 end
