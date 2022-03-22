@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 json.project_details do
   json.id @project.id
   json.name @project.name
