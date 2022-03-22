@@ -50,6 +50,11 @@ class Invoice < ApplicationRecord
     :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
   validates :invoice_number, uniqueness: true
 
+  scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
+  scope :from_date, -> (from) { where("issue_date >= ?", from) if from.present? }
+  scope :to_date, -> (to) { where("issue_date <= ?", to) if to.present? }
+  scope :for_clients, -> (client_ids) { where(client_id: client_ids) if client_ids.present? }
+
   def sub_total
     @_sub_total ||= invoice_line_items.sum { |line_item| line_item[:rate] * line_item[:quantity] }
   end

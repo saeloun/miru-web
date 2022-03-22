@@ -4,9 +4,10 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def index
     authorize :invoice
     pagy, invoices = pagy(current_company.invoices
-      .where(issue_date: params[:from]..params[:to])
-      .where(status: params[:statuses])
-      .where(client_id: params[:client_ids]),
+      .from_date(params[:from])
+      .to_date(params[:to])
+      .for_clients(params[:client_ids])
+      .with_statuses(params[:statuses]),
     items_param: :invoices_per_page)
 
     render json: {
