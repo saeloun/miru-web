@@ -9,7 +9,7 @@ const BannerBox = ({ title, value }) => (
   </li>
 );
 
-const Body = ({ invoiceList, setInvoiceList }) => {
+const Container = ({ invoiceList, setInvoiceList }) => {
 
   const handleSelectAll = (isChecked) => {
     const newInvoiceList = invoiceList.map((invoice) => ({ ...invoice, isChecked }));
@@ -40,4 +40,4 @@ const Body = ({ invoiceList, setInvoiceList }) => {
   );
 };
 
-export default Body;
+export default Container;

@@ -3,7 +3,7 @@ import * as React from "react";
 import CustomCheckbox from "common/CustomCheckbox";
 
 const TableHeader = ({ handleSelectAll }) => {
-  const [isChecked, setChecked] = React.useState(false);
+  const [isChecked, setChecked] = React.useState<boolean>(false);
 
   const handleCheck = (event) => {
     handleSelectAll(event.target.checked);
@@ -17,25 +17,27 @@ const TableHeader = ({ handleSelectAll }) => {
       </th>
       <th
         scope="col"
-        className="px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-wider"
+        className="px-6 py-5 text-left text-xs font-normal text-miru-black-1000 tracking-widest"
       >
-          CLIENT/INVOICE NO.
+          CLIENT / <br/>
+          INVOICE NO.
       </th>
       <th
         scope="col"
-        className="px-6 py-5 text-left font-normal text-xs text-miru-dark-purple-600 tracking-wider"
+        className="px-6 py-5 text-left font-normal text-xs text-miru-black-1000 tracking-widest"
       >
-            ISSUED DATE/DUE DATE
+            ISSUED DATE /<br/>
+            DUE DATE
       </th>
       <th
         scope="col"
-        className="px-6 py-5 text-center font-normal text-xs text-miru-dark-purple-600 tracking-wider"
+        className="px-6 py-5 text-center font-normal text-xs text-miru-black-1000 tracking-widest"
       >
             AMOUNT
       </th>
       <th
         scope="col"
-        className="px-6 py-5 text-center font-normal text-xs text-miru-dark-purple-600 tracking-wider"
+        className="px-6 py-5 text-center font-normal text-xs text-miru-black-1000 tracking-widest"
       >
             STATUS
       </th>

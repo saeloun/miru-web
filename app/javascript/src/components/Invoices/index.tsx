@@ -6,6 +6,7 @@ import Container from "./container";
 import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
 
+// Should be removed once we start integrating with API.
 const invoiceArray = [{
   id: 1,
   invoiceName: "Amazon",
@@ -45,24 +46,26 @@ const Invoices = () => {
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
   const [isInvoiceSelected, setInvoiceSelection] = React.useState<boolean>(false);
   const [updatedInvoiceList, setInvoiceList] = React.useState<any>(invoiceArray);
-  const [selectedInvoiceCount, setSelectedInvoiceCount] = React.useState(0);
-  React.useEffect(() => {
+  const [selectedInvoiceCount, setSelectedInvoiceCount] = React.useState<number>(0);
+
+  const clearCheckboxes = () => {
     const newInvoiceList = invoiceArray.map((invoice) => ({ ...invoice, isChecked: false }));
     setInvoiceList(newInvoiceList);
+  };
+
+  React.useEffect(() => {
+    clearCheckboxes();
   },[]);
 
   React.useEffect(() => {
-    const selectedInvoiceList = updatedInvoiceList.filter(invoice => {
-      console.log(invoice.isChecked);
-      return invoice.isChecked;
-    });
+    const selectedInvoiceList = updatedInvoiceList.filter(invoice => invoice.isChecked);
     setSelectedInvoiceCount(selectedInvoiceList.length);
     setInvoiceSelection(selectedInvoiceList.length>0);
   },[updatedInvoiceList]);
 
   return (
     <React.Fragment>
-      <Header setFilterVisibilty={setFilterVisibilty} selectedInvoiceCount={selectedInvoiceCount} isInvoiceSelected={isInvoiceSelected} />
+      <Header setFilterVisibilty={setFilterVisibilty} clearCheckboxes={clearCheckboxes} selectedInvoiceCount={selectedInvoiceCount} isInvoiceSelected={isInvoiceSelected} />
       <Container invoiceList={updatedInvoiceList} setInvoiceList = {setInvoiceList} />
       { isFilterVisible && <FilterSideBar setFilterVisibilty={setFilterVisibilty} /> }
       <Pagination />
