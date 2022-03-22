@@ -3,12 +3,14 @@
 class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationController
   def index
     authorize :invoice
-    render json: { invoices: invoices }.deep_transform_keys { |k| k.to_s.camelize(:lower) }, status: :ok
-  end
+    pagy, invoices = pagy(current_company.invoices
+      .where(issue_date: params[:from]..params[:to])
+      .where(status: params[:statuses])
+      .where(client_id: params[:client_ids]),
+    items_param: :invoices_per_page)
 
-  private
-    def invoices
-      current_company.invoices.map do |invoice|
+    render json: {
+      invoices: invoices.map do |invoice|
         {
           id: invoice.id,
           invoice_number: invoice.invoice_number,
@@ -25,9 +27,12 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
           },
           status: invoice.status
         }
-      end
-    end
+      end,
+      pagy: pagy_metadata(pagy) }.deep_transform_keys { |k| k.to_s.camelize(:lower)
+      }, status: :ok
+  end
 
+  private
     def client(id)
       Client.find(id)
     end
