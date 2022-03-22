@@ -42,4 +42,8 @@ class Company < ApplicationRecord
   def client_details(time_frame = "week")
     clients.kept.map { |client| { id: client.id, name: client.name, email: client.email, minutes_spent: client.total_hours_logged(time_frame) } }
   end
+
+  def client_list
+    clients.kept.map { |client| { id: client.id, name: client.name, email: client.email, address: client.address } }
+  end
 end
