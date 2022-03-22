@@ -124,29 +124,29 @@
           <div class="relative z-0 flex-auto flex items-center justify-center sm:absolute sm:inset-0">
             <div class="ml-12 hidden lg:block lg:flex lg:space-x-10 xl:pr-80 <%= "lg:mr-86" if current_user.has_role?(:employee, current_company) %>">
               <% if policy(:dashboard).index? %>
-                <a href="/dashboard" class="<%= request.path == "/dashboard" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                <a href="/dashboard" data-cy="dashboard-tab" class="<%= request.path == "/dashboard" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                   <%= t('navbar.dashboard') %>
                 </a>
               <% end %>
-              <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+              <a href="/time-tracking" data-cy="time-tracking-tab" class="<%= request.path == "/time-tracking" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                 <%= t('navbar.time_tracking') %>
               </a>
-              <a href="/team" class="<%= request.path == "/team" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+             <a href="/team" data-cy="team-tab" class="<%= request.path == "/team" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                 <%= t('navbar.team') %>
               </a>
-              <a href="/clients" class="<%= request.path == "/clients" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+              <a href="/clients" data-cy="clients-tab" class="<%= request.path == "/clients" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                 <%= t('navbar.clients') %>
               </a>
-              <a href="/projects" class="<%= request.path == "/project" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+              <a href="/projects" data-cy="projects-tab" class="<%= request.path == "/project" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                 <%= t('navbar.projects') %>
               </a>
               <% if current_user.has_owner_or_admin_role?(current_company) %>
-                <a href="/invoices" class="<%= request.path == "/invoices" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                  <%= t('navbar.invoices') %>
+                <a href="/invoice" data-cy="invoice-tab" class="<%= request.path == "/invoice" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                  <%= t('navbar.invoice') %>
                 </a>
               <% end %>
               <% if current_user.has_owner_or_admin_role?(current_company) %>
-                <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "navbar___large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                <a href="<%= reports_path %>" data-cy="reports-tab" class="<%= request.path == "#{reports_path}" ? "navbar___large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                   <%= t('navbar.reports') %>
                 </a>
               <% end %>

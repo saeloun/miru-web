@@ -177,7 +177,10 @@
       @apply min-w-full divide-y divide-gray-200 mt-4;
     }
     &__header {
-      @apply px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest;
+      @apply px-6 py-5 text-left font-normal text-xs text-miru-dark-purple-600 tracking-widest;
+    }
+    &__cell {
+      @apply px-5 py-5 text-left text-xs font-normal text-miru-dark-purple-1000 tracking-normal;
     }
     &__body {
       @apply bg-white divide-y divide-gray-200;

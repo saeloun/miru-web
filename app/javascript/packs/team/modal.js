@@ -25,11 +25,11 @@ document.addEventListener("DOMContentLoaded", function () {
     modalToOpen.style.display = "flex";
   };
 
-  function ClearFields () {
+  const ClearFields = () => {
     document.getElementById("team_first_name").value = "";
     document.getElementById("team_last_name").value = "";
     document.getElementById("team_email").value = "";
-  }
+  };
 
   const newUserBtn = document.querySelector(
     "button[data-team-element=\"new-user-btn\"]"
