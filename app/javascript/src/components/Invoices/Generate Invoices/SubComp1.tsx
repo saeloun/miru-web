@@ -1,12 +1,12 @@
 import * as React from "react";
 
 const SubComp1 = () => {
+  const logo = require("../../../../images/saeloun.svg"); // eslint-disable-line
   return (
     <div className="flex justify-between border-b-2 border-miru-gray-400 p-10 h-40">
       <div className="flex">
-        Saeloun-Logo
-        {/* <img src={SaelounLogo}/> */}
-        <div className="">
+        <img src={logo} className="mr-5" />
+        <div className="mt-2">
           <p className="font-bold text-3xl text-miru-dark-purple-1000">
             Saeloun Inc.
           </p>
