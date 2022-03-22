@@ -34,9 +34,9 @@ class Project < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
 
-  def project_users_details(time_frame)
+  def project_team_member_details(time_frame)
     from, to = week_month_year(time_frame)
-    project_members.map { |project_team_member| { user_id: project_team_member.user_id, user_name: project_team_member.full_name, user_hourly_rate: project_team_member.hourly_rate, minutes_logged: (project_team_member.timesheet_entries.where(project_id: project_team_member.project_id, work_date: from..to)).sum(:duration) } }
+    project_members.map { |project_member| { user_id: project_member.user_id, user_name: project_member.full_name, user_hourly_rate: project_member.hourly_rate, minutes_logged: (project_member.timesheet_entries.where(project_id: project_member.project_id, work_date: from..to)).sum(:duration) } }
   end
 
   def week_month_year(time_frame)
