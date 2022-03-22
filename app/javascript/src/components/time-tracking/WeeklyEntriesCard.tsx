@@ -39,7 +39,7 @@ const WeeklyEntriesCard = ({
     };
 
     let res;
-    if (currentEntries[selectedInputBox]) {
+    if (currentEntries[selectedInputBox]) { // update
       const timesheetEntryId = currentEntries[selectedInputBox]["id"];
       res = await timesheetEntryApi.update(timesheetEntryId, payload);
       if (res.status === 200) {
@@ -53,15 +53,19 @@ const WeeklyEntriesCard = ({
           return newState;
         });
       }
-    } else {
+    } else { // new entry
       res = await timesheetEntryApi.create(payload);
       if (res.status === 200) {
         setEntryList(prevState => {
           const newState = { ...prevState };
-          newState[res.data.entry.work_date] = [
-            ...newState[res.data.entry.work_date],
-            res.data.entry
-          ];
+          if (newState[res.data.entry.work_date]) {
+            newState[res.data.entry.work_date] = [
+              ...newState[res.data.entry.work_date],
+              res.data.entry
+            ];
+          } else {
+            newState[res.data.entry.work_date] = [res.data.entry];
+          }
           return newState;
         });
       }

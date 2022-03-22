@@ -52,16 +52,20 @@ const WeeklyEntries: React.FC<Props> = ({
     }
   };
 
-  const handleDeleEntries = async () => {
+  const handleDeleteEntries = async () => {
     const ids = getIds();
     const res = await timesheetEntryApi.destroyBulk({ ids: ids });
     if (res.status === 200) {
       setEntryList(prevState => {
         const newState : object = { ...prevState };
-        dayInfo.forEach(day => {
-          newState[day["fullDate"]] = newState[day["fullDate"]]?.filter(
-            entry => !ids.includes(entry["id"])
-          );
+        dayInfo.forEach(({ fullDate }) => {
+          if (newState[fullDate]) {
+            newState[fullDate] = newState[fullDate].filter(
+              entry => {
+                if (! ids.includes(entry["id"])) return entry;
+              }
+            );
+          }
         });
         return newState;
       });
@@ -94,7 +98,7 @@ const WeeklyEntries: React.FC<Props> = ({
       newRowView={newRowView}
       setNewRowView={setNewRowView}
       setEntryList={setEntryList}
-      handleDeleteEntries={handleDeleEntries}
+      handleDeleteEntries={handleDeleteEntries}
       handleEditEntries={handleEditEntries}
       dayInfo={dayInfo}
     />
