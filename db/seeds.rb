@@ -7,7 +7,7 @@ company = Company.create!(
   address: "31R Providence Rd Westford MA, 01886",
   business_phone: "1111111111",
   country: "US",
-  timezone: "EST"
+  timezone: "EST",
 )
 puts "Company Created"
 
@@ -35,8 +35,8 @@ seed_users  = User.where(email: users.map { |user| user[:email] })
 puts "#{users.size} Users created"
 
 clientData = [
-  { name: "Saeloun LLC", email: "contact@saeloun.com" },
-  { name: "Angel India", email: "hello@angel.co" }
+  { name: "Saeloun LLC", email: "contact@saeloun.com", client_code: "SA" },
+  { name: "Angel India", email: "hello@angel.co", client_code: "AN" }
 ]
 
 company.clients.create!(clientData)

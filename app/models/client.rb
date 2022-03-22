@@ -11,7 +11,7 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  discarded_at :datetime
-#  client_code  :string
+#  client_code  :string           not null
 #
 # Indexes
 #
