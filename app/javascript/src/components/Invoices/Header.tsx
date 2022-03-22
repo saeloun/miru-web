@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Funnel, MagnifyingGlass, Plus, Trash, PaperPlaneTilt, X } from "phosphor-react";
 
-const Header = ({ setFilterVisibilty, isInvoiceSelected, selectedInvoiceCount, }) => (
+const Header = ({ setFilterVisibilty, isInvoiceSelected, selectedInvoiceCount }) => (
   <div className="sm:flex mt-6 mb-3 sm:items-center sm:justify-between">
     <h2 className="header__title">
           Invoices
