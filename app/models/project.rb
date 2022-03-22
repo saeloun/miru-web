@@ -36,10 +36,7 @@ class Project < ApplicationRecord
 
   def project_users_details(time_frame)
     from, to = week_month_year(time_frame)
-    project_members.map do |project_team_member|
-      minutes_logged = (project_team_member.user.timesheet_entries.where(project_id: project_team_member[:project_id]).where(work_date: from..to)).sum(:duration)
-      { user_id: project_team_member.user_id, user_name: project_team_member.full_name, user_hourly_rate: project_team_member.hourly_rate, minutes_logged: minutes_logged }
-    end
+    project_members.map { |project_team_member| { user_id: project_team_member.user_id, user_name: project_team_member.full_name, user_hourly_rate: project_team_member.hourly_rate, minutes_logged: (project_team_member.timesheet_entries.where(project_id: project_team_member.project_id, work_date: from..to)).sum(:duration) } }
   end
 
   def week_month_year(time_frame)

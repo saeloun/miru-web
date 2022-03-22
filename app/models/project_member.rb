@@ -25,6 +25,7 @@ class ProjectMember < ApplicationRecord
   belongs_to :project
   belongs_to :user
   delegate :full_name, to: :user
+  delegate :timesheet_entries, to: :user
 
   validates :hourly_rate, presence: true
 end
