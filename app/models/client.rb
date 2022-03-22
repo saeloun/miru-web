@@ -28,6 +28,7 @@ class Client < ApplicationRecord
 
   has_many :projects
   has_many :timesheet_entries, through: :projects
+  has_many :invoices
   belongs_to :company
 
   validates :name, :email, presence: true
