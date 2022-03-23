@@ -3,8 +3,7 @@
 class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationController
   def show
     authorize Project
-    @project = project
-    render :show, status: :ok
+    render :show, locals: { project: project }, status: :ok
   end
 
   private
