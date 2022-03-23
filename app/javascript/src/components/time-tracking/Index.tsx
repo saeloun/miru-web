@@ -11,6 +11,7 @@ import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "../../helpers/ordinal";
 
+const { useState, useEffect } = React;
 dayjs.extend(weekday);
 
 // Day start from monday
@@ -22,20 +23,19 @@ const TimeTracking: React.FC<Iprops> = ({
   entries,
   isAdmin
 }) => {
-  const { useState, useEffect } = React;
-  const [dayInfo, setDayInfo] = useState([]);
-  const [view, setView] = useState("day");
-  const [newEntryView, setNewEntryView] = useState(false);
-  const [newRowView, setNewRowView] = useState(false);
-  const [selectDate, setSelectDate] = useState(dayjs().weekday());
-  const [weekDay, setWeekDay] = useState(0);
-  const [totalHours, setTotalHours] = useState("00:00");
-  const [entryList, setEntryList] = useState(entries);
-  const [selectedFullDate, setSelectedFullDate] = useState(
+  const [dayInfo, setDayInfo] = useState<any[]>([]);
+  const [view, setView] = useState<string>("day");
+  const [newEntryView, setNewEntryView] = useState<boolean>(false);
+  const [newRowView, setNewRowView] = useState<boolean>(false);
+  const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
+  const [weekDay, setWeekDay] = useState<number>(0);
+  const [totalHours, setTotalHours] = useState<string>("00:00");
+  const [entryList, setEntryList] = useState<object>(entries);
+  const [selectedFullDate, setSelectedFullDate] = useState<string>(
     dayjs().format("YYYY-MM-DD")
   );
-  const [editEntryId, setEditEntryId] = useState(0);
-  const [weeklyData, setWeeklyData] = useState([]);
+  const [editEntryId, setEditEntryId] = useState<number>(0);
+  const [weeklyData, setWeeklyData] = useState<any[]>([]);
 
   useEffect(() => {
     setAuthHeaders();
@@ -65,24 +65,23 @@ const TimeTracking: React.FC<Iprops> = ({
   }, [entryList]);
 
   const handleWeekInfo = () => {
-    const weekArr = [];
-    for (let i = 0; i < 7; i++) {
+    const daysInWeek = [0, 1, 2, 3, 4, 5, 6, 7].map((weekCounter) => {
       const [day, month, date, year] = dayjs()
-        .weekday(i + weekDay)
+        .weekday(weekCounter + weekDay)
         ["$d"].toString()
         .split(" ");
       const fullDate = dayjs()
-        .weekday(i + weekDay)
+        .weekday(weekCounter + weekDay)
         .format("YYYY-MM-DD");
-      weekArr.push({
+      return {
         day: day,
         month: month,
         date: date,
         year: year,
         fullDate: fullDate
-      });
-    }
-    setDayInfo(weekArr);
+      };
+    });
+    setDayInfo(() => daysInWeek);
   };
 
   const fetchEntries = async () => {
@@ -109,9 +108,9 @@ const TimeTracking: React.FC<Iprops> = ({
 
   const calculateTotalHours = () => {
     let total = 0;
-    for (let i = 0; i < 7; i++) {
+    for (let weekCounter = 0; weekCounter < 7; weekCounter++) {
       const day = dayjs()
-        .weekday(i + weekDay)
+        .weekday(weekCounter + weekDay)
         .format("YYYY-MM-DD");
       if (entryList[day]) {
         entryList[day].forEach(e => {
@@ -132,9 +131,9 @@ const TimeTracking: React.FC<Iprops> = ({
 
   const parseWeeklyViewData = () => {
     const weekArr = [];
-    for (let i = 0; i < 7; i++) {
+    for (let weekCounter = 0; weekCounter < 7; weekCounter++) {
       const date = dayjs()
-        .weekday(weekDay + i)
+        .weekday(weekDay + weekCounter)
         .format("YYYY-MM-DD");
 
       if (!entryList[date]) continue;
@@ -144,10 +143,10 @@ const TimeTracking: React.FC<Iprops> = ({
         weekArr.forEach(rowInfo => {
           if (
             rowInfo["projectId"] === entry["project_id"] &&
-            !rowInfo["entries"][i] &&
+            !rowInfo["entries"][weekCounter] &&
             !entryAdded
           ) {
-            rowInfo["entries"][i] = entry;
+            rowInfo["entries"][weekCounter] = entry;
             entryAdded = true;
           }
           return rowInfo;
@@ -155,7 +154,7 @@ const TimeTracking: React.FC<Iprops> = ({
 
         if (entryAdded) return;
         const newRow = [];
-        newRow[i] = entry;
+        newRow[weekCounter] = entry;
         weekArr.push({
           projectId: entry["project_id"],
           clientName: entry.client,
@@ -334,7 +333,7 @@ const TimeTracking: React.FC<Iprops> = ({
         {/* entry cards for day and month */}
         {view !== "week" &&
           entryList[selectedFullDate] &&
-          entryList[selectedFullDate].map((entry, i) =>
+          entryList[selectedFullDate].map((entry, weekCounter) =>
             editEntryId === entry.id ? (
               <AddEntry
                 setNewEntryView={setNewEntryView}
@@ -350,7 +349,7 @@ const TimeTracking: React.FC<Iprops> = ({
               />
             ) : (
               <EntryCard
-                key={i}
+                key={weekCounter}
                 handleDeleteEntry={handleDeleteEntry}
                 setEditEntryId={setEditEntryId}
                 {...entry}
@@ -361,9 +360,9 @@ const TimeTracking: React.FC<Iprops> = ({
         {/* entry cards for week */}
         {view === "week" && (
           <div className="">
-            {weeklyData.map((entry, i) => (
+            {weeklyData.map((entry, weekCounter) => (
               <WeeklyEntries
-                key={i + 1}
+                key={weekCounter + 1}
                 {...entry}
                 setEntryList={setEntryList}
                 clients={clients}

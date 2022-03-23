@@ -18,13 +18,13 @@ const AddEntry: React.FC<Iprops> = ({
   editEntryId
 }) => {
   const { useState, useEffect } = React;
-  clients = clients.sort((a, b) => (a["name"] < b["name"] ? -1 : 1));
   const [note, setNote] = useState("");
   const [duration, setDuration] = useState("00:00");
   const [client, setClient] = useState("");
   const [project, setProject] = useState("");
   const [projectId, setProjectId] = useState(0);
   const [billable, setBillable] = useState(false);
+  clients.sort().reverse();
 
   const handleFillData = () => {
     if (!editEntryId) return;
@@ -54,12 +54,7 @@ const AddEntry: React.FC<Iprops> = ({
   }, [project]);
 
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let v = e.target.value;
-    if (v === ":") v = "00:00";
-    let [hh, mm] = v.split(":");
-    hh = hh.length === 1 ? `0${hh}` : hh;
-    mm = mm.length === 1 ? `0${mm}` : mm;
-    setDuration(`${hh}:${mm}`);
+    setDuration(e.target.value);
   };
 
   const handleSave = async () => {
@@ -257,7 +252,7 @@ const AddEntry: React.FC<Iprops> = ({
 
 interface Iprops {
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
-  clients: [];
+  clients: any[];
   projects: object;
   selectedDateInfo: object;
   setEntryList: React.Dispatch<React.SetStateAction<object[]>>;

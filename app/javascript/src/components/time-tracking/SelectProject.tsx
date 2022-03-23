@@ -26,10 +26,11 @@ const SelectProject: React.FC<Iprops> = ({
   };
 
   const handleSaveButton = () => {
-    if (!client || !project) return;
-    setProjectSelected(true);
-    setProjectId();
-    if (!newRowView) handleEditEntries();
+    if (client && project) {
+      setProjectSelected(true);
+      setProjectId();
+      if (!newRowView) handleEditEntries();
+    }
   };
 
   const handleClientChange = (e) => {
