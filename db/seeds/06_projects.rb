@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # Projects Start
-
 project_india = { name: "Project_1_Client_1_saeloun_India", description: "Timesheet app", billable: false }
 project_us = { name: "Project_1_Client_1_saeloun_us", description: "Timesheet app", billable: false }
 
