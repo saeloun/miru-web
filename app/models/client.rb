@@ -16,7 +16,6 @@
 #
 # Indexes
 #
-#  index_clients_on_client_code           (client_code) UNIQUE
 #  index_clients_on_company_id            (company_id)
 #  index_clients_on_discarded_at          (discarded_at)
 #  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
@@ -32,7 +31,7 @@ class Client < ApplicationRecord
   belongs_to :company
 
   validates :name, :email, presence: true
-  validates :client_code, uniqueness: true
+  validates :client_code,  presence: true
   validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
 
   after_discard :discard_projects
