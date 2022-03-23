@@ -4,12 +4,12 @@ import { ToastContainer } from "react-toastify";
 import * as dayjs from "dayjs";
 import * as weekday from "dayjs/plugin/weekday";
 import AddEntry from "./AddEntry";
+import DatesInWeek from "./DatesInWeek";
 import EntryCard from "./EntryCard";
 import WeeklyEntries from "./WeeklyEntries";
 import { setAuthHeaders, registerIntercepts } from "../../apis/axios";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";
-import { getNumberWithOrdinal } from "../../helpers/ordinal";
 
 const { useState, useEffect } = React;
 dayjs.extend(weekday);
@@ -236,48 +236,7 @@ const TimeTracking: React.FC<Iprops> = ({
                   <p className="text-white font-extrabold">{totalHours}</p>
                 </div>
               </div>
-              {/* dates */}
-              {view === "day" ? (
-                <div className="h-16 bg-miru-gray-100 flex justify-evenly">
-                  {dayInfo.map((d, index) => (
-                    <button
-                      onClick={() => {
-                        setSelectDate(index);
-                      }}
-                      key={index}
-                      className={
-                        "px-5 py-2 my-2 w-24 h-12 items-center rounded-xl border-2 border-transparent " +
-                        (index === selectDate &&
-                          "bg-white border-miru-han-purple-1000")
-                      }
-                    >
-                      <p className="text-xs text-miru-dark-purple-1000 font-medium">
-                        {d.day}
-                      </p>
-                      <p className="text-xs">
-                        {getNumberWithOrdinal(d.date)} {d.month}{" "}
-                      </p>
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                // dates for week
-                <div className="h-16 px-60 bg-miru-gray-100 flex justify-items-stretch">
-                  {dayInfo.map((d, index) => (
-                    <div
-                      key={index}
-                      className="py-2 my-2 w-24 h-12 items-center rounded-xl border-2 border-transparent"
-                    >
-                      <p className="text-xs text-miru-dark-purple-1000 font-medium">
-                        {d.day}
-                      </p>
-                      <p className="text-xs">
-                        {getNumberWithOrdinal(d.date)} {d.month}{" "}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <DatesInWeek view={view} dayInfo={dayInfo} selectDate={selectDate} setSelectDate={setSelectDate}  />
             </div>
             {!editEntryId && newEntryView && view !== "week" && (
               <AddEntry
