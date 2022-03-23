@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import reports from "apis/reports";
 import { TimeEntry, ITimeEntry } from "./TimeEntry";
 
 const Reports = () => {
-  const [timeEntries, setTimeEntries] = React.useState<Array<ITimeEntry>>([]);
+  const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
 
   const fetchTimeEntries = async () => {
     const res = await reports.get();
@@ -13,7 +13,7 @@ const Reports = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
     fetchTimeEntries();
