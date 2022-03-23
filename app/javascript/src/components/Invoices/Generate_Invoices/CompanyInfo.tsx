@@ -1,6 +1,6 @@
 import * as React from "react";
 
-const SubComp1 = () => {
+const CompanyInfo = () => {
   const logo = require("../../../../images/saeloun.svg"); // eslint-disable-line
   return (
     <div className="flex justify-between border-b-2 border-miru-gray-400 p-10 h-40">
@@ -25,4 +25,4 @@ const SubComp1 = () => {
   );
 };
 
-export default SubComp1;
+export default CompanyInfo;

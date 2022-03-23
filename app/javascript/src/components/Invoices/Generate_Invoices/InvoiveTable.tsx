@@ -1,0 +1,101 @@
+
+import * as React from "react";
+import ManualEntry from "./ManualEntry";
+import NewLineItemTable from "./NewLineItemTable";
+
+const InvoiceTable = () => {
+
+  //States
+  const [Addnew, setAddnew] = React.useState<boolean>(false);
+  const [selectedOption, setSelectedOption] = React.useState<any>(null);
+  const [ShowItemInputs, setShowItemInputs] = React.useState<boolean>(false);
+  const [NewLineItems, setNewLineItems] = React.useState<Array<any>>([]);
+
+  return (
+    <>
+      <table className="w-full table-fixed">
+        <thead className="my-2">
+          <th className="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">
+            NAME
+          </th>
+          <th className=" px-3 text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">
+            DATE
+          </th>
+          <th className="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest w-2/5">
+            DESCRIPTION
+          </th>
+          <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">
+            RATE
+          </th>
+          <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest pr-2">
+            QTY
+          </th>
+          <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">
+            LINE TOTAL
+          </th>
+        </thead>
+
+        <tbody className="w-full">
+          {Addnew ?
+            <NewLineItemTable
+              ShowItemInputs={ShowItemInputs}
+              setShowItemInputs={setShowItemInputs}
+              selectedOption={selectedOption}
+              setSelectedOption={setSelectedOption}
+              Addnew={Addnew}
+              setAddnew={setAddnew}
+            />
+            : (
+              <tr className="w-full ">
+                <td colSpan={6} className="py-4">
+                  <button
+                    className=" py-1 tracking-widest w-full bg-white font-bold text-base text-center text-miru-dark-purple-200 rounded-md border-2 border-miru-dark-purple-200 border-dashed"
+                    onClick={() => {
+                      setAddnew(!Addnew);
+                    }}
+                  >
+                  + NEW LINE ITEM
+                  </button>
+                </td>
+              </tr>
+            )}
+
+          {ShowItemInputs
+            ? <ManualEntry
+              setShowItemInputs={setShowItemInputs}
+              setNewLineItems={setNewLineItems}
+              NewLineItems={NewLineItems}
+            />
+            : null}
+
+          {NewLineItems.length > 0
+            ? NewLineItems.map(item => (
+              <tr>
+                <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left ">
+                  {item.Name}
+                </td>
+                <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left ">
+                  {item.Date}
+                </td>
+                <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-center ">
+                  {item.Description}
+                </td>
+                <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
+                  {item.Rate}
+                </td>
+                <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
+                  {item.Qty}
+                </td>
+                <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
+                  {item.LineTotal}
+                </td>
+              </tr>
+            ))
+            : null}
+        </tbody>
+      </table>
+    </>
+  );
+};
+
+export default InvoiceTable;

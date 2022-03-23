@@ -1,18 +1,17 @@
 import * as React from "react";
 import Select, {
   components,
-  DropdownIndicatorProps,
-  SingleValueProps
+  DropdownIndicatorProps
 } from "react-select";
 import { MagnifyingGlass, PencilSimple } from "phosphor-react";
 
 const SubComp2 = () => {
   //states
-  const [selectedOption, setSelectedOption] = React.useState(null);
-  const [addClient, setaddClient] = React.useState(false);
-  const [dateEdit, setdateEdit] = React.useState(false);
-  const [issueDate, setissueDate] = React.useState("");
-  const [dueDate, setdueDate] = React.useState("");
+  const [selectedOption, setSelectedOption] = React.useState<any>(null);
+  const [addClient, setaddClient] = React.useState<boolean>(false);
+  const [issueDate, setissueDate] = React.useState<string>("");
+  const [dueDate, setdueDate] = React.useState<string>("");
+
   //variables
   const options = [
     { value: "chocolate", label: "Chocolate" },
@@ -22,33 +21,28 @@ const SubComp2 = () => {
 
   //functions
 
-  const DropdownIndicator = (props: DropdownIndicatorProps<true>) => {
-    return (
-      <components.DropdownIndicator {...props}>
-        <MagnifyingGlass size={20} color="#1D1A31" />
-      </components.DropdownIndicator>
-    );
-  };
+  const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
+    <components.DropdownIndicator {...props}>
+      <MagnifyingGlass size={20} color="#1D1A31" />
+    </components.DropdownIndicator>
+  );
 
   const calculateDates = (date, type) => {
     setissueDate(
       new Date().getDate() +
-        "." +
-        (new Date().getMonth() + 1) +
-        "." +
-        new Date().getFullYear()
+      "." +
+      (new Date().getMonth() + 1) +
+      "." +
+      new Date().getFullYear()
     );
     setdueDate(
       new Date().getDate() +
-        "." +
-        (new Date().getMonth() + 2) +
-        "." +
-        new Date().getFullYear()
+      "." +
+      (new Date().getMonth() + 2) +
+      "." +
+      new Date().getFullYear()
     );
 
-    if (date) {
-      console.log(date);
-    }
   };
 
   //useeffects
@@ -79,7 +73,6 @@ const SubComp2 = () => {
           <Select
             defaultValue={selectedOption}
             onChange={val => {
-              console.log(val);
               setSelectedOption(val);
               setaddClient(false);
             }}
