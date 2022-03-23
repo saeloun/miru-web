@@ -28,11 +28,11 @@ const TableRow = ({ invoice, handleSelectCheckbox }) => {
       </td>
       <td className="px-6 py-5 font-medium w-2/4 ftracking-wider">
         <h1 className="font-semibold text-miru-dark-purple-1000">{invoice.invoiceName}</h1>
-        <h3 className="font-normal text-sm miru-dark-purple-400">{invoice.invoiceId}</h3>
+        <h3 className="font-normal text-sm text-miru-dark-purple-400">{invoice.invoiceId}</h3>
       </td>
       <td className="px-6 py-5 font-medium w-1/4 tracking-wider">
         <h1 className="font-semibold text-miru-dark-purple-1000">{invoice.invoicedate}</h1>
-        <h3 className="font-normal text-sm miru-dark-purple-400">{invoice.invoiceduedate}</h3>
+        <h3 className="font-normal text-sm text-miru-dark-purple-400">{invoice.invoiceduedate}</h3>
       </td>
       <td className="px-6 py-5 font-bold text-xl text-miru-dark-purple-1000 tracking-wider">
         {invoice.amount}
