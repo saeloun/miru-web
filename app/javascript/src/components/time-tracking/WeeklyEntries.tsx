@@ -1,6 +1,6 @@
 import * as React from "react";
 import timesheetEntryApi from "apis/timesheet-entry";
-import { minutesFromHHMM } from "helpers/hhmm-parser";
+import Toastr from "common/Toastr";
 import SelectProject from "./SelectProject";
 import WeeklyEntriesCard from "./WeeklyEntriesCard";
 
@@ -39,36 +39,44 @@ const WeeklyEntries: React.FC<Props> = ({
   };
 
   const handleEditEntries = async () => {
-    const ids = getIds();
-    const res = await timesheetEntryApi.updateBulk({
-      project_id: setProjectId(),
-      ids: ids
-    });
-    if (res.status === 200) {
-      setEntryList(prevState => {
-        const newState = { ...prevState, ...res.data.entries };
-        return newState;
+    try {
+      const ids = getIds();
+      const res = await timesheetEntryApi.updateBulk({
+        project_id: setProjectId(),
+        ids: ids
       });
+      if (res.status === 200) {
+        setEntryList(prevState => {
+          const newState = { ...prevState, ...res.data.entries };
+          return newState;
+        });
+      }
+    } catch (error) {
+      Toastr.error(error.message);
     }
   };
 
   const handleDeleteEntries = async () => {
-    const ids = getIds();
-    const res = await timesheetEntryApi.destroyBulk({ ids: ids });
-    if (res.status === 200) {
-      setEntryList(prevState => {
-        const newState : object = { ...prevState };
-        dayInfo.forEach(({ fullDate }) => {
-          if (newState[fullDate]) {
-            newState[fullDate] = newState[fullDate].filter(
-              entry => {
-                if (! ids.includes(entry["id"])) return entry;
-              }
-            );
-          }
+    try {
+      const ids = getIds();
+      const res = await timesheetEntryApi.destroyBulk({ ids: ids });
+      if (res.status === 200) {
+        setEntryList(prevState => {
+          const newState : any = { ...prevState };
+          dayInfo.forEach(({ fullDate }) => {
+            if (newState[fullDate]) {
+              newState[fullDate] = newState[fullDate].filter(
+                entry => {
+                  if (! ids.includes(entry["id"])) return entry;
+                }
+              );
+            }
+          });
+          return newState;
         });
-        return newState;
-      });
+      }
+    } catch (error) {
+      Toastr.error(error.message);
     }
   };
 

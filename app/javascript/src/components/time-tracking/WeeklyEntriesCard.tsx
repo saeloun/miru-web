@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
+import Toastr from "common/Toastr";
 import { minutesToHHMM, minutesFromHHMM } from "helpers/hhmm-parser";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 
@@ -20,44 +21,38 @@ const WeeklyEntriesCard = ({
   setNewRowView,
   dayInfo
 }: Iprops) => {
-  const [selectedInputBox, setSelectedInputBox] = useState(-1);
-  const [note, setNote] = useState("");
-  const [duration, setDuration] = useState("00:00");
-  const [showNote, setShowNote] = useState(false);
-  const [weeklyTotalHours, setWeeklyTotalHours] = useState(0);
-  const [billable, setBillable] = useState(false);
-  const [dataChanged, setDataChanged] = useState(false);
+  const [selectedInputBox, setSelectedInputBox] = useState<number>(-1);
+  const [note, setNote] = useState<string>("");
+  const [duration, setDuration] = useState<string>("00:00");
+  const [showNote, setShowNote] = useState<boolean>(false);
+  const [weeklyTotalHours, setWeeklyTotalHours] = useState<number>(0);
+  const [billable, setBillable] = useState<boolean>(false);
+  const [dataChanged, setDataChanged] = useState<boolean>(false);
+
+  const getPayload = () => ({
+    project_id: currentProjectId,
+    duration: minutesFromHHMM(duration),
+    bill_status: billable ? "unbilled" : "non_billable",
+    note: note
+  });
+
+  const handleUpdateRow = (entry) => {
+    setCurrentEntries(prevState => {
+      const newState: any = [...prevState];
+      newState[selectedInputBox] = entry;
+      return newState;
+    });
+  };
 
   const handleSaveEntry = async () => {
-    if (!dataChanged && note && duration) return;
-    const payload = {
-      project_id: currentProjectId,
-      duration: minutesFromHHMM(duration),
-      work_date: dayInfo[selectedInputBox]["fullDate"],
-      bill_status: billable ? "unbilled" : "non_billable",
-      note: note
-    };
-
-    let res;
-    if (currentEntries[selectedInputBox]) { // update
-      const timesheetEntryId = currentEntries[selectedInputBox]["id"];
-      res = await timesheetEntryApi.update(timesheetEntryId, payload);
+    try {
+      if (!dataChanged && note && duration) return;
+      const payload = getPayload();
+      payload["work_date"] = dayInfo[selectedInputBox]["fullDate"];
+      const res = await timesheetEntryApi.create(payload);
       if (res.status === 200) {
         setEntryList(prevState => {
-          const newState = { ...prevState };
-          newState[res.data.entry.work_date] = newState[
-            res.data.entry.work_date
-          ].map(entry =>
-            entry.id === res.data.entry.id ? res.data.entry : entry
-          );
-          return newState;
-        });
-      }
-    } else { // new entry
-      res = await timesheetEntryApi.create(payload);
-      if (res.status === 200) {
-        setEntryList(prevState => {
-          const newState = { ...prevState };
+          const newState: any = { ...prevState };
           if (newState[res.data.entry.work_date]) {
             newState[res.data.entry.work_date] = [
               ...newState[res.data.entry.work_date],
@@ -68,20 +63,35 @@ const WeeklyEntriesCard = ({
           }
           return newState;
         });
+        handleUpdateRow(res.data.entry);
+        if (newRowView) setNewRowView(false);
+        setDataChanged(false);
       }
+    } catch (error) {
+      Toastr.error(error.message);
     }
+  };
 
-    if (res.status === 200) {
-      setCurrentEntries(prevState => {
-        const newState = [...prevState];
-        newState[selectedInputBox] = res.data.entry;
-        return newState;
-      });
-      setDataChanged(false);
-    }
-
-    if (newRowView) {
-      setNewRowView(false);
+  const handleUpdateEntry = async () => {
+    try {
+      const timesheetEntryId = currentEntries[selectedInputBox]["id"];
+      const payload = getPayload();
+      const res = await timesheetEntryApi.update(timesheetEntryId, payload);
+      if (res.status === 200) {
+        setEntryList(prevState => {
+          const newState: any = { ...prevState };
+          newState[res.data.entry.work_date] = newState[
+            res.data.entry.work_date
+          ].map(entry =>
+            entry.id === res.data.entry.id ? res.data.entry : entry
+          );
+          return newState;
+        });
+        handleUpdateRow(res.data.entry);
+        setDataChanged(false);
+      }
+    } catch (error) {
+      Toastr.error(error.message);
     }
   };
 
@@ -220,17 +230,30 @@ const WeeklyEntriesCard = ({
               <h4>Billable</h4>
             </div>
             <div>
-              <button
-                className={
-                  "m-2 mb-1 inline-block h-6 w-30 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
+              {currentEntries[selectedInputBox] ?
+                <button
+                  className={
+                    "m-2 mb-1 inline-block h-6 w-30 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
                   (dataChanged && note && duration
                     ? "bg-miru-han-purple-1000 hover:border-transparent"
                     : "bg-miru-gray-1000")
-                }
-                onClick={handleSaveEntry}
-              >
-                {currentEntries[selectedInputBox] ? "UPDATE" : "SAVE"}
-              </button>
+                  }
+                  onClick={handleUpdateEntry}
+                >
+                UPDATE
+                </button>
+                :
+                <button
+                  className={
+                    "m-2 mb-1 inline-block h-6 w-30 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
+                  (dataChanged && note && duration
+                    ? "bg-miru-han-purple-1000 hover:border-transparent"
+                    : "bg-miru-gray-1000")
+                  }
+                  onClick={handleSaveEntry}
+                >
+                SAVE
+                </button>}
               <button
                 onClick={() => {
                   setNote("");
