@@ -45,7 +45,7 @@ const Invoices = () => {
 
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
   const [isInvoiceSelected, setInvoiceSelection] = React.useState<boolean>(false);
-  const [updatedInvoiceList, setInvoiceList] = React.useState<any>(invoiceArray);
+  const [invoiceList, setInvoiceList] = React.useState<any>(invoiceArray);
   const [selectedInvoiceCount, setSelectedInvoiceCount] = React.useState<number>(0);
 
   const clearCheckboxes = () => {
@@ -58,15 +58,15 @@ const Invoices = () => {
   },[]);
 
   React.useEffect(() => {
-    const selectedInvoiceList = updatedInvoiceList.filter(invoice => invoice.isChecked);
+    const selectedInvoiceList = invoiceList.filter(invoice => invoice.isChecked);
     setSelectedInvoiceCount(selectedInvoiceList.length);
     setInvoiceSelection(selectedInvoiceList.length>0);
-  },[updatedInvoiceList]);
+  },[invoiceList]);
 
   return (
     <React.Fragment>
       <Header setFilterVisibilty={setFilterVisibilty} clearCheckboxes={clearCheckboxes} selectedInvoiceCount={selectedInvoiceCount} isInvoiceSelected={isInvoiceSelected} />
-      <Container invoiceList={updatedInvoiceList} setInvoiceList = {setInvoiceList} />
+      <Container invoiceList={invoiceList} setInvoiceList = {setInvoiceList} />
       { isFilterVisible && <FilterSideBar setFilterVisibilty={setFilterVisibilty} /> }
       <Pagination />
     </React.Fragment>

@@ -13,7 +13,7 @@ const getPaginationButton = (pageCounter) => {
   return pageButtons;
 };
 
-const Pagination = ({ totalData = 41 }) => {
+const Pagination = ({ totalData = 0 }) => {
 
   const [pages, getPages] = React.useState(null);
   const [counter, setCounter] = React.useState(30);
