@@ -52,7 +52,6 @@ ActiveRecord::Schema.define(version: 2022_03_16_140058) do
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "discarded_at", precision: 6
     t.string "client_code", null: false
-    t.index ["client_code"], name: "index_clients_on_client_code", unique: true
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
     t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true
