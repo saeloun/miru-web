@@ -1,4 +1,5 @@
 import { authSelectors } from "../constants/selectors/auth";
+import { teamTabSelector } from "../constants/selectors/team";
 
 Cypress.Commands.add("loginAsOwner", function () {
   cy.get(authSelectors.emailField).clear().type(this.data.email);

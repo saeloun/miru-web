@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
+  include DeviseWhitelist
   include PunditHelper
   include ErrorHandler
   include CurrentCompanyConcern
