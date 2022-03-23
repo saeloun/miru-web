@@ -29,8 +29,24 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
           status: invoice.status
         }
       end,
-      pagy: pagy_metadata(pagy) }.deep_transform_keys { |k| k.to_s.camelize(:lower)
-      }, status: :ok
+      pagy: pagy_metadata(pagy)
+    }.deep_transform_keys { |k| k.to_s.camelize(:lower) }, status: :ok
+  end
+
+  def summary
+    authorize :invoice
+    render json: {
+      company: {
+        name: current_company.name,
+        base_currency: current_company.base_currency,
+        date_format: current_company.date_format || "YYYY-MM-DD",
+      },
+      invoices_summary: {
+        overdue_amount: current_company.invoices.where(status: :overdue).sum(:amount),
+        outstanding_amount: current_company.invoices.sum(:outstanding_amount),
+        draft_amount: current_company.invoices.where(status: :draft).sum(:amount),
+      }
+    }.deep_transform_keys { |k| k.to_s.camelize(:lower) }, status: :ok
   end
 
   private
