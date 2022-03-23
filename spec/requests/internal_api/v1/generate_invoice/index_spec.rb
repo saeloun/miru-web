@@ -15,18 +15,16 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
       send_request :get, internal_api_v1_generate_invoice_index_path
     end
 
-    context "when time_frame is week" do
-      it "returns the total hours logged for a Company in the last_week" do
-        company_details = { id: user.current_workspace.id, phone_number: user.current_workspace.business_phone, address: user.current_workspace.address, country: user.current_workspace.country }
-        company_client_list = user.current_workspace.client_list
-        issue_date = Date.today
-        due_date = Date.today + 30
-        expect(response).to have_http_status(:ok)
-        expect(json_response["company_details"]).to eq(JSON.parse(company_details.to_json))
-        expect(json_response["company_client_list"]).to eq(JSON.parse(company_client_list.to_json))
-        expect(json_response["issue_date"]).to eq(JSON.parse(issue_date.to_json))
-        expect(json_response["due_date"]).to eq(JSON.parse(due_date.to_json))
-      end
+    it "returns the company deatils and list of clients" do
+      company_details = { id: user.current_workspace.id, phone_number: user.current_workspace.business_phone, address: user.current_workspace.address, country: user.current_workspace.country }
+      company_client_list = user.current_workspace.client_list
+      issue_date = Date.today
+      due_date = Date.today + 30
+      expect(response).to have_http_status(:ok)
+      expect(json_response["company_details"]).to eq(JSON.parse(company_details.to_json))
+      expect(json_response["company_client_list"]).to eq(JSON.parse(company_client_list.to_json))
+      expect(json_response["issue_date"]).to eq(JSON.parse(issue_date.to_json))
+      expect(json_response["due_date"]).to eq(JSON.parse(due_date.to_json))
     end
   end
 
