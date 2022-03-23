@@ -6,11 +6,11 @@
     "files.trimTrailingWhitespace": true,
     "files.insertFinalNewline": true,
     "editor.renderWhitespace": "boundary",
-    "editor.fontSize": 14,
     "editor.rulers": [
         100,
         120
     ],
     "editor.tabSize": 2,
     "javascript.updateImportsOnFileMove.enabled": "never",
+    "editor.fontSize": 18,
 }
