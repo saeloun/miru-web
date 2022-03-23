@@ -13,6 +13,4 @@
     ],
     "editor.tabSize": 2,
     "javascript.updateImportsOnFileMove.enabled": "never",
-    "workbench.iconTheme": "material-icon-theme",
-    "workbench.colorTheme": "Oceanic Plus"
 }

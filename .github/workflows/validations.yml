@@ -93,9 +93,6 @@ jobs:
       - name: Run Eslint
         run: |
           npx eslint "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
-      - name: Run Prettier
-        run: |
-          npx prettier "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
       - name: Cypress install
         uses: cypress-io/github-action@v2
         with:

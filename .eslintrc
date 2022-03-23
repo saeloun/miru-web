@@ -46,7 +46,7 @@
         }
     },
     "plugins": [
-      "react", 
+      "react",
       "import",
       "@typescript-eslint"
     ],
@@ -61,6 +61,7 @@
         "window": true
     },
     "rules": {
+      "@typescript-eslint/no-explicit-any": "off",
       "object-curly-newline": "off",
       "comma-dangle": ["error", "never"],
       "indent": ["warn", 2, { "SwitchCase": 1 }],
@@ -69,6 +70,8 @@
       "object-curly-spacing": [1, "always"],
       "semi": 2,
       "array-bracket-spacing": [2, "never"],
+      "arrow-body-style": ["error", "as-needed"],
+      "func-style": ["error", "expression"],
       "space-before-function-paren": 2,
       "no-multiple-empty-lines": ["warn", { "max": 1, "maxEOF": 1 }],
       "quotes": ["warn", "double"],
@@ -93,4 +96,3 @@
       }]
     }
   }
-  

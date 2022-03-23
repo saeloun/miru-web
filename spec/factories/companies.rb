@@ -11,5 +11,13 @@ FactoryBot.define do
     date_format { "DD-MM-YYYY" }
     country { "US" }
     timezone { Faker::Address.time_zone }
+
+    trait :with_logo do
+      after :build do |company|
+        file_name = "test-image.png"
+        file_path = Rails.root.join("spec", "support", "fixtures", file_name)
+        company.logo.attach(io: File.open(file_path), filename: file_name, content_type: "image/png")
+      end
+    end
   end
 end

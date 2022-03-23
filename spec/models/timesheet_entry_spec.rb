@@ -21,8 +21,9 @@ RSpec.describe TimesheetEntry, type: :model do
     it { is_expected.to validate_presence_of(:note) }
     it { is_expected.to validate_presence_of(:work_date) }
     it { is_expected.to validate_presence_of(:bill_status) }
+
     it do
-      is_expected.to validate_numericality_of(:duration).
+      expect(subject).to validate_numericality_of(:duration).
       is_less_than_or_equal_to(Minutes.in_a_day).
       is_greater_than_or_equal_to(0.0)
     end
