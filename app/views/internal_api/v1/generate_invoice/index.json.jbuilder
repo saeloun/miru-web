@@ -6,6 +6,6 @@ json.company_details do
   json.address current_company.address
   json.country current_company.country
 end
-json.issue_date Date.today
-json.due_date Date.today + 30
+json.issue_date Date.current
+json.due_date Date.current + 30
 json.company_client_list current_company.client_list
