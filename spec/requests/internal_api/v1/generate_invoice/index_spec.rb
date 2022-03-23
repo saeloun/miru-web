@@ -33,7 +33,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_clients_path
+      send_request :get, internal_api_v1_generate_invoice_index_path
     end
 
     it "is not permitted to view time entry report" do
