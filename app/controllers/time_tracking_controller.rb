@@ -11,7 +11,7 @@ class TimeTrackingController < ApplicationController
     clients.map { |client| projects[client.name] = client.projects }
 
     timesheet_entries = current_user.timesheet_entries.in_workspace(current_company).during(
-    Date.today.beginning_of_week,
+      Date.today.beginning_of_week,
       Date.today.end_of_week
     )
     entries = formatted_entries_by_date(timesheet_entries)
