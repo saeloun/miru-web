@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import reports from "apis/reports";
 import { TimeEntry, ITimeEntry } from "./TimeEntry";

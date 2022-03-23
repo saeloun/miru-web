@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";
 
 export interface IClient {

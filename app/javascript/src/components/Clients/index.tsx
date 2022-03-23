@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import axios from "axios";
