@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_16_140058) do
+ActiveRecord::Schema.define(version: 2022_03_24_113443) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -119,12 +119,10 @@ ActiveRecord::Schema.define(version: 2022_03_16_140058) do
     t.decimal "amount_due", precision: 20, scale: 2, default: "0.0"
     t.decimal "discount", precision: 20, scale: 2, default: "0.0"
     t.integer "status", default: 0, null: false
-    t.bigint "company_id", null: false
     t.bigint "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["client_id"], name: "index_invoices_on_client_id"
-    t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
   end
 
@@ -241,7 +239,6 @@ ActiveRecord::Schema.define(version: 2022_03_16_140058) do
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoice_line_items", "users"
   add_foreign_key "invoices", "clients"
-  add_foreign_key "invoices", "companies"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"

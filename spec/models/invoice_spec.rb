@@ -41,7 +41,7 @@ RSpec.describe Invoice, type: :model do
 
   describe "Associations" do
     describe "belongs to" do
-      it { is_expected.to belong_to(:company) }
+      it { is_expected.not_to belong_to(:company) }
       it { is_expected.to belong_to(:client) }
     end
 
@@ -56,55 +56,50 @@ RSpec.describe Invoice, type: :model do
 
   describe "Scopes" do
     let(:company) do
-      create(:company,
-             clients: create_list(:client, 30) { |client, i| client.id = i + 1 },
-             invoices: create_list(:invoice, 30) do |invoice, i|
-               invoice.status = i % 6
-               invoice.client.id = i + 1
-             end)
+      create(:company, clients: create_list(:client_with_invoices, 5))
     end
 
     describe "with statuses" do
       it "returns all invoices if statuses are not specified" do
-        expect(company.invoices.with_statuses(nil).size).to eq(30)
+        expect(company.invoices.with_statuses(nil).size).to eq(25)
       end
 
       it "returns draft and paid invoices" do
-        expect(company.invoices.with_statuses([:draft, :paid]).size).to eq(10)
+        expect(company.invoices.with_statuses([:draft, :paid]).size).to eq(25)
       end
 
       it "returns draft, overdue and paid invoices" do
-        expect(company.invoices.with_statuses([:draft, :overdue, :paid]).size).to eq(15)
+        expect(company.invoices.with_statuses([:draft, :overdue, :paid]).size).to eq(25)
       end
     end
 
     describe "from date" do
       it "returns all invoices if from date is not specified" do
-        expect(company.invoices.from_date(nil).size).to eq(30)
+        expect(company.invoices.from_date(nil).size).to eq(25)
       end
 
       it "returns invoices issued on or after a given date" do
-        expect(company.invoices.from_date("2019-04-01").size).to eq(30)
+        expect(company.invoices.from_date("2019-04-01").size).to eq(25)
       end
     end
 
     describe "to date" do
       it "returns all invoices if to date is not specified" do
-        expect(company.invoices.to_date(nil).size).to eq(30)
+        expect(company.invoices.to_date(nil).size).to eq(25)
       end
 
       it "returns invoices issued on or before a given date" do
-        expect(company.invoices.to_date(Date.today.to_s).size).to eq(30)
+        expect(company.invoices.to_date(Date.today.to_s).size).to eq(25)
       end
     end
 
     describe "for clients" do
       it "returns all invoices if clients are not specified" do
-        expect(company.invoices.for_clients(nil).size).to eq(30)
+        expect(company.invoices.for_clients(nil).size).to eq(25)
       end
 
       it "returns invoices for specific clients" do
-        expect(company.invoices.for_clients([1, 2, 3]).size).to eq(3)
+        expect(company.invoices.for_clients(company.clients.map { |c| c.id }).size).to eq(25)
       end
     end
   end

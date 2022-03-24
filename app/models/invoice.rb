@@ -14,7 +14,6 @@
 #  amount_due         :decimal(20, 2)   default("0.0")
 #  discount           :decimal(20, 2)   default("0.0")
 #  status             :integer          default("0"), not null
-#  company_id         :integer          not null
 #  client_id          :integer          not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
@@ -22,7 +21,6 @@
 # Indexes
 #
 #  index_invoices_on_client_id       (client_id)
-#  index_invoices_on_company_id      (company_id)
 #  index_invoices_on_invoice_number  (invoice_number) UNIQUE
 #
 
@@ -40,7 +38,6 @@ class Invoice < ApplicationRecord
     :overdue
   ]
 
-  belongs_to :company
   belongs_to :client
   has_many :invoice_line_items, dependent: :destroy
 
