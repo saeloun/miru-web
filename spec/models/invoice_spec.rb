@@ -33,7 +33,7 @@ RSpec.describe Invoice, type: :model do
 
     describe "validate enum" do
       it do
-        is_expected.to define_enum_for(:status)
+        expect(subject).to define_enum_for(:status)
           .with_values([:draft, :sent, :viewed, :paid, :declined, :overdue])
       end
     end
