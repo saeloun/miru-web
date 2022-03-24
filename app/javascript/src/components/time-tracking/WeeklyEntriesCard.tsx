@@ -46,8 +46,11 @@ const WeeklyEntriesCard = ({
 
   const handleSaveEntry = async () => {
     try {
-      if (!dataChanged && note && duration) return;
       const payload = getPayload();
+      if (!payload["duration"]) {
+        Toastr.error("Please enter a valid duration");
+        return;
+      }
       payload["work_date"] = dayInfo[selectedInputBox]["fullDate"];
       const res = await timesheetEntryApi.create(payload);
       if (res.status === 200) {
@@ -76,6 +79,10 @@ const WeeklyEntriesCard = ({
     try {
       const timesheetEntryId = currentEntries[selectedInputBox]["id"];
       const payload = getPayload();
+      if (!payload["duration"]) {
+        Toastr.error("Please enter a valid duration");
+        return;
+      }
       const res = await timesheetEntryApi.update(timesheetEntryId, payload);
       if (res.status === 200) {
         setEntryList(prevState => {
@@ -165,7 +172,7 @@ const WeeklyEntriesCard = ({
                     ? setBillable(true)
                     : setBillable(false);
                 }}
-                className="bold text-xl content-center px-1 py-4 w-18 h-15 border-2 rounded bg-miru-gray-100"
+                className={`bold text-xl content-center px-1 py-4 w-18 h-15 border-2 border-transparent rounded bg-miru-gray-100 ${currentEntries[num] ? "text-miru-gray-500" : "text-miru-dark-purple-200"}`}
               >
                 {currentEntries[num]
                   ? minutesToHHMM(currentEntries[num]["duration"])
@@ -193,7 +200,7 @@ const WeeklyEntriesCard = ({
         </div>
       </div>
       {showNote && (
-        <div className="mt-4 mx-54 justify-between bg-miru-gray-100 w-138 rounded">
+        <div className="mt-4 mx-54 justify-between bg-miru-gray-100 w-138 border border-miru-gray-1000 rounded">
           <textarea
             value={note}
             onChange={e => {
@@ -230,6 +237,18 @@ const WeeklyEntriesCard = ({
               <h4>Billable</h4>
             </div>
             <div>
+              <button
+                onClick={() => {
+                  setNote("");
+                  setShowNote(false);
+                  setDataChanged(false);
+                  setSelectedInputBox(-1);
+                  setBillable(false);
+                }}
+                className="m-2 inline-block h-6 w-30 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest  text-center justify-center align-middle"
+              >
+                CANCEL
+              </button>
               {currentEntries[selectedInputBox] ?
                 <button
                   className={
@@ -246,7 +265,7 @@ const WeeklyEntriesCard = ({
                 <button
                   className={
                     "m-2 mb-1 inline-block h-6 w-30 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-                  (dataChanged && note && duration
+                  (dataChanged && duration
                     ? "bg-miru-han-purple-1000 hover:border-transparent"
                     : "bg-miru-gray-1000")
                   }
@@ -254,18 +273,6 @@ const WeeklyEntriesCard = ({
                 >
                 SAVE
                 </button>}
-              <button
-                onClick={() => {
-                  setNote("");
-                  setShowNote(false);
-                  setDataChanged(false);
-                  setSelectedInputBox(-1);
-                  setBillable(false);
-                }}
-                className="m-2 inline-block h-6 w-30 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest  text-center justify-center align-middle"
-              >
-                CANCEL
-              </button>
             </div>
           </div>
         </div>

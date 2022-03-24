@@ -37,6 +37,9 @@ const TimeTracking: React.FC<Iprops> = ({
   const [editEntryId, setEditEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
 
+  // sorting by client's name
+  clients.sort((a: object, b: object) => a["name"].localeCompare(b["name"]));
+
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
@@ -65,7 +68,7 @@ const TimeTracking: React.FC<Iprops> = ({
   }, [entryList]);
 
   const handleWeekInfo = () => {
-    const daysInWeek = [0, 1, 2, 3, 4, 5, 6, 7].map((weekCounter) => {
+    const daysInWeek = [0, 1, 2, 3, 4, 5, 6].map((weekCounter) => {
       const [day, month, date, year] = dayjs()
         .weekday(weekCounter + weekDay)
         ["$d"].toString()

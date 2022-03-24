@@ -2,7 +2,6 @@
 
 class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationController
   include Timesheet
-  include ErrorHandler
 
   skip_after_action :verify_authorized, only: [:index]
   after_action :verify_policy_scoped, only: [:index]

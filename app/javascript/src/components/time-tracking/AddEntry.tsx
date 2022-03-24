@@ -24,7 +24,6 @@ const AddEntry: React.FC<Iprops> = ({
   const [project, setProject] = useState("");
   const [projectId, setProjectId] = useState(0);
   const [billable, setBillable] = useState(false);
-  clients.sort().reverse();
 
   const handleFillData = () => {
     if (!editEntryId) return;
