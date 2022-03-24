@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import Table from "./Table";
 import BannerBox from "./BannerBox";
+import Table from "./Table";
 
 const Container = ({ invoiceList, setInvoiceList }) => {
 
