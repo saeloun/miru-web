@@ -195,10 +195,6 @@ Style/DefWithParentheses:
 Style/MethodDefParentheses:
   Enabled: true
 
-# # bad
-# def some_method(arg1=:default, arg2=nil, arg3=[])
-# # good
-# def some_method(arg1 = :default, arg2 = nil, arg3 = [])
 Layout/SpaceAroundEqualsInParameterDefault:
   Enabled: true
 
