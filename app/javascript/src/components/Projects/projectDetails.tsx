@@ -1,17 +1,39 @@
 import * as React from "react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import projectsAPI from "apis/projects";
+import projectAPI from "apis/projects";
 import { Member } from "./member";
-import { minutesToHHMM } from "../../helpers/hhmm-parser";
+
+export interface IProjectDetails {
+  id: number;
+  name: string;
+  clientName: string;
+  isBillable: boolean;
+  minutesSpent: number;
+  projectMembers: any;
+  editIcon: string;
+  deleteIcon: string;
+  isAdminUser: boolean;
+  setShowEditDialog: any;
+  setProjectToEdit: any;
+  setProjectToDelete: any;
+  setShowDeleteDialog: any;
+  projectClickHandler: any;
+}
 
 const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
 
-  const [project, setProject] = React.useState({});
+  const [project, setProject] = React.useState<IProjectDetails>();
 
-  const fetchProject = () => {
-    projectsAPI.show(id)
-      .then(res => setProject(res.data.project))
-      .catch (err => {console.log(err);});
+  const fetchProject = async () => {
+
+    try {
+      const resp = await projectAPI.show(id);
+      console.log(resp);
+      setProject(resp.data.project);
+    } catch (err) {
+      console.log(err);
+    }
+
   };
 
   React.useEffect(() => {
@@ -20,15 +42,15 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
     fetchProject();
   }, []);
 
+  console.log(project);
   return (
-
     <>
       <div>Showing details for project {id}</div>
-      <div>Project-name: {project.name}</div>
-      <div>Project name: {project.name}</div>
-      <div>Client name: {project.clientName}</div>
-      <div>Billable: {project.isBillable}</div>
-      <div>Minutes spent(week): {project.minutesSpent}</div>
+      <div>Project-name: {project?.name}</div>
+      <div>Project name: {project?.name}</div>
+      <div>Client name: {project?.clientName}</div>
+      <div>Billable: {project?.isBillable}</div>
+      <div>Minutes spent(week): {project?.minutesSpent}</div>
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">

@@ -1,21 +1,23 @@
 import * as React from "react";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import projects from "apis/projects";
-import { Project } from "./project";
+import projectApi from "apis/projects";
+import { IProject } from "./project";
 import ProjectDetails from "./projectDetails";
 import ProjectList from "./projectList";
 
 const Projects = ({ editIcon, deleteIcon, isAdminUser }) => {
-  const [allProjects, setAllProjects] = React.useState([]);
+  const [projects, setProjects] = React.useState<IProject[]>([]);
   const [showProjectDetails, setShowProjectDetails] = React.useState(null);
 
-  const fetchProjects = () => {
+  const fetchProjects = async () => {
 
-    projects.get()
-      .then(res => setAllProjects(res.data.projects))
-      .catch(err => console.log(err));
-
+    try {
+      const resp = await projectApi.get();
+      setProjects(resp.data.projects);
+    } catch (error)
+    {console.log(error);}
+     
   };
 
   React.useEffect(() => {
@@ -36,7 +38,7 @@ const Projects = ({ editIcon, deleteIcon, isAdminUser }) => {
         editIcon={editIcon}
         deleteIcon={deleteIcon}/> :
       <ProjectList
-        allProjects={allProjects}
+        allProjects={projects}
         isAdminUser={isAdminUser}
         projectClickHandler={projectClickHandler}/>
   );
