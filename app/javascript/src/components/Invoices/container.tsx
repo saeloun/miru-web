@@ -1,13 +1,7 @@
 import * as React from "react";
 
 import Table from "./Table";
-
-const BannerBox = ({ title, value }) => (
-  <li className="page-display__box">
-    <p className="font-normal text-sm tracking-widest">{title}</p>
-    <p className="text-5xl font-normal mt-3 tracking-widest">{value}</p>
-  </li>
-);
+import BannerBox from "./BannerBox";
 
 const Container = ({ invoiceList, setInvoiceList }) => {
 
