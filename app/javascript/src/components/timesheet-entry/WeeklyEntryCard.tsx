@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 const WeeklyEntryCard: React.FC<any> = () => (
   <div className="max-h-48 w-full mt-4 shadow-2xl rounded-lg">
