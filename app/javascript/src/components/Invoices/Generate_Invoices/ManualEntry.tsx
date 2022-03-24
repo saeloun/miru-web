@@ -9,6 +9,7 @@ const ManualEntry = ({ setShowItemInputs,setNewLineItems,NewLineItems }) => {
   const [Rate, setRate] = React.useState<string>("");
   const [Qty, setQty] = React.useState<string>("");
   const [LineTotal, setLineTotal] = React.useState<string>("");
+  const ref =React.useRef();
 
   const onEnter = val => {
     if (val.key == "Enter") {
@@ -46,8 +47,10 @@ const ManualEntry = ({ setShowItemInputs,setNewLineItems,NewLineItems }) => {
       </td>
       <td className=" w-full">
         <input
-          type="date"
-          placeholder="Date"
+          type="text"
+          placeholder="Something"
+          ref={ref}
+          onFocus={(e)=>(e.target.type="date")}
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000"
           value={Date}
           onChange={val => setDate(val.target.value)}

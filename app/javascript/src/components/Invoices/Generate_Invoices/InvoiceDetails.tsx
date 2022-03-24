@@ -27,7 +27,7 @@ const SubComp2 = () => {
     </components.DropdownIndicator>
   );
 
-  const calculateDates = (date, type) => {
+  const calculateDates = () => {
     setissueDate(
       new Date().getDate() +
       "." +
@@ -48,7 +48,7 @@ const SubComp2 = () => {
   //useeffects
 
   React.useEffect(() => {
-    calculateDates(null, null);
+    calculateDates();
   }, []);
 
   return (
@@ -101,7 +101,7 @@ const SubComp2 = () => {
                 borderTopLeftRadius: "4px",
                 borderBottomLeftRadius: "4px"
               }),
-              valueContainer: (provided, state) => ({
+              valueContainer: (provided) => ({
                 ...provided,
                 background: "#F5F7F9",
                 padding: 0,
@@ -117,7 +117,7 @@ const SubComp2 = () => {
                 borderTopRightRadius: "4px",
                 borderBottomRightRadius: "4px"
               }),
-              control: (provided, state) => ({
+              control: (provided) => ({
                 ...provided,
                 boxShadow: "none",
                 border: 0,
