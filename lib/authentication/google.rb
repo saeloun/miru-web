@@ -22,9 +22,9 @@ module Authentication
         else
           user_first_name = first_name || email.split("@").first
           user = User.new(
-            email: email,
+            email:,
             first_name: user_first_name,
-            last_name: last_name,
+            last_name:,
             password: Devise.friendly_token[0, 20]
           )
           user.skip_confirmation!

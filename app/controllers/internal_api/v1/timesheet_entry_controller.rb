@@ -10,7 +10,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
     timesheet_entries = policy_scope(TimesheetEntry)
     timesheet_entries = timesheet_entries.where(user_id: params[:user_id] || current_user.id).during(params[:from], params[:to])
     entries = formatted_entries_by_date(timesheet_entries)
-    render json: { entries: entries }
+    render json: { entries: }
   end
 
   def create
@@ -23,7 +23,8 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
   def update
     authorize current_timesheet_entry
     current_timesheet_entry.project = current_project
-    render json: { notice: I18n.t("timesheet_entry.update.message"), entry: current_timesheet_entry.formatted_entry }, status: :ok if current_timesheet_entry.update(timesheet_entry_params)
+    render json: { notice: I18n.t("timesheet_entry.update.message"), entry: current_timesheet_entry.formatted_entry },
+           status: :ok if current_timesheet_entry.update(timesheet_entry_params)
   end
 
   def destroy

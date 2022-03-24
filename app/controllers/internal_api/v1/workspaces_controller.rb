@@ -8,7 +8,7 @@ class InternalApi::V1::WorkspacesController < ApplicationController
     if current_user.update(current_workspace_id: workspace.id)
       render json: {
         success: true,
-        workspace: workspace,
+        workspace:,
         notice: I18n.t("workspaces.update.success")
       }, status: :ok
     else

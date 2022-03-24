@@ -19,6 +19,7 @@ module ApplicationHelper
 
   def error_message_on(resource, attribute)
     return unless resource.respond_to?(:errors) && resource.errors.include?(attribute)
+
     field_error(resource, attribute)
   end
 

@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe "TimeTracking#index", type: :request do
   let (:company) { create(:company) }
   let (:user) { create(:user, current_workspace_id: company.id) }
-  let! (:clients) { create_list(:client, 2, company: company) }
+  let! (:clients) { create_list(:client, 2, company:) }
 
   context "when user is admin" do
     before do

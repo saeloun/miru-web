@@ -5,7 +5,7 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.1
   # RuboCop has a bunch of cops enabled by default. This setting tells RuboCop
   # to ignore them, so only the ones explicitly set in this file are enabled.
   DisabledByDefault: true
@@ -148,6 +148,21 @@ Layout/SpaceBeforeComment:
 Layout/SpaceBeforeFirstArg:
   Enabled: true
 
+Layout/ArgumentAlignment:
+  Enabled: true
+
+Layout/ArrayAlignment:
+  Enabled: true
+
+Layout/AssignmentIndentation:
+  Enabled: true
+
+Layout/BlockEndNewline:
+  Enabled: true
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: true
+
 Style/DefWithParentheses:
   Enabled: true
 
@@ -204,6 +219,10 @@ Layout/TrailingEmptyLines:
 # No trailing whitespace.
 Layout/TrailingWhitespace:
   Enabled: true
+
+# Limit the line lenght to 150 characters.
+Layout/LineLength:
+  Max: 150
 
 # Use quotes for string literals when they are enough.
 Style/RedundantPercentQ:
@@ -478,16 +497,6 @@ RSpec/MultipleMemoizedHelpers:
   Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleMemoizedHelpers
   Max: 10
-
-RSpec/MissingExampleGroupArgument:
-  Description: Checks that the first argument to an example group is not empty.
-  Enabled: true
-  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MissingExampleGroupArgument
-
-RSpec/MultipleDescribes:
-  Description: Checks for multiple top-level example groups.
-  Enabled: true
-  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleDescribes
 
 RSpec/MissingExampleGroupArgument:
   Description: Checks that the first argument to an example group is not empty.

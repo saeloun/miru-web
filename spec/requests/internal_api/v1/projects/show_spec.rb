@@ -5,8 +5,8 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Projects#show", type: :request do
   let (:company) { create(:company) }
   let (:user) { create(:user, current_workspace_id: company.id) }
-  let (:client) { create(:client, company: company) }
-  let (:project) { create(:project, client: client) }
+  let (:client) { create(:client, company:) }
+  let (:project) { create(:project, client:) }
   let (:project_member) { create(:project_member, user_id: user.id, project_id: project.id, hourly_rate: 5000) }
 
   context "when user is admin" do
@@ -14,7 +14,7 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :admin, company
       sign_in user
-      create_list(:timesheet_entry, 5, user: user, project: project)
+      create_list(:timesheet_entry, 5, user:, project:)
       send_request :get, internal_api_v1_project_path(project)
     end
 

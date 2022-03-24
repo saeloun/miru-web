@@ -60,9 +60,9 @@ class User < ApplicationRecord
 
   # Validations
   validates :first_name, :last_name,
-    presence: true,
-    format: { with: /\A[a-zA-Z\s]+\z/ },
-    length: { maximum: 50 }
+            presence: true,
+            format: { with: /\A[a-zA-Z\s]+\z/ },
+            length: { maximum: 50 }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable

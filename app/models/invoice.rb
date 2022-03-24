@@ -47,7 +47,7 @@ class Invoice < ApplicationRecord
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }
   validates :amount, :outstanding_amount, :tax,
-    :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
+            :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
   validates :invoice_number, uniqueness: true
 
   def sub_total
