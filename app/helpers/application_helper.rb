@@ -32,6 +32,7 @@ module ApplicationHelper
   end
 
   private
+
     def field_error(resource, attribute)
       resource.errors[attribute].first
     end

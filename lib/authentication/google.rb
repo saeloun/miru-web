@@ -15,6 +15,7 @@ module Authentication
     end
 
     private
+
       def create_user!
         user = User.find_by_email(email)
         if user.present?

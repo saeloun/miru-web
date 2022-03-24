@@ -27,6 +27,7 @@ class ClientsController < ApplicationController
   end
 
   private
+
     def clients
       @_clients ||= current_company.clients.kept.order(created_at: :desc).map do |c|
         c.attributes.merge({ hours_logged: c.timesheet_entries.sum(:duration) })

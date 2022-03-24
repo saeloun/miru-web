@@ -3,9 +3,9 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
-  let (:company) { create(:company) }
-  let (:user) { create(:user, current_workspace_id: company.id) }
-  let (:client) { create(:client, company:) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:client) { create(:client, company:) }
 
   context "when user is admin" do
     before do
@@ -16,8 +16,10 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
     end
 
     it "returns the company details and list of clients" do
-      company_details = { id: user.current_workspace.id, phone_number: user.current_workspace.business_phone,
-address: user.current_workspace.address, country: user.current_workspace.country }
+      company_details = {
+        id: user.current_workspace.id, phone_number: user.current_workspace.business_phone,
+        address: user.current_workspace.address, country: user.current_workspace.country
+      }
       company_client_list = user.current_workspace.client_list
       issue_date = Date.current
       due_date = Date.current + 30

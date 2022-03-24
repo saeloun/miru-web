@@ -3,13 +3,12 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Clients#index", type: :request do
-  let (:company) { create(:company) }
-  let (:user) { create(:user, current_workspace_id: company.id) }
-  let (:client_1) { create(:client, company:) }
-  let (:client_2) { create(:client, company:) }
-  let (:project_1) { create(:project, client: client_1) }
-  let (:project_2) { create(:project, client: client_2) }
-
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:client_1) { create(:client, company:) }
+  let(:client_2) { create(:client, company:) }
+  let(:project_1) { create(:project, client: client_1) }
+  let(:project_2) { create(:project, client: client_2) }
 
   context "when user is admin" do
     before do
@@ -22,7 +21,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     end
 
     context "when time_frame is week" do
-      let (:time_frame) { "last_week" }
+      let(:time_frame) { "last_week" }
 
       it "returns the total hours logged for a Company in the last_week" do
         client_details = user.current_workspace.clients.kept.map { |client|

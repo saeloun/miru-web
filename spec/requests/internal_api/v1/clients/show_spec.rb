@@ -3,10 +3,10 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Clients#show", type: :request do
-  let (:company) { create(:company) }
-  let (:user) { create(:user, current_workspace_id: company.id) }
-  let (:client_1) { create(:client, company:) }
-  let (:project_1) { create(:project, client: client_1) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:client_1) { create(:client, company:) }
+  let(:project_1) { create(:project, client: client_1) }
 
   context "when user is admin" do
     before do
@@ -19,7 +19,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
     end
 
     context "when time_frame is week" do
-      let (:time_frame) { "week" }
+      let(:time_frame) { "week" }
 
       it "returns the total hours logged for a client in that week" do
         client_details = { id: client_1.id, name: client_1.name, email: client_1.email }

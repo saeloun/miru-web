@@ -3,11 +3,11 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Projects#show", type: :request do
-  let (:company) { create(:company) }
-  let (:user) { create(:user, current_workspace_id: company.id) }
-  let (:client) { create(:client, company:) }
-  let (:project) { create(:project, client:) }
-  let (:project_member) { create(:project_member, user_id: user.id, project_id: project.id, hourly_rate: 5000) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:client) { create(:client, company:) }
+  let(:project) { create(:project, client:) }
+  let(:project_member) { create(:project_member, user_id: user.id, project_id: project.id, hourly_rate: 5000) }
 
   context "when user is admin" do
     before do
@@ -19,12 +19,14 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
     end
 
     context "when time_frame is week" do
-      let (:time_frame) { "week" }
+      let(:time_frame) { "week" }
 
-      it "returns the project_details, project_team_member_details, project_total_minutes_logged for a project in that week" do
+      it "returns the project_details, project_team_member_details, project_total_minutes_logged for project in week" do
         project_details = { id: project.id, name: project.name, billable_status: project.billable }
         project_team_member_details = project.project_team_member_details(time_frame)
-        project_total_minutes_logged = (project_team_member_details.map { |user_details| user_details[:minutes_logged] }).sum
+        project_total_minutes_logged = (
+          project_team_member_details.map { |user_details|user_details[:minutes_logged] }
+        ).sum
         expect(response).to have_http_status(:ok)
         expect(json_response["project_details"]).to eq(JSON.parse(project_details.to_json))
         expect(json_response["project_team_member_details"]).to eq(JSON.parse(project_team_member_details.to_json))
