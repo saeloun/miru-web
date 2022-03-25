@@ -4,9 +4,8 @@ import { minutesToHHMM } from "helpers/hhmm-parser";
 export interface IMember {
   id: number;
   name: string;
-  hourlyRate: number;
-  minutesSpent: number;
-  cost: number;
+  hourly_rate: number;
+  minutes_logged: number;
   editIcon: string;
   deleteIcon: string;
   isAdminUser: boolean;
@@ -19,9 +18,8 @@ export interface IMember {
 export const Member = ({
   id,
   name,
-  hourlyRate,
-  minutesSpent,
-  cost,
+  hourly_rate,
+  minutes_logged,
   editIcon,
   deleteIcon,
   isAdminUser,
@@ -52,19 +50,19 @@ export const Member = ({
         {name}
       </td>
       <td className="table__cell text-xs">
-        {hourlyRate}
+        {hourly_rate}
       </td>
       <td className="table__cell text-xl text-right font-bold">
-        {minutesToHHMM(minutesSpent)}
+        {minutesToHHMM(minutes_logged)}
       </td>
       <td className="table__cell text-xl text-right font-bold">
-        {cost}
+        {minutes_logged * hourly_rate}
       </td>
       <td className="table__cell px-3 py-3">
         {isAdminUser && isHover && <button
           onClick={() => {
             setShowEditDialog(true);
-            setMemberToEdit({ id, name, hourlyRate });
+            setMemberToEdit({ id, name, hourly_rate });
           }}
         >
           <img src={editIcon} alt="" />

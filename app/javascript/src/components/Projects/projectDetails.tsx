@@ -6,10 +6,10 @@ import { Member } from "./member";
 export interface IProjectDetails {
   id: number;
   name: string;
-  clientName: string;
-  isBillable: boolean;
-  minutesSpent: number;
-  projectMembers: any;
+  client: any;
+  is_billable: boolean;
+  total_minutes_logged: number;
+  members: any;
   editIcon: string;
   deleteIcon: string;
   isAdminUser: boolean;
@@ -28,10 +28,9 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
 
     try {
       const resp = await projectAPI.show(id);
-      console.log(resp);
-      setProject(resp.data.project);
+      setProject(resp.data.project_details);
     } catch (err) {
-      console.log(err);
+      // Add error handling
     }
 
   };
@@ -42,15 +41,13 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
     fetchProject();
   }, []);
 
-  console.log(project);
   return (
     <>
       <div>Showing details for project {id}</div>
-      <div>Project-name: {project?.name}</div>
       <div>Project name: {project?.name}</div>
-      <div>Client name: {project?.clientName}</div>
-      <div>Billable: {project?.isBillable}</div>
-      <div>Minutes spent(week): {project?.minutesSpent}</div>
+      <div>Client name: {project?.client.name}</div>
+      <div>Billable: {project?.is_billable}</div>
+      <div>Minutes spent(week): {project?.total_minutes_logged}</div>
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -84,7 +81,7 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
                 </thead>
 
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {project?.projectMembers?.map((member, index) => (
+                  {project?.members?.map((member, index) => (
                     <Member
                       key={index}
                       {...member}

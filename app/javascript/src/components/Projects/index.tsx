@@ -1,5 +1,4 @@
 import * as React from "react";
-import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectApi from "apis/projects";
 import { IProject } from "./project";
@@ -16,8 +15,10 @@ const Projects = ({ editIcon, deleteIcon, isAdminUser }) => {
       const resp = await projectApi.get();
       setProjects(resp.data.projects);
     } catch (error)
-    {console.log(error);}
-     
+    {
+      // Add error handling
+    }
+
   };
 
   React.useEffect(() => {
