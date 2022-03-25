@@ -22,7 +22,8 @@ RSpec.describe "Client#index", type: :request do
               name: "Test Client",
               email: "test@example.com",
               phone: "Test phone",
-              address: "India"
+              address: "India",
+              client_code: "TE"
             }
           })
       end
@@ -48,7 +49,8 @@ RSpec.describe "Client#index", type: :request do
               name: "",
               email: "",
               phone: "",
-              address: ""
+              address: "",
+              client_code: ""
             }
           })
       end
@@ -78,7 +80,8 @@ RSpec.describe "Client#index", type: :request do
             name: "Test Client",
             email: "test@example.com",
             phone: "Test phone",
-            address: "India"
+            address: "India",
+            client_code: "TE"
           }
         })
     end
@@ -104,7 +107,8 @@ RSpec.describe "Client#index", type: :request do
             name: "Test Client",
             email: "test@example.com",
             phone: "Test phone",
-            address: "India"
+            address: "India",
+            client_code: "TE"
           }
         })
       expect(response).to redirect_to(user_session_path)

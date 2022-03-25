@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: clients
@@ -13,12 +12,14 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  discarded_at :datetime
+#  client_code  :string           not null
 #
 # Indexes
 #
-#  index_clients_on_company_id            (company_id)
-#  index_clients_on_discarded_at          (discarded_at)
-#  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
+#  index_clients_on_client_code_and_company_id  (client_code,company_id) UNIQUE
+#  index_clients_on_company_id                  (company_id)
+#  index_clients_on_discarded_at                (discarded_at)
+#  index_clients_on_email_and_company_id        (email,company_id) UNIQUE
 #
 
 # frozen_string_literal: true
@@ -32,8 +33,8 @@ class Client < ApplicationRecord
   belongs_to :company
 
   validates :name, :email, presence: true
+  validates :client_code, presence: true, uniqueness: { scope: :company_id }
   validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
-
   after_discard :discard_projects
 
   def total_hours_logged(time_frame = "week")
