@@ -13,7 +13,9 @@ const SelectProject: React.FC<Iprops> = ({
   setProjectSelected,
   newRowView,
   setNewRowView,
-  handleEditEntries
+  handleEditEntries,
+  isWeeklyEditing,
+  setIsWeeklyEditing
 }) => {
   const handleCancelButton = () => {
     if (newRowView) {
@@ -23,6 +25,7 @@ const SelectProject: React.FC<Iprops> = ({
       setClient(clientName);
       setProject(projectName);
     }
+    setIsWeeklyEditing(false);
   };
 
   const handleSaveButton = () => {
@@ -118,6 +121,8 @@ interface Iprops {
   newRowView: boolean;
   setNewRowView: (newRowView: boolean) => void;
   handleEditEntries: () => void;
+  isWeeklyEditing: boolean;
+  setIsWeeklyEditing: (isWeeklyEditing: boolean) => void;
 }
 
 export default SelectProject;

@@ -19,7 +19,9 @@ const WeeklyEntriesCard = ({
   setCurrentEntries,
   newRowView,
   setNewRowView,
-  dayInfo
+  dayInfo,
+  isWeeklyEditing,
+  setIsWeeklyEditing
 }: Iprops) => {
   const [selectedInputBox, setSelectedInputBox] = useState<number>(-1);
   const [note, setNote] = useState<string>("");
@@ -42,6 +44,28 @@ const WeeklyEntriesCard = ({
       newState[selectedInputBox] = entry;
       return newState;
     });
+  };
+
+  const handleDurationClick = (num: number) => {
+    if (dataChanged) return;
+    if (isWeeklyEditing) return;
+    setSelectedInputBox(num);
+    setShowNote(true);
+    setNote(
+      currentEntries[num] ? currentEntries[num]["note"] : ""
+    );
+    setDuration(
+      minutesToHHMM(
+        currentEntries[num] ? currentEntries[num]["duration"] : 0
+      )
+    );
+    currentEntries[num] &&
+      ["unbilled", "billed"].includes(
+        currentEntries[num]["bill_status"]
+      )
+      ? setBillable(true)
+      : setBillable(false);
+    setIsWeeklyEditing(true);
   };
 
   const handleSaveEntry = async () => {
@@ -69,6 +93,8 @@ const WeeklyEntriesCard = ({
         handleUpdateRow(res.data.entry);
         if (newRowView) setNewRowView(false);
         setDataChanged(false);
+        setShowNote(false);
+        setIsWeeklyEditing(false);
       }
     } catch (error) {
       Toastr.error(error.message);
@@ -96,6 +122,8 @@ const WeeklyEntriesCard = ({
         });
         handleUpdateRow(res.data.entry);
         setDataChanged(false);
+        setShowNote(false);
+        setIsWeeklyEditing(false);
       }
     } catch (error) {
       Toastr.error(error.message);
@@ -130,7 +158,7 @@ const WeeklyEntriesCard = ({
   }, []);
 
   return (
-    <div className="p-6 w-full mt-4 shadow-xl rounded-lg">
+    <div className="week-card p-6 w-full mt-4 shadow-xl rounded-lg">
       <div className="flex items-center">
         <div className="flex mr-10 w-44">
           <p className="text-lg">{client}</p>
@@ -153,25 +181,7 @@ const WeeklyEntriesCard = ({
             ) : (
               <div
                 key={num}
-                onClick={() => {
-                  if (dataChanged) return;
-                  setSelectedInputBox(num);
-                  setShowNote(true);
-                  setNote(
-                    currentEntries[num] ? currentEntries[num]["note"] : ""
-                  );
-                  setDuration(
-                    minutesToHHMM(
-                      currentEntries[num] ? currentEntries[num]["duration"] : 0
-                    )
-                  );
-                  currentEntries[num] &&
-                  ["unbilled", "billed"].includes(
-                    currentEntries[num]["bill_status"]
-                  )
-                    ? setBillable(true)
-                    : setBillable(false);
-                }}
+                onClick={() => handleDurationClick(num)}
                 className={`bold text-xl content-center px-1 py-4 w-18 h-15 border-2 border-transparent rounded bg-miru-gray-100 ${currentEntries[num] ? "text-miru-gray-500" : "text-miru-dark-purple-200"}`}
               >
                 {currentEntries[num]
@@ -186,16 +196,16 @@ const WeeklyEntriesCard = ({
         </div>
         <div className="flex justify-around">
           <img
-            onClick={() => setProjectSelected(false)}
+            onClick={() => {if (! isWeeklyEditing) setProjectSelected(false); setIsWeeklyEditing(true); }}
             src="/edit.svg"
             alt="edit"
-            className="ml-8"
+            className="icon-hover ml-8 cursor-pointer"
           />
           <img
             onClick={handleDeleteEntries}
             src="/delete.svg"
             alt="delete"
-            className="ml-8"
+            className="icon-hover ml-8 cursor-pointer"
           />
         </div>
       </div>
@@ -244,6 +254,7 @@ const WeeklyEntriesCard = ({
                   setDataChanged(false);
                   setSelectedInputBox(-1);
                   setBillable(false);
+                  setIsWeeklyEditing(false);
                 }}
                 className="m-2 inline-block h-6 w-30 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest  text-center justify-center align-middle"
               >
@@ -295,6 +306,8 @@ interface Iprops {
   handleDeleteEntries: () => any;
   handleEditEntries: () => any;
   dayInfo: Array<any>;
+  isWeeklyEditing: boolean;
+  setIsWeeklyEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default WeeklyEntriesCard;
