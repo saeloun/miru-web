@@ -43,12 +43,12 @@ class Client < ApplicationRecord
 
   def project_details(time_frame = "week")
     from, to = week_month_year(time_frame)
-    projects.kept.map { | project |
-  {
-    name: project.name, team: project.project_member_full_names,
-    minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
-  }
-}
+    projects.kept.map do | project |
+      {
+        name: project.name, team: project.project_member_full_names,
+        minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
+      }
+    end
   end
 
   def week_month_year(time_frame)

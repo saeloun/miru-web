@@ -47,8 +47,9 @@ module ErrorHandler
 
       respond_to do |format|
         format.json {
-  render json: { errors: message, notice: I18n.t("errors.internal_server_error") }, status: :internal_server_error
-}
+          render json: { errors: message, notice: I18n.t("errors.internal_server_error") },
+            status: :internal_server_error
+        }
         format.html { render file: "public/500.html", status: :internal_server_error, layout: false, alert: message }
       end
     end
@@ -56,9 +57,9 @@ module ErrorHandler
     def record_invalid(exception)
       respond_to do |format|
         format.json {
-  render json: { errors: exception.record.errors, notice: I18n.t("client.update.failure.message") },
-    status: :unprocessable_entity
-}
+          render json: { errors: exception.record.errors, notice: I18n.t("client.update.failure.message") },
+            status: :unprocessable_entity
+        }
         format.html { render file: "public/422.html", status: :unprocessable_entity, layout: false, alert: message }
       end
     end
