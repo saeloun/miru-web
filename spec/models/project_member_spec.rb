@@ -13,4 +13,9 @@ RSpec.describe ProjectMember, type: :model do
   describe "Validations" do
     it { is_expected.to validate_presence_of(:hourly_rate) }
   end
+
+  describe "Delegations" do
+    it { is_expected.to delegate_method(:full_name).to(:user) }
+    it { is_expected.to delegate_method(:timesheet_entries).to(:user) }
+  end
 end

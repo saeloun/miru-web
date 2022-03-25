@@ -33,7 +33,7 @@ en:
   navbar:
     clients: Clients
     dashboard: Dashboard
-    invoice: Invoice
+    invoices: Invoices
     logout: Logout
     profile: Profile
     projects: Projects

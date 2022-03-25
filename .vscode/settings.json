@@ -5,12 +5,10 @@
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "files.insertFinalNewline": true,
-    "editor.renderWhitespace": "boundary",
     "editor.rulers": [
         100,
         120
     ],
     "editor.tabSize": 2,
     "javascript.updateImportsOnFileMove.enabled": "never",
-    "editor.fontSize": 18,
 }

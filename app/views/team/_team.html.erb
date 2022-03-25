@@ -41,11 +41,11 @@
     <% end %>
   <% end %>
 </td>
-<td id="delete-<%= member.id %>" class="table__data table__button_design" data-cy="delete-team-member-button">
+<td id="delete-<%= member.id %>" class="table__data table__button_design">
   <% if policy(:team).destroy? %>
     <%= link_to team_path(member), data: { confirm: "Are you sure?" }, method: :delete do %>
       <div class="w-6">
-        <%= image_tag 'delete_image_button.svg', class:"table__button" %>
+        <%= image_tag 'delete_image_button.svg', class:"table__button", "data-cy": "delete-team-member-button" %>
       </div>
     <% end %>
   <% end %>

@@ -27,23 +27,3 @@ Cypress.Commands.add("loginAsEmployee", function () {
   cy.get(authSelectors.signInButton).click();
   cy.location("pathname").should("eq", "/time-tracking");
 });
-
-//add new admin user from Team tab
-Cypress.Commands.add("addNewAdminUser", function () {
-  cy.get(teamTabSelector.addNewUserButton).click();
-  cy.get(teamTabSelector.newMemberFirstName).type("Dummy Admin FirstName");
-  cy.get(teamTabSelector.newMemberLastname).type("Dummy Admin LastName");
-  cy.get(teamTabSelector.newMemberEmail).type("test@email.com");
-  cy.get(teamTabSelector.adminRadioButton).check();
-  cy.get(teamTabSelector.sendInviteButton).click();
-});
-
-//add new employee user from Team tab
-Cypress.Commands.add("addNewEmpUser", function () {
-  cy.get(teamTabSelector.addNewUserButton).click();
-  cy.get(teamTabSelector.newMemberFirstName).type("Dummy Emp FirstName");
-  cy.get(teamTabSelector.newMemberLastname).type("Dummy Emp LastName");
-  cy.get(teamTabSelector.newMemberEmail).type("test@email.com");
-  cy.get(teamTabSelector.employeeRadioButton).check();
-  cy.get(teamTabSelector.sendInviteButton).click();
-});
