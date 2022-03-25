@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 2022_03_25_040806) do
+=======
+ActiveRecord::Schema.define(version: 2022_03_16_140058) do
+>>>>>>> ad71fe46d5b3b9d58058f19975ee5a7bb5b4b1b8
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,6 +57,7 @@ ActiveRecord::Schema.define(version: 2022_03_25_040806) do
     t.datetime "discarded_at", precision: 6
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
+    t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true
   end
 
   create_table "companies", force: :cascade do |t|

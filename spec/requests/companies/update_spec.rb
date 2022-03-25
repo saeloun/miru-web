@@ -30,7 +30,7 @@ RSpec.describe "Companies#create", type: :request do
         expect(company.address).to eq("updated address")
       end
 
-      it "redirects to root_path " do
+      it "redirects to root_path" do
         expect(response).to have_http_status(:redirect)
       end
     end

@@ -21,7 +21,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
     context "when time_frame is week" do
       let (:time_frame) { "week" }
 
-      it "should return the total hours logged for a client in that week" do
+      it "returns the total hours logged for a client in that week" do
         client_details = { id: client_1.id, name: client_1.name, email: client_1.email }
         project_details = client_1.project_details(time_frame)
         total_minutes = (project_details.map { |project| project[:minutes_spent] }).sum
@@ -41,13 +41,13 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
       send_request :get, internal_api_v1_clients_path
     end
 
-    it "should not be permitted to view time entry report" do
+    it "is not permitted to view time entry report" do
       expect(response).to have_http_status(:forbidden)
     end
   end
 
   context "when unauthenticated" do
-    it "should not be permitted to view time entry report" do
+    it "is not permitted to view time entry report" do
       send_request :get, internal_api_v1_reports_path
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")

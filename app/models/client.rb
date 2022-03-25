@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: clients
@@ -14,8 +16,9 @@
 #
 # Indexes
 #
-#  index_clients_on_company_id    (company_id)
-#  index_clients_on_discarded_at  (discarded_at)
+#  index_clients_on_company_id            (company_id)
+#  index_clients_on_discarded_at          (discarded_at)
+#  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
 #
 
 # frozen_string_literal: true
@@ -25,10 +28,11 @@ class Client < ApplicationRecord
 
   has_many :projects
   has_many :timesheet_entries, through: :projects
+  has_many :invoices, dependent: :destroy
   belongs_to :company
 
   validates :name, :email, presence: true
-  validates :email, uniqueness: true, format: { with: Devise.email_regexp }
+  validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
 
   after_discard :discard_projects
 

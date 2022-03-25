@@ -1,6 +1,6 @@
 import { teamTabSelector } from "../../constants/selectors/team";
 
-export const addNewUser = role => {
+export const addNewUser = (role) => {
   cy.get(teamTabSelector.addNewUserButton).click();
   cy.get(teamTabSelector.newMemberFirstName).type("Dummy Emp FirstName");
   cy.get(teamTabSelector.newMemberLastname).type("Dummy Emp LastName");

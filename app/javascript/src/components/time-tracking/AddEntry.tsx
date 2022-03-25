@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import * as React from "react";
+import React from "react";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesFromHHMM, minutesToHHMM } from "../../helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "../../helpers/ordinal";

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";
 
 export interface IClient {
@@ -32,8 +32,8 @@ export const Client = ({
   setClientToDelete,
   setShowDeleteDialog
 }: IClient) => {
-  const [grayColor, setGrayColor] = React.useState<string>("");
-  const [isHover, setHover] = React.useState<boolean>(false);
+  const [grayColor, setGrayColor] = useState<string>("");
+  const [isHover, setHover] = useState<boolean>(false);
 
   const handleMouseEnter = () => {
     setGrayColor("bg-miru-gray-100");
