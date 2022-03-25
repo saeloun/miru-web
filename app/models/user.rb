@@ -67,9 +67,9 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :invitable, :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable,
-         :trackable, :confirmable,
-         :omniauthable, omniauth_providers: [:google_oauth2]
+    :recoverable, :rememberable, :validatable,
+    :trackable, :confirmable,
+    :omniauthable, omniauth_providers: [:google_oauth2]
 
   # Callbacks
   after_discard :discard_project_members
@@ -95,6 +95,7 @@ class User < ApplicationRecord
   end
 
   private
+
     def discard_project_members
       project_members.discard_all
     end

@@ -33,7 +33,7 @@ en:
   navbar:
     clients: Clients
     dashboard: Dashboard
-    invoice: Invoice
+    invoices: Invoices
     logout: Logout
     profile: Profile
     projects: Projects
@@ -76,6 +76,9 @@ en:
     address:
       label: Address
       placeholder: Enter address
+    code:
+      label: Client Code
+      placeholder: Enter Client code
     create:
       failure: "Client creation failed"
       success: "Client added successfully"
@@ -184,7 +187,7 @@ en:
     team_policy:
       edit?: You are not authorized to edit team.
       update?: You are not authorized to update team.
-      destroy?: You are not authorized to destroy team. 
+      destroy?: You are not authorized to destroy team.
   errors:
     not_found: The resource you're looking for is not available
     unauthorized: Only owner or admin users are authorized to perform this action
@@ -192,9 +195,9 @@ en:
     create_billed_entry: You can't create a billed timesheet entry
     internal_server_error: Something went wrong
   timesheet_entry:
-    create: 
+    create:
       message: "Timesheet created"
     update:
       message: "Timesheet updated"
-    destroy: 
+    destroy:
       message: "Timesheet deleted"

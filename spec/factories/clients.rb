@@ -10,5 +10,6 @@ FactoryBot.define do
     factory :client_with_invoices do
       invoices { Array.new(5) { association(:invoice) } }
     end
+    client_code { Faker::Alphanumeric.unique.alpha(number: 2).upcase }
   end
 end

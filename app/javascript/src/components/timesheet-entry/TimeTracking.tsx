@@ -1,5 +1,5 @@
 /* eslint-disable no-unexpected-multiline */
-import * as React from "react";
+import React from "react";
 import { ToastContainer } from "react-toastify";
 import * as dayjs from "dayjs";
 import * as weekday from "dayjs/plugin/weekday";

@@ -4,8 +4,4 @@ class InvoicePolicy < ApplicationPolicy
   def index?
     user_owner_or_admin?
   end
-
-  def summary?
-    user_owner_or_admin?
-  end
 end
