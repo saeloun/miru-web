@@ -1,6 +1,7 @@
 import * as React from "react";
 import timesheetEntryApi from "apis/timesheet-entry";
 import Toastr from "common/Toastr";
+import Logger from "js-logger";
 import SelectProject from "./SelectProject";
 import WeeklyEntriesCard from "./WeeklyEntriesCard";
 
@@ -65,20 +66,15 @@ const WeeklyEntries: React.FC<Props> = ({
       if (res.status === 200) {
         setEntryList(prevState => {
           const newState : any = { ...prevState };
-          dayInfo.forEach(({ fullDate }) => {
-            if (newState[fullDate]) {
-              newState[fullDate] = newState[fullDate].filter(
-                entry => {
-                  if (! ids.includes(entry["id"])) return entry;
-                }
-              );
-            }
+          dayInfo.forEach(({ fullDate }, index) => {
+            if (! newState[fullDate]) return;
+            newState[fullDate] = newState[fullDate].filter(entry => !ids.includes(entry.id));
           });
           return newState;
         });
       }
     } catch (error) {
-      Toastr.error(error.message);
+      Logger.error(error.message);
     }
   };
 
