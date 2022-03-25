@@ -7,7 +7,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     create(:company, clients: create_list(:client_with_invoices, 5))
   end
 
-  let (:user) { create(:user, current_workspace_id: company.id) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
 
   context "when user is admin" do
     before do
@@ -58,7 +58,13 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         send_request :get, "#{internal_api_v1_invoices_path}?from=#{from}"
         expected_invoices = company.invoices.select { |inv| !inv.issue_date.before?(from) }
         expect(response).to have_http_status(:ok)
-        expect(json_response["invoices"].map { |invoice| invoice["id"] }).to match_array(expected_invoices.map { |invoice| invoice["id"] })
+        expect(
+          json_response["invoices"].map { |invoice|
+            invoice["id"]
+          }).to match_array(
+            expected_invoices.map { |invoice|
+              invoice["id"]
+            })
       end
     end
 
@@ -68,7 +74,13 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         send_request :get, "#{internal_api_v1_invoices_path}?to=#{to}"
         expected_invoices = company.invoices.select { |inv| !inv.issue_date.after?(to) }
         expect(response).to have_http_status(:ok)
-        expect(json_response["invoices"].map { |invoice| invoice["id"] }).to match_array(expected_invoices.map { |invoice| invoice["id"] })
+        expect(
+          json_response["invoices"].map { |invoice|
+            invoice["id"]
+          }).to match_array(
+            expected_invoices.map { |invoice|
+              invoice["id"]
+            })
       end
     end
 
@@ -78,7 +90,13 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         send_request :get, "#{internal_api_v1_invoices_path}?client_ids[]=#{client_ids[0]}&client_ids[]=#{client_ids[1]}&client_ids[]=#{client_ids[2]}"
         expected_invoices = company.invoices.select { |inv| client_ids.include?(inv.client_id) }
         expect(response).to have_http_status(:ok)
-        expect(json_response["invoices"].map { |invoice| invoice["id"] }).to match_array(expected_invoices.map { |invoice| invoice["id"] })
+        expect(
+          json_response["invoices"].map { |invoice|
+            invoice["id"]
+          }).to match_array(
+            expected_invoices.map { |invoice|
+              invoice["id"]
+            })
       end
     end
 

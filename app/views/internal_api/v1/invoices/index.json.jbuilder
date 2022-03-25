@@ -22,5 +22,3 @@ json.invoices do
 end
 json.summary summary
 json.pagy pagy
-
-
