@@ -59,7 +59,7 @@ RSpec.describe Invoice, type: :model do
       create(:company, clients: create_list(:client_with_invoices, 5))
     end
 
-    describe "with statuses" do
+    describe ".with_statuses" do
       it "returns all invoices if statuses are not specified" do
         expect(company.invoices.with_statuses(nil).size).to eq(25)
       end
@@ -73,7 +73,7 @@ RSpec.describe Invoice, type: :model do
       end
     end
 
-    describe "from date" do
+    describe ".from_date" do
       it "returns all invoices if from date is not specified" do
         expect(company.invoices.from_date(nil).size).to eq(25)
       end
@@ -83,7 +83,7 @@ RSpec.describe Invoice, type: :model do
       end
     end
 
-    describe "to date" do
+    describe ".to_date" do
       it "returns all invoices if to date is not specified" do
         expect(company.invoices.to_date(nil).size).to eq(25)
       end
@@ -93,7 +93,7 @@ RSpec.describe Invoice, type: :model do
       end
     end
 
-    describe "for clients" do
+    describe ".for_clients" do
       it "returns all invoices if clients are not specified" do
         expect(company.invoices.for_clients(nil).size).to eq(25)
       end
