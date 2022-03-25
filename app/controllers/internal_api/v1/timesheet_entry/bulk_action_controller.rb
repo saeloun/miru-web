@@ -10,7 +10,7 @@ class InternalApi::V1::TimesheetEntry::BulkActionController < InternalApi::V1::A
     timesheet_entries = policy_scope(TimesheetEntry)
     timesheet_entries.update(project_id: params[:project_id]) if params[:project_id]
     entries = formatted_entries_by_date(timesheet_entries)
-    render json: { notice: I18n.t("timesheet_entry.update.message"), entries: entries }, status: :ok
+    render json: { notice: I18n.t("timesheet_entry.update.message"), entries: }, status: :ok
   end
 
   def destroy
@@ -21,6 +21,7 @@ class InternalApi::V1::TimesheetEntry::BulkActionController < InternalApi::V1::A
   end
 
   private
+
     def ids_params
       params.require(:source).require(:ids)
     end
