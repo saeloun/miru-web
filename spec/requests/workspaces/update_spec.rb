@@ -3,9 +3,9 @@
 require "rails_helper"
 
 RSpec.describe "Workspaces#update", type: :request do
-  let (:company) { create(:company) }
-  let (:company_2) { create(:company) }
-  let (:user) { create(:user, current_workspace_id: company.id) }
+  let(:company) { create(:company) }
+  let(:company_2) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
 
   context "when user is admin" do
     before do

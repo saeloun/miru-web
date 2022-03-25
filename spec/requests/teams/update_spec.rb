@@ -3,22 +3,23 @@
 require "rails_helper"
 
 RSpec.describe "Team#update", type: :request do
-  let (:company) { create(:company) }
-  let (:user) { create(:user, current_workspace_id: company.id) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
 
   context "when user is admin" do
     before do
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :admin, company
       sign_in user
-      send_request(:put, team_path(user), params: {
-        user: {
-          first_name: "test",
-          last_name: "example",
-          email: "test@example.com",
-          roles: "admin"
-        }
-      })
+      send_request(
+        :put, team_path(user), params: {
+          user: {
+            first_name: "test",
+            last_name: "example",
+            email: "test@example.com",
+            roles: "admin"
+          }
+        })
     end
 
     it "is permitted to update user" do
@@ -38,14 +39,15 @@ RSpec.describe "Team#update", type: :request do
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :employee, company
       sign_in user
-      send_request(:put, team_path(user), params: {
-        user: {
-          first_name: "test",
-          last_name: "example",
-          email: "test@example.com",
-          roles: "admin"
-        }
-      })
+      send_request(
+        :put, team_path(user), params: {
+          user: {
+            first_name: "test",
+            last_name: "example",
+            email: "test@example.com",
+            roles: "admin"
+          }
+        })
     end
 
     it "redirect to root_path" do
@@ -60,14 +62,15 @@ RSpec.describe "Team#update", type: :request do
 
   context "when unauthenticated" do
     it "user will be redirects to sign in path" do
-      send_request(:put, team_path(user), params: {
-        user: {
-          first_name: "test",
-          last_name: "example",
-          email: "test@example.com",
-          roles: "admin"
-        }
-      })
+      send_request(
+        :put, team_path(user), params: {
+          user: {
+            first_name: "test",
+            last_name: "example",
+            email: "test@example.com",
+            roles: "admin"
+          }
+        })
       expect(response).to redirect_to(user_session_path)
       expect(flash[:alert]).to eq("You need to sign in or sign up before continuing.")
     end
