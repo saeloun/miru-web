@@ -18,7 +18,7 @@ RSpec.describe Invoice, type: :model do
 
     describe "validate comparisons" do
       it "issue_date should not be after due_date" do
-        expect(invoice.issue_date).to be < invoice.due_date
+        expect(invoice.issue_date).to be <= invoice.due_date
       end
     end
 
