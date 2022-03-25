@@ -36,7 +36,9 @@ Rails.application.routes.draw do
   resources :clients, only: [:index, :create]
   resources :projects, only: [:index, :create]
   resources :reports, only: [:index]
+  resources :invoices, only: [:index, :create]
   resources :workspaces, only: [:update]
+
 
   devise_scope :user do
     get "profile", to: "users/registrations#edit"

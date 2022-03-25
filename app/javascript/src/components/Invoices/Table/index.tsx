@@ -1,12 +1,18 @@
 import * as React from "react";
+
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 
-const Table = () => (
+const Table = ({ updatedInvoiceList, handleSelectAll, handleSelectCheckbox }) => (
   <table className="min-w-full divide-y divide-gray-200 mt-4">
-    <TableHeader />
+    <thead>
+      <TableHeader handleSelectAll={handleSelectAll}/>
+    </thead>
     <tbody className="bg-white min-w-full divide-y divide-gray-200">
-      <TableRow />
+      {
+        updatedInvoiceList.map(invoice => <TableRow handleSelectCheckbox={handleSelectCheckbox} invoice={invoice}/>)
+      }
+
     </tbody>
   </table>
 );

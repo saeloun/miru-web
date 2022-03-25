@@ -1,34 +1,65 @@
 import * as React from "react";
+import CustomCheckbox from "common/CustomCheckbox";
 import { Pen, Trash } from "phosphor-react";
+import getStatusCssClass from "../../../utils/getStatusTag";
 
-const TableRow = () => (
-  <tr>
-    <td>
-      <input type="checkbox" className="" id="check1" />
-    </td>
-    <td className="px-6 py-5 text-left font-medium w-2/4 ftracking-wider">
-      <h1 className="text-left font-semibold">Amazon</h1>
-      <h3 className="text-left font-normal text-sm">78388</h3>
-    </td>
-    <td className="px-6 py-5 text-left font-medium w-1/4 tracking-wider">
-      <h1 className="text-left font-semibold">Amazon</h1>
-      <h3 className="text-left font-normal text-sm">78388</h3>
-    </td>
-    <td className="px-6 py-5 text-left font-bold text-xl tracking-wider">
-        $1975
-    </td>
-    <td className="px-6 py-5 text-left font-medium tracking-wider">
-      <span className="rounded-xl text-xs font-semibold px-1  bg-miru-alert-yellow-400 text-miru-alert-green-1000">
-          DRAFT
-      </span>
-    </td>
-    <td className="px-6 py-5 text-left font-medium tracking-wider">
-      <button><Pen size={18} /></button>
-    </td>
-    <td className="text-left w-full">
-      <button><Trash size={18} /></button>
-    </td>
-  </tr>
-);
+const TableRow = ({ invoice, handleSelectCheckbox }) => {
+  const [grayColor, setGrayColor] = React.useState<string>("");
+  const [isHover, setHover] = React.useState<boolean>(false);
+
+  const handleMouseEnter = () => {
+    setGrayColor("bg-miru-gray-100");
+    setHover(true);
+  };
+
+  const handleMouseLeave = () => {
+    setGrayColor("");
+    setHover(false);
+  };
+
+  const handleCheckboxChange = (event) => {
+    handleSelectCheckbox(invoice.id, event.target.checked);
+  };
+
+  return (
+    <tr className={`last:border-b-0 ${grayColor}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <td className="px-6 py-5">
+        <CustomCheckbox text='' handleCheck={handleCheckboxChange} isChecked={invoice.isChecked} checkboxValue='' id={invoice.id} />
+      </td>
+      <td className="px-6 py-5 font-medium w-2/4 ftracking-wider">
+        <h1 className="font-semibold text-miru-dark-purple-1000">{invoice.invoiceName}</h1>
+        <h3 className="font-normal text-sm text-miru-dark-purple-400">{invoice.invoiceId}</h3>
+      </td>
+      <td className="px-6 py-5 font-medium w-1/4 tracking-wider">
+        <h1 className="font-semibold text-miru-dark-purple-1000">{invoice.invoicedate}</h1>
+        <h3 className="font-normal text-sm text-miru-dark-purple-400">{invoice.invoiceduedate}</h3>
+      </td>
+      <td className="px-6 py-5 font-bold text-xl text-miru-dark-purple-1000 tracking-wider">
+        {invoice.amount}
+      </td>
+      <td className="px-6 py-5 font-medium">
+        <span className={getStatusCssClass(invoice.status)}>
+          {invoice.status}
+        </span>
+      </td>
+      <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <div className="flex items-center h-full">
+          { isHover && <button>
+            <Pen size={16} color="#5B34EA" />
+          </button>
+          }
+        </div>
+      </td>
+      <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <div className="flex items-center h-full">
+          { isHover && <button>
+            <Trash size={16} color="#5B34EA" />
+          </button>
+          }
+        </div>
+      </td>
+    </tr>
+  );
+};
 
 export default TableRow;

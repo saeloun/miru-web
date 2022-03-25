@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import GetClientBar from "./ChartBar";
 import { IChartBar } from "./interface";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";

@@ -22,9 +22,9 @@
       <a href="/clients" class="<%= request.path == "/clients" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.clients') %></a>
       <a href="/projects" class="<%= request.path == "/projects" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.projects') %></a>
       <% if current_user.has_owner_or_admin_role?(current_company) %>
-        <a href="/invoices" class="<%= request.path == "/invoices" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.invoices') %></a>
-        <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.reports') %></a>
-      <% end %>
+      <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.reports') %></a>
+      <a href="/invoices" class="<%= request.path == "/invoices" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.invoices') %></a>
+       <% end %>
     </div>
     <!-- dashboard time_tracking team clients projects invoice report etc. end -->
 
@@ -141,8 +141,8 @@
                 <%= t('navbar.projects') %>
               </a>
               <% if current_user.has_owner_or_admin_role?(current_company) %>
-                <a href="/invoice" data-cy="invoice-tab" class="<%= request.path == "/invoice" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                  <%= t('navbar.invoice') %>
+                <a href="/invoices" class="<%= request.path == "/invoices" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                  <%= t('navbar.invoices') %>
                 </a>
               <% end %>
               <% if current_user.has_owner_or_admin_role?(current_company) %>
