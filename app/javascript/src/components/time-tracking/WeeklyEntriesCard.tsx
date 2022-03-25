@@ -2,6 +2,7 @@
 import * as React from "react";
 import Toastr from "common/Toastr";
 import { minutesToHHMM, minutesFromHHMM } from "helpers/hhmm-parser";
+import Logger from "js-logger";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 
 const { useState, useEffect } = React;
@@ -97,7 +98,7 @@ const WeeklyEntriesCard = ({
         setIsWeeklyEditing(false);
       }
     } catch (error) {
-      Toastr.error(error.message);
+      Logger.error(error.message);
     }
   };
 
@@ -126,7 +127,7 @@ const WeeklyEntriesCard = ({
         setIsWeeklyEditing(false);
       }
     } catch (error) {
-      Toastr.error(error.message);
+      Logger.error(error.message);
     }
   };
 
@@ -160,7 +161,7 @@ const WeeklyEntriesCard = ({
   return (
     <div className="week-card p-6 w-full mt-4 shadow-xl rounded-lg">
       <div className="flex items-center">
-        <div className="flex mr-10 w-44">
+        <div className="flex mr-10 w-44 overflow-scroll">
           <p className="text-lg">{client}</p>
           <p className="text-lg mx-2">•</p>
           <p className="text-lg">{project}</p>
