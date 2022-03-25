@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: clients
@@ -34,6 +33,7 @@ class Client < ApplicationRecord
   belongs_to :company
 
   validates :name, :email, presence: true
+  validates :client_code,  presence: true, uniqueness: { scope: :company_id }
   validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
   after_discard :discard_projects
 
