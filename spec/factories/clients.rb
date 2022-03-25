@@ -7,5 +7,6 @@ FactoryBot.define do
     email { Faker::Internet.safe_email }
     phone { Faker::PhoneNumber.phone_number_with_country_code }
     address { Faker::Address.street_address }
+    client_code { Faker::Alphanumeric.unique.alpha(number: 2).upcase }
   end
 end
