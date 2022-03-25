@@ -24,7 +24,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         expect(json_response["invoices"].size).to eq(10)
       end
 
-      it "errs if invoices_per_page is less than or equal to zero" do
+      it "throws 400 bad_request error if invoices_per_page is less than or equal to zero" do
         invoices_per_page = 0
         send_request :get, "#{internal_api_v1_invoices_path}?invoices_per_page=#{invoices_per_page}"
         expect(response).to have_http_status(:bad_request)
@@ -39,13 +39,13 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         expect(json_response["invoices"].size).to eq(5)
       end
 
-      it "errs if page is less than or equal to zero" do
+      it "throws 400 bad_request error if page is less than or equal to zero" do
         page = -1
         send_request :get, "#{internal_api_v1_invoices_path}?page=#{page}&invoices_per_page=5"
         expect(response).to have_http_status(:bad_request)
       end
 
-      it "errs if page overflows the total number of invoices" do
+      it "throws 400 bad_request error if page overflows the total number of invoices" do
         page = 10
         send_request :get, "#{internal_api_v1_invoices_path}?page=#{page}&invoices_per_page=5"
         expect(response).to have_http_status(:bad_request)
