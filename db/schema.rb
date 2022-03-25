@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,11 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 2022_03_25_040806) do
-=======
-ActiveRecord::Schema.define(version: 2022_03_16_140058) do
->>>>>>> ad71fe46d5b3b9d58058f19975ee5a7bb5b4b1b8
+ActiveRecord::Schema.define(version: 2022_03_25_043541) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -25,7 +23,8 @@ ActiveRecord::Schema.define(version: 2022_03_16_140058) do
     t.bigint "blob_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness",
+unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
@@ -55,6 +54,8 @@ ActiveRecord::Schema.define(version: 2022_03_16_140058) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "discarded_at", precision: 6
+    t.string "client_code", null: false
+    t.index ["client_code", "company_id"], name: "index_clients_on_client_code_and_company_id", unique: true
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
     t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true

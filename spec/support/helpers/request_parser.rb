@@ -3,14 +3,14 @@
 def send_request(request_type, url, headers: {}, params: {}, xhr: false)
   case request_type
   when :get
-    get url, headers: headers, params: params, xhr: xhr
+    get url, headers:, params:, xhr:
   when :post
-    post url, headers: headers, params: params
+    post url, headers:, params:
   when :put
-    put url, headers: headers, params: params
+    put url, headers:, params:
   when :patch
-    put url, headers: headers, params: params
+    put url, headers:, params:
   when :delete
-    delete url, headers: headers, params: params
+    delete url, headers:, params:
   end
 end
