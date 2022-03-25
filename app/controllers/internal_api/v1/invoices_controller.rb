@@ -2,7 +2,7 @@
 
 class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationController
   def index
-    authorize :invoice
+    authorize Invoice
     pagy, invoices = pagy(current_company.invoices.includes(:client)
       .from_date(params[:from])
       .to_date(params[:to])
