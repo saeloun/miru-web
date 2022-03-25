@@ -36,6 +36,7 @@ const TimeTracking: React.FC<Iprops> = ({
   );
   const [editEntryId, setEditEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
+  const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
 
   // sorting by client's name
   clients.sort((a: object, b: object) => a["name"].localeCompare(b["name"]));
@@ -68,7 +69,7 @@ const TimeTracking: React.FC<Iprops> = ({
   }, [entryList]);
 
   const handleWeekInfo = () => {
-    const daysInWeek = [0, 1, 2, 3, 4, 5, 6].map((weekCounter) => {
+    const daysInWeek = Array.from(Array(7).keys()).map((weekCounter) => {
       const [day, month, date, year] = dayjs()
         .weekday(weekCounter + weekDay)
         ["$d"].toString()
@@ -287,6 +288,8 @@ const TimeTracking: React.FC<Iprops> = ({
                 projectName={""}
                 dayInfo={dayInfo}
                 projectId={null}
+                isWeeklyEditing={isWeeklyEditing}
+                setIsWeeklyEditing={setIsWeeklyEditing}
               />
             )}
           </div>
@@ -332,6 +335,8 @@ const TimeTracking: React.FC<Iprops> = ({
                 newRowView={newRowView}
                 setNewRowView={setNewRowView}
                 dayInfo={dayInfo}
+                isWeeklyEditing={isWeeklyEditing}
+                setIsWeeklyEditing={setIsWeeklyEditing}
               />
             ))}
           </div>

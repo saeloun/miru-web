@@ -16,7 +16,9 @@ const WeeklyEntries: React.FC<Props> = ({
   projectName,
   entries,
   setEntryList,
-  dayInfo
+  dayInfo,
+  isWeeklyEditing,
+  setIsWeeklyEditing
 }) => {
   const [client, setClient] = useState("");
   const [project, setProject] = useState("");
@@ -109,6 +111,8 @@ const WeeklyEntries: React.FC<Props> = ({
       handleDeleteEntries={handleDeleteEntries}
       handleEditEntries={handleEditEntries}
       dayInfo={dayInfo}
+      isWeeklyEditing={isWeeklyEditing}
+      setIsWeeklyEditing={setIsWeeklyEditing}
     />
     : <SelectProject
       clients={clients}
@@ -126,6 +130,8 @@ const WeeklyEntries: React.FC<Props> = ({
       newRowView={newRowView}
       setNewRowView={setNewRowView}
       handleEditEntries={handleEditEntries}
+      isWeeklyEditing={isWeeklyEditing}
+      setIsWeeklyEditing={setIsWeeklyEditing}
     />;
 };
 
@@ -140,6 +146,8 @@ interface Props {
   entries: [];
   setEntryList: React.Dispatch<React.SetStateAction<[]>>;
   dayInfo: Array<any>;
+  isWeeklyEditing: boolean;
+  setIsWeeklyEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default WeeklyEntries;
