@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require "pagy/extras/metadata"
+Pagy::DEFAULT[:metadata] = %i[scaffold_url page count in items pages prev next last]   # example
+
+require "pagy/extras/items"
 # Pagy initializer file (5.10.1)
 # Customize only what you really need and notice that the core Pagy works also without any of the following lines.
 # Should you just cherry pick part of this file, please maintain the require-order of the extras
@@ -102,9 +106,8 @@
 # See https://ddnexus.github.io/pagy/extras/metadata
 # you must require the shared internal extra (BEFORE the metadata extra) ONLY if you need also the :sequels
 # require 'pagy/extras/shared'
-require "pagy/extras/metadata"
 # For performance reasons, you should explicitly set ONLY the metadata you use in the frontend
-Pagy::DEFAULT[:metadata] = %i[scaffold_url page count in items pages prev next last]   # example
+# Pagy::DEFAULT[:metadata] = %i[scaffold_url page count in items pages prev next last]   # example
 
 # Searchkick extra: Paginate `Searchkick::Results` objects
 # See https://ddnexus.github.io/pagy/extras/searchkick
@@ -166,7 +169,7 @@ Pagy::DEFAULT[:metadata] = %i[scaffold_url page count in items pages prev next l
 
 # Items extra: Allow the client to request a custom number of items per page with an optional selector UI
 # See https://ddnexus.github.io/pagy/extras/items
-require "pagy/extras/items"
+# require "pagy/extras/items"
 # set to false only if you want to make :items_extra an opt-in variable
 # Pagy::DEFAULT[:items_extra] = false    # default true
 # Pagy::DEFAULT[:items_param] = :items   # default
