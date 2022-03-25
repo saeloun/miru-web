@@ -8,7 +8,7 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
 
   def show
     authorize Project
-    render json: { project: project }, status: :ok
+    render :show, locals: { project: project }, status: :ok
   end
 
   private
@@ -17,17 +17,6 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
     end
 
     def project
-      project = Project.find(params[:id])
-      project_members = project.project_member_details.map { | member |
-                          { name: member[:name],
-                           hourlyRate: member[:hourly_rate],
-                           minutesSpent: member[:minutes_spent],
-                           cost: member[:hourly_rate] * member[:minutes_spent] / 60 }}
-      { id: project.id,
-        name: project.name,
-        clientName: project.client.name,
-        isBillable: project.billable,
-        minutesSpent: project.total_hours_logged,
-        projectMembers:  project_members }
+      @_project ||= Project.includes(:project_members, project_members: [:user]).find(params[:id])
     end
 end

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";
 
 export interface ITimeEntry {
@@ -29,7 +29,7 @@ export const TimeEntry = ({
         {client}
       </p>
     </td>
-    <td className="w-full px-6 py-4 text-left whitespace-nowrap text-xs font-normal text-miru-dark-purple-1000">
+    <td className="w-full px-6 py-4 text-left text-xs font-normal text-miru-dark-purple-1000 whitespace-pre-wrap">
       {note}
     </td>
     <td className="w-full px-6 py-4 text-left whitespace-nowrap">
