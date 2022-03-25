@@ -16,6 +16,6 @@ class TimeTrackingController < ApplicationController
     )
     entries = formatted_entries_by_date(timesheet_entries)
 
-    render :index, locals: { is_admin: is_admin, clients: clients, projects: projects, entries: entries }
+    render :index, locals: { is_admin:, clients:, projects:, entries: }
   end
 end

@@ -33,7 +33,7 @@ class Client < ApplicationRecord
   belongs_to :company
 
   validates :name, :email, presence: true
-  validates :client_code,  presence: true, uniqueness: { scope: :company_id }
+  validates :client_code, presence: true, uniqueness: { scope: :company_id }
   validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
   after_discard :discard_projects
 
@@ -44,7 +44,12 @@ class Client < ApplicationRecord
 
   def project_details(time_frame = "week")
     from, to = week_month_year(time_frame)
-    projects.kept.map { | project | { name: project.name, team: project.project_member_full_names, minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration) } }
+    projects.kept.map do | project |
+      {
+        name: project.name, team: project.project_member_full_names,
+        minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
+      }
+    end
   end
 
   def week_month_year(time_frame)
@@ -61,6 +66,7 @@ class Client < ApplicationRecord
   end
 
   private
+
     def discard_projects
       projects.discard_all
     end
