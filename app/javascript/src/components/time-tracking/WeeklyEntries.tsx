@@ -67,8 +67,8 @@ const WeeklyEntries: React.FC<Props> = ({
         setEntryList(prevState => {
           const newState : any = { ...prevState };
           dayInfo.forEach(({ fullDate }, index) => {
-            if (! newState[fullDate]) return;
-            newState[fullDate] = newState[fullDate].filter(entry => !ids.includes(entry.id));
+            if ((! newState[fullDate]) || (! currentEntries[index])) return;
+            newState[fullDate] = newState[fullDate].filter(entry => entry.id !== currentEntries[index]["id"]);
           });
           return newState;
         });
