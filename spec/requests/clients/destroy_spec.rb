@@ -3,9 +3,9 @@
 require "rails_helper"
 
 RSpec.describe "Client#destroy", type: :request do
-  let (:company) { create(:company) }
-  let (:user) { create(:user, current_workspace_id: company.id) }
-  let (:client) { create(:client, { id: 1, company_id: company.id }) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:client) { create(:client, { id: 1, company_id: company.id }) }
 
   context "when user is admin" do
     before do

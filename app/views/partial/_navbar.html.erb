@@ -141,7 +141,7 @@
                 <%= t('navbar.projects') %>
               </a>
               <% if current_user.has_owner_or_admin_role?(current_company) %>
-                <a href="/invoices" class="<%= request.path == "/invoices" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                <a href="/invoices" data-cy="invoices-tab" class="<%= request.path == "/invoices" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                   <%= t('navbar.invoices') %>
                 </a>
               <% end %>
