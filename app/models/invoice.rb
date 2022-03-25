@@ -54,6 +54,8 @@ class Invoice < ApplicationRecord
   scope :to_date, -> (to) { where("issue_date <= ?", to) if to.present? }
   scope :for_clients, -> (client_ids) { where(client_id: client_ids) if client_ids.present? }
 
+  delegate :name, to: :client, prefix: :client
+
   def sub_total
     @_sub_total ||= invoice_line_items.sum { |line_item| line_item[:rate] * line_item[:quantity] }
   end

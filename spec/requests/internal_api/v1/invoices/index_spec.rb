@@ -19,35 +19,35 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     describe "invoices_per_page param" do
       it "returns the number the invoices specified by invoices_per_page" do
         invoices_per_page = 10
-        send_request :get, "#{internal_api_v1_invoices_path}?invoices_per_page=#{invoices_per_page}"
+        send_request :get, internal_api_v1_invoices_path(invoices_per_page:)
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].size).to eq(10)
       end
 
       it "throws 400 bad_request error if invoices_per_page is less than or equal to zero" do
         invoices_per_page = 0
-        send_request :get, "#{internal_api_v1_invoices_path}?invoices_per_page=#{invoices_per_page}"
+        send_request :get, internal_api_v1_invoices_path(invoices_per_page:)
         expect(response).to have_http_status(:bad_request)
       end
     end
 
     describe "page param" do
       it "returns invoices offset by page" do
-        page = 2
-        send_request :get, "#{internal_api_v1_invoices_path}?page=#{page}&invoices_per_page=5"
+        page, invoices_per_page = 2, 5
+        send_request :get, internal_api_v1_invoices_path(page:, invoices_per_page:)
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].size).to eq(5)
       end
 
       it "throws 400 bad_request error if page is less than or equal to zero" do
-        page = -1
-        send_request :get, "#{internal_api_v1_invoices_path}?page=#{page}&invoices_per_page=5"
+        page, invoices_per_page = -1, 5
+        send_request :get, internal_api_v1_invoices_path(page:, invoices_per_page:)
         expect(response).to have_http_status(:bad_request)
       end
 
       it "throws 400 bad_request error if page overflows the total number of invoices" do
-        page = 10
-        send_request :get, "#{internal_api_v1_invoices_path}?page=#{page}&invoices_per_page=5"
+        page, invoices_per_page = 10, 5
+        send_request :get, internal_api_v1_invoices_path(page:, invoices_per_page:)
         expect(response).to have_http_status(:bad_request)
       end
     end
@@ -55,7 +55,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     describe "from param" do
       it "returns invoices issued on or after from" do
         from = Date.parse("2021-01-01")
-        send_request :get, "#{internal_api_v1_invoices_path}?from=#{from}"
+        send_request :get, internal_api_v1_invoices_path(from:)
         expected_invoices = company.invoices.select { |inv| !inv.issue_date.before?(from) }
         expect(response).to have_http_status(:ok)
         expect(
@@ -71,7 +71,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     describe "to param" do
       it "returns invoices issued on or before to" do
         to = Date.parse("2021-01-01")
-        send_request :get, "#{internal_api_v1_invoices_path}?to=#{to}"
+        send_request :get, internal_api_v1_invoices_path(to:)
         expected_invoices = company.invoices.select { |inv| !inv.issue_date.after?(to) }
         expect(response).to have_http_status(:ok)
         expect(
@@ -87,7 +87,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     describe "client_ids[] param" do
       it "returns invoices generated for clients specified by client_ids[]" do
         client_ids = [9, 15, 29]
-        send_request :get, "#{internal_api_v1_invoices_path}?client_ids[]=#{client_ids[0]}&client_ids[]=#{client_ids[1]}&client_ids[]=#{client_ids[2]}"
+        send_request :get, internal_api_v1_invoices_path(client_ids:)
         expected_invoices = company.invoices.select { |inv| client_ids.include?(inv.client_id) }
         expect(response).to have_http_status(:ok)
         expect(
@@ -103,8 +103,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     describe "statuses[] param" do
       it "returns invoices with statuses specified by statuses[]" do
         statuses = [:draft, :overdue, :paid]
-        send_request :get, "#{internal_api_v1_invoices_path}?statuses[]=#{statuses[0]}&statuses[]=#{statuses[1]}&statuses[]=#{statuses[2]}"
-        expected_invoices = company.invoices.select { |inv| statuses.include?(inv.status.to_sym) }
+        send_request :get, internal_api_v1_invoices_path(statuses:)
         expect(response).to have_http_status(:ok)
       end
     end

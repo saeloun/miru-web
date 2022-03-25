@@ -10,7 +10,7 @@ json.invoices do
     json.due_date invoice.due_date
     json.amount invoice.amount
     json.client do
-      json.name invoice.client.name
+      json.name invoice.client_name
     end
     json.company do
       json.name current_company.name

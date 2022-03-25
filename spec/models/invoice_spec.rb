@@ -106,4 +106,8 @@ RSpec.describe Invoice, type: :model do
       end
     end
   end
+
+  describe ".delegate" do
+    it { is_expected.to delegate_method(:name).to(:client).with_prefix(:client) }
+  end
 end

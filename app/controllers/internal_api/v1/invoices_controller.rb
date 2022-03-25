@@ -15,9 +15,9 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       invoices:,
       pagy: pagy_metadata(pagy),
       summary: {
-        overdue_amount: current_company.invoices.where(status: :overdue).sum(:amount),
+        overdue_amount: current_company.invoices.overdue.sum(:amount),
         outstanding_amount: current_company.invoices.sum(:outstanding_amount),
-        draft_amount: current_company.invoices.where(status: :draft).sum(:amount)
+        draft_amount: current_company.invoices.draft.sum(:amount)
       }
     }
   end
