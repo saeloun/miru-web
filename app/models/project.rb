@@ -34,28 +34,14 @@ class Project < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
 
-  def project_member_full_names
-    project_members.map do |member|
-      user = User.find(member.user_id)
-      user.full_name
-    end
-  end
-
-  def total_hours_logged(time_frame = "week")
+  def project_team_member_details(time_frame)
     from, to = week_month_year(time_frame)
-    timesheet_entries.where(work_date: from..to).sum(:duration)
-  end
-
-  def project_member_details
-    project_members.map do |member|
-      user = User.find(member.user_id)
-      { name: user.full_name,
-       hourly_rate: member.hourly_rate,
-       minutes_spent: user.timesheet_entries.where(project_id: self.id).sum(:duration) }
+    project_members.map do |project_member|
+      minutes_logged = (project_member.timesheet_entries.where(project_id: project_member.project_id, work_date: from..to)).sum(:duration)
+      { id: project_member.user_id, name: project_member.full_name, hourly_rate: project_member.hourly_rate, minutes_logged: minutes_logged }
     end
   end
 
-  # Move weeK_month_year method copied from client.rb to common place
   def week_month_year(time_frame)
     case time_frame
     when "last_week"
@@ -68,6 +54,19 @@ class Project < ApplicationRecord
       return Date.today.beginning_of_week, Date.today.end_of_week
     end
   end
+
+  def project_member_full_names
+    project_members.map do |member|
+      user = User.find(member.user_id)
+      user.full_name
+    end
+  end
+
+  def total_hours_logged(time_frame = "week")
+    from, to = week_month_year(time_frame)
+    timesheet_entries.where(work_date: from..to).sum(:duration)
+  end
+
 
   private
     def discard_project_members

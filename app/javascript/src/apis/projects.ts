@@ -6,6 +6,6 @@ const get = async () => axios.get(`${path}`);
 
 const show = async id => axios.get(`${path}/${id}`);
 
-const projects = { get, show };
+const projectApi = { get, show };
 
-export default projects;
+export default projectApi;

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 
 import clients from "apis/clients";
 
@@ -10,11 +10,11 @@ export interface IEditClient {
 }
 
 const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
-  const [name, setName] = React.useState<string>(client.name);
-  const [email, setEmail] = React.useState<string>(client.email);
-  const [phone, setPhone] = React.useState<string>(client.phone);
-  const [address, setAddress] = React.useState<string>(client.address);
-  const [errors, setErrors] = React.useState<{ name: string; email: string }>({
+  const [name, setName] = useState<string>(client.name);
+  const [email, setEmail] = useState<string>(client.email);
+  const [phone, setPhone] = useState<string>(client.phone);
+  const [address, setAddress] = useState<string>(client.address);
+  const [errors, setErrors] = useState<{ name: string; email: string }>({
     name: "",
     email: ""
   });

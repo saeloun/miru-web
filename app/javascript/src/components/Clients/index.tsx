@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import axios from "axios";
@@ -9,12 +9,12 @@ import ClientBarGraph from "./ClientBarGraph";
 import EditClient from "./EditClient";
 
 const Clients = ({ editIcon, deleteIcon, isAdminUser }) => {
-  const [showEditDialog, setShowEditDialog] = React.useState<boolean>(false);
-  const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
-  const [clientToEdit, setClientToEdit] = React.useState({});
-  const [clientToDelete, setClientToDelete] = React.useState({});
-  const [clientData, setClientData] = React.useState([]);
-  const [totalMinutes, setTotalMinutes] = React.useState(null);
+  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [clientToEdit, setClientToEdit] = useState({});
+  const [clientToDelete, setClientToDelete] = useState({});
+  const [clientData, setClientData] = useState([]);
+  const [totalMinutes, setTotalMinutes] = useState(null);
 
   const handleSelectChange = (event) => {
     axios.get(`clients?time_frame=${event.target.value}`)
@@ -24,7 +24,7 @@ const Clients = ({ editIcon, deleteIcon, isAdminUser }) => {
       });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
     axios.get("clients?time_frame=week")
