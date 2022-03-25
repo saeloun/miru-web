@@ -22,6 +22,8 @@
 #
 #  index_invoices_on_client_id       (client_id)
 #  index_invoices_on_invoice_number  (invoice_number) UNIQUE
+#  index_invoices_on_issue_date      (issue_date)
+#  index_invoices_on_status          (status)
 #
 
 # frozen_string_literal: true
