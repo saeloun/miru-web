@@ -83,4 +83,5 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Warden::Test::Helpers
   config.include RequestHelper, type: :request
+  config.before { Faker::UniqueGenerator.clear }
 end

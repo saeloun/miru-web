@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :company do
     name { "Saeloun" }
-    company_code { Faker::Alphanumeric.alpha(number: 2).upcase }
+    company_code { Faker::Alphanumeric.unique.alpha(number: 2).upcase }
     address { Faker::Address.full_address }
     business_phone { Faker::PhoneNumber.cell_phone_in_e164 }
     base_currency { Faker::Currency.code }
