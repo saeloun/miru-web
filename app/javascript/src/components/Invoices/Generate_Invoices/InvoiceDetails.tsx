@@ -3,7 +3,9 @@ import Select, {
   components,
   DropdownIndicatorProps
 } from "react-select";
+import dayjs from "dayjs";
 import { MagnifyingGlass, PencilSimple } from "phosphor-react";
+
 import Styles from "./Styles.js";
 
 const InvoiceDetails = () => {
@@ -34,25 +36,11 @@ const InvoiceDetails = () => {
   );
 
   const calculateDates = () => {
-    setissueDate(
-      new Date().getDate() +
-      "." +
-      (new Date().getMonth() + 1) +
-      "." +
-      new Date().getFullYear()
-    );
-    setdueDate(
-      new Date().getDate() +
-      "." +
-      (new Date().getMonth() + 2) +
-      "." +
-      new Date().getFullYear()
-    );
-
+    setissueDate(dayjs().format("DD.MM.YYYY"));
+    setdueDate(dayjs().add(1, "month").format("DD.MM.YYYY"));
   };
 
   //useeffects
-
   React.useEffect(() => {
     calculateDates();
   }, []);

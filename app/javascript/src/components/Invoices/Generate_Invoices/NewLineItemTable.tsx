@@ -1,7 +1,7 @@
-
 import * as React from "react";
 import Select, { components, DropdownIndicatorProps } from "react-select";
 import { MagnifyingGlass } from "phosphor-react";
+
 import Styles from "./Styles";
 
 const NewLineItemTable = ({ ShowItemInputs, setShowItemInputs, Addnew, setAddnew, selectedOption, setSelectedOption }) => {

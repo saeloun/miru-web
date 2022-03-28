@@ -1,5 +1,5 @@
-
 import * as React from "react";
+
 import ManualEntry from "./ManualEntry";
 import NewLineItemRow from "./NewLineItemRow";
 import NewLineItemTable from "./NewLineItemTable";
@@ -13,7 +13,7 @@ const InvoiceTable = () => {
   const [NewLineItems, setNewLineItems] = React.useState<Array<any>>([]);
 
   return (
-    <>
+    <React.Fragment>
       <table className="w-full table-fixed">
         <thead className="my-2">
           <th className="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">
@@ -55,7 +55,7 @@ const InvoiceTable = () => {
                       setAddnew(!Addnew);
                     }}
                   >
-                  + NEW LINE ITEM
+                    + NEW LINE ITEM
                   </button>
                 </td>
               </tr>
@@ -70,15 +70,15 @@ const InvoiceTable = () => {
             : null}
 
           {NewLineItems.length > 0
-            ? NewLineItems.map(item =>(
+            && NewLineItems.map(item => (
               <NewLineItemRow
                 item={item}
               />
             ))
-            : null}
+          }
         </tbody>
       </table>
-    </>
+    </React.Fragment>
   );
 };
 

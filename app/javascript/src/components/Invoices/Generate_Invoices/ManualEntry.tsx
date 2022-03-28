@@ -1,4 +1,3 @@
-
 import * as React from "react";
 
 const ManualEntry = ({ setShowItemInputs,setNewLineItems,NewLineItems }) => {

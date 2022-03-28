@@ -22,7 +22,7 @@
     "axios": "^0.24.0",
     "babel-plugin-js-logger": "^1.0.17",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
-    "dayjs": "^1.10.7",
+    "dayjs": "^1.11.0",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
     "jquery": "^3.6.0",
     "js-logger": "^1.6.1",
