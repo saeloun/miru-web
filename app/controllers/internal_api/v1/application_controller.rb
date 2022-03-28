@@ -5,6 +5,7 @@ class InternalApi::V1::ApplicationController < ActionController::API
   include ActionController::MimeResponds
   include ErrorHandler
   include CurrentCompanyConcern
+  include Pagy::Backend
 
   before_action :authenticate_user!
 end
