@@ -14,6 +14,7 @@ const SelectProject: React.FC<Iprops> = ({
   newRowView,
   setNewRowView,
   handleEditEntries,
+  isWeeklyEditing,
   setIsWeeklyEditing
 }) => {
   const handleCancelButton = () => {
@@ -82,7 +83,12 @@ const SelectProject: React.FC<Iprops> = ({
             </option>
           ))}
       </select>
-
+      <button
+        onClick={handleCancelButton}
+        className="h-8 w-38 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest"
+      >
+        CANCEL
+      </button>
       <button
         onClick={handleSaveButton}
         className={
@@ -93,12 +99,6 @@ const SelectProject: React.FC<Iprops> = ({
         }
       >
         SAVE
-      </button>
-      <button
-        onClick={handleCancelButton}
-        className="h-8 w-38 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest"
-      >
-        CANCEL
       </button>
     </div>
   );
