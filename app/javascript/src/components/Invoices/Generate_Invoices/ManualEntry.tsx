@@ -85,7 +85,7 @@ const ManualEntry = ({ setShowItemInputs,setNewLineItems,NewLineItems }) => {
         />
       </td>
       <td className="text-right font-normal text-base text-miru-dark-purple-1000">
-                $90
+        $90
       </td>
     </tr>
   );

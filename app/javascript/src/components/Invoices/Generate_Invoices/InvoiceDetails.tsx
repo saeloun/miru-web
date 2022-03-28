@@ -4,8 +4,9 @@ import Select, {
   DropdownIndicatorProps
 } from "react-select";
 import { MagnifyingGlass, PencilSimple } from "phosphor-react";
+import Styles from "./Styles.js";
 
-const SubComp2 = () => {
+const InvoiceDetails = () => {
   //states
   const [selectedOption, setSelectedOption] = React.useState<any>(null);
   const [addClient, setaddClient] = React.useState<boolean>(false);
@@ -20,6 +21,11 @@ const SubComp2 = () => {
   ];
 
   //functions
+
+  const selectAction =(client,option)=>{
+    setaddClient(client);
+    setSelectedOption(option);
+  };
 
   const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
     <components.DropdownIndicator {...props}>
@@ -58,10 +64,7 @@ const SubComp2 = () => {
           Billed to
           {selectedOption ? (
             <button
-              onClick={() => {
-                setaddClient(true);
-                setSelectedOption(null);
-              }}
+              onClick={()=>selectAction(true,null)}
               className="bg-miru-gray-1000 rounded mx-1  p-1 hidden group-hover:block"
             >
               <PencilSimple size={13} color="#1D1A31" />
@@ -72,10 +75,7 @@ const SubComp2 = () => {
         {addClient ? (
           <Select
             defaultValue={selectedOption}
-            onChange={val => {
-              setSelectedOption(val);
-              setaddClient(false);
-            }}
+            onChange={val => selectAction(false,val)}
             options={options}
             placeholder="Search"
             menuIsOpen={true}
@@ -83,51 +83,7 @@ const SubComp2 = () => {
             className="m-0 w-52 text-white"
             classNamePrefix="m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white"
             defaultMenuIsOpen={true}
-            styles={{
-              menu: base => ({
-                ...base,
-                marginTop: 0,
-                borderRadius: 0,
-                borderBottomLeftRadius: "8px",
-                borderBottomRightRadius: "8px",
-                border: 0,
-                boxShadow: "none"
-              }),
-              placeholder: defaultStyles => ({
-                ...defaultStyles,
-                background: "#F5F7F9",
-                padding: 5,
-                margin: 0,
-                borderTopLeftRadius: "4px",
-                borderBottomLeftRadius: "4px"
-              }),
-              valueContainer: (provided) => ({
-                ...provided,
-                background: "#F5F7F9",
-                padding: 0,
-                margin: 0,
-                borderTopLeftRadius: "4px",
-                borderBottomLeftRadius: "4px"
-              }),
-              dropdownIndicator: base => ({
-                ...base,
-                background: "#F5F7F9",
-                margin: 0,
-                padding: 5,
-                borderTopRightRadius: "4px",
-                borderBottomRightRadius: "4px"
-              }),
-              control: (provided) => ({
-                ...provided,
-                boxShadow: "none",
-                border: 0,
-                borderRadius: 0,
-                borderTopLeftRadius: "8px",
-                borderTopRightRadius: "8px",
-                padding: 10,
-                display: "flex"
-              })
-            }}
+            styles={Styles.InvoiceDetails}
             components={{ DropdownIndicator, IndicatorSeparator: () => null }}
           />
         ) : null}
@@ -190,4 +146,4 @@ const SubComp2 = () => {
   );
 };
 
-export default SubComp2;
+export default InvoiceDetails;

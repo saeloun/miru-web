@@ -2,6 +2,7 @@
 import * as React from "react";
 import Select, { components, DropdownIndicatorProps } from "react-select";
 import { MagnifyingGlass } from "phosphor-react";
+import Styles from "./Styles";
 
 const NewLineItemTable = ({ ShowItemInputs, setShowItemInputs, Addnew, setAddnew, selectedOption, setSelectedOption }) => {
 
@@ -103,64 +104,7 @@ const NewLineItemTable = ({ ShowItemInputs, setShowItemInputs, Addnew, setAddnew
           className="mt-5 w-full "
           classNamePrefix="m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white"
           defaultMenuIsOpen={true}
-          styles={{
-            menu: base => ({
-              ...base,
-              marginTop: 0,
-              borderRadius: 0,
-              borderBottomLeftRadius: "8px",
-              borderBottomRightRadius: "8px",
-              border: 0,
-              boxShadow: "none"
-            }),
-            option: (
-              styles,
-              { isSelected }
-            ) => ({
-              ...styles,
-              backgroundColor: isSelected ? "#F5F7F9" : null,
-              color: "#1D1A31"
-            }),
-            placeholder: defaultStyles => ({
-              ...defaultStyles,
-              padding: 0,
-              paddingLeft: 2,
-              margin: 0,
-              borderTopLeftRadius: "4px",
-              borderBottomLeftRadius: "4px"
-            }),
-            valueContainer: (provided) => ({
-              ...provided,
-              background: "#F5F7F9",
-              padding: "1px",
-              paddingLeft: 5,
-              margin: 0,
-              borderTopLeftRadius: "4px",
-              borderBottomLeftRadius: "4px",
-              border: "1px solid #CDD6DF",
-              borderRight: "0px"
-            }),
-            dropdownIndicator: base => ({
-              ...base,
-              background: "#F5F7F9",
-              margin: 0,
-              padding: "5px",
-              borderTopRightRadius: "4px",
-              borderBottomRightRadius: "4px",
-              border: "1px solid #CDD6DF",
-              borderLeft: "0px"
-            }),
-            control: (provided) => ({
-              ...provided,
-              boxShadow: "none",
-              border: 0,
-              borderRadius: 0,
-              borderTopLeftRadius: "8px",
-              borderTopRightRadius: "8px",
-              padding: 10,
-              display: "flex"
-            })
-          }}
+          styles={Styles.NewLineItemTable}
           components={{
             DropdownIndicator,
             IndicatorSeparator: () => null,
