@@ -1,6 +1,7 @@
 import * as React from "react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectAPI from "apis/projects";
+import EditMembersList from "./EditMembersList";
 import { Member } from "./member";
 
 export interface IProjectDetails {
@@ -23,6 +24,7 @@ export interface IProjectDetails {
 const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
 
   const [project, setProject] = React.useState<IProjectDetails>();
+  const [showAddMemberDialog, setShowAddMemberDialog] = React.useState<boolean>(false);
 
   const fetchProject = async () => {
 
@@ -32,7 +34,6 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
     } catch (err) {
       // Add error handling
     }
-
   };
 
   React.useEffect(() => {
@@ -48,6 +49,12 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
       <div>Client name: {project?.client.name}</div>
       <div>Billable: {project?.is_billable}</div>
       <div>Minutes spent(week): {project?.total_minutes_logged}</div>
+      <button className="place-self-center m-8  bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+        onClick={() => {
+          setShowAddMemberDialog(true);
+        }}>
+         Add project member
+      </button>
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -101,7 +108,17 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
           </div>
         </div>
       </div>
-
+      {showAddMemberDialog ? (
+        <EditMembersList
+          setShowAddMemberDialog={setShowAddMemberDialog}
+          // this is dummydata, will update with actual data in next commit
+          addedMembers={[{ id: "id1", hourly_rate: 10, name: "shala" }, { id: "id2", hourly_rate: 20, name: "foo" }]}
+          allMembers={[{ id: "id4", name: "member-4-name" },
+            { id: "id2", name: "member-2-name" },
+            { id: "id1", name: "member-1-name" },
+            { id: "id3", name: "member-3-name" }]}
+        />
+      ) : null}
     </>
   );
 
