@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe TimesheetEntry, type: :model do
-  let (:company) { create(:company) }
-  let (:company2) { create(:company) }
+  let(:company) { create(:company) }
+  let(:company2) { create(:company) }
   let(:client) { create(:client, company_id: company.id) }
   let(:client2) { create(:client, company_id: company2.id) }
   let(:project) { create(:project, client_id: client.id) }
@@ -23,9 +23,9 @@ RSpec.describe TimesheetEntry, type: :model do
     it { is_expected.to validate_presence_of(:bill_status) }
 
     it do
-      expect(subject).to validate_numericality_of(:duration).
-      is_less_than_or_equal_to(Minutes.in_a_day).
-      is_greater_than_or_equal_to(0.0)
+      expect(subject).to validate_numericality_of(:duration)
+        .is_less_than_or_equal_to(Minutes.in_a_day)
+        .is_greater_than_or_equal_to(0.0)
     end
   end
 

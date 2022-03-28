@@ -13,8 +13,8 @@ class Users::PasswordsController < Devise::PasswordsController
     end
   end
 
-
   private
+
     def set_flash_error(resource)
       if resource.errors.any?
         resource.errors.full_messages.each do |message|
