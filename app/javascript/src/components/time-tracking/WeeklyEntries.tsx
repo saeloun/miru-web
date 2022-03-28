@@ -16,10 +16,13 @@ const WeeklyEntries: React.FC<Props> = ({
   clientName,
   projectName,
   entries,
+  entryList,
   setEntryList,
   dayInfo,
   isWeeklyEditing,
-  setIsWeeklyEditing
+  setIsWeeklyEditing,
+  weeklyData,
+  setWeeklyData
 }) => {
   const [client, setClient] = useState("");
   const [project, setProject] = useState("");
@@ -61,17 +64,15 @@ const WeeklyEntries: React.FC<Props> = ({
 
   const handleDeleteEntries = async () => {
     try {
+      if (!currentEntries.length) return;
       const ids = getIds();
-      const res = await timesheetEntryApi.destroyBulk({ ids: ids });
-      if (res.status === 200) {
-        setEntryList(prevState => {
-          const newState : any = { ...prevState };
-          dayInfo.forEach(({ fullDate }, index) => {
-            if ((! newState[fullDate]) || (! currentEntries[index])) return;
-            newState[fullDate] = newState[fullDate].filter(entry => entry.id !== currentEntries[index]["id"]);
-          });
-          return newState;
-        });
+      const delRes = await timesheetEntryApi.destroyBulk({ ids: ids });
+      if (delRes.status === 200) {
+        const getRes = await timesheetEntryApi.list(dayInfo[0]["fullDate"], dayInfo[6]["fullDate"]);
+        if (getRes.status === 200) {
+          const newState = { ...entryList, ...getRes.data.entries };
+          setEntryList(newState);
+        }
       }
     } catch (error) {
       Logger.error(error.message);
@@ -109,6 +110,8 @@ const WeeklyEntries: React.FC<Props> = ({
       dayInfo={dayInfo}
       isWeeklyEditing={isWeeklyEditing}
       setIsWeeklyEditing={setIsWeeklyEditing}
+      weeklyData={weeklyData}
+      setWeeklyData={setWeeklyData}
     />
     : <SelectProject
       clients={clients}
@@ -132,6 +135,7 @@ const WeeklyEntries: React.FC<Props> = ({
 };
 
 interface Props {
+  key: number;
   clients: [];
   projects: object;
   newRowView: boolean;
@@ -140,10 +144,14 @@ interface Props {
   clientName: string;
   projectName: string;
   entries: [];
+  entryList: object;
   setEntryList: React.Dispatch<React.SetStateAction<[]>>;
   dayInfo: Array<any>;
   isWeeklyEditing: boolean;
   setIsWeeklyEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  weeklyData: any[];
+  setWeeklyData: React.Dispatch<React.SetStateAction<any[]>>;
+  parseWeeklyViewData: () => void;
 }
 
 export default WeeklyEntries;

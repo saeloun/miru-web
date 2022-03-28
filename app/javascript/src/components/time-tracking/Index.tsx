@@ -64,10 +64,6 @@ const TimeTracking: React.FC<Iprops> = ({
     );
   }, [selectDate, weekDay]);
 
-  useEffect(() => {
-    parseWeeklyViewData();
-  }, [entryList]);
-
   const handleWeekInfo = () => {
     const daysInWeek = Array.from(Array(7).keys()).map((weekCounter) => {
       const [day, month, date, year] = dayjs()
@@ -282,6 +278,7 @@ const TimeTracking: React.FC<Iprops> = ({
                 clients={clients}
                 projects={projects}
                 newRowView={newRowView}
+                entryList={entryList}
                 setEntryList={setEntryList}
                 setNewRowView={setNewRowView}
                 clientName={""}
@@ -290,6 +287,9 @@ const TimeTracking: React.FC<Iprops> = ({
                 projectId={null}
                 isWeeklyEditing={isWeeklyEditing}
                 setIsWeeklyEditing={setIsWeeklyEditing}
+                weeklyData={weeklyData}
+                setWeeklyData={setWeeklyData}
+                parseWeeklyViewData={parseWeeklyViewData}
               />
             )}
           </div>
@@ -324,7 +324,7 @@ const TimeTracking: React.FC<Iprops> = ({
 
         {/* entry cards for week */}
         {view === "week" && (
-          <div className="">
+          <div>
             {weeklyData.map((entry, weekCounter) => (
               <WeeklyEntries
                 key={weekCounter + 1}
@@ -333,10 +333,12 @@ const TimeTracking: React.FC<Iprops> = ({
                 clients={clients}
                 projects={projects}
                 newRowView={newRowView}
+                entryList={entryList}
                 setNewRowView={setNewRowView}
                 dayInfo={dayInfo}
                 isWeeklyEditing={isWeeklyEditing}
                 setIsWeeklyEditing={setIsWeeklyEditing}
+                parseWeeklyViewData={parseWeeklyViewData}
               />
             ))}
           </div>

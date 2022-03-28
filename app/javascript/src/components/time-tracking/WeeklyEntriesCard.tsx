@@ -309,6 +309,8 @@ interface Iprops {
   dayInfo: Array<any>;
   isWeeklyEditing: boolean;
   setIsWeeklyEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  weeklyData: any[];
+  setWeeklyData: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 export default WeeklyEntriesCard;
