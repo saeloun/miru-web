@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_25_043541) do
+ActiveRecord::Schema.define(version: 2022_03_25_113830) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -73,6 +73,8 @@ unique: true
     t.string "timezone"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "company_code", null: false
+    t.index ["company_code"], name: "index_companies_on_company_code", unique: true
   end
 
   create_table "company_users", force: :cascade do |t|

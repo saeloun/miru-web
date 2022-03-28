@@ -19,6 +19,7 @@ RSpec.describe "Companies#create", type: :request do
           :post, company_path, params: {
             company: {
               name: "Test Company",
+              company_code: "TE",
               address: "test address",
               business_phone: "Test phone",
               country: "India",
@@ -54,7 +55,8 @@ RSpec.describe "Companies#create", type: :request do
               base_currency: "",
               standard_price: "",
               fiscal_year_end: "",
-              date_format: ""
+              date_format: "",
+              company_code: ""
             }
           })
       end
@@ -86,6 +88,7 @@ RSpec.describe "Companies#create", type: :request do
           :post, company_path, params: {
             company: {
               name: "Test Company",
+              company_code: "TE",
               address: "test address",
               business_phone: "Test phone",
               country: "India",
