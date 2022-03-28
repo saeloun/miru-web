@@ -123,13 +123,13 @@ unique: true
     t.decimal "amount_due", precision: 20, scale: 2, default: "0.0"
     t.decimal "discount", precision: 20, scale: 2, default: "0.0"
     t.integer "status", default: 0, null: false
-    t.bigint "company_id", null: false
     t.bigint "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["client_id"], name: "index_invoices_on_client_id"
-    t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
+    t.index ["issue_date"], name: "index_invoices_on_issue_date"
+    t.index ["status"], name: "index_invoices_on_status"
   end
 
   create_table "project_members", force: :cascade do |t|
@@ -235,7 +235,6 @@ unique: true
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoice_line_items", "users"
   add_foreign_key "invoices", "clients"
-  add_foreign_key "invoices", "companies"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
