@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe Company, type: :model do
+  subject { create(:company) }
+
   describe "Associations" do
     it { is_expected.to have_many(:users).through(:company_users) }
     it { is_expected.to have_many(:company_users).dependent(:destroy) }
@@ -18,6 +20,9 @@ RSpec.describe Company, type: :model do
     it { is_expected.to validate_presence_of(:standard_price) }
     it { is_expected.to validate_presence_of(:country) }
     it { is_expected.to validate_presence_of(:base_currency) }
+    it { is_expected.to validate_presence_of(:company_code) }
+    it { is_expected.to validate_uniqueness_of(:company_code) }
+    it { is_expected.to validate_length_of(:company_code).is_equal_to(2) }
 
     it do
       expect(subject).to validate_numericality_of(:standard_price).is_greater_than_or_equal_to(0)
