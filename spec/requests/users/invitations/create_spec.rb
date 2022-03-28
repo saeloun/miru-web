@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Users::Invitations#create", type: :request do
-  let (:company) { create(:company) }
-  let (:user) { create(:user, current_workspace_id: company.id) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
     create(:company_user, company_id: company.id, user_id: user.id)

@@ -8,6 +8,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   protected
+
     def update_resource(resource, params)
       if params[:current_password].blank?
         resource.update_without_password(params.except(:current_password))

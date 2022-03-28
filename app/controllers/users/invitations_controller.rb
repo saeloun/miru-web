@@ -5,6 +5,7 @@ class Users::InvitationsController < Devise::InvitationsController
   after_action :assign_role, only: [:create]
 
   protected
+
     def assign_company
       resource.companies << current_company
     end
