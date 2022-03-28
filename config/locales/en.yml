@@ -143,6 +143,7 @@ en:
     save: save
     logo: logo
     company: company
+    company_code: company code
     address: address
     business_phone: business phone
     country: country
