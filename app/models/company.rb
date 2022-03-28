@@ -14,6 +14,11 @@
 #  timezone        :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  company_code    :string(2)        not null
+#
+# Indexes
+#
+#  index_companies_on_company_code  (company_code) UNIQUE
 #
 
 # frozen_string_literal: true
@@ -40,6 +45,7 @@ class Company < ApplicationRecord
   # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
+  validates :company_code, presence: true, uniqueness: true, length: { is: 2 }
 
   def client_details(time_frame = "week")
     clients.kept.map do |client|
