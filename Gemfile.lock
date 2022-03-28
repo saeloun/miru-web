@@ -109,6 +109,9 @@ GEM
     bootsnap (1.9.4)
       msgpack (~> 1.0)
     builder (3.2.4)
+    bullet (7.0.1)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.11)
     capybara (3.36.0)
       addressable
       matrix
@@ -423,6 +426,7 @@ GEM
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.1.0)
+    uniform_notifier (1.16.0)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.0)
@@ -448,6 +452,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  x86_64-darwin-19
   x86_64-darwin-20
   x86_64-darwin-21
   x86_64-linux
@@ -456,6 +461,7 @@ DEPENDENCIES
   annotate
   aws-sdk-s3
   bootsnap (>= 1.4.4)
+  bullet
   capybara (>= 3.26)
   countries
   data_migrate (~> 8.0.0.rc2)
