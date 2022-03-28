@@ -74,7 +74,7 @@ RSpec.describe "Companies#create", type: :request do
       end
     end
 
-    context "when company code is 3 letters" do
+    context "when company code is not two-lettered" do
       before do
         send_request(
           :post, company_path, params: {
