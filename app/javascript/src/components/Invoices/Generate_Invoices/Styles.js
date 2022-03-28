@@ -13,6 +13,7 @@ const Styles = {
       ...defaultStyles,
       background: "#F5F7F9",
       padding: 5,
+      paddingLeft: "5px",
       margin: 0,
       borderTopLeftRadius: "4px",
       borderBottomLeftRadius: "4px"
@@ -21,6 +22,7 @@ const Styles = {
       ...provided,
       background: "#F5F7F9",
       padding: 0,
+      paddingLeft: "5px",
       margin: 0,
       borderTopLeftRadius: "4px",
       borderBottomLeftRadius: "4px"

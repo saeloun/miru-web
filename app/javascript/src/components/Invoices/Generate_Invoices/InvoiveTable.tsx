@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 
 import ManualEntry from "./ManualEntry";
 import NewLineItemRow from "./NewLineItemRow";
@@ -7,10 +7,10 @@ import NewLineItemTable from "./NewLineItemTable";
 const InvoiceTable = () => {
 
   //States
-  const [Addnew, setAddnew] = React.useState<boolean>(false);
-  const [selectedOption, setSelectedOption] = React.useState<any>(null);
-  const [ShowItemInputs, setShowItemInputs] = React.useState<boolean>(false);
-  const [NewLineItems, setNewLineItems] = React.useState<Array<any>>([]);
+  const [Addnew, setAddnew] = useState<boolean>(false);
+  const [selectedOption, setSelectedOption] = useState<any>(null);
+  const [ShowItemInputs, setShowItemInputs] = useState<boolean>(false);
+  const [NewLineItems, setNewLineItems] = useState<Array<any>>([]);
 
   return (
     <React.Fragment>
@@ -28,7 +28,7 @@ const InvoiceTable = () => {
           <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">
             RATE
           </th>
-          <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest pr-2">
+          <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">
             QTY
           </th>
           <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">
@@ -62,12 +62,12 @@ const InvoiceTable = () => {
             )}
 
           {ShowItemInputs
-            ? <ManualEntry
+            && <ManualEntry
               setShowItemInputs={setShowItemInputs}
               setNewLineItems={setNewLineItems}
               NewLineItems={NewLineItems}
             />
-            : null}
+          }
 
           {NewLineItems.length > 0
             && NewLineItems.map(item => (

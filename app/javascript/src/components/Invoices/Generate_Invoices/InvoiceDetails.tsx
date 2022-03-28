@@ -1,4 +1,4 @@
-import * as React from "react";
+import React,{ useState,useEffect } from "react";
 import Select, {
   components,
   DropdownIndicatorProps
@@ -10,10 +10,10 @@ import Styles from "./Styles.js";
 
 const InvoiceDetails = () => {
   //states
-  const [selectedOption, setSelectedOption] = React.useState<any>(null);
-  const [addClient, setaddClient] = React.useState<boolean>(false);
-  const [issueDate, setissueDate] = React.useState<string>("");
-  const [dueDate, setdueDate] = React.useState<string>("");
+  const [selectedOption, setSelectedOption] = useState<any>(null);
+  const [addClient, setaddClient] = useState<boolean>(false);
+  const [issueDate, setissueDate] = useState<string>("");
+  const [dueDate, setdueDate] = useState<string>("");
 
   //variables
   const options = [
@@ -41,7 +41,7 @@ const InvoiceDetails = () => {
   };
 
   //useeffects
-  React.useEffect(() => {
+  useEffect(() => {
     calculateDates();
   }, []);
 
@@ -50,17 +50,17 @@ const InvoiceDetails = () => {
       <div className="group">
         <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
           Billed to
-          {selectedOption ? (
+          {selectedOption &&
             <button
               onClick={()=>selectAction(true,null)}
               className="bg-miru-gray-1000 rounded mx-1  p-1 hidden group-hover:block"
             >
               <PencilSimple size={13} color="#1D1A31" />
             </button>
-          ) : null}
+          }
         </p>
 
-        {addClient ? (
+        {addClient && (
           <Select
             defaultValue={selectedOption}
             onChange={val => selectAction(false,val)}
@@ -74,7 +74,7 @@ const InvoiceDetails = () => {
             styles={Styles.InvoiceDetails}
             components={{ DropdownIndicator, IndicatorSeparator: () => null }}
           />
-        ) : null}
+        ) }
         {selectedOption == null && !addClient ? (
           <button
             className="py-4 mt-2 px-6 font-bold text-base text-miru-dark-purple-200 bg-white border-2 border-dashed rounded-md tracking-widest"
@@ -82,18 +82,18 @@ const InvoiceDetails = () => {
           >
             + ADD CLIENT
           </button>
-        ) : selectedOption ? (
+        ) : selectedOption &&
           <div>
             <p className="font-bold text-base text-miru-dark-purple-1000">
               Microsoft
             </p>
             <p className="font-normal text-xs text-miru-dark-purple-400 w-52">
-              One Microsoft Way <br />
-              Redmond,Washington <br />
+              One Microsoft Way <br/>
+              Redmond,Washington <br/>
               98052-6399
             </p>
           </div>
-        ) : null}
+        }
       </div>
       <div className="group">
         <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
@@ -110,7 +110,7 @@ const InvoiceDetails = () => {
         </p>
       </div>
 
-      <div className="">
+      <div>
         <p className="font-normal text-xs text-miru-dark-purple-1000">
           Invoice Number
         </p>
@@ -122,7 +122,7 @@ const InvoiceDetails = () => {
         </p>
       </div>
 
-      <div className="">
+      <div>
         <p className="font-normal text-xs text-miru-dark-purple-1000 text-right">
           Amount
         </p>

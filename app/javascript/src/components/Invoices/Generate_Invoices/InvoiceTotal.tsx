@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 const InvoiceTotal = () => (
   <div className="px-10 pt-3 pb-10 mb-5 w-full flex justify-end">

@@ -1,26 +1,25 @@
-import * as React from "react";
+import React,{ useState,useRef } from "react";
 
 const ManualEntry = ({ setShowItemInputs,setNewLineItems,NewLineItems }) => {
 
-  const [Name, setName] = React.useState<string>("");
-  const [Date, setDate] = React.useState<string>("");
-  const [Description, setDescription] = React.useState<string>("");
-  const [Rate, setRate] = React.useState<string>("");
-  const [Qty, setQty] = React.useState<string>("");
-  const [LineTotal, setLineTotal] = React.useState<string>("");
-  const ref =React.useRef();
+  const [Name, setName] = useState<string>("");
+  const [Date, setDate] = useState<string>("");
+  const [Description, setDescription] = useState<string>("");
+  const [Rate, setRate] = useState<string>("");
+  const [Qty, setQty] = useState<string>("");
+  const [LineTotal, setLineTotal] = useState<string>("");
+  const ref =useRef();
 
   const onEnter = val => {
     if (val.key == "Enter") {
-      const newItem = [...NewLineItems];
-      newItem.push({
+      const newItem = [...NewLineItems,{
         Name: Name,
         Date: Date,
         Description: Description,
         Rate: Rate,
         Qty: Qty,
         LineTotal: LineTotal
-      });
+      }];
 
       setNewLineItems(newItem);
       setName("");
@@ -35,7 +34,7 @@ const ManualEntry = ({ setShowItemInputs,setNewLineItems,NewLineItems }) => {
 
   return (
     <tr className="w-full my-1">
-      <td className="p-1  w-full">
+      <td className="p-1 w-full">
         <input
           type="text"
           placeholder="Name"
@@ -44,10 +43,10 @@ const ManualEntry = ({ setShowItemInputs,setNewLineItems,NewLineItems }) => {
           onChange={val => setName(val.target.value)}
         />
       </td>
-      <td className=" w-full">
+      <td className="w-full">
         <input
           type="text"
-          placeholder="Something"
+          placeholder="Date"
           ref={ref}
           onFocus={(e)=>(e.target.type="date")}
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000"

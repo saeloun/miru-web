@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 const logo = require("../../../../images/saeloun.svg"); // eslint-disable-line
 
 const CompanyInfo = () => (
@@ -16,7 +16,7 @@ const CompanyInfo = () => (
     </div>
 
     <div className="font-normal text-base text-right text-miru-dark-purple-1000 w-36">
-      <p className="">31R</p>
+      <p>31R</p>
       <p>Providence Rd</p>
       <p>Westford MA,01886</p>
     </div>
