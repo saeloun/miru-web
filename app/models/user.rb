@@ -49,7 +49,6 @@ class User < ApplicationRecord
   include Discard::Model
 
   # Associations
-  belongs_to :current_workspace, class_name: "Company", foreign_key: :current_workspace_id, optional: true
   has_many :company_users, dependent: :destroy
   has_many :companies, through: :company_users
   has_many :project_members, dependent: :destroy
@@ -92,6 +91,18 @@ class User < ApplicationRecord
     return false if company.nil?
 
     self.has_cached_role?(:owner, company) || self.has_cached_role?(:admin, company)
+  end
+
+  def current_workspace(load_associations: true)
+    @_current_workspace ||= if load_associations
+      Company.includes(:logo_attachment).find_by(id: current_workspace_id)
+    else
+      Company.find_by(id: current_workspace_id)
+    end
+  end
+
+  def current_workspace=(workspace)
+    write_attribute(:current_workspace_id, workspace&.id)
   end
 
   private
