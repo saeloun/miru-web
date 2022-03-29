@@ -68,7 +68,7 @@ const InvoiceDetails = () => {
             placeholder="Search"
             menuIsOpen={true}
             isSearchable={true}
-            className="m-0 w-52 text-white"
+            className="m-0 mt-2 w-52 text-white"
             classNamePrefix="m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white"
             defaultMenuIsOpen={true}
             styles={Styles.InvoiceDetails}
@@ -77,7 +77,7 @@ const InvoiceDetails = () => {
         ) }
         {selectedOption == null && !addClient ? (
           <button
-            className="py-4 mt-2 px-6 font-bold text-base text-miru-dark-purple-200 bg-white border-2 border-dashed rounded-md tracking-widest"
+            className="py-5 mt-2 px-6 font-bold text-base text-miru-dark-purple-200 bg-white border-2 border-dashed rounded-md tracking-widest"
             onClick={() => setaddClient(true)}
           >
             + ADD CLIENT
@@ -102,7 +102,7 @@ const InvoiceDetails = () => {
         <p className="font-normal text-base text-miru-dark-purple-1000">
           {issueDate}
         </p>
-        <p className="font-normal text-xs text-miru-dark-purple-1000 mt-2">
+        <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
           Due Date
         </p>
         <p className="font-normal text-base text-miru-dark-purple-1000">
@@ -117,8 +117,11 @@ const InvoiceDetails = () => {
         <p className="font-normal text-base text-miru-dark-purple-1000">
           6335 7871
         </p>
-        <p className="font-normal text-xs text-miru-dark-purple-1000 mt-3">
+        <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
           Reference
+        </p>
+        <p className="font-normal text-base text-miru-dark-purple-1000">
+          -
         </p>
       </div>
 

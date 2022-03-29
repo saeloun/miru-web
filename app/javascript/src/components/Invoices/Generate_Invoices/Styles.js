@@ -12,7 +12,6 @@ const Styles = {
     placeholder: defaultStyles => ({
       ...defaultStyles,
       background: "#F5F7F9",
-      padding: 5,
       paddingLeft: "5px",
       margin: 0,
       borderTopLeftRadius: "4px",
@@ -21,7 +20,6 @@ const Styles = {
     valueContainer: (provided) => ({
       ...provided,
       background: "#F5F7F9",
-      padding: 0,
       paddingLeft: "5px",
       margin: 0,
       borderTopLeftRadius: "4px",
@@ -31,7 +29,8 @@ const Styles = {
       ...base,
       background: "#F5F7F9",
       margin: 0,
-      padding: 5,
+      padding: "6px",
+      paddingTop: "7px",
       borderTopRightRadius: "4px",
       borderBottomRightRadius: "4px"
     }),
@@ -75,8 +74,6 @@ const Styles = {
     valueContainer: (provided) => ({
       ...provided,
       background: "#F5F7F9",
-      padding: "1px",
-      paddingLeft: 5,
       margin: 0,
       borderTopLeftRadius: "4px",
       borderBottomLeftRadius: "4px",
@@ -87,7 +84,8 @@ const Styles = {
       ...base,
       background: "#F5F7F9",
       margin: 0,
-      padding: "5px",
+      padding: "6px",
+      paddingTop: "7px",
       borderTopRightRadius: "4px",
       borderBottomRightRadius: "4px",
       border: "1px solid #CDD6DF",
