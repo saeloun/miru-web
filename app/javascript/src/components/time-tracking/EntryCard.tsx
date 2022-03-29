@@ -24,7 +24,7 @@ const EntryCard: React.FC<props> = ({
   bill_status
 }) => (
   <div className="flex justify-between items-center shadow-2xl w-full p-6 mt-10 rounded-lg">
-    <div className="">
+    <div>
       <div className="flex">
         <p className="text-lg">{client}</p>
         <p className="text-lg mx-2">•</p>
