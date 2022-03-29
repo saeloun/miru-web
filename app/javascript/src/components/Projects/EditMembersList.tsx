@@ -1,31 +1,42 @@
 import * as React from "react";
 
-import projectAPIS from "apis/projects";
+import workspaceAPIS from "apis/workspaces";
 
 const closeButton = require("../../../../assets/images/close_button.svg"); // eslint-disable-line @typescript-eslint/no-var-requires
 
 export interface IEditMembersList {
   setShowAddMemberDialog: any;
   addedMembers: any;
-  allMembers: any;
 }
 
-const EditMembersList = ({ setShowAddMemberDialog, addedMembers, allMembers }: IEditMembersList) => {
+const EditMembersList = ({ setShowAddMemberDialog, addedMembers }: IEditMembersList) => {
   const [members, setMembers] = React.useState(addedMembers.map(v => ({ ...v, isExisting: true })));
-  const [allMemberList, setAllMemberList] = React.useState(allMembers);
+  const [allMemberList, setAllMemberList] = React.useState([]);
   const [rate, setRate] = React.useState<string>();
   const anyError = false; // this is dummy atm
 
-  React.useEffect(() => {
-    const addedMemberIds = members.map((v) => v.id);
-    setAllMemberList(allMemberList.map(
-      (v) => addedMemberIds.includes(v.id)? { ...v, isAdded: true } : { ...v, isAdded: false }));
-  }, [members]);
+  const markAddedMembers = allMembers => allMembers.map(
+    (v) => members.some((m) => m.id === v.id)? { ...v, isAdded: true } : { ...v, isAdded: false });
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const fetchCurrentWorkspaceUsers = async () => {
+    try {
+      const resp = await workspaceAPIS.users();
+      setAllMemberList(markAddedMembers(resp.data.users));
+    } catch (error)
+    {
+      // Add error handling
+    }
 
   };
+
+  React.useEffect(() => {
+    fetchCurrentWorkspaceUsers();
+  }, []);
+
+  React.useEffect(() => {
+    const addedMemberIds = members.map((v) => v.id);
+    setAllMemberList(markAddedMembers(allMemberList));
+  }, [members]);
 
   const updateMemberState = (idx, k, v) => {
     const modalMembers = [...members];
@@ -33,6 +44,10 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, allMembers }: I
     memberToEdit[k] = v;
     modalMembers[idx] = memberToEdit;
     setMembers(modalMembers);
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
   };
 
   return (
@@ -67,7 +82,7 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, allMembers }: I
                       id={m.id}
                       disabled={m.isExisting}
                       className="w-60 bg-miru-gray-100 rounded-sm mt-2 h-8"
-                      onChange={e => { m.isExisting ? null : updateMemberState(idx, "id", e.target.value); }}>
+                      onChange={e => { m.isExisting ? null : updateMemberState(idx, "id", parseInt(e.target.value)); }}>
                       {m.isExisting? null : <option value="" disabled selected>Select team Member</option>}
                       {allMemberList.map((am, i) => (
                         <option

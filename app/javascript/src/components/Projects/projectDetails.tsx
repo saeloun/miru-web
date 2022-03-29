@@ -112,11 +112,7 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
         <EditMembersList
           setShowAddMemberDialog={setShowAddMemberDialog}
           // this is dummydata, will update with actual data in next commit
-          addedMembers={[{ id: "id1", hourly_rate: 10, name: "shala" }, { id: "id2", hourly_rate: 20, name: "foo" }]}
-          allMembers={[{ id: "id4", name: "member-4-name" },
-            { id: "id2", name: "member-2-name" },
-            { id: "id1", name: "member-1-name" },
-            { id: "id3", name: "member-3-name" }]}
+          addedMembers={[{ id: 1, hourly_rate: 10, name: "shala" }, { id: 2, hourly_rate: 20, name: "foo" }]}
         />
       ) : null}
 
