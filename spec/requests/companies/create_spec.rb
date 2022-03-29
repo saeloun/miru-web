@@ -19,6 +19,7 @@ RSpec.describe "Companies#create", type: :request do
           :post, company_path, params: {
             company: {
               name: "Test Company",
+              company_code: "TE",
               address: "test address",
               business_phone: "Test phone",
               country: "India",
@@ -54,7 +55,40 @@ RSpec.describe "Companies#create", type: :request do
               base_currency: "",
               standard_price: "",
               fiscal_year_end: "",
-              date_format: ""
+              date_format: "",
+              company_code: ""
+            }
+          })
+      end
+
+      it "will fail" do
+        expect(response.body).to include("Company creation failed")
+      end
+
+      it "will not be created" do
+        expect(Company.count).to eq(1)
+      end
+
+      it "redirects to root_path" do
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context "when company code is not two-lettered" do
+      before do
+        send_request(
+          :post, company_path, params: {
+            company: {
+              name: "test ",
+              company_code: "test",
+              address: "test address",
+              business_phone: "Test phone",
+              country: "India",
+              timezone: "IN",
+              base_currency: "Rs",
+              standard_price: "1000",
+              fiscal_year_end: "April",
+              date_format: "DD/MM/YYYY"
             }
           })
       end
@@ -86,6 +120,7 @@ RSpec.describe "Companies#create", type: :request do
           :post, company_path, params: {
             company: {
               name: "Test Company",
+              company_code: "TE",
               address: "test address",
               business_phone: "Test phone",
               country: "India",
