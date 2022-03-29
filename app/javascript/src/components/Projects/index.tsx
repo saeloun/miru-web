@@ -2,7 +2,7 @@ import * as React from "react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectApi from "apis/projects";
 import { IProject } from "./project";
-import ProjectDetails from "./projectDetails";
+import ProjectDetails from "./Details";
 import ProjectList from "./projectList";
 
 const Projects = ({ editIcon, deleteIcon, isAdminUser }) => {
