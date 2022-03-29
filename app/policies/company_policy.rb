@@ -28,6 +28,10 @@ class CompanyPolicy < ApplicationPolicy
     true
   end
 
+  def users?
+    user_owner_or_admin?
+  end
+
   def permitted_attributes
     [:name, :address, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end,
      :date_format, :logo, :company_code]

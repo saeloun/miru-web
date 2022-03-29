@@ -61,4 +61,13 @@ class Company < ApplicationRecord
   def client_list
     clients.kept.map { |client| { id: client.id, name: client.name, email: client.email, address: client.address } }
   end
+
+  def user_details
+    users.kept.map do |user|
+      {
+        id: user.id,
+        name: user.full_name
+      }
+    end
+  end
 end

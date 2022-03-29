@@ -9,5 +9,6 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :workspaces, only: [:update]
     resources :invoices, only: [:index]
     resources :generate_invoice, only: [:index]
+    get "/current_workspace/users", to: "workspaces#users"
   end
 end
