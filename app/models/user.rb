@@ -93,12 +93,8 @@ class User < ApplicationRecord
     self.has_cached_role?(:owner, company) || self.has_cached_role?(:admin, company)
   end
 
-  def current_workspace(load_associations: true)
-    @_current_workspace ||= if load_associations
-      Company.includes(:logo_attachment).find_by(id: current_workspace_id)
-    else
-      Company.find_by(id: current_workspace_id)
-    end
+  def current_workspace(load_associations: [:logo_attachment])
+    @_current_workspace ||= Company.includes(load_associations).find_by(id: current_workspace_id)
   end
 
   def current_workspace=(workspace)
