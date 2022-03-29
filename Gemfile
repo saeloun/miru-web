@@ -145,6 +145,9 @@ group :test do
 
   # Use Codecov for code coverage analysis
   gem "simplecov", require: false
+
+  # Strategies for cleaning databases in Ruby.
+  gem "database_cleaner", "~> 2.0"
 end
 
 # Role management library with resource scoping
