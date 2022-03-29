@@ -108,8 +108,8 @@ group :development, :test do
   gem "rspec-rails", "~> 5.0", ">= 5.0.2"
 
   # Simple one-liner tests for common Rails functionality
-  gem "shoulda-matchers", "~> 5.1"
   gem "shoulda-callback-matchers", "~> 1.1.1"
+  gem "shoulda-matchers", "~> 5.1"
 
   # Use factory-bot to replace fixtures
   gem "factory_bot_rails"
@@ -159,3 +159,6 @@ gem "pundit", "~> 2.2"
 
 # Data migration gem to migrate data alongside schema changes
 gem "data_migrate", "~> 8.0.0.rc2"
+
+# pagy for Pagination
+gem "pagy", "~> 5.10"

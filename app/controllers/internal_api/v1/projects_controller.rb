@@ -3,15 +3,16 @@
 class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationController
   def index
     authorize Project
-    render :index, locals: { projects: projects }, status: :ok
+    render :index, locals: { projects: }, status: :ok
   end
 
   def show
     authorize Project
-    render :show, locals: { project: project }, status: :ok
+    render :show, locals: { project: }, status: :ok
   end
 
   private
+
     def projects
       @_projects ||= current_company.projects.kept
     end

@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe TeamPolicy, type: :policy, test_ploi: true do
-  let (:company) { create(:company) }
-  let (:user) { create(:user, current_workspace_id: company.id) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
 
   subject { described_class }
 

@@ -119,6 +119,7 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
             { id: "id3", name: "member-3-name" }]}
         />
       ) : null}
+
     </>
   );
 
