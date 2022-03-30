@@ -3,22 +3,22 @@ import React from "react";
 const NewLineItemRow = ({ item }) => (
   <tr>
     <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left ">
-      {item.Name}
+      {item.name}
     </td>
     <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left ">
-      {item.Date}
+      {item.date}
     </td>
     <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-center ">
-      {item.Description}
+      {item.description}
     </td>
     <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-      {item.Rate}
+      {item.rate}
     </td>
     <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-      {item.Qty}
+      {item.qty}
     </td>
     <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-      {item.LineTotal}
+      {item.lineTotal}
     </td>
   </tr>
 );

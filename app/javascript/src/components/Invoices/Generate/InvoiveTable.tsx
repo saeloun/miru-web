@@ -6,11 +6,10 @@ import NewLineItemTable from "./NewLineItemTable";
 
 const InvoiceTable = () => {
 
-  //States
-  const [Addnew, setAddnew] = useState<boolean>(false);
+  const [addNew, setAddNew] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<any>(null);
-  const [ShowItemInputs, setShowItemInputs] = useState<boolean>(false);
-  const [NewLineItems, setNewLineItems] = useState<Array<any>>([]);
+  const [showItemInputs, setShowItemInputs] = useState<boolean>(false);
+  const [newLineItems, setNewLineItems] = useState<Array<any>>([]);
 
   return (
     <React.Fragment>
@@ -37,14 +36,14 @@ const InvoiceTable = () => {
         </thead>
 
         <tbody className="w-full">
-          {Addnew ?
+          {addNew ?
             <NewLineItemTable
-              ShowItemInputs={ShowItemInputs}
+              showItemInputs={showItemInputs}
               setShowItemInputs={setShowItemInputs}
               selectedOption={selectedOption}
               setSelectedOption={setSelectedOption}
-              Addnew={Addnew}
-              setAddnew={setAddnew}
+              addNew={addNew}
+              setAddNew={setAddNew}
             />
             : (
               <tr className="w-full ">
@@ -52,7 +51,7 @@ const InvoiceTable = () => {
                   <button
                     className=" py-1 tracking-widest w-full bg-white font-bold text-base text-center text-miru-dark-purple-200 rounded-md border-2 border-miru-dark-purple-200 border-dashed"
                     onClick={() => {
-                      setAddnew(!Addnew);
+                      setAddNew(!addNew);
                     }}
                   >
                     + NEW LINE ITEM
@@ -61,21 +60,20 @@ const InvoiceTable = () => {
               </tr>
             )}
 
-          {ShowItemInputs
+          {showItemInputs
             && <ManualEntry
               setShowItemInputs={setShowItemInputs}
               setNewLineItems={setNewLineItems}
-              NewLineItems={NewLineItems}
+              newLineItems={newLineItems}
             />
           }
 
-          {NewLineItems.length > 0
-            && NewLineItems.map(item => (
+          {newLineItems.length > 0
+            && newLineItems.map(item => (
               <NewLineItemRow
                 item={item}
               />
-            ))
-          }
+            ))}
         </tbody>
       </table>
     </React.Fragment>

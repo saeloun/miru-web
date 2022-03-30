@@ -1,4 +1,4 @@
-const Styles = {
+export const reactSelectStyles = {
   InvoiceDetails: {
     menu: base => ({
       ...base,
@@ -7,7 +7,7 @@ const Styles = {
       borderBottomLeftRadius: "8px",
       borderBottomRightRadius: "8px",
       border: 0,
-      boxShadow: "none"
+      boxShadow: "0px 20px 20px rgba(0, 0, 0, 0.1), 0px 10px 10px rgba(0, 0, 0, 0.1), 0px 10px 10px rgba(0, 0, 0, 0.1)"
     }),
     placeholder: defaultStyles => ({
       ...defaultStyles,
@@ -36,13 +36,22 @@ const Styles = {
     }),
     control: (provided) => ({
       ...provided,
-      boxShadow: "none",
+      boxShadow: "0px 0px 40px rgba(0,0,0,0.1)",
       border: 0,
       borderRadius: 0,
       borderTopLeftRadius: "8px",
       borderTopRightRadius: "8px",
       padding: 10,
       display: "flex"
+    }),
+    option: (
+      styles,{ isSelected }
+    ) => ({
+      ...styles,
+      backgroundColor: isSelected ? "#F5F7F9":null,
+      "&:hover": {
+        backgroundColor: "#F5F7F9"
+      }
     })
   },
   NewLineItemTable: {
@@ -53,15 +62,15 @@ const Styles = {
       borderBottomLeftRadius: "8px",
       borderBottomRightRadius: "8px",
       border: 0,
-      boxShadow: "none"
+      boxShadow: "0px 20px 20px rgba(0, 0, 0, 0.1), 0px 10px 10px rgba(0, 0, 0, 0.1), 0px 10px 10px rgba(0, 0, 0, 0.1)"
     }),
     option: (
-      styles,
-      { isSelected }
+      styles
     ) => ({
       ...styles,
-      backgroundColor: isSelected ? "#F5F7F9" : null,
-      color: "#1D1A31"
+      "&:hover": {
+        backgroundColor: "#F5F7F9"
+      }
     }),
     placeholder: defaultStyles => ({
       ...defaultStyles,
@@ -93,15 +102,14 @@ const Styles = {
     }),
     control: (provided) => ({
       ...provided,
-      boxShadow: "none",
+      boxShadow: "0px 0px 40px rgba(0,0,0,0.1)",
       border: 0,
       borderRadius: 0,
       borderTopLeftRadius: "8px",
       borderTopRightRadius: "8px",
       padding: 10,
       display: "flex"
+
     })
   }
 };
-
-export default Styles;

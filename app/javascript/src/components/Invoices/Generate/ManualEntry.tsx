@@ -1,24 +1,24 @@
-import React,{ useState,useRef } from "react";
+import React, { useState, useRef } from "react";
 
-const ManualEntry = ({ setShowItemInputs,setNewLineItems,NewLineItems }) => {
+const ManualEntry = ({ setShowItemInputs, setNewLineItems, newLineItems }) => {
 
-  const [Name, setName] = useState<string>("");
-  const [Date, setDate] = useState<string>("");
-  const [Description, setDescription] = useState<string>("");
-  const [Rate, setRate] = useState<string>("");
-  const [Qty, setQty] = useState<string>("");
-  const [LineTotal, setLineTotal] = useState<string>("");
-  const ref =useRef();
+  const [name, setName] = useState<string>("");
+  const [date, setDate] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [rate, setRate] = useState<string>("");
+  const [qty, setQty] = useState<string>("");
+  const [lineTotal, setLineTotal] = useState<string>("");
+  const ref = useRef();
 
-  const onEnter = val => {
-    if (val.key == "Enter") {
-      const newItem = [...NewLineItems,{
-        Name: Name,
-        Date: Date,
-        Description: Description,
-        Rate: Rate,
-        Qty: Qty,
-        LineTotal: LineTotal
+  const onEnter = e => {
+    if (e.key == "Enter") {
+      const newItem = [...newLineItems, {
+        name: name,
+        date: date,
+        description: description,
+        rate: rate,
+        qty: qty,
+        lineTotal: lineTotal
       }];
 
       setNewLineItems(newItem);
@@ -38,9 +38,9 @@ const ManualEntry = ({ setShowItemInputs,setNewLineItems,NewLineItems }) => {
         <input
           type="text"
           placeholder="Name"
-          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 "
-          value={Name}
-          onChange={val => setName(val.target.value)}
+          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          value={name}
+          onChange={e => setName(e.target.value)}
         />
       </td>
       <td className="w-full">
@@ -48,41 +48,41 @@ const ManualEntry = ({ setShowItemInputs,setNewLineItems,NewLineItems }) => {
           type="text"
           placeholder="Date"
           ref={ref}
-          onFocus={(e)=>(e.target.type="date")}
-          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000"
-          value={Date}
-          onChange={val => setDate(val.target.value)}
+          onFocus={(e) => (e.target.type = "date")}
+          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          value={date}
+          onChange={e => setDate(e.target.value)}
         />
       </td>
       <td className="p-1 w-full">
         <input
           type="text"
           placeholder="Description"
-          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000"
-          value={Description}
-          onChange={val => setDescription(val.target.value)}
+          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          value={description}
+          onChange={e => setDescription(e.target.value)}
         />
       </td>
       <td className=" w-full">
         <input
           type="text"
           placeholder="Rate"
-          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000"
-          value={Rate}
-          onChange={val => setRate(val.target.value)}
+          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          value={rate}
+          onChange={e => setRate(e.target.value)}
         />
       </td>
       <td className="p-1 w-full">
         <input
           type="text"
           placeholder="Qty"
-          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000"
-          value={Qty}
-          onChange={val => setQty(val.target.value)}
-          onKeyDown={val => onEnter(val)}
+          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          value={qty}
+          onChange={e => setQty(e.target.value)}
+          onKeyDown={e => onEnter(e)}
         />
       </td>
-      <td className="text-right font-normal text-base text-miru-dark-purple-1000">
+      <td className="text-right font-normal text-base text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000">
         $90
       </td>
     </tr>
