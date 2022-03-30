@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React from "react";
 import { useTable, useRowSelect } from "react-table";
 
@@ -9,6 +10,7 @@ const IndeterminateCheckbox = React.forwardRef(
     React.useEffect(() => {
       resolvedRef.current.indeterminate = indeterminate;
     }, [resolvedRef, indeterminate]);
+
     return (
       <div className="flex items-center">
         <input type="checkbox" ref={resolvedRef} {...rest} className="opacity-0 absolute h-8 w-8 custom__checkbox" />
@@ -35,8 +37,6 @@ const getTableCheckbox = hooks => {
           <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
         </div>
       ),
-      // The cell can use the individual row's getToggleRowSelectedProps method
-      // to the render a checkbox
       Cell: ({ row }) => (
         <div>
           <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
@@ -68,7 +68,7 @@ const Table = ({
       data
     },
     useRowSelect,
-    hasCheckbox ? getTableCheckbox : () => {}
+    hasCheckbox ? getTableCheckbox : {}
   );
 
   return (
@@ -77,17 +77,15 @@ const Table = ({
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => {
-                return (
-                  <th className={`table__header ${column.cssClass}`} {...column.getHeaderProps()}>{column.render("Header")}</th>
-                )
-              }
+              {headerGroup.headers.map(column => (
+                <th className={`table__header ${column.cssClass}`} {...column.getHeaderProps()}>{column.render("Header")}</th>
+              )
               )}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.slice(0, 10).map((row, i) => {
+          {rows.slice(0, 10).map((row) => {
             prepareRow(row);
             return (
               <tr {...row.getRowProps()}>

@@ -1,9 +1,9 @@
 import * as React from "react";
-import { ArrowLeft, DotsThreeVertical } from "phosphor-react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectAPI from "apis/projects";
-import Table from "../../../common/Table";
+import { ArrowLeft, DotsThreeVertical } from "phosphor-react";
 import ChartBar from "../../../common/ChartBar";
+import Table from "../../../common/Table";
 import { unmapper } from "../../../mapper/project.mapper";
 
 export interface IProjectDetails {
@@ -70,22 +70,22 @@ const ProjectDetails = ({ id }) => {
     {
       Header: "TEAM MEMBER",
       accessor: "col1", // accessor is the "key" in the data
-      cssClass: 'abc'
+      cssClass: "abc"
     },
     {
       Header: "HOURLY RATE",
       accessor: "col2",
-      cssClass: 'text-right'
+      cssClass: "text-right"
     },
     {
       Header: "HOURS LOGGED",
       accessor: "col3",
-      cssClass: 'text-right' // accessor is the "key" in the data
+      cssClass: "text-right" // accessor is the "key" in the data
     },
     {
       Header: "COST",
       accessor: "col4",
-      cssClass: 'text-right' // accessor is the "key" in the data
+      cssClass: "text-right" // accessor is the "key" in the data
     }
   ];
 
@@ -100,9 +100,9 @@ const ProjectDetails = ({ id }) => {
             <h2 className="text-3xl mr-1 font-extrabold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
               {project?.name}
             </h2>
-              <span className="rounded-xl text-xs self-center  tracking-widest font-semibold px-1 bg-miru-han-purple-100 text-miru-han-purple-1000">
+            <span className="rounded-xl text-xs self-center  tracking-widest font-semibold px-1 bg-miru-han-purple-100 text-miru-han-purple-1000">
                 BILLABLE
-              </span>
+            </span>
           </div>
           <div>
             <DotsThreeVertical size={20} color="#000000" />
@@ -153,9 +153,3 @@ const ProjectDetails = ({ id }) => {
 
 };
 export default ProjectDetails;
-
-// <div>Showing details for project {id}</div>
-//       <div>Project name: {project?.name}</div>
-//       <div>Client name: {project?.client.name}</div>
-//       <div>Billable: {project?.is_billable}</div>
-//       <div>Minutes spent(week): {project?.total_minutes_logged}</div>

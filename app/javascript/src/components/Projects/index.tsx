@@ -2,9 +2,8 @@ import * as React from "react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectApi from "apis/projects";
 import ProjectDetails from "./Details";
-import ProjectList from "./List";
 import { IProject } from "./interface";
-
+import ProjectList from "./List";
 
 const Projects = ({ isAdminUser }) => {
   const [projects, setProjects] = React.useState<IProject[]>([]);
@@ -15,11 +14,9 @@ const Projects = ({ isAdminUser }) => {
     try {
       const resp = await projectApi.get();
       setProjects(resp.data.projects);
-    } catch (error)
-    {
+    } catch (error) {
       // Add error handling
     }
-
   };
 
   React.useEffect(() => {

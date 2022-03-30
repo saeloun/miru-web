@@ -1,6 +1,6 @@
 import * as React from "react";
 import { minutesToHHMM } from "helpers/hhmm-parser";
-import { IProject } from '../interface';
+import { IProject } from "../interface";
 
 export const Project = ({
   id,
