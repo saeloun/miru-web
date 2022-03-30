@@ -5,7 +5,7 @@ class TeamController < ApplicationController
   after_action :assign_role, only: [:update]
 
   def index
-    query = current_company.users.ransack(params[:q])
+    query = current_company.users.includes([:avatar_attachment, :roles]).ransack(params[:q])
     teams = query.result(distinct: true)
     render :index, locals: { query:, teams: }
   end
