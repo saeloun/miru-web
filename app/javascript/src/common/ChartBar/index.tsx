@@ -21,34 +21,32 @@ const Client = ({ element, totalMinutes, index }:ISingleClient) => {
       </ReactTooltip>
       <button data-tip data-for={`registerTip-${index}`} type="button" className={`bg-${randomColor}-600 w-full h-4 block border-b border-t hover:border-transparent`}></button>
     </div>
-  )
-}
-
-const GetClientBar = ({ data, totalMinutes }:IChartBarGraph) => {
-  return (
-    <Fragment>
-      <p className="mb-3 text-tiny text-miru-dark-purple-600 tracking-widest">
-            TOTAL HOURS: <span className="font-medium">{minutesToHHMM(totalMinutes)}</span>
-      </p>
-      <div className="w-full bg-gray-200 flex h-1">
-        {data.map((element, index) => <Client
-            element={element}
-            key={index}
-            index={index}
-            totalMinutes={totalMinutes}
-          />)
-        }
-      </div>
-      <div className="flex text-tiny text-miru-dark-purple-400 tracking-widest border-b-2 border-miru-gray-1000 border-b-miru-gray-1000 pb-6 justify-between mt-3">
-        <span>
-              0
-        </span>
-        <span>
-          {minutesToHHMM(totalMinutes)}
-        </span>
-      </div>
-    </Fragment>
   );
 };
+
+const GetClientBar = ({ data, totalMinutes }:IChartBarGraph) => (
+  <Fragment>
+    <p className="mb-3 text-tiny text-miru-dark-purple-600 tracking-widest">
+            TOTAL HOURS: <span className="font-medium">{minutesToHHMM(totalMinutes)}</span>
+    </p>
+    <div className="w-full bg-gray-200 flex h-1">
+      {data.map((element, index) => <Client
+        element={element}
+        key={index}
+        index={index}
+        totalMinutes={totalMinutes}
+      />)
+      }
+    </div>
+    <div className="flex text-tiny text-miru-dark-purple-400 tracking-widest border-b-2 border-miru-gray-1000 border-b-miru-gray-1000 pb-6 justify-between mt-3">
+      <span>
+              0
+      </span>
+      <span>
+        {minutesToHHMM(totalMinutes)}
+      </span>
+    </div>
+  </Fragment>
+);
 
 export default GetClientBar;

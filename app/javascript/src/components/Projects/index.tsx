@@ -1,11 +1,12 @@
 import * as React from "react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectApi from "apis/projects";
-import { IProject } from "./project";
 import ProjectDetails from "./Details";
-import ProjectList from "./projectList";
+import ProjectList from "./List";
+import { IProject } from "./interface";
 
-const Projects = ({ editIcon, deleteIcon, isAdminUser }) => {
+
+const Projects = ({ isAdminUser }) => {
   const [projects, setProjects] = React.useState<IProject[]>([]);
   const [showProjectDetails, setShowProjectDetails] = React.useState(null);
 
@@ -35,9 +36,7 @@ const Projects = ({ editIcon, deleteIcon, isAdminUser }) => {
     showProjectDetails ?
       <ProjectDetails
         id={showProjectDetails}
-        isAdminUser={isAdminUser}
-        editIcon={editIcon}
-        deleteIcon={deleteIcon}/> :
+      /> :
       <ProjectList
         allProjects={projects}
         isAdminUser={isAdminUser}

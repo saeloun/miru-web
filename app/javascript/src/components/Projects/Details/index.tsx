@@ -1,10 +1,10 @@
 import * as React from "react";
+import { ArrowLeft, DotsThreeVertical } from "phosphor-react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectAPI from "apis/projects";
-import { Member } from "../member";
+import Table from "../../../common/Table";
 import ChartBar from "../../../common/ChartBar";
-import { unmapper } from '../project.mapper';
-import Table from './Table';
+import { unmapper } from "../../../mapper/project.mapper";
 
 export interface IProjectDetails {
   id: number;
@@ -31,22 +31,22 @@ const BannerBox = ({ title, value }) => (
 );
 
 const getTableHeader = (project) => {
-  if(project) {
-    return project.members.map((member, index) => {
+  if (project) {
+    return project.members.map((member) => {
       const hours = member.minutes/60;
       const cost = hours * parseInt(member.hourlyRate);
 
       return {
-        col2 : <div>${member.hourlyRate}</div>,
-        col4 : <div>${cost}</div>,
-        col3 : <div>{member.minutes}</div>,
-        col1 : <div>{member.name}</div>
-      }
-    })
+        col1: <div className="text-base text-miru-dark-purple-1000">{member.name}</div>,
+        col2: <div className="text-base text-miru-dark-purple-1000 text-right">${member.hourlyRate}</div>,
+        col3: <div className="text-base text-miru-dark-purple-1000 text-right">{member.minutes}</div>,
+        col4: <div className="text-lg font-bold text-miru-dark-purple-1000 text-right">${cost}</div>
+      };
+    });
   }
-}
+};
 
-const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
+const ProjectDetails = ({ id }) => {
 
   const [project, setProject] = React.useState<any>();
   const fetchProject = async () => {
@@ -64,30 +64,51 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
     fetchProject();
   }, []);
 
-
-  const tableHeader = getTableHeader(project)
+  const tableHeader = getTableHeader(project);
 
   const column = [
     {
-      Header: 'TEAM MEMBER',
-      accessor: 'col1', // accessor is the "key" in the data
+      Header: "TEAM MEMBER",
+      accessor: "col1", // accessor is the "key" in the data
+      cssClass: 'abc'
     },
     {
-      Header: 'HOURLY RATE',
-      accessor: 'col2',
+      Header: "HOURLY RATE",
+      accessor: "col2",
+      cssClass: 'text-right'
     },
     {
-      Header: 'HOURS LOGGED',
-      accessor: 'col3', // accessor is the "key" in the data
+      Header: "HOURS LOGGED",
+      accessor: "col3",
+      cssClass: 'text-right' // accessor is the "key" in the data
     },
     {
-      Header: 'COST',
-      accessor: 'col4', // accessor is the "key" in the data
-    },
+      Header: "COST",
+      accessor: "col4",
+      cssClass: 'text-right' // accessor is the "key" in the data
+    }
   ];
 
   return (
     <>
+      <div className="mt-6 mb-3">
+        <div className="flex min-w-0 justify-between">
+          <div className="flex align-center">
+            <button className="mr-3">
+              <ArrowLeft size={20} color="#5b34ea" weight="bold" />
+            </button>
+            <h2 className="text-3xl mr-1 font-extrabold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
+              {project?.name}
+            </h2>
+              <span className="rounded-xl text-xs self-center  tracking-widest font-semibold px-1 bg-miru-han-purple-100 text-miru-han-purple-1000">
+                BILLABLE
+              </span>
+          </div>
+          <div>
+            <DotsThreeVertical size={20} color="#000000" />
+          </div>
+        </div>
+      </div>
       <div className="bg-miru-gray-100 py-10 px-10">
         <div className="flex justify-end">
           <select className="px-3
@@ -132,10 +153,6 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
 
 };
 export default ProjectDetails;
-
-
-
-
 
 // <div>Showing details for project {id}</div>
 //       <div>Project name: {project?.name}</div>
