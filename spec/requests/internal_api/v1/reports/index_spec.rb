@@ -5,9 +5,12 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Reports#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:client) { create(:client, company:) }
+  let(:project) { create(:project, client:) }
 
   context "when user is admin" do
     before do
+      @timesheet_entry = create(:timesheet_entry, project_id: project.id)
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :admin, company
       sign_in user
@@ -16,12 +19,14 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
 
     it "returns the time entry report" do
       expect(response).to have_http_status(:ok)
-      expect(json_response["entries"]).to match_array([])
+      expect(json_response["entries"].size).to eq(1)
+      expect(json_response["entries"].first["id"]).to eq(@timesheet_entry.id)
     end
   end
 
   context "when user is employee" do
     before do
+      create(:timesheet_entry, project_id: project.id)
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :employee, company
       sign_in user

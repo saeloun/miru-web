@@ -9,6 +9,9 @@ if ENV.fetch("COVERAGE", false)
     add_filter "/db/"
     add_filter "/spec/"
     add_filter "app/views"
+    add_filter "app/channels"
+    add_filter "app/jobs"
+    add_filter "app/mailers"
   end
 end
 

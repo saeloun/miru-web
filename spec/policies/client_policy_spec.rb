@@ -4,6 +4,7 @@ require "rails_helper"
 
 RSpec.describe ClientPolicy, type: :policy do
   let(:company) { create(:company) }
+  let(:company_2) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company_id: company.id) }
 
@@ -22,8 +23,24 @@ RSpec.describe ClientPolicy, type: :policy do
     end
 
     permissions :update? do
-      it "is permitted to create update" do
+      it "is permitted to update" do
         expect(subject).to permit(user, client)
+      end
+
+      it "is not permitted to update client in different company" do
+        client.update(company_id: company_2.id)
+        expect(subject).not_to permit(user, client)
+      end
+    end
+
+    permissions :destroy? do
+      it "is permitted to destroy" do
+        expect(subject).to permit(user, client)
+      end
+
+      it "is not permitted to destroy client in different company" do
+        client.update(company_id: company_2.id)
+        expect(subject).not_to permit(user, client)
       end
     end
   end
@@ -41,7 +58,23 @@ RSpec.describe ClientPolicy, type: :policy do
     end
 
     permissions :update? do
-      it "is not permitted to create update" do
+      it "is not permitted to update" do
+        expect(subject).not_to permit(user, client)
+      end
+
+      it "is not permitted to update client in different company" do
+        client.update(company_id: company_2.id)
+        expect(subject).not_to permit(user, client)
+      end
+    end
+
+    permissions :destroy? do
+      it "is not permitted to destroy" do
+        expect(subject).not_to permit(user, client)
+      end
+
+      it "is not permitted to destroy client in different company" do
+        client.update(company_id: company_2.id)
         expect(subject).not_to permit(user, client)
       end
     end

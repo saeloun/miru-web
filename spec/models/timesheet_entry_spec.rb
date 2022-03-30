@@ -76,4 +76,17 @@ RSpec.describe TimesheetEntry, type: :model do
       )
     end
   end
+
+  describe "#ensure_bill_status_is_set" do
+    it "returns non billable if project is not billable" do
+      timesheet_entry.update(bill_status: nil)
+      expect(timesheet_entry.reload).to have_attributes(bill_status: "non_billable")
+    end
+
+    it "returns billable if project is billable" do
+      project.update(billable: true)
+      timesheet_entry.update(bill_status: nil)
+      expect(timesheet_entry.reload).to have_attributes(bill_status: "unbilled")
+    end
+  end
 end

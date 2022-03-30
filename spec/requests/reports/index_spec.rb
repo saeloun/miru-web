@@ -5,9 +5,12 @@ require "rails_helper"
 RSpec.describe "Reports#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:client) { create(:client, company:) }
+  let(:project) { create(:project, client:) }
 
   context "when user is admin" do
     before do
+      create(:timesheet_entry, project_id: project.id)
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :admin, company
       sign_in user
@@ -22,6 +25,7 @@ RSpec.describe "Reports#index", type: :request do
 
   context "when user is employee" do
     before do
+      create(:timesheet_entry, project_id: project.id)
       create(:company_user, company_id: company.id, user_id: user.id)
       user.add_role :employee, company
       sign_in user
