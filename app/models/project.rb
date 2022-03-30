@@ -49,6 +49,11 @@ class Project < ApplicationRecord
     end
   end
 
+  # def project_team_member_details(time_frame)
+  #   from, to = week_month_year(time_frame)
+  #   project_members_timesheet_entries = timesheet_entries.where(user_id: project_members, work_date: from..to)
+  # end
+
   def week_month_year(time_frame)
     case time_frame
     when "last_week"
