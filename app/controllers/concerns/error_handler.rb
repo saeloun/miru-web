@@ -8,6 +8,7 @@ module ErrorHandler
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
     rescue_from Discard::RecordNotDiscarded, with: :record_not_discarded
     rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
+    rescue_from Pagy::VariableError, with: :invalid_param_value
   end
 
   private
@@ -61,6 +62,15 @@ module ErrorHandler
             status: :unprocessable_entity
         }
         format.html { render file: "public/422.html", status: :unprocessable_entity, layout: false, alert: message }
+      end
+    end
+
+    def invalid_param_value(exception)
+      message = exception.message
+
+      respond_to do |format|
+        format.json { render json: { errors: message }, status: :bad_request }
+        format.html { render file: "public/400.html", status: :bad_request, layout: false, alert: message }
       end
     end
 end

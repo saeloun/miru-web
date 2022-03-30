@@ -41,9 +41,9 @@ class Project < ApplicationRecord
         project_id: project_member.project_id,
         work_date: from..to)).sum(:duration)
       {
-        user_id: project_member.user_id,
-        user_name: project_member.full_name,
-        user_hourly_rate: project_member.hourly_rate,
+        id: project_member.user_id,
+        name: project_member.full_name,
+        hourly_rate: project_member.hourly_rate,
         minutes_logged:
       }
     end
@@ -67,6 +67,11 @@ class Project < ApplicationRecord
       user = User.find(member.user_id)
       user.full_name
     end
+  end
+
+  def total_hours_logged(time_frame = "week")
+    from, to = week_month_year(time_frame)
+    timesheet_entries.where(work_date: from..to).sum(:duration)
   end
 
   private
