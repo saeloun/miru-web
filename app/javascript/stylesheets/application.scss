@@ -42,6 +42,13 @@
     }
   }
 
+  .menuButton {
+    &__wrapper {
+      box-shadow: -2px 6px 11px grey;
+      @apply absolute bg-white right-0 p-5 w-64 rounded-xl;
+    }
+  }
+
   .header {
     &__title {
       @apply text-3xl font-extrabold leading-7 text-gray-900;

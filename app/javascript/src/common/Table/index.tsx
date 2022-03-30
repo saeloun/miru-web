@@ -1,8 +1,7 @@
-/* eslint-disable react/display-name */
 import React from "react";
 import { useTable, useRowSelect } from "react-table";
 
-const IndeterminateCheckbox = React.forwardRef(
+const IndeterminateCheckbox = React.forwardRef( // eslint-disable-line react/display-name
   ({ indeterminate, ...rest }:any, ref) => {
     const defaultRef = React.useRef();
     const resolvedRef:any = ref || defaultRef;
@@ -68,7 +67,7 @@ const Table = ({
       data
     },
     useRowSelect,
-    hasCheckbox ? getTableCheckbox : {}
+    hasCheckbox ? getTableCheckbox : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
   );
 
   return (

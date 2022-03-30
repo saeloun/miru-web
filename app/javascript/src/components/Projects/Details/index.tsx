@@ -1,41 +1,17 @@
 import * as React from "react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectAPI from "apis/projects";
-import { ArrowLeft, DotsThreeVertical } from "phosphor-react";
-import ChartBar from "../../../common/ChartBar";
-import Table from "../../../common/Table";
+import AmountBoxContainer from "common/AmountBox";
+import ChartBar from "common/ChartBar";
+import Table from "common/Table";
+import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, UsersThree, Trash } from "phosphor-react";
 import { unmapper } from "../../../mapper/project.mapper";
 
-export interface IProjectDetails {
-  id: number;
-  name: string;
-  client: any;
-  is_billable: boolean;
-  total_minutes_logged: number;
-  members: any;
-  editIcon: string;
-  deleteIcon: string;
-  isAdminUser: boolean;
-  setShowEditDialog: any;
-  setProjectToEdit: any;
-  setProjectToDelete: any;
-  setShowDeleteDialog: any;
-  projectClickHandler: any;
-}
-
-const BannerBox = ({ title, value }) => (
-  <li className="page-display__box">
-    <p className="font-normal text-sm tracking-widest">{title}</p>
-    <p className="text-5xl font-normal mt-3 tracking-widest">{value}</p>
-  </li>
-);
-
-const getTableHeader = (project) => {
+const getTableData = (project) => {
   if (project) {
     return project.members.map((member) => {
       const hours = member.minutes/60;
       const cost = hours * parseInt(member.hourlyRate);
-
       return {
         col1: <div className="text-base text-miru-dark-purple-1000">{member.name}</div>,
         col2: <div className="text-base text-miru-dark-purple-1000 text-right">${member.hourlyRate}</div>,
@@ -49,6 +25,7 @@ const getTableHeader = (project) => {
 const ProjectDetails = ({ id }) => {
 
   const [project, setProject] = React.useState<any>();
+  const [isHeaderMenuVisible, setHeaderMenuVisibility] = React.useState<boolean>(false);
   const fetchProject = async () => {
     try {
       const resp = await projectAPI.show(id);
@@ -64,9 +41,9 @@ const ProjectDetails = ({ id }) => {
     fetchProject();
   }, []);
 
-  const tableHeader = getTableHeader(project);
+  const tableData = getTableData(project);
 
-  const column = [
+  const tableHeader = [
     {
       Header: "TEAM MEMBER",
       accessor: "col1", // accessor is the "key" in the data
@@ -89,9 +66,24 @@ const ProjectDetails = ({ id }) => {
     }
   ];
 
+  const amountBox = [{
+    title: "OVERDUE",
+    amount: "$35.5k"
+  },
+  {
+    title: "OUTSTANDING",
+    amount: "$24.3k"
+  }];
+
+  const handleMenuVisibility = () => {
+    setHeaderMenuVisibility(!isHeaderMenuVisible);
+  };
+
+  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
+
   return (
     <>
-      <div className="mt-6 mb-3">
+      <div className="my-6">
         <div className="flex min-w-0 justify-between">
           <div className="flex align-center">
             <button className="mr-3">
@@ -104,10 +96,39 @@ const ProjectDetails = ({ id }) => {
                 BILLABLE
             </span>
           </div>
-          <div>
-            <DotsThreeVertical size={20} color="#000000" />
+          <div className="relative">
+            <button onClick = {handleMenuVisibility} className={`rounded px-2 h-full ${menuBackground}`}>
+              <DotsThreeVertical size={20} color="#000000" />
+            </button>
+            { isHeaderMenuVisible && <ul className="menuButton__wrapper">
+              <li className="py-1.5">
+                <button className="text-sm text-miru-han-purple-1000 items-center flex">
+                  <Receipt size={16} color="#5B34EA" weight="bold" />
+                  <span className="ml-3">Generate Invoice</span>
+                </button>
+              </li>
+              <li className="py-1.5">
+                <button className="text-sm text-miru-han-purple-1000 items-center flex">
+                  <Pencil size={16} color="#5b34ea" weight="bold" />
+                  <span className="ml-3">Edit Project Details</span>
+                </button>
+              </li>
+              <li className="py-1.5">
+                <button className="text-sm text-miru-han-purple-1000 items-center flex">
+                  <UsersThree size={16} color="#5b34ea" weight="bold" />
+                  <span className="ml-3">Add/Remove Team Members</span>
+                </button>
+              </li>
+              <li className="py-1.5">
+                <button className="text-sm text-miru-red-400 items-center flex">
+                  <Trash size={16} color="#E04646" weight="bold" />
+                  <span className="ml-3">Delete Project</span>
+                </button>
+              </li>
+            </ul> }
           </div>
         </div>
+        <p className="text-xs ml-8 mt-1">{project && project.client.name}</p>
       </div>
       <div className="bg-miru-gray-100 py-10 px-10">
         <div className="flex justify-end">
@@ -134,16 +155,13 @@ const ProjectDetails = ({ id }) => {
           </select>
         </div>
         {project && <ChartBar data={project.members} totalMinutes={project.totalMinutes} /> }
-        <ul className="page-display__wrap">
-          <BannerBox title="OVERDUE" value="$35.5k" />
-          <BannerBox title="OUTSTANDING" value="$24.3k" />
-        </ul>
+        <AmountBoxContainer amountBox = {amountBox} />
       </div>
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="overflow-hidden">
-              { project && <Table tableHeader={column} tableRowArray={tableHeader} /> }
+              { project && <Table tableHeader={tableHeader} tableRowArray={tableData} /> }
             </div>
           </div>
         </div>
