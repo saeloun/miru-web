@@ -9,7 +9,7 @@ import { reactSelectStyles } from "./Styles";
 const InvoiceDetails = () => {
 
   const [selectedOption, setSelectedOption] = useState<any>(null);
-  const [addClient, setaddClient] = useState<boolean>(false);
+  const [addClient, setAddClient] = useState<boolean>(false);
   const [issueDate, setissueDate] = useState<string>(dayjs().format("DD.MM.YYYY"));
   const [dueDate, setdueDate] = useState<string>(dayjs().add(1, "month").format("DD.MM.YYYY"));
   const options = [
@@ -19,7 +19,7 @@ const InvoiceDetails = () => {
   ];
 
   const selectAction = (client, option) => {
-    setaddClient(client);
+    setAddClient(client);
     setSelectedOption(option);
   };
 
@@ -56,7 +56,7 @@ const InvoiceDetails = () => {
         {!selectedOption && !addClient ? (
           <button
             className="py-5 mt-2 px-6 font-bold text-base text-miru-dark-purple-200 bg-white border-2 border-dashed border-miru-dark-purple-200 rounded-md tracking-widest"
-            onClick={() => setaddClient(true)}
+            onClick={() => setAddClient(true)}
           >
             + ADD CLIENT
           </button>

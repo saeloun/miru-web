@@ -12,14 +12,7 @@ const ManualEntry = ({ setShowItemInputs, setNewLineItems, newLineItems }) => {
 
   const onEnter = e => {
     if (e.key == "Enter") {
-      const newItem = [...newLineItems, {
-        name: name,
-        date: date,
-        description: description,
-        rate: rate,
-        qty: qty,
-        lineTotal: lineTotal
-      }];
+      const newItem = [...newLineItems, { name,date,description,rate,qty,lineTotal }];
 
       setNewLineItems(newItem);
       setName("");
@@ -67,7 +60,7 @@ const ManualEntry = ({ setShowItemInputs, setNewLineItems, newLineItems }) => {
         <input
           type="text"
           placeholder="Rate"
-          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={rate}
           onChange={e => setRate(e.target.value)}
         />
@@ -76,7 +69,7 @@ const ManualEntry = ({ setShowItemInputs, setNewLineItems, newLineItems }) => {
         <input
           type="text"
           placeholder="Qty"
-          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={qty}
           onChange={e => setQty(e.target.value)}
           onKeyDown={e => onEnter(e)}
