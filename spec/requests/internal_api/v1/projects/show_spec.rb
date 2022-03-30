@@ -21,16 +21,20 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
     context "when time_frame is week" do
       let(:time_frame) { "week" }
 
-      it "returns the project_details, project_team_member_details, project_total_minutes_logged for project in week" do
-        project_details = { id: project.id, name: project.name, billable_status: project.billable }
+      it "returns the project id, name, billable, client, members, total_minutes_logged for project in week" do
         project_team_member_details = project.project_team_member_details(time_frame)
-        project_total_minutes_logged = (
-          project_team_member_details.map { |user_details|user_details[:minutes_logged] }
-        ).sum
+        project_details = {
+          id: project.id,
+          name: project.name,
+          is_billable: project.billable,
+          client: { name: project.client.name },
+          members: project_team_member_details,
+          total_minutes_logged: (
+                              project_team_member_details.map { |user_details|user_details[:minutes_logged] }
+                            ).sum
+        }
         expect(response).to have_http_status(:ok)
         expect(json_response["project_details"]).to eq(JSON.parse(project_details.to_json))
-        expect(json_response["project_team_member_details"]).to eq(JSON.parse(project_team_member_details.to_json))
-        expect(json_response["project_total_minutes_logged"]).to eq(project_total_minutes_logged)
       end
     end
   end
