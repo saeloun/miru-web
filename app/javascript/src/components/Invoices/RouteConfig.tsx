@@ -1,25 +1,23 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 import {
   BrowserRouter,
   Routes,
-  Route,
+  Route
 } from "react-router-dom";
 
-import List from './List';
 import Generate from "./Generate";
+import List from "./List";
 
-const RouteConfig = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="invoices">
-          <Route index element={<List />} />
-          <Route path=":invoiceId" element={<Generate />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
-}
+const RouteConfig = () => (
+  <BrowserRouter>
+    <Routes>
+      <Route path="invoices">
+        <Route index element={<List />} />
+        <Route path=":invoiceId" element={<Generate />} />
+      </Route>
+    </Routes>
+  </BrowserRouter>
+);
 
-export default RouteConfig
+export default RouteConfig;
