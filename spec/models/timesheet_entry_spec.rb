@@ -18,7 +18,6 @@ RSpec.describe TimesheetEntry, type: :model do
 
   describe "Validations" do
     it { is_expected.to validate_presence_of(:duration) }
-    it { is_expected.to validate_presence_of(:note) }
     it { is_expected.to validate_presence_of(:work_date) }
     it { is_expected.to validate_presence_of(:bill_status) }
 

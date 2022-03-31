@@ -145,6 +145,9 @@ group :test do
 
   # Use Codecov for code coverage analysis
   gem "simplecov", require: false
+
+  # Strategies for cleaning databases in Ruby.
+  gem "database_cleaner", "~> 2.0"
 end
 
 # Role management library with resource scoping
@@ -159,3 +162,6 @@ gem "pundit", "~> 2.2"
 
 # Data migration gem to migrate data alongside schema changes
 gem "data_migrate", "~> 8.0.0.rc2"
+
+# pagy for Pagination
+gem "pagy", "~> 5.10"

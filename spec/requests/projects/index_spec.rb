@@ -15,7 +15,7 @@ RSpec.describe "Projects#index", type: :request do
       sign_in @user
 
       send_request :get, projects_path, params: { q: @project.name }
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:redirect)
     end
   end
 

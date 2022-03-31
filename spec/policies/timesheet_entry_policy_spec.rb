@@ -102,13 +102,5 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
         expect(subject).not_to permit(user, @timesheet_entry)
       end
     end
-
-    describe "scope" do
-      it "allows timesheet entries of current user" do
-        timesheet_entry = create(:timesheet_entry, project:, user_id: user.id)
-        user.update(current_workspace_id: company_2.id)
-        expect(scope.to_a).to match_array([timesheet_entry])
-      end
-    end
   end
 end
