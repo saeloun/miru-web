@@ -10,8 +10,8 @@ const InvoiceDetails = () => {
 
   const [selectedOption, setSelectedOption] = useState<any>(null);
   const [addClient, setAddClient] = useState<boolean>(false);
-  const [issueDate, setissueDate] = useState<string>(dayjs().format("DD.MM.YYYY"));
-  const [dueDate, setdueDate] = useState<string>(dayjs().add(1, "month").format("DD.MM.YYYY"));
+  const [issueDate, setIssueDate] = useState<string>(dayjs().format("DD.MM.YYYY"));
+  const [dueDate, setDueDate] = useState<string>(dayjs().add(1, "month").format("DD.MM.YYYY"));
   const options = [
     { value: "chocolate", label: "Chocolate" },
     { value: "strawberry", label: "Strawberry" },
