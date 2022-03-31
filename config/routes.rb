@@ -40,8 +40,8 @@ Rails.application.routes.draw do
   # resources :invoices, only: [:index, :create]
   resources :workspaces, only: [:update]
 
-  get 'invoices/*path', to: 'invoices#index', via: :all
-  get 'invoices', to: 'invoices#index'
+  get "invoices/*path", to: "invoices#index", via: :all
+  get "invoices", to: "invoices#index"
 
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
