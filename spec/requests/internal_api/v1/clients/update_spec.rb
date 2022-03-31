@@ -40,72 +40,63 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
       end
     end
 
-    # context "when client is invalid" do
-    #   before do
-    #     send_request(:patch, internal_api_v1_client_path(@client), params: {
-    #       client: {
-    #         name: "",
-    #         email: "",
-    #         phone: "",
-    #         address: "",
-    #       }
-    #     })
-    #   end
+    context "when client is invalid" do
+      before do
+        send_request(
+          :patch, internal_api_v1_client_path(@client), params: {
+            client: {
+              id: @client.id,
+              name: "",
+              email: "",
+              phone: "",
+              address: "India"
+            }
+          })
+      end
 
-    #   it "will fail" do
-    #     expect(response.body).to include("Client creation failed")
-    #   end
-
-    #   it "will not be created" do
-    #     expect(Client.count).to eq(0)
-    #   end
-
-    #   it "redirects to root_path" do
-    #     expect(response).to have_http_status(:unprocessable_entity)
-    #   end
-    # end
+      it "returns falied json response" do
+        expect(json_response["notice"]).to match("Failed to saved changes")
+      end
+    end
   end
 
-  # context "when user is employee" do
-  #   before do
-  #     create(:company_user, company_id: company.id, user_id: user.id)
-  #     user.add_role :employee, company
-  #     sign_in user
-  #     send_request(:post, clients_path, params: {
-  #       client: {
-  #         name: "Test Client",
-  #         email: "test@example.com",
-  #         phone: "Test phone",
-  #         address: "India",
-  #       }
-  #     })
-  #   end
+  context "when user is employee" do
+    before do
+      @client = create(:client, company:, name: "Client", email: "client@example.com")
+      create(:company_user, company_id: company.id, user_id: user.id)
+      user.add_role :employee, company
+      sign_in user
+      send_request(
+        :patch, internal_api_v1_client_path(@client), params: {
+          client: {
+            id: @client.id,
+            name: "Test Client",
+            email: "test@example.com",
+            phone: "Test phone",
+            address: "India"
+          }
+        })
+    end
 
-  #   it "will not be created" do
-  #     expect(Client.count).to eq(0)
-  #   end
+    it "is not permitted to update client" do
+      expect(json_response["errors"]).to match("You are not authorized to update client.")
+    end
+  end
 
-  #   it "redirects to root_path" do
-  #     expect(response).to have_http_status(:redirect)
-  #   end
-
-  #   it "is not permitted to create client" do
-  #     expect(flash[:alert]).to eq("You are not authorized to create client.")
-  #   end
-  # end
-
-  # context "when unauthenticated" do
-  #   it "user will be redirects to sign in path" do
-  #     send_request(:post, clients_path, params: {
-  #       client: {
-  #         name: "Test Client",
-  #         email: "test@example.com",
-  #         phone: "Test phone",
-  #         address: "India",
-  #       }
-  #     })
-  #     expect(response).to redirect_to(user_session_path)
-  #     expect(flash[:alert]).to eq("You need to sign in or sign up before continuing.")
-  #   end
-  # end
+  context "when unauthenticated" do
+    it "user will be not be permitted to update client" do
+      @client = create(:client, company:, name: "Client", email: "client@example.com")
+      send_request(
+        :patch, internal_api_v1_client_path(@client), params: {
+          client: {
+            id: @client.id,
+            name: "Test Client",
+            email: "test@example.com",
+            phone: "Test phone",
+            address: "India"
+          }
+        })
+      expect(json_response["error"]).to match("You need to sign in or sign up before continuing.")
+    end
+  end
 end
