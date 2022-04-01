@@ -12,4 +12,8 @@ class ProjectPolicy < ApplicationPolicy
   def show?
     user_owner_or_admin?
   end
+
+  def update_members?
+    user_owner_or_admin?
+  end
 end

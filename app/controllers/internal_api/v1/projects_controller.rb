@@ -11,6 +11,26 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
     render :show, locals: { project: }, status: :ok
   end
 
+  def update_members
+    authorize Project
+
+    ActiveRecord::Base.transaction do
+      add_new_members
+      update_existing_members
+      remove_members
+    end
+    render json: {
+      success: true,
+      notice: I18n.t("projects.update_members.success.message")
+    }, status: :ok
+    rescue Exception => ex
+      render json: {
+        success: false,
+        data: ex.message,
+        notice: I18n.t("projects.update_members.failure.message")
+      }, status: :ok
+  end
+
   private
 
     def projects
@@ -19,5 +39,39 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
 
     def project
       @_project ||= Project.includes(:project_members, project_members: [:user]).find(params[:id])
+    end
+
+    def add_new_members
+      ProjectMember.create!(add_members_params)
+    end
+
+    def update_existing_members
+      update_members_params
+        .each { |member_params|
+  ProjectMember
+    .where(user_id: member_params["id"], project_id: params[:id])
+    .update!(hourly_rate: member_params["hourly_rate"])
+}
+    end
+
+    def remove_members
+      member_ids = remove_members_params
+
+      if !member_ids.empty?
+        project.project_members.where(user_id: remove_members_params).delete_all
+      end
+    end
+
+    def add_members_params
+      params.require(:members).permit(added_members: [:id, :hourly_rate])["added_members"]
+        .map { |m| { user_id: m["id"], project_id: params[:id], hourly_rate: m["hourly_rate"] } }
+    end
+
+    def update_members_params
+      params.require(:members).permit(updated_members: [:id, :hourly_rate])["updated_members"]
+    end
+
+    def remove_members_params
+      params.require(:members).permit(removed_member_ids: [])["removed_member_ids"]
     end
 end
