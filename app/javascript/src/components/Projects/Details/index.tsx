@@ -86,10 +86,10 @@ const ProjectDetails = ({ id }) => {
       <div className="my-6">
         <div className="flex min-w-0 justify-between">
           <div className="flex align-center">
-            <button className="mr-3">
+            <button className="mr-3 hover:bg-miru-gray-1000">
               <ArrowLeft size={20} color="#5b34ea" weight="bold" />
             </button>
-            <h2 className="text-3xl mr-1 font-extrabold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
+            <h2 className="text-3xl mr-2 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
               {project?.name}
             </h2>
             <span className="rounded-xl text-xs self-center  tracking-widest font-semibold px-1 bg-miru-han-purple-100 text-miru-han-purple-1000">
@@ -97,30 +97,30 @@ const ProjectDetails = ({ id }) => {
             </span>
           </div>
           <div className="relative">
-            <button onClick = {handleMenuVisibility} className={`rounded px-2 h-full ${menuBackground}`}>
+            <button onClick = {handleMenuVisibility} className={`rounded px-2 h-full hover:bg-miru-gray-1000 ${menuBackground}`}>
               <DotsThreeVertical size={20} color="#000000" />
             </button>
             { isHeaderMenuVisible && <ul className="menuButton__wrapper">
-              <li className="py-1.5">
-                <button className="text-sm text-miru-han-purple-1000 items-center flex">
+              <li>
+                <button className="menuButton__list-item">
                   <Receipt size={16} color="#5B34EA" weight="bold" />
                   <span className="ml-3">Generate Invoice</span>
                 </button>
               </li>
-              <li className="py-1.5">
-                <button className="text-sm text-miru-han-purple-1000 items-center flex">
+              <li>
+                <button className="menuButton__list-item">
                   <Pencil size={16} color="#5b34ea" weight="bold" />
                   <span className="ml-3">Edit Project Details</span>
                 </button>
               </li>
-              <li className="py-1.5">
-                <button className="text-sm text-miru-han-purple-1000 items-center flex">
+              <li>
+                <button className="menuButton__list-item">
                   <UsersThree size={16} color="#5b34ea" weight="bold" />
                   <span className="ml-3">Add/Remove Team Members</span>
                 </button>
               </li>
-              <li className="py-1.5">
-                <button className="text-sm text-miru-red-400 items-center flex">
+              <li>
+                <button className="menuButton__list-item">
                   <Trash size={16} color="#E04646" weight="bold" />
                   <span className="ml-3">Delete Project</span>
                 </button>
@@ -128,7 +128,7 @@ const ProjectDetails = ({ id }) => {
             </ul> }
           </div>
         </div>
-        <p className="text-xs ml-8 mt-1">{project && project.client.name}</p>
+        <p className="text-xs ml-8 mt-1 text-miru-dark-purple-400">{project && project.client.name}</p>
       </div>
       <div className="bg-miru-gray-100 py-10 px-10">
         <div className="flex justify-end">

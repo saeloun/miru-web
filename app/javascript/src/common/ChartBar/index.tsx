@@ -38,7 +38,7 @@ const GetClientBar = ({ data, totalMinutes }:IChartBarGraph) => (
       />)
       }
     </div>
-    <div className="flex text-tiny text-miru-dark-purple-400 tracking-widest border-b-2 border-miru-gray-1000 border-b-miru-gray-1000 pb-6 justify-between mt-3">
+    <div className="flex text-tiny text-miru-dark-purple-400 tracking-widest pb-6 justify-between mt-3">
       <span>
               0
       </span>

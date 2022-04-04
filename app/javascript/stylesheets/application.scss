@@ -44,8 +44,11 @@
 
   .menuButton {
     &__wrapper {
-      box-shadow: -2px 6px 11px grey;
-      @apply absolute bg-white right-0 p-5 w-64 rounded-xl;
+      box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
+      @apply absolute bg-white right-0 py-5 w-64 rounded-xl;
+    }
+    &__list-item {
+      @apply text-sm block hover:bg-miru-gray-100 w-full px-5 py-1.5 text-miru-han-purple-1000 items-center flex;
     }
   }
 
@@ -69,10 +72,10 @@
 
   .page-display {
     &__wrap {
-      @apply mt-5 w-full flex items-stretch flex-col sm:flex-row text-miru-dark-purple-1000;
+      @apply pt-5 w-full flex items-stretch flex-col sm:flex-row text-miru-dark-purple-1000 border-t border-miru-gray-1000;
     }
     &__box {
-      @apply flex flex-col justify-start mr-12 w-full border-r-0 sm:border-r;
+      @apply flex flex-col justify-start mr-12 w-full border-r-0 sm:border-r sm:border-miru-gray-1000;
     }
     &__box:last-child {
       @apply border-r-0;

@@ -84,10 +84,11 @@ const Table = ({
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.slice(0, 10).map((row) => {
+          {rows.slice(0, 10).map((row, index) => {
             prepareRow(row);
+            const isLastChild = rows.length - 1 !== index;
             return (
-              <tr {...row.getRowProps()}>
+              <tr {...row.getRowProps()} className={isLastChild ? "border-b": ""}>
                 {row.cells.map(cell => <td className="table__cell" {...cell.getCellProps()}>{cell.render("Cell")}</td>)}
               </tr>
             );
