@@ -1,21 +1,6 @@
 import * as React from "react";
 import { minutesToHHMM } from "helpers/hhmm-parser";
-
-export interface IProject {
-  id: number;
-  name: string;
-  clientName: string;
-  isBillable: boolean;
-  minutesSpent: number;
-  editIcon: string;
-  deleteIcon: string;
-  isAdminUser: boolean;
-  setShowEditDialog: any;
-  setProjectToEdit: any;
-  setProjectToDelete: any;
-  setShowDeleteDialog: any;
-  projectClickHandler: any;
-}
+import { IProject } from "../interface";
 
 export const Project = ({
   id,
