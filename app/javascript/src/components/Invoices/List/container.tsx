@@ -1,8 +1,7 @@
 import * as React from "react";
 
-import BannerBox from "./BannerBox";
+import AmountBoxContainer from "common/AmountBox";
 import Table from "./Table";
-
 const Container = ({ invoiceList, setInvoiceList }) => {
 
   const handleSelectAll = (isChecked) => {
@@ -20,13 +19,24 @@ const Container = ({ invoiceList, setInvoiceList }) => {
     setInvoiceList(newInvoiceList);
   };
 
+  const amountBox = [{
+    title: "OVERDUE",
+    amount: "$35.5k"
+  },
+  {
+    title: "OUTSTANDING",
+    amount: "$24.3k"
+  },
+  {
+    title: "AMOUNT IN DRAFT",
+    amount: "$24.5k"
+  }];
+
   return (
     <React.Fragment>
-      <ul className="page-display__wrap">
-        <BannerBox title="OVERDUE" value="$35.5k" />
-        <BannerBox title="OUTSTANDING" value="$24.3k" />
-        <BannerBox title="AMOUNT IN DRAFT" value="$24.5k" />
-      </ul>
+      <div className="bg-miru-gray-100 py-10 px-10">
+        <AmountBoxContainer amountBox = {amountBox} cssClass="mt-0" />
+      </div>
       <div>
         <Table  handleSelectAll={handleSelectAll} handleSelectCheckbox={handleSelectCheckbox} updatedInvoiceList={invoiceList} />
       </div>
