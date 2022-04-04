@@ -4,15 +4,15 @@ require "rails_helper"
 
 RSpec.describe ClientPolicy, type: :policy do
   let(:company) { create(:company) }
-  let(:company_2) { create(:company) }
+  let(:company2) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:client) { create(:client, company_id: company.id) }
+  let(:client) { create(:client, company:) }
 
   subject { described_class }
 
   context "when user is admin" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user_id: user.id)
       user.add_role :admin, company
     end
 
@@ -28,7 +28,7 @@ RSpec.describe ClientPolicy, type: :policy do
       end
 
       it "is not permitted to update client in different company" do
-        client.update(company_id: company_2.id)
+        client.update(company_id: company2.id)
         expect(subject).not_to permit(user, client)
       end
     end
@@ -39,7 +39,7 @@ RSpec.describe ClientPolicy, type: :policy do
       end
 
       it "is not permitted to destroy client in different company" do
-        client.update(company_id: company_2.id)
+        client.update(company_id: company2.id)
         expect(subject).not_to permit(user, client)
       end
     end
@@ -47,7 +47,7 @@ RSpec.describe ClientPolicy, type: :policy do
 
   context "when user is employee" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user_id: user.id)
       user.add_role :employee, company
     end
 
@@ -63,7 +63,7 @@ RSpec.describe ClientPolicy, type: :policy do
       end
 
       it "is not permitted to update client in different company" do
-        client.update(company_id: company_2.id)
+        client.update(company_id: company2.id)
         expect(subject).not_to permit(user, client)
       end
     end
@@ -74,7 +74,7 @@ RSpec.describe ClientPolicy, type: :policy do
       end
 
       it "is not permitted to destroy client in different company" do
-        client.update(company_id: company_2.id)
+        client.update(company_id: company2.id)
         expect(subject).not_to permit(user, client)
       end
     end

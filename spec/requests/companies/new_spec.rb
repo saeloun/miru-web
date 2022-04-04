@@ -8,7 +8,7 @@ RSpec.describe "Companies#new", type: :request do
 
   context "when user is admin" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user_id: user.id)
       user.add_role :admin, company
       sign_in user
       send_request :get, new_company_path
@@ -25,7 +25,7 @@ RSpec.describe "Companies#new", type: :request do
 
   context "when user is employee" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user_id: user.id)
       user.add_role :employee, company
       sign_in user
       send_request :get, new_company_path

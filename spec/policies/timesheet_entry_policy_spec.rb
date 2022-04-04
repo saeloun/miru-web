@@ -4,9 +4,9 @@ require "rails_helper"
 
 RSpec.describe TimesheetEntryPolicy, type: :policy do
   let(:company) { create(:company) }
-  let(:company_2) { create(:company) }
+  let(:company2) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:client) { create(:client, company_id: company.id) }
+  let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
   let(:scope) { Pundit.policy_scope!(user, TimesheetEntry) }
 
@@ -14,7 +14,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
 
   context "when user is admin" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user_id: user.id)
       @timesheet_entry = create(:timesheet_entry, project:)
       user.add_role :admin, company
     end
@@ -31,7 +31,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
       end
 
       it "is not permitted to update timesheet_entry in different company" do
-        client.update(company_id: company_2.id)
+        client.update(company_id: company2.id)
         expect(subject).not_to permit(user, @timesheet_entry)
       end
     end
@@ -48,7 +48,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
       end
 
       it "is not permitted to destroy timesheet_entry in different company" do
-        client.update(company_id: company_2.id)
+        client.update(company_id: company2.id)
         expect(subject).not_to permit(user, @timesheet_entry)
       end
     end
@@ -62,9 +62,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
 
   context "when user is employee" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
-      client_2 = create(:client, company_id: company_2.id)
-      project_2 = create(:project, client: client_2)
+      create(:company_user, company:, user_id: user.id)
       @timesheet_entry = create(:timesheet_entry, project:)
       user.add_role :employee, company
     end
@@ -81,7 +79,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
       end
 
       it "is not permitted to update timesheet_entry in different company" do
-        client.update(company_id: company_2.id)
+        client.update(company_id: company2.id)
         expect(subject).not_to permit(user, @timesheet_entry)
       end
     end
@@ -98,7 +96,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
       end
 
       it "is not permitted to destroy client in different company" do
-        client.update(company_id: company_2.id)
+        client.update(company_id: company2.id)
         expect(subject).not_to permit(user, @timesheet_entry)
       end
     end

@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe TimesheetEntry, type: :model do
   let(:company) { create(:company) }
   let(:company2) { create(:company) }
-  let(:client) { create(:client, company_id: company.id) }
+  let(:client) { create(:client, company:) }
   let(:client2) { create(:client, company_id: company2.id) }
   let(:project) { create(:project, client_id: client.id) }
   let(:project2) { create(:project, client_id: client2.id) }

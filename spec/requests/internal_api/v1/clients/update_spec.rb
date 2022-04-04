@@ -9,7 +9,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
   context "when user is admin" do
     before do
       @client = create(:client, company:, name: "Client", email: "client@example.com")
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :admin, company
       sign_in user
     end
@@ -54,7 +54,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
           })
       end
 
-      it "returns falied json response" do
+      it "returns failed json response" do
         expect(json_response["notice"]).to match("Failed to saved changes")
       end
     end
@@ -63,7 +63,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
   context "when user is employee" do
     before do
       @client = create(:client, company:, name: "Client", email: "client@example.com")
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user_id: user.id)
       user.add_role :employee, company
       sign_in user
       send_request(

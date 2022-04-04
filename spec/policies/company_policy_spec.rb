@@ -10,7 +10,7 @@ RSpec.describe CompanyPolicy, type: :policy do
 
   context "when user is admin" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user_id: user.id)
       user.add_role :admin, company
     end
 
@@ -35,7 +35,7 @@ RSpec.describe CompanyPolicy, type: :policy do
 
   context "when user is employee" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user_id: user.id)
       user.add_role :employee, company
     end
 

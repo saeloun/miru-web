@@ -9,7 +9,7 @@ RSpec.describe "Projects#create", type: :request do
 
   context "when user is admin" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user_id: user.id)
       user.add_role :admin, company
       sign_in user
     end
@@ -27,57 +27,11 @@ RSpec.describe "Projects#create", type: :request do
       end
 
       it "creates a new project" do
-        expect(Project.count).to eq(1)
+        change(Project, :count).by(1)
       end
 
-      it "redirects to root_path" do
-        expect(response).to have_http_status(:redirect)
-      end
-    end
-
-    context "when company is invalid" do
-      before do
-        send_request(
-          :post, projects_path, params: {
-            project: {
-              client_id: client.id,
-              name: "",
-              billable: true
-            }
-          })
-      end
-
-      it "will not be created" do
-        expect(Project.count).to eq(0)
-      end
-
-      it "redirects to root_path" do
-        expect(response).to have_http_status(:redirect)
-      end
-    end
-  end
-
-  context "when user is employee" do
-    before do
-      create(:company_user, company_id: company.id, user_id: user.id)
-      user.add_role :employee, company
-      sign_in user
-    end
-
-    context "when project is valid" do
-      before do
-        send_request(
-          :post, projects_path, params: {
-            project: {
-              client_id: client.id,
-              name: "Test project",
-              billable: true
-            }
-          })
-      end
-
-      it "will be created" do
-        expect(Company.count).to eq(1)
+      it "returns success flash notice" do
+        expect(flash[:notice]).to eq("Project added successfully.")
       end
 
       it "redirects to root_path" do
@@ -98,7 +52,69 @@ RSpec.describe "Projects#create", type: :request do
       end
 
       it "will not be created" do
-        expect(Project.count).to eq(0)
+        change(Project, :count).by(0)
+      end
+
+      it "returns failed flash alert" do
+        expect(flash[:alert]).to eq("Project creation failed.")
+      end
+
+      it "redirects to root_path" do
+        expect(response).to have_http_status(:redirect)
+      end
+    end
+  end
+
+  context "when user is employee" do
+    before do
+      create(:company_user, company:, user_id: user.id)
+      user.add_role :employee, company
+      sign_in user
+    end
+
+    context "when project is valid" do
+      before do
+        send_request(
+          :post, projects_path, params: {
+            project: {
+              client_id: client.id,
+              name: "Test project",
+              billable: true
+            }
+          })
+      end
+
+      it "will be created" do
+        change(Project, :count).by(1)
+      end
+
+      it "returns success flash" do
+        expect(flash[:notice]).to eq("Project added successfully.")
+      end
+
+      it "redirects to root_path" do
+        expect(response).to have_http_status(:redirect)
+      end
+    end
+
+    context "when project is invalid" do
+      before do
+        send_request(
+          :post, projects_path, params: {
+            project: {
+              client_id: client.id,
+              name: "",
+              billable: true
+            }
+          })
+      end
+
+      it "will not be created" do
+        change(Project, :count).by(0)
+      end
+
+      it "returns failed flash alert" do
+        expect(flash[:alert]).to eq("Project creation failed.")
       end
 
       it "redirects to root_path" do
