@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Select from "react-select";
 import dayjs from "dayjs";
 import { PencilSimple } from "phosphor-react";
@@ -10,8 +10,8 @@ const InvoiceDetails = () => {
 
   const [selectedOption, setSelectedOption] = useState<any>(null);
   const [addClient, setAddClient] = useState<boolean>(false);
-  const [issueDate, setIssueDate] = useState<string>(dayjs().format("DD.MM.YYYY"));
-  const [dueDate, setDueDate] = useState<string>(dayjs().add(1, "month").format("DD.MM.YYYY"));
+  const [issueDate] = useState<string>(dayjs().format("DD.MM.YYYY"));
+  const [dueDate] = useState<string>(dayjs().add(1, "month").format("DD.MM.YYYY"));
   const options = [
     { value: "chocolate", label: "Chocolate" },
     { value: "strawberry", label: "Strawberry" },

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { X, FloppyDisk, PaperPlaneTilt } from "phosphor-react";
 
 const Header = () => (
@@ -6,10 +7,14 @@ const Header = () => (
     <h2 className="header__title font-bold">Generate Invoice</h2>
 
     <div className="flex w-2/5">
-      <button type="button" className="header__button w-1/3 p-0">
+      <Link
+        to="/invoices"
+        type="button"
+        className="header__button w-1/3 p-0"
+      >
         <X size={12} />
         <span className="ml-2 inline-block">CANCEL</span>
-      </button>
+      </Link>
       <button
         type="button"
         className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
