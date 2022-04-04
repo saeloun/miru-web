@@ -1,11 +1,13 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import CustomCheckbox from "common/CustomCheckbox";
 import { Pen, Trash } from "phosphor-react";
-import getStatusCssClass from "../../../utils/getStatusTag";
+import getStatusCssClass from "../../../../utils/getStatusTag";
 
 const TableRow = ({ invoice, handleSelectCheckbox }) => {
   const [grayColor, setGrayColor] = React.useState<string>("");
   const [isHover, setHover] = React.useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleMouseEnter = () => {
     setGrayColor("bg-miru-gray-100");
@@ -21,8 +23,14 @@ const TableRow = ({ invoice, handleSelectCheckbox }) => {
     handleSelectCheckbox(invoice.id, event.target.checked);
   };
 
+  const handleTableRowClick = () => {
+    // for now its kept as static,
+    // change ID to dynamic once integration is completed with api
+    navigate("/invoices/1");
+  };
+
   return (
-    <tr className={`last:border-b-0 ${grayColor}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <tr className={`last:border-b-0 ${grayColor}`} onClick = {handleTableRowClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <td className="px-6 py-5">
         <CustomCheckbox text='' handleCheck={handleCheckboxChange} isChecked={invoice.isChecked} checkboxValue='' id={invoice.id} />
       </td>
