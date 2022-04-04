@@ -17,6 +17,7 @@
       "apis/*": ["./app/javascript/src/apis/*"],
       "helpers/*": ["./app/javascript/src/helpers/*"],
       "common/*": ["./app/javascript/src/common/*"],
+      "utils/*": ["./app/javascript/src/utils/*"],
     }
   },
   "exclude": [
