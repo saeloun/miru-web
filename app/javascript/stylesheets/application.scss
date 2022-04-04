@@ -42,7 +42,25 @@
     }
   }
 
+  .button-icon{
+    &__back {
+      @apply mr-4 h-8 p-1;
+    }
+    &__back:hover {
+      background-color: rgba(205, 214, 223, 0.2);
+      @apply rounded;
+
+    }
+  }
+
   .menuButton {
+    &__button {
+      @apply rounded px-2 h-8;
+    }
+    &__button:hover {
+      background-color: rgba(205, 214, 223, 0.2);
+      @apply rounded;
+    }
     &__wrapper {
       box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
       @apply absolute bg-white right-0 py-5 w-64 rounded-xl;

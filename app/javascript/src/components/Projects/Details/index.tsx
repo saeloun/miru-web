@@ -85,8 +85,8 @@ const ProjectDetails = ({ id }) => {
     <>
       <div className="my-6">
         <div className="flex min-w-0 justify-between">
-          <div className="flex align-center">
-            <button className="mr-3 hover:bg-miru-gray-1000">
+          <div className="flex items-center">
+            <button className="button-icon__back">
               <ArrowLeft size={20} color="#5b34ea" weight="bold" />
             </button>
             <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
@@ -96,8 +96,8 @@ const ProjectDetails = ({ id }) => {
                 BILLABLE
             </span>
           </div>
-          <div className="relative">
-            <button onClick = {handleMenuVisibility} className={`rounded px-2 h-full hover:bg-miru-gray-1000 ${menuBackground}`}>
+          <div className="relative flex items-center">
+            <button onClick = {handleMenuVisibility} className={`menuButton__button ${menuBackground}`}>
               <DotsThreeVertical size={20} color="#000000" />
             </button>
             { isHeaderMenuVisible && <ul className="menuButton__wrapper">
@@ -120,7 +120,7 @@ const ProjectDetails = ({ id }) => {
                 </button>
               </li>
               <li>
-                <button className="menuButton__list-item">
+                <button className="menuButton__list-item text-miru-red-400">
                   <Trash size={16} color="#E04646" weight="bold" />
                   <span className="ml-3">Delete Project</span>
                 </button>
@@ -128,7 +128,7 @@ const ProjectDetails = ({ id }) => {
             </ul> }
           </div>
         </div>
-        <p className="text-xs ml-8 mt-1 text-miru-dark-purple-400">{project && project.client.name}</p>
+        <p className="text-xs ml-12 mt-1 text-miru-dark-purple-400">{project && project.client.name}</p>
       </div>
       <div className="bg-miru-gray-100 py-10 px-10">
         <div className="flex justify-end">
