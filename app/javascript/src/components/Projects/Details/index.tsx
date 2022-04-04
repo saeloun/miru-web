@@ -84,7 +84,7 @@ const ProjectDetails = ({ id }) => {
   return (
     <>
       <div className="my-6">
-        <div className="flex min-w-0 justify-between">
+        <div className="flex min-w-0 items-center justify-between">
           <div className="flex items-center">
             <button className="button-icon__back">
               <ArrowLeft size={20} color="#5b34ea" weight="bold" />
@@ -96,7 +96,7 @@ const ProjectDetails = ({ id }) => {
                 BILLABLE
             </span>
           </div>
-          <div className="relative flex items-center">
+          <div className="relative h-8">
             <button onClick = {handleMenuVisibility} className={`menuButton__button ${menuBackground}`}>
               <DotsThreeVertical size={20} color="#000000" />
             </button>

@@ -49,13 +49,12 @@
     &__back:hover {
       background-color: rgba(205, 214, 223, 0.2);
       @apply rounded;
-
     }
   }
 
   .menuButton {
     &__button {
-      @apply rounded px-2 h-8;
+      @apply rounded p-2;
     }
     &__button:hover {
       background-color: rgba(205, 214, 223, 0.2);
