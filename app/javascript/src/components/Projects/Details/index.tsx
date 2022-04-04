@@ -89,7 +89,7 @@ const ProjectDetails = ({ id }) => {
             <button className="mr-3 hover:bg-miru-gray-1000">
               <ArrowLeft size={20} color="#5b34ea" weight="bold" />
             </button>
-            <h2 className="text-3xl mr-2 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
+            <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
               {project?.name}
             </h2>
             <span className="rounded-xl text-xs self-center  tracking-widest font-semibold px-1 bg-miru-han-purple-100 text-miru-han-purple-1000">
