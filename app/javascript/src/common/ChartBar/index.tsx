@@ -19,7 +19,12 @@ const Client = ({ element, totalMinutes, index }:ISingleClient) => {
         <p className="text-xs">{element.name}</p>
         <p className="text-2xl text-center">{minutesToHHMM(element.minutes)}</p>
       </ReactTooltip>
-      <button data-tip data-for={`registerTip-${index}`} type="button" className={`bg-${randomColor}-600 w-full h-4 block border-b border-t hover:border-transparent`}></button>
+      <button
+        data-tip
+        data-for={`registerTip-${index}`}
+        type="button"
+        className={`bg-${randomColor}-600 w-full h-4 block border-b border-t hover:border-transparent`}>
+      </button>
     </div>
   );
 };
@@ -27,7 +32,7 @@ const Client = ({ element, totalMinutes, index }:ISingleClient) => {
 const GetClientBar = ({ data, totalMinutes }:IChartBarGraph) => (
   <Fragment>
     <p className="mb-3 text-tiny text-miru-dark-purple-600 tracking-widest">
-            TOTAL HOURS: <span className="font-medium">{minutesToHHMM(totalMinutes)}</span>
+      TOTAL HOURS: <span className="font-medium">{minutesToHHMM(totalMinutes)}</span>
     </p>
     <div className="w-full bg-gray-200 flex h-1">
       {data.map((element, index) => <Client
@@ -40,7 +45,7 @@ const GetClientBar = ({ data, totalMinutes }:IChartBarGraph) => (
     </div>
     <div className="flex text-tiny text-miru-dark-purple-400 tracking-widest pb-6 justify-between mt-3">
       <span>
-              0
+        0
       </span>
       <span>
         {minutesToHHMM(totalMinutes)}
