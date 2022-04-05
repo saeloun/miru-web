@@ -1,5 +1,5 @@
 import * as React from "react";
-
+import projectApi from "apis/projects";
 import workspaceAPIS from "apis/workspaces";
 
 const closeButton = require("../../../../assets/images/close_button.svg"); // eslint-disable-line @typescript-eslint/no-var-requires
@@ -7,23 +7,25 @@ const closeButton = require("../../../../assets/images/close_button.svg"); // es
 export interface IEditMembersList {
   setShowAddMemberDialog: any;
   addedMembers: any;
+  projectId: number;
+  fetchProjectDetailsAgain: any;
 }
 
-const EditMembersList = ({ setShowAddMemberDialog, addedMembers }: IEditMembersList) => {
+const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, fetchProjectDetailsAgain }: IEditMembersList) => {
+  const [existingMembers, setExistingMembers] = React.useState(addedMembers);
   const [members, setMembers] = React.useState(addedMembers.map(v => ({ ...v, isExisting: true })));
   const [allMemberList, setAllMemberList] = React.useState([]);
   const [rate, setRate] = React.useState<string>();
   const anyError = false; // this is dummy atm
 
   const markAddedMembers = allMembers => allMembers.map(
-    (v) => members.some((m) => m.id === v.id)? { ...v, isAdded: true } : { ...v, isAdded: false });
+    (v) => members.some((m) => m.id === v.id) ? { ...v, isAdded: true } : { ...v, isAdded: false });
 
   const fetchCurrentWorkspaceUsers = async () => {
     try {
       const resp = await workspaceAPIS.users();
       setAllMemberList(markAddedMembers(resp.data.users));
-    } catch (error)
-    {
+    } catch (error) {
       // Add error handling
     }
 
@@ -48,6 +50,29 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers }: IEditMembersL
 
   const handleSubmit = async e => {
     e.preventDefault();
+    const oldIds = existingMembers.map(v => v.id);
+    const currentIds = members.map(v => v.id);
+    const removedIds = oldIds.filter(x => !currentIds.includes(x));
+    const alreadyAddedMembersMap = {};
+    existingMembers.forEach((v) => { alreadyAddedMembersMap[v.id] = v.hourly_rate; });
+    const newlyAddedMembers = members.filter((v) => !alreadyAddedMembersMap[v.id]);
+    const updatedMembers = members.filter((v) => alreadyAddedMembersMap[v.id] && alreadyAddedMembersMap[v.id] != v.hourly_rate);
+    if (newlyAddedMembers.length > 0 || updatedMembers.length > 0 || removedIds.length > 0) {
+      try {
+        const res = await projectApi.updateMembers(projectId, {
+          members: {
+            added_members: newlyAddedMembers,
+            removed_member_ids: removedIds,
+            updated_members: updatedMembers
+          }
+        });
+        setExistingMembers(members);
+        fetchProjectDetailsAgain();
+      }
+      catch (err) {
+        // add error handling
+      }
+    }
   };
 
   return (
@@ -83,8 +108,8 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers }: IEditMembersL
                       disabled={m.isExisting}
                       className="w-60 bg-miru-gray-100 rounded-sm mt-2 h-8"
                       onChange={e => { m.isExisting ? null : updateMemberState(idx, "id", parseInt(e.target.value)); }}>
-                      {m.isExisting? null : <option value="" disabled selected>Select team Member</option>}
-                      {allMemberList.map((am, i) => (
+                      {m.isExisting ? null : <option value="" disabled selected>Select team Member</option>}
+                      {allMemberList.map((am) => (
                         <option
                           key={am.id}
                           value={am.id}
@@ -104,15 +129,15 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers }: IEditMembersL
                       name={m.hourly_rate}
                       id={m.hourly_rate}
                       value={m.hourly_rate}
-                      disabled={m.isExisting}
-                      onChange={e => { m.isExisting ? null : updateMemberState(idx, "hourly_rate", e.target.value); }}
+                      // disabled={m.isExisting}
+                      onChange={e => (updateMemberState(idx, "hourly_rate", e.target.value))}
                     />
                   </div>
 
                   {/* Delete button for each member */}
                   <div>
                     <button type="button"
-                      onClick={(event) => {
+                      onClick={() => {
                         setMembers(members => members.filter((_, i) => i != idx));
                       }}
                     >

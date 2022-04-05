@@ -23,6 +23,7 @@ export interface IProjectDetails {
 
 const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
 
+  const [fetchProjectAgain, setFetchProjectAgain] = React.useState(0);
   const [project, setProject] = React.useState<IProjectDetails>();
   const [showAddMemberDialog, setShowAddMemberDialog] = React.useState<boolean>(false);
 
@@ -35,6 +36,10 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
       // Add error handling
     }
   };
+
+  React.useEffect(() => {
+    fetchProject();
+  }, [fetchProjectAgain]);
 
   React.useEffect(() => {
     setAuthHeaders();
@@ -95,10 +100,6 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
                       isAdminUser={isAdminUser}
                       editIcon={editIcon}
                       deleteIcon={deleteIcon}
-                      /*  setShowEditDialog={setShowEditDialog}
-                    setProjectToEdit={setProjectToEdit}
-                    setShowDeleteDialog={setShowDeleteDialog}
-                    setProjectToDelete={setProjectToDelete} */
                     />
                   ))
                   }
@@ -112,7 +113,9 @@ const ProjectDetails = ({ id, editIcon, deleteIcon, isAdminUser }) => {
         <EditMembersList
           setShowAddMemberDialog={setShowAddMemberDialog}
           // this is dummydata, will update with actual data in next commit
-          addedMembers={[{ id: 1, hourly_rate: 10, name: "shala" }, { id: 2, hourly_rate: 20, name: "foo" }]}
+          addedMembers={project?.members}
+          fetchProjectDetailsAgain={(() => (setFetchProjectAgain((v) => v + 1)))}
+          projectId={id}
         />
       ) : null}
 
