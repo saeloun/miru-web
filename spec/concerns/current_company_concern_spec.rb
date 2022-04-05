@@ -3,9 +3,9 @@
 require "rails_helper"
 
 RSpec.describe CurrentCompanyConcern do
-  let (:company) { create(:company) }
-  let (:user) { create(:user, current_workspace_id: company.id) }
-  let (:user_2) { create(:user, current_workspace: nil) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:user_2) { create(:user, current_workspace: nil) }
 
   before do
     create(:company_user, company_id: company.id, user_id: user.id)

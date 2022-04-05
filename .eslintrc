@@ -63,6 +63,7 @@
     "rules": {
       "@typescript-eslint/no-explicit-any": "off",
       "object-curly-newline": "off",
+      "no-console": ["error", { "allow": ["warn", "error"] }],
       "comma-dangle": ["error", "never"],
       "indent": ["warn", 2, { "SwitchCase": 1 }],
       "key-spacing": 1,

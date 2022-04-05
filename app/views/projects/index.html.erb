@@ -1,91 +1,11 @@
-<div class="" id="root-page">
-  <div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope" x-data="{ 'isDialogOpen': false }" @keydown.escape="isDialogOpen = false">
-    <div class="px-5">
-      <div class="">
+<div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
+  <div class="px-5">
+    <div>
+      <%= react_component("Projects", {
+        isAdminUser: current_user.has_owner_or_admin_role?(current_user.current_workspace)
+      }) %>
 
-        <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
-          <div class="flex-1 min-w-0">
-            <h2 class="text-3xl font-extrabold leading-7 text-gray-900 sm:text-4xl py-1">
-                <%= t('projects.projects') %>
-            </h2>
-          </div>
-          <div class="mt-6 flex sm:mt-0 md:ml-4 items-center sm:w-4/6">
-            <div class="mt-1 relative rounded-md shadow-sm md:ml-10">
-                <%= search_form_for @query do |f| %>
-                    <%= f.search_field :name_cont, class: 'rounded tracking-wider appearance-none border border-gray-100 block w-72 sm:w-96 px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-sm', placeholder: 'Search' %>
-                    <%= image_submit_tag 'search_icon.svg', class: "h-3 text-miru-gray-400 absolute inset-y-2 right-0 pr-3 flex items-center cursor-pointer" %>     
-                <% end %>
-            </div>
-          </div>
 
-          <% if policy(Project).create? %>
-            <div class="mt-6 flex sm:mt-0 md:ml-4">
-              <button @click="isDialogOpen = true" type="button" class="form__button_outline">
-                  <img src="<%= image_url 'plus_icon.svg' %>" class="-ml-0.5 mr-2 h-4 w-4 ">
-                      <%= t('project.new_project') %>
-              </button>
-            </div>
-          <% end %>
-        </div>
-
-        <!-- team table -->
-          <div class="flex flex-col">
-            <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 ">
-              <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                <div class="overflow-hidden border-b-2 border-miru-gray-200 ">
-                  <table class="min-w-full divide-y divide-gray-200 mt-4">
-                    <thead class="">
-                      <tr>
-                        <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
-                          <%= t('projects.project').upcase %>/<%= t('projects.client').upcase %>
-                        </th>
-                        <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
-                          <%= t('project.hours_logged') %>
-                        </th>
-                        <th scope="col" class="px-6 py-5 text-left text-sm font-semibold text-miru-dark-purple-600 tracking-wider">
-
-                        </th>
-                        <th scope="col" class="relative px-6 py-5">
-                          <span class="sr-only"><%= t('projects.edit') %></span>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                      <% @projects.each do |project| %>
-                        <tr>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
-                            <%= project.name.capitalize %>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-miru-dark-purple-1000">
-                            <%= project.timesheet_entries.collect(&:duration).first %>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          </td>
-                        </tr>
-                      <% end %>
-
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-    </div>
-
-    <div class="px-4 min-h-screen flex items-center justify-center">
-    <div class="overflow-auto" style="background-color: rgba(29, 26, 49,0.6)" x-show="isDialogOpen" :class="{ 'absolute inset-0 z-10 flex items-start justify-center': isDialogOpen }">
-      <div class="relative px-4 min-h-screen md:flex md:items-center md:justify-center">
-      <div class="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md sm:w-full" x-show="isDialogOpen" @click.away="isDialogOpen = false">
-        <div class="flex justify-between items-center mt-6">
-          <h6 class="text-base font-extrabold"><%= t('projects.add_new_project').capitalize %></h6>
-          <button type="button" @click="isDialogOpen = false"><%= image_tag('close_button.svg') %></button>
-        </div>
-        <%= render "projects/new"%>
-      </div>
-      </div>
     </div>
   </div>
 </div>
-
-

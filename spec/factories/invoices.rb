@@ -4,7 +4,9 @@ FactoryBot.define do
   factory :invoice do
     issue_date { Faker::Date.between(from: "2019-04-01", to: Date.today) }
     due_date { Faker::Date.between(from: self.issue_date, to: Date.today) }
-    invoice_number { "#{company.name.slice(0, 2).upcase}-#{client.name.slice(0, 2).upcase}-#{Faker::Number.unique.number(digits: 4)}" }
+    invoice_number {
+  "#{client.company.company_code}-#{client.client_code}-#{Faker::Number.unique.number(digits: 4)}"
+}
     reference { Faker::Invoice.reference }
     amount { Faker::Number.decimal(r_digits: 2) }
     outstanding_amount { Faker::Number.decimal(r_digits: 2) }
@@ -12,9 +14,8 @@ FactoryBot.define do
     amount_paid { Faker::Number.decimal(r_digits: 2) }
     amount_due { Faker::Number.decimal(r_digits: 2) }
     discount { Faker::Number.decimal(r_digits: 2) }
-    company
     client
-    status { :draft }
+    status { [:draft, :paid].sample }
     factory :invoice_with_invoice_line_items do
       invoice_line_items { Array.new(5) { association(:invoice_line_item) } }
     end

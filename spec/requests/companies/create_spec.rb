@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Companies#create", type: :request do
-  let (:company) { create(:company) }
-  let (:user) { create(:user, current_workspace_id: company.id) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
 
   context "when user is admin" do
     before do
@@ -15,19 +15,21 @@ RSpec.describe "Companies#create", type: :request do
 
     context "when company is valid" do
       before do
-        send_request(:post, company_path, params: {
-          company: {
-            name: "Test Company",
-            address: "test address",
-            business_phone: "Test phone",
-            country: "India",
-            timezone: "IN",
-            base_currency: "Rs",
-            standard_price: "1000",
-            fiscal_year_end: "April",
-            date_format: "DD/MM/YYYY"
-          }
-        })
+        send_request(
+          :post, company_path, params: {
+            company: {
+              name: "Test Company",
+              company_code: "TE",
+              address: "test address",
+              business_phone: "Test phone",
+              country: "India",
+              timezone: "IN",
+              base_currency: "Rs",
+              standard_price: "1000",
+              fiscal_year_end: "April",
+              date_format: "DD/MM/YYYY"
+            }
+          })
       end
 
       it "creates a new company" do
@@ -45,16 +47,50 @@ RSpec.describe "Companies#create", type: :request do
 
     context "when company is invalid" do
       before do
-        send_request(:post, company_path, params: {
-          company: {
-            business_phone: "12345677",
-            timezone: "",
-            base_currency: "",
-            standard_price: "",
-            fiscal_year_end: "",
-            date_format: ""
-          }
-        })
+        send_request(
+          :post, company_path, params: {
+            company: {
+              business_phone: "12345677",
+              timezone: "",
+              base_currency: "",
+              standard_price: "",
+              fiscal_year_end: "",
+              date_format: "",
+              company_code: ""
+            }
+          })
+      end
+
+      it "will fail" do
+        expect(response.body).to include("Company creation failed")
+      end
+
+      it "will not be created" do
+        expect(Company.count).to eq(1)
+      end
+
+      it "redirects to root_path" do
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context "when company code is not two-lettered" do
+      before do
+        send_request(
+          :post, company_path, params: {
+            company: {
+              name: "test ",
+              company_code: "test",
+              address: "test address",
+              business_phone: "Test phone",
+              country: "India",
+              timezone: "IN",
+              base_currency: "Rs",
+              standard_price: "1000",
+              fiscal_year_end: "April",
+              date_format: "DD/MM/YYYY"
+            }
+          })
       end
 
       it "will fail" do
@@ -80,19 +116,21 @@ RSpec.describe "Companies#create", type: :request do
 
     context "when company is valid" do
       before do
-        send_request(:post, company_path, params: {
-          company: {
-            name: "Test Company",
-            address: "test address",
-            business_phone: "Test phone",
-            country: "India",
-            timezone: "IN",
-            base_currency: "Rs",
-            standard_price: "1000",
-            fiscal_year_end: "April",
-            date_format: "DD/MM/YYYY"
-          }
-        })
+        send_request(
+          :post, company_path, params: {
+            company: {
+              name: "Test Company",
+              company_code: "TE",
+              address: "test address",
+              business_phone: "Test phone",
+              country: "India",
+              timezone: "IN",
+              base_currency: "Rs",
+              standard_price: "1000",
+              fiscal_year_end: "April",
+              date_format: "DD/MM/YYYY"
+            }
+          })
       end
 
       it "will be created" do
@@ -110,16 +148,17 @@ RSpec.describe "Companies#create", type: :request do
 
     context "when company is invalid" do
       before do
-        send_request(:post, company_path, params: {
-          company: {
-            business_phone: "12345677",
-            timezone: "",
-            base_currency: "",
-            standard_price: "",
-            fiscal_year_end: "",
-            date_format: ""
-          }
-        })
+        send_request(
+          :post, company_path, params: {
+            company: {
+              business_phone: "12345677",
+              timezone: "",
+              base_currency: "",
+              standard_price: "",
+              fiscal_year_end: "",
+              date_format: ""
+            }
+          })
       end
 
       it "will not be created" do
@@ -138,19 +177,20 @@ RSpec.describe "Companies#create", type: :request do
 
   context "when unauthenticated" do
     it "user will be redirects to sign in path" do
-      send_request(:post, company_path, params: {
-        company: {
-          name: "Test Company",
-          address: "test address",
-          business_phone: "Test phone",
-          country: "India",
-          timezone: "IN",
-          base_currency: "Rs",
-          standard_price: "1000",
-          fiscal_year_end: "April",
-          date_format: "DD/MM/YYYY"
-        }
-      })
+      send_request(
+        :post, company_path, params: {
+          company: {
+            name: "Test Company",
+            address: "test address",
+            business_phone: "Test phone",
+            country: "India",
+            timezone: "IN",
+            base_currency: "Rs",
+            standard_price: "1000",
+            fiscal_year_end: "April",
+            date_format: "DD/MM/YYYY"
+          }
+        })
       expect(response).to redirect_to(user_session_path)
       expect(flash[:alert]).to eq("You need to sign in or sign up before continuing.")
     end

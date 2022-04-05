@@ -49,7 +49,6 @@ class User < ApplicationRecord
   include Discard::Model
 
   # Associations
-  belongs_to :current_workspace, class_name: "Company", foreign_key: :current_workspace_id, optional: true
   has_many :company_users, dependent: :destroy
   has_many :companies, through: :company_users
   has_many :project_members, dependent: :destroy
@@ -67,9 +66,9 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :invitable, :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable,
-         :trackable, :confirmable,
-         :omniauthable, omniauth_providers: [:google_oauth2]
+    :recoverable, :rememberable, :validatable,
+    :trackable, :confirmable,
+    :omniauthable, omniauth_providers: [:google_oauth2]
 
   # Callbacks
   after_discard :discard_project_members
@@ -94,7 +93,16 @@ class User < ApplicationRecord
     self.has_cached_role?(:owner, company) || self.has_cached_role?(:admin, company)
   end
 
+  def current_workspace(load_associations: [:logo_attachment])
+    @_current_workspace ||= Company.includes(load_associations).find_by(id: current_workspace_id)
+  end
+
+  def current_workspace=(workspace)
+    write_attribute(:current_workspace_id, workspace&.id)
+  end
+
   private
+
     def discard_project_members
       project_members.discard_all
     end

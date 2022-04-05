@@ -30,6 +30,20 @@
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
+        <%= f.label t('client.code.label'), class: "form__label" %>
+        <div class="tracking-wider block text-xs text-red-600">
+          <%= error_message_on(f.object, :client_code) %>
+        </div>
+      </div>
+      <div class="mt-1">
+        <%= f.text_field :client_code, placeholder: t('client.code.placeholder'), autofocus: true, class: "form__input #{error_message_class(f.object, :client_code)}" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <div class="field">
+      <div class="field_with_errors">
         <%= f.label t('client.phone.label'), class: "form__label" %>
         <div class="tracking-wider block text-xs text-red-600">
           <%= error_message_on(f.object, :phone) %>

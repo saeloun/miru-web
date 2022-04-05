@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe User, type: :model do
-  let (:company) { create(:company) }
-  let (:user) { create(:user, current_workspace_id: company.id) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
     create(:company_user, company_id: company.id, user_id: user.id)
@@ -17,7 +17,6 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:timesheet_entries) }
     it { is_expected.to have_one_attached(:avatar) }
-    it { is_expected.to belong_to(:current_workspace).optional }
   end
 
   describe "Validations" do

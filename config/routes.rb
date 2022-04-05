@@ -32,11 +32,16 @@ Rails.application.routes.draw do
   end
 
   resources :time_tracking, only: [:index], path: "time-tracking"
+
   resources :team, only: [:index, :update, :destroy, :edit]
   resources :clients, only: [:index, :create]
   resources :projects, only: [:index, :create]
   resources :reports, only: [:index]
+  # resources :invoices, only: [:index, :create]
   resources :workspaces, only: [:update]
+
+  get "invoices/*path", to: "invoices#index", via: :all
+  get "invoices", to: "invoices#index"
 
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
