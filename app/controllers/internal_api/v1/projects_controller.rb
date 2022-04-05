@@ -46,11 +46,11 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
     end
 
     def add_new_members
-      ProjectMember.create!(add_members_params)
+      ProjectMember.create!(added_members_params)
     end
 
     def update_existing_members
-      update_members_params
+      updated_members_params
         .each { |member_params|
   ProjectMember
     .where(user_id: member_params["id"], project_id: params[:id])
@@ -59,23 +59,23 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
     end
 
     def remove_members
-      member_ids = remove_members_params
+      member_ids = removed_members_params
 
       if !member_ids.empty?
-        project.project_members.where(user_id: remove_members_params).delete_all
+        project.project_members.where(user_id: member_ids).delete_all
       end
     end
 
-    def add_members_params
+    def added_members_params
       params.require(:members).permit(added_members: [:id, :hourlyRate])["added_members"]
         .map { |m| { user_id: m["id"], project_id: params[:id], hourly_rate: m["hourlyRate"] } }
     end
 
-    def update_members_params
+    def updated_members_params
       params.require(:members).permit(updated_members: [:id, :hourlyRate])["updated_members"]
     end
 
-    def remove_members_params
+    def removed_members_params
       params.require(:members).permit(removed_member_ids: [])["removed_member_ids"]
     end
 end
