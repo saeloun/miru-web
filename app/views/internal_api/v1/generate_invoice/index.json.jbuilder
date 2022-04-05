@@ -2,7 +2,7 @@
 
 json.company_details do
   json.id current_company.id
-  json.logo Rails.application.routes.url_helpers.rails_blob_path(current_company.logo, only_path: true)
+  json.logo polymorphic_url(current_company.logo)
   json.phone_number current_company.business_phone
   json.address current_company.address
   json.country current_company.country
