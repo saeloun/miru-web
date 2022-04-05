@@ -1,9 +1,13 @@
-import React, { Fragment } from "react";
+import React from "react";
 
-const Generate = () => (
-  <Fragment>
-    <h1>Generate Invoice</h1>
-  </Fragment>
+import Container from "./Container";
+import Header from "./Header";
+
+const GenerateInvoices = () => (
+  <React.Fragment>
+    <Header />
+    <Container />
+  </React.Fragment>
 );
 
-export default Generate;
+export default GenerateInvoices;
