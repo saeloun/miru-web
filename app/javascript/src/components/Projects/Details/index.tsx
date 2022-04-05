@@ -26,7 +26,7 @@ const getTableData = (project) => {
 const ProjectDetails = ({ id }) => {
 
   const [project, setProject] = React.useState<any>();
-  const [fetchProjectAgain, setFetchProjectAgain] = React.useState(0);
+  const [fetchProjectAgain, setFetchProjectAgain] = React.useState<number>(0);
   const [showAddMemberDialog, setShowAddMemberDialog] = React.useState<boolean>(false);
   const [isHeaderMenuVisible, setHeaderMenuVisibility] = React.useState<boolean>(false);
 
