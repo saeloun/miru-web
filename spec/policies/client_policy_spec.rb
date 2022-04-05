@@ -3,9 +3,9 @@
 require "rails_helper"
 
 RSpec.describe ClientPolicy, type: :policy do
-  let (:company) { create(:company) }
-  let (:user) { create(:user, current_workspace_id: company.id) }
-  let (:client) { create(:client, company_id: company.id) }
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:client) { create(:client, company_id: company.id) }
 
   subject { described_class }
 

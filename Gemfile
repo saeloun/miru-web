@@ -108,8 +108,8 @@ group :development, :test do
   gem "rspec-rails", "~> 5.0", ">= 5.0.2"
 
   # Simple one-liner tests for common Rails functionality
-  gem "shoulda-matchers", "~> 5.1"
   gem "shoulda-callback-matchers", "~> 1.1.1"
+  gem "shoulda-matchers", "~> 5.1"
 
   # Use factory-bot to replace fixtures
   gem "factory_bot_rails"
@@ -119,6 +119,9 @@ group :development, :test do
 
   # Added rails controller to use render_template
   gem "rails-controller-testing", "~> 1.0", ">= 1.0.5"
+
+  # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
+  gem "bullet"
 end
 
 group :development do
@@ -145,6 +148,9 @@ group :test do
 
   # Use Codecov for code coverage analysis
   gem "simplecov", require: false
+
+  # Strategies for cleaning databases in Ruby.
+  gem "database_cleaner", "~> 2.0"
 end
 
 # Role management library with resource scoping
@@ -159,3 +165,6 @@ gem "pundit", "~> 2.2"
 
 # Data migration gem to migrate data alongside schema changes
 gem "data_migrate", "~> 8.0.0.rc2"
+
+# pagy for Pagination
+gem "pagy", "~> 5.10"

@@ -12,7 +12,7 @@
     </div>
     <!-- miru logo for smaller screen size end -->
 
-    <!-- dashboard time_tracking team clients projects invoice report etc. Start -->
+    <!-- dashboard time_tracking team clients projects invoices report etc. Start -->
     <div class="border-t border-gray-200 pt-4 pb-3 pl-3">
       <% if policy(:dashboard).index? %>
         <a href="/dashboard" class="<%= request.path == "/dashboard" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.dashboard') %></a>
@@ -22,9 +22,9 @@
       <a href="/clients" class="<%= request.path == "/clients" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.clients') %></a>
       <a href="/projects" class="<%= request.path == "/projects" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.projects') %></a>
       <% if current_user.has_owner_or_admin_role?(current_company) %>
-        <a href="/invoice" class="<%= request.path == "/invoice" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.invoice') %></a>
-        <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.reports') %></a>
-      <% end %>
+      <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.reports') %></a>
+      <a href="/invoices" class="<%= request.path == "/invoices" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.invoices') %></a>
+       <% end %>
     </div>
     <!-- dashboard time_tracking team clients projects invoice report etc. end -->
 
@@ -107,8 +107,8 @@
                 <%= t('navbar.projects') %>
               </a>
               <% if current_user.has_owner_or_admin_role?(current_company) %>
-                <a href="/invoice" class="<%= request.path == "/invoice" ? "block" : "hidden" %> navbar__small-screen-second_titles">
-                  <%= t('navbar.invoice') %>
+                <a href="/invoices" class="<%= request.path == "/invoices" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                  <%= t('navbar.invoices') %>
                 </a>
               <% end %>
               <% if current_user.has_owner_or_admin_role?(current_company) %>
@@ -120,7 +120,7 @@
           </div>
           <!-- title smaller screen end -->
 
-          <!-- dashboard time_tracking team clients projects invoice report etc. start -->
+          <!-- dashboard time_tracking team clients projects invoices report etc. start -->
           <div class="relative z-0 flex-auto flex items-center justify-center sm:absolute sm:inset-0">
             <div class="ml-12 hidden lg:block lg:flex lg:space-x-10 xl:pr-80 <%= "lg:mr-86" if current_user.has_role?(:employee, current_company) %>">
               <% if policy(:dashboard).index? %>
@@ -141,8 +141,8 @@
                 <%= t('navbar.projects') %>
               </a>
               <% if current_user.has_owner_or_admin_role?(current_company) %>
-                <a href="/invoice" data-cy="invoice-tab" class="<%= request.path == "/invoice" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                  <%= t('navbar.invoice') %>
+                <a href="/invoices" data-cy="invoices-tab" class="<%= request.path == "/invoices" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                  <%= t('navbar.invoices') %>
                 </a>
               <% end %>
               <% if current_user.has_owner_or_admin_role?(current_company) %>
@@ -152,7 +152,7 @@
               <% end %>
             </div>
           </div>
-          <!-- dashboard time_tracking team clients projects invoice report etc. end -->
+          <!-- dashboard time_tracking team clients projects invoices report etc. end -->
 
           <!-- hamburger icons start -->
           <div class="relative z-10 flex items-center lg:hidden">
@@ -181,7 +181,7 @@
 
               <div x-show="isOpen" @click.away="isOpen = false">
                 <div class="flex flex-col absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                  <% current_user.companies.each do |company| %>
+                  <% current_user.companies.includes(:logo_attachment).each do |company| %>
                     <div class="<%= current_user.current_workspace == company ? 'bg-miru-gray-100' : '' %> items-center px-4 py-4 hover:bg-miru-gray-100 text-miru-dark-purple-1000 cursor-pointer rounded-sm" role="menuitem" tabindex="-1" id="menu-item-0">
                       <%= link_to workspace_path(company), method: :patch, class: "flex" do %>
                         <%= image_tag company_logo(company), alt: "company_logo", class: "mr-3 h-5 w-5 mt-1" %>

@@ -29,6 +29,7 @@ class CompanyPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:name, :address, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end, :date_format, :logo]
+    [:name, :address, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end,
+     :date_format, :logo, :company_code]
   end
 end
