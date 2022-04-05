@@ -19,27 +19,27 @@ const TableHeader = ({ handleSelectAll }) => {
         scope="col"
         className="px-6 py-5 text-left text-xs font-normal text-miru-black-1000 tracking-widest"
       >
-          CLIENT / <br/>
-          INVOICE NO.
+        CLIENT / <br/>
+        INVOICE NO.
       </th>
       <th
         scope="col"
         className="px-6 py-5 text-left font-normal text-xs text-miru-black-1000 tracking-widest"
       >
-            ISSUED DATE /<br/>
-            DUE DATE
+        ISSUED DATE /<br/>
+        DUE DATE
       </th>
       <th
         scope="col"
         className="px-6 py-5 text-center font-normal text-xs text-miru-black-1000 tracking-widest"
       >
-            AMOUNT
+        AMOUNT
       </th>
       <th
         scope="col"
         className="px-6 py-5 text-center font-normal text-xs text-miru-black-1000 tracking-widest"
       >
-            STATUS
+        STATUS
       </th>
       <th scope="col" className="relative px-6 py-3"></th>
       <th scope="col" className="relative px-6 py-3"></th>
