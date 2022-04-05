@@ -16,7 +16,6 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, fetc
   const [existingMembers, setExistingMembers] = React.useState(addedMembers);
   const [members, setMembers] = React.useState(addedMembers.map(v => ({ ...v, isExisting: true })));
   const [allMemberList, setAllMemberList] = React.useState([]);
-  const [rate, setRate] = React.useState<string>();
 
   const markAddedMembers = allMembers => allMembers.map(
     (v) => members.some((m) => m.id === v.id) ? { ...v, isAdded: true } : { ...v, isAdded: false });
@@ -36,7 +35,6 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, fetc
   }, []);
 
   React.useEffect(() => {
-    const addedMemberIds = members.map((v) => v.id);
     setAllMemberList(markAddedMembers(allMemberList));
   }, [members]);
 
@@ -59,7 +57,7 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, fetc
     const updatedMembers = members.filter((v) => alreadyAddedMembersMap[v.id] && alreadyAddedMembersMap[v.id] != v.hourlyRate);
     if (newlyAddedMembers.length > 0 || updatedMembers.length > 0 || removedIds.length > 0) {
       try {
-        const res = await projectApi.updateMembers(projectId, {
+        await projectApi.updateMembers(projectId, {
           members: {
             added_members: newlyAddedMembers,
             removed_member_ids: removedIds,

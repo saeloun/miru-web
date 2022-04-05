@@ -5,6 +5,14 @@ const closeButton = require("../../../../../assets/images/close_button.svg"); //
 const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMembers, handleSubmit }) => {
   const anyError = false; // this is dummy atm
 
+  const removeMemberHandler = (idx) => {
+    setMembers(members => members.filter((_, i) => i != idx));
+  };
+
+  const addNewMemberRowHandler = () => {
+    setMembers(oldMembers => [...oldMembers, {}]);
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       {/* Show already added members */}
@@ -47,10 +55,7 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
           {/* Delete button for each member */}
           <div>
             <button type="button"
-              onClick={() => {
-                setMembers(members => members.filter((_, i) => i != idx));
-              }}
-            >
+              onClick={() => removeMemberHandler(idx)}>
               <img
                 src={closeButton}
               />
@@ -61,13 +66,10 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
 
       <div className="actions mt-4">
         <input
-
           name="add"
           value="+ Add amother team member"
           className="form__input_submit"
-          onClick={() => {
-            setMembers(oldMembers => [...oldMembers, {}]);
-          }}
+          onClick={addNewMemberRowHandler}
         />
       </div>
 
