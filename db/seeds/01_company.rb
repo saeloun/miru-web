@@ -30,8 +30,16 @@ companies = [
 ]
 
 @companies = companies.map { |company| Company.create!(company) }
+
 puts "Company Created"
+
 @saeloun_india, @saeloun_us = ["Saeloun India Pvt. Ltd", "Saeloun USA INC."].map { |company|
   Company.find_by(name: company)
 }
+
+[@saeloun_india, @saeloun_us].each do |company|
+  company.logo.attach(
+    io: File.open(Rails.root.join("app/assets/images/saeloun_logo.png")),
+    filename: "saeloun_logo.png")
+end
 # Company Create End
