@@ -13,9 +13,6 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
       user.add_role :admin, company
       sign_in user
       send_request :get, internal_api_v1_generate_invoice_index_path
-      file_name = "test-image.png"
-      file_path = Rails.root.join("spec", "support", "fixtures", file_name)
-      company.logo.attach(io: File.open(file_path), filename: file_name, content_type: "image/png")
     end
 
     it "returns the company details and list of clients" do
