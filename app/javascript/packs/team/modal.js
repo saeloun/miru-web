@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const all_modals = ["main-modal", "another-modal"];
+  const all_modals = ["main-modal", "another-modal", "delete-modal"];
   all_modals.forEach(modal => {
     const modalSelected = document.querySelector("." + modal);
     if (modalSelected === undefined || modalSelected === null) return;
@@ -43,8 +43,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const teamModalClose = document.querySelector(
     "div[data-team-element=\"modal-close\"]"
   );
+  const delModalClose = document.querySelector(
+    "div[data-team-element=\"del-modal-close\"]"
+  );
   const editMembers = document.querySelectorAll(
     "img[data-team-element=\"edit-member\"]"
+  );
+  const delMembers = document.querySelectorAll(
+    "img[data-team-element=\"delete-member\"]"
   );
 
   if (newUserBtn)
@@ -55,8 +61,12 @@ document.addEventListener("DOMContentLoaded", function () {
     inviteModalCloseBtn.addEventListener("click", () => ClearFields());
   if (teamModalClose)
     teamModalClose.addEventListener("click", () => modalClose("another-modal"));
-
+  if (delModalClose)
+    delModalClose.addEventListener("click", () => modalClose("delete-modal"));
   editMembers.forEach(editMember => {
     editMember.addEventListener("click", () => openModal("another-modal"));
+  });
+  delMembers.forEach(editMember => {
+    editMember.addEventListener("click", () => openModal("delete-modal"));
   });
 });
