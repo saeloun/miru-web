@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create :company, :with_logo }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
 
@@ -13,12 +13,18 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
       user.add_role :admin, company
       sign_in user
       send_request :get, internal_api_v1_generate_invoice_index_path
+      file_name = "test-image.png"
+      file_path = Rails.root.join("spec", "support", "fixtures", file_name)
+      company.logo.attach(io: File.open(file_path), filename: file_name, content_type: "image/png")
     end
 
     it "returns the company details and list of clients" do
       company_details = {
-        id: user.current_workspace.id, phone_number: user.current_workspace.business_phone,
-        address: user.current_workspace.address, country: user.current_workspace.country
+        id: user.current_workspace.id,
+        logo: polymorphic_url(user.current_workspace.logo),
+        phone_number: user.current_workspace.business_phone,
+        address: user.current_workspace.address,
+        country: user.current_workspace.country
       }
       company_client_list = user.current_workspace.client_list
       issue_date = Date.current
