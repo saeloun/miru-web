@@ -27,7 +27,7 @@ RSpec.describe Project, type: :model do
     let(:project_member) { create(:project_member, project:, user:, hourly_rate: 5000) }
 
     before do
-      create_list(:timesheet_entry, 5, user:, project:)
+      create_list(:timesheet_entry, 5, user_id: user.id, project_id: project.id)
     end
 
     context "when time_frame is last_week" do
@@ -35,59 +35,83 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in the last week" do
         from, to = project.week_month_year(time_frame)
-        result = [ {
-          id: project_member.user_id, name: project_member.full_name,
-          hourly_rate: project_member.hourly_rate, minutes_logged: (
-            project_member.timesheet_entries.where(project_id: project_member.project_id, work_date: from..to)
-          ).sum(:duration)
-        } ]
+        project_members_timesheet_entries = project.timesheet_entries.where(
+          user_id: project.project_members,
+          work_date: from..to)
+        result = project.project_members.map do |project_member|
+          minutes_logged = (project_members_timesheet_entries.map { |project_members_timesheet_entry|
+  project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
+}).compact.sum
+          {
+            id: project_member.user_id, name: project_member.full_name, hourly_rate: project_member.hourly_rate,
+            minutes_logged:
+          }
+        end
         expect(project.project_team_member_details(time_frame)).to eq(result)
       end
     end
 
-    # context "when time_frame is week" do
-    #   let(:time_frame) { "week" }
-    #
-    #   it "returns the project_team_member_details for a project in a week" do
-    #     from, to = project.week_month_year(time_frame)
-    #     result = [ {
-    #       id: project_member.user_id, name: project_member.full_name,
-    #       hourly_rate: project_member.hourly_rate, minutes_logged: (
-    #         project_member.timesheet_entries.where(project_id: project_member.project_id, work_date: from..to)
-    #       ).sum(:duration)
-    #     } ]
-    #     expect(project.project_team_member_details(time_frame)).to eq(result)
-    #   end
-    # end
-    #
-    # context "when time_frame is month" do
-    #   let(:time_frame) { "month" }
-    #
-    #   it "returns the project_team_member_details for a project in a month" do
-    #     from, to = project.week_month_year(time_frame)
-    #     result = [ {
-    #       id: project_member.user_id, name: project_member.full_name,
-    #       hourly_rate: project_member.hourly_rate, minutes_logged: (
-    #         project_member.timesheet_entries.where(project_id: project_member.project_id, work_date: from..to)
-    #       ).sum(:duration)
-    #     } ]
-    #     expect(project.project_team_member_details(time_frame)).to eq(result)
-    #   end
-    # end
-    #
-    # context "when time_frame is year" do
-    #   let(:time_frame) { "year" }
-    #
-    #   it "returns the project_team_member_details for a project in a year" do
-    #     from, to = project.week_month_year(time_frame)
-    #     result = [ {
-    #       id: project_member.user_id, name: project_member.full_name,
-    #       hourly_rate: project_member.hourly_rate, minutes_logged: (
-    #         project_member.timesheet_entries.where(project_id: project_member.project_id, work_date: from..to)
-    #       ).sum(:duration)
-    #     } ]
-    #     expect(project.project_team_member_details(time_frame)).to eq(result)
-    #   end
-    # end
+    context "when time_frame is week" do
+      let(:time_frame) { "week" }
+
+      it "returns the project_team_member_details for a project in a week" do
+        from, to = project.week_month_year(time_frame)
+        project_members_timesheet_entries = project.timesheet_entries.where(
+          user_id: project.project_members,
+          work_date: from..to)
+        result = project.project_members.map do |project_member|
+          minutes_logged = (project_members_timesheet_entries.map { |project_members_timesheet_entry|
+  project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
+}).compact.sum
+          {
+            id: project_member.user_id, name: project_member.full_name, hourly_rate: project_member.hourly_rate,
+            minutes_logged:
+          }
+        end
+        expect(project.project_team_member_details(time_frame)).to eq(result)
+      end
+    end
+
+    context "when time_frame is month" do
+      let(:time_frame) { "month" }
+
+      it "returns the project_team_member_details for a project in a month" do
+        from, to = project.week_month_year(time_frame)
+        project_members_timesheet_entries = project.timesheet_entries.where(
+          user_id: project.project_members,
+          work_date: from..to)
+        result = project.project_members.map do |project_member|
+          minutes_logged = (project_members_timesheet_entries.map { |project_members_timesheet_entry|
+  project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
+}).compact.sum
+          {
+            id: project_member.user_id, name: project_member.full_name, hourly_rate: project_member.hourly_rate,
+            minutes_logged:
+          }
+        end
+        expect(project.project_team_member_details(time_frame)).to eq(result)
+      end
+    end
+
+    context "when time_frame is year" do
+      let(:time_frame) { "year" }
+
+      it "returns the project_team_member_details for a project in a year" do
+        from, to = project.week_month_year(time_frame)
+        project_members_timesheet_entries = project.timesheet_entries.where(
+          user_id: project.project_members,
+          work_date: from..to)
+        result = project.project_members.map do |project_member|
+          minutes_logged = (project_members_timesheet_entries.map { |project_members_timesheet_entry|
+  project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
+}).compact.sum
+          {
+            id: project_member.user_id, name: project_member.full_name, hourly_rate: project_member.hourly_rate,
+            minutes_logged:
+          }
+        end
+        expect(project.project_team_member_details(time_frame)).to eq(result)
+      end
+    end
   end
 end
