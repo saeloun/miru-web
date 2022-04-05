@@ -1,0 +1,180 @@
+import * as React from "react";
+import projectApi from "apis/projects";
+import workspaceAPIS from "apis/workspaces";
+
+const closeButton = require("../../../../../assets/images/close_button.svg"); // eslint-disable-line @typescript-eslint/no-var-requires
+
+export interface IEditMembersList {
+  setShowAddMemberDialog: any;
+  addedMembers: any;
+  projectId: number;
+  fetchProjectDetailsAgain: any;
+}
+
+const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, fetchProjectDetailsAgain }: IEditMembersList) => {
+  const [existingMembers, setExistingMembers] = React.useState(addedMembers);
+  const [members, setMembers] = React.useState(addedMembers.map(v => ({ ...v, isExisting: true })));
+  const [allMemberList, setAllMemberList] = React.useState([]);
+  const [rate, setRate] = React.useState<string>();
+  const anyError = false; // this is dummy atm
+
+  const markAddedMembers = allMembers => allMembers.map(
+    (v) => members.some((m) => m.id === v.id) ? { ...v, isAdded: true } : { ...v, isAdded: false });
+
+  const fetchCurrentWorkspaceUsers = async () => {
+    try {
+      const resp = await workspaceAPIS.users();
+      setAllMemberList(markAddedMembers(resp.data.users));
+    } catch (error) {
+      // Add error handling
+    }
+
+  };
+
+  React.useEffect(() => {
+    fetchCurrentWorkspaceUsers();
+  }, []);
+
+  React.useEffect(() => {
+    const addedMemberIds = members.map((v) => v.id);
+    setAllMemberList(markAddedMembers(allMemberList));
+  }, [members]);
+
+  const updateMemberState = (idx, k, v) => {
+    const modalMembers = [...members];
+    const memberToEdit = { ...members[idx] };
+    memberToEdit[k] = v;
+    modalMembers[idx] = memberToEdit;
+    setMembers(modalMembers);
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const oldIds = existingMembers.map(v => v.id);
+    const currentIds = members.map(v => v.id);
+    const removedIds = oldIds.filter(x => !currentIds.includes(x));
+    const alreadyAddedMembersMap = {};
+    existingMembers.forEach((v) => { alreadyAddedMembersMap[v.id] = v.hourlyRate; });
+    const newlyAddedMembers = members.filter((v) => !alreadyAddedMembersMap[v.id]);
+    const updatedMembers = members.filter((v) => alreadyAddedMembersMap[v.id] && alreadyAddedMembersMap[v.id] != v.hourlyRate);
+    if (newlyAddedMembers.length > 0 || updatedMembers.length > 0 || removedIds.length > 0) {
+      try {
+        const res = await projectApi.updateMembers(projectId, {
+          members: {
+            added_members: newlyAddedMembers,
+            removed_member_ids: removedIds,
+            updated_members: updatedMembers
+          }
+        });
+        setExistingMembers(members);
+        fetchProjectDetailsAgain();
+      }
+      catch (err) {
+        // add error handling
+      }
+    }
+  };
+
+  return (
+    <div className="px-4 min-h-screen flex items-center justify-center">
+      <div
+        className="overflow-auto absolute inset-0 z-10 flex items-start justify-center"
+        style={{
+          backgroundColor: "rgba(29, 26, 49, 0.6)"
+        }}
+      >
+        <div className="relative px-4 min-h-screen md:flex md:items-center md:justify-center">
+          <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
+            <div className="flex justify-between items-center mt-6">
+              <h6 className="text-base font-extrabold">{addedMembers.length > 0 ? "Add/Remove" : "Add"} Team Member</h6>
+              <button type="button">
+                <img
+                  src={closeButton}
+                  onClick={() => {
+                    setShowAddMemberDialog(false);
+                  }}
+                />
+              </button>
+            </div>
+            <form onSubmit={handleSubmit}>
+              {/* Show already added members */}
+              {members.map((m, idx) => (
+                <div className="flex flex-row">
+                  <div>
+                    <select
+                      value={m.id}
+                      name={m.id}
+                      id={m.id}
+                      disabled={m.isExisting}
+                      className="w-60 bg-miru-gray-100 rounded-sm mt-2 h-8"
+                      onChange={e => { m.isExisting ? null : updateMemberState(idx, "id", parseInt(e.target.value)); }}>
+                      {m.isExisting ? null : <option value="" disabled selected>Select team Member</option>}
+                      {allMemberList.map((am) => (
+                        <option
+                          key={am.id}
+                          value={am.id}
+                          hidden={am.isAdded}>
+                          {am.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <input
+                      placeholder="Rate"
+                      className={`form__input ${anyError
+                        ? "border-red-600 focus:ring-red-600 focus:border-red-600"
+                        : "border-gray-100 focus:ring-miru-gray-1000 focus:border-miru-gray-1000"}`}
+                      type="number"
+                      name={m.hourlyRate}
+                      id={m.hourlyRate}
+                      value={m.hourlyRate}
+                      // disabled={m.isExisting}
+                      onChange={e => (updateMemberState(idx, "hourlyRate", e.target.value))}
+                    />
+                  </div>
+
+                  {/* Delete button for each member */}
+                  <div>
+                    <button type="button"
+                      onClick={() => {
+                        setMembers(members => members.filter((_, i) => i != idx));
+                      }}
+                    >
+                      <img
+                        src={closeButton}
+                      />
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              <div className="actions mt-4">
+                <input
+
+                  name="add"
+                  value="+ Add amother team member"
+                  className="form__input_submit"
+                  onClick={() => {
+                    setMembers(oldMembers => [...oldMembers, {}]);
+                  }}
+                />
+              </div>
+
+              <div className="actions mt-4">
+                <input
+                  type="submit"
+                  name="commit"
+                  value="SAVE CHANGES"
+                  className="form__input_submit"
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EditMembersList;

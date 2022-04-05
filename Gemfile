@@ -119,6 +119,9 @@ group :development, :test do
 
   # Added rails controller to use render_template
   gem "rails-controller-testing", "~> 1.0", ">= 1.0.5"
+
+  # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
+  gem "bullet"
 end
 
 group :development do
@@ -145,6 +148,9 @@ group :test do
 
   # Use Codecov for code coverage analysis
   gem "simplecov", require: false
+
+  # Strategies for cleaning databases in Ruby.
+  gem "database_cleaner", "~> 2.0"
 end
 
 # Role management library with resource scoping

@@ -4,6 +4,7 @@
 @import "react-toastify/dist/ReactToastify.min.css";
 @import "toastr/toastr";
 @import "team";
+@import "time-tracking";
 
 @layer base {
   @font-face {
@@ -41,6 +42,33 @@
     }
   }
 
+  .button-icon{
+    &__back {
+      @apply mr-4 h-8 p-1;
+    }
+    &__back:hover {
+      background-color: rgba(205, 214, 223, 0.2);
+      @apply rounded;
+    }
+  }
+
+  .menuButton {
+    &__button {
+      @apply rounded p-2;
+    }
+    &__button:hover {
+      background-color: rgba(205, 214, 223, 0.2);
+      @apply rounded;
+    }
+    &__wrapper {
+      box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
+      @apply absolute bg-white right-0 py-5 w-64 rounded-xl;
+    }
+    &__list-item {
+      @apply text-sm block hover:bg-miru-gray-100 w-full px-5 py-1.5 text-miru-han-purple-1000 items-center flex;
+    }
+  }
+
   .header {
     &__title {
       @apply text-3xl font-extrabold leading-7 text-gray-900;
@@ -61,10 +89,10 @@
 
   .page-display {
     &__wrap {
-      @apply bg-gray-50 p-5 mt-5 w-full flex items-stretch flex-col sm:flex-row text-miru-dark-purple-1000;
+      @apply pt-5 w-full flex items-stretch flex-col sm:flex-row text-miru-dark-purple-1000 border-t border-miru-gray-1000;
     }
     &__box {
-      @apply flex flex-col justify-start my-5 pl-8 w-full border-r-0 sm:border-r;
+      @apply flex flex-col justify-start mr-12 w-full border-r-0 sm:border-r sm:border-miru-gray-1000;
     }
     &__box:last-child {
       @apply border-r-0;
@@ -194,10 +222,10 @@
       @apply min-w-full divide-y divide-gray-200 mt-4;
     }
     &__header {
-      @apply px-6 py-5 text-left font-normal text-xs text-miru-dark-purple-600 tracking-widest;
+      @apply p-5 text-left font-normal text-xs text-miru-dark-purple-600 tracking-widest;
     }
     &__cell {
-      @apply px-5 py-5 text-left text-xs font-normal text-miru-dark-purple-1000 tracking-normal;
+      @apply p-5 text-left text-xs font-normal text-miru-dark-purple-1000 tracking-normal;
     }
     &__body {
       @apply bg-white divide-y divide-gray-200;
@@ -257,10 +285,12 @@
   &__checkbox:checked + div {
     @apply border-miru-han-purple-1000;
   }
-  &__checkbox:checked + div svg {
+  &__checkbox:checked + div .custom__checkbox-tick {
     @apply block;
   }
-
+  &__checkbox:indeterminate + div .custom__checkbox-dash {
+    @apply block;
+  }
   &__radio:checked + label i {
     @apply bg-miru-han-purple-1000 h-3 w-3;
     box-shadow: 0px 0px 0px 2px white inset;

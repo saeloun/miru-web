@@ -8,7 +8,7 @@
 #  user_id     :integer          not null
 #  project_id  :integer          not null
 #  duration    :float            not null
-#  note        :text             not null
+#  note        :text             default("")
 #  work_date   :date             not null
 #  bill_status :integer          not null
 #  created_at  :datetime         not null
@@ -30,7 +30,7 @@ class TimesheetEntry < ApplicationRecord
   before_validation :ensure_bill_status_is_not_billed, on: :create
   before_validation :ensure_billed_status_should_not_be_changed, on: :update
 
-  validates :duration, :note, :work_date, :bill_status, presence: true
+  validates :duration, :work_date, :bill_status, presence: true
   validates :duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
 
   scope :in_workspace, -> (company) { where(project_id: company&.project_ids) }

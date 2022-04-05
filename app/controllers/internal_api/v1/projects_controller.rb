@@ -37,6 +37,10 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
       @_projects ||= current_company.projects.kept
     end
 
+    def projects
+      @_projects ||= current_company.projects.kept
+    end
+
     def project
       @_project ||= Project.includes(:project_members, project_members: [:user]).find(params[:id])
     end
@@ -50,7 +54,7 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
         .each { |member_params|
   ProjectMember
     .where(user_id: member_params["id"], project_id: params[:id])
-    .update!(hourly_rate: member_params["hourly_rate"])
+    .update!(hourly_rate: member_params["hourlyRate"])
 }
     end
 
@@ -63,12 +67,12 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
     end
 
     def add_members_params
-      params.require(:members).permit(added_members: [:id, :hourly_rate])["added_members"]
-        .map { |m| { user_id: m["id"], project_id: params[:id], hourly_rate: m["hourly_rate"] } }
+      params.require(:members).permit(added_members: [:id, :hourlyRate])["added_members"]
+        .map { |m| { user_id: m["id"], project_id: params[:id], hourly_rate: m["hourlyRate"] } }
     end
 
     def update_members_params
-      params.require(:members).permit(updated_members: [:id, :hourly_rate])["updated_members"]
+      params.require(:members).permit(updated_members: [:id, :hourlyRate])["updated_members"]
     end
 
     def remove_members_params
