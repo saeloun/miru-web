@@ -7,7 +7,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
-    create(:company_user, company:, user_id: user.id)
+    create(:company_user, company:, user:)
     user.add_role :admin, company
     sign_in user
     send_request :post, user_invitation_path, params: { user: { email: "invited@example.com", roles: "employee" } }

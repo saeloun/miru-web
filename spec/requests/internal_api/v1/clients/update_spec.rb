@@ -5,10 +5,11 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Clients#update", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:client) { create(:client, company:, name: "Client", email: "client@example.com") }
 
   context "when user is admin" do
     before do
-      @client = create(:client, company:, name: "Client", email: "client@example.com")
+      client
       create(:company_user, company:, user:)
       user.add_role :admin, company
       sign_in user
@@ -17,9 +18,9 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
     context "when client is valid" do
       before do
         send_request(
-          :patch, internal_api_v1_client_path(@client), params: {
+          :patch, internal_api_v1_client_path(client), params: {
             client: {
-              id: @client.id,
+              id: client.id,
               name: "Test Client",
               email: "test@example.com",
               phone: "Test phone",
@@ -29,9 +30,9 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
       end
 
       it "updates client's name and email" do
-        @client.reload
-        expect(@client.name).to eq("Test Client")
-        expect(@client.email).to eq("test@example.com")
+        client.reload
+        expect(client.name).to eq("Test Client")
+        expect(client.email).to eq("test@example.com")
       end
 
       it "returns success json response" do
@@ -43,9 +44,9 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
     context "when client is invalid" do
       before do
         send_request(
-          :patch, internal_api_v1_client_path(@client), params: {
+          :patch, internal_api_v1_client_path(client), params: {
             client: {
-              id: @client.id,
+              id: client.id,
               name: "",
               email: "",
               phone: "",
@@ -62,14 +63,14 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
 
   context "when user is employee" do
     before do
-      @client = create(:client, company:, name: "Client", email: "client@example.com")
-      create(:company_user, company:, user_id: user.id)
+      client
+      create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
       send_request(
-        :patch, internal_api_v1_client_path(@client), params: {
+        :patch, internal_api_v1_client_path(client), params: {
           client: {
-            id: @client.id,
+            id: client.id,
             name: "Test Client",
             email: "test@example.com",
             phone: "Test phone",
@@ -85,11 +86,10 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
 
   context "when unauthenticated" do
     it "user will be not be permitted to update client" do
-      @client = create(:client, company:, name: "Client", email: "client@example.com")
       send_request(
-        :patch, internal_api_v1_client_path(@client), params: {
+        :patch, internal_api_v1_client_path(client), params: {
           client: {
-            id: @client.id,
+            id: client.id,
             name: "Test Client",
             email: "test@example.com",
             phone: "Test phone",

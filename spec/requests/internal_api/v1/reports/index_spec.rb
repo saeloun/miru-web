@@ -7,11 +7,12 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
+  let(:timesheet_entry) { create(:timesheet_entry, project:) }
 
   context "when user is admin" do
     before do
-      @timesheet_entry = create(:timesheet_entry, project_id: project.id)
-      create(:company_user, company:, user_id: user.id)
+      timesheet_entry
+      create(:company_user, company:, user:)
       user.add_role :admin, company
       sign_in user
       send_request :get, internal_api_v1_reports_path
@@ -20,14 +21,13 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
     it "returns the time entry report" do
       expect(response).to have_http_status(:ok)
       expect(json_response["entries"].size).to eq(1)
-      expect(json_response["entries"].first["id"]).to eq(@timesheet_entry.id)
+      expect(json_response["entries"].first["id"]).to eq(timesheet_entry.id)
     end
   end
 
   context "when user is employee" do
     before do
-      create(:timesheet_entry, project_id: project.id)
-      create(:company_user, company:, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
       send_request :get, internal_api_v1_reports_path

@@ -10,8 +10,8 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
 
   context "when user is admin" do
     before do
-      create(:company_user, company:, user_id: user.id)
-      create(:project_member, user_id: user.id, project_id: project_1.id)
+      create(:company_user, company:, user:)
+      create(:project_member, user:, project_id: project_1.id)
       user.add_role :admin, company
       sign_in user
       create_list(:timesheet_entry, 5, user:, project: project_1)
@@ -35,7 +35,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
 
   context "when user is employee" do
     before do
-      create(:company_user, company:, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
       send_request :get, internal_api_v1_clients_path

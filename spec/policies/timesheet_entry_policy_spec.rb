@@ -14,7 +14,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
 
   context "when user is admin" do
     before do
-      create(:company_user, company:, user_id: user.id)
+      create(:company_user, company:, user:)
       @timesheet_entry = create(:timesheet_entry, project:)
       user.add_role :admin, company
     end
@@ -62,7 +62,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
 
   context "when user is employee" do
     before do
-      create(:company_user, company:, user_id: user.id)
+      create(:company_user, company:, user:)
       @timesheet_entry = create(:timesheet_entry, project:)
       user.add_role :employee, company
     end

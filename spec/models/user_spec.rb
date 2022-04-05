@@ -7,7 +7,7 @@ RSpec.describe User, type: :model do
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
-    create(:company_user, company:, user_id: user.id)
+    create(:company_user, company:, user:)
   end
 
   describe "Associations" do

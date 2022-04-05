@@ -5,7 +5,7 @@ class InternalApi::V1::WorkspacesController < ApplicationController
 
   def update
     workspace = current_user.companies.find(params[:id])
-    current_user.update(current_workspace_id: workspace.id)
+    current_user.update!(current_workspace_id: workspace.id)
 
     render json: {
       success: true,
