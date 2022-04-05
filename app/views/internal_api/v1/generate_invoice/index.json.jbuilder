@@ -2,6 +2,7 @@
 
 json.company_details do
   json.id current_company.id
+  json.logo url_for(current_company.logo)
   json.phone_number current_company.business_phone
   json.address current_company.address
   json.country current_company.country
