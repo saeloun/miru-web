@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_16_140058) do
+ActiveRecord::Schema.define(version: 2022_03_28_073038) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,7 +23,8 @@ ActiveRecord::Schema.define(version: 2022_03_16_140058) do
     t.bigint "blob_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness",
+unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
@@ -51,6 +54,8 @@ ActiveRecord::Schema.define(version: 2022_03_16_140058) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "discarded_at", precision: 6
+    t.string "client_code", null: false
+    t.index ["client_code", "company_id"], name: "index_clients_on_client_code_and_company_id", unique: true
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
     t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true
@@ -68,6 +73,8 @@ ActiveRecord::Schema.define(version: 2022_03_16_140058) do
     t.string "timezone"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "company_code", limit: 2, null: false
+    t.index ["company_code"], name: "index_companies_on_company_code", unique: true
   end
 
   create_table "company_users", force: :cascade do |t|
@@ -77,9 +84,6 @@ ActiveRecord::Schema.define(version: 2022_03_16_140058) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["company_id"], name: "index_company_users_on_company_id"
     t.index ["user_id"], name: "index_company_users_on_user_id"
-  end
-
-  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
   create_table "identities", force: :cascade do |t|
@@ -119,13 +123,13 @@ ActiveRecord::Schema.define(version: 2022_03_16_140058) do
     t.decimal "amount_due", precision: 20, scale: 2, default: "0.0"
     t.decimal "discount", precision: 20, scale: 2, default: "0.0"
     t.integer "status", default: 0, null: false
-    t.bigint "company_id", null: false
     t.bigint "client_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["client_id"], name: "index_invoices_on_client_id"
-    t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
+    t.index ["issue_date"], name: "index_invoices_on_issue_date"
+    t.index ["status"], name: "index_invoices_on_status"
   end
 
   create_table "project_members", force: :cascade do |t|
@@ -162,21 +166,11 @@ ActiveRecord::Schema.define(version: 2022_03_16_140058) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
-  create_table "team_members", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "project_id", null: false
-    t.decimal "hourly_rate", default: "0.0", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["project_id"], name: "index_team_members_on_project_id"
-    t.index ["user_id"], name: "index_team_members_on_user_id"
-  end
-
   create_table "timesheet_entries", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
     t.float "duration", null: false
-    t.text "note", null: false
+    t.text "note"
     t.date "work_date", null: false
     t.integer "bill_status", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -241,12 +235,9 @@ ActiveRecord::Schema.define(version: 2022_03_16_140058) do
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoice_line_items", "users"
   add_foreign_key "invoices", "clients"
-  add_foreign_key "invoices", "companies"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
-  add_foreign_key "team_members", "projects"
-  add_foreign_key "team_members", "users"
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies", column: "current_workspace_id"

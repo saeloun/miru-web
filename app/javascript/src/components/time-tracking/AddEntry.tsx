@@ -1,28 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import * as React from "react";
+import React from "react";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesFromHHMM, minutesToHHMM } from "../../helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "../../helpers/ordinal";
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 
-interface props {
-  setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
-  clients: Iclient[];
-  projects: object;
-  selectedDateInfo: object;
-  setEntryList: React.Dispatch<React.SetStateAction<object[]>>;
-  entryList: object;
-  selectedFullDate: string;
-  editEntryId: number;
-  setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
-}
-
-interface Iclient {
-  name: string;
-}
-
-const AddEntry: React.FC<props> = ({
+const AddEntry: React.FC<Iprops> = ({
   setNewEntryView,
   clients,
   projects,
@@ -34,7 +18,6 @@ const AddEntry: React.FC<props> = ({
   editEntryId
 }) => {
   const { useState, useEffect } = React;
-  clients = clients.sort((a, b) => (a.name < b.name ? -1 : 1));
   const [note, setNote] = useState("");
   const [duration, setDuration] = useState("00:00");
   const [client, setClient] = useState("");
@@ -42,12 +25,11 @@ const AddEntry: React.FC<props> = ({
   const [projectId, setProjectId] = useState(0);
   const [billable, setBillable] = useState(false);
 
-  useEffect(() => {
+  const handleFillData = () => {
     if (!editEntryId) return;
-    const entry = entryList[selectedFullDate].filter(
+    const entry = entryList[selectedFullDate].find(
       entry => entry.id === editEntryId
-    )[0];
-
+    );
     if (entry) {
       setNote(entry.note);
       setDuration(minutesToHHMM(entry.duration));
@@ -56,23 +38,22 @@ const AddEntry: React.FC<props> = ({
       setProjectId(entry.project_id);
       if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
     }
+  };
+
+  useEffect(() => {
+    handleFillData();
   }, []);
 
   useEffect(() => {
     if (!project) return;
-    const id = projects[client].filter(
+    const id = projects[client].find(
       currentProject => currentProject.name === project
-    )[0].id;
+    ).id;
     setProjectId(Number(id));
   }, [project]);
 
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let v = e.target.value;
-    let [hh, mm] = v.split(":");
-    if (Number(hh) > 24) hh = "00";
-    if (Number(mm) > 59) mm = "00";
-    v = `${hh}:${mm}`;
-    setDuration(v);
+    setDuration(e.target.value);
   };
 
   const handleSave = async () => {
@@ -101,8 +82,6 @@ const AddEntry: React.FC<props> = ({
         }
         return newState;
       });
-
-      setNewEntryView(false);
     }
   };
 
@@ -139,7 +118,7 @@ const AddEntry: React.FC<props> = ({
         (editEntryId === 0 ? "" : "mt-10")
       }
     >
-      <span className="w-60 ml-4">
+      <div className="w-60 ml-4">
         <select
           onChange={e => {
             setClient(e.target.value);
@@ -156,7 +135,7 @@ const AddEntry: React.FC<props> = ({
             </option>
           )}
           {clients.map((client, i) => (
-            <option key={i.toString()}>{client.name}</option>
+            <option key={i.toString()}>{client["name"]}</option>
           ))}
         </select>
 
@@ -181,7 +160,7 @@ const AddEntry: React.FC<props> = ({
               </option>
             ))}
         </select>
-      </span>
+      </div>
       <div className="mx-10">
         <textarea
           value={note}
@@ -190,7 +169,7 @@ const AddEntry: React.FC<props> = ({
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className="p-1 w-60 h-18 rounded-sm bg-miru-gray-100 my-2"
+          className="p-1 w-60 h-18 rounded-sm bg-miru-gray-100 my-2 focus:miru-han-purple-1000 outline-none resize-none"
         ></textarea>
       </div>
       <div className="w-60">
@@ -269,5 +248,18 @@ const AddEntry: React.FC<props> = ({
     </div>
   );
 };
+
+interface Iprops {
+  setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
+  clients: any[];
+  projects: object;
+  selectedDateInfo: object;
+  setEntryList: React.Dispatch<React.SetStateAction<object[]>>;
+  entryList: object;
+  selectedFullDate: string;
+  editEntryId: number;
+  setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
+  dayInfo: object;
+}
 
 export default AddEntry;

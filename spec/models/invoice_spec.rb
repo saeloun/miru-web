@@ -18,7 +18,7 @@ RSpec.describe Invoice, type: :model do
 
     describe "validate comparisons" do
       it "issue_date should not be after due_date" do
-        expect(invoice.issue_date).to be < invoice.due_date
+        expect(invoice.issue_date).to be <= invoice.due_date
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.describe Invoice, type: :model do
 
   describe "Associations" do
     describe "belongs to" do
-      it { is_expected.to belong_to(:company) }
+      it { is_expected.not_to belong_to(:company) }
       it { is_expected.to belong_to(:client) }
     end
 
@@ -49,8 +49,65 @@ RSpec.describe Invoice, type: :model do
       it { is_expected.to have_many(:invoice_line_items) }
 
       it "sub_total should tally with amount of all invoice line items combined" do
-        expect(invoice.sub_total).to eq(invoice.invoice_line_items.sum { |line_item| line_item[:rate] * line_item[:quantity] })
+        expect(invoice.sub_total).to eq(
+          invoice.invoice_line_items.sum { |line_item|
+            line_item[:rate] * line_item[:quantity]
+          })
       end
     end
+  end
+
+  describe "Scopes" do
+    let(:company) do
+      create(:company, clients: create_list(:client_with_invoices, 5))
+    end
+
+    describe ".with_statuses" do
+      it "returns all invoices if statuses are not specified" do
+        expect(company.invoices.with_statuses(nil).size).to eq(25)
+      end
+
+      it "returns draft and paid invoices" do
+        expect(company.invoices.with_statuses([:draft, :paid]).size).to eq(25)
+      end
+
+      it "returns draft, overdue and paid invoices" do
+        expect(company.invoices.with_statuses([:draft, :overdue, :paid]).size).to eq(25)
+      end
+    end
+
+    describe ".from_date" do
+      it "returns all invoices if from date is not specified" do
+        expect(company.invoices.from_date(nil).size).to eq(25)
+      end
+
+      it "returns invoices issued on or after a given date" do
+        expect(company.invoices.from_date("2019-04-01").size).to eq(25)
+      end
+    end
+
+    describe ".to_date" do
+      it "returns all invoices if to date is not specified" do
+        expect(company.invoices.to_date(nil).size).to eq(25)
+      end
+
+      it "returns invoices issued on or before a given date" do
+        expect(company.invoices.to_date(Date.today.to_s).size).to eq(25)
+      end
+    end
+
+    describe ".for_clients" do
+      it "returns all invoices if clients are not specified" do
+        expect(company.invoices.for_clients(nil).size).to eq(25)
+      end
+
+      it "returns invoices for specific clients" do
+        expect(company.invoices.for_clients(company.clients.map { |c| c.id }).size).to eq(25)
+      end
+    end
+  end
+
+  describe ".delegate" do
+    it { is_expected.to delegate_method(:name).to(:client).with_prefix(:client) }
   end
 end

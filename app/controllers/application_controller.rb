@@ -5,10 +5,12 @@ class ApplicationController < ActionController::Base
   include PunditHelper
   include ErrorHandler
   include CurrentCompanyConcern
+  include Pagy::Backend
 
   before_action :authenticate_user!, :validate_company!
 
   private
+
     def validate_company!
       return if current_user.nil?
 

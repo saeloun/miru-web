@@ -10,6 +10,18 @@ const update = async (id, payload) => axios.put(`${path}/${id}`, payload);
 
 const destroy = async id => axios.delete(`${path}/${id}`);
 
-const timesheetEntryApi = { list, create, update, destroy };
+const destroyBulk = async payload =>
+  axios.delete(`${path}/bulk_action/`, { data: { source: payload } });
+
+const updateBulk = async payload => axios.patch(`${path}/bulk_action/`, payload);
+
+const timesheetEntryApi = {
+  list,
+  create,
+  update,
+  destroy,
+  destroyBulk,
+  updateBulk
+};
 
 export default timesheetEntryApi;

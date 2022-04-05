@@ -8,9 +8,11 @@ module ErrorHandler
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
     rescue_from Discard::RecordNotDiscarded, with: :record_not_discarded
     rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
+    rescue_from Pagy::VariableError, with: :invalid_param_value
   end
 
   private
+
     def handle_not_found_error(exception)
       message = exception.message || I18n.t("errors.not_found")
 
@@ -37,7 +39,7 @@ module ErrorHandler
 
       respond_to do |format|
         format.html { redirect_to redirect_path, alert: message }
-        format.json { render json: { errors: message }, status: :forbidden  }
+        format.json { render json: { errors: message }, status: :forbidden }
       end
     end
 
@@ -45,15 +47,30 @@ module ErrorHandler
       message = exception.message
 
       respond_to do |format|
-        format.json { render json: { errors: message, notice: I18n.t("errors.internal_server_error") }, status: :internal_server_error }
+        format.json {
+          render json: { errors: message, notice: I18n.t("errors.internal_server_error") },
+            status: :internal_server_error
+        }
         format.html { render file: "public/500.html", status: :internal_server_error, layout: false, alert: message }
       end
     end
 
     def record_invalid(exception)
       respond_to do |format|
-        format.json { render json: { errors: exception.record.errors, notice: I18n.t("client.update.failure.message") }, status: :unprocessable_entity }
+        format.json {
+          render json: { errors: exception.record.errors, notice: I18n.t("client.update.failure.message") },
+            status: :unprocessable_entity
+        }
         format.html { render file: "public/422.html", status: :unprocessable_entity, layout: false, alert: message }
+      end
+    end
+
+    def invalid_param_value(exception)
+      message = exception.message
+
+      respond_to do |format|
+        format.json { render json: { errors: message }, status: :bad_request }
+        format.html { render file: "public/400.html", status: :bad_request, layout: false, alert: message }
       end
     end
 end
