@@ -19,6 +19,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
       company_details = {
         id: user.current_workspace.id,
         logo: polymorphic_url(user.current_workspace.logo),
+        name: user.current_workspace.name,
         phone_number: user.current_workspace.business_phone,
         address: user.current_workspace.address,
         country: user.current_workspace.country
