@@ -36,7 +36,8 @@ class Project < ApplicationRecord
 
   def project_team_member_details(time_frame)
     from, to = week_month_year(time_frame)
-    project_members_timesheet_entries = timesheet_entries.where(user_id: project_members, work_date: from..to)
+    project_members_user_id = project_members.map { |project_member| project_member.user_id }
+    project_members_timesheet_entries = timesheet_entries.where(user_id: project_members_user_id, work_date: from..to)
     project_members.map do |project_member|
       minutes_logged = (project_members_timesheet_entries.map { |project_members_timesheet_entry|
   project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
