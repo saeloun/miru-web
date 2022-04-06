@@ -18,7 +18,7 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, fetc
   const [allMemberList, setAllMemberList] = React.useState([]);
 
   const markAddedMembers = allMembers => allMembers.map(
-    (v) => members.some((m) => m.id === v.id) ? { ...v, isAdded: true } : { ...v, isAdded: false });
+    (memberFromAllMembers) => members.some((member) => member.id === memberFromAllMembers.id) ? { ...memberFromAllMembers, isAdded: true } : { ...memberFromAllMembers, isAdded: false });
 
   const fetchCurrentWorkspaceUsers = async () => {
     try {
@@ -38,23 +38,23 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, fetc
     setAllMemberList(markAddedMembers(allMemberList));
   }, [members]);
 
-  const updateMemberState = (idx, k, v) => {
+  const updateMemberState = (idx, key, val) => {
     const modalMembers = [...members];
     const memberToEdit = { ...members[idx] };
-    memberToEdit[k] = v;
+    memberToEdit[key] = val;
     modalMembers[idx] = memberToEdit;
     setMembers(modalMembers);
   };
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const oldIds = existingMembers.map(v => v.id);
-    const currentIds = members.map(v => v.id);
-    const removedIds = oldIds.filter(x => !currentIds.includes(x));
+    const oldIds = existingMembers.map(member => member.id);
+    const currentIds = members.map(member => member.id);
+    const removedIds = oldIds.filter(id => !currentIds.includes(id));
     const alreadyAddedMembersMap = {};
-    existingMembers.forEach((v) => { alreadyAddedMembersMap[v.id] = v.hourlyRate; });
-    const newlyAddedMembers = members.filter((v) => !alreadyAddedMembersMap[v.id]);
-    const updatedMembers = members.filter((v) => alreadyAddedMembersMap[v.id] && alreadyAddedMembersMap[v.id] != v.hourlyRate);
+    existingMembers.forEach((member) => { alreadyAddedMembersMap[member.id] = member.hourlyRate; });
+    const newlyAddedMembers = members.filter((member) => !alreadyAddedMembersMap[member.id]);
+    const updatedMembers = members.filter((member) => alreadyAddedMembersMap[member.id] && alreadyAddedMembersMap[member.id] != member.hourlyRate);
     if (newlyAddedMembers.length > 0 || updatedMembers.length > 0 || removedIds.length > 0) {
       try {
         await projectApi.updateMembers(projectId, {

@@ -16,23 +16,23 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
   return (
     <form onSubmit={handleSubmit}>
       {/* Show already added members */}
-      {members.map((m, idx) => (
+      {members.map((member, idx) => (
         <div className="flex flex-row">
           <div>
             <select
-              value={m.id}
-              name={m.id}
-              id={m.id}
-              disabled={m.isExisting}
+              value={member.id}
+              name={member.id}
+              id={member.id}
+              disabled={member.isExisting}
               className="w-60 bg-miru-gray-100 rounded-sm mt-2 h-8"
-              onChange={e => { m.isExisting ? null : updateMemberState(idx, "id", parseInt(e.target.value)); }}>
-              {m.isExisting ? null : <option value="" disabled selected>Select team Member</option>}
-              {allMemberList.map((am) => (
+              onChange={e => { member.isExisting ? null : updateMemberState(idx, "id", parseInt(e.target.value)); }}>
+              {member.isExisting ? null : <option value="" disabled selected>Select team Member</option>}
+              {allMemberList.map((memberFromAllMemberList) => (
                 <option
-                  key={am.id}
-                  value={am.id}
-                  hidden={am.isAdded}>
-                  {am.name}
+                  key={memberFromAllMemberList.id}
+                  value={memberFromAllMemberList.id}
+                  hidden={memberFromAllMemberList.isAdded}>
+                  {memberFromAllMemberList.name}
                 </option>
               ))}
             </select>
@@ -44,10 +44,9 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
                 ? "border-red-600 focus:ring-red-600 focus:border-red-600"
                 : "border-gray-100 focus:ring-miru-gray-1000 focus:border-miru-gray-1000"}`}
               type="number"
-              name={m.hourlyRate}
-              id={m.hourlyRate}
-              value={m.hourlyRate}
-              // disabled={m.isExisting}
+              name={member.hourlyRate}
+              id={member.hourlyRate}
+              value={member.hourlyRate}
               onChange={e => (updateMemberState(idx, "hourlyRate", e.target.value))}
             />
           </div>
@@ -67,7 +66,7 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
       <div className="actions mt-4">
         <input
           name="add"
-          value="+ Add amother team member"
+          value="+ Add another team member"
           className="form__input_submit"
           onClick={addNewMemberRowHandler}
         />
