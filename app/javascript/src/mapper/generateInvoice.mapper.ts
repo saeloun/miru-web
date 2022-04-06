@@ -1,4 +1,12 @@
-const unmapClientListDropdown = ({ data }) => data.company_client_list.map(client => ({
+
+interface GenerateInvoiceClientList {
+  address: string;
+  id: number;
+  name: string;
+  phone_number: number;
+}
+
+const unmapClientListDropdown = (clientList:Array<GenerateInvoiceClientList>) => clientList.map(client => ({
   address: client.address,
   value: client.id,
   label: client.name,

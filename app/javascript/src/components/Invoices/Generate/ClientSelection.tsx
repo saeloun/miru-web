@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import generateInvoice from "apis/generateInvoice";
@@ -6,11 +6,12 @@ import { PencilSimple } from "phosphor-react";
 
 import { DropdownIndicator } from "./CustomComponents";
 import { reactSelectStyles } from "./Styles";
+import useOutsideClick from "../../../helpers/outsideClick";
 import { unmapClientListDropdown } from "../../../mapper/generateInvoice.mapper";
 
 const fetchClientList = async () => {
   const response = await generateInvoice.get();
-  return unmapClientListDropdown(response);
+  return unmapClientListDropdown(response.data.company_client_list);
 };
 
 const ClientSelection = () => {
@@ -19,6 +20,9 @@ const ClientSelection = () => {
   const [clientOptions, setClientOptions] = useState<any>([{}]);
   const [clientInfo, setClientInfo] = useState<any>();
   const navigate = useNavigate();
+  const wrapperRef = useRef(null);
+
+  useOutsideClick(wrapperRef, () => setClientVisible(false), isClientVisible);
 
   const handleSelectClientClick = async () => {
     try {
@@ -48,7 +52,7 @@ const ClientSelection = () => {
   };
 
   return (
-    <div className="group">
+    <div className="group" ref={wrapperRef}>
       <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
       Billed to
         {isOptionSelected &&
