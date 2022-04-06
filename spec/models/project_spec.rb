@@ -24,7 +24,7 @@ RSpec.describe Project, type: :model do
     let(:user) { create(:user) }
     let(:client) { create(:client, company:) }
     let(:project) { create(:project, client:) }
-    let(:project_member) { create(:project_member, project_id: project.id, user_id: user.id, hourly_rate: 5000) }
+    let(:project_member) { create(:project_member, project:, user:, hourly_rate: 5000) }
 
     before do
       create_list(:timesheet_entry, 5, user:, project:)
