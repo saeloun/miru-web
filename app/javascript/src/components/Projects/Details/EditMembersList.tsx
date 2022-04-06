@@ -1,9 +1,8 @@
 import * as React from "react";
 import projectApi from "apis/projects";
 import workspaceAPIS from "apis/workspaces";
+import { X } from "phosphor-react";
 import EditMembersListForm from "./EditMembersListForm";
-
-const closeButton = require("../../../../../assets/images/close_button.svg"); // eslint-disable-line @typescript-eslint/no-var-requires
 
 export interface IEditMembersList {
   setShowAddMemberDialog: any;
@@ -81,13 +80,11 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, fetc
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
               <h6 className="text-base font-extrabold">{addedMembers.length > 0 ? "Add/Remove" : "Add"} Team Member</h6>
-              <button type="button">
-                <img
-                  src={closeButton}
-                  onClick={() => {
-                    setShowAddMemberDialog(false);
-                  }}
-                />
+              <button type="button"
+                onClick={() => {
+                  setShowAddMemberDialog(false);
+                }}>
+                <X size={24} />
               </button>
             </div>
             <EditMembersListForm

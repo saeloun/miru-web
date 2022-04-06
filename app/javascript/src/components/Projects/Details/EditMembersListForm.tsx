@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Trash } from "phosphor-react";
 
 const closeButton = require("../../../../../assets/images/close_button.svg"); // eslint-disable-line @typescript-eslint/no-var-requires
 
@@ -55,9 +56,10 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
           <div>
             <button type="button"
               onClick={() => removeMemberHandler(idx)}>
-              <img
+              <Trash size={15} />
+              {/* <img
                 src={closeButton}
-              />
+              /> */}
             </button>
           </div>
         </div>
