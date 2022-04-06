@@ -5,11 +5,11 @@ require "rails_helper"
 RSpec.describe TimesheetEntry, type: :model do
   let(:company) { create(:company) }
   let(:company2) { create(:company) }
-  let(:client) { create(:client, company_id: company.id) }
+  let(:client) { create(:client, company:) }
   let(:client2) { create(:client, company_id: company2.id) }
   let(:project) { create(:project, client_id: client.id) }
   let(:project2) { create(:project, client_id: client2.id) }
-  let(:timesheet_entry) { create(:timesheet_entry, project_id: project.id) }
+  let(:timesheet_entry) { create(:timesheet_entry, project:) }
 
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
@@ -36,7 +36,7 @@ RSpec.describe TimesheetEntry, type: :model do
 
   describe "Scopes" do
     before do
-      @timesheet_entry1 = create(:timesheet_entry, project_id: project.id)
+      @timesheet_entry1 = create(:timesheet_entry, project:)
       @timesheet_entry2 = create(:timesheet_entry, project_id: project2.id)
       @timesheet_entry3 = create(:timesheet_entry, project_id: project2.id)
     end
@@ -73,6 +73,19 @@ RSpec.describe TimesheetEntry, type: :model do
           team_member: timesheet_entry.user.full_name
         }
       )
+    end
+  end
+
+  describe "#ensure_bill_status_is_set" do
+    it "returns non billable if project is not billable" do
+      timesheet_entry.update(bill_status: nil)
+      expect(timesheet_entry.reload).to have_attributes(bill_status: "non_billable")
+    end
+
+    it "returns billable if project is billable" do
+      project.update(billable: true)
+      timesheet_entry.update(bill_status: nil)
+      expect(timesheet_entry.reload).to have_attributes(bill_status: "unbilled")
     end
   end
 end

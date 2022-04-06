@@ -5,11 +5,11 @@ require "rails_helper"
 RSpec.describe "Client#destroy", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:client) { create(:client, { id: 1, company_id: company.id }) }
+  let(:client) { create(:client, { id: 1, company: }) }
 
   context "when user is admin" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :admin, company
       sign_in user
     end
@@ -43,7 +43,7 @@ RSpec.describe "Client#destroy", type: :request do
 
   context "when user is employee" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
       send_request(:delete, "/internal_api/v1/clients/#{client.id}")
