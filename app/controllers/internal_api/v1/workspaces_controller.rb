@@ -21,6 +21,6 @@ class InternalApi::V1::WorkspacesController < ApplicationController
 
   def users
     authorize Company
-    render :users, locals: { users: current_user.current_workspace.user_details }, status: :ok
+    render :users, locals: { users: current_company.user_details }, status: :ok
   end
 end

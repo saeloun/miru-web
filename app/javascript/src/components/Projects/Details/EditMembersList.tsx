@@ -1,7 +1,9 @@
 import * as React from "react";
+
 import projectApi from "apis/projects";
 import workspaceAPIS from "apis/workspaces";
 import { X } from "phosphor-react";
+
 import EditMembersListForm from "./EditMembersListForm";
 
 export interface IEditMembersList {

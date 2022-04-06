@@ -20,15 +20,13 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
       remove_members
     end
     render json: {
-      success: true,
       notice: I18n.t("projects.update_members.success.message")
     }, status: :ok
     rescue Exception => ex
       render json: {
-        success: false,
         data: ex.message,
         notice: I18n.t("projects.update_members.failure.message")
-      }, status: :ok
+      }, status: :bad_request
   end
 
   private
