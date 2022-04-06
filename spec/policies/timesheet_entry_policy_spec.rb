@@ -9,13 +9,14 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
   let(:scope) { Pundit.policy_scope!(user, TimesheetEntry) }
+  let(:timesheet_entry) { create(:timesheet_entry, project:) }
 
   subject { described_class }
 
   context "when user is admin" do
     before do
+      timesheet_entry
       create(:company_user, company:, user:)
-      @timesheet_entry = create(:timesheet_entry, project:)
       user.add_role :admin, company
     end
 
@@ -27,43 +28,43 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
 
     permissions :update? do
       it "is permitted to update" do
-        expect(subject).to permit(user, @timesheet_entry)
+        expect(subject).to permit(user, timesheet_entry)
       end
 
       it "is not permitted to update timesheet_entry in different company" do
         client.update(company_id: company2.id)
-        expect(subject).not_to permit(user, @timesheet_entry)
+        expect(subject).not_to permit(user, timesheet_entry)
       end
     end
 
     permissions :show? do
       it "is permitted to show" do
-        expect(subject).to permit(user, @timesheet_entry)
+        expect(subject).to permit(user, timesheet_entry)
       end
     end
 
     permissions :destroy? do
       it "is permitted to destroy" do
-        expect(subject).to permit(user, @timesheet_entry)
+        expect(subject).to permit(user, timesheet_entry)
       end
 
       it "is not permitted to destroy timesheet_entry in different company" do
         client.update(company_id: company2.id)
-        expect(subject).not_to permit(user, @timesheet_entry)
+        expect(subject).not_to permit(user, timesheet_entry)
       end
     end
 
     describe "scope" do
       it "allows current workspace timesheet entries" do
-        expect(scope.to_a).to match_array([@timesheet_entry])
+        expect(scope.to_a).to match_array([timesheet_entry])
       end
     end
   end
 
   context "when user is employee" do
     before do
+      timesheet_entry
       create(:company_user, company:, user:)
-      @timesheet_entry = create(:timesheet_entry, project:)
       user.add_role :employee, company
     end
 
@@ -75,29 +76,29 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
 
     permissions :update? do
       it "is not permitted to update" do
-        expect(subject).not_to permit(user, @timesheet_entry)
+        expect(subject).not_to permit(user, timesheet_entry)
       end
 
       it "is not permitted to update timesheet_entry in different company" do
         client.update(company_id: company2.id)
-        expect(subject).not_to permit(user, @timesheet_entry)
+        expect(subject).not_to permit(user, timesheet_entry)
       end
     end
 
     permissions :show? do
       it "is permitted to show" do
-        expect(subject).to permit(user, @timesheet_entry)
+        expect(subject).to permit(user, timesheet_entry)
       end
     end
 
     permissions :destroy? do
       it "is not permitted to destroy" do
-        expect(subject).not_to permit(user, @timesheet_entry)
+        expect(subject).not_to permit(user, timesheet_entry)
       end
 
       it "is not permitted to destroy client in different company" do
         client.update(company_id: company2.id)
-        expect(subject).not_to permit(user, @timesheet_entry)
+        expect(subject).not_to permit(user, timesheet_entry)
       end
     end
   end
