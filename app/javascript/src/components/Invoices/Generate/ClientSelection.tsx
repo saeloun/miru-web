@@ -1,48 +1,26 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import Select from "react-select";
-import generateInvoice from "apis/generateInvoice";
 import { PencilSimple } from "phosphor-react";
 
 import { DropdownIndicator } from "./CustomComponents";
 import { reactSelectStyles } from "./Styles";
 import useOutsideClick from "../../../helpers/outsideClick";
-import { unmapClientListDropdown } from "../../../mapper/generateInvoice.mapper";
 
-const fetchClientList = async () => {
-  const response = await generateInvoice.get();
-  return unmapClientListDropdown(response.data.company_client_list);
-};
-
-const ClientSelection = () => {
+const ClientSelection = ({ clientList }) => {
   const [isOptionSelected, setOptionSelection] = useState<boolean>(false);
   const [isClientVisible, setClientVisible] = useState<boolean>(false);
-  const [clientOptions, setClientOptions] = useState<any>([{}]);
   const [clientInfo, setClientInfo] = useState<any>();
-  const navigate = useNavigate();
   const wrapperRef = useRef(null);
 
   useOutsideClick(wrapperRef, () => setClientVisible(false), isClientVisible);
 
   const handleSelectClientClick = async () => {
-    try {
-      const response = await fetchClientList();
-      await setClientOptions(response);
-      setClientVisible(true);
-      setOptionSelection(false);
-    } catch (e) {
-      navigate("invoices/error");
-    }
+    setClientVisible(true);
+    setOptionSelection(false);
   };
 
   const handleGetClientList = async () => {
-    try {
-      const response = await fetchClientList();
-      await setClientOptions(response);
-      setClientVisible(true);
-    } catch (e) {
-      navigate("invoices/error");
-    }
+    setClientVisible(true);
   };
 
   const handleClientChange = (selection) => {
@@ -69,7 +47,7 @@ const ClientSelection = () => {
         <Select
           defaultValue={null}
           onChange={handleClientChange}
-          options={clientOptions}
+          options={clientList}
           placeholder="Search"
           isSearchable={true}
           className="m-0 mt-2 w-52 text-white"
