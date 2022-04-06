@@ -70,14 +70,14 @@ RSpec.describe Project, type: :model do
       from, to = project.week_month_year(time_frame)
       project_members_timesheet_entries = project.timesheet_entries.where(user_id: project.project_members.pluck(:user_id), work_date: from..to)
       project.project_members.map do |project_member|
-        minutes_logged = project_members_timesheet_entries.map do |project_members_timesheet_entry|
+        minutes_logged = project_members_timesheet_entries.filter_map do |project_members_timesheet_entry|
           project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
-        end
+        end.sum
         {
           id: project_member.user_id,
           name: project_member.full_name,
           hourly_rate: project_member.hourly_rate,
-          minutes_logged: minutes_logged.compact.sum
+          minutes_logged:
         }
       end
     end
