@@ -106,7 +106,10 @@ RSpec.describe Company, type: :model do
       let(:client) { create(:client, company:) }
 
       it "returns list of all the clients of a company" do
-        result = [{ id: client.id, name: client.name, email: client.email, address: client.address }]
+        result = [{
+          id: client.id, name: client.name, email: client.email, phone: client.phone,
+          address: client.address
+        }]
         expect(company.client_list).to eq(result)
       end
     end
