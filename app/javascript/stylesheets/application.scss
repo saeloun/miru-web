@@ -358,3 +358,7 @@ body {
   opacity: 0.01;
   transition: opacity 3000ms ease-in;
 }
+
+.hoverIcon:hover .iconWrapper {
+  @apply visible;
+}

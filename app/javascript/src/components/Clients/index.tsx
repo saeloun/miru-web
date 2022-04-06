@@ -1,93 +1,141 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import axios from "axios";
+import clients from "apis/clients";
 
+import AmountBoxContainer from "common/AmountBox";
+import ChartBar from "common/ChartBar";
+import Table from "common/Table";
 import DeleteClient from "components/Clients/DeleteClient";
-import { Client } from "./Client";
-import ClientBarGraph from "./ClientBarGraph";
 import EditClient from "./EditClient";
+import unmapClientList from "../../mapper/client.mapper";
 
-const Clients = ({ editIcon, deleteIcon, isAdminUser }) => {
+const getTableData = (clients) => {
+  if (clients) {
+    return clients.map((client) => {
+      const hours = client.minutes/60;
+      return {
+        col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
+        col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
+        col3: <div className="text-base text-miru-dark-purple-1000 text-right">{hours}</div>,
+        rowId: client.id
+      };
+    });
+  }
+  return [{}];
+};
+
+const Clients = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [clientToEdit, setClientToEdit] = useState({});
   const [clientToDelete, setClientToDelete] = useState({});
-  const [clientData, setClientData] = useState([]);
+  const [clientData, setClientData] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
 
+  const handleEditClick = (id) => {
+    setShowEditDialog(true);
+    const editSelection = clientData.find(client => client.id === id);
+    setClientToEdit(editSelection);
+  };
+
+  const handleDeleteClick = (id) => {
+    setShowDeleteDialog(true);
+    const editSelection = clientData.find(client => client.id === id);
+    setClientToDelete(editSelection);
+  };
+
   const handleSelectChange = (event) => {
-    axios.get(`clients?time_frame=${event.target.value}`)
+    clients.get(`?time_frame=${event.target.value}`)
       .then((res) => {
-        setClientData(res.data.client_details);
-        setTotalMinutes(res.data.total_minutes);
+        const sanitized = unmapClientList(res);
+        setClientData(sanitized.clientList);
+        setTotalMinutes(sanitized.totalMinutes);
       });
   };
 
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
-    axios.get("clients?time_frame=week")
+    clients.get("?time_frame=week")
       .then((res) => {
-        setClientData(res.data.client_details);
-        setTotalMinutes(res.data.total_minutes);
+        const sanitized = unmapClientList(res);
+        setClientData(sanitized.clientList);
+        setTotalMinutes(sanitized.totalMinutes);
       });
   }, []);
+
+  const tableHeader = [
+    {
+      Header: "CLIENT",
+      accessor: "col1", // accessor is the "key" in the data
+      cssClass: ""
+    },
+    {
+      Header: "EMAIL ID",
+      accessor: "col2",
+      cssClass: "text-right"
+    },
+    {
+      Header: "HOURS LOGGED",
+      accessor: "col3",
+      cssClass: "text-right" // accessor is the "key" in the data
+    }
+  ];
+
+  const amountBox = [{
+    title: "OVERDUE",
+    amount: "$35.5k"
+  },
+  {
+    title: "OUTSTANDING",
+    amount: "$24.3k"
+  }];
+
+  const tableData = getTableData(clientData);
 
   return (
     <>
       <ToastContainer />
+      { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
+        <div className="flex justify-end">
+          <select onChange={handleSelectChange} className="px-3
+                py-1.5
+                text-base
+                font-normal
+                bg-transparent bg-clip-padding bg-no-repeat
+                border-none
+                transition
+                ease-in-out
+                m-0
+                focus:outline-none
+                text-miru-han-purple-1000">
+            <option className="text-miru-dark-purple-600" value="week">
+                  THIS WEEK
+            </option>
+            <option className="text-miru-dark-purple-600" value="month">
+                  This MONTH
+            </option>
+            <option className="text-miru-dark-purple-600" value="year">
+                  THIS YEAR
+            </option>
+          </select>
+        </div>
+        {clientData && <ChartBar data={clientData} totalMinutes={totalMinutes} />}
+        <AmountBoxContainer amountBox = {amountBox} />
+      </div>
+      }
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            { isAdminUser && <ClientBarGraph
-              handleSelectChange={handleSelectChange}
-              clients={clientData}
-              totalMinutes={totalMinutes} />
-            }
             <div className="overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200 mt-4">
-                <thead>
-                  <tr>
-                    <th
-                      scope="col"
-                      className="table__header"
-                    >
-                      CLIENT
-                    </th>
-                    <th
-                      scope="col"
-                      className="table__header"
-                    >
-                      EMAIL ID
-                    </th>
-                    <th
-                      scope="col"
-                      className="table__header text-right"
-                    >
-                      HOURS LOGGED
-                    </th>
-                    <th scope="col" className="table__header"></th>
-                    <th scope="col" className="table__header"></th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {clientData.map((client, index) => (
-                    <Client
-
-                      key={index}
-                      {...client}
-                      editIcon={editIcon}
-                      deleteIcon={deleteIcon}
-                      isAdminUser={isAdminUser}
-                      setShowEditDialog={setShowEditDialog}
-                      setClientToEdit={setClientToEdit}
-                      setShowDeleteDialog={setShowDeleteDialog}
-                      setClientToDelete={setClientToDelete}
-                    />
-                  ))}
-                </tbody>
-              </table>
+              { clientData && <Table
+                handleEditClick={handleEditClick}
+                handleDeleteClick={handleDeleteClick}
+                hasRowIcons={true}
+                tableHeader={tableHeader}
+                tableRowArray={tableData}
+              /> }
             </div>
           </div>
         </div>

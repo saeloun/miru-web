@@ -1,5 +1,6 @@
 import React from "react";
 import { useTable, useRowSelect } from "react-table";
+import { Pencil, Trash } from "phosphor-react";
 
 const IndeterminateCheckbox = React.forwardRef( // eslint-disable-line react/display-name
   ({ indeterminate, ...rest }:any, ref) => {
@@ -49,7 +50,10 @@ const getTableCheckbox = hooks => {
 const Table = ({
   tableHeader,
   tableRowArray,
-  hasCheckbox = false
+  hasCheckbox = false,
+  hasRowIcons=false,
+  handleDeleteClick = (id) => {}, // eslint-disable-line
+  handleEditClick = (id) => {} // eslint-disable-line
 }) => {
 
   const data = React.useMemo(() => tableRowArray, []);
@@ -80,16 +84,30 @@ const Table = ({
                 <th className={`table__header ${column.cssClass}`} {...column.getHeaderProps()}>{column.render("Header")}</th>
               )
               )}
+              {hasRowIcons && <th className="table__header"></th> }
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
           {rows.slice(0, 10).map((row, index) => {
             prepareRow(row);
-            const isLastChild = rows.length - 1 !== index;
+            const cssClassLastRow = rows.length - 1 !== index ? "border-b": "";
+            const cssClassRowHover = hasRowIcons ? "hoverIcon" : "";
             return (
-              <tr {...row.getRowProps()} className={isLastChild ? "border-b": ""}>
+              <tr {...row.getRowProps()} className={`${cssClassLastRow} ${cssClassRowHover}`}>
                 {row.cells.map(cell => <td className="table__cell" {...cell.getCellProps()}>{cell.render("Cell")}</td>)}
+
+                {hasRowIcons && <td className="table__cell">
+                  <div className="iconWrapper invisible">
+                    <button onClick={() => handleEditClick(row.original.rowId)}>
+                      <Pencil size={16} color="#5b34ea" weight="bold" />
+                    </button>
+                    <button onClick={() => handleDeleteClick(row.original.rowId)} className="ml-10">
+                      <Trash size={16} color="#5b34ea" weight="bold" />
+                    </button>
+                  </div>
+                </td>
+                }
               </tr>
             );
           })}

@@ -50,14 +50,14 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
     }
   };
   return (
-    <div className="px-4 min-h-screen flex items-center justify-center">
+    <div className="px-4 flex items-center justify-center">
       <div
-        className="overflow-auto absolute inset-0 z-10 flex items-start justify-center"
+        className="overflow-auto fixed top-0 left-0 right-0 bottom-0 inset-0 z-10 flex items-start justify-center"
         style={{
           backgroundColor: "rgba(29, 26, 49, 0.6)"
         }}
       >
-        <div className="relative px-4 min-h-screen md:flex md:items-center md:justify-center">
+        <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
               <h6 className="text-base font-extrabold">Edit Client Details</h6>
