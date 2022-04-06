@@ -7,11 +7,10 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
-  let(:timesheet_entry) { create(:timesheet_entry, project:) }
+  let!(:timesheet_entry) { create(:timesheet_entry, project:) }
 
   context "when user is admin" do
     before do
-      timesheet_entry
       create(:company_user, company:, user:)
       user.add_role :admin, company
       sign_in user

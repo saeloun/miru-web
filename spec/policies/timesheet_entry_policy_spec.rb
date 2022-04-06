@@ -15,7 +15,6 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
 
   context "when user is admin" do
     before do
-      timesheet_entry
       create(:company_user, company:, user:)
       user.add_role :admin, company
     end
