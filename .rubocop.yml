@@ -355,7 +355,7 @@ Layout/CaseIndentation:
 
 Layout/LineLength:
   Enabled: true
-  Max: 120
+  Max: 200
   IgnoredPatterns: [
     '^\s*#', # line that begins with comment
     '^\s*"', # line that begins with double quote (long string literal)

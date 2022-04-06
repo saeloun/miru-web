@@ -35,16 +35,16 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in the last week" do
         from, to = project.week_month_year(time_frame)
-        project_members_timesheet_entries = project.timesheet_entries.where(
-          user_id: project.project_members,
-          work_date: from..to)
+        project_members_timesheet_entries = project.timesheet_entries.where(user_id: project.project_members.pluck(:user_id), work_date: from..to)
         result = project.project_members.map do |project_member|
-          minutes_logged = (project_members_timesheet_entries.map { |project_members_timesheet_entry|
-  project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
-}).compact.sum
+          minutes_logged = project_members_timesheet_entries.map do |project_members_timesheet_entry|
+            project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
+          end
           {
-            id: project_member.user_id, name: project_member.full_name, hourly_rate: project_member.hourly_rate,
-            minutes_logged:
+            id: project_member.user_id,
+            name: project_member.full_name,
+            hourly_rate: project_member.hourly_rate,
+            minutes_logged: minutes_logged.compact.sum
           }
         end
         expect(project.project_team_member_details(time_frame)).to eq(result)
@@ -56,16 +56,16 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a week" do
         from, to = project.week_month_year(time_frame)
-        project_members_timesheet_entries = project.timesheet_entries.where(
-          user_id: project.project_members,
-          work_date: from..to)
+        project_members_timesheet_entries = project.timesheet_entries.where(user_id: project.project_members.pluck(:user_id), work_date: from..to)
         result = project.project_members.map do |project_member|
-          minutes_logged = (project_members_timesheet_entries.map { |project_members_timesheet_entry|
-  project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
-}).compact.sum
+          minutes_logged = project_members_timesheet_entries.map do |project_members_timesheet_entry|
+            project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
+          end
           {
-            id: project_member.user_id, name: project_member.full_name, hourly_rate: project_member.hourly_rate,
-            minutes_logged:
+            id: project_member.user_id,
+            name: project_member.full_name,
+            hourly_rate: project_member.hourly_rate,
+            minutes_logged: minutes_logged.compact.sum
           }
         end
         expect(project.project_team_member_details(time_frame)).to eq(result)
@@ -77,16 +77,16 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a month" do
         from, to = project.week_month_year(time_frame)
-        project_members_timesheet_entries = project.timesheet_entries.where(
-          user_id: project.project_members,
-          work_date: from..to)
+        project_members_timesheet_entries = project.timesheet_entries.where(user_id: project.project_members.pluck(:user_id), work_date: from..to)
         result = project.project_members.map do |project_member|
-          minutes_logged = (project_members_timesheet_entries.map { |project_members_timesheet_entry|
-  project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
-}).compact.sum
+          minutes_logged = project_members_timesheet_entries.map do |project_members_timesheet_entry|
+            project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
+          end
           {
-            id: project_member.user_id, name: project_member.full_name, hourly_rate: project_member.hourly_rate,
-            minutes_logged:
+            id: project_member.user_id,
+            name: project_member.full_name,
+            hourly_rate: project_member.hourly_rate,
+            minutes_logged: minutes_logged.compact.sum
           }
         end
         expect(project.project_team_member_details(time_frame)).to eq(result)
@@ -98,16 +98,16 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a year" do
         from, to = project.week_month_year(time_frame)
-        project_members_timesheet_entries = project.timesheet_entries.where(
-          user_id: project.project_members,
-          work_date: from..to)
+        project_members_timesheet_entries = project.timesheet_entries.where(user_id: project.project_members.pluck(:user_id), work_date: from..to)
         result = project.project_members.map do |project_member|
-          minutes_logged = (project_members_timesheet_entries.map { |project_members_timesheet_entry|
-  project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
-}).compact.sum
+          minutes_logged = project_members_timesheet_entries.map do |project_members_timesheet_entry|
+            project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
+          end
           {
-            id: project_member.user_id, name: project_member.full_name, hourly_rate: project_member.hourly_rate,
-            minutes_logged:
+            id: project_member.user_id,
+            name: project_member.full_name,
+            hourly_rate: project_member.hourly_rate,
+            minutes_logged: minutes_logged.compact.sum
           }
         end
         expect(project.project_team_member_details(time_frame)).to eq(result)
