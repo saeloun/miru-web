@@ -170,8 +170,8 @@ RSpec.describe Project, type: :model do
       let(:user) { create(:user) }
       let(:client) { create(:client, company:) }
       let(:project) { create(:project, client:) }
-      let(:project_member1) { create(:project_member, project:, user:, hourly_rate: 5000) }
-      let(:project_member2) { create(:project_member, project:, user:, hourly_rate: 1000) }
+      let!(:project_member1) { create(:project_member, project:, user:, hourly_rate: 5000) }
+      let!(:project_member2) { create(:project_member, project:, user:, hourly_rate: 1000) }
 
       it "returns empty list of project members when project is discarded" do
         expect(project.project_members.kept.pluck(:id)).to match_array([project_member1.id, project_member2.id])

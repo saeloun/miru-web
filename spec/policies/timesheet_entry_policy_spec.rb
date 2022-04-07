@@ -9,7 +9,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
   let(:scope) { Pundit.policy_scope!(user, TimesheetEntry) }
-  let(:timesheet_entry) { create(:timesheet_entry, project:) }
+  let!(:timesheet_entry) { create(:timesheet_entry, project:) }
 
   subject { described_class }
 
