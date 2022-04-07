@@ -19,6 +19,12 @@ RSpec.describe ProjectPolicy, type: :policy do
         expect(subject).to permit(user, Project)
       end
     end
+
+    permissions :update_members? do
+      it "is permitted to update project members" do
+        expect(subject).to permit(user, Project)
+      end
+    end
   end
 
   context "when user is employee" do
@@ -29,6 +35,12 @@ RSpec.describe ProjectPolicy, type: :policy do
 
     permissions :create? do
       it "is not permitted to create project" do
+        expect(subject).not_to permit(user, Project)
+      end
+    end
+
+    permissions :update_members? do
+      it "is not permitted to update project members" do
         expect(subject).not_to permit(user, Project)
       end
     end

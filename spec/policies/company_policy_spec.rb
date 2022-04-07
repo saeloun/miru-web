@@ -31,6 +31,12 @@ RSpec.describe CompanyPolicy, type: :policy do
         expect(subject).not_to permit(user, nil)
       end
     end
+
+    permissions :users? do
+      it "is permitted to get company users list" do
+        expect(subject).to permit(user, Project)
+      end
+    end
   end
 
   context "when user is employee" do
@@ -60,6 +66,12 @@ RSpec.describe CompanyPolicy, type: :policy do
         user.update(current_workspace_id: nil)
 
         expect(subject).not_to permit(user, nil)
+      end
+    end
+
+    permissions :users? do
+      it "is not permitted to get company users list" do
+        expect(subject).not_to permit(user, Project)
       end
     end
   end
