@@ -6,6 +6,7 @@ import {
   Route
 } from "react-router-dom";
 
+import ErrorPage from "common/Error";
 import Generate from "./Generate";
 import List from "./List";
 
@@ -15,6 +16,7 @@ const RouteConfig = () => (
       <Route path="invoices">
         <Route index element={<List />} />
         <Route path="generate" element={<Generate />} />
+        <Route path="*" element={<ErrorPage />} />
       </Route>
     </Routes>
   </BrowserRouter>
