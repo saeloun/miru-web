@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { PencilSimple, DotsThreeVertical, Trash } from "phosphor-react";
+import { PencilSimple, DotsThreeVertical } from "phosphor-react";
 
 import DiscountMenu from "./DiscountMenu";
 
@@ -57,7 +57,7 @@ const InvoiceTotal = ({ newLineItems }) => {
         <tbody>
           <tr>
             <td className="font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
-                                          Sub total
+              Sub total
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
               {subTotal}
@@ -69,24 +69,24 @@ const InvoiceTotal = ({ newLineItems }) => {
             className="pb-5 border-b-2 miru-gray-400 ">
             {showDiscount && discount
               ? <td className="py-2 pr-10 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
-                                                Discount
+                Discount
               </td>
               : <td className="pt-2 pr-10 pb-3 font-bold text-xs text-miru-han-purple-1000 text-right tracking-widest cursor-pointer" onClick={() => setAddDiscount(true)}>
-                                                ADD DISCOUNT
+                ADD DISCOUNT
               </td>
             }
             {showDiscount && discount
               ? <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">{discount}</td>
               : addDiscount &&
-                                          <td className="text-right pb-1">
-                                            <input
-                                              type="text"
-                                              value={discount}
-                                              className="p-1 pr-2 font-medium text-sm text-miru-dark-purple-1000 text-right w-20 rounded focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-                                              onChange={(e) => setDiscount(e.target.value)}
-                                              onKeyDown={e => onEnter(e, "Discount")}
-                                            />
-                                          </td>
+              <td className="text-right pb-1">
+                <input
+                  type="text"
+                  value={discount}
+                  className="p-1 pr-2 font-medium text-sm text-miru-dark-purple-1000 text-right w-20 rounded focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+                  onChange={(e) => setDiscount(e.target.value)}
+                  onKeyDown={e => onEnter(e, "Discount")}
+                />
+              </td>
             }
           </tr>
           <tr
@@ -94,7 +94,7 @@ const InvoiceTotal = ({ newLineItems }) => {
             onMouseLeave={() => setShowEditTaxButton(false)}
           >
             <td className="pt-4 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
-                                          Tax
+              Tax
             </td>
             <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">
               {showTax && tax ?
@@ -114,7 +114,7 @@ const InvoiceTotal = ({ newLineItems }) => {
           </tr>
           <tr>
             <td className="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
-                                          Total
+              Total
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right">
               {"$" + total}
@@ -122,7 +122,7 @@ const InvoiceTotal = ({ newLineItems }) => {
           </tr>
           <tr>
             <td className="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
-                                          Amount Paid
+              Amount Paid
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
               {"$" + amountPaid}
@@ -130,7 +130,7 @@ const InvoiceTotal = ({ newLineItems }) => {
           </tr>
           <tr>
             <td className="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
-                                          Amount Due
+              Amount Due
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right">
               {"$" + amountDue}
@@ -138,19 +138,19 @@ const InvoiceTotal = ({ newLineItems }) => {
           </tr>
           <tr>
             <td className="pt-2 font-bold text-xs text-miru-han-purple-1000 text-right tracking-widest pr-10">
-                                          REQUEST DEPOSIT
+              REQUEST DEPOSIT
             </td>
             <td></td>
           </tr>
         </tbody>
       </table>
       {showDiscountMenu &&
-                        <DiscountMenu
-                          setShowDiscount={setShowDiscount}
-                          setShowDiscountMenu={setShowDiscountMenu}
-                          setAddDiscount={setAddDiscount}
-                          setDiscount={setDiscount}
-                        />
+        <DiscountMenu
+          setShowDiscount={setShowDiscount}
+          setShowDiscountMenu={setShowDiscountMenu}
+          setAddDiscount={setAddDiscount}
+          setDiscount={setDiscount}
+        />
       }
       <div className="flex flex-col">
         <div

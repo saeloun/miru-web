@@ -1,5 +1,5 @@
 import React from "react";
-import { PencilSimple, DotsThreeVertical, Trash } from "phosphor-react";
+import { PencilSimple,Trash } from "phosphor-react";
 
 const Discountmenu = ({ setShowDiscount,setShowDiscountMenu,setAddDiscount,setDiscount }) => (
   <div className="bg-white rounded-lg w-28 mt-16 py-2 absolute">

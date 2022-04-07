@@ -5,7 +5,7 @@ import InvoiceDetails from "./InvoiceDetails";
 import InvoiceTotal from "./InvoiceTotal";
 import InvoiceTable from "./InvoiveTable";
 
-const Container = ({invoiceDetails}) => {
+const Container = ({ invoiceDetails }) => {
 
   const [newLineItems, setNewLineItems] = useState<Array<any>>([]);
 
