@@ -6,9 +6,10 @@ import clients from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
-import DeleteClient from "components/Clients/DeleteClient";
-import EditClient from "./EditClient";
-import unmapClientList from "../../mapper/client.mapper";
+
+import unmapClientList from "../../../mapper/client.mapper";
+import DeleteClient from "../Modals/DeleteClient";
+import EditClient from "../Modals/EditClient";
 
 const getTableData = (clients) => {
   if (clients) {
@@ -97,9 +98,10 @@ const Clients = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer />
-      { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
-        <div className="flex justify-end">
-          <select onChange={handleSelectChange} className="px-3
+      <div>
+        { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
+          <div className="flex justify-end">
+            <select onChange={handleSelectChange} className="px-3
                 py-1.5
                 text-base
                 font-normal
@@ -110,32 +112,33 @@ const Clients = ({ isAdminUser }) => {
                 m-0
                 focus:outline-none
                 text-miru-han-purple-1000">
-            <option className="text-miru-dark-purple-600" value="week">
-                  THIS WEEK
-            </option>
-            <option className="text-miru-dark-purple-600" value="month">
-                  This MONTH
-            </option>
-            <option className="text-miru-dark-purple-600" value="year">
-                  THIS YEAR
-            </option>
-          </select>
+              <option className="text-miru-dark-purple-600" value="week">
+                    THIS WEEK
+              </option>
+              <option className="text-miru-dark-purple-600" value="month">
+                    This MONTH
+              </option>
+              <option className="text-miru-dark-purple-600" value="year">
+                    THIS YEAR
+              </option>
+            </select>
+          </div>
+          {clientData && <ChartBar data={clientData} totalMinutes={totalMinutes} />}
+          <AmountBoxContainer amountBox = {amountBox} />
         </div>
-        {clientData && <ChartBar data={clientData} totalMinutes={totalMinutes} />}
-        <AmountBoxContainer amountBox = {amountBox} />
-      </div>
-      }
-      <div className="flex flex-col">
-        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="overflow-hidden">
-              { clientData && <Table
-                handleEditClick={handleEditClick}
-                handleDeleteClick={handleDeleteClick}
-                hasRowIcons={true}
-                tableHeader={tableHeader}
-                tableRowArray={tableData}
-              /> }
+        }
+        <div className="flex flex-col">
+          <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+              <div className="overflow-hidden">
+                { clientData && <Table
+                  handleEditClick={handleEditClick}
+                  handleDeleteClick={handleDeleteClick}
+                  hasRowIcons={true}
+                  tableHeader={tableHeader}
+                  tableRowArray={tableData}
+                /> }
+              </div>
             </div>
           </div>
         </div>

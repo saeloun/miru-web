@@ -53,7 +53,8 @@ const Table = ({
   hasCheckbox = false,
   hasRowIcons=false,
   handleDeleteClick = (id) => {}, // eslint-disable-line
-  handleEditClick = (id) => {} // eslint-disable-line
+  handleEditClick = (id) => {}, // eslint-disable-line
+  rowOnClick = () => {} // eslint-disable-line
 }) => {
 
   const data = React.useMemo(() => tableRowArray, []);
@@ -94,7 +95,7 @@ const Table = ({
             const cssClassLastRow = rows.length - 1 !== index ? "border-b": "";
             const cssClassRowHover = hasRowIcons ? "hoverIcon" : "";
             return (
-              <tr {...row.getRowProps()} className={`${cssClassLastRow} ${cssClassRowHover}`}>
+              <tr {...row.getRowProps()} onClick={rowOnClick} className={`${cssClassLastRow} ${cssClassRowHover}`}>
                 {row.cells.map(cell => <td className="table__cell" {...cell.getCellProps()}>{cell.render("Cell")}</td>)}
 
                 {hasRowIcons && <td className="table__cell">

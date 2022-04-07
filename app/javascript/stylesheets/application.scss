@@ -359,6 +359,9 @@ body {
   transition: opacity 3000ms ease-in;
 }
 
-.hoverIcon:hover .iconWrapper {
-  @apply visible;
+.hoverIcon:hover {
+  background-color: #F5F7F9;
+  .iconWrapper {
+    @apply visible;
+  }
 }

@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 
 import clients from "apis/clients";
-
-const closeButton = require("../../../../assets/images/close_button.svg"); // eslint-disable-line @typescript-eslint/no-var-requires
-
+import { X } from "phosphor-react";
 export interface IEditClient {
   setShowEditDialog: any;
   client: any;
@@ -61,13 +59,8 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
               <h6 className="text-base font-extrabold">Edit Client Details</h6>
-              <button type="button">
-                <img
-                  src={closeButton}
-                  onClick={() => {
-                    setShowEditDialog(false);
-                  }}
-                />
+              <button type="button" onClick={() => { setShowEditDialog(false); }}>
+                <X size={16} color="#CDD6DF" weight="bold" />
               </button>
             </div>
             <form onSubmit={handleSubmit}>
