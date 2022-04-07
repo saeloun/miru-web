@@ -9,7 +9,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
   let(:scope) { Pundit.policy_scope!(user, TimesheetEntry) }
-  let!(:timesheet_entry) { create(:timesheet_entry, project:) }
+  let(:timesheet_entry) { create(:timesheet_entry, project:) }
 
   subject { described_class }
 
@@ -36,7 +36,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
       end
     end
 
-    permissions :show? do
+    permissions :show?, :index? do
       it "is permitted to show" do
         expect(subject).to permit(user, timesheet_entry)
       end
@@ -83,7 +83,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
       end
     end
 
-    permissions :show? do
+    permissions :show?, :index? do
       it "is permitted to show" do
         expect(subject).to permit(user, timesheet_entry)
       end
@@ -97,6 +97,17 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
       it "is not permitted to destroy client in different company" do
         client.update(company_id: company2.id)
         expect(subject).not_to permit(user, timesheet_entry)
+      end
+    end
+
+    describe "scope" do
+      it "allows timesheet entries only for the user" do
+        timesheet_entry.update!(user:)
+        user1 = create(:user, current_workspace_id: company.id)
+        timesheet_entry1 = create(:timesheet_entry, project:, user: user1)
+
+        expect(scope.to_a).to match_array([timesheet_entry])
+        expect(scope.to_a).not_to include(timesheet_entry1)
       end
     end
   end
