@@ -34,13 +34,7 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "last_week" }
 
       it "returns the project_team_member_details for a project in the last week" do
-        from, to = project.week_month_year(time_frame)
-        result = [ {
-          id: project_member.user_id, name: project_member.full_name,
-          hourly_rate: project_member.hourly_rate, minutes_logged: (
-            project_member.timesheet_entries.where(project_id: project_member.project_id, work_date: from..to)
-          ).sum(:duration)
-        } ]
+        result = project_members_details(time_frame)
         expect(project.project_team_member_details(time_frame)).to eq(result)
       end
     end
@@ -49,13 +43,7 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "week" }
 
       it "returns the project_team_member_details for a project in a week" do
-        from, to = project.week_month_year(time_frame)
-        result = [ {
-          id: project_member.user_id, name: project_member.full_name,
-          hourly_rate: project_member.hourly_rate, minutes_logged: (
-            project_member.timesheet_entries.where(project_id: project_member.project_id, work_date: from..to)
-          ).sum(:duration)
-        } ]
+        result = project_members_details(time_frame)
         expect(project.project_team_member_details(time_frame)).to eq(result)
       end
     end
@@ -64,13 +52,7 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "month" }
 
       it "returns the project_team_member_details for a project in a month" do
-        from, to = project.week_month_year(time_frame)
-        result = [ {
-          id: project_member.user_id, name: project_member.full_name,
-          hourly_rate: project_member.hourly_rate, minutes_logged: (
-            project_member.timesheet_entries.where(project_id: project_member.project_id, work_date: from..to)
-          ).sum(:duration)
-        } ]
+        result = project_members_details(time_frame)
         expect(project.project_team_member_details(time_frame)).to eq(result)
       end
     end
@@ -79,14 +61,25 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "year" }
 
       it "returns the project_team_member_details for a project in a year" do
-        from, to = project.week_month_year(time_frame)
-        result = [ {
-          id: project_member.user_id, name: project_member.full_name,
-          hourly_rate: project_member.hourly_rate, minutes_logged: (
-            project_member.timesheet_entries.where(project_id: project_member.project_id, work_date: from..to)
-          ).sum(:duration)
-        } ]
+        result = project_members_details(time_frame)
         expect(project.project_team_member_details(time_frame)).to eq(result)
+      end
+    end
+
+    def project_members_details(time_frame)
+      from, to = project.week_month_year(time_frame)
+      project_members_timesheet_entries =
+        project.timesheet_entries.where(user_id: project.project_members.pluck(:user_id), work_date: from..to)
+      project.project_members.map do |project_member|
+        minutes_logged = project_members_timesheet_entries.filter_map do |project_members_timesheet_entry|
+          project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
+        end.sum
+        {
+          id: project_member.user_id,
+          name: project_member.full_name,
+          hourly_rate: project_member.hourly_rate,
+          minutes_logged:
+        }
       end
     end
   end
