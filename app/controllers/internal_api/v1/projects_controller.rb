@@ -49,11 +49,11 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
 
     def update_existing_members
       updated_members_params
-        .each { |member_params|
-  ProjectMember
-    .where(user_id: member_params["id"], project_id: params[:id])
-    .update!(hourly_rate: member_params["hourlyRate"])
-}
+        .each do |member_params|
+          ProjectMember
+            .where(user_id: member_params["id"], project_id: params[:id])
+            .update!(hourly_rate: member_params["hourlyRate"])
+        end
     end
 
     def remove_members
