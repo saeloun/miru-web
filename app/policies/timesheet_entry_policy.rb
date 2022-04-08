@@ -34,7 +34,7 @@ class TimesheetEntryPolicy < ApplicationPolicy
       if user_owner_or_admin?
         scope = user.current_workspace.timesheet_entries
       else
-        scope = user.timesheet_entries.where(company: user.current_workspace)
+        scope = user.timesheet_entries.in_workspace(user.current_workspace)
       end
     end
   end
