@@ -36,12 +36,6 @@ class Company < ApplicationRecord
   has_many :invoices, through: :clients
   resourcify
 
-  def client_hours_logged(time_frame)
-    clients.kept.map do |client|
-      { name: client.name, email: client.email, hours_spend: client.project_total_hours(time_frame) }
-    end
-  end
-
   # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
