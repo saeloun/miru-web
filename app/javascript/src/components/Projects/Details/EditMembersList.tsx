@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import projectApi from "apis/projects";
+import projectMembersApi from "apis/project-members";
 import workspaceAPIS from "apis/workspaces";
 import { X } from "phosphor-react";
 
@@ -58,7 +58,7 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, fetc
     const updatedMembers = members.filter((member) => alreadyAddedMembersMap[member.id] && alreadyAddedMembersMap[member.id] != member.hourlyRate);
     if (newlyAddedMembers.length > 0 || updatedMembers.length > 0 || removedIds.length > 0) {
       try {
-        await projectApi.updateMembers(projectId, {
+        await projectMembersApi.update(projectId, {
           members: {
             added_members: newlyAddedMembers,
             removed_member_ids: removedIds,
