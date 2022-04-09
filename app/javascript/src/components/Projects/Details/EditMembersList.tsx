@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import companyUsersApi from "apis/company-users";
 import projectMembersApi from "apis/project-members";
 import workspaceAPIS from "apis/workspaces";
 import { X } from "phosphor-react";
@@ -23,7 +24,7 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, fetc
 
   const fetchCurrentWorkspaceUsers = async () => {
     try {
-      const resp = await workspaceAPIS.users();
+      const resp = await companyUsersApi.get();
       setAllMemberList(markAddedMembers(resp.data.users));
     } catch (error) {
       // Add error handling
