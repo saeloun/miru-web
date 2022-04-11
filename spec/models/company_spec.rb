@@ -123,7 +123,7 @@ RSpec.describe Company, type: :model do
 
       it "return list of all users of a company" do
         result = [ { id: user1.id, name: user1.full_name }, { id: user2.id, name: user2.full_name }]
-        expect(company.user_details).to eq(result)
+        expect(company.user_details).to match_array(result)
       end
     end
   end
