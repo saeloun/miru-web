@@ -3,7 +3,7 @@
 class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationController
   def index
     authorize Client
-    client_details = current_user.current_workspace.client_details(params[:time_frame])
+    client_details = current_user.current_workspace.client_details(params[:time_frame], params[:q])
     total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
     render json: { client_details:, total_minutes: }, status: :ok
   end

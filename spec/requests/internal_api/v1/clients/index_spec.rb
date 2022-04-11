@@ -36,6 +36,26 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
         expect(json_response["total_minutes"]).to eq(JSON.parse(total_minutes.to_json))
       end
     end
+
+    context "for ransack search" do
+      let(:time_frame) { "last_week" }
+
+      before do
+        create(:company_user, company:, user:)
+        user.add_role :admin, company
+        sign_in user
+        send_request :get, internal_api_v1_clients_path, params: { q: client_1.name }
+      end
+
+      it "finds specific client by name" do
+        client_details = [{
+          id: client_1.id, name: client_1.name, email: client_1.email,
+          minutes_spent: client_1.total_hours_logged(time_frame)
+        }]
+        expect(response).to have_http_status(:ok)
+        expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
+      end
+    end
   end
 
   context "when user is employee" do
