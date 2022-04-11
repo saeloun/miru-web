@@ -47,16 +47,26 @@ class Company < ApplicationRecord
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
   validates :company_code, presence: true, uniqueness: true, length: { is: 2 }
 
-  def client_details(time_frame = "week", search_params)
-    Client.ransack(name_or_email_cont: search_params)
-      .result(distinct: true).kept.map do |client|
-     {
-       id: client.id,
-       name: client.name,
-       email: client.email,
-       minutes_spent: client.total_hours_logged(time_frame)
-     }
-   end
+  def client_details(records: nil, time_frame: "week")
+    if records.present?
+      records.kept.map do |client|
+        {
+          id: client.id,
+          name: client.name,
+          email: client.email,
+          minutes_spent: client.total_hours_logged(time_frame)
+        }
+      end
+    else
+      clients.kept.map do |client|
+        {
+          id: client.id,
+          name: client.name,
+          email: client.email,
+          minutes_spent: client.total_hours_logged(time_frame)
+        }
+      end
+    end
   end
 
   def client_list
