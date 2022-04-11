@@ -93,14 +93,14 @@ RSpec.describe Project, type: :model do
 
     context "when time_frame is last week" do
       let(:time_frame) { "last_week" }
-      let(:nine_days_before) { Date.today - 9.days }
-      let(:ten_days_before) { Date.today - 10.days }
-      let(:one_day_before) { Date.today - 1.day }
+      let(:last_week_beginning_date) { Date.today.last_week.beginning_of_week }
+      let(:last_week_end_date) { Date.today.last_week.end_of_week }
+      let(:current_week) { Date.today.beginning_of_week }
 
       it "returns total duration for timesheet entries in last week" do
-        timesheet_entry1 = create(:timesheet_entry, user:, project:, duration: 300, work_date: nine_days_before)
-        timesheet_entry2 = create(:timesheet_entry, user:, project:, duration: 200, work_date: ten_days_before)
-        timesheet_entry3 = create(:timesheet_entry, user:, project:, duration: 400, work_date: one_day_before)
+        timesheet_entry1 = create(:timesheet_entry, user:, project:, duration: 300, work_date: last_week_beginning_date)
+        timesheet_entry2 = create(:timesheet_entry, user:, project:, duration: 200, work_date: last_week_end_date)
+        timesheet_entry3 = create(:timesheet_entry, user:, project:, duration: 400, work_date: current_week)
 
         # timesheet_entry3 is excluded since it belongs to current week
         total_duration = timesheet_entry1.duration + timesheet_entry2.duration

@@ -55,7 +55,7 @@ class Client < ApplicationRecord
   def week_month_year(time_frame)
     case time_frame
     when "last_week"
-      return ((Date.today.beginning_of_week) - 7), ((Date.today.end_of_week) - 7)
+      return Date.today.last_week.beginning_of_week, Date.today.last_week.end_of_week
     when "month"
       return Date.today.beginning_of_month, Date.today.end_of_month
     when "year"
