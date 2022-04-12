@@ -42,7 +42,7 @@ const AddEntry: React.FC<Iprops> = ({
 
   useEffect(() => {
     handleFillData();
-  }, []);
+  }, [selectedFullDate]);
 
   useEffect(() => {
     if (!project) return;
