@@ -7,7 +7,6 @@ import * as weekday from "dayjs/plugin/weekday";
 import AddEntry from "./AddEntry";
 import DatesInWeek from "./DatesInWeek";
 import EntryCard from "./EntryCard";
-import monthCalender from "./MonthCalender";
 import MonthCalender from "./MonthCalender";
 import WeeklyEntries from "./WeeklyEntries";
 import { setAuthHeaders, registerIntercepts } from "../../apis/axios";
@@ -44,8 +43,6 @@ const TimeTracking: React.FC<Iprops> = ({
   const [editEntryId, setEditEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
   const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
-  const [currentMonthNumber, setCurrentMonthNumber] = useState<number>(dayjs().month());
-  const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
 
   // sorting by client's name
   clients.sort((a: object, b: object) => a["name"].localeCompare(b["name"]));
@@ -57,7 +54,11 @@ const TimeTracking: React.FC<Iprops> = ({
 
   useEffect(() => {
     handleWeekInfo();
-    fetchEntries();
+    const from = dayjs().weekday(weekDay).format("YYYY-MM-DD");
+    const to = dayjs()
+      .weekday(weekDay + 6)
+      .format("YYYY-MM-DD");
+    fetchEntries(from, to);
   }, [weekDay]);
 
   useEffect(() => {
@@ -72,6 +73,11 @@ const TimeTracking: React.FC<Iprops> = ({
         .format("YYYY-MM-DD")
     );
   }, [selectDate, weekDay]);
+
+  const handleTodayButton = () => {
+    setSelectDate(dayjs().weekday());
+    setWeekDay(0);
+  };
 
   const handleWeekInfo = () => {
     const daysInWeek = Array.from(Array(7).keys()).map((weekCounter) => {
@@ -93,12 +99,8 @@ const TimeTracking: React.FC<Iprops> = ({
     setDayInfo(() => daysInWeek);
   };
 
-  const fetchEntries = async () => {
-    const from = dayjs().weekday(weekDay).format("YYYY-MM-DD");
-    const to = dayjs()
-      .weekday(weekDay + 6)
-      .format("YYYY-MM-DD");
-    if (entryList[from]) return;
+  const fetchEntries = async (from: string, to: string) => {
+    if (entryList[from] && entryList[to]) return;
     const res = await timesheetEntryApi.list(from, to);
     if (res.status >= 200 && res.status < 300) {
       setEntryList(prevState => ({ ...prevState, ...res.data.entries }));
@@ -136,24 +138,6 @@ const TimeTracking: React.FC<Iprops> = ({
 
   const handlePrevWeek = () => {
     setWeekDay(p => p - 7);
-  };
-
-  const handlePrevMonth = () => {
-    if (currentMonthNumber === 0) {
-      setCurrentMonthNumber(11);
-      setCurrentYear(cy => cy - 1);
-    } else {
-      setCurrentMonthNumber(cm => cm - 1);
-    }
-  };
-
-  const handleNextMonth = () => {
-    if (currentMonthNumber === 11) {
-      setCurrentYear(0);
-      setCurrentYear(p => p + 1);
-    } else {
-      setCurrentMonthNumber(cmn => cmn + 1);
-    }
   };
 
   const parseWeeklyViewData = () => {
@@ -224,37 +208,30 @@ const TimeTracking: React.FC<Iprops> = ({
         </div>
 
         <div>
-          <div className="mb-6">
-            <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
-              <button
-                onClick={() => {
-                  setWeekDay(0);
-                  setSelectDate(dayjs().weekday());
-                }}
-                className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold ml-4"
-              >
+          {
+            view === "month" ?
+              <MonthCalender
+                fetchEntries={fetchEntries}
+                dayInfo={dayInfo}
+                selectedFullDate={selectedFullDate}
+                setSelectedFullDate={setSelectedFullDate}
+                entryList={entryList}
+                setEntryList={setEntryList}
+                handleTodayButton={handleTodayButton}
+                monthsAbbr={monthsAbbr}
+              />
+              :
+              <div className="mb-6">
+                <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
+                  <button
+                    onClick={() => {
+                      setWeekDay(0);
+                      setSelectDate(dayjs().weekday());
+                    }}
+                    className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold ml-4"
+                  >
                   TODAY
-              </button>
-              {
-                view === "month" ?
-                  <div className="flex">
-                    <button
-                      onClick={handlePrevMonth}
-                      className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
-                    >
-                      {"<"}
-                    </button>
-                    <p className="text-white mx-6 w-auto">
-                      {monthsAbbr[Math.abs(currentMonthNumber)]} {currentYear}
-                    </p>
-                    <button
-                      onClick={handleNextMonth}
-                      className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
-                    >
-                      {">"}
-                    </button>
-                  </div>
-                  :
+                  </button>
                   <div className="flex">
                     <button
                       onClick={handlePrevWeek}
@@ -276,31 +253,19 @@ const TimeTracking: React.FC<Iprops> = ({
                       {">"}
                     </button>
                   </div>
-              }
-              <div className="flex mr-12">
-                <p className="text-white mr-2">Total</p>
-                <p className="text-white font-extrabold">{totalHours}</p>
-              </div>
-            </div>
-            {
-              view === "month" ?
-                <MonthCalender
-                  dayInfo={dayInfo}
-                  selectDate={selectDate}
-                  setSelectDate={setSelectDate}
-                  currentMonthNumber={currentMonthNumber}
-                  currentYear={currentYear}
-                  entryList={entryList}
-                />
-                :
+                  <div className="flex mr-12">
+                    <p className="text-white mr-2">Total</p>
+                    <p className="text-white font-extrabold">{totalHours}</p>
+                  </div>
+                </div>
                 <DatesInWeek
                   view={view}
                   dayInfo={dayInfo}
                   selectDate={selectDate}
                   setSelectDate={setSelectDate}
                 />
-            }
-          </div>
+              </div>
+          }
           {!editEntryId && newEntryView && view !== "week" && (
             <AddEntry
               setNewEntryView={setNewEntryView}
