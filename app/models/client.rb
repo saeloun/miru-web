@@ -37,7 +37,7 @@ class Client < ApplicationRecord
   validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
   after_discard :discard_projects
 
-  def new_line_item_entries
+  def new_line_item_entries(selected_entries)
     timesheet_entries.where(bill_status: :unbilled)
       .joins(
         "INNER JOIN project_members ON timesheet_entries.project_id = project_members.project_id
@@ -52,7 +52,7 @@ class Client < ApplicationRecord
          timesheet_entries.note as description,
          project_members.hourly_rate as rate,
          timesheet_entries.duration as qty"
-      )
+      ).where.not(id: selected_entries)
   end
 
   def total_hours_logged(time_frame = "week")
