@@ -168,3 +168,6 @@ gem "data_migrate", "~> 8.0.0.rc2"
 
 # pagy for Pagination
 gem "pagy", "~> 5.10"
+
+# Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
+gem "active_interaction"
