@@ -38,22 +38,21 @@ class Client < ApplicationRecord
   after_discard :discard_projects
 
   def line_items
-    line_items =
-      timesheet_entries.where(bill_status: :unbilled)
-        .joins(
-          "INNER JOIN project_members ON timesheet_entries.project_id = project_members.project_id
-            AND timesheet_entries.user_id = project_members.user_id"
-        )
-        .joins("INNER JOIN users ON project_members.user_id = users.id")
-        .select(
-          "timesheet_entries.id,
-           users.first_name as user_first_name,
-           users.last_name as user_last_name,
-           timesheet_entries.duration,
-           timesheet_entries.note,
-           timesheet_entries.work_date,
-           project_members.hourly_rate as hourly_rate"
-        )
+    line_items = timesheet_entries.where(bill_status: :unbilled)
+      .joins(
+        "INNER JOIN project_members ON timesheet_entries.project_id = project_members.project_id
+          AND timesheet_entries.user_id = project_members.user_id"
+      )
+      .joins("INNER JOIN users ON project_members.user_id = users.id")
+      .select(
+        "timesheet_entries.id,
+         users.first_name as user_first_name,
+         users.last_name as user_last_name,
+         timesheet_entries.duration,
+         timesheet_entries.note,
+         timesheet_entries.work_date,
+         project_members.hourly_rate as hourly_rate"
+      )
     line_items.map do |line_item|
       {
         id: line_item.id,
