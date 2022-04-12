@@ -36,7 +36,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
       }
     end
 
-    it "is successful" do
+    it "they should be able to update the record successfully" do
       expect(response).to be_successful
     end
 
@@ -64,7 +64,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
       }
     end
 
-    it "is successful" do
+    it "they should be able to update the record successfully" do
       expect(response).to be_successful
     end
 
@@ -92,7 +92,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
       }
     end
 
-    it "is successful" do
+    it "they should not be able to update the record" do
       expect(response).to have_http_status(:not_found)
     end
 
@@ -102,7 +102,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
   end
 
   context "when unauthenticated" do
-    it "user will be redirects to sign in path" do
+    it "user will be redirected to sign in path" do
       send_request :patch, internal_api_v1_timesheet_entry_path(timesheet_entry.id)
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to match("You need to sign in or sign up before continuing.")

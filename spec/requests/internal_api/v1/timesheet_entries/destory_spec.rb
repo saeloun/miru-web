@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
+RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:user2) { create(:user, current_workspace_id: company.id) }
@@ -20,7 +20,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
       send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
     end
 
-    it "is successful" do
+    it "they should be able to destroy the record successfully" do
       expect(response).to be_successful
     end
 
@@ -37,7 +37,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
       send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
     end
 
-    it "is successful" do
+    it "they should be able to destroy the record successfully" do
       expect(response).to be_successful
     end
 
@@ -54,7 +54,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
       send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
     end
 
-    it "is successful" do
+    it "they should not be able to delete the record" do
       expect(response).to have_http_status(:not_found)
     end
 
@@ -64,7 +64,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
   end
 
   context "when unauthenticated" do
-    it "user will be redirects to sign in path" do
+    it "user will be redirected to sign in path" do
       send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to match("You need to sign in or sign up before continuing.")

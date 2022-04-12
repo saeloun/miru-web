@@ -30,7 +30,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#index", type: :request do
       }
     end
 
-    it "is successful" do
+    it "they should be able to access records successfully" do
       expect(response).to have_http_status(:ok)
     end
 
@@ -55,7 +55,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#index", type: :request do
       }
     end
 
-    it "is successful" do
+    it "they should be able to access records successfully" do
       expect(response).to have_http_status(:ok)
     end
 
@@ -70,7 +70,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#index", type: :request do
   end
 
   context "when unauthenticated" do
-    it "user will be redirects to sign in path" do
+    it "user will be redirected to sign in path" do
       send_request :get, internal_api_v1_timesheet_entry_index_path
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
