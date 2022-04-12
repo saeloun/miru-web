@@ -10,7 +10,7 @@ RSpec.describe TestController, type: :controller do
 
   controller do
     def show
-      raise Discard::RecordNotDiscarded.new("Discarded record")
+      raise Discard::RecordNotDiscarded.new("Record is corrupted")
     end
   end
 
@@ -23,19 +23,23 @@ RSpec.describe TestController, type: :controller do
     end
 
     context "when request is HTML type" do
-      it "returns a 500 error page" do
+      before do
         get :show
+      end
 
+      it "returns a 500 error page" do
         expect(response).to have_http_status(:internal_server_error)
         expect(response.body).to include("We're sorry, but something went wrong (500)")
       end
     end
 
     context "when request is JSON type" do
-      it "returns a 500 error page" do
+      before do
         get :show, format: :json
+      end
 
-        error_message = "Discarded record"
+      it "returns a 500 error page" do
+        error_message = "Record is corrupted"
         actual_response = JSON.parse(response.body)
         expect(response).to have_http_status(:internal_server_error)
         expect(actual_response["errors"]).to eq(error_message)
