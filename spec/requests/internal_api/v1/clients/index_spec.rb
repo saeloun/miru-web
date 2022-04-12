@@ -9,6 +9,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   let(:client_2) { create(:client, company:) }
   let(:project_1) { create(:project, client: client_1) }
   let(:project_2) { create(:project, client: client_2) }
+  let(:time_frame) { "last_week" }
 
   context "when user is admin" do
     before do
@@ -21,8 +22,6 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     end
 
     context "when time_frame is week" do
-      let(:time_frame) { "last_week" }
-
       it "returns the total hours logged for a Company in the last_week" do
         client_details = user.current_workspace.clients.kept.map do |client|
           {
@@ -38,8 +37,6 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     end
 
     context "for ransack search" do
-      let(:time_frame) { "last_week" }
-
       before do
         create(:company_user, company:, user:)
         user.add_role :admin, company
@@ -55,6 +52,17 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
         expect(response).to have_http_status(:ok)
         expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
       end
+    end
+
+    it "returns all the clients when query params are empty" do
+      client_details = [{
+        id: client_1.id, name: client_1.name, email: client_1.email,
+        minutes_spent: client_1.total_hours_logged(time_frame)
+      }, id: client_2.id, name: client_2.name, email: client_2.email,
+         minutes_spent: client_2.total_hours_logged(time_frame) ]
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
     end
   end
 

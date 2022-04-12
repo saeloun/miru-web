@@ -5,7 +5,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     authorize Client
     query = current_user.current_workspace.clients.ransack({ name_or_email_cont: params[:q] })
     clients = query.result(distinct: true)
-    client_details = current_user.current_workspace.client_details(records: clients, time_frame: params[:time_frame])
+    client_details = clients.map { |client| client.client_detail(params[:time_frame]) }
     total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
     render json: { client_details:, total_minutes: }, status: :ok
   end
