@@ -22,20 +22,66 @@ const InvoiceTotal = ({ newLineItems }) => {
 
   const onEnter = (e, type) => {
     if (e.key === "Enter") {
-      if (type == "Discount") {
+      if (type === "Discount") {
         setAddDiscount(false);
         setShowDiscount(true);
       }
-      else if (type == "Tax") {
+      else {
         setShowTax(true);
         setShowTaxInput(false);
       }
     }
   };
 
+  const getDiscount = () => {
+    if (showDiscount && discount) {
+      return (
+        <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">{discount}</td>
+      );
+    }
+    else if (addDiscount) {
+      return (
+        <td className="text-right pb-1">
+          <input
+            type="text"
+            value={discount}
+            className="p-1 pr-2 font-medium text-sm text-miru-dark-purple-1000 text-right w-20 rounded focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            onChange={(e) => setDiscount(e.target.value)}
+            onKeyDown={e => onEnter(e, "Discount")}
+          />
+        </td>
+      );
+    }
+    else return null;
+  };
+
+  const getTax = () => {
+    if (showTax && tax) {
+      return (
+        <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">${tax}</td>
+      );
+    }
+    else if (showTaxInput) {
+      return (
+        <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">
+          <input
+            type="text"
+            value={tax}
+            className="p-1 pr-2 font-medium text-sm text-miru-dark-purple-1000 text-right w-20 rounded focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            onChange={(e) => setTax(e.target.value)}
+            onKeyDown={e => onEnter(e, "Tax")}
+          />
+        </td>
+      );
+    }
+    else {
+      return <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">$0</td>;
+    }
+  };
+
   useEffect(() => {
     let sum = 0;
-    newLineItems.map(item => {
+    newLineItems.forEach(item => {
       sum = sum + item.lineTotal;
     });
     setSubTotal(sum);
@@ -75,18 +121,8 @@ const InvoiceTotal = ({ newLineItems }) => {
                 ADD DISCOUNT
               </td>
             }
-            {showDiscount && discount
-              ? <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">{discount}</td>
-              : addDiscount &&
-              <td className="text-right pb-1">
-                <input
-                  type="text"
-                  value={discount}
-                  className="p-1 pr-2 font-medium text-sm text-miru-dark-purple-1000 text-right w-20 rounded focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-                  onChange={(e) => setDiscount(e.target.value)}
-                  onKeyDown={e => onEnter(e, "Discount")}
-                />
-              </td>
+            {
+              getDiscount()
             }
           </tr>
           <tr
@@ -96,28 +132,16 @@ const InvoiceTotal = ({ newLineItems }) => {
             <td className="pt-4 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
               Tax
             </td>
-            <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">
-              {showTax && tax ?
-                <p>{tax}</p>
-                : showTaxInput ?
-                  <input
-                    type="text"
-                    value={tax}
-                    className="p-1 pr-2 font-medium text-sm text-miru-dark-purple-1000 text-right w-20 rounded focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-                    onChange={(e) => setTax(e.target.value)}
-                    onKeyDown={e => onEnter(e, "Tax")}
-                  />
-                  : <p>$0</p>
-              }
-
-            </td>
+            {
+              getTax()
+            }
           </tr>
           <tr>
             <td className="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
               Total
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right">
-              {"$" + total}
+              ${total}
             </td>
           </tr>
           <tr>
@@ -125,7 +149,7 @@ const InvoiceTotal = ({ newLineItems }) => {
               Amount Paid
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
-              {"$" + amountPaid}
+              ${amountPaid}
             </td>
           </tr>
           <tr>
@@ -133,7 +157,7 @@ const InvoiceTotal = ({ newLineItems }) => {
               Amount Due
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right">
-              {"$" + amountDue}
+              ${amountDue}
             </td>
           </tr>
           <tr>

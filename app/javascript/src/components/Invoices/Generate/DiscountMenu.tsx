@@ -13,7 +13,7 @@ const Discountmenu = ({ setShowDiscount,setShowDiscountMenu,setAddDiscount,setDi
         }}
       >
         <PencilSimple size={18} color="#5B34EA" />
-        <p className="pl-2 font-medium text-sm text-miru-han-purple-1000">Edit</p>
+        <span className="pl-2 font-medium text-sm text-miru-han-purple-1000">Edit</span>
       </li>
       <li
         className="flex py-2.5 px-4 cursor-pointer bg-white hover:bg-miru-gray-100 rounded"
@@ -25,7 +25,7 @@ const Discountmenu = ({ setShowDiscount,setShowDiscountMenu,setAddDiscount,setDi
         }}
       >
         <Trash size={18} color="#E04646" />
-        <p className="pl-2 font-medium text-sm text-miru-red-400">Remove</p>
+        <span className="pl-2 font-medium text-sm text-miru-red-400">Remove</span>
       </li>
     </ul>
   </div>
