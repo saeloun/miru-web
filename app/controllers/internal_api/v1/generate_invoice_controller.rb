@@ -8,7 +8,8 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
 
   def show
     authorize :show, policy_class: GenerateInvoicePolicy
-    render json: { client: }, status: :ok
+    line_item = client.line_items
+    render json: { client:, line_item: }, status: :ok
   end
 
   private
