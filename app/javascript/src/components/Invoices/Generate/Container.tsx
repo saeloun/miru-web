@@ -27,6 +27,8 @@ const Container = ({ invoiceDetails }) => {
       />
       {showMultilineModal &&
         <MultipleEntriesModal
+          newLineItems={newLineItems}
+          setNewLineItems={setNewLineItems}
           setShowMultilineModal={setShowMultilineModal}
         />
       }
