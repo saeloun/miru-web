@@ -11,6 +11,7 @@ const Container = ({ invoiceDetails }) => {
   const [selectedClient, setSelectedClient] = useState<any>();
   const [selectedOption, setSelectedOption] = useState<any>([]);
   const [amountDue, setAmountDue] = useState<number>(0);
+  const [newLineItems, setNewLineItems] = useState<Array<any>>([]);
   const [showMultilineModal, setShowMultilineModal] = useState<boolean>();
 
   return (
