@@ -30,7 +30,7 @@ RSpec.describe "Invoice#index", type: :request do
       send_request :get, invoices_path
     end
 
-    it "they should not be premitted to visit index page" do
+    it "they should not be permitted to visit index page" do
       expect(response).to have_http_status(:redirect)
       expect(flash["alert"]).to eq("You are not authorized to perform this action.")
     end
