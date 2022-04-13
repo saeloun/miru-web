@@ -4,7 +4,7 @@ import ManualEntry from "./ManualEntry";
 import NewLineItemRow from "./NewLineItemRow";
 import NewLineItemTable from "./NewLineItemTable";
 
-const InvoiceTable = ({ newLineItems,setNewLineItems }) => {
+const InvoiceTable = ({ newLineItems, setNewLineItems, setShowMultilineModal }) => {
 
   const [addNew, setAddNew] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<any>(null);
@@ -45,6 +45,7 @@ const InvoiceTable = ({ newLineItems,setNewLineItems }) => {
               setSelectedOption={setSelectedOption}
               addNew={addNew}
               setAddNew={setAddNew}
+              setShowMultilineModal={setShowMultilineModal}
             />
             : (
               <tr className="w-full ">

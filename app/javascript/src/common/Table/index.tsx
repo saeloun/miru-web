@@ -2,9 +2,9 @@ import React from "react";
 import { useTable, useRowSelect } from "react-table";
 
 const IndeterminateCheckbox = React.forwardRef( // eslint-disable-line react/display-name
-  ({ indeterminate, ...rest }:any, ref) => {
+  ({ cssClass, indeterminate, ...rest }: any, ref) => {
     const defaultRef = React.useRef();
-    const resolvedRef:any = ref || defaultRef;
+    const resolvedRef: any = ref || defaultRef;
 
     React.useEffect(() => {
       resolvedRef.current.indeterminate = indeterminate;
@@ -13,7 +13,7 @@ const IndeterminateCheckbox = React.forwardRef( // eslint-disable-line react/dis
     return (
       <div className="flex items-center">
         <input type="checkbox" ref={resolvedRef} {...rest} className="opacity-0 absolute h-8 w-8 custom__checkbox" />
-        <div className="bg-white border-2 border-miru-han-purple-1000 w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
+        <div className={`bg-white border-2 border-miru-han-purple-1000 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500 ${cssClass}`}>
           <svg className="custom__checkbox-tick fill-current hidden w-2 h-2 text-miru-han-purple-1000 pointer-events-none" version="1.1" viewBox="0 0 17 12" xmlns="http://www.w3.org/2000/svg">
             <g fill="none" fillRule="evenodd">
               <g transform="translate(-9 -11)" fill="#5B34EA" fillRule="nonzero">
@@ -27,18 +27,18 @@ const IndeterminateCheckbox = React.forwardRef( // eslint-disable-line react/dis
   }
 );
 
-const getTableCheckbox = hooks => {
+const getTableCheckbox = checkboxCss => hooks => {
   hooks.visibleColumns.push(columns => [
     {
       id: "selection",
       Header: ({ getToggleAllRowsSelectedProps }) => (
         <div>
-          <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+          <IndeterminateCheckbox cssClass={checkboxCss} {...getToggleAllRowsSelectedProps()} />
         </div>
       ),
       Cell: ({ row }) => (
         <div>
-          <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+          <IndeterminateCheckbox cssClass={checkboxCss} {...row.getToggleRowSelectedProps()} />
         </div>
       )
     },
@@ -49,7 +49,9 @@ const getTableCheckbox = hooks => {
 const Table = ({
   tableHeader,
   tableRowArray,
-  hasCheckbox = false
+  hasCheckbox = false,
+  checkboxCss = "",
+  showRowBorder = false
 }) => {
 
   const data = React.useMemo(() => tableRowArray, []);
@@ -67,17 +69,17 @@ const Table = ({
       data
     },
     useRowSelect,
-    hasCheckbox ? getTableCheckbox : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
+    hasCheckbox ? getTableCheckbox(checkboxCss) : () => { } // eslint-disable-line  @typescript-eslint/no-empty-function
   );
 
   return (
     <>
-      <table className="min-w-full divide-y divide-gray-200 mt-4" {...getTableProps()}>
+      <table className="min-w-full" {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <th className={`table__header ${column.cssClass}`} {...column.getHeaderProps()}>{column.render("Header")}</th>
+                <th className={`table__header px-0 py-3 ${column.cssClass}`} {...column.getHeaderProps()}>{column.render("Header")}</th>
               )
               )}
             </tr>
@@ -88,8 +90,8 @@ const Table = ({
             prepareRow(row);
             const isLastChild = rows.length - 1 !== index;
             return (
-              <tr {...row.getRowProps()} className={isLastChild ? "border-b": ""}>
-                {row.cells.map(cell => <td className="table__cell" {...cell.getCellProps()}>{cell.render("Cell")}</td>)}
+              <tr {...row.getRowProps()} className={showRowBorder ? isLastChild ? "border-b" : "" : ""}>
+                {row.cells.map(cell => <td className={`table__cell px-0 py-3 ${cell.cssClass}`} {...cell.getCellProps()}>{cell.render("Cell")}</td>)}
               </tr>
             );
           })}

@@ -111,5 +111,38 @@ export const reactSelectStyles = {
       display: "flex"
 
     })
+  },
+  multipleEntriesFilter: {
+    option: (styles,{ isSelected }) => ({
+      ...styles,
+      backgroundColor: isSelected ? "#F5F7F9":null,
+      color: isSelected ? "miru-dark-purple-1000":null,
+      height: "40px",
+      "&:hover": {
+        backgroundColor: "#F5F7F9"
+      }
+    }),
+    control: (base,state) => ({
+      ...base,
+      backgroundColor: "miru-gray-100",
+      border: state.isFocused ? 0 : 0,
+      boxShadow: state.isFocused ? 0 : 0,
+      "&:hover": {
+        border: state.isFocused ? 0 : 0
+      }
+    }),
+    placeholder: defaultStyles => ({
+      ...defaultStyles,
+      color: "#A5A3AD",
+      fontWeight: "medium",
+      fontSize: "14px"
+    }),
+    menu: base => ({
+      ...base,
+      marginTop: 0,
+      border: 0,
+      borderRadius: "8px",
+      boxShadow: "0px 0px 40px 0px rgba(0,0,0,0.1)"
+    })
   }
 };
