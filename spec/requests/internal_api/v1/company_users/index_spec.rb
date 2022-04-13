@@ -36,8 +36,9 @@ RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
       send_request :get, internal_api_v1_company_users_path
     end
 
-    it "returns the list of users of company" do
+    it "forbids the user to access the list of users of company" do
       expect(response).to have_http_status(:forbidden)
+      expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
     end
   end
 end
