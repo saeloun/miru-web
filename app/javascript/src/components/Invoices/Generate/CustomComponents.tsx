@@ -8,15 +8,6 @@ export const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
   </components.DropdownIndicator>
 );
 
-export const MultiLineButton = props => (
-  <components.Control {...props}>
-    {props.children}
-    <button className=" mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000">
-        CLICK TO ADD MULTIPLE ENTRIES
-    </button>
-  </components.Control>
-);
-
 export const CustomOption = props => {
   const { innerProps, innerRef } = props;
   return (
