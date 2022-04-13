@@ -26,7 +26,6 @@ const getTableData = (project) => {
 const ProjectDetails = ({ id }) => {
 
   const [project, setProject] = React.useState<any>();
-  const [fetchProjectAgain, setFetchProjectAgain] = React.useState<number>(0);
   const [showAddMemberDialog, setShowAddMemberDialog] = React.useState<boolean>(false);
   const [isHeaderMenuVisible, setHeaderMenuVisibility] = React.useState<boolean>(false);
 
@@ -39,9 +38,9 @@ const ProjectDetails = ({ id }) => {
     }
   };
 
-  React.useEffect(() => {
+  const handleAddProjectDetails = () => {
     fetchProject();
-  }, [fetchProjectAgain]);
+  };
 
   React.useEffect(() => {
     setAuthHeaders();
@@ -88,6 +87,11 @@ const ProjectDetails = ({ id }) => {
     setHeaderMenuVisibility(!isHeaderMenuVisible);
   };
 
+  const handleAddRemoveMembers = () => {
+    handleMenuVisibility();
+    setShowAddMemberDialog(true);
+  };
+
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
 
   return (
@@ -124,7 +128,7 @@ const ProjectDetails = ({ id }) => {
               </li>
               <li>
                 <button className="menuButton__list-item"
-                  onClick={() => {setShowAddMemberDialog(true);}}>
+                  onClick={handleAddRemoveMembers}>
                   <UsersThree size={16} color="#5b34ea" weight="bold" />
                   <span className="ml-3">Add/Remove Team Members</span>
                 </button>
@@ -180,7 +184,7 @@ const ProjectDetails = ({ id }) => {
         <EditMembersList
           setShowAddMemberDialog={setShowAddMemberDialog}
           addedMembers={project?.members}
-          fetchProjectDetailsAgain={(() => (setFetchProjectAgain((v) => v + 1)))}
+          handleAddProjectDetails = {handleAddProjectDetails}
           projectId={id}
         />
       ) : null}

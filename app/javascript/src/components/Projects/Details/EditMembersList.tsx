@@ -2,7 +2,6 @@ import * as React from "react";
 
 import companyUsersApi from "apis/company-users";
 import projectMembersApi from "apis/project-members";
-import workspaceAPIS from "apis/workspaces";
 import { X } from "phosphor-react";
 
 import EditMembersListForm from "./EditMembersListForm";
@@ -11,10 +10,10 @@ export interface IEditMembersList {
   setShowAddMemberDialog: any;
   addedMembers: any;
   projectId: number;
-  fetchProjectDetailsAgain: any;
+  handleAddProjectDetails: any;
 }
 
-const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, fetchProjectDetailsAgain }: IEditMembersList) => {
+const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, handleAddProjectDetails }: IEditMembersList) => {
   const [existingMembers, setExistingMembers] = React.useState(addedMembers);
   const [members, setMembers] = React.useState(addedMembers.map(v => ({ ...v, isExisting: true })));
   const [allMemberList, setAllMemberList] = React.useState([]);
@@ -67,7 +66,7 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, fetc
           }
         });
         setExistingMembers(members);
-        fetchProjectDetailsAgain();
+        handleAddProjectDetails();
       }
       catch (err) {
         // add error handling
