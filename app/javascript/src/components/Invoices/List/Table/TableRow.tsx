@@ -1,7 +1,7 @@
 import * as React from "react";
 import CustomCheckbox from "common/CustomCheckbox";
 import { Pen, Trash } from "phosphor-react";
-import getStatusCssClass from "../../../utils/getStatusTag";
+import getStatusCssClass from "../../../../utils/getStatusTag";
 
 const TableRow = ({ invoice, handleSelectCheckbox }) => {
   const [grayColor, setGrayColor] = React.useState<string>("");

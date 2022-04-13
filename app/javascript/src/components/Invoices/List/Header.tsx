@@ -1,6 +1,6 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
 import { Funnel, MagnifyingGlass, Plus, Trash, PaperPlaneTilt, X } from "phosphor-react";
-
 const Header = ({ setFilterVisibilty, isInvoiceSelected, selectedInvoiceCount, clearCheckboxes }) => {
 
   const handleCloseButton = () => {
@@ -29,13 +29,14 @@ const Header = ({ setFilterVisibilty, isInvoiceSelected, selectedInvoiceCount, c
           </button>
         </div>
         <div className="flex">
-          <button
+          <Link
+            to="/invoices/generate"
             type="button"
             className="header__button"
           >
             <Plus weight="fill" size={16} />
             <span className="ml-2 inline-block">NEW INVOICE</span>
-          </button>
+          </Link>
         </div>
       </React.Fragment>
       }

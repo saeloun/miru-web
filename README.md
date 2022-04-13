@@ -63,13 +63,15 @@ cp .env.example .env
 10. Update `APP_BASE_URL` in `.env` to `localhost:3000`
 11. Run `bin/rails db:create RAILS_ENV=development` to create the database
 12. Run `bin/rails db:migrate RAILS_ENV=development` for migrations
-13. Run app in local env
+13. Run `bin/rails db:seed` for populating the database with initial data
+
+14. Run app in local env
 
 ```
 foreman start -f Procfile.dev
 ```
 
-14. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
+15. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
 
 ### To receive the emails in non-production apps.
 
