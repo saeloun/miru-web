@@ -1,10 +1,10 @@
 import React from "react";
 import Select, { components } from "react-select";
 
-import { DropdownIndicator, MultiLineButton, CustomOption } from "./CustomComponents";
+import { DropdownIndicator, CustomOption } from "./CustomComponents";
 import { reactSelectStyles } from "./Styles";
 
-const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew, selectedOption, setSelectedOption }) => {
+const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew, selectedOption,setSelectedOption,setShowMultilineModal }) => {
 
   const options = [
     {
@@ -33,6 +33,17 @@ const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew
       total: "5 Hours"
     }
   ];
+
+  const multipleEntryButton = props => (
+    <components.Control {...props}>
+      {props.children}
+      <button
+        onClick={()=>setShowMultilineModal(true)}
+        className=" mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000">
+          CLICK TO ADD MULTIPLE ENTRIES
+      </button>
+    </components.Control>
+  );
 
   const manualEntryButton = props => (
     <components.MenuList {...props}>
@@ -68,7 +79,7 @@ const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew
           components={{
             DropdownIndicator,
             IndicatorSeparator: () => null,
-            Control: MultiLineButton,
+            Control: multipleEntryButton,
             MenuList: manualEntryButton,
             Option: CustomOption
           }}
