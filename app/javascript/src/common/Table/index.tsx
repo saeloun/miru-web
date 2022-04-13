@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTable, useRowSelect } from "react-table";
 import PropTypes from "prop-types";
 import { Pencil, Trash } from "phosphor-react";
@@ -58,7 +58,8 @@ const Table = ({
   rowOnClick = () => {}, // eslint-disable-line
   checkboxCss = "",
   tableCss = "",
-  showRowBorder = true
+  showRowBorder = true,
+  setSelectedRows = null
 }) => {
 
   const data = React.useMemo(() => tableRowArray, [tableRowArray]);
@@ -69,7 +70,8 @@ const Table = ({
     getTableBodyProps,
     headerGroups,
     rows,
-    prepareRow
+    prepareRow,
+    selectedFlatRows
   } = useTable(
     {
       columns,
@@ -78,6 +80,10 @@ const Table = ({
     useRowSelect,
     hasCheckbox ? getTableCheckbox(checkboxCss) : () => { } // eslint-disable-line  @typescript-eslint/no-empty-function
   );
+
+  useEffect(() => {
+    setSelectedRows(selectedFlatRows);
+  }, [selectedFlatRows]);
 
   return (
     <>
