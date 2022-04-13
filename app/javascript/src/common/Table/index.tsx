@@ -51,7 +51,8 @@ const Table = ({
   tableRowArray,
   hasCheckbox = false,
   checkboxCss = "",
-  showRowBorder = false
+  tableCss = "",
+  showRowBorder = true
 }) => {
 
   const data = React.useMemo(() => tableRowArray, []);
@@ -74,7 +75,7 @@ const Table = ({
 
   return (
     <>
-      <table className="min-w-full" {...getTableProps()}>
+      <table className={`min-w-full ${tableCss}`} {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>

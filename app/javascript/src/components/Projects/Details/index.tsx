@@ -161,7 +161,7 @@ const ProjectDetails = ({ id }) => {
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="overflow-hidden">
-              { project && <Table tableHeader={tableHeader} tableRowArray={tableData} /> }
+              { project && <Table tableHeader={tableHeader} tableRowArray={tableData} tableCss="divide-y divide-gray-200 mt-4"/> }
             </div>
           </div>
         </div>
