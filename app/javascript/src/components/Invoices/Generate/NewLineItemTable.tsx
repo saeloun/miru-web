@@ -4,7 +4,7 @@ import Select, { components } from "react-select";
 import { DropdownIndicator, CustomOption } from "./CustomComponents";
 import { reactSelectStyles } from "./Styles";
 
-const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew, selectedOption,setSelectedOption,setShowMultilineModal }) => {
+const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew, selectedOption, setSelectedOption, setShowMultilineModal }) => {
 
   const options = [
     {
@@ -38,9 +38,12 @@ const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew
     <components.Control {...props}>
       {props.children}
       <button
-        onClick={()=>setShowMultilineModal(true)}
+        onClick={() => {
+          setAddNew(!addNew);
+          setShowMultilineModal(true);
+        }}
         className=" mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000">
-          CLICK TO ADD MULTIPLE ENTRIES
+        CLICK TO ADD MULTIPLE ENTRIES
       </button>
     </components.Control>
   );
