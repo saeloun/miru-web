@@ -55,8 +55,44 @@ const MultipleEntriesModal = ({ setShowMultilineModal, setNewLineItems, newLineI
     Name: "Robert jnr.",
     Description: "I am the description of single entry",
     Date: "23.12.2021",
-    Time: 5
-  }];
+    Time: "6 Hours"
+  }, {
+    id: 5,
+    Name: "Paul Rud",
+    Description: "I am the description of single entry",
+    Date: "23.12.2021",
+    Time: "6 Hours",
+    cssClass: "px-0 py-3"
+  }, {
+    id: 6,
+    Name: "Chris evans",
+    Description: "I am the description of single entry",
+    Date: "23.12.2021",
+    Time: "6 Hours",
+    cssClass: "px-0 py-3"
+  }, {
+    id: 7,
+    Name: "Chris hemsworth",
+    Description: "I am the description of single entry",
+    Date: "23.12.2021",
+    Time: "6 Hours",
+    cssClass: "px-0 py-3"
+  }, {
+    id: 8,
+    Name: "Leo decaprio",
+    Description: "I am the description of single entry",
+    Date: "23.12.2021",
+    Time: "6 Hours",
+    cssClass: "px-0 py-3"
+  }, {
+    id: 9,
+    Name: "will smith",
+    Description: "I am the description of single entry",
+    Date: "23.12.2021",
+    Time: "6 Hours",
+    cssClass: "px-0 py-3"
+  }
+  ];
 
   const getTableData = (Entries) => {
     if (Entries) {
