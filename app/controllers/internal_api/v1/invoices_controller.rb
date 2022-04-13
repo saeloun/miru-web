@@ -21,4 +21,20 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       }
     }
   end
+
+  def create
+    authorize Invoice
+    render :create, locals: {
+      invoice: Invoice.create!(invoice_params),
+      client: Client.find(invoice_params[:client_id])
+    }
+  end
+
+  private
+
+    def invoice_params
+      params.require(:invoice).permit(
+        policy(Invoice).permitted_attributes
+      )
+    end
 end
