@@ -128,14 +128,14 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
           {dayInfo.map((d, index) => (
             <div
               key={index}
-              className="text-center text-xs text-miru-dark-purple-1000 font-medium py-2 my-2 w-28 items-center rounded-xl border-2 border-transparent"
+              className="text-center text-xs text-miru-dark-purple-1000 font-medium w-28 items-center rounded-xl"
             >
               {d.day}
             </div>
           ))}
           <div
             key="8"
-            className="text-center text-xs text-miru-dark-purple-1000 font-medium py-2 my-2 w-28 items-center rounded-xl border-2 border-transparent"
+            className="text-center text-xs text-miru-dark-purple-1000 font-medium w-28 items-center rounded-xl"
           >
           Total
           </div>
@@ -147,16 +147,16 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
                 weekInfo[dayNum] ? <div onClick={() => {setSelectedFullDate(weekInfo[dayNum]["date"]);}} className={("border-2 cursor-pointer h-14 w-24 bg-white rounded-md flex justify-end p-1 " + (weekInfo[dayNum]["date"] === selectedFullDate ? "border-miru-han-purple-1000" : "border-transparent"))}>
                   <div>
                     <div className="flex justify-end">
-                      <p className={"text-xs font-medium " + (weekInfo[dayNum]["date"] === today ? "text-miru-white-1000 bg-miru-han-purple-1000 rounded-xl px-2" : "text-miru-han-purple-200")}>{weekInfo[dayNum]["day"]}</p>
+                      <p className={"text-xs font-medium " + (weekInfo[dayNum]["date"] === today ? "text-miru-white-1000 bg-miru-han-purple-1000 rounded-xl px-2" : "text-miru-dark-purple-200")}>{weekInfo[dayNum]["day"]}</p>
                     </div>
-                    <p className="text-2xl">{weekInfo[dayNum]["totalDuration"] ? minutesToHHMM(weekInfo[dayNum]["totalDuration"]) : ""}</p>
+                    <p className="text-2xl mx-3 text-miru-dark-purple-1000">{weekInfo[dayNum]["totalDuration"] >= 0 ? minutesToHHMM(weekInfo[dayNum]["totalDuration"]) : ""}</p>
                   </div>
                 </div>
                   :
-                  <div className="h-16 w-26"></div>
+                  <div className="h-14 w-24 text-miru-dark-purple-1000"></div>
               ))}
               <div className="h-16 w-28 bg-white rounded-md font-bold relative">
-                <div className="flex justify-end bottom-0 absolute">
+                <div className="flex p-1 justify-end bottom-0 right-0 absolute">
                   <p className="text-2xl mr-auto">{weekInfo[7] ? minutesToHHMM(weekInfo[7]) : ""}</p>
                 </div>
               </div>
