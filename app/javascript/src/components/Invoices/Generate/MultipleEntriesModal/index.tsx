@@ -128,17 +128,14 @@ const MultipleEntriesModal = ({ setShowMultilineModal, setNewLineItems, newLineI
           <Table
             hasCheckbox={true}
             checkboxCss="w-4 h-4"
-            RowCss="px-0 py-3"
             showRowBorder={false}
             tableHeader={tableHeader}
             tableRowArray={tableData}
-            setSelectedRows={setSelectedRows}
           />
         </div>
         <Footer
-          selectedRowCount={selectedRows.length}
-          setAddEntries={setAddEntries}
-        />
+        selectedRowCount={selectedRows.length}
+        setAddEntries={setAddEntries}/>
       </div>
     </div>
   );
