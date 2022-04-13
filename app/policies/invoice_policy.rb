@@ -9,6 +9,10 @@ class InvoicePolicy < ApplicationPolicy
     user_owner_or_admin?
   end
 
+  def update?
+    user_owner_or_admin?
+  end
+
   def show?
     user_owner_or_admin?
   end

@@ -30,7 +30,21 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     }
   end
 
+  def update
+    authorize invoice
+    if invoice.update!(invoice_params)
+      render :update, locals: {
+        invoice:,
+        client: Client.find(invoice[:client_id])
+      }
+    end
+  end
+
   private
+
+    def invoice
+      @_invoice ||= Invoice.find(params[:id])
+    end
 
     def invoice_params
       params.require(:invoice).permit(

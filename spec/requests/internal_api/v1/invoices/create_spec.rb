@@ -20,7 +20,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
       it "creates invoice successfully" do
         send_request :post, internal_api_v1_invoices_path(
           invoice: {
-            client_id: 1,
+            client_id: company.clients.first.id,
             invoice_number: "INV0001",
             reference: "bar",
             issue_date: "2022-01-01",
