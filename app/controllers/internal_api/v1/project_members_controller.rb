@@ -18,33 +18,36 @@ class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationCo
 
     def add_new_members
       added_members = added_members_params
-      if !added_members.blank?
-        added_members = added_members_params.map do |m|
-          { user_id: m["id"], project_id: params[:id], hourly_rate: m["hourlyRate"] }
-        end
-        ProjectMember.create!(added_members)
+
+      return if added_members.blank?
+
+      added_members = added_members.map do |m|
+        { user_id: m["id"], project_id: params[:id], hourly_rate: m["hourlyRate"] }
       end
+      ProjectMember.create!(added_members)
     end
 
     def update_existing_members
       updated_members = updated_members_params
-      if !updated_members.blank?
-        updated_members.each do |member_params|
+
+      return if updated_members.blank?
+
+      updated_members.each do |member_params|
           ProjectMember
             .where(user_id: member_params["id"], project_id: params[:id])
             .update!(hourly_rate: member_params["hourlyRate"])
         end
-      end
     end
 
     def remove_members
       member_ids = removed_members_params
-      if !member_ids.blank?
-        member_ids.each do |member_id|
+
+      return if member_ids.blank?
+
+      member_ids.each do |member_id|
           ProjectMember.where(user_id: member_id, project_id: params[:id])
             .delete_all
         end
-      end
     end
 
     def added_members_params
