@@ -48,7 +48,7 @@ const MultipleEntriesModal = ({ setShowMultilineModal, setNewLineItems, newLineI
     Name: "Jake Sully",
     Description: "I am the description of single entry",
     Date: "23.12.2021",
-    Time: 5,
+    Time: "3 Hours",
     cssClass: "px-0 py-3"
   }, {
     id: 4,
