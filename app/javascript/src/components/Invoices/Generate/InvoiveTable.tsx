@@ -4,12 +4,11 @@ import ManualEntry from "./ManualEntry";
 import NewLineItemRow from "./NewLineItemRow";
 import NewLineItemTable from "./NewLineItemTable";
 
-const InvoiceTable = () => {
+const InvoiceTable = ({ newLineItems,setNewLineItems }) => {
 
   const [addNew, setAddNew] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<any>(null);
   const [showItemInputs, setShowItemInputs] = useState<boolean>(false);
-  const [newLineItems, setNewLineItems] = useState<Array<any>>([]);
 
   return (
     <React.Fragment>
