@@ -119,6 +119,9 @@ group :development, :test do
 
   # Added rails controller to use render_template
   gem "rails-controller-testing", "~> 1.0", ">= 1.0.5"
+
+  # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
+  gem "bullet"
 end
 
 group :development do
@@ -165,3 +168,6 @@ gem "data_migrate", "~> 8.0.0.rc2"
 
 # pagy for Pagination
 gem "pagy", "~> 5.10"
+
+# Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
+gem "active_interaction"

@@ -7,7 +7,7 @@ RSpec.describe User, type: :model do
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
-    create(:company_user, company_id: company.id, user_id: user.id)
+    create(:company_user, company:, user:)
   end
 
   describe "Associations" do
@@ -17,7 +17,6 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:timesheet_entries) }
     it { is_expected.to have_one_attached(:avatar) }
-    it { is_expected.to belong_to(:current_workspace).optional }
   end
 
   describe "Validations" do

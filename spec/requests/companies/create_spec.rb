@@ -8,7 +8,7 @@ RSpec.describe "Companies#create", type: :request do
 
   context "when user is admin" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :admin, company
       sign_in user
     end
@@ -33,7 +33,7 @@ RSpec.describe "Companies#create", type: :request do
       end
 
       it "creates a new company" do
-        expect(Company.count).to eq(2)
+        change(Company, :count).by(1)
       end
 
       it "sets the current_workspace_id to current_user" do
@@ -66,7 +66,7 @@ RSpec.describe "Companies#create", type: :request do
       end
 
       it "will not be created" do
-        expect(Company.count).to eq(1)
+        change(Company, :count).by(0)
       end
 
       it "redirects to root_path" do
@@ -98,7 +98,7 @@ RSpec.describe "Companies#create", type: :request do
       end
 
       it "will not be created" do
-        expect(Company.count).to eq(1)
+        change(Company, :count).by(0)
       end
 
       it "redirects to root_path" do
@@ -109,7 +109,7 @@ RSpec.describe "Companies#create", type: :request do
 
   context "when user is employee" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
     end
@@ -134,7 +134,7 @@ RSpec.describe "Companies#create", type: :request do
       end
 
       it "will be created" do
-        expect(Company.count).to eq(2)
+        change(Company, :count).by(1)
       end
 
       it "sets the current_workspace_id to current_user" do
@@ -162,7 +162,7 @@ RSpec.describe "Companies#create", type: :request do
       end
 
       it "will not be created" do
-        expect(Company.count).to eq(1)
+        change(Company, :count).by(0)
       end
 
       it "will fail" do

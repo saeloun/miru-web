@@ -8,7 +8,7 @@ RSpec.describe "Client#index", type: :request do
 
   context "when user is admin" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :admin, company
       sign_in user
       send_request :get, clients_path
@@ -71,7 +71,7 @@ RSpec.describe "Client#index", type: :request do
 
   context "when user is employee" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
       send_request(
@@ -113,6 +113,31 @@ RSpec.describe "Client#index", type: :request do
         })
       expect(response).to redirect_to(user_session_path)
       expect(flash[:alert]).to eq("You need to sign in or sign up before continuing.")
+    end
+  end
+
+  context "when user's current workspace is nil" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :employee, company
+      user.update!(current_workspace_id: nil)
+      sign_in user
+      send_request(
+        :post, clients_path, params: {
+          client: {
+            name: "Test Client",
+            email: "test@example.com",
+            phone: "Test phone",
+            address: "India",
+            client_code: "TE"
+          }
+        }
+      )
+    end
+
+    it "redirects to new_company_path" do
+      expect(response).to have_http_status(:redirect)
+      expect(response.body).to include("/company/new")
     end
   end
 end
