@@ -11,7 +11,7 @@ const Container = ({ invoiceDetails }) => {
 
   return (
     <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
-      <CompanyInfo />
+      <CompanyInfo companyDetails={invoiceDetails.companyDetails}/>
       <InvoiceDetails clientList = {invoiceDetails.clientList}/>
       <div className="px-10 py-5">
         <InvoiceTable
