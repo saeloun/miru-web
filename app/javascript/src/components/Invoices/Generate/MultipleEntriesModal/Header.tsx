@@ -1,6 +1,6 @@
 import React from "react";
 
-import { X } from "phosphor-react";
+import { X, MagnifyingGlass } from "phosphor-react";
 import FilterSelect from "./FilterSelect";
 
 const Header = ({ setShowMultilineModal }) => (
@@ -14,7 +14,10 @@ const Header = ({ setShowMultilineModal }) => (
       </button>
     </div>
     <div className='flex justify-between px-6 py-2'>
-      <input type="text" placeholder='Search' className='p-2 w-2/5 bg-miru-gray-100 text-sm font-medium rounded ' />
+      <div className="w-2/5 flex">
+        <input type="text" placeholder='Search' className='p-2 w-full bg-miru-gray-100 text-sm font-medium rounded focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000' />
+        <MagnifyingGlass size={16} color="#1D1A31" style={{ marginLeft: "300px" }} className="absolute mt-3" />
+      </div>
       <FilterSelect
         option={[{ value: "All", label: "All" }, { value: "Billed", label: "Billed" }, { value: "UnBilled", label: "Unbilled" }]}
         placeholder="Billing Status"

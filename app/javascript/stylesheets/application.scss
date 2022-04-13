@@ -42,6 +42,17 @@
     }
   }
 
+  ::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+    background: none;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #CDD6DF;
+    -webkit-border-radius: 3px;
+  }
+
   .button-icon{
     &__back {
       @apply mr-4 h-8 p-1;
