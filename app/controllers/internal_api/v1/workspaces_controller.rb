@@ -18,9 +18,4 @@ class InternalApi::V1::WorkspacesController < ApplicationController
       }, status: :unprocessable_entity
     end
   end
-
-  def users
-    authorize Company
-    render :users, locals: { users: current_company.user_details }, status: :ok
-  end
 end
