@@ -57,7 +57,8 @@ const Table = ({
   handleEditClick = (id) => {}, // eslint-disable-line
   rowOnClick = () => {}, // eslint-disable-line
   checkboxCss = "",
-  showRowBorder = false
+  tableCss = "",
+  showRowBorder = true
 }) => {
 
   const data = React.useMemo(() => tableRowArray, [tableRowArray]);
@@ -80,7 +81,7 @@ const Table = ({
 
   return (
     <>
-      <table className="min-w-full" {...getTableProps()}>
+      <table className={`min-w-full ${tableCss}`} {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
