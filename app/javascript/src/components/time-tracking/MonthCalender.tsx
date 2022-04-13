@@ -73,7 +73,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
   };
 
   const handleMonthNumberChange = async () => {
-    const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber}-01`;
+    const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber + 1}-01`;
     setStartOfTheMonth(dayjs(firstDateOfTheMonth).format("YYYY-MM-DD"));
     setEndOfTheMonth(dayjs(firstDateOfTheMonth).endOf("month").format("YYYY-MM-DD"));
     setFirstDay(dayjs(firstDateOfTheMonth).startOf("month").day());
@@ -88,7 +88,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
 
   useEffect(() => {
     handleMonthChange();
-  }, [dayInfo]);
+  }, [entryList]);
 
   return (
     <div className="mb-6">
