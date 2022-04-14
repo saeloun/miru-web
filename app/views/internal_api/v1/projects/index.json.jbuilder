@@ -14,8 +14,4 @@ end
 json.clients current_company.clients do |client|
   json.id client.id
   json.name client.name
-  json.projects client.projects do |project|
-    json.id project.id
-    json.name project.name
-  end
 end

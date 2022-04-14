@@ -30,9 +30,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
         end
         clients = user.current_workspace.clients.kept.map do |client|
           {
-            id: client.id, name: client.name, projects: client.projects.kept.map do |project|
-            { id: project.id, name: project.name }
-          end
+            id: client.id, name: client.name
           }
         end
         expect(response).to have_http_status(:ok)
