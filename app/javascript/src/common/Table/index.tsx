@@ -100,10 +100,18 @@ const Table = ({
 
                 {hasRowIcons && <td className="table__cell">
                   <div className="iconWrapper invisible">
-                    <button onClick={() => handleEditClick(row.original.rowId)}>
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleEditClick(row.original.rowId)
+                    }}>
                       <Pencil size={16} color="#5b34ea" weight="bold" />
                     </button>
-                    <button onClick={() => handleDeleteClick(row.original.rowId)} className="ml-10">
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDeleteClick(row.original.rowId)
+                    }} className="ml-10">
                       <Trash size={16} color="#5b34ea" weight="bold" />
                     </button>
                   </div>
