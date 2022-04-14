@@ -1,5 +1,6 @@
 import React from "react";
 import { useTable, useRowSelect } from "react-table";
+import PropTypes from "prop-types";
 import { Pencil, Trash } from "phosphor-react";
 
 const IndeterminateCheckbox = React.forwardRef( // eslint-disable-line react/display-name
@@ -119,3 +120,13 @@ const Table = ({
 };
 
 export default Table;
+
+Table.proptypes = {
+  tableHeader: PropTypes.array,
+  tableRowArray: PropTypes.array,
+  hasCheckbox: PropTypes.bool,
+  hasRowIcons: PropTypes.bool,
+  handleDeleteClick: PropTypes.func,
+  handleEditClick: PropTypes.func,
+  rowOnClick: PropTypes.func
+};

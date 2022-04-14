@@ -29,21 +29,21 @@ const getTableData = (clients) => {
 const Clients = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [clientToEdit, setClientToEdit] = useState({});
-  const [clientToDelete, setClientToDelete] = useState({});
+  const [edit, setedit] = useState({});
+  const [deleteClient, setDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
 
   const handleEditClick = (id) => {
     setShowEditDialog(true);
     const editSelection = clientData.find(client => client.id === id);
-    setClientToEdit(editSelection);
+    setedit(editSelection);
   };
 
   const handleDeleteClick = (id) => {
     setShowDeleteDialog(true);
     const editSelection = clientData.find(client => client.id === id);
-    setClientToDelete(editSelection);
+    setDelete(editSelection);
   };
 
   const handleSelectChange = (event) => {
@@ -146,13 +146,13 @@ const Clients = ({ isAdminUser }) => {
       {showEditDialog ? (
         <EditClient
           setShowEditDialog={setShowEditDialog}
-          client={clientToEdit}
+          client={edit}
         />
       ) : null}
       {showDeleteDialog && (
         <DeleteClient
           setShowDeleteDialog={setShowDeleteDialog}
-          client={clientToDelete}
+          client={deleteClient}
         />
       )}
     </>
