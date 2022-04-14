@@ -174,9 +174,7 @@
                 <div class="cursor-pointer" x-data="{ isOpen: false}">
                   <div class="flex p-1" @click="isOpen = !isOpen">
                     <%= image_tag company_logo(current_company), alt: "company_logo", class: "mr-1 h-6 w-6 rounded-md" %>
-                    <p class="px-1 font-manrope font-bold tracking-widest">
-                      <%= current_company.name.upcase %>
-                    </p>
+
                     <p class="py-1.5 px-1">
                       <img src="<%= image_url 'down_arrow.svg' %>" class="mr-3 h-3 w-3" alt="down_arrow" />
                     </p>
