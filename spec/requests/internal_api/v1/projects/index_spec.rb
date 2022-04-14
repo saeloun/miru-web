@@ -28,8 +28,16 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
             isBillable: project.billable, minutesSpent: project.total_hours_logged(time_frame)
           }
         end
+        clients = user.current_workspace.clients.kept.map do |client|
+          {
+            id: client.id, name: client.name, projects: client.projects.kept.map do |project|
+            { id: project.id, name: project.name }
+          end
+          }
+        end
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
+        expect(json_response["clients"]).to eq(JSON.parse(clients.to_json))
       end
     end
   end

@@ -11,11 +11,11 @@ json.projects projects do |project|
   json.is_billable project.billable
   json.minutes_spent project.total_hours_logged
 end
-# json.clients current_company.clients do |client|
-#   json.id client.id
-#   json.name client.name
-#   json.projects client.projects do |project|
-#     json.id project.id
-#     json.name project.name
-#   end
-# end
+json.clients current_company.clients do |client|
+  json.id client.id
+  json.name client.name
+  json.projects client.projects do |project|
+    json.id project.id
+    json.name project.name
+  end
+end
