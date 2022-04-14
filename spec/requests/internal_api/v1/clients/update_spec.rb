@@ -99,4 +99,33 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
       expect(json_response["error"]).to match("You need to sign in or sign up before continuing.")
     end
   end
+
+  context "when user's current workspace is different" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :employee, company
+      company2 = create(:company)
+      create(:company_user, company: company2, user:)
+      user.add_role :employee, company2
+      user.update!(current_workspace_id: company2)
+      sign_in user
+      send_request(
+        :patch, internal_api_v1_client_path(client), params: {
+          client: {
+            id: client.id,
+            name: "Test Client",
+            email: "test@example.com",
+            phone: "Test phone",
+            address: "India"
+          }
+        }
+      )
+    end
+
+    it "redirects to root path and displays an error message" do
+      expect(response).to have_http_status(:forbidden)
+      error_json = { "errors" => "User is unauthorized to modify this client's details" }
+      expect(JSON.parse(response.body)).to eq(error_json)
+    end
+  end
 end
