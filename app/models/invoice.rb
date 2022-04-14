@@ -29,6 +29,8 @@
 # frozen_string_literal: true
 
 class Invoice < ApplicationRecord
+  include InvoiceSendable
+
   attr_accessor :sub_total
 
   enum status: [
