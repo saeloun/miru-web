@@ -93,6 +93,7 @@ RSpec.describe Project, type: :model do
 
     context "when time_frame is last week" do
       let(:time_frame) { "last_week" }
+
       let(:last_week_start_date) { Date.today.last_week.beginning_of_week }
       let(:last_week_end_date) { Date.today.last_week.end_of_week }
       let(:current_week) { Date.today.beginning_of_week }
