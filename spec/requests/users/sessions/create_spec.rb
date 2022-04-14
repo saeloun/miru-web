@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Users::SessionsController#after_sign_in_path_for", type: :request do
+RSpec.describe "Users::SessionsController#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id, password: "testing!") }
 
