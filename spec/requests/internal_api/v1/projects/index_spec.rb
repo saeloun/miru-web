@@ -45,17 +45,17 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_clients_path
+      send_request :get, internal_api_v1_projects_path
     end
 
-    it "is not permitted to view time entry report" do
+    it "is not permitted to view time project" do
       expect(response).to have_http_status(:forbidden)
     end
   end
 
   context "when unauthenticated" do
-    it "is not permitted to view time entry report" do
-      send_request :get, internal_api_v1_reports_path
+    it "is not permitted to view project" do
+      send_request :get, internal_api_v1_projects_path
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
     end
