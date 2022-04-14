@@ -1,61 +1,87 @@
-import * as React from "react";
+import React from "react";
+
 import CustomCheckbox from "common/CustomCheckbox";
+import dayjs from "dayjs";
+import { currencyFormat } from "helpers/currency";
 import { Pen, Trash } from "phosphor-react";
+
 import getStatusCssClass from "../../../../utils/getStatusTag";
 
-const TableRow = ({ invoice, handleSelectCheckbox }) => {
-  const [grayColor, setGrayColor] = React.useState<string>("");
-  const [isHover, setHover] = React.useState<boolean>(false);
-
-  const handleMouseEnter = () => {
-    setGrayColor("bg-miru-gray-100");
-    setHover(true);
-  };
-
-  const handleMouseLeave = () => {
-    setGrayColor("");
-    setHover(false);
-  };
-
+const TableRow = ({
+  invoice,
+  isSelected,
+  selectInvoices,
+  deselectInvoices
+}) => {
   const handleCheckboxChange = (event) => {
-    handleSelectCheckbox(invoice.id, event.target.checked);
+    if (isSelected) {
+      deselectInvoices([invoice.id]);
+    } else {
+      selectInvoices([invoice.id]);
+    }
   };
+
+  const formattedAmount = currencyFormat({
+    baseCurrency: invoice.company.baseCurrency,
+    amount: invoice.amount
+  });
+
+  const formattedDate = (date) =>
+    dayjs(date).format(invoice.company.dateFormat);
 
   return (
-    <tr className={`last:border-b-0 ${grayColor}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <tr className="last:border-b-0 hover:bg-miru-gray-100 group">
       <td className="px-6 py-5">
-        <CustomCheckbox text='' handleCheck={handleCheckboxChange} isChecked={invoice.isChecked} checkboxValue='' id={invoice.id} />
+        <CustomCheckbox
+          text=""
+          handleCheck={handleCheckboxChange}
+          isChecked={isSelected}
+          checkboxValue={isSelected}
+          id={invoice.id}
+        />
       </td>
-      <td className="px-6 py-5 font-medium w-2/4 ftracking-wider">
-        <h1 className="font-semibold text-miru-dark-purple-1000">{invoice.invoiceName}</h1>
-        <h3 className="font-normal text-sm text-miru-dark-purple-400">{invoice.invoiceId}</h3>
+
+      <td className="w-2/4 px-6 py-5 font-medium ftracking-wider">
+        <h1 className="font-semibold capitalize text-miru-dark-purple-1000">
+          {invoice.client.name}
+        </h1>
+        <h3 className="text-sm font-normal text-miru-dark-purple-400">
+          {invoice.invoiceNumber}
+        </h3>
       </td>
-      <td className="px-6 py-5 font-medium w-1/4 tracking-wider">
-        <h1 className="font-semibold text-miru-dark-purple-1000">{invoice.invoicedate}</h1>
-        <h3 className="font-normal text-sm text-miru-dark-purple-400">{invoice.invoiceduedate}</h3>
+
+      <td className="w-1/4 px-6 py-5 font-medium tracking-wider">
+        <h1 className="font-semibold text-miru-dark-purple-1000">
+          {formattedDate(invoice.issueDate)}
+        </h1>
+        <h3 className="text-sm font-normal text-miru-dark-purple-400">
+          Due on {formattedDate(invoice.dueDate)}
+        </h3>
       </td>
-      <td className="px-6 py-5 font-bold text-xl text-miru-dark-purple-1000 tracking-wider">
-        {invoice.amount}
+
+      <td className="px-6 py-5 text-xl font-bold tracking-wider text-miru-dark-purple-1000">
+        {formattedAmount}
       </td>
+
       <td className="px-6 py-5 font-medium">
-        <span className={getStatusCssClass(invoice.status)}>
+        <span className={getStatusCssClass(invoice.status) + " uppercase"}>
           {invoice.status}
         </span>
       </td>
-      <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
+
+      <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
         <div className="flex items-center h-full">
-          { isHover && <button>
-            <Pen size={16} color="#5B34EA" />
+          <button className="hidden group-hover:block text-miru-han-purple-1000">
+            <Pen size={16} />
           </button>
-          }
         </div>
       </td>
-      <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
+
+      <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
         <div className="flex items-center h-full">
-          { isHover && <button>
-            <Trash size={16} color="#5B34EA" />
+          <button className="hidden group-hover:block text-miru-han-purple-1000">
+            <Trash size={16} />
           </button>
-          }
         </div>
       </td>
     </tr>
