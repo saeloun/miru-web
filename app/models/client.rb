@@ -83,6 +83,15 @@ class Client < ApplicationRecord
     end
   end
 
+  def client_detail(time_frame = "week")
+    {
+      id: id,
+      name: name,
+      email: email,
+      minutes_spent: total_hours_logged(time_frame)
+    }
+  end
+
   private
 
     def discard_projects

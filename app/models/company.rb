@@ -42,14 +42,7 @@ class Company < ApplicationRecord
   validates :company_code, presence: true, uniqueness: true, length: { is: 2 }
 
   def client_details(time_frame = "week")
-    clients.kept.map do |client|
-      {
-        id: client.id,
-        name: client.name,
-        email: client.email,
-        minutes_spent: client.total_hours_logged(time_frame)
-      }
-    end
+    clients.kept.map { |client| client.client_detail(time_frame) }
   end
 
   def client_list
