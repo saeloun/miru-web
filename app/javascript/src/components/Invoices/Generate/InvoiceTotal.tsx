@@ -3,7 +3,7 @@ import { PencilSimple, DotsThreeVertical } from "phosphor-react";
 
 import DiscountMenu from "./DiscountMenu";
 
-const InvoiceTotal = ({ newLineItems }) => {
+const InvoiceTotal = ({ newLineItems, amountDue, setAmountDue }) => {
 
   const [addDiscount, setAddDiscount] = useState<boolean>(false);
   const [showDiscountMenu, setShowDiscountMenu] = useState<boolean>(false);
@@ -18,7 +18,6 @@ const InvoiceTotal = ({ newLineItems }) => {
   const [subTotal, setSubTotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [amountPaid] = useState<number>(0);
-  const [amountDue, setAmountDue] = useState<number>(0);
 
   const onEnter = (e, type) => {
     if (e.key === "Enter") {

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 import ClientSelection from "./ClientSelection";
 
-const InvoiceDetails = ({ clientList, selectedClient, setSelectedClient }) => {
+const InvoiceDetails = ({ clientList, selectedClient, setSelectedClient, amountDue }) => {
   const [issueDate] = useState<string>(dayjs().format("DD.MM.YYYY"));
   const [dueDate] = useState<string>(dayjs().add(1, "month").format("DD.MM.YYYY"));
 
@@ -44,7 +44,7 @@ const InvoiceDetails = ({ clientList, selectedClient, setSelectedClient }) => {
           Amount
         </p>
         <p className="font-normal text-4xl text-miru-dark-purple-1000 mt-6">
-          $90.00
+          ${amountDue}
         </p>
       </div>
     </div>
