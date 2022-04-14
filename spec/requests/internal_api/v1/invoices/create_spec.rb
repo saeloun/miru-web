@@ -18,19 +18,18 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
 
     describe "invoice creation" do
       it "creates invoice successfully" do
-        send_request :post, internal_api_v1_invoices_path(
-          invoice: {
-            client_id: company.clients.first.id,
-            invoice_number: "INV0001",
-            reference: "bar",
-            issue_date: "2022-01-01",
-            due_date: "2022-01-31"
-          })
+        invoice = attributes_for(
+          :invoice,
+          client: company.clients.first,
+          client_id: company.clients.first.id,
+          status: :draft)
+        send_request :post, internal_api_v1_invoices_path(invoice:)
         expect(response).to have_http_status(:ok)
-        expect(json_response["invoiceNumber"]).to eq("INV0001")
-        expect(json_response["issueDate"]).to eq("2022-01-01")
-        expect(json_response["dueDate"]).to eq("2022-01-31")
-        expect(json_response["status"]).to eq("draft")
+        expected_attrs = ["amount", "amountDue", "amountPaid",
+                          "client", "discount", "dueDate", "id",
+                          "invoiceNumber", "issueDate", "outstandingAmount",
+                          "reference", "status", "tax"]
+        expect(json_response.keys.sort).to match(expected_attrs)
       end
 
       it "throws 422 if client doesn't exist" do
