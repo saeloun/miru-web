@@ -37,6 +37,24 @@ class Client < ApplicationRecord
   validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
   after_discard :discard_projects
 
+  def new_line_item_entries(selected_entries)
+    timesheet_entries.where(bill_status: :unbilled)
+      .joins(
+        "INNER JOIN project_members ON timesheet_entries.project_id = project_members.project_id
+          AND timesheet_entries.user_id = project_members.user_id"
+      )
+      .joins("INNER JOIN users ON project_members.user_id = users.id")
+      .select(
+        "timesheet_entries.id as id,
+         users.first_name as first_name,
+         users.last_name as last_name,
+         timesheet_entries.work_date as date,
+         timesheet_entries.note as description,
+         project_members.hourly_rate as rate,
+         timesheet_entries.duration as qty"
+      ).where.not(id: selected_entries)
+  end
+
   def total_hours_logged(time_frame = "week")
     from, to = week_month_year(time_frame)
     (projects.kept.map { |project| project.timesheet_entries.where(work_date: from..to).sum(:duration) }).sum
