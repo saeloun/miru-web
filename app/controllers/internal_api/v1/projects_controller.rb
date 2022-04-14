@@ -14,8 +14,7 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
   def create
     authorize Project
     render :create, locals: {
-      project: Project.create!(project_params),
-      client: load_client(project_params[:client_id])
+      project: Project.create!(project_params)
     }
   end
 
@@ -23,9 +22,13 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
     authorize project
     project.update!(project_params)
     render :update, locals: {
-      project:,
-      client: load_client(project[:client_id])
+      project:
     }
+  end
+
+  def destroy
+    authorize project
+    project.discard!
   end
 
   private
@@ -36,10 +39,6 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
 
     def project
       @_project ||= Project.includes(:project_members, project_members: [:user]).find(params[:id])
-    end
-
-    def load_client(client_id)
-      Client.find(client_id)
     end
 
     def project_params

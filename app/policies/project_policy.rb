@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
 class ProjectPolicy < ApplicationPolicy
+  attr_reader :error_message_key
+
   def index?
+    user_owner_or_admin?
+  end
+
+  def show?
     user_owner_or_admin?
   end
 
@@ -13,7 +19,7 @@ class ProjectPolicy < ApplicationPolicy
     user_owner_or_admin?
   end
 
-  def show?
+  def destroy?
     user_owner_or_admin?
   end
 
