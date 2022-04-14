@@ -14,6 +14,6 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :reports, only: [:index]
     resources :workspaces, only: [:update]
     resources :invoices, only: [:index]
-    resources :generate_invoice, only: [:index]
+    resources :generate_invoice, only: [:index, :show]
   end
 end
