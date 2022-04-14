@@ -34,6 +34,6 @@ class ClientPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:name, :email, :phone, :address, :client_code]
+    [:name, :email, :phone, :address]
   end
 end

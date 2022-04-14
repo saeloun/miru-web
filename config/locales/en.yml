@@ -76,9 +76,6 @@ en:
     address:
       label: Address
       placeholder: Enter address
-    code:
-      label: Client Code
-      placeholder: Enter Client code
     create:
       failure: "Client creation failed"
       success: "Client added successfully"
@@ -143,7 +140,6 @@ en:
     save: save
     logo: logo
     company: company
-    company_code: company code
     address: address
     business_phone: business phone
     country: country
