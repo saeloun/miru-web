@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   private
 
     def validate_company!
-      return if current_user.nil?
+      return if current_user.nil? || devise_controller?
 
       authorize current_company, :company_present?, policy_class: CompanyPolicy
     end
