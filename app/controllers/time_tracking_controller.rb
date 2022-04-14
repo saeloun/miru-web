@@ -15,8 +15,8 @@ class TimeTrackingController < ApplicationController
       .includes([:project, :user])
       .in_workspace(current_company)
       .during(
-        Date.today.beginning_of_month,
-        Date.today.end_of_month
+        1.month.ago.beginning_of_month,
+        1.month.since.end_of_month
         )
     entries = formatted_entries_by_date(timesheet_entries)
 

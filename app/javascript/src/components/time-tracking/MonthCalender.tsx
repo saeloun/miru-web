@@ -3,6 +3,7 @@ import * as React from "react";
 import dayjs from "dayjs";
 
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
+import Logger from "js-logger";
 
 const { useState, useEffect } = React;
 
@@ -47,21 +48,35 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
     setMonthData(monthData);
   };
 
-  const handlePrevMonth = () => {
-    if (currentMonthNumber === 0) {
-      setCurrentMonthNumber(11);
-      setCurrentYear(currentYear - 1);
-    } else {
-      setCurrentMonthNumber(cmn => cmn - 1);
+  const handlePrevMonth = async () => {
+    try {
+      const startOfTheMonth2MonthsAgo = dayjs(startOfTheMonth).subtract(2, "month").format("YYYY-MM-DD");
+      const endOfTheMonth2MonthsAgo = dayjs(endOfTheMonth).subtract(2, "month").format("YYYY-MM-DD");
+      await fetchEntries(startOfTheMonth2MonthsAgo, endOfTheMonth2MonthsAgo);
+      if (currentMonthNumber === 0) {
+        setCurrentMonthNumber(11);
+        setCurrentYear(currentYear - 1);
+      } else {
+        setCurrentMonthNumber(cmn => cmn - 1);
+      }
+    } catch (error) {
+      Logger.error(error);
     }
   };
 
-  const handleNextMonth = () => {
-    if (currentMonthNumber === 11) {
-      setCurrentMonthNumber(0);
-      setCurrentYear(currentYear + 1);
-    } else {
-      setCurrentMonthNumber(currentMonthNumber + 1);
+  const handleNextMonth = async () => {
+    try {
+      const startOfTheMonth2MonthsLater = dayjs(startOfTheMonth).add(2, "month").format("YYYY-MM-DD");
+      const endOfTheMonth2MonthsLater = dayjs(endOfTheMonth).add(2, "month").format("YYYY-MM-DD");
+      await fetchEntries(startOfTheMonth2MonthsLater, endOfTheMonth2MonthsLater);
+      if (currentMonthNumber === 11) {
+        setCurrentMonthNumber(0);
+        setCurrentYear(currentYear + 1);
+      } else {
+        setCurrentMonthNumber(currentMonthNumber + 1);
+      }
+    } catch (error) {
+      Logger.error(error);
     }
   };
 
@@ -72,14 +87,13 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
     setCurrentYear(dayjs().year());
   };
 
-  const handleMonthNumberChange = async () => {
+  const handleMonthNumberChange = () => {
     const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber + 1}-01`;
     setStartOfTheMonth(dayjs(firstDateOfTheMonth).format("YYYY-MM-DD"));
     setEndOfTheMonth(dayjs(firstDateOfTheMonth).endOf("month").format("YYYY-MM-DD"));
     setFirstDay(dayjs(firstDateOfTheMonth).startOf("month").day());
     setDaysInMonth(dayjs(firstDateOfTheMonth).daysInMonth());
     handleMonthChange();
-    await fetchEntries(startOfTheMonth, endOfTheMonth);
   };
 
   useEffect(() => {
@@ -105,7 +119,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
               onClick={handlePrevMonth}
               className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
             >
-              {"<"}
+              &lt;
             </button>
             <p className="text-white mx-6 w-auto">
               {monthsAbbr[Math.abs(currentMonthNumber)]} {currentYear}
@@ -114,7 +128,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
               onClick={handleNextMonth}
               className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
             >
-              {">"}
+              &gt;
             </button>
           </div>
         }

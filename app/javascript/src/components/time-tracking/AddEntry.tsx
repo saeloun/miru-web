@@ -57,7 +57,7 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   const handleSave = async () => {
-    if (!note && !project) return;
+    if (!project) return;
 
     const res = await timesheetEntryApi.create({
       project_id: projectId,
@@ -82,6 +82,7 @@ const AddEntry: React.FC<Iprops> = ({
         }
         return newState;
       });
+      setNewEntryView(false);
     }
   };
 

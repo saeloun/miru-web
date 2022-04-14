@@ -237,7 +237,7 @@ const TimeTracking: React.FC<Iprops> = ({
                       onClick={handlePrevWeek}
                       className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
                     >
-                      {"<"}
+                      &lt;
                     </button>
                     {!!dayInfo.length && (
                       <p className="text-white mx-6 w-40">
@@ -250,7 +250,7 @@ const TimeTracking: React.FC<Iprops> = ({
                       onClick={handleNextWeek}
                       className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
                     >
-                      {">"}
+                      &gt;
                     </button>
                   </div>
                   <div className="flex mr-12">
