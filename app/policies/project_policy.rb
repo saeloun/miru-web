@@ -19,10 +19,7 @@ class ProjectPolicy < ApplicationPolicy
 
   def permitted_attributes
     [
-      :issue_date, :due_date,
-      :invoice_number, :reference, :amount,
-      :outstanding_amount, :tax, :amount_paid,
-      :amount_due, :discount, :client_id
+      :name, :description, :billable, :client_id
     ]
   end
 end
