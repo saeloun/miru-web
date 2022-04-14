@@ -14,8 +14,8 @@ RSpec.describe "InternalApi::V1::Project#create", type: :request do
       sign_in user
     end
 
-    describe "project creation" do
-      it "creates project successfully" do
+    describe "#create" do
+      it "creates the project successfully" do
         project = attributes_for(:project, client_id: client.id)
         send_request :post, internal_api_v1_projects_path(project:)
         expect(response).to have_http_status(:ok)
@@ -23,7 +23,7 @@ RSpec.describe "InternalApi::V1::Project#create", type: :request do
         expect(json_response.keys.sort).to match(expected_attrs)
       end
 
-      it "throws 422 if client doesn't exist" do
+      it "throws 422 if the client doesn't exist" do
         send_request :post, internal_api_v1_projects_path(
           project: {
             name: "Test Project",
@@ -36,7 +36,7 @@ RSpec.describe "InternalApi::V1::Project#create", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when the user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company

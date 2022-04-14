@@ -8,14 +8,14 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
       sign_in user
     end
 
-    describe "project update" do
+    describe "#update" do
       it "updates project successfully" do
         send_request :patch, internal_api_v1_project_path(
           id: project.id, params: {
@@ -27,12 +27,12 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
         expect(json_response["description"]).to eq("test for update")
       end
 
-      it "throws 422 if client doesn't exist" do
+      it "throws 422 if the client doesn't exist" do
         send_request :patch, internal_api_v1_project_path(
           id: project.id, params: {
             project: {
               client_id: 100000,
-              reference: "test for update"
+              description: "test for update"
             }
           })
         expect(response).to have_http_status(:unprocessable_entity)
@@ -41,7 +41,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company

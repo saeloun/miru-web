@@ -8,14 +8,14 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
 
-  context "when user is admin" do
+  context "when the user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
       sign_in user
     end
 
-    describe "project update" do
+    describe "#destroy" do
       it "updates project successfully" do
         send_request :delete, internal_api_v1_project_path(id: project.id)
         expect(response).to be_successful
@@ -23,7 +23,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when the user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
