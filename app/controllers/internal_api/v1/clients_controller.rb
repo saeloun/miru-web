@@ -3,7 +3,7 @@
 class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationController
   def index
     authorize Client
-    query = current_user.current_workspace.clients.ransack({ name_or_email_cont: params[:q] })
+    query = current_company.clients.ransack({ name_or_email_cont: params[:q] })
     clients = query.result(distinct: true)
     client_details = clients.map { |client| client.client_detail(params[:time_frame]) }
     total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
