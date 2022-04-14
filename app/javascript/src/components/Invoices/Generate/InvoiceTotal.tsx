@@ -17,7 +17,7 @@ const InvoiceTotal = ({ newLineItems }) => {
   const [tax, setTax] = useState<any>(null);
   const [subTotal, setSubTotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
-  const [amountPaid, setAmountPaid] = useState<number>(0);
+  const [amountPaid] = useState<number>(0);
   const [amountDue, setAmountDue] = useState<number>(0);
 
   const onEnter = (e, type) => {
