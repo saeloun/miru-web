@@ -27,22 +27,23 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
         expect(response).to have_http_status(:ok)
         expected_attrs = ["amount", "amountDue", "amountPaid",
                           "client", "discount", "dueDate", "id",
-                          "invoiceNumber", "issueDate", "outstandingAmount",
-                          "reference", "status", "tax"]
+                          "invoiceLineItems", "invoiceNumber", "issueDate",
+                          "outstandingAmount", "reference", "status", "tax"]
         expect(json_response.keys.sort).to match(expected_attrs)
       end
 
-      it "throws 422 if client doesn't exist" do
-        send_request :post, internal_api_v1_invoices_path(
-          invoice: {
-            client_id: 100000,
-            invoice_number: "INV0001",
-            reference: "bar",
-            issue_date: "2022-01-01",
-            due_date: "2022-01-31"
-          })
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(json_response["errors"]["client"].first).to eq("must exist")
+      context "when client doesn't exist" do
+        it "throws 404" do
+          send_request :post, internal_api_v1_invoices_path(
+            invoice: {
+              client_id: 100000,
+              invoice_number: "INV0001",
+              reference: "bar",
+              issue_date: "2022-01-01",
+              due_date: "2022-01-31"
+            })
+          expect(response).to have_http_status(:not_found)
+        end
       end
     end
   end
@@ -52,7 +53,14 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
       create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :post, internal_api_v1_invoices_path
+      send_request :post, internal_api_v1_invoices_path(
+        invoice: attributes_for(
+          :invoice,
+          client: company.clients.first,
+          client_id: company.clients.first.id,
+          status: :draft
+        )
+      )
     end
 
     it "is not be permitted to generate an invoice" do
@@ -62,7 +70,14 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
 
   context "when unauthenticated" do
     it "is not be permitted to generate an invoice" do
-      send_request :post, internal_api_v1_invoices_path
+      send_request :post, internal_api_v1_invoices_path(
+        invoice: attributes_for(
+          :invoice,
+          client: company.clients.first,
+          client_id: company.clients.first.id,
+          status: :draft
+        )
+      )
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
     end

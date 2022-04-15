@@ -15,6 +15,15 @@ json.amount_due invoice.amount_due
 json.discount invoice.discount
 json.tax invoice.tax
 json.status invoice.status
+json.invoice_line_items invoice.invoice_line_items do |invoice_line_item|
+  json.id invoice_line_item.id
+  json.name invoice_line_item.name
+  json.description invoice_line_item.description
+  json.date invoice_line_item.date
+  json.rate invoice_line_item.rate
+  json.quantity invoice_line_item.quantity
+end
 json.client do
+  json.id client.id
   json.name client.name
 end
