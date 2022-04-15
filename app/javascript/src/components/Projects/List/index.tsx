@@ -1,18 +1,28 @@
 import * as React from "react";
 import { ToastContainer } from "react-toastify";
 import { Project } from "./project";
+import Header from './Header';
+import AddEditModal from "../Modals/AddEditProject";
 
 export const ProjectList = (
   {
     allProjects,
     isAdminUser,
-    projectClickHandler,
-    setShowProjectModal,
-    setEditProjectId
+    projectClickHandler
   }
-) => (
+) => {
+
+
+
+  const [showProjectModal,setShowProjectModal] =React.useState<boolean>(false);
+  const [editProjectId,setEditProjectId]=React.useState(null);
+
+  return(
   <>
     <ToastContainer />
+    <Header
+    setShowProjectModal={setShowProjectModal}
+    />
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -64,6 +74,14 @@ export const ProjectList = (
       </div>
     </div>
 
+    {
+        showProjectModal &&
+          <AddEditModal
+            setShowProjectModal={setShowProjectModal}
+            editProjectId={editProjectId}
+          />
+      }
+
     {/* {showEditDialog ? (
         <EditProject
           setShowEditDialog={setShowEditDialog}
@@ -76,7 +94,9 @@ export const ProjectList = (
           project={projectToDelete}
         />
       )} */}
+
   </>
-);
+  )}
+
 
 export default ProjectList;
