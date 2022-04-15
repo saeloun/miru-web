@@ -1,5 +1,6 @@
 import * as React from "react";
 import { minutesToHHMM } from "helpers/hhmm-parser";
+import { Pen, Trash } from "phosphor-react";
 import { IProject } from "../interface";
 
 export const Project = ({
@@ -8,14 +9,10 @@ export const Project = ({
   clientName,
   minutesSpent,
   isBillable,
-  editIcon,
-  deleteIcon,
   isAdminUser,
   projectClickHandler,
-  setShowEditDialog,
-  setProjectToEdit,
-  setProjectToDelete,
-  setShowDeleteDialog
+  setShowProjectModal,
+  setEditProjectData
 }: IProject) => {
   const [grayColor, setGrayColor] = React.useState<string>("");
   const [isHover, setHover] = React.useState<boolean>(false);
@@ -47,23 +44,20 @@ export const Project = ({
       </td>
       <td className="table__cell px-3 py-3">
         {isAdminUser && isHover && <button
-          onClick={() => {
-            setShowEditDialog(true);
-            setProjectToEdit({ id, name, isBillable });
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowProjectModal(true);
+            setEditProjectData({ id,name,clientName,isBillable });
           }}
         >
-          <img src={editIcon} alt="" />
+          <Pen size={16} color="#5B34EA" />
         </button>
         }
       </td>
       <td className="table__cell px-3 py-3">
-        { isAdminUser && isHover && <button
-          onClick={() => {
-            setShowDeleteDialog(true);
-            setProjectToDelete({ id, name });
-          }}
-        >
-          <img src={deleteIcon} alt="" />
+        {isAdminUser && isHover && <button>
+          <Trash size={16} color="#5B34EA" />
         </button>
         }
       </td>
