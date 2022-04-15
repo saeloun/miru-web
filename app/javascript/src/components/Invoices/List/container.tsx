@@ -35,7 +35,7 @@ const Container = ({ invoiceList, setInvoiceList }) => {
   return (
     <React.Fragment>
       <div className="bg-miru-gray-100 py-10 px-10">
-        <AmountBoxContainer amountBox = {amountBox} cssClass="mt-0" />
+        <AmountBoxContainer amountBox = {amountBox} cssClass="mt-0 border-none pt-0" />
       </div>
       <div>
         <Table  handleSelectAll={handleSelectAll} handleSelectCheckbox={handleSelectCheckbox} updatedInvoiceList={invoiceList} />
