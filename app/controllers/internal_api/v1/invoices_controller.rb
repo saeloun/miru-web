@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationController
+  before_action :load_client, only: [:create, :update]
+
   def index
     authorize Invoice
     pagy, invoices = pagy(
@@ -25,24 +27,26 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def create
     authorize Invoice
     render :create, locals: {
-      invoice: Invoice.create!(invoice_params),
-      client: load_client(invoice_params[:client_id])
+      invoice: @client.invoices.create!(invoice_params),
+      client: @client
     }
   end
 
   def update
     authorize invoice
+    invoice = @client.invoices.find(params[:id])
     invoice.update!(invoice_params)
     render :update, locals: {
       invoice:,
-      client: load_client(invoice[:client_id])
+      client: @client
     }
   end
 
   private
 
-    def load_client(client_id)
-      Client.find(client_id)
+    def load_client
+      client = invoice_params[:client_id] || invoice[:client_id]
+      @client = Client.find(client)
     end
 
     def invoice

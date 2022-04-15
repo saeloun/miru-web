@@ -28,16 +28,17 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
         expect(json_response["reference"]).to eq("foo")
       end
 
-      it "throws 422 if client doesn't exist" do
-        send_request :patch, internal_api_v1_invoice_path(
-          id: company.clients.first.invoices.first.id, params: {
-            invoice: {
-              client_id: 100000,
-              reference: "foo"
-            }
-          })
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(json_response["errors"]["client"].first).to eq("must exist")
+      context "when client doesn't exist" do
+        it "throws 404" do
+          send_request :patch, internal_api_v1_invoice_path(
+            id: company.clients.first.invoices.first.id, params: {
+              invoice: {
+                client_id: 100000,
+                reference: "foo"
+              }
+            })
+          expect(response).to have_http_status(:not_found)
+        end
       end
     end
   end
@@ -47,7 +48,12 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
       create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :patch, internal_api_v1_invoice_path(id: company.clients.first.invoices.first.id)
+      send_request :patch, internal_api_v1_invoice_path(
+        id: company.clients.first.invoices.first.id, params: {
+          invoice: {
+            reference: "foo"
+          }
+        })
     end
 
     it "is not be permitted to update an invoice" do
@@ -57,7 +63,12 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
 
   context "when unauthenticated" do
     it "is not be permitted to update an invoice" do
-      send_request :patch, internal_api_v1_invoice_path(id: 1)
+      send_request :patch, internal_api_v1_invoice_path(
+        id: company.clients.first.invoices.first.id, params: {
+          invoice: {
+            reference: "foo"
+          }
+        })
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
     end
