@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationController
-  before_action -> { load_client(invoice_params[:client_id] || invoice[:client_id]) }, only: [:create, :update]
+  before_action :load_client, only: [:create, :update]
 
   def index
     authorize Invoice
@@ -27,25 +27,26 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def create
     authorize Invoice
     render :create, locals: {
-      invoice: @_client.invoices.create!(invoice_params),
-      client: @_client
+      invoice: @client.invoices.create!(invoice_params),
+      client: @client
     }
   end
 
   def update
     authorize invoice
-    invoice = @_client.invoices.find(params[:id])
+    invoice = @client.invoices.find(params[:id])
     invoice.update!(invoice_params)
     render :update, locals: {
       invoice:,
-      client: @_client
+      client: @client
     }
   end
 
   private
 
-    def load_client(client_id)
-      @_client ||= Client.find(client_id)
+    def load_client
+      client = invoice_params[:client_id] || invoice[:client_id]
+      @client = Client.find(client)
     end
 
     def invoice
