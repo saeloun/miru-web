@@ -1,20 +1,20 @@
 import React, { useState, useRef } from "react";
 
-const ManualEntry = ({ setShowItemInputs, setNewLineItems, newLineItems }) => {
+const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) => {
 
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [rate, setRate] = useState<string>("");
+  const [rate, setRate] = useState<any>("");
   const [qty, setQty] = useState<string>("");
-  const [lineTotal, setLineTotal] = useState<string>("");
+  const [lineTotal, setLineTotal] = useState<any>("");
   const ref = useRef();
 
   const onEnter = e => {
     if (e.key == "Enter") {
-      const newItem = [...newLineItems, { name,date,description,rate,qty,lineTotal }];
+      const newItem = [...selectedOption, { name, date, description, rate, qty: (Number(qty)*60), lineTotal: (Number(qty) * Number(rate)) }];
 
-      setNewLineItems(newItem);
+      setSelectedOption(newItem);
       setName("");
       setDate("");
       setDescription("");
@@ -71,12 +71,14 @@ const ManualEntry = ({ setShowItemInputs, setNewLineItems, newLineItems }) => {
           placeholder="Qty"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={qty}
-          onChange={e => setQty(e.target.value)}
+          onChange={e => {setQty(e.target.value);
+            setLineTotal(Number(rate)*Number(e.target.value));
+          }}
           onKeyDown={e => onEnter(e)}
         />
       </td>
       <td className="text-right font-normal text-base text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000">
-        $90
+        {lineTotal}
       </td>
     </tr>
   );

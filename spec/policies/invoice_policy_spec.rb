@@ -10,11 +10,11 @@ RSpec.describe InvoicePolicy, type: :policy do
 
   context "when user is admin" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :admin, company
     end
 
-    permissions :index? do
+    permissions :index?, :show? do
       it "is permitted to access index" do
         expect(subject).to permit(user, :invoice)
       end
@@ -23,11 +23,11 @@ RSpec.describe InvoicePolicy, type: :policy do
 
   context "when user is employee" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :employee, company
     end
 
-    permissions :index? do
+    permissions :index?, :show? do
       it "is not permitted to access index" do
         expect(subject).not_to permit(user, :invoice)
       end

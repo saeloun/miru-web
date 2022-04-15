@@ -9,12 +9,12 @@ namespace :internal_api, defaults: { format: "json" } do
         resource :bulk_action, only: [:update, :destroy], controller: "timesheet_entry/bulk_action"
       end
     end
-    resources :projects, only: [:index, :show]
+    resources :projects, only: [:index, :show, :create, :update, :destroy]
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
     resources :reports, only: [:index]
     resources :workspaces, only: [:update]
-    resources :invoices, only: [:index]
-    resources :generate_invoice, only: [:index]
+    resources :invoices, only: [:index, :create, :update]
+    resources :generate_invoice, only: [:index, :show]
     resources :project_members, only: [:update]
     resources :company_users, only: [:index]
   end

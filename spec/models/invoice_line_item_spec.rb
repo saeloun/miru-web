@@ -21,7 +21,6 @@ RSpec.describe InvoiceLineItem, type: :model do
 
   describe "Associations" do
     describe "belongs to" do
-      it { is_expected.to belong_to(:user) }
       it { is_expected.to belong_to(:invoice) }
       it { is_expected.to belong_to(:timesheet_entry).optional(true) }
     end
