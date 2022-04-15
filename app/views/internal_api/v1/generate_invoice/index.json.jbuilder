@@ -2,6 +2,8 @@
 
 json.company_details do
   json.id current_company.id
+  json.logo current_company.logo.attached? ? polymorphic_url(current_company.logo) : ""
+  json.name current_company.name
   json.phone_number current_company.business_phone
   json.address current_company.address
   json.country current_company.country

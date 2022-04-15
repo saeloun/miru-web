@@ -14,7 +14,8 @@ class TimesheetEntryPolicy < ApplicationPolicy
   end
 
   def update?
-    record.user_id == user.id || user.has_owner_or_admin?
+    record.user_id == user.id ||
+      user.has_owner_or_admin_role?(record.project.client.company)
   end
 
   def destroy?
@@ -33,7 +34,7 @@ class TimesheetEntryPolicy < ApplicationPolicy
       if user_owner_or_admin?
         scope = user.current_workspace.timesheet_entries
       else
-        scope = user.timesheet_entries.where(company: user.current_workspace)
+        scope = user.timesheet_entries.in_workspace(user.current_workspace)
       end
     end
   end
