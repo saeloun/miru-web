@@ -39,7 +39,7 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when the user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -48,10 +48,10 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
       send_request :get, internal_api_v1_project_path(project)
     end
 
-    context "when time_frame is week" do
+    context "when time_frame is a week" do
       let(:time_frame) { "week" }
 
-      it "returns the project id, name, billable, client, members, total_minutes_logged for project in week" do
+      it "returns the project id, name, billable, client, members, total_minutes_logged for the project in a week" do
         project_team_member_details = project.project_team_member_details(time_frame)
         project_details = {
           id: project.id,
