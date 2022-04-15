@@ -8,7 +8,7 @@ class InternalApi::V1::TimesheetEntry::BulkActionController < InternalApi::V1::A
 
   def update
     timesheet_entries = policy_scope(TimesheetEntry)
-    timesheet_entries.update(project_id: params[:project_id]) if params[:project_id]
+    timesheet_entries.where(id: params[:ids]).update(project_id: params[:project_id])
     entries = formatted_entries_by_date(timesheet_entries)
     render json: { notice: I18n.t("timesheet_entry.update.message"), entries: }, status: :ok
   end
