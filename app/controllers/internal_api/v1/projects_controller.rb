@@ -3,6 +3,7 @@
 class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationController
   def index
     authorize Project
+    # project_details = current_company.project_list_after_filter((params[:from]), (params[:client_filter]), (params[:user_filter]))
     render :index, locals: { projects: }, status: :ok
   end
 
