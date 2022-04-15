@@ -2,10 +2,9 @@ import * as React from "react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectApi from "apis/projects";
 import ProjectDetails from "./Details";
-import Header from "./Header";
 import { IProject } from "./interface";
 import ProjectList from "./List";
-import ProjectModal from "./ProjectModal";
+
 
 const Projects = ({ isAdminUser }) => {
 
