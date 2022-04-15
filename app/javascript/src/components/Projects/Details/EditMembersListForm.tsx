@@ -1,8 +1,6 @@
 import * as React from "react";
 import { Trash } from "phosphor-react";
 
-const closeButton = require("../../../../../assets/images/close_button.svg"); // eslint-disable-line @typescript-eslint/no-var-requires
-
 const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMembers, handleSubmit }) => {
   const anyError = false; // this is dummy atm
 
@@ -14,34 +12,42 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
     setMembers(oldMembers => [...oldMembers, {}]);
   };
 
+  const getMember = (member, idx) => {
+    if (member.isExisting) {
+      return <input type="text" className="form__input" disabled value={member.name} />;
+    }
+    return (
+      <select
+        value={member.id}
+        name={member.id}
+        id={member.id}
+        disabled={member.isExisting}
+        className="w-full px-3 py-1 font-medium text-sm rounded bg-miru-gray-100 h-8 rounded-sm"
+        onChange={e => { member.isExisting ? null : updateMemberState(idx, "id", parseInt(e.target.value)); }}>
+        {allMemberList.map((memberFromAllMemberList) => (
+          <option
+            key={memberFromAllMemberList.id}
+            value={memberFromAllMemberList.id}
+            hidden={memberFromAllMemberList.isAdded}>
+            {memberFromAllMemberList.name}
+          </option>
+        ))}
+      </select>
+    );
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
-      {/* Show already added members */}
+    <form className="mt-7" onSubmit={handleSubmit}>
+      <h5 className="text-xs mb-4 text-miru-dark-purple-1000">Team Members</h5>
       {members.map((member, idx) => (
-        <div className="flex flex-row">
-          <div>
-            <select
-              value={member.id}
-              name={member.id}
-              id={member.id}
-              disabled={member.isExisting}
-              className="w-60 bg-miru-gray-100 rounded-sm mt-2 h-8"
-              onChange={e => { member.isExisting ? null : updateMemberState(idx, "id", parseInt(e.target.value)); }}>
-              {member.isExisting ? null : <option value="" disabled selected>Select team Member</option>}
-              {allMemberList.map((memberFromAllMemberList) => (
-                <option
-                  key={memberFromAllMemberList.id}
-                  value={memberFromAllMemberList.id}
-                  hidden={memberFromAllMemberList.isAdded}>
-                  {memberFromAllMemberList.name}
-                </option>
-              ))}
-            </select>
+        <div className="flex items-center mb-2">
+          <div className="mr-2 w-56">
+            {getMember(member, idx)}
           </div>
-          <div>
+          <div className="mr-2 w-24">
             <input
               placeholder="Rate"
-              className={`form__input ${anyError
+              className={`form__input w-full ${anyError
                 ? "border-red-600 focus:ring-red-600 focus:border-red-600"
                 : "border-gray-100 focus:ring-miru-gray-1000 focus:border-miru-gray-1000"}`}
               type="number"
@@ -51,27 +57,23 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
               onChange={e => (updateMemberState(idx, "hourlyRate", e.target.value))}
             />
           </div>
-
-          {/* Delete button for each member */}
-          <div>
+          <div className="w-6 text-right">
             <button type="button"
               onClick={() => removeMemberHandler(idx)}>
-              <Trash size={15} />
-              {/* <img
-                src={closeButton}
-              /> */}
+              <Trash size={15} fill="#5B34EA" />
             </button>
           </div>
         </div>
       ))}
 
-      <div className="actions mt-4">
-        <input
+      <div className="actions mt-4 text-center">
+        <button
           name="add"
-          value="+ Add another team member"
-          className="form__input_submit"
+          className="text-miru-han-purple-1000 "
           onClick={addNewMemberRowHandler}
-        />
+        >
+          + Add another team member
+        </button>
       </div>
 
       <div className="actions mt-4">
