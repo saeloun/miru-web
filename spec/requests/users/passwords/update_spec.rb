@@ -23,7 +23,7 @@ RSpec.describe "Users::Passwords#update", type: :request do
       expect(response).to have_http_status(:redirect)
     end
 
-    it "redirects to login page" do
+    it "redirects to root_path" do
       expect(response).to redirect_to(root_path)
     end
 
