@@ -82,6 +82,9 @@ const AddEntry: React.FC<Iprops> = ({
         }
         return newState;
       });
+      setNote("");
+      setDuration("");
+      setBillable(false);
     }
   };
 
