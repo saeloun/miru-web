@@ -26,6 +26,8 @@ class TimesheetEntry < ApplicationRecord
   belongs_to :user
   belongs_to :project
 
+  has_one :invoice_line_item
+
   before_validation :ensure_bill_status_is_set
   before_validation :ensure_bill_status_is_not_billed, on: :create
   before_validation :ensure_billed_status_should_not_be_changed, on: :update
