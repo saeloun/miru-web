@@ -3,21 +3,21 @@ import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import { X } from "phosphor-react";
 
-const ProjectModal = ({ allprojects, editProjectId, setShowProjectModal }) => {
+const AddEditProject = ({ editProjectId, setShowProjectModal }) => {
 
   const [client, setClient] = useState<any>();
   const [projectName, setProjectName] = useState<any>();
   const [projectType, setProjectType] = useState<any>("Billable");
 
-  useEffect(() => {
-    allprojects.map(project => {
-      if (project.id == editProjectId) {
-        setClient(project.client.name);
-        setProjectName(project.name);
-        setProjectType(project.isBillable ? "Billable" : "Non-Billable");
-      }
-    });
-  }, [editProjectId]);
+  // useEffect(() => {
+  //   allprojects.map(project => {
+  //     if (project.id == editProjectId) {
+  //       setClient(project.client.name);
+  //       setProjectName(project.name);
+  //       setProjectType(project.isBillable ? "Billable" : "Non-Billable");
+  //     }
+  //   });
+  // }, [editProjectId]);
 
   return (
     <div className="modal__modal main-modal" style={{ background: "rgba(29, 26, 49,0.6)" }}>
@@ -137,4 +137,4 @@ const ProjectModal = ({ allprojects, editProjectId, setShowProjectModal }) => {
   );
 };
 
-export default ProjectModal;
+export default AddEditProject;

@@ -2,16 +2,14 @@ import * as React from "react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectApi from "apis/projects";
 import ProjectDetails from "./Details";
-import Header from "./Header";
 import { IProject } from "./interface";
 import ProjectList from "./List";
-import ProjectModal from "./ProjectModal";
+
 
 const Projects = ({ isAdminUser }) => {
-  const [projects, setProjects] = React.useState<IProject[]>([]);
+
   const [showProjectDetails, setShowProjectDetails] = React.useState(null);
-  const [showProjectModal,setShowProjectModal] =React.useState<boolean>(false);
-  const [editProjectId,setEditProjectId]=React.useState(null);
+  const [projects, setProjects] = React.useState<IProject[]>([]);
 
   const fetchProjects = async () => {
 
@@ -35,9 +33,7 @@ const Projects = ({ isAdminUser }) => {
 
   return (
     <React.Fragment>
-      { isAdminUser && <Header
-        setShowProjectModal={setShowProjectModal}
-      />}
+
       {showProjectDetails ?
         <ProjectDetails
           id={showProjectDetails}
@@ -46,18 +42,9 @@ const Projects = ({ isAdminUser }) => {
           allProjects={projects}
           isAdminUser={isAdminUser}
           projectClickHandler={projectClickHandler}
-          setShowProjectModal={setShowProjectModal}
-          setEditProjectId={setEditProjectId}
         />}
 
-      {
-        showProjectModal &&
-          <ProjectModal
-            setShowProjectModal={setShowProjectModal}
-            editProjectId={editProjectId}
-            allprojects={projects}
-          />
-      }
+
     </React.Fragment>
   );
 
