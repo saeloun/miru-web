@@ -57,6 +57,9 @@ en:
     add_new_project: Add new project
     billable: Billable
     non_billable: Non-Billable
+    delete:
+      success:
+        message: Project removed successfully
   companies:
     create:
       failure: "Company creation failed"
