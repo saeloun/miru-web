@@ -2,7 +2,15 @@ import * as React from "react";
 import { ToastContainer } from "react-toastify";
 import { Project } from "./project";
 
-export const ProjectList = ({ allProjects, isAdminUser, projectClickHandler }) => (
+export const ProjectList = (
+  {
+    allProjects,
+    isAdminUser,
+    projectClickHandler,
+    setShowProjectModal,
+    setEditProjectId
+  }
+) => (
   <>
     <ToastContainer />
     <div className="flex flex-col">
@@ -41,9 +49,9 @@ export const ProjectList = ({ allProjects, isAdminUser, projectClickHandler }) =
                     {...project}
                     isAdminUser={isAdminUser}
                     projectClickHandler={projectClickHandler}
-                    /* editIcon={editIcon}
-                      deleteIcon={deleteIcon}
-                      setShowEditDialog={setShowEditDialog}
+                    setShowProjectModal={setShowProjectModal}
+                    setEditProjectId={setEditProjectId}
+                    /*setShowEditDialog={setShowEditDialog}
                       setProjectToEdit={setProjectToEdit}
                       setShowDeleteDialog={setShowDeleteDialog}
                       setProjectToDelete={setProjectToDelete} */
@@ -55,6 +63,7 @@ export const ProjectList = ({ allProjects, isAdminUser, projectClickHandler }) =
         </div>
       </div>
     </div>
+
     {/* {showEditDialog ? (
         <EditProject
           setShowEditDialog={setShowEditDialog}

@@ -12,6 +12,8 @@ export interface IProject {
   setProjectToDelete: any;
   setShowDeleteDialog: any;
   projectClickHandler: any;
+  setShowProjectModal:any;
+  setEditProjectId:any
 }
 
 export interface IMember {
