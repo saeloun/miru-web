@@ -11,12 +11,8 @@ export const Project = ({
   isBillable,
   isAdminUser,
   projectClickHandler,
-  setShowEditDialog,
-  setProjectToEdit,
-  setProjectToDelete,
-  setShowDeleteDialog,
   setShowProjectModal,
-  setEditProjectId
+  setEditProjectData
 }: IProject) => {
   const [grayColor, setGrayColor] = React.useState<string>("");
   const [isHover, setHover] = React.useState<boolean>(false);
@@ -48,9 +44,11 @@ export const Project = ({
       </td>
       <td className="table__cell px-3 py-3">
         {isAdminUser && isHover && <button
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
             setShowProjectModal(true);
-            setEditProjectId(id);
+            setEditProjectData({ id,name,clientName,isBillable });
           }}
         >
           <Pen size={16} color="#5B34EA" />
@@ -58,11 +56,7 @@ export const Project = ({
         }
       </td>
       <td className="table__cell px-3 py-3">
-        {isAdminUser && isHover && <button
-          onClick={() => {
-            setShowDeleteDialog(true);
-            setProjectToDelete({ id, name });
-          }}>
+        {isAdminUser && isHover && <button>
           <Trash size={16} color="#5B34EA" />
         </button>
         }

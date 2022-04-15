@@ -5,14 +5,12 @@ import ProjectDetails from "./Details";
 import { IProject } from "./interface";
 import ProjectList from "./List";
 
-
 const Projects = ({ isAdminUser }) => {
 
   const [showProjectDetails, setShowProjectDetails] = React.useState(null);
   const [projects, setProjects] = React.useState<IProject[]>([]);
 
   const fetchProjects = async () => {
-
     try {
       const resp = await projectApi.get();
       setProjects(resp.data.projects);
@@ -33,7 +31,6 @@ const Projects = ({ isAdminUser }) => {
 
   return (
     <React.Fragment>
-
       {showProjectDetails ?
         <ProjectDetails
           id={showProjectDetails}
@@ -43,8 +40,6 @@ const Projects = ({ isAdminUser }) => {
           isAdminUser={isAdminUser}
           projectClickHandler={projectClickHandler}
         />}
-
-
     </React.Fragment>
   );
 

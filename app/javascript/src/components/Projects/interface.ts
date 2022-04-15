@@ -13,7 +13,7 @@ export interface IProject {
   setShowDeleteDialog: any;
   projectClickHandler: any;
   setShowProjectModal:any;
-  setEditProjectId:any
+  setEditProjectData:any
 }
 
 export interface IMember {
