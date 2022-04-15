@@ -13,7 +13,7 @@ const TableRow = ({
   selectInvoices,
   deselectInvoices
 }) => {
-  const handleCheckboxChange = (event) => {
+  const handleCheckboxChange = () => {
     if (isSelected) {
       deselectInvoices([invoice.id]);
     } else {
