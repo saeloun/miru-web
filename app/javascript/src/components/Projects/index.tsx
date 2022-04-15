@@ -5,7 +5,6 @@ import ProjectDetails from "./Details";
 import { IProject } from "./interface";
 import ProjectList from "./List";
 
-
 const Projects = ({ isAdminUser }) => {
 
   const [showProjectDetails, setShowProjectDetails] = React.useState(null);
