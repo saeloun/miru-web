@@ -42,6 +42,14 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     }
   end
 
+  def send_invoice
+    authorize invoice
+
+    invoice.send_to_email(subject: invoice_email_params[:subject], recipients: invoice_email_params[:recipients])
+
+    render json: { message: "Invoice will be sent!" }, status: :accepted
+  end
+
   private
 
     def load_client
@@ -57,5 +65,9 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       params.require(:invoice).permit(
         policy(Invoice).permitted_attributes
       )
+    end
+
+    def invoice_email_params
+      params.require(:invoice_email).permit(:subject, :body, recipients: [])
     end
 end

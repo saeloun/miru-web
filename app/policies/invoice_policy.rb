@@ -17,6 +17,10 @@ class InvoicePolicy < ApplicationPolicy
     user_owner_or_admin?
   end
 
+  def send_invoice?
+    user_owner_or_admin?
+  end
+
   def permitted_attributes
     [
       :issue_date, :due_date,
