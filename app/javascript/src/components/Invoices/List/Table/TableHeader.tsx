@@ -2,42 +2,52 @@ import * as React from "react";
 
 import CustomCheckbox from "common/CustomCheckbox";
 
-const TableHeader = ({ handleSelectAll }) => {
+const TableHeader = ({ selectAllInvoices, deselectAllInvoices }) => {
   const [isChecked, setChecked] = React.useState<boolean>(false);
 
   const handleCheck = (event) => {
-    handleSelectAll(event.target.checked);
+    if (event.target.checked) {
+      selectAllInvoices();
+    } else {
+      deselectAllInvoices();
+    }
     setChecked(!isChecked);
   };
 
   return (
     <tr>
       <th className="px-6 py-5" scope="col">
-        <CustomCheckbox isChecked={isChecked} handleCheck={handleCheck} text='' checkboxValue={1} id={1} />
+        <CustomCheckbox
+          isChecked={isChecked}
+          handleCheck={handleCheck}
+          text=""
+          checkboxValue={1}
+          id={1}
+        />
       </th>
       <th
         scope="col"
-        className="px-6 py-5 text-left text-xs font-normal text-miru-black-1000 tracking-widest"
+        className="px-6 py-5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
       >
-        CLIENT / <br/>
+        CLIENT / <br />
         INVOICE NO.
       </th>
       <th
         scope="col"
-        className="px-6 py-5 text-left font-normal text-xs text-miru-black-1000 tracking-widest"
+        className="px-6 py-5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
       >
-        ISSUED DATE /<br/>
+        ISSUED DATE /<br />
         DUE DATE
       </th>
       <th
         scope="col"
-        className="px-6 py-5 text-center font-normal text-xs text-miru-black-1000 tracking-widest"
+        className="px-6 py-5 text-xs font-normal tracking-widest text-center text-miru-black-1000"
       >
         AMOUNT
       </th>
       <th
         scope="col"
-        className="px-6 py-5 text-center font-normal text-xs text-miru-black-1000 tracking-widest"
+        className="px-6 py-5 text-xs font-normal tracking-widest text-center text-miru-black-1000"
       >
         STATUS
       </th>
