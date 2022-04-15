@@ -55,6 +55,10 @@ RSpec.describe Invoice, type: :model do
           })
       end
     end
+
+    describe "accepts_nested_attributes_for" do
+      it { is_expected.to accept_nested_attributes_for(:invoice_line_items).allow_destroy(true) }
+    end
   end
 
   describe "Scopes" do
