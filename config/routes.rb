@@ -35,13 +35,16 @@ Rails.application.routes.draw do
 
   resources :team, only: [:index, :update, :destroy, :edit]
   resources :clients, only: [:index, :create]
-  resources :projects, only: [:index, :create]
+  # resources :projects, only: [:index, :create]
   resources :reports, only: [:index]
   # resources :invoices, only: [:index, :create]
   resources :workspaces, only: [:update]
 
   get "invoices/*path", to: "invoices#index", via: :all
   get "invoices", to: "invoices#index"
+
+  get "projects/*path", to: "projects#index", via: :all
+  get "projects", to: "projects#index"
 
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
