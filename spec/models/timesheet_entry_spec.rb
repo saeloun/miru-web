@@ -14,6 +14,7 @@ RSpec.describe TimesheetEntry, type: :model do
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to have_one(:invoice_line_item).dependent(:destroy) }
   end
 
   describe "Validations" do
