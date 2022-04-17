@@ -24,6 +24,7 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
         disabled={member.isExisting}
         className="w-full px-3 py-1 font-medium text-sm rounded bg-miru-gray-100 h-8 rounded-sm"
         onChange={e => { member.isExisting ? null : updateMemberState(idx, "id", parseInt(e.target.value)); }}>
+        <option value="">Please select</option>
         {allMemberList.map((memberFromAllMemberList) => (
           <option
             key={memberFromAllMemberList.id}
