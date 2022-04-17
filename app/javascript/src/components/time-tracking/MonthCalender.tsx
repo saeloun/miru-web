@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
 import dayjs from "dayjs";
-
-import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
+import { minutesToHHMM } from "helpers/hhmm-parser";
 import Logger from "js-logger";
 
 const { useState, useEffect } = React;
+// Day start from monday
+dayjs.Ls.en.weekStart = 1;
 
-const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, selectedFullDate, setSelectedFullDate, handleTodayButton, monthsAbbr  }) => {
+const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, selectedFullDate, setSelectedFullDate, handleWeekTodayButton, monthsAbbr, setWeekDay, setSelectDate  }) => {
   const [currentMonthNumber, setCurrentMonthNumber] = useState<number>(dayjs().month());
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
-  const [firstDay, setFirstDay] = useState<number>(dayjs().startOf("month").day());
+  const [firstDay, setFirstDay] = useState<number>(dayjs().startOf("month").weekday());
   const [daysInMonth, setDaysInMonth] = useState<number>(dayjs().daysInMonth());
   const [totalMonthDuration, setTotalMonthDuration] = useState<number>(0);
   const [monthData, setMonthData] = useState<object[]>([]);
@@ -80,25 +81,35 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
     }
   };
 
-  const handleMonthToday = () => {
+  const handleMonthTodayButton = () => {
+    handleWeekTodayButton();
     setSelectedFullDate(today);
-    handleTodayButton();
     setCurrentMonthNumber(dayjs().month());
+    setFirstDay(() => dayjs().startOf("month").weekday());
     setCurrentYear(dayjs().year());
   };
 
   const handleMonthNumberChange = () => {
-    const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber + 1}-01`;
+    const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber +1}-01`;
     setStartOfTheMonth(dayjs(firstDateOfTheMonth).format("YYYY-MM-DD"));
     setEndOfTheMonth(dayjs(firstDateOfTheMonth).endOf("month").format("YYYY-MM-DD"));
-    setFirstDay(dayjs(firstDateOfTheMonth).startOf("month").day());
     setDaysInMonth(dayjs(firstDateOfTheMonth).daysInMonth());
-    handleMonthChange();
+    setFirstDay(() => dayjs(firstDateOfTheMonth).startOf("month").weekday());
+  };
+
+  const handleWeekday = (date: string) => {
+    const firstDateOfCurrentWeek = dayjs(today).startOf("week").format("YYYY-MM-DD");
+    const firstDateOfSelectedWeek = dayjs(date).startOf("week").format("YYYY-MM-DD");
+    setWeekDay(dayjs(firstDateOfCurrentWeek).diff(firstDateOfSelectedWeek, "week") * -7);
   };
 
   useEffect(() => {
     handleMonthNumberChange();
   }, [currentMonthNumber]);
+
+  useEffect(() => {
+    handleMonthChange();
+  }, [firstDay]);
 
   useEffect(() => {
     handleMonthChange();
@@ -108,7 +119,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
     <div className="mb-6">
       <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
         <button
-          onClick={handleMonthToday}
+          onClick={handleMonthTodayButton}
           className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold ml-4"
         >
           TODAY
@@ -158,18 +169,21 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
           monthData.map((weekInfo) => (
             <div className="my-4 bg-miru-gray-100 flex justify-between">
               {Array.from(Array(7).keys()).map((dayNum) => (
-                weekInfo[dayNum] ? <div onClick={() => {setSelectedFullDate(weekInfo[dayNum]["date"]);}} className={("border-2 cursor-pointer h-14 w-24 bg-white rounded-md flex justify-end p-1 " + (weekInfo[dayNum]["date"] === selectedFullDate ? "border-miru-han-purple-1000" : "border-transparent"))}>
+                weekInfo[dayNum] ? <div onClick={() => {
+                  handleWeekday(weekInfo[dayNum].date);
+                  setSelectDate(dayNum);
+                }} className={("border-2 cursor-pointer h-14 w-24 bg-white rounded-md flex justify-end p-1 " + (weekInfo[dayNum]["date"] === selectedFullDate ? "border-miru-han-purple-1000" : "border-transparent"))}>
                   <div>
                     <div className="flex justify-end">
                       <p className={"text-xs font-medium " + (weekInfo[dayNum]["date"] === today ? "text-miru-white-1000 bg-miru-han-purple-1000 rounded-xl px-2" : "text-miru-dark-purple-200")}>{weekInfo[dayNum]["day"]}</p>
                     </div>
-                    <p className="text-2xl mx-3 text-miru-dark-purple-1000">{weekInfo[dayNum]["totalDuration"] >= 0 ? minutesToHHMM(weekInfo[dayNum]["totalDuration"]) : ""}</p>
+                    <p className="text-2xl mx-3 text-miru-dark-purple-1000">{weekInfo[dayNum]["totalDuration"] > 0 ? minutesToHHMM(weekInfo[dayNum]["totalDuration"]) : ""}</p>
                   </div>
                 </div>
                   :
                   <div className="h-14 w-24 text-miru-dark-purple-1000"></div>
               ))}
-              <div className="h-16 w-28 bg-white rounded-md font-bold relative">
+              <div className="h-14 w-24 bg-white rounded-md font-bold relative">
                 <div className="flex p-1 justify-end bottom-0 right-0 absolute">
                   <p className="text-2xl mr-auto">{weekInfo[7] ? minutesToHHMM(weekInfo[7]) : ""}</p>
                 </div>
@@ -189,8 +203,10 @@ interface Iprops {
   setSelectedFullDate: any;
   entryList: object;
   setEntryList: object
-  handleTodayButton: () => void;
+  handleWeekTodayButton: () => void;
   monthsAbbr: string[];
+  setWeekDay: React.Dispatch<React.SetStateAction<number>>;
+  setSelectDate: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default MonthCalender;

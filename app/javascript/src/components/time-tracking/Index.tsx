@@ -54,11 +54,6 @@ const TimeTracking: React.FC<Iprops> = ({
 
   useEffect(() => {
     handleWeekInfo();
-    const from = dayjs().weekday(weekDay).format("YYYY-MM-DD");
-    const to = dayjs()
-      .weekday(weekDay + 6)
-      .format("YYYY-MM-DD");
-    fetchEntries(from, to);
   }, [weekDay]);
 
   useEffect(() => {
@@ -74,9 +69,8 @@ const TimeTracking: React.FC<Iprops> = ({
     );
   }, [selectDate, weekDay]);
 
-  const handleTodayButton = () => {
+  const handleWeekTodayButton = () => {
     setSelectDate(dayjs().weekday());
-    setWeekDay(0);
   };
 
   const handleWeekInfo = () => {
@@ -134,10 +128,24 @@ const TimeTracking: React.FC<Iprops> = ({
 
   const handleNextWeek = () => {
     setWeekDay(p => p + 7);
+    const from = dayjs()
+      .weekday(weekDay + 7)
+      .format("YYYY-MM-DD");
+    const to = dayjs()
+      .weekday(weekDay + 13)
+      .format("YYYY-MM-DD");
+    fetchEntries(from, to);
   };
 
   const handlePrevWeek = () => {
     setWeekDay(p => p - 7);
+    const from = dayjs()
+      .weekday(weekDay - 7)
+      .format("YYYY-MM-DD");
+    const to = dayjs()
+      .weekday(weekDay - 1)
+      .format("YYYY-MM-DD");
+    fetchEntries(from, to);
   };
 
   const parseWeeklyViewData = () => {
@@ -217,8 +225,10 @@ const TimeTracking: React.FC<Iprops> = ({
                 setSelectedFullDate={setSelectedFullDate}
                 entryList={entryList}
                 setEntryList={setEntryList}
-                handleTodayButton={handleTodayButton}
+                handleWeekTodayButton={handleWeekTodayButton}
                 monthsAbbr={monthsAbbr}
+                setWeekDay={setWeekDay}
+                setSelectDate={setSelectDate}
               />
               :
               <div className="mb-6">
