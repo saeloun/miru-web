@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 
-const ManualEntry = ({ setShowItemInputs, setNewLineItems, newLineItems }) => {
+const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) => {
 
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<string>("");
@@ -12,9 +12,9 @@ const ManualEntry = ({ setShowItemInputs, setNewLineItems, newLineItems }) => {
 
   const onEnter = e => {
     if (e.key == "Enter") {
-      const newItem = [...newLineItems, { name,date,description,rate,qty,lineTotal }];
+      const newItem = [...selectedOption, { name, date, description, rate, qty: (Number(qty)*60), lineTotal: (Number(qty) * Number(rate)) }];
 
-      setNewLineItems(newItem);
+      setSelectedOption(newItem);
       setName("");
       setDate("");
       setDescription("");

@@ -11,8 +11,7 @@ companies = [
     fiscal_year_end: "apr-mar",
     date_format: "DD-MM-YYYY",
     country: "IN",
-    timezone: "Asia - Kolkata",
-    company_code: "SA"
+    timezone: "Asia - Kolkata"
   },
 
   {
@@ -24,8 +23,7 @@ companies = [
     fiscal_year_end: "jan-dec",
     date_format: "YYYY-MM-DD",
     country: "US",
-    timezone: "America - New York",
-    company_code: "SU"
+    timezone: "America - New York"
   }
 ]
 
