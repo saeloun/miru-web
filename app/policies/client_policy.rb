@@ -4,7 +4,7 @@ class ClientPolicy < ApplicationPolicy
   attr_reader :error_message_key
 
   def index?
-    user_owner_or_admin?
+    true
   end
 
   def show?
