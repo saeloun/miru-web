@@ -38,7 +38,10 @@ module ErrorHandler
       end
 
       respond_to do |format|
-        format.html { redirect_to redirect_path, alert: message }
+        format.html do
+          redirect_to redirect_path
+          flash.now[:alert] = message
+        end
         format.json { render json: { errors: message }, status: :forbidden }
       end
     end
