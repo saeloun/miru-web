@@ -171,3 +171,5 @@ gem "pagy", "~> 5.10"
 
 # Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
 gem "active_interaction"
+
+gem "stripe"
