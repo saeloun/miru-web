@@ -110,5 +110,21 @@ RSpec.describe Company, type: :model do
         expect(company.client_list).to eq(result)
       end
     end
+
+    describe "#user_details" do
+      let(:company) { create(:company) }
+      let(:user1) { create(:user) }
+      let(:user2) { create(:user) }
+
+      before do
+        create(:company_user, company_id: company.id, user_id: user1.id)
+        create(:company_user, company_id: company.id, user_id: user2.id)
+      end
+
+      it "return list of all users of a company" do
+        result = [ { id: user1.id, name: user1.full_name }, { id: user2.id, name: user2.full_name }]
+        expect(company.user_details).to match_array(result)
+      end
+    end
   end
 end

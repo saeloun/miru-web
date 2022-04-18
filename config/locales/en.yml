@@ -53,6 +53,12 @@ en:
     create:
       success: Project added successfully.
       failure: Project creation failed.
+    update_members:
+      success:
+        message: Changes saved successfully
+      failure:
+        unauthorized: User is unauthorized to modify this project's details
+        message: Failed to saved changes
     add_project: Add project
     add_new_project: Add new project
     billable: Billable

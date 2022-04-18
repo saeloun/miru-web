@@ -52,7 +52,7 @@ const Table = ({
   hasCheckbox = false
 }) => {
 
-  const data = React.useMemo(() => tableRowArray, []);
+  const data = React.useMemo(() => tableRowArray, [tableRowArray]);
   const columns = React.useMemo(() => tableHeader, []);
 
   const {

@@ -5,6 +5,7 @@ import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, UsersThree, Trash } from "phosphor-react";
+import EditMembersList from "./EditMembersList";
 import { unmapper } from "../../../mapper/project.mapper";
 
 const getTableData = (project) => {
@@ -25,7 +26,9 @@ const getTableData = (project) => {
 const ProjectDetails = ({ id }) => {
 
   const [project, setProject] = React.useState<any>();
+  const [showAddMemberDialog, setShowAddMemberDialog] = React.useState<boolean>(false);
   const [isHeaderMenuVisible, setHeaderMenuVisibility] = React.useState<boolean>(false);
+
   const fetchProject = async () => {
     try {
       const resp = await projectAPI.show(id);
@@ -35,12 +38,17 @@ const ProjectDetails = ({ id }) => {
     }
   };
 
+  const handleAddProjectDetails = () => {
+    fetchProject();
+  };
+
   React.useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
     fetchProject();
   }, []);
 
+  //check with Ajinkya why tableData is not updating
   const tableData = getTableData(project);
 
   const tableHeader = [
@@ -79,6 +87,11 @@ const ProjectDetails = ({ id }) => {
     setHeaderMenuVisibility(!isHeaderMenuVisible);
   };
 
+  const handleAddRemoveMembers = () => {
+    handleMenuVisibility();
+    setShowAddMemberDialog(true);
+  };
+
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
 
   return (
@@ -114,7 +127,8 @@ const ProjectDetails = ({ id }) => {
                 </button>
               </li>
               <li>
-                <button className="menuButton__list-item">
+                <button className="menuButton__list-item"
+                  onClick={handleAddRemoveMembers}>
                   <UsersThree size={16} color="#5b34ea" weight="bold" />
                   <span className="ml-3">Add/Remove Team Members</span>
                 </button>
@@ -166,6 +180,14 @@ const ProjectDetails = ({ id }) => {
           </div>
         </div>
       </div>
+      {showAddMemberDialog ? (
+        <EditMembersList
+          setShowAddMemberDialog={setShowAddMemberDialog}
+          addedMembers={project?.members}
+          handleAddProjectDetails = {handleAddProjectDetails}
+          projectId={id}
+        />
+      ) : null}
     </>
   );
 
