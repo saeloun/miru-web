@@ -8,9 +8,11 @@ import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 
+import Header from "./Header";
 import { unmapClientList } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
+import NewClient from "../Modals/NewClient";
 
 const getTableData = (clients) => {
   if (clients) {
@@ -30,6 +32,7 @@ const getTableData = (clients) => {
 const Clients = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [newClient, setnewClient] = useState<boolean>(false);
   const [clientToEdit, setedit] = useState({});
   const [clientToDelete, setDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
@@ -104,6 +107,7 @@ const Clients = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer />
+      <Header setnewClient={setnewClient} />
       <div>
         { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
           <div className="flex justify-end">
@@ -160,6 +164,13 @@ const Clients = ({ isAdminUser }) => {
         <DeleteClient
           setShowDeleteDialog={setShowDeleteDialog}
           client={clientToDelete}
+        />
+      )}
+      {newClient && (
+        <NewClient
+          setnewClient={setnewClient}
+          setClientData = {setClientData}
+          clientData = {clientData}
         />
       )}
     </>

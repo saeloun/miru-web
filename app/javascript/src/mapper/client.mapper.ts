@@ -21,6 +21,7 @@ const mapProjectDetails = (input) => input.map((project) => ({
 
 const unmapClientDetails = (input) => {
   const { data } = input;
+
   return {
     clientDetails: {
       id: data.client_details.id,

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { MagnifyingGlass, Plus } from "phosphor-react";
 
-const Header = ({ setShowNewClientModal }) => (
+const Header = ({ setnewClient }) => (
   <div className="sm:flex mt-6 mb-3 sm:items-center sm:justify-between">
     <h2 className="header__title">
             Clients
@@ -22,7 +22,7 @@ const Header = ({ setShowNewClientModal }) => (
       <button
         type="button"
         className="header__button"
-        onClick={() => setShowNewClientModal(true)}
+        onClick={() => setnewClient(true)}
       >
         <Plus weight="fill" size={16} />
         <span className="ml-2 inline-block">NEW CLIENT</span>

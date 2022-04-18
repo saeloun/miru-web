@@ -1,4 +1,5 @@
 import React from "react";
+import clients from "apis/clients";
 import { Formik, Form, Field } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";
@@ -17,8 +18,13 @@ const initialValues = {
   address: ""
 };
 
-const EditClient = ({ setShowNewClientModal }) => {
-  const handleSubmit = (values) => { //eslint-disable-line
+const EditClient = ({ setnewClient, clientData, setClientData }) => {
+  const handleSubmit = (values) => {
+    clients.create(values)
+      .then(res => {
+        setClientData([...clientData, { ...res.data }]);
+        setnewClient(false);
+      });
   };
 
   return (
@@ -33,7 +39,7 @@ const EditClient = ({ setShowNewClientModal }) => {
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
               <h6 className="text-base font-extrabold">Add New Client</h6>
-              <button type="button" onClick={() => { setShowNewClientModal(false); }}>
+              <button type="button" onClick={() => { setnewClient(false); }}>
                 <X size={16} color="#CDD6DF" weight="bold" />
               </button>
             </div>
