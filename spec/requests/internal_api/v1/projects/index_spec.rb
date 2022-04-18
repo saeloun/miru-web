@@ -48,8 +48,23 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       send_request :get, internal_api_v1_projects_path
     end
 
-    it "is not permitted to view time project" do
-      expect(response).to have_http_status(:forbidden)
+    context "when time_frame is week" do
+      it "returns the list of projects and minutes logged" do
+        projects = user.current_workspace.projects.kept.map do |project|
+          {
+            id: project.id, name: project.name, client: { name: project.client.name },
+            isBillable: project.billable, minutesSpent: project.total_hours_logged(time_frame)
+          }
+        end
+        clients = user.current_workspace.clients.kept.map do |client|
+          {
+            id: client.id, name: client.name
+          }
+        end
+        expect(response).to have_http_status(:ok)
+        expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
+        expect(json_response["clients"]).to eq(JSON.parse(clients.to_json))
+      end
     end
   end
 
