@@ -64,8 +64,8 @@ RSpec.describe "Users::OmniauthCallbacks#google_oauth2", type: :request do
     end
 
     it "returns a failed authentication flash message" do
-      expect(flash[:error]).to
-      eq("There was a problem signing you in through Google. Please register or try signing in later.")
+      expect(flash[:error])
+        .to eq("There was a problem signing you in through Google. Please register or try signing in later.")
     end
   end
 end
