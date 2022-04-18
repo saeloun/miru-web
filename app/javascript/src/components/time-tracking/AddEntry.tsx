@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
+import Toastr from "common/Toastr";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesFromHHMM, minutesToHHMM } from "../../helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "../../helpers/ordinal";
@@ -42,7 +43,7 @@ const AddEntry: React.FC<Iprops> = ({
 
   useEffect(() => {
     handleFillData();
-  }, []);
+  }, [selectedFullDate]);
 
   useEffect(() => {
     if (!project) return;
@@ -56,9 +57,18 @@ const AddEntry: React.FC<Iprops> = ({
     setDuration(e.target.value);
   };
 
-  const handleSave = async () => {
-    if (!note && !project) return;
+  const validateInput = () => {
+    if (!project) return false;
+    const durationMinutes = minutesFromHHMM(duration);
+    if (durationMinutes <= 0) {
+      Toastr.error("Please enter a valid duration");
+      return false;
+    }
+    return true;
+  };
 
+  const handleSave = async () => {
+    if (!validateInput()) return;
     const res = await timesheetEntryApi.create({
       project_id: projectId,
       timesheet_entry: {
@@ -82,13 +92,12 @@ const AddEntry: React.FC<Iprops> = ({
         }
         return newState;
       });
-      setNote("");
-      setDuration("");
-      setBillable(false);
+      setNewEntryView(false);
     }
   };
 
   const handleEdit = async () => {
+    if (!validateInput()) return;
     const res = await timesheetEntryApi.update(editEntryId, {
       project_id: projectId,
       timesheet_entry: {
@@ -118,7 +127,7 @@ const AddEntry: React.FC<Iprops> = ({
     <div
       className={
         "h-24 py-1 flex justify-evenly rounded-lg shadow-2xl " +
-        (editEntryId === 0 ? "" : "mt-10")
+        (editEntryId ? "mt-10" : "")
       }
     >
       <div className="w-60 ml-4">
