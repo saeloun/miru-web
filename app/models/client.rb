@@ -12,14 +12,12 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  discarded_at :datetime
-#  client_code  :string           not null
 #
 # Indexes
 #
-#  index_clients_on_client_code_and_company_id  (client_code,company_id) UNIQUE
-#  index_clients_on_company_id                  (company_id)
-#  index_clients_on_discarded_at                (discarded_at)
-#  index_clients_on_email_and_company_id        (email,company_id) UNIQUE
+#  index_clients_on_company_id            (company_id)
+#  index_clients_on_discarded_at          (discarded_at)
+#  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
 #
 
 # frozen_string_literal: true
@@ -33,7 +31,6 @@ class Client < ApplicationRecord
   belongs_to :company
 
   validates :name, :email, presence: true
-  validates :client_code, presence: true, uniqueness: { scope: :company_id }
   validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
   after_discard :discard_projects
 
@@ -73,7 +70,7 @@ class Client < ApplicationRecord
   def week_month_year(time_frame)
     case time_frame
     when "last_week"
-      return ((Date.today.beginning_of_week) - 7), ((Date.today.end_of_week) - 7)
+      return Date.today.last_week.beginning_of_week, Date.today.last_week.end_of_week
     when "month"
       return Date.today.beginning_of_month, Date.today.end_of_month
     when "year"
@@ -81,6 +78,15 @@ class Client < ApplicationRecord
     else
       return Date.today.beginning_of_week, Date.today.end_of_week
     end
+  end
+
+  def client_detail(time_frame = "week")
+    {
+      id: id,
+      name: name,
+      email: email,
+      minutes_spent: total_hours_logged(time_frame)
+    }
   end
 
   private

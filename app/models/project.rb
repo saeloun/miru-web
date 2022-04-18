@@ -44,9 +44,7 @@ class Project < ApplicationRecord
         project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
       end.sum
       {
-        id: project_member.user_id,
-        name: project_member.full_name,
-        hourly_rate: project_member.hourly_rate,
+        id: project_member.user_id, name: project_member.full_name, hourly_rate: project_member.hourly_rate,
         minutes_logged:
       }
     end

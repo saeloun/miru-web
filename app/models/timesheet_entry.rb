@@ -8,7 +8,7 @@
 #  user_id     :integer          not null
 #  project_id  :integer          not null
 #  duration    :float            not null
-#  note        :text
+#  note        :text             default("")
 #  work_date   :date             not null
 #  bill_status :integer          not null
 #  created_at  :datetime         not null
@@ -25,6 +25,8 @@ class TimesheetEntry < ApplicationRecord
 
   belongs_to :user
   belongs_to :project
+
+  has_one :invoice_line_item, dependent: :destroy
 
   before_validation :ensure_bill_status_is_set
   before_validation :ensure_bill_status_is_not_billed, on: :create

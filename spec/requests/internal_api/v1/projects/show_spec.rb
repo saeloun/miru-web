@@ -9,7 +9,7 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
   let(:project) { create(:project, client:) }
   let(:project_member) { create(:project_member, user:, project:, hourly_rate: 5000) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -18,10 +18,10 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
       send_request :get, internal_api_v1_project_path(project)
     end
 
-    context "when time_frame is week" do
+    context "when time_frame is a week" do
       let(:time_frame) { "week" }
 
-      it "returns the project id, name, billable, client, members, total_minutes_logged for project in week" do
+      it "returns the project id, name, billable, client, members, total_minutes_logged for the project in that week" do
         project_team_member_details = project.project_team_member_details(time_frame)
         project_details = {
           id: project.id,
@@ -67,11 +67,16 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
         expect(json_response["project_details"]).to eq(JSON.parse(project_details.to_json))
       end
     end
+
+    it "is not permitted to view project details" do
+      send_request :get, internal_api_v1_project_path(project)
+      expect(response).to have_http_status(:forbidden)
+    end
   end
 
   context "when unauthenticated" do
-    it "is not permitted to view time entry report" do
-      send_request :get, internal_api_v1_reports_path
+    it "is not permitted to view project details" do
+      send_request :get, internal_api_v1_project_path(project)
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
     end

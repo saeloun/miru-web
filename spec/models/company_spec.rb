@@ -20,9 +20,6 @@ RSpec.describe Company, type: :model do
     it { is_expected.to validate_presence_of(:standard_price) }
     it { is_expected.to validate_presence_of(:country) }
     it { is_expected.to validate_presence_of(:base_currency) }
-    it { is_expected.to validate_presence_of(:company_code) }
-    it { is_expected.to validate_uniqueness_of(:company_code) }
-    it { is_expected.to validate_length_of(:company_code).is_equal_to(2) }
 
     it do
       expect(subject).to validate_numericality_of(:standard_price).is_greater_than_or_equal_to(0)
@@ -111,6 +108,22 @@ RSpec.describe Company, type: :model do
           address: client.address
         }]
         expect(company.client_list).to eq(result)
+      end
+    end
+
+    describe "#user_details" do
+      let(:company) { create(:company) }
+      let(:user1) { create(:user) }
+      let(:user2) { create(:user) }
+
+      before do
+        create(:company_user, company_id: company.id, user_id: user1.id)
+        create(:company_user, company_id: company.id, user_id: user2.id)
+      end
+
+      it "return list of all users of a company" do
+        result = [ { id: user1.id, name: user1.full_name }, { id: user2.id, name: user2.full_name }]
+        expect(company.user_details).to match_array(result)
       end
     end
   end

@@ -1,47 +1,31 @@
 import * as React from "react";
 
-import AmountBoxContainer from "common/AmountBox";
 import Table from "./Table";
-const Container = ({ invoiceList, setInvoiceList }) => {
+import InvoiceSummary from "../InvoiceSummary";
 
-  const handleSelectAll = (isChecked) => {
-    const newInvoiceList = invoiceList.map((invoice) => ({ ...invoice, isChecked }));
-    setInvoiceList(newInvoiceList);
-  };
+const Container = ({
+  summary,
+  invoices,
+  selectedInvoices,
+  selectInvoices,
+  deselectInvoices
+}) =>
+  invoices.length > 0 ? (
+    <>
+      <InvoiceSummary
+        summary={summary}
+        baseCurrency={invoices[0].company.baseCurrency}
+      />
 
-  const handleSelectCheckbox = (id, isChecked) => {
-    const newInvoiceList = invoiceList.map((invoice) => {
-      if (invoice.id === id) {
-        return { ...invoice, isChecked: isChecked };
-      }
-      return { ...invoice };
-    });
-    setInvoiceList(newInvoiceList);
-  };
-
-  const amountBox = [{
-    title: "OVERDUE",
-    amount: "$35.5k"
-  },
-  {
-    title: "OUTSTANDING",
-    amount: "$24.3k"
-  },
-  {
-    title: "AMOUNT IN DRAFT",
-    amount: "$24.5k"
-  }];
-
-  return (
-    <React.Fragment>
-      <div className="bg-miru-gray-100 py-10 px-10">
-        <AmountBoxContainer amountBox = {amountBox} cssClass="mt-0" />
-      </div>
-      <div>
-        <Table  handleSelectAll={handleSelectAll} handleSelectCheckbox={handleSelectCheckbox} updatedInvoiceList={invoiceList} />
-      </div>
-    </React.Fragment>
+      <Table
+        invoices={invoices}
+        selectedInvoices={selectedInvoices}
+        selectInvoices={selectInvoices}
+        deselectInvoices={deselectInvoices}
+      />
+    </>
+  ) : (
+    <div>No invoices to show</div>
   );
-};
 
 export default Container;
