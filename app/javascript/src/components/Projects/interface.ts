@@ -1,7 +1,7 @@
 export interface IProject {
   id: number;
   name: string;
-  clientName: string;
+  client: string;
   isBillable: boolean;
   minutesSpent: number;
   editIcon: string;

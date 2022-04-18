@@ -66,6 +66,7 @@ export const ProjectList = ({ allProjects, isAdminUser, projectClickHandler }) =
         showProjectModal &&
         <AddEditProject
           setShowProjectModal={setShowProjectModal}
+          setEditProjectData={setEditProjectData}
           editProjectData={editProjectData}
         />
       }
