@@ -42,7 +42,7 @@ class Client < ApplicationRecord
       )
       .joins("INNER JOIN users ON project_members.user_id = users.id")
       .select(
-        "timesheet_entries.id as id,
+        "timesheet_entries.id as timesheet_entry_id,
          users.first_name as first_name,
          users.last_name as last_name,
          timesheet_entries.work_date as date,
