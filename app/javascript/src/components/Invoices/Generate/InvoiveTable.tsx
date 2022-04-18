@@ -30,7 +30,7 @@ const fetchNewLineItems = async (
   }
 };
 
-const InvoiceTable = ({ selectedClient, setSelectedOption, selectedOption }) => {
+const InvoiceTable = ({ selectedClient, setSelectedOption, selectedOption ,setShowMultilineModal }) => {
 
   const [addNew, setAddNew] = useState<boolean>(false);
   const [showItemInputs, setShowItemInputs] = useState<boolean>(false);
@@ -68,6 +68,7 @@ const InvoiceTable = ({ selectedClient, setSelectedOption, selectedOption }) => 
         pageNumber = {pageNumber}
         setSelectedOption={setSelectedOption}
         selectedOption={selectedOption}
+        setShowMultilineModal={setShowMultilineModal}
       />;
     }
     return (
