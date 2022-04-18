@@ -33,9 +33,10 @@ const TimeTracking: React.FC<Iprops> = ({
   const [view, setView] = useState<string>("day");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
-  const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
-  const [weekDay, setWeekDay] = useState<number>(0);
-  const [totalHours, setTotalHours] = useState<string>("00:00");
+  const [selectDate, setSelectDate] = useState<number>(0);
+  const [weekDay, setWeekDay] = useState<number>(dayjs().weekday());
+  const [weeklyTotalHours, setWeeklyTotalHours] = useState<string>("00:00");
+  const [dailyTotalHours, setDailyTotalHours] = useState<number[]>([]);
   const [entryList, setEntryList] = useState<object>(entries);
   const [selectedFullDate, setSelectedFullDate] = useState<string>(
     dayjs().format("YYYY-MM-DD")
@@ -57,9 +58,14 @@ const TimeTracking: React.FC<Iprops> = ({
   }, [weekDay]);
 
   useEffect(() => {
-    calculateTotalHours();
+    if (view === "month") return;
     parseWeeklyViewData();
+    calculateTotalHours();
   }, [weekDay, entryList]);
+
+  useEffect(() => {
+    setIsWeeklyEditing(false);
+  }, [view]);
 
   useEffect(() => {
     setSelectedFullDate(
@@ -70,7 +76,8 @@ const TimeTracking: React.FC<Iprops> = ({
   }, [selectDate, weekDay]);
 
   const handleWeekTodayButton = () => {
-    setSelectDate(dayjs().weekday());
+    setSelectDate(0);
+    setWeekDay(dayjs().weekday());
   };
 
   const handleWeekInfo = () => {
@@ -113,17 +120,24 @@ const TimeTracking: React.FC<Iprops> = ({
 
   const calculateTotalHours = () => {
     let total = 0;
+    const dailyTotal = [];
     for (let weekCounter = 0; weekCounter < 7; weekCounter++) {
       const day = dayjs()
         .weekday(weekCounter + weekDay)
         .format("YYYY-MM-DD");
       if (entryList[day]) {
+        let dayTotal = 0;
         entryList[day].forEach(e => {
-          total += e.duration;
+          dayTotal += e.duration;
         });
+        dailyTotal.push(minutesToHHMM(dayTotal));
+        total += dayTotal;
+      } else {
+        dailyTotal.push("00:00");
       }
     }
-    setTotalHours(minutesToHHMM(total));
+    setDailyTotalHours(dailyTotal);
+    setWeeklyTotalHours(minutesToHHMM(total));
   };
 
   const handleNextWeek = () => {
@@ -150,6 +164,7 @@ const TimeTracking: React.FC<Iprops> = ({
 
   const parseWeeklyViewData = () => {
     const weekArr = [];
+    setWeeklyData(weekArr);
     for (let weekCounter = 0; weekCounter < 7; weekCounter++) {
       const date = dayjs()
         .weekday(weekDay + weekCounter)
@@ -182,7 +197,7 @@ const TimeTracking: React.FC<Iprops> = ({
         });
       });
     }
-    setWeeklyData(weekArr);
+    setWeeklyData(() => weekArr);
   };
 
   return (
@@ -265,7 +280,7 @@ const TimeTracking: React.FC<Iprops> = ({
                   </div>
                   <div className="flex mr-12">
                     <p className="text-white mr-2">Total</p>
-                    <p className="text-white font-extrabold">{totalHours}</p>
+                    <p className="text-white font-extrabold">{ view === "week" ? weeklyTotalHours : dailyTotalHours[selectDate]}</p>
                   </div>
                 </div>
                 <DatesInWeek
