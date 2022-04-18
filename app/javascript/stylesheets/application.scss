@@ -363,5 +363,8 @@ body {
   background-color: #F5F7F9;
   .iconWrapper {
     @apply visible;
-  }
+}
+  
+.box-shadow {
+  box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
 }

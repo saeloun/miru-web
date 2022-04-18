@@ -58,7 +58,7 @@ const Table = ({
   rowOnClick = () => {} // eslint-disable-line
 }) => {
 
-  const data = React.useMemo(() => tableRowArray, []);
+  const data = React.useMemo(() => tableRowArray, [tableRowArray]);
   const columns = React.useMemo(() => tableHeader, []);
 
   const {

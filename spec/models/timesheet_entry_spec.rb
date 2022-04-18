@@ -14,6 +14,7 @@ RSpec.describe TimesheetEntry, type: :model do
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to have_one(:invoice_line_item).dependent(:destroy) }
   end
 
   describe "Validations" do
@@ -86,6 +87,28 @@ RSpec.describe TimesheetEntry, type: :model do
       project.update(billable: true)
       timesheet_entry.update(bill_status: nil)
       expect(timesheet_entry.reload).to have_attributes(bill_status: "unbilled")
+    end
+  end
+
+  describe "#ensure_bill_status_is_not_billed" do
+    let(:error_message) { "You can't create a billed timesheet entry" }
+
+    it "returns an error if project is created with billed status" do
+      timesheet_entry = build(:timesheet_entry, bill_status: "billed")
+      expect(timesheet_entry.valid?).to be_falsey
+      expect(timesheet_entry.errors.messages[:timesheet_entry]).to eq([error_message])
+    end
+  end
+
+  describe "#ensure_billed_status_should_not_be_changed" do
+    let(:error_message) { "You can't bill an entry that has already been billed" }
+
+    it "returns an error if status is changed for a billed entry" do
+      timesheet_entry.update!(bill_status: "billed")
+      timesheet_entry.update(bill_status: "unbilled")
+
+      expect(timesheet_entry.valid?).to be_falsey
+      expect(timesheet_entry.errors.messages[:timesheet_entry]).to eq([error_message])
     end
   end
 end
