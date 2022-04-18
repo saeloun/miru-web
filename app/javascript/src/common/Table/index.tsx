@@ -57,6 +57,7 @@ const Table = ({
   handleEditClick = (id) => {}, // eslint-disable-line
   rowOnClick = () => {}, // eslint-disable-line
   checkboxCss = "",
+  RowCss = "",
   tableCss = "",
   showRowBorder = true,
   setSelectedRows = null
@@ -83,7 +84,7 @@ const Table = ({
 
   useEffect(() => {
     setSelectedRows(selectedFlatRows);
-  }, [selectedFlatRows]);
+  }, []);
 
   return (
     <>
@@ -105,8 +106,8 @@ const Table = ({
             const cssClassLastRow = rows.length - 1 !== index ? "border-b": "";
             const cssClassRowHover = hasRowIcons ? "hoverIcon" : "";
             return (
-              <tr {...row.getRowProps()} onClick={rowOnClick} className={`${cssClassLastRow} ${cssClassRowHover}`}>
-                {row.cells.map(cell => <td className="table__cell" {...cell.getCellProps()}>{cell.render("Cell")}</td>)}
+              <tr {...row.getRowProps()} onClick={rowOnClick} className={`${showRowBorder && cssClassLastRow } ${cssClassRowHover}`}>
+                {row.cells.map(cell => <td className={`table__cell ${RowCss}`} {...cell.getCellProps()}>{cell.render("Cell")}</td>)}
 
                 {hasRowIcons && <td className="table__cell">
                   <div className="iconWrapper invisible">

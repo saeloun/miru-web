@@ -2,7 +2,7 @@ import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { DropdownHeader } from "./CustomComponents";
 
-const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew, lineItems, loadMoreItems, totalLineItems, pageNumber, selectedOption, setSelectedOption }) => {
+const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew, lineItems, loadMoreItems, totalLineItems, pageNumber, selectedOption, setSelectedOption ,setShowMultilineModal }) => {
   const hasMoreItems = lineItems.length === totalLineItems;
   const selectRowId = (items) => {
     const option = { ...items, lineTotal: (Number(items.qty)/60 * Number(items.rate)) };
@@ -10,63 +10,13 @@ const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew
     setSelectedOption([...selectedOption, option]);
   };
 
-<<<<<<< HEAD
   return (
     <div>
-      <DropdownHeader/>
+      <DropdownHeader
+        setShowMultilineModal={setShowMultilineModal}
+      />
       <div>
         <button onClick={() => {
-=======
-const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew, selectedOption, setSelectedOption, setShowMultilineModal }) => {
-
-  const options = [
-    {
-      value: "Jake",
-      name: "Jake",
-      date: "20-1-2022",
-      description: "I am description",
-      total: "5 Hours"
-    },
-    {
-      name: "Jake",
-      date: "20-1-2022",
-      description: "I am description",
-      total: "5 Hours"
-    },
-    {
-      name: "Jake",
-      date: "20-1-2022",
-      description: "I am description",
-      total: "5 Hours"
-    },
-    {
-      name: "Jake",
-      date: "20-1-2022",
-      description: "I am description",
-      total: "5 Hours"
-    }
-  ];
-
-  const multipleEntryButton = props => (
-    <components.Control {...props}>
-      {props.children}
-      <button
-        onClick={() => {
-          setAddNew(!addNew);
-          setShowMultilineModal(true);
-        }}
-        className=" mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000">
-        CLICK TO ADD MULTIPLE ENTRIES
-      </button>
-    </components.Control>
-  );
-
-  const manualEntryButton = props => (
-    <components.MenuList {...props}>
-      <button
-        className="px-3 py-2 font-bold text-xs text-miru-han-purple-600 tracking-widest cursor-pointer"
-        onClick={() => {
->>>>>>> Add entries functionality added
           setShowItemInputs(!showItemInputs);
           setAddNew(!addNew);
         }} className="mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000">Add Manual Entry</button>
