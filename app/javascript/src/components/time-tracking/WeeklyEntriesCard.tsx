@@ -265,7 +265,7 @@ const WeeklyEntriesCard = ({
                 <button
                   className={
                     "m-2 mb-1 inline-block h-6 w-30 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-                  (dataChanged && note && duration
+                  (dataChanged && duration
                     ? "bg-miru-han-purple-1000 hover:border-transparent"
                     : "bg-miru-gray-1000")
                   }

@@ -58,6 +58,9 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    active_interaction (4.1.0)
+      activemodel (>= 5, < 8)
+      activesupport (>= 5, < 8)
     activejob (7.0.1)
       activesupport (= 7.0.1)
       globalid (>= 0.3.6)
@@ -427,6 +430,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    stripe (5.50.0)
     strscan (3.0.1)
     thor (1.2.1)
     tilt (2.0.10)
@@ -466,6 +470,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  active_interaction
   annotate
   aws-sdk-s3
   bootsnap (>= 1.4.4)
@@ -513,13 +518,14 @@ DEPENDENCIES
   shoulda-matchers (~> 5.1)
   simplecov
   spring
+  stripe
   tzinfo-data
   web-console (>= 4.1.0)
   webdrivers
   webpacker
 
 RUBY VERSION
-   ruby 3.1.0p0
+   ruby 3.1.1p18
 
 BUNDLED WITH
    2.3.3

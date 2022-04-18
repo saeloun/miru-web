@@ -12,7 +12,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
       params[:from],
       params[:to])
     entries = formatted_entries_by_date(timesheet_entries)
-    render json: { entries: }
+    render json: { entries: }, status: :ok
   end
 
   def create

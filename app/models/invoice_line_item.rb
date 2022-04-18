@@ -8,7 +8,6 @@
 #  date               :date
 #  rate               :decimal(20, 2)   default("0.0")
 #  quantity           :integer          default("1")
-#  user_id            :integer          not null
 #  invoice_id         :integer          not null
 #  timesheet_entry_id :integer
 #  created_at         :datetime         not null
@@ -18,13 +17,11 @@
 #
 #  index_invoice_line_items_on_invoice_id          (invoice_id)
 #  index_invoice_line_items_on_timesheet_entry_id  (timesheet_entry_id)
-#  index_invoice_line_items_on_user_id             (user_id)
 #
 
 # frozen_string_literal: true
 
 class InvoiceLineItem < ApplicationRecord
-  belongs_to :user
   belongs_to :invoice
   belongs_to :timesheet_entry, optional: true
 

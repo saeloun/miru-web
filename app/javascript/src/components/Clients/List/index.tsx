@@ -8,11 +8,9 @@ import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 
-import Header from "./Header";
 import { unmapClientList } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
-import NewClientModal from "../Modals/NewClient";
 
 const getTableData = (clients) => {
   if (clients) {
@@ -29,12 +27,12 @@ const getTableData = (clients) => {
   return [{}];
 };
 
-const ClientList = ({ isAdminUser }) => {
+const Clients = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showNewClient, setShowNewClientModal] =  useState<boolean>(false);
-  const [clientToEdit, setClientToEdit] = useState({});
-  const [clientToDelete, setClientToDelete] = useState({});
+  const [clientToEdit, setedit] = useState({});
+  const [clientToDelete, setDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
   const navigate = useNavigate();
@@ -42,13 +40,13 @@ const ClientList = ({ isAdminUser }) => {
   const handleEditClick = (id) => {
     setShowEditDialog(true);
     const editSelection = clientData.find(client => client.id === id);
-    setClientToEdit(editSelection);
+    setedit(editSelection);
   };
 
   const handleDeleteClick = (id) => {
     setShowDeleteDialog(true);
     const editSelection = clientData.find(client => client.id === id);
-    setClientToDelete(editSelection);
+    setDelete(editSelection);
   };
 
   const handleSelectChange = (event) => {
@@ -107,7 +105,6 @@ const ClientList = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer />
-      <Header setShowNewClientModal={setShowNewClientModal} />
       <div>
         { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
           <div className="flex justify-end">
@@ -166,15 +163,8 @@ const ClientList = ({ isAdminUser }) => {
           client={clientToDelete}
         />
       )}
-      {
-        showNewClient && (
-          <NewClientModal
-            setShowNewClientModal = { setShowNewClientModal}
-          />
-        )
-      }
     </>
   );
 };
 
-export default ClientList;
+export default Clients;

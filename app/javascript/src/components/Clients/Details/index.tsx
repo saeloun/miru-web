@@ -12,7 +12,6 @@ import Header from "./Header";
 import { unmapClientDetails } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
-import NewClientModal from "../Modals/NewClient";
 
 const getTableData = (clients) => {
   if (clients) {
@@ -165,13 +164,6 @@ const ClientList = ({ isAdminUser }) => {
           client={clientToDelete}
         />
       )}
-      {
-        showNewClient && (
-          <NewClientModal
-            setShowNewClientModal = { setShowNewClientModal}
-          />
-        )
-      }
     </>
   );
 };

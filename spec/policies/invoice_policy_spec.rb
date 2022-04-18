@@ -14,7 +14,7 @@ RSpec.describe InvoicePolicy, type: :policy do
       user.add_role :admin, company
     end
 
-    permissions :index? do
+    permissions :index?, :show? do
       it "is permitted to access index" do
         expect(subject).to permit(user, :invoice)
       end
@@ -27,7 +27,7 @@ RSpec.describe InvoicePolicy, type: :policy do
       user.add_role :employee, company
     end
 
-    permissions :index? do
+    permissions :index?, :show? do
       it "is not permitted to access index" do
         expect(subject).not_to permit(user, :invoice)
       end

@@ -22,8 +22,7 @@ RSpec.describe "Client#index", type: :request do
               name: "Test Client",
               email: "test@example.com",
               phone: "Test phone",
-              address: "India",
-              client_code: "TE"
+              address: "India"
             }
           })
       end
@@ -49,8 +48,7 @@ RSpec.describe "Client#index", type: :request do
               name: "",
               email: "",
               phone: "",
-              address: "",
-              client_code: ""
+              address: ""
             }
           })
       end
@@ -80,8 +78,7 @@ RSpec.describe "Client#index", type: :request do
             name: "Test Client",
             email: "test@example.com",
             phone: "Test phone",
-            address: "India",
-            client_code: "TE"
+            address: "India"
           }
         })
     end
@@ -107,12 +104,35 @@ RSpec.describe "Client#index", type: :request do
             name: "Test Client",
             email: "test@example.com",
             phone: "Test phone",
-            address: "India",
-            client_code: "TE"
+            address: "India"
           }
         })
       expect(response).to redirect_to(user_session_path)
       expect(flash[:alert]).to eq("You need to sign in or sign up before continuing.")
+    end
+  end
+
+  context "when user's current workspace is nil" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :employee, company
+      user.update!(current_workspace_id: nil)
+      sign_in user
+      send_request(
+        :post, clients_path, params: {
+          client: {
+            name: "Test Client",
+            email: "test@example.com",
+            phone: "Test phone",
+            address: "India"
+          }
+        }
+      )
+    end
+
+    it "redirects to new_company_path" do
+      expect(response).to have_http_status(:redirect)
+      expect(response.body).to include("/company/new")
     end
   end
 end

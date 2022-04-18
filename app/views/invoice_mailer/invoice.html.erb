@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Invoice: <%= @invoice.invoice_number %></h1>
+
+    <p>
+      Hi <%= @invoice.client_name %>, You have an invoice with amount <%= @invoice.amount %>.
+    </p>
+
+    <p>
+      The due date is <%= @invoice.due_date %>.
+    </p>
+
+    <p>Thanks!</p>
+  </body>
+</html>
