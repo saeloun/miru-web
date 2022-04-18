@@ -280,7 +280,7 @@ const TimeTracking: React.FC<Iprops> = ({
                   </div>
                   <div className="flex mr-12">
                     <p className="text-white mr-2">Total</p>
-                    <p className="text-white font-extrabold">{ view === "week" ? weeklyTotalHours : dailyTotalHours[selectDate]}</p>
+                    <p className="text-white font-extrabold">{ view === "week" ? weeklyTotalHours : dailyTotalHours[selectDate] }</p>
                   </div>
                 </div>
                 <DatesInWeek

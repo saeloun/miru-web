@@ -49,7 +49,7 @@ const Header = ({
     )}
     {isInvoiceSelected && (
       <div className="flex items-center justify-center">
-        <span>{selectedInvoiceCount} invoices selected</span>
+        <span>{selectedInvoiceCount > 1 ? `${selectedInvoiceCount} invoices selected` :`${selectedInvoiceCount} invoice selected` } </span>
         <button className="ml-2" onClick={clearCheckboxes}>
           <X size={16} color="#5b34ea" weight="bold" />
         </button>
