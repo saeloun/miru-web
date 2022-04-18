@@ -23,7 +23,7 @@ const EntryCard: React.FC<props> = ({
   setEditEntryId,
   bill_status
 }) => (
-  <div className="flex justify-between items-center shadow-2xl w-full p-6 mt-10 rounded-lg">
+  <div className="week-card flex justify-between items-center shadow-2xl w-full p-6 mt-10 rounded-lg">
     <div>
       <div className="flex">
         <p className="text-lg">{client}</p>
@@ -43,18 +43,18 @@ const EntryCard: React.FC<props> = ({
         <BillTag color="miru-alert-green-400" text="billed" />
       )}
       <p className="text-4xl">{minutesToHHMM(duration)}</p>
-      <button onClick={() => setEditEntryId(id)} className="mx-10">
+      <button onClick={() => setEditEntryId(id)} className="mx-10 h-4 w-4">
         <img
           src="/edit.svg"
           alt="edit"
-          className="h-4 w-4 text-miru-han-purple-600 hover:text-miru-han-purple-1000"
+          className="icon-hover text-miru-han-purple-600 hover:text-miru-han-purple-1000"
         />
       </button>
-      <button onClick={() => handleDeleteEntry(id)}>
+      <button onClick={() => handleDeleteEntry(id)} className="mr-10 h-4 w-4">
         <img
           src="/delete.svg"
           alt="delete"
-          className="mr-10 h-4 w-4 fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000"
+          className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000"
         />
       </button>
     </div>

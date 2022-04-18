@@ -10,7 +10,7 @@ RSpec.describe CompanyPolicy, type: :policy do
 
   context "when user is admin" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :admin, company
     end
 
@@ -31,11 +31,17 @@ RSpec.describe CompanyPolicy, type: :policy do
         expect(subject).not_to permit(user, nil)
       end
     end
+
+    permissions :users? do
+      it "is permitted to get company users list" do
+        expect(subject).to permit(user, Project)
+      end
+    end
   end
 
   context "when user is employee" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :employee, company
     end
 
@@ -60,6 +66,12 @@ RSpec.describe CompanyPolicy, type: :policy do
         user.update(current_workspace_id: nil)
 
         expect(subject).not_to permit(user, nil)
+      end
+    end
+
+    permissions :users? do
+      it "is not permitted to get company users list" do
+        expect(subject).not_to permit(user, Project)
       end
     end
   end

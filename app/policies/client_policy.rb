@@ -4,7 +4,7 @@ class ClientPolicy < ApplicationPolicy
   attr_reader :error_message_key
 
   def index?
-    user_owner_or_admin?
+    true
   end
 
   def show?
@@ -34,6 +34,6 @@ class ClientPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:name, :email, :phone, :address, :client_code]
+    [:name, :email, :phone, :address]
   end
 end

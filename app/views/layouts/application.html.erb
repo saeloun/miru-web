@@ -17,8 +17,8 @@
           toastr.<%= type %>('<%= value %>')
         <% end %>
       </script>
-      <div class="">
-        <%= render "partial/navbar" if user_signed_in? && current_company %>
+      <div>
+        <%= render "partial/navbar" if user_signed_in? %>
         <%= yield %>
       </div>
     </main>

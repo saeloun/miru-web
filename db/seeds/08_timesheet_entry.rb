@@ -8,7 +8,7 @@
   (@timesheet_entry_start_date..@timesheet_entry_end_date).each do |date|
     TimesheetEntry.create!(
       user: project_member.user, project: project_member.project, duration: 60,
-      note: "Worked on #{@project_1_client_1_saeloun_india.name}", work_date: date)
+      note: "Worked on #{@project_1_client_1_saeloun_india.name}", bill_status: :unbilled, work_date: date)
   end
 end
 
@@ -16,7 +16,7 @@ end
   (@timesheet_entry_start_date..@timesheet_entry_end_date).each do |date|
     TimesheetEntry.create!(
       user: project_member.user, project: project_member.project, duration: 60,
-      note: "Worked on #{@project_1_client_1_saeloun_us.name}", work_date: date)
+      note: "Worked on #{@project_1_client_1_saeloun_us.name}", bill_status: :unbilled, work_date: date)
   end
 end
 # Timesheet Entry End
