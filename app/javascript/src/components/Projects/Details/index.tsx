@@ -55,7 +55,7 @@ const ProjectDetails = ({ id }) => {
     {
       Header: "TEAM MEMBER",
       accessor: "col1", // accessor is the "key" in the data
-      cssClass: "abc"
+      cssClass: ""
     },
     {
       Header: "HOURLY RATE",
