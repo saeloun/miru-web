@@ -80,7 +80,7 @@ const Invoices = () => {
           <FilterSideBar setFilterVisibilty={setFilterVisibilty} />
         )}
 
-        {invoices.length && <Pagination pagy={pagy} />}
+        {invoices.length && <Pagination />}
       </React.Fragment>
     )
   );
