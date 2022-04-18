@@ -36,14 +36,15 @@ class Project < ApplicationRecord
 
   def project_team_member_details(time_frame)
     from, to = week_month_year(time_frame)
+    project_members_timesheet_entries = timesheet_entries.where(
+      user_id: project_members.pluck(:user_id),
+      work_date: from..to)
     project_members.map do |project_member|
-      minutes_logged = (project_member.timesheet_entries.where(
-        project_id: project_member.project_id,
-        work_date: from..to)).sum(:duration)
+      minutes_logged = project_members_timesheet_entries.filter_map do |project_members_timesheet_entry|
+        project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
+      end.sum
       {
-        id: project_member.user_id,
-        name: project_member.full_name,
-        hourly_rate: project_member.hourly_rate,
+        id: project_member.user_id, name: project_member.full_name, hourly_rate: project_member.hourly_rate,
         minutes_logged:
       }
     end

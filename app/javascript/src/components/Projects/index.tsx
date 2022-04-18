@@ -6,11 +6,11 @@ import { IProject } from "./interface";
 import ProjectList from "./List";
 
 const Projects = ({ isAdminUser }) => {
-  const [projects, setProjects] = React.useState<IProject[]>([]);
+
   const [showProjectDetails, setShowProjectDetails] = React.useState(null);
+  const [projects, setProjects] = React.useState<IProject[]>([]);
 
   const fetchProjects = async () => {
-
     try {
       const resp = await projectApi.get();
       setProjects(resp.data.projects);
@@ -26,18 +26,22 @@ const Projects = ({ isAdminUser }) => {
   }, []);
 
   const projectClickHandler = (id) => {
-    setShowProjectDetails(id);
+    if (isAdminUser)
+    { setShowProjectDetails(id); }
   };
 
   return (
-    showProjectDetails ?
-      <ProjectDetails
-        id={showProjectDetails}
-      /> :
-      <ProjectList
-        allProjects={projects}
-        isAdminUser={isAdminUser}
-        projectClickHandler={projectClickHandler}/>
+    <React.Fragment>
+      {showProjectDetails ?
+        <ProjectDetails
+          id={showProjectDetails}
+        /> :
+        <ProjectList
+          allProjects={projects}
+          isAdminUser={isAdminUser}
+          projectClickHandler={projectClickHandler}
+        />}
+    </React.Fragment>
   );
 
 };

@@ -8,7 +8,7 @@ RSpec.describe CurrentCompanyConcern do
   let(:user_2) { create(:user, current_workspace: nil) }
 
   before do
-    create(:company_user, company_id: company.id, user_id: user.id)
+    create(:company_user, company:, user:)
     user.add_role :admin, company
 
     @stub_class = Class.new do

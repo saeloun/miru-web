@@ -53,10 +53,19 @@ en:
     create:
       success: Project added successfully.
       failure: Project creation failed.
+    update_members:
+      success:
+        message: Changes saved successfully
+      failure:
+        unauthorized: User is unauthorized to modify this project's details
+        message: Failed to saved changes
     add_project: Add project
     add_new_project: Add new project
     billable: Billable
     non_billable: Non-Billable
+    delete:
+      success:
+        message: Project removed successfully
   companies:
     create:
       failure: "Company creation failed"
@@ -76,9 +85,6 @@ en:
     address:
       label: Address
       placeholder: Enter address
-    code:
-      label: Client Code
-      placeholder: Enter Client code
     create:
       failure: "Client creation failed"
       success: "Client added successfully"
@@ -143,7 +149,6 @@ en:
     save: save
     logo: logo
     company: company
-    company_code: company code
     address: address
     business_phone: business phone
     country: country
