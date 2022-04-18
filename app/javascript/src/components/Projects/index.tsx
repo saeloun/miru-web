@@ -26,7 +26,8 @@ const Projects = ({ isAdminUser }) => {
   }, []);
 
   const projectClickHandler = (id) => {
-    setShowProjectDetails(id);
+    if (isAdminUser)
+    { setShowProjectDetails(id); }
   };
 
   return (
