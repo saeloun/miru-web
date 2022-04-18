@@ -3,13 +3,13 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create :company, :with_logo }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
 
   context "when user is admin" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :admin, company
       sign_in user
       send_request :get, internal_api_v1_generate_invoice_index_path
@@ -17,8 +17,12 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
 
     it "returns the company details and list of clients" do
       company_details = {
-        id: user.current_workspace.id, phone_number: user.current_workspace.business_phone,
-        address: user.current_workspace.address, country: user.current_workspace.country
+        id: user.current_workspace.id,
+        logo: polymorphic_url(user.current_workspace.logo),
+        name: user.current_workspace.name,
+        phone_number: user.current_workspace.business_phone,
+        address: user.current_workspace.address,
+        country: user.current_workspace.country
       }
       company_client_list = user.current_workspace.client_list
       issue_date = Date.current
@@ -33,7 +37,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
 
   context "when user is employee" do
     before do
-      create(:company_user, company_id: company.id, user_id: user.id)
+      create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
       send_request :get, internal_api_v1_generate_invoice_index_path

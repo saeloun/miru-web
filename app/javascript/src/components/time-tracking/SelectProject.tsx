@@ -14,7 +14,7 @@ const SelectProject: React.FC<Iprops> = ({
   newRowView,
   setNewRowView,
   handleEditEntries,
-  isWeeklyEditing,
+  isWeeklyEditing, // eslint-disable-line
   setIsWeeklyEditing
 }) => {
   const handleCancelButton = () => {

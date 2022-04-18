@@ -1,21 +1,18 @@
 import * as React from "react";
 import { minutesToHHMM } from "helpers/hhmm-parser";
+import { Pen, Trash } from "phosphor-react";
 import { IProject } from "../interface";
 
 export const Project = ({
   id,
   name,
-  clientName,
+  client,
   minutesSpent,
   isBillable,
-  editIcon,
-  deleteIcon,
   isAdminUser,
   projectClickHandler,
-  setShowEditDialog,
-  setProjectToEdit,
-  setProjectToDelete,
-  setShowDeleteDialog
+  setShowProjectModal,
+  setEditProjectData
 }: IProject) => {
   const [grayColor, setGrayColor] = React.useState<string>("");
   const [isHover, setHover] = React.useState<boolean>(false);
@@ -37,33 +34,30 @@ export const Project = ({
       onMouseEnter={handleMouseEnter}
       onClick={() => projectClickHandler(id)}>
       <td className="table__cell text-base">
-        {name}"  "{clientName}
+        {name}
       </td>
-      <td className="table__cell text-xs">
-        {isBillable}
+      <td className="table__cell text-right">
+        {isBillable && <span className="px-1 tracking-widest rounded-lg text-xs font-semibold leading-4 bg-miru-han-purple-100 text-miru-han-purple-1000">Billable</span>}
       </td>
       <td className="table__cell text-xl text-right font-bold">
         {minutesToHHMM(minutesSpent)}
       </td>
       <td className="table__cell px-3 py-3">
         {isAdminUser && isHover && <button
-          onClick={() => {
-            setShowEditDialog(true);
-            setProjectToEdit({ id, name, isBillable });
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowProjectModal(true);
+            setEditProjectData({ id,name,client,isBillable });
           }}
         >
-          <img src={editIcon} alt="" />
+          <Pen size={16} color="#5B34EA" />
         </button>
         }
       </td>
       <td className="table__cell px-3 py-3">
-        { isAdminUser && isHover && <button
-          onClick={() => {
-            setShowDeleteDialog(true);
-            setProjectToDelete({ id, name });
-          }}
-        >
-          <img src={deleteIcon} alt="" />
+        {isAdminUser && isHover && <button>
+          <Trash size={16} color="#5B34EA" />
         </button>
         }
       </td>

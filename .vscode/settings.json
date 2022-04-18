@@ -6,7 +6,6 @@
     "files.trimTrailingWhitespace": true,
     "files.insertFinalNewline": true,
     "editor.rulers": [
-        100,
         120
     ],
     "editor.tabSize": 2,
