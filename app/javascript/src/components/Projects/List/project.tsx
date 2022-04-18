@@ -6,7 +6,7 @@ import { IProject } from "../interface";
 export const Project = ({
   id,
   name,
-  clientName,
+  client,
   minutesSpent,
   isBillable,
   isAdminUser,
@@ -34,10 +34,10 @@ export const Project = ({
       onMouseEnter={handleMouseEnter}
       onClick={() => projectClickHandler(id)}>
       <td className="table__cell text-base">
-        {name}"  "{clientName}
+        {name}
       </td>
-      <td className="table__cell text-xs">
-        {isBillable}
+      <td className="table__cell text-right">
+        {isBillable && <span className="px-1 tracking-widest rounded-lg text-xs font-semibold leading-4 bg-miru-han-purple-100 text-miru-han-purple-1000">Billable</span>}
       </td>
       <td className="table__cell text-xl text-right font-bold">
         {minutesToHHMM(minutesSpent)}
@@ -48,7 +48,7 @@ export const Project = ({
             e.preventDefault();
             e.stopPropagation();
             setShowProjectModal(true);
-            setEditProjectData({ id,name,clientName,isBillable });
+            setEditProjectData({ id,name,client,isBillable });
           }}
         >
           <Pen size={16} color="#5B34EA" />
