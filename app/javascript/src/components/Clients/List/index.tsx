@@ -30,7 +30,6 @@ const getTableData = (clients) => {
 const Clients = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [showNewClient, setShowNewClientModal] =  useState<boolean>(false);
   const [clientToEdit, setedit] = useState({});
   const [clientToDelete, setDelete] = useState({});
   const [clientData, setClientData] = useState<any>();

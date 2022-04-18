@@ -104,14 +104,14 @@ const Table = ({
                     <button onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      handleEditClick(row.original.rowId)
+                      handleEditClick(row.original.rowId);
                     }}>
                       <Pencil size={16} color="#5b34ea" weight="bold" />
                     </button>
                     <button onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      handleDeleteClick(row.original.rowId)
+                      handleDeleteClick(row.original.rowId);
                     }} className="ml-10">
                       <Trash size={16} color="#5b34ea" weight="bold" />
                     </button>

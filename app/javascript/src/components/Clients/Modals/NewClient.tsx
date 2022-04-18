@@ -1,27 +1,24 @@
-import React, { useState } from "react";
-
-import clients from "apis/clients";
-import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
-
+import React from "react";
+import { Formik, Form, Field } from "formik";
 import { X } from "phosphor-react";
+import * as Yup from "yup";
 
 const newClientSchema = Yup.object().shape({
-  name: Yup.string().required('Name cannot be blank'),
-  email: Yup.string().email('Invalid email ID').required('Email ID cannot be blank'),
-  phoneNo: Yup.number().typeError('Invalid phone number'),
-  address: Yup.string().required('Address cannot be blank')
+  name: Yup.string().required("Name cannot be blank"),
+  email: Yup.string().email("Invalid email ID").required("Email ID cannot be blank"),
+  phoneNo: Yup.number().typeError("Invalid phone number"),
+  address: Yup.string().required("Address cannot be blank")
 });
 
 const initialValues = {
-  name: '',
-  email: '',
-  phoneNo: '',
-  address: ''
-}
+  name: "",
+  email: "",
+  phoneNo: "",
+  address: ""
+};
 
 const EditClient = ({ setShowNewClientModal }) => {
-  const handleSubmit = (values) => {
+  const handleSubmit = (values) => { //eslint-disable-line
   };
 
   return (
@@ -58,7 +55,7 @@ const EditClient = ({ setShowNewClientModal }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input ${errors.name && touched.name && 'border-red-600 focus:ring-red-600 focus:border-red-600'} `} name="name" />
+                        <Field className={`form__input ${errors.name && touched.name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="name" />
                       </div>
                     </div>
                   </div>
@@ -73,7 +70,7 @@ const EditClient = ({ setShowNewClientModal }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input ${errors.email && touched.email && 'border-red-600 focus:ring-red-600 focus:border-red-600'} `} name="email" />
+                        <Field className={`form__input ${errors.email && touched.email && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="email" />
                       </div>
                     </div>
                   </div>
@@ -88,7 +85,7 @@ const EditClient = ({ setShowNewClientModal }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input ${errors.phoneNo && touched.phoneNo && 'border-red-600 focus:ring-red-600 focus:border-red-600'} `} name="phoneNo" />
+                        <Field className={`form__input ${errors.phoneNo && touched.phoneNo && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="phoneNo" />
                       </div>
                     </div>
                   </div>
@@ -103,7 +100,7 @@ const EditClient = ({ setShowNewClientModal }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input ${errors.address && touched.address && 'border-red-600 focus:ring-red-600 focus:border-red-600'} `} name="address" />
+                        <Field className={`form__input ${errors.address && touched.address && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="address" />
                       </div>
                     </div>
                   </div>

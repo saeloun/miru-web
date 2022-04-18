@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, CaretDown, Trash } from "phosphor-react";
 
-const Header = ({ clientDetails, setShowNewClientModal }) => {
+const Header = ({ clientDetails }) => {
 
   const [isHeaderMenuVisible, setHeaderMenuVisibility] = useState<boolean>(false);
   const [isClientOpen, toggleClientDetails] = useState<boolean>(false);
@@ -42,7 +42,7 @@ const Header = ({ clientDetails, setShowNewClientModal }) => {
           </button>
           { isHeaderMenuVisible && <ul className="menuButton__wrapper">
             <li>
-              <button className="menuButton__list-item" onClick={() => setShowNewClientModal(true)}>
+              <button className="menuButton__list-item">
                 <Receipt size={16} color="#5B34EA" weight="bold" />
                 <span className="ml-3">Add Client</span>
               </button>

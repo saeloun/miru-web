@@ -31,7 +31,6 @@ const getTableData = (clients) => {
 const ClientList = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [showNewClient, setShowNewClientModal] =  useState<boolean>(false);
   const [clientToEdit, setClientToEdit] = useState({});
   const [clientToDelete, setClientToDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
@@ -106,7 +105,7 @@ const ClientList = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer />
-      <Header clientDetails={clientDetails} setShowNewClientModal={setShowNewClientModal} />
+      <Header clientDetails={clientDetails} />
       <div>
         { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
           <div className="flex justify-end">
