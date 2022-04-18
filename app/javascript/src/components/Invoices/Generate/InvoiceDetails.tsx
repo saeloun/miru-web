@@ -1,14 +1,19 @@
 import React, { useState, useRef } from "react";
-import dayjs from "dayjs";
 import { PencilSimple } from "phosphor-react";
 import ClientSelection from "./ClientSelection";
 import useOutsideClick from "../../../helpers/outsideClick";
 
-const InvoiceDetails = ({ clientList, selectedClient, setSelectedClient, amountDue }) => {
-  const [issueDate] = useState<string>(dayjs().format("DD.MM.YYYY"));
-  const [dueDate] = useState<string>(dayjs().add(1, "month").format("DD.MM.YYYY"));
+const InvoiceDetails = ({
+  clientList,
+  selectedClient, setSelectedClient,
+  amountDue,
+  issueDate,
+  dueDate,
+  invoiceNumber,
+  setInvoiceNumber,
+  reference
+}) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [invoiceNumber, setInvoiceNumber] = useState<string>("");
   const wrapperRef = useRef(null);
 
   useOutsideClick(wrapperRef, () => setIsEditing(false), isEditing);
@@ -47,7 +52,7 @@ const InvoiceDetails = ({ clientList, selectedClient, setSelectedClient, amountD
           Reference
         </p>
         <p className="font-normal text-base text-miru-dark-purple-1000">
-          -
+          {reference}
         </p>
       </div>
 
