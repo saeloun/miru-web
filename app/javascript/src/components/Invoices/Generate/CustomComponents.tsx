@@ -8,7 +8,7 @@ export const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
   </components.DropdownIndicator>
 );
 
-export const DropdownHeader = () => (
+export const DropdownHeader = ({ setShowMultilineModal }) => (
   <div className="grid grid-cols-3 gap-4 p-2 items-center">
     <div className="mt-1 relative rounded-md shadow-sm col-span-2 ">
       <input
@@ -17,13 +17,18 @@ export const DropdownHeader = () => (
         placeholder="Search"
       />
       <button className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
-        <MagnifyingGlass size={20} color="#1D1A31"
+        <MagnifyingGlass
+          size={20}
+          color="#1D1A31"
           className="h-3 w-3 text-miru-gray-400"
         />
       </button>
     </div>
     <div>
-      <button className=" mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000">
+      <button
+        className="mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000"
+        onClick={() => setShowMultilineModal(true)}
+      >
         CLICK TO ADD MULTIPLE ENTRIES
       </button>
     </div>
