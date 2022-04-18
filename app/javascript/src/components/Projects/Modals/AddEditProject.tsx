@@ -1,20 +1,49 @@
 import React, { useEffect, useState } from "react";
 
 import Select from "react-select";
+import projectApi from "apis/projects";
 import { X } from "phosphor-react";
 
 const AddEditProject = ({ editProjectData, setShowProjectModal }) => {
 
-  const [client, setClient] = useState<any>();
-  const [projectName, setProjectName] = useState<any>();
+  const [client, setClient] = useState<any>(null);
+  const [projectName, setProjectName] = useState<any>(null);
   const [projectType, setProjectType] = useState<any>("Billable");
 
   useEffect(() => {
-
-    setClient(editProjectData.clientName);
-    setProjectName(editProjectData.name);
-    setProjectType(editProjectData.isBillable ? "Billable" : "Non-Billable");
+    if (editProjectData) {
+      setClient(editProjectData.clientName ? editProjectData.clientName : "");
+      setProjectName(editProjectData.name ? editProjectData.name : null);
+      setProjectType(editProjectData.isBillable ? "Billable" : "Non-Billable");
+    }
   }, [editProjectData]);
+
+  const handleEdit = () => {
+    projectApi.update(editProjectData.id, {
+      project: {
+        client,
+        projectName,
+        projectType
+      }
+    }).then(() => {
+      setShowProjectModal(false);
+      window.location.reload();
+    });
+  };
+
+  const handleSubmit = () => {
+
+    projectApi.create({
+      project: {
+        client,
+        projectName,
+        projectType
+      }
+    }).then(() => {
+      window.location.reload();
+      setShowProjectModal(false);
+    });
+  };
 
   return (
     <div className="modal__modal main-modal" style={{ background: "rgba(29, 26, 49,0.6)" }}>
@@ -123,8 +152,8 @@ const AddEditProject = ({ editProjectData, setShowProjectModal }) => {
 
             <div className="actions mt-4">
               {client && projectName && projectType ?
-                <button type="submit" className="tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer">{editProjectData ? " SAVE CHANGES" : "ADD PROJECT"}</button>
-                : <button type="submit" className="tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-gray-1000 focus:outline-none rounded cursor-pointer">{editProjectData ? "SAVE CHANGES" : "ADD PROJECT"}</button>
+                <button type="submit" className="tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer" onClick={() => editProjectData ? handleEdit() : handleSubmit()}>{editProjectData ? " SAVE CHANGES" : "ADD PROJECT"}</button>
+                : <button type="submit" className="tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-gray-1000 focus:outline-none rounded cursor-pointer" disabled>{editProjectData ? "SAVE CHANGES" : "ADD PROJECT"}</button>
               }
             </div>
           </div>
