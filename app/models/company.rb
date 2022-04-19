@@ -39,19 +39,24 @@ class Company < ApplicationRecord
     clients.kept.map { |client| client.client_detail(time_frame) }
   end
 
+  # Method for project list page along with client and user filter START
+
+  # Project Filter START
   def project_list_after_filter(time_frame, client_filter = nil, user_filter = nil)
     project_list = project_list(time_frame)
     project_list_after_client_filter = project_list[:project_details].filter_map do |project|
-      !client_filter.nil? ? (project if client_filter.include?(project[:client_name])) : project
+      client_filter.nil? ? project : (project if client_filter.include?(project[:client_name]))
     end
     project_list_after_user_filter = project_list_after_client_filter.filter_map do |project|
-      !user_filter.nil? ? (project[:project_team_member].map { | member |
-  project if user_filter.include?(member)
-} .uniq) : project
-    end
+      user_filter.nil? ? project : (project if user_filter.any? { |user|
+  project[:project_team_member].include?(user)
+})
+    end.compact
     { project_details: project_list_after_user_filter, project_users_list: project_list[:project_users_list] }
   end
+  # Project Filter END
 
+  # Project last START
   def project_list(time_frame)
     from, to = week_month_year(time_frame)
     project_list = projects.kept.includes(:client, :timesheet_entries, timesheet_entries: [:user])
@@ -71,6 +76,9 @@ class Company < ApplicationRecord
     project_users_list = (project_details.map { | project | project[:project_team_member] }).flatten.uniq
     { project_details:, project_users_list: }
   end
+  # Project list END
+
+  # Method for project list page along with client and user filter END
 
   def week_month_year(time_frame)
     case time_frame
