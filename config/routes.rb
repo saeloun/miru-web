@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   # resources :clients, only: [:create]
   resources :projects, only: [:index, :create]
   resources :reports, only: [:index]
-  # resources :invoices, only: [:index, :create]
+  resources :invoices, only: [:show]
   resources :workspaces, only: [:update]
 
   get "clients/*path", to: "clients#index", via: :all
