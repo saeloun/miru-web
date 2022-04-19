@@ -10,7 +10,8 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
             .from_date(params[:from])
             .to_date(params[:to])
             .for_clients(params[:client_ids])
-            .with_statuses(params[:statuses]),
+            .with_statuses(params[:statuses])
+            .order(created_at: :desc),
       items_param: :invoices_per_page)
 
     render :index, locals: {
