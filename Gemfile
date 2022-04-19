@@ -122,6 +122,12 @@ group :development, :test do
 
   # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
   gem "bullet"
+
+  # Payments engine for Ruby on Rails https://github.com/pay-rails/pay
+  gem "pay", "~> 3.0"
+
+  # For payments
+  gem "stripe"
 end
 
 group :development do
@@ -171,5 +177,3 @@ gem "pagy", "~> 5.10"
 
 # Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
 gem "active_interaction"
-
-gem "stripe"

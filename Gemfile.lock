@@ -284,6 +284,8 @@ GEM
     parallel (1.21.0)
     parser (3.1.0.0)
       ast (~> 2.4.1)
+    pay (3.0.24)
+      rails (>= 6.0.0)
     pg (1.2.3)
     public_suffix (4.0.6)
     puma (5.5.2)
@@ -496,6 +498,7 @@ DEPENDENCIES
   omniauth-google-oauth2 (~> 1.0)
   omniauth-rails_csrf_protection (~> 1.0)
   pagy (~> 5.10)
+  pay (~> 3.0)
   pg
   puma (~> 5.0)
   pundit (~> 2.2)
