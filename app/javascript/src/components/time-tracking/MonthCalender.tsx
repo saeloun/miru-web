@@ -26,7 +26,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
     let dayInWeekCounter = firstDay;
     for (let i = 1; i <= daysInMonth; i++) {
       // Ex. date = "2020-01-01"
-      const date = `${currentYear}-${currentMonthNumber < 9 ? "0" : ""}${currentMonthNumber + 1}-${i < 9 ? "0" : ""}${i}`;
+      const date = dayjs(`${currentYear}-${currentMonthNumber + 1}-${i}`).format("YYYY-MM-DD");
       const totalDuration = entryList[date]?.reduce((acc: number, cv: number) => cv["duration"] + acc, 0);
       if (totalDuration) currentWeekTotalHours += totalDuration;
       weeksData[dayInWeekCounter] = { date: date, day: i, totalDuration: totalDuration };
@@ -83,7 +83,6 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
 
   const handleMonthTodayButton = () => {
     handleWeekTodayButton();
-    setSelectedFullDate(today);
     setCurrentMonthNumber(dayjs().month());
     setFirstDay(() => dayjs().startOf("month").weekday());
     setCurrentYear(dayjs().year());
