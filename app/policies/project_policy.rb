@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
 class ProjectPolicy < ApplicationPolicy
+  attr_reader :error_message_key
+
   def index?
+    true
+  end
+
+  def show?
     user_owner_or_admin?
   end
 
@@ -9,7 +15,17 @@ class ProjectPolicy < ApplicationPolicy
     user_owner_or_admin?
   end
 
-  def show?
+  def update?
     user_owner_or_admin?
+  end
+
+  def destroy?
+    user_owner_or_admin?
+  end
+
+  def permitted_attributes
+    [
+      :name, :description, :billable, :client_id
+    ]
   end
 end

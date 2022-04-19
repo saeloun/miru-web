@@ -6,6 +6,7 @@ import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, UsersThree, Trash } from "phosphor-react";
+import EditMembersList from "./EditMembersList";
 import { unmapper } from "../../../mapper/project.mapper";
 
 const getTableData = (project) => {
@@ -26,6 +27,7 @@ const getTableData = (project) => {
 const ProjectDetails = () => {
 
   const [project, setProject] = React.useState<any>();
+  const [showAddMemberDialog, setShowAddMemberDialog] = React.useState<boolean>(false);
   const [isHeaderMenuVisible, setHeaderMenuVisibility] = React.useState<boolean>(false);
   const params = useParams();
   const navigate = useNavigate();
@@ -39,19 +41,24 @@ const ProjectDetails = () => {
       });
   };
 
+  const handleAddProjectDetails = () => {
+    fetchProject();
+  };
+
   React.useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
     fetchProject();
   }, []);
 
+  //check with Ajinkya why tableData is not updating
   const tableData = getTableData(project);
 
   const tableHeader = [
     {
       Header: "TEAM MEMBER",
       accessor: "col1", // accessor is the "key" in the data
-      cssClass: "abc"
+      cssClass: ""
     },
     {
       Header: "HOURLY RATE",
@@ -81,6 +88,11 @@ const ProjectDetails = () => {
 
   const handleMenuVisibility = () => {
     setHeaderMenuVisibility(!isHeaderMenuVisible);
+  };
+
+  const handleAddRemoveMembers = () => {
+    handleMenuVisibility();
+    setShowAddMemberDialog(true);
   };
 
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
@@ -118,7 +130,8 @@ const ProjectDetails = () => {
                 </button>
               </li>
               <li>
-                <button className="menuButton__list-item">
+                <button className="menuButton__list-item"
+                  onClick={handleAddRemoveMembers}>
                   <UsersThree size={16} color="#5b34ea" weight="bold" />
                   <span className="ml-3">Add/Remove Team Members</span>
                 </button>
@@ -170,6 +183,14 @@ const ProjectDetails = () => {
           </div>
         </div>
       </div>
+      {showAddMemberDialog ? (
+        <EditMembersList
+          setShowAddMemberDialog={setShowAddMemberDialog}
+          addedMembers={project?.members}
+          handleAddProjectDetails = {handleAddProjectDetails}
+          projectId={1}
+        />
+      ) : null}
     </>
   );
 

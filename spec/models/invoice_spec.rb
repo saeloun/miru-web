@@ -55,6 +55,10 @@ RSpec.describe Invoice, type: :model do
           })
       end
     end
+
+    describe "accepts_nested_attributes_for" do
+      it { is_expected.to accept_nested_attributes_for(:invoice_line_items).allow_destroy(true) }
+    end
   end
 
   describe "Scopes" do
@@ -109,5 +113,15 @@ RSpec.describe Invoice, type: :model do
 
   describe ".delegate" do
     it { is_expected.to delegate_method(:name).to(:client).with_prefix(:client) }
+  end
+
+  describe ".send_to_email" do
+    let(:invoice) { create :invoice }
+    let(:recipients) { [invoice.client.email, "miru@example.com"] }
+    let(:subject) { "Invoice (#{invoice.invoice_number}) due on #{invoice.due_date}" }
+
+    it "sends the invoice on email" do
+      expect { invoice.send_to_email(subject:, recipients:) }.to have_enqueued_mail(InvoiceMailer, :invoice)
+    end
   end
 end

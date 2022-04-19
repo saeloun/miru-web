@@ -6,10 +6,9 @@ import { DropdownIndicator } from "./CustomComponents";
 import { reactSelectStyles } from "./Styles";
 import useOutsideClick from "../../../helpers/outsideClick";
 
-const ClientSelection = ({ clientList }) => {
+const ClientSelection = ({ clientList, selectedClient, setSelectedClient }) => {
   const [isOptionSelected, setOptionSelection] = useState<boolean>(false);
   const [isClientVisible, setClientVisible] = useState<boolean>(false);
-  const [clientInfo, setClientInfo] = useState<any>();
   const wrapperRef = useRef(null);
 
   useOutsideClick(wrapperRef, () => setClientVisible(false), isClientVisible);
@@ -24,7 +23,7 @@ const ClientSelection = ({ clientList }) => {
   };
 
   const handleClientChange = (selection) => {
-    setClientInfo(selection);
+    setSelectedClient(selection);
     setClientVisible(false);
     setOptionSelection(true);
   };
@@ -67,11 +66,11 @@ const ClientSelection = ({ clientList }) => {
       }
       { isOptionSelected && <div>
         <p className="font-bold text-base text-miru-dark-purple-1000">
-          {clientInfo.label}
+          {selectedClient.label}
         </p>
         <p className="font-normal text-xs text-miru-dark-purple-400 w-52">
-          {clientInfo.address}<br/>
-          {clientInfo.phone}
+          {selectedClient.address}<br/>
+          {selectedClient.phone}
         </p>
       </div>
       }

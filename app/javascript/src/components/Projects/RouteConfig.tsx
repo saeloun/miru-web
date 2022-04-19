@@ -15,9 +15,7 @@ const RouteConfig = ({ isAdminUser }) => (
     <BrowserRouter>
       <Routes>
         <Route path="projects">
-          <Route index element={ <ProjectList
-            isAdminUser={isAdminUser}
-          />} />
+          <Route index element={ <ProjectList isAdminUser={isAdminUser} />} />
           <Route path=":projectId" element={<ProjectDetails />} />
           <Route path="*" element={<ErrorPage />} />
         </Route>

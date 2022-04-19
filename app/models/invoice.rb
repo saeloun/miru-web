@@ -29,6 +29,8 @@
 # frozen_string_literal: true
 
 class Invoice < ApplicationRecord
+  include InvoiceSendable
+
   attr_accessor :sub_total
 
   enum status: [
@@ -42,6 +44,7 @@ class Invoice < ApplicationRecord
 
   belongs_to :client
   has_many :invoice_line_items, dependent: :destroy
+  accepts_nested_attributes_for :invoice_line_items, allow_destroy: true
 
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }

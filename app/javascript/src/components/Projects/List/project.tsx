@@ -7,14 +7,14 @@ import { IProject } from "../interface";
 export const Project = ({
   id,
   name,
-  clientName,
+  client,
   minutesSpent,
   isBillable,
   isAdminUser,
   setProjectToDelete,
   setShowDeleteDialog,
   setShowProjectModal,
-  setEditProjectId
+  setEditProjectData
 }: IProject) => {
   const [grayColor, setGrayColor] = React.useState<string>("");
   const [isHover, setHover] = React.useState<boolean>(false);
@@ -32,6 +32,7 @@ export const Project = ({
   const projectClickHandler = (id) => {
     navigate(`${id}`);
   };
+
   return (
     <tr key={id}
       className={`last:border-b-0 ${grayColor}`}
@@ -39,19 +40,21 @@ export const Project = ({
       onMouseEnter={handleMouseEnter}
       onClick={() => projectClickHandler(id)}>
       <td className="table__cell text-base">
-        {name}"  "{clientName}
+        {name}
       </td>
-      <td className="table__cell text-xs">
-        {isBillable}
+      <td className="table__cell text-right">
+        {isBillable && <span className="px-1 tracking-widest rounded-lg text-xs font-semibold leading-4 bg-miru-han-purple-100 text-miru-han-purple-1000">Billable</span>}
       </td>
       <td className="table__cell text-xl text-right font-bold">
         {minutesToHHMM(minutesSpent)}
       </td>
       <td className="table__cell px-3 py-3">
         {isAdminUser && isHover && <button
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
             setShowProjectModal(true);
-            setEditProjectId(id);
+            setEditProjectData({ id,name,client,isBillable });
           }}
         >
           <Pen size={16} color="#5B34EA" />

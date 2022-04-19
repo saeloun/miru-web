@@ -1,6 +1,6 @@
 {
   "name": "@saeloun/miru-web",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "^7.16.5",
     "@babel/preset-react": "^7.16.5",
@@ -22,8 +22,10 @@
     "axios": "^0.24.0",
     "babel-plugin-js-logger": "^1.0.17",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "classnames": "^2.3.1",
     "dayjs": "^1.11.0",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
+    "formik": "^2.2.9",
     "jquery": "^3.6.0",
     "js-logger": "^1.6.1",
     "phosphor-react": "^1.4.1",
@@ -31,6 +33,7 @@
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.2.2",
     "react-select": "^5.2.2",
     "react-table": "^7.7.0",
@@ -42,7 +45,8 @@
     "toastr": "^2.1.4",
     "typescript": "^4.5.4",
     "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.12"
+    "webpack-cli": "^3.3.12",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.16.3",
