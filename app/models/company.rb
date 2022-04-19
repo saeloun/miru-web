@@ -42,8 +42,8 @@ class Company < ApplicationRecord
   # Method for project list page along with client and user filter START
 
   # Project Filter START
-  def project_list_after_filter(time_frame, client_filter = nil, user_filter = nil)
-    project_list = project_list(time_frame)
+  def project_list_after_filter(time_frame, client_filter = nil, user_filter = nil, search)
+    project_list = project_list(time_frame, search)
     project_list_after_client_filter = project_list[:project_details].filter_map do |project|
       client_filter.nil? ? project : (project if client_filter.include?(project[:client_name]))
     end
@@ -57,9 +57,12 @@ class Company < ApplicationRecord
   # Project Filter END
 
   # Project last START
-  def project_list(time_frame)
+  def project_list(time_frame, search)
     from, to = week_month_year(time_frame)
-    project_list = projects.kept.includes(:client, :timesheet_entries, timesheet_entries: [:user])
+    query = projects.kept.includes(
+      :client, :timesheet_entries,
+      timesheet_entries: [:user]).ransack({ name_or_client_name_cont: search })
+    project_list = query.result(distinct: true)
     project_details = project_list.uniq.map do |project|
       project_team_member = (project.timesheet_entries.map { | timesheet_entries |
   timesheet_entries.user.full_name
