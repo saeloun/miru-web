@@ -46,7 +46,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  pay_customer stripe_attributes: :stripe_attributes
+  pay_customer
 
   # Includes
   include Discard::Model
@@ -105,16 +105,6 @@ class User < ApplicationRecord
   end
 
   private
-
-    def stripe_attributes(pay_customer)
-      {
-        metadata: {
-          pay_customer_id: pay_customer.id,
-          user_id: id,
-          full_name:
-        }
-      }
-    end
 
     def discard_project_members
       project_members.discard_all
