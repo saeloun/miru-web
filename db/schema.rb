@@ -243,16 +243,6 @@ unique: true
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
-  create_table "team_members", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "project_id", null: false
-    t.decimal "hourly_rate", default: "0.0", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["project_id"], name: "index_team_members_on_project_id"
-    t.index ["user_id"], name: "index_team_members_on_user_id"
-  end
-
   create_table "timesheet_entries", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
