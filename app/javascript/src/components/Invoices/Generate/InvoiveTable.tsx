@@ -30,11 +30,10 @@ const fetchNewLineItems = async (
   }
 };
 
-const InvoiceTable = ({ selectedClient, setSelectedOption, selectedOption ,setShowMultilineModal }) => {
+const InvoiceTable = ({ selectedClient, setSelectedOption, selectedOption ,setShowMultilineModal, setLineItems, lineItems }) => {
 
   const [addNew, setAddNew] = useState<boolean>(false);
   const [showItemInputs, setShowItemInputs] = useState<boolean>(false);
-  const [lineItems, setLineItems] = useState<any>([]);
   const [totalLineItems, setTotalLineItems] = useState<number>(null);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const wrapperRef = useRef(null);
@@ -52,7 +51,7 @@ const InvoiceTable = ({ selectedClient, setSelectedOption, selectedOption ,setSh
   useOutsideClick(wrapperRef, () => {
     setAddNew(false);
     setPageNumber(1);
-    setLineItems([]);
+    //setLineItems([]);
   }, addNew);
 
   const getNewLineItemDropdown = () => {

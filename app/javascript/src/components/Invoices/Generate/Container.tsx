@@ -11,7 +11,7 @@ const Container = ({ invoiceDetails }) => {
   const [selectedClient, setSelectedClient] = useState<any>();
   const [selectedOption, setSelectedOption] = useState<any>([]);
   const [amountDue, setAmountDue] = useState<number>(0);
-  const [newLineItems, setNewLineItems] = useState<Array<any>>([]);
+  const [lineItems, setLineItems] = useState<any>([]);
   const [showMultilineModal, setShowMultilineModal] = useState<boolean>(false);
 
   return (
@@ -24,6 +24,8 @@ const Container = ({ invoiceDetails }) => {
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
           setShowMultilineModal={setShowMultilineModal}
+          lineItems={lineItems}
+          setLineItems={setLineItems}
         />
       </div>
       <InvoiceTotal
@@ -33,9 +35,11 @@ const Container = ({ invoiceDetails }) => {
       />
       {showMultilineModal &&
         <MultipleEntriesModal
-          newLineItems={newLineItems}
-          setNewLineItems={setNewLineItems}
+          lineItems={lineItems}
+          setLineItems={setLineItems}
           setShowMultilineModal={setShowMultilineModal}
+          selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
         />
       }
     </div>

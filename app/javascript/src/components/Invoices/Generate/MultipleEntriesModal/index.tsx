@@ -4,7 +4,7 @@ import Table from "common/Table";
 import Footer from "./Footer";
 import Header from "./Header";
 
-const MultipleEntriesModal = ({ setShowMultilineModal, setNewLineItems, newLineItems }) => {
+const MultipleEntriesModal = ({ setShowMultilineModal, setLineItems, lineItems, selectedOption, setSelectedOption }) => {
 
   const tableHeader = [
     {
@@ -29,47 +29,18 @@ const MultipleEntriesModal = ({ setShowMultilineModal, setNewLineItems, newLineI
     }
   ];
 
-  const MultipleEntries = [{
-    id: 1,
-    Name: "Cameron Prichett",
-    Description: "I am the description of single entry",
-    Date: "23.12.2021",
-    Time: 5,
-    cssClass: "px-0 py-3"
-  }, {
-    id: 2,
-    Name: "Chris Patt",
-    Description: "I am the description of single entry",
-    Date: "23.12.2021",
-    Time: 5,
-    cssClass: "px-0 py-3"
-  }, {
-    id: 3,
-    Name: "Jake Sully",
-    Description: "I am the description of single entry",
-    Date: "23.12.2021",
-    Time: 5,
-    cssClass: "px-0 py-3"
-  }, {
-    id: 4,
-    Name: "Robert jnr.",
-    Description: "I am the description of single entry",
-    Date: "23.12.2021",
-    Time: 5
-  }];
-
   const getTableData = (Entries) => {
     if (Entries) {
       return Entries.map((member) => ({
-        col1: <div className='font medium text-sm text-miru-dark-purple-1000 text-left'>{member.Name}</div>,
-        col2: <div className='font medium text-xs text-miru-dark-purple-600 text-left'>{member.Description}</div>,
-        col3: <div className='font medium text-xs text-miru-dark-purple-1000 text-right'>{member.Date}</div>,
-        col4: <div className='font medium text-xs text-miru-dark-purple-1000 text-right'>{member.Time}</div>
+        col1: <div className='font medium text-sm text-miru-dark-purple-1000 text-left'>{member.first_name} {member.last_name}</div>,
+        col2: <div className='font medium text-xs text-miru-dark-purple-600 text-left'>{member.description}</div>,
+        col3: <div className='font medium text-xs text-miru-dark-purple-1000 text-right'>{member.date}</div>,
+        col4: <div className='font medium text-xs text-miru-dark-purple-1000 text-right'>{member.qty}</div>
       }));
     }
   };
 
-  const tableData = getTableData(MultipleEntries);
+  const tableData = getTableData(lineItems);
 
   const [multipleEntries, setMultipleEntries] = useState<any>([]);
   const [selectedRows, setSelectedRows] = useState<any>([]);
@@ -108,12 +79,12 @@ const MultipleEntriesModal = ({ setShowMultilineModal, setNewLineItems, newLineI
     if (multipleItems) {
       setMultipleEntries(multipleItems);
     }
-  }, []);
+  }, [selectedRows]);
 
   useEffect(() => {
     if (addEntries) {
-      const arr = newLineItems.concat(multipleEntries);
-      setNewLineItems(arr);
+      const arr = selectedOption.concat(multipleEntries);
+      setSelectedOption(arr);
       setShowMultilineModal(false);
     }
   }, [addEntries]);
@@ -128,6 +99,7 @@ const MultipleEntriesModal = ({ setShowMultilineModal, setNewLineItems, newLineI
           <Table
             hasCheckbox={true}
             checkboxCss="w-4 h-4"
+            RowCss="px-0 py-3"
             showRowBorder={false}
             tableHeader={tableHeader}
             tableRowArray={tableData}
@@ -135,8 +107,8 @@ const MultipleEntriesModal = ({ setShowMultilineModal, setNewLineItems, newLineI
           />
         </div>
         <Footer
-        selectedRowCount={selectedRows.length}
-        setAddEntries={setAddEntries}/>
+          selectedRowCount={selectedRows.length}
+          setAddEntries={setAddEntries}/>
       </div>
     </div>
   );
