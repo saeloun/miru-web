@@ -34,12 +34,9 @@ Rails.application.routes.draw do
   resources :time_tracking, only: [:index], path: "time-tracking"
 
   resources :team, only: [:index, :update, :destroy, :edit]
-  resources :clients, only: [:index, :create]
-  # resources :projects, only: [:index, :create]
-  # resources :clients, only: [:create]
 
   resources :reports, only: [:index]
-  # resources :invoices, only: [:index, :create]
+
   resources :workspaces, only: [:update]
 
   get "clients/*path", to: "clients#index", via: :all
