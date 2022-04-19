@@ -70,7 +70,6 @@ export const ProjectList = ({ isAdminUser }) => {
                       {...project}
                       isAdminUser={isAdminUser}
                       setShowProjectModal={setShowProjectModal}
-                      setEditProjectData={setEditProjectData}
                     />
                   ))}
                 </tbody>

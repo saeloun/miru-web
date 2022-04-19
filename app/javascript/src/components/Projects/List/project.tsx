@@ -11,8 +11,6 @@ export const Project = ({
   minutesSpent,
   isBillable,
   isAdminUser,
-  setProjectToDelete,
-  setShowDeleteDialog,
   setShowProjectModal,
   setEditProjectData
 }: IProject) => {
@@ -62,11 +60,7 @@ export const Project = ({
         }
       </td>
       <td className="table__cell px-3 py-3">
-        {isAdminUser && isHover && <button
-          onClick={() => {
-            setShowDeleteDialog(true);
-            setProjectToDelete({ id, name });
-          }}>
+        {isAdminUser && isHover && <button>
           <Trash size={16} color="#5B34EA" />
         </button>
         }

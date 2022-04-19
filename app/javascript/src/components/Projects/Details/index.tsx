@@ -36,7 +36,7 @@ const ProjectDetails = () => {
     await projectAPI.show(params.projectId)
       .then(resp => {
         setProject(unmapper(resp.data.project_details));
-      }).catch((err) => {
+      }).catch(() => {
       // Add error handling
       });
   };
