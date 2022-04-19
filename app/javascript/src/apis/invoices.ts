@@ -2,7 +2,8 @@ import axios from "axios";
 
 const path = "/invoices";
 
-const get = async () => axios.get(`${path}`);
+const get = async (query = "") =>
+  axios.get(query ? `${path}?${query}` : `${path}`);
 
 const invoicesApi = { get };
 
