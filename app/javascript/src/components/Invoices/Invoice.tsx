@@ -1,7 +1,7 @@
 import React from "react";
 
-const Invoice = () => (
-  <h1>Invoice</h1>
+const Invoice = ({ invoice }) => (
+  <h1>Invoice {invoice.id}</h1>
 );
 
 export default Invoice;
