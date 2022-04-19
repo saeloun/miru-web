@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clients from "apis/clients";
@@ -9,10 +9,9 @@ import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 
 import Header from "./Header";
-import { unmapClientList } from "../../../mapper/client.mapper";
+import { unmapClientDetails } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
-import NewClient from "../Modals/NewClient";
 
 const getTableData = (clients) => {
   if (clients) {
@@ -20,7 +19,7 @@ const getTableData = (clients) => {
       const hours = client.minutes/60;
       return {
         col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
-        col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
+        col2: <div className="text-base text-miru-dark-purple-1000">{client.team.map(member => <span>{member},&nbsp;</span>)}</div>,
         col3: <div className="text-base text-miru-dark-purple-1000 text-right">{hours}</div>,
         rowId: client.id
       };
@@ -29,62 +28,61 @@ const getTableData = (clients) => {
   return [{}];
 };
 
-const Clients = ({ isAdminUser }) => {
+const ClientList = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [newClient, setnewClient] = useState<boolean>(false);
-  const [clientToEdit, setedit] = useState({});
-  const [clientToDelete, setDelete] = useState({});
+  const [clientToEdit, setClientToEdit] = useState({});
+  const [clientToDelete, setClientToDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
-  const navigate = useNavigate();
+  const [clientDetails, setClientDetails] = useState<any>({});
+
+  const params = useParams();
 
   const handleEditClick = (id) => {
     setShowEditDialog(true);
     const editSelection = clientData.find(client => client.id === id);
-    setedit(editSelection);
+    setClientToEdit(editSelection);
   };
 
   const handleDeleteClick = (id) => {
     setShowDeleteDialog(true);
     const editSelection = clientData.find(client => client.id === id);
-    setDelete(editSelection);
+    setClientToDelete(editSelection);
   };
 
   const handleSelectChange = (event) => {
-    clients.get(`?time_frame=${event.target.value}`)
+    clients.show(params.clientId,`?time_frame=${event.target.value}`)
       .then((res) => {
-        const sanitized = unmapClientList(res);
-        setClientData(sanitized.clientList);
+        const sanitized = unmapClientDetails(res);
+        setClientData(sanitized.projectDetails);
+        setClientDetails(sanitized.clientDetails);
         setTotalMinutes(sanitized.totalMinutes);
       });
-  };
-
-  const handleRowClick = (id) => {
-    navigate(`${id}`);
   };
 
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
-    clients.get("?time_frame=week")
+    clients.show(params.clientId, "?time_frame=week")
       .then((res) => {
-        const sanitized = unmapClientList(res);
-        setClientData(sanitized.clientList);
+        const sanitized = unmapClientDetails(res);
+        setClientDetails(sanitized.clientDetails);
+        setClientData(sanitized.projectDetails);
         setTotalMinutes(sanitized.totalMinutes);
       });
   }, []);
 
   const tableHeader = [
     {
-      Header: "CLIENT",
+      Header: "PROJECT",
       accessor: "col1", // accessor is the "key" in the data
       cssClass: ""
     },
     {
-      Header: "EMAIL ID",
+      Header: "TEAM",
       accessor: "col2",
-      cssClass: "text-right"
+      cssClass: ""
     },
     {
       Header: "HOURS LOGGED",
@@ -107,7 +105,7 @@ const Clients = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer />
-      <Header setnewClient={setnewClient} />
+      <Header clientDetails={clientDetails} />
       <div>
         { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
           <div className="flex justify-end">
@@ -147,7 +145,6 @@ const Clients = ({ isAdminUser }) => {
                   hasRowIcons={true}
                   tableHeader={tableHeader}
                   tableRowArray={tableData}
-                  rowOnClick={handleRowClick}
                 /> }
               </div>
             </div>
@@ -166,15 +163,8 @@ const Clients = ({ isAdminUser }) => {
           client={clientToDelete}
         />
       )}
-      {newClient && (
-        <NewClient
-          setnewClient={setnewClient}
-          setClientData = {setClientData}
-          clientData = {clientData}
-        />
-      )}
     </>
   );
 };
 
-export default Clients;
+export default ClientList;
