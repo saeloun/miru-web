@@ -2,17 +2,23 @@
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import * as dayjs from "dayjs";
+import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
 import AddEntry from "./AddEntry";
 import DatesInWeek from "./DatesInWeek";
 import EntryCard from "./EntryCard";
+import MonthCalender from "./MonthCalender";
 import WeeklyEntries from "./WeeklyEntries";
 import { setAuthHeaders, registerIntercepts } from "../../apis/axios";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";
 
 const { useState, useEffect } = React;
+dayjs.extend(updateLocale);
 dayjs.extend(weekday);
+
+const monthsAbbr = "Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_");
+dayjs.updateLocale("en", { monthShort: monthsAbbr });
 
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
@@ -27,9 +33,10 @@ const TimeTracking: React.FC<Iprops> = ({
   const [view, setView] = useState<string>("day");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
-  const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
-  const [weekDay, setWeekDay] = useState<number>(0);
-  const [totalHours, setTotalHours] = useState<string>("00:00");
+  const [selectDate, setSelectDate] = useState<number>(0);
+  const [weekDay, setWeekDay] = useState<number>(dayjs().weekday());
+  const [weeklyTotalHours, setWeeklyTotalHours] = useState<string>("00:00");
+  const [dailyTotalHours, setDailyTotalHours] = useState<number[]>([]);
   const [entryList, setEntryList] = useState<object>(entries);
   const [selectedFullDate, setSelectedFullDate] = useState<string>(
     dayjs().format("YYYY-MM-DD")
@@ -48,13 +55,17 @@ const TimeTracking: React.FC<Iprops> = ({
 
   useEffect(() => {
     handleWeekInfo();
-    fetchEntries();
   }, [weekDay]);
 
   useEffect(() => {
-    calculateTotalHours();
+    if (view === "month") return;
     parseWeeklyViewData();
+    calculateTotalHours();
   }, [weekDay, entryList]);
+
+  useEffect(() => {
+    setIsWeeklyEditing(false);
+  }, [view]);
 
   useEffect(() => {
     setSelectedFullDate(
@@ -63,6 +74,11 @@ const TimeTracking: React.FC<Iprops> = ({
         .format("YYYY-MM-DD")
     );
   }, [selectDate, weekDay]);
+
+  const handleWeekTodayButton = () => {
+    setSelectDate(0);
+    setWeekDay(dayjs().weekday());
+  };
 
   const handleWeekInfo = () => {
     const daysInWeek = Array.from(Array(7).keys()).map((weekCounter) => {
@@ -84,12 +100,8 @@ const TimeTracking: React.FC<Iprops> = ({
     setDayInfo(() => daysInWeek);
   };
 
-  const fetchEntries = async () => {
-    const from = dayjs().weekday(weekDay).format("YYYY-MM-DD");
-    const to = dayjs()
-      .weekday(weekDay + 6)
-      .format("YYYY-MM-DD");
-    if (entryList[from]) return;
+  const fetchEntries = async (from: string, to: string) => {
+    if (entryList[from] && entryList[to]) return;
     const res = await timesheetEntryApi.list(from, to);
     if (res.status >= 200 && res.status < 300) {
       setEntryList(prevState => ({ ...prevState, ...res.data.entries }));
@@ -108,29 +120,51 @@ const TimeTracking: React.FC<Iprops> = ({
 
   const calculateTotalHours = () => {
     let total = 0;
+    const dailyTotal = [];
     for (let weekCounter = 0; weekCounter < 7; weekCounter++) {
       const day = dayjs()
         .weekday(weekCounter + weekDay)
         .format("YYYY-MM-DD");
       if (entryList[day]) {
+        let dayTotal = 0;
         entryList[day].forEach(e => {
-          total += e.duration;
+          dayTotal += e.duration;
         });
+        dailyTotal.push(minutesToHHMM(dayTotal));
+        total += dayTotal;
+      } else {
+        dailyTotal.push("00:00");
       }
     }
-    setTotalHours(minutesToHHMM(total));
+    setDailyTotalHours(dailyTotal);
+    setWeeklyTotalHours(minutesToHHMM(total));
   };
 
   const handleNextWeek = () => {
     setWeekDay(p => p + 7);
+    const from = dayjs()
+      .weekday(weekDay + 7)
+      .format("YYYY-MM-DD");
+    const to = dayjs()
+      .weekday(weekDay + 13)
+      .format("YYYY-MM-DD");
+    fetchEntries(from, to);
   };
 
   const handlePrevWeek = () => {
     setWeekDay(p => p - 7);
+    const from = dayjs()
+      .weekday(weekDay - 7)
+      .format("YYYY-MM-DD");
+    const to = dayjs()
+      .weekday(weekDay - 1)
+      .format("YYYY-MM-DD");
+    fetchEntries(from, to);
   };
 
   const parseWeeklyViewData = () => {
     const weekArr = [];
+    setWeeklyData(weekArr);
     for (let weekCounter = 0; weekCounter < 7; weekCounter++) {
       const date = dayjs()
         .weekday(weekDay + weekCounter)
@@ -163,7 +197,7 @@ const TimeTracking: React.FC<Iprops> = ({
         });
       });
     }
-    setWeeklyData(weekArr);
+    setWeeklyData(() => weekArr);
   };
 
   return (
@@ -196,104 +230,122 @@ const TimeTracking: React.FC<Iprops> = ({
           </div>
         </div>
 
-        {/* day and week */}
-        {view !== "month" && (
-          <div>
-            <div className="mb-6">
-              <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
-                <button
-                  onClick={() => {
-                    setWeekDay(0);
-                    setSelectDate(dayjs().weekday());
-                  }}
-                  className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold ml-4"
-                >
-                  TODAY
-                </button>
-                <div className="flex">
-                  <button
-                    onClick={handlePrevWeek}
-                    className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
-                  >
-                    {"<"}
-                  </button>
-                  {!!dayInfo.length && (
-                    <p className="text-white mx-6 w-40">
-                      {dayInfo[0]["date"]} {dayInfo[0].month} -{" "}
-                      {dayInfo[6]["date"]} {dayInfo[6]["month"]}{" "}
-                      {dayInfo[6]["year"]}
-                    </p>
-                  )}
-                  <button
-                    onClick={handleNextWeek}
-                    className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
-                  >
-                    {">"}
-                  </button>
-                </div>
-                <div className="flex mr-12">
-                  <p className="text-white mr-2">Total</p>
-                  <p className="text-white font-extrabold">{totalHours}</p>
-                </div>
-              </div>
-              <DatesInWeek view={view} dayInfo={dayInfo} selectDate={selectDate} setSelectDate={setSelectDate}  />
-            </div>
-            {!editEntryId && newEntryView && view !== "week" && (
-              <AddEntry
-                setNewEntryView={setNewEntryView}
-                clients={clients}
-                projects={projects}
-                selectedDateInfo={dayInfo[selectDate]}
+        <div>
+          {
+            view === "month" ?
+              <MonthCalender
+                fetchEntries={fetchEntries}
+                dayInfo={dayInfo}
                 selectedFullDate={selectedFullDate}
-                setEntryList={setEntryList}
+                setSelectedFullDate={setSelectedFullDate}
                 entryList={entryList}
-                setEditEntryId={setEditEntryId}
-                editEntryId={editEntryId}
-                dayInfo={dayInfo}
+                setEntryList={setEntryList}
+                handleWeekTodayButton={handleWeekTodayButton}
+                monthsAbbr={monthsAbbr}
+                setWeekDay={setWeekDay}
+                setSelectDate={setSelectDate}
               />
-            )}
-            {view !== "week" && !newEntryView && (
-              <button
-                onClick={() => setNewEntryView(true)}
-                className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
-              >
+              :
+              <div className="mb-6">
+                <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
+                  <button
+                    onClick={() => {
+                      setWeekDay(0);
+                      setSelectDate(dayjs().weekday());
+                    }}
+                    className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold ml-4"
+                  >
+                  TODAY
+                  </button>
+                  <div className="flex">
+                    <button
+                      onClick={handlePrevWeek}
+                      className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
+                    >
+                      &lt;
+                    </button>
+                    {!!dayInfo.length && (
+                      <p className="text-white mx-6 w-40">
+                        {dayInfo[0]["date"]} {dayInfo[0].month} -{" "}
+                        {dayInfo[6]["date"]} {dayInfo[6]["month"]}{" "}
+                        {dayInfo[6]["year"]}
+                      </p>
+                    )}
+                    <button
+                      onClick={handleNextWeek}
+                      className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
+                    >
+                      &gt;
+                    </button>
+                  </div>
+                  <div className="flex mr-12">
+                    <p className="text-white mr-2">Total</p>
+                    <p className="text-white font-extrabold">{ view === "week" ? weeklyTotalHours : dailyTotalHours[selectDate] }</p>
+                  </div>
+                </div>
+                <DatesInWeek
+                  view={view}
+                  dayInfo={dayInfo}
+                  selectDate={selectDate}
+                  setSelectDate={setSelectDate}
+                />
+              </div>
+          }
+          {!editEntryId && newEntryView && view !== "week" && (
+            <AddEntry
+              setNewEntryView={setNewEntryView}
+              clients={clients}
+              projects={projects}
+              selectedDateInfo={dayInfo[selectDate]}
+              selectedFullDate={selectedFullDate}
+              setEntryList={setEntryList}
+              entryList={entryList}
+              setEditEntryId={setEditEntryId}
+              editEntryId={editEntryId}
+              dayInfo={dayInfo}
+            />
+          )}
+          {view !== "week" && !newEntryView && (
+            <button
+              onClick={() => setNewEntryView(true)}
+              className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
+            >
                 + NEW ENTRY
-              </button>
-            )}
+            </button>
+          )}
 
-            {/* --- weekly view --- */}
-            {view === "week" && !newRowView && (
-              <button
-                onClick={() => setNewRowView(true)}
-                className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
-              >
+          {/* --- weekly view --- */}
+          {view === "week" && !newRowView && (
+            <button
+              onClick={() => setNewRowView(true)}
+              className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
+            >
                 + NEW ROW
-              </button>
-            )}
+            </button>
+          )}
 
-            {view === "week" && newRowView && (
-              <WeeklyEntries
-                key={0}
-                entries={[]}
-                clients={clients}
-                projects={projects}
-                newRowView={newRowView}
-                entryList={entryList}
-                setEntryList={setEntryList}
-                setNewRowView={setNewRowView}
-                clientName={""}
-                projectName={""}
-                dayInfo={dayInfo}
-                projectId={null}
-                isWeeklyEditing={isWeeklyEditing}
-                setIsWeeklyEditing={setIsWeeklyEditing}
-                weeklyData={weeklyData}
-                setWeeklyData={setWeeklyData}
-                parseWeeklyViewData={parseWeeklyViewData}
-              />
-            )}
-          </div>
-        )}
+          {view === "week" && newRowView && (
+            <WeeklyEntries
+              key={0}
+              entries={[]}
+              clients={clients}
+              projects={projects}
+              newRowView={newRowView}
+              entryList={entryList}
+              setEntryList={setEntryList}
+              setNewRowView={setNewRowView}
+              clientName={""}
+              projectName={""}
+              dayInfo={dayInfo}
+              projectId={null}
+              isWeeklyEditing={isWeeklyEditing}
+              setIsWeeklyEditing={setIsWeeklyEditing}
+              weeklyData={weeklyData}
+              setWeeklyData={setWeeklyData}
+              parseWeeklyViewData={parseWeeklyViewData}
+            />
+          )}
+        </div>
 
         {/* entry cards for day and month */}
         {view !== "week" &&

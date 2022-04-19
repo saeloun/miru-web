@@ -1,5 +1,7 @@
 import React from "react";
 import { useTable, useRowSelect } from "react-table";
+import PropTypes from "prop-types";
+import { Pencil, Trash } from "phosphor-react";
 
 const IndeterminateCheckbox = React.forwardRef( // eslint-disable-line react/display-name
   ({ indeterminate, ...rest }:any, ref) => {
@@ -49,10 +51,14 @@ const getTableCheckbox = hooks => {
 const Table = ({
   tableHeader,
   tableRowArray,
-  hasCheckbox = false
+  hasCheckbox = false,
+  hasRowIcons=false,
+  handleDeleteClick = (id) => {}, // eslint-disable-line
+  handleEditClick = (id) => {}, // eslint-disable-line
+  rowOnClick = (id) => {} // eslint-disable-line
 }) => {
 
-  const data = React.useMemo(() => tableRowArray, []);
+  const data = React.useMemo(() => tableRowArray, [tableRowArray]);
   const columns = React.useMemo(() => tableHeader, []);
 
   const {
@@ -80,16 +86,38 @@ const Table = ({
                 <th className={`table__header ${column.cssClass}`} {...column.getHeaderProps()}>{column.render("Header")}</th>
               )
               )}
+              {hasRowIcons && <th className="table__header"></th> }
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
           {rows.slice(0, 10).map((row, index) => {
             prepareRow(row);
-            const isLastChild = rows.length - 1 !== index;
+            const cssClassLastRow = rows.length - 1 !== index ? "border-b": "";
+            const cssClassRowHover = hasRowIcons ? "hoverIcon" : "";
             return (
-              <tr {...row.getRowProps()} className={isLastChild ? "border-b": ""}>
+              <tr {...row.getRowProps()} onClick={() => rowOnClick(row.original.rowId)} className={`${cssClassLastRow} ${cssClassRowHover}`}>
                 {row.cells.map(cell => <td className="table__cell" {...cell.getCellProps()}>{cell.render("Cell")}</td>)}
+
+                {hasRowIcons && <td className="table__cell">
+                  <div className="iconWrapper invisible">
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleEditClick(row.original.rowId);
+                    }}>
+                      <Pencil size={16} color="#5b34ea" weight="bold" />
+                    </button>
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDeleteClick(row.original.rowId);
+                    }} className="ml-10">
+                      <Trash size={16} color="#5b34ea" weight="bold" />
+                    </button>
+                  </div>
+                </td>
+                }
               </tr>
             );
           })}
@@ -100,3 +128,13 @@ const Table = ({
 };
 
 export default Table;
+
+Table.proptypes = {
+  tableHeader: PropTypes.array,
+  tableRowArray: PropTypes.array,
+  hasCheckbox: PropTypes.bool,
+  hasRowIcons: PropTypes.bool,
+  handleDeleteClick: PropTypes.func,
+  handleEditClick: PropTypes.func,
+  rowOnClick: PropTypes.func
+};

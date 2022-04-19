@@ -5,12 +5,12 @@ import projectApi from "apis/projects";
 import Header from "./Header";
 import { Project } from "./project";
 import { IProject } from "../interface";
-import AddEditModal from "../Modals/AddEditProject";
+import AddEditProject from "../Modals/AddEditProject";
 
 export const ProjectList = ({ isAdminUser }) => {
 
-  const [showProjectModal,setShowProjectModal] =React.useState<boolean>(false);
-  const [editProjectId,setEditProjectId]=React.useState(null);
+  const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
+  const [editProjectData, setEditProjectData] = React.useState<any>(null);
   const [projects, setProjects] = React.useState<IProject[]>([]);
 
   const fetchProjects = async () => {
@@ -29,7 +29,7 @@ export const ProjectList = ({ isAdminUser }) => {
   }, []);
 
   return (
-    <>
+    <React.Fragment>
       <ToastContainer />
       <Header
         setShowProjectModal={setShowProjectModal}
@@ -70,7 +70,7 @@ export const ProjectList = ({ isAdminUser }) => {
                       {...project}
                       isAdminUser={isAdminUser}
                       setShowProjectModal={setShowProjectModal}
-                      setEditProjectId={setEditProjectId}
+                      setEditProjectData={setEditProjectData}
                     />
                   ))}
                 </tbody>
@@ -82,12 +82,14 @@ export const ProjectList = ({ isAdminUser }) => {
 
       {
         showProjectModal &&
-          <AddEditModal
-            setShowProjectModal={setShowProjectModal}
-            editProjectId={editProjectId}
-          />
+        <AddEditProject
+          setShowProjectModal={setShowProjectModal}
+          setEditProjectData={setEditProjectData}
+          editProjectData={editProjectData}
+        />
       }
-    </>
-  );};
+    </React.Fragment>
+  );
+};
 
 export default ProjectList;

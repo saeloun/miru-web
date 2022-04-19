@@ -38,7 +38,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
       create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_clients_path
+      send_request :get, internal_api_v1_client_path(client_1)
     end
 
     it "is not permitted to view time entry report" do

@@ -85,5 +85,8 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers
   config.include RequestHelper, type: :request
   config.include Devise::Test::ControllerHelpers, type: :controller
-  config.before { Faker::UniqueGenerator.clear }
+  config.before do
+    Faker::UniqueGenerator.clear
+    OmniAuth.config.test_mode = true
+  end
 end

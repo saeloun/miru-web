@@ -1,34 +1,74 @@
 import React, { useEffect, useState } from "react";
-
-import Select from "react-select";
+import projectApi from "apis/projects";
 import { X } from "phosphor-react";
 
-const AddEditProject = ({ editProjectId, setShowProjectModal }) => {
+const AddEditProject = ({ setEditProjectData, editProjectData, setShowProjectModal }) => {
 
-  const [client, setClient] = useState<any>();
-  const [projectName, setProjectName] = useState<any>();
+  const [client, setClient] = useState<any>(null);
+  const [projectName, setProjectName] = useState<any>(null);
   const [projectType, setProjectType] = useState<any>("Billable");
+  const [clientList, setClientList] = useState<any>(null);
 
-  // useEffect(() => {
-  //   allprojects.map(project => {
-  //     if (project.id == editProjectId) {
-  //       setClient(project.client.name);
-  //       setProjectName(project.name);
-  //       setProjectType(project.isBillable ? "Billable" : "Non-Billable");
-  //     }
-  //   });
-  // }, [editProjectId]);
+  useEffect(() => {
+    const getClientList = async () => {
+      const data = await projectApi.get();
+      setClientList(data.data.clients);
+    };
+    getClientList();
+  }, []);
+
+  useEffect(() => {
+    if (editProjectData) {
+      if (clientList) {
+        const client = clientList.filter(client => client.name == editProjectData.client.name);
+        setClient(client[0].id);
+      }
+      setProjectName(editProjectData.name ? editProjectData.name : null);
+      setProjectType(editProjectData.isBillable ? "Billable" : "Non-Billable");
+    }
+  }, [editProjectData, clientList]);
+
+  const handleEdit = () => {
+    projectApi.update(editProjectData.id, {
+      project: {
+        "client_id": client,
+        "name": projectName,
+        "billable": projectType === "Billable"
+      }
+    }).then(() => {
+      setEditProjectData("");
+      setShowProjectModal(false);
+      window.location.reload();
+    });
+  };
+
+  const handleSubmit = () => {
+    projectApi.create({
+      project: {
+        "client_id": client,
+        "name": projectName,
+        "billable": projectType === "Billable"
+      }
+    }).then(() => {
+      setEditProjectData("");
+      window.location.reload();
+      setShowProjectModal(false);
+    });
+  };
 
   return (
     <div className="modal__modal main-modal" style={{ background: "rgba(29, 26, 49,0.6)" }}>
       <div className="modal__container modal-container">
         <div className="modal__content modal-content">
           <div className="modal__position">
-            <h6 className="modal__title">{editProjectId ? "Edit Project Details" : "Add New Project"}</h6>
+            <h6 className="modal__title">{editProjectData ? "Edit Project Details" : "Add New Project"}</h6>
             <div className="modal__close">
               <button
                 className="modal__button"
-                onClick={() => setShowProjectModal(false)}
+                onClick={() => {
+                  setEditProjectData("");
+                  setShowProjectModal(false);
+                }}
               >
                 <X size={15} color="#CDD6DF" />
               </button>
@@ -43,49 +83,14 @@ const AddEditProject = ({ editProjectId, setShowProjectModal }) => {
                   </label>
                 </div>
                 <div className="mt-1">
-                  <Select
+                  <select
                     defaultValue={client}
-                    onChange={e => { setClient(e); }}
-                    options={[{ value: "Client1", label: "client1" }, { value: "Client2", label: "client2" }]}
-                    placeholder="Select Client"
-                    isSearchable={true}
-                    components={{
-                      IndicatorSeparator: () => null
-                    }}
-                    styles={{
-                      option: (styles, { isSelected }) => ({
-                        ...styles,
-                        backgroundColor: isSelected ? "#F5F7F9" : null,
-                        color: isSelected ? "miru-dark-purple-1000" : null,
-                        height: "40px",
-                        "&:hover": {
-                          backgroundColor: "#F5F7F9"
-                        }
-                      }),
-                      control: (base, state) => ({
-                        ...base,
-                        backgroundColor: "#F5F7F9",
-                        borderColor: "#F5F7F9",
-                        boxShadow: state.isFocused ? "0px" : "0px",
-                        border: state.isFocused ? "0px" : "0px",
-                        "&:hover": {
-                          border: state.isFocused ? "0px" : "0px"
-                        }
-                      }),
-                      placeholder: defaultStyles => ({
-                        ...defaultStyles,
-                        color: "#A5A3AD",
-                        fontWeight: "500",
-                        fontSize: "16px"
-                      }),
-                      menu: base => ({
-                        ...base,
-                        marginTop: 0,
-                        border: 0,
-                        borderRadius: "4px"
-                      })
-                    }}
-                  />
+                    className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
+                    onChange={(e) => setClient(e.target.value)}>
+                    <option value='0'>Select Client</option>
+                    {clientList &&
+                      clientList.map(e => <option value={e.id} selected={e.id == client}>{e.name}</option>)}
+                  </select>
                 </div>
               </div>
             </div>
@@ -107,14 +112,14 @@ const AddEditProject = ({ editProjectId, setShowProjectModal }) => {
                 <div className="mt-1">
                   <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
                     <div className="flex items-center">
-                      <input type="radio" id='billable' name='project_type' defaultChecked={projectType === "Billable"} className="focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Billable")} />
+                      <input type="radio" id='billable' name='project_type' defaultChecked={editProjectData ? editProjectData.isBillable : true} className="focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Billable")} />
                       <label htmlFor="billable" className="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
                         Billable
                       </label>
                     </div>
 
                     <div className="flex items-center">
-                      <input type="radio" id='non-billable' name='project_type' defaultChecked={projectType === "Non-Billable"} className="focus:ring-miru-han-purple-1000 h-4 w-4 bg--miru-han-purple-1000 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Non-Billable")} />
+                      <input type="radio" id='non-billable' name='project_type' defaultChecked={editProjectData ? !editProjectData.isBillable : false} className="focus:ring-miru-han-purple-1000 h-4 w-4 bg--miru-han-purple-1000 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Non-Billable")} />
                       <label htmlFor="non-billable" className="ml-3 block text-sm font-medium text-miru-dark-purple-1000 ">
                         Non-billable
                       </label>
@@ -126,8 +131,8 @@ const AddEditProject = ({ editProjectId, setShowProjectModal }) => {
 
             <div className="actions mt-4">
               {client && projectName && projectType ?
-                <button type="submit" className="tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer">{editProjectId ? " SAVE CHANGES" : "ADD PROJECT"}</button>
-                : <button type="submit" className="tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-gray-1000 focus:outline-none rounded cursor-pointer">{editProjectId ? "SAVE CHANGES" : "ADD PROJECT"}</button>
+                <button type="submit" className="tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer" onClick={() => editProjectData ? handleEdit() : handleSubmit()}>{editProjectData ? " SAVE CHANGES" : "ADD PROJECT"}</button>
+                : <button type="submit" className="tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-gray-1000 focus:outline-none rounded cursor-pointer" disabled>{editProjectData ? "SAVE CHANGES" : "ADD PROJECT"}</button>
               }
             </div>
           </div>
