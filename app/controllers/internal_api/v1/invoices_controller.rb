@@ -47,7 +47,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     authorize invoice
 
     invoice.send_to_email(subject: invoice_email_params[:subject], recipients: invoice_email_params[:recipients])
-
+    invoice.update_timesheet_entry_status
     render json: { message: "Invoice will be sent!" }, status: :accepted
   end
 
