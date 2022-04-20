@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class PaymentsController < ApplicationController
-  skip_after_action :verify_authorized
-
   def index
+    authorize :index, policy_class: PaymentPolicy
   end
 end
