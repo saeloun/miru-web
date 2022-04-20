@@ -12,5 +12,7 @@
 @keshav.add_role(:employee, @saeloun_us) # Keshav is Employee is Saeloun US
 @rohit.add_role(:employee, @saeloun_india) # Rohit is Employee is Saeloun India
 @rohit.add_role(:admin, @saeloun_us) # Rohit is Admin is Saeloun US
+@book_keeper.add_role(:book_keeper, @saeloun_india) # Book Keeper is book_keeper is Saeloun India
+@book_keeper.add_role(:book_keeper, @saeloun_us) # Book Keeper is book_keeper is Saeloun US
 puts "Users Roles Created"
 # User Roles End
