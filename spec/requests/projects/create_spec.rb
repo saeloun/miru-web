@@ -137,4 +137,27 @@ RSpec.describe "Projects#create", type: :request do
       expect(flash[:alert]).to eq("You need to sign in or sign up before continuing.")
     end
   end
+
+  context "when user's current workspace is nil" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :employee, company
+      user.update!(current_workspace_id: nil)
+      sign_in user
+      send_request(
+        :post, projects_path, params: {
+          project: {
+            client_id: client.id,
+            name: "Test project",
+            billable: true
+          }
+        }
+      )
+    end
+
+    it "redirects to new_company_path" do
+      expect(response).to have_http_status(:redirect)
+      expect(response.body).to include("/company/new")
+    end
+  end
 end
