@@ -4,11 +4,11 @@ class CompanyPolicy < ApplicationPolicy
   attr_reader :error_message_key
 
   def new?
-    true
+    user_owner_or_admin_or_employee?
   end
 
   def create?
-    true
+    user_owner_or_admin_or_employee?
   end
 
   def show?

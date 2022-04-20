@@ -6,6 +6,8 @@ class Users::SessionsController < Devise::SessionsController
 
     if resource.has_owner_or_admin_role?(current_company)
       dashboard_index_path
+    elsif resource.has_book_keeper_role?(current_company)
+      payments_path
     else
       time_tracking_index_path
     end

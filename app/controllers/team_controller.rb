@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class TeamController < ApplicationController
-  skip_after_action :verify_authorized, only: :index
   after_action :assign_role, only: [:update]
 
   def index
+    authorize :index, policy_class: TeamPolicy
     query = current_company.users.includes([:avatar_attachment, :roles]).ransack(params[:q])
     teams = query.result(distinct: true)
     render :index, locals: { query:, teams: }

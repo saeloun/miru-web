@@ -4,7 +4,7 @@ class ProjectPolicy < ApplicationPolicy
   attr_reader :error_message_key
 
   def index?
-    true
+    user_owner_or_admin_or_employee?
   end
 
   def show?

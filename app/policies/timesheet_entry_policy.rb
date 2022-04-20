@@ -2,7 +2,7 @@
 
 class TimesheetEntryPolicy < ApplicationPolicy
   def show?
-    true
+    user_owner_or_admin_or_employee?
   end
 
   def index?
@@ -10,7 +10,7 @@ class TimesheetEntryPolicy < ApplicationPolicy
   end
 
   def create?
-    true
+    user_owner_or_admin_or_employee?
   end
 
   def update?
