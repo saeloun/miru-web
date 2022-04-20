@@ -124,4 +124,13 @@ RSpec.describe Invoice, type: :model do
       expect { invoice.send_to_email(subject:, recipients:) }.to have_enqueued_mail(InvoiceMailer, :invoice)
     end
   end
+
+  describe ".update_timesheet_entry_status" do
+    it "updates the time_sheet_entries status to billed" do
+      invoice.update_timesheet_entry_status!
+      invoice.invoice_line_items.reload.each do |line_item|
+        expect(line_item.timesheet_entry.bill_status).to eq("billed")
+      end
+    end
+  end
 end
