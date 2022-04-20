@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe DashboardPolicy, type: :policy do
+RSpec.describe GenerateInvoicePolicy, type: :policy do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
@@ -19,6 +19,12 @@ RSpec.describe DashboardPolicy, type: :policy do
         expect(subject).to permit(user, :dashboard)
       end
     end
+
+    permissions :show? do
+      it "is permitted to access show" do
+        expect(subject).to permit(user, :dashboard)
+      end
+    end
   end
 
   context "when user is an employee" do
@@ -32,6 +38,12 @@ RSpec.describe DashboardPolicy, type: :policy do
         expect(subject).not_to permit(user, :dashboard)
       end
     end
+
+    permissions :show? do
+      it "is not permitted to access show" do
+        expect(subject).not_to permit(user, :dashboard)
+      end
+    end
   end
 
   context "when user is an Book Keeper" do
@@ -42,6 +54,11 @@ RSpec.describe DashboardPolicy, type: :policy do
 
     permissions :index? do
       it "is not permitted to access index" do
+        expect(subject).not_to permit(user, :dashboard)
+      end
+    end
+    permissions :show? do
+      it "is not permitted to access show" do
         expect(subject).not_to permit(user, :dashboard)
       end
     end

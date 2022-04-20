@@ -2,7 +2,7 @@
 
 class TeamPolicy < ApplicationPolicy
   def index?
-    user_owner_or_admin?
+    user_owner_or_admin_or_employee?
   end
 
   def edit?

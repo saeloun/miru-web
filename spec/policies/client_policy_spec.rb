@@ -10,10 +10,22 @@ RSpec.describe ClientPolicy, type: :policy do
 
   subject { described_class }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
+    end
+
+    permissions :index? do
+      it "is permitted to index client" do
+        expect(subject).to permit(user, Client)
+      end
+    end
+
+    permissions :show? do
+      it "is permitted to show client" do
+        expect(subject).to permit(user, Client)
+      end
     end
 
     permissions :create? do
@@ -45,10 +57,69 @@ RSpec.describe ClientPolicy, type: :policy do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
+    end
+
+    permissions :index? do
+      it "is not permitted to index client" do
+        expect(subject).not_to permit(user, Client)
+      end
+    end
+
+    permissions :show? do
+      it "is not permitted to show client" do
+        expect(subject).not_to permit(user, Client)
+      end
+    end
+
+    permissions :create? do
+      it "is not permitted to create client" do
+        expect(subject).not_to permit(user, Client)
+      end
+    end
+
+    permissions :update? do
+      it "is not permitted to update" do
+        expect(subject).not_to permit(user, client)
+      end
+
+      it "is not permitted to update client in different company" do
+        client.update(company_id: company2.id)
+        expect(subject).not_to permit(user, client)
+      end
+    end
+
+    permissions :destroy? do
+      it "is not permitted to destroy" do
+        expect(subject).not_to permit(user, client)
+      end
+
+      it "is not permitted to destroy client in different company" do
+        client.update(company_id: company2.id)
+        expect(subject).not_to permit(user, client)
+      end
+    end
+  end
+
+  context "when user is an Book Keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+    end
+
+    permissions :index? do
+      it "is not permitted to index client" do
+        expect(subject).not_to permit(user, Client)
+      end
+    end
+
+    permissions :show? do
+      it "is not permitted to show client" do
+        expect(subject).not_to permit(user, Client)
+      end
     end
 
     permissions :create? do

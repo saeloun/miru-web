@@ -8,14 +8,14 @@ RSpec.describe ProjectPolicy, type: :policy do
 
   subject { described_class }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
     end
 
-    permissions :create? do
-      it "is permitted to create project" do
+    permissions :index?, :show?, :create?, :update?, :destroy? do
+      it "is permitted to index, show, create, update, destroy project project" do
         expect(subject).to permit(user, Project)
       end
     end
@@ -28,14 +28,40 @@ RSpec.describe ProjectPolicy, type: :policy do
     # end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
     end
 
-    permissions :create? do
-      it "is not permitted to create project" do
+    permissions :index? do
+      it "is permitted to access project" do
+        expect(subject).to permit(user, Project)
+      end
+    end
+
+    permissions :show?, :create?, :update?, :destroy? do
+      it "is not permitted to show, create, update, destroy project" do
+        expect(subject).not_to permit(user, Project)
+      end
+    end
+
+    # Will move this to correct file once commit changes get approved
+    # permissions :update_members? do
+    #   it "is not permitted to update project members" do
+    #     expect(subject).not_to permit(user, Project)
+    #   end
+    # end
+  end
+
+  context "when user is an Book Keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+    end
+
+    permissions :index?, :show?, :create?, :update?, :destroy? do
+      it "is not permitted to show, create, update, destroy project" do
         expect(subject).not_to permit(user, Project)
       end
     end

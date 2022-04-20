@@ -13,7 +13,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
 
   subject { described_class }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -60,7 +60,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
@@ -108,6 +108,53 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
 
         expect(scope.to_a).to match_array([timesheet_entry])
         expect(scope.to_a).not_to include(timesheet_entry1)
+      end
+    end
+  end
+
+  context "when user is an Book Keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+    end
+
+    permissions :create? do
+      it "is not permitted to create timesheet entry" do
+        expect(subject).not_to permit(user, TimesheetEntry)
+      end
+    end
+
+    permissions :update? do
+      it "is not permitted to update" do
+        expect(subject).not_to permit(user, timesheet_entry)
+      end
+
+      it "is not permitted to update timesheet_entry in different company" do
+        client.update(company_id: company2.id)
+        expect(subject).not_to permit(user, timesheet_entry)
+      end
+    end
+
+    permissions :show?, :index? do
+      it "is not permitted to show" do
+        expect(subject).not_to permit(user, timesheet_entry)
+      end
+    end
+
+    permissions :destroy? do
+      it "is not permitted to destroy" do
+        expect(subject).not_to permit(user, timesheet_entry)
+      end
+
+      it "is not permitted to destroy timesheet_entry in different company" do
+        client.update(company_id: company2.id)
+        expect(subject).not_to permit(user, timesheet_entry)
+      end
+    end
+
+    describe "scope" do
+      it "not allows current workspace timesheet entries" do
+        expect(scope.to_a).not_to match_array([timesheet_entry])
       end
     end
   end

@@ -8,7 +8,7 @@ RSpec.describe CompanyPolicy, type: :policy do
 
   subject { described_class }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -39,7 +39,7 @@ RSpec.describe CompanyPolicy, type: :policy do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
@@ -65,6 +65,36 @@ RSpec.describe CompanyPolicy, type: :policy do
       it "is not permitted to access app when current workspace is not present" do
         user.update(current_workspace_id: nil)
 
+        expect(subject).not_to permit(user, nil)
+      end
+    end
+
+    permissions :users? do
+      it "is not permitted to get company users list" do
+        expect(subject).not_to permit(user, Project)
+      end
+    end
+  end
+
+  context "when user is an Book Keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+    end
+
+    permissions :show?, :update?, :new?, :create? do
+      it "is not permitted to access company" do
+        expect(subject).not_to permit(user, company)
+      end
+    end
+
+    permissions :company_present? do
+      it "is not permitted to access app" do
+        expect(subject).to permit(user, company)
+      end
+
+      it "is not permitted to access app when current workspace is not present" do
+        user.update(current_workspace_id: nil)
         expect(subject).not_to permit(user, nil)
       end
     end

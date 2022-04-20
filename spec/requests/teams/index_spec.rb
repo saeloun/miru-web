@@ -6,33 +6,43 @@ RSpec.describe "Team#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
-      user.add_role :admin
+      user.add_role :admin, company
       sign_in user
       send_request :get, team_index_path
     end
 
-    it "returns http success" do
-      expect(response).to have_http_status(:ok)
-    end
-
-    it "is can access Team#index page" do
-      expect(response).to have_http_status(:ok)
+    it "they should be able to visit team page successfully" do
+      expect(response).to be_successful
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
-      user.add_role :employee
+      user.add_role :employee, company
       sign_in user
       send_request :get, team_index_path
     end
 
-    it "is permitted to access Team#index page" do
-      expect(response).to have_http_status(:ok)
+    it "they should be able to visit team page successfully" do
+      expect(response).to be_successful
+    end
+  end
+
+  context "when the user is an book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :get, team_index_path
+    end
+
+    it "they should not be permitted to visit index page" do
+      expect(response).to have_http_status(:redirect)
+      expect(flash["alert"]).to eq("You are not authorized to perform this action.")
     end
   end
 
