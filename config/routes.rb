@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "sidekiq/web"
+
 class ActionDispatch::Routing::Mapper
   def draw(routes_name)
     instance_eval(File.read(Rails.root.join("config/routes/#{routes_name}.rb")))
@@ -50,4 +52,6 @@ Rails.application.routes.draw do
     get "profile", to: "users/registrations#edit"
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
   end
+
+  mount Sidekiq::Web => "/sidekiq"
 end
