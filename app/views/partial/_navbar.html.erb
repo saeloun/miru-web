@@ -25,6 +25,7 @@
         <% if current_user.has_owner_or_admin_role?(current_company) %>
         <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.reports') %></a>
         <a href="/invoices" class="<%= request.path == "/invoices" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.invoices') %></a>
+        <a href="/payments" class="<%= request.path == "/payments" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.payments') %></a>
         <% end %>
       </div>
       <!-- dashboard time_tracking team clients projects invoice report etc. end -->
@@ -118,6 +119,11 @@
                     <%= t('navbar.reports') %>
                   </a>
                 <% end %>
+                <% if policy(:payment).index? %>
+                  <a href="/payments" class="<%= request.path == "/payments" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                    <%= t('navbar.payments') %>
+                  </a>
+                <% end %>
               </div>
             </div>
             <!-- title smaller screen end -->
@@ -150,6 +156,11 @@
                 <% if current_user.has_owner_or_admin_role?(current_company) %>
                   <a href="<%= reports_path %>" data-cy="reports-tab" class="<%= request.path == "#{reports_path}" ? "navbar___large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                     <%= t('navbar.reports') %>
+                  </a>
+                <% end %>
+                <% if policy(:payment).index? %>
+                  <a href="/payments" data-cy="invoices-tab" class="<%= request.path == "/payments" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                    <%= t('navbar.payments') %>
                   </a>
                 <% end %>
               </div>
