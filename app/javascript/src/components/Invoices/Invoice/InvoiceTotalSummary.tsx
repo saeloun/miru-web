@@ -1,10 +1,9 @@
 import React from "react";
 
 const InvoiceTotalSummary = ({ invoice }) => {
-  const subTotal = invoice.invoiceLineItems.reduce(
-    (prev, curr) => prev.rate * prev.quantity/60 + curr.rate * curr.quantity/60,
-    { rate: 0, quantity: 0 }
-  );
+  const subTotal = invoice.invoiceLineItems
+    .map(item => item.rate * item.quantity/60)
+    .reduce((prev, curr) => prev + curr, 0);
   const tax = invoice.tax;
   const discount = invoice.discount;
   const total = Number(subTotal) + Number(tax) - Number(discount);
