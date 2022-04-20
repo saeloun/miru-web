@@ -2,6 +2,8 @@ import React from "react";
 import ClientInfo from "./ClientInfo";
 import CompanyInfo from "./CompanyInfo";
 import InvoiceInfo from "./InvoiceInfo";
+import InvoiceLineItems from "./InvoiceLineItems";
+import InvoiceTotalSummary from "./InvoiceTotalSummary";
 
 const InvoiceDetails = ({ invoice }) => (
   <>
@@ -10,6 +12,8 @@ const InvoiceDetails = ({ invoice }) => (
       <ClientInfo client={invoice.client}/>
       <InvoiceInfo invoice={invoice} />
     </div>
+    <InvoiceLineItems items={invoice.invoiceLineItems}/>
+    <InvoiceTotalSummary invoice={invoice} />
   </>
 );
 
