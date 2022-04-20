@@ -10,6 +10,13 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     render json: { client_details:, total_minutes: }, status: :ok
   end
 
+  def create
+    authorize Client
+    render :create, locals: {
+      client: Client.create!(client_params)
+    }
+  end
+
   def show
     authorize client
     project_details = client.project_details(params[:time_frame])
