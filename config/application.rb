@@ -38,7 +38,5 @@ module MiruWeb
     config.autoload_paths << Rails.root.join("lib")
 
     config.react.camelize_props = true
-
-    config.active_job.queue_adapter = :sidekiq
   end
 end
