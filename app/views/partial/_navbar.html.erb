@@ -119,7 +119,7 @@
                     <%= t('navbar.reports') %>
                   </a>
                 <% end %>
-                <% if current_user.has_owner_or_admin_role?(current_company) %>
+                <% if policy(:payment).index? %>
                   <a href="/payments" class="<%= request.path == "/payments" ? "block" : "hidden" %> navbar__small-screen-second_titles">
                     <%= t('navbar.payments') %>
                   </a>
@@ -158,7 +158,7 @@
                     <%= t('navbar.reports') %>
                   </a>
                 <% end %>
-                <% if current_user.has_owner_or_admin_role?(current_company) %>
+                <% if policy(:payment).index? %>
                   <a href="/payments" data-cy="invoices-tab" class="<%= request.path == "/payments" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                     <%= t('navbar.payments') %>
                   </a>

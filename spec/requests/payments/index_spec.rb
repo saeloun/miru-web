@@ -19,7 +19,7 @@ RSpec.describe "Payments#index", type: :request do
     end
   end
 
-  context "when user is a employee" do
+  context "when the user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
