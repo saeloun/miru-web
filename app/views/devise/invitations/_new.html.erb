@@ -57,6 +57,13 @@
               <%= t('team.form_employee')%>
             </label>
           </div>
+
+          <div class="flex items-center">
+            <%= f.radio_button :roles, 'Book_keeper', class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" , "data-cy": "employee-radio-button" %>
+            <label for="Book_keeper" class="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
+              <%= t('team.form_book_keeper')%>
+            </label>
+          </div>
         </div>
       </div>
     </div>
