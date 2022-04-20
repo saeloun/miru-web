@@ -27,18 +27,17 @@ RSpec.describe "Client#index", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
-      create(:timesheet_entry, user:, project:)
       sign_in user
       send_request :get, clients_path
     end
 
-    it "renders Client#index page" do
-      expect(response.body).to include("Clients")
-      expect(response.body).not_to include("NEW CLIENT")
+    it "they should not be permitted to visit index page" do
+      expect(response).to have_http_status(:redirect)
+      expect(flash["alert"]).to eq("You are not authorized to perform this action.")
     end
   end
 

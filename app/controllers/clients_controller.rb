@@ -1,15 +1,22 @@
 # frozen_string_literal: true
 
 class ClientsController < ApplicationController
-  skip_after_action :verify_authorized, except: :create
+  # skip_after_action :verify_authorized, except: :create
 
   def index
+    authorize Client
     render :index, locals: {
-      clients:,
-      new_client: Client.new,
       keep_new_client_dialog_open: false
     }
   end
+
+  # def index
+  #   authorize Client
+  #   render :index, locals: {clients:,
+  #                           new_client: Client.new,
+  #     keep_new_client_dialog_open: false
+  #   }
+  # end
 
   # def create
   #   client = Client.new(client_params)
@@ -26,19 +33,19 @@ class ClientsController < ApplicationController
   #   end
   # end
 
-  private
-
-    def clients
-      @_clients ||= current_company.clients.kept.order(created_at: :desc).map do |c|
-        c.attributes.merge({ hours_logged: c.timesheet_entries.sum(:duration) })
-      end
-    end
-
-    def client_params
-      params.require(:client).permit(
-        policy(Client).permitted_attributes
-      ).tap do |client_params|
-        client_params[:company_id] = current_company.id
-      end
-    end
+  # private
+  #
+  #   def clients
+  #     @_clients ||= current_company.clients.kept.order(created_at: :desc).map do |c|
+  #       c.attributes.merge({ hours_logged: c.timesheet_entries.sum(:duration) })
+  #     end
+  #   end
+  #
+  #   def client_params
+  #     params.require(:client).permit(
+  #       policy(Client).permitted_attributes
+  #     ).tap do |client_params|
+  #       client_params[:company_id] = current_company.id
+  #     end
+  #   end
 end
