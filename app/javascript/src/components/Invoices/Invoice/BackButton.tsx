@@ -3,9 +3,9 @@ import {
   ArrowLeft
 } from "phosphor-react";
 
-const BackButton = () => (
+const BackButton = ({ onClick }) => (
   <div className="h-14 w-14 flex justify-around mr-1">
-    <button>
+    <button onClick={onClick}>
       <ArrowLeft size={20} />
     </button>
   </div>
