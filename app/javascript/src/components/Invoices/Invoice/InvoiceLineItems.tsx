@@ -31,6 +31,7 @@ const InvoiceLineItems = ({ items }) => (
         {items.length > 0
           && items.map(item => (
             <LineItem
+              key={item.id}
               item={item}
             />
           ))}
