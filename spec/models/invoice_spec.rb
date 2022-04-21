@@ -123,9 +123,9 @@ RSpec.describe Invoice, type: :model do
     let(:invoice) { create :invoice }
     let(:recipients) { [invoice.client.email, "miru@example.com"] }
     let(:subject) { "Invoice (#{invoice.invoice_number}) due on #{invoice.due_date}" }
-    let(:message) {
-  "#{invoice.client.company.name} has sent you an invoice (#{invoice.invoice_number}) for $#{invoice.amount.to_i} that's due on #{invoice.due_date}."
-}
+    let(:message) do
+      "#{invoice.client.company.name} has sent you an invoice (#{invoice.invoice_number}) for $#{invoice.amount.to_i} that's due on #{invoice.due_date}."
+    end
 
     it "sends the invoice on email" do
       expect { invoice.send_to_email(subject:, recipients:, message:) }.to have_enqueued_mail(InvoiceMailer, :invoice)
