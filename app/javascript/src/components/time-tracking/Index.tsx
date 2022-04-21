@@ -164,7 +164,6 @@ const TimeTracking: React.FC<Iprops> = ({
 
   const parseWeeklyViewData = () => {
     const weekArr = [];
-    setWeeklyData(weekArr);
     for (let weekCounter = 0; weekCounter < 7; weekCounter++) {
       const date = dayjs()
         .weekday(weekDay + weekCounter)
@@ -307,7 +306,7 @@ const TimeTracking: React.FC<Iprops> = ({
           )}
           {view !== "week" && !newEntryView && (
             <button
-              onClick={() => setNewEntryView(true)}
+              onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
               className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
             >
                 + NEW ENTRY
