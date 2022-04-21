@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import { minutesToHHMM } from "helpers/hhmm-parser";
 import { Pen, Trash } from "phosphor-react";
 import { IProject } from "../interface";
@@ -10,12 +11,12 @@ export const Project = ({
   minutesSpent,
   isBillable,
   isAdminUser,
-  projectClickHandler,
   setShowProjectModal,
   setEditProjectData
 }: IProject) => {
   const [grayColor, setGrayColor] = React.useState<string>("");
   const [isHover, setHover] = React.useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleMouseEnter = () => {
     setGrayColor("bg-miru-gray-100");
@@ -25,6 +26,9 @@ export const Project = ({
   const handleMouseLeave = () => {
     setGrayColor("");
     setHover(false);
+  };
+  const projectClickHandler = (id) => {
+    navigate(`${id}`);
   };
 
   return (
