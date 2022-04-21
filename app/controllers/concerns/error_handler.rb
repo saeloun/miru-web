@@ -61,7 +61,10 @@ module ErrorHandler
     def record_invalid(exception)
       respond_to do |format|
         format.json {
-          render json: { errors: exception.record.errors, notice: I18n.t("client.update.failure.message") },
+          render json: {
+            error: exception.record.errors.full_messages.first,
+            notice: I18n.t("client.update.failure.message")
+          },
             status: :unprocessable_entity
         }
         format.html { render file: "public/422.html", status: :unprocessable_entity, layout: false, alert: message }
