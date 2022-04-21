@@ -90,8 +90,8 @@ const InvoiceTotal = ({
   }, [newLineItems]);
 
   useEffect(() => {
-    const Total = Number(subTotal) + Number(tax) - Number(discount);
-    setTotal(Total);
+
+    setTotal(Number(subTotal) + Number(tax) - Number(discount));
   }, [discount, subTotal, tax]);
 
   useEffect(() => {

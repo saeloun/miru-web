@@ -19,7 +19,7 @@ const fetchNewLineItems = async (
   if (selectedClient) {
     let selectedEntriesString = "";
     selectedEntries.forEach((entries) => {
-      selectedEntriesString += `&selected_entries[]=${entries.id}`;
+      selectedEntriesString += `&selected_entries[]=${entries.timesheet_entry_id}`;
     });
 
     await generateInvoice.getLineItems(selectedClient.value, pageNumber, selectedEntriesString).then(async res => {
@@ -30,7 +30,7 @@ const fetchNewLineItems = async (
   }
 };
 
-const InvoiceTable = ({ selectedClient, setSelectedOption, selectedOption ,setShowMultilineModal, setLineItems, lineItems }) => {
+const InvoiceTable = ({ selectedClient, setSelectedOption, selectedOption ,setShowMultilineModal, setLineItems, lineItems, showMultilineModal }) => {
 
   const [addNew, setAddNew] = useState<boolean>(false);
   const [showItemInputs, setShowItemInputs] = useState<boolean>(false);
@@ -51,7 +51,9 @@ const InvoiceTable = ({ selectedClient, setSelectedOption, selectedOption ,setSh
   useOutsideClick(wrapperRef, () => {
     setAddNew(false);
     setPageNumber(1);
-    //setLineItems([]);
+    if(showMultilineModal) {
+      setLineItems([]);
+    }
   }, addNew);
 
   const getNewLineItemDropdown = () => {
