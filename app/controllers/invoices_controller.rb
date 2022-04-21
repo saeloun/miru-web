@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class InvoicesController < ApplicationController
+  before_action :load_invoice, only: [:show]
+
   def index
     authorize :invoice
   end
@@ -8,7 +10,14 @@ class InvoicesController < ApplicationController
   def show
     authorize Invoice
     render :show, locals: {
-      invoice: Invoice.includes(:invoice_line_items, :client)
+      invoice: @invoice
+    }
+  end
+
+  private
+
+    def load_invoice
+      @invoice = Invoice.includes(:invoice_line_items, :client)
         .find(params[:id]).as_json(include: [:invoice_line_items, :client])
         .merge(company: {
           id: current_company.id,
@@ -16,8 +25,8 @@ class InvoicesController < ApplicationController
           name: current_company.name,
           phone_number: current_company.business_phone,
           address: current_company.address,
-          country: current_company.country
+          country: current_company.country,
+          currency: current_company.base_currency
         })
-    }
-  end
+    end
 end

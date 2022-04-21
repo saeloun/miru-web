@@ -1,4 +1,5 @@
 import React from "react";
+import { currencyFormat } from "helpers/currency";
 
 const InvoiceInfo = ({ invoice }) => (
   <>
@@ -37,7 +38,7 @@ const InvoiceInfo = ({ invoice }) => (
         Amount
       </p>
       <p className="font-normal text-4xl text-miru-dark-purple-1000 mt-6">
-        ${invoice.amount}
+        {currencyFormat({ baseCurrency: invoice.company.currency, amount: invoice.amount })}
       </p>
     </div>
   </>

@@ -7,7 +7,7 @@ const Header = ({ invoice }) => (
   <>
     <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
       <div className="flex flex-row">
-        <BackButton onClick={() => window.location.href = "/invoices"}/>
+        <BackButton href="/invoices"/>
         <InvoiceStatus invoice={invoice} />
       </div>
       <InvoiceActions

@@ -46,12 +46,12 @@ const TableRow = ({
       </td>
 
       <td className="w-2/4 px-6 py-5 font-medium ftracking-wider">
-        <h1
+        <a
           className="font-semibold capitalize text-miru-dark-purple-1000"
-          onClick={() => window.location.href = `/invoices/${invoice.id}`}
+          href={`/invoices/${invoice.id}`}
         >
           {invoice.client.name}
-        </h1>
+        </a>
         <h3 className="text-sm font-normal text-miru-dark-purple-400">
           {invoice.invoiceNumber}
         </h3>
