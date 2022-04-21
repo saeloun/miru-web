@@ -85,6 +85,8 @@ class Client < ApplicationRecord
       id: id,
       name: name,
       email: email,
+      phone: phone,
+      address: address,
       minutes_spent: total_hours_logged(time_frame)
     }
   end

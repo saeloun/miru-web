@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectAPI from "apis/projects";
 import AmountBoxContainer from "common/AmountBox";
@@ -23,19 +24,21 @@ const getTableData = (project) => {
   }
 };
 
-const ProjectDetails = ({ id }) => {
+const ProjectDetails = () => {
 
   const [project, setProject] = React.useState<any>();
   const [showAddMemberDialog, setShowAddMemberDialog] = React.useState<boolean>(false);
   const [isHeaderMenuVisible, setHeaderMenuVisibility] = React.useState<boolean>(false);
+  const params = useParams();
+  const navigate = useNavigate();
 
   const fetchProject = async () => {
-    try {
-      const resp = await projectAPI.show(id);
-      setProject(unmapper(resp.data.project_details));
-    } catch (err) {
+    await projectAPI.show(params.projectId)
+      .then(resp => {
+        setProject(unmapper(resp.data.project_details));
+      }).catch(() => {
       // Add error handling
-    }
+      });
   };
 
   const handleAddProjectDetails = () => {
@@ -99,7 +102,7 @@ const ProjectDetails = ({ id }) => {
       <div className="my-6">
         <div className="flex min-w-0 items-center justify-between">
           <div className="flex items-center">
-            <button className="button-icon__back">
+            <button className="button-icon__back" onClick={() => {navigate("/projects");}}>
               <ArrowLeft size={20} color="#5b34ea" weight="bold" />
             </button>
             <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
@@ -185,7 +188,7 @@ const ProjectDetails = ({ id }) => {
           setShowAddMemberDialog={setShowAddMemberDialog}
           addedMembers={project?.members}
           handleAddProjectDetails = {handleAddProjectDetails}
-          projectId={id}
+          projectId={1}
         />
       ) : null}
     </>
