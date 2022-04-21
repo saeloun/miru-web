@@ -2,6 +2,7 @@
 import * as React from "react";
 import Toastr from "common/Toastr";
 import { minutesToHHMM, minutesFromHHMM } from "helpers/hhmm-parser";
+import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 import Logger from "js-logger";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 
@@ -72,8 +73,9 @@ const WeeklyEntriesCard = ({
   const handleSaveEntry = async () => {
     try {
       const payload = getPayload();
-      if (!payload["duration"]) {
-        Toastr.error("Please enter a valid duration");
+      const message = validateTimesheetEntry(payload);
+      if (message) {
+        Toastr.error(message);
         return;
       }
       payload["work_date"] = dayInfo[selectedInputBox]["fullDate"];
@@ -106,8 +108,9 @@ const WeeklyEntriesCard = ({
     try {
       const timesheetEntryId = currentEntries[selectedInputBox]["id"];
       const payload = getPayload();
-      if (!payload["duration"]) {
-        Toastr.error("Please enter a valid duration");
+      const message = validateTimesheetEntry(payload);
+      if (message) {
+        Toastr.error(message);
         return;
       }
       const res = await timesheetEntryApi.update(timesheetEntryId, payload);
