@@ -7,6 +7,7 @@ class InvoiceMailer < ApplicationMailer
     @invoice = params[:invoice]
     recipients = params[:recipients]
     subject = params[:subject]
+    @message = params[:message]
 
     mail(to: recipients, subject:)
   end
