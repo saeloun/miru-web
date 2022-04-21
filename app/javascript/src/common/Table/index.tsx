@@ -91,7 +91,8 @@ const Table = ({
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.slice(0, 10).map((row, index) => {
+          {/* {rows.slice(0, 10).map((row, index) => {  // this will be used when we add the pagination. */}
+          {rows.map((row, index) => {
             prepareRow(row);
             const cssClassLastRow = rows.length - 1 !== index ? "border-b": "";
             const cssClassRowHover = hasRowIcons ? "hoverIcon" : "";
