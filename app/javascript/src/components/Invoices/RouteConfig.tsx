@@ -8,6 +8,7 @@ import {
 
 import ErrorPage from "common/Error";
 import Generate from "./Generate";
+import Invoice from "./Invoice";
 import List from "./List";
 
 const RouteConfig = () => (
