@@ -2,7 +2,18 @@ import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { DropdownHeader } from "./CustomComponents";
 
-const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew, lineItems, loadMoreItems, totalLineItems, pageNumber, selectedOption, setSelectedOption ,setShowMultilineModal }) => {
+const NewLineItemTable = ({
+  showItemInputs,
+  setShowItemInputs,
+  addNew, setAddNew,
+  lineItems,
+  loadMoreItems,
+  totalLineItems,
+  pageNumber,
+  selectedOption,
+  setSelectedOption,
+  setShowMultilineModal
+}) => {
   const hasMoreItems = lineItems.length === totalLineItems;
   const selectRowId = (items) => {
     const option = { ...items, lineTotal: (Number(items.qty)/60 * Number(items.rate)) };

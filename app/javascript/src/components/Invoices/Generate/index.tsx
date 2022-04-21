@@ -17,7 +17,6 @@ const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
 
   } catch (e) {
     navigate("invoices/error");
-    return {};
   }
 };
 
@@ -36,7 +35,7 @@ const GenerateInvoices = () => {
   const [tax, setTax] = useState<any>(null);
   const [issueDate] = useState<string>(dayjs().format("DD.MM.YYYY"));
   const [dueDate] = useState<string>(dayjs().add(1, "month").format("DD.MM.YYYY"));
-  const [selectedOption, setSelectedOption] = useState<any>([]);
+  const [selectedOption, setSelectedOption] = useState<any>([]); // all selected Options will come here.
 
   useEffect(() => {
     setAuthHeaders();

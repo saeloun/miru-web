@@ -47,16 +47,8 @@ const Container = ({
           setLineItems={setLineItems}
           lineItems={lineItems}
           setShowMultilineModal={setShowMultilineModal}
+          showMultilineModal= {showMultilineModal}
         />
-        {showMultilineModal &&
-        <MultipleEntriesModal
-          lineItems={lineItems}
-          setLineItems={setLineItems}
-          setShowMultilineModal={setShowMultilineModal}
-          selectedOption={selectedOption}
-          setSelectedOption={setSelectedOption}
-        />
-        }
       </div>
       <InvoiceTotal
         newLineItems={selectedOption}
@@ -67,6 +59,14 @@ const Container = ({
         tax={tax}
         setTax={setTax}
       />
+      {showMultilineModal &&
+      <MultipleEntriesModal
+        setShowMultilineModal={setShowMultilineModal}
+        selectedOption={selectedOption}
+        setSelectedOption={setSelectedOption}
+        selectedClient ={selectedClient}
+      />
+      }
     </div>
   );
 };

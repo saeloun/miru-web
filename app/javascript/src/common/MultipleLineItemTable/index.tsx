@@ -1,21 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTable, useRowSelect } from "react-table";
 import PropTypes from "prop-types";
 import { Pencil, Trash } from "phosphor-react";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const IndeterminateCheckbox = React.forwardRef( // eslint-disable-line react/display-name
-  ({ indeterminate, ...rest }:any, ref) => {
+  ({ cssClass, indeterminate, ...rest }: any, ref) => {
     const defaultRef = React.useRef();
-    const resolvedRef:any = ref || defaultRef;
+    const resolvedRef: any = ref || defaultRef;
 
     React.useEffect(() => {
       resolvedRef.current.indeterminate = indeterminate;
     }, [resolvedRef, indeterminate]);
 
     return (
-      <div className="flex items-center">
+      <div className="flex items-center relative">
         <input type="checkbox" ref={resolvedRef} {...rest} className="opacity-0 absolute h-8 w-8 custom__checkbox" />
-        <div className="bg-white border-2 border-miru-han-purple-1000 w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
+        <div className={`bg-white border-2 border-miru-han-purple-1000 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500 ${cssClass}`}>
           <svg className="custom__checkbox-tick fill-current hidden w-2 h-2 text-miru-han-purple-1000 pointer-events-none" version="1.1" viewBox="0 0 17 12" xmlns="http://www.w3.org/2000/svg">
             <g fill="none" fillRule="evenodd">
               <g transform="translate(-9 -11)" fill="#5B34EA" fillRule="nonzero">
@@ -29,18 +30,18 @@ const IndeterminateCheckbox = React.forwardRef( // eslint-disable-line react/dis
   }
 );
 
-const getTableCheckbox = hooks => {
+const getTableCheckbox = checkboxCss => hooks => {
   hooks.visibleColumns.push(columns => [
     {
       id: "selection",
       Header: ({ getToggleAllRowsSelectedProps }) => (
         <div>
-          <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+          <IndeterminateCheckbox cssClass={checkboxCss} {...getToggleAllRowsSelectedProps()} />
         </div>
       ),
       Cell: ({ row }) => (
         <div>
-          <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+          <IndeterminateCheckbox cssClass={checkboxCss} {...row.getToggleRowSelectedProps()} />
         </div>
       )
     },
@@ -48,42 +49,65 @@ const getTableCheckbox = hooks => {
   ]);
 };
 
+
 const Table = ({
   tableHeader,
-  tableRowArray,
   hasCheckbox = false,
   hasRowIcons=false,
   handleDeleteClick = (id) => {}, // eslint-disable-line
   handleEditClick = (id) => {}, // eslint-disable-line
-  rowOnClick = (id) => {} // eslint-disable-line
+  rowOnClick = (id) => {}, // eslint-disable-line
+  checkboxCss = "",
+  RowCss = "",
+  tableCss = "",
+  getselectedRow = (selectedRows) => {}, // eslint-disable-line
+  loadMoreItems,
+  lineItems,
+  pageNumber,
+  tableData
 }) => {
 
-  const data = React.useMemo(() => tableRowArray, [tableRowArray]);
   const columns = React.useMemo(() => tableHeader, []);
+  const data = React.useMemo(() => tableData, [tableData]);
 
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     rows,
-    prepareRow
+    prepareRow,
+    selectedFlatRows,
+    getRowId,
+    state: { selectedRowIds },
+    useControlledState
   } = useTable(
     {
       columns,
       data
     },
     useRowSelect,
-    hasCheckbox ? getTableCheckbox : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
+    hasCheckbox ? getTableCheckbox(checkboxCss) : () => { } // eslint-disable-line  @typescript-eslint/no-empty-function
   );
+
+  // useEffect(() => {
+  //   getselectedRow(selectedFlatRows);
+  // }, [selectedFlatRows]);
 
   return (
     <>
-      <table className="min-w-full divide-y divide-gray-200 mt-4" {...getTableProps()}>
+      <InfiniteScroll
+        dataLength={pageNumber*10}
+        next={loadMoreItems}
+        hasMore={true}
+        height={440}
+        loader={<h4>Please wait loading more...</h4>}
+      >
+      <table className={`min-w-full ${tableCss}`} {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <th className={`table__header ${column.cssClass}`} {...column.getHeaderProps()}>{column.render("Header")}</th>
+                <th className={`table__header px-0 py-3 ${column.cssClass}`} {...column.getHeaderProps()}>{column.render("Header")}</th>
               )
               )}
               {hasRowIcons && <th className="table__header"></th> }
@@ -96,9 +120,12 @@ const Table = ({
             const cssClassLastRow = rows.length - 1 !== index ? "border-b": "";
             const cssClassRowHover = hasRowIcons ? "hoverIcon" : "";
             return (
-              <tr {...row.getRowProps()} onClick={() => rowOnClick(row.original.rowId)} className={`${cssClassLastRow} ${cssClassRowHover}`}>
-                {row.cells.map(cell => <td className="table__cell" {...cell.getCellProps()}>{cell.render("Cell")}</td>)}
-
+              <tr {...row.getRowProps()} onClick={() => rowOnClick(getRowId(row, index))} className={`${cssClassLastRow} ${cssClassRowHover}`}>
+                {row.cells.map(cell => {
+                  if (cell.column.id !== "id") {
+                    return (<td className={`table__cell ${RowCss}`} {...cell.getCellProps()}>{cell.render("Cell")}</td>);
+                  }
+                })}
                 {hasRowIcons && <td className="table__cell">
                   <div className="iconWrapper invisible">
                     <button onClick={(e) => {
@@ -123,6 +150,7 @@ const Table = ({
           })}
         </tbody>
       </table>
+      </InfiniteScroll>
     </>
   );
 };
@@ -136,5 +164,6 @@ Table.proptypes = {
   hasRowIcons: PropTypes.bool,
   handleDeleteClick: PropTypes.func,
   handleEditClick: PropTypes.func,
-  rowOnClick: PropTypes.func
+  rowOnClick: PropTypes.func,
+  tableCss: PropTypes.string
 };
