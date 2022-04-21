@@ -3,7 +3,7 @@
 module InvoiceSendable
   extend ActiveSupport::Concern
 
-  def send_to_email(subject:, recipients:)
-    InvoiceMailer.with(invoice: self, subject:, recipients:).invoice.deliver_later
+  def send_to_email(subject:, recipients:, message:)
+    InvoiceMailer.with(invoice: self, subject:, recipients:, message:).invoice.deliver_later
   end
 end
