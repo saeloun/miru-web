@@ -29,7 +29,6 @@ module ErrorHandler
       error_key = policy.try(:error_message_key) || exception.query
 
       message = I18n.t("#{policy_name}.#{error_key}", scope: "pundit", default: :default)
-
       case policy.try(:error_message_key)
       when :company_not_present
         redirect_path = new_company_path

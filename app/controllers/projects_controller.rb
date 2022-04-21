@@ -6,10 +6,4 @@ class ProjectsController < ApplicationController
   def index
     authorize Project
   end
-
-  private
-
-    def project_params
-      params.require(:project).permit(:client_id, :name, :billable)
-    end
 end
