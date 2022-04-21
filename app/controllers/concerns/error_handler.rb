@@ -29,7 +29,6 @@ module ErrorHandler
       error_key = policy.try(:error_message_key) || exception.query
 
       message = I18n.t("#{policy_name}.#{error_key}", scope: "pundit", default: :default)
-
       case policy.try(:error_message_key)
       when :company_not_present
         redirect_path = new_company_path
@@ -61,7 +60,10 @@ module ErrorHandler
     def record_invalid(exception)
       respond_to do |format|
         format.json {
-          render json: { errors: exception.record.errors, notice: I18n.t("client.update.failure.message") },
+          render json: {
+            error: exception.record.errors.full_messages.first,
+            notice: I18n.t("client.update.failure.message")
+          },
             status: :unprocessable_entity
         }
         format.html { render file: "public/422.html", status: :unprocessable_entity, layout: false, alert: message }
