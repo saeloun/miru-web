@@ -36,7 +36,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
             }
           })
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(json_response["errors"]["client"].first).to eq("must exist")
+        expect(json_response["error"]).to eq("Client must exist")
       end
     end
   end
