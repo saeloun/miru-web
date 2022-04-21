@@ -1,5 +1,6 @@
 import React from "react";
 import clients from "apis/clients";
+import Toastr from "common/Toastr";
 import { Formik, Form, Field } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";
@@ -22,8 +23,9 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
   const handleSubmit = (values) => {
     clients.create(values)
       .then(res => {
-        setClientData([...clientData, { ...res.data }]);
+        setClientData([...clientData, { ...res.data, minutes: 0 }]);
         setnewClient(false);
+        Toastr.success("Client added successfully");
       });
   };
 
