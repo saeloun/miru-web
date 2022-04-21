@@ -11,6 +11,7 @@ json.invoices do
     json.amount invoice.amount
     json.client do
       json.name invoice.client_name
+      json.email invoice.client_email
     end
     json.company do
       json.name current_company.name

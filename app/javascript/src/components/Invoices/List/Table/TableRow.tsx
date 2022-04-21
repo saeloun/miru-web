@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import CustomCheckbox from "common/CustomCheckbox";
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers/currency";
-import { Pen, Trash } from "phosphor-react";
+import { PaperPlaneTilt, Pen, Trash } from "phosphor-react";
 
 import getStatusCssClass from "../../../../utils/getStatusTag";
+import SendInvoice from "../SendInvoice";
 
 const TableRow = ({
   invoice,
@@ -14,6 +15,8 @@ const TableRow = ({
   selectInvoices,
   deselectInvoices
 }) => {
+  const [isSending, setIsSending] = useState<boolean>(false);
+
   const handleCheckboxChange = () => {
     if (isSelected) {
       deselectInvoices([invoice.id]);
@@ -75,6 +78,17 @@ const TableRow = ({
 
       <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
         <div className="flex items-center h-full">
+          <button
+            className="hidden group-hover:block text-miru-han-purple-1000"
+            onClick={() => setIsSending(!isSending)}
+          >
+            <PaperPlaneTilt size={16} />
+          </button>
+        </div>
+      </td>
+
+      <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
+        <div className="flex items-center h-full">
           <button className="hidden group-hover:block text-miru-han-purple-1000">
             <Pen size={16} />
           </button>
@@ -88,6 +102,10 @@ const TableRow = ({
           </button>
         </div>
       </td>
+
+      {isSending && (
+        <SendInvoice invoice={invoice} setIsSending={setIsSending} isSending />
+      )}
     </tr>
   );
 };

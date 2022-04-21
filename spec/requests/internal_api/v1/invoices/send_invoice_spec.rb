@@ -14,7 +14,7 @@ RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
     end
 
     let(:invoice_email) do
-      { subject: "Some Subject", recipients: [client.email, "miru@example.com"], body: "You have an invoice!" }
+      { subject: "Some Subject", recipients: [client.email, "miru@example.com"], message: "You have an invoice!" }
     end
 
     context "when user is an admin" do

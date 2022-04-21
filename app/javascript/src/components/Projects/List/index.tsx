@@ -1,13 +1,32 @@
 import * as React from "react";
 import { ToastContainer } from "react-toastify";
+import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import projectApi from "apis/projects";
 import Header from "./Header";
 import { Project } from "./project";
+import { IProject } from "../interface";
 import AddEditProject from "../Modals/AddEditProject";
 
-export const ProjectList = ({ allProjects, isAdminUser, projectClickHandler }) => {
+export const ProjectList = ({ isAdminUser }) => {
 
   const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
   const [editProjectData, setEditProjectData] = React.useState<any>(null);
+  const [projects, setProjects] = React.useState<IProject[]>([]);
+
+  const fetchProjects = async () => {
+    await projectApi.get()
+      .then(resp => {
+        setProjects(resp.data.projects);
+      }).catch(() => {
+        //error handling
+      });
+  };
+
+  React.useEffect(() => {
+    setAuthHeaders();
+    registerIntercepts();
+    fetchProjects();
+  }, []);
 
   return (
     <React.Fragment>
@@ -45,14 +64,12 @@ export const ProjectList = ({ allProjects, isAdminUser, projectClickHandler }) =
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {allProjects.map((project, index) => (
+                  {projects.map((project, index) => (
                     <Project
                       key={index}
                       {...project}
                       isAdminUser={isAdminUser}
-                      projectClickHandler={projectClickHandler}
                       setShowProjectModal={setShowProjectModal}
-                      setEditProjectData={setEditProjectData}
                     />
                   ))}
                 </tbody>
