@@ -55,7 +55,7 @@ const Table = ({
   hasRowIcons=false,
   handleDeleteClick = (id) => {}, // eslint-disable-line
   handleEditClick = (id) => {}, // eslint-disable-line
-  rowOnClick = () => {} // eslint-disable-line
+  rowOnClick = (id) => {} // eslint-disable-line
 }) => {
 
   const data = React.useMemo(() => tableRowArray, [tableRowArray]);
@@ -91,20 +91,29 @@ const Table = ({
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.slice(0, 10).map((row, index) => {
+          {/* {rows.slice(0, 10).map((row, index) => {  // this will be used when we add the pagination. */}
+          {rows.map((row, index) => {
             prepareRow(row);
             const cssClassLastRow = rows.length - 1 !== index ? "border-b": "";
             const cssClassRowHover = hasRowIcons ? "hoverIcon" : "";
             return (
-              <tr {...row.getRowProps()} onClick={rowOnClick} className={`${cssClassLastRow} ${cssClassRowHover}`}>
+              <tr {...row.getRowProps()} onClick={() => rowOnClick(row.original.rowId)} className={`${cssClassLastRow} ${cssClassRowHover}`}>
                 {row.cells.map(cell => <td className="table__cell" {...cell.getCellProps()}>{cell.render("Cell")}</td>)}
 
                 {hasRowIcons && <td className="table__cell">
                   <div className="iconWrapper invisible">
-                    <button onClick={() => handleEditClick(row.original.rowId)}>
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleEditClick(row.original.rowId);
+                    }}>
                       <Pencil size={16} color="#5b34ea" weight="bold" />
                     </button>
-                    <button onClick={() => handleDeleteClick(row.original.rowId)} className="ml-10">
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDeleteClick(row.original.rowId);
+                    }} className="ml-10">
                       <Trash size={16} color="#5b34ea" weight="bold" />
                     </button>
                   </div>

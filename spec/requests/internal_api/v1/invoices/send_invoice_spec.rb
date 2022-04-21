@@ -3,9 +3,9 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
-  let(:client) { create :client_with_invoices }
+  let(:invoice) { create :invoice_with_invoice_line_items }
+  let(:client) { invoice.client }
   let(:company) { client.company }
-  let(:invoice) { client.invoices.first }
   let(:user) { create :user, current_workspace_id: company.id }
 
   context "when user is signed in" do
@@ -14,7 +14,7 @@ RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
     end
 
     let(:invoice_email) do
-      { subject: "Some Subject", recipients: [client.email, "miru@example.com"], body: "You have an invoice!" }
+      { subject: "Some Subject", recipients: [client.email, "miru@example.com"], message: "You have an invoice!" }
     end
 
     context "when user is an admin" do
@@ -34,6 +34,13 @@ RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
         expect do
           post send_invoice_internal_api_v1_invoice_path(id: invoice.id), params: { invoice_email: }
         end.to have_enqueued_mail(InvoiceMailer, :invoice)
+      end
+
+      it "changes time_sheet_entries status to billed" do
+        post send_invoice_internal_api_v1_invoice_path(id: invoice.id), params: { invoice_email: }
+        invoice.invoice_line_items.reload.each do |line_item|
+          expect(line_item.timesheet_entry.bill_status).to eq("billed")
+        end
       end
 
       context "when invoice doesn't exist" do

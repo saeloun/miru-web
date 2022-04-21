@@ -111,17 +111,33 @@ RSpec.describe Invoice, type: :model do
     end
   end
 
-  describe ".delegate" do
+  describe ".client_name" do
     it { is_expected.to delegate_method(:name).to(:client).with_prefix(:client) }
+  end
+
+  describe ".client_email" do
+    it { is_expected.to delegate_method(:email).to(:client).with_prefix(:client) }
   end
 
   describe ".send_to_email" do
     let(:invoice) { create :invoice }
     let(:recipients) { [invoice.client.email, "miru@example.com"] }
     let(:subject) { "Invoice (#{invoice.invoice_number}) due on #{invoice.due_date}" }
+    let(:message) do
+      "#{invoice.client.company.name} has sent you an invoice (#{invoice.invoice_number}) for $#{invoice.amount.to_i} that's due on #{invoice.due_date}."
+    end
 
     it "sends the invoice on email" do
-      expect { invoice.send_to_email(subject:, recipients:) }.to have_enqueued_mail(InvoiceMailer, :invoice)
+      expect { invoice.send_to_email(subject:, recipients:, message:) }.to have_enqueued_mail(InvoiceMailer, :invoice)
+    end
+  end
+
+  describe ".update_timesheet_entry_status" do
+    it "updates the time_sheet_entries status to billed" do
+      invoice.update_timesheet_entry_status!
+      invoice.invoice_line_items.reload.each do |line_item|
+        expect(line_item.timesheet_entry.bill_status).to eq("billed")
+      end
     end
   end
 end

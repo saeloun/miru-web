@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 import Toastr from "common/Toastr";
+import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 import timesheetEntryApi from "../../apis/timesheet-entry";
 import { minutesFromHHMM, minutesToHHMM } from "../../helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "../../helpers/ordinal";
@@ -57,26 +58,23 @@ const AddEntry: React.FC<Iprops> = ({
     setDuration(e.target.value);
   };
 
-  const validateInput = () => {
-    if (!project) return false;
-    const durationMinutes = minutesFromHHMM(duration);
-    if (durationMinutes <= 0) {
-      Toastr.error("Please enter a valid duration");
-      return false;
-    }
-    return true;
-  };
+  const getPayload = () => ({
+    work_date: selectedFullDate,
+    duration: minutesFromHHMM(duration),
+    note: note,
+    bill_status: billable ? "unbilled" : "non_billable"
+  });
 
   const handleSave = async () => {
-    if (!validateInput()) return;
+    const tse = getPayload();
+    const message = validateTimesheetEntry(tse);
+    if (message) {
+      Toastr.error(message);
+      return;
+    }
     const res = await timesheetEntryApi.create({
       project_id: projectId,
-      timesheet_entry: {
-        work_date: selectedFullDate,
-        duration: minutesFromHHMM(duration),
-        note: note,
-        bill_status: billable ? "unbilled" : "non_billable"
-      }
+      timesheet_entry: tse
     });
 
     if (res.status === 200) {
@@ -97,16 +95,17 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   const handleEdit = async () => {
-    if (!validateInput()) return;
+    const tse = getPayload();
+    const message = validateTimesheetEntry(tse);
+    if (message) {
+      Toastr.error(message);
+      return;
+    }
     const res = await timesheetEntryApi.update(editEntryId, {
       project_id: projectId,
-      timesheet_entry: {
-        bill_status: billable ? "unbilled" : "non_billable",
-        note: note,
-        duration: minutesFromHHMM(duration),
-        work_date: selectedFullDate
-      }
+      timesheet_entry: tse
     });
+
     if (res.status === 200) {
       setEntryList(pv => {
         const newState = { ...pv };

@@ -24,10 +24,10 @@ RSpec.describe Project, type: :model do
     let(:user) { create(:user) }
     let(:client) { create(:client, company:) }
     let(:project) { create(:project, client:) }
-    let(:project_member) { create(:project_member, project:, user:, hourly_rate: 5000) }
 
     before do
-      create_list(:timesheet_entry, 5, user:, project:)
+      create_list(:timesheet_entry, 5, user:, project:, work_date: Date.today.beginning_of_week + 2.days)
+      create(:project_member, project:, user:, hourly_rate: 5000)
     end
 
     context "when time_frame is last_week" do
