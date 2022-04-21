@@ -46,4 +46,42 @@ RSpec.describe TestController, type: :controller do
       end
     end
   end
+
+  describe "#company_not_present" do
+    before do
+      routes.draw { get "show" => "test#show" }
+      user.update(current_workspace_id: nil)
+      sign_in user
+    end
+
+    context "when request is HTML type" do
+      before do
+        get :show
+      end
+
+      it "redirects" do
+        expect(response).to have_http_status(:redirect)
+      end
+
+      it "redirects to new_company_path" do
+        expect(response).to redirect_to(new_company_path)
+      end
+
+      it "shows alert You are not authorized to perform this action." do
+        expect(flash[:alert]).to eq("You are not authorized to perform this action.")
+      end
+    end
+
+    context "when request is JSON type" do
+      before do
+        get :show, format: :json
+      end
+
+      it "shows error You are not authorized to perform this action" do
+        actual_response = JSON.parse(response.body)
+        expect(response).to have_http_status(:forbidden)
+        expect(actual_response["errors"]).to eq("You are not authorized to perform this action.")
+      end
+    end
+  end
 end
