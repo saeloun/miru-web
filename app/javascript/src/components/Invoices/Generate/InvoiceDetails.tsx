@@ -29,8 +29,8 @@ const  InvoiceDetails = ({
       <div className="group">
         <div className="hoverPencil">
           <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
-            Date of Issue
-            <DatePicker onChange={(date:Date) => setIssueDate(date)} customInput={<button className="ml-2 invisible">
+            <span>Date of Issue</span>
+            <DatePicker wrapperClassName="datePicker" onChange={(date:Date) => setIssueDate(date)} customInput={<button className="ml-2 invisible">
               <PencilSimple size={13} color="#1D1A31" />
             </button>} />
           </p>
@@ -39,12 +39,9 @@ const  InvoiceDetails = ({
             {getIssuedDate}
           </p>
         </div>
-        <div  className="hoverPencil">
-          <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
-            Due Date
-            <button className="ml-2 invisible">
-              <PencilSimple size={13} color="#1D1A31" />
-            </button>
+        <div className="hoverPencil">
+          <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4 flex">
+            <span>Due Date</span>
           </p>
           <p className="font-normal text-base text-miru-dark-purple-1000">
             {dueDate}
