@@ -45,6 +45,19 @@ class Company < ApplicationRecord
     end
   end
 
+  def invoice_amount_calculation
+    amount_calculation = invoices.group(:status).sum(:amount)
+    sent_amount = amount_calculation["sent"] || 0
+    viewed_amount = amount_calculation["viewed"] || 0
+    overdue_amount = amount_calculation["overdue"] || 0
+    draft_amount = amount_calculation["draft"] || 0
+    {
+      overdue_amount:,
+      outstanding_amount: sent_amount + viewed_amount + overdue_amount,
+      draft_amount:
+    }
+  end
+
   def user_details
     users.kept.map do |user|
       {
