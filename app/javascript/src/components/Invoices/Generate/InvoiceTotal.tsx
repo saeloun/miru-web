@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { currencyFormat } from "helpers/currency";
 import { PencilSimple, DotsThreeVertical } from "phosphor-react";
 
 import DiscountMenu from "./DiscountMenu";
 
 const InvoiceTotal = ({
+  currency,
   newLineItems,
   amountPaid, setAmountPaid,
   amountDue, setAmountDue,
@@ -17,7 +19,6 @@ const InvoiceTotal = ({
   const [showDiscountButton, setShowDiscountButton] = useState<boolean>(false);
   const [showDiscount, setShowDiscount] = useState<boolean>(false);
   const [showTaxInput, setShowTaxInput] = useState<boolean>(false);
-  const [showTax, setShowTax] = useState<boolean>(false);
   const [showEditTaxButton, setShowEditTaxButton] = useState<boolean>(false);
 
   const [subTotal, setSubTotal] = useState<number>(0);
@@ -30,7 +31,6 @@ const InvoiceTotal = ({
         setShowDiscount(true);
       }
       else {
-        setShowTax(true);
         setShowTaxInput(false);
       }
     }
@@ -59,12 +59,7 @@ const InvoiceTotal = ({
   };
 
   const getTax = () => {
-    if (showTax && tax) {
-      return (
-        <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">${tax}</td>
-      );
-    }
-    else if (showTaxInput) {
+    if (showTaxInput) {
       return (
         <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">
           <input
@@ -77,9 +72,12 @@ const InvoiceTotal = ({
         </td>
       );
     }
-    else {
-      return <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">$0</td>;
-    }
+
+    return (
+      <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">
+        {currencyFormat({ baseCurrency: currency, amount: tax })}
+      </td>
+    );
   };
 
   useEffect(() => {
@@ -145,7 +143,7 @@ const InvoiceTotal = ({
               Total
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right">
-              ${total}
+              {currencyFormat({ baseCurrency: currency, amount: total })}
             </td>
           </tr>
           <tr>
@@ -153,7 +151,7 @@ const InvoiceTotal = ({
               Amount Paid
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
-              ${amountPaid}
+              {currencyFormat({ baseCurrency: currency, amount: amountPaid })}
             </td>
           </tr>
           <tr>
@@ -161,7 +159,7 @@ const InvoiceTotal = ({
               Amount Due
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right">
-              ${amountDue}
+              {currencyFormat({ baseCurrency: currency, amount: amountDue })}
             </td>
           </tr>
           <tr>
@@ -199,8 +197,6 @@ const InvoiceTotal = ({
           {showEditTaxButton && <button
             className="bg-miru-gray-1000 rounded mt-8 mx-1 p-2"
             onClick={() => {
-              setTax(null);
-              setShowTax(false);
               setShowTaxInput(true);
             }}
           >
