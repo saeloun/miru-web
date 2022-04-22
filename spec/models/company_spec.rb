@@ -128,7 +128,7 @@ RSpec.describe Company, type: :model do
       end
     end
 
-    describe "#invoice_amount_calculation" do
+    describe "#overdue_and_outstanding_and_draft_amount" do
       let(:company) do
         create(:company, clients: create_list(:client_with_invoices, 5))
       end
@@ -146,7 +146,7 @@ RSpec.describe Company, type: :model do
           draft_amount: status_and_amount["draft"],
           currency:
         }
-        expect(company.invoice_amount_calculation).to match_array(result)
+        expect(company.overdue_and_outstanding_and_draft_amount).to match_array(result)
       end
     end
   end

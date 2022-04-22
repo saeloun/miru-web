@@ -30,7 +30,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
           }
         end
         total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
-        overdue_outstanding_amount = user.current_workspace.invoice_amount_calculation
+        overdue_outstanding_amount = user.current_workspace.overdue_and_outstanding_and_draft_amount
         expect(response).to have_http_status(:ok)
         expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
         expect(json_response["total_minutes"]).to eq(JSON.parse(total_minutes.to_json))
@@ -89,7 +89,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
           }
         end
         total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
-        overdue_outstanding_amount = user.current_workspace.invoice_amount_calculation
+        overdue_outstanding_amount = user.current_workspace.overdue_and_outstanding_and_draft_amount
         expect(response).to have_http_status(:ok)
         expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
         expect(json_response["total_minutes"]).to eq(JSON.parse(total_minutes.to_json))

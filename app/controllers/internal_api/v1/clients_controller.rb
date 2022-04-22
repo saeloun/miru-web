@@ -7,7 +7,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     clients = query.result(distinct: true)
     client_details = clients.map { |client| client.client_detail(params[:time_frame]) }
     total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
-    overdue_outstanding_amount = current_company.invoice_amount_calculation
+    overdue_outstanding_amount = current_company.overdue_and_outstanding_and_draft_amount
     render json: { client_details:, total_minutes:, overdue_outstanding_amount: }, status: :ok
   end
 

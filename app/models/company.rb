@@ -45,7 +45,7 @@ class Company < ApplicationRecord
     end
   end
 
-  def invoice_amount_calculation
+  def overdue_and_outstanding_and_draft_amount
     currency = base_currency
     status_and_amount = invoices.group(:status).sum(:amount)
     status_and_amount.default = 0
