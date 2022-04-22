@@ -1,6 +1,8 @@
 const getClientList = (input) => input.client_details.map((client) => ({
   email: client.email,
   id: client.id,
+  address: client.address,
+  phone: client.phone,
   minutes: client.minutes_spent,
   name: client.name
 }));
