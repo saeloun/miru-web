@@ -127,5 +127,34 @@ RSpec.describe Company, type: :model do
         expect(company.user_details).to match_array(result)
       end
     end
+
+    describe "#invoice_amount_calculation" do
+      let(:company) do
+        create(:company, clients: create_list(:client_with_invoices, 5))
+      end
+      let(:user) { create(:user, current_workspace_id: company.id) }
+
+      it "return draft overdue outstanding amount of invoices" do
+        result = (overdue_amount = [], outstanding_amount = [], draft_amount = [], paid_amount = []
+                  company.invoices.each do |invoice|
+                     case invoice.status
+                     when "draft"
+                       draft_amount.push(invoice[:amount])
+                     when "overdue"
+                       overdue_amount.push(invoice[:amount])
+                     when "paid"
+                       paid_amount.push(invoice[:amount])
+                     end
+                     outstanding_amount.push(invoice[:amount])
+                   end
+                  {
+                    overdue_amount: overdue_amount.sum,
+                    outstanding_amount: (outstanding_amount.sum - paid_amount.sum - draft_amount.sum),
+                    draft_amount: draft_amount.sum
+                  }
+          )
+        expect(company.invoice_amount_calculation).to match_array(result)
+      end
+    end
   end
 end
