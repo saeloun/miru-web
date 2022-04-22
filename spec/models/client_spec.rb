@@ -219,18 +219,17 @@ RSpec.describe Client, type: :model do
         create_list(:invoice, 5, client:)
       end
 
-      it "return invoice amounts" do
-        result = (currency = client.company.base_currency
-                  status_and_amount = client.invoices.group(:status).sum(:amount)
-                  status_and_amount.default = 0
-                  outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"]
-                  + status_and_amount["overdue"]
-                  {
-                    overdue_amount: status_and_amount["overdue"],
-                    outstanding_amount:,
-                    currency:
-                  }
-        )
+      it "return outstanding_amount overdue_amount amounts" do
+        currency = client.company.base_currency
+        status_and_amount = client.invoices.group(:status).sum(:amount)
+        status_and_amount.default = 0
+        outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"]
+        + status_and_amount["overdue"]
+        result = {
+          overdue_amount: status_and_amount["overdue"],
+          outstanding_amount:,
+          currency:
+        }
         expect(client.client_overdue_and_outstanding_calculation).to match_array(result)
       end
     end
