@@ -570,7 +570,7 @@ RSpec/EmptyLineAfterSubject:
 RSpec/ExampleLength:
   Description: Checks for long examples.
   Enabled: true
-  Max: 19
+  Max: 16
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
 
 RSpec/ExampleWithoutDescription:
