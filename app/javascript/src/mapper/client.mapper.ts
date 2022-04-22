@@ -16,6 +16,7 @@ const unmapClientList = (input) => {
 };
 
 const mapProjectDetails = (input) => input.map((project) => ({
+  id: project.id,
   name: project.name,
   minutes: project.minutes_spent,
   team: project.team
