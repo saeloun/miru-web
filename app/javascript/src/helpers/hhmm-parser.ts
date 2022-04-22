@@ -1,15 +1,23 @@
-export const minutesFromHHMM = (d: string) => {
-  if (!d) return "";
-  const [h, m] = d.split(":");
-  if (!h || !m) return 0;
-  return Number(h) * 60 + Number(m);
+export const minutesFromHHMM = (duration: string) => {
+  const numberDuration = Number(duration);
+  if (duration.includes(":")) {
+    const [h, m] = duration.split(":");
+    return Number(h) * 60 + Number(m);
+  } else if (numberDuration > 0) {
+    return numberDuration * 60;
+  } else {
+    return 0;
+  }
 };
 
-export const minutesToHHMM = (t: number) => {
-  if (isNaN(t)) return "00:00";
-  let h = (t / 60).toString().split(".")[0];
-  let m = (t % 60).toString();
-  if (h.length === 1) h = `0${h}`;
-  if (m.length === 1) m = `0${m}`;
-  return `${h}:${m}`;
+export const minutesToHHMM = (duration: number) => {
+  if (Number.isNaN(duration) || duration <= 0) {
+    return "00:00";
+  } else {
+    let hours = (duration / 60).toString().split(".")[0];
+    let minutes = (duration % 60).toString();
+    if (hours.length === 1) hours = `0${hours}`;
+    if (minutes.length === 1) minutes = `0${minutes}`;
+    return `${hours}:${minutes}`;
+  }
 };
