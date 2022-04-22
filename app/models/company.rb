@@ -46,15 +46,13 @@ class Company < ApplicationRecord
   end
 
   def invoice_amount_calculation
-    amount_calculation = invoices.group(:status).sum(:amount)
-    sent_amount = amount_calculation["sent"] || 0
-    viewed_amount = amount_calculation["viewed"] || 0
-    overdue_amount = amount_calculation["overdue"] || 0
-    draft_amount = amount_calculation["draft"] || 0
+    status_and_amount = invoices.group(:status).sum(:amount)
+    status_and_amount.default = 0
+    outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
     {
-      overdue_amount:,
-      outstanding_amount: sent_amount + viewed_amount + overdue_amount,
-      draft_amount:
+      overdue_amount: status_and_amount["overdue"],
+      outstanding_amount:,
+      draft_amount: status_and_amount["draft"]
     }
   end
 
