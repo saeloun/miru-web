@@ -5,7 +5,9 @@ import DiscountMenu from "./DiscountMenu";
 
 const InvoiceTotal = ({
   newLineItems,
+  amountPaid, setAmountPaid,
   amountDue, setAmountDue,
+  setAmount,
   discount, setDiscount,
   tax, setTax
 }) => {
@@ -20,7 +22,6 @@ const InvoiceTotal = ({
 
   const [subTotal, setSubTotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
-  const [amountPaid] = useState<number>(0);
 
   const onEnter = (e, type) => {
     if (e.key === "Enter") {
@@ -92,6 +93,7 @@ const InvoiceTotal = ({
   useEffect(() => {
     const Total = Number(subTotal) + Number(tax) - Number(discount);
     setTotal(Total);
+    setAmount(Total);
   }, [discount, subTotal, tax]);
 
   useEffect(() => {

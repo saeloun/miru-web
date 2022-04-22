@@ -32,8 +32,8 @@ const GenerateInvoices = () => {
   const [outstandingAmount, setOutstandingAmount] = useState<any>(0);
   const [amountDue, setAmountDue] = useState<any>(0);
   const [amountPaid, setAmountPaid] = useState<any>(0);
-  const [discount, setDiscount] = useState<any>(null);
-  const [tax, setTax] = useState<any>(null);
+  const [discount, setDiscount] = useState<any>(0);
+  const [tax, setTax] = useState<any>(0);
   const [issueDate] = useState<string>(dayjs().format("DD.MM.YYYY"));
   const [dueDate] = useState<string>(dayjs().add(1, "month").format("DD.MM.YYYY"));
   const [selectedOption, setSelectedOption] = useState<any>([]);

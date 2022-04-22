@@ -28,6 +28,11 @@ const Header = ({
       reference: reference,
       issue_date: issueDate,
       due_date: dueDate,
+      amount_due: amountDue,
+      amount_paid: amountPaid,
+      amount: amount,
+      discount: discount,
+      tax: tax,
       invoice_line_items_attributes: invoiceLineItems.map(ilt => ({
         name: `${ilt.first_name} ${ilt.last_name}`,
         description: ilt.description,

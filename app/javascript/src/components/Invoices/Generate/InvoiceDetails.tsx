@@ -6,7 +6,7 @@ import useOutsideClick from "../../../helpers/outsideClick";
 const InvoiceDetails = ({
   clientList,
   selectedClient, setSelectedClient,
-  amountDue,
+  amount,
   issueDate,
   dueDate,
   invoiceNumber,
@@ -61,7 +61,7 @@ const InvoiceDetails = ({
           Amount
         </p>
         <p className="font-normal text-4xl text-miru-dark-purple-1000 mt-6">
-          ${amountDue}
+          ${amount}
         </p>
       </div>
     </div>
