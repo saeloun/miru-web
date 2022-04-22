@@ -27,7 +27,7 @@ const Container = ({
       clientList = {invoiceDetails.clientList}
       selectedClient={selectedClient}
       setSelectedClient= {setSelectedClient}
-      amountDue={amountDue}
+      amount={amount}
       issueDate={issueDate}
       dueDate={dueDate}
       invoiceNumber={invoiceNumber}
@@ -45,8 +45,11 @@ const Container = ({
     </div>
     <InvoiceTotal
       newLineItems={selectedOption}
-      setAmountDue={setAmountDue}
+      setAmountPaid={setAmountPaid}
+      amountPaid={amountPaid}
       amountDue={amountDue}
+      setAmountDue={setAmountDue}
+      setAmount={setAmount}
       discount={discount}
       setDiscount={setDiscount}
       tax={tax}
