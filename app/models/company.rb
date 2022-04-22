@@ -45,26 +45,6 @@ class Company < ApplicationRecord
     end
   end
 
-  def invoice_amount_calculation
-    overdue_amount = [], outstanding_amount = [], draft_amount = [], paid_amount = []
-    invoices.each do |invoice|
-      case invoice.status
-      when "draft"
-        draft_amount.push(invoice[:amount])
-      when "overdue"
-        overdue_amount.push(invoice[:amount])
-      when "paid"
-        paid_amount.push(invoice[:amount])
-      end
-      outstanding_amount.push(invoice[:amount])
-    end
-    {
-      overdue_amount: overdue_amount.sum,
-      outstanding_amount: (outstanding_amount.sum - paid_amount.sum - draft_amount.sum),
-      draft_amount: draft_amount.sum
-    }
-  end
-
   def user_details
     users.kept.map do |user|
       {

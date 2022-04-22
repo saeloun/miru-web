@@ -18,12 +18,11 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     render :index, locals: {
       invoices:,
       pagy: pagy_metadata(pagy),
-      summary: current_company.invoice_amount_calculation
-      # summary: {
-      #   overdue_amount: current_company.invoices.overdue.sum(:amount),
-      #   outstanding_amount: (current_company.invoices.sum(:amount) - current_company.invoices.draft.sum(:amount) - current_company.invoices.paid.sum(:amount)),
-      #   draft_amount: current_company.invoices.draft.sum(:amount)
-      # }
+      summary: {
+        overdue_amount: current_company.invoices.overdue.sum(:amount),
+        outstanding_amount: (current_company.invoices.where(status: [:sent, :viewed, :overdue]).sum(:amount)),
+        draft_amount: current_company.invoices.draft.sum(:amount)
+      }
     }
   end
 
