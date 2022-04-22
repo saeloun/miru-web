@@ -2,38 +2,54 @@ import React, { useState, useRef } from "react";
 import { PencilSimple } from "phosphor-react";
 import ClientSelection from "./ClientSelection";
 import useOutsideClick from "../../../helpers/outsideClick";
+import dayjs from "dayjs";
+import DatePicker from "react-datepicker";
 
-const InvoiceDetails = ({
+import "react-datepicker/dist/react-datepicker.css";
+
+const  InvoiceDetails = ({
   clientList,
   selectedClient, setSelectedClient,
   amountDue,
-  issueDate,
+  issueDate, setIssueDate,
   dueDate,
   invoiceNumber,
   setInvoiceNumber,
   reference
 }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
+
   const wrapperRef = useRef(null);
 
   useOutsideClick(wrapperRef, () => setIsEditing(false), isEditing);
-
+  const getIssuedDate = dayjs(issueDate).format("DD.MM.YYYY")
   return (
     <div className="flex justify-between border-b-2 border-miru-gray-400 px-10 py-5 h-36">
       <ClientSelection selectedClient={selectedClient} setSelectedClient={setSelectedClient} clientList ={clientList} />
       <div className="group">
-        <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
-          Date of Issue
-        </p>
-        <p className="font-normal text-base text-miru-dark-purple-1000">
-          {issueDate}
-        </p>
-        <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
-          Due Date
-        </p>
-        <p className="font-normal text-base text-miru-dark-purple-1000">
-          {dueDate}
-        </p>
+        <div className="hoverPencil">
+          <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
+            Date of Issue
+            <DatePicker onChange={(date:Date) => setIssueDate(date)} customInput={<button className="ml-2 invisible">
+              <PencilSimple size={13} color="#1D1A31" />
+            </button>} />
+          </p>
+
+          <p className="font-normal text-base text-miru-dark-purple-1000">
+            {getIssuedDate}
+          </p>
+        </div>
+        <div  className="hoverPencil">
+          <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
+            Due Date
+            <button className="ml-2 invisible">
+              <PencilSimple size={13} color="#1D1A31" />
+            </button>
+          </p>
+          <p className="font-normal text-base text-miru-dark-purple-1000">
+            {dueDate}
+          </p>
+        </div>
       </div>
 
       <div>

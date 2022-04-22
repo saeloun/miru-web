@@ -12,7 +12,7 @@ const Container = ({
   invoiceNumber, setInvoiceNumber,
   amount, setAmount,
   reference, setReference,
-  issueDate,
+  issueDate, setIssueDate,
   dueDate,
   outstandingAmount, setOutstandingAmount,
   amountDue, setAmountDue,
@@ -29,6 +29,7 @@ const Container = ({
       setSelectedClient= {setSelectedClient}
       amountDue={amountDue}
       issueDate={issueDate}
+      setIssueDate={setIssueDate}
       dueDate={dueDate}
       invoiceNumber={invoiceNumber}
       setInvoiceNumber={setInvoiceNumber}

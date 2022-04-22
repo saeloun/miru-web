@@ -34,7 +34,8 @@ const GenerateInvoices = () => {
   const [amountPaid, setAmountPaid] = useState<any>(0);
   const [discount, setDiscount] = useState<any>(null);
   const [tax, setTax] = useState<any>(null);
-  const [issueDate] = useState<string>(dayjs().format("DD.MM.YYYY"));
+  const [issueDate, setIssueDate] = useState(new Date());
+  // dayjs().format("DD.MM.YYYY")
   const [dueDate] = useState<string>(dayjs().add(1, "month").format("DD.MM.YYYY"));
   const [selectedOption, setSelectedOption] = useState<any>([]);
 
@@ -72,6 +73,7 @@ const GenerateInvoices = () => {
           reference={reference}
           setReference={setReference}
           issueDate={issueDate}
+          setIssueDate={setIssueDate}
           dueDate={dueDate}
           amount={amount}
           setAmount={setAmount}
