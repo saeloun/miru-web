@@ -22,10 +22,10 @@ export const DropdownHeader = () => (
         />
       </button>
     </div>
-    <div>
+    {/* <div>
       <button className=" mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000">
         CLICK TO ADD MULTIPLE ENTRIES
       </button>
-    </div>
+    </div> */}
   </div>
 );
