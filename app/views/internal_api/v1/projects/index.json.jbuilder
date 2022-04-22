@@ -11,7 +11,7 @@ json.projects projects do |project|
   json.is_billable project.billable
   json.minutes_spent project.total_hours_logged
 end
-json.clients current_company.clients do |client|
+json.clients current_company.clients.kept do |client|
   json.id client.id
   json.name client.name
 end
