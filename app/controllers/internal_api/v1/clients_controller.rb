@@ -7,7 +7,8 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     clients = query.result(distinct: true)
     client_details = clients.map { |client| client.client_detail(params[:time_frame]) }
     total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
-    render json: { client_details:, total_minutes: }, status: :ok
+    overdue_outstanding_amount = current_company.overdue_and_outstanding_and_draft_amount
+    render json: { client_details:, total_minutes:, overdue_outstanding_amount: }, status: :ok
   end
 
   def create
@@ -22,7 +23,8 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     project_details = client.project_details(params[:time_frame])
     client_details = { id: client.id, name: client.name, email: client.email }
     total_minutes = (project_details.map { |project| project[:minutes_spent] }).sum
-    render json: { client_details:, project_details:, total_minutes: }, status: :ok
+    overdue_outstanding_amount = client.client_overdue_and_outstanding_calculation
+    render json: { client_details:, project_details:, total_minutes:, overdue_outstanding_amount: }, status: :ok
   end
 
   def update
