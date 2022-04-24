@@ -18,7 +18,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     render :index, locals: {
       invoices:,
       pagy: pagy_metadata(pagy),
-      summary: current_company.invoice_amount_calculation
+      summary: current_company.overdue_and_outstanding_and_draft_amount
     }
   end
 
