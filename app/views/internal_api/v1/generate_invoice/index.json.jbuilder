@@ -7,6 +7,7 @@ json.company_details do
   json.phone_number current_company.business_phone
   json.address current_company.address
   json.country current_company.country
+  json.currency current_company.base_currency
 end
 json.issue_date Date.current
 json.due_date Date.current + 30

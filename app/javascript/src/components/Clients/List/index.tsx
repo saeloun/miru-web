@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clients from "apis/clients";
@@ -7,9 +8,11 @@ import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 
-import unmapClientList from "../../../mapper/client.mapper";
+import Header from "./Header";
+import { unmapClientList } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
+import NewClient from "../Modals/NewClient";
 
 const getTableData = (clients) => {
   if (clients) {
@@ -29,10 +32,12 @@ const getTableData = (clients) => {
 const Clients = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [edit, setedit] = useState({});
-  const [deleteClient, setDelete] = useState({});
+  const [newClient, setnewClient] = useState<boolean>(false);
+  const [clientToEdit, setedit] = useState({});
+  const [clientToDelete, setDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
+  const navigate = useNavigate();
 
   const handleEditClick = (id) => {
     setShowEditDialog(true);
@@ -53,6 +58,10 @@ const Clients = ({ isAdminUser }) => {
         setClientData(sanitized.clientList);
         setTotalMinutes(sanitized.totalMinutes);
       });
+  };
+
+  const handleRowClick = (id) => {
+    navigate(`${id}`);
   };
 
   useEffect(() => {
@@ -98,6 +107,7 @@ const Clients = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer />
+      <Header setnewClient={setnewClient} />
       <div>
         { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
           <div className="flex justify-end">
@@ -137,22 +147,30 @@ const Clients = ({ isAdminUser }) => {
                   hasRowIcons={true}
                   tableHeader={tableHeader}
                   tableRowArray={tableData}
+                  rowOnClick={handleRowClick}
                 /> }
               </div>
             </div>
           </div>
         </div>
       </div>
-      {showEditDialog ? (
+      {showEditDialog &&
         <EditClient
           setShowEditDialog={setShowEditDialog}
-          client={edit}
+          client={clientToEdit}
         />
-      ) : null}
+      }
       {showDeleteDialog && (
         <DeleteClient
           setShowDeleteDialog={setShowDeleteDialog}
-          client={deleteClient}
+          client={clientToDelete}
+        />
+      )}
+      {newClient && (
+        <NewClient
+          setnewClient={setnewClient}
+          setClientData = {setClientData}
+          clientData = {clientData}
         />
       )}
     </>

@@ -1,52 +1,47 @@
 import React, { useState } from "react";
 
 import clients from "apis/clients";
+import { Formik, Form, Field } from "formik";
 import { X } from "phosphor-react";
+import * as Yup from "yup";
+
+const newClientSchema = Yup.object().shape({
+  name: Yup.string().required("Name cannot be blank"),
+  email: Yup.string().email("Invalid email ID").required("Email ID cannot be blank"),
+  phoneNo: Yup.number().typeError("Invalid phone number"),
+  address: Yup.string().required("Address cannot be blank")
+});
+
+const getInitialvalues = (client) => ({
+  name: client.name,
+  email: client.email,
+  phone: client.phone,
+  address: client.address,
+  minutes: client.minutes
+});
+
 export interface IEditClient {
   setShowEditDialog: any;
   client: any;
 }
 
 const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
-  const [name, setName] = useState<string>(client.name);
-  const [email, setEmail] = useState<string>(client.email);
-  const [phone, setPhone] = useState<string>(client.phone);
-  const [address, setAddress] = useState<string>(client.address);
-  const [errors, setErrors] = useState<{ name: string; email: string }>({
-    name: "",
-    email: ""
-  });
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const [apiError, setApiError] = useState<string>("");
 
-    try {
-      const res = await clients.update(client.id, {
-        client: {
-          name,
-          email,
-          phone,
-          address
-        }
-      });
-      setTimeout(() => {
-        if (res.data?.success) {
-          window.location.reload();
-        }
-      }, 500);
-    } catch (err) {
-      if (err.response.status == 422) {
-        setErrors({
-          name: err.response.data.errors.name
-            ? err.response.data.errors.name[0]
-            : null,
-          email: err.response.data.errors.email
-            ? err.response.data.errors.email[0]
-            : null
-        });
+  const handleSubmit = async values => {
+    await clients.update(client.id, {
+      client: {
+        ...values
       }
-    }
+    }).then(() => {
+      setShowEditDialog(false);
+      document.location.reload();
+    }).catch((e) => {
+      setApiError(e.message);
+    });
   };
+
   return (
     <div className="px-4 flex items-center justify-center">
       <div
@@ -58,112 +53,90 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
         <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
-              <h6 className="text-base font-extrabold">Edit Client Details</h6>
+              <h6 className="text-base font-extrabold">Edit Client</h6>
               <button type="button" onClick={() => { setShowEditDialog(false); }}>
                 <X size={16} color="#CDD6DF" weight="bold" />
               </button>
             </div>
-            <form onSubmit={handleSubmit}>
-              <div className="mt-4">
-                <div className="field">
-                  <div className="field_with_errors">
-                    <label className="form__label">Name</label>
-                    <div className="tracking-wider block text-xs text-red-600">
-                      {errors.name}
+            <Formik
+              initialValues={getInitialvalues(client)}
+              validationSchema={newClientSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ errors, touched }) => (
+                <Form>
+                  <div className="mt-4">
+                    <div className="field">
+                      <div className="field_with_errors">
+                        <label className="form__label">Name</label>
+                        <div className="tracking-wider block text-xs text-red-600">
+                          {errors.name && touched.name &&
+                          <div>{errors.name}</div>
+                          }
+                        </div>
+                      </div>
+                      <div className="mt-1">
+                        <Field className={`form__input ${errors.name && touched.name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="name" />
+                      </div>
                     </div>
                   </div>
-                  <div className="mt-1">
-                    <input
-                      placeholder="Enter name"
-                      className={`form__input ${
-                        errors.name
-                          ? "border-red-600 focus:ring-red-600 focus:border-red-600"
-                          : "border-gray-100 focus:ring-miru-gray-1000 focus:border-miru-gray-1000"
-                      }`}
-                      type="text"
-                      name="client[name]"
-                      id="client_name"
-                      value={name}
-                      onChange={e => setName(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <div className="field">
-                  <div className="field_with_errors">
-                    <label className="form__label">Email</label>
-                    <div className="tracking-wider block text-xs text-red-600">
-                      {errors.email}
+                  <div className="mt-4">
+                    <div className="field">
+                      <div className="field_with_errors">
+                        <label className="form__label">Email</label>
+                        <div className="tracking-wider block text-xs text-red-600">
+                          {errors.email && touched.email &&
+                          <div>{errors.email}</div>
+                          }
+                        </div>
+                      </div>
+                      <div className="mt-1">
+                        <Field className={`form__input ${errors.email && touched.email && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="email" />
+                      </div>
                     </div>
                   </div>
-                  <div className="mt-1">
+                  <div className="mt-4">
+                    <div className="field">
+                      <div className="field_with_errors">
+                        <label className="form__label">Phone number</label>
+                        <div className="tracking-wider block text-xs text-red-600">
+                          {errors.phoneNo && touched.phoneNo &&
+                          <div>{errors.phoneNo}</div>
+                          }
+                        </div>
+                      </div>
+                      <div className="mt-1">
+                        <Field className={`form__input ${errors.phoneNo && touched.phoneNo && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="phoneNo" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="field">
+                      <div className="field_with_errors">
+                        <label className="form__label">Address</label>
+                        <div className="tracking-wider block text-xs text-red-600">
+                          {errors.address && touched.address &&
+                          <div>{errors.address}</div>
+                          }
+                        </div>
+                      </div>
+                      <div className="mt-1">
+                        <Field className={`form__input ${errors.address && touched.address && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="address" />
+                      </div>
+                    </div>
+                  </div>
+                  <p className="tracking-wider mt-3 block text-xs text-red-600">{apiError}</p>
+                  <div className="actions mt-4">
                     <input
-                      placeholder="Enter email ID"
-                      className={`form__input ${
-                        errors.email
-                          ? "border-red-600 focus:ring-red-600 focus:border-red-600"
-                          : "border-gray-100 focus:ring-miru-gray-1000 focus:border-miru-gray-1000"
-                      }`}
-                      type="text"
-                      name="client[email]"
-                      id="client_email"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
+                      type="submit"
+                      name="commit"
+                      value="SAVE CHANGES"
+                      className="form__input_submit"
                     />
                   </div>
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <div className="field">
-                  <div className="field_with_errors">
-                    <label className="form__label">Phone number</label>
-                    <div className="tracking-wider block text-xs text-red-600"></div>
-                  </div>
-                  <div className="mt-1">
-                    <input
-                      placeholder="Enter phone number"
-                      className="form__input border-gray-100 focus:ring-miru-gray-1000 focus:border-miru-gray-1000"
-                      type="text"
-                      name="client[phone]"
-                      id="client_phone"
-                      value={phone}
-                      onChange={e => setPhone(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <div className="field">
-                  <div className="field_with_errors">
-                    <label className="form__label">Address</label>
-                    <div className="tracking-wider block text-xs text-red-600"></div>
-                  </div>
-                  <div className="mt-1">
-                    <textarea
-                      placeholder="Enter address"
-                      className="form__textarea border-gray-100 focus:ring-miru-gray-1000 focus:border-miru-gray-1000"
-                      name="client[address]"
-                      id="client_address"
-                      value={address}
-                      onChange={e => setAddress(e.target.value)}
-                    ></textarea>
-                  </div>
-                </div>
-              </div>
-
-              <div className="actions mt-4">
-                <input
-                  type="submit"
-                  name="commit"
-                  value="SAVE CHANGES"
-                  className="form__input_submit"
-                />
-              </div>
-            </form>
+                </Form>
+              )}
+            </Formik>
           </div>
         </div>
       </div>

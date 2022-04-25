@@ -46,7 +46,7 @@ RSpec.describe Company, type: :model do
         it "returns the total hours logged for all the clients of a Company in the last_week" do
           result = [client_1, client_2].map do |client|
             {
-              id: client.id, name: client.name, email: client.email,
+              id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.address,
               minutes_spent: client.total_hours_logged(time_frame)
             }
           end
@@ -61,7 +61,8 @@ RSpec.describe Company, type: :model do
           result = [client_1, client_2].map do |client|
             {
               id: client.id,
-              name: client.name, email: client.email, minutes_spent: client.total_hours_logged(time_frame)
+              name: client.name, email: client.email,
+              phone: client.phone, address: client.address, minutes_spent: client.total_hours_logged(time_frame)
             }
           end
           expect(company.client_details(time_frame)).to eq(result)
@@ -74,7 +75,7 @@ RSpec.describe Company, type: :model do
         it "returns the total hours logged for all the clients of a Company in that week" do
           result = [client_1, client_2].map do |client|
             {
-              id: client.id, name: client.name, email: client.email,
+              id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.address,
               minutes_spent: client.total_hours_logged(time_frame)
             }
           end
@@ -88,7 +89,7 @@ RSpec.describe Company, type: :model do
         it "returns the total hours logged for all the clients of a Company in that week" do
           result = [client_1, client_2].map do |client|
             {
-              id: client.id, name: client.name, email: client.email,
+              id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.address,
               minutes_spent: client.total_hours_logged(time_frame)
             }
           end
@@ -124,6 +125,28 @@ RSpec.describe Company, type: :model do
       it "return list of all users of a company" do
         result = [ { id: user1.id, name: user1.full_name }, { id: user2.id, name: user2.full_name }]
         expect(company.user_details).to match_array(result)
+      end
+    end
+
+    describe "#overdue_and_outstanding_and_draft_amount" do
+      let(:company) do
+        create(:company, clients: create_list(:client_with_invoices, 5))
+      end
+      let(:user) { create(:user, current_workspace_id: company.id) }
+
+      it "return invoice amounts" do
+        status_and_amount = company.invoices.group(:status).sum(:amount)
+        currency = company.base_currency
+        status_and_amount.default = 0
+        outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"]
+        + status_and_amount["overdue"]
+        result = {
+          overdue_amount: status_and_amount["overdue"],
+          outstanding_amount:,
+          draft_amount: status_and_amount["draft"],
+          currency:
+        }
+        expect(company.overdue_and_outstanding_and_draft_amount).to match_array(result)
       end
     end
   end

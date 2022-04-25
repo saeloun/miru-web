@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useSearchParams } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
 import Pagination from "common/Pagination";
@@ -9,15 +10,22 @@ import Header from "./Header";
 
 import { ApiStatus as InvoicesStatus } from "../../../constants";
 
-const Invoices = () => {
+const Invoices: React.FC = () => {
   const [status, setStatus] = React.useState<InvoicesStatus>(
     InvoicesStatus.IDLE
   );
-  const [invoices, setInvoices] = React.useState<any>(null);
+  const [invoices, setInvoices] = React.useState<null | any[]>(null);
   const [summary, setSummary] = React.useState<any>(null);
   const [pagy, setPagy] = React.useState<any>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [params, setParams] = React.useState<any>({
+    invoices_per_page: searchParams.get("invoices_per_page") || 20,
+    page: searchParams.get("page") || 1
+  });
 
-  const [selectedInvoices, setSelectedInvoices] = React.useState<any[]>([]);
+  const queryParams = () => new URLSearchParams(params).toString();
+
+  const [selectedInvoices, setSelectedInvoices] = React.useState<number[]>([]);
 
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
 
@@ -26,14 +34,15 @@ const Invoices = () => {
 
   React.useEffect(() => {
     fetchInvoices();
-  }, []);
+    setSearchParams(params);
+  }, [params.invoices_per_page, params.page]);
 
   const fetchInvoices = async () => {
     try {
       setStatus(InvoicesStatus.LOADING);
       const {
         data: { invoices, pagy, summary }
-      } = await invoicesApi.get();
+      } = await invoicesApi.get(queryParams());
 
       setInvoices(invoices);
       setSummary(summary);
@@ -80,7 +89,9 @@ const Invoices = () => {
           <FilterSideBar setFilterVisibilty={setFilterVisibilty} />
         )}
 
-        {invoices.length && <Pagination pagy={pagy} />}
+        {invoices.length && (
+          <Pagination pagy={pagy} params={params} setParams={setParams} />
+        )}
       </React.Fragment>
     )
   );

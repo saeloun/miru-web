@@ -27,14 +27,17 @@ const Header = ({
               className="header__searchInput"
               placeholder="Search"
             />
+
             <button className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
               <MagnifyingGlass size={12} />
             </button>
           </div>
+
           <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
             <Funnel size={16} />
           </button>
         </div>
+
         <div className="flex">
           <Link
             to="/invoices/generate"
@@ -49,10 +52,16 @@ const Header = ({
     )}
     {isInvoiceSelected && (
       <div className="flex items-center justify-center">
-        <span>{selectedInvoiceCount > 1 ? `${selectedInvoiceCount} invoices selected` :`${selectedInvoiceCount} invoice selected` } </span>
+        <span>
+          {selectedInvoiceCount > 1
+            ? `${selectedInvoiceCount} invoices selected`
+            : `${selectedInvoiceCount} invoice selected`}{" "}
+        </span>
+
         <button className="ml-2" onClick={clearCheckboxes}>
           <X size={16} color="#5b34ea" weight="bold" />
         </button>
+
         <div className="flex">
           <button
             type="button"
@@ -61,6 +70,7 @@ const Header = ({
             <Trash weight="fill" size={16} />
             <span className="inline-block ml-2">DELETE</span>
           </button>
+
           <button type="button" className="header__button">
             <PaperPlaneTilt weight="fill" size={16} />
             <span className="inline-block ml-2">SEND TO</span>

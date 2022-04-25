@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import generateInvoice from "apis/generateInvoice";
+import dayjs from "dayjs";
 
 import Container from "./Container";
 import Header from "./Header";
@@ -23,6 +24,19 @@ const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
 const GenerateInvoices = () => {
   const navigate = useNavigate();
   const [invoiceDetails, getInvoiceDetails] = useState<any>();
+  const [lineItems, setLineItems] = useState<any>([]);
+  const [selectedClient, setSelectedClient] = useState<any>();
+  const [invoiceNumber, setInvoiceNumber] = useState<any>("");
+  const [reference, setReference] = useState<any>("");
+  const [amount, setAmount] = useState<any>(0);
+  const [outstandingAmount, setOutstandingAmount] = useState<any>(0);
+  const [amountDue, setAmountDue] = useState<any>(0);
+  const [amountPaid, setAmountPaid] = useState<any>(0);
+  const [discount, setDiscount] = useState<any>(0);
+  const [tax, setTax] = useState<any>(0);
+  const [issueDate] = useState<string>(dayjs().format("DD.MM.YYYY"));
+  const [dueDate] = useState<string>(dayjs().add(1, "month").format("DD.MM.YYYY"));
+  const [selectedOption, setSelectedOption] = useState<any>([]);
 
   useEffect(() => {
     setAuthHeaders();
@@ -33,8 +47,47 @@ const GenerateInvoices = () => {
   if (invoiceDetails) {
     return (
       <React.Fragment>
-        <Header />
-        <Container invoiceDetails={invoiceDetails} />
+        <Header
+          client={selectedClient}
+          invoiceNumber={invoiceNumber}
+          reference={reference}
+          issueDate={issueDate}
+          dueDate={dueDate}
+          amount={amount}
+          amountDue={amountDue}
+          amountPaid={amountPaid}
+          discount={discount}
+          tax={tax}
+          outstandingAmount={outstandingAmount}
+          invoiceLineItems={selectedOption}
+        />
+        <Container
+          invoiceDetails={invoiceDetails}
+          selectedClient={selectedClient}
+          setSelectedClient={setSelectedClient}
+          lineItems={lineItems}
+          setLineItems={setLineItems}
+          invoiceNumber={invoiceNumber}
+          setInvoiceNumber={setInvoiceNumber}
+          reference={reference}
+          setReference={setReference}
+          issueDate={issueDate}
+          dueDate={dueDate}
+          amount={amount}
+          setAmount={setAmount}
+          outstandingAmount={outstandingAmount}
+          setOutstandingAmount={setOutstandingAmount}
+          amountDue={amountDue}
+          setAmountDue={setAmountDue}
+          amountPaid={amountPaid}
+          setAmountPaid={setAmountPaid}
+          discount={discount}
+          setDiscount={setDiscount}
+          tax={tax}
+          setTax={setTax}
+          selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
+        />
       </React.Fragment>
     );
   }

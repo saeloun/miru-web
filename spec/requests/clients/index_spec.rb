@@ -23,7 +23,6 @@ RSpec.describe "Client#index", type: :request do
 
     it "renders Client#index page" do
       expect(response.body).to include("Clients")
-      expect(response.body).to include("NEW CLIENT")
     end
   end
 
@@ -38,7 +37,6 @@ RSpec.describe "Client#index", type: :request do
 
     it "renders Client#index page" do
       expect(response.body).to include("Clients")
-      expect(response.body).not_to include("NEW CLIENT")
     end
   end
 

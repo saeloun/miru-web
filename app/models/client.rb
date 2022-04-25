@@ -42,7 +42,7 @@ class Client < ApplicationRecord
       )
       .joins("INNER JOIN users ON project_members.user_id = users.id")
       .select(
-        "timesheet_entries.id as id,
+        "timesheet_entries.id as timesheet_entry_id,
          users.first_name as first_name,
          users.last_name as last_name,
          timesheet_entries.work_date as date,
@@ -85,7 +85,21 @@ class Client < ApplicationRecord
       id: id,
       name: name,
       email: email,
+      phone: phone,
+      address: address,
       minutes_spent: total_hours_logged(time_frame)
+    }
+  end
+
+  def client_overdue_and_outstanding_calculation
+    currency = company.base_currency
+    status_and_amount = invoices.group(:status).sum(:amount)
+    status_and_amount.default = 0
+    outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
+    {
+      overdue_amount: status_and_amount["overdue"],
+      outstanding_amount:,
+      currency:
     }
   end
 
