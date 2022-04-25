@@ -8,17 +8,20 @@ RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
   let(:user1) { create(:user, current_workspace_id: company1.id) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
+  let(:user4) { create(:user) }
 
   before do
     create(:company_user, company_id: company1.id, user_id: user1.id)
     create(:company_user, company_id: company1.id, user_id: user2.id)
     create(:company_user, company_id: company2.id, user_id: user3.id)
+    create(:company_user, company_id: company1.id, user_id: user4.id)
   end
 
   context "when user is admin" do
     before do
       user1.add_role :admin, company1
       sign_in user1
+      user4.discard
       send_request :get, internal_api_v1_company_users_path
     end
 
