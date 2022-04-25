@@ -14,6 +14,8 @@
       The due date is <%= @invoice.due_date %>.
     </p>
 
+    <p>You can pay for the invoice here: <%= link_to nil, new_invoice_payment_url(@invoice), target: "_blank", rel: "nofollow" %></p>
+
     <p>Thanks!</p>
   </body>
 </html>

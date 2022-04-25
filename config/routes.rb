@@ -41,6 +41,15 @@ Rails.application.routes.draw do
 
   resources :workspaces, only: [:update]
 
+  resources :invoices, only: [], module: :invoices do
+    resources :payments, only: [:new] do
+      collection do
+        get :success
+        get :cancel
+      end
+    end
+  end
+
   get "clients/*path", to: "clients#index", via: :all
   get "clients", to: "clients#index"
 
