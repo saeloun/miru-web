@@ -53,6 +53,7 @@ const TableHeader = ({ selectAllInvoices, deselectAllInvoices }) => {
       </th>
       <th scope="col" className="relative px-6 py-3"></th>
       <th scope="col" className="relative px-6 py-3"></th>
+      <th scope="col" className="relative px-6 py-3"></th>
     </tr>
   );
 };

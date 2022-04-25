@@ -37,6 +37,9 @@ module.exports = {
       margin: {
         86: "342px",
       },
+      width: {
+        "fit": "fit-content"
+      },
       colors: {
         "miru-black": {
           1000: "#303A4B",
