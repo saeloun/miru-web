@@ -69,11 +69,11 @@ const Header = ({ clientDetails }) => {
         </div>
         <div className="ml-28 text-xs text-miru-dark-purple-400">
           <h6 className="font-semibold">Address</h6>
-          <p>--</p>
+          <p>{clientDetails.address}</p>
         </div>
         <div className="ml-28 text-xs text-miru-dark-purple-400">
           <h6 className="font-semibold">Phone number</h6>
-          <p>--</p>
+          <p>{clientDetails.phone}</p>
         </div>
       </div>
       }

@@ -24,10 +24,11 @@ const Container = ({
   <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
     <CompanyInfo companyDetails={invoiceDetails.companyDetails}/>
     <InvoiceDetails
+      currency={invoiceDetails.companyDetails.currency}
       clientList = {invoiceDetails.clientList}
       selectedClient={selectedClient}
       setSelectedClient= {setSelectedClient}
-      amountDue={amountDue}
+      amount={amount}
       issueDate={issueDate}
       dueDate={dueDate}
       invoiceNumber={invoiceNumber}
@@ -44,9 +45,13 @@ const Container = ({
       />
     </div>
     <InvoiceTotal
+      currency={invoiceDetails.companyDetails.currency}
       newLineItems={selectedOption}
-      setAmountDue={setAmountDue}
+      setAmountPaid={setAmountPaid}
+      amountPaid={amountPaid}
       amountDue={amountDue}
+      setAmountDue={setAmountDue}
+      setAmount={setAmount}
       discount={discount}
       setDiscount={setDiscount}
       tax={tax}

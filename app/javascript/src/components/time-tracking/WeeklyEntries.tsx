@@ -62,22 +62,22 @@ const WeeklyEntries: React.FC<Props> = ({
     }
   };
 
-  const handleDeleteEntries = async () => {
-    try {
-      if (!currentEntries.length) return;
-      const ids = getIds();
-      const delRes = await timesheetEntryApi.destroyBulk({ ids: ids });
-      if (delRes.status === 200) {
-        const getRes = await timesheetEntryApi.list(dayInfo[0]["fullDate"], dayInfo[6]["fullDate"]);
-        if (getRes.status === 200) {
-          const newState = { ...entryList, ...getRes.data.entries };
-          setEntryList(newState);
-        }
-      }
-    } catch (error) {
-      Logger.error(error.message);
-    }
-  };
+  // const handleDeleteEntries = async () => {
+  //   try {
+  //     if (!currentEntries.length) return;
+  //     const ids = getIds();
+  //     const delRes = await timesheetEntryApi.destroyBulk({ ids: ids });
+  //     if (delRes.status === 200) {
+  //       const getRes = await timesheetEntryApi.list(dayInfo[0]["fullDate"], dayInfo[6]["fullDate"]);
+  //       if (getRes.status === 200) {
+  //         const newState = { ...entryList, ...getRes.data.entries };
+  //         setEntryList(newState);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     Logger.error(error.message);
+  //   }
+  // };
 
   const handleSetData = () => {
     if (projectId) {
@@ -105,7 +105,7 @@ const WeeklyEntries: React.FC<Props> = ({
       newRowView={newRowView}
       setNewRowView={setNewRowView}
       setEntryList={setEntryList}
-      handleDeleteEntries={handleDeleteEntries}
+      // handleDeleteEntries={handleDeleteEntries}
       handleEditEntries={handleEditEntries}
       dayInfo={dayInfo}
       isWeeklyEditing={isWeeklyEditing}
