@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from "react";
+import { currencyFormat } from "helpers/currency";
 import { PencilSimple, DotsThreeVertical } from "phosphor-react";
 
 import DiscountMenu from "./DiscountMenu";
 
-const InvoiceTotal = ({ newLineItems, amountDue, setAmountDue }) => {
+const InvoiceTotal = ({
+  currency,
+  newLineItems,
+  amountPaid, setAmountPaid,
+  amountDue, setAmountDue,
+  setAmount,
+  discount, setDiscount,
+  tax, setTax
+}) => {
 
   const [addDiscount, setAddDiscount] = useState<boolean>(false);
   const [showDiscountMenu, setShowDiscountMenu] = useState<boolean>(false);
   const [showDiscountButton, setShowDiscountButton] = useState<boolean>(false);
   const [showDiscount, setShowDiscount] = useState<boolean>(false);
   const [showTaxInput, setShowTaxInput] = useState<boolean>(false);
-  const [showTax, setShowTax] = useState<boolean>(false);
   const [showEditTaxButton, setShowEditTaxButton] = useState<boolean>(false);
 
-  const [discount, setDiscount] = useState<any>(null);
-  const [tax, setTax] = useState<any>(null);
   const [subTotal, setSubTotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
-  const [amountPaid] = useState<number>(0);
 
   const onEnter = (e, type) => {
     if (e.key === "Enter") {
@@ -26,7 +31,6 @@ const InvoiceTotal = ({ newLineItems, amountDue, setAmountDue }) => {
         setShowDiscount(true);
       }
       else {
-        setShowTax(true);
         setShowTaxInput(false);
       }
     }
@@ -55,12 +59,7 @@ const InvoiceTotal = ({ newLineItems, amountDue, setAmountDue }) => {
   };
 
   const getTax = () => {
-    if (showTax && tax) {
-      return (
-        <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">${tax}</td>
-      );
-    }
-    else if (showTaxInput) {
+    if (showTaxInput) {
       return (
         <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">
           <input
@@ -73,9 +72,12 @@ const InvoiceTotal = ({ newLineItems, amountDue, setAmountDue }) => {
         </td>
       );
     }
-    else {
-      return <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">$0</td>;
-    }
+
+    return (
+      <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">
+        {currencyFormat({ baseCurrency: currency, amount: tax })}
+      </td>
+    );
   };
 
   useEffect(() => {
@@ -89,6 +91,7 @@ const InvoiceTotal = ({ newLineItems, amountDue, setAmountDue }) => {
   useEffect(() => {
     const Total = Number(subTotal) + Number(tax) - Number(discount);
     setTotal(Total);
+    setAmount(Total);
   }, [discount, subTotal, tax]);
 
   useEffect(() => {
@@ -140,7 +143,7 @@ const InvoiceTotal = ({ newLineItems, amountDue, setAmountDue }) => {
               Total
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right">
-              ${total}
+              {currencyFormat({ baseCurrency: currency, amount: total })}
             </td>
           </tr>
           <tr>
@@ -148,7 +151,7 @@ const InvoiceTotal = ({ newLineItems, amountDue, setAmountDue }) => {
               Amount Paid
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
-              ${amountPaid}
+              {currencyFormat({ baseCurrency: currency, amount: amountPaid })}
             </td>
           </tr>
           <tr>
@@ -156,7 +159,7 @@ const InvoiceTotal = ({ newLineItems, amountDue, setAmountDue }) => {
               Amount Due
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right">
-              ${amountDue}
+              {currencyFormat({ baseCurrency: currency, amount: amountDue })}
             </td>
           </tr>
           <tr>
@@ -194,8 +197,6 @@ const InvoiceTotal = ({ newLineItems, amountDue, setAmountDue }) => {
           {showEditTaxButton && <button
             className="bg-miru-gray-1000 rounded mt-8 mx-1 p-2"
             onClick={() => {
-              setTax(null);
-              setShowTax(false);
               setShowTaxInput(true);
             }}
           >

@@ -1,10 +1,24 @@
-import React, { useState } from "react";
-import dayjs from "dayjs";
+import React, { useState, useRef } from "react";
+import { currencyFormat } from "helpers/currency";
+import { PencilSimple } from "phosphor-react";
 import ClientSelection from "./ClientSelection";
+import useOutsideClick from "../../../helpers/outsideClick";
 
-const InvoiceDetails = ({ clientList, selectedClient, setSelectedClient, amountDue }) => {
-  const [issueDate] = useState<string>(dayjs().format("DD.MM.YYYY"));
-  const [dueDate] = useState<string>(dayjs().add(1, "month").format("DD.MM.YYYY"));
+const InvoiceDetails = ({
+  currency,
+  clientList,
+  selectedClient, setSelectedClient,
+  amount,
+  issueDate,
+  dueDate,
+  invoiceNumber,
+  setInvoiceNumber,
+  reference
+}) => {
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const wrapperRef = useRef(null);
+
+  useOutsideClick(wrapperRef, () => setIsEditing(false), isEditing);
 
   return (
     <div className="flex justify-between border-b-2 border-miru-gray-400 px-10 py-5 h-36">
@@ -25,17 +39,22 @@ const InvoiceDetails = ({ clientList, selectedClient, setSelectedClient, amountD
       </div>
 
       <div>
-        <p className="font-normal text-xs text-miru-dark-purple-1000">
-          Invoice Number
-        </p>
-        <p className="font-normal text-base text-miru-dark-purple-1000">
-          6335 7871
-        </p>
+        <div className="flex flex-col" ref={wrapperRef}>
+          <div className="flex flex-row">
+            <p className="font-normal text-xs text-miru-dark-purple-1000">
+              Invoice Number
+            </p>
+            <button onClick={() => { setIsEditing(!isEditing); }}>
+              <PencilSimple size={13} color="#1D1A31" />
+            </button>
+          </div>
+          <input type="text" disabled={!isEditing} value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value) }/>
+        </div>
         <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
           Reference
         </p>
         <p className="font-normal text-base text-miru-dark-purple-1000">
-          -
+          {reference}
         </p>
       </div>
 
@@ -44,7 +63,7 @@ const InvoiceDetails = ({ clientList, selectedClient, setSelectedClient, amountD
           Amount
         </p>
         <p className="font-normal text-4xl text-miru-dark-purple-1000 mt-6">
-          ${amountDue}
+          {currencyFormat({ baseCurrency: currency, amount: amount })}
         </p>
       </div>
     </div>

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "sidekiq/web"
+
 class ActionDispatch::Routing::Mapper
   def draw(routes_name)
     instance_eval(File.read(Rails.root.join("config/routes/#{routes_name}.rb")))
@@ -34,17 +36,26 @@ Rails.application.routes.draw do
   resources :time_tracking, only: [:index], path: "time-tracking"
 
   resources :team, only: [:index, :update, :destroy, :edit]
-  resources :clients, only: [:index, :create]
-  resources :projects, only: [:index, :create]
+
   resources :reports, only: [:index]
-  # resources :invoices, only: [:index, :create]
   resources :workspaces, only: [:update]
+
+  get "clients/*path", to: "clients#index", via: :all
+  get "clients", to: "clients#index"
 
   get "invoices/*path", to: "invoices#index", via: :all
   get "invoices", to: "invoices#index"
+
+  get "projects/*path", to: "projects#index", via: :all
+  get "projects", to: "projects#index"
+
+  get "payments/*path", to: "payments#index", via: :all
+  get "payments", to: "payments#index"
 
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
   end
+
+  mount Sidekiq::Web => "/sidekiq"
 end

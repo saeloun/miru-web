@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-
-import Select from "react-select";
 import projectApi from "apis/projects";
 import { X } from "phosphor-react";
 
