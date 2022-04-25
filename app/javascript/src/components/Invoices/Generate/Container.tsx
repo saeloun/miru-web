@@ -13,7 +13,7 @@ const Container = ({
   amount, setAmount,
   reference, setReference,
   issueDate, setIssueDate,
-  dueDate,
+  dueDate, setDueDate,
   outstandingAmount, setOutstandingAmount,
   amountDue, setAmountDue,
   amountPaid, setAmountPaid,
@@ -22,13 +22,14 @@ const Container = ({
   selectedOption, setSelectedOption
 }) => (
   <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
-    <CompanyInfo companyDetails={invoiceDetails.companyDetails}/>
+    <CompanyInfo companyDetails={invoiceDetails.companyDetails} />
     <InvoiceDetails
       currency={invoiceDetails.companyDetails.currency}
-      clientList = {invoiceDetails.clientList}
+      clientList={invoiceDetails.clientList}
       selectedClient={selectedClient}
-      setSelectedClient= {setSelectedClient}
+      setSelectedClient={setSelectedClient}
       amount={amount}
+      setDueDate={setDueDate}
       issueDate={issueDate}
       setIssueDate={setIssueDate}
       dueDate={dueDate}
@@ -38,7 +39,7 @@ const Container = ({
     />
     <div className="px-10 py-5">
       <InvoiceTable
-        selectedClient ={selectedClient}
+        selectedClient={selectedClient}
         selectedOption={selectedOption}
         setSelectedOption={setSelectedOption}
         setLineItems={setLineItems}

@@ -23,6 +23,7 @@
     "babel-plugin-js-logger": "^1.0.17",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "classnames": "^2.3.1",
+    "date-fns": "^2.28.0",
     "dayjs": "^1.11.0",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
     "formik": "^2.2.9",

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import generateInvoice from "apis/generateInvoice";
-import dayjs from "dayjs";
 
 import Container from "./Container";
 import Header from "./Header";
@@ -35,8 +34,7 @@ const GenerateInvoices = () => {
   const [discount, setDiscount] = useState<any>(0);
   const [tax, setTax] = useState<any>(0);
   const [issueDate, setIssueDate] = useState(new Date());
-  // dayjs().format("DD.MM.YYYY")
-  const [dueDate] = useState<string>(dayjs().add(1, "month").format("DD.MM.YYYY"));
+  const [dueDate, setDueDate] = useState(new Date());
   const [selectedOption, setSelectedOption] = useState<any>([]);
 
   useEffect(() => {
@@ -75,6 +73,7 @@ const GenerateInvoices = () => {
           issueDate={issueDate}
           setIssueDate={setIssueDate}
           dueDate={dueDate}
+          setDueDate={setDueDate}
           amount={amount}
           setAmount={setAmount}
           outstandingAmount={outstandingAmount}

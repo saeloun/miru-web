@@ -1,12 +1,10 @@
 import React, { useState, useRef } from "react";
+import CustomDatePicker from "common/CutomDatePicker";
+import dayjs from "dayjs";
 import { currencyFormat } from "helpers/currency";
 import { PencilSimple } from "phosphor-react";
 import ClientSelection from "./ClientSelection";
 import useOutsideClick from "../../../helpers/outsideClick";
-import dayjs from "dayjs";
-import DatePicker from "react-datepicker";
-
-import "react-datepicker/dist/react-datepicker.css";
 
 const InvoiceDetails = ({
   currency,
@@ -14,18 +12,31 @@ const InvoiceDetails = ({
   selectedClient, setSelectedClient,
   amount,
   issueDate, setIssueDate,
-  dueDate,
+  dueDate, setDueDate,
   invoiceNumber,
   setInvoiceNumber,
   reference
 }) => {
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
-
+  const [showDateOfIssuePicker, setShowDateOfIssuePicker] = useState<boolean>(false);
+  const [showDueDatePicker, setShowDueDatePicker] = useState<boolean>(false);
   const wrapperRef = useRef(null);
 
   useOutsideClick(wrapperRef, () => setIsEditing(false), isEditing);
-  const getIssuedDate = dayjs(issueDate).format("DD.MM.YYYY")
+
+  const getIssuedDate = dayjs(issueDate).format("DD.MM.YYYY");
+  const getDueDate = dayjs(dueDate).format("DD.MM.YYYY");
+  const handleDatePickerChange = (date) => {
+    setIssueDate(date);
+    setShowDateOfIssuePicker(false);
+  };
+
+  const handleDueDatePicker = (date) => {
+    setDueDate(date);
+    setShowDueDatePicker(false);
+  };
+
   return (
     <div className="flex justify-between border-b-2 border-miru-gray-400 px-10 py-5 h-36">
       <ClientSelection selectedClient={selectedClient} setSelectedClient={setSelectedClient} clientList={clientList} />
@@ -33,11 +44,11 @@ const InvoiceDetails = ({
         <div className="hoverPencil">
           <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
             <span>Date of Issue</span>
-            <DatePicker wrapperClassName="datePicker" onChange={(date: Date) => setIssueDate(date)} customInput={<button className="ml-2 invisible">
+            <button className="ml-2 invisible" onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}>
               <PencilSimple size={13} color="#1D1A31" />
-            </button>} />
+            </button>
           </p>
-
+          {showDateOfIssuePicker && <CustomDatePicker handleChange={handleDatePickerChange} />}
           <p className="font-normal text-base text-miru-dark-purple-1000">
             {getIssuedDate}
           </p>
@@ -45,9 +56,13 @@ const InvoiceDetails = ({
         <div className="hoverPencil">
           <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4 flex">
             <span>Due Date</span>
+            <button className="ml-2 invisible" onClick={() => setShowDueDatePicker(!showDueDatePicker)}>
+              <PencilSimple size={13} color="#1D1A31" />
+            </button>
           </p>
+          {showDueDatePicker && <CustomDatePicker handleChange={handleDueDatePicker} />}
           <p className="font-normal text-base text-miru-dark-purple-1000">
-            {dueDate}
+            {getDueDate}
           </p>
         </div>
       </div>
