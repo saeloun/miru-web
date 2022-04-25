@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   resources :team, only: [:index, :update, :destroy, :edit]
 
   resources :reports, only: [:index]
+
   resources :workspaces, only: [:update]
 
   get "clients/*path", to: "clients#index", via: :all
