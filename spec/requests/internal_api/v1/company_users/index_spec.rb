@@ -35,11 +35,11 @@ RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
     end
 
     it "does not return the discarded users of company1" do
-      expect(json_response["users"].map { |user| user["id"] }).not_to include user4.id
+      expect(json_response["users"].pluck("id")).not_to include user4.id
     end
 
     it "does not return the users of company2" do
-      expect(json_response["users"].map { |user| user["id"] }).not_to include user3.id
+      expect(json_response["users"].pluck("id")).not_to include user3.id
     end
   end
 
