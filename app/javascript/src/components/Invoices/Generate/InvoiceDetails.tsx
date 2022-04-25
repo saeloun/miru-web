@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { currencyFormat } from "helpers/currency";
 import { PencilSimple } from "phosphor-react";
 import ClientSelection from "./ClientSelection";
 import useOutsideClick from "../../../helpers/outsideClick";
@@ -7,16 +8,18 @@ import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-const  InvoiceDetails = ({
+const InvoiceDetails = ({
+  currency,
   clientList,
   selectedClient, setSelectedClient,
-  amountDue,
+  amount,
   issueDate, setIssueDate,
   dueDate,
   invoiceNumber,
   setInvoiceNumber,
   reference
 }) => {
+
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const wrapperRef = useRef(null);
@@ -25,12 +28,12 @@ const  InvoiceDetails = ({
   const getIssuedDate = dayjs(issueDate).format("DD.MM.YYYY")
   return (
     <div className="flex justify-between border-b-2 border-miru-gray-400 px-10 py-5 h-36">
-      <ClientSelection selectedClient={selectedClient} setSelectedClient={setSelectedClient} clientList ={clientList} />
+      <ClientSelection selectedClient={selectedClient} setSelectedClient={setSelectedClient} clientList={clientList} />
       <div className="group">
         <div className="hoverPencil">
           <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
             <span>Date of Issue</span>
-            <DatePicker wrapperClassName="datePicker" onChange={(date:Date) => setIssueDate(date)} customInput={<button className="ml-2 invisible">
+            <DatePicker wrapperClassName="datePicker" onChange={(date: Date) => setIssueDate(date)} customInput={<button className="ml-2 invisible">
               <PencilSimple size={13} color="#1D1A31" />
             </button>} />
           </p>
@@ -59,7 +62,7 @@ const  InvoiceDetails = ({
               <PencilSimple size={13} color="#1D1A31" />
             </button>
           </div>
-          <input type="text" disabled={!isEditing} value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value) }/>
+          <input type="text" disabled={!isEditing} value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} />
         </div>
         <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
           Reference
@@ -74,7 +77,7 @@ const  InvoiceDetails = ({
           Amount
         </p>
         <p className="font-normal text-4xl text-miru-dark-purple-1000 mt-6">
-          ${amountDue}
+          {currencyFormat({ baseCurrency: currency, amount: amount })}
         </p>
       </div>
     </div>

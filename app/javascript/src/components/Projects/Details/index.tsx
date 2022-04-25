@@ -31,6 +31,7 @@ const ProjectDetails = () => {
   const [isHeaderMenuVisible, setHeaderMenuVisibility] = React.useState<boolean>(false);
   const params = useParams();
   const navigate = useNavigate();
+  const projectId = parseInt(params.projectId);
 
   const fetchProject = async () => {
     await projectAPI.show(params.projectId)
@@ -188,7 +189,7 @@ const ProjectDetails = () => {
           setShowAddMemberDialog={setShowAddMemberDialog}
           addedMembers={project?.members}
           handleAddProjectDetails = {handleAddProjectDetails}
-          projectId={1}
+          projectId={projectId}
         />
       ) : null}
     </>

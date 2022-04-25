@@ -22,16 +22,15 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
         name: user.current_workspace.name,
         phone_number: user.current_workspace.business_phone,
         address: user.current_workspace.address,
-        country: user.current_workspace.country
+        country: user.current_workspace.country,
+        currency: user.current_workspace.base_currency
       }
       company_client_list = user.current_workspace.client_list
-      issue_date = Date.current
-      due_date = Date.current + 30
       expect(response).to have_http_status(:ok)
       expect(json_response["company_details"]).to eq(JSON.parse(company_details.to_json))
       expect(json_response["company_client_list"]).to eq(JSON.parse(company_client_list.to_json))
-      expect(json_response["issue_date"]).to eq(JSON.parse(issue_date.to_json))
-      expect(json_response["due_date"]).to eq(JSON.parse(due_date.to_json))
+      expect(json_response["issue_date"]).to eq(JSON.parse(Date.current.to_json))
+      expect(json_response["due_date"]).to eq(JSON.parse((Date.current + 30).to_json))
     end
   end
 

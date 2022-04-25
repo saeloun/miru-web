@@ -127,5 +127,27 @@ RSpec.describe Company, type: :model do
         expect(company.user_details).to match_array(result)
       end
     end
+
+    describe "#overdue_and_outstanding_and_draft_amount" do
+      let(:company) do
+        create(:company, clients: create_list(:client_with_invoices, 5))
+      end
+      let(:user) { create(:user, current_workspace_id: company.id) }
+
+      it "return invoice amounts" do
+        status_and_amount = company.invoices.group(:status).sum(:amount)
+        currency = company.base_currency
+        status_and_amount.default = 0
+        outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"]
+        + status_and_amount["overdue"]
+        result = {
+          overdue_amount: status_and_amount["overdue"],
+          outstanding_amount:,
+          draft_amount: status_and_amount["draft"],
+          currency:
+        }
+        expect(company.overdue_and_outstanding_and_draft_amount).to match_array(result)
+      end
+    end
   end
 end
