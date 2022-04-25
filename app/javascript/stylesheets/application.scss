@@ -5,6 +5,7 @@
 @import "toastr/toastr";
 @import "team";
 @import "time-tracking";
+@import "react-calendar";
 
 @layer base {
   @font-face {
@@ -368,4 +369,18 @@ body {
 
 .box-shadow {
   box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
+}
+
+.hoverPencil:hover button {
+  @apply visible
+}
+
+
+
+.hoverPencil .react-datepicker-wrapper {
+  width: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2px;
 }
