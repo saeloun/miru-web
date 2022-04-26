@@ -8,24 +8,38 @@ RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
   let(:user1) { create(:user, current_workspace_id: company1.id) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
+  let(:user4) { create(:user) }
 
   before do
     create(:company_user, company_id: company1.id, user_id: user1.id)
     create(:company_user, company_id: company1.id, user_id: user2.id)
     create(:company_user, company_id: company2.id, user_id: user3.id)
+    create(:company_user, company_id: company1.id, user_id: user4.id)
   end
 
   context "when user is admin" do
     before do
       user1.add_role :admin, company1
       sign_in user1
+      user4.discard
       send_request :get, internal_api_v1_company_users_path
     end
 
-    it "returns the list of users of company" do
+    it "returns the success" do
       expect(response).to have_http_status(:ok)
+    end
+
+    it "returns the users of company1" do
       result = [ { id: user1.id, name: user1.full_name }, { id: user2.id, name: user2.full_name }]
       expect(json_response["users"]).to match_array(JSON.parse(result.to_json))
+    end
+
+    it "does not return the discarded users of company1" do
+      expect(json_response["users"].pluck("id")).not_to include user4.id
+    end
+
+    it "does not return the users of company2" do
+      expect(json_response["users"].pluck("id")).not_to include user3.id
     end
   end
 

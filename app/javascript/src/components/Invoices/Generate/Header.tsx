@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import invoicesApi from "apis/invoices";
+import dayjs from "dayjs";
 import { X, FloppyDisk, PaperPlaneTilt } from "phosphor-react";
 
 const Header = ({
@@ -21,14 +22,21 @@ const Header = ({
 
   const navigate = useNavigate();
   const [isInvoiceSavedSuccessfully, setIsInvoiceSavedSuccessfully] = React.useState<boolean>(false);
+  const getIssuedDate = dayjs(issueDate).format("DD.MM.YYYY");
+  const getDueDate = dayjs(dueDate).format("DD.MM.YYYY");
 
   const saveInvoice = () => {
     invoicesApi.post({
       client_id: client.value,
       invoice_number: invoiceNumber,
       reference: reference,
-      issue_date: issueDate,
-      due_date: dueDate,
+      issue_date: getIssuedDate,
+      due_date: getDueDate,
+      amount_due: amountDue,
+      amount_paid: amountPaid,
+      amount: amount,
+      discount: discount,
+      tax: tax,
       invoice_line_items_attributes: invoiceLineItems.map(ilt => ({
         name: `${ilt.first_name} ${ilt.last_name}`,
         description: ilt.description,
@@ -38,14 +46,14 @@ const Header = ({
         timesheet_entry_id: ilt.timesheet_entry_id
       }))
     })
-      .then(()=>navigate("/invoices"))
+      .then(() => navigate("/invoices"))
       .catch();
 
   };
 
   return (
     <React.Fragment>
-      <ToastContainer/>
+      <ToastContainer />
       <div className="sm:flex mt-6 mb-3 sm:items-center sm:justify-between">
         <h2 className="header__title font-bold">Generate Invoice</h2>
 
