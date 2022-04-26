@@ -96,6 +96,10 @@ const ProjectDetails = () => {
     setShowAddMemberDialog(true);
   };
 
+  const closeAddRemoveMembers = () => {
+    setShowAddMemberDialog(false);
+  };
+
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
 
   return (
@@ -189,7 +193,8 @@ const ProjectDetails = () => {
           setShowAddMemberDialog={setShowAddMemberDialog}
           addedMembers={project?.members}
           handleAddProjectDetails = {handleAddProjectDetails}
-          projectId={params.projectId}
+          closeAddRemoveMembers = {closeAddRemoveMembers}
+          projectId={projectId}
         />
       ) : null}
     </>

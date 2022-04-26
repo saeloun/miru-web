@@ -11,9 +11,10 @@ export interface IEditMembersList {
   addedMembers: any;
   projectId: any;
   handleAddProjectDetails: any;
+  closeAddRemoveMembers: any;
 }
 
-const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, handleAddProjectDetails }: IEditMembersList) => {
+const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, handleAddProjectDetails, closeAddRemoveMembers }: IEditMembersList) => {
   const [existingMembers, setExistingMembers] = React.useState(addedMembers);
   const [members, setMembers] = React.useState(addedMembers.map(v => ({ ...v, isExisting: true })));
   const [allMemberList, setAllMemberList] = React.useState([]);
@@ -67,6 +68,7 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, hand
         });
         setExistingMembers(members);
         handleAddProjectDetails();
+        closeAddRemoveMembers();
       }
       catch (err) {
         // add error handling
