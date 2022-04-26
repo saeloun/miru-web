@@ -11,20 +11,21 @@ const AddEditProject = ({ setEditProjectData, editProjectData, setShowProjectMod
 
   useEffect(() => {
     const getClientList = async () => {
-      try {
-        const data = await projectApi.get();
-        setClientList(data.data.clients);
-      } catch {
-        setClientList({});
-      }
+      projectApi.get()
+        .then((data) => {
+          setClientList(data.data.clients);
+        }).catch((e) => {
+          setClientList({});
+        });
     };
     const getProject = async () => {
-      try {
-        const data = await projectApi.show(projectData.id);
-        setEditProjectData(data.data.project_details);
-      } catch {
-        setEditProjectData({});
-      }
+      projectApi.show(projectData.id)
+        .then((data) => {
+          setEditProjectData(data.data.project_details);
+        })
+        .catch((e) => {
+          setEditProjectData({});
+        });
     };
 
     getClientList();

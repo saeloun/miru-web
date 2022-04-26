@@ -8,15 +8,15 @@ interface IProps {
 
 const DeleteProject = ({ project, setShowDeleteDialog }: IProps) => {
   const deleteProject = async project => {
-    try {
-      await projectApi.destroy(project.id);
-      setTimeout(() => {
-        setShowDeleteDialog(false);
-        window.location.reload();
-      }, 500);
-    } catch {
-      setShowDeleteDialog(true);
-    }
+    projectApi.destroy(project.id)
+      .then(() => {
+        setTimeout(() => {
+          setShowDeleteDialog(false);
+          window.location.reload();
+        }, 500);
+      }).catch((e) => {
+        setShowDeleteDialog(true);
+      });
   };
   return (
     <div className="px-4 flex items-center justify-center">
