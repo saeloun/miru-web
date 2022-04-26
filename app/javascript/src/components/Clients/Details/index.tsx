@@ -31,8 +31,7 @@ const getTableData = (clients) => {
 const ClientList = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [projectToEdit, setProjectToEdit] = useState({});
-  const [projectToDelete, setProjectToDelete] = useState({});
+  const [selectedProject, setSelectedProject] = useState({});
   const [projectDetails, setProjectDetails] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
   const [clientDetails, setClientDetails] = useState<any>({});
@@ -43,13 +42,13 @@ const ClientList = ({ isAdminUser }) => {
   const handleEditClick = (id) => {
     setShowEditDialog(true);
     const editSelection = projectDetails.find(project => project.id === id);
-    setProjectToEdit(editSelection);
+    setSelectedProject(editSelection);
   };
 
   const handleDeleteClick = (id) => {
     setShowDeleteDialog(true);
     const editSelection = projectDetails.find(project => project.id === id);
-    setProjectToDelete(editSelection);
+    setSelectedProject(editSelection);
   };
 
   const handleSelectChange = (event) => {
@@ -157,13 +156,13 @@ const ClientList = ({ isAdminUser }) => {
           setShowProjectModal={setShowEditDialog}
           setEditProjectData={setEditProjectData}
           editProjectData={editProjectData}
-          projectData={projectToEdit}
+          projectData={selectedProject}
         />
       }
       {showDeleteDialog && (
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}
-          project={projectToDelete}
+          project={selectedProject}
         />
       )}
     </>

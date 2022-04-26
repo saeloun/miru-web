@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import projectApi from "apis/projects";
 
 interface IProps {
@@ -8,11 +8,15 @@ interface IProps {
 
 const DeleteProject = ({ project, setShowDeleteDialog }: IProps) => {
   const deleteProject = async project => {
-    await projectApi.destroy(project.id);
-    setTimeout(() => {
-      setShowDeleteDialog(false);
-      window.location.reload();
-    }, 500);
+    try {
+      await projectApi.destroy(project.id);
+      setTimeout(() => {
+        setShowDeleteDialog(false);
+        window.location.reload();
+      }, 500);
+    } catch {
+      setShowDeleteDialog(true);
+    }
   };
   return (
     <div className="px-4 flex items-center justify-center">
