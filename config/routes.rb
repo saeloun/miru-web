@@ -54,7 +54,7 @@ Rails.application.routes.draw do
   get "payments", to: "payments#index"
 
   get "subscriptions/*path", to: "subscriptions#index", via: :all
-  get "subscriptions", to: "subscriptions#index"
+  resources :subscriptions, only: [:index]
 
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
