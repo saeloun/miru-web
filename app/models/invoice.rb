@@ -68,4 +68,8 @@ class Invoice < ApplicationRecord
     timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
     TimesheetEntry.where(id: timesheet_entry_ids).update!(bill_status: :billed)
   end
+
+  def create_checkout_session!(success_url:, cancel_url:)
+    InvoicePayment::Checkout.process(invoice: self, success_url:, cancel_url:)
+  end
 end
