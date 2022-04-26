@@ -12,6 +12,7 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  discarded_at :datetime
+#  stripe_id    :string
 #
 # Indexes
 #
@@ -101,6 +102,22 @@ class Client < ApplicationRecord
       outstanding_amount:,
       currency:
     }
+  end
+
+  def register_on_stripe!
+    self.transaction do
+      customer = Stripe::Customer.create(
+        {
+          email:,
+          name:,
+          phone:,
+          metadata: {
+            platform_id: id
+          }
+        })
+
+      update!(stripe_id: customer.id)
+    end
   end
 
   private
