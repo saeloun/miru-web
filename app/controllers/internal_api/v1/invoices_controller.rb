@@ -2,6 +2,7 @@
 
 class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationController
   before_action :load_client, only: [:create, :update]
+  before_action :load_invoice, only: [:show]
   after_action :ensure_time_entries_billed, only: [:send_invoice]
 
   def index
@@ -40,6 +41,13 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     }
   end
 
+  def show
+    authorize Invoice
+    render :show, locals: {
+      invoice: @invoice
+    }
+  end
+
   def send_invoice
     authorize invoice
 
@@ -61,6 +69,20 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
     def invoice
       @_invoice ||= Invoice.find(params[:id])
+    end
+
+    def load_invoice
+      @invoice = Invoice.includes(:invoice_line_items, :client)
+        .find(params[:id]).as_json(include: [:invoice_line_items, :client])
+        .merge(company: {
+          id: current_company.id,
+          logo: current_company.logo.attached? ? polymorphic_url(current_company.logo) : "",
+          name: current_company.name,
+          phone_number: current_company.business_phone,
+          address: current_company.address,
+          country: current_company.country,
+          currency: current_company.base_currency
+        })
     end
 
     def invoice_params
