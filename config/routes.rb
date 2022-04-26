@@ -53,6 +53,9 @@ Rails.application.routes.draw do
   get "payments/*path", to: "payments#index", via: :all
   get "payments", to: "payments#index"
 
+  get "subscriptions/*path", to: "subscriptions#index", via: :all
+  get "subscriptions", to: "subscriptions#index"
+
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
