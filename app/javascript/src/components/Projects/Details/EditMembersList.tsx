@@ -9,7 +9,7 @@ import EditMembersListForm from "./EditMembersListForm";
 export interface IEditMembersList {
   setShowAddMemberDialog: any;
   addedMembers: any;
-  projectId: number;
+  projectId: any;
   handleAddProjectDetails: any;
 }
 

@@ -6,11 +6,14 @@ import Header from "./Header";
 import { Project } from "./project";
 import { IProject } from "../interface";
 import AddEditProject from "../Modals/AddEditProject";
+import DeleteProject from "../Modals/DeleteProject";
 
 export const ProjectList = ({ isAdminUser }) => {
 
   const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
   const [editProjectData, setEditProjectData] = React.useState<any>(null);
+  const [deleteProjectData, setDeleteProjectData] = React.useState({});
   const [projects, setProjects] = React.useState<IProject[]>([]);
 
   const fetchProjects = async () => {
@@ -70,6 +73,9 @@ export const ProjectList = ({ isAdminUser }) => {
                       {...project}
                       isAdminUser={isAdminUser}
                       setShowProjectModal={setShowProjectModal}
+                      setEditProjectData={setEditProjectData}
+                      setShowDeleteDialog={setShowDeleteDialog}
+                      setDeleteProjectData={setDeleteProjectData}
                     />
                   ))}
                 </tbody>
@@ -79,14 +85,19 @@ export const ProjectList = ({ isAdminUser }) => {
         </div>
       </div>
 
-      {
-        showProjectModal &&
+      {showProjectModal &&
         <AddEditProject
           setShowProjectModal={setShowProjectModal}
           setEditProjectData={setEditProjectData}
           editProjectData={editProjectData}
         />
       }
+      {showDeleteDialog && (
+        <DeleteProject
+          setShowDeleteDialog={setShowDeleteDialog}
+          project={deleteProjectData}
+        />
+      )}
     </React.Fragment>
   );
 };

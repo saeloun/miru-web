@@ -189,7 +189,7 @@ const ProjectDetails = () => {
           setShowAddMemberDialog={setShowAddMemberDialog}
           addedMembers={project?.members}
           handleAddProjectDetails = {handleAddProjectDetails}
-          projectId={projectId}
+          projectId={params.projectId}
         />
       ) : null}
     </>

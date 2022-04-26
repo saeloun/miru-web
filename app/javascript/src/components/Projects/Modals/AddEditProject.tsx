@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import projectApi from "apis/projects";
 import { X } from "phosphor-react";
 
-const AddEditProject = ({ setEditProjectData, editProjectData, setShowProjectModal }) => {
+const AddEditProject = ({ setEditProjectData, editProjectData, setShowProjectModal, projectData }) => {
 
   const [client, setClient] = useState<any>(null);
   const [projectName, setProjectName] = useState<any>(null);
@@ -14,7 +14,13 @@ const AddEditProject = ({ setEditProjectData, editProjectData, setShowProjectMod
       const data = await projectApi.get();
       setClientList(data.data.clients);
     };
+    const getProject = async () => {
+      const data = await projectApi.show(projectData.id);
+      setEditProjectData(data.data.project_details);
+    };
+
     getClientList();
+    if (projectData) getProject();
   }, []);
 
   useEffect(() => {
@@ -23,7 +29,7 @@ const AddEditProject = ({ setEditProjectData, editProjectData, setShowProjectMod
         const client = clientList.filter(client => client.name == editProjectData.client.name);
         setClient(client[0].id);
       }
-      setProjectName(editProjectData.name ? editProjectData.name : null);
+      setProjectName(editProjectData ? editProjectData.name : null);
       setProjectType(editProjectData.isBillable ? "Billable" : "Non-Billable");
     }
   }, [editProjectData, clientList]);
@@ -140,6 +146,10 @@ const AddEditProject = ({ setEditProjectData, editProjectData, setShowProjectMod
       </div>
     </div>
   );
+};
+
+AddEditProject.defaultProps = {
+  projectData: null
 };
 
 export default AddEditProject;

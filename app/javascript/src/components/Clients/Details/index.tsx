@@ -10,8 +10,8 @@ import Table from "common/Table";
 
 import Header from "./Header";
 import { unmapClientDetails } from "../../../mapper/client.mapper";
-import DeleteClient from "../Modals/DeleteClient";
-import EditClient from "../Modals/EditClient";
+import AddEditProject from "../../Projects/Modals/AddEditProject";
+import DeleteProject from "../../Projects/Modals/DeleteProject";
 
 const getTableData = (clients) => {
   if (clients) {
@@ -31,31 +31,32 @@ const getTableData = (clients) => {
 const ClientList = ({ isAdminUser }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [clientToEdit, setClientToEdit] = useState({});
-  const [clientToDelete, setClientToDelete] = useState({});
-  const [clientData, setClientData] = useState<any>();
+  const [projectToEdit, setProjectToEdit] = useState({});
+  const [projectToDelete, setProjectToDelete] = useState({});
+  const [projectDetails, setProjectDetails] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
   const [clientDetails, setClientDetails] = useState<any>({});
+  const [editProjectData, setEditProjectData] = React.useState<any>(null);
 
   const params = useParams();
 
   const handleEditClick = (id) => {
     setShowEditDialog(true);
-    const editSelection = clientData.find(client => client.id === id);
-    setClientToEdit(editSelection);
+    const editSelection = projectDetails.find(project => project.id === id);
+    setProjectToEdit(editSelection);
   };
 
   const handleDeleteClick = (id) => {
     setShowDeleteDialog(true);
-    const editSelection = clientData.find(client => client.id === id);
-    setClientToDelete(editSelection);
+    const editSelection = projectDetails.find(project => project.id === id);
+    setProjectToDelete(editSelection);
   };
 
   const handleSelectChange = (event) => {
     clients.show(params.clientId,`?time_frame=${event.target.value}`)
       .then((res) => {
         const sanitized = unmapClientDetails(res);
-        setClientData(sanitized.projectDetails);
+        setProjectDetails(sanitized.projectDetails);
         setClientDetails(sanitized.clientDetails);
         setTotalMinutes(sanitized.totalMinutes);
       });
@@ -68,7 +69,7 @@ const ClientList = ({ isAdminUser }) => {
       .then((res) => {
         const sanitized = unmapClientDetails(res);
         setClientDetails(sanitized.clientDetails);
-        setClientData(sanitized.projectDetails);
+        setProjectDetails(sanitized.projectDetails);
         setTotalMinutes(sanitized.totalMinutes);
       });
   }, []);
@@ -100,7 +101,7 @@ const ClientList = ({ isAdminUser }) => {
     amount: "$24.3k"
   }];
 
-  const tableData = getTableData(clientData);
+  const tableData = getTableData(projectDetails);
 
   return (
     <>
@@ -131,7 +132,7 @@ const ClientList = ({ isAdminUser }) => {
               </option>
             </select>
           </div>
-          {clientData && <ChartBar data={clientData} totalMinutes={totalMinutes} />}
+          {projectDetails && <ChartBar data={projectDetails} totalMinutes={totalMinutes} />}
           <AmountBoxContainer amountBox = {amountBox} />
         </div>
         }
@@ -139,7 +140,7 @@ const ClientList = ({ isAdminUser }) => {
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
               <div className="overflow-hidden">
-                { clientData && <Table
+                { projectDetails && <Table
                   handleEditClick={handleEditClick}
                   handleDeleteClick={handleDeleteClick}
                   hasRowIcons={true}
@@ -152,15 +153,17 @@ const ClientList = ({ isAdminUser }) => {
         </div>
       </div>
       {showEditDialog &&
-        <EditClient
-          setShowEditDialog={setShowEditDialog}
-          client={clientToEdit}
+        <AddEditProject
+          setShowProjectModal={setShowEditDialog}
+          setEditProjectData={setEditProjectData}
+          editProjectData={editProjectData}
+          projectData={projectToEdit}
         />
       }
       {showDeleteDialog && (
-        <DeleteClient
+        <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}
-          client={clientToDelete}
+          project={projectToDelete}
         />
       )}
     </>
