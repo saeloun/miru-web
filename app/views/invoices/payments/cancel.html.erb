@@ -1,0 +1,21 @@
+<div class="flex flex-col min-h-full pt-16 pb-12 my-auto">
+  <main class="flex flex-col self-center justify-center flex-grow w-full px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <div class="flex justify-center flex-shrink-0">
+      <svg class="w-auto h-16 text-red-400 bg-red-200 rounded-full shadow-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+      </svg>
+    </div>
+
+    <div class="py-16">
+      <div class="text-center">
+        <p class="text-sm font-semibold tracking-wide uppercase text-miru-han-purple-600">Invoice #<%= @invoice.invoice_number %></p>
+        <h1 class="mt-2 text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">Payment was cancelled.</h1>
+        <p class="mt-2 text-base text-gray-500">Didn't cancel the payment?</p>
+        <div class="mt-6 group">
+          <%= link_to "Try again", new_invoice_payment_url(@invoice), class: "text-base font-medium text-miru-han-purple-600 group-hover:text-miru-han-purple-400", target: "_blank", rel: "nofollow" %>
+          <span aria-hidden="true" class="text-base font-medium text-miru-han-purple-600 group-hover:text-miru-han-purple-400"> &rarr;</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
