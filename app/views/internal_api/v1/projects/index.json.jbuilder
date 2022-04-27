@@ -3,7 +3,7 @@
 json.key_format! camelize: :lower
 json.deep_format_keys!
 
-json.projects current_company.project_list_after_filter(params[:client_filter], params[:user_filter])
+json.projects current_company.project_list_after_filter(params[:client_filter], params[:user_filter], params[:search])
 # json.projects projects do |project|
 #   json.id project.id
 #   json.name project.name

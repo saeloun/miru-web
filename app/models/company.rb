@@ -36,8 +36,9 @@ class Company < ApplicationRecord
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
 
-  def project_list_after_filter(client_filter = nil, user_filter = nil)
-    project_list = project_list(client_filter, user_filter)
+  def project_list_after_filter(client_filter = nil, user_filter = nil, search)
+    query = project_list(client_filter, user_filter).ransack({ name_or_client_name_cont: search })
+    project_list = query.result
     project_ids = project_list.map { |project| project.id }.uniq
     project_ids.map do |id|
       member_list = [], team_member_array = [], billable_array = [], duration_array = [], project_name_array = [],
