@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { DropdownHeader } from "./CustomComponents";
 
 const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew, lineItems, loadMoreItems, totalLineItems, pageNumber, selectedOption, setSelectedOption }) => {
+
+  const [showMultiLineModal, setShowMultilineModal] = useState<boolean>(false);
   const hasMoreItems = lineItems.length === totalLineItems;
   const selectRowId = (items) => {
-    const option = { ...items, lineTotal: (Number(items.qty)/60 * Number(items.rate)) };
+    const option = { ...items, lineTotal: (Number(items.qty) / 60 * Number(items.rate)) };
     setAddNew(false);
     setSelectedOption([...selectedOption, option]);
   };
 
   return (
     <div>
-      <DropdownHeader/>
+      <DropdownHeader setShowMultilineModal={setShowMultilineModal} />
       <div>
         <button onClick={() => {
           setShowItemInputs(!showItemInputs);
@@ -21,7 +23,7 @@ const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew
       </div>
       <div className="overflow-scroll mt-4 relative">
         <InfiniteScroll
-          dataLength={pageNumber*10}
+          dataLength={pageNumber * 10}
           next={loadMoreItems}
           hasMore={!hasMoreItems}
           loader={
@@ -37,7 +39,7 @@ const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew
           }
         >
           {lineItems.map(items => (
-            <div onClick = {() => {selectRowId(items);}} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100">
+            <div onClick={() => { selectRowId(items); }} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100">
               <span className="font-medium text-base text-miru-dark-purple-1000 text-left">
                 {items.first_name} {items.last_name}
               </span>
