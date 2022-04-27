@@ -36,6 +36,94 @@ class Company < ApplicationRecord
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
 
+  def project_list_after_filter(client_filter = nil, user_filter = nil)
+    project_list = project_list(client_filter, user_filter)
+    project_ids = project_list.map { |project| project.id }.uniq
+    project_ids.map do |id|
+      member_list = [], team_member_array = [], billable_array = [], duration_array = [], project_name_array = [],
+                    client_name_array = []
+      project_list.each do |project|
+        if id == project.id
+          team_member_array.push("#{project.first_name} #{project.last_name}")
+          billable_array.push(project.is_billable)
+          client_name_array.push(project.client_name)
+          project_name_array.push(project.project_name)
+          duration_array.push(project.duration)
+        end
+      end
+      {
+        id:,
+        project_name: project_name_array[0],
+        is_billable: billable_array[0],
+        client_name: client_name_array[0],
+        duration: duration_array.compact.sum,
+        team_member: team_member_array.compact.uniq
+      }
+    end
+  end
+
+  def project_list(client_filter, user_filter)
+    if client_filter.nil? && user_filter.nil?
+      return projects.kept.left_outer_joins(:project_members)
+          .joins("LEFT OUTER JOIN users ON users.id = project_members.user_id")
+          .joins(:client)
+          .joins("LEFT OUTER JOIN timesheet_entries ON timesheet_entries.user_id = project_members.user_id
+                      AND timesheet_entries.project_id = projects.id ")
+          .select("projects.id as id,
+                       projects.name as project_name,
+                       projects.billable as is_billable,
+                       clients.name as client_name,
+                       users.first_name as first_name,
+                       users.last_name as last_name,
+                       timesheet_entries.duration as duration")
+    end
+    if !client_filter.nil? && user_filter.nil?
+      return projects.kept.left_outer_joins(:project_members)
+          .joins("LEFT OUTER JOIN users ON users.id = project_members.user_id")
+          .joins(:client)
+          .joins("LEFT OUTER JOIN timesheet_entries ON timesheet_entries.user_id = project_members.user_id
+                      AND timesheet_entries.project_id = projects.id ")
+          .where(client_id: client_filter)
+          .select("projects.id as id,
+                       projects.name as project_name,
+                       projects.billable as is_billable,
+                       clients.name as client_name,
+                       users.first_name as first_name,
+                       users.last_name as last_name,
+                       timesheet_entries.duration as duration")
+    end
+    if client_filter.nil? && !user_filter.nil?
+      return projects.kept.left_outer_joins(:project_members)
+          .joins("LEFT OUTER JOIN users ON users.id = project_members.user_id")
+          .joins(:client)
+          .joins("LEFT OUTER JOIN timesheet_entries ON timesheet_entries.user_id = project_members.user_id
+                      AND timesheet_entries.project_id = projects.id ")
+          .where(timesheet_entries: { user_id: user_filter })
+          .select("projects.id as id,
+                       projects.name as project_name,
+                       projects.billable as is_billable,
+                       clients.name as client_name,
+                       users.first_name as first_name,
+                       users.last_name as last_name,
+                       timesheet_entries.duration as duration")
+    end
+    if !client_filter.nil? && !user_filter.nil?
+      projects.kept.left_outer_joins(:project_members)
+        .joins("LEFT OUTER JOIN users ON users.id = project_members.user_id")
+        .joins(:client)
+        .joins("LEFT OUTER JOIN timesheet_entries ON timesheet_entries.user_id = project_members.user_id
+                      AND timesheet_entries.project_id = projects.id ")
+        .where(timesheet_entries: { user_id: user_filter }, client_id: client_filter)
+        .select("projects.id as id,
+                       projects.name as project_name,
+                       projects.billable as is_billable,
+                       clients.name as client_name,
+                       users.first_name as first_name,
+                       users.last_name as last_name,
+                       timesheet_entries.duration as duration")
+    end
+  end
+
   def client_details(time_frame = "week")
     clients.kept.map { |client| client.client_detail(time_frame) }
   end

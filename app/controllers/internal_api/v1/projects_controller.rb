@@ -3,7 +3,7 @@
 class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationController
   def index
     authorize Project
-    render :index, locals: { projects: }, status: :ok
+    render :index, locals: { current_company: }, status: :ok
   end
 
   def show
@@ -33,9 +33,9 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
 
   private
 
-    def projects
-      @_projects ||= current_company.projects.kept
-    end
+    # def projects
+    #   @_projects ||= current_company.projects.kept
+    # end
 
     def project
       @_project ||= Project.includes(:project_members, project_members: [:user]).find(params[:id])
