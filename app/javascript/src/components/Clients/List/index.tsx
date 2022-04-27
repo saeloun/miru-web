@@ -147,7 +147,7 @@ const Clients = ({ isAdminUser }) => {
                   hasRowIcons={isAdminUser}
                   tableHeader={tableHeader}
                   tableRowArray={tableData}
-                  rowOnClick={isAdminUser ? handleRowClick : () => { }}
+                  rowOnClick={isAdminUser ? handleRowClick : () => { }}// eslint-disable-line
                 />}
               </div>
             </div>
