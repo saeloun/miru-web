@@ -54,10 +54,10 @@ class Company < ApplicationRecord
       end
       {
         id:,
-        project_name: project_name_array[0],
-        is_billable: billable_array[0],
+        name: project_name_array[0],
         client_name: client_name_array[0],
-        duration: duration_array.compact.sum,
+        is_billable: billable_array[0],
+        minutes_spent: duration_array.compact.sum,
         team_member: team_member_array.compact.uniq
       }
     end
