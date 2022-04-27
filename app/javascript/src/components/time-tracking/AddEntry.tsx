@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
+import autosize from "autosize";
 import Toastr from "common/Toastr";
 import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 import timesheetEntryApi from "../../apis/timesheet-entry";
@@ -33,18 +34,21 @@ const AddEntry: React.FC<Iprops> = ({
       entry => entry.id === editEntryId
     );
     if (entry) {
-      setNote(entry.note);
       setDuration(minutesToHHMM(entry.duration));
       setClient(entry.client);
       setProject(entry.project);
       setProjectId(entry.project_id);
+      setNote(entry.note);
       if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
     }
   };
 
   useEffect(() => {
+    const textArea = document.querySelector("textarea");
+    autosize(textArea);
     handleFillData();
-  }, [selectedFullDate]);
+    textArea.click();
+  }, []);
 
   useEffect(() => {
     if (!project) return;
@@ -125,54 +129,54 @@ const AddEntry: React.FC<Iprops> = ({
   return (
     <div
       className={
-        "h-24 py-1 flex justify-evenly rounded-lg shadow-2xl " +
+        "min-h-24 p-4 flex justify-between rounded-lg shadow-2xl " +
         (editEntryId ? "mt-10" : "")
       }
     >
-      <div className="w-60 ml-4">
-        <select
-          onChange={e => {
-            setClient(e.target.value);
-            setProject(projects[e.target.value][0].name);
-          }}
-          value={client || "Client"}
-          name="client"
-          id="client"
-          className="w-60 bg-miru-gray-100 rounded-sm mt-2 h-8"
-        >
-          {!client && (
-            <option disabled selected className="text-miru-gray-100">
+      <div className="w-1/2">
+        <div className="w-129 mb-2 flex justify-between">
+          <select
+            onChange={e => {
+              setClient(e.target.value);
+              setProject(projects[e.target.value][0].name);
+            }}
+            value={client || "Client"}
+            name="client"
+            id="client"
+            className="w-64 bg-miru-gray-100 rounded-sm h-8"
+          >
+            {!client && (
+              <option disabled selected className="text-miru-gray-100">
               Client
-            </option>
-          )}
-          {clients.map((client, i) => (
-            <option key={i.toString()}>{client["name"]}</option>
-          ))}
-        </select>
+              </option>
+            )}
+            {clients.map((client, i) => (
+              <option key={i.toString()}>{client["name"]}</option>
+            ))}
+          </select>
 
-        <select
-          onChange={e => {
-            setProject(e.target.value);
-          }}
-          value={project}
-          name="project"
-          id="project"
-          className="w-60 bg-miru-gray-100 rounded-sm mt-2 h-8"
-        >
-          {!project && (
-            <option disabled selected className="text-miru-gray-100">
+          <select
+            onChange={e => {
+              setProject(e.target.value);
+            }}
+            value={project}
+            name="project"
+            id="project"
+            className="w-64 bg-miru-gray-100 rounded-sm h-8"
+          >
+            {!project && (
+              <option disabled selected className="text-miru-gray-100">
               Project
-            </option>
-          )}
-          {client &&
+              </option>
+            )}
+            {client &&
             projects[client].map((project, i) => (
               <option data-project-id={project.id} key={i.toString()}>
                 {project.name}
               </option>
             ))}
-        </select>
-      </div>
-      <div className="mx-10">
+          </select>
+        </div>
         <textarea
           value={note}
           onChange={e => setNote(e.target.value)}
@@ -180,12 +184,12 @@ const AddEntry: React.FC<Iprops> = ({
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className="p-1 w-60 h-18 rounded-sm bg-miru-gray-100 my-2 focus:miru-han-purple-1000 outline-none resize-none"
+          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + editEntryId ? "h-32" : "h-8" )}
         ></textarea>
       </div>
       <div className="w-60">
-        <div className="flex justify-between">
-          <div className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm mt-2 mr-1 text-sm flex justify-center items-center">
+        <div className="mb-2 flex justify-between">
+          <div className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center">
             {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${
               selectedDateInfo["month"]
             }, ${selectedDateInfo["year"]}`}
@@ -194,10 +198,10 @@ const AddEntry: React.FC<Iprops> = ({
             value={duration}
             onChange={handleDurationChange}
             type="text"
-            className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm mt-2 ml-1 text-sm"
+            className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm"
           />
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center mt-2">
           {billable ? (
             <img
               onClick={() => {
@@ -220,7 +224,7 @@ const AddEntry: React.FC<Iprops> = ({
           <h4>Billable</h4>
         </div>
       </div>
-      <div className="mr-4 my-2 ml-14">
+      <div className="max-w-min">
         {editEntryId === 0 ? (
           <button
             onClick={handleSave}
