@@ -34,7 +34,8 @@ const GenerateInvoices = () => {
   const [discount, setDiscount] = useState<any>(0);
   const [tax, setTax] = useState<any>(0);
   const [issueDate, setIssueDate] = useState(new Date());
-  const [dueDate, setDueDate] = useState(new Date());
+  const today = new Date();
+  const [dueDate, setDueDate] = useState(today.setMonth(issueDate.getMonth() + 1));
   const [selectedOption, setSelectedOption] = useState<any>([]);
 
   useEffect(() => {

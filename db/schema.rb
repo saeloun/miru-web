@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_14_122335) do
+ActiveRecord::Schema.define(version: 2022_04_25_074402) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -54,6 +54,7 @@ unique: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "discarded_at", precision: 6
+    t.string "stripe_id"
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
     t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true
@@ -164,7 +165,7 @@ unique: true
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
     t.float "duration", null: false
-    t.text "note", default: ""
+    t.text "note"
     t.date "work_date", null: false
     t.integer "bill_status", null: false
     t.datetime "created_at", precision: 6, null: false
