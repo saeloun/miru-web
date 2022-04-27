@@ -10,4 +10,7 @@
     ],
     "editor.tabSize": 2,
     "javascript.updateImportsOnFileMove.enabled": "never",
+    "cSpell.words": [
+        "autosize"
+    ],
 }
