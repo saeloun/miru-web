@@ -122,7 +122,6 @@ group :development, :test do
 
   # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
   gem "bullet"
-
 end
 
 group :development do
@@ -177,4 +176,3 @@ gem "stripe"
 
 # Background job processing adapter
 gem "sidekiq"
-

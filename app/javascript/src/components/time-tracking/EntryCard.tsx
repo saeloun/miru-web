@@ -23,14 +23,14 @@ const EntryCard: React.FC<props> = ({
   setEditEntryId,
   bill_status
 }) => (
-  <div className="week-card flex justify-between items-center shadow-2xl w-full p-6 mt-10 rounded-lg">
+  <div className="week-card flex justify-between items-center shadow-2xl w-full p-4 mt-10 rounded-lg">
     <div>
       <div className="flex">
         <p className="text-lg">{client}</p>
         <p className="text-lg mx-2">•</p>
         <p className="text-lg">{project}</p>
       </div>
-      <p className="text-sm text-miru-dark-purple-400 max-w-xs break-words whitespace-pre-wrap">
+      <p className="max-h-32 w-129 overflow-scroll text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
         {note}
       </p>
     </div>

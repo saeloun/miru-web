@@ -12,7 +12,9 @@ export const Project = ({
   isBillable,
   isAdminUser,
   setShowProjectModal,
-  setEditProjectData
+  setEditProjectData,
+  setShowDeleteDialog,
+  setDeleteProjectData
 }: IProject) => {
   const [grayColor, setGrayColor] = React.useState<string>("");
   const [isHover, setHover] = React.useState<boolean>(false);
@@ -60,7 +62,14 @@ export const Project = ({
         }
       </td>
       <td className="table__cell px-3 py-3">
-        {isAdminUser && isHover && <button>
+        {isAdminUser && isHover && <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowDeleteDialog(true);
+            setDeleteProjectData({ id,name });
+          }}
+        >
           <Trash size={16} color="#5B34EA" />
         </button>
         }
