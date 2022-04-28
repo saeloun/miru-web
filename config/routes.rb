@@ -62,8 +62,8 @@ Rails.application.routes.draw do
   get "payments/*path", to: "payments#index", via: :all
   get "payments", to: "payments#index"
 
-  get "payments_setting/*path", to: "payments_setting#index", via: :all
-  get "payments_setting", to: "payments_setting#index"
+  get "payment_settings/*path", to: "payment_settings#index", via: :all
+  get "payment_settings", to: "payment_settings#index"
 
   get "subscriptions/*path", to: "subscriptions#index", via: :all
   resources :subscriptions, only: [:index]

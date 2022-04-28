@@ -16,7 +16,7 @@ RSpec.describe PaymentSettingPolicy, type: :policy do
 
     permissions :index? do
       it "is permitted to access index" do
-        expect(subject).to permit(user, :payments_setting)
+        expect(subject).to permit(user, :payment_settings)
       end
     end
   end
@@ -29,7 +29,7 @@ RSpec.describe PaymentSettingPolicy, type: :policy do
 
     permissions :index? do
       it "is not permitted to access index" do
-        expect(subject).not_to permit(user, :payments_setting)
+        expect(subject).not_to permit(user, :payment_settings)
       end
     end
   end

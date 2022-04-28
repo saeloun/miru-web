@@ -11,7 +11,7 @@ RSpec.describe "PaymentsSetting#index", type: :request do
       create(:company_user, company:, user:)
       user.add_role :admin, company
       sign_in user
-      send_request :get, payments_setting_path
+      send_request :get, payment_settings_path
     end
 
     it "they should be able to visit payments setting page successfully" do
@@ -24,7 +24,7 @@ RSpec.describe "PaymentsSetting#index", type: :request do
       create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :get, payments_setting_path
+      send_request :get, payment_settings_path
     end
 
     it "they should not be permitted to visit index page" do
@@ -35,7 +35,7 @@ RSpec.describe "PaymentsSetting#index", type: :request do
 
   context "when unauthenticated" do
     it "is not be permitted to view the payments" do
-      send_request :get, payments_setting_path
+      send_request :get, payment_settings_path
       expect(response).to have_http_status(:redirect)
       expect(flash["alert"]).to eq("You need to sign in or sign up before continuing.")
     end
