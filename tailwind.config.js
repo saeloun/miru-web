@@ -38,7 +38,7 @@ module.exports = {
         86: "342px",
       },
       width: {
-        "fit": "fit-content"
+        fit: "fit-content",
       },
       colors: {
         "miru-black": {
@@ -125,6 +125,7 @@ module.exports = {
         50: "12.5rem",
         104: "26rem",
         112: "28rem",
+        129: "33rem",
         138: "34.5rem",
       },
       padding: {
@@ -143,7 +144,7 @@ module.exports = {
   variants: {
     extend: {
       display: ["group-hover"],
-    }
+    },
   },
   plugins: [],
 };

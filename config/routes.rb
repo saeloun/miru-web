@@ -38,8 +38,17 @@ Rails.application.routes.draw do
   resources :team, only: [:index, :update, :destroy, :edit]
 
   resources :reports, only: [:index]
-
+  resources :invoices, only: [:show]
   resources :workspaces, only: [:update]
+
+  resources :invoices, only: [], module: :invoices do
+    resources :payments, only: [:new] do
+      collection do
+        get :success
+        get :cancel
+      end
+    end
+  end
 
   get "clients/*path", to: "clients#index", via: :all
   get "clients", to: "clients#index"
@@ -52,6 +61,9 @@ Rails.application.routes.draw do
 
   get "payments/*path", to: "payments#index", via: :all
   get "payments", to: "payments#index"
+
+  get "subscriptions/*path", to: "subscriptions#index", via: :all
+  resources :subscriptions, only: [:index]
 
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
