@@ -36,7 +36,7 @@ RSpec.describe "Client#destroy", type: :request do
       it "responds with client not found error" do
         expect(response).to have_http_status(:not_found)
         expect(JSON.parse(response.body, { object_class: OpenStruct }).errors)
-          .to eq("Couldn't find Client with 'id'=#{client_id}")
+          .to include("Couldn't find Client with 'id'=#{client_id}")
       end
     end
   end
