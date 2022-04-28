@@ -43,14 +43,14 @@ class TimesheetEntry < ApplicationRecord
 
   def formatted_entry
     {
-      id: id,
+      id:,
       project: project.name,
-      project_id: project_id,
+      project_id:,
       client: project.client.name,
-      duration: duration,
-      note: note,
-      work_date: work_date,
-      bill_status: bill_status,
+      duration:,
+      note:,
+      work_date:,
+      bill_status:,
       team_member: user.full_name
     }
   end
