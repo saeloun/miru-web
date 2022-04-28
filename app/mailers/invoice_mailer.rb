@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class InvoiceMailer < ApplicationMailer
+  include InvoicesHelper
   include ActionController::MimeResponds
 
   after_action -> { @invoice.sent! }
