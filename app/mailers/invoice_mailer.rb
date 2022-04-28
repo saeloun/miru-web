@@ -16,7 +16,8 @@ class InvoiceMailer < ApplicationMailer
       template: "invoices/pdf",
       layout: "layouts/pdf",
       locals: {
-        invoice: @invoice
+        invoice: @invoice,
+        company_logo: @invoice.client.company.logo.attached? ? polymorphic_url(@invoice.client.company.logo) : ""
       })
 
     style_tag_options = [
