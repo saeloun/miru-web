@@ -36,6 +36,14 @@ class TimesheetEntry < ApplicationRecord
   validates :duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
 
   scope :in_workspace, -> (company) { where(project_id: company&.project_ids) }
+  scope :within_date_range, -> (from, to) { where(work_date: from..to) if from.present? && to.present? }
+  scope :with_client, -> (clients) { where(
+    project_id: clients.map { |client|
+      client.project_ids
+    } .flatten) if clients.present?
+}
+  scope :with_bill_status, -> (status) { where(bill_status: status) if status.present? }
+  scope :with_user_id, -> (user_id) { where(user_id:) if user_id.present? }
 
   def self.during(from, to)
     where(work_date: from..to).order(work_date: :desc)
