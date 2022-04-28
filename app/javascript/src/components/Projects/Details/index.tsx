@@ -8,6 +8,8 @@ import Table from "common/Table";
 import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, UsersThree, Trash } from "phosphor-react";
 import EditMembersList from "./EditMembersList";
 import { unmapper } from "../../../mapper/project.mapper";
+import AddEditProject from "../Modals/AddEditProject";
+import DeleteProject from "../Modals/DeleteProject";
 
 const getTableData = (project) => {
   if (project) {
@@ -30,6 +32,9 @@ const ProjectDetails = () => {
   const [project, setProject] = React.useState<any>();
   const [showAddMemberDialog, setShowAddMemberDialog] = React.useState<boolean>(false);
   const [isHeaderMenuVisible, setHeaderMenuVisibility] = React.useState<boolean>(false);
+  const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
+  const [editProjectData, setEditProjectData] = React.useState<any>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
   const params = useParams();
   const navigate = useNavigate();
   const projectId = parseInt(params.projectId);
@@ -101,6 +106,13 @@ const ProjectDetails = () => {
     setShowAddMemberDialog(false);
   };
 
+  const handleEditProject = () => {
+    setShowProjectModal(true);
+    setEditProjectData({ isBillable: project.is_billable,
+      name: project.name,
+      client: project.client });
+  };
+
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
 
   return (
@@ -114,9 +126,11 @@ const ProjectDetails = () => {
             <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
               {project?.name}
             </h2>
+            {project?.is_billable &&
             <span className="rounded-xl text-xs self-center  tracking-widest font-semibold px-1 bg-miru-han-purple-100 text-miru-han-purple-1000">
                 BILLABLE
             </span>
+            }
           </div>
           <div className="relative h-8">
             <button onClick = {handleMenuVisibility} className={`menuButton__button ${menuBackground}`}>
@@ -124,13 +138,20 @@ const ProjectDetails = () => {
             </button>
             { isHeaderMenuVisible && <ul className="menuButton__wrapper">
               <li>
-                <button className="menuButton__list-item">
+                <button
+                  onClick={()=>document.location.assign(window.location.origin+"/invoices/generate")}
+                  className="menuButton__list-item">
                   <Receipt size={16} color="#5B34EA" weight="bold" />
                   <span className="ml-3">Generate Invoice</span>
                 </button>
               </li>
               <li>
-                <button className="menuButton__list-item">
+                <button
+                  onClick={()=>{
+                    handleEditProject();
+                    setHeaderMenuVisibility(false);
+                  }}
+                  className="menuButton__list-item">
                   <Pencil size={16} color="#5b34ea" weight="bold" />
                   <span className="ml-3">Edit Project Details</span>
                 </button>
@@ -143,7 +164,9 @@ const ProjectDetails = () => {
                 </button>
               </li>
               <li>
-                <button className="menuButton__list-item text-miru-red-400">
+                <button
+                  onClick={()=>setShowDeleteDialog(true)}
+                  className="menuButton__list-item text-miru-red-400">
                   <Trash size={16} color="#E04646" weight="bold" />
                   <span className="ml-3">Delete Project</span>
                 </button>
@@ -198,6 +221,18 @@ const ProjectDetails = () => {
           projectId={projectId}
         />
       ) : null}
+      {showProjectModal && <AddEditProject
+        editProjectData={editProjectData}
+        setEditProjectData={setEditProjectData}
+        setShowProjectModal={setShowProjectModal}/>
+      }
+      { showDeleteDialog &&
+        <DeleteProject
+          setShowDeleteDialog={setShowDeleteDialog}
+          project={project}
+
+        />
+      }
     </>
   );
 
