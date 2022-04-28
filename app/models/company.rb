@@ -99,7 +99,7 @@ class Company < ApplicationRecord
           .joins(:client)
           .joins("LEFT OUTER JOIN timesheet_entries ON timesheet_entries.user_id = project_members.user_id
                       AND timesheet_entries.project_id = projects.id ")
-          .where(timesheet_entries: { user_id: user_filter })
+          .where(project_members: { user_id: user_filter })
           .select("projects.id as id,
                        projects.name as project_name,
                        projects.billable as is_billable,
@@ -114,7 +114,7 @@ class Company < ApplicationRecord
         .joins(:client)
         .joins("LEFT OUTER JOIN timesheet_entries ON timesheet_entries.user_id = project_members.user_id
                       AND timesheet_entries.project_id = projects.id ")
-        .where(timesheet_entries: { user_id: user_filter }, client_id: client_filter)
+        .where(project_members: { user_id: user_filter }, client_id: client_filter)
         .select("projects.id as id,
                        projects.name as project_name,
                        projects.billable as is_billable,
