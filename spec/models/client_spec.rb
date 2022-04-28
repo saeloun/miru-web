@@ -19,6 +19,23 @@ RSpec.describe Client, type: :model do
     it { is_expected.to belong_to(:company) }
   end
 
+  describe "Scopes" do
+    describe "default scope" do
+      let(:company) { create(:company) }
+
+      before do
+        create_list(:client, 2, company:)
+      end
+
+      it "when a client is discarded default scope won't query discarded client record" do
+        expect(company.clients.count).to eq(2)
+        company.clients.first.update(discarded_at: Time.now)
+        expect(company.clients.count).to eq(1)
+        expect(company.clients.unscoped.count).to eq(2)
+      end
+    end
+  end
+
   describe "Public methods" do
     describe "#total_hours_logged" do
       let(:company) { create(:company) }
