@@ -31,7 +31,7 @@ jobs:
       - name: Audit gems
         run: |
           bundle exec bundle-audit --update
-          ruby-audit check
+          bundle exec ruby-audit check
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
