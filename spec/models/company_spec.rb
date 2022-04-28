@@ -50,7 +50,9 @@ RSpec.describe Company, type: :model do
               minutes_spent: client.total_hours_logged(time_frame)
             }
           end
-          expect(company.client_details(time_frame)).to eq(result)
+          client_details = company.client_details(time_frame)
+          expect(client_details).to include(result[0])
+          expect(client_details).to include(result[1])
         end
       end
 
@@ -65,7 +67,9 @@ RSpec.describe Company, type: :model do
               phone: client.phone, address: client.address, minutes_spent: client.total_hours_logged(time_frame)
             }
           end
-          expect(company.client_details(time_frame)).to eq(result)
+          client_details = company.client_details(time_frame)
+          expect(client_details).to include(result[0])
+          expect(client_details).to include(result[1])
         end
       end
 
@@ -79,7 +83,9 @@ RSpec.describe Company, type: :model do
               minutes_spent: client.total_hours_logged(time_frame)
             }
           end
-          expect(company.client_details(time_frame)).to eq(result)
+          client_details = company.client_details(time_frame)
+          expect(client_details).to include(result[0])
+          expect(client_details).to include(result[1])
         end
       end
 
@@ -93,7 +99,9 @@ RSpec.describe Company, type: :model do
               minutes_spent: client.total_hours_logged(time_frame)
             }
           end
-          expect(company.client_details(time_frame)).to eq(result)
+          client_details = company.client_details(time_frame)
+          expect(client_details).to include(result[0])
+          expect(client_details).to include(result[1])
         end
       end
     end
