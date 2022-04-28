@@ -147,7 +147,7 @@ const Clients = ({ isAdminUser }) => {
                   hasRowIcons={true}
                   tableHeader={tableHeader}
                   tableRowArray={tableData}
-                  rowOnClick={handleRowClick}
+                  rowOnClick={isAdminUser && handleRowClick}
                 /> }
               </div>
             </div>
