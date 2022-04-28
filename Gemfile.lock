@@ -115,6 +115,9 @@ GEM
     bullet (7.0.1)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
+    bundler-audit (0.9.0.1)
+      bundler (>= 1.2.0, < 3)
+      thor (~> 1.0)
     capybara (3.36.0)
       addressable
       matrix
@@ -394,6 +397,8 @@ GEM
     ruby-vips (2.1.4)
       ffi (~> 1.12)
     ruby2_keywords (0.0.5)
+    ruby_audit (2.1.0)
+      bundler-audit (~> 0.9.0)
     rubyzip (2.3.2)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
@@ -479,6 +484,7 @@ DEPENDENCIES
   aws-sdk-s3
   bootsnap (>= 1.4.4)
   bullet
+  bundler-audit
   capybara (>= 3.26)
   countries
   data_migrate (~> 8.0.0.rc2)
@@ -516,6 +522,7 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   rubocop-rspec (~> 2.8)
+  ruby_audit
   sass-rails
   selenium-webdriver (>= 4.0.0)
   shoulda-callback-matchers (~> 1.1.1)

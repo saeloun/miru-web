@@ -122,6 +122,10 @@ group :development, :test do
 
   # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
   gem "bullet"
+
+  # For finding the vulnerabilities in the gems
+  gem "bundler-audit", require: false
+  gem "ruby_audit", require: false
 end
 
 group :development do
