@@ -11,6 +11,8 @@ class InvoiceMailer < ApplicationMailer
     subject = params[:subject]
     @message = params[:message]
 
+    serialized_invoice = serializer(@invoice.invoice_line_items)
+
     controller = ActionController::Base.new
     html = controller.render_to_string(
       template: "invoices/pdf",
@@ -21,9 +23,9 @@ class InvoiceMailer < ApplicationMailer
                         polymorphic_url(@invoice.client.company.logo) :
                         "",
         client: @invoice.client,
-        invoice_line_items: serializer(@invoice.invoice_line_items)[:invoice_line_items],
-        sub_total: serializer(@invoice.invoice_line_items)[:sub_total],
-        total: serializer(@invoice.invoice_line_items)[:total]
+        invoice_line_items: serialized_invoice[:invoice_line_items],
+        sub_total: serialized_invoice[:sub_total],
+        total: serialized_invoice[:total]
       }
       )
 
