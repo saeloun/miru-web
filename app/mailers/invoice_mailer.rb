@@ -30,6 +30,6 @@ class InvoiceMailer < ApplicationMailer
     pdf = Grover.new(html).to_pdf
     attachments["invoice_#{@invoice.invoice_number}.pdf"] = pdf
 
-    mail(to: recipients, subject:)
+    mail(to: recipients, subject:, reply_to: "no-reply@miru.com")
   end
 end
