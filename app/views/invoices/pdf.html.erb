@@ -3,7 +3,6 @@ html {
   -webkit-print-color-adjust: exact;
 }
 </style>
-<%sub_total = 0%>
 <div class="main">
   <div class="flex justify-between border-b-2 border-miru-gray-400 p-10 h-40">
     <div class="flex">
@@ -13,16 +12,16 @@ html {
 
       <div class="mt-2">
         <p class="font-bold text-3xl text-miru-dark-purple-1000">
-          <%=invoice.client.company.name%>
+          <%=invoice.company.name%>
         </p>
         <p class="mt-1 font-normal text-base text-miru-dark-purple-1000">
-          <%=invoice.client.company.business_phone%>
+          <%=invoice.company.business_phone%>
         </p>
       </div>
     </div>
     <div class="mt-2 font-normal text-base text-right text-miru-dark-purple-1000 w-36">
-      <p><%=invoice.client.company.address%></p>
-      <p><%=invoice.client.company.country%></p>
+      <p><%=invoice.company.address%></p>
+      <p><%=invoice.company.country%></p>
     </div>
   </div>
 
@@ -31,10 +30,10 @@ html {
       <p class="font-normal text-xs text-miru-dark-purple-1000 flex">Billed to</p>
       <div>
         <p class="font-bold text-base text-miru-dark-purple-1000">
-          <%=invoice.client.name%>
+          <%=client.name%>
         </p>
         <p class="font-normal text-xs text-miru-dark-purple-400 w-52">
-          <%=invoice.client.address%><br><%=invoice.client.phone%>
+          <%=client.address%><br><%=client.phone%>
         </p>
       </div>
     </div>
@@ -61,7 +60,7 @@ html {
     <div>
       <p class="font-normal text-xs text-miru-dark-purple-1000 text-right">Amount</p>
       <p class="font-normal text-4xl text-miru-dark-purple-1000 mt-1">
-        <%="#{invoice.client.company.base_currency} #{invoice["amount"]}"%>
+        <%="#{invoice.company.base_currency} #{invoice["amount"]}"%>
       </p>
     </div>
   </div>
@@ -78,22 +77,21 @@ html {
         </tr>
       </thead>
       <tbody class="w-full">
-        <%invoice.invoice_line_items.each do |item| %>
+        <%invoice_line_items.each do |item| %>
           <tr>
-            <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left "><%=item["name"]%></td>
-            <td class="border-b-2 border-miru-gray-200 py-3 font-normal text-base text-miru-dark-purple-1000 text-left"><%=item["date"]%></td>
+            <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left "><%=item[:name]%></td>
+            <td class="border-b-2 border-miru-gray-200 py-3 font-normal text-base text-miru-dark-purple-1000 text-left"><%=item[:date]%></td>
             <td class="border-b-2 border-miru-gray-200 px-1 pl-2 py-3 font-normal text-base text-miru-dark-purple-1000 text-left ">
-              <%=item["description"]%>
+              <%=item[:description]%>
             </td>
             <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-              <%=item["rate"]%>
+              <%=item[:rate]%>
             </td>
             <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-              <%=item["quantity"]/60%>
+              <%=item[:quantity]%>
             </td>
             <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-            <%sub_total += (item["quantity"]/60) * item["rate"].to_i%>
-              <%=(item["quantity"]/60) * item["rate"].to_i %>
+              <%=item[:line_total]%>
             </td>
         </tr>
         <% end %>
@@ -114,23 +112,23 @@ html {
         <tr>
           <td class="pt-4 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Tax</td>
           <td class="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">
-            <%="#{invoice.client.company.base_currency} #{invoice["tax"]}"%>
+            <%="#{invoice.company.base_currency} #{invoice["tax"]}"%>
           </td>
         </tr>
         <tr>
           <td class="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Total</td>
           <td class="font-bold text-base text-miru-dark-purple-1000 text-right">
-            <%="#{invoice.client.company.base_currency} #{(sub_total + invoice["tax"].to_i - invoice["discount"].to_i)}"%>
+            <%="#{invoice.company.base_currency} #{total}"%>
           </td>
         </tr>
         <tr>
           <td class="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Amount Paid</td>
-          <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%="#{invoice.client.company.base_currency} #{invoice["amount_paid"]}"%></td>
+          <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%="#{invoice.company.base_currency} #{invoice["amount_paid"]}"%></td>
         </tr>
         <tr>
           <td class="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Amount Due</td>
           <td class="font-bold text-base text-miru-dark-purple-1000 text-right">
-            <%="#{invoice.client.company.base_currency} #{invoice["amount_due"]}"%>
+            <%="#{invoice.company.base_currency} #{invoice["amount_due"]}"%>
           </td>
         </tr>
       </tbody>

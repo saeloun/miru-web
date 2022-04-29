@@ -2,7 +2,6 @@
 
 class InvoiceMailer < ApplicationMailer
   include InvoicesHelper
-  include ActionController::MimeResponds
 
   after_action -> { @invoice.sent! }
 
@@ -18,14 +17,18 @@ class InvoiceMailer < ApplicationMailer
       layout: "layouts/pdf",
       locals: {
         invoice: @invoice,
-        company_logo: @invoice.client.company.logo.attached? ? polymorphic_url(@invoice.client.company.logo) : ""
-      })
+        company_logo: @invoice.client.company.logo.attached? ?
+                        polymorphic_url(@invoice.client.company.logo) :
+                        "",
+        client: @invoice.client,
+        invoice_line_items: serializer(@invoice.invoice_line_items)[:invoice_line_items],
+        sub_total: serializer(@invoice.invoice_line_items)[:sub_total],
+        total: serializer(@invoice.invoice_line_items)[:total]
+      }
+      )
 
-    style_tag_options = [
-      { content: "h1{background-color: red}" }
-    ]
-    pdf = Grover.new(html, style_tag_options:).to_pdf
-    attachments["invoice_#{@invoice.id}.pdf"] = pdf
+    pdf = Grover.new(html).to_pdf
+    attachments["invoice_#{@invoice.invoice_number}.pdf"] = pdf
 
     mail(to: recipients, subject:)
   end
