@@ -45,7 +45,7 @@ module InvoicePayment
                   name: invoice.invoice_number,
                   description:
                 },
-                unit_amount: invoice.amount.to_i
+                unit_amount: calculate_amount
               },
               quantity: 1
             }],
@@ -54,6 +54,15 @@ module InvoicePayment
             success_url:,
             cancel_url:
           })
+      end
+
+      def calculate_amount
+        zero_decimal_currencies = %w[BIF CLP DJF GNF JPY KMF KRW MGA PYG RWF UGX VND VUV XAF XOF XPF]
+        if zero_decimal_currencies.include?(currency)
+          amount = invoice.amount.to_i
+        else
+          amount = (invoice.amount * 100).to_i
+        end
       end
   end
 end
