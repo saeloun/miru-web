@@ -17,7 +17,7 @@ import NewClient from "../Modals/NewClient";
 const getTableData = (clients) => {
   if (clients) {
     return clients.map((client) => {
-      const hours = client.minutes/60;
+      const hours = client.minutes / 60;
       return {
         col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
         col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
@@ -107,9 +107,9 @@ const Clients = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer />
-      <Header setnewClient={setnewClient} />
+      <Header isAdminUser={isAdminUser} setnewClient={setnewClient} />
       <div>
-        { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
+        {isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
           <div className="flex justify-end">
             <select onChange={handleSelectChange} className="px-3
                 py-1.5
@@ -123,32 +123,32 @@ const Clients = ({ isAdminUser }) => {
                 focus:outline-none
                 text-miru-han-purple-1000">
               <option className="text-miru-dark-purple-600" value="week">
-                    THIS WEEK
+                THIS WEEK
               </option>
               <option className="text-miru-dark-purple-600" value="month">
-                    This MONTH
+                This MONTH
               </option>
               <option className="text-miru-dark-purple-600" value="year">
-                    THIS YEAR
+                THIS YEAR
               </option>
             </select>
           </div>
           {clientData && <ChartBar data={clientData} totalMinutes={totalMinutes} />}
-          <AmountBoxContainer amountBox = {amountBox} />
+          <AmountBoxContainer amountBox={amountBox} />
         </div>
         }
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
               <div className="overflow-hidden">
-                { clientData && <Table
+                {clientData && <Table
                   handleEditClick={handleEditClick}
                   handleDeleteClick={handleDeleteClick}
-                  hasRowIcons={true}
+                  hasRowIcons={isAdminUser}
                   tableHeader={tableHeader}
                   tableRowArray={tableData}
-                  rowOnClick={handleRowClick}
-                /> }
+                  rowOnClick={isAdminUser ? handleRowClick : () => { }}// eslint-disable-line
+                />}
               </div>
             </div>
           </div>
@@ -169,8 +169,8 @@ const Clients = ({ isAdminUser }) => {
       {newClient && (
         <NewClient
           setnewClient={setnewClient}
-          setClientData = {setClientData}
-          clientData = {clientData}
+          setClientData={setClientData}
+          clientData={clientData}
         />
       )}
     </>

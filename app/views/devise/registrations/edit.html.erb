@@ -36,6 +36,13 @@
               </h2>
             </div>
           <% end %>
+          <% if policy(:payment_setting).index? %>
+            <div class="flex-1 min-w-0">
+              <h2 class="<%= request.path == "/payment_settings" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
+                <%= link_to t('settings.payment_setting').upcase, payment_settings_path %>
+              </h2>
+            </div>
+          <% end %>
         </div>
 
         <div class="bg-miru-gray-100 p-10">
