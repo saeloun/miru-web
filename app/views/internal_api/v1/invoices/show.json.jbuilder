@@ -3,7 +3,7 @@
 json.key_format! camelize: :lower
 json.deep_format_keys!
 
-json.partial! "internal_api/v1/partial/invoice", locals: { invoice: invoice }
+json.partial! "internal_api/v1/partial/invoice", locals: { invoice: }
 json.client do
   json.partial! "internal_api/v1/partial/client", locals: { client: invoice.client }
 end
