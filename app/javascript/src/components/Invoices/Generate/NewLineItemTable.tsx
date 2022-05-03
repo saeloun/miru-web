@@ -2,9 +2,18 @@ import React, { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { DropdownHeader } from "./CustomComponents";
 
-const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew, lineItems, loadMoreItems, totalLineItems, pageNumber, selectedOption, setSelectedOption }) => {
+const NewLineItemTable = ({
+  showItemInputs,
+  setShowItemInputs,
+  addNew, setAddNew,
+  lineItems,
+  loadMoreItems,
+  totalLineItems,
+  pageNumber,
+  selectedOption,
+  setSelectedOption,
+  setMultiLineItemModal }) => {
 
-  const [showMultiLineModal, setShowMultilineModal] = useState<boolean>(false);
   const hasMoreItems = lineItems.length === totalLineItems;
   const selectRowId = (items) => {
     const option = { ...items, lineTotal: (Number(items.qty) / 60 * Number(items.rate)) };
@@ -14,7 +23,7 @@ const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew
 
   return (
     <div>
-      <DropdownHeader setShowMultilineModal={setShowMultilineModal} />
+      <DropdownHeader setShowMultilineModal={setMultiLineItemModal} />
       <div>
         <button onClick={() => {
           setShowItemInputs(!showItemInputs);
@@ -38,8 +47,8 @@ const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew
             </p>
           }
         >
-          {lineItems.map(items => (
-            <div onClick={() => { selectRowId(items); }} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100">
+          {lineItems.map((items, index) => (
+            <div key={index} onClick={() => { selectRowId(items); }} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100">
               <span className="font-medium text-base text-miru-dark-purple-1000 text-left">
                 {items.first_name} {items.last_name}
               </span>

@@ -6,7 +6,7 @@ import NewLineItemRow from "./NewLineItemRow";
 import NewLineItemTable from "./NewLineItemTable";
 
 import useOutsideClick from "../../../helpers/outsideClick";
-
+import MultipleEntriesModal from "../MultipleEntriesModal";
 const fetchNewLineItems = async (
   selectedClient,
   setLineItems,
@@ -19,23 +19,29 @@ const fetchNewLineItems = async (
   if (selectedClient) {
     let selectedEntriesString = "";
     selectedEntries.forEach((entries) => {
-      selectedEntriesString += `&selected_entries[]=${entries.id}`;
+      selectedEntriesString += `&selected_entries[]=${entries.timesheet_entry_id}`;
     });
 
     await generateInvoice.getLineItems(selectedClient.value, pageNumber, selectedEntriesString).then(async res => {
       await setTotalLineItems(res.data.pagy.count);
-      await setPageNumber(pageNumber+1);
+      await setPageNumber(pageNumber + 1);
       await setLineItems([...res.data.new_line_item_entries, ...lineItems]);
     });
   }
 };
 
-const InvoiceTable = ({ selectedClient, setSelectedOption, selectedOption, lineItems, setLineItems }) => {
+const InvoiceTable = ({
+  selectedClient,
+  setSelectedOption,
+  selectedOption,
+  lineItems,
+  setLineItems }) => {
 
   const [addNew, setAddNew] = useState<boolean>(false);
   const [showItemInputs, setShowItemInputs] = useState<boolean>(false);
   const [totalLineItems, setTotalLineItems] = useState<number>(null);
   const [pageNumber, setPageNumber] = useState<number>(1);
+  const [showMultiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
@@ -61,12 +67,13 @@ const InvoiceTable = ({ selectedClient, setSelectedOption, selectedOption, lineI
         setShowItemInputs={setShowItemInputs}
         addNew={addNew}
         setAddNew={setAddNew}
-        lineItems= {lineItems}
+        lineItems={lineItems}
         loadMoreItems={loadMoreItems}
-        totalLineItems= {totalLineItems}
-        pageNumber = {pageNumber}
+        totalLineItems={totalLineItems}
+        pageNumber={pageNumber}
         setSelectedOption={setSelectedOption}
         selectedOption={selectedOption}
+        setMultiLineItemModal={setMultiLineItemModal}
       />;
     }
     return (
@@ -133,6 +140,14 @@ const InvoiceTable = ({ selectedClient, setSelectedOption, selectedOption, lineI
             ))}
         </tbody>
       </table>
+      <div>
+        {showMultiLineItemModal && <MultipleEntriesModal
+          selectedClient={selectedClient}
+          setSelectedOption={setSelectedOption}
+          selectedOption={selectedOption}
+          setMultiLineItemModal={setMultiLineItemModal}
+        />}
+      </div>
     </React.Fragment>
   );
 };
