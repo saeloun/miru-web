@@ -12,7 +12,7 @@ const Invoice = () => {
   const [status, setStatus] = React.useState<InvoiceStatus>(
     InvoiceStatus.IDLE
   );
-  const [invoice, setInvoice] = useState<any>();
+  const [invoice, setInvoice] = useState<any>(null);
 
   const fetchInvoice = async () => {
     try {
