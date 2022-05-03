@@ -38,7 +38,6 @@ Rails.application.routes.draw do
   resources :team, only: [:index, :update, :destroy, :edit]
 
   resources :reports, only: [:index]
-  resources :invoices, only: [:show]
   resources :workspaces, only: [:update]
 
   resources :invoices, only: [], module: :invoices do

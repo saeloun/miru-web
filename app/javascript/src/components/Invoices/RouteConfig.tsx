@@ -17,6 +17,7 @@ const RouteConfig = () => (
       <Route path="invoices">
         <Route index element={<List />} />
         <Route path="generate" element={<Generate />} />
+        <Route path=":id" element={<Invoice />} />
         <Route path="*" element={<ErrorPage />} />
       </Route>
     </Routes>
