@@ -12,6 +12,7 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  discarded_at :datetime
+#  stripe_id    :string
 #
 # Indexes
 #
@@ -33,6 +34,8 @@ class Client < ApplicationRecord
   validates :name, :email, presence: true
   validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
   after_discard :discard_projects
+
+  default_scope { where(discarded_at: nil) }
 
   def new_line_item_entries(selected_entries)
     timesheet_entries.where(bill_status: :unbilled)
@@ -61,7 +64,7 @@ class Client < ApplicationRecord
     from, to = week_month_year(time_frame)
     projects.kept.map do | project |
       {
-        name: project.name, team: project.project_member_full_names,
+        id: project.id, name: project.name, team: project.project_member_full_names,
         minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
       }
     end
@@ -101,6 +104,22 @@ class Client < ApplicationRecord
       outstanding_amount:,
       currency:
     }
+  end
+
+  def register_on_stripe!
+    self.transaction do
+      customer = Stripe::Customer.create(
+        {
+          email:,
+          name:,
+          phone:,
+          metadata: {
+            platform_id: id
+          }
+        })
+
+      update!(stripe_id: customer.id)
+    end
   end
 
   private

@@ -27,9 +27,12 @@ const InvoiceDetails = ({
 
   const getIssuedDate = dayjs(issueDate).format("DD.MM.YYYY");
   const getDueDate = dayjs(dueDate).format("DD.MM.YYYY");
+
   const handleDatePickerChange = (date) => {
     setIssueDate(date);
     setShowDateOfIssuePicker(false);
+    const newDueDate = new Date(date);
+    setDueDate(new Date(newDueDate.setMonth(newDueDate.getMonth() + 1)));
   };
 
   const handleDueDatePicker = (date) => {

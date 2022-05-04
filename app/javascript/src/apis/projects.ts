@@ -10,6 +10,8 @@ const show = async id => axios.get(`${path}/${id}`);
 
 const update = async (id, payload) => axios.patch(`${path}/${id}`, payload);
 
-const projectApi = { get, show, create, update };
+const destroy = async id => axios.delete(`${path}/${id}`);
+
+const projectApi = { get, show, create, update, destroy };
 
 export default projectApi;
