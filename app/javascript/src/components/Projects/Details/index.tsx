@@ -52,15 +52,11 @@ const getTableData = (project) => {
 
 const ProjectDetails = () => {
   const [project, setProject] = React.useState<any>();
-  const [showAddMemberDialog, setShowAddMemberDialog] =
-    React.useState<boolean>(false);
-  const [isHeaderMenuVisible, setHeaderMenuVisibility] =
-    React.useState<boolean>(false);
-  const [showProjectModal, setShowProjectModal] =
-    React.useState<boolean>(false);
+  const [showAddMemberDialog, setShowAddMemberDialog] = React.useState<boolean>(false);
+  const [isHeaderMenuVisible, setHeaderMenuVisibility] = React.useState<boolean>(false);
+  const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
   const [editProjectData, setEditProjectData] = React.useState<any>(null);
-  const [showDeleteDialog, setShowDeleteDialog] =
-    React.useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
   const params = useParams();
   const navigate = useNavigate();
   const projectId = parseInt(params.projectId);
