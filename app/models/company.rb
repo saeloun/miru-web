@@ -36,8 +36,24 @@ class Company < ApplicationRecord
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
 
-  def project_list_after_filter(client_filter = nil, user_filter = nil, search)
-    query = project_list(client_filter, user_filter).ransack({ name_or_client_name_cont: search })
+  def project_list(client_id = nil, user_id = nil, billable = nil, search)
+    db_query = projects.kept.left_outer_joins(:project_members)
+      .joins("LEFT OUTER JOIN users ON users.id = project_members.user_id")
+      .joins(:client)
+      .joins("LEFT OUTER JOIN timesheet_entries ON timesheet_entries.user_id = project_members.user_id
+                       AND timesheet_entries.project_id = projects.id ")
+    db_query = db_query.where(project_members: { user_id: }) if user_id.present?
+    db_query = db_query.where(client_id:) if client_id.present?
+    db_query = db_query.where(projects: { billable: }) if billable.present?
+    project_list = db_query.select(
+      "projects.id as id,
+                                    projects.name as project_name,
+                                    projects.billable as is_billable,
+                                    clients.name as client_name,
+                                    users.first_name as first_name,
+                                    users.last_name as last_name,
+                                    timesheet_entries.duration as duration")
+    query = project_list.ransack({ name_or_client_name_or_is_billable_cont: search })
     project_list = query.result
     project_ids = project_list.map { |project| project.id }.uniq
     project_ids.map do |id|
@@ -60,68 +76,6 @@ class Company < ApplicationRecord
         minutes_spent: duration_array.compact.sum,
         team_member: team_member_array.compact.uniq
       }
-    end
-  end
-
-  def project_list(client_filter, user_filter)
-    if client_filter.nil? && user_filter.nil?
-      return projects.kept.left_outer_joins(:project_members)
-          .joins("LEFT OUTER JOIN users ON users.id = project_members.user_id")
-          .joins(:client)
-          .joins("LEFT OUTER JOIN timesheet_entries ON timesheet_entries.user_id = project_members.user_id
-                      AND timesheet_entries.project_id = projects.id ")
-          .select("projects.id as id,
-                       projects.name as project_name,
-                       projects.billable as is_billable,
-                       clients.name as client_name,
-                       users.first_name as first_name,
-                       users.last_name as last_name,
-                       timesheet_entries.duration as duration")
-    end
-    if !client_filter.nil? && user_filter.nil?
-      return projects.kept.left_outer_joins(:project_members)
-          .joins("LEFT OUTER JOIN users ON users.id = project_members.user_id")
-          .joins(:client)
-          .joins("LEFT OUTER JOIN timesheet_entries ON timesheet_entries.user_id = project_members.user_id
-                      AND timesheet_entries.project_id = projects.id ")
-          .where(client_id: client_filter)
-          .select("projects.id as id,
-                       projects.name as project_name,
-                       projects.billable as is_billable,
-                       clients.name as client_name,
-                       users.first_name as first_name,
-                       users.last_name as last_name,
-                       timesheet_entries.duration as duration")
-    end
-    if client_filter.nil? && !user_filter.nil?
-      return projects.kept.left_outer_joins(:project_members)
-          .joins("LEFT OUTER JOIN users ON users.id = project_members.user_id")
-          .joins(:client)
-          .joins("LEFT OUTER JOIN timesheet_entries ON timesheet_entries.user_id = project_members.user_id
-                      AND timesheet_entries.project_id = projects.id ")
-          .where(project_members: { user_id: user_filter })
-          .select("projects.id as id,
-                       projects.name as project_name,
-                       projects.billable as is_billable,
-                       clients.name as client_name,
-                       users.first_name as first_name,
-                       users.last_name as last_name,
-                       timesheet_entries.duration as duration")
-    end
-    if !client_filter.nil? && !user_filter.nil?
-      projects.kept.left_outer_joins(:project_members)
-        .joins("LEFT OUTER JOIN users ON users.id = project_members.user_id")
-        .joins(:client)
-        .joins("LEFT OUTER JOIN timesheet_entries ON timesheet_entries.user_id = project_members.user_id
-                      AND timesheet_entries.project_id = projects.id ")
-        .where(project_members: { user_id: user_filter }, client_id: client_filter)
-        .select("projects.id as id,
-                       projects.name as project_name,
-                       projects.billable as is_billable,
-                       clients.name as client_name,
-                       users.first_name as first_name,
-                       users.last_name as last_name,
-                       timesheet_entries.duration as duration")
     end
   end
 
