@@ -1,61 +1,6 @@
 <div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope" x-data="{ 'isDialogOpen': <%= keep_new_client_dialog_open %> }" @keydown.escape="isDialogOpen = false">
-  <div class="px-5">
-    <div>
-      <div class="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
-        <div class="flex-1 min-w-0">
-          <h2 class="text-3xl font-extrabold leading-7 text-gray-900 sm:text-4xl sm:truncate py-1">
-            Clients
-          </h2>
-        </div>
-        <div class="mt-6 flex sm:mt-0 md:ml-4 items-center sm:w-4/6">
-          <div class="mt-1 relative rounded-md shadow-sm md:ml-10">
-            <input
-              type="search"
-              class="rounded tracking-wider appearance-none border border-gray-100 block w-72 sm:w-96 px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-sm"
-              placeholder="Search"
-            />
-            <button class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
-              <img
-                src=<%= image_url('search_icon.svg') %>
-                class="h-3 w-3 text-miru-gray-400"
-              />
-            </button>
-          </div>
-        </div>
-        <% if current_user.admin? %>
-          <div class="mt-6 flex sm:mt-0 md:ml-4">
-            <button
-              type="button"
-              @click="isDialogOpen = true"
-              class="ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-sans font-medium text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer"
-            >
-              <img src=<%= image_url('plus_icon.svg') %> class="-ml-0.5 mr-2 h-4 w-4 " />
-              NEW CLIENT
-            </button>
-          </div>
-        <% end %>
-      </div>
-
-      <%= react_component("Clients",
-                          clients: clients.map { |h| h.transform_keys { |k| k.to_s.camelize(:lower) } },
-                          editIcon: image_url('edit_image_button.svg'),
-                          deleteIcon: image_url('delete_image_button.svg'),
-                          isAdminUser: current_user.admin?) %>
-
-      <div class="px-4 min-h-screen flex items-center justify-center">
-        <div class="overflow-auto" style="background-color: rgba(29, 26, 49,0.6)" x-show="isDialogOpen" :class="{ 'absolute inset-0 z-10 flex items-start justify-center': isDialogOpen }">
-          <div class="relative px-4 min-h-screen md:flex md:items-center md:justify-center">
-          <div class="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width" x-show="isDialogOpen" @click.away="isDialogOpen = false">
-            <div class="flex justify-between items-center mt-6">
-              <h6 class="text-base font-extrabold">Add New Client</h6>
-              <button type="button" @click="isDialogOpen = false"><img src="<%= image_url 'close_button.svg' %>"%></button>
-            </div>
-            <%= render template: "clients/new", locals: { client: new_client } %>
-          </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
+  <div>
+  <%= react_component("Clients/RouteConfig", {
+    isAdminUser: current_user.has_owner_or_admin_role?(current_user.current_workspace) }) %>
   </div>
 </div>

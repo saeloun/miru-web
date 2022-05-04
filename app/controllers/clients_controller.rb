@@ -5,7 +5,7 @@ class ClientsController < ApplicationController
 
   def index
     render :index, locals: {
-      clients: clients,
+      clients:,
       new_client: Client.new,
       keep_new_client_dialog_open: false
     }
@@ -18,7 +18,7 @@ class ClientsController < ApplicationController
     else
       flash.now[:error] = t("client.create.failure")
       render :index, locals: {
-        clients: clients,
+        clients:,
         new_client: client,
         keep_new_client_dialog_open: true
       }, status: :unprocessable_entity
@@ -26,6 +26,7 @@ class ClientsController < ApplicationController
   end
 
   private
+
     def clients
       @_clients ||= current_company.clients.map do |c|
         c.attributes.merge({ hours_logged: c.timesheet_entries.sum(:duration) })
