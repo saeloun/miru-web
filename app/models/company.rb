@@ -41,18 +41,18 @@ class Company < ApplicationRecord
       .joins("LEFT OUTER JOIN users ON users.id = project_members.user_id")
       .joins(:client)
       .joins("LEFT OUTER JOIN timesheet_entries ON timesheet_entries.user_id = project_members.user_id
-                       AND timesheet_entries.project_id = projects.id ")
+              AND timesheet_entries.project_id = projects.id ")
     db_query = db_query.where(project_members: { user_id: }) if user_id.present?
     db_query = db_query.where(client_id:) if client_id.present?
     db_query = db_query.where(projects: { billable: }) if billable.present?
     project_list = db_query.select(
       "projects.id as id,
-                                    projects.name as project_name,
-                                    projects.billable as is_billable,
-                                    clients.name as client_name,
-                                    users.first_name as first_name,
-                                    users.last_name as last_name,
-                                    timesheet_entries.duration as duration")
+       projects.name as project_name,
+       projects.billable as is_billable,
+       clients.name as client_name,
+       users.first_name as first_name,
+       users.last_name as last_name,
+       timesheet_entries.duration as duration")
     query = project_list.ransack({ name_or_client_name_or_is_billable_cont: search })
     project_list = query.result
     project_ids = project_list.map { |project| project.id }.uniq
