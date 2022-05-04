@@ -11,19 +11,21 @@ function setTimeZoneOptions(options) {
   });
 }
 
-document
-  .querySelector(".select-country")
-  .addEventListener("change", (event) => {
-    const country = event.target.value;
-    const timeZonesForCountry = timezones[country];
-    if (timeZonesForCountry) setTimeZoneOptions(timeZonesForCountry);
-  });
+function handleChangeCountry(event) {
+  const country = event.target.value;
+  const timeZonesForCountry = timezones[country];
+  if (timeZonesForCountry) setTimeZoneOptions(timeZonesForCountry);
+}
+
+const selectCountry = document.querySelector(".select-country");
+
+selectCountry.addEventListener("change", handleChangeCountry);
 
 async function main() {
   const response = await fetch("/internal_api/v1/timezones");
   const jsonResponse = await response.json();
   timezones = jsonResponse.timezones;
-  setTimeZoneOptions(timezones["US"]);
+  setTimeZoneOptions(timezones[selectCountry.value]);
 }
 
 main();
