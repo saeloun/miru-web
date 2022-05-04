@@ -51,6 +51,7 @@ const InvoiceTable = ({
   }, [addNew]);
 
   const loadMoreItems = () => {
+    console.log("pageNumber ====> ", pageNumber);
     fetchNewLineItems(selectedClient, setLineItems, lineItems, setTotalLineItems, pageNumber, setPageNumber, selectedOption);
   };
 

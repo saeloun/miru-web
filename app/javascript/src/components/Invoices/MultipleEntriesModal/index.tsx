@@ -38,9 +38,14 @@ const MultipleEntriesModal = ({
   };
 
   const handleSelectAll = (e) => {
-    const selectedLineItem = lineItems.map(item => ({ ...item, checked: e.target.checked }));
-    setLineItems(selectedLineItem);
-    setSelectedLineItem(lineItems);
+    const checkedLineItems = lineItems.map(item => ({ ...item, checked: e.target.checked }));
+    if (e.target.checked) {
+      setSelectedLineItem(lineItems);
+    }
+    else {
+      setSelectedLineItem([]);
+    }
+    setLineItems(checkedLineItems);
     setAllCheckboxSelected(e.target.checked);
   };
 
@@ -71,16 +76,19 @@ const MultipleEntriesModal = ({
       }
     });
   };
+
   const handleSubmitModal = () => {
-    setSelectedOption([...selectedOption, ...selectedLineItem]);
-    setMultiLineItemModal(false);
+    if (selectedLineItem.length > 0) {
+      setSelectedOption([...selectedOption, ...selectedLineItem]);
+      setMultiLineItemModal(false);
+    }
   };
 
   return (
     <div style={{ background: "rgba(29, 26, 49,0.6)" }} className="px-52 py-20 w-full h-full fixed inset-0 flex justify-center z-50">
       <div className="bg-white rounded-lg w-full h-128 flex flex-col justify-between">
         <Header
-          setShowMultilineModal={false}
+          setMultiLineItemModal={setMultiLineItemModal}
         />
         <div className='mx-6'>
           {lineItems.length > 0 && <Table

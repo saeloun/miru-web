@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import dayjs from "dayjs";
 
 const CheckboxIcon = () => <div className="bg-white border-2 border-miru-han-purple-1000 w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
   <svg className="custom__checkbox-tick fill-current hidden w-2 h-2 text-miru-han-purple-1000 pointer-events-none" version="1.1" viewBox="0 0 17 12" xmlns="http://www.w3.org/2000/svg">
@@ -49,28 +50,33 @@ const Table = ({
             >
               <table className="w-full">
                 <tbody>
-                  {lineItems.map((item, index) => (
-                    <tr key={index}>
-                      <td className="w-2.5">
-                        <div className="flex items-center relative">
-                          <input type="checkbox" className="opacity-0 absolute h-8 w-8 custom__checkbox" onChange={() => handleItemSelection(item.timesheet_entry_id)} checked={item.checked} />
-                          <CheckboxIcon />
-                        </div>
-                      </td>
-                      <td className="table__data w-1/5 font medium text-sm text-miru-dark-purple-1000 text-left">
-                        {item.first_name} {item.last_name}
-                      </td>
-                      <td className="table__data w-3/5 font medium text-xs text-miru-dark-purple-600 text-left">
-                        {item.description}
-                      </td>
-                      <td className="table__data font medium text-xs text-miru-dark-purple-1000 text-right">
-                        {item.date}
-                      </td>
-                      <td className="table__data  w-1/12 font medium text-xs text-miru-dark-purple-1000 text-right">
-                        {item.qty}
-                      </td>
-                    </tr>
-                  ))}
+                  {lineItems.map((item, index) => {
+                    const hoursLogged = (item.qty / 60).toFixed(2);
+                    const date = dayjs(item.date).format('DD.MM.YYYY');
+                    return (
+                      <tr key={index}>
+                        <td className="w-2.5">
+                          <div className="flex items-center relative">
+                            <input type="checkbox" className="opacity-0 absolute h-8 w-8 custom__checkbox" onChange={() => handleItemSelection(item.timesheet_entry_id)} checked={item.checked} />
+                            <CheckboxIcon />
+                          </div>
+                        </td>
+                        <td className="table__data w-1/5 font medium text-sm text-miru-dark-purple-1000 text-left">
+                          {item.first_name} {item.last_name}
+                        </td>
+                        <td className="table__data w-3/5 font medium text-xs text-miru-dark-purple-600 text-left">
+                          {item.description}
+                        </td>
+                        <td className="table__data font medium text-xs text-miru-dark-purple-1000 text-right">
+                          {date}
+                        </td>
+                        <td className="table__data  w-1/12 font medium text-xs text-miru-dark-purple-1000 text-right">
+                          {hoursLogged}
+                        </td>
+                      </tr>
+                    )
+                  }
+                  )}
                 </tbody>
               </table>
             </InfiniteScroll>

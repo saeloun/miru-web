@@ -3,12 +3,12 @@ import React from "react";
 import { X, MagnifyingGlass } from "phosphor-react";
 import FilterSelect from "./FilterSelect";
 
-const Header = ({ setShowMultilineModal }) => (
+const Header = ({ setMultiLineItemModal }) => (
   <div>
     <div className='flex justify-between px-6 pb-2 pt-6'>
       <span className='text-miru-dark-purple-1000 text-base font-extrabold'>Select Time Entries</span>
       <button
-        onClick={() => setShowMultilineModal(false)}
+        onClick={() => setMultiLineItemModal(false)}
       >
         <X size={16} color="#CDD6DF" />
       </button>
