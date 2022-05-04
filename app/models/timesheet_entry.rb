@@ -8,7 +8,7 @@
 #  user_id     :integer          not null
 #  project_id  :integer          not null
 #  duration    :float            not null
-#  note        :text             default("")
+#  note        :text
 #  work_date   :date             not null
 #  bill_status :integer          not null
 #  created_at  :datetime         not null
