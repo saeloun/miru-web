@@ -3,14 +3,16 @@
 #
 # Table name: clients
 #
-#  id         :integer          not null, primary key
-#  company_id :integer          not null
-#  name       :string           not null
-#  email      :string
-#  phone      :string
-#  address    :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id           :integer          not null, primary key
+#  company_id   :integer          not null
+#  name         :string           not null
+#  email        :string
+#  phone        :string
+#  address      :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  discarded_at :datetime
+#  stripe_id    :string
 #
 # Indexes
 #
@@ -26,6 +28,7 @@ class Client < ApplicationRecord
 
   has_many :projects
   has_many :timesheet_entries, through: :projects
+  has_many :invoices, dependent: :destroy
   belongs_to :company
 
   validates :name, :email, presence: true
