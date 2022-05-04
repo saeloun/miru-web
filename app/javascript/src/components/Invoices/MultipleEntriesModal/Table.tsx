@@ -52,7 +52,7 @@ const Table = ({
                 <tbody>
                   {lineItems.map((item, index) => {
                     const hoursLogged = (item.qty / 60).toFixed(2);
-                    const date = dayjs(item.date).format('DD.MM.YYYY');
+                    const date = dayjs(item.date).format("DD.MM.YYYY");
                     return (
                       <tr key={index}>
                         <td className="w-2.5">
@@ -74,7 +74,7 @@ const Table = ({
                           {hoursLogged}
                         </td>
                       </tr>
-                    )
+                    );
                   }
                   )}
                 </tbody>
