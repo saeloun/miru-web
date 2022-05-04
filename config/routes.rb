@@ -38,7 +38,6 @@ Rails.application.routes.draw do
   resources :team, only: [:index, :update, :destroy, :edit]
 
   resources :reports, only: [:index]
-  resources :invoices, only: [:show]
   resources :workspaces, only: [:update]
 
   resources :invoices, only: [], module: :invoices do
@@ -61,6 +60,9 @@ Rails.application.routes.draw do
 
   get "payments/*path", to: "payments#index", via: :all
   get "payments", to: "payments#index"
+
+  get "payment_settings/*path", to: "payment_settings#index", via: :all
+  get "payment_settings", to: "payment_settings#index"
 
   get "subscriptions/*path", to: "subscriptions#index", via: :all
   resources :subscriptions, only: [:index]
