@@ -1,11 +1,15 @@
 import * as React from "react";
 import { Funnel, MagnifyingGlass, Plus } from "phosphor-react";
 
-const Header = ({ setShowProjectModal }) => (
-  <div className="sm:flex mt-6 mb-3 sm:items-center sm:justify-between">
-    <h2 className="header__title">
-            Projects
-    </h2>
+const Header = ({ setShowProjectModal, isAdminUser }) => (
+  <div
+    className={
+      isAdminUser
+        ? "sm:flex mt-6 mb-3 sm:items-center sm:justify-between"
+        : "sm:flex mt-6 mb-3 sm:items-center"
+    }
+  >
+    <h2 className="header__title">Projects</h2>
     <React.Fragment>
       <div className="header__searchWrap">
         <div className="header__searchInnerWrapper">
@@ -18,17 +22,21 @@ const Header = ({ setShowProjectModal }) => (
             <MagnifyingGlass size={12} />
           </button>
         </div>
-        <button className="ml-7">
-          <Funnel size={16} />
-        </button>
+        {isAdminUser && (
+          <button className="ml-7">
+            <Funnel size={16} />
+          </button>
+        )}
       </div>
-      <button
-        className="flex header__button"
-        onClick={()=>setShowProjectModal(true)}
-      >
-        <Plus weight="fill" size={16} />
-        <span className="ml-2 inline-block">NEW PROJECT</span>
-      </button>
+      {isAdminUser && (
+        <button
+          className="flex header__button"
+          onClick={() => setShowProjectModal(true)}
+        >
+          <Plus weight="fill" size={16} />
+          <span className="ml-2 inline-block">NEW PROJECT</span>
+        </button>
+      )}
     </React.Fragment>
 
     {/* {
