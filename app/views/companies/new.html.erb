@@ -77,11 +77,19 @@
               </div>
             </div>
             <div class="mt-1">
-              <%= form.select :country, [[ "Please select", "", { selected: true, disabled: true }]] + ISO3166::Country.pluck(:alpha2, :name).collect { |c| [ c.second, c.first ] }, {}, { autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :country)}" } %>
+              <select class="select-country rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :country)}" autofocus="autofocus" name="company[country]" id="company_country">
+                <option disabled >Most Selected Countries</option>
+                <option value="US">United States of America</option>
+                <option value="CA">Canada</option>
+                <option value="IN">India</option>
+                <option disabled >Plese Select</option>
+                <% ISO3166::Country.pluck(:alpha2, :name).map do |country|  %>
+                  <option value="<%= country.first %>"  ><%= country.second %></option>
+                <% end %>
+              </select>
            </div>
           </div>
         </div>
-
         <div class="mt-4">
           <div class="field">
             <div class="field_with_errors">
@@ -91,7 +99,9 @@
               </div>
             </div>
             <div class="mt-1">
-              <%= form.select :timezone, [[ "Please select", "", { selected: true, disabled: true }]] + TZInfo::Timezone.all_country_zones.collect { |t| [ t.to_s ] }, {}, { autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :timezone)}" } %>
+              <select name="company[timezone]" id="company_timezone" autofocus="autofocus" class="select-timezone rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :timezone)}">
+                <option selected disabled >Please select country</option>
+              </select>
             </div>
           </div>
         </div>
@@ -105,7 +115,7 @@
               </div>
             </div>
             <div class="mt-1">
-              <%= form.select :base_currency, [[ "Please select", "", { selected: true, disabled: true }]] + Money::Currency.table.collect { |k, v| [ v[:name], v[:iso_code] ] }, {}, {autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :base_currency)}"} %>
+              <%= form.select :base_currency, [[ "Please select", "", { disabled: true }]] + Money::Currency.table.collect { |k, v| [ v[:name], v[:iso_code] ] }, {selected: "USD"}, {autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :base_currency)}"} %>
             </div>
           </div>
         </div>
@@ -133,7 +143,7 @@
               </div>
             </div>
             <div class="mt-1">
-              <%= form.select :fiscal_year_end, [[ "Please select", "", { selected: true, disabled: true }], ["January-December", "jan-dec",], ["April-March", "apr-mar"]], {}, {autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :fiscal_year_end)}"} %>
+              <%= form.select :fiscal_year_end, [[ "Please select", "", { disabled: true }], ["January-December", "jan-dec", {selected: true}], ["October-September", "oct-sep"], ["April-March", "apr-mar"]], {}, {autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :fiscal_year_end)}"} %>
             </div>
           </div>
         </div>
@@ -147,7 +157,7 @@
               </div>
             </div>
             <div class="mt-1">
-              <%= form.select :date_format, [[ "Please select", "", { selected: true, disabled: true }], ["DD-MM-YYYY"], ["MM-DD-YYYY"], ["YYYY-MM-DD"]], {}, {autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :date_format)}"} %>
+              <%= form.select :date_format, [[ "Please select", "", { disabled: true }], ["DD-MM-YYYY"], ["MM-DD-YYYY", {selected: true}], ["YYYY-MM-DD"]], {}, {autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :date_format)}"} %>
             </div>
           </div>
         </div>
@@ -159,3 +169,4 @@
     </div>
   </div>
 </div>
+<script  src="/javascripts/org.js" >
