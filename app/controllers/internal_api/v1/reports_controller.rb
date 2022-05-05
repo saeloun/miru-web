@@ -5,19 +5,54 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
 
   def index
     authorize :report
-    render json: { entries: }, status: :ok
+    render :index, locals: { entries: }, status: :ok
   end
 
   private
 
     def entries
-      current_company.timesheet_entries.includes([:user, :project])
-        .within_date_range(from_date, to_date)
-        .with_client(clients)
-        .with_bill_status(params[:status])
-        .with_user_id(params[:team_member])
-        .map do |timesheet_entry|
-        timesheet_entry.formatted_entry.transform_keys { |key| key.to_s.camelize(:lower) }
+      where_clause = add_filters_if_any({ project_id: current_company.project_ids })
+      TimesheetEntry.search(where: where_clause, includes: [:user, :project])
+    end
+
+    def add_filters_if_any(where_clause)
+      where_clause = add_date_range_filter(where_clause)
+      where_clause = add_clients_filter(where_clause)
+      where_clause = add_bill_status_filter(where_clause)
+      where_clause = add_team_members_filter(where_clause)
+    end
+
+    def add_date_range_filter(where_clause)
+      if params[:date_range].present?
+        where_clause.merge(work_date: from_date..to_date)
+      else
+        where_clause
+      end
+    end
+
+    def add_clients_filter(where_clause)
+      if params[:client_id].present?
+        clients = Client.includes(:projects).where(id: params[:client_id])
+        project_ids = clients.map { |client| client.project_ids }.flatten
+        where_clause.merge(project_id: project_ids)
+      else
+        where_clause
+      end
+    end
+
+    def add_bill_status_filter(where_clause)
+      if params[:status].present?
+        where_clause.merge(bill_status: params[:status])
+      else
+        where_clause
+      end
+    end
+
+    def add_team_members_filter(where_clause)
+      if params[:team_member].present?
+        where_clause.merge(user_id: params[:team_member])
+      else
+        where_clause
       end
     end
 
@@ -45,9 +80,5 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
       when "last_week"
         1.weeks.ago.end_of_week
       end
-    end
-
-    def clients
-      Client.where(id: params[:client_id]) if params[:client_id].present?
     end
 end
