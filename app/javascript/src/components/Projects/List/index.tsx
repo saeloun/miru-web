@@ -17,12 +17,12 @@ export const ProjectList = ({ isAdminUser }) => {
   const [projects, setProjects] = React.useState<IProject[]>([]);
 
   const fetchProjects = async () => {
-    await projectApi.get()
-      .then(resp => {
-        setProjects(resp.data.projects);
-      }).catch(() => {
-        //error handling
-      });
+    try {
+      const res = await projectApi.get();
+      setProjects(res.data.projects);
+    } catch (e) {
+      console.log(e) // eslint-disable-line
+    }
   };
 
   React.useEffect(() => {
