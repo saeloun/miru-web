@@ -62,14 +62,13 @@ const ProjectDetails = () => {
   const projectId = parseInt(params.projectId);
 
   const fetchProject = async () => {
-    await projectAPI
-      .show(params.projectId)
-      .then((resp) => {
-        setProject(unmapper(resp.data.project_details));
-      })
-      .catch(() => {
-        // Add error handling
-      });
+    try {
+      const res = await projectAPI
+        .show(params.projectId);
+      setProject(unmapper(res.data.project_details));
+    } catch (e) {
+        console.log(e); // eslint-disable-line
+    }
   };
 
   const handleAddProjectDetails = () => {
