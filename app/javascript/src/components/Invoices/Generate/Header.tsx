@@ -16,12 +16,10 @@ const Header = ({
   amountDue,
   amountPaid,
   discount,
-  tax,
-  outstandingAmount
+  tax
 }) => {
 
   const navigate = useNavigate();
-  const [isInvoiceSavedSuccessfully, setIsInvoiceSavedSuccessfully] = React.useState<boolean>(false);
   const getIssuedDate = dayjs(issueDate).format("DD.MM.YYYY");
   const getDueDate = dayjs(dueDate).format("DD.MM.YYYY");
 

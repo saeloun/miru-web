@@ -66,6 +66,7 @@
       "no-console": ["error", { "allow": ["warn", "error"] }],
       "comma-dangle": ["error", "never"],
       "indent": ["warn", 2, { "SwitchCase": 1 }],
+      "@typescript-eslint/no-unused-vars": ["error"],
       "key-spacing": 1,
       "keyword-spacing": 2,
       "object-curly-spacing": [1, "always"],
