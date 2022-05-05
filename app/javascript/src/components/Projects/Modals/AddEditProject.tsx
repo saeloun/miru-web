@@ -14,7 +14,7 @@ const AddEditProject = ({ setEditProjectData, editProjectData, setShowProjectMod
       projectApi.get()
         .then((data) => {
           setClientList(data.data.clients);
-        }).catch((e) => {
+        }).catch(() => {
           setClientList({});
         });
     };
@@ -23,7 +23,7 @@ const AddEditProject = ({ setEditProjectData, editProjectData, setShowProjectMod
         .then((data) => {
           setEditProjectData(data.data.project_details);
         })
-        .catch((e) => {
+        .catch(() => {
           setEditProjectData({});
         });
     };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import CompanyInfo from "./CompanyInfo";
 import InvoiceDetails from "./InvoiceDetails";
@@ -11,12 +11,11 @@ const Container = ({
   selectedClient, setSelectedClient,
   invoiceNumber, setInvoiceNumber,
   amount, setAmount,
-  reference, setReference,
+  reference,
   issueDate, setIssueDate,
   dueDate, setDueDate,
-  outstandingAmount, setOutstandingAmount,
   amountDue, setAmountDue,
-  amountPaid, setAmountPaid,
+  amountPaid,
   discount, setDiscount,
   tax, setTax,
   selectedOption, setSelectedOption
@@ -49,7 +48,6 @@ const Container = ({
     <InvoiceTotal
       currency={invoiceDetails.companyDetails.currency}
       newLineItems={selectedOption}
-      setAmountPaid={setAmountPaid}
       amountPaid={amountPaid}
       amountDue={amountDue}
       setAmountDue={setAmountDue}
