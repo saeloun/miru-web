@@ -38,7 +38,7 @@ export const Project = ({
       className={`last:border-b-0 ${grayColor}`}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-      onClick={() => projectClickHandler(id)}>
+      onClick={() =>{isAdminUser && projectClickHandler(id);}}>
       <td className="table__cell text-base">
         {name}
       </td>
