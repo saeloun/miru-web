@@ -1,15 +1,16 @@
 import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import dayjs from "dayjs";
 import { DropdownHeader } from "./CustomComponents";
 
 const NewLineItemTable = ({
   showItemInputs,
   setShowItemInputs,
   addNew, setAddNew,
-  lineItems,
+  lineItems, setLineItems,
   loadMoreItems,
   totalLineItems,
-  pageNumber,
+  pageNumber, setPageNumber,
   selectedOption,
   setSelectedOption,
   setMultiLineItemModal }) => {
@@ -19,6 +20,8 @@ const NewLineItemTable = ({
     const option = { ...items, lineTotal: (Number(items.qty) / 60 * Number(items.rate)) };
     setAddNew(false);
     setSelectedOption([...selectedOption, option]);
+    setLineItems([]);
+    setPageNumber(1);
   };
 
   return (
@@ -47,22 +50,26 @@ const NewLineItemTable = ({
             </p>
           }
         >
-          {lineItems.map((items, index) => (
-            <div key={index} onClick={() => { selectRowId(items); }} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100">
-              <span className="font-medium text-base text-miru-dark-purple-1000 text-left">
-                {items.first_name} {items.last_name}
-              </span>
-              <span className="font-medium text-xs text-miru-dark-purple-600 text-left w-1/2">
-                {items.description}
-              </span>
-              <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
-                {items.date}
-              </span>
-              <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
-                ${items.rate}
-              </span>
-            </div>
-          ))
+          {lineItems.map((item, index) => {
+            const hoursLogged = (item.qty / 60).toFixed(2);
+            const date = dayjs(item.date).format("DD.MM.YYYY");
+            return (
+              <div key={index} onClick={() => { selectRowId(item); }} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100">
+                <span className="font-medium text-base text-miru-dark-purple-1000 text-left">
+                  {item.first_name} {item.last_name}
+                </span>
+                <span className="font-medium text-xs text-miru-dark-purple-600 text-left w-1/2">
+                  {item.description}
+                </span>
+                <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
+                  {date}
+                </span>
+                <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
+                  {hoursLogged}
+                </span>
+              </div>
+            );
+          })
           }
         </InfiniteScroll>
       </div>

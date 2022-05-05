@@ -7,6 +7,7 @@ import NewLineItemTable from "./NewLineItemTable";
 
 import useOutsideClick from "../../../helpers/outsideClick";
 import MultipleEntriesModal from "../MultipleEntriesModal";
+
 const fetchNewLineItems = async (
   selectedClient,
   setLineItems,
@@ -68,9 +69,11 @@ const InvoiceTable = ({
         addNew={addNew}
         setAddNew={setAddNew}
         lineItems={lineItems}
+        setLineItems={setLineItems}
         loadMoreItems={loadMoreItems}
         totalLineItems={totalLineItems}
         pageNumber={pageNumber}
+        setPageNumber={setPageNumber}
         setSelectedOption={setSelectedOption}
         selectedOption={selectedOption}
         setMultiLineItemModal={setMultiLineItemModal}
