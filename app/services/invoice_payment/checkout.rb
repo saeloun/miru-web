@@ -45,7 +45,7 @@ module InvoicePayment
                   name: invoice.invoice_number,
                   description:
                 },
-                unit_amount: invoice.amount.to_i
+                unit_amount: invoice.unit_amount(company.base_currency)
               },
               quantity: 1
             }],
