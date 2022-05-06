@@ -11,7 +11,7 @@ class InvoiceMailer < ApplicationMailer
     subject = params[:subject]
     @message = params[:message]
 
-    serialized_invoice = serializer(@invoice.invoice_line_items)
+    formatted_invoice = format_invoice(@invoice.invoice_line_items)
 
     controller = ActionController::Base.new
     html = controller.render_to_string(
@@ -19,13 +19,11 @@ class InvoiceMailer < ApplicationMailer
       layout: "layouts/pdf",
       locals: {
         invoice: @invoice,
-        company_logo: @invoice.client.company.logo.attached? ?
-                        polymorphic_url(@invoice.client.company.logo) :
-                        "",
+        company_logo:,
         client: @invoice.client,
-        invoice_line_items: serialized_invoice[:invoice_line_items],
-        sub_total: serialized_invoice[:sub_total],
-        total: serialized_invoice[:total]
+        invoice_line_items: formatted_invoice[:invoice_line_items],
+        sub_total: formatted_invoice[:sub_total],
+        total: formatted_invoice[:total]
       }
       )
 
@@ -34,4 +32,12 @@ class InvoiceMailer < ApplicationMailer
 
     mail(to: recipients, subject:, reply_to: "no-reply@miru.com")
   end
+
+  private
+
+    def company_logo
+      @invoice.company.logo.attached? ?
+        polymorphic_url(@invoice.company.logo) :
+        ""
+    end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module InvoicesHelper
-  def serializer(invoice_line_items)
+  def format_invoice(invoice_line_items)
     sub_total = 0
     total = 0
 
