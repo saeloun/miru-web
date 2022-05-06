@@ -20,5 +20,8 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :project_members, only: [:update]
     resources :company_users, only: [:index]
     resources :timezones, only: [:index]
+
+    # Non-Resourceful Routes
+    post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
   end
 end
