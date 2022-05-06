@@ -2,6 +2,10 @@
 
 class PaymentSettingsController < ApplicationController
   def index
-    authorize :index, policy_class: PaymentSettingPolicy
+    authorize :index, policy_class: PaymentSettingsPolicy
+  end
+
+  def connect_stripe
+    authorize :connect_stripe, policy_class: PaymentSettingsPolicy
   end
 end

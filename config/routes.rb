@@ -73,6 +73,7 @@ Rails.application.routes.draw do
 
   get "payment_settings/*path", to: "payment_settings#index", via: :all
   get "payment_settings", to: "payment_settings#index"
+  post "payment/settings/stripe-connect", to: "payment_settings#connect_stripe"
 
   get "subscriptions/*path", to: "subscriptions#index", via: :all
   resources :subscriptions, only: [:index]
