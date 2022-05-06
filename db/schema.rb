@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_25_074402) do
+ActiveRecord::Schema.define(version: 2022_05_06_085404) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -161,6 +161,15 @@ unique: true
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
+  create_table "stripe_connected_accounts", force: :cascade do |t|
+    t.string "account_id", null: false
+    t.bigint "company_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id"], name: "index_stripe_connected_accounts_on_account_id", unique: true
+    t.index ["company_id"], name: "index_stripe_connected_accounts_on_company_id"
+  end
+
   create_table "timesheet_entries", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
@@ -232,6 +241,7 @@ unique: true
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
+  add_foreign_key "stripe_connected_accounts", "companies"
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies", column: "current_workspace_id"
