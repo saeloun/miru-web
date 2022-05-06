@@ -72,4 +72,8 @@ class Invoice < ApplicationRecord
   def create_checkout_session!(success_url:, cancel_url:)
     InvoicePayment::Checkout.process(invoice: self, success_url:, cancel_url:)
   end
+
+  def unit_amount(base_currency)
+    (amount * Money::Currency.new(base_currency).subunit_to_unit).to_i
+  end
 end

@@ -29,8 +29,12 @@ async function main() {
   const response = await fetch("/internal_api/v1/timezones");
   const jsonResponse = await response.json();
   timezones = jsonResponse.timezones;
+<<<<<<< HEAD
   if (window.location.pathname === "/company/new")
     setTimeZoneOptions(timezones[selectCountry.value]);
+=======
+  setTimeZoneOptions(timezones[selectCountry.value]);
+>>>>>>> 55b888166bbb6857a672e61faf00a366b8e6af9c
 }
 
 main();
