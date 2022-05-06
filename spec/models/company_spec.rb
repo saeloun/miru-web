@@ -200,9 +200,9 @@ RSpec.describe Company, type: :model do
           {
             id:,
             name: project_name_array[0],
-            client_name: client_name_array[0],
-            is_billable: billable_array[0],
-            minutes_spent: minutes_spent[id]
+            clientName: client_name_array[0],
+            isBillable: billable_array[0],
+            minutesSpent: minutes_spent[id]
           }
         end
       end
