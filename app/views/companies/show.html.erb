@@ -139,7 +139,7 @@
                   </div>
                 </div>
                 <div class="mt-1">
-                  <%= form.select :timezone, TZInfo::Timezone.all_country_zones.collect { |t| [ t.to_s ] }, {}, { autofocus: true, class: "select-timezone rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :timezone)}" } %>
+                  <%= form.select :timezone, ActiveSupport::TimeZone.country_zones(current_company.country), {}, { autofocus: true, class: "select-timezone rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :timezone)}" } %>
                 </div>
               </div>
             </div>
