@@ -2,17 +2,17 @@ import React, { useState, useEffect } from "react";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import reports from "apis/reports";
-import EntryContext from './context/EntryContext';
-
-import Header from './Header';
 import Container from "./Container";
-import Filters from './Filters';
+import EntryContext from "./context/EntryContext";
+
+import Filters from "./Filters";
+import Header from "./Header";
 
 import { ITimeEntry } from "./interface";
 
 const Reports = () => {
   const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
-  const [isFilterVisible, setFilterVisibilty] = useState<Boolean>(false)
+  const [isFilterVisible, setFilterVisibilty] = useState<boolean>(false);
   const fetchTimeEntries = async () => {
     const res = await reports.get();
     if (res.status == 200) {
@@ -34,7 +34,7 @@ const Reports = () => {
         {isFilterVisible && <Filters setFilterVisibilty={setFilterVisibilty} />}
       </EntryContext.Provider>
     </div>
-  )
-}
+  );
+};
 
 export default Reports;

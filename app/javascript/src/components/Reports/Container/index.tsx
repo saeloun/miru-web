@@ -1,6 +1,6 @@
 import React from "react";
-import { useEntry } from "../context/EntryContext";
 import TableRow from "./TableRow";
+import { useEntry } from "../context/EntryContext";
 
 const Container = () => {
   const { entries } = useEntry();
@@ -9,9 +9,9 @@ const Container = () => {
     if (entries.length > 0) {
       return entries.map((timeEntry, index) => (
         <TableRow key={index} {...timeEntry} />
-      ))
+      ));
     }
-  }
+  };
 
   return (
     <table className="min-w-full divide-y divide-gray-200 mt-4">
@@ -53,7 +53,7 @@ const Container = () => {
         {getEntryList()}
       </tbody>
     </table>
-  )
-}
+  );
+};
 
 export default Container;

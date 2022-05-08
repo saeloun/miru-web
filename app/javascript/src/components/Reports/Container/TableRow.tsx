@@ -1,6 +1,6 @@
 import React from "react";
-import { ITimeEntry } from "../interface";
 import { minutesToHHMM } from "../../../helpers/hhmm-parser";
+import { ITimeEntry } from "../interface";
 
 const TableRow = ({
   id,

@@ -1,7 +1,7 @@
-import React, { createContext, useContext } from "react";
+import { createContext, useContext } from "react";
 
 const EntryContext = createContext(({
-  entries: [],
+  entries: []
 }));
 
 export const useEntry = () => useContext(EntryContext);
