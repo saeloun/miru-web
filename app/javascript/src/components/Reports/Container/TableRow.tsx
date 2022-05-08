@@ -1,17 +1,8 @@
 import React from "react";
-import { minutesToHHMM } from "../../helpers/hhmm-parser";
+import { ITimeEntry } from "../interface";
+import { minutesToHHMM } from "../../../helpers/hhmm-parser";
 
-export interface ITimeEntry {
-  id: number;
-  project: string;
-  client: string;
-  note: string;
-  teamMember: string;
-  workDate: string;
-  duration: number;
-}
-
-export const TimeEntry = ({
+const TableRow = ({
   id,
   project,
   client,
@@ -20,6 +11,7 @@ export const TimeEntry = ({
   workDate,
   duration
 }: ITimeEntry) => (
+
   <tr key={id} className="flex flex-row items-center">
     <td className="w-full px-6 py-4 text-left whitespace-nowrap">
       <p className="font-semibold text-base text-miru-dark-purple-1000">
@@ -45,3 +37,5 @@ export const TimeEntry = ({
     </td>
   </tr>
 );
+
+export default TableRow;
