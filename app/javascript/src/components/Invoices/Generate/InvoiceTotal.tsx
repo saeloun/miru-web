@@ -7,7 +7,7 @@ import DiscountMenu from "./DiscountMenu";
 const InvoiceTotal = ({
   currency,
   newLineItems,
-  amountPaid, setAmountPaid,
+  amountPaid,
   amountDue, setAmountDue,
   setAmount,
   discount, setDiscount,
