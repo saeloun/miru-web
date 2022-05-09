@@ -16,7 +16,7 @@ const WeeklyEntries: React.FC<Iprops> = ({
           }}
           key={index}
           className={
-            "px-5 py-1 my-2 w-24 h-12 text-left items-center rounded-xl border-2 border-transparent " +
+            "px-5 py-1 my-2 w-26 h-12 text-left items-center rounded-xl border-2 border-transparent " +
             (index === selectDate &&
               "bg-white border-miru-han-purple-1000")
           }
