@@ -19,7 +19,6 @@ RSpec.describe "Reports#index", type: :request do
 
     it "renders Reports#index page" do
       expect(response).to be_successful
-      expect(response.body).to include("Time entry report")
     end
   end
 
