@@ -16,9 +16,9 @@ const WeeklyEntries: React.FC<Iprops> = ({
           }}
           key={index}
           className={
-            "px-5 py-2 my-2 w-24 h-12 items-center rounded-xl border-2 border-transparent " +
-              (index === selectDate &&
-                "bg-white border-miru-han-purple-1000")
+            "px-5 py-1 my-2 w-24 h-12 text-left items-center rounded-xl border-2 border-transparent " +
+            (index === selectDate &&
+              "bg-white border-miru-han-purple-1000")
           }
         >
           <p className="text-xs text-miru-dark-purple-1000 font-medium">
@@ -31,7 +31,7 @@ const WeeklyEntries: React.FC<Iprops> = ({
       ))}
     </div>
   ) : (
-  // dates for week
+    // dates for week
     <div className="h-16 px-60 bg-miru-gray-100 flex justify-items-stretch">
       {dayInfo.map((d, index) => (
         <div
