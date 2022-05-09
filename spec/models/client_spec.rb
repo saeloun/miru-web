@@ -155,7 +155,9 @@ RSpec.describe Client, type: :model do
               minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
             }
           end
-          expect(client.project_details(time_frame)).to eq(result)
+          results.map do |result|
+            expect(client.project_details(time_frame)).to include(result)
+          end
         end
       end
 
