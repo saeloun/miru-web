@@ -4,7 +4,7 @@
 
 class InvoicePreview < ActionMailer::Preview
   def invoice
-    invoice = Invoice.first
+    invoice = Invoice.last
     recipients = [invoice.client.email, "miru@example.com"]
     subject = "Invoice (#{invoice.invoice_number}) due on #{invoice.due_date}"
     message = "#{invoice.client.company.name} has sent you an invoice (#{invoice.invoice_number}) for $#{invoice.amount.to_i} that's due on #{invoice.due_date}."

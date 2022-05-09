@@ -176,3 +176,6 @@ gem "stripe"
 
 # Background job processing adapter
 gem "sidekiq"
+
+# PDF generator
+gem "grover"
