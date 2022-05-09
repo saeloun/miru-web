@@ -115,13 +115,15 @@ RSpec.describe Client, type: :model do
 
         it "returns the hours_logged for a project in the last week" do
           from, to = client.week_month_year(time_frame)
-          result = [project_1, project_2].map do | project |
+          results = [project_1, project_2].map do | project |
             {
               id: project.id, name: project.name, team: project.project_member_full_names,
               minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
             }
           end
-          expect(client.project_details(time_frame)).to eq(result)
+          results.map do |result|
+            expect(client.project_details(time_frame)).to include(result)
+          end
         end
       end
 
@@ -130,13 +132,15 @@ RSpec.describe Client, type: :model do
 
         it "returns the hours_logged for a project in that week" do
           from, to = client.week_month_year(time_frame)
-          result = [project_1, project_2].map do | project |
+          results = [project_1, project_2].map do | project |
             {
               id: project.id, name: project.name, team: project.project_member_full_names,
               minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
             }
           end
-          expect(client.project_details(time_frame)).to eq(result)
+          results.map do |result|
+            expect(client.project_details(time_frame)).to include(result)
+          end
         end
       end
 
@@ -160,13 +164,15 @@ RSpec.describe Client, type: :model do
 
         it "returns the hours_logged for a project in that year" do
           from, to = client.week_month_year(time_frame)
-          result = [project_1, project_2].map do | project |
+          results = [project_1, project_2].map do | project |
             {
               id: project.id, name: project.name, team: project.project_member_full_names,
               minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
             }
           end
-          expect(client.project_details(time_frame)).to eq(result)
+          results.map do |result|
+            expect(client.project_details(time_frame)).to include(result)
+          end
         end
       end
     end
