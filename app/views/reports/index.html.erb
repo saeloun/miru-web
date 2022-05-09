@@ -16,7 +16,7 @@
             </div>
             <div x-show="isOpen" @click.away="isOpen = false">
               <div class="navbar__open-profile-menu w-44" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-                <%= button_to profile_path, method: :get, class: "navbar__profile-menu_settings", id:"menu-item-0", role:"menuitem", tabindex:"-1" do %>
+                <%= button_to reports_path(format: :csv), method: :get, class: "navbar__profile-menu_settings", id:"menu-item-0", role:"menuitem", tabindex:"-1" do %>
                   <%= image_tag 'csv_icon.svg', class:"mr-3 h-5 w-5" %>
                   Export as CSV
                 <% end %>
