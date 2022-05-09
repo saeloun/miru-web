@@ -9,6 +9,17 @@ class InvoiceMailer < ApplicationMailer
     subject = params[:subject]
     @message = params[:message]
 
-    mail(to: recipients, subject:)
+    pdf = InvoicePayment::PdfGeneration.process(@invoice, company_logo)
+    attachments["invoice_#{@invoice.invoice_number}.pdf"] = pdf
+
+    mail(to: recipients, subject:, reply_to: "no-reply@miru.com")
   end
+
+  private
+
+    def company_logo
+      @invoice.company.logo.attached? ?
+        polymorphic_url(@invoice.company.logo) :
+        ""
+    end
 end

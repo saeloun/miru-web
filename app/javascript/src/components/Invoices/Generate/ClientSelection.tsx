@@ -28,18 +28,28 @@ const ClientSelection = ({ clientList, selectedClient, setSelectedClient }) => {
     setOptionSelection(true);
   };
 
+  React.useEffect(() => {
+    const prePopulatedClient = window.location.search.split("?")[1];
+    if (prePopulatedClient) {
+      const selection = clientList.filter(
+        (client) => client.label == prePopulatedClient
+      );
+      selection[0] && handleClientChange(selection[0]);
+    }
+  }, []);
+
   return (
     <div className="group" ref={wrapperRef}>
       <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
-      Billed to
-        {isOptionSelected &&
-        <button
-          onClick={handleSelectClientClick}
-          className="bg-miru-gray-1000 rounded mx-1  p-1 hidden group-hover:block"
-        >
-          <PencilSimple size={13} color="#1D1A31" />
-        </button>
-        }
+        Billed to
+        {isOptionSelected && (
+          <button
+            onClick={handleSelectClientClick}
+            className="bg-miru-gray-1000 rounded mx-1  p-1 hidden group-hover:block"
+          >
+            <PencilSimple size={13} color="#1D1A31" />
+          </button>
+        )}
       </p>
 
       {isClientVisible && (
@@ -56,24 +66,26 @@ const ClientSelection = ({ clientList, selectedClient, setSelectedClient }) => {
           components={{ DropdownIndicator, IndicatorSeparator: () => null }}
         />
       )}
-      {!isOptionSelected && !isClientVisible &&
-      <button
-        className="py-5 mt-2 px-6 font-bold text-base text-miru-dark-purple-200 bg-white border-2 border-dashed border-miru-dark-purple-200 rounded-md tracking-widest"
-        onClick={handleGetClientList}
-      >
-        + ADD CLIENT
-      </button>
-      }
-      { isOptionSelected && <div>
-        <p className="font-bold text-base text-miru-dark-purple-1000">
-          {selectedClient.label}
-        </p>
-        <p className="font-normal text-xs text-miru-dark-purple-400 w-52">
-          {selectedClient.address}<br/>
-          {selectedClient.phone}
-        </p>
-      </div>
-      }
+      {!isOptionSelected && !isClientVisible && (
+        <button
+          className="py-5 mt-2 px-6 font-bold text-base text-miru-dark-purple-200 bg-white border-2 border-dashed border-miru-dark-purple-200 rounded-md tracking-widest"
+          onClick={handleGetClientList}
+        >
+          + ADD CLIENT
+        </button>
+      )}
+      {isOptionSelected && (
+        <div>
+          <p className="font-bold text-base text-miru-dark-purple-1000">
+            {selectedClient.label}
+          </p>
+          <p className="font-normal text-xs text-miru-dark-purple-400 w-52">
+            {selectedClient.address}
+            <br />
+            {selectedClient.phone}
+          </p>
+        </div>
+      )}
     </div>
   );
 };
