@@ -35,10 +35,10 @@ const handleErrorResponse = error => {
   }
   Toastr.error(
     error.response?.data?.error ||
-      error.response?.data?.notice ||
-      error.message ||
-      error.notice ||
-      "Something went wrong!"
+    error.response?.data?.notice ||
+    error.message ||
+    error.notice ||
+    "Something went wrong!"
   );
   if (error.response?.status === 423) {
     window.location.href = "/";
