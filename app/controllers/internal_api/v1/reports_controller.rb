@@ -32,7 +32,7 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
 
     def add_clients_filter(where_clause)
       if params[:client_id].present?
-        clients = Client.includes(:projects).where(id: params[:client_id])
+        clients = Client.includes(:projects).where(id: params[:client_id].split(","))
         project_ids = clients.map { |client| client.project_ids }.flatten
         where_clause.merge(project_id: project_ids)
       else
@@ -42,7 +42,7 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
 
     def add_bill_status_filter(where_clause)
       if params[:status].present?
-        where_clause.merge(bill_status: params[:status])
+        where_clause.merge(bill_status: params[:status].split(","))
       else
         where_clause
       end
@@ -50,7 +50,7 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
 
     def add_team_members_filter(where_clause)
       if params[:team_member].present?
-        where_clause.merge(user_id: params[:team_member])
+        where_clause.merge(user_id: params[:team_member].split(","))
       else
         where_clause
       end
