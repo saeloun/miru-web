@@ -149,7 +149,7 @@ RSpec.describe Client, type: :model do
 
         it "returns the hours_logged for a project in that month" do
           from, to = client.week_month_year(time_frame)
-          result = [project_1, project_2].map do | project |
+          results = [project_1, project_2].map do | project |
             {
               id: project.id, name: project.name, team: project.project_member_full_names,
               minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
