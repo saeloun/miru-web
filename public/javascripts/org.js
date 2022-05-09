@@ -7,6 +7,10 @@ function setTimeZoneOptions(options) {
     const optionElement = document.createElement("option");
     optionElement.value = option;
     optionElement.innerText = option;
+    if (window.location.pathname === "/company/new") {
+      optionElement.selected =
+        option === "(GMT-05:00) Eastern Time (US & Canada)";
+    }
     timeZoneSelect.appendChild(optionElement);
   });
 }
@@ -25,7 +29,12 @@ async function main() {
   const response = await fetch("/internal_api/v1/timezones");
   const jsonResponse = await response.json();
   timezones = jsonResponse.timezones;
+<<<<<<< HEAD
+  if (window.location.pathname === "/company/new")
+    setTimeZoneOptions(timezones[selectCountry.value]);
+=======
   setTimeZoneOptions(timezones[selectCountry.value]);
+>>>>>>> 55b888166bbb6857a672e61faf00a366b8e6af9c
 }
 
 main();
