@@ -88,4 +88,6 @@ Rails.application.configure do
     Bullet.add_footer = true
     Bullet.unused_eager_loading_enable = false
   end
+
+  config.serve_static_assets = true
 end

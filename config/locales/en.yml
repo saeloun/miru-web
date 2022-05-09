@@ -41,6 +41,7 @@ en:
     settings: Settings
     team: Team
     payments: Payments
+    help: Help
     time_tracking: Time Tracking
     view_notifications: View Notifications
   projects:
