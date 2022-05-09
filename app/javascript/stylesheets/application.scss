@@ -338,6 +338,14 @@
 }
 
 
+.filter {
+  &__counter {
+    @apply absolute right-0 block rounded-lg text-white bg-miru-han-purple-600;
+    top: 4px;
+    padding: 7px 5px;
+  }
+}
+
 body {
   font-family: "Manrope", "sans-serif";
 }
