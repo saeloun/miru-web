@@ -11,7 +11,7 @@
 # Indexes
 #
 #  index_stripe_connected_accounts_on_account_id  (account_id) UNIQUE
-#  index_stripe_connected_accounts_on_company_id  (company_id)
+#  index_stripe_connected_accounts_on_company_id  (company_id) UNIQUE
 #
 
 # frozen_string_literal: true

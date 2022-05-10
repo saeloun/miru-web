@@ -167,7 +167,7 @@ unique: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id"], name: "index_stripe_connected_accounts_on_account_id", unique: true
-    t.index ["company_id"], name: "index_stripe_connected_accounts_on_company_id"
+    t.index ["company_id"], name: "index_stripe_connected_accounts_on_company_id", unique: true
   end
 
   create_table "timesheet_entries", force: :cascade do |t|
