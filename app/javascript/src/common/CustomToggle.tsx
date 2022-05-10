@@ -7,7 +7,7 @@ const CustomToggle = ({ isChecked = false, setIsChecked, toggleCss, id }) => (
         id={id}
         className="toggle"
         type="checkbox"
-        onChange={() => setIsChecked(!isChecked)}
+        onChange={()=> setIsChecked(!isChecked) }
         checked={isChecked}
       />
       <div>
