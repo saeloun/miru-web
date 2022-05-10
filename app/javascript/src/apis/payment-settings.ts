@@ -1,9 +1,11 @@
 import axios from "axios";
 
-const path = "/internal_api/v1/payments/settings/stripe/connect";
+const path = "/payments/settings";
 
-const connectStripe = async () => axios.post(`${path}`);
+const get = async () => axios.get(`${path}`);
 
-const paymentSettings = { connectStripe };
+const connectStripe = async () => axios.post(`${path}/stripe/connect`);
+
+const paymentSettings = { get, connectStripe };
 
 export default paymentSettings;

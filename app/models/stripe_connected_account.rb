@@ -29,12 +29,16 @@ class StripeConnectedAccount < ApplicationRecord
     Stripe::Account.retrieve(self.account_id)
   end
 
+  def details_submitted
+    retrieve.details_submitted
+  end
+
   def url
     Stripe::AccountLink.create(
       type: "account_onboarding",
       account: self.account_id,
       refresh_url: "#{ENV['APP_BASE_URL']}/internal_api/v1/payment/settings/stripe/connect/refresh",
-      return_url: "#{ENV['APP_BASE_URL']}/payment/settings"
+      return_url: "#{ENV['APP_BASE_URL']}/payments/settings"
     ).url unless retrieve.details_submitted
   end
 end

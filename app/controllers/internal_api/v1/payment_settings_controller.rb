@@ -1,6 +1,21 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::PaymentSettingsController < InternalApi::V1::ApplicationController
+  def index
+    authorize :index, policy_class: PaymentSettingsPolicy
+
+    render json: {
+      providers: {
+        stripe: {
+          connected: stripe_connected_account.nil? ? false : stripe_connected_account.details_submitted
+        },
+        paypal: {
+          connected: false
+        }
+      }
+    }
+  end
+
   def connect_stripe
     authorize :connect_stripe, policy_class: PaymentSettingsPolicy
 
