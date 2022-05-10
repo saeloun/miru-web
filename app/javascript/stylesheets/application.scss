@@ -392,3 +392,72 @@ body {
   align-items: center;
   margin-top: 2px;
 }
+
+.CustomToggle {
+  &_Container{
+	  -webkit-transform: translate3d( -50%, -50%, 0 );
+	  transform: translate3d( -50%, -50%, 0 );
+  }
+}
+
+input[type="checkbox"].toggle  {
+  position: absolute;
+  opacity: 0;
+}
+
+input[type="checkbox"].toggle + div {
+  vertical-align: middle;
+  width: 40px;
+  height: 20px;
+  border-radius: 999px;
+  background-color: #E1E6EC;
+  -webkit-transition-duration: .4s;
+  transition-duration: .4s;
+  -webkit-transition-property: background-color, box-shadow;
+  transition-property: background-color, box-shadow;
+  cursor: pointer;
+}
+
+input[type="checkbox"].toggle:checked + div {
+  width: 48px;
+  background-position: 0 0;
+  background-color: #E1E6EC;
+}
+
+input[type="checkbox"].toggle + div {
+  width: 48px;
+  height: 24px;
+}
+
+
+input[type="checkbox"].toggle:checked + div {
+  background-color: #5B34EA;
+}
+
+input[type="checkbox"].toggle + div > div {
+  float: left;
+  width: 16px; height: 16px;
+  border-radius: inherit;
+  background: #ffffff;
+  -webkit-transition-timing-function: cubic-bezier(1,0,0,1);
+  transition-timing-function: cubic-bezier(1,0,0,1);
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  -webkit-transition-property: transform, background-color;
+  transition-property: transform, background-color;
+  pointer-events: none;
+  margin-top: 4px;
+  margin-left: 3px;
+}
+
+input[type="checkbox"].toggle:checked + div > div {
+  -webkit-transform: translate3d(20px, 0, 0);
+  transform: translate3d(20px, 0, 0);
+  background-color: #ffffff;
+}
+
+
+input[type="checkbox"].toggle:checked + div > div {
+  -webkit-transform: translate3d(25px, 0, 0);
+  transform: translate3d(25px, 0, 0);
+}
