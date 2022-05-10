@@ -63,11 +63,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :invoices, only: [:index, :edit, :update]
+
   get "clients/*path", to: "clients#index", via: :all
   get "clients", to: "clients#index"
 
   get "invoices/*path", to: "invoices#index", via: :all
-  get "invoices", to: "invoices#index"
 
   get "projects/*path", to: "projects#index", via: :all
   get "projects", to: "projects#index"
