@@ -17,7 +17,24 @@
 # frozen_string_literal: true
 
 class StripeConnectedAccount < ApplicationRecord
+  before_create do
+    self.account_id = Stripe::Account.create(type: "standard").id
+  end
+
   belongs_to :company
 
   validates :account_id, uniqueness: true
+
+  def retrieve
+    Stripe::Account.retrieve(self.account_id)
+  end
+
+  def url
+    Stripe::AccountLink.create(
+      type: "account_onboarding",
+      account: self.account_id,
+      refresh_url: "#{ENV['APP_BASE_URL']}/internal_api/v1/payment/settings/stripe/connect/refresh",
+      return_url: "#{ENV['APP_BASE_URL']}/payment/settings"
+    ).url unless retrieve.details_submitted
+  end
 end

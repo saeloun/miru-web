@@ -4,21 +4,14 @@ class InternalApi::V1::PaymentSettingsController < InternalApi::V1::ApplicationC
   def connect_stripe
     authorize :connect_stripe, policy_class: PaymentSettingsPolicy
 
-    account = Stripe::Account.create(type: "standard")
+    StripeConnectedAccount.create!({ company: current_company }) if stripe_connected_account.nil?
 
-    StripeConnectedAccount.create(
-      {
-        account_id: account.id,
-        company: current_company
-      })
-
-    account_link = Stripe::AccountLink.create(
-      type: "account_onboarding",
-      account: account.id,
-      refresh_url: "#{ENV['APP_BASE_URL']}/internal_api/v1/payment/settings/stripe/connect/refresh",
-      return_url: "#{ENV['APP_BASE_URL']}/payment/settings/stripe/connect/return"
-    )
-
-    render json: { account_link: account_link.url }
+    render json: { account_link: stripe_connected_account.url }
   end
+
+  private
+
+    def stripe_connected_account
+      current_company.stripe_connected_account
+    end
 end
