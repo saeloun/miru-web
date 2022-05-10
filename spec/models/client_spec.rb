@@ -121,9 +121,7 @@ RSpec.describe Client, type: :model do
               minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
             }
           end
-          results.map do |result|
-            expect(client.project_details(time_frame)).to include(result)
-          end
+          expect(client.project_details(time_frame)).to match_array(results)
         end
       end
 
@@ -138,9 +136,7 @@ RSpec.describe Client, type: :model do
               minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
             }
           end
-          results.map do |result|
-            expect(client.project_details(time_frame)).to include(result)
-          end
+          expect(client.project_details(time_frame)).to match_array(results)
         end
       end
 
@@ -155,9 +151,7 @@ RSpec.describe Client, type: :model do
               minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
             }
           end
-          results.map do |result|
-            expect(client.project_details(time_frame)).to include(result)
-          end
+          expect(client.project_details(time_frame)).to match_array(results)
         end
       end
 
@@ -172,9 +166,7 @@ RSpec.describe Client, type: :model do
               minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
             }
           end
-          results.map do |result|
-            expect(client.project_details(time_frame)).to include(result)
-          end
+          expect(client.project_details(time_frame)).to match_array(results)
         end
       end
     end
