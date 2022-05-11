@@ -78,8 +78,6 @@ Rails.application.configure do
   config.action_mailer.delivery_method = ENV.fetch("MAILER_DELIVERY_METHOD", "letter_opener").to_sym
   config.action_mailer.perform_deliveries = true
 
-  config.active_job.queue_adapter = :sidekiq
-
   Rails.application.config.after_initialize do
     Bullet.enable = true
     Bullet.bullet_logger = true
