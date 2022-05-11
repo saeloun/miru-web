@@ -13,6 +13,8 @@ import { unmapClientList } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 import NewClient from "../Modals/NewClient";
+import { cashFormatter } from "helpers/cashFormater";
+import { currencySymbol } from "helpers/currencySymbol";
 
 const getTableData = (clients) => {
   if (clients) {
@@ -37,6 +39,7 @@ const Clients = ({ isAdminUser }) => {
   const [clientToDelete, setDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
+  const [overdueOutstandingAmount, setOverDueOutstandingAmt]= useState<any>(null);
   const navigate = useNavigate();
 
   const handleEditClick = (id) => {
@@ -57,6 +60,7 @@ const Clients = ({ isAdminUser }) => {
         const sanitized = unmapClientList(res);
         setClientData(sanitized.clientList);
         setTotalMinutes(sanitized.totalMinutes);
+        setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
       });
   };
 
@@ -72,6 +76,7 @@ const Clients = ({ isAdminUser }) => {
         const sanitized = unmapClientList(res);
         setClientData(sanitized.clientList);
         setTotalMinutes(sanitized.totalMinutes);
+        setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
       });
   }, []);
 
@@ -93,13 +98,15 @@ const Clients = ({ isAdminUser }) => {
     }
   ];
 
+  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
+
   const amountBox = [{
     title: "OVERDUE",
-    amount: "$35.5k"
+    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount),
   },
   {
     title: "OUTSTANDING",
-    amount: "$24.3k"
+    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.outstanding_amount),
   }];
 
   const tableData = getTableData(clientData);
