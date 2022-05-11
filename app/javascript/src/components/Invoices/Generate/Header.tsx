@@ -16,7 +16,8 @@ const Header = ({
   amountDue,
   amountPaid,
   discount,
-  tax
+  tax,
+  setShowSendInvoiceModal
 }) => {
 
   const navigate = useNavigate();
@@ -46,7 +47,10 @@ const Header = ({
     })
       .then(() => navigate("/invoices"))
       .catch();
+  };
 
+  const handleSendInvoice = () => {
+    setShowSendInvoiceModal(true);
   };
 
   return (
@@ -74,6 +78,7 @@ const Header = ({
           </button>
           <button
             type="button"
+            onClick={handleSendInvoice}
             className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
           >
             <PaperPlaneTilt size={18} color="White" />

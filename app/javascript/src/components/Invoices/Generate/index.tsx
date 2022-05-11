@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import generateInvoice from "apis/generateInvoice";
+import Toastr from "common/Toastr";
 
 import Container from "./Container";
 import Header from "./Header";
 import { unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
+import SendInvoice from "../modals/SendInvoice";
 
 const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
   try {
@@ -36,12 +38,26 @@ const GenerateInvoices = () => {
   const today = new Date();
   const [dueDate, setDueDate] = useState(today.setMonth(issueDate.getMonth() + 1));
   const [selectedOption, setSelectedOption] = useState<any>([]);
+  const [showSendInvoiceModal, setShowSendInvoiceModal] = useState<boolean>(false);
+
+  const sendInvoiceObj = {
+    "client": selectedClient,
+    "company": invoiceDetails?.companyDetails,
+    invoiceNumber
+  };
 
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
     fetchGenerateInvoice(navigate, getInvoiceDetails);
   }, []);
+
+  const getSendInvoiceModal = () => {
+    if (selectedClient && invoiceDetails.companyDetails) {
+      return <SendInvoice invoice={sendInvoiceObj} setIsSending={setShowSendInvoiceModal} isSending={showSendInvoiceModal} />;
+    }
+    else Toastr.error("Please select client and enter invoice id");
+  };
 
   if (invoiceDetails) {
     return (
@@ -58,6 +74,7 @@ const GenerateInvoices = () => {
           discount={discount}
           tax={tax}
           invoiceLineItems={selectedOption}
+          setShowSendInvoiceModal={setShowSendInvoiceModal}
         />
         <Container
           invoiceDetails={invoiceDetails}
@@ -84,6 +101,7 @@ const GenerateInvoices = () => {
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
         />
+        {showSendInvoiceModal && getSendInvoiceModal()}
       </React.Fragment>
     );
   }
