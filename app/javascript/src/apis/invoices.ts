@@ -14,9 +14,6 @@ const getInvoice = async (id) => axios.get(`${path}/${id}`);
 const sendInvoice = async (id, payload) =>
   axios.post(`${path}/${id}/send_invoice`, payload);
 
-const sendInvoiceWoId = async (payload) =>
-  axios.post(`${path}/send_invoice`, payload);
-
-const invoicesApi = { get, post, patch, sendInvoice, getInvoice, sendInvoiceWoId };
+const invoicesApi = { get, post, patch, sendInvoice, getInvoice };
 
 export default invoicesApi;

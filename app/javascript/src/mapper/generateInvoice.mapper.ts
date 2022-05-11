@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 
 interface GenerateInvoiceClientList {
   address: string;
@@ -35,6 +36,28 @@ const unmapGenerateInvoice = (input) => {
   };
 };
 
+const mapGenerateInvoice = (input) => ({
+  client_id: input.selectedClient.value,
+  invoice_number: input.invoiceNumber,
+  reference: input.reference,
+  issue_date: dayjs(input.issueDate).format("DD.MM.YYYY"),
+  due_date: dayjs(input.dueDate).format("DD.MM.YYYY"),
+  amount_due: input.amountDue,
+  amount_paid: input.amountPaid,
+  amount: input.amount,
+  discount: input.discount,
+  tax: input.tax,
+  invoice_line_items_attributes: input.selectedOption.map(ilt => ({
+    name: `${ilt.first_name} ${ilt.last_name}`,
+    description: ilt.description,
+    date: ilt.date,
+    rate: ilt.rate,
+    quantity: ilt.qty,
+    timesheet_entry_id: ilt.timesheet_entry_id
+  }))
+});
+
 export {
-  unmapGenerateInvoice
+  unmapGenerateInvoice,
+  mapGenerateInvoice
 };
