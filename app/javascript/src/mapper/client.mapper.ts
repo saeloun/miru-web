@@ -11,7 +11,8 @@ const unmapClientList = (input) => {
   const { data } = input;
   return {
     clientList: getClientList(data),
-    totalMinutes: data.total_minutes
+    totalMinutes: data.total_minutes,
+    overdueOutstandingAmount: data.overdue_outstanding_amount
   };
 };
 
@@ -30,8 +31,9 @@ const unmapClientDetails = (input) => {
       name: data.client_details.name,
       email: data.client_details.email,
       phone: data.client_details.phone || "--",
-      address: data.client_details.address || "--"
+      address: data.client_details.address || "--",
     },
+    overdueOutstandingAmount: data.overdue_outstanding_amount,
     totalMinutes: data.total_minutes,
     projectDetails: mapProjectDetails(data.project_details)
   };
