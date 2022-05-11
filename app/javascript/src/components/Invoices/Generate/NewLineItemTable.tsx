@@ -1,18 +1,32 @@
 import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import dayjs from "dayjs";
 import { DropdownHeader } from "./CustomComponents";
 
-const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew, lineItems, loadMoreItems, totalLineItems, pageNumber, selectedOption, setSelectedOption }) => {
+const NewLineItemTable = ({
+  showItemInputs,
+  setShowItemInputs,
+  addNew, setAddNew,
+  lineItems, setLineItems,
+  loadMoreItems,
+  totalLineItems,
+  pageNumber, setPageNumber,
+  selectedOption,
+  setSelectedOption,
+  setMultiLineItemModal }) => {
+
   const hasMoreItems = lineItems.length === totalLineItems;
   const selectRowId = (items) => {
-    const option = { ...items, lineTotal: (Number(items.qty)/60 * Number(items.rate)) };
+    const option = { ...items, lineTotal: (Number(items.qty) / 60 * Number(items.rate)) };
     setAddNew(false);
     setSelectedOption([...selectedOption, option]);
+    setLineItems([]);
+    setPageNumber(1);
   };
 
   return (
     <div>
-      <DropdownHeader/>
+      <DropdownHeader setShowMultilineModal={setMultiLineItemModal} />
       <div>
         <button onClick={() => {
           setShowItemInputs(!showItemInputs);
@@ -21,7 +35,7 @@ const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew
       </div>
       <div className="overflow-scroll mt-4 relative">
         <InfiniteScroll
-          dataLength={pageNumber*10}
+          dataLength={pageNumber * 10}
           next={loadMoreItems}
           hasMore={!hasMoreItems}
           loader={
@@ -36,22 +50,26 @@ const NewLineItemTable = ({ showItemInputs, setShowItemInputs, addNew, setAddNew
             </p>
           }
         >
-          {lineItems.map(items => (
-            <div onClick = {() => {selectRowId(items);}} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100">
-              <span className="font-medium text-base text-miru-dark-purple-1000 text-left">
-                {items.first_name} {items.last_name}
-              </span>
-              <span className="font-medium text-xs text-miru-dark-purple-600 text-left w-1/2">
-                {items.description}
-              </span>
-              <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
-                {items.date}
-              </span>
-              <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
-                ${items.rate}
-              </span>
-            </div>
-          ))
+          {lineItems.map((item, index) => {
+            const hoursLogged = (item.qty / 60).toFixed(2);
+            const date = dayjs(item.date).format("DD.MM.YYYY");
+            return (
+              <div key={index} onClick={() => { selectRowId(item); }} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100">
+                <span className="font-medium text-base text-miru-dark-purple-1000 text-left">
+                  {item.first_name} {item.last_name}
+                </span>
+                <span className="font-medium text-xs text-miru-dark-purple-600 text-left w-1/2">
+                  {item.description}
+                </span>
+                <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
+                  {date}
+                </span>
+                <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
+                  {hoursLogged}
+                </span>
+              </div>
+            );
+          })
           }
         </InfiniteScroll>
       </div>

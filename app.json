@@ -1,25 +1,40 @@
 {
-  "name": "MiruWeb",
+  "name": "Miru",
   "repository": "https://github.com/saeloun/miru-web",
-  "addons": [
-    {
-      "plan": "heroku-postgresql:hobby-dev"
-    }
-  ],
+  "description": "Miru is an open-source to for time tracking, invoice management, and accounting easy for small businesses worldwide.",
+  "website": "https://getmiru.com/",
+  "logo": "https://getmiru.com/assets/images/image01.svg",
+  "success_url": "/",
   "env": {
-    "MAILER_SENDER": {
-      "description": "The email address to use as the sender",
-      "value": "miru-review@saeloun.com"
+    "SECRET_TOKEN": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
     },
-    "EMAIL_DELIVERY_METHOD": {
-      "description": "The email delivery method to use",
-      "value": "letter_opener_web"
+    "RACK_ENV": {
+      "description": "Environment for rack middleware.",
+      "value": "production"
     },
-    "JWT_SECRET_KEY": {
-      "description": "The secret key for the JWT",
-      "value": "fc68556be046e0972ccd4608d10aa36f01adf7fd9eeae05c792308f973be79c055f0a72f8b76cd5aa0740622d263a93c2b3f6e51ad2873afda81e6a0724884c2"
+    "RAILS_ENV": {
+      "description": "Environment for rails middleware.",
+      "value": "production"
+    },
+    "APP_BASE_URL": {
+      "description": "Base URL for the application.",
+      "value": "https://CHANGE.herokuapp.com"
     }
   },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "FREE"
+    },
+    "worker": {
+      "quantity": 1,
+      "size": "FREE"
+    }
+  },
+  "image": "heroku/ruby",
+  "addons": [ "heroku-redis", "heroku-postgresql"],
   "buildpacks": [
     {
       "url": "heroku/nodejs"
@@ -28,7 +43,11 @@
       "url": "heroku/ruby"
     }
   ],
-  "scripts": {
-    "postdeploy": "bundle exec rails db:migrate && bundle exec rails db:seed"
+  "environments": {
+    "test": {
+      "scripts": {
+        "postdeploy": "bundle exec rails db:migrate && bundle exec rails db:seed"
+      }
+    }
   }
 }

@@ -24,6 +24,16 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/sent_emails"
   end
 
+  Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+    ActiveSupport::SecurityUtils.secure_compare(
+      ::Digest::SHA256.hexdigest(username),
+      ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_USERNAME"])) &
+      ActiveSupport::SecurityUtils.secure_compare(
+        ::Digest::SHA256.hexdigest(password),
+        ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_PASSWORD"]))
+  end
+  mount Sidekiq::Web, at: "/sidekiq"
+
   root to: "root#index"
   draw(:internal_api)
   resources :dashboard, only: [:index]
@@ -38,7 +48,6 @@ Rails.application.routes.draw do
   resources :team, only: [:index, :update, :destroy, :edit]
 
   resources :reports, only: [:index]
-  resources :invoices, only: [:show]
   resources :workspaces, only: [:update]
 
   resources :invoices, only: [], module: :invoices do
@@ -72,6 +81,4 @@ Rails.application.routes.draw do
     get "profile", to: "users/registrations#edit"
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
   end
-
-  mount Sidekiq::Web => "/sidekiq"
 end

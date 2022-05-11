@@ -184,7 +184,7 @@ const AddEntry: React.FC<Iprops> = ({
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + editEntryId ? "h-32" : "h-8" )}
+          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
         ></textarea>
       </div>
       <div className="w-60">
