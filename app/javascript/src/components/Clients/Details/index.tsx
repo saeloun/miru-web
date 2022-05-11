@@ -7,13 +7,13 @@ import clients from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
+import { cashFormatter } from "helpers/cashFormater";
+import { currencySymbol } from "helpers/currencySymbol";
 
 import Header from "./Header";
 import { unmapClientDetails } from "../../../mapper/client.mapper";
 import AddEditProject from "../../Projects/Modals/AddEditProject";
 import DeleteProject from "../../Projects/Modals/DeleteProject";
-import { cashFormatter } from "helpers/cashFormater";
-import { currencySymbol } from "helpers/currencySymbol";
 
 const getTableData = (clients) => {
   if (clients) {
@@ -100,11 +100,11 @@ const ClientList = ({ isAdminUser }) => {
 
   const amountBox = [{
     title: "OVERDUE",
-    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount),
+    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount)
   },
   {
     title: "OUTSTANDING",
-    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.outstanding_amount),
+    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.outstanding_amount)
   }];
 
   const tableData = getTableData(projectDetails);
