@@ -71,10 +71,9 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
       setStatus(InvoiceStatus.LOADING);
 
       const payload = { invoice_email: invoiceEmail };
-      const {
-        data: { notice }
-      } = await invoicesApi.sendInvoice(invoice.id, payload);
-      Toastr.success(notice);
+      const resp = await invoicesApi.sendInvoice(invoice.id, payload);
+
+      Toastr.success(resp.data.message);
       setStatus(InvoiceStatus.SUCCESS);
     } catch (error) {
       setStatus(InvoiceStatus.ERROR);
