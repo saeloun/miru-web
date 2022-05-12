@@ -11,5 +11,3 @@ json.providers do
     json.connected false
   end
 end
-
-
