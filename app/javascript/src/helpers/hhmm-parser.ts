@@ -1,7 +1,13 @@
 export const minutesFromHHMM = (duration: string) => {
   const numberDuration = Number(duration);
   if (duration.includes(":")) {
-    const [h, m] = duration.split(":");
+    let [h, m] = duration.split(":");
+    if (h.length > 2) {
+      h = h.slice(0, 2);
+    }
+    if (m.length > 2) {
+      m = m.slice(0, 2);
+    }
     return Number(h) * 60 + Number(m);
   } else if (numberDuration > 0) {
     return numberDuration * 60;
