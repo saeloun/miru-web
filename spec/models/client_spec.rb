@@ -43,6 +43,8 @@ RSpec.describe Client, type: :model do
       let(:client) { create(:client, company:) }
       let(:project_1) { create(:project, client:) }
       let(:project_2) { create(:project, client:) }
+      let(:results) do
+      end
 
       before do
         create_list(:timesheet_entry, 5, user:, project: project_1)
@@ -104,6 +106,15 @@ RSpec.describe Client, type: :model do
       let(:client) { create(:client, company:) }
       let(:project_1) { create(:project, client:) }
       let(:project_2) { create(:project, client:) }
+      let(:results) do
+        from, to = client.week_month_year(time_frame)
+        [project_1, project_2].map do | project |
+          {
+            id: project.id, name: project.name, team: project.project_member_full_names,
+            minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
+          }
+        end
+      end
 
       before do
         create_list(:timesheet_entry, 5, user:, project: project_1)
@@ -114,14 +125,7 @@ RSpec.describe Client, type: :model do
         let(:time_frame) { "last_week" }
 
         it "returns the hours_logged for a project in the last week" do
-          from, to = client.week_month_year(time_frame)
-          result = [project_1, project_2].map do | project |
-            {
-              id: project.id, name: project.name, team: project.project_member_full_names,
-              minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
-            }
-          end
-          expect(client.project_details(time_frame)).to eq(result)
+          expect(client.project_details(time_frame)).to match_array(results)
         end
       end
 
@@ -129,14 +133,7 @@ RSpec.describe Client, type: :model do
         let(:time_frame) { "week" }
 
         it "returns the hours_logged for a project in that week" do
-          from, to = client.week_month_year(time_frame)
-          result = [project_1, project_2].map do | project |
-            {
-              id: project.id, name: project.name, team: project.project_member_full_names,
-              minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
-            }
-          end
-          expect(client.project_details(time_frame)).to eq(result)
+          expect(client.project_details(time_frame)).to match_array(results)
         end
       end
 
@@ -144,14 +141,7 @@ RSpec.describe Client, type: :model do
         let(:time_frame) { "month" }
 
         it "returns the hours_logged for a project in that month" do
-          from, to = client.week_month_year(time_frame)
-          result = [project_1, project_2].map do | project |
-            {
-              id: project.id, name: project.name, team: project.project_member_full_names,
-              minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
-            }
-          end
-          expect(client.project_details(time_frame)).to eq(result)
+          expect(client.project_details(time_frame)).to match_array(results)
         end
       end
 
@@ -159,14 +149,7 @@ RSpec.describe Client, type: :model do
         let(:time_frame) { "year" }
 
         it "returns the hours_logged for a project in that year" do
-          from, to = client.week_month_year(time_frame)
-          result = [project_1, project_2].map do | project |
-            {
-              id: project.id, name: project.name, team: project.project_member_full_names,
-              minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
-            }
-          end
-          expect(client.project_details(time_frame)).to eq(result)
+          expect(client.project_details(time_frame)).to match_array(results)
         end
       end
     end
