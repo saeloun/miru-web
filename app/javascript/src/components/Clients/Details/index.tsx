@@ -7,6 +7,8 @@ import clients from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
+import { cashFormatter } from "helpers/cashFormater";
+import { currencySymbol } from "helpers/currencySymbol";
 
 import Header from "./Header";
 import { unmapClientDetails } from "../../../mapper/client.mapper";
@@ -36,6 +38,7 @@ const ClientList = ({ isAdminUser }) => {
   const [totalMinutes, setTotalMinutes] = useState(null);
   const [clientDetails, setClientDetails] = useState<any>({});
   const [editProjectData, setEditProjectData] = React.useState<any>(null);
+  const [overdueOutstandingAmount, setOverDueOutstandingAmt]= useState<any>(null);
 
   const params = useParams();
 
@@ -58,6 +61,7 @@ const ClientList = ({ isAdminUser }) => {
         setProjectDetails(sanitized.projectDetails);
         setClientDetails(sanitized.clientDetails);
         setTotalMinutes(sanitized.totalMinutes);
+        setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
       });
   };
 
@@ -70,6 +74,7 @@ const ClientList = ({ isAdminUser }) => {
         setClientDetails(sanitized.clientDetails);
         setProjectDetails(sanitized.projectDetails);
         setTotalMinutes(sanitized.totalMinutes);
+        setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
       });
   }, []);
 
@@ -91,13 +96,15 @@ const ClientList = ({ isAdminUser }) => {
     }
   ];
 
+  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
+
   const amountBox = [{
     title: "OVERDUE",
-    amount: "$35.5k"
+    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount)
   },
   {
     title: "OUTSTANDING",
-    amount: "$24.3k"
+    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.outstanding_amount)
   }];
 
   const tableData = getTableData(projectDetails);
