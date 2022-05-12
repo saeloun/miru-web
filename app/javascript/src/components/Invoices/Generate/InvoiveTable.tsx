@@ -7,6 +7,7 @@ import NewLineItemTable from "./NewLineItemTable";
 
 import useOutsideClick from "../../../helpers/outsideClick";
 import MultipleEntriesModal from "../MultipleEntriesModal";
+import dayjs from "dayjs";
 
 const fetchNewLineItems = async (
   selectedClient,
@@ -26,7 +27,11 @@ const fetchNewLineItems = async (
     await generateInvoice.getLineItems(selectedClient.value, pageNumber, selectedEntriesString).then(async res => {
       await setTotalLineItems(res.data.pagy.count);
       await setPageNumber(pageNumber + 1);
-      await setLineItems([...res.data.new_line_item_entries, ...lineItems]);
+      const mergedItems = [...res.data.new_line_item_entries, ...lineItems];
+      const sortedData = mergedItems.sort((item1, item2) => {
+        return dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1
+      });
+      await setLineItems(sortedData);
     });
   }
 };
@@ -63,6 +68,7 @@ const InvoiceTable = ({
 
   const getNewLineItemDropdown = () => {
     if (selectedClient && lineItems) {
+      console.log("lineItems ---> ", lineItems);
       return <NewLineItemTable
         showItemInputs={showItemInputs}
         setShowItemInputs={setShowItemInputs}
