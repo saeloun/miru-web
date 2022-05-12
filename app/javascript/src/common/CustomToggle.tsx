@@ -1,11 +1,11 @@
 import React from "react";
 
 const CustomToggle = ({ isChecked = false, setIsChecked, toggleCss, id }) => (
-  <div className={`CustomToggle_Container ${toggleCss}`}>
+  <div className={`customToggle__container ${toggleCss}`}>
     <label>
       <input
         id={id}
-        className="toggle"
+        className="customToggle"
         type="checkbox"
         onChange={()=> setIsChecked(!isChecked) }
         checked={isChecked}
