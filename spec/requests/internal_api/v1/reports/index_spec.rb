@@ -24,6 +24,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
     context "when reports page's request is made without any filters" do
       before do
         @timesheet_entry1 = create(:timesheet_entry, project:)
+        TimesheetEntry.search_index.refresh
         get internal_api_v1_reports_path
       end
 
@@ -44,6 +45,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
         @timesheet_entry1 = create(:timesheet_entry, project:, work_date: last_month_start_date)
         @timesheet_entry2 = create(:timesheet_entry, project:, work_date: this_week_start_date)
         @timesheet_entry3 = create(:timesheet_entry, project:, work_date: this_week_start_date)
+        TimesheetEntry.search_index.refresh
         get "/internal_api/v1/reports?date_range=this_week"
       end
 
@@ -62,6 +64,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
         @timesheet_entry1 = create(:timesheet_entry, project:, bill_status: "non_billable")
         @timesheet_entry2 = create(:timesheet_entry, project:, bill_status: "unbilled")
         @timesheet_entry3 = create(:timesheet_entry, project:, bill_status: "non_billable")
+        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports with given single status value" do
@@ -87,6 +90,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
         @timesheet_entry2 = create(:timesheet_entry, project:)
         @timesheet_entry3 = create(:timesheet_entry, project: project2)
         @timesheet_entry4 = create(:timesheet_entry, project: project3)
+        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports with given single client value" do
@@ -115,6 +119,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
         @timesheet_entry2 = create(:timesheet_entry, user: @user1, project:)
         @timesheet_entry3 = create(:timesheet_entry, user: @user2, project:)
         @timesheet_entry4 = create(:timesheet_entry, user: @user3, project:)
+        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports with given single team member value" do
@@ -175,6 +180,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
           work_date: this_week_start_date,
           user: @user1,
           bill_status: "unbilled")
+        TimesheetEntry.search_index.refresh
       end
 
       it "returns the time entry reports with given filter values" do
