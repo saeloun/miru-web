@@ -31,6 +31,11 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
         expect(response).to have_http_status(:ok)
         expect(json_response["entries"].size).to eq(1)
         expect(json_response["entries"].first["id"]).to eq(@timesheet_entry1.id)
+        filter_options = {
+          clients: [{ "label": client.name, "value": client.id }],
+          teamMembers: [{ "label": user.full_name, "value": user.id }]
+        }
+        expect(json_response["filterOptions"]).to eq(JSON.parse(filter_options.to_json))
       end
     end
 
@@ -48,6 +53,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
         expect(json_response["entries"].size).to eq(2)
         expect(timesheet_ids_in_response).to include(@timesheet_entry2.id, @timesheet_entry3.id)
         expect(timesheet_ids_in_response).not_to include(@timesheet_entry1.id)
+        expect(json_response["filterOptions"]).to eq(JSON.parse({ clients: [], teamMembers: [] }.to_json))
       end
     end
 

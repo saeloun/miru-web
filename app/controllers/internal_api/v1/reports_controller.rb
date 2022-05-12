@@ -5,80 +5,30 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
 
   def index
     authorize :report
-    render :index, locals: { entries: }, status: :ok
+    render :index, locals: { entries:, filter_options: }, status: :ok
   end
 
   private
 
+    def filter_options
+      # Send filter options only when page loads
+      # and not for other requests where user is doing filtering on reports page
+      return {} if any_filter_added?
+
+      @_filter_options ||= { clients: current_company.clients, team_members: current_company.users }
+    end
+
+    def any_filter_added?
+      params[:date_range].present? ||
+      params[:status].present? ||
+      params[:team_member].present? ||
+      params[:team_member].present?
+    end
+
     def entries
-      where_clause = add_filters_if_any({ project_id: current_company.project_ids })
+      current_company_project_ids_filter = { project_id: current_company.project_ids }
+      filters_where_clause = Report::Filters.process(params)
+      where_clause = current_company_project_ids_filter.merge(filters_where_clause)
       TimesheetEntry.search(where: where_clause, includes: [:user, :project])
-    end
-
-    def add_filters_if_any(where_clause)
-      where_clause = add_date_range_filter(where_clause)
-      where_clause = add_clients_filter(where_clause)
-      where_clause = add_bill_status_filter(where_clause)
-      where_clause = add_team_members_filter(where_clause)
-    end
-
-    def add_date_range_filter(where_clause)
-      if params[:date_range].present?
-        where_clause.merge(work_date: from_date..to_date)
-      else
-        where_clause
-      end
-    end
-
-    def add_clients_filter(where_clause)
-      if params[:client_id].present?
-        clients = Client.includes(:projects).where(id: params[:client_id].split(","))
-        project_ids = clients.map { |client| client.project_ids }.flatten
-        where_clause.merge(project_id: project_ids)
-      else
-        where_clause
-      end
-    end
-
-    def add_bill_status_filter(where_clause)
-      if params[:status].present?
-        where_clause.merge(bill_status: params[:status].split(","))
-      else
-        where_clause
-      end
-    end
-
-    def add_team_members_filter(where_clause)
-      if params[:team_member].present?
-        where_clause.merge(user_id: params[:team_member].split(","))
-      else
-        where_clause
-      end
-    end
-
-    def from_date
-      case params[:date_range]
-      when "this_month"
-        0.month.ago.beginning_of_month
-      when "last_month"
-        1.month.ago.beginning_of_month
-      when "this_week"
-        0.weeks.ago.beginning_of_week
-      when "last_week"
-        1.weeks.ago.beginning_of_week
-      end
-    end
-
-    def to_date
-      case params[:date_range]
-      when "this_month"
-        0.month.ago.end_of_month
-      when "last_month"
-        1.month.ago.end_of_month
-      when "this_week"
-        0.weeks.ago.end_of_week
-      when "last_week"
-        1.weeks.ago.end_of_week
-      end
     end
 end

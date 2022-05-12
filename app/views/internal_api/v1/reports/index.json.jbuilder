@@ -18,8 +18,8 @@ json.filter_options do
     json.label client.name
     json.value client.id
   end
-   json.team_members filter_options[:team_members] do |team_member|
-    json.label team_member.full_name
-    json.value team_member.id
-  end
+  json.team_members filter_options[:team_members] do |team_member|
+   json.label team_member.full_name
+   json.value team_member.id
+ end
 end
