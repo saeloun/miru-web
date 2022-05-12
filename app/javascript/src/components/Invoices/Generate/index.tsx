@@ -37,7 +37,7 @@ const GenerateInvoices = () => {
   const today = new Date();
   const [dueDate, setDueDate] = useState(today.setMonth(issueDate.getMonth() + 1));
   const [selectedOption, setSelectedOption] = useState<any>([]);
-  const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(false);
+  const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(true);
 
   useEffect(() => {
     setAuthHeaders();
