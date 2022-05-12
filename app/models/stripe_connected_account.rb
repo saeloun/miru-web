@@ -17,6 +17,8 @@
 # frozen_string_literal: true
 
 class StripeConnectedAccount < ApplicationRecord
+  include Rails.application.routes.url_helpers
+
   before_create do
     self.account_id = Stripe::Account.create(type: "standard").id
   end
@@ -24,10 +26,6 @@ class StripeConnectedAccount < ApplicationRecord
   belongs_to :company
 
   validates :account_id, uniqueness: true
-
-  def retrieve
-    Stripe::Account.retrieve(self.account_id)
-  end
 
   def details_submitted
     retrieve.details_submitted
@@ -37,8 +35,14 @@ class StripeConnectedAccount < ApplicationRecord
     Stripe::AccountLink.create(
       type: "account_onboarding",
       account: self.account_id,
-      refresh_url: "#{ENV['APP_BASE_URL']}/payments/settings/stripe/connect/refresh",
-      return_url: "#{ENV['APP_BASE_URL']}/payments/settings"
-    ).url unless retrieve.details_submitted
+      refresh_url: payments_settings_stripe_connect_refresh_url(host: "#{ENV['APP_BASE_URL']}"),
+      return_url: payments_settings_url(host: "#{ENV['APP_BASE_URL']}")
+    ).url unless details_submitted
   end
+
+  private
+
+    def retrieve
+      Stripe::Account.retrieve(self.account_id)
+    end
 end
