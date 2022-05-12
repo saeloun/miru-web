@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { X, FloppyDisk, PaperPlaneTilt } from "phosphor-react";
+import { X, FloppyDisk, PaperPlaneTilt, Gear } from "phosphor-react";
 
 const Header = ({
   handleSendInvoice,
@@ -50,6 +50,5 @@ const Header = ({
     </div>
   </React.Fragment>
 );
-
 
 export default Header;

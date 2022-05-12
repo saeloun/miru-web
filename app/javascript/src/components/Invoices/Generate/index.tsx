@@ -5,12 +5,13 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import generateInvoice from "apis/generateInvoice";
 
 import invoicesApi from "apis/invoices";
+import Toastr from "common/Toastr";
 import Container from "./Container";
 import Header from "./Header";
 
+import Invoice_settings from "./Invoice_settings";
 import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
 import SendInvoice from "../modals/SendInvoice";
-import Invoice_settings from "./Invoice_settings";
 
 const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
   try {
@@ -69,14 +70,23 @@ const GenerateInvoices = () => {
   };
 
   const handleSendInvoice = async () => {
-    saveInvoice().then(resp => {
-      setShowSendInvoiceModal(true);
-      setInvoiceId(resp.data.id);
-    });
+    if (selectedClient && invoiceNumber !== "") {
+      saveInvoice().then(resp => {
+        setShowSendInvoiceModal(true);
+        setInvoiceId(resp.data.id);
+      });
+    }
+    else {
+      Toastr.error("Please select client and enter invoice number to proceed.");
+    }
   };
 
   const handleSaveInvoice = async () => {
-    saveInvoice().then(() => navigate("/invoices"));
+    if (selectedClient && invoiceNumber !== "") {
+      saveInvoice().then(() => navigate("/invoices"));
+    } else {
+      Toastr.error("Please select client and enter invoice number to proceed.");
+    }
   };
 
   if (invoiceDetails) {
@@ -120,8 +130,8 @@ const GenerateInvoices = () => {
           invoiceNumber,
           amount
         }}
-          isSending={showSendInvoiceModal}
-          setIsSending={setShowSendInvoiceModal}
+        isSending={showSendInvoiceModal}
+        setIsSending={setShowSendInvoiceModal}
         />}
 
         {showInvoiceSetting && (
