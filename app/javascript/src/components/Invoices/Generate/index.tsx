@@ -7,8 +7,10 @@ import generateInvoice from "apis/generateInvoice";
 import invoicesApi from "apis/invoices";
 import Container from "./Container";
 import Header from "./Header";
+
 import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
 import SendInvoice from "../modals/SendInvoice";
+import Invoice_settings from "./Invoice_settings";
 
 const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
   try {
@@ -40,6 +42,7 @@ const GenerateInvoices = () => {
   const [selectedOption, setSelectedOption] = useState<any>([]);
   const [showSendInvoiceModal, setShowSendInvoiceModal] = useState<boolean>(false);
   const [invoiceId, setInvoiceId] = useState<number>(null);
+  const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(true);
 
   useEffect(() => {
     setAuthHeaders();
@@ -82,6 +85,7 @@ const GenerateInvoices = () => {
         <Header
           handleSendInvoice={handleSendInvoice}
           handleSaveInvoice={handleSaveInvoice}
+          setShowInvoiceSetting={setShowInvoiceSetting}
         />
         <Container
           invoiceDetails={invoiceDetails}
@@ -116,10 +120,15 @@ const GenerateInvoices = () => {
           invoiceNumber,
           amount
         }}
-        isSending={showSendInvoiceModal}
-        setIsSending={setShowSendInvoiceModal}
+          isSending={showSendInvoiceModal}
+          setIsSending={setShowSendInvoiceModal}
         />}
 
+        {showInvoiceSetting && (
+          <Invoice_settings
+            setShowInvoiceSetting={setShowInvoiceSetting}
+          />
+        )}
       </React.Fragment>
     );
   }

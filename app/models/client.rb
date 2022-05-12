@@ -25,6 +25,7 @@
 
 class Client < ApplicationRecord
   include Discard::Model
+  default_scope -> { kept }
 
   has_many :projects
   has_many :timesheet_entries, through: :projects
