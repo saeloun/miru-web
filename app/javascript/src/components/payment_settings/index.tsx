@@ -20,7 +20,7 @@ const payment_settings = () => {
   const [isStripeConnected, setIsStripeConnected] = useState<boolean>(null);
   const connectStripe = async () => {
     const res = await paymentSettings.connectStripe();
-    setAccountLink(res.data.account_link);
+    setAccountLink(res.data.accountLink);
   };
   const fetchPaymentSettings = async () => {
     try {
