@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import invoicesApi from "apis/invoices";
 import dayjs from "dayjs";
-import { X, FloppyDisk, PaperPlaneTilt } from "phosphor-react";
+import { X, FloppyDisk, PaperPlaneTilt, Gear } from "phosphor-react";
 
 const Header = ({
   client,
@@ -16,7 +16,8 @@ const Header = ({
   amountDue,
   amountPaid,
   discount,
-  tax
+  tax,
+  setShowInvoiceSetting
 }) => {
 
   const navigate = useNavigate();
@@ -53,7 +54,16 @@ const Header = ({
     <React.Fragment>
       <ToastContainer />
       <div className="sm:flex mt-6 mb-3 sm:items-center sm:justify-between">
-        <h2 className="header__title font-bold">Generate Invoice</h2>
+        <div className="flex">
+          <h2 className="header__title font-bold">Generate Invoice</h2>
+          <button
+            onClick={()=>setShowInvoiceSetting(true)}
+            className="font-bold text-xs text-miru-han-purple-1000 tracking-widest leading-4 flex items-center ml-5"
+          >
+            <Gear size={15} color="#5B34EA" className="mr-2.5"/>
+            SETTINGS
+          </button>
+        </div>
 
         <div className="flex w-2/5">
           <Link
