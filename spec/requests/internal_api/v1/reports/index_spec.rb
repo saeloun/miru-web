@@ -73,7 +73,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given multiple status values" do
-        get "/internal_api/v1/reports?status=unbilled,non_billable"
+        get "/internal_api/v1/reports?status[]=unbilled&status[]=non_billable"
         expect(response).to have_http_status(:ok)
         timesheet_ids_in_response = json_response["entries"].pluck("id")
         expect(json_response["entries"].size).to eq(3)
@@ -98,7 +98,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given multiple client values" do
-        get "/internal_api/v1/reports?client_id=#{client.id},#{client2.id}"
+        get "/internal_api/v1/reports?client_id[]=#{client.id}&client_id[]=#{client2.id}"
         expect(response).to have_http_status(:ok)
         timesheet_ids_in_response = json_response["entries"].pluck("id")
         expect(json_response["entries"].size).to eq(3)
@@ -126,7 +126,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given multiple team members values" do
-        get "/internal_api/v1/reports?team_member=#{@user1.id},#{@user2.id}"
+        get "/internal_api/v1/reports?team_member[]=#{@user1.id}&team_member[]=#{@user2.id}"
         expect(response).to have_http_status(:ok)
         timesheet_ids_in_response = json_response["entries"].pluck("id")
         expect(json_response["entries"].size).to eq(3)

@@ -29,7 +29,7 @@ module Report
       def add_clients_filter_if_any(where_clause)
         return where_clause if client_filter.blank?
 
-        clients = Client.includes(:projects).where(id: client_filter.split(","))
+        clients = Client.includes(:projects).where(id: client_filter)
         project_ids = clients.map { |client| client.project_ids }.flatten
         where_clause.merge(project_id: project_ids)
       end
@@ -37,13 +37,13 @@ module Report
       def add_bill_status_filter_if_any(where_clause)
         return where_clause if status_filter.blank?
 
-        where_clause.merge(bill_status: status_filter.split(","))
+        where_clause.merge(bill_status: status_filter)
       end
 
       def add_team_members_filter_if_any(where_clause)
         return where_clause if team_members_filter.blank?
 
-        where_clause.merge(user_id: team_members_filter.split(","))
+        where_clause.merge(user_id: team_members_filter)
       end
 
       def from_date
