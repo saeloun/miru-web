@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :stripe_connected_account do
-    company { nil }
+    association :company, factory: :company
+    account_id { "123" }
   end
 end
