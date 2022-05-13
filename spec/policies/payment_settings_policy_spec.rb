@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe PaymentSettingPolicy, type: :policy do
+RSpec.describe PaymentSettingsPolicy, type: :policy do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
