@@ -7,7 +7,11 @@ RSpec.describe StripeConnectedAccount, type: :model do
 
   describe "Validations" do
     describe "validate uniqueness of" do
-      it { is_expected.to validate_uniqueness_of(:account_id) }
+      it do
+        allow(Stripe::Account).to receive(:create)
+          .and_return(OpenStruct.new({ id: stripe_connected_account.account_id }))
+        expect(subject).to validate_uniqueness_of(:account_id)
+      end
     end
   end
 
