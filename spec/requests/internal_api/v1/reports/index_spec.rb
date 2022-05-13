@@ -68,7 +68,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given single status value" do
-        get "/internal_api/v1/reports?status=unbilled"
+        get "/internal_api/v1/reports?status[]=unbilled"
         expect(response).to have_http_status(:ok)
         timesheet_ids_in_response = json_response["entries"].pluck("id")
         expect(json_response["entries"].size).to eq(1)
@@ -94,7 +94,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given single client value" do
-        get "/internal_api/v1/reports?client_id=#{client.id}"
+        get "/internal_api/v1/reports?client[]=#{client.id}"
         expect(response).to have_http_status(:ok)
         timesheet_ids_in_response = json_response["entries"].pluck("id")
         expect(json_response["entries"].size).to eq(2)
@@ -102,7 +102,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given multiple client values" do
-        get "/internal_api/v1/reports?client_id[]=#{client.id}&client_id[]=#{client2.id}"
+        get "/internal_api/v1/reports?client[]=#{client.id}&client[]=#{client2.id}"
         expect(response).to have_http_status(:ok)
         timesheet_ids_in_response = json_response["entries"].pluck("id")
         expect(json_response["entries"].size).to eq(3)
@@ -184,7 +184,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given filter values" do
-        get "/internal_api/v1/reports?date_range=last_month&status=unbilled&team_member=#{@user1.id}&client_id=#{client.id}"
+        get "/internal_api/v1/reports?date_range=last_month&status[]=unbilled&team_member[]=#{@user1.id}&client[]=#{client.id}"
         expect(response).to have_http_status(:ok)
         timesheet_ids_in_response = json_response["entries"].pluck("id")
         expect(json_response["entries"].size).to eq(2)
