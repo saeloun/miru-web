@@ -15,17 +15,9 @@ jobs:
           postgresql version: 9.6.2-alpine
           postgresql db: miru_web_test
           postgresql user: root
-      - name: Configure sysctl limits
-        run: |
-          sudo swapoff -a
-          sudo sysctl -w vm.swappiness=1
-          sudo sysctl -w fs.file-max=262144
-          sudo sysctl -w vm.max_map_count=262144
-      - name: Run Elasticsearch
-        uses: elastic/elastic-github-actions/elasticsearch@master
-        with:
-          stack-version: 8.0.0-SNAPSHOT
-      - name: Elasticsearch is reachable
+      - name: Setup ElasticSearch
+        uses: ankane/setup-elasticsearch@v1
+      - name: Check if Elasticsearch is reachable
         run: |
           curl --verbose --show-error http://localhost:9200
       - name: Setup Ruby
@@ -106,4 +98,3 @@ jobs:
       - name: Run Eslint
         run: |
           npx eslint "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
-     
