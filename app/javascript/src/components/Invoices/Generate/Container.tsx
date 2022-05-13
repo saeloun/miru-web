@@ -35,6 +35,8 @@ const Container = ({
       invoiceNumber={invoiceNumber}
       setInvoiceNumber={setInvoiceNumber}
       reference={reference}
+      optionSelected={false}
+      clientVisible={false}
     />
     <div className="px-10 py-5">
       <InvoiceTable

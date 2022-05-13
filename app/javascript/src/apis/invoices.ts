@@ -15,9 +15,11 @@ const destroyBulk = (invoice_ids) => axios.post(`${path}/bulk_deletion`, invoice
 
 const getInvoice = async (id) => axios.get(`${path}/${id}`);
 
+const editInvoice = async (id) => axios.get(`${path}/${id}/edit`);
+
 const sendInvoice = async (id, payload) =>
   axios.post(`${path}/${id}/send_invoice`, payload);
 
-const invoicesApi = { get, post, patch, destroy, sendInvoice, getInvoice, destroyBulk };
+const invoicesApi = { get, post, patch, destroy, sendInvoice, getInvoice, destroyBulk, editInvoice };
 
 export default invoicesApi;
