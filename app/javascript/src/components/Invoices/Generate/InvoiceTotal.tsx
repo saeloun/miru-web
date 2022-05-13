@@ -81,11 +81,7 @@ const InvoiceTotal = ({
   };
 
   useEffect(() => {
-    let sum = 0;
-    newLineItems.forEach(item => {
-      sum = sum + item.lineTotal;
-    });
-    setSubTotal(sum);
+    setSubTotal(newLineItems.reduce((sum, { lineTotal }) => (sum + lineTotal), 0));
   }, [newLineItems]);
 
   useEffect(() => {

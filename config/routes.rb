@@ -67,6 +67,7 @@ Rails.application.routes.draw do
   get "clients", to: "clients#index"
 
   get "invoices/*path", to: "invoices#index", via: :all
+  get "invoices", to: "invoices#index"
 
   get "projects/*path", to: "projects#index", via: :all
   get "projects", to: "projects#index"
