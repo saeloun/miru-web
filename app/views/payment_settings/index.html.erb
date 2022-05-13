@@ -1,0 +1,9 @@
+<div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
+  <div>
+    <div>
+      <%= react_component("payment_settings", {
+        isAdminUser: current_user.has_owner_or_admin_role?(current_user.current_workspace)
+      }) %>
+    </div>
+  </div>
+</div>

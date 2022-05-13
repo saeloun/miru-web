@@ -1,10 +1,11 @@
-# README
+<p align="center">
+  <img src="https://getmiru.com/assets/images/image01.svg?v=097ef681" width="200" />
+  <br/>
+</p>
 
-## Miru-Web
+Miru is an open-source tool, designed to make time tracking, invoice management, and accounting easy for small businesses worldwide. It is a platform for organizations to help them streamline their workflow.
 
-Saeloun timetracking application.
-
-### Installation
+## Installation
 
 1. Clone repo to local
 
@@ -37,7 +38,9 @@ nvm install $(cat .nvmrc)
 ```
 brew install postgresql
 ```
+
 6. Install Redis
+
 ```
 brew install redis
 ```
@@ -61,8 +64,8 @@ cp .env.example .env
 ```
 
 10. Update `DATABASE_URL` in `.env` as per local `psql` creds. For example, if
-   the user is `root` and password is `password`, change the variable as
-   `DATABASE_URL="postgres://root:password@localhost/miru_web?encoding=utf8&pool=5&timeout=5000"`
+    the user is `root` and password is `password`, change the variable as
+    `DATABASE_URL="postgres://root:password@localhost/miru_web?encoding=utf8&pool=5&timeout=5000"`
 
 11. Update `APP_BASE_URL` in `.env` to `localhost:3000`
 12. Run `bin/rails db:create RAILS_ENV=development` to create the database
@@ -150,3 +153,11 @@ command
 cd cypress
 yarn run cy:open:staging
 ```
+
+## Deployment
+
+### Heroku one-click deploy
+
+You can deploy Miru on Heroku using the one-click-deployment button:
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/saeloun/miru-web/tree/main)

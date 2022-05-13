@@ -6,6 +6,7 @@ import generateInvoice from "apis/generateInvoice";
 
 import Container from "./Container";
 import Header from "./Header";
+import Invoice_settings from "./Invoice_settings";
 import { unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
 
 const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
@@ -26,17 +27,17 @@ const GenerateInvoices = () => {
   const [lineItems, setLineItems] = useState<any>([]);
   const [selectedClient, setSelectedClient] = useState<any>();
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
-  const [reference, setReference] = useState<any>("");
+  const [reference] = useState<any>("");
   const [amount, setAmount] = useState<any>(0);
-  const [outstandingAmount, setOutstandingAmount] = useState<any>(0);
   const [amountDue, setAmountDue] = useState<any>(0);
-  const [amountPaid, setAmountPaid] = useState<any>(0);
+  const [amountPaid] = useState<any>(0);
   const [discount, setDiscount] = useState<any>(0);
   const [tax, setTax] = useState<any>(0);
   const [issueDate, setIssueDate] = useState(new Date());
   const today = new Date();
   const [dueDate, setDueDate] = useState(today.setMonth(issueDate.getMonth() + 1));
   const [selectedOption, setSelectedOption] = useState<any>([]);
+  const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(true);
 
   useEffect(() => {
     setAuthHeaders();
@@ -58,8 +59,8 @@ const GenerateInvoices = () => {
           amountPaid={amountPaid}
           discount={discount}
           tax={tax}
-          outstandingAmount={outstandingAmount}
           invoiceLineItems={selectedOption}
+          setShowInvoiceSetting={setShowInvoiceSetting}
         />
         <Container
           invoiceDetails={invoiceDetails}
@@ -70,19 +71,15 @@ const GenerateInvoices = () => {
           invoiceNumber={invoiceNumber}
           setInvoiceNumber={setInvoiceNumber}
           reference={reference}
-          setReference={setReference}
           issueDate={issueDate}
           setIssueDate={setIssueDate}
           dueDate={dueDate}
           setDueDate={setDueDate}
           amount={amount}
           setAmount={setAmount}
-          outstandingAmount={outstandingAmount}
-          setOutstandingAmount={setOutstandingAmount}
           amountDue={amountDue}
           setAmountDue={setAmountDue}
           amountPaid={amountPaid}
-          setAmountPaid={setAmountPaid}
           discount={discount}
           setDiscount={setDiscount}
           tax={tax}
@@ -90,6 +87,11 @@ const GenerateInvoices = () => {
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
         />
+        { showInvoiceSetting && (
+          <Invoice_settings
+            setShowInvoiceSetting={setShowInvoiceSetting}
+          />
+        )}
       </React.Fragment>
     );
   }

@@ -41,6 +41,7 @@ en:
     settings: Settings
     team: Team
     payments: Payments
+    help: Help
     time_tracking: Time Tracking
     view_notifications: View Notifications
   projects:
@@ -168,6 +169,7 @@ en:
     save: save
     profile_setting: profile settings
     organization_setting: organization settings
+    payment_setting: payment settings
     profile_picture: profile picture
     name: name
     email: email

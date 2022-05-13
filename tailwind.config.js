@@ -40,6 +40,9 @@ module.exports = {
       width: {
         fit: "fit-content",
       },
+      height: {
+        '128': '40rem',
+      },
       colors: {
         "miru-black": {
           1000: "#303A4B",

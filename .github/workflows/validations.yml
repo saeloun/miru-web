@@ -106,11 +106,4 @@ jobs:
       - name: Run Eslint
         run: |
           npx eslint "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
-      - name: Cypress install
-        uses: cypress-io/github-action@v2
-        with:
-          # just perform install
-          runTests: false
-      - name: Cypress tests
-        run: |
-          npm run cy:run:staging
+     

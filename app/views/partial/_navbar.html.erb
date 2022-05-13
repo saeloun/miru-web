@@ -248,6 +248,10 @@
                     <%= image_tag 'setting_icon.svg', class:"mr-3 h-5 w-5" %>
                     <%= t('navbar.settings') %>
                   <% end %>
+                  <%= link_to 'mailto:support@miru.com', method: :get, class: "navbar__profile-menu_settings", id:"menu-item-0", role:"menuitem", tabindex:"-1" do %>
+                    <%= image_tag 'help_icon.png', class:"mr-3 h-5 w-5" %>
+                    <%= t('navbar.help') %>
+                  <% end %>
                   <%= button_to destroy_user_session_path, method: :delete, class: "navbar__profile-menu_logout", id:"menu-item-0", role:"menuitem", tabindex:"-1" do %>
                     <%= image_tag 'logout_icon.svg', class:"mr-3 h-5 w-5" %>
                     <%= t('navbar.logout') %>

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import CustomDatePicker from "common/CutomDatePicker";
+import CustomDatePicker from "common/CustomDatePicker";
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers/currency";
 import { PencilSimple } from "phosphor-react";

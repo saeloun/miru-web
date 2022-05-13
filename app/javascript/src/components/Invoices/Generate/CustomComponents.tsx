@@ -8,7 +8,7 @@ export const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
   </components.DropdownIndicator>
 );
 
-export const DropdownHeader = () => (
+export const DropdownHeader = ({ setShowMultilineModal }) => (
   <div className="grid grid-cols-3 gap-4 p-2 items-center">
     <div className="mt-1 relative rounded-md shadow-sm col-span-2 ">
       <input
@@ -22,10 +22,10 @@ export const DropdownHeader = () => (
         />
       </button>
     </div>
-    {/* <div>
-      <button className=" mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000">
+    <div>
+      <button onClick={() => setShowMultilineModal(true)} className="mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000">
         CLICK TO ADD MULTIPLE ENTRIES
       </button>
-    </div> */}
+    </div>
   </div>
 );

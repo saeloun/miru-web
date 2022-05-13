@@ -25,6 +25,7 @@
 
 class Client < ApplicationRecord
   include Discard::Model
+  default_scope -> { kept }
 
   has_many :projects
   has_many :timesheet_entries, through: :projects
@@ -34,6 +35,8 @@ class Client < ApplicationRecord
   validates :name, :email, presence: true
   validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
   after_discard :discard_projects
+
+  default_scope { where(discarded_at: nil) }
 
   def new_line_item_entries(selected_entries)
     timesheet_entries.where(bill_status: :unbilled)

@@ -7,6 +7,8 @@ import clients from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
+import { cashFormatter } from "helpers/cashFormater";
+import { currencySymbol } from "helpers/currencySymbol";
 
 import Header from "./Header";
 import { unmapClientList } from "../../../mapper/client.mapper";
@@ -17,7 +19,7 @@ import NewClient from "../Modals/NewClient";
 const getTableData = (clients) => {
   if (clients) {
     return clients.map((client) => {
-      const hours = client.minutes/60;
+      const hours = client.minutes / 60;
       return {
         col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
         col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
@@ -37,6 +39,7 @@ const Clients = ({ isAdminUser }) => {
   const [clientToDelete, setDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
+  const [overdueOutstandingAmount, setOverDueOutstandingAmt]= useState<any>(null);
   const navigate = useNavigate();
 
   const handleEditClick = (id) => {
@@ -57,6 +60,7 @@ const Clients = ({ isAdminUser }) => {
         const sanitized = unmapClientList(res);
         setClientData(sanitized.clientList);
         setTotalMinutes(sanitized.totalMinutes);
+        setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
       });
   };
 
@@ -72,6 +76,7 @@ const Clients = ({ isAdminUser }) => {
         const sanitized = unmapClientList(res);
         setClientData(sanitized.clientList);
         setTotalMinutes(sanitized.totalMinutes);
+        setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
       });
   }, []);
 
@@ -93,13 +98,15 @@ const Clients = ({ isAdminUser }) => {
     }
   ];
 
+  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
+
   const amountBox = [{
     title: "OVERDUE",
-    amount: "$35.5k"
+    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount)
   },
   {
     title: "OUTSTANDING",
-    amount: "$24.3k"
+    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.outstanding_amount)
   }];
 
   const tableData = getTableData(clientData);
@@ -107,9 +114,9 @@ const Clients = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer />
-      <Header setnewClient={setnewClient} />
+      <Header isAdminUser={isAdminUser} setnewClient={setnewClient} />
       <div>
-        { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
+        {isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
           <div className="flex justify-end">
             <select onChange={handleSelectChange} className="px-3
                 py-1.5
@@ -123,32 +130,32 @@ const Clients = ({ isAdminUser }) => {
                 focus:outline-none
                 text-miru-han-purple-1000">
               <option className="text-miru-dark-purple-600" value="week">
-                    THIS WEEK
+                THIS WEEK
               </option>
               <option className="text-miru-dark-purple-600" value="month">
-                    This MONTH
+                This MONTH
               </option>
               <option className="text-miru-dark-purple-600" value="year">
-                    THIS YEAR
+                THIS YEAR
               </option>
             </select>
           </div>
           {clientData && <ChartBar data={clientData} totalMinutes={totalMinutes} />}
-          <AmountBoxContainer amountBox = {amountBox} />
+          <AmountBoxContainer amountBox={amountBox} />
         </div>
         }
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
               <div className="overflow-hidden">
-                { clientData && <Table
+                {clientData && <Table
                   handleEditClick={handleEditClick}
                   handleDeleteClick={handleDeleteClick}
-                  hasRowIcons={true}
+                  hasRowIcons={isAdminUser}
                   tableHeader={tableHeader}
                   tableRowArray={tableData}
-                  rowOnClick={handleRowClick}
-                /> }
+                  rowOnClick={isAdminUser ? handleRowClick : () => { }}// eslint-disable-line
+                />}
               </div>
             </div>
           </div>
@@ -169,8 +176,8 @@ const Clients = ({ isAdminUser }) => {
       {newClient && (
         <NewClient
           setnewClient={setnewClient}
-          setClientData = {setClientData}
-          clientData = {clientData}
+          setClientData={setClientData}
+          clientData={clientData}
         />
       )}
     </>
