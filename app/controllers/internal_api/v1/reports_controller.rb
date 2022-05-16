@@ -5,13 +5,16 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
 
   def index
     authorize :report
-    respond_to do |f|
-       f.html
-       f.json { render json: { entries: }, status: :ok }
-       f.csv do |csv|
-         send_reports_csv(entries)
-       end
-     end
+    render json: { entries: }, status: :ok
+  end
+
+  def create
+    authorize :report
+
+    respond_to do |format|
+      format.csv { send_reports_csv(entries) }
+      format.any { render json: { entries: }, status: :ok }
+    end
   end
 
   private
@@ -23,18 +26,34 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
     end
 
     def send_reports_csv(entries)
-      headers = %w[project/headers note team_member/date hours_logged].map(&:titleize)
+      headers = %w[project/headers note team_member date hours_logged].map(&:titleize)
       csv_data = CSV.generate(headers: true) do |csv|
         csv << headers
 
         entries.each do |entry|
           csv_row = []
 
-          csv_row << entry
+          csv_row << entry["project"]
+          csv_row << entry["note"]
+          csv_row << entry["teamMember"]
+          csv_row << entry["workDate"]
+          csv_row << minutes_to_hh_mm(entry["duration"])
 
           csv << csv_row
         end
       end
       send_data(csv_data, filename: "reports.csv")
+    end
+
+    def minutes_to_hh_mm(duration)
+      if duration.nil? || duration <= 0
+        "00:00"
+      else
+        hours = (duration / 60).to_s.split(".")[0]
+        minutes = (duration % 60).to_s.delete(".")
+        hours = "0#{hours}" if hours.size == 1
+        minutes = "0#{minutes}" if minutes.size == 3
+        "#{hours}:#{minutes}"
+      end
     end
 end

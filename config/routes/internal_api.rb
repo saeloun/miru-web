@@ -11,7 +11,7 @@ namespace :internal_api, defaults: { format: "json" } do
     end
     resources :projects, only: [:index, :show, :create, :update, :destroy]
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
-    resources :reports, only: [:index]
+    resources :reports, only: [:index, :create]
     resources :workspaces, only: [:update]
     resources :invoices, only: [:index, :create, :update, :show] do
       post :send_invoice, on: :member
