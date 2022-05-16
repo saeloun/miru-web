@@ -5,7 +5,7 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
 
   def index
     authorize :report
-    render :index, locals: { entries:, filter_options: }, status: :ok
+    render :index, locals: { entries: filtered_reports, filter_options: }, status: :ok
   end
 
   private
@@ -25,7 +25,7 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
       params[:team_member].present?
     end
 
-    def entries
+    def filtered_reports
       current_company_project_ids_filter = { project_id: current_company.project_ids }
       filters_where_clause = Report::Filters.process(params)
       where_clause = current_company_project_ids_filter.merge(filters_where_clause)
