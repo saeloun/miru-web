@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import invoicesApi from "apis/invoices";
+import dayjs from "dayjs";
 import Header from "./Header";
 import InvoiceTable from "./InvoiceTable";
 import CompanyInfo from "../CompanyInfo";
@@ -54,12 +55,36 @@ const EditInvoice = () => {
     fetchInvoice(navigate, getInvoiceDetails);
   }, []);
 
+  const updateInvoice = () => {
+    invoicesApi.updateInvoice(invoiceDetails.id, {
+      invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
+      issue_date: dayjs(dueDate || invoiceDetails.issueDate).format("DD.MM.YYYY"),
+      due_date: dayjs(issueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
+      amount_due: amountDue,
+      amount_paid: amountPaid,
+      amount: amount,
+      discount: discount,
+      tax: tax,
+      invoice_line_items_attributes: selectedLineItems.map(item => ({
+        name: `${item.first_name} ${item.last_name}`,
+        description: item.description,
+        date: item.date,
+        rate: item.rate,
+        quantity: item.qty,
+        timesheet_entry_id: item.time_sheet_entry
+      }))
+    })
+      .then(() => navigate(`/invoices/${invoiceDetails.id}`))
+      .catch();
+  };
+
   if (invoiceDetails) {
     return (
       <React.Fragment>
         <Header
           invoiceNumber={invoiceDetails.invoiceNumber}
           id={invoiceDetails.id}
+          updateInvoice={updateInvoice}
         />
         <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
           <CompanyInfo company={invoiceDetails.company} />
