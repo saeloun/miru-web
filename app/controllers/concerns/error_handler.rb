@@ -18,7 +18,7 @@ module ErrorHandler
 
       respond_to do |format|
         format.json { render json: { errors: message }, status: :not_found }
-        format.html { render file: "public/401.html", status: :not_found, layout: false, alert: message }
+        format.html { render file: "public/404.html", status: :not_found, layout: false, alert: message }
       end
     end
 
