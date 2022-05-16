@@ -6,7 +6,7 @@ class PaymentSettingsController < ApplicationController
   end
 
   def refresh_stripe_connect
-    authorize stripe_connected_account, policy_class: PaymentSettingsPolicy
+    authorize :refresh_stripe_connect, policy_class: PaymentSettingsPolicy
 
     redirect_to stripe_connected_account.url, allow_other_host: true
   end
@@ -14,6 +14,6 @@ class PaymentSettingsController < ApplicationController
   private
 
     def stripe_connected_account
-      current_company.stripe_connected_account
+      StripeConnectedAccount.find_by!(company: current_company)
     end
 end

@@ -10,6 +10,6 @@ class PaymentSettingsPolicy < ApplicationPolicy
   end
 
   def refresh_stripe_connect?
-    user_owner_or_admin? and not record.nil?
+    user_owner_or_admin?
   end
 end
