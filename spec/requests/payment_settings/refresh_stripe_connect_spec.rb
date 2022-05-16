@@ -15,15 +15,13 @@ RSpec.describe "PaymentsSetting#refresh_stripe_connect", type: :request do
     end
 
     context "when stripe connected account doesn't exist" do
-      it "is authorized to refresh stripe connect" do
+      it "returns 404" do
         allow(Stripe::AccountLink).to receive(:create)
           .and_return(OpenStruct.new({ url: "https://connect.stripe.com/setup/s/something" }))
         allow(Stripe::Account).to receive(:retrieve)
           .and_return(OpenStruct.new({ details_submitted: false }))
         send_request :get, payments_settings_stripe_connect_refresh_path
-        expect(response).to have_http_status(:redirect)
-        expect(response).not_to redirect_to("https://connect.stripe.com/setup/s/something")
-        expect(flash["alert"]).to eq("You are not authorized to perform this action.")
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -35,7 +33,7 @@ RSpec.describe "PaymentsSetting#refresh_stripe_connect", type: :request do
           .and_return(OpenStruct.new({ url: "https://connect.stripe.com/setup/s/something" }))
         allow(Stripe::Account).to receive(:retrieve)
           .and_return(OpenStruct.new({ details_submitted: false }))
-        stripe_connected_account.save
+        stripe_connected_account.save!
         send_request :get, payments_settings_stripe_connect_refresh_path
         expect(response).to have_http_status(:redirect)
         expect(response).to redirect_to("https://connect.stripe.com/setup/s/something")
