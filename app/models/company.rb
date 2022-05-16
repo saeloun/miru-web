@@ -29,6 +29,7 @@ class Company < ApplicationRecord
   has_one_attached :logo
   has_many :timesheet_entries, through: :clients
   has_many :invoices, through: :clients
+  has_one :stripe_connected_account, dependent: :destroy
   resourcify
 
   # Validations
