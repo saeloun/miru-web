@@ -7,9 +7,10 @@ import DiscountMenu from "./DiscountMenu";
 const InvoiceTotal = ({
   currency,
   newLineItems,
-  amountPaid,
+  invoiceAmount,
+  amountPaid, setAmountPaid,
   amountDue, setAmountDue,
-  setAmount,
+  amount, setAmount,
   discount, setDiscount,
   tax, setTax
 }) => {
@@ -85,15 +86,12 @@ const InvoiceTotal = ({
   }, [newLineItems]);
 
   useEffect(() => {
-    const Total = Number(subTotal) + Number(tax) - Number(discount);
-    setTotal(Total);
-    setAmount(Total);
-  }, [discount, subTotal, tax]);
+    const newTotal = Number(subTotal) + Number(tax) + Number(invoiceAmount) - Number(discount);
 
-  useEffect(() => {
-    const Due = total - amountPaid;
-    setAmountDue(Due);
-  }, [amountPaid, total]);
+    setTotal(newTotal);
+    setAmount(newTotal);
+    setAmountDue(newTotal - amountPaid);
+  }, [discount, subTotal, tax]);
 
   return (
     <div className="pt-3 pb-10 mb-5 w-full flex justify-end">

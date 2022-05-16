@@ -53,11 +53,13 @@ const Container = ({
       amountPaid={amountPaid}
       amountDue={amountDue}
       setAmountDue={setAmountDue}
+      amount={amount}
       setAmount={setAmount}
       discount={discount}
       setDiscount={setDiscount}
       tax={tax}
       setTax={setTax}
+      invoiceAmount={0}
     />
   </div>
 );

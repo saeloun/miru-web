@@ -29,11 +29,18 @@ const EditInvoice = () => {
   const [dueDate, setDueDate] = useState();
   const [selectedOption, setSelectedOption] = useState<any>([]);
 
+  const addKeyToLineItems = items => (
+    items.map((item, index) => {
+      item["key"] = index;
+      return item;
+    })
+  );
+
   const fetchInvoice = async (navigate, getInvoiceDetails) => {
     try {
       const res = await invoicesApi.editInvoice(params.id);
       getInvoiceDetails(res.data);
-      setLineItems(res.data.lineItems);
+      setLineItems(addKeyToLineItems(res.data.lineItems));
       setAmount(res.data.amount);
     } catch (e) {
       navigate("/invoices/error");
@@ -84,6 +91,8 @@ const EditInvoice = () => {
             currency={invoiceDetails.company.currency}
             newLineItems={selectedLineItems}
             setAmount={setAmount}
+            amount={amount}
+            invoiceAmount={invoiceDetails.amount}
             amountPaid={amountPaid}
             setAmountPaid={setAmountPaid}
             amountDue={amountDue}

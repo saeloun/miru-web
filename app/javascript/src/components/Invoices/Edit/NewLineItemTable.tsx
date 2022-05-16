@@ -7,6 +7,16 @@ const NewLineItemTable = ({
   addNew, setAddNew, setManualEntry
 }) => {
 
+  const selectRowId = (item) => {
+    const option = { ...item, lineTotal: (Number(item.qty)/60 * Number(item.rate)) };
+    const newLineItems = [...lineItems];
+    newLineItems.splice(item.key, 1);
+
+    setAddNew(false);
+    setSelectedLineItems([...selectedLineItems, option]);
+    setLineItems(newLineItems);
+  };
+
   const renderLineItem = (item) => (
     <div onClick = {() => {selectRowId(item);}} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100">
       <span className="font-medium text-base text-miru-dark-purple-1000 text-left">
@@ -23,11 +33,6 @@ const NewLineItemTable = ({
       </span>
     </div>
   );
-
-  const selectRowId = (items) => {
-    // const option = { ...items, lineTotal: (Number(items.qty)/60 * Number(items.rate)) };
-    setAddNew(false);
-  };
 
   return (
     <div>
