@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import clientsApi from "apis/clients";
 import invoicesApi from "apis/invoices";
 import dayjs from "dayjs";
 import Header from "./Header";
@@ -18,18 +19,16 @@ const EditInvoice = () => {
   const [invoiceDetails, getInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
   const [selectedLineItems, setSelectedLineItems] = useState<any>([]);
-  const [selectedClient, setSelectedClient] = useState<any>();
+  const [selectedClient, setSelectedClient] = useState<any>({ value: 0 });
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
-  const [reference, setReference] = useState<any>("");
+  const [reference] = useState<any>("");
   const [amount, setAmount] = useState<any>(0);
-  const [outstandingAmount, setOutstandingAmount] = useState<any>(0);
   const [amountDue, setAmountDue] = useState<any>(0);
-  const [amountPaid, setAmountPaid] = useState<any>(0);
+  const [amountPaid] = useState<any>(0);
   const [discount, setDiscount] = useState<any>(0);
   const [tax, setTax] = useState<any>(0);
   const [issueDate, setIssueDate] = useState();
   const [dueDate, setDueDate] = useState();
-  const [selectedOption, setSelectedOption] = useState<any>([]);
 
   const addKeyToLineItems = items => (
     items.map((item, index) => {
@@ -41,9 +40,24 @@ const EditInvoice = () => {
   const fetchInvoice = async (navigate, getInvoiceDetails) => {
     try {
       const res = await invoicesApi.editInvoice(params.id);
+
       getInvoiceDetails(res.data);
       setLineItems(addKeyToLineItems(res.data.lineItems));
       setAmount(res.data.amount);
+      setSelectedClient(res.data.client);
+    } catch (e) {
+      navigate("/invoices/error");
+      return {};
+    }
+  };
+
+  const fetchNewLineItems = async (navigate, id, setSelectedClient, setLineItems) => {
+    try {
+      const res = await clientsApi.newInvoiceLineItems(id);
+      const { address, phone, email, id: value, name: label } = res.data.client;
+
+      setSelectedClient({ address, email, label, phone, value });
+      setLineItems(addKeyToLineItems(res.data.lineItems));
     } catch (e) {
       navigate("/invoices/error");
       return {};
@@ -56,6 +70,14 @@ const EditInvoice = () => {
     fetchInvoice(navigate, getInvoiceDetails);
   }, []);
 
+  useEffect(() => {
+    setAuthHeaders();
+    registerIntercepts();
+    if (selectedClient.value != 0) {
+      fetchNewLineItems(navigate, selectedClient.value, setSelectedClient, setLineItems);
+    }
+  }, [selectedClient.value]);
+
   const updateInvoice = () => {
     invoicesApi.updateInvoice(invoiceDetails.id, {
       invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
@@ -66,6 +88,7 @@ const EditInvoice = () => {
       amount: amount,
       discount: discount,
       tax: tax,
+      client_id: selectedClient.value,
       invoice_line_items_attributes: selectedLineItems.map(item => ({
         name: `${item.first_name} ${item.last_name}`,
         description: item.description,
@@ -92,7 +115,7 @@ const EditInvoice = () => {
           <InvoiceDetails
             currency={invoiceDetails.company.currency}
             clientList={invoiceDetails.companyClientList}
-            selectedClient={invoiceDetails.client}
+            selectedClient={selectedClient || invoiceDetails.client}
             setSelectedClient={setSelectedClient}
             amount={amount}
             dueDate={dueDate || invoiceDetails.dueDate}
@@ -121,16 +144,15 @@ const EditInvoice = () => {
             currency={invoiceDetails.company.currency}
             newLineItems={selectedLineItems}
             setAmount={setAmount}
-            amount={amount}
             invoiceAmount={invoiceDetails.amount}
             amountPaid={amountPaid}
-            setAmountPaid={setAmountPaid}
             amountDue={amountDue}
             setAmountDue={setAmountDue}
             discount={discount}
             setDiscount={setDiscount}
             tax={tax}
             setTax={setTax}
+            invoiceLineItems={invoiceDetails.invoiceLineItems}
           />
         </div>
       </React.Fragment>

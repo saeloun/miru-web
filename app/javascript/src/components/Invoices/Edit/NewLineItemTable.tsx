@@ -1,5 +1,4 @@
 import React from "react";
-import { DropdownHeader } from "../Generate/CustomComponents";
 
 const NewLineItemTable = ({
   lineItems, setLineItems,
@@ -36,7 +35,6 @@ const NewLineItemTable = ({
 
   return (
     <div>
-      <DropdownHeader />
       <div>
         <button
           onClick={() => {
@@ -48,7 +46,7 @@ const NewLineItemTable = ({
           Add Manual Entry
         </button>
       </div>
-      <div className="overflow-scroll mt-4 relative">
+      <div className="overflow-y-scroll h-80 mt-4 relative">
         { lineItems.map(item => renderLineItem(item)) }
       </div>
     </div>
