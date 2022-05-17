@@ -27,9 +27,10 @@ const AddEntry: React.FC<Iprops> = ({
   const [project, setProject] = useState("");
   const [projectId, setProjectId] = useState(0);
   const [billable, setBillable] = useState(false);
+  const [projectBillable, setProjectBillable] = useState(true);
 
   const handleFillData = () => {
-    if (!editEntryId) return;
+    if (! editEntryId) return;
     const entry = entryList[selectedFullDate].find(
       entry => entry.id === editEntryId
     );
@@ -41,6 +42,7 @@ const AddEntry: React.FC<Iprops> = ({
       setNote(entry.note);
       if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
     }
+
   };
 
   useEffect(() => {
@@ -52,10 +54,14 @@ const AddEntry: React.FC<Iprops> = ({
 
   useEffect(() => {
     if (!project) return;
-    const id = projects[client].find(
+    const selectedProject = projects[client].find(
       currentProject => currentProject.name === project
-    ).id;
-    setProjectId(Number(id));
+    );
+    if (selectedProject) {
+      setProjectId(Number(selectedProject.id));
+      setProjectBillable(selectedProject.billable);
+      setBillable(selectedProject.billable);
+    }
   }, [project]);
 
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -214,7 +220,7 @@ const AddEntry: React.FC<Iprops> = ({
           ) : (
             <img
               onClick={() => {
-                setBillable(true);
+                if (projectBillable) setBillable(true);
               }}
               className="inline"
               src={uncheckedIcon}

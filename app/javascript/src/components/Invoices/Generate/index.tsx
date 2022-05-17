@@ -4,9 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import generateInvoice from "apis/generateInvoice";
 
+import invoicesApi from "apis/invoices";
+import Toastr from "common/Toastr";
 import Container from "./Container";
 import Header from "./Header";
-import { unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
+
+import Invoice_settings from "./Invoice_settings";
+import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
+import SendInvoice from "../modals/SendInvoice";
 
 const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
   try {
@@ -36,6 +41,9 @@ const GenerateInvoices = () => {
   const today = new Date();
   const [dueDate, setDueDate] = useState(today.setMonth(issueDate.getMonth() + 1));
   const [selectedOption, setSelectedOption] = useState<any>([]);
+  const [showSendInvoiceModal, setShowSendInvoiceModal] = useState<boolean>(false);
+  const [invoiceId, setInvoiceId] = useState<number>(null);
+  const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(true);
 
   useEffect(() => {
     setAuthHeaders();
@@ -43,21 +51,51 @@ const GenerateInvoices = () => {
     fetchGenerateInvoice(navigate, getInvoiceDetails);
   }, []);
 
+  const saveInvoice = async () => {
+    const sanitized = mapGenerateInvoice({
+      selectedClient,
+      invoiceNumber,
+      reference,
+      issueDate,
+      dueDate,
+      selectedOption,
+      amount,
+      amountDue,
+      amountPaid,
+      discount,
+      tax,
+      setShowSendInvoiceModal
+    });
+    return await invoicesApi.post(sanitized);
+  };
+
+  const handleSendInvoice = async () => {
+    if (selectedClient && invoiceNumber !== "") {
+      saveInvoice().then(resp => {
+        setShowSendInvoiceModal(true);
+        setInvoiceId(resp.data.id);
+      });
+    }
+    else {
+      Toastr.error("Please select client and enter invoice number to proceed.");
+    }
+  };
+
+  const handleSaveInvoice = async () => {
+    if (selectedClient && invoiceNumber !== "") {
+      saveInvoice().then(() => navigate("/invoices"));
+    } else {
+      Toastr.error("Please select client and enter invoice number to proceed.");
+    }
+  };
+
   if (invoiceDetails) {
     return (
       <React.Fragment>
         <Header
-          client={selectedClient}
-          invoiceNumber={invoiceNumber}
-          reference={reference}
-          issueDate={issueDate}
-          dueDate={dueDate}
-          amount={amount}
-          amountDue={amountDue}
-          amountPaid={amountPaid}
-          discount={discount}
-          tax={tax}
-          invoiceLineItems={selectedOption}
+          handleSendInvoice={handleSendInvoice}
+          handleSaveInvoice={handleSaveInvoice}
+          setShowInvoiceSetting={setShowInvoiceSetting}
         />
         <Container
           invoiceDetails={invoiceDetails}
@@ -84,6 +122,23 @@ const GenerateInvoices = () => {
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
         />
+
+        {showSendInvoiceModal && <SendInvoice invoice={{
+          id: invoiceId,
+          client: selectedClient,
+          company: invoiceDetails?.companyDetails,
+          invoiceNumber,
+          amount
+        }}
+        isSending={showSendInvoiceModal}
+        setIsSending={setShowSendInvoiceModal}
+        />}
+
+        {showInvoiceSetting && (
+          <Invoice_settings
+            setShowInvoiceSetting={setShowInvoiceSetting}
+          />
+        )}
       </React.Fragment>
     );
   }
