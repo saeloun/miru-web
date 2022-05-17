@@ -5,6 +5,7 @@ import invoicesApi from "apis/invoices";
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
 import { ApiStatus as InvoiceStatus } from "../../../constants";
+import SendInvoice from "../modals/SendInvoice";
 
 const Invoice = () => {
   const params = useParams();
@@ -13,7 +14,7 @@ const Invoice = () => {
     InvoiceStatus.IDLE
   );
   const [invoice, setInvoice] = useState<any>(null);
-
+  const [showSendInvoiceModal, setShowInvoiceModal] = useState<boolean>(false);
   const fetchInvoice = async () => {
     try {
       setStatus(InvoiceStatus.LOADING);
@@ -31,13 +32,18 @@ const Invoice = () => {
     fetchInvoice();
   }, []);
 
+  const handleSendInvoice = () => {
+    setShowInvoiceModal(true);
+  };
+
   return (
     status === InvoiceStatus.SUCCESS && (
       <>
-        <Header invoice={invoice} />
+        <Header invoice={invoice} handleSendInvoice={handleSendInvoice} />
         <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
-          <InvoiceDetails invoice={invoice}/>
+          <InvoiceDetails invoice={invoice} />
         </div>
+        {showSendInvoiceModal && <SendInvoice invoice={invoice} setIsSending={setShowInvoiceModal} isSending={showSendInvoiceModal} />}
       </>
     )
   );
