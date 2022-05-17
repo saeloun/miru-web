@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectApi from "apis/projects";
@@ -33,7 +33,7 @@ export const ProjectList = ({ isAdminUser }) => {
 
   return (
     <React.Fragment>
-      <ToastContainer />
+      <ToastContainer autoClose={3} />
       <Header
         setShowProjectModal={setShowProjectModal}
         isAdminUser={isAdminUser}

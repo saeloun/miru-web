@@ -201,7 +201,7 @@ const TimeTracking: React.FC<Iprops> = ({
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={3} />
       <div className="mx-50 mt-6">
         <div className="flex justify-between">
           <nav className="flex mb-6">

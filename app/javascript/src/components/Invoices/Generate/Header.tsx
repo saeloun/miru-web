@@ -53,7 +53,7 @@ const Header = ({
 
   return (
     <React.Fragment>
-      <ToastContainer />
+      <ToastContainer autoClose={3} />
       <div className="sm:flex mt-6 mb-3 sm:items-center sm:justify-between">
         <h2 className="header__title font-bold">Generate Invoice</h2>
 

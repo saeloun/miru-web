@@ -106,7 +106,7 @@ const Clients = ({ isAdminUser }) => {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={3} />
       <Header isAdminUser={isAdminUser} setnewClient={setnewClient} />
       <div>
         {isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
