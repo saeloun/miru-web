@@ -27,7 +27,9 @@ const TimeTracking: React.FC<Iprops> = ({
   clients,
   projects,
   entries,
-  isAdmin
+  isAdmin,
+  userId,
+  employees
 }) => {
   const [dayInfo, setDayInfo] = useState<any[]>([]);
   const [view, setView] = useState<string>("day");
@@ -44,6 +46,8 @@ const TimeTracking: React.FC<Iprops> = ({
   const [editEntryId, setEditEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
   const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(userId);
+  const [allEmployeesEntries, setAllEmployeesEntries] = useState<object>({});
 
   // sorting by client's name
   clients.sort((a: object, b: object) => a["name"].localeCompare(b["name"]));
@@ -51,6 +55,9 @@ const TimeTracking: React.FC<Iprops> = ({
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
+    const currentEmployeeEntries = {};
+    currentEmployeeEntries[userId] = entries;
+    setAllEmployeesEntries(currentEmployeeEntries);
   }, []);
 
   useEffect(() => {
@@ -100,11 +107,14 @@ const TimeTracking: React.FC<Iprops> = ({
     setDayInfo(() => daysInWeek);
   };
 
-  const fetchEntries = async (from: string, to: string) => {
+  const fetchEntries = async (from: string, to: string, uid: number) => {
     if (entryList[from] && entryList[to]) return;
-    const res = await timesheetEntryApi.list(from, to);
+    const res = await timesheetEntryApi.list(from, to, uid);
     if (res.status >= 200 && res.status < 300) {
-      setEntryList(prevState => ({ ...prevState, ...res.data.entries }));
+      const ns = { ...allEmployeesEntries };
+      ns[uid] = { ...ns[uid], ...res.data.entries };
+      setAllEmployeesEntries(ns);
+      setEntryList(ns[uid]);
     }
   };
 
@@ -148,7 +158,7 @@ const TimeTracking: React.FC<Iprops> = ({
     const to = dayjs()
       .weekday(weekDay + 13)
       .format("YYYY-MM-DD");
-    fetchEntries(from, to);
+    fetchEntries(from, to, selectedEmployeeId);
   };
 
   const handlePrevWeek = () => {
@@ -159,7 +169,7 @@ const TimeTracking: React.FC<Iprops> = ({
     const to = dayjs()
       .weekday(weekDay - 1)
       .format("YYYY-MM-DD");
-    fetchEntries(from, to);
+    fetchEntries(from, to, selectedEmployeeId);
   };
 
   const parseWeeklyViewData = () => {
@@ -199,6 +209,24 @@ const TimeTracking: React.FC<Iprops> = ({
     setWeeklyData(() => weekArr);
   };
 
+  const handleEmployeeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = Number(e.target.value);
+    setSelectedEmployeeId(id);
+    if (allEmployeesEntries[id]) {
+      setEntryList(allEmployeesEntries[id]);
+    } else {
+      fetchEntries(
+        dayjs()
+          .weekday(weekDay)
+          .format("YYYY-MM-DD"),
+        dayjs()
+          .weekday(weekDay + 7)
+          .format("YYYY-MM-DD"),
+        id
+      );
+    }
+  };
+
   return (
     <>
       <ToastContainer />
@@ -220,10 +248,14 @@ const TimeTracking: React.FC<Iprops> = ({
           </nav>
           <div>
             {isAdmin && (
-              <select className="lg:w-25 lg:h-4 items-center ">
-                <option disabled selected className="text-miru-han-purple-1000">
-                  Employee
-                </option>
+              <select value={selectedEmployeeId} onChange={handleEmployeeChange} className="items-center ">
+                {
+                  employees.map(employee =>
+                    <option value={employee["id"]} className="text-miru-han-purple-1000">
+                      {employee["first_name"] + " " + employee["last_name"]}
+                    </option>
+                  )
+                }
               </select>
             )}
           </div>
@@ -234,6 +266,7 @@ const TimeTracking: React.FC<Iprops> = ({
             view === "month" ?
               <MonthCalender
                 fetchEntries={fetchEntries}
+                selectedEmployeeId={selectedEmployeeId}
                 dayInfo={dayInfo}
                 selectedFullDate={selectedFullDate}
                 setSelectedFullDate={setSelectedFullDate}
@@ -404,6 +437,8 @@ interface Iprops {
   projects: object;
   entries: object;
   isAdmin: boolean;
+  userId: number;
+  employees: [];
 }
 
 export default TimeTracking;

@@ -8,7 +8,7 @@ const { useState, useEffect } = React;
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
 
-const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, selectedFullDate, setSelectedFullDate, handleWeekTodayButton, monthsAbbr, setWeekDay, setSelectDate  }) => {
+const MonthCalender: React.FC<Iprops> = ({ fetchEntries, selectedEmployeeId, dayInfo, entryList, selectedFullDate, setSelectedFullDate, handleWeekTodayButton, monthsAbbr, setWeekDay, setSelectDate  }) => {
   const [currentMonthNumber, setCurrentMonthNumber] = useState<number>(dayjs().month());
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
   const [firstDay, setFirstDay] = useState<number>(dayjs().startOf("month").weekday());
@@ -53,7 +53,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
     try {
       const startOfTheMonth2MonthsAgo = dayjs(startOfTheMonth).subtract(2, "month").format("YYYY-MM-DD");
       const endOfTheMonth2MonthsAgo = dayjs(endOfTheMonth).subtract(2, "month").format("YYYY-MM-DD");
-      await fetchEntries(startOfTheMonth2MonthsAgo, endOfTheMonth2MonthsAgo);
+      await fetchEntries(startOfTheMonth2MonthsAgo, endOfTheMonth2MonthsAgo, selectedEmployeeId);
       if (currentMonthNumber === 0) {
         setCurrentMonthNumber(11);
         setCurrentYear(currentYear - 1);
@@ -69,7 +69,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
     try {
       const startOfTheMonth2MonthsLater = dayjs(startOfTheMonth).add(2, "month").format("YYYY-MM-DD");
       const endOfTheMonth2MonthsLater = dayjs(endOfTheMonth).add(2, "month").format("YYYY-MM-DD");
-      await fetchEntries(startOfTheMonth2MonthsLater, endOfTheMonth2MonthsLater);
+      await fetchEntries(startOfTheMonth2MonthsLater, endOfTheMonth2MonthsLater, selectedEmployeeId);
       if (currentMonthNumber === 11) {
         setCurrentMonthNumber(0);
         setCurrentYear(currentYear + 1);
@@ -196,7 +196,8 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
 };
 
 interface Iprops {
-  fetchEntries: (from: string, to: string) => void;
+  fetchEntries: (from: string, to: string, uid: number) => void;
+  selectedEmployeeId: number;
   dayInfo: any[];
   selectedFullDate: string;
   setSelectedFullDate: any;

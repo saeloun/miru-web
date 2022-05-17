@@ -4,7 +4,7 @@ const path = "/timesheet_entry";
 
 const create = async params => axios.post(path, params);
 
-const list = async (from, to) => axios.get(`${path}?from=${from}&to=${to}`);
+const list = async (from, to, uid) => axios.get(`${path}?from=${from}&to=${to}&uid=${uid}`);
 
 const update = async (id, payload) => axios.put(`${path}/${id}`, payload);
 
