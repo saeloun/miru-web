@@ -468,11 +468,11 @@ body {
   --toastify-color-warning: #EFDBA9;
   --toastify-color-error: #EFA9A9;
 
-    //Used only for colored theme
-    --toastify-text-color-info: #104556;
-    --toastify-text-color-success: #10562C;
-    --toastify-text-color-warning: #564210;
-    --toastify-text-color-error: #561010;
+  //Used only for colored theme
+  --toastify-text-color-info: #104556;
+  --toastify-text-color-success: #10562C;
+  --toastify-text-color-warning: #564210;
+  --toastify-text-color-error: #561010;
 }
 
 .Toastify__toast {
@@ -480,5 +480,10 @@ body {
 
   .Toastify__toast-body {
     border-radius: 8px;
+    font-family: Manrope;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 22px;
+    letter-spacing: 0px;
   }
 }

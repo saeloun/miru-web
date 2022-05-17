@@ -11,6 +11,7 @@ import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
 
 import Header from "./Header";
+import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapClientDetails } from "../../../mapper/client.mapper";
 import AddEditProject from "../../Projects/Modals/AddEditProject";
 import DeleteProject from "../../Projects/Modals/DeleteProject";
@@ -111,7 +112,7 @@ const ClientList = ({ isAdminUser }) => {
 
   return (
     <>
-      <ToastContainer autoClose={3} />
+      <ToastContainer autoClose={TOASTER_DURATION} />
       <Header clientDetails={clientDetails} />
       <div>
         { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">

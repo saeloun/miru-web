@@ -11,6 +11,7 @@ import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
 
 import Header from "./Header";
+import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapClientList } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
@@ -113,7 +114,7 @@ const Clients = ({ isAdminUser }) => {
 
   return (
     <>
-      <ToastContainer autoClose={3} />
+      <ToastContainer autoClose={TOASTER_DURATION} />
       <Header isAdminUser={isAdminUser} setnewClient={setnewClient} />
       <div>
         {isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">

@@ -4,6 +4,7 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectApi from "apis/projects";
 import Header from "./Header";
 import { Project } from "./project";
+import { TOASTER_DURATION } from "../../../constants/index";
 import { IProject } from "../interface";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
@@ -33,7 +34,7 @@ export const ProjectList = ({ isAdminUser }) => {
 
   return (
     <React.Fragment>
-      <ToastContainer autoClose={3} />
+      <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         setShowProjectModal={setShowProjectModal}
         isAdminUser={isAdminUser}
