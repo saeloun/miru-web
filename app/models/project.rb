@@ -21,6 +21,7 @@
 
 class Project < ApplicationRecord
   include Discard::Model
+  default_scope -> { kept }
 
   # Associations
   belongs_to :client

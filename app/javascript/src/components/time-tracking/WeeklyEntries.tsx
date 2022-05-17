@@ -1,7 +1,6 @@
 import * as React from "react";
 import timesheetEntryApi from "apis/timesheet-entry";
 import Toastr from "common/Toastr";
-import Logger from "js-logger";
 import SelectProject from "./SelectProject";
 import WeeklyEntriesCard from "./WeeklyEntriesCard";
 
@@ -16,7 +15,7 @@ const WeeklyEntries: React.FC<Props> = ({
   clientName,
   projectName,
   entries,
-  entryList,
+  entryList, //eslint-disable-line
   setEntryList,
   dayInfo,
   isWeeklyEditing,

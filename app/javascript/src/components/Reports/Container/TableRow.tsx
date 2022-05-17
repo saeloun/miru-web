@@ -1,17 +1,8 @@
 import React from "react";
-import { minutesToHHMM } from "../../helpers/hhmm-parser";
+import { minutesToHHMM } from "../../../helpers/hhmm-parser";
+import { ITimeEntry } from "../interface";
 
-export interface ITimeEntry {
-  id: number;
-  project: string;
-  client: string;
-  note: string;
-  teamMember: string;
-  workDate: string;
-  duration: number;
-}
-
-export const TimeEntry = ({
+const TableRow = ({
   id,
   project,
   client,
@@ -20,8 +11,9 @@ export const TimeEntry = ({
   workDate,
   duration
 }: ITimeEntry) => (
+
   <tr key={id} className="flex flex-row items-center">
-    <td className="w-full px-6 py-4 text-left whitespace-nowrap">
+    <td className="w-2/5 px-6 py-4 text-left whitespace-nowrap">
       <p className="font-semibold text-base text-miru-dark-purple-1000">
         {project}
       </p>
@@ -29,10 +21,10 @@ export const TimeEntry = ({
         {client}
       </p>
     </td>
-    <td className="w-full px-6 py-4 text-left text-xs font-normal text-miru-dark-purple-1000 whitespace-pre-wrap">
+    <td className="w-3/5 px-6 py-4 text-left text-xs font-normal text-miru-dark-purple-1000 whitespace-pre-wrap">
       {note}
     </td>
-    <td className="w-full px-6 py-4 text-left whitespace-nowrap">
+    <td className="w-1/5 px-6 py-4 text-left whitespace-nowrap">
       <p className="font-semibold text-base text-miru-dark-purple-1000">
         {teamMember}
       </p>
@@ -40,8 +32,10 @@ export const TimeEntry = ({
         {workDate}
       </p>
     </td>
-    <td className="w-full px-6 py-4 text-xl text-left whitespace-nowrap font-bold text-miru-dark-purple-1000">
+    <td className=" px-6 py-4 text-xl text-left whitespace-nowrap font-bold text-miru-dark-purple-1000">
       {minutesToHHMM(duration)}
     </td>
   </tr>
 );
+
+export default TableRow;

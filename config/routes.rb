@@ -24,6 +24,16 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/sent_emails"
   end
 
+  Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+    ActiveSupport::SecurityUtils.secure_compare(
+      ::Digest::SHA256.hexdigest(username),
+      ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_USERNAME"])) &
+      ActiveSupport::SecurityUtils.secure_compare(
+        ::Digest::SHA256.hexdigest(password),
+        ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_PASSWORD"]))
+  end
+  mount Sidekiq::Web, at: "/sidekiq"
+
   root to: "root#index"
   draw(:internal_api)
   resources :dashboard, only: [:index]
@@ -58,11 +68,12 @@ Rails.application.routes.draw do
   get "projects/*path", to: "projects#index", via: :all
   get "projects", to: "projects#index"
 
+  get "payments/settings/stripe/connect/refresh", to: "payment_settings#refresh_stripe_connect"
+  get "payments/settings/*path", to: "payment_settings#index", via: :all
+  get "payments/settings", to: "payment_settings#index"
+
   get "payments/*path", to: "payments#index", via: :all
   get "payments", to: "payments#index"
-
-  get "payment_settings/*path", to: "payment_settings#index", via: :all
-  get "payment_settings", to: "payment_settings#index"
 
   get "subscriptions/*path", to: "subscriptions#index", via: :all
   resources :subscriptions, only: [:index]
@@ -71,6 +82,4 @@ Rails.application.routes.draw do
     get "profile", to: "users/registrations#edit"
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
   end
-
-  mount Sidekiq::Web => "/sidekiq"
 end

@@ -19,5 +19,10 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :generate_invoice, only: [:index, :show]
     resources :project_members, only: [:update]
     resources :company_users, only: [:index]
+    resources :timezones, only: [:index]
+
+    # Non-Resourceful Routes
+    get "payments/settings", to: "payment_settings#index"
+    post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
   end
 end

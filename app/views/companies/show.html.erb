@@ -33,8 +33,8 @@
             </h2>
           </div>
           <div class="flex-1 min-w-0">
-            <h2 class="<%= request.path == "/payment_settings" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
-              <%= link_to t('settings.payment_setting').upcase, payment_settings_path %>
+            <h2 class="<%= request.path == "/payments/settings" ? "underline font-extrabold" : "font-normal" %> text-xs text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-widest leading-7 sm:text-base sm:truncate py-1 cursor-pointer">
+              <%= link_to t('settings.payment_setting').upcase, payments_settings_path %>
             </h2>
           </div>
         </div>
@@ -125,7 +125,7 @@
                   </div>
                 </div>
                 <div class="mt-1">
-                  <%= form.select :country, [[ "Please select", "", { selected: true, disabled: true }]] + ISO3166::Country.pluck(:alpha2, :name).collect { |c| [ c.second, c.first ] }, {}, { autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :country)}" } %>
+                  <%= form.select :country, [[ "Please select", "", { selected: true, disabled: true }]] + ISO3166::Country.pluck(:alpha2, :name).collect { |c| [ c.second, c.first ] }, {}, { autofocus: true, class: "select-country rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :country)}" } %>
                 </div>
               </div>
             </div>
@@ -139,7 +139,7 @@
                   </div>
                 </div>
                 <div class="mt-1">
-                  <%= form.select :timezone, TZInfo::Timezone.all_country_zones.collect { |t| [ t.to_s ] }, {}, { autofocus: true, class: "rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :timezone)}" } %>
+                  <%= form.select :timezone, ActiveSupport::TimeZone.country_zones(current_company.country), {}, { autofocus: true, class: "select-timezone rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :timezone)}" } %>
                 </div>
               </div>
             </div>
@@ -208,3 +208,4 @@
     </div>
   </div>
 </div>
+<script  src="/javascripts/org.js" >
