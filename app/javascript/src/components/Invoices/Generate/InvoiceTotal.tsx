@@ -13,14 +13,15 @@ const InvoiceTotal = ({
   amountDue, setAmountDue,
   setAmount,
   discount, setDiscount,
-  tax, setTax
+  tax, setTax,
+  showDiscountInput, showTax
 }) => {
 
   const [addDiscount, setAddDiscount] = useState<boolean>(false);
   const [showDiscountMenu, setShowDiscountMenu] = useState<boolean>(false);
   const [showDiscountButton, setShowDiscountButton] = useState<boolean>(false);
-  const [showDiscount, setShowDiscount] = useState<boolean>(false);
-  const [showTaxInput, setShowTaxInput] = useState<boolean>(false);
+  const [showDiscount, setShowDiscount] = useState<boolean>(showDiscountInput);
+  const [showTaxInput, setShowTaxInput] = useState<boolean>(showTax);
   const [showEditTaxButton, setShowEditTaxButton] = useState<boolean>(false);
 
   const [subTotal, setSubTotal] = useState<number>(0);

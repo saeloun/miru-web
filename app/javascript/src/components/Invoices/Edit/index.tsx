@@ -148,11 +148,13 @@ const EditInvoice = () => {
             amountPaid={amountPaid}
             amountDue={amountDue}
             setAmountDue={setAmountDue}
-            discount={discount}
+            discount={discount || invoiceDetails.discount}
             setDiscount={setDiscount}
-            tax={tax}
+            tax={tax || invoiceDetails.tax}
             setTax={setTax}
             invoiceLineItems={invoiceDetails.invoiceLineItems}
+            showDiscountInput={!!invoiceDetails.discount}
+            showTax={!!invoiceDetails.tax}
           />
         </div>
       </React.Fragment>

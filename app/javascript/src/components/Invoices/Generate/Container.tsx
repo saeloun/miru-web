@@ -60,6 +60,8 @@ const Container = ({
       setTax={setTax}
       invoiceAmount={0}
       invoiceLineItems={[]}
+      showDiscountInput={false}
+      showTax={false}
     />
   </div>
 );
