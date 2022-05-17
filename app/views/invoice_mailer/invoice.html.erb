@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-  </head>
+    </head>
   <body style="display:flex; justify-content:center">
     <div style="width: 640px; height: 702px;" >
       <div class="mailer_container">
@@ -23,13 +23,13 @@
                 <span style='display:flex' class="details_title">
                   Date of Issue
                 </span>
-                <span class="details_value">23.12.2021</span>
+                <span class="details_value"> <%= @invoice.issued_date %> </span>
               </div>
               <div>
                 <span style='display:flex; margin-top:16px' class="details_title">
                   Due Date
                 </span>
-                <span class="details_value">23.1.2022</span>
+                <span class="details_value"> <%= @invoice.due_date %> </span>
               </div>
             </div>
             <div>
@@ -38,7 +38,7 @@
                   Invoice Number
                 </span>
                 <span class="details_value">
-                  6335 7871
+                  <%= @invoice.invoice_number %>
                 </span>
               </div>
               <div style='display:flex; flex-direction:column'>
@@ -56,7 +56,7 @@
                 Total Amount
               </span>
               <span class="amount">
-                $360.00
+                <%= @invoice.amount %>
               </span>
             </div>
           </div>
