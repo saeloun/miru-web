@@ -3,19 +3,87 @@
   <head>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
-  <body>
-    <h1>Invoice: <%= @invoice.invoice_number %></h1>
+  <body style="display:flex; justify-content:center">
+    <div style="width: 640px; height: 702px;" >
+      <div class="mailer_container">
+        <div class="comapany_logo">
+          <%= image_tag "saeloun_logo.png", height: 80 ,width: 80 %>
+          <span class="logo_footer">
+            <span style='font-weight:bold'>Saeloun Inc. </span>
+            has sent you an invoice.
+          </span>
+        </div>
+        <div class="summary_container">
+          <span class="summary_title">
+            Invoice Summary
+          </span>
+          <div style='display:flex; justify-content:space-between'>
+            <div>
+              <div>
+                <span style='display:flex' class="details_title">
+                  Date of Issue
+                </span>
+                <span class="details_value">23.12.2021</span>
+              </div>
+              <div>
+                <span style='display:flex; margin-top:16px' class="details_title">
+                  Due Date
+                </span>
+                <span class="details_value">23.1.2022</span>
+              </div>
+            </div>
+            <div>
+              <div style='display:flex; flex-direction:column'>
+                <span class="details_title">
+                  Invoice Number
+                </span>
+                <span class="details_value">
+                  6335 7871
+                </span>
+              </div>
+              <div style='display:flex; flex-direction:column'>
+                <span style='margin-top:16px' class="details_title">
+                  Reference
+                </span>
+                <span class="details_value">
+                  -
+                </span>
+              </div>
+            </div>
 
-    <p>
-      Hi <%= @invoice.client_name %>, You have an invoice with amount <%= @invoice.amount %>.
-    </p>
+            <div style='display:flex; flex-direction:column'>
+              <span style='text-align:right' class="details_title">
+                Total Amount
+              </span>
+              <span class="amount">
+                $360.00
+              </span>
+            </div>
+          </div>
+          <button class="view_invoice">
+          VIEW INVOICE
+          </button>
+        </div>
+      </div>
 
-    <p>
-      The due date is <%= @invoice.due_date %>.
-    </p>
+      <div class="poweredby_conatiner">
+          <span style='display:flex'>
+            <span style='padding-top:16px' class="poweredby_label">Powered by</span>
+            <%= image_tag "miruLogoWithText.svg", height:'48px', width:'120px' %>
+          </span>
+          <span style="margin-top:20px; line-height:20px" class="poweredby_label">
+            Invoice and accounting software for every business
+          </span>
+      </div>
 
-    <p>You can pay for the invoice here: <%= link_to nil, new_invoice_payment_url(@invoice), target: "_blank", rel: "nofollow" %></p>
-
-    <p>Thanks!</p>
+      <div class="footer">
+          <span class="copyright_label">© Miru 2022. All rights reserved.</span>
+          <span style="display:flex; justify-content:space-between; width:35%" class="copyright_label">
+            www.getmiru.com/
+            <%= image_tag "Instagram.svg", height: '16px' ,width:'16px' %>
+            <%= image_tag "Twitter.svg", height: '16px' ,width:'16px' %>
+          </span>
+      </div>
+    </div>
   </body>
 </html>
