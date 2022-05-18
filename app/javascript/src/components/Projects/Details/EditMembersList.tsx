@@ -2,6 +2,7 @@ import * as React from "react";
 
 import companyUsersApi from "apis/company-users";
 import projectMembersApi from "apis/project-members";
+import Toastr from "common/Toastr";
 import { X } from "phosphor-react";
 
 import EditMembersListForm from "./EditMembersListForm";
@@ -69,6 +70,7 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, hand
         setExistingMembers(members);
         handleAddProjectDetails();
         closeAddRemoveMembers();
+        Toastr.success("Changes saved successfully");
       }
       catch (err) {
         // add error handling
@@ -96,7 +98,7 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, hand
             allMemberList={allMemberList}
             updateMemberState={updateMemberState}
             setMembers={setMembers}
-            handleSubmit={handleSubmit}/>
+            handleSubmit={handleSubmit} />
         </div>
       </div>
     </div>
