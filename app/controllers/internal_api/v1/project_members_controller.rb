@@ -9,9 +9,7 @@ class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationCo
       update_existing_members
       remove_members
     end
-    render json: {
-      notice: I18n.t("projects.update_members.success.message")
-    }, status: :ok
+    render json: {}, status: :ok
   end
 
   private
