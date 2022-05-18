@@ -177,5 +177,9 @@ gem "stripe"
 # Background job processing adapter
 gem "sidekiq"
 
+# searchkick for elasticsearch
+gem "elasticsearch", "< 7.14" # select one
+gem "searchkick"
+
 # PDF generator
 gem "grover"
