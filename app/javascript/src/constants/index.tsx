@@ -1,4 +1,14 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
+
+const alertErrorClose = require("../../../assets/images/alert-error-close.svg");
+const errorOctagon = require("../../../assets/images/error-octagon.svg");
+const infoCircle = require("../../../assets/images/info-circle.svg");
+const infoCloseIcon = require("../../../assets/images/info-close-icon.svg");
+const successCheckCircle = require("../../../assets/images/success-check-circle.svg");
+const successCloseIcon = require("../../../assets/images/success-close-icon.svg");
+const warningCloseIcon = require("../../../assets/images/warning-close-icon.svg");
+const warningTriangle = require("../../../assets/images/warning-triangle.svg");
 
 export enum ApiStatus {
   IDLE = "idle",
@@ -13,31 +23,31 @@ export const getToasterIcon = (type) => {
   switch (type) {
     case "success":
       return <img
-        src="/success-check-circle.svg"
+        src={successCheckCircle}
         className="items-center"
         alt="success"
       />;
     case "error":
       return <img
-        src="/error-octagon.svg"
+        src={errorOctagon}
         className="items-center"
         alt="error"
       />;
     case "warning":
       return <img
-        src="/warning-triangle.svg"
+        src={warningTriangle}
         className="items-center"
         alt="warning"
       />;
     case "info":
       return <img
-        src="/info-circle.svg"
+        src={infoCircle}
         className="items-center"
         alt="info"
       />;
     default:
       return <img
-        src="/success-check-circle.svg"
+        src={successCheckCircle}
         className="items-center"
         alt="success"
       />;
@@ -48,32 +58,32 @@ export const getToasterCloseButton = ({ closeToast, type }) => {
   switch (type) {
     case "success":
       return <img
-        src="/success-close-icon.svg"
-        alt="close"
+        src={successCloseIcon}
+        alt="success"
         onClick={closeToast}
       />;
     case "error":
       return <img
-        src="/alert-error-close.svg"
-        alt="close"
+        src={alertErrorClose}
+        alt="error"
         onClick={closeToast}
       />;
     case "warning":
       return <img
-        src="/warning-close-icon.svg"
-        alt="close"
+        src={warningCloseIcon}
+        alt="warning"
         onClick={closeToast}
       />;
     case "info":
       return <img
-        src="/info-close-icon.svg"
-        alt="close"
+        src={infoCloseIcon}
+        alt="info"
         onClick={closeToast}
       />;
     default:
       return <img
-        src="/success-close-icon.svg"
-        alt="close"
+        src={successCloseIcon}
+        alt="success"
         onClick={closeToast}
       />;
   }
