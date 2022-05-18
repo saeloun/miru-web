@@ -9,6 +9,8 @@ import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
 
 import { ApiStatus as InvoicesStatus } from "../../../constants";
+import BulkDeleteInvoices from "../Modals/BulkDeleteInvoices";
+import DeleteInvoice from "../Modals/DeleteInvoice";
 
 const Invoices: React.FC = () => {
   const [status, setStatus] = React.useState<InvoicesStatus>(
@@ -28,6 +30,11 @@ const Invoices: React.FC = () => {
   const [selectedInvoices, setSelectedInvoices] = React.useState<number[]>([]);
 
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] =
+    React.useState<boolean>(false);
+  const [showBulkDeleteDialaog, setShowBulkDeleteDialog] =
+    React.useState<boolean>(false);
+  const [invoiceToDelete, setInvoiceToDelete] = React.useState(null);
 
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
@@ -47,7 +54,7 @@ const Invoices: React.FC = () => {
       setInvoices(invoices);
       setSummary(summary);
       setPagy(pagy);
-
+      setSelectedInvoices([]);
       setStatus(InvoicesStatus.SUCCESS);
     } catch (error) {
       setStatus(InvoicesStatus.ERROR);
@@ -75,6 +82,7 @@ const Invoices: React.FC = () => {
           }
           selectedInvoiceCount={selectedInvoiceCount}
           isInvoiceSelected={isInvoiceSelected}
+          setShowBulkDeleteDialog={setShowBulkDeleteDialog}
         />
 
         <Container
@@ -83,6 +91,8 @@ const Invoices: React.FC = () => {
           selectedInvoices={selectedInvoices}
           selectInvoices={selectInvoices}
           deselectInvoices={deselectInvoices}
+          setShowDeleteDialog={setShowDeleteDialog}
+          setInvoiceToDelete={setInvoiceToDelete}
         />
 
         {isFilterVisible && (
@@ -91,6 +101,20 @@ const Invoices: React.FC = () => {
 
         {invoices.length && (
           <Pagination pagy={pagy} params={params} setParams={setParams} />
+        )}
+        {showDeleteDialog && (
+          <DeleteInvoice
+            invoice={invoiceToDelete}
+            setShowDeleteDialog={setShowDeleteDialog}
+            fetchInvoices={fetchInvoices}
+          />
+        )}
+        {showBulkDeleteDialaog && (
+          <BulkDeleteInvoices
+            invoices={selectedInvoices}
+            setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+            fetchInvoices={fetchInvoices}
+          />
         )}
       </React.Fragment>
     )

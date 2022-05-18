@@ -1,0 +1,10 @@
+# frozen_string_literal: true
+
+class InternalApi::V1::Invoices::BulkDeletionController < InternalApi::V1::ApplicationController
+  def create
+    authorize :create, policy_class: Invoices::BulkDeletionPolicy
+    invoices = Invoice.where(id: params[:_json])
+    invoices.destroy_all
+    head :no_content
+  end
+end
