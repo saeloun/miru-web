@@ -1,8 +1,8 @@
 import * as React from "react";
-import { MagnifyingGlass, Plus } from "phosphor-react";
-import AutoComplete from './AutoComplete';
 import clients from "apis/clients";
-import { unmapClientListForDropdown } from '../../../mapper/client.mapper';
+import { MagnifyingGlass, Plus } from "phosphor-react";
+import AutoComplete from "./AutoComplete";
+import { unmapClientListForDropdown } from "../../../mapper/client.mapper";
 
 const Header = ({
   setnewClient,
@@ -14,8 +14,8 @@ const Header = ({
       .then((res) => {
         const dropdownList = unmapClientListForDropdown(res);
         setDropdownItems(dropdownList);
-      })
-  }
+      });
+  };
 
   return (
     <div
@@ -46,7 +46,7 @@ const Header = ({
         </div>
       )}
     </div>
-  )
+  );
 };
 
 export default Header;
