@@ -1,7 +1,11 @@
 import * as React from "react";
 import { MagnifyingGlass, Plus } from "phosphor-react";
+import AutoComplete from './AutoComplete';
 
-const Header = ({ setnewClient, isAdminUser }) => (
+const Header = ({
+  setnewClient,
+  isAdminUser
+}) => (
   <div
     className={
       isAdminUser
@@ -12,11 +16,7 @@ const Header = ({ setnewClient, isAdminUser }) => (
     <h2 className="header__title">Clients</h2>
     <div className="header__searchWrap">
       <div className="header__searchInnerWrapper">
-        <input
-          type="search"
-          className="header__searchInput"
-          placeholder="Search"
-        />
+        <AutoComplete />
         <button className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
           <MagnifyingGlass size={12} />
         </button>

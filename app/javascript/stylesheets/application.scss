@@ -78,7 +78,14 @@
       @apply flex items-center
     }
     &__searchInnerWrapper {
-      @apply mt-1 relative rounded-md shadow-sm md:ml-5
+      @apply mt-1 relative rounded-md shadow-sm md:ml-5;
+      input {
+        background-color: #F5F7F9;
+        width: 424px;
+        padding: 7px 6px;
+        font-size: 14px;
+        font-weight: 500;
+      }
     }
     &__searchInput {
       @apply w-24 sm:w-40 md:w-64 lg:w-96 rounded tracking-wider appearance-none border border-gray-100 block  px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-sm
@@ -337,6 +344,7 @@
   }
 }
 
+.autoSearch
 
 .filter {
   &__counter {

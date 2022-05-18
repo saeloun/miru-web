@@ -23,6 +23,16 @@ const mapProjectDetails = (input) => input.map((project) => ({
   team: project.team
 }));
 
+const unmapClientListForDropdown = (input) => {
+  const clientList = input.data.client_details;
+  return clientList.map(item => {
+    return {
+      label: item.name,
+      value: item.id
+    }
+  });
+}
+
 const unmapClientDetails = (input) => {
   const { data } = input;
   return {
@@ -41,5 +51,6 @@ const unmapClientDetails = (input) => {
 
 export {
   unmapClientList,
-  unmapClientDetails
+  unmapClientDetails,
+  unmapClientListForDropdown
 };

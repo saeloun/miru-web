@@ -39,7 +39,7 @@ const Clients = ({ isAdminUser }) => {
   const [clientToDelete, setDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
-  const [overdueOutstandingAmount, setOverDueOutstandingAmt]= useState<any>(null);
+  const [overdueOutstandingAmount, setOverDueOutstandingAmt] = useState<any>(null);
   const navigate = useNavigate();
 
   const handleEditClick = (id) => {
