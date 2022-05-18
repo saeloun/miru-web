@@ -5,7 +5,7 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
 
   def index
     authorize :report
-    render json: { entries: }, status: :ok
+    render :index, locals: { entries: filtered_reports, filter_options: }, status: :ok
   end
 
   def create
@@ -19,10 +19,26 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
 
   private
 
-    def entries
-      current_company.timesheet_entries.includes([:user, :project]).map do |timesheet_entry|
-        timesheet_entry.formatted_entry.transform_keys { |key| key.to_s.camelize(:lower) }
-      end
+    def filter_options
+      # Send filter options only when page loads
+      # and not for other requests where user is doing filtering on reports page
+      return {} if any_filter_added?
+
+      @_filter_options ||= { clients: current_company.clients, team_members: current_company.users }
+    end
+
+    def any_filter_added?
+      params[:date_range].present? ||
+      params[:status].present? ||
+      params[:team_member].present? ||
+      params[:team_member].present?
+    end
+
+    def filtered_reports
+      current_company_project_ids_filter = { project_id: current_company.project_ids }
+      filters_where_clause = Report::Filters.process(params)
+      where_clause = current_company_project_ids_filter.merge(filters_where_clause)
+      TimesheetEntry.search(where: where_clause, includes: [:user, :project])
     end
 
     def send_reports_csv(entries)
