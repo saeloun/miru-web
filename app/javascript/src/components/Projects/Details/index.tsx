@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectAPI from "apis/projects";
 import AmountBoxContainer from "common/AmountBox";
@@ -67,7 +68,7 @@ const ProjectDetails = () => {
         .show(params.projectId);
       setProject(unmapper(res.data.project_details));
     } catch (e) {
-        console.log(e); // eslint-disable-line
+      console.log(e); // eslint-disable-line
     }
   };
 
@@ -145,6 +146,7 @@ const ProjectDetails = () => {
 
   return (
     <>
+      <ToastContainer />
       <div className="my-6">
         <div className="flex min-w-0 items-center justify-between">
           <div className="flex items-center">
@@ -179,8 +181,8 @@ const ProjectDetails = () => {
                     onClick={() =>
                       document.location.assign(
                         window.location.origin +
-                          "/invoices/generate?" +
-                          project.client.name
+                        "/invoices/generate?" +
+                        project.client.name
                       )
                     }
                     className="menuButton__list-item"
