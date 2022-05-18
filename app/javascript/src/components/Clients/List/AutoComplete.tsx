@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Autocomplete from 'react-autocomplete'
-import clients from "apis/clients";
-import { unmapClientListForDropdown } from '../../../mapper/client.mapper';
+
+
 import { useNavigate } from 'react-router-dom';
 
 const cssStyles = {
@@ -26,18 +26,16 @@ const cssStyles = {
   }
 }
 
-const AutoComplete = () => {
+const AutoComplete = ({
+  searchCallBack,
+}) => {
   const [searchValue, setValue] = useState<string>('');
   const [dropdownItems, setDropdownItems] = useState([]);
   const navigate = useNavigate();
 
   const handleChange = async (e) => {
     setValue(e.target.value);
-    await clients.get(`?q=${e.target.value}`)
-      .then((res) => {
-        const dropdownList = unmapClientListForDropdown(res);
-        setDropdownItems(dropdownList);
-      })
+    searchCallBack(`?q=${e.target.value}`, setDropdownItems)
   }
 
   const handleSelect = (value) => {

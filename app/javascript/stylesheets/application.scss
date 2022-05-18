@@ -80,11 +80,9 @@
     &__searchInnerWrapper {
       @apply mt-1 relative rounded-md shadow-sm md:ml-5;
       input {
-        background-color: #F5F7F9;
+        @apply bg-miru-gray-100 text-tiny font-medium;
         width: 424px;
         padding: 7px 6px;
-        font-size: 14px;
-        font-weight: 500;
       }
     }
     &__searchInput {
