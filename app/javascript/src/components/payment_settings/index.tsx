@@ -6,11 +6,14 @@ import paymentSettings from "apis/payment-settings";
 import Header from "./Header";
 import SideNav from "./SideNav";
 import { ApiStatus as PaymentSettingsStatus } from "../../constants";
+
 const Connect = require("../../../../assets/images/Connect.svg");
+const ConnectWise = require("../../../../assets/images/connect_wise.svg");
 const connectedCheck = require("../../../../assets/images/connected_check.svg");
 const Connect_Paypal = require("../../../../assets/images/ConnectPaypal.svg");
 const Paypal_Logo = require("../../../../assets/images/PaypalLogo.svg");
 const Stripe_Logo = require("../../../../assets/images/stripe_logo.svg");
+const WiseLogo = require("../../../../assets/images/wise_logo.svg");
 
 const payment_settings = () => {
   const [status, setStatus] = React.useState<PaymentSettingsStatus>(
@@ -31,6 +34,34 @@ const payment_settings = () => {
     } catch (err) {
       setStatus(PaymentSettingsStatus.ERROR);
     }
+  };
+
+  const getConnectionButton = (isConnected, connect, handleOnClick) => {
+    if (isConnected) {
+      return (
+        <div className="flex flex-row">
+          <div className="logo-container mr-1">
+            <img src={connectedCheck} />
+          </div>
+          <p className="ml-1 text-miru-alert-green-800 font-extrabold text-base">Connected</p>
+        </div>
+      );
+    }
+    return (
+      <button onClick={handleOnClick}>
+        <img src={connect} className="pr-5" />
+      </button>
+    );
+  };
+
+  const getConnectButtonMsg = (isConnected) => {
+    const msg = isConnected ? "Your stripe account is now connected and ready to accept online payments" :
+      "Connect with your existing stripe account or create a new account";
+    return (
+      <span className="px-4 font-normal text-sm text-miru-dark-purple-1000 leading-5 w-2/5">
+        { msg }
+      </span>
+    );
   };
 
   useEffect(() => {
@@ -62,35 +93,24 @@ const payment_settings = () => {
               <div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
                 <img src={Stripe_Logo} />
               </div>
-              <span className="px-4 font-normal text-sm text-miru-dark-purple-1000 leading-5 w-2/5">
-                { isStripeConnected ? "Your stripe account is now connected and ready to accept online payments" : "Connect with your existing stripe account or create a new account" }
-              </span>
-              {
-                isStripeConnected ?
-                  <div className="flex flex-row">
-                    <div className="logo-container mr-1">
-                      <img src={connectedCheck} />
-                    </div>
-                    <p className="ml-1 text-miru-alert-green-800 font-extrabold text-base">Connected</p>
-                  </div> :
-                  <button
-                    onClick={connectStripe}
-                  >
-                    <img src={Connect} className="pr-5" />
-                  </button>
-              }
+              { getConnectButtonMsg(isStripeConnected) }
+              { getConnectionButton(isStripeConnected, Connect, connectStripe) }
             </div>
 
             <div className="h-36 p-5 mt-6 bg-white flex justify-between items-center">
               <div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
                 <img src={Paypal_Logo} />
               </div>
-              <span className="px-4 font-normal text-sm text-miru-dark-purple-1000 leading-5 w-2/5">
-              Connect with your existing paypal account or create a new account
-              </span>
-              <button>
-                <img src={Connect_Paypal} className="pr-5" />
-              </button>
+              { getConnectButtonMsg(false) }
+              { getConnectionButton(false, Connect_Paypal, () => { alert("Implement me!"); }) }
+            </div>
+
+            <div className="h-36 p-5 mt-6 bg-white flex justify-between items-center">
+              <div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
+                <img src={WiseLogo} />
+              </div>
+              { getConnectButtonMsg(false) }
+              { getConnectionButton(false, ConnectWise, () => { alert("In Progress!"); }) }
             </div>
           </div>
         </div>
