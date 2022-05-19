@@ -216,12 +216,8 @@ const TimeTracking: React.FC<Iprops> = ({
       setEntryList(allEmployeesEntries[id]);
     } else {
       fetchEntries(
-        dayjs()
-          .weekday(weekDay)
-          .format("YYYY-MM-DD"),
-        dayjs()
-          .weekday(weekDay + 7)
-          .format("YYYY-MM-DD"),
+        dayjs().startOf("month").subtract(1, "month").format("DD-MM-YYYY"),
+        dayjs().endOf("month").add(1, "month").format("DD-MM-YYYY"),
         id
       );
     }
