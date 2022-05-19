@@ -12,6 +12,12 @@ import Header from "./Header";
 
 import { ITimeEntry } from "./interface";
 
+// declare global {
+//   interface Navigator {
+//     msSaveBlob?: (blob: any, defaultName?: string) => boolean;
+//   }
+// }
+
 const Reports = () => {
   const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
   const [isFilterVisible, setFilterVisibilty] = useState<boolean>(false);
@@ -43,6 +49,56 @@ const Reports = () => {
     pdf.save("print.pdf");
   };
 
+  // const exportToCsv = (
+  //   filename: string,
+  //   rows: object[],
+  //   headers?: string[]
+  // ): void => {
+  //   if (!rows || !rows.length) return;
+
+  //   const separator = ",";
+  //   const keys: string[] = Object.keys(rows[0]);
+  //   let columnHeaders: string[];
+
+  //   if (headers) {
+  //     columnHeaders = headers;
+  //   } else {
+  //     columnHeaders = keys;
+  //   }
+
+  //   const csvContent =
+  //     "sep=,\n" +
+  //     columnHeaders.join(separator) +
+  //     "\n" +
+  //     rows
+  //       .map((row) =>
+  //         keys
+  //           .map((k) => {
+  //             let cell = row[k] === null || row[k] === undefined ? "" : row[k];
+  //             cell =
+  //               cell instanceof Date
+  //                 ? cell.toLocaleString()
+  //                 : cell.toString().replace(/"/g, '""');
+
+  //             if (navigator.msSaveBlob) {
+  //               // eslint-disable-next-line no-control-regex
+  //               cell = cell.replace(/[^\x00-\x7F]/g, "");
+  //             }
+  //             if (cell.search(/("|,|\n)/g) >= 0) {
+  //               cell = `"${cell}"`;
+  //             }
+  //             return cell;
+  //           })
+  //           .join(separator)
+  //       )
+  //       .join("\n");
+
+  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf8;" });
+  //   if (navigator.msSaveBlob) {
+  //     navigator.msSaveBlob(blob, filename);
+  //   }
+  // };
+
   return (
     <div>
       <EntryContext.Provider value={{ entries: timeEntries }}>
@@ -50,6 +106,7 @@ const Reports = () => {
           setFilterVisibilty={setFilterVisibilty}
           isFilterVisible={isFilterVisible}
           downloadPdf={downloadPdf}
+          // downloadCsv={exportToCsv}
         />
         <Container ref={printRef} />
         {isFilterVisible && <Filters setFilterVisibilty={setFilterVisibilty} />}
