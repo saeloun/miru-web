@@ -15,6 +15,11 @@ jobs:
           postgresql version: 9.6.2-alpine
           postgresql db: miru_web_test
           postgresql user: root
+      - name: Setup ElasticSearch
+        uses: ankane/setup-elasticsearch@v1
+      - name: Check if Elasticsearch is reachable
+        run: |
+          curl --verbose --show-error http://localhost:9200
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
       - name: Ruby gem cache
@@ -93,11 +98,3 @@ jobs:
       - name: Run Eslint
         run: |
           npx eslint "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
-      - name: Cypress install
-        uses: cypress-io/github-action@v2
-        with:
-          # just perform install
-          runTests: false
-      - name: Cypress tests
-        run: |
-          npm run cy:run:staging

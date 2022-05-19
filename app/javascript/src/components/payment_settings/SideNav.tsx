@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
-const profile = require("../../../../assets/images/avatar.svg");
+const profile = require("../../../../assets/images/avatar_payments.svg");
 
-const SideNav = () =>(
+const SideNav = () => (
   <div className='flex flex-col'>
     <div className='mr-2 w-60 h-16 p-2 bg-miru-han-purple-1000 flex text-white'>
-      <img src={profile} className='text-white'/>
+      <img src={profile} className='mr-2' />
       <div className='flex flex-col'>
-        <span className='font-bold text-base leading-5'>John Smith</span>
+        <span className='font-bold text-base leading-5 pt-1'>John Smith</span>
         <span className='font-normal text-xs leading-4'>john.smith@saeloun.com</span>
       </div>
     </div>
