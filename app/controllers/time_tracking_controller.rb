@@ -7,7 +7,7 @@ class TimeTrackingController < ApplicationController
   def index
     is_admin = current_user.has_role? [:owner, :admin], current_company
     user_id = current_user.id
-    employees = is_admin ? current_user.current_workspace.users.select(:id, :first_name, :last_name) : [current_user]
+    employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
 
     clients = current_company.clients.includes(:projects)
     projects = {}
