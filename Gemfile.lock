@@ -69,6 +69,8 @@ GEM
     activerecord (7.0.1)
       activemodel (= 7.0.1)
       activesupport (= 7.0.1)
+    activerecord-import (1.4.0)
+      activerecord (>= 4.2)
     activestorage (7.0.1)
       actionpack (= 7.0.1)
       activejob (= 7.0.1)
@@ -158,6 +160,14 @@ GEM
     dotenv-rails (2.7.6)
       dotenv (= 2.7.6)
       railties (>= 3.2)
+    elasticsearch (7.13.3)
+      elasticsearch-api (= 7.13.3)
+      elasticsearch-transport (= 7.13.3)
+    elasticsearch-api (7.13.3)
+      multi_json
+    elasticsearch-transport (7.13.3)
+      faraday (~> 1)
+      multi_json
     erubi (1.10.0)
     execjs (2.8.1)
     factory_bot (6.2.0)
@@ -412,6 +422,9 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    searchkick (5.0.3)
+      activemodel (>= 5.2)
+      hashie
     selenium-webdriver (4.1.0)
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
@@ -482,6 +495,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_interaction
+  activerecord-import
   annotate
   aws-sdk-s3
   bootsnap (>= 1.4.4)
@@ -495,6 +509,7 @@ DEPENDENCIES
   devise_invitable (~> 2.0, >= 2.0.6)
   discard (~> 1.2)
   dotenv-rails
+  elasticsearch (< 7.14)
   factory_bot_rails
   faker
   foreman
@@ -525,6 +540,7 @@ DEPENDENCIES
   rubocop-rails
   rubocop-rspec (~> 2.8)
   sass-rails
+  searchkick
   selenium-webdriver (>= 4.0.0)
   shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers (~> 5.1)
