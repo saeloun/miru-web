@@ -111,7 +111,7 @@ const Invoices: React.FC = () => {
         )}
         {showBulkDeleteDialaog && (
           <BulkDeleteInvoices
-            invoices={selectedInvoices}
+            invoices_ids={selectedInvoices}
             setShowBulkDeleteDialog={setShowBulkDeleteDialog}
             fetchInvoices={fetchInvoices}
           />

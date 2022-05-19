@@ -2,15 +2,15 @@ import React from "react";
 import invoicesApi from "apis/invoices";
 
 interface IProps {
-  invoices: any;
+  invoices_ids: any;
   setShowBulkDeleteDialog : any;
   fetchInvoices: any
 }
 
-const BulkDeleteInvoices = ({ invoices, setShowBulkDeleteDialog, fetchInvoices  }: IProps) => {
-  const destroyInvoices = async invoices => {
+const BulkDeleteInvoices = ({ invoices_ids, setShowBulkDeleteDialog, fetchInvoices  }: IProps) => {
+  const destroyInvoices = async invoices_ids => {
     try {
-      await invoicesApi.destroyBulk(invoices);
+      await invoicesApi.destroyBulk({ invoices_ids });
       setShowBulkDeleteDialog(false);
       fetchInvoices();
     } catch (error) {
@@ -47,7 +47,7 @@ const BulkDeleteInvoices = ({ invoices, setShowBulkDeleteDialog, fetchInvoices  
               <button
                 className="button__bg_purple"
                 onClick={() => {
-                  destroyInvoices(invoices);
+                  destroyInvoices(invoices_ids);
                 }}
               >
                 DELETE

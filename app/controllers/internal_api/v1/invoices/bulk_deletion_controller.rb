@@ -3,7 +3,7 @@
 class InternalApi::V1::Invoices::BulkDeletionController < InternalApi::V1::ApplicationController
   def create
     authorize :create, policy_class: Invoices::BulkDeletionPolicy
-    invoices = Invoice.where(id: params[:_json])
+    invoices = Invoice.where(id: params[:invoices_ids])
     invoices.destroy_all
     head :no_content
   end
