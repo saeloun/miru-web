@@ -8,7 +8,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
 
   def index
     timesheet_entries = policy_scope(TimesheetEntry)
-    timesheet_entries = timesheet_entries.where(user_id: params[:uid] || current_user.id).during(
+    timesheet_entries = timesheet_entries.where(user_id: params[:user_id] || current_user.id).during(
       params[:from],
       params[:to])
     entries = formatted_entries_by_date(timesheet_entries)
