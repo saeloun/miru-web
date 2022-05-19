@@ -39,46 +39,53 @@ nvm install $(cat .nvmrc)
 brew install postgresql
 ```
 
-6. Install Redis
+6. Install elasticsearch
+
+```
+brew install elastic/tap/elasticsearch-full
+brew services start elasticsearch-full
+```
+
+7. Install Redis
 
 ```
 brew install redis
 ```
 
-7. Install gem
+8. Install gem
 
 ```
 bundle install
 ```
 
-8. Install node packages
+9. Install node packages
 
 ```
 yarn install
 ```
 
-9. Setup ENV's
+10. Setup ENV's
 
 ```
 cp .env.example .env
 ```
 
-10. Update `DATABASE_URL` in `.env` as per local `psql` creds. For example, if
+11. Update `DATABASE_URL` in `.env` as per local `psql` creds. For example, if
     the user is `root` and password is `password`, change the variable as
     `DATABASE_URL="postgres://root:password@localhost/miru_web?encoding=utf8&pool=5&timeout=5000"`
 
-11. Update `APP_BASE_URL` in `.env` to `localhost:3000`
-12. Run `bin/rails db:create RAILS_ENV=development` to create the database
-13. Run `bin/rails db:migrate RAILS_ENV=development` for migrations
-14. Run `bin/rails db:seed` for populating the database with initial data
+12. Update `APP_BASE_URL` in `.env` to `localhost:3000`
+13. Run `bin/rails db:create RAILS_ENV=development` to create the database
+14. Run `bin/rails db:migrate RAILS_ENV=development` for migrations
+15. Run `bin/rails db:seed` for populating the database with initial data
 
-15. Run app in local env
+16. Run app in local env
 
 ```
 foreman start -f Procfile.dev
 ```
 
-16. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
+17. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
 
 ### To receive the emails in non-production apps.
 
