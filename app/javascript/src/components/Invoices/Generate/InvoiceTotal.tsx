@@ -84,12 +84,14 @@ const InvoiceTotal = ({
   };
 
   useEffect(() => {
+    const newLineItemsSubTotal = newLineItems.reduce((sum, { lineTotal }) => (sum + lineTotal), 0);
+    const invoiceItemSubTotal = invoiceLineItems.reduce((sum, { quantity, rate }) => (sum +((quantity / 60) * rate)), 0);
 
-    let newSubTotal = invoiceLineItems.reduce((sum, { quantity, rate }) => (sum +((quantity / 60) * rate)), 0);
-    newSubTotal = newLineItems.reduce((sum, { lineTotal }) => (sum + lineTotal), newSubTotal);
-    const newTotal = Number(newSubTotal) + Number(tax) + Number(invoiceAmount) - Number(discount);
+    let newTotal = Number(newLineItemsSubTotal) + Number(invoiceItemSubTotal) + Number(tax) - Number(discount);
 
-    setSubTotal(newSubTotal);
+    invoiceLineItems.length == 0 ? newTotal += Number(invoiceAmount) : newTotal = newLineItemsSubTotal + Number(invoiceAmount);
+
+    setSubTotal(newLineItemsSubTotal + invoiceItemSubTotal);
     setTotal(newTotal);
     setAmount(newTotal);
     setAmountDue(newTotal - amountPaid);

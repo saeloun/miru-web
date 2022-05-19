@@ -45,6 +45,7 @@ const EditInvoice = () => {
       setLineItems(addKeyToLineItems(res.data.lineItems));
       setAmount(res.data.amount);
       setSelectedClient(res.data.client);
+      setAmountDue(res.data.amountDue);
     } catch (e) {
       navigate("/invoices/error");
       return {};
@@ -81,13 +82,13 @@ const EditInvoice = () => {
   const updateInvoice = () => {
     invoicesApi.updateInvoice(invoiceDetails.id, {
       invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
-      issue_date: dayjs(dueDate || invoiceDetails.issueDate).format("DD.MM.YYYY"),
-      due_date: dayjs(issueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
-      amount_due: amountDue,
-      amount_paid: amountPaid,
+      issue_date: dayjs(issueDate || invoiceDetails.issueDate).format("DD.MM.YYYY"),
+      due_date: dayjs(dueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
+      amount_due: amountDue || invoiceDetails.amountDue,
+      amount_paid: amountPaid || invoiceDetails.amountPaid,
       amount: amount,
-      discount: discount,
-      tax: tax,
+      discount: discount || invoiceDetails.discount,
+      tax: tax || invoiceDetails.tax,
       client_id: selectedClient.value,
       invoice_line_items_attributes: selectedLineItems.map(item => ({
         name: `${item.first_name} ${item.last_name}`,
@@ -145,8 +146,8 @@ const EditInvoice = () => {
             newLineItems={selectedLineItems}
             setAmount={setAmount}
             invoiceAmount={invoiceDetails.amount}
-            amountPaid={amountPaid}
-            amountDue={amountDue}
+            amountPaid={amountPaid || invoiceDetails.amountPaid}
+            amountDue={amountDue || invoiceDetails.amountDue}
             setAmountDue={setAmountDue}
             discount={discount || invoiceDetails.discount}
             setDiscount={setDiscount}

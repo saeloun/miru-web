@@ -23,6 +23,3 @@ json.company_client_list current_company.client_list do |client|
 end
 
 json.line_items invoice.client.new_line_item_entries([])
-
-json.issue_date Date.current
-json.due_date Date.current + 30
