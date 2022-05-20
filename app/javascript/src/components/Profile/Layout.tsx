@@ -5,7 +5,6 @@ import RouteConfig from "./RouteConfig";
 import SideNav from "./SubNav";
 
 const Layout = ({isAdmin}) => {
-  console.log(isAdmin);
   return (
     <React.Fragment>
       <BrowserRouter>
@@ -14,15 +13,7 @@ const Layout = ({isAdmin}) => {
           </div>
           <div className="flex mt-5 mb-10">
             <SideNav />
-            <div className="flex flex-col w-4/5">
-              <Header
-                title={'Bank Account Details'}
-                subTitle={'Settings to receive payment from your employer'}
-              />
-              <div className="py-10 px-20 mt-4 bg-miru-gray-100 h-screen">
-                <RouteConfig />
-              </div>
-            </div>
+            <RouteConfig />
           </div>
       </BrowserRouter>
     </React.Fragment>
