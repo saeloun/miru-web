@@ -20,7 +20,7 @@ import NewClient from "../Modals/NewClient";
 const getTableData = (clients) => {
   if (clients) {
     return clients.map((client) => {
-      const hours = client.minutes / 60;
+      const hours = (client.minutes / 60).toFixed(2);
       return {
         col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
         col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
