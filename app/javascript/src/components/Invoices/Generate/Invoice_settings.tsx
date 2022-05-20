@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import paymentSettings from "apis/payment-settings";
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomToggle from "common/CustomToggle";
 import { X } from "phosphor-react";
+import { ApiStatus as PaymentSettingsStatus } from "../../../constants";
 
 const amex = require("../../../../../assets/images/amex.svg");
 const applePay = require("../../../../../assets/images/applePay.svg");
@@ -14,11 +17,45 @@ const stripe = require("../../../../../assets/images/stripe_logo.svg");
 const visa = require("../../../../../assets/images/visa.svg");
 
 const Invoice_settings = ({ setShowInvoiceSetting }) => {
+  const [status, setStatus] = React.useState<PaymentSettingsStatus>(
+    PaymentSettingsStatus.IDLE
+  );
   const [isChecked, setIsChecked] = useState<boolean>(true);
-  const [isStripeConnected, setStripeConnected] = useState<boolean>(false);
+  const [isStripeConnected, setStripeConnected] = useState<boolean>(null);
   const [isPaypalConnected, setPaypalConnected] = useState<boolean>(false);
+  const [accountLink, setAccountLink] = useState<string>(null);
+  const [acceptCardPaymentsStripe, setAcceptCardPaymentsStripe] = useState<boolean>(false);
 
-  return (
+  const connectStripe = async () => {
+    const res = await paymentSettings.connectStripe();
+    setAccountLink(res.data.accountLink);
+  };
+
+  const fetchPaymentSettings = async () => {
+    try {
+      setStatus(PaymentSettingsStatus.LOADING);
+      const res = await paymentSettings.get();
+      setStripeConnected(res.data.providers.stripe.connected);
+      setAcceptCardPaymentsStripe(true);
+      setStatus(PaymentSettingsStatus.SUCCESS);
+    } catch (err) {
+      setStatus(PaymentSettingsStatus.ERROR);
+    }
+  };
+
+  useEffect(() => {
+    if (accountLink) {
+      window.location.href = accountLink;
+    }
+  }, [accountLink]);
+
+  useEffect(() => {
+    setAuthHeaders();
+    registerIntercepts();
+    fetchPaymentSettings();
+  }, [isStripeConnected]);
+
+  return status === PaymentSettingsStatus.SUCCESS && (
     <div className="sidebar__container flex flex-col p-6 justify-between">
       <div>
 
@@ -64,7 +101,8 @@ const Invoice_settings = ({ setShowInvoiceSetting }) => {
             <div className="mt-7 font-normal text-xs text-miru-dark-purple-1000 leading-4 flex">
               <CustomCheckbox
                 id={1}
-                handleCheck={() => {}} // eslint-disable-line
+                handleCheck={() => setAcceptCardPaymentsStripe(!acceptCardPaymentsStripe)} // eslint-disable-line
+                isChecked={acceptCardPaymentsStripe}
                 checkboxValue={null}
               />
               <h4 className="pl-2">Accept Credit Cards</h4>
@@ -95,7 +133,7 @@ const Invoice_settings = ({ setShowInvoiceSetting }) => {
             <img
               src={stripeConnect}
               className="mt-4 cursor-pointer"
-              onClick={() => setStripeConnected(true)}
+              onClick={connectStripe}
             />
           </div>
         )}
