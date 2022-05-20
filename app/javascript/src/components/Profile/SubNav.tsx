@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 
 const profile = require("../../../../assets/images/avatar_payments.svg");
 
-const SideNav = () => {
+const SideNav = ({firstName, lastName, email}) => {
   const getActiveClassName = (isActive) => {
     if (isActive) {
       return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block"
@@ -17,8 +17,8 @@ const SideNav = () => {
       <div className='mr-2 w-60 h-16 p-2 bg-miru-han-purple-1000 flex text-white'>
         <img src={profile} className='mr-2' />
         <div className='flex flex-col'>
-          <span className='font-bold text-base leading-5 pt-1'>John Smith</span>
-          <span className='font-normal text-xs leading-4'>john.smith@saeloun.com</span>
+          <span className='font-bold text-base leading-5 pt-1'>{`${firstName} ${lastName}`}</span>
+          <span className='font-normal text-xs leading-4'>{email}</span>
         </div>
       </div>
 

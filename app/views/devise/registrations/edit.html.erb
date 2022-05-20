@@ -177,7 +177,7 @@
   <div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
     <div>
       <div>
-        <%= react_component("Profile/Layout", { isAdmin: false }) %>
+        <%= react_component("Profile/Layout", { isAdmin: false, userDetails: current_user.attributes }) %>
       </div>
     </div>
   </div>
