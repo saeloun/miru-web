@@ -183,3 +183,5 @@ gem "searchkick"
 
 # PDF generator
 gem "grover"
+
+gem "activerecord-import"
