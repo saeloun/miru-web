@@ -31,13 +31,13 @@ RSpec.describe "InternalApi::V1::Invoices#destroy", type: :request do
       send_request :delete, internal_api_v1_invoice_path(id: invoice.id)
     end
 
-    it "is not be permitted to update an invoice" do
+    it "is not be permitted to delete an invoice" do
       expect(response).to have_http_status(:forbidden)
     end
   end
 
   context "when unauthenticated" do
-    it "is not be permitted to update an invoice" do
+    it "is not be permitted to delete an invoice" do
       send_request :delete, internal_api_v1_invoice_path(id: invoice.id)
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
