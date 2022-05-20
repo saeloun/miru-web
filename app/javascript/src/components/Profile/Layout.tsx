@@ -1,10 +1,9 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import Header from "./Header";
 import RouteConfig from "./RouteConfig";
 import SideNav from "./SubNav";
 
-const Layout = ({isAdmin}) => {
+const Layout = ({isAdmin, userDetails}) => {
   return (
     <React.Fragment>
       <BrowserRouter>
@@ -12,7 +11,11 @@ const Layout = ({isAdmin}) => {
             <h2 className="header__title">Settings</h2>
           </div>
           <div className="flex mt-5 mb-10">
-            <SideNav />
+            <SideNav
+              firstName={userDetails.firstName}
+              lastName={userDetails.lastName}
+              email={userDetails.email}
+            />
             <RouteConfig />
           </div>
       </BrowserRouter>

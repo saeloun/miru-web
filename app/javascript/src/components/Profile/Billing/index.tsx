@@ -8,7 +8,7 @@ const Billing = () => {
         title={'Bank Account Details'}
         subTitle={'Settings to receive payment from your employer'}
       />
-      <div className="py-10 px-20 mt-4 bg-miru-gray-100 h-screen">
+      <div className="py-10 pl-10 mt-4 bg-miru-gray-100 h-screen">
         <p>Payment Page Coming up</p>
       </div>
     </div>
