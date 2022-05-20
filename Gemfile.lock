@@ -69,6 +69,8 @@ GEM
     activerecord (7.0.1)
       activemodel (= 7.0.1)
       activesupport (= 7.0.1)
+    activerecord-import (1.4.0)
+      activerecord (>= 4.2)
     activestorage (7.0.1)
       actionpack (= 7.0.1)
       activejob (= 7.0.1)
@@ -493,6 +495,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_interaction
+  activerecord-import
   annotate
   aws-sdk-s3
   bootsnap (>= 1.4.4)
