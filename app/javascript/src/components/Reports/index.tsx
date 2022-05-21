@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import reports from "apis/reports";
+import applyFilter from "./api/applyFilter";
 import Container from "./Container";
 import EntryContext from "./context/EntryContext";
 
@@ -11,12 +12,28 @@ import Header from "./Header";
 import { ITimeEntry } from "./interface";
 
 const Reports = () => {
+  const filterIntialValues = {
+    dateRange: { label: "All", value: "" },
+    clients: [],
+    teamMember: [],
+    status: [],
+    groupBy: { label: "None", value: "" }
+  };
+
   const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
+  const [filterOptions, getFilterOptions] = useState({
+    clients: [],
+    teamMembers: []
+  });
+  const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
   const [isFilterVisible, setFilterVisibilty] = useState<boolean>(false);
+  const [showNavFilters, setNavFilters] = useState<boolean>(false);
+
   const fetchTimeEntries = async () => {
-    const res = await reports.get();
+    const res = await reports.get("");
     if (res.status == 200) {
       setTimeEntries(res.data.entries);
+      getFilterOptions(res.data.filterOptions);
     }
   };
 
@@ -26,12 +43,56 @@ const Reports = () => {
     fetchTimeEntries();
   }, []);
 
+  useEffect(() => {
+    applyFilter(selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty);
+  }, [selectedFilter]);
+
+  const contextValues = {
+    entries: timeEntries,
+    filterOptions,
+    selectedFilter
+  };
+
+  const handleApplyFilter = async (filters) => {
+    setSelectedFilter(filters);
+  };
+
+  const resetFilter = () => {
+    setSelectedFilter(filterIntialValues);
+    fetchTimeEntries();
+    setFilterVisibilty(false);
+    setNavFilters(false);
+  };
+
+  const handleRemoveSingleFilter = (key, value) => {
+    const filterValue = selectedFilter[key];
+    if (Array.isArray(filterValue)) {
+      const closedFilter = filterValue.filter(item => item.label !== value);
+      setSelectedFilter({ ...selectedFilter, [key]: closedFilter });
+    }
+    else {
+      const label = key === "dateRange" ? "All" : "None";
+      setSelectedFilter({ ...selectedFilter, [key]: { label, value: "" } });
+    }
+  };
+
   return (
     <div>
-      <EntryContext.Provider value={{ entries: timeEntries }}>
-        <Header setFilterVisibilty={setFilterVisibilty} isFilterVisible={isFilterVisible} />
+      <EntryContext.Provider value={{
+        ...contextValues,
+        handleRemoveSingleFilter
+      }}>
+        <Header
+          showNavFilters={showNavFilters}
+          setFilterVisibilty={setFilterVisibilty}
+          isFilterVisible={isFilterVisible}
+        />
         <Container />
-        {isFilterVisible && <Filters setFilterVisibilty={setFilterVisibilty} />}
+        {isFilterVisible && <Filters
+          handleApplyFilter={handleApplyFilter}
+          resetFilter={resetFilter}
+          setFilterVisibilty={setFilterVisibilty}
+        />}
       </EntryContext.Provider>
     </div>
   );

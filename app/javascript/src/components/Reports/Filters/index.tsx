@@ -1,58 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import Select from "react-select";
 import { X } from "phosphor-react";
-
+import {
+  dateRangeOptions,
+  statusOption,
+  groupBy
+} from "./filterOptions";
+import { customStyles } from "./style";
 import getStatusCssClass from "../../../utils/getStatusTag";
+import { useEntry } from "../context/EntryContext";
 
-const FilterSideBar = ({ setFilterVisibilty }) => {
+const FilterSideBar = ({
+  setFilterVisibilty,
+  resetFilter,
+  handleApplyFilter
+}) => {
 
-  const dateRangeOptions = [
-    { value: "", label: "All" },
-    { value: "cwa", label: "This month (1st Dec - 31st Dec)" },
-    { value: "alexa", label: "Last Month (1st Nov - 30th Nov)" },
-    { value: "abc", label: "This Week (27th Dec - 2nd Jan)" },
-    { value: "dwss", label: "Last Week (20th Dec - 26th Dec)" }
-  ];
-  const projectOption = [
-    { value: "onedrive", label: "One Drive" },
-    { value: "cwa", label: "Outlook" },
-    { value: "alexa", label: "Alexa" },
-    { value: "abc", label: "One Drive" },
-    { value: "dwss", label: "Outlook" },
-    { value: "rrr", label: "Alexa" },
-    { value: "xyz", label: "One Drive" },
-    { value: "outlook", label: "Outlook" },
-    { value: "pppp", label: "Alexa" }
-  ];
+  const { filterOptions, selectedFilter } = useEntry();
+  const [filters, setFilters] = useState(selectedFilter);
 
-  const statusOption = [
-    { value: "overdue", label: "OVERDUE" },
-    { value: "sent", label: "SENT" },
-    { value: "paid", label: "PAID" }
-  ];
+  const handleSelectFilter = (selectedValue, field) => {
+    if (Array.isArray(selectedValue)) {
+      setFilters({
+        ...filters,
+        [field.name]: selectedValue
+      });
+    }
+    else {
+      setFilters({
+        ...filters,
+        [field.name]: selectedValue
+      });
+    }
+  };
 
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      marginTop: "8px",
-      backgroundColor: "#F5F7F9",
-      color: "#1D1A31",
-      minHeight: 32,
-      padding: "0"
-    }),
-    menu: (provided) => ({
-      ...provided,
-      fontSize: "12px",
-      letterSpacing: "2px"
-    })
+  const submitApplyFilter = () => {
+    handleApplyFilter(filters);
   };
 
   const CustomOption = (props) => {
     const { innerProps, innerRef } = props;
-
     return (
       <div ref={innerRef} {...innerProps} className="py-1 px-2 cursor-pointer hover:bg-miru-gray-100">
-        <span className={`${getStatusCssClass(props.data.label)} text-xs tracking-widest`} >
+        <span className={`${getStatusCssClass(props.data.value)} text-xs tracking-widest`} >
           {props.data.label}
         </span>
       </div>
@@ -74,30 +64,37 @@ const FilterSideBar = ({ setFilterVisibilty }) => {
           <ul>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Date Range</h5>
-              <Select isMulti={true} classNamePrefix="react-select-filter" styles={customStyles} options={dateRangeOptions} />
+              <Select
+                classNamePrefix="react-select-filter"
+                value={selectedFilter.dateRange}
+                onChange={handleSelectFilter}
+                name="dateRange"
+                styles={customStyles}
+                options={dateRangeOptions}
+              />
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Clients</h5>
-              <Select isMulti={true} classNamePrefix="react-select-filter" styles={customStyles} />
+              <Select isMulti={true} value={filters.clients} classNamePrefix="react-select-filter" name="clients" onChange={handleSelectFilter} styles={customStyles} options={filterOptions.clients} />
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Team Members</h5>
-              <Select isMulti={true} classNamePrefix="react-select-filter" styles={customStyles} options={projectOption} />
+              <Select isMulti={true} value={filters.teamMember} classNamePrefix="react-select-filter" name="teamMember" onChange={handleSelectFilter} styles={customStyles} options={filterOptions.teamMembers} />
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Status</h5>
-              <Select isMulti={true} classNamePrefix="react-select-filter" styles={customStyles} options={statusOption} components={{ Option: CustomOption }} />
+              <Select isMulti={true} value={filters.status} classNamePrefix="react-select-filter" name="status" onChange={handleSelectFilter} styles={customStyles} options={statusOption} components={{ Option: CustomOption }} />
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Group By</h5>
-              <Select isMulti={true} classNamePrefix="react-select-filter" styles={customStyles} options={statusOption} components={{ Option: CustomOption }} />
+              <Select classNamePrefix="react-select-filter" value={filters.groupBy} styles={customStyles} name="groupBy" onChange={handleSelectFilter} options={groupBy} />
             </li>
           </ul>
         </div>
       </div>
       <div className="sidebar__footer">
-        <button className="sidebar__reset">RESET</button>
-        <button className="sidebar__apply">APPLY</button>
+        <button onClick={resetFilter} className="sidebar__reset">RESET</button>
+        <button onClick={submitApplyFilter} className="sidebar__apply">APPLY</button>
       </div>
     </div>
   );
