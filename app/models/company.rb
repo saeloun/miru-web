@@ -39,7 +39,7 @@ class Company < ApplicationRecord
   def project_list(client_id = nil, user_id = nil, billable = nil, search)
     project_list = project_list_query(client_id, user_id, billable)
     minutes_spent = timesheet_entries.group(:project_id).sum(:duration)
-    query = project_list.ransack({ name_or_client_name_or_is_billable_cont: search })
+    query = project_list.ransack({ name_or_client_name_cont: search })
     project_list = query.result
     project_ids = project_list.ids.uniq
     project_ids.map do |id|
