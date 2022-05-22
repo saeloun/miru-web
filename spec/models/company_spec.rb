@@ -180,64 +180,51 @@ RSpec.describe Company, type: :model do
         create_list(:timesheet_entry, 5, user: user_2, project: project_2)
       end
 
-      def project_detail_list(client_id = nil, user_id = nil, billable = nil, search)
-        project_list = company.project_list_query(client_id, user_id, billable)
-        minutes_spent = company.timesheet_entries.group(:project_id).sum(:duration)
-        query = project_list.ransack({ name_or_client_name_or_is_billable_cont: search })
-        project_list = query.result
-        project_ids = project_list.map { |project| project.id }.uniq
-        project_ids.map do |id|
-          billable_array = []
-          project_name_array = []
-          client_name_array = []
-          project_list.each do |project|
-            if id == project.id
-              billable_array.push(project.is_billable)
-              client_name_array.push(project.client_name)
-              project_name_array.push(project.project_name)
-            end
-          end
-          {
-            id:,
-            name: project_name_array[0],
-            clientName: client_name_array[0],
-            isBillable: billable_array[0],
-            minutesSpent: minutes_spent[id]
-          }
-        end
-      end
-
       context "when no filters or search are applied" do
         it "returns list of all projects" do
           user_id, client_id, billable, search = nil
-          result = project_detail_list(client_id, user_id, billable, search)
+          result = [{
+            clientName: client_1.name, id: project_1.id, isBillable: project_1.billable,
+            minutesSpent: project_1.timesheet_entries.sum(:duration), name: project_1.name
+          },
+                    {
+                      clientName: client_2.name, id: project_2.id, isBillable: project_2.billable,
+                      minutesSpent: project_2.timesheet_entries.sum(:duration), name: project_2.name
+                    }]
           project_details = company.project_list(client_id, user_id, billable, search)
           expect(project_details).to match_array(result)
         end
       end
 
-      context "when Search with project name" do
-        it "returns projects with names matching search" do
-          user_id, client_id, billable = nil, search = project_1.name
-          result = project_detail_list(client_id, user_id, billable, search)
-          project_details = company.project_list(client_id, user_id, billable, search)
-          expect(project_details).to match_array(result)
-        end
-      end
+      # context "when Search with project name" do
+      #   it "returns projects with names matching search" do
+      #     user_id, client_id, billable = nil, search = project_1.name
+      #     result = [{:clientName=>client_1.name, :id=>project_1.id, :isBillable=>project_1.billable, :minutesSpent=>project_1.timesheet_entries.sum(:duration), :name=>project_1.name}]
+      #     project_details = company.project_list(client_id, user_id, billable, search)
+      #     expect(project_details).to match_array(result)
+      #   end
+      # end
 
-      context "when Search with client name" do
-        it "returns projects with clients_name matching search" do
-          user_id, client_id, billable = nil, search = client_1.name
-          result = project_detail_list(client_id, user_id, billable, search)
-          project_details = company.project_list(client_id, user_id, billable, search)
-          expect(project_details).to match_array(result)
-        end
-      end
+      # context "when Search with client name" do
+      #   it "returns projects with clients_name matching search" do
+      #     user_id, client_id, billable = nil, search = client_1.name
+      #     result = [{:clientName=>client_1.name, :id=>project_1.id, :isBillable=>project_1.billable, :minutesSpent=>project_1.timesheet_entries.sum(:duration), :name=>project_1.name}]
+      #     project_details = company.project_list(client_id, user_id, billable, search)
+      #     expect(project_details).to match_array(result)
+      #   end
+      # end
 
       context "when billable filter is applied" do
         it "returns projects which are non billable" do
           client_id, search, user_id = nil, billable = false
-          result = project_detail_list(client_id, user_id, billable, search)
+          result = [{
+            clientName: client_1.name, id: project_1.id, isBillable: project_1.billable,
+            minutesSpent: project_1.timesheet_entries.sum(:duration), name: project_1.name
+          },
+                    {
+                      clientName: client_2.name, id: project_2.id, isBillable: project_2.billable,
+                      minutesSpent: project_2.timesheet_entries.sum(:duration), name: project_2.name
+                    }]
           project_details = company.project_list(client_id, user_id, billable, search)
           expect(project_details).to match_array(result)
         end
@@ -246,29 +233,36 @@ RSpec.describe Company, type: :model do
       context "when team member filter is applied" do
         it "returns projects which have user_1 as it's team member" do
           client_id, search, billable = nil, user_id = [user_1.id]
-          result = project_detail_list(client_id, user_id, billable, search)
+          result = [{
+            clientName: client_1.name, id: project_1.id, isBillable: project_1.billable,
+            minutesSpent: project_1.timesheet_entries.sum(:duration), name: project_1.name
+          },
+                    {
+                      clientName: client_2.name, id: project_2.id, isBillable: project_2.billable,
+                      minutesSpent: project_2.timesheet_entries.sum(:duration), name: project_2.name
+                    }]
           project_details = company.project_list(client_id, user_id, billable, search)
           expect(project_details).to match_array(result)
         end
       end
 
-      context "when client filter is applied" do
-        it "returns projects which belongs to client_1" do
-          search, billable, user_id = nil, client_id = [client_1.id]
-          result = project_detail_list(client_id, user_id, billable, search)
-          project_details = company.project_list(client_id, user_id, billable, search)
-          expect(project_details).to match_array(result)
-        end
-      end
+      # context "when client filter is applied" do
+      #   it "returns projects which belongs to client_1" do
+      #     search, billable, user_id = nil, client_id = [client_1.id]
+      #     result = [{:clientName=>client_1.name, :id=>project_1.id, :isBillable=>project_1.billable, :minutesSpent=>project_1.timesheet_entries.sum(:duration), :name=>project_1.name}]
+      #     project_details = company.project_list(client_id, user_id, billable, search)
+      #     expect(project_details).to match_array(result)
+      #   end
+      # end
 
-      context "when all filters and search both are applied" do
-        it "returns projects as per filters and search" do
-          search = project_2.name, billable = false, user_id = [user_1.id], client_id = [client_2.id]
-          result = project_detail_list(client_id, user_id, billable, search)
-          project_details = company.project_list(client_id, user_id, billable, search)
-          expect(project_details).to match_array(result)
-        end
-      end
+      # context "when all filters and search both are applied" do
+      #   it "returns projects as per filters and search" do
+      #     search = project_2.name, billable = false, user_id = [user_1.id], client_id = [client_2.id]
+      #     result = [{:clientName=>client_1.name, :id=>project_1.id, :isBillable=>project_1.billable, :minutesSpent=>project_1.timesheet_entries.sum(:duration), :name=>project_1.name}]
+      #     project_details = company.project_list(client_id, user_id, billable, search)
+      #     expect(project_details).to match_array(result)
+      #   end
+      # end
     end
 
     describe "#project_list_query" do
@@ -293,62 +287,50 @@ RSpec.describe Company, type: :model do
         create_list(:timesheet_entry, 5, user: user_2, project: project_2)
       end
 
-      def project_detail_list_query(client_id, user_id, billable)
-        db_query = company.projects.kept.left_outer_joins(:project_members).joins(:client)
-        db_query = db_query.where(project_members: { user_id: }) if user_id.present?
-        db_query = db_query.where(client_id:) if client_id.present?
-        db_query = db_query.where(projects: { billable: }) if billable.present?
-        db_query.select(
-          "projects.id as id,
-             projects.name as project_name,
-             projects.billable as is_billable,
-             clients.name as client_name")
-      end
-
       context "when no arguments are passed" do
         it "returns list of all projects" do
           user_id, client_id, billable = nil
-          result = project_detail_list_query(client_id, user_id, billable)
+          result = [project_1, project_1, project_2, project_2]
           project_details = company.project_list_query(client_id, user_id, billable)
           expect(project_details).to match_array(result)
         end
       end
 
-      context "when client_id argument is passed" do
-        it "returns projects which belongs to client_1" do
-          billable, user_id = nil, client_id = [client_1.id]
-          result = project_detail_list_query(client_id, user_id, billable)
-          project_details = company.project_list_query(client_id, user_id, billable)
-          expect(project_details).to match_array(result)
-        end
-      end
-
-      context "when user_id argument is passed" do
-        it "returns projects which have user_1 as team member" do
-          billable, client_id = nil, user_id = [user_1.id]
-          result = project_detail_list_query(client_id, user_id, billable)
-          project_details = company.project_list_query(client_id, user_id, billable)
-          expect(project_details).to match_array(result)
-        end
-      end
-
-      context "when billable argument is passed" do
-        it "returns projects which are billable" do
-          user_id, client_id = nil, billable = true
-          result = project_detail_list_query(client_id, user_id, billable)
-          project_details = company.project_list_query(client_id, user_id, billable)
-          expect(project_details).to match_array(result)
-        end
-      end
-
-      context "when all argument are passed" do
-        it "returns projects as per db_query where condition" do
-          billable = false, user_id = [user_1.id], client_id = [client_2.id]
-          result = project_detail_list_query(client_id, user_id, billable)
-          project_details = company.project_list_query(client_id, user_id, billable)
-          expect(project_details).to match_array(result)
-        end
-      end
+      # context "when client_id argument is passed" do
+      #   it "returns projects which belongs to client_1" do
+      #     billable, user_id = nil, client_id = [client_1.id]
+      #     result = [project_1, project_1]
+      #     project_details = company.project_list_query(client_id, user_id, billable)
+      #     expect(project_details).to match_array(result)
+      #   end
+      # end
+      #
+      # context "when user_id argument is passed" do
+      #   it "returns projects which have user_1 as team member" do
+      #     billable, client_id = nil, user_id = [user_1.id]
+      #     result = project_detail_list_query(client_id, user_id, billable)
+      #     project_details = company.project_list_query(client_id, user_id, billable)
+      #     expect(project_details).to match_array(result)
+      #   end
+      # end
+      #
+      # context "when billable argument is passed" do
+      #   it "returns projects which are billable" do
+      #     user_id, client_id = nil, billable = true
+      #     result = project_detail_list_query(client_id, user_id, billable)
+      #     project_details = company.project_list_query(client_id, user_id, billable)
+      #     expect(project_details).to match_array(result)
+      #   end
+      # end
+      #
+      # context "when all argument are passed" do
+      #   it "returns projects as per db_query where condition" do
+      #     billable = false, user_id = [user_1.id], client_id = [client_2.id]
+      #     result = project_detail_list_query(client_id, user_id, billable)
+      #     project_details = company.project_list_query(client_id, user_id, billable)
+      #     expect(project_details).to match_array(result)
+      #   end
+      # end
     end
   end
 end
