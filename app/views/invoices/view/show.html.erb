@@ -3,6 +3,5 @@
     <%= javascript_pack_tag "application"%>
 </head>
 <div>
-  Hello client
-  <%= react_component("InvoiceEmail/index",{}) %>
+  <%= react_component("InvoiceEmail/index",{url: new_invoice_payment_url(@invoice), invoice: @invoice }) %>
 </div>

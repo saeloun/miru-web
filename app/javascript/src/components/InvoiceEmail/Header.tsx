@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Wallet, DownloadSimple, Printer, CaretDown } from "phosphor-react";
 import PayOnlineMenu from "./PayOnlineMenu";
 
-const Header = ({ invoice }) => {
+const Header = ({ invoice, stripeUrl }) => {
   const [showPayMenu, setShowPayMenu] = useState<boolean>(false);
 
   return (
@@ -53,7 +53,7 @@ const Header = ({ invoice }) => {
                 </div>
               </div>
             </button>
-            {showPayMenu && <PayOnlineMenu />}
+            {showPayMenu && <PayOnlineMenu stripeUrl={ stripeUrl }/>}
           </div>
         </div>
       </div>
