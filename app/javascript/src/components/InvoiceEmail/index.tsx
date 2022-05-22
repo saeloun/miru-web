@@ -6,7 +6,7 @@ const Instagram = require("../../../../assets/images/Instagram.svg"); // eslint-
 const Twitter = require("../../../../assets/images/Twitter.svg"); // eslint-disable-line
 const MiruLogowithText = require("../../../../assets/images/MiruWhiteLogowithText.svg"); // eslint-disable-line
 
-const InvoiceEmail = () => {
+const InvoiceEmail = ( { url } ) => {
   const [invoice, setInvoice] = useState<any>({
     amount: "5000.0",
     amountDue: "5000.0",
@@ -48,7 +48,7 @@ const InvoiceEmail = () => {
     tax: "0.0"
   });
 
-  const fetchInvoice = async () => {
+  const fetchInvoice = async () => { // eslint-disable-line
     try {
       const res = await invoicesApi.getInvoice("8");
       setInvoice(res.data);
@@ -56,7 +56,7 @@ const InvoiceEmail = () => {
   };
 
   useEffect(()=> {
-    fetchInvoice();
+    //fetchInvoice();
   },[]);
 
   return (
@@ -65,7 +65,7 @@ const InvoiceEmail = () => {
         <img src={MiruLogowithText} />
       </div>
       <div className="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
-        <Header invoice={invoice} />
+        <Header invoice={invoice} stripeUrl={url}/>
         <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
           <InvoiceDetails invoice={invoice} />
         </div>
