@@ -4,12 +4,12 @@ import { NavLink } from "react-router-dom";
 
 const profile = require("../../../../assets/images/avatar_payments.svg");
 
-const SideNav = ({firstName, lastName, email}) => {
+const SideNav = ({isAdmin, firstName, lastName, email}) => {
   const getActiveClassName = (isActive) => {
     if (isActive) {
       return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block"
     };
-    return "pl-6 py-5 border-b-2 border-miru-gray-400 block"
+    return "pl-6 py-5 border-b-1 border-miru-gray-400 block"
   }
 
   return (
@@ -23,6 +23,7 @@ const SideNav = ({firstName, lastName, email}) => {
       </div>
 
       <div className='mr-2 mt-4 w-60 bg-miru-gray-100 h-screen'>
+        {isAdmin && (<p>Personal</p>) }
         <ul className='list-none text-sm font-medium leading-5 tracking-wider'>
 
           <li className='border-b-2 border-miru-gray-400'>
@@ -30,17 +31,6 @@ const SideNav = ({firstName, lastName, email}) => {
               PROFILE SETTINGS
             </NavLink>
           </li>
-          {/* TODO: For checking admin logic */}
-          {/* <li className='pl-6 py-5 border-b-2 border-miru-gray-400'>
-            <NavLink to="/profile/edit/organization_settings">
-              ORGANIZATION SETTINGS
-            </NavLink>
-          </li>
-          <li className='pl-6 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600'>
-            <NavLink to="/profile/edit/payment_settings">
-              PAYMENT SETTINGS
-            </NavLink>
-          </li> */}
           <li className='border-b-2 border-miru-gray-400'>
             <NavLink
               to="/profile/edit/billing"
