@@ -11,7 +11,7 @@ import Header from "./Header";
 
 import Invoice_settings from "./Invoice_settings";
 import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
-import SendInvoice from "../modals/SendInvoice";
+import SendInvoice from "../Modals/SendInvoice";
 
 const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
   try {

@@ -5,7 +5,7 @@ import invoicesApi from "apis/invoices";
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
 import { ApiStatus as InvoiceStatus } from "../../../constants";
-import SendInvoice from "../modals/SendInvoice";
+import SendInvoice from "../Modals/SendInvoice";
 
 const Invoice = () => {
   const params = useParams();
