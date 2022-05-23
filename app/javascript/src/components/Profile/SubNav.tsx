@@ -4,13 +4,52 @@ import { NavLink } from "react-router-dom";
 
 const profile = require("../../../../assets/images/avatar_payments.svg");
 
-const SideNav = ({isAdmin, firstName, lastName, email}) => {
+const SideNav = ({ isAdmin, firstName, lastName, email }) => {
   const getActiveClassName = (isActive) => {
     if (isActive) {
-      return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block"
-    };
-    return "pl-6 py-5 border-b-1 border-miru-gray-400 block"
-  }
+      return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block";
+    }
+    return "pl-6 py-5 border-b-1 border-miru-gray-400 block";
+  };
+
+  const getAdminLinks = () => (
+    <ul className='list-none text-sm font-medium leading-5 tracking-wider'>
+      <li className='border-b-2 border-miru-gray-400'>Personal</li>
+      <li className='border-b-2 border-miru-gray-400'>
+        <NavLink end to="/profile/edit" className={({ isActive }) => getActiveClassName(isActive)}>
+          PROFILE SETTINGS
+        </NavLink>
+      </li>
+      <li className='border-b-2 border-miru-gray-400'>
+        <NavLink
+          to="/profile/edit/billing"
+          type="li"
+          className={({ isActive }) => getActiveClassName(isActive)}
+        >
+          BILLING
+        </NavLink>
+      </li>
+    </ul>
+  );
+
+  const getEmployeeLinks = () => (
+    <ul className='list-none text-sm font-medium leading-5 tracking-wider'>
+      <li className='border-b-2 border-miru-gray-400'>
+        <NavLink end to="/profile/edit" className={({ isActive }) => getActiveClassName(isActive)}>
+          PROFILE SETTINGS
+        </NavLink>
+      </li>
+      <li className='border-b-2 border-miru-gray-400'>
+        <NavLink
+          to="/profile/edit/billing"
+          type="li"
+          className={({ isActive }) => getActiveClassName(isActive)}
+        >
+          BILLING
+        </NavLink>
+      </li>
+    </ul>
+  );
 
   return (
     <div className='flex flex-col'>
@@ -23,24 +62,7 @@ const SideNav = ({isAdmin, firstName, lastName, email}) => {
       </div>
 
       <div className='mr-2 mt-4 w-60 bg-miru-gray-100 h-screen'>
-        {isAdmin && (<p>Personal</p>) }
-        <ul className='list-none text-sm font-medium leading-5 tracking-wider'>
-
-          <li className='border-b-2 border-miru-gray-400'>
-            <NavLink end to="/profile/edit" className={({ isActive }) => getActiveClassName(isActive)}>
-              PROFILE SETTINGS
-            </NavLink>
-          </li>
-          <li className='border-b-2 border-miru-gray-400'>
-            <NavLink
-              to="/profile/edit/billing"
-              type="li"
-              className={({isActive}) => getActiveClassName(isActive)}
-            >
-              BILLING
-            </NavLink>
-          </li>
-        </ul>
+        { isAdmin ? getAdminLinks() : getEmployeeLinks() }
       </div>
     </div>
   );

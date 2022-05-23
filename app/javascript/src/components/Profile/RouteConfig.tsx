@@ -5,8 +5,8 @@ import {
   Route
 } from "react-router-dom";
 
-import UserDetails from './UserDetail';
-import Billing from './Billing';
+import Billing from "./Billing";
+import UserDetails from "./UserDetail";
 
 const RouteConfig = () => (
   <Routes>

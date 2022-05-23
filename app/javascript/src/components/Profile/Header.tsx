@@ -1,6 +1,6 @@
 import React from "react";
 
-const Header = ({ title, subTitle, showButtons = false, cancelAction = function(){0}, saveAction = function(){0} }) => {
+const Header = ({ title, subTitle, showButtons = false, cancelAction = null, saveAction = null }) => {
   return (
     <div className="h-16 pl-10 py-4 bg-miru-han-purple-1000 flex text-white">
       <span className="font-bold text-2xl">{title}</span>
