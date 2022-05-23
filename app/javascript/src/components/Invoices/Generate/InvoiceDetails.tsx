@@ -51,7 +51,7 @@ const InvoiceDetails = ({
               <PencilSimple size={13} color="#1D1A31" />
             </button>
           </p>
-          {showDateOfIssuePicker && <CustomDatePicker handleChange={handleDatePickerChange} />}
+          {showDateOfIssuePicker && <CustomDatePicker handleChange={handleDatePickerChange} dueDate={dueDate} />}
           <p className="font-normal text-base text-miru-dark-purple-1000">
             {getIssuedDate}
           </p>
