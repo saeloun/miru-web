@@ -7,9 +7,9 @@ import invoicesApi from "apis/invoices";
 import dayjs from "dayjs";
 import Header from "./Header";
 import InvoiceTable from "./InvoiceTable";
+import InvoiceTotal from "./InvoiceTotal";
 import CompanyInfo from "../CompanyInfo";
 import InvoiceDetails from "../Generate/InvoiceDetails";
-import InvoiceTotal from "../Generate/InvoiceTotal";
 import InvoiceLineItems from "../Invoice/InvoiceLineItems";
 
 const EditInvoice = () => {

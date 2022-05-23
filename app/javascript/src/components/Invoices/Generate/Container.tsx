@@ -58,8 +58,6 @@ const Container = ({
       setDiscount={setDiscount}
       tax={tax}
       setTax={setTax}
-      invoiceAmount={0}
-      invoiceLineItems={[]}
       showDiscountInput={false}
       showTax={false}
     />
