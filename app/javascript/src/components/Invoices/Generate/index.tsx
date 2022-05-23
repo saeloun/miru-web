@@ -13,18 +13,6 @@ import Invoice_settings from "./Invoice_settings";
 import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
 import SendInvoice from "../popups/SendInvoice";
 
-const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
-  try {
-    const res = await generateInvoice.get();
-    const sanitzed = await unmapGenerateInvoice(res.data);
-    getInvoiceDetails(sanitzed);
-
-  } catch (e) {
-    navigate("invoices/error");
-    return {};
-  }
-};
-
 const GenerateInvoices = () => {
   const navigate = useNavigate();
   const [invoiceDetails, getInvoiceDetails] = useState<any>();
@@ -44,6 +32,17 @@ const GenerateInvoices = () => {
   const [showSendInvoiceModal, setShowSendInvoiceModal] = useState<boolean>(false);
   const [invoiceId, setInvoiceId] = useState<number>(null);
   const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(true);
+
+  const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
+    try {
+      const res = await generateInvoice.get();
+      const sanitzed = await unmapGenerateInvoice(res.data);
+      getInvoiceDetails(sanitzed);
+    } catch (e) {
+      navigate("invoices/error");
+      return {};
+    }
+  };
 
   useEffect(() => {
     setAuthHeaders();

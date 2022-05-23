@@ -21,6 +21,10 @@ class InvoicePolicy < ApplicationPolicy
     user_owner_or_admin?
   end
 
+  def edit?
+    user_owner_or_admin?
+  end
+
   def send_invoice?
     user_owner_or_admin?
   end
