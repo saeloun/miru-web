@@ -7,7 +7,9 @@ const Table = ({
   invoices,
   selectInvoices,
   deselectInvoices,
-  selectedInvoices
+  selectedInvoices,
+  setShowDeleteDialog,
+  setInvoiceToDelete
 }) => (
   <table className="min-w-full mt-4 divide-y divide-gray-200">
     <thead>
@@ -28,8 +30,7 @@ const Table = ({
           isSelected={selectedInvoices.includes(invoice.id)}
           invoice={invoice}
           selectInvoices={selectInvoices}
-          deselectInvoices={deselectInvoices}
-        />
+          deselectInvoices={deselectInvoices} setShowDeleteDialog={setShowDeleteDialog} setInvoiceToDelete={setInvoiceToDelete} />
       ))}
     </tbody>
   </table>

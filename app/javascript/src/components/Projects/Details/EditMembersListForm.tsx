@@ -71,6 +71,7 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
         <button
           name="add"
           className="text-miru-han-purple-1000 "
+          type="button"
           onClick={addNewMemberRowHandler}
         >
           + Add another team member

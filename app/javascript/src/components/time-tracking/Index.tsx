@@ -11,6 +11,7 @@ import MonthCalender from "./MonthCalender";
 import WeeklyEntries from "./WeeklyEntries";
 import { setAuthHeaders, registerIntercepts } from "../../apis/axios";
 import timesheetEntryApi from "../../apis/timesheet-entry";
+import { TOASTER_DURATION } from "../../constants/index";
 import { minutesToHHMM } from "../../helpers/hhmm-parser";
 
 const { useState, useEffect } = React;
@@ -201,7 +202,7 @@ const TimeTracking: React.FC<Iprops> = ({
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="mx-50 mt-6">
         <div className="flex justify-between">
           <nav className="flex mb-6">
