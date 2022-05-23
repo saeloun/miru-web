@@ -23,7 +23,11 @@ module InvoicePayment
           total: formatted_invoice[:total]
         }
       )
-      Grover.new(html).to_pdf
+
+      options = {
+        wait_until: ["networkidle0", "load", "domcontentloaded", "networkidle2"]
+      }
+      Grover.new(html, options).to_pdf
     end
 
     private
