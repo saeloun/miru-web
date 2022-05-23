@@ -21,6 +21,8 @@
 #
 
 class TimesheetEntry < ApplicationRecord
+  searchkick
+
   enum bill_status: [:non_billable, :unbilled, :billed]
 
   belongs_to :user
