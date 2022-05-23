@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import CustomDatePicker from "common/CutomDatePicker";
+import CustomDatePicker from "common/CustomDatePicker";
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers/currency";
 import { PencilSimple } from "phosphor-react";
@@ -15,7 +15,8 @@ const InvoiceDetails = ({
   dueDate, setDueDate,
   invoiceNumber,
   setInvoiceNumber,
-  reference
+  reference,
+  optionSelected, clientVisible
 }) => {
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -42,7 +43,13 @@ const InvoiceDetails = ({
 
   return (
     <div className="flex justify-between border-b-2 border-miru-gray-400 px-10 py-5 h-36">
-      <ClientSelection selectedClient={selectedClient} setSelectedClient={setSelectedClient} clientList={clientList} />
+      <ClientSelection
+        selectedClient={selectedClient}
+        setSelectedClient={setSelectedClient}
+        clientList={clientList}
+        optionSelected={optionSelected}
+        clientVisible={clientVisible}
+      />
       <div className="group">
         <div className="hoverPencil">
           <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
@@ -51,7 +58,7 @@ const InvoiceDetails = ({
               <PencilSimple size={13} color="#1D1A31" />
             </button>
           </p>
-          {showDateOfIssuePicker && <CustomDatePicker handleChange={handleDatePickerChange} />}
+          {showDateOfIssuePicker && <CustomDatePicker handleChange={handleDatePickerChange} dueDate={dueDate} />}
           <p className="font-normal text-base text-miru-dark-purple-1000">
             {getIssuedDate}
           </p>
@@ -63,7 +70,7 @@ const InvoiceDetails = ({
               <PencilSimple size={13} color="#1D1A31" />
             </button>
           </p>
-          {showDueDatePicker && <CustomDatePicker handleChange={handleDueDatePicker} />}
+          {showDueDatePicker && <CustomDatePicker handleChange={handleDueDatePicker} dueDate={dueDate} />}
           <p className="font-normal text-base text-miru-dark-purple-1000">
             {getDueDate}
           </p>

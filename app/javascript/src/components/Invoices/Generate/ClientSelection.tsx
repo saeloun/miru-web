@@ -6,9 +6,9 @@ import { DropdownIndicator } from "./CustomComponents";
 import { reactSelectStyles } from "./Styles";
 import useOutsideClick from "../../../helpers/outsideClick";
 
-const ClientSelection = ({ clientList, selectedClient, setSelectedClient }) => {
-  const [isOptionSelected, setOptionSelection] = useState<boolean>(false);
-  const [isClientVisible, setClientVisible] = useState<boolean>(false);
+const ClientSelection = ({ clientList, selectedClient, setSelectedClient, optionSelected, clientVisible }) => {
+  const [isOptionSelected, setOptionSelection] = useState<boolean>(optionSelected);
+  const [isClientVisible, setClientVisible] = useState<boolean>(clientVisible);
   const wrapperRef = useRef(null);
 
   useOutsideClick(wrapperRef, () => setClientVisible(false), isClientVisible);

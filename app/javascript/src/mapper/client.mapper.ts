@@ -11,7 +11,8 @@ const unmapClientList = (input) => {
   const { data } = input;
   return {
     clientList: getClientList(data),
-    totalMinutes: data.total_minutes
+    totalMinutes: data.total_minutes,
+    overdueOutstandingAmount: data.overdue_outstanding_amount
   };
 };
 
@@ -21,6 +22,14 @@ const mapProjectDetails = (input) => input.map((project) => ({
   minutes: project.minutes_spent,
   team: project.team
 }));
+
+const unmapClientListForDropdown = (input) => {
+  const clientList = input.data.client_details;
+  return clientList.map(item => ({
+    label: item.name,
+    value: item.id
+  }));
+};
 
 const unmapClientDetails = (input) => {
   const { data } = input;
@@ -32,6 +41,7 @@ const unmapClientDetails = (input) => {
       phone: data.client_details.phone || "--",
       address: data.client_details.address || "--"
     },
+    overdueOutstandingAmount: data.overdue_outstanding_amount,
     totalMinutes: data.total_minutes,
     projectDetails: mapProjectDetails(data.project_details)
   };
@@ -39,5 +49,6 @@ const unmapClientDetails = (input) => {
 
 export {
   unmapClientList,
-  unmapClientDetails
+  unmapClientDetails,
+  unmapClientListForDropdown
 };
