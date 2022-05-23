@@ -11,7 +11,7 @@ import Header from "./Header";
 
 import Invoice_settings from "./Invoice_settings";
 import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
-import SendInvoice from "../Modals/SendInvoice";
+import SendInvoice from "../popups/SendInvoice";
 
 const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
   try {
@@ -130,8 +130,8 @@ const GenerateInvoices = () => {
           invoiceNumber,
           amount
         }}
-        isSending={showSendInvoiceModal}
-        setIsSending={setShowSendInvoiceModal}
+          isSending={showSendInvoiceModal}
+          setIsSending={setShowSendInvoiceModal}
         />}
 
         {showInvoiceSetting && (
