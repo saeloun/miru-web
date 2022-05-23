@@ -36,6 +36,45 @@ class Company < ApplicationRecord
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
 
+  def project_list(client_id = nil, user_id = nil, billable = nil, search)
+    project_list = project_list_query(client_id, user_id, billable)
+    minutes_spent = timesheet_entries.group(:project_id).sum(:duration)
+    query = project_list.ransack({ name_or_client_name_cont: search })
+    project_list = query.result
+    project_ids = project_list.ids.uniq
+    project_ids.map do |id|
+      billable_array = []
+      project_name_array = []
+      client_name_array = []
+      project_list.each do |project|
+        if id == project.id
+          billable_array.push(project.is_billable)
+          client_name_array.push(project.client_name)
+          project_name_array.push(project.project_name)
+        end
+      end
+      {
+        id:,
+        name: project_name_array[0],
+        clientName: client_name_array[0],
+        isBillable: billable_array[0],
+        minutesSpent: minutes_spent[id]
+      }
+    end
+  end
+
+  def project_list_query(client_id, user_id, billable)
+    db_query = projects.kept.left_outer_joins(:project_members).joins(:client)
+    db_query = db_query.where(project_members: { user_id: }) if user_id.present?
+    db_query = db_query.where(client_id:) if client_id.present?
+    db_query = db_query.where(projects: { billable: }) if billable.present?
+    db_query.select(
+      "projects.id as id,
+       projects.name as project_name,
+       projects.billable as is_billable,
+       clients.name as client_name")
+  end
+
   def client_details(time_frame = "week")
     clients.kept.map { |client| client.client_detail(time_frame) }
   end
