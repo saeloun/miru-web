@@ -44,6 +44,7 @@ const EditInvoice = () => {
       getInvoiceDetails(res.data);
       setLineItems(addKeyToLineItems(res.data.lineItems));
       setAmount(res.data.amount);
+      setDiscount(res.data.discount);
       setSelectedClient(res.data.client);
       setAmountDue(res.data.amountDue);
     } catch (e) {
@@ -87,7 +88,7 @@ const EditInvoice = () => {
       amount_due: amountDue || invoiceDetails.amountDue,
       amount_paid: amountPaid || invoiceDetails.amountPaid,
       amount: amount,
-      discount: discount || invoiceDetails.discount,
+      discount: Number(discount),
       tax: tax || invoiceDetails.tax,
       client_id: selectedClient.value,
       invoice_line_items_attributes: selectedLineItems.map(item => ({
@@ -149,7 +150,7 @@ const EditInvoice = () => {
             amountPaid={amountPaid || invoiceDetails.amountPaid}
             amountDue={amountDue || invoiceDetails.amountDue}
             setAmountDue={setAmountDue}
-            discount={discount || invoiceDetails.discount}
+            discount={discount}
             setDiscount={setDiscount}
             tax={tax || invoiceDetails.tax}
             setTax={setTax}
