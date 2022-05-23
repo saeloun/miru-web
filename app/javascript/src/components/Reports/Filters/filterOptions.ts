@@ -28,20 +28,24 @@ const getMonth = (isCurrentMonth) => {
     `Last Month (1st ${monthStr} - ${lastdayOfMonth} ${monthStr})`;
 };
 
-const dateRangeOptions = () => {
+const getDateRangeOptions = () => {
   const thisWeek = getWeek(true);
   const thisMonth = getMonth(true);
   const previousMonth = getMonth(false);
   const previousweek = getWeek(false);
 
   return [
-    { value: "", label: "All" },
     { value: "this_month", label: thisMonth },
     { value: "last_month", label: previousMonth },
     { value: "this_week", label: thisWeek },
     { value: "last_week", label: previousweek }
   ];
 };
+
+const dateRangeOptions = [
+  { value: "", label: "All" },
+  ...getDateRangeOptions()
+];
 
 const statusOption = [
   { value: "billed", label: "BILLED" },

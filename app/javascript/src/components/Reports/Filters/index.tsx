@@ -3,8 +3,7 @@ import Select from "react-select";
 import { X } from "phosphor-react";
 import {
   dateRangeOptions,
-  statusOption,
-  groupBy
+  statusOption
 } from "./filterOptions";
 import { customStyles } from "./style";
 import getStatusCssClass from "../../../utils/getStatusTag";
@@ -66,11 +65,11 @@ const FilterSideBar = ({
               <h5 className="text-xs font-normal">Date Range</h5>
               <Select
                 classNamePrefix="react-select-filter"
-                value={selectedFilter.dateRange}
+                value={filters.dateRange}
                 onChange={handleSelectFilter}
                 name="dateRange"
                 styles={customStyles}
-                options={dateRangeOptions()}
+                options={dateRangeOptions}
               />
             </li>
             <li className="px-5 pb-5">
@@ -85,10 +84,17 @@ const FilterSideBar = ({
               <h5 className="text-xs font-normal">Status</h5>
               <Select isMulti={true} value={filters.status} classNamePrefix="react-select-filter" name="status" onChange={handleSelectFilter} styles={customStyles} options={statusOption} components={{ Option: CustomOption }} />
             </li>
-            <li className="px-5 pb-5">
+            {/* <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Group By</h5>
-              <Select classNamePrefix="react-select-filter" value={filters.groupBy} styles={customStyles} name="groupBy" onChange={handleSelectFilter} options={groupBy} />
-            </li>
+              <Select
+                classNamePrefix="react-select-filter"
+                value={filters.groupBy}
+                styles={customStyles}
+                name="groupBy"
+                onChange={handleSelectFilter}
+                options={groupBy}
+              />
+            </li> */}
           </ul>
         </div>
       </div>
