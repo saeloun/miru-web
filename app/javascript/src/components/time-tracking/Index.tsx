@@ -107,14 +107,16 @@ const TimeTracking: React.FC<Iprops> = ({
     setDayInfo(() => daysInWeek);
   };
 
-  const fetchEntries = async (from: string, to: string, uid: number) => {
-    if (entryList[from] && entryList[to]) return;
-    const res = await timesheetEntryApi.list(from, to, uid);
+  const fetchEntries = async (from: string, to: string) => {
+    const res = await timesheetEntryApi.list(from, to, selectedEmployeeId);
     if (res.status >= 200 && res.status < 300) {
       const ns = { ...allEmployeesEntries };
-      ns[uid] = { ...ns[uid], ...res.data.entries };
+      ns[selectedEmployeeId] = { ...ns[selectedEmployeeId], ...res.data.entries };
       setAllEmployeesEntries(ns);
-      setEntryList(ns[uid]);
+      setEntryList(ns[selectedEmployeeId]);
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -158,7 +160,7 @@ const TimeTracking: React.FC<Iprops> = ({
     const to = dayjs()
       .weekday(weekDay + 13)
       .format("YYYY-MM-DD");
-    fetchEntries(from, to, selectedEmployeeId);
+    fetchEntries(from, to);
   };
 
   const handlePrevWeek = () => {
@@ -169,7 +171,7 @@ const TimeTracking: React.FC<Iprops> = ({
     const to = dayjs()
       .weekday(weekDay - 1)
       .format("YYYY-MM-DD");
-    fetchEntries(from, to, selectedEmployeeId);
+    fetchEntries(from, to);
   };
 
   const parseWeeklyViewData = () => {
@@ -218,7 +220,6 @@ const TimeTracking: React.FC<Iprops> = ({
       fetchEntries(
         dayjs().startOf("month").subtract(1, "month").format("DD-MM-YYYY"),
         dayjs().endOf("month").add(1, "month").format("DD-MM-YYYY"),
-        id
       );
     }
   };
@@ -321,6 +322,8 @@ const TimeTracking: React.FC<Iprops> = ({
           }
           {!editEntryId && newEntryView && view !== "week" && (
             <AddEntry
+              selectedEmployeeId={selectedEmployeeId}
+              fetchEntries={fetchEntries}
               setNewEntryView={setNewEntryView}
               clients={clients}
               projects={projects}
@@ -381,6 +384,8 @@ const TimeTracking: React.FC<Iprops> = ({
           entryList[selectedFullDate].map((entry, weekCounter) =>
             editEntryId === entry.id ? (
               <AddEntry
+                selectedEmployeeId={selectedEmployeeId}
+                fetchEntries={fetchEntries}
                 setNewEntryView={setNewEntryView}
                 clients={clients}
                 projects={projects}

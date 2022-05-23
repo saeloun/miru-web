@@ -53,7 +53,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, selectedEmployeeId, day
     try {
       const startOfTheMonth2MonthsAgo = dayjs(startOfTheMonth).subtract(2, "month").format("YYYY-MM-DD");
       const endOfTheMonth2MonthsAgo = dayjs(endOfTheMonth).subtract(2, "month").format("YYYY-MM-DD");
-      await fetchEntries(startOfTheMonth2MonthsAgo, endOfTheMonth2MonthsAgo, selectedEmployeeId);
+      await fetchEntries(startOfTheMonth2MonthsAgo, endOfTheMonth2MonthsAgo);
       if (currentMonthNumber === 0) {
         setCurrentMonthNumber(11);
         setCurrentYear(currentYear - 1);
@@ -69,7 +69,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, selectedEmployeeId, day
     try {
       const startOfTheMonth2MonthsLater = dayjs(startOfTheMonth).add(2, "month").format("YYYY-MM-DD");
       const endOfTheMonth2MonthsLater = dayjs(endOfTheMonth).add(2, "month").format("YYYY-MM-DD");
-      await fetchEntries(startOfTheMonth2MonthsLater, endOfTheMonth2MonthsLater, selectedEmployeeId);
+      await fetchEntries(startOfTheMonth2MonthsLater, endOfTheMonth2MonthsLater);
       if (currentMonthNumber === 11) {
         setCurrentMonthNumber(0);
         setCurrentYear(currentYear + 1);
@@ -196,7 +196,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, selectedEmployeeId, day
 };
 
 interface Iprops {
-  fetchEntries: (from: string, to: string, uid: number) => void;
+  fetchEntries: (from: string, to: string) => void;
   selectedEmployeeId: number;
   dayInfo: any[];
   selectedFullDate: string;
