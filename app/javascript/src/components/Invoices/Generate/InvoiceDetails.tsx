@@ -15,7 +15,8 @@ const InvoiceDetails = ({
   dueDate, setDueDate,
   invoiceNumber,
   setInvoiceNumber,
-  reference
+  reference,
+  optionSelected, clientVisible
 }) => {
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -42,7 +43,13 @@ const InvoiceDetails = ({
 
   return (
     <div className="flex justify-between border-b-2 border-miru-gray-400 px-10 py-5 h-36">
-      <ClientSelection selectedClient={selectedClient} setSelectedClient={setSelectedClient} clientList={clientList} />
+      <ClientSelection
+        selectedClient={selectedClient}
+        setSelectedClient={setSelectedClient}
+        clientList={clientList}
+        optionSelected={optionSelected}
+        clientVisible={clientVisible}
+      />
       <div className="group">
         <div className="hoverPencil">
           <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
