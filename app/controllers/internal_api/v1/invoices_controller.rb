@@ -47,6 +47,11 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     }
   end
 
+  def destroy
+    authorize invoice
+    invoice.destroy
+  end
+
   def send_invoice
     authorize invoice
 

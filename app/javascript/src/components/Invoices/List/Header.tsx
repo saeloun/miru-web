@@ -14,7 +14,8 @@ const Header = ({
   setFilterVisibilty,
   isInvoiceSelected,
   selectedInvoiceCount,
-  clearCheckboxes
+  clearCheckboxes,
+  setShowBulkDeleteDialog
 }) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
     <h2 className="header__title">Invoices</h2>
@@ -65,6 +66,9 @@ const Header = ({
         <div className="flex">
           <button
             type="button"
+            onClick={()=> {
+              setShowBulkDeleteDialog(true);
+            }}
             className="header__button border-miru-red-400 text-miru-red-400"
           >
             <Trash weight="fill" size={16} />
