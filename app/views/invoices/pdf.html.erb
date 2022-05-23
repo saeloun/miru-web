@@ -40,11 +40,11 @@ html {
     <div class="group">
       <p class="font-normal text-xs text-miru-dark-purple-1000 flex">Date of Issue</p>
       <p class="font-normal text-base text-miru-dark-purple-1000">
-        <%=invoice["issue_date"]%>
+        <%=invoice["issue_date"].strftime('%d-%m-%Y')%>
       </p>
       <p class="font-normal text-xs text-miru-dark-purple-1000 mt-4">Due Date</p>
       <p class="font-normal text-base text-miru-dark-purple-1000">
-        <%=invoice["issue_date"]%>
+        <%=invoice["due_date"].strftime('%d-%m-%Y')%>
       </p>
     </div>
     <div class="group">
@@ -80,7 +80,7 @@ html {
         <%invoice_line_items.each do |item| %>
           <tr>
             <td class="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left "><%=item[:name]%></td>
-            <td class="border-b-2 border-miru-gray-200 py-3 font-normal text-base text-miru-dark-purple-1000 text-left"><%=item[:date]%></td>
+            <td class="border-b-2 border-miru-gray-200 py-3 font-normal text-base text-miru-dark-purple-1000 text-left"><%=item[:date].strftime('%d-%m-%Y')%></td>
             <td class="border-b-2 border-miru-gray-200 px-1 pl-2 py-3 font-normal text-base text-miru-dark-purple-1000 text-left ">
               <%=item[:description]%>
             </td>
