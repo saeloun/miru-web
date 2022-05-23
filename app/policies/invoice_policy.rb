@@ -17,6 +17,10 @@ class InvoicePolicy < ApplicationPolicy
     user_owner_or_admin?
   end
 
+  def destroy?
+    user_owner_or_admin?
+  end
+
   def send_invoice?
     user_owner_or_admin?
   end

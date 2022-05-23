@@ -20,7 +20,7 @@ import NewClient from "../Modals/NewClient";
 const getTableData = (clients) => {
   if (clients) {
     return clients.map((client) => {
-      const hours = client.minutes / 60;
+      const hours = (client.minutes / 60).toFixed(2);
       return {
         col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
         col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
@@ -40,7 +40,7 @@ const Clients = ({ isAdminUser }) => {
   const [clientToDelete, setDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
-  const [overdueOutstandingAmount, setOverDueOutstandingAmt]= useState<any>(null);
+  const [overdueOutstandingAmount, setOverDueOutstandingAmt] = useState<any>(null);
   const navigate = useNavigate();
 
   const handleEditClick = (id) => {
