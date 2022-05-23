@@ -29,14 +29,12 @@ const getQueryParams = (selectedFilter) => {
 
 const applyFilter = async (selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty) => {
   const queryParams = getQueryParams(selectedFilter);
-  if (queryParams !== "") {
-    const sanitizedParam = queryParams.substring(1);
-    const sanitizedQuery = `?${sanitizedParam}`;
-    const res = await reports.get(sanitizedQuery);
-    setTimeEntries(res.data.entries);
-    setNavFilters(true);
-    setFilterVisibilty(false);
-  }
+  const sanitizedParam = queryParams.substring(1);
+  const sanitizedQuery = `?${sanitizedParam}`;
+  const res = await reports.get(sanitizedQuery);
+  setTimeEntries(res.data.entries);
+  setNavFilters(true);
+  setFilterVisibilty(false);
 };
 
 export default applyFilter;

@@ -70,7 +70,7 @@ const FilterSideBar = ({
                 onChange={handleSelectFilter}
                 name="dateRange"
                 styles={customStyles}
-                options={dateRangeOptions}
+                options={dateRangeOptions()}
               />
             </li>
             <li className="px-5 pb-5">

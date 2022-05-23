@@ -10,7 +10,6 @@ import Filters from "./Filters";
 import Header from "./Header";
 
 import { ITimeEntry } from "./interface";
-import dayjs from "dayjs";
 
 const Reports = () => {
   const filterIntialValues = {

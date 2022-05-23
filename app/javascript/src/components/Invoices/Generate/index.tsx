@@ -130,8 +130,8 @@ const GenerateInvoices = () => {
           invoiceNumber,
           amount
         }}
-          isSending={showSendInvoiceModal}
-          setIsSending={setShowSendInvoiceModal}
+        isSending={showSendInvoiceModal}
+        setIsSending={setShowSendInvoiceModal}
         />}
 
         {showInvoiceSetting && (
