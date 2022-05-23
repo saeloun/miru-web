@@ -13,8 +13,11 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
     resources :reports, only: [:index]
     resources :workspaces, only: [:update]
-    resources :invoices, only: [:index, :create, :update, :show] do
+    resources :invoices, only: [:index, :create, :update, :show, :destroy] do
       post :send_invoice, on: :member
+    end
+    namespace :invoices do
+      resources :bulk_deletion, only: [:create]
     end
     resources :generate_invoice, only: [:index, :show]
     resources :project_members, only: [:update]
