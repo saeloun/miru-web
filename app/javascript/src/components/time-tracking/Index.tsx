@@ -82,6 +82,17 @@ const TimeTracking: React.FC<Iprops> = ({
     );
   }, [selectDate, weekDay]);
 
+  useEffect(() => {
+    if (dayInfo.length <= 0) return;
+
+    fetchEntries(
+      dayjs(dayInfo[0]["fullDate"]).startOf("month").subtract(1, "month").format("DD-MM-YYYY"),
+      dayjs(dayInfo[0]["fullDate"]).endOf("month").add(1, "month").format("DD-MM-YYYY"),
+    );
+
+    if (allEmployeesEntries[selectedEmployeeId]) setEntryList(allEmployeesEntries[selectedEmployeeId]);
+  }, [selectedEmployeeId]);
+
   const handleWeekTodayButton = () => {
     setSelectDate(0);
     setWeekDay(dayjs().weekday());
@@ -211,19 +222,6 @@ const TimeTracking: React.FC<Iprops> = ({
     setWeeklyData(() => weekArr);
   };
 
-  const handleEmployeeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const id = Number(e.target.value);
-    setSelectedEmployeeId(id);
-    if (allEmployeesEntries[id]) {
-      setEntryList(allEmployeesEntries[id]);
-    } else {
-      fetchEntries(
-        dayjs().startOf("month").subtract(1, "month").format("DD-MM-YYYY"),
-        dayjs().endOf("month").add(1, "month").format("DD-MM-YYYY"),
-      );
-    }
-  };
-
   return (
     <>
       <ToastContainer />
@@ -245,7 +243,7 @@ const TimeTracking: React.FC<Iprops> = ({
           </nav>
           <div>
             {isAdmin && (
-              <select value={selectedEmployeeId} onChange={handleEmployeeChange} className="items-center ">
+              <select value={selectedEmployeeId} onChange={(e) => setSelectedEmployeeId(Number(e.target.value))} className="items-center ">
                 {
                   employees.map(employee =>
                     <option value={employee["id"]} className="text-miru-han-purple-1000">
