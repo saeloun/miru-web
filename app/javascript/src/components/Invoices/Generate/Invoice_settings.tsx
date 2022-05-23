@@ -113,14 +113,6 @@ const Invoice_settings = ({ setShowInvoiceSetting }) => {
               <img src={amex} />
               <img src={applePay} />
             </div>
-            <div className="mt-10 font-normal text-xs text-miru-dark-purple-1000 leading-4 flex">
-              <CustomCheckbox
-                id={1}
-                handleCheck={() => {}} // eslint-disable-line
-                checkboxValue={null}
-              />
-              <h4 className="pl-2">Accept ACH Bank Transfers</h4>
-            </div>
           </div>
         ) : null}
 
