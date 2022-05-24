@@ -219,6 +219,7 @@ const TimeTracking: React.FC<Iprops> = ({
         });
       });
     }
+
     setWeeklyData(() => weekArr);
   };
 

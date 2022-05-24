@@ -114,6 +114,13 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, selectedEmployeeId, day
     handleMonthChange();
   }, [entryList]);
 
+  useEffect(() => {
+    fetchEntries(
+      dayjs(startOfTheMonth).subtract(1, "month").format("DD-MM-YYYY"),
+      dayjs(endOfTheMonth).add(1, "month").format("DD-MM-YYYY")
+    );
+  }, [selectedEmployeeId]);
+
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
