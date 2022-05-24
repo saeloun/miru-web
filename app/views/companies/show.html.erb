@@ -125,7 +125,7 @@
                   </div>
                 </div>
                 <div class="mt-1">
-                  <%= form.select :country, [[ "Please select", "", { selected: true, disabled: true }]] + ISO3166::Country.pluck(:alpha2, :name).collect { |c| [ c.second, c.first ] }, {}, { autofocus: true, class: "select-country rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :country)}" } %>
+                  <%= form.select :country, [[ "Please select", "", { selected: true, disabled: true }]] + ISO3166::Country.pluck(:alpha2, :iso_short_name).collect { |c| [ c.second, c.first ] }, {}, { autofocus: true, class: "select-country rounded tracking-wider border block w-full px-3 py-2 bg-miru-white-100 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none #{error_message_class(form.object, :country)}" } %>
                 </div>
               </div>
             </div>
