@@ -12,7 +12,7 @@ const Header = ({ invoice, handleSendInvoice }) => (
       </div>
       <InvoiceActions
         deleteInvoice={() => { alert("Implement me!"); }}
-        editInvoice={() => { alert("Implement me!"); }}
+        editInvoiceLink={`/invoices/${invoice.id}/edit`}
         sendInvoice={handleSendInvoice}
       />
     </div>
