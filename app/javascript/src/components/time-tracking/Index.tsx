@@ -374,6 +374,7 @@ const TimeTracking: React.FC<Iprops> = ({
               weeklyData={weeklyData}
               setWeeklyData={setWeeklyData}
               parseWeeklyViewData={parseWeeklyViewData}
+              selectedEmployeeId={selectedEmployeeId}
             />
           )}
         </div>
@@ -424,6 +425,7 @@ const TimeTracking: React.FC<Iprops> = ({
                 isWeeklyEditing={isWeeklyEditing}
                 setIsWeeklyEditing={setIsWeeklyEditing}
                 parseWeeklyViewData={parseWeeklyViewData}
+                selectedEmployeeId={selectedEmployeeId}
               />
             ))}
           </div>
