@@ -13,7 +13,8 @@ const EntryContext = createContext(({
     clients: [],
     teamMembers: []
   },
-  handleRemoveSingleFilter: (key, value) => { } //eslint-disable-line
+  filterCounter: 0,
+  handleRemoveSingleFilter: (key, value) => { }, //eslint-disable-line
 }));
 
 export const useEntry = () => useContext(EntryContext);

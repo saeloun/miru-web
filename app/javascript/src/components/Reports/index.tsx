@@ -28,6 +28,7 @@ const Reports = () => {
   const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
   const [isFilterVisible, setFilterVisibilty] = useState<boolean>(false);
   const [showNavFilters, setNavFilters] = useState<boolean>(false);
+  const [filterCounter, setFilterCounter] = useState(0);
 
   const fetchTimeEntries = async () => {
     const res = await reports.get("");
@@ -43,14 +44,31 @@ const Reports = () => {
     fetchTimeEntries();
   }, []);
 
+  const updateFilterCounter = async () => {
+    let counter = 0;
+    for (const filterkey in selectedFilter) {
+      const filterValue = selectedFilter[filterkey];
+      if (Array.isArray(filterValue)) {
+        counter = counter + filterValue.length;
+      } else {
+        if (filterValue.value !== "") {
+          counter = counter + 1;
+        }
+      }
+    }
+    await setFilterCounter(counter);
+  };
+
   useEffect(() => {
+    updateFilterCounter();
     applyFilter(selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty);
   }, [selectedFilter]);
 
   const contextValues = {
     entries: timeEntries,
     filterOptions,
-    selectedFilter
+    selectedFilter,
+    filterCounter
   };
 
   const handleApplyFilter = async (filters) => {
@@ -86,6 +104,7 @@ const Reports = () => {
           showNavFilters={showNavFilters}
           setFilterVisibilty={setFilterVisibilty}
           isFilterVisible={isFilterVisible}
+          resetFilter={resetFilter}
         />
         <Container />
         {isFilterVisible && <Filters
