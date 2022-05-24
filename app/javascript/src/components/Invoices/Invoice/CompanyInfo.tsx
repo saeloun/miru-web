@@ -14,7 +14,7 @@ const CompanyInfo = ({ company }) => (
       </div>
     </div>
 
-    <div className="font-normal text-base text-right text-miru-dark-purple-1000 w-36">
+    <div className="font-normal text-base text-right text-miru-dark-purple-1000 w-72">
       <p>{company.address}</p>
       <p>{company.country}</p>
     </div>
