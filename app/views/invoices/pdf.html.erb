@@ -60,7 +60,7 @@ html {
     <div>
       <p class="font-normal text-xs text-miru-dark-purple-1000 text-right">Amount</p>
       <p class="font-normal text-4xl text-miru-dark-purple-1000 mt-1">
-        <%="#{invoice.company.base_currency} #{invoice["amount"]}"%>
+        <%=invoice_amount%>
       </p>
     </div>
   </div>
@@ -107,28 +107,28 @@ html {
         </tr>
         <tr class="pb-5 border-b-2 miru-gray-400 ">
           <td class="py-2 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Discount</td>
-          <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%=invoice["discount"]%></td>
+          <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%=invoice_discount%></td>
         </tr>
         <tr>
           <td class="pt-4 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Tax</td>
           <td class="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">
-            <%="#{invoice.company.base_currency} #{invoice["tax"]}"%>
+            <%=invoice_tax%>
           </td>
         </tr>
         <tr>
           <td class="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Total</td>
           <td class="font-bold text-base text-miru-dark-purple-1000 text-right">
-            <%="#{invoice.company.base_currency} #{total}"%>
+            <%=total%>
           </td>
         </tr>
         <tr>
           <td class="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Amount Paid</td>
-          <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%="#{invoice.company.base_currency} #{invoice["amount_paid"]}"%></td>
+          <td class="font-bold text-base text-miru-dark-purple-1000 text-right "><%=invoice_amount_paid%></td>
         </tr>
         <tr>
           <td class="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">Amount Due</td>
           <td class="font-bold text-base text-miru-dark-purple-1000 text-right">
-            <%="#{invoice.company.base_currency} #{invoice["amount_due"]}"%>
+            <%=invoice_amount_due%>
           </td>
         </tr>
       </tbody>

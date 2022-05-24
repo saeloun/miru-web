@@ -183,3 +183,5 @@ gem "searchkick"
 
 # PDF generator
 gem "grover"
+
+gem "rails-i18n", "~> 7.0.0"
