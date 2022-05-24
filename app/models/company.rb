@@ -2,15 +2,15 @@
 #
 # Table name: companies
 #
-#  id              :integer          not null, primary key
-#  name            :string           not null
+#  id              :bigint           not null, primary key
 #  address         :text             not null
-#  business_phone  :string
 #  base_currency   :string           default("USD"), not null
-#  standard_price  :decimal(, )      default("0.0"), not null
-#  fiscal_year_end :string
-#  date_format     :string
+#  business_phone  :string
 #  country         :string           not null
+#  date_format     :string
+#  fiscal_year_end :string
+#  name            :string           not null
+#  standard_price  :decimal(, )      default(0.0), not null
 #  timezone        :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null

@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_06_085404) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_06_085404) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,10 +21,10 @@ ActiveRecord::Schema.define(version: 2022_05_06_085404) do
     t.string "record_type", null: false
     t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
-    t.datetime "created_at", precision: 6, null: false
+    t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness",
-unique: true
+      unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
@@ -35,7 +35,7 @@ unique: true
     t.string "service_name", null: false
     t.bigint "byte_size", null: false
     t.string "checksum"
-    t.datetime "created_at", precision: 6, null: false
+    t.datetime "created_at", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
@@ -51,9 +51,9 @@ unique: true
     t.string "email"
     t.string "phone"
     t.string "address"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.datetime "discarded_at", precision: 6
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
     t.string "stripe_id"
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
@@ -70,15 +70,15 @@ unique: true
     t.string "date_format"
     t.string "country", null: false
     t.string "timezone"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "company_users", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.bigint "user_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_company_users_on_company_id"
     t.index ["user_id"], name: "index_company_users_on_user_id"
   end
@@ -87,8 +87,8 @@ unique: true
     t.string "provider"
     t.string "uid"
     t.bigint "user_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
@@ -100,8 +100,8 @@ unique: true
     t.integer "quantity", default: 1
     t.bigint "invoice_id", null: false
     t.bigint "timesheet_entry_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_invoice_line_items_on_invoice_id"
     t.index ["timesheet_entry_id"], name: "index_invoice_line_items_on_timesheet_entry_id"
   end
@@ -119,8 +119,8 @@ unique: true
     t.decimal "discount", precision: 20, scale: 2, default: "0.0"
     t.integer "status", default: 0, null: false
     t.bigint "client_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
@@ -131,9 +131,9 @@ unique: true
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
     t.decimal "hourly_rate", default: "0.0", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.datetime "discarded_at", precision: 6
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
     t.index ["discarded_at"], name: "index_project_members_on_discarded_at"
     t.index ["project_id"], name: "index_project_members_on_project_id"
     t.index ["user_id"], name: "index_project_members_on_user_id"
@@ -144,9 +144,9 @@ unique: true
     t.string "name", null: false
     t.text "description"
     t.boolean "billable", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.datetime "discarded_at", precision: 6
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
     t.index ["client_id"], name: "index_projects_on_client_id"
     t.index ["discarded_at"], name: "index_projects_on_discarded_at"
   end
@@ -155,8 +155,8 @@ unique: true
     t.string "name"
     t.string "resource_type"
     t.bigint "resource_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
@@ -164,8 +164,8 @@ unique: true
   create_table "stripe_connected_accounts", force: :cascade do |t|
     t.string "account_id", null: false
     t.bigint "company_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_stripe_connected_accounts_on_account_id", unique: true
     t.index ["company_id"], name: "index_stripe_connected_accounts_on_company_id", unique: true
   end
@@ -177,8 +177,8 @@ unique: true
     t.text "note", default: ""
     t.date "work_date", null: false
     t.integer "bill_status", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
     t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
   end
@@ -189,29 +189,29 @@ unique: true
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at", precision: 6
-    t.datetime "remember_created_at", precision: 6
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at", precision: 6
-    t.datetime "last_sign_in_at", precision: 6
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
     t.string "confirmation_token"
-    t.datetime "confirmed_at", precision: 6
-    t.datetime "confirmation_sent_at", precision: 6
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "current_workspace_id"
     t.string "invitation_token"
-    t.datetime "invitation_created_at", precision: 6
-    t.datetime "invitation_sent_at", precision: 6
-    t.datetime "invitation_accepted_at", precision: 6
+    t.datetime "invitation_created_at"
+    t.datetime "invitation_sent_at"
+    t.datetime "invitation_accepted_at"
     t.integer "invitation_limit"
     t.string "invited_by_type"
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
-    t.datetime "discarded_at", precision: 6
+    t.datetime "discarded_at"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
