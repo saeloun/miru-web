@@ -64,7 +64,7 @@ const Table = ({
                         <td className="table__data w-1/5 font medium text-sm text-miru-dark-purple-1000 text-left">
                           {item.first_name} {item.last_name}
                         </td>
-                        <td className="table__data w-3/5 font medium text-xs text-miru-dark-purple-600 text-left">
+                        <td className="whitespace-normal table__data w-3/5 font medium text-xs text-miru-dark-purple-600 text-left">
                           {item.description}
                         </td>
                         <td className="table__data font medium text-xs text-miru-dark-purple-1000 text-right">
