@@ -28,7 +28,9 @@ const TimeTracking: React.FC<Iprops> = ({
   clients,
   projects,
   entries,
-  isAdmin
+  isAdmin,
+  userId,
+  employees
 }) => {
   const [dayInfo, setDayInfo] = useState<any[]>([]);
   const [view, setView] = useState<string>("day");
@@ -45,6 +47,8 @@ const TimeTracking: React.FC<Iprops> = ({
   const [editEntryId, setEditEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
   const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(userId);
+  const [allEmployeesEntries, setAllEmployeesEntries] = useState<object>({});
 
   // sorting by client's name
   clients.sort((a: object, b: object) => a["name"].localeCompare(b["name"]));
@@ -52,6 +56,9 @@ const TimeTracking: React.FC<Iprops> = ({
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
+    const currentEmployeeEntries = {};
+    currentEmployeeEntries[userId] = entries;
+    setAllEmployeesEntries(currentEmployeeEntries);
   }, []);
 
   useEffect(() => {
@@ -75,6 +82,17 @@ const TimeTracking: React.FC<Iprops> = ({
         .format("YYYY-MM-DD")
     );
   }, [selectDate, weekDay]);
+
+  useEffect(() => {
+    if (dayInfo.length <= 0) return;
+
+    fetchEntries(
+      dayjs(dayInfo[0]["fullDate"]).startOf("month").subtract(1, "month").format("DD-MM-YYYY"),
+      dayjs(dayInfo[0]["fullDate"]).endOf("month").add(1, "month").format("DD-MM-YYYY"),
+    );
+
+    if (allEmployeesEntries[selectedEmployeeId]) setEntryList(allEmployeesEntries[selectedEmployeeId]);
+  }, [selectedEmployeeId]);
 
   const handleWeekTodayButton = () => {
     setSelectDate(0);
@@ -102,10 +120,15 @@ const TimeTracking: React.FC<Iprops> = ({
   };
 
   const fetchEntries = async (from: string, to: string) => {
-    if (entryList[from] && entryList[to]) return;
-    const res = await timesheetEntryApi.list(from, to);
+    const res = await timesheetEntryApi.list(from, to, selectedEmployeeId);
     if (res.status >= 200 && res.status < 300) {
-      setEntryList(prevState => ({ ...prevState, ...res.data.entries }));
+      const ns = { ...allEmployeesEntries };
+      ns[selectedEmployeeId] = { ...ns[selectedEmployeeId], ...res.data.entries };
+      setAllEmployeesEntries(ns);
+      setEntryList(ns[selectedEmployeeId]);
+      return true;
+    } else {
+      return false;
     }
   };
 
@@ -197,6 +220,7 @@ const TimeTracking: React.FC<Iprops> = ({
         });
       });
     }
+
     setWeeklyData(() => weekArr);
   };
 
@@ -221,10 +245,14 @@ const TimeTracking: React.FC<Iprops> = ({
           </nav>
           <div>
             {isAdmin && (
-              <select className="lg:w-25 lg:h-4 items-center ">
-                <option disabled selected className="text-miru-han-purple-1000">
-                  Employee
-                </option>
+              <select value={selectedEmployeeId} onChange={(e) => setSelectedEmployeeId(Number(e.target.value))} className="items-center ">
+                {
+                  employees.map(employee =>
+                    <option value={employee["id"]} className="text-miru-han-purple-1000">
+                      {employee["first_name"] + " " + employee["last_name"]}
+                    </option>
+                  )
+                }
               </select>
             )}
           </div>
@@ -235,6 +263,7 @@ const TimeTracking: React.FC<Iprops> = ({
             view === "month" ?
               <MonthCalender
                 fetchEntries={fetchEntries}
+                selectedEmployeeId={selectedEmployeeId}
                 dayInfo={dayInfo}
                 selectedFullDate={selectedFullDate}
                 setSelectedFullDate={setSelectedFullDate}
@@ -293,6 +322,8 @@ const TimeTracking: React.FC<Iprops> = ({
           }
           {!editEntryId && newEntryView && view !== "week" && (
             <AddEntry
+              selectedEmployeeId={selectedEmployeeId}
+              fetchEntries={fetchEntries}
               setNewEntryView={setNewEntryView}
               clients={clients}
               projects={projects}
@@ -353,6 +384,8 @@ const TimeTracking: React.FC<Iprops> = ({
           entryList[selectedFullDate].map((entry, weekCounter) =>
             editEntryId === entry.id ? (
               <AddEntry
+                selectedEmployeeId={selectedEmployeeId}
+                fetchEntries={fetchEntries}
                 setNewEntryView={setNewEntryView}
                 clients={clients}
                 projects={projects}
@@ -405,6 +438,8 @@ interface Iprops {
   projects: object;
   entries: object;
   isAdmin: boolean;
+  userId: number;
+  employees: [];
 }
 
 export default TimeTracking;

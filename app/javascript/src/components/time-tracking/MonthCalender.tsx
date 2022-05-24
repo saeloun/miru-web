@@ -8,7 +8,7 @@ const { useState, useEffect } = React;
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
 
-const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, selectedFullDate, setSelectedFullDate, handleWeekTodayButton, monthsAbbr, setWeekDay, setSelectDate  }) => {
+const MonthCalender: React.FC<Iprops> = ({ fetchEntries, selectedEmployeeId, dayInfo, entryList, selectedFullDate, setSelectedFullDate, handleWeekTodayButton, monthsAbbr, setWeekDay, setSelectDate  }) => {
   const [currentMonthNumber, setCurrentMonthNumber] = useState<number>(dayjs().month());
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
   const [firstDay, setFirstDay] = useState<number>(dayjs().startOf("month").weekday());
@@ -114,6 +114,13 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
     handleMonthChange();
   }, [entryList]);
 
+  useEffect(() => {
+    fetchEntries(
+      dayjs(startOfTheMonth).subtract(1, "month").format("DD-MM-YYYY"),
+      dayjs(endOfTheMonth).add(1, "month").format("DD-MM-YYYY")
+    );
+  }, [selectedEmployeeId]);
+
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
@@ -197,6 +204,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, dayInfo, entryList, sel
 
 interface Iprops {
   fetchEntries: (from: string, to: string) => void;
+  selectedEmployeeId: number;
   dayInfo: any[];
   selectedFullDate: string;
   setSelectedFullDate: any;
