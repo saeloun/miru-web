@@ -29,6 +29,22 @@ const SideNav = ({ isAdmin, firstName, lastName, email }) => {
           BILLING
         </NavLink>
       </li>
+      <h4>Saeloun Inc</h4>
+      <li className='border-b-2 border-miru-gray-400'>
+        <NavLink end to="/profile/edit/organization" className={({ isActive }) => getActiveClassName(isActive)}>
+          ORGANIZATION SETTINGS
+        </NavLink>
+      </li>
+      <li className='border-b-2 border-miru-gray-400'>
+        <NavLink end to="/profile/edit/paymentsettings" className={({ isActive }) => getActiveClassName(isActive)}>
+          PAYMENT SETTINGS
+        </NavLink>
+      </li>
+      <li className='border-b-2 border-miru-gray-400'>
+        <NavLink end to="/profile/edit/billing" className={({ isActive }) => getActiveClassName(isActive)}>
+          BILLING
+        </NavLink>
+      </li>
     </ul>
   );
 
