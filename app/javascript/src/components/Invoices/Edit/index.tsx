@@ -10,7 +10,6 @@ import InvoiceTable from "./InvoiceTable";
 import InvoiceTotal from "./InvoiceTotal";
 import CompanyInfo from "../CompanyInfo";
 import InvoiceDetails from "../Generate/InvoiceDetails";
-import InvoiceLineItems from "../Invoice/InvoiceLineItems";
 
 const EditInvoice = () => {
   const navigate = useNavigate();
@@ -136,12 +135,9 @@ const EditInvoice = () => {
               setLineItems={setLineItems}
               selectedLineItems={selectedLineItems}
               setSelectedLineItems={setSelectedLineItems}
+              items={invoiceDetails.invoiceLineItems}
             />
           </div>
-          <InvoiceLineItems
-            items={invoiceDetails.invoiceLineItems}
-            showHeader={false}
-          />
           <InvoiceTotal
             currency={invoiceDetails.company.currency}
             newLineItems={selectedLineItems}
