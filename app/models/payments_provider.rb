@@ -15,7 +15,8 @@
 #
 # Indexes
 #
-#  index_payments_providers_on_company_id  (company_id)
+#  index_payments_providers_on_company_id           (company_id)
+#  index_payments_providers_on_name_and_company_id  (name,company_id) UNIQUE
 #
 # Foreign Keys
 #

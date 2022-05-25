@@ -136,6 +136,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_25_091818) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_payments_providers_on_company_id"
+    t.index ["name", "company_id"], name: "index_payments_providers_on_name_and_company_id", unique: true
   end
 
   create_table "project_members", force: :cascade do |t|

@@ -8,6 +8,7 @@ class CreatePaymentsProviders < ActiveRecord::Migration[7.0]
       t.boolean :enabled, default: false
       t.string :accepted_payment_methods, array: true, default: []
       t.references :company, null: false, foreign_key: true
+      t.index [:name, :company_id], unique: true
 
       t.timestamps
     end
