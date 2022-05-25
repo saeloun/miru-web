@@ -35,6 +35,10 @@ module InvoicePayment
         company.base_currency
       end
 
+      def stripe_connected_account
+        StripeConnectedAccount.find_by!(company:)
+      end
+
       def checkout!
         Stripe::Checkout::Session.create(
           {
@@ -53,6 +57,8 @@ module InvoicePayment
             customer: client.reload.stripe_id,
             success_url:,
             cancel_url:
+          }, {
+            stripe_account: stripe_connected_account.account_id
           })
       end
   end
