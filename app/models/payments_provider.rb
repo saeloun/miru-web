@@ -26,5 +26,5 @@ class PaymentsProvider < ApplicationRecord
   belongs_to :company
 
   validates :name, uniqueness: { scope: :company_id }
-  validates :name, inclusion: { in: %w(stripe, paypal, wise) }
+  validates :name, inclusion: { in: %w(stripe paypal wise) }
 end

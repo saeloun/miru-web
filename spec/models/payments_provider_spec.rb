@@ -11,7 +11,7 @@ RSpec.describe PaymentsProvider, type: :model do
     end
 
     describe "inclusion" do
-      it { is_expected.to validate_inclusion_of(:name).in_array(%w(stripe, paypal, wise)) }
+      it { is_expected.to validate_inclusion_of(:name).in_array(%w(stripe paypal wise)) }
     end
   end
 
