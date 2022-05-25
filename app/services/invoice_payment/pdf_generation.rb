@@ -62,29 +62,8 @@ module InvoicePayment
         }
       end
 
-      def locale(base_currency)
-        case base_currency
-        when "INR"
-          "en-IN"
-        when "USD"
-          "en-US"
-        when "EUR"
-          "de-DE"
-        when "JPY"
-          "ja-JP"
-        when "GBP"
-          "en-GB"
-        when "CAD"
-          "en-CA"
-        when "AUD"
-          "en-AU"
-        else
-          "en-US"
-        end
-      end
-
       def format_currency(base_currency, amount)
-        I18n.locale = locale(base_currency)
+        Money.locale_backend = :currency
         Money.from_amount(amount, base_currency).format
       end
   end
