@@ -4,12 +4,14 @@ import NewLineItemTable from "./NewLineItemTable";
 import useOutsideClick from "../../../helpers/outsideClick";
 import ManualEntry from "../Generate/ManualEntry";
 import NewLineItemRow from "../Generate/NewLineItemRow";
+import LineItem from "../Invoice/LineItem";
 
 const InvoiceTable = ({
   lineItems,
   selectedLineItems,
   setLineItems,
-  setSelectedLineItems
+  setSelectedLineItems,
+  items
 }) => {
   const [addNew, setAddNew] = useState<boolean>(false);
   const [manualEntry, setManualEntry] = useState<boolean>(false);
@@ -98,6 +100,8 @@ const InvoiceTable = ({
                 item={item}
               />
             ))}
+          {items.length > 0 &&
+            items.map((item) => <LineItem key={item.id} item={item} />)}
         </tbody>
       </table>
     </React.Fragment>
