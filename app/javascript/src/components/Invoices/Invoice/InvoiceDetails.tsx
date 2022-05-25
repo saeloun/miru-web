@@ -12,7 +12,7 @@ const InvoiceDetails = ({ invoice }) => (
       <ClientInfo client={invoice.client}/>
       <InvoiceInfo invoice={invoice} />
     </div>
-    <InvoiceLineItems items={invoice.invoiceLineItems}/>
+    <InvoiceLineItems items={invoice.invoiceLineItems} showHeader={true} />
     <InvoiceTotalSummary invoice={invoice} />
   </>
 );

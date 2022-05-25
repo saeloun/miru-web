@@ -21,7 +21,9 @@ const WeeklyEntries: React.FC<Props> = ({
   isWeeklyEditing,
   setIsWeeklyEditing,
   weeklyData,
-  setWeeklyData
+  setWeeklyData,
+  selectedEmployeeId
+
 }) => {
   const [client, setClient] = useState("");
   const [project, setProject] = useState("");
@@ -111,6 +113,8 @@ const WeeklyEntries: React.FC<Props> = ({
       setIsWeeklyEditing={setIsWeeklyEditing}
       weeklyData={weeklyData}
       setWeeklyData={setWeeklyData}
+      selectedEmployeeId={selectedEmployeeId}
+
     />
     : <SelectProject
       clients={clients}
@@ -136,6 +140,7 @@ const WeeklyEntries: React.FC<Props> = ({
 interface Props {
   key: number;
   clients: [];
+  selectedEmployeeId: number;
   projects: object;
   newRowView: boolean;
   setNewRowView: React.Dispatch<React.SetStateAction<boolean>>;

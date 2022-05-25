@@ -2,8 +2,8 @@ import React from "react";
 
 import CompanyInfo from "./CompanyInfo";
 import InvoiceDetails from "./InvoiceDetails";
+import InvoiceTable from "./InvoiceTable";
 import InvoiceTotal from "./InvoiceTotal";
-import InvoiceTable from "./InvoiveTable";
 
 const Container = ({
   invoiceDetails,
@@ -35,6 +35,8 @@ const Container = ({
       invoiceNumber={invoiceNumber}
       setInvoiceNumber={setInvoiceNumber}
       reference={reference}
+      optionSelected={false}
+      clientVisible={false}
     />
     <div className="px-10 py-5">
       <InvoiceTable
@@ -56,6 +58,8 @@ const Container = ({
       setDiscount={setDiscount}
       tax={tax}
       setTax={setTax}
+      showDiscountInput={false}
+      showTax={false}
     />
   </div>
 );

@@ -2,19 +2,23 @@
 #
 # Table name: projects
 #
-#  id           :integer          not null, primary key
-#  client_id    :integer          not null
-#  name         :string           not null
-#  description  :text
+#  id           :bigint           not null, primary key
 #  billable     :boolean          not null
+#  description  :text
+#  discarded_at :datetime
+#  name         :string           not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
-#  discarded_at :datetime
+#  client_id    :bigint           not null
 #
 # Indexes
 #
 #  index_projects_on_client_id     (client_id)
 #  index_projects_on_discarded_at  (discarded_at)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (client_id => clients.id)
 #
 
 # frozen_string_literal: true

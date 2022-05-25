@@ -12,7 +12,9 @@ const TableRow = ({
   invoice,
   isSelected,
   selectInvoices,
-  deselectInvoices
+  deselectInvoices,
+  setShowDeleteDialog,
+  setInvoiceToDelete
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
 
@@ -88,19 +90,29 @@ const TableRow = ({
 
       <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
         <div className="flex items-center h-full">
-          <button className="hidden group-hover:block text-miru-han-purple-1000">
+          <Link
+            to={`/invoices/${invoice.id}/edit`}
+            type="button"
+            className="hidden group-hover:block text-miru-han-purple-1000"
+          >
             <Pen size={16} />
-          </button>
+          </Link>
         </div>
       </td>
 
-      <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
-        <div className="flex items-center h-full">
-          <button className="hidden group-hover:block text-miru-han-purple-1000">
-            <Trash size={16} />
-          </button>
-        </div>
-      </td>
+      {(invoice.status == "draft" || invoice.status == "declined") && (
+        <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
+          <div className="flex items-center h-full">
+            <button className="hidden group-hover:block text-miru-han-purple-1000"
+              onClick={()=> {
+                setShowDeleteDialog(true);
+                setInvoiceToDelete(invoice.id);
+              }}>
+              <Trash size={16} />
+            </button>
+          </div>
+        </td>
+      )}
 
       {isSending && (
         <SendInvoice invoice={invoice} setIsSending={setIsSending} isSending />
