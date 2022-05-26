@@ -3,15 +3,15 @@
 #
 # Table name: clients
 #
-#  id           :integer          not null, primary key
-#  company_id   :integer          not null
-#  name         :string           not null
-#  email        :string
-#  phone        :string
+#  id           :bigint           not null, primary key
 #  address      :string
+#  discarded_at :datetime
+#  email        :string
+#  name         :string           not null
+#  phone        :string
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
-#  discarded_at :datetime
+#  company_id   :bigint           not null
 #  stripe_id    :string
 #
 # Indexes
@@ -19,6 +19,10 @@
 #  index_clients_on_company_id            (company_id)
 #  index_clients_on_discarded_at          (discarded_at)
 #  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (company_id => companies.id)
 #
 
 # frozen_string_literal: true
@@ -86,11 +90,11 @@ class Client < ApplicationRecord
 
   def client_detail(time_frame = "week")
     {
-      id: id,
-      name: name,
-      email: email,
-      phone: phone,
-      address: address,
+      id:,
+      name:,
+      email:,
+      phone:,
+      address:,
       minutes_spent: total_hours_logged(time_frame)
     }
   end

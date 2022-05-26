@@ -2,21 +2,21 @@
 #
 # Table name: invoices
 #
-#  id                 :integer          not null, primary key
-#  issue_date         :date
+#  id                 :bigint           not null, primary key
+#  amount             :decimal(20, 2)   default(0.0)
+#  amount_due         :decimal(20, 2)   default(0.0)
+#  amount_paid        :decimal(20, 2)   default(0.0)
+#  discount           :decimal(20, 2)   default(0.0)
 #  due_date           :date
 #  invoice_number     :string
+#  issue_date         :date
+#  outstanding_amount :decimal(20, 2)   default(0.0)
 #  reference          :text
-#  amount             :decimal(20, 2)   default("0.0")
-#  outstanding_amount :decimal(20, 2)   default("0.0")
-#  tax                :decimal(20, 2)   default("0.0")
-#  amount_paid        :decimal(20, 2)   default("0.0")
-#  amount_due         :decimal(20, 2)   default("0.0")
-#  discount           :decimal(20, 2)   default("0.0")
-#  status             :integer          default("0"), not null
-#  client_id          :integer          not null
+#  status             :integer          default("draft"), not null
+#  tax                :decimal(20, 2)   default(0.0)
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
+#  client_id          :bigint           not null
 #
 # Indexes
 #
@@ -24,6 +24,10 @@
 #  index_invoices_on_invoice_number  (invoice_number) UNIQUE
 #  index_invoices_on_issue_date      (issue_date)
 #  index_invoices_on_status          (status)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (client_id => clients.id)
 #
 
 # frozen_string_literal: true

@@ -1,10 +1,11 @@
 import React from "react";
 
 import { toast, Slide } from "react-toastify";
+import { getToasterIcon, getToasterCloseButton } from "../constants/index";
 
 const ToastrComponent = ({ message }) => (
-  <div className="flex flex-row items-start justify-start">
-    <p className="mx-4 font-medium leading-5 text-white">{message}</p>
+  <div className="text-center">
+    {message}
   </div>
 );
 
@@ -12,7 +13,10 @@ const showToastr = message => {
   toast.success(<ToastrComponent message={message} />, {
     position: toast.POSITION.BOTTOM_CENTER,
     transition: Slide,
-    theme: "colored"
+    theme: "colored",
+    icon: () => getToasterIcon("success"),
+    closeButton: (closeToast) => getToasterCloseButton({ closeToast, type: "success" }),
+    hideProgressBar: true
   });
 };
 
@@ -23,13 +27,40 @@ const showErrorToastr = error => {
   toast.error(<ToastrComponent message={errorMessage} />, {
     position: toast.POSITION.BOTTOM_CENTER,
     transition: Slide,
-    theme: "colored"
+    theme: "colored",
+    icon: () => getToasterIcon("error"),
+    closeButton: (closeToast) => getToasterCloseButton({ closeToast, type: "error" }),
+    hideProgressBar: true
+  });
+};
+
+const showWarningToastr = warning => {
+  toast.warn(<ToastrComponent message={warning} />, {
+    position: toast.POSITION.BOTTOM_CENTER,
+    transition: Slide,
+    theme: "colored",
+    icon: () => getToasterIcon("warning"),
+    closeButton: (closeToast) => getToasterCloseButton({ closeToast, type: "warning" }),
+    hideProgressBar: true
+  });
+};
+
+const showInfoToastr = info => {
+  toast.info(<ToastrComponent message={info} />, {
+    position: toast.POSITION.BOTTOM_CENTER,
+    transition: Slide,
+    theme: "colored",
+    icon: () => getToasterIcon("info"),
+    closeButton: (closeToast) => getToasterCloseButton({ closeToast, type: "info" }),
+    hideProgressBar: true
   });
 };
 
 export const Toastr = {
   success: showToastr,
-  error: showErrorToastr
+  error: showErrorToastr,
+  warning: showWarningToastr,
+  info: showInfoToastr
 };
 
 export default Toastr;
