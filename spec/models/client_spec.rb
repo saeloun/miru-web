@@ -233,5 +233,28 @@ RSpec.describe Client, type: :model do
         expect(client.client_overdue_and_outstanding_calculation).to match_array(result)
       end
     end
+
+    describe "#register_on_stripe!" do
+      let(:company) { create(:company) }
+      let(:user) { create(:user) }
+      let(:client) { create(:client, company:) }
+
+      context "when associated stripe connected account doesn't exist" do
+        it "raises ActiveRecord::RecordNotFound" do
+          expect { client.register_on_stripe! }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+
+      context "when associated stripe connected account exists" do
+        let(:stripe_connected_account) { build(:stripe_connected_account, company:) }
+
+        it "creates customer for the connected account" do
+          allow(Stripe::Customer).to receive(:create)
+            .and_return(OpenStruct.new({ id: 123 }))
+          stripe_connected_account.save!
+          expect(client.register_on_stripe!).to eq(true)
+        end
+      end
+    end
   end
 end
