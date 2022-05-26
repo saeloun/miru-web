@@ -5,7 +5,10 @@ class Invoices::ViewController < ApplicationController
   skip_after_action :verify_authorized
 
   def show
-    @invoice = Invoice.includes(:client, :invoice_line_items).find(params[:id])
-    render :show, layout: false
+    render :show, locals: { invoice: }, layout: false
+  end
+
+  def invoice
+    @_invoice ||= Invoice.includes(:client, :invoice_line_items).find(params[:id])
   end
 end
