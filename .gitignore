@@ -62,3 +62,6 @@ cypress/artifacts/videos
 /config/credentials/test.key
 
 /config/credentials/production.key
+
+# RVM
+.ruby-gemset
