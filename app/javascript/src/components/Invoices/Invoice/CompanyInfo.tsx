@@ -1,6 +1,6 @@
 import React from "react";
 
-const CompanyInfo = ({ company, logo='' }) => (
+const CompanyInfo = ({ company, logo="" }) => (
   <div className="flex justify-between border-b-2 border-miru-gray-400 p-10 h-40">
     <div className="flex">
       <img src={company.logo ? company.logo : logo} className="mr-5" />
