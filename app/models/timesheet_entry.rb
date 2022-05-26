@@ -4,23 +4,30 @@
 #
 # Table name: timesheet_entries
 #
-#  id          :integer          not null, primary key
-#  user_id     :integer          not null
-#  project_id  :integer          not null
+#  id          :bigint           not null, primary key
+#  bill_status :integer          not null
 #  duration    :float            not null
 #  note        :text             default("")
 #  work_date   :date             not null
-#  bill_status :integer          not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  project_id  :bigint           not null
+#  user_id     :bigint           not null
 #
 # Indexes
 #
 #  index_timesheet_entries_on_project_id  (project_id)
 #  index_timesheet_entries_on_user_id     (user_id)
 #
+# Foreign Keys
+#
+#  fk_rails_...  (project_id => projects.id)
+#  fk_rails_...  (user_id => users.id)
+#
 
 class TimesheetEntry < ApplicationRecord
+  searchkick
+
   enum bill_status: [:non_billable, :unbilled, :billed]
 
   belongs_to :user
@@ -43,14 +50,14 @@ class TimesheetEntry < ApplicationRecord
 
   def formatted_entry
     {
-      id: id,
+      id:,
       project: project.name,
-      project_id: project_id,
+      project_id:,
       client: project.client.name,
-      duration: duration,
-      note: note,
-      work_date: work_date,
-      bill_status: bill_status,
+      duration:,
+      note:,
+      work_date:,
+      bill_status:,
       team_member: user.full_name
     }
   end

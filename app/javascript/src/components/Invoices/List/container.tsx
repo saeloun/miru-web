@@ -8,7 +8,9 @@ const Container = ({
   invoices,
   selectedInvoices,
   selectInvoices,
-  deselectInvoices
+  deselectInvoices,
+  setShowDeleteDialog,
+  setInvoiceToDelete
 }) =>
   invoices.length > 0 ? (
     <>
@@ -22,6 +24,8 @@ const Container = ({
         selectedInvoices={selectedInvoices}
         selectInvoices={selectInvoices}
         deselectInvoices={deselectInvoices}
+        setShowDeleteDialog= {setShowDeleteDialog}
+        setInvoiceToDelete ={setInvoiceToDelete}
       />
     </>
   ) : (

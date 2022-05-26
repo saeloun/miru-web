@@ -11,6 +11,7 @@ import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
 
 import Header from "./Header";
+import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapClientDetails } from "../../../mapper/client.mapper";
 import AddEditProject from "../../Projects/Modals/AddEditProject";
 import DeleteProject from "../../Projects/Modals/DeleteProject";
@@ -18,7 +19,7 @@ import DeleteProject from "../../Projects/Modals/DeleteProject";
 const getTableData = (clients) => {
   if (clients) {
     return clients.map((client) => {
-      const hours = client.minutes/60;
+      const hours = (client.minutes/60).toFixed(2);
       return {
         col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
         col2: <div className="text-base text-miru-dark-purple-1000">{client.team.map(member => <span>{member},&nbsp;</span>)}</div>,
@@ -111,7 +112,7 @@ const ClientList = ({ isAdminUser }) => {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={TOASTER_DURATION} />
       <Header clientDetails={clientDetails} />
       <div>
         { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
