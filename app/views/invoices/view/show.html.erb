@@ -3,5 +3,12 @@
     <%= javascript_pack_tag "application"%>
 </head>
 <div>
-  <%= react_component("InvoiceEmail/index",{url: new_invoice_payment_url(@invoice), invoice: @invoice, logo: url_for(@invoice.company.logo), lineItems: @invoice.invoice_line_items, company: @invoice.company, client: @invoice.client }) %>
+  <%= react_component("InvoiceEmail/index",{
+    url: new_invoice_payment_url(invoice),
+    invoice: invoice,
+    logo: url_for(invoice.company.logo),
+    lineItems: invoice.invoice_line_items,
+    company: invoice.company,
+    client: invoice.client
+    }) %>
 </div>
