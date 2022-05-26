@@ -121,6 +121,8 @@ class Client < ApplicationRecord
           metadata: {
             platform_id: id
           }
+        }, {
+          stripe_account: stripe_connected_account.account_id
         })
 
       update!(stripe_id: customer.id)
@@ -128,6 +130,10 @@ class Client < ApplicationRecord
   end
 
   private
+
+    def stripe_connected_account
+      StripeConnectedAccount.find_by!(company:)
+    end
 
     def discard_projects
       projects.discard_all
