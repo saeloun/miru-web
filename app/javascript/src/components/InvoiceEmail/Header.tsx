@@ -9,7 +9,9 @@ const Header = ({ invoice, stripeUrl }) => {
     <>
       <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
         <div className="flex self-center mr-2">
-          <p className="text-4xl font-bold">Invoice #{invoice.invoiceNumber}</p>
+          <p className="text-4xl font-bold">
+            Invoice #{invoice.invoice_number}
+          </p>
         </div>
         <div className="flex flex-row justify-items-right">
           <div className="flex flex-col justify-items-center edit-button-container mx-1">
@@ -53,7 +55,7 @@ const Header = ({ invoice, stripeUrl }) => {
                 </div>
               </div>
             </button>
-            {showPayMenu && <PayOnlineMenu stripeUrl={ stripeUrl }/>}
+            {showPayMenu && <PayOnlineMenu stripeUrl={stripeUrl} />}
           </div>
         </div>
       </div>
