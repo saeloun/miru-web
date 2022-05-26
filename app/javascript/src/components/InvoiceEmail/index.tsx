@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
-import invoicesApi from "apis/invoices";
+import React from "react";
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
 const Instagram = require("../../../../assets/images/Instagram.svg"); // eslint-disable-line
 const Twitter = require("../../../../assets/images/Twitter.svg"); // eslint-disable-line
 const MiruLogowithText = require("../../../../assets/images/MiruWhiteLogowithText.svg"); // eslint-disable-line
 
-const InvoiceEmail = ({ url, invoice, logo, lineItems, company, client }) => {
-  return (
+const InvoiceEmail = ({ url, invoice, logo, lineItems, company, client }) => (
     <>
       <div className="font-manrope px-24 h-16 flex justify-start bg-miru-han-purple-1000 text-white">
         <img src={MiruLogowithText} />
@@ -36,6 +34,5 @@ const InvoiceEmail = ({ url, invoice, logo, lineItems, company, client }) => {
       </div>
     </>
   );
-};
 
 export default InvoiceEmail;
