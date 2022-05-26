@@ -83,7 +83,7 @@
                 <option value="CA">Canada</option>
                 <option value="IN">India</option>
                 <option disabled >Plese Select</option>
-                <% ISO3166::Country.pluck(:alpha2, :name).map do |country|  %>
+                <% ISO3166::Country.pluck(:alpha2, :iso_short_name).map do |country|  %>
                   <option value="<%= country.first %>"  ><%= country.second %></option>
                 <% end %>
               </select>

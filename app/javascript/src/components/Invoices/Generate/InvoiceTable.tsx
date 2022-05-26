@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import generateInvoice from "apis/generateInvoice";
 
+import dayjs from "dayjs";
 import ManualEntry from "./ManualEntry";
 import NewLineItemRow from "./NewLineItemRow";
 import NewLineItemTable from "./NewLineItemTable";
@@ -26,7 +27,9 @@ const fetchNewLineItems = async (
     await generateInvoice.getLineItems(selectedClient.value, pageNumber, selectedEntriesString).then(async res => {
       await setTotalLineItems(res.data.pagy.count);
       await setPageNumber(pageNumber + 1);
-      await setLineItems([...res.data.new_line_item_entries, ...lineItems]);
+      const mergedItems = [...res.data.new_line_item_entries, ...lineItems];
+      const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
+      await setLineItems(sortedData);
     });
   }
 };

@@ -3,13 +3,15 @@ import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { X, FloppyDisk, PaperPlaneTilt, Gear } from "phosphor-react";
 
+import { TOASTER_DURATION } from "../../../constants/index";
+
 const Header = ({
   handleSendInvoice,
   handleSaveInvoice,
   setShowInvoiceSetting
 }) => (
   <React.Fragment>
-    <ToastContainer />
+    <ToastContainer autoClose={TOASTER_DURATION} />
     <div className="sm:flex mt-6 mb-3 sm:items-center sm:justify-between">
       <div className="flex">
         <h2 className="header__title font-bold">Generate Invoice</h2>

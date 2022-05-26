@@ -11,6 +11,7 @@ import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
 
 import Header from "./Header";
+import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapClientList } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
@@ -19,7 +20,7 @@ import NewClient from "../Modals/NewClient";
 const getTableData = (clients) => {
   if (clients) {
     return clients.map((client) => {
-      const hours = client.minutes / 60;
+      const hours = (client.minutes / 60).toFixed(2);
       return {
         col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
         col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
@@ -39,7 +40,7 @@ const Clients = ({ isAdminUser }) => {
   const [clientToDelete, setDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
-  const [overdueOutstandingAmount, setOverDueOutstandingAmt]= useState<any>(null);
+  const [overdueOutstandingAmount, setOverDueOutstandingAmt] = useState<any>(null);
   const navigate = useNavigate();
 
   const handleEditClick = (id) => {
@@ -113,7 +114,7 @@ const Clients = ({ isAdminUser }) => {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={TOASTER_DURATION} />
       <Header isAdminUser={isAdminUser} setnewClient={setnewClient} />
       <div>
         {isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
