@@ -249,6 +249,8 @@ RSpec.describe Client, type: :model do
         let(:stripe_connected_account) { build(:stripe_connected_account, company:) }
 
         it "creates customer for the connected account" do
+          allow(Stripe::Account).to receive(:create)
+            .and_return(OpenStruct.new({ id: stripe_connected_account.account_id }))
           allow(Stripe::Customer).to receive(:create)
             .and_return(OpenStruct.new({ id: 123 }))
           stripe_connected_account.save!
