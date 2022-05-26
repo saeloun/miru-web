@@ -9,7 +9,7 @@ Miru is an open-source tool, designed to make time tracking, invoice management,
 [![GitHub stars](https://img.shields.io/github/stars/saeloun/miru-web)](https://github.com/saeloun/miru-web/stargazers)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/saeloun/miru-web)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/saeloun/miru-web)
-[![GitHub license](https://img.shields.io/github/license/ToolJet/ToolJet)](https://github.com/saeloun/miru-web)
+[![GitHub license](https://img.shields.io/github/license/saeloun/miru-web)](https://github.com/saeloun/miru-web)
 [![Twitter Follow](https://img.shields.io/twitter/follow/getmiru?style=social)](https://twitter.com/getmiru)
 
 <img src="https://user-images.githubusercontent.com/22231095/170423540-e10ada9e-cf1b-4a05-bbb6-2342955f46b0.png"  width="100%" alt="Miru Monthly Timetracking page"/>
