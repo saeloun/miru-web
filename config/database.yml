@@ -7,13 +7,12 @@ default: &default
 
 development:
   <<: *default
-  url: <%= ENV['DATABASE_URL'].gsub('?', '_development?') %>
+  database: miru_web_development
 
 test:
   <<: *default
-  url: <%= ENV['DATABASE_URL'].gsub('?', '_test?') %>
+  database: miru_web_test
 
-production:
-  <<: *default
-  url: <%= ENV['DATABASE_URL'] %>
-  
+# production:
+#   <<: *default
+#   url: <%= ENV['DATABASE_URL'] %>

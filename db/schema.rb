@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_06_085404) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_26_072402) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -125,6 +125,31 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_06_085404) do
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
     t.index ["status"], name: "index_invoices_on_status"
+  end
+
+  create_table "leads", force: :cascade do |t|
+    t.string "name"
+    t.string "primary_email"
+    t.string "other_email"
+    t.text "address"
+    t.string "mobilephone"
+    t.string "telephone"
+    t.string "skypeid"
+    t.string "linkedinid"
+    t.string "timezone"
+    t.string "country_code"
+    t.string "description"
+    t.boolean "donotbulkemail"
+    t.boolean "donotemail"
+    t.boolean "donotfax"
+    t.boolean "donotphone"
+    t.string "industry"
+    t.integer "quality_code"
+    t.integer "priority_code"
+    t.integer "state_code"
+    t.integer "industry_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "project_members", force: :cascade do |t|
