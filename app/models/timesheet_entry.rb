@@ -26,8 +26,6 @@
 #
 
 class TimesheetEntry < ApplicationRecord
-  searchkick
-
   enum bill_status: [:non_billable, :unbilled, :billed]
 
   belongs_to :user
@@ -43,6 +41,12 @@ class TimesheetEntry < ApplicationRecord
   validates :duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
 
   scope :in_workspace, -> (company) { where(project_id: company&.project_ids) }
+
+  searchkick
+
+  def search_data
+    self.as_json.merge({ client_id: self.project.client_id })
+  end
 
   def self.during(from, to)
     where(work_date: from..to).order(work_date: :desc)
