@@ -9,7 +9,7 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
   def create
     authorize Company
     company = Company.new(company_params)
-    if company.save
+    if company.save!
       current_user.companies << company
       current_user.current_workspace_id = company.id
       current_user.add_role(:owner, company)
@@ -20,7 +20,7 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
 
   def update
     authorize current_company
-    if current_company.update(company_params)
+    if current_company.update!(company_params)
       render json: { notice: I18n.t("companies.update.success") }
     end
   end
