@@ -10,9 +10,9 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
     authorize Company
     company = Company.new(company_params)
     if company.save
-      current_user.companies << @company
-      current_user.current_workspace_id = @company.id
-      current_user.add_role(:owner, @company)
+      current_user.companies << company
+      current_user.current_workspace_id = company.id
+      current_user.add_role(:owner, company)
       current_user.save!
       render json: { notice: I18n.t("companies.create.success") }
     end
@@ -30,6 +30,7 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
     def company_params
       params.require(:company).permit(
         :name, :address, :business_phone, :country, :timezone, :base_currency,
-        :standard_price, :fiscal_year_end, :date_format)
+        :standard_price, :fiscal_year_end, :date_format
+      )
     end
 end
