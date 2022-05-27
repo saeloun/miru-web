@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Companies::Index", type: :request do
+RSpec.describe "InternalApi::V1::Companies::create", type: :request do
   let(:user1) { create(:user) }
 
   context "when user is admin" do
@@ -10,7 +10,7 @@ RSpec.describe "InternalApi::V1::Companies::Index", type: :request do
       sign_in user1
       send_request :post, internal_api_v1_companies_path, params: {
         company: {
-          name: "z~ero labs llc",
+          name: "zero labs llc",
           address: "remote",
           business_phone: "+01 123123",
           country: "india",

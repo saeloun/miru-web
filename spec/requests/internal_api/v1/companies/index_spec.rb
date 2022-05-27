@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Companies::Index", type: :request do
+RSpec.describe "InternalApi::V1::Companies::index", type: :request do
   let(:company1) { create(:company) }
   let(:user1) { create(:user, current_workspace_id: company1.id) }
 
