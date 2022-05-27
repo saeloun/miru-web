@@ -1,0 +1,38 @@
+# frozen_string_literal: true
+
+require "rails_helper"
+
+RSpec.describe "InternalApi::V1::Companies::update", type: :request do
+  let(:company) { create(:company) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
+
+  context "when user is admin" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :admin, company
+      sign_in user
+      send_request(
+        :put, "#{internal_api_v1_companies_path}/#{company[:id]}", params: {
+          company: {
+            name: "Test Company",
+            address: "test address",
+            business_phone: "Test phone",
+            country: "India",
+            timezone: "IN",
+            base_currency: "Rs",
+            standard_price: "1000",
+            fiscal_year_end: "April",
+            date_format: "DD/MM/YYYY"
+          }
+        })
+    end
+
+    it "response should be successful" do
+      expect(response).to be_successful
+    end
+
+    it "returns success json response" do
+      expect(json_response["notice"]).to eq(I18n.t("companies.update.success"))
+    end
+  end
+end
