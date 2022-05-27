@@ -3,9 +3,9 @@
 FactoryBot.define do
   factory :payments_provider do
     association :company, factory: :company
-    name { %w(stripe, paypal, wise).sample }
+    sequence :name, %w(stripe paypal wise).cycle
     connected { false }
     enabled { false }
-    accepted_payment_methods { %(card) }
+    accepted_payment_methods { ["card", "ach"] }
   end
 end
