@@ -1,9 +1,12 @@
 const getList = (input) => input.lead_details.map((lead) => ({
-  email: lead.email,
   id: lead.id,
-  address: lead.address,
-  phone: lead.phone,
-  name: lead.name
+  name: lead.name,
+  budget_amount: lead.budget_amount,
+  budget_status_code: lead.budget_status_code,
+  industry_code: lead.industry_code,
+  quality_code: lead.quality_code,
+  state_code: lead.state_code,
+  status_code: lead.status_code
 }));
 
 const unmapLeadList = (input) => {
@@ -20,30 +23,32 @@ const unmapLeadList = (input) => {
 //   team: project.team
 // }));
 
-// const unmapClientListForDropdown = (input) => {
-//   const clientList = input.data.client_details;
-//   return clientList.map(item => ({
-//     label: item.name,
-//     value: item.id
-//   }));
-// };
+const unmapLeadListForDropdown = (input) => {
+  const leadList = input.data.lead_details;
+  return leadList.map(item => ({
+    label: item.name,
+    value: item.id
+  }));
+};
 
-// const unmapClientDetails = (input) => {
-//   const { data } = input;
-//   return {
-//     clientDetails: {
-//       id: data.client_details.id,
-//       name: data.client_details.name,
-//       email: data.client_details.email,
-//       phone: data.client_details.phone || "--",
-//       address: data.client_details.address || "--"
-//     },
-//     overdueOutstandingAmount: data.overdue_outstanding_amount,
-//     totalMinutes: data.total_minutes,
-//     projectDetails: mapProjectDetails(data.project_details)
-//   };
-// };
+const unmapLeadDetails = (input) => {
+  const { data } = input;
+  return {
+    leadDetails: {
+      id: data.lead_details.id,
+      name: data.lead_details.name,
+      budget_amount: data.lead_details.budget_amount,
+      budget_status_code: data.lead_details.budget_status_code,
+      industry_code: data.lead_details.industry_code,
+      quality_code: data.lead_details.quality_code,
+      state_code: data.lead_details.state_code,
+      status_code: data.lead_details.status_code
+    }
+  };
+};
 
 export {
-  unmapLeadList
+  unmapLeadList,
+  unmapLeadDetails,
+  unmapLeadListForDropdown
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
+
 import leadItemsApi from "apis/lead-items";
 import leads from "apis/leads";
-import Toastr from "common/Toastr";
 import { Formik, Form, Field } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";
@@ -11,17 +11,25 @@ const newLeadSchema = Yup.object().shape({
   budget_amount: Yup.number().typeError("Invalid budget amount")
 });
 
-const initialValues = {
-  name: "",
-  budget_amount: 0.0,
-  budget_status_code: 0,
-  industry_code: 0,
-  quality_code: 0,
-  state_code: 0,
-  status_code: 0
-};
+const getInitialvalues = (lead) => ({
+  name: lead.name,
+  budget_amount: lead.budget_amount,
+  budget_status_code: lead.budget_status_code,
+  industry_code: lead.industry_code,
+  quality_code: lead.quality_code,
+  state_code: lead.state_code,
+  status_code: lead.status_code
+});
 
-const NewLead = ({ setnewLead, leadData, setLeadData }) => {
+export interface IEditLead {
+  setShowEditDialog: any;
+  lead: any;
+}
+
+const EditLead = ({ setShowEditDialog, lead }: IEditLead) => {
+
+  const [apiError, setApiError] = useState<string>("");
+
   const [budgetStatusCodeList, setBudgetStatusCodeList] = useState<any>(null);
   const [industryCodeList, setIndustryCodeList] = useState<any>(null);
   const [qualityCodeList, setQualityCodeList] = useState<any>(null);
@@ -49,13 +57,17 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
     getLeadItems();
   }, []);
 
-  const handleSubmit = (values) => {
-    leads.create(values)
-      .then(res => {
-        setLeadData([...leadData, { ...res.data, minutes: 0 }]);
-        setnewLead(false);
-        Toastr.success("Lead added successfully");
-      });
+  const handleSubmit = async values => {
+    await leads.update(lead.id, {
+      lead: {
+        ...values
+      }
+    }).then(() => {
+      setShowEditDialog(false);
+      document.location.reload();
+    }).catch((e) => {
+      setApiError(e.message);
+    });
   };
 
   return (
@@ -69,13 +81,13 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
         <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
-              <h6 className="text-base font-extrabold">Add New Lead</h6>
-              <button type="button" onClick={() => { setnewLead(false); }}>
+              <h6 className="text-base font-extrabold">Edit Lead</h6>
+              <button type="button" onClick={() => { setShowEditDialog(false); }}>
                 <X size={16} color="#CDD6DF" weight="bold" />
               </button>
             </div>
             <Formik
-              initialValues={initialValues}
+              initialValues={getInitialvalues(lead)}
               validationSchema={newLeadSchema}
               onSubmit={handleSubmit}
             >
@@ -87,7 +99,7 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
                         <label className="form__label">Name</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.name && touched.name &&
-                            <div>{errors.name}</div>
+                          <div>{errors.name}</div>
                           }
                         </div>
                       </div>
@@ -152,11 +164,12 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
                       </div>
                       <div className="mt-1">
                         <select
+                          defaultValue={lead.budget_status_code}
                           className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
                           name="budget_status_code">
                           <option value=''>Select Budget Status</option>
                           {budgetStatusCodeList &&
-                            budgetStatusCodeList.map(e => <option value={e.id} key={e.id}>{e.name}</option>)}
+                            budgetStatusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lead.budget_status_code}>{e.name}</option>)}
                         </select>
                       </div>
                     </div>
@@ -170,11 +183,12 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
                       </div>
                       <div className="mt-1">
                         <select
+                          defaultValue={lead.industry_code}
                           className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
                           name="industry_code">
                           <option value=''>Select Industry</option>
                           {industryCodeList &&
-                            industryCodeList.map(e => <option value={e.id} key={e.id}>{e.name}</option>)}
+                            industryCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lead.industry_code}>{e.name}</option>)}
                         </select>
                       </div>
                     </div>
@@ -188,11 +202,12 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
                       </div>
                       <div className="mt-1">
                         <select
+                          defaultValue={lead.quality_code}
                           className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
                           name="quality_code">
                           <option value=''>Select Quality</option>
                           {qualityCodeList &&
-                            qualityCodeList.map(e => <option value={e.id} key={e.id}>{e.name}</option>)}
+                            qualityCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lead.quality_code}>{e.name}</option>)}
                         </select>
                       </div>
                     </div>
@@ -206,11 +221,12 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
                       </div>
                       <div className="mt-1">
                         <select
+                          defaultValue={lead.state_code}
                           className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
                           name="state_code">
                           <option value=''>Select State</option>
                           {stateCodeList &&
-                            stateCodeList.map(e => <option value={e.id} key={e.id}>{e.name}</option>)}
+                            stateCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lead.state_code}>{e.name}</option>)}
                         </select>
                       </div>
                     </div>
@@ -224,15 +240,17 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
                       </div>
                       <div className="mt-1">
                         <select
+                          defaultValue={lead.status_code}
                           className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
                           name="status_code">
                           <option value=''>Select Status</option>
                           {statusCodeList &&
-                            statusCodeList.map(e => <option value={e.id} key={e.id}>{e.name}</option>)}
+                            statusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lead.status_code}>{e.name}</option>)}
                         </select>
                       </div>
                     </div>
                   </div>
+                  <p className="tracking-wider mt-3 block text-xs text-red-600">{apiError}</p>
                   <div className="actions mt-4">
                     <input
                       type="submit"
@@ -251,4 +269,4 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
   );
 };
 
-export default NewLead;
+export default EditLead;

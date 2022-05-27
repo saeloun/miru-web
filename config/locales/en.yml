@@ -32,6 +32,7 @@
 en:
   navbar:
     clients: Clients
+    leads: Leads
     dashboard: Dashboard
     invoices: Invoices
     logout: Logout
@@ -50,6 +51,7 @@ en:
     new_project: NEW PROJECT
     project: Project
     client: Client
+    lead: Lead
     project_name: Project name
     edit: edit
     create:
@@ -100,6 +102,32 @@ en:
       success:
         message: Client removed successfully
     add: ADD CLIENT
+  lead:
+    name:
+      label: Name
+      placeholder: Enter name
+    email:
+      label: Email
+      placeholder: Enter email ID
+    phone:
+      label: Phone number
+      placeholder: Enter phone number
+    address:
+      label: Address
+      placeholder: Enter address
+    create:
+      failure: "Lead creation failed"
+      success: "Lead added successfully"
+    update:
+      success:
+        message: Changes saved successfully
+      failure:
+        unauthorized: User is unauthorized to modify this lead's details
+        message: Failed to saved changes
+    delete:
+      success:
+        message: Lead removed successfully
+    add: ADD LEAD
   workspaces:
     update:
       failure: "Failed to switch workspace"
@@ -182,6 +210,9 @@ en:
     client_policy:
       create?: You are not authorized to create client.
       update?: You are not authorized to update client.
+    lead_policy:
+      create?: You are not authorized to create lead.
+      update?: You are not authorized to update lead.
     company_policy:
       new?: You are not authorized to create new company.
       create?: You are not authorized to create company.

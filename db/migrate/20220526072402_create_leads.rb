@@ -12,19 +12,24 @@ class CreateLeads < ActiveRecord::Migration[7.0]
       t.string :skypeid
       t.string :linkedinid
       t.string :timezone
-      t.string :country_code
+      t.string :country
       t.string :description
-      t.boolean :donotbulkemail
-      t.boolean :donotemail
-      t.boolean :donotfax
-      t.boolean :donotphone
-      t.string :industry
+      t.boolean :donotbulkemail, default: false
+      t.boolean :donotemail, default: false
+      t.boolean :donotfax, default: false
+      t.boolean :donotphone, default: false
       t.integer :quality_code
-      t.integer :priority_code
+      t.integer :priority
       t.integer :state_code
       t.integer :industry_code
+      t.datetime :discarded_at
+      t.string :base_currency, default: "USD"
+      t.decimal :budget_amount, default: 0
+      t.integer :budget_status_code
+      t.integer :status_code
 
       t.timestamps
     end
+    add_index :leads, :discarded_at
   end
 end

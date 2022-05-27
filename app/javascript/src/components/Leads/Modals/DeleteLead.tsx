@@ -1,14 +1,14 @@
 import React from "react";
-import clients from "apis/clients";
+import leads from "apis/leads";
 
 interface IProps {
-  client: any;
+  lead: any;
   setShowDeleteDialog: any;
 }
 
-const DeleteClient = ({ client, setShowDeleteDialog }: IProps) => {
-  const deleteClient = async client => {
-    await clients.destroy(client.id);
+const DeleteLead = ({ lead, setShowDeleteDialog }: IProps) => {
+  const deleteLead = async lead => {
+    await leads.destroy(lead.id);
     setTimeout(() => {
       window.location.reload();
     }, 500);
@@ -24,10 +24,10 @@ const DeleteClient = ({ client, setShowDeleteDialog }: IProps) => {
         <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex-col my-8">
-              <h6 className="text-2xl font-bold mb-2">Delete Client</h6>
+              <h6 className="text-2xl font-bold mb-2">Delete Lead</h6>
               <p className="font-normal mt-2">
-                Are you sure you want to delete client{" "}
-                <b className="font-bold">{client.name}</b>? This action cannot
+                Are you sure you want to delete lead{" "}
+                <b className="font-bold">{lead.name}</b>? This action cannot
                 be reversed.
               </p>
             </div>
@@ -43,7 +43,7 @@ const DeleteClient = ({ client, setShowDeleteDialog }: IProps) => {
               <button
                 className="button__bg_purple"
                 onClick={() => {
-                  deleteClient(client);
+                  deleteLead(lead);
                 }}
               >
                 DELETE
@@ -56,4 +56,4 @@ const DeleteClient = ({ client, setShowDeleteDialog }: IProps) => {
   );
 };
 
-export default DeleteClient;
+export default DeleteLead;

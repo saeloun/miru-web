@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, CaretDown, Trash } from "phosphor-react";
 
-const Header = ({ clientDetails }) => {
+const Header = ({ leadDetails }) => {
 
   const [isHeaderMenuVisible, setHeaderMenuVisibility] = useState<boolean>(false);
-  const [isClientOpen, toggleClientDetails] = useState<boolean>(false);
+  const [isLeadOpen, toggleLeadDetails] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
-  const handleClientDetails = () => {
-    toggleClientDetails(!isClientOpen);
+  const handleLeadDetails = () => {
+    toggleLeadDetails(!isLeadOpen);
   };
 
   const handleMenuVisibility = () => {
@@ -18,7 +18,7 @@ const Header = ({ clientDetails }) => {
   };
 
   const handleBackButtonClick = () => {
-    navigate("/clients");
+    navigate("/leads");
   };
 
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
@@ -30,9 +30,9 @@ const Header = ({ clientDetails }) => {
             <ArrowLeft size={20} color="#5b34ea" weight="bold" />
           </button>
           <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
-            {clientDetails.name}
+            {leadDetails.name}
           </h2>
-          <button onClick={handleClientDetails}>
+          <button onClick={handleLeadDetails}>
             <CaretDown size={20} weight="bold" />
           </button>
         </div>
@@ -44,7 +44,7 @@ const Header = ({ clientDetails }) => {
             <li>
               <button className="menuButton__list-item">
                 <Receipt size={16} color="#5B34EA" weight="bold" />
-                <span className="ml-3">Add Client</span>
+                <span className="ml-3">Add Lead</span>
               </button>
             </li>
             <li>
@@ -62,18 +62,18 @@ const Header = ({ clientDetails }) => {
           </ul> }
         </div>
       </div>
-      {isClientOpen && <div className="flex ml-12 mt-4">
+      {isLeadOpen && <div className="flex ml-12 mt-4">
         <div className="text-xs text-miru-dark-purple-400">
           <h6 className="font-semibold">Email ID(s)</h6>
-          <p>{clientDetails.email}</p>
+          <p>{leadDetails.email}</p>
         </div>
         <div className="ml-28 text-xs text-miru-dark-purple-400">
           <h6 className="font-semibold">Address</h6>
-          <p>{clientDetails.address}</p>
+          <p>{leadDetails.address}</p>
         </div>
         <div className="ml-28 text-xs text-miru-dark-purple-400">
           <h6 className="font-semibold">Phone number</h6>
-          <p>{clientDetails.phone}</p>
+          <p>{leadDetails.phone}</p>
         </div>
       </div>
       }

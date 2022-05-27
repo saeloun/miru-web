@@ -5,6 +5,9 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :clients, only: [:index, :update, :destroy, :show, :create] do
       get "new_invoice_line_items", to: "clients/new_invoice_line_items", on: :member
     end
+    resources :leads, only: [:index, :update, :destroy, :show, :create] do
+      get "items", to: "/lead_items", on: :collection
+    end
     resources :project, only: [:index]
     resources :timesheet_entry do
       collection do

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-// import leads from "apis/leads";
+import leads from "apis/leads";
 
 // import AmountBoxContainer from "common/AmountBox";
 // import ChartBar from "common/ChartBar";
@@ -12,9 +12,9 @@ import Table from "common/Table";
 
 import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
-// import { unmapLeadList } from "../../../mapper/lead.mapper";
-// import DeleteClient from "../Modals/DeleteLead";
-// import EditClient from "../Modals/EditLead";
+import { unmapLeadList } from "../../../mapper/lead.mapper";
+import DeleteLead from "../Modals/DeleteLead";
+import EditLead from "../Modals/EditLead";
 import NewLead from "../Modals/NewLead";
 
 const getTableData = (leads) => {
@@ -23,8 +23,12 @@ const getTableData = (leads) => {
       // const hours = (lead.minutes / 60).toFixed(2);
       ({
         col1: <div className="text-base text-miru-dark-purple-1000">{lead.name}</div>,
-        // col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
-        // col3: <div className="text-base text-miru-dark-purple-1000 text-right">{hours}</div>,
+        col2: <div className="text-base text-miru-dark-purple-1000">{lead.budget_amount}</div>,
+        col3: <div className="text-base text-miru-dark-purple-1000">{lead.budget_status_code}</div>,
+        col4: <div className="text-base text-miru-dark-purple-1000">{lead.industry_code}</div>,
+        col5: <div className="text-base text-miru-dark-purple-1000">{lead.quality_code}</div>,
+        col6: <div className="text-base text-miru-dark-purple-1000">{lead.state_code}</div>,
+        col7: <div className="text-base text-miru-dark-purple-1000">{lead.status_code}</div>,
         rowId: lead.id
       })
     );
@@ -33,11 +37,11 @@ const getTableData = (leads) => {
 };
 
 const Leads = ({ isAdminUser }) => {
-  // const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
-  // const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [newLead, setnewLead] = useState<boolean>(false);
-  // const [leadToEdit, setedit] = useState({});
-  // const [leadToDelete, setDelete] = useState({});
+  const [leadToEdit, setedit] = useState({});
+  const [leadToDelete, setDelete] = useState({});
   const [leadData, setLeadData] = useState<any>();
   const navigate = useNavigate();
 
@@ -70,13 +74,13 @@ const Leads = ({ isAdminUser }) => {
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
-    // leads.get("?time_frame=week")
-    //   .then((res) => {
-    //     const sanitized = unmapLeadList(res);
-    //     setLeadData(sanitized.leadList);
-    //     // setTotalMinutes(sanitized.totalMinutes);
-    //     // setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
-    //   });
+    leads.get("?time_frame=week")
+      .then((res) => {
+        const sanitized = unmapLeadList(res);
+        setLeadData(sanitized.leadList);
+        // setTotalMinutes(sanitized.totalMinutes);
+        // setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
+      });
   }, []);
 
   const tableHeader = [
@@ -86,8 +90,33 @@ const Leads = ({ isAdminUser }) => {
       cssClass: ""
     },
     {
-      Header: "EMAIL ID",
+      Header: "Budget Amount",
       accessor: "col2",
+      cssClass: "text-right"
+    },
+    {
+      Header: "Budget Status",
+      accessor: "col3",
+      cssClass: "text-right"
+    },
+    {
+      Header: "Industry",
+      accessor: "col4",
+      cssClass: "text-right"
+    },
+    {
+      Header: "Quality",
+      accessor: "col5",
+      cssClass: "text-right"
+    },
+    {
+      Header: "State",
+      accessor: "col6",
+      cssClass: "text-right"
+    },
+    {
+      Header: "Status",
+      accessor: "col7",
       cssClass: "text-right"
     }
   ];
@@ -155,7 +184,7 @@ const Leads = ({ isAdminUser }) => {
           </div>
         </div>
       </div>
-      {/* {showEditDialog &&
+      {showEditDialog &&
         <EditLead
           setShowEditDialog={setShowEditDialog}
           lead={leadToEdit}
@@ -166,7 +195,7 @@ const Leads = ({ isAdminUser }) => {
           setShowDeleteDialog={setShowDeleteDialog}
           lead={leadToDelete}
         />
-      )} */}
+      )}
       {newLead && (
         <NewLead
           setnewLead={setnewLead}
@@ -175,6 +204,7 @@ const Leads = ({ isAdminUser }) => {
         />
       )}
     </>
+
   );
 };
 

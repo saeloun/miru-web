@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class LeadsController < ApplicationController
-  skip_after_action :verify_authorized, except: :create
+  skip_after_action :verify_authorized, except: [:create, :items]
 
   def index
     render :index, locals: {

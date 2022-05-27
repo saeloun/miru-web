@@ -1,14 +1,7 @@
-interface ClientArray {
-  clients: any;
+interface LeadArray {
+  leads: any;
 }
 
-export interface IChartBar extends ClientArray {
+export interface IChartBar extends LeadArray {
   handleSelectChange: any
-  totalMinutes: number;
-}
-
-export interface IChartBarGraph {
-  totalMinutes: number;
-  index: number;
-  client: any;
 }

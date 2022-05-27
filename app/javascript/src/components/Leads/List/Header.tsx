@@ -1,8 +1,8 @@
 import * as React from "react";
-import clients from "apis/clients";
+import leads from "apis/leads";
 import { MagnifyingGlass, Plus } from "phosphor-react";
 import AutoComplete from "./AutoComplete";
-import { unmapClientListForDropdown } from "../../../mapper/client.mapper";
+import { unmapLeadListForDropdown } from "../../../mapper/lead.mapper";
 
 const Header = ({
   setnewLead,
@@ -10,9 +10,9 @@ const Header = ({
 }) => {
 
   const searchCallBack = async (searchString, setDropdownItems) => {
-    await clients.get(searchString)
+    await leads.get(searchString)
       .then((res) => {
-        const dropdownList = unmapClientListForDropdown(res);
+        const dropdownList = unmapLeadListForDropdown(res);
         setDropdownItems(dropdownList);
       });
   };
