@@ -1,21 +1,35 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::Payments::ProvidersController < ApplicationController
-  skip_before_action :verify_authenticity_token
-
   def create
-    current_company.payments_providers.create!(provider_params)
+    authorize :create, policy_class: Payments::ProviderPolicy
+    render :create, locals: {
+      payments_provider: current_company.payments_providers.create!(provider_params)
+    }
   end
 
   def index
+    authorize :index, policy_class: Payments::ProviderPolicy
+    render :index, locals: {
+      payments_providers: current_company.payments_providers
+    }
   end
 
   def update
+    authorize :update, policy_class: Payments::ProviderPolicy
+    payments_provider.update!(provider_params)
+    render :update, locals: {
+      payments_provider:
+    }
   end
 
   private
 
+    def payments_provider
+      current_company.payments_providers.find(params[:id])
+    end
+
     def provider_params
-      params.require(:provider).permit(:name)
+      params.require(:provider).permit(:name, :connected, :enabled, accepted_payment_methods: [])
     end
 end
