@@ -208,6 +208,7 @@ GEM
       combine_pdf (~> 1.0)
       nokogiri (~> 1.0)
     hashie (5.0.0)
+    honeybadger (4.12.1)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
     i18n_data (0.16.0)
@@ -511,6 +512,7 @@ DEPENDENCIES
   faker
   foreman
   grover
+  honeybadger
   image_processing (>= 1.2)
   jbuilder (~> 2.11)
   letter_opener
