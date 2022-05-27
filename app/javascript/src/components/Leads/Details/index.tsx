@@ -46,7 +46,6 @@ const LeadList = () => {
   // const [overdueOutstandingAmount, setOverDueOutstandingAmt]= useState<any>(null);
 
   const params = useParams();
-
   // const handleEditClick = (id) => {
   //   setShowEditDialog(true);
   //   const editSelection = projectDetails.find(project => project.id === id);
