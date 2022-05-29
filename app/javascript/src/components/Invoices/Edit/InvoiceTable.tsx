@@ -3,7 +3,7 @@ import React, { useState, useRef } from "react";
 import NewLineItemTable from "./NewLineItemTable";
 import useOutsideClick from "../../../helpers/outsideClick";
 import ManualEntry from "../Generate/ManualEntry";
-import NewLineItemRow from "../Generate/NewLineItemRow";
+import NewLineItemRow from "./NewLineItemRow";
 import LineItem from "../Invoice/LineItem";
 
 const InvoiceTable = ({
