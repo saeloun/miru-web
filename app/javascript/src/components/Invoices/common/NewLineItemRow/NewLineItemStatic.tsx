@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 import { DotsThreeVertical, PencilSimple, Trash } from "phosphor-react";
 
-const NewLineItemStatic = ({ item, setEdit }) => {
+const NewLineItemStatic = ({
+  item,
+  setEdit,
+  handleDelete
+}) => {
   const [isSideMenuVisible, setSideMenuVisible] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
   const quantity = item.qty || item.quantity;
@@ -53,7 +57,7 @@ const NewLineItemStatic = ({ item, setEdit }) => {
                   </button>
                 </li>
                 <li>
-                  <button className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
+                  <button onClick={() => { handleDelete(item) }} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
                     <Trash size={16} color="#E04646" weight="bold" />
                     <span className="text-miru-red-400 ml-2">Delete</span>
                   </button>
