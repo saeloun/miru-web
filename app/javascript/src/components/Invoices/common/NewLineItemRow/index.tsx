@@ -8,7 +8,12 @@ const NewLineItemRow = ({
   selectedOption
 }) => {
   const [isEdit, setEdit] = useState<boolean>(false);
-
+  const handleDelete = (item) => {
+    const sanitized = selectedOption.filter(option =>
+      option.timesheet_entry_id !== item.timesheet_entry_id
+    )
+    setSelectedOption(sanitized);
+  }
   return isEdit ? (
     <EditLineItems
       item={item}
@@ -18,6 +23,7 @@ const NewLineItemRow = ({
     />
   ) : (
     <NewLineItemStatic
+      handleDelete={handleDelete}
       item={item}
       setEdit={setEdit}
     />
