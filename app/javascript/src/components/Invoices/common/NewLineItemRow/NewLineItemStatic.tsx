@@ -13,7 +13,7 @@ const NewLineItemStatic = ({
   const hoursLogged = (quantity / 60).toFixed(2);
   const date = dayjs(item.date).format("DD.MM.YYYY");
   const totalRate = (quantity / 60) * item.rate;
-
+  const name = item.name || `${item.first_name} ${item.last_name}`;
   return (
     <tr className="invoice-items-row"
       onMouseLeave={() => {
@@ -24,8 +24,7 @@ const NewLineItemStatic = ({
       onMouseEnter={() => { setSideMenuVisible(true); }}
     >
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left ">
-        {item.name}
-        {item.first_name} {item.last_name}
+        {name}
       </td>
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left ">
         {date}

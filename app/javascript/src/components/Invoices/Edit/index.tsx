@@ -10,6 +10,7 @@ import InvoiceTable from "./InvoiceTable";
 import InvoiceTotal from "./InvoiceTotal";
 import CompanyInfo from "../CompanyInfo";
 import InvoiceDetails from "../Generate/InvoiceDetails";
+import { unmapLineItems } from "../../../mapper/editInvoice.mapper";
 
 const EditInvoice = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const EditInvoice = () => {
     try {
       const res = await invoicesApi.editInvoice(params.id);
       getInvoiceDetails(res.data);
-      setSelectedLineItems(res.data.invoiceLineItems)
+      setSelectedLineItems(unmapLineItems(res.data.invoiceLineItems))
       setLineItems(addKeyToLineItems(res.data.lineItems));
       setAmount(res.data.amount);
       setDiscount(res.data.discount);
@@ -142,7 +143,6 @@ const EditInvoice = () => {
             currency={invoiceDetails.company.currency}
             newLineItems={selectedLineItems}
             setAmount={setAmount}
-            invoiceAmount={invoiceDetails.amount}
             amountPaid={amountPaid || invoiceDetails.amountPaid}
             amountDue={amountDue || invoiceDetails.amountDue}
             setAmountDue={setAmountDue}
@@ -150,7 +150,6 @@ const EditInvoice = () => {
             setDiscount={setDiscount}
             tax={tax || invoiceDetails.tax}
             setTax={setTax}
-            invoiceLineItems={invoiceDetails.invoiceLineItems}
             showDiscountInput={!!invoiceDetails.discount}
             showTax={!!invoiceDetails.tax}
           />

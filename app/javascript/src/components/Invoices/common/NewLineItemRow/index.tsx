@@ -14,7 +14,6 @@ const NewLineItemRow = ({
     )
     setSelectedOption(sanitized);
   }
-  console.log("item ===> ", item);
   return isEdit ? (
     <EditLineItems
       item={item}

@@ -55,7 +55,7 @@ const InvoiceTable = ({
   useOutsideClick(wrapperRef, () => {
     setAddNew(false);
   }, addNew);
-  console.log("selectedLineItems ---> ", selectedLineItems);
+
   return (
     <React.Fragment>
       <table className="w-full table-fixed">
