@@ -90,9 +90,13 @@ const TableRow = ({
 
       <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
         <div className="flex items-center h-full">
-          <button className="hidden group-hover:block text-miru-han-purple-1000">
+          <Link
+            to={`/invoices/${invoice.id}/edit`}
+            type="button"
+            className="hidden group-hover:block text-miru-han-purple-1000"
+          >
             <Pen size={16} />
-          </button>
+          </Link>
         </div>
       </td>
 

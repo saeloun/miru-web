@@ -23,7 +23,9 @@ const WeeklyEntriesCard = ({
   setNewRowView,
   dayInfo,
   isWeeklyEditing,
-  setIsWeeklyEditing
+  setIsWeeklyEditing,
+  selectedEmployeeId
+
 }: Iprops) => {
   const [selectedInputBox, setSelectedInputBox] = useState<number>(-1);
   const [note, setNote] = useState<string>("");
@@ -79,7 +81,7 @@ const WeeklyEntriesCard = ({
         return;
       }
       payload["work_date"] = dayInfo[selectedInputBox]["fullDate"];
-      const res = await timesheetEntryApi.create(payload);
+      const res = await timesheetEntryApi.create(payload, selectedEmployeeId);
       if (res.status === 200) {
         setEntryList(prevState => {
           const newState: any = { ...prevState };
@@ -299,6 +301,7 @@ const WeeklyEntriesCard = ({
 interface Iprops {
   client: string;
   project: string;
+  selectedEmployeeId: number;
   currentEntries: Array<any>;
   setCurrentEntries: React.Dispatch<React.SetStateAction<[]>>;
   currentProjectId: number;

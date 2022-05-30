@@ -3,6 +3,10 @@
 class CompanyPolicy < ApplicationPolicy
   attr_reader :error_message_key
 
+  def index?
+    true
+  end
+
   def new?
     true
   end
