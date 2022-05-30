@@ -28,6 +28,7 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :project_members, only: [:update]
     resources :company_users, only: [:index]
     resources :timezones, only: [:index]
+    resources :companies, only: [:index, :create, :update]
 
     # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
