@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Wallet, DownloadSimple, Printer, CaretDown } from "phosphor-react";
+import { Wallet, CaretDown } from "phosphor-react";
 import PayOnlineMenu from "./PayOnlineMenu";
 
 const Header = ({ invoice, stripeUrl }) => {
