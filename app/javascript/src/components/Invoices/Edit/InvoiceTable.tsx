@@ -3,8 +3,8 @@ import React, { useState, useRef } from "react";
 import NewLineItemTable from "./NewLineItemTable";
 import useOutsideClick from "../../../helpers/outsideClick";
 import ManualEntry from "../Generate/ManualEntry";
-import NewLineItemRow from "./NewLineItemRow";
-import LineItem from "../Invoice/LineItem";
+import NewLineItemRow from "../common/NewLineItemRow";
+import TableHeader from "../common/LineItemTableHeader";
 
 const InvoiceTable = ({
   lineItems,
@@ -55,32 +55,11 @@ const InvoiceTable = ({
   useOutsideClick(wrapperRef, () => {
     setAddNew(false);
   }, addNew);
-
+  console.log("selectedLineItems ---> ", selectedLineItems);
   return (
     <React.Fragment>
       <table className="w-full table-fixed">
-        <thead className="my-2">
-          <tr>
-            <th className="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">
-              NAME
-            </th>
-            <th className=" px-3 text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">
-              DATE
-            </th>
-            <th className="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest w-2/5">
-              DESCRIPTION
-            </th>
-            <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">
-              RATE
-            </th>
-            <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">
-              QTY
-            </th>
-            <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">
-              LINE TOTAL
-            </th>
-          </tr>
-        </thead>
+        <TableHeader />
         <tbody className="w-full">
           <tr className="w-full">
             <td colSpan={6} className="py-4 relative">
@@ -95,13 +74,14 @@ const InvoiceTable = ({
             />
           }
           {
-            selectedLineItems.map(item => (
+            selectedLineItems.map((item, index) => (
               <NewLineItemRow
                 item={item}
+                selectedOption={selectedLineItems}
+                setSelectedOption={setSelectedLineItems}
+                key={index}
               />
             ))}
-          {items.length > 0 &&
-            items.map((item) => <LineItem key={item.id} item={item} />)}
         </tbody>
       </table>
     </React.Fragment>

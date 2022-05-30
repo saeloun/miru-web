@@ -39,8 +39,8 @@ const EditInvoice = () => {
   const fetchInvoice = async (navigate, getInvoiceDetails) => {
     try {
       const res = await invoicesApi.editInvoice(params.id);
-
       getInvoiceDetails(res.data);
+      setSelectedLineItems(res.data.invoiceLineItems)
       setLineItems(addKeyToLineItems(res.data.lineItems));
       setAmount(res.data.amount);
       setDiscount(res.data.discount);
@@ -129,7 +129,7 @@ const EditInvoice = () => {
             optionSelected={true}
             clientVisible={false}
           />
-          <div className="px-10 py-5">
+          <div className="pl-10 py-5">
             <InvoiceTable
               lineItems={lineItems}
               setLineItems={setLineItems}
