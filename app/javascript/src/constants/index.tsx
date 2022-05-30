@@ -17,7 +17,7 @@ export enum ApiStatus {
   ERROR = "error",
 }
 
-export const TOASTER_DURATION = false;
+export const TOASTER_DURATION = 3000;
 
 export const getToasterIcon = (type) => {
   switch (type) {
