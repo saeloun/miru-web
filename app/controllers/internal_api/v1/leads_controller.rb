@@ -34,7 +34,7 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
 
   def show
     authorize lead
-    lead_details = { id: lead.id, name: lead.name, email: lead.email }
+    lead_details = lead.lead_detail
     render json: { lead_details: }, status: :ok
   end
 

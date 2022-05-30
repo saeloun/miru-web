@@ -11,6 +11,7 @@ import leads from "apis/leads";
 // import { currencySymbol } from "helpers/currencySymbol";
 
 import Header from "./Header";
+import Tab from "./Tab";
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapLeadDetails } from "../../../mapper/lead.mapper";
 // import AddEditProject from "../../Projects/Modals/AddEditProject";
@@ -72,7 +73,7 @@ const LeadList = () => {
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
-    leads.show(params.leadId, "?time_frame=week")
+    leads.show(params.leadId, "")
       .then((res) => {
         const sanitized = unmapLeadDetails(res);
         setLeadDetails(sanitized.leadDetails);
@@ -107,6 +108,7 @@ const LeadList = () => {
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header leadDetails={leadDetails} />
+      <Tab leadDetails={leadDetails} />
       {/* <div>
         { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
           <div className="flex justify-end">

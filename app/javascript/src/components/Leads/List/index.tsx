@@ -74,7 +74,7 @@ const Leads = ({ isAdminUser }) => {
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
-    leads.get("?time_frame=week")
+    leads.get("")
       .then((res) => {
         const sanitized = unmapLeadList(res);
         setLeadData(sanitized.leadList);

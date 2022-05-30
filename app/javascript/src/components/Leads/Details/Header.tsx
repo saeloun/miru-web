@@ -64,16 +64,28 @@ const Header = ({ leadDetails }) => {
       </div>
       {isLeadOpen && <div className="flex ml-12 mt-4">
         <div className="text-xs text-miru-dark-purple-400">
-          <h6 className="font-semibold">Email ID(s)</h6>
-          <p>{leadDetails.email}</p>
+          <h6 className="font-semibold">Budget Amount</h6>
+          <p>{leadDetails.budget_amount}</p>
         </div>
         <div className="ml-28 text-xs text-miru-dark-purple-400">
-          <h6 className="font-semibold">Address</h6>
-          <p>{leadDetails.address}</p>
+          <h6 className="font-semibold">Budget Status</h6>
+          <p>{leadDetails.budget_status_code}</p>
         </div>
         <div className="ml-28 text-xs text-miru-dark-purple-400">
-          <h6 className="font-semibold">Phone number</h6>
-          <p>{leadDetails.phone}</p>
+          <h6 className="font-semibold">Industry</h6>
+          <p>{leadDetails.industry_code}</p>
+        </div>
+        <div className="ml-28 text-xs text-miru-dark-purple-400">
+          <h6 className="font-semibold">Quality</h6>
+          <p>{leadDetails.quality_code}</p>
+        </div>
+        <div className="ml-28 text-xs text-miru-dark-purple-400">
+          <h6 className="font-semibold">State</h6>
+          <p>{leadDetails.state_code}</p>
+        </div>
+        <div className="ml-28 text-xs text-miru-dark-purple-400">
+          <h6 className="font-semibold">Status</h6>
+          <p>{leadDetails.status_code}</p>
         </div>
       </div>
       }
