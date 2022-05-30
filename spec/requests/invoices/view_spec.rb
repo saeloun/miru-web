@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 require "rails_helper"
+require "securerandom"
 
 RSpec.describe "Invoices::View", type: :request do
   describe "#show" do
     let(:company) { create(:company, :with_logo) }
     let(:user) { create(:user) }
     let(:client) { create(:client, company:) }
-    let(:external_view_key) { "#{[*'a'..'z', *0..9, *'A'..'Z'].shuffle.join}_#{Time.now.to_i}_#{user.id}" }
+    let(:external_view_key) { "#{SecureRandom.hex}" }
     let(:invoice) { create(:invoice, external_view_key:, client:, company:) }
 
     context "when unauthenticated" do

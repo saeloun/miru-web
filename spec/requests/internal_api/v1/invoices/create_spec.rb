@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rails_helper"
+require "securerandom"
 
 RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
   let(:company) do
@@ -20,7 +21,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
       it "creates invoice successfully" do
         invoice = attributes_for(
           :invoice,
-          external_view_key: "#{[*'a'..'z', *0..9, *'A'..'Z'].shuffle.join}_#{Time.now.to_i}_#{user.id}_1",
+          external_view_key: "#{SecureRandom.hex}",
           client: company.clients.first,
           client_id: company.clients.first.id,
           status: :draft)
@@ -57,7 +58,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
       send_request :post, internal_api_v1_invoices_path(
         invoice: attributes_for(
           :invoice,
-          external_view_key: "#{[*'a'..'z', *0..9, *'A'..'Z'].shuffle.join}_#{Time.now.to_i}_#{user.id}_2",
+          external_view_key: "#{SecureRandom.hex}",
           client: company.clients.first,
           client_id: company.clients.first.id,
           status: :draft
