@@ -91,7 +91,6 @@ const InvoiceTotal = ({
     setAmountDue(newTotal - amountPaid);
   }, [newLineItems, discount, subTotal, tax]);
 
-
   return (
     <div className="pt-3 pb-10 mb-5 w-full flex justify-end">
       <table className="w-1/3">

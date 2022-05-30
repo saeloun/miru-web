@@ -3,12 +3,12 @@ import generateInvoice from "apis/generateInvoice";
 
 import dayjs from "dayjs";
 import ManualEntry from "./ManualEntry";
-import NewLineItemRows from "../common/NewLineItemRow";
 import NewLineItemTable from "./NewLineItemTable";
 
 import useOutsideClick from "../../../helpers/outsideClick";
-import MultipleEntriesModal from "../MultipleEntriesModal";
 import TableHeader from "../common/LineItemTableHeader";
+import NewLineItemRows from "../common/NewLineItemRow";
+import MultipleEntriesModal from "../MultipleEntriesModal";
 
 const fetchNewLineItems = async (
   selectedClient,

@@ -8,12 +8,15 @@ const NewLineItemRow = ({
   selectedOption
 }) => {
   const [isEdit, setEdit] = useState<boolean>(false);
-  const handleDelete = (item) => {
-    const sanitized = selectedOption.filter(option =>
-      option.timesheet_entry_id !== item.timesheet_entry_id
-    )
-    setSelectedOption(sanitized);
-  }
+
+  const handleDelete = () => {
+    // const sanitized = selectedOption.filter(option =>
+    //   option.timesheet_entry_id !== item.timesheet_entry_id ||
+    //   option.id !== item.id
+    // )
+    // setSelectedOption(sanitized);
+  };
+
   return isEdit ? (
     <EditLineItems
       item={item}
@@ -28,6 +31,6 @@ const NewLineItemRow = ({
       setEdit={setEdit}
     />
   );
-}
+};
 
 export default NewLineItemRow;

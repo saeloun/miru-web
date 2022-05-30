@@ -8,9 +8,9 @@ import dayjs from "dayjs";
 import Header from "./Header";
 import InvoiceTable from "./InvoiceTable";
 import InvoiceTotal from "./InvoiceTotal";
+import { unmapLineItems } from "../../../mapper/editInvoice.mapper";
 import CompanyInfo from "../CompanyInfo";
 import InvoiceDetails from "../Generate/InvoiceDetails";
-import { unmapLineItems } from "../../../mapper/editInvoice.mapper";
 
 const EditInvoice = () => {
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const EditInvoice = () => {
     try {
       const res = await invoicesApi.editInvoice(params.id);
       getInvoiceDetails(res.data);
-      setSelectedLineItems(unmapLineItems(res.data.invoiceLineItems))
+      setSelectedLineItems(unmapLineItems(res.data.invoiceLineItems));
       setLineItems(addKeyToLineItems(res.data.lineItems));
       setAmount(res.data.amount);
       setDiscount(res.data.discount);
@@ -92,7 +92,8 @@ const EditInvoice = () => {
       tax: tax || invoiceDetails.tax,
       client_id: selectedClient.value,
       invoice_line_items_attributes: selectedLineItems.map(item => ({
-        name: `${item.first_name} ${item.last_name}`,
+        id: item.id,
+        name: item.name,
         description: item.description,
         date: item.date,
         rate: item.rate,
@@ -136,7 +137,6 @@ const EditInvoice = () => {
               setLineItems={setLineItems}
               selectedLineItems={selectedLineItems}
               setSelectedLineItems={setSelectedLineItems}
-              items={invoiceDetails.invoiceLineItems}
             />
           </div>
           <InvoiceTotal

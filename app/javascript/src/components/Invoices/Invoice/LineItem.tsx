@@ -16,10 +16,10 @@ const LineItem = ({ item }) => (
       {item.rate}
     </td>
     <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-      {item.quantity/60}
+      {item.qty / 60}
     </td>
     <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-      {(item.quantity/60) * item.rate}
+      {(item.qty / 60) * item.rate}
     </td>
   </tr>
 );

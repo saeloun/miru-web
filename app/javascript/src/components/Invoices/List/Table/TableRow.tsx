@@ -100,7 +100,6 @@ const TableRow = ({
         </div>
       </td>
 
-
       <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
         {(invoice.status == "draft" || invoice.status == "declined") && (
           <div className="flex items-center h-full">
@@ -114,7 +113,6 @@ const TableRow = ({
           </div>
         )}
       </td>
-
 
       {isSending && (
         <SendInvoice invoice={invoice} setIsSending={setIsSending} isSending />

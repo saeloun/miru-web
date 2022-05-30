@@ -6,7 +6,8 @@ const EditLineItems = ({
   selectedOption,
   setEdit
 }) => {
-  const [name, setName] = useState<string>(`${item.first_name} ${item.last_name}`);
+  const strName = item.name || `${item.first_name} ${item.last_name}`;
+  const [name, setName] = useState<string>(strName);
   const [date, setDate] = useState<string>(item.date);
   const [description, setDescription] = useState<string>(item.description);
   const [rate, setRate] = useState<any>(item.rate);
@@ -17,13 +18,14 @@ const EditLineItems = ({
   const onEnter = e => {
     if (e.key == "Enter") {
       const sanitizedSelected = selectedOption.filter(option =>
-        option.timesheet_entry_id !== item.timesheet_entry_id
-      )
+        option.id !== item.id || option.timesheet_entry_id !== item.timesheet_entry_id
+      );
       const names = name.split(" ");
       const newItem = {
         ...item,
         first_name: names.splice(0, 1)[0],
         last_name: names.join(" "),
+        name: name,
         date, description,
         rate,
         qty: Number(qty),
@@ -96,6 +98,6 @@ const EditLineItems = ({
       </td>
     </tr>
   );
-}
+};
 
 export default EditLineItems;

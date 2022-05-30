@@ -2,16 +2,15 @@ import React, { useState, useRef } from "react";
 
 import NewLineItemTable from "./NewLineItemTable";
 import useOutsideClick from "../../../helpers/outsideClick";
-import ManualEntry from "../Generate/ManualEntry";
-import NewLineItemRow from "../common/NewLineItemRow";
 import TableHeader from "../common/LineItemTableHeader";
+import NewLineItemRow from "../common/NewLineItemRow";
+import ManualEntry from "../Generate/ManualEntry";
 
 const InvoiceTable = ({
   lineItems,
   selectedLineItems,
   setLineItems,
-  setSelectedLineItems,
-  items
+  setSelectedLineItems
 }) => {
   const [addNew, setAddNew] = useState<boolean>(false);
   const [manualEntry, setManualEntry] = useState<boolean>(false);

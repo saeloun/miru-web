@@ -50,13 +50,13 @@ const NewLineItemStatic = ({
             {
               showEditMenu && <ul className="absolute bg-white right-0 top-10 w-30 shadow-c1 rounded">
                 <li>
-                  <button onClick={() => { setEdit(true) }} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
+                  <button onClick={() => { setEdit(true); }} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
                     <PencilSimple size={16} color="#5b34ea" weight="bold" />
                     <span className="text-miru-han-purple-1000 ml-2">Edit</span>
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => { handleDelete(item) }} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
+                  <button onClick={() => { handleDelete(item); }} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
                     <Trash size={16} color="#E04646" weight="bold" />
                     <span className="text-miru-red-400 ml-2">Delete</span>
                   </button>
