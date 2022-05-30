@@ -112,9 +112,9 @@
     <div style="width: 640px; height: 702px;" >
       <div class="mailer_container">
         <div class="comapany_logo">
-          <%= image_tag "saeloun_logo.png", height: 80 ,width: 80 %>
+          <%= image_tag @invoice.company.logo, height: 80 ,width: 80 %>
           <span class="logo_footer">
-            <span style='font-weight:bold'>Saeloun Inc. </span>
+            <span style='font-weight:bold'> <%= @invoice.company.name %> </span>
             has sent you an invoice.
           </span>
         </div>
@@ -161,7 +161,7 @@
                 Total Amount
               </span>
               <span class="amount">
-                <%= react_component("app/javascript/src/helpers/currency.ts",{ baseCurrency: invoice.company.base_currency, amount: invoice.amount}) %>
+                <%= @invoice.amount %>
               </span>
             </div>
           </div>
