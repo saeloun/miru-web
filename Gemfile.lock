@@ -117,6 +117,9 @@ GEM
     bullet (7.0.1)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
+    bundler-audit (0.9.0.1)
+      bundler (>= 1.2.0, < 3)
+      thor (~> 1.0)
     capybara (3.37.1)
       addressable
       matrix
@@ -208,6 +211,7 @@ GEM
       combine_pdf (~> 1.0)
       nokogiri (~> 1.0)
     hashie (5.0.0)
+    honeybadger (4.12.1)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
     i18n_data (0.16.0)
@@ -409,6 +413,8 @@ GEM
     ruby-vips (2.1.4)
       ffi (~> 1.12)
     ruby2_keywords (0.0.5)
+    ruby_audit (2.1.0)
+      bundler-audit (~> 0.9.0)
     rubyzip (2.3.2)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
@@ -499,6 +505,7 @@ DEPENDENCIES
   aws-sdk-s3
   bootsnap (>= 1.4.4)
   bullet
+  bundler-audit
   capybara (>= 3.26)
   countries
   data_migrate (~> 8.0.0.rc2)
@@ -513,6 +520,7 @@ DEPENDENCIES
   faker
   foreman
   grover
+  honeybadger
   image_processing (>= 1.2)
   jbuilder (~> 2.11)
   letter_opener
@@ -526,7 +534,7 @@ DEPENDENCIES
   puma (~> 5.0)
   pundit (~> 2.2)
   rack-mini-profiler (>= 2.3.3)
-  rails (~> 7.0.1)
+  rails (~> 7.0.3)
   rails-controller-testing (~> 1.0, >= 1.0.5)
   ransack
   react-rails
@@ -538,6 +546,7 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   rubocop-rspec (~> 2.8)
+  ruby_audit
   sass-rails
   searchkick
   selenium-webdriver (>= 4.0.0)

@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.1.2"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.0.1"
+gem "rails", "~> 7.0.3"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 # gem "sprockets-rails", ">= 3.4.1"
@@ -93,6 +93,47 @@ gem "discard", "~> 1.2"
 # Use newrelic for monitoring
 gem "newrelic_rpm", "~> 8.4"
 
+# Role management library with resource scoping
+gem "rolify", "~> 6.0"
+
+# OAuth Gems
+gem "omniauth-google-oauth2", "~> 1.0"
+gem "omniauth-rails_csrf_protection", "~> 1.0"
+
+# Pundit gem for user authorization
+gem "pundit", "~> 2.2"
+
+# Data migration gem to migrate data alongside schema changes
+gem "data_migrate", "~> 8.0.0.rc2"
+
+# pagy for Pagination
+gem "pagy", "~> 5.10"
+
+# Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
+gem "active_interaction"
+
+# For stripe payments
+gem "stripe"
+
+# Background job processing adapter
+gem "sidekiq"
+
+# searchkick for elasticsearch
+gem "elasticsearch", "< 7.14" # select one
+gem "searchkick"
+
+# PDF generator
+gem "grover"
+
+gem "activerecord-import"
+
+# Honeybadger for error reporting
+gem "honeybadger"
+
+# For finding the vulnerabilities in the gems
+gem "bundler-audit", require: false
+gem "ruby_audit", require: false
+
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
@@ -152,36 +193,3 @@ group :test do
   # Strategies for cleaning databases in Ruby.
   gem "database_cleaner", "~> 2.0"
 end
-
-# Role management library with resource scoping
-gem "rolify", "~> 6.0"
-
-# OAuth Gems
-gem "omniauth-google-oauth2", "~> 1.0"
-gem "omniauth-rails_csrf_protection", "~> 1.0"
-
-# Pundit gem for user authorization
-gem "pundit", "~> 2.2"
-
-# Data migration gem to migrate data alongside schema changes
-gem "data_migrate", "~> 8.0.0.rc2"
-
-# pagy for Pagination
-gem "pagy", "~> 5.10"
-
-# Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
-gem "active_interaction"
-
-gem "stripe"
-
-# Background job processing adapter
-gem "sidekiq"
-
-# searchkick for elasticsearch
-gem "elasticsearch", "< 7.14" # select one
-gem "searchkick"
-
-# PDF generator
-gem "grover"
-
-gem "activerecord-import"
