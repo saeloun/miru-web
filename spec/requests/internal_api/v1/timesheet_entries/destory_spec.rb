@@ -55,11 +55,11 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
     end
 
     it "they should not be able to delete the record" do
-      expect(response).to have_http_status(:not_found)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it "returns success json response" do
-      expect(json_response["errors"]).to include("Couldn't find TimesheetEntry")
+      expect(json_response["errors"]).to include("You are not authorized to perform this action.")
     end
   end
 

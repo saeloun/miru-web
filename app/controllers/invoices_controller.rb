@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InvoicesController < ApplicationController
-  before_action :load_invoice, only: [:show]
+  before_action :load_invoice, only: [:show, :edit]
 
   def index
     authorize :invoice
@@ -12,6 +12,11 @@ class InvoicesController < ApplicationController
     render :show, locals: {
       invoice: @invoice
     }
+  end
+
+  def edit
+    authorize Invoice
+    render :edit, locals: { invoice: @invoice }
   end
 
   private
