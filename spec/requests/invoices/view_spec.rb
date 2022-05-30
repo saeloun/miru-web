@@ -5,12 +5,14 @@ require "rails_helper"
 RSpec.describe "Invoices::View", type: :request do
   describe "#show" do
     let(:company) { create(:company, :with_logo) }
+    let(:user) { create(:user) }
     let(:client) { create(:client, company:) }
-    let(:invoice) { create(:invoice, client:, company:) }
+    let(:external_view_key) { "#{[*'a'..'z', *0..9, *'A'..'Z'].shuffle.join}_#{user.id}" }
+    let(:invoice) { create(:invoice, external_view_key:, client:, company:) }
 
     context "when unauthenticated" do
       it "is able to view the client invoice successfully" do
-        send_request :get, view_invoice_path(invoice)
+        send_request :get, view_invoice_path(external_view_key)
         expect(response).to be_successful
       end
     end

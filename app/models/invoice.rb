@@ -8,6 +8,7 @@
 #  amount_paid        :decimal(20, 2)   default(0.0)
 #  discount           :decimal(20, 2)   default(0.0)
 #  due_date           :date
+#  external_view_key  :string
 #  invoice_number     :string
 #  issue_date         :date
 #  outstanding_amount :decimal(20, 2)   default(0.0)
