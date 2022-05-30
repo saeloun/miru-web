@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_26_072402) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_27_092935) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -125,6 +125,19 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_26_072402) do
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
     t.index ["status"], name: "index_invoices_on_status"
+  end
+
+  create_table "lead_line_items", force: :cascade do |t|
+    t.bigint "lead_id", null: false
+    t.string "name"
+    t.integer "kind"
+    t.text "description"
+    t.integer "numbert_of_resource"
+    t.integer "resource_expertise_level"
+    t.float "price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lead_id"], name: "index_lead_line_items_on_lead_id"
   end
 
   create_table "leads", force: :cascade do |t|
@@ -268,6 +281,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_26_072402) do
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"
+  add_foreign_key "lead_line_items", "leads"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
