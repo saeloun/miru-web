@@ -161,7 +161,7 @@
                 Total Amount
               </span>
               <span class="amount">
-                <%= @invoice.amount %>
+                <%= react_component("app/javascript/src/helpers/currency.ts",{ baseCurrency: invoice.company.base_currency, amount: invoice.amount}) %>
               </span>
             </div>
           </div>

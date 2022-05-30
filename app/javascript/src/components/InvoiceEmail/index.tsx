@@ -6,7 +6,7 @@ const Twitter = require("../../../../assets/images/Twitter.svg"); // eslint-disa
 const MiruLogowithText = require("../../../../assets/images/MiruWhiteLogowithText.svg"); // eslint-disable-line
 
 const InvoiceEmail = ({ url, invoice, logo, lineItems, company, client }) => (
-    <>
+    <div className="flex flex-col justify-between">
       <div className="font-manrope px-24 h-16 flex justify-start bg-miru-han-purple-1000 text-white">
         <img src={MiruLogowithText} />
       </div>
@@ -32,7 +32,7 @@ const InvoiceEmail = ({ url, invoice, logo, lineItems, company, client }) => (
           <img src={Twitter} height="16px" width="16px" />
         </span>
       </div>
-    </>
+    </div>
   );
 
 export default InvoiceEmail;
