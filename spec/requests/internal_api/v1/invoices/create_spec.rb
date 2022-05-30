@@ -20,7 +20,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
       it "creates invoice successfully" do
         invoice = attributes_for(
           :invoice,
-          external_view_key: "#{[*'a'..'z', *0..9, *'A'..'Z'].shuffle.join}_#{Time.now}_#{user.id}",
+          external_view_key: "#{[*'a'..'z', *0..9, *'A'..'Z'].shuffle.join}_#{Time.now.to_i}_#{user.id}",
           client: company.clients.first,
           client_id: company.clients.first.id,
           status: :draft)

@@ -7,7 +7,7 @@ RSpec.describe "Invoices::View", type: :request do
     let(:company) { create(:company, :with_logo) }
     let(:user) { create(:user) }
     let(:client) { create(:client, company:) }
-    let(:external_view_key) { "#{[*'a'..'z', *0..9, *'A'..'Z'].shuffle.join}_#{Time.now}_#{user.id}" }
+    let(:external_view_key) { "#{[*'a'..'z', *0..9, *'A'..'Z'].shuffle.join}_#{Time.now.to_i}_#{user.id}" }
     let(:invoice) { create(:invoice, external_view_key:, client:, company:) }
 
     context "when unauthenticated" do
