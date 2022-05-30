@@ -5,7 +5,6 @@ import ClientInfo from "../Invoices/Invoice/ClientInfo";
 import CompanyInfo from "../Invoices/Invoice/CompanyInfo";
 import InvoiceLineItems from "../Invoices/Invoice/InvoiceLineItems";
 
-
 const InvoiceDetails = ({ invoice, company, lineItems, client, logo }) => (
   <>
     <CompanyInfo company={company} logo={logo}/>
