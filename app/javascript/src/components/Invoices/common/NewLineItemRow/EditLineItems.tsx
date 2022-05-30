@@ -6,12 +6,14 @@ const EditLineItems = ({
   selectedOption,
   setEdit
 }) => {
+
   const strName = item.name || `${item.first_name} ${item.last_name}`;
+  const quantity = (item.qty / 60) || (item.quantity / 60);
   const [name, setName] = useState<string>(strName);
-  const [date, setDate] = useState<string>(item.date);
+  const [lineItemDate, setLineItemDate] = useState<string>(item.date);
   const [description, setDescription] = useState<string>(item.description);
   const [rate, setRate] = useState<any>(item.rate);
-  const [qty, setQty] = useState<string>(item.qty || item.quantity);
+  const [qty, setQty] = useState<any>(quantity);
   const [lineTotal, setLineTotal] = useState<any>((item.qty / 60) * item.rate);
   const ref = useRef();
 
@@ -20,16 +22,18 @@ const EditLineItems = ({
       const sanitizedSelected = selectedOption.filter(option =>
         option.id !== item.id || option.timesheet_entry_id !== item.timesheet_entry_id
       );
+
       const names = name.split(" ");
       const newItem = {
         ...item,
         first_name: names.splice(0, 1)[0],
         last_name: names.join(" "),
         name: name,
-        date, description,
+        date: lineItemDate,
+        description,
         rate,
-        qty: Number(qty),
-        lineTotal: ((Number(qty) / 60) * Number(rate))
+        qty: Number(qty) * 60,
+        lineTotal: Number(qty) * Number(rate)
       };
       setSelectedOption([...sanitizedSelected, { ...newItem }]);
       setEdit(false);
@@ -53,10 +57,11 @@ const EditLineItems = ({
           type="text"
           placeholder="Date"
           ref={ref}
+          pattern="\d{1,2}-\d{1,2}-\d{4}"
           onFocus={(e) => (e.target.type = "date")}
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          value={date}
-          onChange={e => setDate(e.target.value)}
+          value={lineItemDate}
+          onChange={e => setLineItemDate(e.target.value)}
           onKeyDown={e => onEnter(e)}
         />
       </td>
