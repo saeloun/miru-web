@@ -56,3 +56,9 @@ cypress/artifacts/screenshots
 cypress/artifacts/videos
 
 .DS_Store
+
+/config/credentials/development.key
+
+/config/credentials/test.key
+
+/config/credentials/production.key

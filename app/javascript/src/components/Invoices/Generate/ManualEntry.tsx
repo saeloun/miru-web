@@ -12,7 +12,8 @@ const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) =
 
   const onEnter = e => {
     if (e.key == "Enter") {
-      const newItem = [...selectedOption, { name, date, description, rate, qty: (Number(qty)*60), lineTotal: (Number(qty) * Number(rate)) }];
+      const names = name.split(" ");
+      const newItem = [...selectedOption, { first_name: names.splice(0,1)[0], last_name: names.join(" "), date, description, rate, qty: (Number(qty)*60), lineTotal: (Number(qty) * Number(rate)) }];
 
       setSelectedOption(newItem);
       setName("");
