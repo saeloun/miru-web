@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 import React, { useState } from "react";
 
 import { Divider } from "common/Divider";
 
-const img = require("../../../../../assets/images/plus_icon.svg")
-const password_icon = require("../../../../../assets/images/password_icon.svg")
-const password_icon_text = require("../../../../../assets/images/password_icon_text.svg")
-const editButton = require("../../../../../assets/images/edit_image_button.svg")
-
-import Header from "../Header";
 import * as Yup from "yup";
+import Header from "../Header";
+const editButton = require("../../../../../assets/images/edit_image_button.svg");
+const password_icon = require("../../../../../assets/images/password_icon.svg");
+const password_icon_text = require("../../../../../assets/images/password_icon_text.svg");
+const img = require("../../../../../assets/images/plus_icon.svg");
 
 const userProfileSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name cannot be blank"),
@@ -16,7 +17,7 @@ const userProfileSchema = Yup.object().shape({
   password: Yup.string().required("Please enter password"),
   currentPassword: Yup.string().required("Please enter current password"),
   confirmPassword: Yup.string()
-    .oneOf([Yup.ref('password'), null], `Passwords don't match`),
+    .oneOf([Yup.ref("password"), null], "Passwords don't match")
 });
 
 const UserDetails = () => {
@@ -33,11 +34,11 @@ const UserDetails = () => {
   const [showConfirmPasword, setShowConfirmPassword] = useState<boolean>(false);
 
   const [errDetails, setErrDetails] = useState({
-    firstNameErr: '',
-    lastNameErr: '',
-    passwordErr: '',
-    currentPasswordErr: '',
-    confirmPasswordErr: '',
+    firstNameErr: "",
+    lastNameErr: "",
+    passwordErr: "",
+    currentPasswordErr: "",
+    confirmPasswordErr: ""
   });
 
   const handleProfileImageChange = (e) => {
@@ -46,30 +47,37 @@ const UserDetails = () => {
   };
 
   const handleUpdateProfile = () => {
-    userProfileSchema.validate({ firstName, lastName, password, confirmPassword, currentPassword }, { abortEarly: false }).then((msg) => {
-      console.log(msg)
+    userProfileSchema.validate({ firstName, lastName, password, confirmPassword, currentPassword }, { abortEarly: false }).then(() => {
+      const errObj = {
+        firstNameErr: "",
+        lastNameErr: "",
+        passwordErr: "",
+        currentPasswordErr: "",
+        confirmPasswordErr: ""
+      };
+      setErrDetails(errObj);
     }).catch(function (err) {
       const errObj = {
-        firstNameErr: '',
-        lastNameErr: '',
-        passwordErr: '',
-        currentPasswordErr: '',
-        confirmPasswordErr: '',
+        firstNameErr: "",
+        lastNameErr: "",
+        passwordErr: "",
+        currentPasswordErr: "",
+        confirmPasswordErr: ""
       };
       err.inner.map((item) => {
-        errObj[item.path + 'Err'] = item.message;
-      })
+        errObj[item.path + "Err"] = item.message;
+      });
       setErrDetails(errObj);
-    })
+    });
   };
 
   return (
     <div className="flex flex-col w-4/5">
       <Header
-        title={'Profile Settings'}
-        subTitle={'View and manage profile settings'}
+        title={"Profile Settings"}
+        subTitle={"View and manage profile settings"}
         showButtons={true}
-        cancelAction={() => { }}
+        // cancelAction={()=> {}}
         saveAction={handleUpdateProfile}
       />
       <div className="pb-10 pt-10 pl-10 pr-10 mt-4 bg-miru-gray-100 min-h-80v">
@@ -83,15 +91,15 @@ const UserDetails = () => {
                   <img src={profileImage} className={"rounded-full min-w-full h-full"}></img>
                 </div>
                 <label htmlFor="file-input" className="">
-                  <img src={editButton} className={"rounded-full mt-5 cursor-pointer"} style={{ 'minWidth': '40px' }}></img>
+                  <img src={editButton} className={"rounded-full mt-5 cursor-pointer"} style={{ "minWidth": "40px" }}></img>
                 </label>
                 <input id="file-input" type="file" name="myImage" className='hidden' onChange={handleProfileImageChange}>
                 </input>
-                <button onClick={() => { }} className="">
+                <button className="">
                   <img
                     src="/delete.svg"
                     alt="delete"
-                    style={{ 'minWidth': '20px' }}
+                    style={{ "minWidth": "20px" }}
                   />
                 </button>
               </div>
