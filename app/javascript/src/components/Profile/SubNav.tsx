@@ -14,8 +14,8 @@ const SideNav = ({ isAdmin, firstName, lastName, email }) => {
 
   const getAdminLinks = () => (
     <ul className='list-none text-sm font-medium leading-5 tracking-wider'>
-      <li className='border-b-2 border-miru-gray-400'>Personal</li>
-      <li className='border-b-2 border-miru-gray-400'>
+      <p className='font-bold text-base mt-3 ml-4'>Personal</p>
+      <li className='border-b-2 border-miru-gray-400 mt-4'>
         <NavLink end to="/profile/edit" className={({ isActive }) => getActiveClassName(isActive)}>
           PROFILE SETTINGS
         </NavLink>
@@ -68,8 +68,8 @@ const SideNav = ({ isAdmin, firstName, lastName, email }) => {
   );
 
   return (
-    <div className='flex flex-col'>
-      <div className='mr-2 w-60 h-16 p-2 bg-miru-han-purple-1000 flex text-white'>
+    <div className='flex flex-col '>
+      <div className='mr-2 w-60 h-16 p-4 bg-miru-han-purple-1000 flex text-white items-center'>
         <img src={profile} className='mr-2' />
         <div className='flex flex-col'>
           <span className='font-bold text-base leading-5 pt-1'>{`${firstName} ${lastName}`}</span>
@@ -77,7 +77,7 @@ const SideNav = ({ isAdmin, firstName, lastName, email }) => {
         </div>
       </div>
 
-      <div className='mr-2 mt-4 w-60 bg-miru-gray-100 h-screen'>
+      <div className='mr-2 mt-4 w-60 bg-miru-gray-100 h-full'>
         { isAdmin ? getAdminLinks() : getEmployeeLinks() }
       </div>
     </div>
