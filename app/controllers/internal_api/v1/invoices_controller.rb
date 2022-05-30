@@ -24,7 +24,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def create
     authorize Invoice
-    external_view_key = "#{[*'a'..'z', *0..9, *'A'..'Z'].shuffle.join}_#{current_user.id}"
+    external_view_key = "#{[*'a'..'z', *0..9, *'A'..'Z'].shuffle.join}_#{Time.now}_#{current_user.id}"
     render :create, locals: {
       invoice: @client.invoices.create!(invoice_params.merge(external_view_key:)),
       client: @client
