@@ -1,6 +1,14 @@
-<div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
-  <div>
-    <%# react_component("Invoices/RouteConfig") %>
-    Client view goes here
-  </div>
+<head>
+    <%= stylesheet_pack_tag "application" %>
+    <%= javascript_pack_tag "application"%>
+</head>
+<div>
+  <%= react_component("InvoiceEmail/index",{
+    url: new_invoice_payment_url(invoice),
+    invoice: invoice,
+    logo: url_for(invoice.company.logo),
+    lineItems: invoice.invoice_line_items,
+    company: invoice.company,
+    client: invoice.client
+    }) %>
 </div>
