@@ -36,6 +36,12 @@ const EditLead = ({ setShowEditDialog, lead }: IEditLead) => {
   const [stateCodeList, setStateCodeList] = useState<any>(null);
   const [statusCodeList, setStatusCodeList] = useState<any>(null);
 
+  const [budgetStatusCode, setBudgetStatusCode] = useState<any>(null);
+  const [industryCode, setIndustryCode] = useState<any>(null);
+  const [qualityCode, setQualityCode] = useState<any>(null);
+  const [stateCode, setStateCode] = useState<any>(null);
+  const [statusCode, setStatusCode] = useState<any>(null);
+
   useEffect(() => {
     const getLeadItems = async () => {
       leadItemsApi.get()
@@ -60,7 +66,13 @@ const EditLead = ({ setShowEditDialog, lead }: IEditLead) => {
   const handleSubmit = async values => {
     await leads.update(lead.id, {
       lead: {
-        ...values
+        "name": values.name,
+        "budget_amount": values.budget_amount,
+        "budget_status_code": budgetStatusCode || values.budget_status_code,
+        "industry_code": industryCode || values.industry_code,
+        "quality_code": qualityCode || values.quality_code,
+        "state_code": stateCode || values.state_code,
+        "status_code": statusCode || values.status_code
       }
     }).then(() => {
       setShowEditDialog(false);
@@ -166,7 +178,7 @@ const EditLead = ({ setShowEditDialog, lead }: IEditLead) => {
                         <select
                           defaultValue={lead.budget_status_code}
                           className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                          name="budget_status_code">
+                          name="budget_status_code" onChange={(e) => setBudgetStatusCode(e.target.value)}>
                           <option value=''>Select Budget Status</option>
                           {budgetStatusCodeList &&
                             budgetStatusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lead.budget_status_code}>{e.name}</option>)}
@@ -185,7 +197,7 @@ const EditLead = ({ setShowEditDialog, lead }: IEditLead) => {
                         <select
                           defaultValue={lead.industry_code}
                           className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                          name="industry_code">
+                          name="industry_code" onChange={(e) => setIndustryCode(e.target.value)}>
                           <option value=''>Select Industry</option>
                           {industryCodeList &&
                             industryCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lead.industry_code}>{e.name}</option>)}
@@ -204,7 +216,7 @@ const EditLead = ({ setShowEditDialog, lead }: IEditLead) => {
                         <select
                           defaultValue={lead.quality_code}
                           className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                          name="quality_code">
+                          name="quality_code" onChange={(e) => setQualityCode(e.target.value)}>
                           <option value=''>Select Quality</option>
                           {qualityCodeList &&
                             qualityCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lead.quality_code}>{e.name}</option>)}
@@ -223,7 +235,7 @@ const EditLead = ({ setShowEditDialog, lead }: IEditLead) => {
                         <select
                           defaultValue={lead.state_code}
                           className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                          name="state_code">
+                          name="state_code" onChange={(e) => setStateCode(e.target.value)}>
                           <option value=''>Select State</option>
                           {stateCodeList &&
                             stateCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lead.state_code}>{e.name}</option>)}
@@ -242,7 +254,7 @@ const EditLead = ({ setShowEditDialog, lead }: IEditLead) => {
                         <select
                           defaultValue={lead.status_code}
                           className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                          name="status_code">
+                          name="status_code" onChange={(e) => setStatusCode(e.target.value)}>
                           <option value=''>Select Status</option>
                           {statusCodeList &&
                             statusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lead.status_code}>{e.name}</option>)}
