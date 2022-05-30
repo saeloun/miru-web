@@ -27,7 +27,7 @@ const EditLineItems = ({
         date, description,
         rate,
         qty: Number(qty),
-        lineTotal: (Number(qty) * Number(rate))
+        lineTotal: ((Number(qty) / 60) * Number(rate))
       };
       setSelectedOption([...sanitizedSelected, { ...newItem }]);
       setEdit(false);
