@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_27_092935) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_30_111026) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -138,6 +138,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_27_092935) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["lead_id"], name: "index_lead_line_items_on_lead_id"
+  end
+
+  create_table "lead_timelines", force: :cascade do |t|
+    t.bigint "lead_id", null: false
+    t.integer "kind"
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lead_id"], name: "index_lead_timelines_on_lead_id"
   end
 
   create_table "leads", force: :cascade do |t|
@@ -282,6 +291,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_27_092935) do
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"
   add_foreign_key "lead_line_items", "leads"
+  add_foreign_key "lead_timelines", "leads"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
