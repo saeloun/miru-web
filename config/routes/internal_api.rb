@@ -34,6 +34,20 @@ namespace :internal_api, defaults: { format: "json" } do
       resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
     end
 
+    namespace :profiles do
+      resources :billing, only: [:index, :create, :update], param: :account_id
+    end
+
+    namespace :wise do
+      post :create_recipient
+      put :update_recipient
+      get :fetch_bank_requirements
+      get :fetch_currencies
+      get :fetch_recipient
+      get :validate_account_details
+    end
+
+    # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
 
