@@ -5,7 +5,7 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
 
   def index
     authorize :report
-    render :index, locals: { entries: filtered_reports, filter_options: }, status: :ok
+    render :index, locals: { reports:, filter_options: }, status: :ok
   end
 
   private
@@ -25,10 +25,14 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
       params[:team_member].present?
     end
 
-    def filtered_reports
+    def reports
       current_company_project_ids_filter = { project_id: current_company.project_ids }
       filters_where_clause = Report::Filters.process(params)
       where_clause = current_company_project_ids_filter.merge(filters_where_clause)
-      TimesheetEntry.search(where: where_clause, includes: [:user, :project])
+      group_by_clause = Report::GroupBy.process(params["group_by"])
+      search_result = TimesheetEntry.search(
+        where: where_clause, body_options: group_by_clause,
+        includes: [:user, { project: :client } ])
+      Report::Result.process(search_result, params["group_by"])
     end
 end
