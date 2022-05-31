@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import paymentSettings from "apis/payment-settings";
+import PaymentsProviders from "apis/payments/providers";
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomToggle from "common/CustomToggle";
 import { X } from "phosphor-react";
@@ -13,8 +14,16 @@ const masterCard = require("../../../../../assets/images/masterCard.svg");
 const paypal = require("../../../../../assets/images/PaypalLogo.svg");
 const paypalConnect = require("../../../../../assets/images/pConnectInvoice.svg");
 const stripeConnect = require("../../../../../assets/images/sConnectInvoice.svg");
-const stripe = require("../../../../../assets/images/stripe_logo.svg");
+const stripeLogo = require("../../../../../assets/images/stripe_logo.svg");
 const visa = require("../../../../../assets/images/visa.svg");
+
+interface IProvider {
+  id: number;
+  name: string;
+  connected: boolean;
+  enabled: boolean;
+  acceptedPaymentMethods: Array<string>;
+}
 
 const Invoice_settings = ({ setShowInvoiceSetting }) => {
   const [status, setStatus] = React.useState<PaymentSettingsStatus>(
@@ -22,25 +31,59 @@ const Invoice_settings = ({ setShowInvoiceSetting }) => {
   );
   const [isChecked, setIsChecked] = useState<boolean>(true);
   const [isStripeConnected, setStripeConnected] = useState<boolean>(null);
+  const [isStripeEnabled, setStripeEnabled] = useState<boolean>(null);
   const [isPaypalConnected, setPaypalConnected] = useState<boolean>(false);
   const [accountLink, setAccountLink] = useState<string>(null);
-  const [acceptCardPaymentsStripe, setAcceptCardPaymentsStripe] = useState<boolean>(false);
+  const [stripeAcceptedPaymentMethods, setStripeAcceptedPaymentMethods] = useState<Array<string>>(null);
+  const [stripe, setStripeSettings] = useState<IProvider>(null);
 
   const connectStripe = async () => {
     const res = await paymentSettings.connectStripe();
     setAccountLink(res.data.accountLink);
   };
 
-  const fetchPaymentSettings = async () => {
+  const fetchPaymentsProvidersSettings = async () => {
     try {
       setStatus(PaymentSettingsStatus.LOADING);
-      const res = await paymentSettings.get();
-      setStripeConnected(res.data.providers.stripe.connected);
-      setAcceptCardPaymentsStripe(true);
+      const res = await PaymentsProviders.get();
+      const paymentsProviders = res.data.paymentsProviders;
+      const stripe = paymentsProviders.find(p => p.name === "stripe");
+      setStripeConnected(!!stripe && stripe.connected);
+      setStripeEnabled(!!stripe && stripe.enabled);
+      setStripeAcceptedPaymentMethods(!!stripe && stripe.acceptedPaymentMethods);
+      !!stripe && setStripeSettings(stripe);
       setStatus(PaymentSettingsStatus.SUCCESS);
     } catch (err) {
       setStatus(PaymentSettingsStatus.ERROR);
     }
+  };
+
+  const updatePaymentsProvidersSettings = async (provider) => {
+    await PaymentsProviders.update(provider.id, provider); 
+  };
+
+  const toggleStripe = async () => {
+    await updatePaymentsProvidersSettings({
+      id: stripe.id,
+      enabled: !isStripeEnabled
+    });
+    setStripeEnabled(!isStripeEnabled);
+  };
+
+  const removePaymentMethod = async (method) => {
+    await updatePaymentsProvidersSettings({
+      id: stripe.id,
+      accepted_payment_methods: stripe.acceptedPaymentMethods.filter(m => m !== method)
+    });
+    setStripeAcceptedPaymentMethods(stripe.acceptedPaymentMethods.filter(m => m !== method));
+  };
+
+  const addPaymentMethod = async (method) => {
+    await updatePaymentsProvidersSettings({
+      id: stripe.id,
+      accepted_payment_methods: stripe.acceptedPaymentMethods.concat(method)
+    });
+    setStripeAcceptedPaymentMethods(stripe.acceptedPaymentMethods.concat(method));
   };
 
   useEffect(() => {
@@ -52,7 +95,7 @@ const Invoice_settings = ({ setShowInvoiceSetting }) => {
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
-    fetchPaymentSettings();
+    fetchPaymentsProvidersSettings();
   }, [isStripeConnected]);
 
   return status === PaymentSettingsStatus.SUCCESS && (
@@ -69,17 +112,18 @@ const Invoice_settings = ({ setShowInvoiceSetting }) => {
           Accept Online Payments
         </span>
 
-        {isStripeConnected || isPaypalConnected ? (
+        {(!!stripe && stripe.connected) || isPaypalConnected ? (
           <div className="p-4 mt-4 items-center bg-miru-gray-100">
             <div className="border-b-2 border-miru-gray-200">
 
-              {isStripeConnected && (
+              {stripe.connected && (
                 <div className="flex justify-between items-center">
-                  <img src={stripe} width="64px" className="pb-4 mr-38" />
+                  <img src={stripeLogo} width="64px" className="pb-4 mr-38" />
                   <CustomToggle
-                    id='1'
-                    isChecked={isChecked}
-                    setIsChecked={setIsChecked}
+                    id={stripe.id}
+                    isChecked={isStripeEnabled}
+                    setIsChecked={setStripeEnabled}
+                    onToggle={toggleStripe}
                     toggleCss="mt-5"
                   />
                 </div>
@@ -98,27 +142,36 @@ const Invoice_settings = ({ setShowInvoiceSetting }) => {
               )}
             </div>
 
-            <div className="mt-7 font-normal text-xs text-miru-dark-purple-1000 leading-4 flex">
-              <CustomCheckbox
-                id={1}
-                handleCheck={() => setAcceptCardPaymentsStripe(!acceptCardPaymentsStripe)} // eslint-disable-line
-                isChecked={acceptCardPaymentsStripe}
-                checkboxValue={null}
-              />
-              <h4 className="pl-2">Accept Credit Cards</h4>
-            </div>
-            <div className="mt-6 flex justify-between">
-              <img src={visa} />
-              <img src={masterCard} />
-              <img src={amex} />
-              <img src={applePay} />
-            </div>
+            {isStripeEnabled && (
+              <>
+                <div className="mt-7 font-normal text-xs text-miru-dark-purple-1000 leading-4 flex">
+                  <CustomCheckbox
+                    id={stripe.id}
+                    handleCheck={() => {
+                      if (stripeAcceptedPaymentMethods.includes("card")) {
+                        removePaymentMethod("card");
+                      } else {
+                        addPaymentMethod("card");
+                      }
+                    }}
+                    isChecked={stripeAcceptedPaymentMethods.includes("card")}
+                    checkboxValue={stripeAcceptedPaymentMethods.find(m => m === "card")}
+                  />
+                  <h4 className="pl-2">Accept Credit Cards</h4>
+                </div>
+                <div className="mt-6 flex justify-between">
+                  <img src={visa} />
+                  <img src={masterCard} />
+                  <img src={amex} />
+                  <img src={applePay} />
+                </div>
+              </>)}
           </div>
         ) : null}
 
         {!isStripeConnected && (
           <div className="p-4 mt-3 mb-2  bg-miru-gray-100">
-            <img src={stripe} width="64px" height="32px" className="mb-4" />
+            <img src={stripeLogo} width="64px" height="32px" className="mb-4" />
             <span className="font-normal text-sm text-miru-dark-purple-1000 leading-5">
               Connect with your existing stripe account or create a new account
             </span>
