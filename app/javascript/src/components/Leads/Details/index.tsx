@@ -3,106 +3,31 @@ import { useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leads from "apis/leads";
-
-// import AmountBoxContainer from "common/AmountBox";
-// import ChartBar from "common/ChartBar";
-// import Table from "common/Table";
-// import { cashFormatter } from "helpers/cashFormater";
-// import { currencySymbol } from "helpers/currencySymbol";
-
 import Header from "./Header";
 import Tab from "./Tab";
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapLeadDetails } from "../../../mapper/lead.mapper";
-// import AddEditProject from "../../Projects/Modals/AddEditProject";
-// import DeleteProject from "../../Projects/Modals/DeleteProject";
-
-// const getTableData = (leads) => {
-//   if (leads) {
-//     return leads.map((lead) => {
-//       // const hours = (lead.minutes/60).toFixed(2);
-//       ({
-//         col1: <div className="text-base text-miru-dark-purple-1000">{lead.name}</div>,
-//         col2: <div className="text-base text-miru-dark-purple-1000">{lead.budget_amount}</div>,
-//         col3: <div className="text-base text-miru-dark-purple-1000">{lead.budget_status_code}</div>,
-//         col4: <div className="text-base text-miru-dark-purple-1000">{lead.industry_code}</div>,
-//         col5: <div className="text-base text-miru-dark-purple-1000">{lead.quality_code}</div>,
-//         col6: <div className="text-base text-miru-dark-purple-1000">{lead.state_code}</div>,
-//         col7: <div className="text-base text-miru-dark-purple-1000">{lead.status_code}</div>,
-//         rowId: lead.id
-//       })
-//     });
-//   }
-//   return [{}];
-// };
 
 const LeadList = () => {
-  // const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
-  // const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  // const [selectedProject, setSelectedProject] = useState({});
-  // const [projectDetails, setProjectDetails] = useState<any>();
-  // const [totalMinutes, setTotalMinutes] = useState(null);
-  const [leadDetails, setLeadDetails] = useState<any>({});
-  // const [editProjectData, setEditProjectData] = React.useState<any>(null);
-  // const [overdueOutstandingAmount, setOverDueOutstandingAmt]= useState<any>(null);
-
   const params = useParams();
-  // const handleEditClick = (id) => {
-  //   setShowEditDialog(true);
-  //   const editSelection = projectDetails.find(project => project.id === id);
-  //   setSelectedProject(editSelection);
-  // };
+  const [leadDetails, setLeadDetails] = useState<any>({});
+  const [leadId, setLeadId] = useState<any>(null);
 
-  // const handleDeleteClick = (id) => {
-  //   setShowDeleteDialog(true);
-  //   const editSelection = projectDetails.find(project => project.id === id);
-  //   setSelectedProject(editSelection);
-  // };
-
-  // const handleSelectChange = (event) => {
-  //   leads.show(params.leadId,`?time_frame=${event.target.value}`)
-  //     .then((res) => {
-  //       const sanitized = unmapLeadDetails(res);
-  //       // setProjectDetails(sanitized.projectDetails);
-  //       setLeadDetails(sanitized.leadDetails);
-  //       // setTotalMinutes(sanitized.totalMinutes);
-  //       // setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
-  //     });
-  // };
+  useEffect(() => {
+    if (leadId === null){
+      setLeadId(params.leadId)
+    }
+  }, []);
 
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
-    leads.show(params.leadId, "")
+    leads.show(params.leadId)
       .then((res) => {
         const sanitized = unmapLeadDetails(res);
         setLeadDetails(sanitized.leadDetails);
-        // setProjectDetails(sanitized.projectDetails);
-        // setTotalMinutes(sanitized.totalMinutes);
-        // setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
       });
-  }, []);
-
-  // const tableHeader = [
-  //   {
-  //     Header: "Lead",
-  //     accessor: "col1", // accessor is the "key" in the data
-  //     cssClass: ""
-  //   }
-  // ];
-
-  // const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
-
-  // const amountBox = [{
-  //   title: "OVERDUE",
-  //   amount: currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount)
-  // },
-  // {
-  //   title: "OUTSTANDING",
-  //   amount: currencySymb + cashFormatter(overdueOutstandingAmount?.outstanding_amount)
-  // }];
-
-  // const tableData = getTableData(projectDetails);
+  }, [leadId]);
 
   return (
     <>

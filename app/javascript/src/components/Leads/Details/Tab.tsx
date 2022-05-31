@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import DetailsContent from "./DetailsContent";
-import LineItemsContent from "./LineItemsContent";
-import QuotesContent from "./QuotesContent";
-import SummaryContent from "./SummaryContent";
+import LineItems from "./LineItems";
+import Quotes from "./Quotes";
+import Summary from "./Summary";
 
 const Tab = ({ leadDetails }) => {
 
@@ -11,7 +10,13 @@ const Tab = ({ leadDetails }) => {
 
   const [renderTabData, setRenderTabData] = useState<any>(null);
   const [tabClassName, setTabClassName] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<string>("");
+
+  useEffect(() => {
+    if (activeTab === ""){
+      setActiveTab("summary");
+    }
+  }, []);
 
   useEffect(() => {
     if (activeTab === "summary"){
@@ -21,15 +26,7 @@ const Tab = ({ leadDetails }) => {
         lineItemsTab: defaultClassName,
         quotesTab: defaultClassName
       });
-      setRenderTabData(<SummaryContent leadDetails={leadDetails} />);
-    } else if (activeTab === "details"){
-      setTabClassName({
-        summaryTab: defaultClassName,
-        detailsTab: activeClassName,
-        lineItemsTab: defaultClassName,
-        quotesTab: defaultClassName
-      });
-      setRenderTabData(<DetailsContent />);
+      setRenderTabData(<Summary leadDetails={leadDetails} />);
     } else if (activeTab === "lineItems"){
       setTabClassName({
         summaryTab: defaultClassName,
@@ -37,7 +34,7 @@ const Tab = ({ leadDetails }) => {
         lineItemsTab: activeClassName,
         quotesTab: defaultClassName
       });
-      setRenderTabData(<LineItemsContent />);
+      setRenderTabData(<LineItems />);
     } else if (activeTab === "quotes"){
       setTabClassName({
         summaryTab: defaultClassName,
@@ -45,9 +42,9 @@ const Tab = ({ leadDetails }) => {
         lineItemsTab: defaultClassName,
         quotesTab: activeClassName
       });
-      setRenderTabData(<QuotesContent />);
+      setRenderTabData(<Quotes />);
     }
-  }, [activeTab]);
+  }, [activeTab, leadDetails]);
 
   return (
     <>
@@ -57,11 +54,6 @@ const Tab = ({ leadDetails }) => {
             <li className="mr-3">
               <a href="#summary" className={tabClassName ? tabClassName.summaryTab : activeClassName} onClick={() => { setActiveTab("summary"); }} >
               Summary
-              </a>
-            </li>
-            <li className="mr-3">
-              <a href="#details" className={tabClassName ? tabClassName.detailsTab : defaultClassName} onClick={() => { setActiveTab("details"); }} >
-              Details
               </a>
             </li>
             <li className="mr-3">
@@ -76,7 +68,7 @@ const Tab = ({ leadDetails }) => {
             </li>
           </ul>
         </div>
-        {renderTabData ? renderTabData : <SummaryContent leadDetails={leadDetails} />}
+        {renderTabData ? renderTabData : <Summary leadDetails={leadDetails} />}
       </div>
     </>
   );

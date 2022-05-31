@@ -1,14 +1,14 @@
 import React from "react";
 
-const DetailsContent = () =>
+const LineItems = () =>
 
 // const [renderTabData, setRenderTabData] = useState<any>(null);
 
   (
     <div className="my-6">
-      DetailsContent
+      LineItems
     </div>
   )
 ;
 
-export default DetailsContent;
+export default LineItems;
