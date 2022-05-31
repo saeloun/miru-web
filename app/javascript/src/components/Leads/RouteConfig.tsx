@@ -15,6 +15,8 @@ const RouteConfig = ({ isAdminUser }) => (
       <Route path="leads">
         <Route index element={<LeadList isAdminUser={isAdminUser} />} />
         <Route path=":leadId" element={<Details />} />
+        <Route path=":leadId/line-items" element={<Details />} />
+        <Route path=":leadId/quotes" element={<Details />} />
       </Route>
     </Routes>
   </BrowserRouter>

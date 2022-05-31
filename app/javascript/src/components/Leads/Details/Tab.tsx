@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
-import LineItems from "./LineItems";
-import Quotes from "./Quotes";
-import Summary from "./Summary";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import LineItems from "./../LineItems";
+import Quotes from "./../Quotes";
+import DetailsContent from "./DetailsContent";
+import SummaryContent from "./SummaryContent";
 
 const Tab = ({ leadDetails }) => {
 
@@ -10,6 +12,9 @@ const Tab = ({ leadDetails }) => {
 
   const [renderTabData, setRenderTabData] = useState<any>(null);
   const [tabClassName, setTabClassName] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<any>(null);
+  const navigate = useNavigate();
+  const { leadId } = useParams();
   const [activeTab, setActiveTab] = useState<string>("");
 
   useEffect(() => {
@@ -34,7 +39,7 @@ const Tab = ({ leadDetails }) => {
         lineItemsTab: activeClassName,
         quotesTab: defaultClassName
       });
-      setRenderTabData(<LineItems />);
+      setRenderTabData(<LineItems leadDetails={leadDetails} />);
     } else if (activeTab === "quotes"){
       setTabClassName({
         summaryTab: defaultClassName,
@@ -42,9 +47,26 @@ const Tab = ({ leadDetails }) => {
         lineItemsTab: defaultClassName,
         quotesTab: activeClassName
       });
-      setRenderTabData(<Quotes />);
+      setRenderTabData(<Quotes leadDetails={leadDetails} />);
     }
   }, [activeTab, leadDetails]);
+
+  const handleTabChange = (activeItem) => {
+    if (activeItem) {
+      setActiveTab(activeItem)
+    }
+    switch (activeItem) {
+      case "lineItems":
+        navigate(`/leads/${leadId}/line-items`);
+        break
+      case "quotes":
+        navigate(`/leads/${leadId}/quotes`);
+        break
+      default:
+        break
+    }
+
+  };
 
   return (
     <>
@@ -52,19 +74,19 @@ const Tab = ({ leadDetails }) => {
         <div className="border-b border-gray-200 dark:border-gray-700">
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
             <li className="mr-3">
-              <a href="#summary" className={tabClassName ? tabClassName.summaryTab : activeClassName} onClick={() => { setActiveTab("summary"); }} >
+              <button className={tabClassName ? tabClassName.summaryTab : activeClassName} onClick={() => handleTabChange('summary')} >
               Summary
-              </a>
+              </button>
             </li>
             <li className="mr-3">
-              <a href="#lineItems" className={tabClassName ? tabClassName.lineItemsTab : defaultClassName} onClick={() => { setActiveTab("lineItems"); }} >
+              <button className={tabClassName ? tabClassName.lineItemsTab : defaultClassName} onClick={() => handleTabChange('lineItems')} >
               Line Items
-              </a>
+              </button>
             </li>
             <li className="mr-3">
-              <a href="#quotes" className={tabClassName ? tabClassName.quotesTab : defaultClassName} onClick={() => { setActiveTab("quotes"); }} >
+              <button className={tabClassName ? tabClassName.quotesTab : defaultClassName} onClick={() => handleTabChange('quotes')} >
               Quotes
-              </a>
+              </button>
             </li>
           </ul>
         </div>
