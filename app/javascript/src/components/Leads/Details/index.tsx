@@ -9,20 +9,13 @@ import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapLeadDetails } from "../../../mapper/lead.mapper";
 
 const LeadList = () => {
-  const params = useParams();
   const [leadDetails, setLeadDetails] = useState<any>({});
-  const [leadId, setLeadId] = useState<any>(null);
-
-  useEffect(() => {
-    if (leadId === null){
-      setLeadId(params.leadId)
-    }
-  }, []);
+  const { leadId } = useParams();
 
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
-    leads.show(params.leadId)
+    leads.show(leadId)
       .then((res) => {
         const sanitized = unmapLeadDetails(res);
         setLeadDetails(sanitized.leadDetails);

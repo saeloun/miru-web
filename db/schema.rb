@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_30_111026) do
+ActiveRecord::Schema[7.0].define(version: 2022_05_31_122749) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -132,11 +132,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_30_111026) do
     t.string "name"
     t.integer "kind"
     t.text "description"
-    t.integer "numbert_of_resource"
+    t.integer "number_of_resource"
     t.integer "resource_expertise_level"
     t.float "price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
+    t.index ["discarded_at"], name: "index_lead_line_items_on_discarded_at"
     t.index ["lead_id"], name: "index_lead_line_items_on_lead_id"
   end
 
@@ -146,6 +148,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_30_111026) do
     t.text "comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
+    t.index ["discarded_at"], name: "index_lead_timelines_on_discarded_at"
     t.index ["lead_id"], name: "index_lead_timelines_on_lead_id"
   end
 

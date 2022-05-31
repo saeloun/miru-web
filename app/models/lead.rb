@@ -38,7 +38,6 @@
 #
 class Lead < ApplicationRecord
   include Discard::Model
-  default_scope -> { kept }
 
   CodeOptionKlass = Struct.new(:name, :id)
 
@@ -110,6 +109,9 @@ class Lead < ApplicationRecord
   validates :name, presence: true
   # validates_format_of :primary_email, :other_email, :with => Devise::email_regexp
   # validates :budget_amount, numericality: { greater_than_or_equal_to: 0 }
+
+  has_many :lead_line_items
+  has_many :lead_quotes
 
   def lead_detail
     {

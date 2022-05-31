@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LineItems from "./../LineItems";
 import Quotes from "./../Quotes";
-import DetailsContent from "./DetailsContent";
-import SummaryContent from "./SummaryContent";
+import Summary from "./Summary";
 
 const Tab = ({ leadDetails }) => {
 
@@ -15,13 +14,31 @@ const Tab = ({ leadDetails }) => {
   const [activeTab, setActiveTab] = useState<any>(null);
   const navigate = useNavigate();
   const { leadId } = useParams();
-  const [activeTab, setActiveTab] = useState<string>("");
 
   useEffect(() => {
     if (activeTab === ""){
       setActiveTab("summary");
     }
   }, []);
+
+  useEffect(() => {
+    if (leadId) setActiveTabKey();
+  }, [location.pathname]);
+
+  const setActiveTabKey = useCallback(async () => {
+    if (leadId) {
+      const path = {
+        summary: `/leads/${leadId}`,
+        lineItems: `/leads/${leadId}/line-items`,
+        quotes: `/leads/${leadId}/quotes`,
+      };
+      const filterPath = Object.keys(path).filter((key, _index) => (location.pathname === path[key]));
+      if (filterPath[0]) {
+        setActiveTab(filterPath[0]);
+        return null;
+      }
+    }
+  }, [leadId]);
 
   useEffect(() => {
     if (activeTab === "summary"){
@@ -51,21 +68,27 @@ const Tab = ({ leadDetails }) => {
     }
   }, [activeTab, leadDetails]);
 
-  const handleTabChange = (activeItem) => {
-    if (activeItem) {
-      setActiveTab(activeItem)
-    }
-    switch (activeItem) {
-      case "lineItems":
-        navigate(`/leads/${leadId}/line-items`);
-        break
-      case "quotes":
-        navigate(`/leads/${leadId}/quotes`);
-        break
-      default:
-        break
+  const handleTabChange = (key) => {
+    const path = {
+      summary: `/leads/${leadId}`,
+      lineItems: `/leads/${leadId}/line-items`,
+      quotes: `/leads/${leadId}/quotes`,
+    }[key];
+
+    if (location.pathname !== path) {
+      navigate(path);
     }
 
+    // switch (activeItem) {
+    //   case "lineItems":
+    //     navigate(`/leads/${leadId}/line-items`);
+    //     break
+    //   case "quotes":
+    //     navigate(`/leads/${leadId}/quotes`);
+    //     break
+    //   default:
+    //     break
+    // }
   };
 
   return (
