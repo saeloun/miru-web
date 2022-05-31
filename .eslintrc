@@ -76,7 +76,6 @@
       "func-style": ["error", "expression"],
       "space-before-function-paren": 2,
       "no-multiple-empty-lines": ["warn", { "max": 1, "maxEOF": 1 }],
-      "quotes": ["warn", "double"],
       "prefer-const": ["warn", { "destructuring": "any", "ignoreReadBeforeAssign": false }],
       "no-var": 1,
       "no-extra-boolean-cast": 1,
