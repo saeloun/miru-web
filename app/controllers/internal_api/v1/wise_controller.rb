@@ -5,7 +5,6 @@ class InternalApi::V1::WiseController < ApplicationController
     payload = recipient_params.to_h
     response = wise.create_recipient(payload)
 
-    binding.break
     render json: response.body, status: response.status
   end
 

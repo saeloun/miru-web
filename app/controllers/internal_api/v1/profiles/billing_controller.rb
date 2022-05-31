@@ -48,7 +48,6 @@ class InternalApi::V1::Profiles::BillingController < InternalApi::V1::Applicatio
       wise_account: @account
     }
   rescue => error
-    binding.break
     render json: {
       error: error.message
     }, status: 500
