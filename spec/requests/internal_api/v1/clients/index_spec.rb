@@ -22,18 +22,29 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     end
 
     context "when time_frame is week" do
-      it "returns the total hours logged for a Company in the last_week" do
-        client_details = user.current_workspace.clients.kept.map do |client|
-          {
-            id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.address,
-            minutes_spent: client.total_hours_logged(time_frame)
-          }
+      let(:client_details) do
+        user.current_workspace.clients.kept.map do |client|
+          a_hash_including(
+            "id" => client.id,
+            "name" => client.name,
+            "email" => client.email,
+            "phone" => client.phone,
+            "address" => client.address,
+            "minutes_spent" => client.total_hours_logged(time_frame)
+          )
         end
-        total_minutes = (client_details.map { |client| client[:minutes_spent] }).sum
+      end
+      let(:total_minutes) do
+        user.current_workspace.clients.kept.reduce(0) do |sum, client|
+          sum += client.total_hours_logged(time_frame)
+        end
+      end
+
+      it "returns the total hours logged for a Company in the last_week" do
         overdue_outstanding_amount = user.current_workspace.overdue_and_outstanding_and_draft_amount
         expect(response).to have_http_status(:ok)
-        expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
-        expect(json_response["total_minutes"]).to eq(JSON.parse(total_minutes.to_json))
+        expect(json_response["client_details"]).to match_array(client_details)
+        expect(json_response["total_minutes"]).to eq(total_minutes)
         expect(json_response["overdue_outstanding_amount"]).to eq(JSON.parse(overdue_outstanding_amount.to_json))
       end
     end

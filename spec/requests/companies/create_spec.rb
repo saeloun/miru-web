@@ -45,7 +45,7 @@ RSpec.describe "Companies#create", type: :request do
     end
 
     context "when company is invalid" do
-      before do
+    before do
         send_request(
           :post, company_path, params: {
             company: {
@@ -59,18 +59,18 @@ RSpec.describe "Companies#create", type: :request do
           })
       end
 
-      it "will fail" do
-        expect(response.body).to include("Company creation failed")
-      end
-
-      it "will not be created" do
-        change(Company, :count).by(0)
-      end
-
-      it "redirects to root_path" do
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
+    it "will fail" do
+      expect(response.body).to include("Company creation failed")
     end
+
+    it "will not be created" do
+      change(Company, :count).by(0)
+    end
+
+    it "redirects to root_path" do
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
   end
 
   context "when user is employee" do
