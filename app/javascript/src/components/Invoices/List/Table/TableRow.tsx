@@ -100,19 +100,19 @@ const TableRow = ({
         </div>
       </td>
 
-      {(invoice.status == "draft" || invoice.status == "declined") && (
-        <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
+      <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
+        {(invoice.status == "draft" || invoice.status == "declined") && (
           <div className="flex items-center h-full">
             <button className="hidden group-hover:block text-miru-han-purple-1000"
-              onClick={()=> {
+              onClick={() => {
                 setShowDeleteDialog(true);
                 setInvoiceToDelete(invoice.id);
               }}>
               <Trash size={16} />
             </button>
           </div>
-        </td>
-      )}
+        )}
+      </td>
 
       {isSending && (
         <SendInvoice invoice={invoice} setIsSending={setIsSending} isSending />
