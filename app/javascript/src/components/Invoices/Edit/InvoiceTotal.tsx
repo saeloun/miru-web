@@ -8,8 +8,6 @@ import DiscountMenu from "../Generate/DiscountMenu";
 const InvoiceTotal = ({
   currency,
   newLineItems,
-  invoiceLineItems,
-  invoiceAmount,
   amountPaid,
   amountDue, setAmountDue,
   setAmount,
@@ -86,11 +84,8 @@ const InvoiceTotal = ({
 
   useEffect(() => {
     const newLineItemsSubTotal = newLineItems.reduce((sum, { lineTotal }) => (sum + lineTotal), 0);
-    const invoiceItemSubTotal = invoiceLineItems.reduce((sum, { quantity, rate }) => (sum +((quantity / 60) * rate)), 0);
-
-    const newTotal = Number(newLineItemsSubTotal) + Number(invoiceAmount) + Number(tax) - Number(discount);
-
-    setSubTotal(newLineItemsSubTotal + invoiceItemSubTotal);
+    const newTotal = Number(newLineItemsSubTotal) + Number(tax) - Number(discount);
+    setSubTotal(newLineItemsSubTotal);
     setTotal(newTotal);
     setAmount(newTotal);
     setAmountDue(newTotal - amountPaid);

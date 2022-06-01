@@ -1,9 +1,8 @@
 import React from "react";
 import { currencyFormat } from "helpers/currency";
 
-const InvoiceTotalSummary = ({ invoice }) => {
-  const subTotal = invoice.invoiceLineItems
-    .reduce((prev, curr) => prev + curr.rate * curr.qty / 60, 0);
+const InvoiceTotalSummary = ({ invoice, company, lineItems }) => {
+  const subTotal = lineItems.reduce((prev, curr) => prev + curr.rate * curr.quantity/60, 0);
   const tax = invoice.tax;
   const discount = invoice.discount;
   const total = Number(subTotal) + Number(tax) - Number(discount);
@@ -31,7 +30,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               Tax
             </td>
             <td className="pt-4 font-bold text-base text-miru-dark-purple-1000 text-right w-22">
-              {currencyFormat({ baseCurrency: invoice.company.currency, amount: tax })}
+              {currencyFormat({ baseCurrency: company.base_currency, amount: tax })}
             </td>
           </tr>
           <tr>
@@ -39,7 +38,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               Total
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right">
-              {currencyFormat({ baseCurrency: invoice.company.currency, amount: total })}
+              {currencyFormat({ baseCurrency: company.base_currency, amount: total })}
             </td>
           </tr>
           <tr>
@@ -47,7 +46,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               Amount Paid
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
-              {currencyFormat({ baseCurrency: invoice.company.currency, amount: invoice.amountPaid })}
+              {currencyFormat({ baseCurrency: company.base_currency, amount: invoice.amount_paid })}
             </td>
           </tr>
           <tr>
@@ -55,7 +54,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               Amount Due
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right">
-              {currencyFormat({ baseCurrency: invoice.company.currency, amount: invoice.amountDue })}
+              {currencyFormat({ baseCurrency: company.base_currency, amount: invoice.amount_due })}
             </td>
           </tr>
         </tbody>
