@@ -160,9 +160,6 @@ group :development, :test do
 
   # Added rails controller to use render_template
   gem "rails-controller-testing", "~> 1.0", ">= 1.0.5"
-
-  # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
-  gem "bullet"
 end
 
 group :development do
@@ -170,7 +167,9 @@ group :development do
   gem "web-console", ">= 4.1.0"
 
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
-  gem "rack-mini-profiler", ">= 2.3.3"
+  # gem "rack-mini-profiler", ">= 2.3.3"
+  # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
+  # gem "bullet"
 
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   gem "spring"

@@ -78,14 +78,5 @@ Rails.application.configure do
   config.action_mailer.delivery_method = ENV.fetch("MAILER_DELIVERY_METHOD", "letter_opener").to_sym
   config.action_mailer.perform_deliveries = true
 
-  Rails.application.config.after_initialize do
-    Bullet.enable = true
-    Bullet.bullet_logger = true
-    Bullet.console = true
-    Bullet.rails_logger = true
-    Bullet.add_footer = true
-    Bullet.unused_eager_loading_enable = false
-  end
-
   config.serve_static_assets = true
 end
