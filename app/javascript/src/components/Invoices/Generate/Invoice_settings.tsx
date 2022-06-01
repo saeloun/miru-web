@@ -194,16 +194,6 @@ const Invoice_settings = ({ setShowInvoiceSetting }) => {
           </div>
         )}
       </div>
-
-      <button
-        className={`p-2 mt-2 ${
-          isStripeConnected || isPaypalConnected
-            ? "bg-miru-han-purple-1000"
-            : "bg-miru-gray-1000"
-        } rounded font-bold text-base text-white leading-5 text-center tracking-wider`}
-      >
-        SAVE
-      </button>
     </div>
   );
 };
