@@ -31,7 +31,7 @@ module Report
                 top_report_hits: {
                   top_hits: {
                     _source: ["id"],
-                    size: 100
+                    size: 100 # aggregation query can only return max top 100 hits
                   }
                 }
               }

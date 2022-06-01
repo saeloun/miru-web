@@ -52,7 +52,10 @@ module Report
         when "project"
           timesheet_entry.project.name
         when "week"
-          bucket_name
+          start_date = DateTime.parse(bucket_name)
+          end_date = start_date + 6.days
+          date_format = "%d %b %Y"
+          "#{start_date.strftime(date_format)} - #{end_date.strftime(date_format)}"
         end
       end
   end
