@@ -63,9 +63,11 @@ RSpec.describe "InternalApi::V1::Profiles::BillingController", type: :request do
 
     context "when wise account for user is not present" do
       it "creates the record for wise account" do
-        expect { subject }.to change (WiseAccount.count).from(0).to(1)
+        # rubocop:disable RSpec/ExpectChange
+        expect { subject }.to change { WiseAccount.count }.from(0).to(1)
         expect(json_response["profileId"]).to eq(params[:profile].to_s)
         expect(json_response["recipientId"]).to eq(params[:id].to_s)
+        # rubocop:enable RSpec/ExpectChange
       end
     end
 

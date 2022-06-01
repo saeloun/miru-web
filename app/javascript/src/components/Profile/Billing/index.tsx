@@ -107,7 +107,7 @@ const Billing = () => {
       />
       <div className="py-10 pl-10 mt-4 bg-miru-gray-100 h-screen inline-flex">
         {isLoading && <Loader message={"Loading..."} /> }
-        <div className="w-26 float-left">Bank Account Details</div>
+        <div className="w-26 h-12 float-left my-2">Bank Account Details</div>
         {
           !billingDetails.recipientId ?
             <CurrencyDropdown

@@ -29,8 +29,16 @@ const BankInfo = ({
   }, []);
 
   return (
-    <div className="mx-2 w-5/6 h-12 px-8 py-2 bg-gray-200">
-      <p onClick={ () => setBankDetailsModal(true) }>You have already submitted your bank details. View or update bank details</p>
+    <div className="mx-2 w-5/8 h-12 px-8 py-3.5 bg-gray-200 flex justify-center">
+      <p>
+        You have already submitted your bank details.
+      </p>
+      <button
+        className="bg-transparent text-miru-han-purple-1000 font-semibold underline mx-1"
+        onClick={() => setBankDetailsModal(true)}
+      >
+        View or update bank details
+      </button>
     </div>
   );
 };
