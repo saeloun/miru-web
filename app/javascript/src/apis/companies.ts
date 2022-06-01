@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const path = "/companies";
+const path = "/internal_api/v1/companies";
 
 const index = () => axios.get(path);
 
 const create = payload => axios.post(path, payload);
 
-const update = payload => axios.put(path, payload);
+const update = (id, payload) => axios.put(`${path}/${id}`, payload);
 
 const companiesApi = {
   index,
