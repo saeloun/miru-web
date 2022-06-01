@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::TimezonesController < InternalApi::V1::ApplicationController
-  skip_after_action :verify_authorized, only: [:index]
-
   def index
-    timezones = Hash.new([])
-    ISO3166::Country.pluck(:alpha2).map do |alpha_arr|
-      alpha_name = alpha_arr.first
-      timezones[alpha_name] = ActiveSupport::TimeZone.country_zones(alpha_name).map { |tz| tz.to_s }
+    authorize :index, policy_class: TimezonePolicy
+
+    timezones = ISO3166::Country.pluck(:alpha2).flatten.reduce(Hash.new([])) do |obj, alpha|
+      obj[alpha] = ActiveSupport::TimeZone.country_zones(alpha).map(&:to_s)
+      obj
     end
+
     render json: { timezones: }, status: :ok
   end
 end
