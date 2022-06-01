@@ -26,11 +26,10 @@ const InvoiceLineItems = ({ items, showHeader }) => {
       </tr>
     </thead>
   );
-  
   return (
     <div className="px-10 py-5">
       <table className="w-full table-fixed">
-        { showHeader ? getHeader(): null }
+        {showHeader ? getHeader() : null}
         <tbody className="w-full">
           {items.length > 0
             && items.map(item => (

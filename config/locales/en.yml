@@ -76,6 +76,9 @@ en:
       success: "Company created successfully"
     update:
       success: "Changes saved successfully"
+    purge_logo:
+      destroy:
+        success: "Company Logo successfully removed"
   client:
     name:
       label: Name
