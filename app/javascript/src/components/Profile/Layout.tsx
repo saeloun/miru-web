@@ -3,7 +3,7 @@ import { BrowserRouter } from "react-router-dom";
 import RouteConfig from "./RouteConfig";
 import SideNav from "./SubNav";
 
-const Layout = ({ isAdmin, userDetails }) => (
+const Layout = ({ isAdmin, company, userDetails }) => (
   <React.Fragment>
     <BrowserRouter>
       <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
@@ -12,6 +12,7 @@ const Layout = ({ isAdmin, userDetails }) => (
       <div className="flex mt-5 mb-10">
         <SideNav
           isAdmin={isAdmin}
+          company={company}
           firstName={userDetails.firstName}
           lastName={userDetails.lastName}
           email={userDetails.email}
