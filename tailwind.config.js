@@ -34,6 +34,9 @@ module.exports = {
       xxl: "1536px",
     },
     extend: {
+      boxShadow: {
+        c1: "0px 0px 40px rgba(0, 0, 0, 0.1);"
+      },
       margin: {
         86: "342px",
       },
