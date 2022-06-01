@@ -131,12 +131,6 @@ class Client < ApplicationRecord
 
   private
 
-    def unique_client_name_for_company
-      if company.clients.where(name:).exists?
-        errors.add(:name, "is already taken")
-      end
-    end
-
     def stripe_connected_account
       StripeConnectedAccount.find_by!(company:)
     end
