@@ -206,7 +206,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
         }
         expect(response).to have_http_status(:ok)
         timesheet_ids_in_response = json_response["entries"].pluck("id")
-        expect(json_response["entries"].size).to eq(2)
+        expect(json_response["entries"].size).to eq(3)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id)
       end
     end
