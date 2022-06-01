@@ -11,6 +11,8 @@ const newItemSchema = Yup.object().shape({
 
 const getInitialvalues = (item) => ({
   name: item.name,
+  description: item.description,
+  price: item.price
 });
 
 export interface IProps {
@@ -26,6 +28,8 @@ const EditLineItem = ({ leadDetails, item, setShowEditDialog }: IProps) => {
   const handleSubmit = async values => {
     await leadLineItems.update(leadDetails.id, item.id, {
       "name": values.name,
+      "description": values.description,
+      "price": values.price
     }).then(() => {
       setShowEditDialog(false);
       document.location.reload();
@@ -69,6 +73,38 @@ const EditLineItem = ({ leadDetails, item, setShowEditDialog }: IProps) => {
                       </div>
                       <div className="mt-1">
                         <Field className={`form__input ${errors.name && touched.name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="name" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="field">
+                      <div className="field_with_errors">
+                        <label className="form__label">Description</label>
+                        <div className="tracking-wider block text-xs text-red-600">
+                          {errors.description && touched.description &&
+                            <div>{errors.description}</div>
+                          }
+                        </div>
+                      </div>
+                      <div className="mt-1">
+                        <Field className={`form__input ${errors.description && touched.description && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="description" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="field">
+                      <div className="field_with_errors">
+                        <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                          Price
+                        </label>
+                        <div className="tracking-wider block text-xs text-red-600">
+                          {errors.price && touched.price &&
+                            <div>{errors.price}</div>
+                          }
+                        </div>
+                      </div>
+                      <div className="mt-1">
+                        <Field className={`form__input rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none ${errors.price && touched.price && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="price" type="number" min="0" />
                       </div>
                     </div>
                   </div>

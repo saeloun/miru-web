@@ -6,18 +6,21 @@ import { X } from "phosphor-react";
 import * as Yup from "yup";
 
 const newLeadSchema = Yup.object().shape({
-  name: Yup.string().required("Name cannot be blank"),
-  budget_amount: Yup.number().typeError("Invalid budget amount")
+  name: Yup.string().required("Name cannot be blank")
 });
 
 const initialValues = {
   name: "",
+  description: "",
+  price: 0.0
 };
 
 const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
   const handleSubmit = (values) => {
     leadLineItems.create(leadDetails.id, {
       "name": values.name,
+      "description": values.description,
+      "price": values.price,
     })
       .then(res => {
         setLeadData([...leadData, { ...res.data }]);
@@ -62,6 +65,38 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                       </div>
                       <div className="mt-1">
                         <Field className={`form__input ${errors.name && touched.name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="name" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="field">
+                      <div className="field_with_errors">
+                        <label className="form__label">Description</label>
+                        <div className="tracking-wider block text-xs text-red-600">
+                          {errors.description && touched.description &&
+                            <div>{errors.description}</div>
+                          }
+                        </div>
+                      </div>
+                      <div className="mt-1">
+                        <Field className={`form__input ${errors.description && touched.description && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="description" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="field">
+                      <div className="field_with_errors">
+                        <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                          Price
+                        </label>
+                        <div className="tracking-wider block text-xs text-red-600">
+                          {errors.price && touched.price &&
+                            <div>{errors.price}</div>
+                          }
+                        </div>
+                      </div>
+                      <div className="mt-1">
+                        <Field className={`form__input rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none ${errors.price && touched.price && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="price" type="number" min="0" />
                       </div>
                     </div>
                   </div>

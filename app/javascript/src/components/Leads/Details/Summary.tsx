@@ -25,7 +25,6 @@ const getInitialvalues = (lead) => ({
 });
 
 const Summary = ({ leadDetails }) => {
-
   const [apiError, setApiError] = useState<string>("");
 
   const [budgetStatusCodeList, setBudgetStatusCodeList] = useState<any>(null);
@@ -83,6 +82,7 @@ const Summary = ({ leadDetails }) => {
       <Formik
         initialValues={getInitialvalues(leadDetails)}
         validationSchema={newLeadSchema}
+        enableReinitialize={true}
         onSubmit={handleSubmit}
       >
         {({ errors, touched }) => (

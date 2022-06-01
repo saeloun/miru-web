@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, CaretDown, Trash } from "phosphor-react";
 
@@ -20,6 +20,10 @@ const Header = ({ leadDetails }) => {
   const handleBackButtonClick = () => {
     navigate("/leads");
   };
+
+  useEffect(() => {
+    toggleLeadDetails(!isLeadOpen);
+  }, []);
 
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
   return (
@@ -69,23 +73,23 @@ const Header = ({ leadDetails }) => {
         </div>
         <div className="ml-28 text-xs text-miru-dark-purple-400">
           <h6 className="font-semibold">Budget Status</h6>
-          <p>{leadDetails.budget_status_code}</p>
+          <p>{leadDetails.budget_status_code_name}</p>
         </div>
         <div className="ml-28 text-xs text-miru-dark-purple-400">
           <h6 className="font-semibold">Industry</h6>
-          <p>{leadDetails.industry_code}</p>
+          <p>{leadDetails.industry_code_name}</p>
         </div>
         <div className="ml-28 text-xs text-miru-dark-purple-400">
           <h6 className="font-semibold">Quality</h6>
-          <p>{leadDetails.quality_code}</p>
+          <p>{leadDetails.quality_code_name}</p>
         </div>
         <div className="ml-28 text-xs text-miru-dark-purple-400">
           <h6 className="font-semibold">State</h6>
-          <p>{leadDetails.state_code}</p>
+          <p>{leadDetails.state_code_name}</p>
         </div>
         <div className="ml-28 text-xs text-miru-dark-purple-400">
           <h6 className="font-semibold">Status</h6>
-          <p>{leadDetails.status_code}</p>
+          <p>{leadDetails.status_code_name}</p>
         </div>
       </div>
       }

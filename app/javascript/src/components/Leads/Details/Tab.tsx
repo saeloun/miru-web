@@ -16,12 +16,6 @@ const Tab = ({ leadDetails }) => {
   const { leadId } = useParams();
 
   useEffect(() => {
-    if (activeTab === ""){
-      setActiveTab("summary");
-    }
-  }, []);
-
-  useEffect(() => {
     if (leadId) setActiveTabKey();
   }, [location.pathname]);
 
