@@ -79,8 +79,9 @@ const EditLineItems = ({
         <input
           type="text"
           placeholder="Rate"
-          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          className=" p-1 px-2 bg-miru-gray-600 rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={rate}
+          disabled={true}
           onChange={e => setRate(e.target.value)}
           onKeyDown={e => onEnter(e)}
         />
@@ -89,8 +90,9 @@ const EditLineItems = ({
         <input
           type="text"
           placeholder="Qty"
-          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          className=" p-1 px-2 bg-miru-gray-600 rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={qty}
+          disabled={true}
           onChange={e => {
             setQty(e.target.value);
             setLineTotal(Number(rate) * Number(e.target.value));
