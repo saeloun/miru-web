@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_31_122749) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_01_130833) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -140,6 +140,24 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_31_122749) do
     t.datetime "discarded_at"
     t.index ["discarded_at"], name: "index_lead_line_items_on_discarded_at"
     t.index ["lead_id"], name: "index_lead_line_items_on_lead_id"
+  end
+
+  create_table "lead_line_items_quotes", id: false, force: :cascade do |t|
+    t.bigint "lead_quote_id", null: false
+    t.bigint "lead_line_item_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lead_line_item_id"], name: "index_lead_line_items_quotes_on_lead_line_item_id"
+    t.index ["lead_quote_id"], name: "index_lead_line_items_quotes_on_lead_quote_id"
+  end
+
+  create_table "lead_quotes", force: :cascade do |t|
+    t.bigint "lead_id", null: false
+    t.string "name"
+    t.string "description"
+    t.datetime "discarded_at"
+    t.index ["discarded_at"], name: "index_lead_quotes_on_discarded_at"
+    t.index ["lead_id"], name: "index_lead_quotes_on_lead_id"
   end
 
   create_table "lead_timelines", force: :cascade do |t|
@@ -295,6 +313,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_31_122749) do
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"
   add_foreign_key "lead_line_items", "leads"
+  add_foreign_key "lead_quotes", "leads"
   add_foreign_key "lead_timelines", "leads"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"

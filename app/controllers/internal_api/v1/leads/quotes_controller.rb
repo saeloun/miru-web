@@ -3,28 +3,28 @@
 class InternalApi::V1::Leads::QuotesController < InternalApi::V1::ApplicationController
   def index
     authorize lead
-    line_items = lead.lead_line_items.where(params[:q].present? ? ["name LIKE ?", "%#{params[:q]}%"] : {}).distinct
-    line_item_details = line_items.map(&:render_properties)
-    render json: { line_item_details: }, status: :ok
+    lead_quotes = lead.lead_quotes.kept.where(params[:q].present? ? ["name LIKE ?", "%#{params[:q]}%"] : {}).distinct
+    quote_details = lead_quotes.map(&:render_properties)
+    render json: { quote_details: }, status: :ok
   end
 
   def create
     authorize lead
     render :create, locals: {
-      lead: Lead.create!(line_item_params)
+      quote: lead.lead_quotes.create!(quote_params)
     }
   end
 
   def show
     authorize lead
-    line_item_details = lead.render_properties
-    render json: { line_item_details: }, status: :ok
+    quote_details = quote.render_properties
+    render json: { quote_details: }, status: :ok
   end
 
   def update
     authorize lead
 
-    if line_item.update!(line_item_params)
+    if quote.update!(quote_params)
       render json: {
         success: true,
         lead:,
@@ -36,7 +36,7 @@ class InternalApi::V1::Leads::QuotesController < InternalApi::V1::ApplicationCon
   def destroy
     authorize lead
 
-    if line_item.discard!
+    if quote.discard!
       render json: {
         lead:,
         notice: I18n.t("lead.delete.success.message")
@@ -50,13 +50,13 @@ class InternalApi::V1::Leads::QuotesController < InternalApi::V1::ApplicationCon
       @_lead ||= Lead.find(params[:lead_id])
     end
 
-    def line_item
-      @_line_items ||= lead.lead_line_items.find(params[:id])
+    def quote
+      @_quote ||= lead.lead_quotes.kept.find(params[:id])
     end
 
-    def line_item_params
-      params.require(:line_item_params).permit(
-        policy(LeadLineItem).permitted_attributes
+    def quote_params
+      params.require(:quote).permit(
+        policy("leads/quote".to_sym).permitted_attributes
       )
     end
 end

@@ -112,6 +112,7 @@ class Lead < ApplicationRecord
 
   has_many :lead_line_items
   has_many :lead_quotes
+  has_many :lead_timelines
 
   def budget_status_code_name
     return "" if budget_status_code.nil?
