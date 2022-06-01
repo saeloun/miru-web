@@ -10,7 +10,7 @@ const update = (id, payload) => axios.put(`${path}/${id}`, payload);
 
 const destroy = id => axios.delete(`${path}/${id}`);
 
-const removeLogo = id => axios.delete(`${path}/${id}/logo`);
+const removeLogo = id => axios.delete(`${path}/${id}/purge_logo`);
 
 const companiesApi = {
   index,
