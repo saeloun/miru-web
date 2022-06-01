@@ -21,7 +21,11 @@ const getInitialvalues = (lead) => ({
   industry_code: lead.industry_code,
   quality_code: lead.quality_code,
   state_code: lead.state_code,
-  status_code: lead.status_code
+  status_code: lead.status_code,
+  donotemail: lead.donotemail,
+  donotbulkemail: lead.donotbulkemail,
+  donotfax: lead.donotfax,
+  donotphone: lead.donotphone
 });
 
 const Summary = ({ leadDetails }) => {
@@ -38,6 +42,11 @@ const Summary = ({ leadDetails }) => {
   const [qualityCode, setQualityCode] = useState<any>(null);
   const [stateCode, setStateCode] = useState<any>(null);
   const [statusCode, setStatusCode] = useState<any>(null);
+
+  const [doNotEmail, setDoNotEmail] = useState<any>(false);
+  const [doNotBulkEmail, setDoNotBulkEmail] = useState<any>(false);
+  const [doNotFax, setDoNotFax] = useState<any>(false);
+  const [doNotPhone, setDoNotPhone] = useState<any>(false);
 
   useEffect(() => {
     const getLeadItems = async () => {
@@ -68,7 +77,11 @@ const Summary = ({ leadDetails }) => {
         "industry_code": industryCode || values.industry_code,
         "quality_code": qualityCode || values.quality_code,
         "state_code": stateCode || values.state_code,
-        "status_code": statusCode || values.status_code
+        "status_code": statusCode || values.status_code,
+        "donotemail": doNotEmail || values.donotemail,
+        "donotbulkemail": doNotBulkEmail || values.donotbulkemail,
+        "donotfax": doNotFax || values.donotfax,
+        "donotphone": doNotPhone || values.donotphone
       }
     }).then(() => {
       document.location.reload();
@@ -244,6 +257,49 @@ const Summary = ({ leadDetails }) => {
                   <a href="#" className="inline-flex items-center text-xs font-normal text-gray-500 hover:underline dark:text-gray-400">
                         Why do I need to connect with my wallet?</a>
                 </div> */}
+              </div>
+            </div>
+            <div className="my-6">
+              <div className="p-4 max-w-sm bg-white rounded-lg border shadow-md sm:p-6 dark:bg-gray-800 dark:border-gray-700">
+                {/* <h5 className="mb-3 text-base font-semibold text-gray-900 lg:text-xl dark:text-white">
+                    Connect wallet
+                </h5>
+                <p className="text-sm font-normal text-gray-500 dark:text-gray-400">Connect with one of our available wallet providers or create a new one.</p> */}
+
+                <ul className="my-4 space-y-3">
+                  <li>
+                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+                      <span className="flex-1 ml-3 whitespace-nowrap">Do not Email</span>
+                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
+                        <Field className={`form__input rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none ${errors.donotemail && touched.donotemail && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} type="checkbox" name="donotemail" onChange={(e) => {e.preventDefault(); setDoNotEmail(e.target.checked)}} />
+                      </span>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+                      <span className="flex-1 ml-3 whitespace-nowrap">Do not bulk Email</span>
+                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
+                        <Field className={`form__input rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none ${errors.donotbulkemail && touched.donotbulkemail && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} type="checkbox" name="donotbulkemail" onChange={(e) => {e.preventDefault(); setDoNotBulkEmail(e.target.checked)}} />
+                      </span>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+                      <span className="flex-1 ml-3 whitespace-nowrap">Do not Fax</span>
+                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
+                        <Field className={`form__input rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none ${errors.donotfax && touched.donotfax && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} type="checkbox" name="donotfax" onChange={(e) => {e.preventDefault(); setDoNotFax(e.target.checked)}} />
+                      </span>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+                      <span className="flex-1 ml-3 whitespace-nowrap">Do not Phone</span>
+                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
+                        <Field className={`form__input rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none ${errors.donotphone && touched.donotphone && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} type="checkbox" name="donotphone" onChange={(e) => {e.preventDefault(); setDoNotPhone(e.target.checked)}} />
+                      </span>
+                    </div>
+                  </li>
+                </ul>
               </div>
             </div>
             <div className="my-6">
