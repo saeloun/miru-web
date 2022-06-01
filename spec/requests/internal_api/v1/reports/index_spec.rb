@@ -191,7 +191,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
         @timesheet_entry6 = create(
           :timesheet_entry,
           project:,
-          work_date: this_week_start_date,
+          work_date: Date.today,
           user: @user1,
           bill_status: "unbilled")
         TimesheetEntry.search_index.refresh
