@@ -6,7 +6,15 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
     # query = Lead.all.kept.ransack({ name_or_email_cont: params[:q] })
     # leads = query.result(distinct: true)
     leads = Lead.where(params[:q].present? ? ["name LIKE ?", "%#{params[:q]}%"] : {}).distinct
-    lead_details = leads.map { |lead| lead.lead_detail }
+    lead_details = leads.map { |lead| lead.lead_detail.merge(
+      {
+        budget_status_code_name: lead.budget_status_code_name,
+        industry_code_name: lead.industry_code_name,
+        quality_code_name: lead.quality_code_name,
+        state_code_name: lead.state_code_name,
+        status_code_name: lead.status_code_name
+      })
+}
     render json: { lead_details: }, status: :ok
   end
 

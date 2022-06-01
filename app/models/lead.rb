@@ -113,6 +113,46 @@ class Lead < ApplicationRecord
   has_many :lead_line_items
   has_many :lead_quotes
 
+  def budget_status_code_name
+    return "" if budget_status_code.nil?
+
+    codes = Lead::BUDGET_STATUS_CODE_OPTIONS.map { |obj| { obj.id => obj.name } }
+    code_name_hash = codes.find { |c| c[budget_status_code] }
+    code_name_hash[budget_status_code]
+  end
+
+  def industry_code_name
+    return "" if industry_code.nil?
+
+    codes = Lead::INDUSTRY_CODE_OPTIONS.map { |obj| { obj.id => obj.name } }
+    code_name_hash = codes.find { |c| c[industry_code] }
+    code_name_hash[industry_code]
+  end
+
+  def quality_code_name
+    return "" if quality_code.nil?
+
+    codes = Lead::QUALITY_CODE_OPTIONS.map { |obj| { obj.id => obj.name } }
+    code_name_hash = codes.find { |c| c[quality_code] }
+    code_name_hash[quality_code]
+  end
+
+  def state_code_name
+    return "" if state_code.nil?
+
+    codes = Lead::STATE_CODE_OPTIONS.map { |obj| { obj.id => obj.name } }
+    code_name_hash = codes.find { |c| c[state_code] }
+    code_name_hash[state_code]
+  end
+
+  def status_code_name
+    return "" if status_code.nil?
+
+    codes = Lead::STATUS_CODE_OPTIONS.map { |obj| { obj.id => obj.name } }
+    code_name_hash = codes.find { |c| c[status_code] }
+    code_name_hash[status_code]
+  end
+
   def lead_detail
     {
       id:, address:, base_currency:, budget_amount:, budget_status_code:,

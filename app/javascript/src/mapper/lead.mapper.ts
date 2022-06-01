@@ -6,7 +6,12 @@ const getList = (input) => input.lead_details.map((lead) => ({
   industry_code: lead.industry_code,
   quality_code: lead.quality_code,
   state_code: lead.state_code,
-  status_code: lead.status_code
+  status_code: lead.status_code,
+  budget_status_code_name: lead.budget_status_code_name,
+  industry_code_name: lead.industry_code_name,
+  quality_code_name: lead.quality_code_name,
+  state_code_name: lead.state_code_name,
+  status_code_name: lead.status_code_name
 }));
 
 const unmapLeadList = (input) => {
@@ -42,7 +47,12 @@ const unmapLeadDetails = (input) => {
       industry_code: data.lead_details.industry_code,
       quality_code: data.lead_details.quality_code,
       state_code: data.lead_details.state_code,
-      status_code: data.lead_details.status_code
+      status_code: data.lead_details.status_code,
+      budget_status_code_name: data.lead_details.budget_status_code_name,
+      industry_code_name: data.lead_details.industry_code_name,
+      quality_code_name: data.lead_details.quality_code_name,
+      state_code_name: data.lead_details.state_code_name,
+      status_code_name: data.lead_details.status_code_name
     }
   };
 };

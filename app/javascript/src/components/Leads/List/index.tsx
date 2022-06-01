@@ -24,11 +24,11 @@ const getTableData = (leads) => {
       ({
         col1: <div className="text-base text-miru-dark-purple-1000">{lead.name}</div>,
         col2: <div className="text-base text-miru-dark-purple-1000">{lead.budget_amount}</div>,
-        col3: <div className="text-base text-miru-dark-purple-1000">{lead.budget_status_code}</div>,
-        col4: <div className="text-base text-miru-dark-purple-1000">{lead.industry_code}</div>,
-        col5: <div className="text-base text-miru-dark-purple-1000">{lead.quality_code}</div>,
-        col6: <div className="text-base text-miru-dark-purple-1000">{lead.state_code}</div>,
-        col7: <div className="text-base text-miru-dark-purple-1000">{lead.status_code}</div>,
+        col3: <div className="text-base text-miru-dark-purple-1000">{lead.budget_status_code_name}</div>,
+        col4: <div className="text-base text-miru-dark-purple-1000">{lead.industry_code_name}</div>,
+        col5: <div className="text-base text-miru-dark-purple-1000">{lead.quality_code_name}</div>,
+        col6: <div className="text-base text-miru-dark-purple-1000">{lead.state_code_name}</div>,
+        col7: <div className="text-base text-miru-dark-purple-1000">{lead.status_code_name}</div>,
         rowId: lead.id
       })
     );
