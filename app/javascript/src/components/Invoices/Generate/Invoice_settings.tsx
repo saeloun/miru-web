@@ -58,32 +58,29 @@ const Invoice_settings = ({ setShowInvoiceSetting }) => {
     }
   };
 
-  const updatePaymentsProvidersSettings = async (provider) => {
-    await PaymentsProviders.update(provider.id, provider); 
+  const updatePaymentsProvidersSettings = async (id, provider) => {
+    await PaymentsProviders.update(id, provider); 
   };
 
   const toggleStripe = async () => {
-    await updatePaymentsProvidersSettings({
-      id: stripe.id,
+    await updatePaymentsProvidersSettings(stripe.id, {
       enabled: !isStripeEnabled
     });
     setStripeEnabled(!isStripeEnabled);
   };
 
   const removePaymentMethod = async (method) => {
-    await updatePaymentsProvidersSettings({
-      id: stripe.id,
-      accepted_payment_methods: stripe.acceptedPaymentMethods.filter(m => m !== method)
+    await updatePaymentsProvidersSettings(stripe.id, {
+      accepted_payment_methods: stripeAcceptedPaymentMethods.filter(m => m !== method)
     });
-    setStripeAcceptedPaymentMethods(stripe.acceptedPaymentMethods.filter(m => m !== method));
+    setStripeAcceptedPaymentMethods(stripeAcceptedPaymentMethods.filter(m => m !== method));
   };
 
   const addPaymentMethod = async (method) => {
-    await updatePaymentsProvidersSettings({
-      id: stripe.id,
-      accepted_payment_methods: stripe.acceptedPaymentMethods.concat(method)
+    await updatePaymentsProvidersSettings(stripe.id, {
+      accepted_payment_methods: stripeAcceptedPaymentMethods.concat(method)
     });
-    setStripeAcceptedPaymentMethods(stripe.acceptedPaymentMethods.concat(method));
+    setStripeAcceptedPaymentMethods(stripeAcceptedPaymentMethods.concat(method));
   };
 
   useEffect(() => {
