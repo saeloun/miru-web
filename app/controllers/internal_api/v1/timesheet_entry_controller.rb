@@ -18,7 +18,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
   def create
     authorize TimesheetEntry
     timesheet_entry = current_project.timesheet_entries.new(timesheet_entry_params)
-    timesheet_entry.user = current_user
+    timesheet_entry.user = current_company.users.find(params[:user_id])
     render json: {
       notice: I18n.t("timesheet_entry.create.message"),
       entry: timesheet_entry.formatted_entry
@@ -44,7 +44,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
     end
 
     def current_timesheet_entry
-      @_current_timesheet_entry ||= current_user.timesheet_entries.find(params[:id])
+      @_current_timesheet_entry ||= current_company.timesheet_entries.find(params[:id])
     end
 
     def timesheet_entry_params
