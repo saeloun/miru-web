@@ -6,6 +6,7 @@ import React, {
   useState
 } from "react";
 
+import { useNavigate } from "react-router-dom";
 import invoicesApi from "apis/invoices";
 import cn from "classnames";
 import Toastr from "common/Toastr";
@@ -55,6 +56,7 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
   const [newRecipient, setNewRecipient] = useState<string>("");
   const [width, setWidth] = useState<string>("10ch");
 
+  const navigate = useNavigate();
   const modal = useRef();
   const input: React.RefObject<HTMLInputElement> = useRef();
 
@@ -75,8 +77,10 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
 
       Toastr.success(resp.data.message);
       setStatus(InvoiceStatus.SUCCESS);
+      navigate("/invoices");
     } catch (error) {
       setStatus(InvoiceStatus.ERROR);
+      navigate("/invoices");
     }
   };
 
