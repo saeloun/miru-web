@@ -29,8 +29,11 @@ namespace :internal_api, defaults: { format: "json" } do
       resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
     end
 
-    # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
+
+    namespace :payments do
+      resources :providers, only: [:create, :index, :update]
+    end
   end
 end
