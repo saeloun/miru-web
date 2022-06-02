@@ -11,6 +11,7 @@ import { currencyList } from "../../../../constants/currencyList";
 import { CountryList } from "../../../../constants/countryList";
 import * as Yup from "yup";
 import companiesApi from "apis/companies";
+const img = require("../../../../../../assets/images/plus_icon.svg");
 
 const orgSchema = Yup.object().shape({
   companyName: Yup.string().required("Name cannot be blank"),
@@ -75,18 +76,6 @@ const OrgEdit = () => {
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [updateMsg, setupdateMsg] = useState({ message: '', type: '' });
 
-  const getTimezone = async () => {
-    const timezones = await companyProfileApi.get();
-    setTimeZones(timezones.data.timezones);
-    const timezoneOptionList = timezones.data.timezones["US"].map((item) => {
-      return {
-        value: item,
-        label: item,
-      }
-    })
-    setTimezoneOption(timezoneOptionList)
-  };
-
   const getCountries = async () => {
     const countries = CountryList.map((item) => {
       return {
@@ -121,24 +110,24 @@ const OrgEdit = () => {
   const getData = async () => {
     const resp = await companiesApi.index();
     setOrgDetails({
-      logoUrl: '',
-      companyName: resp.data.company.name,
-      companyAddr: resp.data.company.address,
-      companyPhone: resp.data.company.business_phone,
-      countryName: resp.data.company.country,
-      companyCurrency: resp.data.company.base_currency,
-      companyRate: parseFloat(resp.data.company.standard_price),
-      companyFiscalYear: resp.data.company.fiscal_year_end,
-      companyDateFormat: resp.data.company.date_format,
-      companyTimezone: resp.data.company.timezone,
-      id: resp.data.company.id,
+      logoUrl: resp.data.logo_url,
+      companyName: resp.data.name,
+      companyAddr: resp.data.address,
+      companyPhone: resp.data.business_phone,
+      countryName: resp.data.country,
+      companyCurrency: resp.data.base_currency,
+      companyRate: parseFloat(resp.data.standard_price),
+      companyFiscalYear: resp.data.fiscal_year_end,
+      companyDateFormat: resp.data.date_format,
+      companyTimezone: resp.data.timezone,
+      id: resp.data.id,
       logo: null,
     });
 
     const timezonesEntry = await companyProfileApi.get();
     setTimeZones(timezonesEntry.data.timezones);
 
-    const timeZonesForCountry = timezonesEntry.data.timezones[resp.data.company.country];
+    const timeZonesForCountry = timezonesEntry.data.timezones[resp.data.country];
     const timezoneOptionList = timeZonesForCountry.map((item) => {
       return {
         value: item,
@@ -285,6 +274,13 @@ const OrgEdit = () => {
     setIsDetailUpdated(false);
   };
 
+  const handleDeleteLogo = async () => {
+    const removeLogo = await companiesApi.removeLogo(orgDetails.id);
+    if(removeLogo.status === 200){
+      setOrgDetails({ ...orgDetails, logoUrl: null, logo: null });
+    };
+  };
+
   return (
     <div className="flex flex-col w-4/5">
       <Header
@@ -301,22 +297,35 @@ const OrgEdit = () => {
           <div className="w-4/12 font-bold p-2">Basic Details</div>
           <div className="w-full p-2">
             Logo
-            <div className="w-20 h-20 mt-2 flex flex-row">
-              <img src={orgDetails.logoUrl ? orgDetails.logoUrl : companyLogo} className={"rounded-full min-w-full h-full"}></img>
-              <label htmlFor="file-input" className="">
-                <img src={editButton} className={"rounded-full mt-5 cursor-pointer"} style={{ 'minWidth': '40px' }}></img>
-              </label>
-              <input id="file-input" type="file" name="myImage" className='hidden' onChange={onLogoChange}>
-              </input>
-              <button onClick={() => { }} className="">
-                <img
-                  src="/delete.svg"
-                  alt="delete"
-                  style={{ 'minWidth': '20px' }}
-                />
-              </button>
-            </div>
-            <div className="flex flex-col mt-2 w-1/2">
+            {orgDetails.logoUrl  ? (
+              <div className="mt-2 flex flex-row">
+                <div className="w-20 h-20">
+                  <img src={orgDetails.logoUrl} className={"rounded-full min-w-full h-full"}></img>
+                </div>
+                <label htmlFor="file-input">
+                  <img src={editButton} className={"rounded-full mt-5 cursor-pointer"} style={{ "minWidth": "40px" }}></img>
+                </label>
+                <input id="file-input" type="file" name="myImage" className='hidden' onChange={onLogoChange}>
+                </input>
+                <button onClick={handleDeleteLogo}>
+                  <img
+                    src="/delete.svg"
+                    alt="delete"
+                    style={{ "minWidth": "20px" }}
+                  />
+                </button>
+              </div>
+            ) : (
+              <>
+                <label htmlFor="file-input">
+                  <div className="w-20 h-20 border rounded border-miru-han-purple-1000 flex justify-center items-center mt-2 cursor-pointer">
+                    <img src={img}></img>
+                  </div>
+                </label>
+                <input id="file-input" type="file" name="myImage" className='hidden' onChange={onLogoChange} />
+              </>
+            )}
+            <div className="flex flex-col mt-4 w-1/2">
               <label className="mb-2">Company Name</label>
               <input
                 type="text"
@@ -343,7 +352,7 @@ const OrgEdit = () => {
                 className="border py-1 px-1 w-5/6	"
                 onChange={handleAddrChange}
               />
-              <label className="mb-2 mt-2">Business Phone</label>
+              <label className="mb-2 mt-4">Business Phone</label>
               <input
                 type="text"
                 id="company_phone"
