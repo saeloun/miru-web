@@ -24,7 +24,7 @@ interface IProvider {
   acceptedPaymentMethods: Array<string>;
 }
 
-const Invoice_settings = ({ setShowInvoiceSetting }) => {
+const InvoiceSettings = ({ setShowInvoiceSetting }) => {
   const [status, setStatus] = React.useState<PaymentSettingsStatus>(
     PaymentSettingsStatus.IDLE
   );
@@ -195,4 +195,4 @@ const Invoice_settings = ({ setShowInvoiceSetting }) => {
   );
 };
 
-export default Invoice_settings;
+export default InvoiceSettings;
