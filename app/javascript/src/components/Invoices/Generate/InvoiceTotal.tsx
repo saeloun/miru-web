@@ -11,14 +11,15 @@ const InvoiceTotal = ({
   amountDue, setAmountDue,
   setAmount,
   discount, setDiscount,
-  tax, setTax
+  tax, setTax,
+  showDiscountInput, showTax
 }) => {
 
   const [addDiscount, setAddDiscount] = useState<boolean>(false);
   const [showDiscountMenu, setShowDiscountMenu] = useState<boolean>(false);
   const [showDiscountButton, setShowDiscountButton] = useState<boolean>(false);
-  const [showDiscount, setShowDiscount] = useState<boolean>(false);
-  const [showTaxInput, setShowTaxInput] = useState<boolean>(false);
+  const [showDiscount, setShowDiscount] = useState<boolean>(showDiscountInput);
+  const [showTaxInput, setShowTaxInput] = useState<boolean>(showTax);
   const [showEditTaxButton, setShowEditTaxButton] = useState<boolean>(false);
 
   const [subTotal, setSubTotal] = useState<number>(0);
@@ -81,23 +82,14 @@ const InvoiceTotal = ({
   };
 
   useEffect(() => {
-    let sum = 0;
-    newLineItems.forEach(item => {
-      sum = sum + item.lineTotal;
-    });
-    setSubTotal(sum);
-  }, [newLineItems]);
+    const newLineItemsSubTotal = newLineItems.reduce((sum, { lineTotal }) => (sum + lineTotal), 0);
 
-  useEffect(() => {
-    const Total = Number(subTotal) + Number(tax) - Number(discount);
-    setTotal(Total);
-    setAmount(Total);
-  }, [discount, subTotal, tax]);
-
-  useEffect(() => {
-    const Due = total - amountPaid;
-    setAmountDue(Due);
-  }, [amountPaid, total]);
+    const newTotal = Number(newLineItemsSubTotal) + Number(tax) - Number(discount);
+    setSubTotal(newLineItemsSubTotal);
+    setTotal(newTotal);
+    setAmount(newTotal);
+    setAmountDue(newTotal - amountPaid);
+  }, [newLineItems, discount, subTotal, tax]);
 
   return (
     <div className="pt-3 pb-10 mb-5 w-full flex justify-end">

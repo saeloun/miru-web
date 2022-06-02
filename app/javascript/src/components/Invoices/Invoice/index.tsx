@@ -5,7 +5,8 @@ import invoicesApi from "apis/invoices";
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
 import { ApiStatus as InvoiceStatus } from "../../../constants";
-import SendInvoice from "../Modals/SendInvoice";
+import DeleteInvoice from "../popups/DeleteInvoice";
+import SendInvoice from "../popups/SendInvoice";
 
 const Invoice = () => {
   const params = useParams();
@@ -15,6 +16,8 @@ const Invoice = () => {
   );
   const [invoice, setInvoice] = useState<any>(null);
   const [showSendInvoiceModal, setShowInvoiceModal] = useState<boolean>(false);
+  const [invoiceToDelete, setInvoiceToDelete] = React.useState(null);
+  const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
   const fetchInvoice = async () => {
     try {
       setStatus(InvoiceStatus.LOADING);
@@ -35,15 +38,24 @@ const Invoice = () => {
   const handleSendInvoice = () => {
     setShowInvoiceModal(true);
   };
-
   return (
     status === InvoiceStatus.SUCCESS && (
       <>
-        <Header invoice={invoice} handleSendInvoice={handleSendInvoice} />
+        <Header invoice={invoice} handleSendInvoice={handleSendInvoice} setShowDeleteDialog={setShowDeleteDialog}
+          setInvoiceToDelete={setInvoiceToDelete} />
         <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
           <InvoiceDetails invoice={invoice} />
         </div>
-        {showSendInvoiceModal && <SendInvoice invoice={invoice} setIsSending={setShowInvoiceModal} isSending={showSendInvoiceModal} />}
+        {
+          showSendInvoiceModal &&
+          <SendInvoice invoice={invoice} setIsSending={setShowInvoiceModal} isSending={showSendInvoiceModal} />
+        }
+        {showDeleteDialog && (
+          <DeleteInvoice
+            invoice={invoiceToDelete}
+            setShowDeleteDialog={setShowDeleteDialog}
+          />
+        )}
       </>
     )
   );

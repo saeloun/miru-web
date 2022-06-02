@@ -30,9 +30,14 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     }
   end
 
+  def edit
+    authorize Invoice
+    render :edit, locals: { invoice: }
+  end
+
   def update
     authorize invoice
-    invoice = @client.invoices.find(params[:id])
+
     invoice.update!(invoice_params)
     render :update, locals: {
       invoice:,

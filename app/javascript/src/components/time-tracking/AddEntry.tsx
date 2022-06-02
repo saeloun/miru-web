@@ -10,11 +10,12 @@ const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 
 const AddEntry: React.FC<Iprops> = ({
+  selectedEmployeeId,
+  fetchEntries,
   setNewEntryView,
   clients,
   projects,
   selectedDateInfo,
-  setEntryList,
   entryList,
   selectedFullDate,
   setEditEntryId,
@@ -85,22 +86,13 @@ const AddEntry: React.FC<Iprops> = ({
     const res = await timesheetEntryApi.create({
       project_id: projectId,
       timesheet_entry: tse
-    });
+    }, selectedEmployeeId);
 
     if (res.status === 200) {
-      setEntryList(pv => {
-        const newState = { ...pv };
-        if (pv[selectedFullDate]) {
-          newState[selectedFullDate] = [
-            res.data.entry,
-            ...pv[selectedFullDate]
-          ];
-        } else {
-          newState[selectedFullDate] = [res.data.entry];
-        }
-        return newState;
-      });
-      setNewEntryView(false);
+      const fetchEntriesRes = await fetchEntries(selectedFullDate, selectedFullDate);
+      if (fetchEntriesRes) {
+        setNewEntryView(false);
+      }
     }
   };
 
@@ -117,18 +109,11 @@ const AddEntry: React.FC<Iprops> = ({
     });
 
     if (res.status === 200) {
-      setEntryList(pv => {
-        const newState = { ...pv };
-        newState[selectedFullDate] = pv[selectedFullDate].map(entry => {
-          if (entry.id === editEntryId) {
-            return res.data.entry;
-          }
-          return entry;
-        });
-        return newState;
-      });
-      setNewEntryView(false);
-      setEditEntryId(0);
+      const fetchEntriesRes = await fetchEntries(selectedFullDate, selectedFullDate);
+      if (fetchEntriesRes) {
+        setNewEntryView(false);
+        setEditEntryId(0);
+      }
     }
   };
 
@@ -271,6 +256,8 @@ const AddEntry: React.FC<Iprops> = ({
 };
 
 interface Iprops {
+  selectedEmployeeId: number;
+  fetchEntries: (from: string, to: string) => Promise<any>
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
   clients: any[];
   projects: object;
