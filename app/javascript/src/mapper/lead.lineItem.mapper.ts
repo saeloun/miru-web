@@ -6,6 +6,7 @@ const getList = (input) => input.line_item_details.map((item) => ({
   number_of_resource: item.number_of_resource,
   resource_expertise_level: item.resource_expertise_level,
   price: item.price,
+  kind_name: item.kind_name
 }));
 
 const unmapLeadLineItemList = (input) => {
@@ -15,7 +16,7 @@ const unmapLeadLineItemList = (input) => {
   };
 };
 
-const unmapLeadListForDropdown = (input) => {
+const unmapLeadLineItemListForDropdown = (input) => {
   const leadList = input.data.line_item_details;
   return leadList.map(item => ({
     label: item.name,
@@ -23,24 +24,24 @@ const unmapLeadListForDropdown = (input) => {
   }));
 };
 
-const unmapLeadDetails = (input) => {
+const unmapLeadLineItemDetails = (input) => {
   const { data } = input;
   return {
     leadDetails: {
-      id: data.lead_details.id,
-      name: data.lead_details.name,
-      budget_amount: data.lead_details.budget_amount,
-      budget_status_code: data.lead_details.budget_status_code,
-      industry_code: data.lead_details.industry_code,
-      quality_code: data.lead_details.quality_code,
-      state_code: data.lead_details.state_code,
-      status_code: data.lead_details.status_code
+      id: data.line_item_details.id,
+      name: data.line_item_details.name,
+      kind: data.line_item_details.kind,
+      description: data.line_item_details.description,
+      number_of_resource: data.line_item_details.number_of_resource,
+      resource_expertise_level: data.line_item_details.resource_expertise_level,
+      price: data.line_item_details.price,
+      kind_name: data.line_item_details.kind_name
     }
   };
 };
 
 export {
   unmapLeadLineItemList,
-  unmapLeadDetails,
-  unmapLeadListForDropdown
+  unmapLeadLineItemDetails,
+  unmapLeadLineItemListForDropdown
 };

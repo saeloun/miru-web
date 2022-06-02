@@ -181,7 +181,7 @@ const EditLead = ({ setShowEditDialog, lead }: IEditLead) => {
                           name="budget_status_code" onChange={(e) => setBudgetStatusCode(e.target.value)}>
                           <option value=''>Select Budget Status</option>
                           {budgetStatusCodeList &&
-                            budgetStatusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lead.budget_status_code}>{e.name}</option>)}
+                            budgetStatusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lead.budget_status_code} >{e.name}</option>)}
                         </select>
                       </div>
                     </div>

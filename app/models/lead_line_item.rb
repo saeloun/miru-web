@@ -29,6 +29,23 @@ class LeadLineItem < ApplicationRecord
   include Discard::Model
   belongs_to :lead
 
+  KindOptionKlass = Struct.new(:name, :id)
+
+  KIND_OPTIONS = [
+    KindOptionKlass.new("Product", 0),
+    KindOptionKlass.new("Bundle", 1),
+    KindOptionKlass.new("Required Bundle Product", 2),
+    KindOptionKlass.new("Optional Bundle Product", 3),
+    KindOptionKlass.new("Project-based Service", 4),
+  ]
+
+  def kind_name
+    return "" if kind.nil?
+
+    kind_name_hash = LeadLineItem::KIND_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+    kind_name_hash[kind]
+  end
+
   def render_properties
     {
       id:, name:, kind:, description:, price:,

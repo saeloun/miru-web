@@ -4,7 +4,9 @@ class InternalApi::V1::Leads::LineItemsController < InternalApi::V1::Application
   def index
     authorize lead
     line_items = lead.lead_line_items.kept.where(params[:q].present? ? ["name LIKE ?", "%#{params[:q]}%"] : {}).distinct
-    line_item_details = line_items.map(&:render_properties)
+    line_item_details = line_items.map { |line_item|
+  line_item.render_properties.merge({ kind_name: line_item.kind_name })
+}
     render json: { line_item_details: }, status: :ok
   end
 
@@ -17,7 +19,7 @@ class InternalApi::V1::Leads::LineItemsController < InternalApi::V1::Application
 
   def show
     authorize lead
-    line_item_details = ead_line_item.render_properties
+    line_item_details = lead_line_item.render_properties.merge({ kind_name: line_item.kind_name })
     render json: { line_item_details: }, status: :ok
   end
 

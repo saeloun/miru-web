@@ -1,3 +1,1 @@
-export const dataCy = (value, suffix = "") => {
-  return `[data-cy='${value}']${suffix}`;
-};
+export const dataCy = (value, suffix = "") => `[data-cy='${value}']${suffix}`;
