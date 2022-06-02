@@ -14,6 +14,9 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
   let(:last_month_start_date) { 1.month.ago.beginning_of_month }
   let(:this_week_start_date) { 0.weeks.ago.beginning_of_week }
 
+  def generate_label(date)
+    "#{date.beginning_of_week.strftime("%d %b %Y")} - #{date.end_of_week.strftime("%d %b %Y")}"
+  end
   context "when user is admin" do
     before do
       create(:company_user, company:, user:)
@@ -225,6 +228,99 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(2)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id)
+      end
+    end
+
+    context "when reports page request is made as group by with team members" do
+      before do
+        @user1 = create(:user)
+        @user2 = create(:user)
+        @timesheet_entry1 = create(:timesheet_entry, user: @user1, project:)
+        @timesheet_entry2 = create(:timesheet_entry, user: @user1, project:)
+        @timesheet_entry3 = create(:timesheet_entry, user: @user2, project:)
+        @timesheet_entry4 = create(:timesheet_entry, user: @user2, project:)
+      end
+
+      it "returns the time entry reports grouped by team members" do
+        send_request :get, internal_api_v1_reports_path, params: {
+          group_by: "team_member"
+        }
+        expect(response).to have_http_status(:ok)
+        reports = json_response["reports"]
+        expect(reports.first["label"]).to eq(@user1.full_name)
+        expect(reports.first["entries"].pluck("id")).to include(@timesheet_entry1.id, @timesheet_entry2.id)
+        expect(reports.last["label"]).to eq(@user2.full_name)
+        expect(reports.last["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
+      end
+    end
+
+    context "when reports page request is made as group by with clients" do
+      before do
+        @timesheet_entry1 = create(:timesheet_entry, project:)
+        @timesheet_entry2 = create(:timesheet_entry, project:)
+        @timesheet_entry3 = create(:timesheet_entry, project: project2)
+        @timesheet_entry4 = create(:timesheet_entry, project: project2)
+        TimesheetEntry.search_index.refresh
+      end
+
+      it "returns the time entry reports grouped by clients" do
+        send_request :get, internal_api_v1_reports_path, params: {
+          group_by: "client"
+        }
+        expect(response).to have_http_status(:ok)
+        reports = json_response["reports"]
+        expect(reports.first["label"]).to eq(client.name)
+        expect(reports.first["entries"].pluck("id")).to include(@timesheet_entry1.id, @timesheet_entry2.id)
+        expect(reports.last["label"]).to eq(client2.name)
+        expect(reports.last["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
+      end
+    end
+
+    context "when reports page request is made as group by with projects" do
+      before do
+        @timesheet_entry1 = create(:timesheet_entry, project:)
+        @timesheet_entry2 = create(:timesheet_entry, project:)
+        @timesheet_entry3 = create(:timesheet_entry, project: project2)
+        @timesheet_entry4 = create(:timesheet_entry, project: project2)
+        TimesheetEntry.search_index.refresh
+      end
+
+      it "returns the time entry reports grouped by projects" do
+        send_request :get, internal_api_v1_reports_path, params: {
+          group_by: "project"
+        }
+        expect(response).to have_http_status(:ok)
+        reports = json_response["reports"]
+        expect(reports.first["label"]).to eq(project.name)
+        expect(reports.first["entries"].pluck("id")).to include(@timesheet_entry1.id, @timesheet_entry2.id)
+        expect(reports.last["label"]).to eq(project2.name)
+        expect(reports.last["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
+      end
+    end
+
+    context "when reports page request is made as group by week" do
+      before do
+        @current_year = Time.now.year
+        @current_month = Time.now.month
+        @date1 = Date.new(@current_year, @current_month, 1)
+        @date2 = Date.new(@current_year, @current_month, 8)
+        @timesheet_entry1 = create(:timesheet_entry, work_date: @date1, project:)
+        @timesheet_entry2 = create(:timesheet_entry, work_date: @date1, project:)
+        @timesheet_entry3 = create(:timesheet_entry, work_date: @date2, project:)
+        @timesheet_entry4 = create(:timesheet_entry, work_date: @date2, project:)
+        TimesheetEntry.search_index.refresh
+      end
+
+      it "returns the time entry reports grouped by week" do
+        send_request :get, internal_api_v1_reports_path, params: {
+          group_by: "week"
+        }
+        expect(response).to have_http_status(:ok)
+        reports = json_response["reports"]
+        expect(reports.first["label"]).to eq(generate_label(@date1))
+        expect(reports.first["entries"].pluck("id")).to include(@timesheet_entry1.id, @timesheet_entry2.id)
+        expect(reports.last["label"]).to eq(generate_label(@date2))
+        expect(reports.last["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
       end
     end
   end
