@@ -20,6 +20,14 @@ const userProfileSchema = Yup.object().shape({
     .oneOf([Yup.ref("password"), null], "Passwords don't match")
 });
 
+const initialErrState = {
+  firstNameErr: "",
+  lastNameErr: "",
+  passwordErr: "",
+  currentPasswordErr: "",
+  confirmPasswordErr: ""
+}
+
 const UserDetails = () => {
   const [profileImage, setProfileImage] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -33,13 +41,7 @@ const UserDetails = () => {
   const [showCurrentPasword, setShowCurrentPassword] = useState<boolean>(false);
   const [showConfirmPasword, setShowConfirmPassword] = useState<boolean>(false);
 
-  const [errDetails, setErrDetails] = useState({
-    firstNameErr: "",
-    lastNameErr: "",
-    passwordErr: "",
-    currentPasswordErr: "",
-    confirmPasswordErr: ""
-  });
+  const [errDetails, setErrDetails] = useState(initialErrState);
 
   const handleProfileImageChange = (e) => {
     const imageFile = e.target.files[0];
@@ -48,22 +50,9 @@ const UserDetails = () => {
 
   const handleUpdateProfile = () => {
     userProfileSchema.validate({ firstName, lastName, password, confirmPassword, currentPassword }, { abortEarly: false }).then(() => {
-      const errObj = {
-        firstNameErr: "",
-        lastNameErr: "",
-        passwordErr: "",
-        currentPasswordErr: "",
-        confirmPasswordErr: ""
-      };
-      setErrDetails(errObj);
+      setErrDetails(initialErrState);
     }).catch(function (err) {
-      const errObj = {
-        firstNameErr: "",
-        lastNameErr: "",
-        passwordErr: "",
-        currentPasswordErr: "",
-        confirmPasswordErr: ""
-      };
+      const errObj = initialErrState;
       err.inner.map((item) => {
         errObj[item.path + "Err"] = item.message;
       });
