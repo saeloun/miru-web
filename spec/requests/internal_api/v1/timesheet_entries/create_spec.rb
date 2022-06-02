@@ -20,7 +20,8 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
           work_date: Time.now,
           note: "Test Note",
           bill_status: :unbilled
-        }
+        },
+        user_id: user.id
       }
     end
 
@@ -46,7 +47,8 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
           work_date: Time.now,
           note: "Test Note",
           bill_status: :unbilled
-        }
+        },
+        user_id: user.id
       }
     end
 

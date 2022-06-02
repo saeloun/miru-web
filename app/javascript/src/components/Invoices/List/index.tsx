@@ -9,8 +9,8 @@ import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
 
 import { ApiStatus as InvoicesStatus } from "../../../constants";
-import BulkDeleteInvoices from "../Modals/BulkDeleteInvoices";
-import DeleteInvoice from "../Modals/DeleteInvoice";
+import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
+import DeleteInvoice from "../popups/DeleteInvoice";
 
 const Invoices: React.FC = () => {
   const [status, setStatus] = React.useState<InvoicesStatus>(

@@ -50,6 +50,14 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     end
   end
 
+  def new_invoice_line_items
+    authorize client
+    render json: {
+      client:,
+      lineItems: client.new_line_item_entries([])
+    }, status: :ok
+  end
+
   private
 
     def client

@@ -2,35 +2,35 @@
 #
 # Table name: users
 #
-#  id                     :integer          not null, primary key
-#  first_name             :string           default(""), not null
-#  last_name              :string           default(""), not null
-#  email                  :string           default(""), not null
-#  encrypted_password     :string           default(""), not null
-#  reset_password_token   :string
-#  reset_password_sent_at :datetime
-#  remember_created_at    :datetime
-#  sign_in_count          :integer          default("0"), not null
-#  current_sign_in_at     :datetime
-#  last_sign_in_at        :datetime
-#  current_sign_in_ip     :string
-#  last_sign_in_ip        :string
+#  id                     :bigint           not null, primary key
+#  confirmation_sent_at   :datetime
 #  confirmation_token     :string
 #  confirmed_at           :datetime
-#  confirmation_sent_at   :datetime
+#  current_sign_in_at     :datetime
+#  current_sign_in_ip     :string
+#  discarded_at           :datetime
+#  email                  :string           default(""), not null
+#  encrypted_password     :string           default(""), not null
+#  first_name             :string           not null
+#  invitation_accepted_at :datetime
+#  invitation_created_at  :datetime
+#  invitation_limit       :integer
+#  invitation_sent_at     :datetime
+#  invitation_token       :string
+#  invitations_count      :integer          default(0)
+#  invited_by_type        :string
+#  last_name              :string           not null
+#  last_sign_in_at        :datetime
+#  last_sign_in_ip        :string
+#  remember_created_at    :datetime
+#  reset_password_sent_at :datetime
+#  reset_password_token   :string
+#  sign_in_count          :integer          default(0), not null
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  current_workspace_id   :integer
-#  invitation_token       :string
-#  invitation_created_at  :datetime
-#  invitation_sent_at     :datetime
-#  invitation_accepted_at :datetime
-#  invitation_limit       :integer
-#  invited_by_type        :string
-#  invited_by_id          :integer
-#  invitations_count      :integer          default("0")
-#  discarded_at           :datetime
+#  current_workspace_id   :bigint
+#  invited_by_id          :bigint
 #
 # Indexes
 #
@@ -41,6 +41,10 @@
 #  index_users_on_invited_by            (invited_by_type,invited_by_id)
 #  index_users_on_invited_by_id         (invited_by_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (current_workspace_id => companies.id)
 #
 
 # frozen_string_literal: true

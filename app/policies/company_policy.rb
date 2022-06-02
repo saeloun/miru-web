@@ -3,6 +3,10 @@
 class CompanyPolicy < ApplicationPolicy
   attr_reader :error_message_key
 
+  def index?
+    true
+  end
+
   def new?
     true
   end
@@ -35,5 +39,9 @@ class CompanyPolicy < ApplicationPolicy
   def permitted_attributes
     [:name, :address, :business_phone, :country, :timezone, :base_currency, :standard_price, :fiscal_year_end,
      :date_format, :logo]
+  end
+
+  def purge_logo?
+    user_owner_or_admin?
   end
 end
