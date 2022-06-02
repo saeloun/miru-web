@@ -52,7 +52,7 @@ const LineItems = ({ leadDetails }) => {
   useEffect(() => {
     setAuthHeaders();
     if (leadDetails && leadDetails.id) {
-      leadLineItems.index(leadDetails.id)
+      leadLineItems.index(leadDetails.id, "")
         .then((res) => {
           const sanitized = unmapLeadLineItemList(res);
           setLeadData(sanitized.itemList);

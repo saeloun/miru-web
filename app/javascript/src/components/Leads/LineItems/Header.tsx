@@ -1,5 +1,6 @@
 import * as React from "react";
-import leads from "apis/leads";
+import { useParams } from "react-router-dom";
+import leadLineItems from "apis/lead-line-items";
 import { MagnifyingGlass, Plus } from "phosphor-react";
 import AutoComplete from "./AutoComplete";
 import { unmapLeadLineItemListForDropdown } from "../../../mapper/lead.lineItem.mapper";
@@ -8,9 +9,10 @@ const Header = ({
   setnewLead,
   isAdminUser
 }) => {
+  const { leadId } = useParams();
 
   const searchCallBack = async (searchString, setDropdownItems) => {
-    await leads.get(searchString)
+    await leadLineItems.index(leadId, searchString)
       .then((res) => {
         const dropdownList = unmapLeadLineItemListForDropdown(res);
         setDropdownItems(dropdownList);

@@ -17,8 +17,8 @@ const unmapLeadLineItemList = (input) => {
 };
 
 const unmapLeadLineItemListForDropdown = (input) => {
-  const leadList = input.data.line_item_details;
-  return leadList.map(item => ({
+  const leadLineItemList = input.data.line_item_details;
+  return leadLineItemList.map(item => ({
     label: item.name,
     value: item.id
   }));

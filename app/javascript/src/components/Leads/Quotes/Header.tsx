@@ -1,18 +1,21 @@
 import * as React from "react";
-import leads from "apis/leads";
+import { useParams } from "react-router-dom";
+import leadQuotes from "apis/lead-quotes";
 import { MagnifyingGlass, Plus } from "phosphor-react";
 import AutoComplete from "./AutoComplete";
-import { unmapLeadListForDropdown } from "../../../mapper/lead.mapper";
+import { unmapLeadQuoteListForDropdown } from "../../../mapper/lead.quote.mapper";
 
 const Header = ({
   setnewLead,
   isAdminUser
 }) => {
 
+  const { leadId } = useParams();
+
   const searchCallBack = async (searchString, setDropdownItems) => {
-    await leads.get(searchString)
+    await leadQuotes.index(leadId, searchString)
       .then((res) => {
-        const dropdownList = unmapLeadListForDropdown(res);
+        const dropdownList = unmapLeadQuoteListForDropdown(res);
         setDropdownItems(dropdownList);
       });
   };
