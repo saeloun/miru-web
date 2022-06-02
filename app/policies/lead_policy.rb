@@ -19,7 +19,7 @@ class LeadPolicy < ApplicationPolicy
     user_owner_or_admin?
   end
 
-  def new_invoice_line_items?
+  def update_line_items?
     user_owner_or_admin?
   end
 

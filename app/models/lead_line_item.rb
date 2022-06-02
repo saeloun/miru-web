@@ -27,7 +27,6 @@
 #
 class LeadLineItem < ApplicationRecord
   include Discard::Model
-  belongs_to :lead
 
   KindOptionKlass = Struct.new(:name, :id)
 
@@ -38,6 +37,9 @@ class LeadLineItem < ApplicationRecord
     KindOptionKlass.new("Optional Bundle Product", 3),
     KindOptionKlass.new("Project-based Service", 4),
   ]
+
+  belongs_to :lead
+  has_and_belongs_to_many :lead_quotes
 
   def kind_name
     return "" if kind.nil?

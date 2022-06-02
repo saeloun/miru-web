@@ -8,6 +8,7 @@ import {
 
 import Details from "./Details";
 import LeadList from "./List";
+import QuoteDetails from "./QuoteDetails";
 
 const RouteConfig = ({ isAdminUser }) => (
   <BrowserRouter>
@@ -17,6 +18,7 @@ const RouteConfig = ({ isAdminUser }) => (
         <Route path=":leadId" element={<Details />} />
         <Route path=":leadId/line-items" element={<Details />} />
         <Route path=":leadId/quotes" element={<Details />} />
+        <Route path=":leadId/quotes/:quoteId" element={<QuoteDetails />} />
       </Route>
     </Routes>
   </BrowserRouter>

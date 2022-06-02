@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders } from "apis/axios";
 import leadQuotes from "apis/lead-quotes";
@@ -32,6 +33,7 @@ const LineItems = ({ leadDetails }) => {
   const [leadToEdit, setEdit] = useState({});
   const [leadToDelete, setDelete] = useState({});
   const [leadData, setLeadData] = useState<any>();
+  const navigate = useNavigate();
 
   const handleEditClick = (id) => {
     setShowEditDialog(true);
@@ -71,6 +73,10 @@ const LineItems = ({ leadDetails }) => {
 
   const tableData = getTableData(leadData);
 
+  const handleRowClick = (id) => {
+    navigate(`${id}`);
+  };
+
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
@@ -86,6 +92,7 @@ const LineItems = ({ leadDetails }) => {
                   hasRowIcons={true}
                   tableHeader={tableHeader}
                   tableRowArray={tableData}
+                  rowOnClick={handleRowClick}
                 />}
               </div>
             </div>

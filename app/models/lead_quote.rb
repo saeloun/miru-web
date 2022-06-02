@@ -21,7 +21,9 @@
 #
 class LeadQuote < ApplicationRecord
   include Discard::Model
+
   belongs_to :lead
+  has_and_belongs_to_many :lead_line_items
 
   def render_properties
     {

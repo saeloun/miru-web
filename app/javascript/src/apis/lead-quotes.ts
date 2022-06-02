@@ -12,6 +12,8 @@ const update = async (leadId, id, payload) => axios.patch(`${path}/${leadId}/quo
 
 const destroy = async (leadId, id) => axios.delete(`${path}/${leadId}/quotes/${id}`);
 
-const leadQuotes = { index, create, show, update, destroy };
+const updateLineItems = async (leadId, id, leadLineItemIds) => axios.get(`${path}/${leadId}/quotes/${id}/update_line_items?lead_line_item_ids=${leadLineItemIds}`);
+
+const leadQuotes = { index, create, show, update, destroy, updateLineItems };
 
 export default leadQuotes;
