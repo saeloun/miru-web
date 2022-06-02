@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe TimezonePolicy, type: :policy do
+RSpec.describe SubscriptionsPolicy, type: :policy do
   let(:company) { create(:company) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
@@ -13,12 +13,12 @@ RSpec.describe TimezonePolicy, type: :policy do
   end
 
   permissions :index? do
-    it "grants permission to an admin" do
+    it "grants permission to admin and owner" do
       expect(described_class).to permit(admin)
     end
 
-    it "grants permission to an employee" do
-      expect(described_class).to permit(employee)
+    it "does not grants permission to employee" do
+      expect(described_class).not_to permit(employee)
     end
   end
 end
