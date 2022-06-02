@@ -21,7 +21,6 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
       it "creates invoice successfully" do
         invoice = attributes_for(
           :invoice,
-          external_view_key: "#{SecureRandom.hex}",
           client: company.clients.first,
           client_id: company.clients.first.id,
           status: :draft)
@@ -58,7 +57,6 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
       send_request :post, internal_api_v1_invoices_path(
         invoice: attributes_for(
           :invoice,
-          external_view_key: "#{SecureRandom.hex}",
           client: company.clients.first,
           client_id: company.clients.first.id,
           status: :draft
