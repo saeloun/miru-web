@@ -56,7 +56,7 @@ RSpec.describe SubscriptionsController, type: :request do
         sign_in employee
       end
 
-      it "fails" do
+      it "redirects user to root path with 302 status" do
         subject
 
         expect(response.status).to eq 302
