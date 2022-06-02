@@ -39,11 +39,10 @@ namespace :internal_api, defaults: { format: "json" } do
     end
 
     namespace :wise do
-      post :create_recipient
-      put :update_recipient
+      resources :recipients, only: [:create, :show, :update], param: :recipient_id
+      resources :currencies, only: [:index]
+
       get :fetch_bank_requirements
-      get :fetch_currencies
-      get :fetch_recipient
       get :validate_account_details
     end
 

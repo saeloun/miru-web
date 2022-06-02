@@ -54,6 +54,7 @@ const Billing = () => {
       const response = await wiseApi.updateRecipient(payload);
       const billingResponse = await profilesApi.put(billingDetails.id, response.data);
       setBillingDetails(billingResponse.data);
+      setRecipientDetails(response.data);
     } catch (_error) {
       setBankDetailsModal(true);
       throw new Error("Error while creating recipient");

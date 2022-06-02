@@ -2,10 +2,17 @@ import axios from "axios";
 
 const path = "/wise";
 
-const createRecipient = async (payload) => axios.post(`${path}/create_recipient`, payload);
+// Currency APIs
+const fetchCurrencies = async () => axios.get(`${path}/currencies`);
 
-const updateRecipient = async (payload) => axios.put(`${path}/update_recipient`, payload);
+// Recipient APIs
+const fetchRecipient = async (recipientId) => axios.get(`${path}/recipients/${recipientId}`);
 
+const createRecipient = async (payload) => axios.post(`${path}/recipients`, payload);
+
+const updateRecipient = async (payload) => axios.put(`${path}/recipients/${payload["id"]}`, payload);
+
+// Bank Apis
 const fetchAccountRequirements = async (sourceCurrency, targetCurrency) => {
   const query = `source_currency=${sourceCurrency}&target_currency=${targetCurrency}&source_amount=1000`;
 
@@ -13,10 +20,6 @@ const fetchAccountRequirements = async (sourceCurrency, targetCurrency) => {
     `${path}/fetch_bank_requirements?${query}`
   );
 };
-
-const fetchCurrencies = async () => axios.get(`${path}/fetch_currencies`);
-
-const fetchRecipient = async (recipientId) => axios.get(`${path}/fetch_recipient?recipient_id=${recipientId}`);
 
 const validateAccountDetail = async (url) => {
   const { pathname, search } = new URL(url);
