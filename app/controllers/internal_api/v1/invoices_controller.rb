@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "securerandom"
-
 class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationController
   before_action :load_client, only: [:create, :update]
   after_action :ensure_time_entries_billed, only: [:send_invoice]
@@ -26,9 +24,8 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def create
     authorize Invoice
-    external_view_key = "#{SecureRandom.hex}"
     render :create, locals: {
-      invoice: @client.invoices.create!(invoice_params.merge(external_view_key:)),
+      invoice: @client.invoices.create!(invoice_params),
       client: @client
     }
   end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "rails_helper"
-require "securerandom"
 
 RSpec.describe "Invoices::View", type: :request do
   describe "#show" do

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "rails_helper"
-require "securerandom"
 
 RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
   let(:company) do

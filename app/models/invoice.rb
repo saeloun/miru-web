@@ -35,6 +35,11 @@
 
 class Invoice < ApplicationRecord
   include InvoiceSendable
+  require "securerandom"
+
+  before_create do
+    self.external_view_key = "#{SecureRandom.hex}"
+  end
 
   attr_accessor :sub_total
 
