@@ -30,6 +30,7 @@ module Report
               aggs: {
                 top_report_hits: {
                   top_hits: {
+                    sort: [{ work_date: { order: "desc" } }],
                     _source: ["id"],
                     size: 100 # aggregation query can only return max top 100 hits
                   }

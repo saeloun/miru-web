@@ -31,7 +31,9 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
       where_clause = current_company_project_ids_filter.merge(filters_where_clause)
       group_by_clause = Report::GroupBy.process(params["group_by"])
       search_result = TimesheetEntry.search(
-        where: where_clause, body_options: group_by_clause,
+        where: where_clause,
+        order: { work_date: :desc },
+        body_options: group_by_clause,
         includes: [:user, { project: :client } ])
       Report::Result.process(search_result, params["group_by"])
     end

@@ -19,12 +19,12 @@ module Report
 
     private
 
+      # When we query ES, we get all matching timesheet entries as response even when we pass aggregation query.
+      # Those timesheet entries contains all required association but not the ones in aggregated data.
+      # So, in order to avoid queries for associated records,
+      # creating map of id -> timesheet entries from the general ES response and
+      # then using it for building final data by merging that with ids found in aggregation query.
       def process_aggregated_es_response
-        # When we query ES, we get all matching timesheet entries as response even when we pass aggregation query.
-        # Those timesheet entries contains all required association but not the ones in aggregated data.
-        # So, in order to avoid queries for associated records,
-        # creating map of id -> timesheet entries from the general ES response and
-        # then using it for building final data by merging that with ids found in aggregation query.
         id_to_timesheet_entry = timsheet_id_to_timesheet_entry
         buckets = es_response.aggs["grouped_reports"]["buckets"]
         buckets.map do |bucket|
