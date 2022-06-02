@@ -6,7 +6,7 @@ FactoryBot.define do
     project
     duration { 480.0 } # in minutes
     note { "Did that" }
-    work_date { "2022-01-11" }
+    work_date { Date.today }
     bill_status { "non_billable" }
   end
 end

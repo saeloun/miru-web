@@ -30,8 +30,10 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
 
       it "returns the time entry report" do
         expect(response).to have_http_status(:ok)
-        expect(json_response["entries"].size).to eq(1)
-        expect(json_response["entries"].first["id"]).to eq(@timesheet_entry1.id)
+        reports = json_response["reports"].first
+        expect(reports["label"]).to eq("")
+        expect(reports["entries"].size).to eq(1)
+        expect(reports["entries"].first["id"]).to eq(@timesheet_entry1.id)
         filter_options = {
           clients: [{ "label": client.name, "value": client.id }],
           teamMembers: [{ "label": user.full_name, "value": user.id }]
@@ -53,11 +55,12 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
           date_range: "this_week"
         }
         expect(response).to have_http_status(:ok)
-        timesheet_ids_in_response = json_response["entries"].pluck("id")
-        expect(json_response["entries"].size).to eq(2)
+        reports = json_response["reports"].first
+        expect(reports["label"]).to eq("")
+        timesheet_ids_in_response = reports["entries"].pluck("id")
+        expect(reports["entries"].size).to eq(2)
         expect(timesheet_ids_in_response).to include(@timesheet_entry2.id, @timesheet_entry3.id)
         expect(timesheet_ids_in_response).not_to include(@timesheet_entry1.id)
-        expect(json_response["filterOptions"]).to eq(JSON.parse({ clients: [], teamMembers: [] }.to_json))
       end
     end
 
@@ -74,8 +77,10 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
           status: ["unbilled"]
         }
         expect(response).to have_http_status(:ok)
-        timesheet_ids_in_response = json_response["entries"].pluck("id")
-        expect(json_response["entries"].size).to eq(1)
+        reports = json_response["reports"].first
+        expect(reports["label"]).to eq("")
+        timesheet_ids_in_response = reports["entries"].pluck("id")
+        expect(reports["entries"].size).to eq(1)
         expect(timesheet_ids_in_response).to include(@timesheet_entry2.id)
       end
 
@@ -84,8 +89,10 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
           status: ["unbilled", "non_billable"]
         }
         expect(response).to have_http_status(:ok)
-        timesheet_ids_in_response = json_response["entries"].pluck("id")
-        expect(json_response["entries"].size).to eq(3)
+        reports = json_response["reports"].first
+        expect(reports["label"]).to eq("")
+        timesheet_ids_in_response = reports["entries"].pluck("id")
+        expect(reports["entries"].size).to eq(3)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id, @timesheet_entry3.id)
       end
     end
@@ -105,8 +112,10 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
         }
         get "/internal_api/v1/reports?client[]=#{client.id}"
         expect(response).to have_http_status(:ok)
-        timesheet_ids_in_response = json_response["entries"].pluck("id")
-        expect(json_response["entries"].size).to eq(2)
+        reports = json_response["reports"].first
+        expect(reports["label"]).to eq("")
+        timesheet_ids_in_response = reports["entries"].pluck("id")
+        expect(reports["entries"].size).to eq(2)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id)
       end
 
@@ -115,8 +124,10 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
           client: [client.id, client2.id]
         }
         expect(response).to have_http_status(:ok)
-        timesheet_ids_in_response = json_response["entries"].pluck("id")
-        expect(json_response["entries"].size).to eq(3)
+        reports = json_response["reports"].first
+        expect(reports["label"]).to eq("")
+        timesheet_ids_in_response = reports["entries"].pluck("id")
+        expect(reports["entries"].size).to eq(3)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id, @timesheet_entry3.id)
       end
     end
@@ -138,8 +149,10 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
           team_member: [@user1.id]
         }
         expect(response).to have_http_status(:ok)
-        timesheet_ids_in_response = json_response["entries"].pluck("id")
-        expect(json_response["entries"].size).to eq(2)
+        reports = json_response["reports"].first
+        expect(reports["label"]).to eq("")
+        timesheet_ids_in_response = reports["entries"].pluck("id")
+        expect(reports["entries"].size).to eq(2)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id)
       end
 
@@ -148,8 +161,10 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
           team_member: [@user1.id, @user2.id]
         }
         expect(response).to have_http_status(:ok)
-        timesheet_ids_in_response = json_response["entries"].pluck("id")
-        expect(json_response["entries"].size).to eq(3)
+        reports = json_response["reports"].first
+        expect(reports["label"]).to eq("")
+        timesheet_ids_in_response = reports["entries"].pluck("id")
+        expect(reports["entries"].size).to eq(3)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id, @timesheet_entry3.id)
       end
     end
@@ -191,7 +206,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
         @timesheet_entry6 = create(
           :timesheet_entry,
           project:,
-          work_date: this_week_start_date,
+          work_date: Date.today,
           user: @user1,
           bill_status: "unbilled")
         TimesheetEntry.search_index.refresh
@@ -205,8 +220,10 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
           client: [client.id]
         }
         expect(response).to have_http_status(:ok)
-        timesheet_ids_in_response = json_response["entries"].pluck("id")
-        expect(json_response["entries"].size).to eq(2)
+        reports = json_response["reports"].first
+        expect(reports["label"]).to eq("")
+        timesheet_ids_in_response = reports["entries"].pluck("id")
+        expect(reports["entries"].size).to eq(2)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id)
       end
     end
