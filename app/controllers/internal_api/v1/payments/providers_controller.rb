@@ -3,17 +3,17 @@
 class InternalApi::V1::Payments::ProvidersController < ApplicationController
   after_action :save_stripe_settings, only: :index
 
-  def create
-    authorize :create, policy_class: Payments::ProviderPolicy
-    render :create, locals: {
-      payments_provider: current_company.payments_providers.create!(provider_params)
-    }
-  end
-
   def index
     authorize :index, policy_class: Payments::ProviderPolicy
     render :index, locals: {
       payments_providers: current_company.payments_providers
+    }
+  end
+
+  def create
+    authorize :create, policy_class: Payments::ProviderPolicy
+    render :create, locals: {
+      payments_provider: current_company.payments_providers.create!(provider_params)
     }
   end
 
