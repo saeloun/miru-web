@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import paymentSettings from "apis/payment-settings";
 import PaymentsProviders from "apis/payments/providers";
 import CustomCheckbox from "common/CustomCheckbox";
@@ -90,8 +89,6 @@ const Invoice_settings = ({ setShowInvoiceSetting }) => {
   }, [accountLink]);
 
   useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
     fetchPaymentsProvidersSettings();
   }, [isStripeConnected]);
 
