@@ -77,7 +77,6 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
 
       Toastr.success(resp.data.message);
       setStatus(InvoiceStatus.SUCCESS);
-      navigate("/invoices");
     } catch (error) {
       setStatus(InvoiceStatus.ERROR);
     }
@@ -103,6 +102,12 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
       setNewRecipient("");
     }
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      status === InvoiceStatus.SUCCESS && navigate("/invoices");
+    }, 5000);
+  }, [status]);
 
   return (
     <div
