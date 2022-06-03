@@ -2,13 +2,6 @@
 
 require "rails_helper"
 
-shared_examples_for "Internal::V1::WiseController error from Wise API" do
-  it "returns 500 status in response" do
-    subject
-    expect(response.status).to eq(500)
-  end
-end
-
 RSpec.describe InternalApi::V1::WiseController, type: :controller do
   let(:company) { create(:company) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
@@ -83,16 +76,9 @@ RSpec.describe InternalApi::V1::WiseController, type: :controller do
     end
 
     context "when wise returns error" do
-      before do
-        allow_any_instance_of(Faraday::Connection).to receive(:get).and_return(
-          Struct.new(:status, :body).new(500, { error: "Error while calling Wise Api" }.to_json)
-        )
-      end
+      let(:status) { 500 }
 
-      it "returns 500 status code" do
-        expect(subject.status).to eq 500
-        expect(JSON.parse(response.body)["error"]).to eq "Error while calling Wise Api"
-      end
+      it_behaves_like "Internal::V1::WiseController error response from wise"
     end
   end
 end

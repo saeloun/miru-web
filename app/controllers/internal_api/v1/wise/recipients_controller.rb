@@ -14,8 +14,7 @@ class InternalApi::V1::Wise::RecipientsController < InternalApi::V1::WiseControl
   def create
     authorize current_company, policy_class: Wise::RecipientPolicy
 
-    payload = recipient_params.to_h
-    response = wise_recipient.create(payload)
+    response = wise_recipient.create(recipient_params.to_h)
 
     render json: response.body, status: response.status
   end

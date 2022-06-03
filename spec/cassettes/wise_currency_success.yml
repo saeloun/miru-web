@@ -1,0 +1,72 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.sandbox.transferwise.tech/v2/borderless-accounts-configuration/profiles/16455649/available-currencies
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      User-Agent:
+      - Faraday v1.9.3
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 03 Jun 2022 07:20:26 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - 43a57585-ff2d-9bd1-b759-780b5823d627
+      X-Trace-Id:
+      - c253e90017379004
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Envoy-Upstream-Service-Time:
+      - '57'
+      X-Envoy-Attempt-Count:
+      - '1'
+      Vary:
+      - accept-encoding
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Set-Cookie:
+      - __cf_bm=szx38VAQuy7FSRJlxYsF_TnQBFAR0w6NZxKrZkVbLPw-1654240826-0-AYl1aftKKCWFUCHP4CQLvDdGCifgJsstNJk43s61nmHZrFJyY4Bs9wPHnRdQNAqdqC3pe7MViFwnjIx27j6fCFk=;
+        path=/; expires=Fri, 03-Jun-22 07:50:26 GMT; domain=.transferwise.tech; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7156aa8ea841a917-MAA
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '["AED","ARS","AUD","BDT","BGN","BWP","CAD","CHF","CLP","CNY","CRC","CZK","DKK","EGP","EUR","GBP","GEL","GHS","HKD","HRK","HUF","IDR","ILS","INR","JPY","KES","KRW","LKR","MAD","MXN","MYR","NGN","NOK","NPR","NZD","PEN","PHP","PKR","PLN","RON","RUB","SEK","SGD","THB","TRY","TZS","UAH","UGX","USD","UYU","VND","XOF","ZAR","ZMW"]'
+    http_version:
+  recorded_at: Fri, 03 Jun 2022 07:20:26 GMT
+recorded_with: VCR 3.0.3
