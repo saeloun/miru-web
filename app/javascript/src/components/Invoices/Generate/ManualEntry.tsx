@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 
-const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) => {
+const ManualEntry = ({ setSelectedOption, selectedOption }) => {
 
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<string>("");
@@ -8,14 +8,36 @@ const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) =
   const [rate, setRate] = useState<any>("");
   const [qty, setQty] = useState<string>("");
   const [lineTotal, setLineTotal] = useState<any>("");
+  const [currentIndex, setCurrentIndex] = useState<any>(selectedOption.length);
   const ref = useRef();
 
-  const onEnter = e => {
-    if (e.key == "Enter") {
-      const names = name.split(" ");
+  const onEnter = () => {
+    const currentOption = selectedOption.find((option) => option.idx === currentIndex);
+
+    if (currentOption) {
+      const item = { ...currentOption,
+        idx: currentIndex,
+        name,
+        date,
+        description,
+        rate,
+        qty: (Number(qty) * 60),
+        lineTotal: (Number(qty) * Number(rate))
+      };
+
+      const newSelectedOption = selectedOption.map((option) => {
+        if (option.idx === currentIndex) {
+          return item;
+        }
+
+        return option;
+      });
+
+      setSelectedOption(newSelectedOption);
+    } else {
       const newItem = [...selectedOption, {
-        first_name: names.splice(0, 1)[0],
-        last_name: names.join(" "),
+        idx: currentIndex,
+        name,
         date, description,
         rate,
         qty: (Number(qty) * 60),
@@ -23,14 +45,9 @@ const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) =
       }];
 
       setSelectedOption(newItem);
-      setName("");
-      setDate("");
-      setDescription("");
-      setRate("");
-      setQty("");
-      setLineTotal("");
-      setShowItemInputs(false);
     }
+
+    setCurrentIndex(currentIndex);
   };
 
   return (
