@@ -33,7 +33,7 @@ namespace :internal_api, defaults: { format: "json" } do
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
 
     namespace :payments do
-      resources :providers, only: [:create, :index, :update]
+      resources :providers, only: [:index, :update]
     end
   end
 end
