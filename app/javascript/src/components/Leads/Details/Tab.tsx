@@ -3,8 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import LineItems from "./../LineItems";
 import Quotes from "./../Quotes";
 import Summary from "./Summary";
+import AddLineItems from "../../../components/Leads/QuoteDetails/AddLineItems";
 
-const Tab = ({ leadDetails }) => {
+const Tab = ({ leadDetails, forItem, quoteId }) => {
 
   const defaultClassName = "inline-flex p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group";
   const activeClassName = "inline-flex p-4 text-blue-600 rounded-t-lg border-b-2 border-blue-600 active dark:text-blue-500 dark:border-blue-500 group";
@@ -21,15 +22,20 @@ const Tab = ({ leadDetails }) => {
 
   const setActiveTabKey = useCallback(async () => {
     if (leadId) {
-      const path = {
-        summary: `/leads/${leadId}`,
-        lineItems: `/leads/${leadId}/line-items`,
-        quotes: `/leads/${leadId}/quotes`,
-      };
-      const filterPath = Object.keys(path).filter((key, _index) => (location.pathname === path[key]));
-      if (filterPath[0]) {
-        setActiveTab(filterPath[0]);
+      if (quoteId){
+        setActiveTab('quotes');
         return null;
+      } else {
+        const path = {
+          summary: `/leads/${leadId}`,
+          lineItems: `/leads/${leadId}/line-items`,
+          quotes: `/leads/${leadId}/quotes`,
+        };
+        const filterPath = Object.keys(path).filter((key, _index) => (location.pathname === path[key]));
+        if (filterPath[0]) {
+          setActiveTab(filterPath[0]);
+          return null;
+        }
       }
     }
   }, [leadId]);
@@ -58,7 +64,11 @@ const Tab = ({ leadDetails }) => {
         lineItemsTab: defaultClassName,
         quotesTab: activeClassName
       });
-      setRenderTabData(<Quotes leadDetails={leadDetails} />);
+      if (forItem == 'quoteDetails'){
+        setRenderTabData(<AddLineItems leadDetails={leadDetails} />);
+      } else {
+        setRenderTabData(<Quotes leadDetails={leadDetails} />);
+      }
     }
   }, [activeTab, leadDetails]);
 
@@ -66,7 +76,7 @@ const Tab = ({ leadDetails }) => {
     const path = {
       summary: `/leads/${leadId}`,
       lineItems: `/leads/${leadId}/line-items`,
-      quotes: `/leads/${leadId}/quotes`,
+      quotes: `/leads/${leadId}/quotes` + (quoteId ? `/${quoteId}` : ``),
     }[key];
 
     if (location.pathname !== path) {

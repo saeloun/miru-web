@@ -26,7 +26,7 @@ const LeadList = () => {
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header leadDetails={leadDetails} />
-      <Tab leadDetails={leadDetails} />
+      <Tab leadDetails={leadDetails} forItem="leads" quoteId={null} />
     </>
   );
 };

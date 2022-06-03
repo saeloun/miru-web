@@ -40,7 +40,7 @@ const NewQuote = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
         <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
-              <h6 className="text-base font-extrabold">Add New Line Item</h6>
+              <h6 className="text-base font-extrabold">Add New Quote</h6>
               <button type="button" onClick={() => { setnewLead(false); }}>
                 <X size={16} color="#CDD6DF" weight="bold" />
               </button>
