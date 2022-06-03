@@ -26,11 +26,11 @@ RSpec.describe InternalApi::V1::Wise::RecipientsController, type: :controller do
     end
 
     context "when recipient is missing from wise", vcr: { cassette_name: "wise_fetch_recipient_failure" } do
-      let(:recipient_id) { Faker::Number.number(digits: 7) }
+      let(:recipient_id) { 1483 }
 
       it "returns error" do
-        expect(subject.status).to eq 500
-        expect(response.body).to eq "Error while fetching the recipient details"
+        expect(subject.status).to eq 200
+        expect(JSON.parse(response.body)["errors"].first["code"]).to eq "RECIPIENT_MISSING"
       end
     end
 
@@ -44,7 +44,7 @@ RSpec.describe InternalApi::V1::Wise::RecipientsController, type: :controller do
   describe "POST create" do
     subject { post :create, params: }
 
-    let(:params) do
+    let!(:params) do
       {
         recipient: {
           profile: 16455649,
@@ -94,11 +94,11 @@ RSpec.describe InternalApi::V1::Wise::RecipientsController, type: :controller do
   describe "PUT update" do
     subject { put :update, params: }
 
-    let(:params) do
+    let!(:params) do
       {
-        recipient_id: 148397163,
+        recipient_id: 148398162,
         recipient: {
-          id: 148397163,
+          id: 148398162,
           profile: 16455649,
           accountHolderName: "Sudeep Tarlekar",
           currency: "INR",

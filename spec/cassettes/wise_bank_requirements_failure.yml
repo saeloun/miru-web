@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.sandbox.transferwise.tech/v1/accounts/1483
+    uri: https://api.sandbox.transferwise.tech/v1/account-requirements?source=&sourceAmount=1000&target=
     body:
       encoding: US-ASCII
       string: ''
@@ -10,28 +10,28 @@ http_interactions:
       Authorization:
       - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
       User-Agent:
-      - Faraday v1.10.0
+      - Faraday v1.9.3
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
       - "*/*"
   response:
     status:
-      code: 403
-      message: Forbidden
+      code: 422
+      message: Unprocessable Entity
     headers:
       Date:
-      - Fri, 03 Jun 2022 11:36:11 GMT
+      - Fri, 03 Jun 2022 11:08:42 GMT
       Content-Type:
       - application/json;charset=UTF-8
-      Transfer-Encoding:
-      - chunked
+      Content-Length:
+      - '271'
       Connection:
       - keep-alive
       X-Request-Id:
-      - 5d022149-9d65-9044-8716-075006efe34e
+      - ba6445f4-e1ce-9def-8e4e-d5c9e0935e86
       X-Trace-Id:
-      - a2440ea3f17a0e1f
+      - ff18893fb84db0f2
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
@@ -45,7 +45,7 @@ http_interactions:
       X-Frame-Options:
       - DENY
       X-Envoy-Upstream-Service-Time:
-      - '63'
+      - '20'
       X-Envoy-Attempt-Count:
       - '1'
       Vary:
@@ -55,24 +55,25 @@ http_interactions:
       Expect-Ct:
       - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
       Set-Cookie:
-      - __cf_bm=lrP16J_gqGKxqojj.uzFCAen7Qsjp8YHlgieiW7lyVQ-1654256171-0-AZjRUbHu4/9CZcepqsdwkRvP8yqKDthZKCHZRdPAdWvg6SGZyIfd56gBfk+lL4ZUOfX8Ce37GEJRLZhdLTm8h3U=;
-        path=/; expires=Fri, 03-Jun-22 12:06:11 GMT; domain=.transferwise.tech; HttpOnly;
+      - __cf_bm=pE.mUE7uGyaNQT_ncIJGUO3U0gfHHDYSP.OimwcITyk-1654254522-0-ASvimDXtwH6RnrkIZXfSfqV3X6ctbfdMd+xNnXPADkgfnxKLzg5eET6ppekPAzykp7JCA2L4KPCx4uaAd9j6SyE=;
+        path=/; expires=Fri, 03-Jun-22 11:38:42 GMT; domain=.transferwise.tech; HttpOnly;
         Secure; SameSite=None
       Server:
       - cloudflare
       Cf-Ray:
-      - 7158212bcae3a917-MAA
+      - 7157f8e8dcaa0690-MAA
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
-      encoding: ASCII-8BIT
-      string: '{"timestamp":"2022-06-03T11:36:10.989253770Z","errors":[{"code":"RECIPIENT_MISSING","message":"[RECIPIENT_MISSING]
-        Recipient with such id is not found among your recipients."}]}'
+      encoding: UTF-8
+      string: '{"timestamp":"2022-06-03T11:08:41.975812580Z","errors":[{"code":"NOT_VALID","message":"Must
+        be an ISO 4217 alpha-3 currency code.","path":"target","arguments":[]},{"code":"NOT_VALID","message":"Must
+        be an ISO 4217 alpha-3 currency code.","path":"source","arguments":[]}]}'
     http_version:
-  recorded_at: Fri, 03 Jun 2022 11:36:10 GMT
+  recorded_at: Fri, 03 Jun 2022 11:08:42 GMT
 - request:
     method: get
-    uri: https://api.transferwise.com/v1/accounts/1483
+    uri: https://api.transferwise.com/v1/account-requirements?source=&sourceAmount=1000&target=
     body:
       encoding: US-ASCII
       string: ''
@@ -80,28 +81,28 @@ http_interactions:
       Authorization:
       - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
       User-Agent:
-      - Faraday v1.10.0
+      - Faraday v1.9.3
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
       - "*/*"
   response:
     status:
-      code: 403
-      message: Forbidden
+      code: 422
+      message: Unprocessable Entity
     headers:
       Date:
-      - Fri, 03 Jun 2022 11:36:11 GMT
+      - Fri, 03 Jun 2022 11:08:42 GMT
       Content-Type:
       - application/json;charset=UTF-8
-      Transfer-Encoding:
-      - chunked
+      Content-Length:
+      - '271'
       Connection:
       - keep-alive
       X-Request-Id:
-      - 5d022149-9d65-9044-8716-075006efe34e
+      - ba6445f4-e1ce-9def-8e4e-d5c9e0935e86
       X-Trace-Id:
-      - a2440ea3f17a0e1f
+      - ff18893fb84db0f2
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
@@ -115,7 +116,7 @@ http_interactions:
       X-Frame-Options:
       - DENY
       X-Envoy-Upstream-Service-Time:
-      - '63'
+      - '20'
       X-Envoy-Attempt-Count:
       - '1'
       Vary:
@@ -125,19 +126,20 @@ http_interactions:
       Expect-Ct:
       - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
       Set-Cookie:
-      - __cf_bm=lrP16J_gqGKxqojj.uzFCAen7Qsjp8YHlgieiW7lyVQ-1654256171-0-AZjRUbHu4/9CZcepqsdwkRvP8yqKDthZKCHZRdPAdWvg6SGZyIfd56gBfk+lL4ZUOfX8Ce37GEJRLZhdLTm8h3U=;
-        path=/; expires=Fri, 03-Jun-22 12:06:11 GMT; domain=.transferwise.tech; HttpOnly;
+      - __cf_bm=pE.mUE7uGyaNQT_ncIJGUO3U0gfHHDYSP.OimwcITyk-1654254522-0-ASvimDXtwH6RnrkIZXfSfqV3X6ctbfdMd+xNnXPADkgfnxKLzg5eET6ppekPAzykp7JCA2L4KPCx4uaAd9j6SyE=;
+        path=/; expires=Fri, 03-Jun-22 11:38:42 GMT; domain=.transferwise.tech; HttpOnly;
         Secure; SameSite=None
       Server:
       - cloudflare
       Cf-Ray:
-      - 7158212bcae3a917-MAA
+      - 7157f8e8dcaa0690-MAA
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
-      encoding: ASCII-8BIT
-      string: '{"timestamp":"2022-06-03T11:36:10.989253770Z","errors":[{"code":"RECIPIENT_MISSING","message":"[RECIPIENT_MISSING]
-        Recipient with such id is not found among your recipients."}]}'
+      encoding: UTF-8
+      string: '{"timestamp":"2022-06-03T11:08:41.975812580Z","errors":[{"code":"NOT_VALID","message":"Must
+        be an ISO 4217 alpha-3 currency code.","path":"target","arguments":[]},{"code":"NOT_VALID","message":"Must
+        be an ISO 4217 alpha-3 currency code.","path":"source","arguments":[]}]}'
     http_version:
-  recorded_at: Fri, 03 Jun 2022 11:36:10 GMT
+  recorded_at: Fri, 03 Jun 2022 11:08:42 GMT
 recorded_with: VCR 3.0.3

@@ -10,7 +10,7 @@ http_interactions:
       Authorization:
       - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
       User-Agent:
-      - Faraday v1.9.3
+      - Faraday v1.10.0
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 03 Jun 2022 07:54:13 GMT
+      - Fri, 03 Jun 2022 11:36:10 GMT
       Content-Type:
       - application/json;charset=UTF-8
       Transfer-Encoding:
@@ -29,9 +29,9 @@ http_interactions:
       Connection:
       - keep-alive
       X-Request-Id:
-      - 960538af-30f5-9219-bde7-7f8d4956fedc
+      - dff52a4b-f4a7-9a2c-9676-da20759560ad
       X-Trace-Id:
-      - 107f126d1c4b0ea8
+      - ee0c47bc0c15d243
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
@@ -45,7 +45,7 @@ http_interactions:
       X-Frame-Options:
       - DENY
       X-Envoy-Upstream-Service-Time:
-      - '44'
+      - '59'
       X-Envoy-Attempt-Count:
       - '1'
       Vary:
@@ -55,21 +55,21 @@ http_interactions:
       Expect-Ct:
       - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
       Set-Cookie:
-      - __cf_bm=BzQXr_FqG_lhX6mcrfQJompxtdpGlhz0bAEVc0i7El0-1654242853-0-AYeeQXN4gSlMbKZp9gzugFydEhrtCl3/4+VytNiBKapeqNi3iv7z+n/j6MEJZ+2Y3TIEdlqC/F2VEg75Wahg6bM=;
-        path=/; expires=Fri, 03-Jun-22 08:24:13 GMT; domain=.transferwise.tech; HttpOnly;
+      - __cf_bm=4IaVdo.o.ZDHjRHILzyAN5adIjDBXwFq1hyCnI_9ubQ-1654256170-0-AURGFq9ebFWqc83rnynjwcbUiAmVHCW3cltkG4e00LFbnB7mYToMnYGNiIdIhhcsdrnam9Ps7F25M7lnI8HYfMo=;
+        path=/; expires=Fri, 03-Jun-22 12:06:10 GMT; domain=.transferwise.tech; HttpOnly;
         Secure; SameSite=None
       Server:
       - cloudflare
       Cf-Ray:
-      - 7156dc0578c9a92c-MAA
+      - 715821271a0a396b-MAA
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: '{"id":148397163,"business":16455649,"profile":16455649,"accountHolderName":"Sudeep
-        Tarlekar","currency":"INR","country":"IN","type":"indian","details":{"address":{"country":"IN","countryCode":"IN","firstLine":"Pune","postCode":"560015","city":"Pune","state":null},"email":null,"legalType":"PRIVATE","accountHolderName":null,"accountNumber":"1234567","sortCode":null,"abartn":null,"accountType":null,"bankgiroNumber":null,"ifscCode":"UTIB0002580","bsbCode":null,"institutionNumber":null,"transitNumber":null,"phoneNumber":null,"bankCode":null,"russiaRegion":null,"routingNumber":null,"branchCode":null,"cpf":null,"cardToken":null,"idType":null,"idNumber":null,"idCountryIso3":null,"idValidFrom":null,"idValidTo":null,"clabe":null,"swiftCode":null,"dateOfBirth":null,"clearingNumber":null,"bankName":null,"branchName":null,"businessNumber":null,"province":null,"city":null,"rut":null,"token":null,"cnpj":null,"payinReference":null,"pspReference":null,"orderId":null,"idDocumentType":null,"idDocumentNumber":null,"targetProfile":null,"targetUserId":null,"taxId":null,"job":null,"nationality":null,"interacAccount":null,"bban":null,"town":null,"postCode":null,"language":null,"billerCode":null,"customerReferenceNumber":null,"prefix":null,"IBAN":null,"iban":null,"BIC":null,"bic":null},"user":5967985,"active":true,"ownedByCustomer":false}'
+        Tarlekar","currency":"INR","country":"IN","type":"indian","details":{"address":{"country":"IN","countryCode":"IN","firstLine":"Pune","postCode":"560015","city":"Pune","state":null},"email":null,"legalType":"PRIVATE","accountHolderName":null,"accountNumber":"1234567","sortCode":null,"abartn":null,"accountType":null,"bankgiroNumber":null,"ifscCode":"UTIB0002580","bsbCode":null,"institutionNumber":null,"transitNumber":null,"phoneNumber":null,"bankCode":null,"russiaRegion":null,"routingNumber":null,"branchCode":null,"cpf":null,"cardToken":null,"idType":null,"idNumber":null,"idCountryIso3":null,"idValidFrom":null,"idValidTo":null,"clabe":null,"swiftCode":null,"dateOfBirth":null,"clearingNumber":null,"bankName":null,"branchName":null,"businessNumber":null,"province":null,"city":null,"rut":null,"token":null,"cnpj":null,"payinReference":null,"pspReference":null,"orderId":null,"idDocumentType":null,"idDocumentNumber":null,"targetProfile":null,"targetUserId":null,"taxId":null,"job":null,"nationality":null,"interacAccount":null,"bban":null,"town":null,"postCode":null,"language":null,"billerCode":null,"customerReferenceNumber":null,"prefix":null,"IBAN":null,"iban":null,"BIC":null,"bic":null},"user":5967985,"active":false,"ownedByCustomer":false}'
     http_version:
-  recorded_at: Fri, 03 Jun 2022 07:54:12 GMT
+  recorded_at: Fri, 03 Jun 2022 11:36:10 GMT
 - request:
     method: get
     uri: https://api.transferwise.com/v1/accounts/148397163
@@ -80,7 +80,7 @@ http_interactions:
       Authorization:
       - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
       User-Agent:
-      - Faraday v1.9.3
+      - Faraday v1.10.0
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -91,7 +91,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 03 Jun 2022 07:54:13 GMT
+      - Fri, 03 Jun 2022 11:36:10 GMT
       Content-Type:
       - application/json;charset=UTF-8
       Transfer-Encoding:
@@ -99,9 +99,9 @@ http_interactions:
       Connection:
       - keep-alive
       X-Request-Id:
-      - 960538af-30f5-9219-bde7-7f8d4956fedc
+      - dff52a4b-f4a7-9a2c-9676-da20759560ad
       X-Trace-Id:
-      - 107f126d1c4b0ea8
+      - ee0c47bc0c15d243
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
@@ -115,7 +115,7 @@ http_interactions:
       X-Frame-Options:
       - DENY
       X-Envoy-Upstream-Service-Time:
-      - '44'
+      - '59'
       X-Envoy-Attempt-Count:
       - '1'
       Vary:
@@ -125,19 +125,19 @@ http_interactions:
       Expect-Ct:
       - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
       Set-Cookie:
-      - __cf_bm=BzQXr_FqG_lhX6mcrfQJompxtdpGlhz0bAEVc0i7El0-1654242853-0-AYeeQXN4gSlMbKZp9gzugFydEhrtCl3/4+VytNiBKapeqNi3iv7z+n/j6MEJZ+2Y3TIEdlqC/F2VEg75Wahg6bM=;
-        path=/; expires=Fri, 03-Jun-22 08:24:13 GMT; domain=.transferwise.tech; HttpOnly;
+      - __cf_bm=4IaVdo.o.ZDHjRHILzyAN5adIjDBXwFq1hyCnI_9ubQ-1654256170-0-AURGFq9ebFWqc83rnynjwcbUiAmVHCW3cltkG4e00LFbnB7mYToMnYGNiIdIhhcsdrnam9Ps7F25M7lnI8HYfMo=;
+        path=/; expires=Fri, 03-Jun-22 12:06:10 GMT; domain=.transferwise.tech; HttpOnly;
         Secure; SameSite=None
       Server:
       - cloudflare
       Cf-Ray:
-      - 7156dc0578c9a92c-MAA
+      - 715821271a0a396b-MAA
       Alt-Svc:
       - h3=":443"; ma=86400, h3-29=":443"; ma=86400
     body:
       encoding: ASCII-8BIT
       string: '{"id":148397163,"business":16455649,"profile":16455649,"accountHolderName":"Sudeep
-        Tarlekar","currency":"INR","country":"IN","type":"indian","details":{"address":{"country":"IN","countryCode":"IN","firstLine":"Pune","postCode":"560015","city":"Pune","state":null},"email":null,"legalType":"PRIVATE","accountHolderName":null,"accountNumber":"1234567","sortCode":null,"abartn":null,"accountType":null,"bankgiroNumber":null,"ifscCode":"UTIB0002580","bsbCode":null,"institutionNumber":null,"transitNumber":null,"phoneNumber":null,"bankCode":null,"russiaRegion":null,"routingNumber":null,"branchCode":null,"cpf":null,"cardToken":null,"idType":null,"idNumber":null,"idCountryIso3":null,"idValidFrom":null,"idValidTo":null,"clabe":null,"swiftCode":null,"dateOfBirth":null,"clearingNumber":null,"bankName":null,"branchName":null,"businessNumber":null,"province":null,"city":null,"rut":null,"token":null,"cnpj":null,"payinReference":null,"pspReference":null,"orderId":null,"idDocumentType":null,"idDocumentNumber":null,"targetProfile":null,"targetUserId":null,"taxId":null,"job":null,"nationality":null,"interacAccount":null,"bban":null,"town":null,"postCode":null,"language":null,"billerCode":null,"customerReferenceNumber":null,"prefix":null,"IBAN":null,"iban":null,"BIC":null,"bic":null},"user":5967985,"active":true,"ownedByCustomer":false}'
+        Tarlekar","currency":"INR","country":"IN","type":"indian","details":{"address":{"country":"IN","countryCode":"IN","firstLine":"Pune","postCode":"560015","city":"Pune","state":null},"email":null,"legalType":"PRIVATE","accountHolderName":null,"accountNumber":"1234567","sortCode":null,"abartn":null,"accountType":null,"bankgiroNumber":null,"ifscCode":"UTIB0002580","bsbCode":null,"institutionNumber":null,"transitNumber":null,"phoneNumber":null,"bankCode":null,"russiaRegion":null,"routingNumber":null,"branchCode":null,"cpf":null,"cardToken":null,"idType":null,"idNumber":null,"idCountryIso3":null,"idValidFrom":null,"idValidTo":null,"clabe":null,"swiftCode":null,"dateOfBirth":null,"clearingNumber":null,"bankName":null,"branchName":null,"businessNumber":null,"province":null,"city":null,"rut":null,"token":null,"cnpj":null,"payinReference":null,"pspReference":null,"orderId":null,"idDocumentType":null,"idDocumentNumber":null,"targetProfile":null,"targetUserId":null,"taxId":null,"job":null,"nationality":null,"interacAccount":null,"bban":null,"town":null,"postCode":null,"language":null,"billerCode":null,"customerReferenceNumber":null,"prefix":null,"IBAN":null,"iban":null,"BIC":null,"bic":null},"user":5967985,"active":false,"ownedByCustomer":false}'
     http_version:
-  recorded_at: Fri, 03 Jun 2022 07:54:12 GMT
+  recorded_at: Fri, 03 Jun 2022 11:36:10 GMT
 recorded_with: VCR 3.0.3
