@@ -62,6 +62,7 @@ class Invoice < ApplicationRecord
   validates :amount, :outstanding_amount, :tax,
     :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
   validates :invoice_number, uniqueness: true
+  validates :external_view_key, uniqueness: true
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :from_date, -> (from) { where("issue_date >= ?", from) if from.present? }
