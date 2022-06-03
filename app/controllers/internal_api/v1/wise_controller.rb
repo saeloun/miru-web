@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::WiseController < InternalApi::V1::ApplicationController
-  # skip_after_action :verify_authorized
-
   def fetch_bank_requirements
     authorize current_company, policy_class: WisePolicy
 
