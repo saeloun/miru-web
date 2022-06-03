@@ -72,4 +72,76 @@ http_interactions:
         enter currency.","path":"currency","arguments":[]}]}'
     http_version:
   recorded_at: Fri, 03 Jun 2022 08:12:49 GMT
+- request:
+    method: post
+    uri: https://api.transferwise.com/v1/accounts
+    body:
+      encoding: UTF-8
+      string: '{"accountHolderName":"Sudeep Anil Tarlekar","country":"GB","details":{"accountNumber":"GB46
+        TRWI 2314 7025 5421 89","address":{"city":"London","country":"GB","countryCode":"GB","firstLine":"Times
+        Square","postCode":"56001"},"legalType":"BUSINESS","swiftCode":"TRWIGB2L"},"profile":"16455649","type":"swift_code"}'
+    headers:
+      Authorization:
+      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      User-Agent:
+      - Faraday v1.9.3
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 422
+      message: Unprocessable Entity
+    headers:
+      Date:
+      - Fri, 03 Jun 2022 08:12:49 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - 17b19820b2ea19df
+      X-Envoy-Upstream-Service-Time:
+      - '40'
+      X-Envoy-Attempt-Count:
+      - '1'
+      Vary:
+      - origin,access-control-request-method,access-control-request-headers,accept-encoding
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Set-Cookie:
+      - __cf_bm=Xz6fBl1Xml9RZh7m2TBRAzD82hVctD47PTiVJAy8obs-1654243969-0-AWxFdwvcuRUAICSDhN/mogOwZvsQfuBuPNQZQIQnooCkbjxFO+Gtj8uIR4dKCz1Rbra6FcEcgncfP3DKSnGQ89Q=;
+        path=/; expires=Fri, 03-Jun-22 08:42:49 GMT; domain=.transferwise.tech; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7156f749ba34a8fc-MAA
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"timestamp":"2022-06-03T08:12:49.925678240Z","errors":[{"code":"NOT_VALID","message":"Please
+        enter currency.","path":"currency","arguments":[]}]}'
+    http_version:
+  recorded_at: Fri, 03 Jun 2022 08:12:49 GMT
 recorded_with: VCR 3.0.3

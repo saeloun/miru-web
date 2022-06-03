@@ -70,4 +70,74 @@ http_interactions:
         has not passed validation.","path":"ifscCode","arguments":["UTIB"]}]}'
     http_version:
   recorded_at: Fri, 03 Jun 2022 07:12:26 GMT
+- request:
+    method: get
+    uri: https://api.transferwise.com/v1/validators/ifsc-code?ifscCode=UTIB
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      User-Agent:
+      - Faraday v1.9.3
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Date:
+      - Fri, 03 Jun 2022 07:12:26 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Content-Length:
+      - '136'
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - c1b895d0-962d-9356-9a2f-a6d9807e1a73
+      X-Trace-Id:
+      - ae60aeee210207a0
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Envoy-Upstream-Service-Time:
+      - '42'
+      X-Envoy-Attempt-Count:
+      - '1'
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers,accept-encoding
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Set-Cookie:
+      - __cf_bm=vdeng1sY_0voNtvByfOjlBvRiDCvQqM6lU_6RPpAWag-1654240346-0-AQlRQoQf5m6OB2H93mcsp2CDvis6qNAUlWL4I0MLUv27RjVRtU12tDArFucxYJzF8eLaiZaiQboYUTNXNzZleX8=;
+        path=/; expires=Fri, 03-Jun-22 07:42:26 GMT; domain=.transferwise.tech; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 71569ed5df0f396c-MAA
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"errors":[{"code":"VALIDATION_NOT_SUCCESSFUL","message":"ifscCode
+        has not passed validation.","path":"ifscCode","arguments":["UTIB"]}]}'
+    http_version:
+  recorded_at: Fri, 03 Jun 2022 07:12:26 GMT
 recorded_with: VCR 3.0.3

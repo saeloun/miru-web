@@ -33,17 +33,9 @@ RSpec.describe InternalApi::V1::WiseController, type: :controller do
     end
 
     context "when wise returns an error" do
-      before do
-        allow_any_instance_of(Faraday::Connection).to receive(:get).and_return(
-          Struct.new(:status, :body).new(500, { error: "Error while calling Wise Api" }.to_json)
-        )
-      end
+      let(:status) { 500 }
 
-      it "returns response from Wise" do
-        subject
-
-        expect(response.status).to eq 500
-      end
+      it_behaves_like "Internal::V1::WiseController error response from wise"
     end
   end
 
