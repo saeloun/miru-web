@@ -32,7 +32,7 @@ class InternalApi::V1::Payments::ProvidersController < ApplicationController
     end
 
     def provider_params
-      params.require(:provider).permit(:name, :connected, :enabled, accepted_payment_methods: [])
+      params.require(:provider).permit(:name, :enabled, accepted_payment_methods: [])
     end
 
     def stripe_connected_account
