@@ -80,7 +80,6 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
       navigate("/invoices");
     } catch (error) {
       setStatus(InvoiceStatus.ERROR);
-      navigate("/invoices");
     }
   };
 
