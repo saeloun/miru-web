@@ -125,6 +125,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_09_024351) do
     t.datetime "updated_at", null: false
     t.string "external_view_key"
     t.index ["client_id"], name: "index_invoices_on_client_id"
+    t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
     t.index ["status"], name: "index_invoices_on_status"
