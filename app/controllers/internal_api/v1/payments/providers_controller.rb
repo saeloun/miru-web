@@ -10,13 +10,6 @@ class InternalApi::V1::Payments::ProvidersController < ApplicationController
     }
   end
 
-  def create
-    authorize :create, policy_class: Payments::ProviderPolicy
-    render :create, locals: {
-      payments_provider: current_company.payments_providers.create!(provider_params)
-    }
-  end
-
   def update
     authorize :update, policy_class: Payments::ProviderPolicy
     payments_provider.update!(provider_params)
