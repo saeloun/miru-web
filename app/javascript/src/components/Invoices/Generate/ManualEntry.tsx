@@ -13,7 +13,14 @@ const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) =
   const onEnter = e => {
     if (e.key == "Enter") {
       const names = name.split(" ");
-      const newItem = [...selectedOption, { first_name: names.splice(0,1)[0], last_name: names.join(" "), date, description, rate, qty: (Number(qty)*60), lineTotal: (Number(qty) * Number(rate)) }];
+      const newItem = [...selectedOption, {
+        first_name: names.splice(0, 1)[0],
+        last_name: names.join(" "),
+        date, description,
+        rate,
+        qty: (Number(qty) * 60),
+        lineTotal: (Number(qty) * Number(rate))
+      }];
 
       setSelectedOption(newItem);
       setName("");
@@ -72,8 +79,9 @@ const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) =
           placeholder="Qty"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={qty}
-          onChange={e => {setQty(e.target.value);
-            setLineTotal(Number(rate)*Number(e.target.value));
+          onChange={e => {
+            setQty(e.target.value);
+            setLineTotal(Number(rate) * Number(e.target.value));
           }}
           onKeyDown={e => onEnter(e)}
         />

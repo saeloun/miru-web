@@ -3,7 +3,7 @@ import { currencyFormat } from "helpers/currency";
 
 const InvoiceTotalSummary = ({ invoice }) => {
   const subTotal = invoice.invoiceLineItems
-    .reduce((prev, curr) => prev + curr.rate * curr.quantity/60, 0);
+    .reduce((prev, curr) => prev + curr.rate * curr.qty / 60, 0);
   const tax = invoice.tax;
   const discount = invoice.discount;
   const total = Number(subTotal) + Number(tax) - Number(discount);
