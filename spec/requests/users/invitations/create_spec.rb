@@ -10,7 +10,15 @@ RSpec.describe "Users::Invitations#create", type: :request do
     create(:company_user, company:, user:)
     user.add_role :admin, company
     sign_in user
-    send_request :post, user_invitation_path, params: { user: { email: "invited@example.com", roles: "employee" } }
+    send_request(
+      :post, user_invitation_path, params: {
+        user: {
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: "invited@example.com",
+          roles: "employee"
+        }
+      })
   end
 
   it "creates new user with invitation token" do
