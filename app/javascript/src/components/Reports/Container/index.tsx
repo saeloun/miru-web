@@ -19,7 +19,7 @@ const Container = () => {
         <tr className="flex flex-row items-center">
           <th
             scope="col"
-            className="w-2/5 px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+            className="w-1/5 px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
           >
             PROJECT/
             <br />
@@ -41,7 +41,7 @@ const Container = () => {
           </th>
           <th
             scope="col"
-            className="px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+            className="w-1/5 px-6 py-5 text-right text-xs font-normal text-miru-dark-purple-600 tracking-widest"
           >
             HOURS
             <br />
@@ -49,7 +49,7 @@ const Container = () => {
           </th>
         </tr>
       </thead>
-      <tbody className="bg-white divide-y divide-gray-200">
+      <tbody className="">
         {getEntryList()}
       </tbody>
     </table>
