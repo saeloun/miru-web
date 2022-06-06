@@ -135,7 +135,7 @@ class Client < ApplicationRecord
     def unique_client_name_for_company
       return unless Client.where(company_id:, name:).exists?
 
-      errors.add(:name, "client name must be unique for a company")
+      errors.add(:name, "already taken")
     end
 
     def stripe_connected_account

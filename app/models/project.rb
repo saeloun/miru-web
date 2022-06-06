@@ -86,7 +86,7 @@ class Project < ApplicationRecord
 
     def unique_project_name_for_client
       if client && client.projects.where(name:).exists?
-        errors.add(:name, "project name has already been taken")
+        errors.add(:name, "already taken")
       end
     end
 
