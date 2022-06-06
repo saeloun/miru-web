@@ -25,12 +25,19 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :project_members, only: [:update]
     resources :company_users, only: [:index]
     resources :timezones, only: [:index]
+
     resources :companies, only: [:index, :create, :update] do
       resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
     end
 
-    # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
+
+    namespace :payments do
+      resources :providers, only: [:create, :index, :update]
+    end
+
+    delete "profile/remove_avatar", to: "profile#remove_avatar"
+    put "profile", to: "profile#update"
   end
 end
