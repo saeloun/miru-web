@@ -42,24 +42,21 @@ const TableHeader = () => (
 const Container = () => {
   const { reports } = useEntry();
 
-  const getEntryList = (entries) => {
-    if (entries.length > 0) {
-      return entries.map((timeEntry, index) => (
-        <TableRow key={index} {...timeEntry} />
-      ));
-    }
-  };
+  const getEntryList = (entries) =>
+    entries.map((timeEntry, index) => (
+      <TableRow key={`${timeEntry.client}-${index}`} {...timeEntry} />
+    ));
 
   return (
     <Fragment>
       {
-        reports.map(report => (
-          <Fragment>
+        reports.map((report, index) => (
+          <Fragment key={index}>
             {report.label !== "" && <h1 className="text-miru-han-purple-1000 font-bold text-xl py-5 border-b border-miru-han-purple-1000">{report.label}</h1>}
             <table className="min-w-full divide-y divide-gray-200 mt-4">
               <TableHeader />
               <tbody className="bg-white divide-y divide-gray-200">
-                {getEntryList(report.entries)}
+                {report.entries.length > 0 && getEntryList(report.entries)}
               </tbody>
             </table>
           </Fragment>
