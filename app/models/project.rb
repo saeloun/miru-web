@@ -32,6 +32,8 @@ class Project < ApplicationRecord
   has_many :timesheet_entries
   has_many :project_members, dependent: :destroy
 
+  before_validation :unique_project_name_for_client, if: :name_changed?
+
   # Validations
   validates :name, presence: true
   validates :billable, inclusion: { in: [ true, false ] }
@@ -81,6 +83,12 @@ class Project < ApplicationRecord
   end
 
   private
+
+    def unique_project_name_for_client
+      if client && client.projects.where(name:).exists?
+        errors.add(:name, "project name has already been taken")
+      end
+    end
 
     def discard_project_members
       project_members.discard_all

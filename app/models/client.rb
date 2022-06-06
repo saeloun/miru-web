@@ -16,9 +16,8 @@
 #
 # Indexes
 #
-#  index_clients_on_company_id            (company_id)
-#  index_clients_on_discarded_at          (discarded_at)
-#  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
+#  index_clients_on_company_id    (company_id)
+#  index_clients_on_discarded_at  (discarded_at)
 #
 # Foreign Keys
 #
@@ -36,8 +35,10 @@ class Client < ApplicationRecord
   has_many :invoices, dependent: :destroy
   belongs_to :company
 
+  before_validation :unique_client_name_for_company, if: :name_changed?
+
   validates :name, :email, presence: true
-  validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
+  validates :email, format: { with: Devise.email_regexp }
   after_discard :discard_projects
 
   default_scope { where(discarded_at: nil) }
@@ -130,6 +131,12 @@ class Client < ApplicationRecord
   end
 
   private
+
+    def unique_client_name_for_company
+      return unless Client.where(company_id:, name:).exists?
+
+      errors.add(:name, "client name must be unique for a company")
+    end
 
     def stripe_connected_account
       StripeConnectedAccount.find_by!(company:)

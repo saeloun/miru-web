@@ -8,7 +8,6 @@ RSpec.describe Client, type: :model do
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:email) }
-    it { is_expected.to validate_uniqueness_of(:email).scoped_to(:company_id) }
     it { is_expected.to allow_value("valid@email.com").for(:email) }
     it { is_expected.not_to allow_value("invalid@email").for(:email) }
   end
@@ -40,15 +39,20 @@ RSpec.describe Client, type: :model do
     describe "#total_hours_logged" do
       let(:company) { create(:company) }
       let(:user) { create(:user) }
-      let(:client) { create(:client, company:) }
-      let(:project_1) { create(:project, client:) }
-      let(:project_2) { create(:project, client:) }
+      let(:client) { create(:client, company:, name: "Client_1") }
+      let(:project_1) { create(:project, client:, name: "Project 1") }
+      let(:project_2) { create(:project, client:, name: "Project 2") }
       let(:results) do
       end
 
       before do
         create_list(:timesheet_entry, 5, user:, project: project_1)
         create_list(:timesheet_entry, 5, user:, project: project_2)
+      end
+
+      it "can not create client with same name" do
+        company.clients.create(name: client.name)
+        expect(company.clients.count).to eq(1)
       end
 
       context "when time_frame is last week" do
@@ -104,8 +108,8 @@ RSpec.describe Client, type: :model do
       let(:company) { create(:company) }
       let(:user) { create(:user) }
       let(:client) { create(:client, company:) }
-      let(:project_1) { create(:project, client:) }
-      let(:project_2) { create(:project, client:) }
+      let(:project_1) { create(:project, client:, name: "Project Alpha") }
+      let(:project_2) { create(:project, client:, name: "Project Beta") }
       let(:results) do
         from, to = client.week_month_year(time_frame)
         [project_1, project_2].map do | project |
@@ -213,7 +217,7 @@ RSpec.describe Client, type: :model do
     describe "#client_overdue_and_outstanding_calculation" do
       let(:company) { create(:company) }
       let(:user) { create(:user) }
-      let(:client) { create(:client, company:) }
+      let(:client) { create(:client, company:, name: "Client X") }
 
       before do
         create_list(:invoice, 5, client:)
@@ -235,9 +239,9 @@ RSpec.describe Client, type: :model do
     end
 
     describe "#register_on_stripe!" do
-      let(:company) { create(:company) }
+      let(:company) { create(:company, name: "Company Y") }
       let(:user) { create(:user) }
-      let(:client) { create(:client, company:) }
+      let(:client) { create(:client, company:, name: "Client Y") }
 
       context "when associated stripe connected account doesn't exist" do
         it "raises ActiveRecord::RecordNotFound" do

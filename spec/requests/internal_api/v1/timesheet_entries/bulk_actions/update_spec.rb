@@ -6,8 +6,8 @@ RSpec.describe "InternalApi::V1::TimesheetEntry::BulkActionController#update", t
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
-  let(:project1) { create(:project, client:) }
-  let(:project2) { create(:project, client:) }
+  let(:project1) { create(:project, client:, name: "Pro 1") }
+  let(:project2) { create(:project, client:, name: "Pro 2") }
   let!(:timesheet_entry1) { create(:timesheet_entry, user:, project: project1) }
   let!(:timesheet_entry2) { create(:timesheet_entry, user:, project: project1) }
   let!(:timesheet_entry3) { create(:timesheet_entry, user:, project: project1) }
