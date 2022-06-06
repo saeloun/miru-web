@@ -13,7 +13,7 @@ const TableRow = ({
 }: ITimeEntry) => (
 
   <tr key={id} className="flex flex-row items-center">
-    <td className="w-2/5 px-6 py-4 text-left whitespace-nowrap">
+    <td className="w-2/5 pr-6 py-4 text-left whitespace-nowrap">
       <p className="font-semibold text-base text-miru-dark-purple-1000">
         {project}
       </p>
@@ -32,7 +32,7 @@ const TableRow = ({
         {workDate}
       </p>
     </td>
-    <td className=" px-6 py-4 text-xl text-left whitespace-nowrap font-bold text-miru-dark-purple-1000">
+    <td className=" pl-6 py-4 text-xl text-left whitespace-nowrap font-bold text-miru-dark-purple-1000">
       {minutesToHHMM(duration)}
     </td>
   </tr>
