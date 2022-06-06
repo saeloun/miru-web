@@ -34,6 +34,7 @@ class Leads::QuotePolicy < ApplicationPolicy
   def permitted_attributes
     [
       :name, :description,
+      lead_line_item_ids: []
     ]
   end
 end

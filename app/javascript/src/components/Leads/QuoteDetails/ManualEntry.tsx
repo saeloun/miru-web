@@ -67,7 +67,7 @@ const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) =
       </td>
       <td className="p-1 w-full">
         <select
-          className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
+          className="p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           name="kind" onChange={e => setKind(e.target.value)}>
           <option value=''>Select Kind</option>
           {kindList &&

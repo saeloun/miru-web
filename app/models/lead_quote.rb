@@ -27,10 +27,7 @@ class LeadQuote < ApplicationRecord
 
   def render_properties
     {
-      id:, name:, description:, lead_line_items:,
-      lead_line_items_quotes_attributes: [
-        :lead_quote_id, :lead_line_item_id, :_destroy
-      ]
+      id:, name:, description:, lead_line_items:
     }
   end
 end

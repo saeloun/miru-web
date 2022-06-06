@@ -14,8 +14,6 @@ const show = async (leadId, id, queryParam) => axios.get(`${path}/${leadId}/quot
 
 const destroy = async (leadId, id) => axios.delete(`${path}/${leadId}/quotes/${id}`);
 
-const updateLineItems = async (leadId, id, leadLineItemIds) => axios.get(`${path}/${leadId}/quotes/${id}/update_line_items?lead_line_item_ids=${leadLineItemIds}`);
-
-const leadQuotes = { index, create, show, edit, update, destroy, updateLineItems };
+const leadQuotes = { index, create, show, edit, update, destroy };
 
 export default leadQuotes;

@@ -4,8 +4,9 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leadLineItems from "apis/lead-line-items";
 import leadQuotes from "apis/lead-quotes";
 
+import { FloppyDisk } from "phosphor-react";
 import LineItemTableHeader from "./LineItemTableHeader";
-import ManualEntry from "./ManualEntry";
+// import ManualEntry from "./ManualEntry";
 import NewLineItemRow from "./NewLineItemRow";
 import NewLineItemTable from "./NewLineItemTable";
 
@@ -14,6 +15,8 @@ import { unmapQuoteLineItemList } from "../../../mapper/editQuote.mapper";
 import { unmapLeadLineItemList } from "../../../mapper/lead.lineItem.mapper";
 
 const LineItemTable = () => {
+
+  const [apiError, setApiError] = useState<string>("");
 
   const [lineItems, setLineItems] = useState<any>(null);
   const { leadId } = useParams();
@@ -36,7 +39,7 @@ const LineItemTable = () => {
   }, [leadId]);
 
   const [addNew, setAddNew] = useState<boolean>(false);
-  const [manualEntry, setManualEntry] = useState<boolean>(false);
+  // const [manualEntry, setManualEntry] = useState<boolean>(false);
   const wrapperRef = useRef(null);
 
   useOutsideClick(wrapperRef, () => {
@@ -48,9 +51,9 @@ const LineItemTable = () => {
     setLineItems={setLineItems}
     selectedLineItems={selectedLineItems}
     setSelectedLineItems={setSelectedLineItems}
-    addNew={addNew}
+    // addNew={addNew}
     setAddNew={setAddNew}
-    setManualEntry={setManualEntry}
+    // setManualEntry={setManualEntry}
   />;
 
   const getAddNewButton = () => {
@@ -70,8 +73,28 @@ const LineItemTable = () => {
     }
   };
 
+  const handleSubmit = async () => {
+    await leadQuotes.update(leadId, quoteId, {
+      "lead_line_item_ids": selectedLineItems.map(item => (item.id))
+    }).then(() => {
+      document.location.reload();
+    }).catch((e) => {
+      setApiError(e.message);
+    });
+  };
+
   return (
     <React.Fragment>
+      <div className="flex justify-end m-6">
+        <button
+          type="button"
+          className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
+          onClick={handleSubmit}
+        >
+          <FloppyDisk size={18} color="white" />
+          <span className="ml-2 inline-block">SAVE</span>
+        </button>
+      </div>
       <table className="w-full table-fixed">
         <LineItemTableHeader />
         <tbody className="w-full">
@@ -80,13 +103,13 @@ const LineItemTable = () => {
               {getAddNewButton()}
             </td>
           </tr>
-          {manualEntry
+          {/* {manualEntry
             && <ManualEntry
               setShowItemInputs={setManualEntry}
               setSelectedOption={setSelectedLineItems}
               selectedOption={selectedLineItems}
             />
-          }
+          } */}
           {
             selectedLineItems.map((item, index) => (
               <NewLineItemRow
@@ -98,6 +121,7 @@ const LineItemTable = () => {
             ))}
         </tbody>
       </table>
+      <p className="tracking-wider mt-3 block text-xs text-red-600">{apiError}</p>
     </React.Fragment>
   );
 };

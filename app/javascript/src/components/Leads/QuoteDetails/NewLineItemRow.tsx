@@ -9,13 +9,13 @@ const NewLineItemRow = ({
 }) => {
   const [isEdit, setEdit] = useState<boolean>(false);
 
-  const handleDelete = () => {
-    // const sanitized = selectedOption.filter(option =>
-    //   option.timesheet_entry_id !== item.timesheet_entry_id ||
-    //   option.id !== item.id
-    // )
-    // setSelectedOption(sanitized);
-  };
+  // const handleDelete = () => {
+  //   // const sanitized = selectedOption.filter(option =>
+  //   //   option.timesheet_entry_id !== item.timesheet_entry_id ||
+  //   //   option.id !== item.id
+  //   // )
+  //   // setSelectedOption(sanitized);
+  // };
 
   return isEdit ? (
     <EditLineItems
@@ -26,9 +26,9 @@ const NewLineItemRow = ({
     />
   ) : (
     <NewLineItemStatic
-      handleDelete={handleDelete}
+      // handleDelete={handleDelete}
       item={item}
-      setEdit={setEdit}
+      // setEdit={setEdit}
     />
   );
 };

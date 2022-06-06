@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, CaretDown, Trash } from "phosphor-react";
+import { ArrowLeft, CaretDown } from "phosphor-react";
 
 const Header = ({ leadDetails }) => {
 
-  const [isHeaderMenuVisible, setHeaderMenuVisibility] = useState<boolean>(false);
   const [isLeadOpen, toggleLeadDetails] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -15,10 +14,6 @@ const Header = ({ leadDetails }) => {
     toggleLeadDetails(!isLeadOpen);
   };
 
-  const handleMenuVisibility = () => {
-    setHeaderMenuVisibility(!isHeaderMenuVisible);
-  };
-
   const handleBackButtonClick = () => {
     navigate(`/leads/${leadId}/quotes`);
   };
@@ -27,7 +22,6 @@ const Header = ({ leadDetails }) => {
     toggleLeadDetails(!isLeadOpen);
   }, []);
 
-  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
   return (
     <div className="my-6">
       <div className="flex min-w-0 items-center justify-between">
@@ -41,31 +35,6 @@ const Header = ({ leadDetails }) => {
           <button onClick={handleLeadDetails}>
             <CaretDown size={20} weight="bold" />
           </button>
-        </div>
-        <div className="relative h-8">
-          <button onClick = {handleMenuVisibility} className={`menuButton__button ${menuBackground}`}>
-            <DotsThreeVertical size={20} color="#000000" />
-          </button>
-          { isHeaderMenuVisible && <ul className="menuButton__wrapper">
-            <li>
-              <button className="menuButton__list-item">
-                <Receipt size={16} color="#5B34EA" weight="bold" />
-                <span className="ml-3">Add Lead</span>
-              </button>
-            </li>
-            <li>
-              <button className="menuButton__list-item">
-                <Pencil size={16} color="#5b34ea" weight="bold" />
-                <span className="ml-3">Edit</span>
-              </button>
-            </li>
-            <li>
-              <button className="menuButton__list-item text-miru-red-400">
-                <Trash size={16} color="#E04646" weight="bold" />
-                <span className="ml-3">Delete</span>
-              </button>
-            </li>
-          </ul> }
         </div>
       </div>
       {isLeadOpen && <div className="flex ml-12 mt-4">
