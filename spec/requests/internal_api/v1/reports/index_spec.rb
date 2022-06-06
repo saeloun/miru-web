@@ -54,7 +54,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
         TimesheetEntry.search_index.refresh
       end
 
-      it "returns the time entry reports in given date range" do
+      it "returns the time entry reports in given date range in descending order" do
         send_request :get, internal_api_v1_reports_path, params: {
           date_range: "this_week"
         }
@@ -63,7 +63,6 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
         expect(reports["label"]).to eq("")
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(2)
-        # Timsheets should be in desceding order of work_date
         expect(timesheet_ids_in_response).to eq([@timesheet_entry3.id, @timesheet_entry2.id])
         expect(timesheet_ids_in_response).not_to include(@timesheet_entry1.id)
       end

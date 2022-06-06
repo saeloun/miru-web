@@ -45,7 +45,14 @@ class TimesheetEntry < ApplicationRecord
   searchkick
 
   def search_data
-    self.as_json.merge({ client_id: self.project.client_id })
+    {
+      id: id.to_i,
+      bill_status:,
+      project_id:,
+      client_id: self.project.client_id,
+      user_id:,
+      work_date:
+    }
   end
 
   def self.during(from, to)

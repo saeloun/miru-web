@@ -4,7 +4,7 @@ module Report
   class GroupBy < ApplicationService
     attr_reader :group_by_field
 
-    POSSIBLE_GROUP_BY_INPUTS = ["team_member", "client", "project", "week"]
+    POSSIBLE_GROUP_BY_INPUTS = ["team_member", "client", "project", "week"].freeze
     GROUP_BY_INPUT_TO_ES_FIELD = {
       "team_member" => "user_id",
       "client" => "client_id",
@@ -17,7 +17,7 @@ module Report
     end
 
     def process
-      return {} if group_by_field.blank? || !POSSIBLE_GROUP_BY_INPUTS.include?(group_by_field)
+      return {} if group_by_field.blank? || POSSIBLE_GROUP_BY_INPUTS.exclude?(group_by_field)
 
       group_by_query(GROUP_BY_INPUT_TO_ES_FIELD[group_by_field])
     end

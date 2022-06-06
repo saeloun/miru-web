@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "service::reports#group_by", type: :model do
+RSpec.describe "GroupBy", type: :service do
   def group_by_field_to_term_field(field)
     case field
     when "team_member"
