@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Invoices::View", type: :request do
   describe "#show" do
-    let(:company) { create(:company) }
+    let(:company) { create(:company, :with_logo) }
     let(:client) { create(:client, company:) }
     let(:invoice) { create(:invoice, client:, company:) }
 

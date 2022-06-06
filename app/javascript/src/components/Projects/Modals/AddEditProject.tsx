@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import projectApi from "apis/projects";
 import { X } from "phosphor-react";
 
-const AddEditProject = ({ setEditProjectData, editProjectData, setShowProjectModal, projectData }) => {
+const AddEditProject = ({
+  setEditProjectData,
+  editProjectData,
+  setShowProjectModal,
+  projectData
+}) => {
 
   const [client, setClient] = useState<any>(null);
   const [projectName, setProjectName] = useState<any>(null);
@@ -35,7 +40,7 @@ const AddEditProject = ({ setEditProjectData, editProjectData, setShowProjectMod
   useEffect(() => {
     if (editProjectData) {
       if (clientList) {
-        const client = clientList.filter(client => client.name == editProjectData.client.name);
+        const client = clientList.filter(clientItem => clientItem.name == editProjectData.clientName);
         setClient(client[0].id);
       }
       setProjectName(editProjectData ? editProjectData.name : null);
@@ -104,7 +109,7 @@ const AddEditProject = ({ setEditProjectData, editProjectData, setShowProjectMod
                     onChange={(e) => setClient(e.target.value)}>
                     <option value='0'>Select Client</option>
                     {clientList &&
-                      clientList.map(e => <option value={e.id} selected={e.id == client}>{e.name}</option>)}
+                      clientList.map((e, index) => <option key={index} value={e.id} selected={e.id == client}>{e.name}</option>)}
                   </select>
                 </div>
               </div>
