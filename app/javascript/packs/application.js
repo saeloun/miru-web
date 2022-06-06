@@ -13,6 +13,7 @@ import "@fontsource/plus-jakarta-sans";
 global.toastr = require("toastr");
 global.toastr.options = {
   closeButton: true,
+  closeHtml: "<button></button>",
   debug: false,
   newestOnTop: false,
   progressBar: false,

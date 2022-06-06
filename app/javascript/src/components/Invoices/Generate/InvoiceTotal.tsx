@@ -85,7 +85,6 @@ const InvoiceTotal = ({
     const newLineItemsSubTotal = newLineItems.reduce((sum, { lineTotal }) => (sum + lineTotal), 0);
 
     const newTotal = Number(newLineItemsSubTotal) + Number(tax) - Number(discount);
-
     setSubTotal(newLineItemsSubTotal);
     setTotal(newTotal);
     setAmount(newTotal);
