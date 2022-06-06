@@ -1,17 +1,53 @@
+import { Divider } from "common/Divider";
 import React from "react";
 
 import Header from "../Header";
+import Table from './Table';
 
 const Billing = () => (
-  <div className="flex flex-col w-4/5">
-    <Header
-      title={"Bank Account Details"}
-      subTitle={"Settings to receive payment from your employer"}
-    />
-    <div className="py-10 pl-10 mt-4 bg-miru-gray-100 h-screen">
-      <p>Payment Page Coming up</p>
+  <>
+    <div className="flex flex-col w-4/5">
+      <Header
+        title={""}
+        subTitle={""}
+        showButtons={false}
+      // cancelAction={()=> {}}
+      // saveAction={}
+      />
+      <div className="pb-5 pt-5 pl-5 pr-5 mt-4 bg-miru-gray-100 min-h-40v">
+        <div className="flex flex-row py-2 justify-between">
+          <div className="font-semibold p-2">Next Billing Date</div>
+          <div className="font-bold p-2">
+            22nd May 2022
+          </div>
+        </div>
+        <Divider />
+        <div className="flex flex-row py-2 justify-between items-end">
+          <div className="p-2">
+            <p className="font-normal	text-xs	text-miru-dark-purple-1000">Add-Ons</p>
+            <p className="font-semibold">1 team member</p>
+            <p className="font-normal	text-xs text-miru-dark-purple-400">5$ per user per month</p>
+          </div>
+          <div className="p-2 text-right">
+            <p className="font-bold mt-2 text-base">5$/mo</p>
+            <p className="font-normal	text-xs text-miru-dark-purple-400">charged every month </p>
+          </div>
+        </div>
+        <Divider />
+        <div className="flex flex-row py-2 justify-between items-start">
+          <div className="p-2 font-bold text-2xl"> Total </div>
+          <div className="p-2 text-right">
+            <p className="font-bold mt-2">5$</p>
+            <p className="font-normal	text-xs	text-miru-dark-purple-400">plus taxes </p>
+          </div>
+        </div>
+      </div>
+      <div className="pb-5 pt-5 pl-5 pr-5 mt-4 bg-miru-gray-100 min-h-40v">
+        <p className='font-semibold	p-2 text-xl'>Billing History</p>
+        <Table />
+      </div>
     </div>
-  </div>
+  </>
 );
 
 export default Billing;
