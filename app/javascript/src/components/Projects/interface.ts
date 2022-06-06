@@ -1,7 +1,7 @@
 export interface IProject {
   id: number;
   name: string;
-  client: string;
+  clientName: string;
   isBillable: boolean;
   minutesSpent: number;
   editIcon: string;
@@ -12,10 +12,10 @@ export interface IProject {
   setProjectToDelete: any;
   setShowDeleteDialog: any;
   projectClickHandler: any;
-  setShowProjectModal:any;
-  setEditProjectId:any;
-  setEditProjectData:any;
-  setDeleteProjectData:any,
+  setShowProjectModal: any;
+  setEditProjectId: any;
+  setEditProjectData: any;
+  setDeleteProjectData: any,
 }
 
 export interface IMember {
