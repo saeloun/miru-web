@@ -8,11 +8,7 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :leads, only: [:index, :update, :destroy, :show, :create] do
       get "items", to: "/lead_items", on: :collection
       resources :line_items, only: [:index, :update, :destroy, :show, :create], module: :leads
-      resources :quotes, only: [:index, :update, :destroy, :show, :create], module: :leads do
-        member do
-          get :update_line_items
-        end
-      end
+      resources :quotes, only: [:index, :update, :destroy, :show, :create, :edit], module: :leads
     end
     resources :project, only: [:index]
     resources :timesheet_entry do

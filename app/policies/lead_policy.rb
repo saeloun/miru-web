@@ -19,7 +19,7 @@ class LeadPolicy < ApplicationPolicy
     user_owner_or_admin?
   end
 
-  def update_line_items?
+  def edit?
     user_owner_or_admin?
   end
 

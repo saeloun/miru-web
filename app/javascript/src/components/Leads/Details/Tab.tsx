@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import LineItems from "./../LineItems";
 import Quotes from "./../Quotes";
 import Summary from "./Summary";
-import AddLineItems from "../../../components/Leads/QuoteDetails/AddLineItems";
+import LineItemTable from "../../../components/Leads/QuoteDetails/LineItemTable";
 
 const Tab = ({ leadDetails, forItem, quoteId }) => {
 
@@ -65,7 +65,7 @@ const Tab = ({ leadDetails, forItem, quoteId }) => {
         quotesTab: activeClassName
       });
       if (forItem == 'quoteDetails'){
-        setRenderTabData(<AddLineItems leadDetails={leadDetails} />);
+        setRenderTabData(<LineItemTable />);
       } else {
         setRenderTabData(<Quotes leadDetails={leadDetails} />);
       }

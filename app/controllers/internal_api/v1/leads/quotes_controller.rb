@@ -4,9 +4,7 @@ class InternalApi::V1::Leads::QuotesController < InternalApi::V1::ApplicationCon
   def index
     authorize lead
     lead_quotes = lead.lead_quotes.kept.where(params[:q].present? ? ["name LIKE ?", "%#{params[:q]}%"] : {}).distinct
-    quote_details = lead_quotes.map { |lead_quote|
-  lead_quote.render_properties.merge({ lead_line_item_ids: lead_quote.lead_line_items.pluck(:id) })
-}
+    quote_details = lead_quotes.map(&:render_properties)
     render json: { quote_details: }, status: :ok
   end
 
@@ -17,9 +15,15 @@ class InternalApi::V1::Leads::QuotesController < InternalApi::V1::ApplicationCon
     }
   end
 
+  def edit
+    authorize lead
+    quote_details = quote.render_properties
+    render json: { quote_details: }, status: :ok
+  end
+
   def show
     authorize lead
-    quote_details = quote.render_properties.merge({ lead_line_item_ids: quote.lead_line_items.pluck(:id) })
+    quote_details = quote.render_properties
     render json: { quote_details: }, status: :ok
   end
 
