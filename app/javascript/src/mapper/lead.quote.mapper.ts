@@ -2,7 +2,8 @@ const getList = (input) => input.quote_details.map((item) => ({
   id: item.id,
   name: item.name,
   description: item.description,
-  lead_line_item_ids: item.lead_line_item_ids
+  status: item.status,
+  status_comment: item.status_comment
 }));
 
 const unmapLeadQuoteList = (input) => {
@@ -27,7 +28,8 @@ const unmapLeadQuoteDetails = (input) => {
       id: data.quote_details.id,
       name: data.quote_details.name,
       description: data.quote_details.description,
-      lead_line_item_ids: data.quote_details.lead_line_item_ids
+      status: data.quote_details.status,
+      status_comment: data.quote_details.status_comment
     }
   };
 };

@@ -1,27 +1,30 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leadLineItems from "apis/lead-line-items";
 import leadQuotes from "apis/lead-quotes";
 
-import { FloppyDisk } from "phosphor-react";
+import { FloppyDisk, ArrowLineUpRight, PaperPlaneTilt } from "phosphor-react";
 import LineItemTableHeader from "./LineItemTableHeader";
 import ManualEntry from "./ManualEntry";
 import NewLineItemRow from "./NewLineItemRow";
 import NewLineItemTable from "./NewLineItemTable";
 
 import useOutsideClick from "../../../helpers/outsideClick";
-import { unmapQuoteLineItemList } from "../../../mapper/editQuote.mapper";
 import { unmapLeadLineItemList } from "../../../mapper/lead.lineItem.mapper";
+import { unmapLeadQuoteDetails } from "../../../mapper/lead.quote.mapper";
+import { unmapQuoteLineItemList } from "../../../mapper/quote.lineItem.mapper";
 
 const LineItemTable = () => {
 
   const [apiError, setApiError] = useState<string>("");
 
   const [lineItems, setLineItems] = useState<any>(null);
+  const navigate = useNavigate();
   const { leadId } = useParams();
   const { quoteId } = useParams();
   const [selectedLineItems, setSelectedLineItems] = useState<any>([]);
+  const [quoteDetails, setQuoteDetails] = useState<any>(null);
 
   useEffect(() => {
     setAuthHeaders();
@@ -35,6 +38,11 @@ const LineItemTable = () => {
       .then((res) => {
         const sanitized = unmapQuoteLineItemList(res);
         setSelectedLineItems(sanitized.itemList);
+      });
+    leadQuotes.show(leadId, quoteId, "")
+      .then((res) => {
+        const sanitized = unmapLeadQuoteDetails(res);
+        setQuoteDetails(sanitized.leadDetails);
       });
   }, [leadId]);
 
@@ -74,8 +82,9 @@ const LineItemTable = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (quoteStatus) => {
     await leadQuotes.update(leadId, quoteId, {
+      status: quoteStatus,
       quote_line_items_attributes: selectedLineItems.map(item => ({
         id: item.id,
         name: item.name,
@@ -88,7 +97,7 @@ const LineItemTable = () => {
         lead_quote_id: item.lead_quote_id
       }))
     }).then(() => {
-      document.location.reload();
+      navigate(`/leads/${leadId}/quotes`);
     }).catch((e) => {
       setApiError(e.message);
     });
@@ -97,14 +106,36 @@ const LineItemTable = () => {
   return (
     <React.Fragment>
       <div className="flex justify-end m-6">
-        <button
-          type="button"
-          className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
-          onClick={handleSubmit}
-        >
-          <FloppyDisk size={18} color="white" />
-          <span className="ml-2 inline-block">SAVE</span>
-        </button>
+        {quoteDetails && ["", "draft"].includes(quoteDetails.status) ?
+          <button
+            type="button"
+            className="header__button bg-miru-han-purple-1000 text-white w-1/6 p-0 hover:text-white"
+            onClick={() => handleSubmit('draft')}
+          >
+            <FloppyDisk size={18} color="white" />
+            <span className="ml-2 inline-block">DRAFT</span>
+          </button>
+          : ""}
+        {quoteDetails && quoteDetails.status === "draft" ?
+          <button
+            type="button"
+            className="header__button bg-miru-han-purple-1000 text-white w-1/4 p-0 hover:text-white"
+            onClick={() => handleSubmit('completed')}
+          >
+            <ArrowLineUpRight size={18} color="white" />
+            <span className="ml-2 inline-block">READY FOR APPROVAL</span>
+          </button>
+          : ""}
+        {quoteDetails && quoteDetails.status === "completed" ?
+          <button
+            type="button"
+            className="header__button bg-miru-han-purple-1000 text-white w-1/6 p-0 hover:text-white"
+            onClick={() => handleSubmit('sent')}
+          >
+            <PaperPlaneTilt size={18} color="white" />
+            <span className="ml-2 inline-block">SENT</span>
+          </button>
+          : ""}
       </div>
       <table className="w-full table-fixed">
         <LineItemTableHeader />

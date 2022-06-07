@@ -12,6 +12,7 @@ import NewQuote from "./../Modals/NewQuote";
 import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapLeadQuoteList } from "../../../mapper/lead.quote.mapper";
+import getStatusCssClass from "../../../utils/getStatusTag";
 
 const getTableData = (quotes) => {
   if (quotes) {
@@ -19,6 +20,11 @@ const getTableData = (quotes) => {
       ({
         col1: <div className="text-base text-miru-dark-purple-1000">{item.name}</div>,
         col2: <div className="text-center text-miru-dark-purple-1000">{item.description}</div>,
+        col3: <div className="text-center text-miru-dark-purple-1000">
+          <span className={item.status ? `${getStatusCssClass(item.status)} uppercase` : ""}>
+            {item.status}
+          </span>
+        </div>,
         rowId: item.id
       })
     );
@@ -65,8 +71,13 @@ const LineItems = ({ leadDetails }) => {
       cssClass: ""
     },
     {
-      Header: "Description",
+      Header: "DESCRIPTION",
       accessor: "col2",
+      cssClass: "text-center"
+    },
+    {
+      Header: "STATUS",
+      accessor: "col3",
       cssClass: "text-center"
     }
   ];

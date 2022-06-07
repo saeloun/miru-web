@@ -30,7 +30,7 @@ class LeadQuote < ApplicationRecord
 
   def render_properties
     {
-      id:, name:, description:, quote_line_items:
+      id:, name:, description:, status:, status_comment:, quote_line_items:
     }
   end
 end
