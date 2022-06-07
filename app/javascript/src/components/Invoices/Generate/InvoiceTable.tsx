@@ -3,10 +3,11 @@ import generateInvoice from "apis/generateInvoice";
 
 import dayjs from "dayjs";
 import ManualEntry from "./ManualEntry";
-import NewLineItemRow from "./NewLineItemRow";
 import NewLineItemTable from "./NewLineItemTable";
 
 import useOutsideClick from "../../../helpers/outsideClick";
+import TableHeader from "../common/LineItemTableHeader";
+import NewLineItemRows from "../common/NewLineItemRow";
 import MultipleEntriesModal from "../MultipleEntriesModal";
 
 const fetchNewLineItems = async (
@@ -90,34 +91,12 @@ const InvoiceTable = ({
   return (
     <React.Fragment>
       <table className="w-full table-fixed">
-        <thead className="my-2">
-          <tr>
-            <th className="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">
-              NAME
-            </th>
-            <th className=" px-3 text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">
-              DATE
-            </th>
-            <th className="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest w-2/5">
-              DESCRIPTION
-            </th>
-            <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">
-              RATE
-            </th>
-            <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">
-              QTY
-            </th>
-            <th className="text-miru-dark-purple-600 font-normal text-xs text-right tracking-widest">
-              LINE TOTAL
-            </th>
-          </tr>
-        </thead>
-
+        <TableHeader />
         <tbody className="w-full">
           <tr className="w-full ">
             <td colSpan={6} className="py-4 relative">
               {
-                addNew && <div ref={wrapperRef} className="box-shadow rounded absolute m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white top-0 w-full">
+                addNew && <div ref={wrapperRef} className="box-shadow z-10 rounded absolute m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white top-0 w-full">
                   {getNewLineItemDropdown()}
                 </div>
               }
@@ -131,7 +110,8 @@ const InvoiceTable = ({
               </button>
             </td>
           </tr>
-          {showItemInputs
+          {
+            showItemInputs
             && <ManualEntry
               setShowItemInputs={setShowItemInputs}
               setSelectedOption={setSelectedOption}
@@ -139,9 +119,12 @@ const InvoiceTable = ({
             />
           }
           {selectedOption.length > 0
-            && selectedOption.map(item => (
-              <NewLineItemRow
+            && selectedOption.map((item, index) => (
+              <NewLineItemRows
                 item={item}
+                key={index}
+                setSelectedOption={setSelectedOption}
+                selectedOption={selectedOption}
               />
             ))}
         </tbody>

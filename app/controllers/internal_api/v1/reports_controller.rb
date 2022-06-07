@@ -33,6 +33,6 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
     end
 
     def this_month_filter
-      { work_date: 0.month.ago.beginning_of_month..0.month.ago.end_of_month }
+      { work_date: DateTime.current.beginning_of_month..DateTime.current.end_of_month }
     end
 end

@@ -38,7 +38,7 @@ const Container = ({
       optionSelected={false}
       clientVisible={false}
     />
-    <div className="px-10 py-5">
+    <div className="pl-10 py-5">
       <InvoiceTable
         selectedClient={selectedClient}
         selectedOption={selectedOption}

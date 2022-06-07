@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import Header from "./Header";
 import InvoiceTable from "./InvoiceTable";
 import InvoiceTotal from "./InvoiceTotal";
+import { unmapLineItems } from "../../../mapper/editInvoice.mapper";
 import CompanyInfo from "../CompanyInfo";
 import InvoiceDetails from "../Generate/InvoiceDetails";
 
@@ -39,8 +40,8 @@ const EditInvoice = () => {
   const fetchInvoice = async (navigate, getInvoiceDetails) => {
     try {
       const res = await invoicesApi.editInvoice(params.id);
-
       getInvoiceDetails(res.data);
+      setSelectedLineItems(unmapLineItems(res.data.invoiceLineItems));
       setLineItems(addKeyToLineItems(res.data.lineItems));
       setAmount(res.data.amount);
       setDiscount(res.data.discount);
@@ -91,7 +92,8 @@ const EditInvoice = () => {
       tax: tax || invoiceDetails.tax,
       client_id: selectedClient.value,
       invoice_line_items_attributes: selectedLineItems.map(item => ({
-        name: `${item.first_name} ${item.last_name}`,
+        id: item.id,
+        name: item.name,
         description: item.description,
         date: item.date,
         rate: item.rate,
@@ -129,20 +131,18 @@ const EditInvoice = () => {
             optionSelected={true}
             clientVisible={false}
           />
-          <div className="px-10 py-5">
+          <div className="pl-10 py-5">
             <InvoiceTable
               lineItems={lineItems}
               setLineItems={setLineItems}
               selectedLineItems={selectedLineItems}
               setSelectedLineItems={setSelectedLineItems}
-              items={invoiceDetails.invoiceLineItems}
             />
           </div>
           <InvoiceTotal
             currency={invoiceDetails.company.currency}
             newLineItems={selectedLineItems}
             setAmount={setAmount}
-            invoiceAmount={invoiceDetails.amount}
             amountPaid={amountPaid || invoiceDetails.amountPaid}
             amountDue={amountDue || invoiceDetails.amountDue}
             setAmountDue={setAmountDue}
@@ -150,7 +150,6 @@ const EditInvoice = () => {
             setDiscount={setDiscount}
             tax={tax || invoiceDetails.tax}
             setTax={setTax}
-            invoiceLineItems={invoiceDetails.invoiceLineItems}
             showDiscountInput={!!invoiceDetails.discount}
             showTax={!!invoiceDetails.tax}
           />
