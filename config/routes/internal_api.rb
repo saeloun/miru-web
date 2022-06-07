@@ -39,5 +39,6 @@ namespace :internal_api, defaults: { format: "json" } do
 
     delete "profile/remove_avatar", to: "profile#remove_avatar"
     put "profile", to: "profile#update"
+    get "profile", to: "profile#index"
   end
 end
