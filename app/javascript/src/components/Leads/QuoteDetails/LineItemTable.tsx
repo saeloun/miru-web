@@ -128,7 +128,6 @@ const LineItemTable = () => {
                 item={item}
                 selectedOption={selectedLineItems}
                 setSelectedOption={setSelectedLineItems}
-                quoteId={quoteId}
                 key={index}
               />
             ))}

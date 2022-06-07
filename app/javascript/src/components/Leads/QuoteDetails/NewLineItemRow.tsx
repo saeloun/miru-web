@@ -5,7 +5,6 @@ import NewLineItemStatic from "./NewLineItemStatic";
 const NewLineItemRow = ({
   item,
   setSelectedOption,
-  quoteId,
   selectedOption
 }) => {
   const [isEdit, setEdit] = useState<boolean>(false);
@@ -23,8 +22,6 @@ const NewLineItemRow = ({
       item={item}
       setSelectedOption={setSelectedOption}
       selectedOption={selectedOption}
-      selectedLineItemId={item.lead_line_item_id || null}
-      quoteId={quoteId}
       setEdit={setEdit}
     />
   ) : (

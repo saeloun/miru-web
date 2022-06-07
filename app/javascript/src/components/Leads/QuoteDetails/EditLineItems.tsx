@@ -4,8 +4,6 @@ const EditLineItems = ({
   item,
   setSelectedOption,
   selectedOption,
-  selectedLineItemId,
-  quoteId,
   setEdit
 }) => {
 
@@ -17,6 +15,7 @@ const EditLineItems = ({
   const [estimatedHours, setEstimatedHoures] = useState<any>(item.estimated_hours || null);
 
   const onEnter = e => {
+
     if (e.key == "Enter") {
       const sanitizedSelected = selectedOption.filter(option =>
         option.id !== item.id
@@ -28,9 +27,7 @@ const EditLineItems = ({
         comment: comment,
         number_of_resource: numberOfResource,
         resource_expertise_level: resourceExpertiseLevel,
-        estimated_hours: estimatedHours,
-        lead_line_item_id: item.lead_line_item_id || selectedLineItemId,
-        lead_quote_id: item.lead_quote_id || quoteId
+        estimated_hours: estimatedHours
       }]);
       setEdit(false);
     }
