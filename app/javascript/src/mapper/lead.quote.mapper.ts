@@ -29,7 +29,8 @@ const unmapLeadQuoteDetails = (input) => {
       name: data.quote_details.name,
       description: data.quote_details.description,
       status: data.quote_details.status,
-      status_comment: data.quote_details.status_comment
+      status_comment: data.quote_details.status_comment,
+      quote_line_items: data.quote_details.quote_line_items
     }
   };
 };

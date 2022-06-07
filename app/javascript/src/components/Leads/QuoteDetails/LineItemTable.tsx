@@ -106,7 +106,7 @@ const LineItemTable = () => {
   return (
     <React.Fragment>
       <div className="flex justify-end m-6">
-        {quoteDetails && ["", "draft"].includes(quoteDetails.status) ?
+        {quoteDetails && quoteDetails.status !== "completed" ?
           <button
             type="button"
             className="header__button bg-miru-han-purple-1000 text-white w-1/6 p-0 hover:text-white"
@@ -116,7 +116,7 @@ const LineItemTable = () => {
             <span className="ml-2 inline-block">DRAFT</span>
           </button>
           : ""}
-        {quoteDetails && quoteDetails.status === "draft" ?
+        {quoteDetails && quoteDetails.quote_line_items.length > 0 && quoteDetails.status === "draft" ?
           <button
             type="button"
             className="header__button bg-miru-han-purple-1000 text-white w-1/4 p-0 hover:text-white"
@@ -126,7 +126,7 @@ const LineItemTable = () => {
             <span className="ml-2 inline-block">READY FOR APPROVAL</span>
           </button>
           : ""}
-        {quoteDetails && quoteDetails.status === "completed" ?
+        {quoteDetails && quoteDetails.quote_line_items.length > 0 && quoteDetails.status === "completed" ?
           <button
             type="button"
             className="header__button bg-miru-han-purple-1000 text-white w-1/6 p-0 hover:text-white"
