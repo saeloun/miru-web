@@ -5,7 +5,8 @@ import NewLineItemStatic from "./NewLineItemStatic";
 const NewLineItemRow = ({
   item,
   setSelectedOption,
-  selectedOption
+  selectedOption,
+  quoteDetails
 }) => {
   const [isEdit, setEdit] = useState<boolean>(false);
 
@@ -17,7 +18,7 @@ const NewLineItemRow = ({
     // setSelectedOption(sanitized);
   };
 
-  return isEdit ? (
+  return isEdit && !["accepted", "rejected"].includes(quoteDetails.status) ? (
     <EditLineItems
       item={item}
       setSelectedOption={setSelectedOption}
@@ -29,6 +30,7 @@ const NewLineItemRow = ({
       handleDelete={handleDelete}
       item={item}
       setEdit={setEdit}
+      quoteDetails={quoteDetails}
     />
   );
 };

@@ -4,7 +4,7 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leadLineItems from "apis/lead-line-items";
 import leadQuotes from "apis/lead-quotes";
 
-import { FloppyDisk, ArrowLineUpRight, PaperPlaneTilt } from "phosphor-react";
+import { FloppyDisk, ArrowLineUpRight, PaperPlaneTilt, ThumbsUp, ThumbsDown } from "phosphor-react";
 import LineItemTableHeader from "./LineItemTableHeader";
 import ManualEntry from "./ManualEntry";
 import NewLineItemRow from "./NewLineItemRow";
@@ -66,6 +66,9 @@ const LineItemTable = () => {
   />;
 
   const getAddNewButton = () => {
+    if (quoteDetails && ["accepted", "rejected"].includes(quoteDetails.status)){
+      return "";
+    }
     if (addNew) {
       return <div ref={wrapperRef} className="box-shadow rounded absolute m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white top-0 w-full">
         {getNewLineItemDropdown()}
@@ -106,7 +109,7 @@ const LineItemTable = () => {
   return (
     <React.Fragment>
       <div className="flex justify-end m-6">
-        {quoteDetails && quoteDetails.status !== "completed" ?
+        {quoteDetails && (quoteDetails.status.trim() == "" || quoteDetails.status === "draft") ?
           <button
             type="button"
             className="header__button bg-miru-han-purple-1000 text-white w-1/6 p-0 hover:text-white"
@@ -120,13 +123,13 @@ const LineItemTable = () => {
           <button
             type="button"
             className="header__button bg-miru-han-purple-1000 text-white w-1/4 p-0 hover:text-white"
-            onClick={() => handleSubmit('completed')}
+            onClick={() => handleSubmit('ready_for_approval')}
           >
             <ArrowLineUpRight size={18} color="white" />
             <span className="ml-2 inline-block">READY FOR APPROVAL</span>
           </button>
           : ""}
-        {quoteDetails && quoteDetails.quote_line_items.length > 0 && quoteDetails.status === "completed" ?
+        {quoteDetails && quoteDetails.quote_line_items.length > 0 && quoteDetails.status === "ready_for_approval" ?
           <button
             type="button"
             className="header__button bg-miru-han-purple-1000 text-white w-1/6 p-0 hover:text-white"
@@ -135,6 +138,26 @@ const LineItemTable = () => {
             <PaperPlaneTilt size={18} color="white" />
             <span className="ml-2 inline-block">SENT</span>
           </button>
+          : ""}
+        {quoteDetails && quoteDetails.quote_line_items.length > 0 && quoteDetails.status === "sent" ?
+          <>
+            <button
+              type="button"
+              className="header__button bg-miru-han-purple-1000 text-white w-1/6 p-0 hover:text-white"
+              onClick={() => handleSubmit('accepted')}
+            >
+              <ThumbsUp size={18} color="white" />
+              <span className="ml-2 inline-block">ACCEPT</span>
+            </button>
+            <button
+              type="button"
+              className="header__button bg-miru-han-purple-1000 text-white w-1/6 p-0 hover:text-white"
+              onClick={() => handleSubmit('rejected')}
+            >
+              <ThumbsDown size={18} color="white" />
+              <span className="ml-2 inline-block">REJECT</span>
+            </button>
+          </>
           : ""}
       </div>
       <table className="w-full table-fixed">
@@ -145,7 +168,7 @@ const LineItemTable = () => {
               {getAddNewButton()}
             </td>
           </tr>
-          {manualEntry
+          {manualEntry && !["accepted", "rejected"].includes(quoteDetails.status)
             && <ManualEntry
               setShowItemInputs={setManualEntry}
               setSelectedOption={setSelectedLineItems}
@@ -159,6 +182,7 @@ const LineItemTable = () => {
                 item={item}
                 selectedOption={selectedLineItems}
                 setSelectedOption={setSelectedLineItems}
+                quoteDetails={quoteDetails}
                 key={index}
               />
             ))}

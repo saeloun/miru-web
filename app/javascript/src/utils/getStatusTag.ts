@@ -8,7 +8,7 @@ const getStatusCssClass = (status) => {
     billed: "bg-miru-alert-green-400 text-miru-alert-green-800",
     accepted: "bg-miru-alert-green-400 text-miru-alert-green-800",
     unbilled: "bg-miru-alert-yellow-400 text-miru-alert-green-1000",
-    completed: "bg-miru-alert-yellow-400 text-miru-alert-green-1000",
+    ready_for_approval: "bg-miru-alert-yellow-400 text-miru-alert-green-1000",
     nonbilled: "bg-miru-dark-purple-100 text-miru-dark-purple-600"
   };
   const lowerCaseStatus = status.toLowerCase();

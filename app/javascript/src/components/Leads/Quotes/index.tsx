@@ -22,7 +22,7 @@ const getTableData = (quotes) => {
         col2: <div className="text-center text-miru-dark-purple-1000">{item.description}</div>,
         col3: <div className="text-center text-miru-dark-purple-1000">
           <span className={item.status ? `${getStatusCssClass(item.status)} uppercase` : ""}>
-            {item.status}
+            {item.status.replaceAll('_', / /g)}
           </span>
         </div>,
         rowId: item.id
