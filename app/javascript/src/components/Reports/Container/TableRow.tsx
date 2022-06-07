@@ -14,7 +14,7 @@ const TableRow = ({
 
   <tr key={id} className="flex flex-row items-center">
     <td className="w-2/5 pr-6 py-4 text-left whitespace-nowrap">
-      <p className="font-semibold text-base text-miru-dark-purple-1000">
+      <p className="font-semibold whitespace-normal text-base text-miru-dark-purple-1000">
         {project}
       </p>
       <p className="font-normal text-sm text-miru-dark-purple-400">
