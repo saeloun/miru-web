@@ -92,7 +92,7 @@ const WeeklyEntries: React.FC<Props> = ({
 
   useEffect(() => {
     handleSetData();
-  }, []);
+  }, [entries]);
 
   return projectSelected ?
     <WeeklyEntriesCard
