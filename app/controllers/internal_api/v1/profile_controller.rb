@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::ProfileController < InternalApi::V1::ApplicationController
+  def index
+    authorize :index, policy_class: ProfilePolicy
+    render json: { user: current_user }
+  end
+
   def remove_avatar
     authorize :remove_avatar, policy_class: ProfilePolicy
     current_user.avatar.destroy
