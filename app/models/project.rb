@@ -47,13 +47,24 @@ class Project < ApplicationRecord
       .select(:user_id, "SUM(duration) as duration")
       .group(:user_id)
 
-    entries.map do |entry|
-      {
-        id: entry.user_id,
-        name: entry.user.full_name,
-        hourly_rate: members[entry.user_id],
-        minutes_logged: entry.duration
-      }
+    if entries.empty?
+      project_members.map do |member|
+        {
+          id: member.user_id,
+          name: member.full_name,
+          hourly_rate: member.hourly_rate,
+          minutes_logged: 0
+        }
+      end
+    else
+      entries.map do |entry|
+        {
+          id: entry.user_id,
+          name: entry.user.full_name,
+          hourly_rate: members[entry.user_id],
+          minutes_logged: entry.duration
+        }
+      end
     end
   end
 
