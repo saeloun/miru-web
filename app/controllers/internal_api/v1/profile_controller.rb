@@ -3,7 +3,10 @@
 class InternalApi::V1::ProfileController < InternalApi::V1::ApplicationController
   def index
     authorize :index, policy_class: ProfilePolicy
-    render json: { user: current_user }
+    if current_user.avatar.attached?
+      avatar_url = url_for(current_user.avatar)
+    end
+    render json: { user: current_user.as_json.merge("avatar_url" => avatar_url) }, status: :ok
   end
 
   def remove_avatar
