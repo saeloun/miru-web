@@ -7,13 +7,12 @@ const NavigationFilter = () => {
 
   const filterHtml = (value, key, filterKey) => (
     <li key={key} className="flex px-2 mr-4 py-1 rounded-xl tracking-widest font-semibold px-1 text-xs tracking-widest bg-miru-gray-400 text-miru-dark-purple-1000">
-      <span>{value}</span>
+      <span>{filterKey === "groupBy" && "Group By:"} {value}</span>
       <button onClick={() => handleRemoveSingleFilter(filterKey, value)} className="inline-block ml-1">
         <X size={11} color="#1D1A31" className="inline-block" weight="bold" />
       </button>
     </li>
   );
-
   const getFilterValues = () => {
     let filterOptions = [];
     for (const filterKey in selectedFilter) {
