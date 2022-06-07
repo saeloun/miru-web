@@ -6,7 +6,7 @@ const get = async () => axios.get(`${path}`);
 
 const create = async (payload) => axios.post(`${path}`, payload);
 
-const show = async id => axios.get(`${path}/${id}`);
+const show = async (id, timeFrame = "week") => axios.get(`${path}/${id}?time_frame=${timeFrame}`);
 
 const update = async (id, payload) => axios.patch(`${path}/${id}`, payload);
 
