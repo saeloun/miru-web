@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 
+import profileApi from "apis/profile";
 import { Divider } from "common/Divider";
 
 import * as Yup from "yup";
@@ -10,7 +11,6 @@ const editButton = require("../../../../../assets/images/edit_image_button.svg")
 const password_icon = require("../../../../../assets/images/password_icon.svg");
 const password_icon_text = require("../../../../../assets/images/password_icon_text.svg");
 const img = require("../../../../../assets/images/plus_icon.svg");
-import profileApi from "apis/profile";
 
 const userProfileSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name cannot be blank"),
@@ -26,15 +26,15 @@ const userProfileSchema = Yup.object().shape({
     .string()
     .when("changePassword", {
       is: true,
-      then: Yup.string().required("Please enter current password"),
+      then: Yup.string().required("Please enter current password")
     }),
 
   confirmPassword: Yup
     .string()
     .when("changePassword", {
       is: true,
-      then: Yup.string().oneOf([Yup.ref("password"), null], "Passwords don't match"),
-    }),
+      then: Yup.string().oneOf([Yup.ref("password"), null], "Passwords don't match")
+    })
 });
 
 const UserDetails = () => {
@@ -44,7 +44,7 @@ const UserDetails = () => {
     passwordErr: "",
     currentPasswordErr: "",
     confirmPasswordErr: ""
-  }
+  };
   const [profileImage, setProfileImage] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [firstName, setFirstName] = useState("");
@@ -57,7 +57,7 @@ const UserDetails = () => {
   const [showPasword, setShowPassword] = useState<boolean>(false);
   const [showCurrentPasword, setShowCurrentPassword] = useState<boolean>(false);
   const [showConfirmPasword, setShowConfirmPassword] = useState<boolean>(false);
-  const [updateMsg, setupdateMsg] = useState({ message: '', type: '' });
+  const [updateMsg, setupdateMsg] = useState({ message: "", type: "" });
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [errDetails, setErrDetails] = useState(initialErrState);
 
@@ -71,39 +71,39 @@ const UserDetails = () => {
   const handleUpdateProfile = async () => {
     userProfileSchema.validate({ firstName, lastName, changePassword, password, confirmPassword, currentPassword }, { abortEarly: false }).then(async () => {
       try {
-        let formD = new FormData();
+        const formD = new FormData();
         formD.append(
-          `user[first_name]`, firstName
+          "user[first_name]", firstName
         );
         formD.append(
-          `user[last_name]`, lastName
+          "user[last_name]", lastName
         );
         if (changePassword) {
           formD.append(
-            `user[current_password]`, currentPassword
+            "user[current_password]", currentPassword
           );
           formD.append(
-            `user[password]`, password
+            "user[password]", password
           );
           formD.append(
-            `user[password_confirmation]`, confirmPassword
+            "user[password_confirmation]", confirmPassword
           );
         }
         if (imageFile) {
           formD.append(
-            `user[avatar]`, imageFile
+            "user[avatar]", imageFile
           );
         }
         const updateUserDetails = await profileApi.update(formD);
-        setupdateMsg({ message: updateUserDetails.data.notice, type: 'success' });
+        setupdateMsg({ message: updateUserDetails.data.notice, type: "success" });
         setTimeout(() => {
-          setupdateMsg({ message: '', type: '' });
+          setupdateMsg({ message: "", type: "" });
         }, 5000);
         setIsDetailUpdated(false);
       } catch (err) {
-        setupdateMsg({ message: 'Error: please verify password ', type: 'error' });
+        setupdateMsg({ message: "Error: please verify password ", type: "error" });
         setTimeout(() => {
-          setupdateMsg({ message: '', type: '' });
+          setupdateMsg({ message: "", type: "" });
         }, 5000);
       }
       setErrDetails(initialErrState);
@@ -119,27 +119,25 @@ const UserDetails = () => {
   const handleFirstNameChange = (event) => {
     setFirstName(event.target.value);
     setIsDetailUpdated(true);
-    setErrDetails({ ...errDetails, firstNameErr: '' })
+    setErrDetails({ ...errDetails, firstNameErr: "" });
   };
-
 
   const handleLastNameChange = (event) => {
     setLastName(event.target.value);
     setIsDetailUpdated(true);
-    setErrDetails({ ...errDetails, lastNameErr: '' })
+    setErrDetails({ ...errDetails, lastNameErr: "" });
   };
-
 
   const handleCurrentPasswordChange = (event) => {
     setCurrentPassword(event.target.value);
     setIsDetailUpdated(true);
-    setErrDetails({ ...errDetails, currentPasswordErr: '' })
+    setErrDetails({ ...errDetails, currentPasswordErr: "" });
   };
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
     setIsDetailUpdated(true);
-    setErrDetails({ ...errDetails, passwordErr: '' })
+    setErrDetails({ ...errDetails, passwordErr: "" });
   };
 
   const handleConfirmPasswordChange = (event) => {
@@ -152,7 +150,7 @@ const UserDetails = () => {
     setFirstName(data.data.user.first_name);
     setLastName(data.data.user.last_name);
     setProfileImage(data.data.user.avatar_url);
-    setEmail(data.data.user.email)
+    setEmail(data.data.user.email);
   };
 
   useEffect(() => {
@@ -174,12 +172,10 @@ const UserDetails = () => {
     if (removeProfile.status === 200) {
       setImageFile(null);
       setProfileImage("");
-    };
+    }
   };
 
-  const getErr = (errMsg) => {
-    return <p className="text-red-600 text-sm">{errMsg}</p>
-  };
+  const getErr = (errMsg) => <p className="text-red-600 text-sm">{errMsg}</p>;
 
   return (
     <div className="flex flex-col w-4/5">
