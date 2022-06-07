@@ -32,6 +32,8 @@ class Project < ApplicationRecord
   has_many :timesheet_entries
   has_many :project_members, dependent: :destroy
 
+  before_validation :unique_project_name_for_client, if: :name_changed?
+
   # Validations
   validates :name, presence: true
   validates :billable, inclusion: { in: [ true, false ] }
@@ -41,17 +43,30 @@ class Project < ApplicationRecord
 
   def project_team_member_details(time_frame)
     from, to = week_month_year(time_frame)
-    project_members_timesheet_entries = timesheet_entries.where(
-      user_id: project_members.pluck(:user_id),
-      work_date: from..to)
-    project_members.map do |project_member|
-      minutes_logged = project_members_timesheet_entries.filter_map do |project_members_timesheet_entry|
-        project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
-      end.sum
-      {
-        id: project_member.user_id, name: project_member.full_name, hourly_rate: project_member.hourly_rate,
-        minutes_logged:
-      }
+    members = project_members.pluck(:user_id, :hourly_rate).to_h
+    entries = timesheet_entries.includes(:user)
+      .where(user_id: members.keys, work_date: from..to)
+      .select(:user_id, "SUM(duration) as duration")
+      .group(:user_id)
+
+    if entries.empty?
+      project_members.map do |member|
+        {
+          id: member.user_id,
+          name: member.full_name,
+          hourly_rate: member.hourly_rate,
+          minutes_logged: 0
+        }
+      end
+    else
+      entries.map do |entry|
+        {
+          id: entry.user_id,
+          name: entry.user.full_name,
+          hourly_rate: members[entry.user_id],
+          minutes_logged: entry.duration
+        }
+      end
     end
   end
 
@@ -81,6 +96,12 @@ class Project < ApplicationRecord
   end
 
   private
+
+    def unique_project_name_for_client
+      if client && client.projects.where(name:).exists?
+        errors.add(:name, "project name has already been taken")
+      end
+    end
 
     def discard_project_members
       project_members.discard_all

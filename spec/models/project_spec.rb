@@ -30,6 +30,11 @@ RSpec.describe Project, type: :model do
       create(:project_member, project:, user:, hourly_rate: 5000)
     end
 
+    it "can not create project with same name" do
+      project2 = build(:project, client_id: client.id, name: project.name)
+      expect(project2).to be_invalid
+    end
+
     context "when time_frame is last_week" do
       let(:time_frame) { "last_week" }
 
@@ -87,8 +92,8 @@ RSpec.describe Project, type: :model do
   describe "#total_hours_logged" do
     let(:company) { create(:company) }
     let(:user) { create(:user) }
-    let(:client) { create(:client, company:) }
-    let(:project) { create(:project, client:) }
+    let(:client) { create(:client, company:, name: "zero") }
+    let(:project) { create(:project, client:, name: "project zero") }
     let(:project_member) { create(:project_member, project:, user:, hourly_rate: 5000) }
 
     context "when time_frame is last week" do
@@ -162,8 +167,8 @@ RSpec.describe Project, type: :model do
     describe "#discard_project_members" do
       let(:company) { create(:company) }
       let(:user) { create(:user) }
-      let(:client) { create(:client, company:) }
-      let(:project) { create(:project, client:) }
+      let(:client) { create(:client, company:, name: "Client One") }
+      let(:project) { create(:project, client:, name: "Project One") }
       let!(:project_member1) { create(:project_member, project:, user:, hourly_rate: 5000) }
       let!(:project_member2) { create(:project_member, project:, user:, hourly_rate: 1000) }
 
