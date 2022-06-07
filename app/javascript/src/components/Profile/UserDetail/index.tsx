@@ -58,7 +58,7 @@ const UserDetails = () => {
   const [showCurrentPasword, setShowCurrentPassword] = useState<boolean>(false);
   const [showConfirmPasword, setShowConfirmPassword] = useState<boolean>(false);
   const [updateMsg, setupdateMsg] = useState({ message: '', type: '' });
-  const [isDetailUpdated, setIsDetailUpdated] = useState(true);
+  const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [errDetails, setErrDetails] = useState(initialErrState);
 
   const handleProfileImageChange = (e) => {
