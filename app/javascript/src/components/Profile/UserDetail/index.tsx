@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Divider } from "common/Divider";
 
@@ -10,26 +10,43 @@ const editButton = require("../../../../../assets/images/edit_image_button.svg")
 const password_icon = require("../../../../../assets/images/password_icon.svg");
 const password_icon_text = require("../../../../../assets/images/password_icon_text.svg");
 const img = require("../../../../../assets/images/plus_icon.svg");
+import profileApi from "apis/profile";
 
 const userProfileSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name cannot be blank"),
   lastName: Yup.string().required("Last Name cannot be blank"),
-  password: Yup.string().required("Please enter password"),
-  currentPassword: Yup.string().required("Please enter current password"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords don't match")
+  changePassword: Yup.boolean(),
+  password: Yup
+    .string()
+    .when("changePassword", {
+      is: true,
+      then: Yup.string().required("Please enter password")
+    }),
+  currentPassword: Yup
+    .string()
+    .when("changePassword", {
+      is: true,
+      then: Yup.string().required("Please enter current password"),
+    }),
+
+  confirmPassword: Yup
+    .string()
+    .when("changePassword", {
+      is: true,
+      then: Yup.string().oneOf([Yup.ref("password"), null], "Passwords don't match"),
+    }),
 });
 
-const initialErrState = {
-  firstNameErr: "",
-  lastNameErr: "",
-  passwordErr: "",
-  currentPasswordErr: "",
-  confirmPasswordErr: ""
-}
-
 const UserDetails = () => {
+  const initialErrState = {
+    firstNameErr: "",
+    lastNameErr: "",
+    passwordErr: "",
+    currentPasswordErr: "",
+    confirmPasswordErr: ""
+  }
   const [profileImage, setProfileImage] = useState("");
+  const [imageFile, setImageFile] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -40,16 +57,55 @@ const UserDetails = () => {
   const [showPasword, setShowPassword] = useState<boolean>(false);
   const [showCurrentPasword, setShowCurrentPassword] = useState<boolean>(false);
   const [showConfirmPasword, setShowConfirmPassword] = useState<boolean>(false);
-
+  const [updateMsg, setupdateMsg] = useState({ message: '', type: '' });
+  const [isDetailUpdated, setIsDetailUpdated] = useState(true);
   const [errDetails, setErrDetails] = useState(initialErrState);
 
   const handleProfileImageChange = (e) => {
     const imageFile = e.target.files[0];
     setProfileImage(URL.createObjectURL(imageFile));
+    setImageFile(imageFile);
+    setIsDetailUpdated(true);
   };
 
-  const handleUpdateProfile = () => {
-    userProfileSchema.validate({ firstName, lastName, password, confirmPassword, currentPassword }, { abortEarly: false }).then(() => {
+  const handleUpdateProfile = async () => {
+    userProfileSchema.validate({ firstName, lastName, changePassword, password, confirmPassword, currentPassword }, { abortEarly: false }).then(async () => {
+      try {
+        let formD = new FormData();
+        formD.append(
+          `user[first_name]`, firstName
+        );
+        formD.append(
+          `user[last_name]`, lastName
+        );
+        if (changePassword) {
+          formD.append(
+            `user[current_password]`, currentPassword
+          );
+          formD.append(
+            `user[password]`, password
+          );
+          formD.append(
+            `user[password_confirmation]`, confirmPassword
+          );
+        }
+        if (imageFile) {
+          formD.append(
+            `user[avatar]`, imageFile
+          );
+        }
+        const updateUserDetails = await profileApi.update(formD);
+        setupdateMsg({ message: updateUserDetails.data.notice, type: 'success' });
+        setTimeout(() => {
+          setupdateMsg({ message: '', type: '' });
+        }, 5000);
+        setIsDetailUpdated(false);
+      } catch (err) {
+        setupdateMsg({ message: 'Error: please verify password ', type: 'error' });
+        setTimeout(() => {
+          setupdateMsg({ message: '', type: '' });
+        }, 5000);
+      }
       setErrDetails(initialErrState);
     }).catch(function (err) {
       const errObj = initialErrState;
@@ -60,14 +116,81 @@ const UserDetails = () => {
     });
   };
 
+  const handleFirstNameChange = (event) => {
+    setFirstName(event.target.value);
+    setIsDetailUpdated(true);
+    setErrDetails({ ...errDetails, firstNameErr: '' })
+  };
+
+
+  const handleLastNameChange = (event) => {
+    setLastName(event.target.value);
+    setIsDetailUpdated(true);
+    setErrDetails({ ...errDetails, lastNameErr: '' })
+  };
+
+
+  const handleCurrentPasswordChange = (event) => {
+    setCurrentPassword(event.target.value);
+    setIsDetailUpdated(true);
+    setErrDetails({ ...errDetails, currentPasswordErr: '' })
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+    setIsDetailUpdated(true);
+    setErrDetails({ ...errDetails, passwordErr: '' })
+  };
+
+  const handleConfirmPasswordChange = (event) => {
+    setConfirmPassword(event.target.value);
+    setIsDetailUpdated(true);
+  };
+
+  const getData = async () => {
+    const data = await profileApi.index();
+    setFirstName(data.data.user.first_name);
+    setLastName(data.data.user.last_name);
+    setProfileImage(data.data.user.avatar_url);
+    setEmail(data.data.user.email)
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const handleCancelAction = () => {
+    getData();
+    setIsDetailUpdated(false);
+    setErrDetails(initialErrState);
+    setChangePassword(false);
+    setCurrentPassword("");
+    setPassword("");
+    setConfirmPassword("");
+  };
+
+  const handleDeleteLogo = async () => {
+    const removeProfile = await profileApi.removeAvatar();
+    if (removeProfile.status === 200) {
+      setImageFile(null);
+      setProfileImage("");
+    };
+  };
+
+  const getErr = (errMsg) => {
+    return <p className="text-red-600 text-sm">{errMsg}</p>
+  };
+
   return (
     <div className="flex flex-col w-4/5">
       <Header
         title={"Profile Settings"}
         subTitle={"View and manage profile settings"}
         showButtons={true}
-        // cancelAction={()=> {}}
+        cancelAction={handleCancelAction}
         saveAction={handleUpdateProfile}
+        isDisableUpdateBtn={isDetailUpdated}
+        updateMsg={updateMsg}
       />
       <div className="pb-10 pt-10 pl-10 pr-10 mt-4 bg-miru-gray-100 min-h-80v">
         <div className="flex flex-row py-6">
@@ -84,7 +207,7 @@ const UserDetails = () => {
                 </label>
                 <input id="file-input" type="file" name="myImage" className='hidden' onChange={handleProfileImageChange}>
                 </input>
-                <button className="">
+                <button className="" onClick={handleDeleteLogo}>
                   <img
                     src="/delete.svg"
                     alt="delete"
@@ -112,9 +235,9 @@ const UserDetails = () => {
                     name="first_name"
                     value={firstName}
                     className="border py-1 px-1 w-full mr-2"
-                    onChange={event => setFirstName(event.target.value)}
+                    onChange={handleFirstNameChange}
                   />
-                  {errDetails.firstNameErr && (<p className="text-red-600 text-sm">{errDetails.firstNameErr}</p>)}
+                  {errDetails.firstNameErr && getErr(errDetails.firstNameErr)}
                 </div>
                 <div className="flex flex-col w-1/2">
                   <input
@@ -123,9 +246,9 @@ const UserDetails = () => {
                     name="last_name"
                     value={lastName}
                     className="border py-1 px-1 w-full ml-2"
-                    onChange={event => setLastName(event.target.value)}
+                    onChange={handleLastNameChange}
                   />
-                  {errDetails.lastNameErr && (<p className="text-red-600 text-sm ml-2">{errDetails.lastNameErr}</p>)}
+                  {errDetails.lastNameErr && getErr(errDetails.lastNameErr)}
                 </div>
               </div>
             </div>
@@ -156,8 +279,8 @@ const UserDetails = () => {
                       type="password"
                       id="current_password"
                       name="current_password"
-                      disabled={!changePassword}
-                      value={currentPassword}
+                      disabled
+                      value={'pass@123'}
                       className="border py-1 px-1 w-full mt-2"
                     />
                     <p className="mt-5 text-miru-han-purple-1000 cursor-pointer" onClick={() => setChangePassword(true)}>CHANGE PASSWORD</p>
@@ -177,13 +300,13 @@ const UserDetails = () => {
                             name="current_password"
                             value={currentPassword}
                             className="border py-1 px-1 w-full mt-2"
-                            onChange={event => setCurrentPassword(event.target.value)}
+                            onChange={handleCurrentPasswordChange}
                           />
                           <button className="btn btn-outline-primary absolute mt-2 mr-3 right-0" onClick={() => setShowCurrentPassword(!showCurrentPasword)} >
                             {!showCurrentPasword ? <img src={password_icon} /> : <img src={password_icon_text} />}
                           </button>
                         </div>
-                        {errDetails.currentPasswordErr && (<p className="text-red-600 text-sm ml-2">{errDetails.currentPasswordErr}</p>)}
+                        {errDetails.currentPasswordErr && getErr(errDetails.currentPasswordErr)}
                       </div>
                       <div className="flex flex-row mt-2">
                         <div className="flex flex-col w-1/2 pr-2 mt-2">
@@ -195,13 +318,13 @@ const UserDetails = () => {
                               name="password"
                               value={password}
                               className=" border py-1 px-1 w-full mt-2"
-                              onChange={event => setPassword(event.target.value)}
+                              onChange={handlePasswordChange}
                             />
                             <button className="btn btn-outline-primary absolute mt-2 mr-3 right-0" onClick={() => setShowPassword(!showPasword)}>
                               {!showPasword ? <img src={password_icon} /> : <img src={password_icon_text} />}
                             </button>
                           </div>
-                          {errDetails.passwordErr && (<p className="text-red-600 text-sm ml-2">{errDetails.passwordErr}</p>)}
+                          {errDetails.passwordErr && getErr(errDetails.passwordErr)}
 
                         </div>
                         <div className="flex flex-col w-1/2 pl-2 mt-2">
@@ -213,13 +336,13 @@ const UserDetails = () => {
                               name="confirm_password"
                               value={confirmPassword}
                               className="border py-1 px-1 w-full mt-2"
-                              onChange={event => setConfirmPassword(event.target.value)}
+                              onChange={handleConfirmPasswordChange}
                             />
                             <button className="btn btn-outline-primary absolute mt-2 mr-3 right-0" onClick={() => setShowConfirmPassword(!showConfirmPasword)}>
                               {!showConfirmPasword ? <img src={password_icon} /> : <img src={password_icon_text} />}
                             </button>
                           </div>
-                          {errDetails.confirmPasswordErr && (<p className="text-red-600 text-sm ml-2">{errDetails.confirmPasswordErr}</p>)}
+                          {errDetails.confirmPasswordErr && getErr(errDetails.confirmPasswordErr)}
                         </div>
                       </div>
                       <p className="mt-5 text-miru-han-purple-1000 cursor-pointer" onClick={() => setChangePassword(false)}>CANCEL</p>
