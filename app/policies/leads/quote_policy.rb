@@ -34,7 +34,12 @@ class Leads::QuotePolicy < ApplicationPolicy
   def permitted_attributes
     [
       :name, :description,
-      lead_line_item_ids: []
+      quote_line_items_attributes: [
+        :id, :name, :description,
+        :comment, :estimated_hours,
+        :lead_line_item_id, :lead_quote_id,
+        :number_of_resource, :resource_expertise_level, :_destroy
+      ]
     ]
   end
 end

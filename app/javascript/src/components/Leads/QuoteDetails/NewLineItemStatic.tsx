@@ -1,28 +1,29 @@
-import React from "react";
-// import React, { useState } from "react";
-// import { DotsThreeVertical, PencilSimple, Trash } from "phosphor-react";
+import React, { useState } from "react";
+import { DotsThreeVertical, PencilSimple, Trash } from "phosphor-react";
 
 const NewLineItemStatic = ({
   item,
-  // setEdit,
-  // handleDelete
+  setEdit,
+  handleDelete
 }) => {
-  // const [isSideMenuVisible, setSideMenuVisible] = useState(false);
-  // const [showEditMenu, setShowEditMenu] = useState(false);
-  const name = item.name
-  const description = item.description
-  const kindName = item.kind_name
-  const numberOfResource = item.numberOfResource
-  const resourceExpertiseLevel = item.resourceExpertiseLevel
-  const price = item.price
+  const [isSideMenuVisible, setSideMenuVisible] = useState(false);
+  const [showEditMenu, setShowEditMenu] = useState(false);
+
+  const name = (item.name || "");
+  const description = (item.description || "");
+  const comment = (item.comment || "");
+  const numberOfResource = (item.number_of_resource || "");
+  const resourceExpertiseLevel = (item.resource_expertise_level || "");
+  const estimatedHours = (item.estimated_hours || "");
+
   return (
     <tr className="invoice-items-row"
-      // onMouseLeave={() => {
-      //   setSideMenuVisible(false);
-      //   setShowEditMenu(false);
-      // }}
-      // onMouseOver={() => { setSideMenuVisible(true); }}
-      // onMouseEnter={() => { setSideMenuVisible(true); }}
+      onMouseLeave={() => {
+        setSideMenuVisible(false);
+        setShowEditMenu(false);
+      }}
+      onMouseOver={() => { setSideMenuVisible(true); }}
+      onMouseEnter={() => { setSideMenuVisible(true); }}
     >
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left ">
         {name}
@@ -31,7 +32,7 @@ const NewLineItemStatic = ({
         {description}
       </td>
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-left ">
-        {kindName}
+        {comment}
       </td>
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
         {numberOfResource}
@@ -40,10 +41,10 @@ const NewLineItemStatic = ({
         {resourceExpertiseLevel}
       </td>
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-        {price}
+        {estimatedHours}
       </td>
       <td className="w-10">
-        {/* {
+        {
           isSideMenuVisible && <div className="relative">
             <button onClick={() => { setShowEditMenu(true); }} className="w-9 h-9 m-0.5 bg-miru-gray-1000 rounded flex items-center justify-center">
               <DotsThreeVertical size={16} color="#000000" weight="bold" />
@@ -65,7 +66,7 @@ const NewLineItemStatic = ({
               </ul>
             }
           </div>
-        } */}
+        }
       </td>
     </tr>
   );

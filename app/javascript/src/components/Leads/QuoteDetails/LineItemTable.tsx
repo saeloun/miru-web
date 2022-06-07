@@ -6,7 +6,7 @@ import leadQuotes from "apis/lead-quotes";
 
 import { FloppyDisk } from "phosphor-react";
 import LineItemTableHeader from "./LineItemTableHeader";
-// import ManualEntry from "./ManualEntry";
+import ManualEntry from "./ManualEntry";
 import NewLineItemRow from "./NewLineItemRow";
 import NewLineItemTable from "./NewLineItemTable";
 
@@ -39,7 +39,7 @@ const LineItemTable = () => {
   }, [leadId]);
 
   const [addNew, setAddNew] = useState<boolean>(false);
-  // const [manualEntry, setManualEntry] = useState<boolean>(false);
+  const [manualEntry, setManualEntry] = useState<boolean>(false);
   const wrapperRef = useRef(null);
 
   useOutsideClick(wrapperRef, () => {
@@ -51,9 +51,10 @@ const LineItemTable = () => {
     setLineItems={setLineItems}
     selectedLineItems={selectedLineItems}
     setSelectedLineItems={setSelectedLineItems}
-    // addNew={addNew}
+    quoteId={quoteId}
+    addNew={addNew}
     setAddNew={setAddNew}
-    // setManualEntry={setManualEntry}
+    setManualEntry={setManualEntry}
   />;
 
   const getAddNewButton = () => {
@@ -75,7 +76,17 @@ const LineItemTable = () => {
 
   const handleSubmit = async () => {
     await leadQuotes.update(leadId, quoteId, {
-      "lead_line_item_ids": selectedLineItems.map(item => (item.id))
+      quote_line_items_attributes: selectedLineItems.map(item => ({
+        id: item.id,
+        name: item.name,
+        comment: item.comment,
+        description: item.description,
+        number_of_resource: item.number_of_resource,
+        resource_expertise_level: item.resource_expertise_level,
+        estimated_hours: item.estimated_hours,
+        lead_line_item_id: item.lead_line_item_id,
+        lead_quote_id: item.lead_quote_id
+      }))
     }).then(() => {
       document.location.reload();
     }).catch((e) => {
@@ -103,19 +114,21 @@ const LineItemTable = () => {
               {getAddNewButton()}
             </td>
           </tr>
-          {/* {manualEntry
+          {manualEntry
             && <ManualEntry
               setShowItemInputs={setManualEntry}
               setSelectedOption={setSelectedLineItems}
               selectedOption={selectedLineItems}
+              quoteId={quoteId}
             />
-          } */}
+          }
           {
             selectedLineItems.map((item, index) => (
               <NewLineItemRow
                 item={item}
                 selectedOption={selectedLineItems}
                 setSelectedOption={setSelectedLineItems}
+                quoteId={quoteId}
                 key={index}
               />
             ))}

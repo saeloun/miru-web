@@ -1,12 +1,13 @@
-const getList = (input) => input.quote_details.lead_line_items.map((item) => ({
+const getList = (input) => input.quote_details.quote_line_items.map((item) => ({
   id: item.id,
   name: item.name,
-  kind: item.kind,
+  comment: item.comment,
   description: item.description,
   number_of_resource: item.number_of_resource,
   resource_expertise_level: item.resource_expertise_level,
-  price: item.price,
-  kind_name: item.kind_name
+  estimated_hours: item.estimated_hours,
+  lead_line_item_id: item.lead_line_item_id,
+  lead_quote_id: item.lead_quote_id
 }));
 
 const unmapQuoteLineItemList = (input) => {

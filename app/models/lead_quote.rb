@@ -4,11 +4,13 @@
 #
 # Table name: lead_quotes
 #
-#  id           :bigint           not null, primary key
-#  description  :string
-#  discarded_at :datetime
-#  name         :string
-#  lead_id      :bigint           not null
+#  id             :bigint           not null, primary key
+#  description    :string
+#  discarded_at   :datetime
+#  name           :string
+#  status         :string
+#  status_comment :text
+#  lead_id        :bigint           not null
 #
 # Indexes
 #
@@ -23,11 +25,12 @@ class LeadQuote < ApplicationRecord
   include Discard::Model
 
   belongs_to :lead
-  has_and_belongs_to_many :lead_line_items
+  has_many :quote_line_items
+  accepts_nested_attributes_for :quote_line_items, allow_destroy: true
 
   def render_properties
     {
-      id:, name:, description:, lead_line_items:
+      id:, name:, description:, quote_line_items:
     }
   end
 end

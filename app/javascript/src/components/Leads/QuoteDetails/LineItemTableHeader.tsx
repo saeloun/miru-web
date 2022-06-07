@@ -10,7 +10,7 @@ const LineItemTableHeader = () => (
           DESCRIPTION
       </th>
       <th className="text-miru-dark-purple-1000 font-normal text-xs text-left tracking-widest">
-          KIND
+          COMMENT
       </th>
       <th className="text-miru-dark-purple-1000 font-normal text-xs text-right tracking-widest">
           NUMBER OF RESOURCE
@@ -19,7 +19,7 @@ const LineItemTableHeader = () => (
           RESOURCE EXPERTISE LEVEL
       </th>
       <th className="text-miru-dark-purple-1000 font-normal text-xs text-right tracking-widest">
-          PRICE
+          ESTIMATED HOURS
       </th>
       <th className="w-10"></th>
     </tr>

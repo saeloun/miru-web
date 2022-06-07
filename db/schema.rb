@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_01_130833) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_06_135923) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -156,6 +156,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_130833) do
     t.string "name"
     t.string "description"
     t.datetime "discarded_at"
+    t.string "status"
+    t.text "status_comment"
     t.index ["discarded_at"], name: "index_lead_quotes_on_discarded_at"
     t.index ["lead_id"], name: "index_lead_quotes_on_lead_id"
   end
@@ -223,6 +225,21 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_130833) do
     t.datetime "discarded_at"
     t.index ["client_id"], name: "index_projects_on_client_id"
     t.index ["discarded_at"], name: "index_projects_on_discarded_at"
+  end
+
+  create_table "quote_line_items", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.text "comment"
+    t.bigint "estimated_hours"
+    t.bigint "lead_line_item_id"
+    t.bigint "lead_quote_id", null: false
+    t.integer "number_of_resource"
+    t.integer "resource_expertise_level"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lead_line_item_id"], name: "index_quote_line_items_on_lead_line_item_id"
+    t.index ["lead_quote_id"], name: "index_quote_line_items_on_lead_quote_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -318,6 +335,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_01_130833) do
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
+  add_foreign_key "quote_line_items", "lead_quotes"
   add_foreign_key "stripe_connected_accounts", "companies"
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
