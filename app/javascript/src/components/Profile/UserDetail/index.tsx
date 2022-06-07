@@ -273,17 +273,8 @@ const UserDetails = () => {
             <div>
               {
                 !changePassword && (
-                  <div className="mt-2">
-                    <label>Password</label>
-                    <input
-                      type="password"
-                      id="current_password"
-                      name="current_password"
-                      disabled
-                      value={'pass@123'}
-                      className="border py-1 px-1 w-full mt-2"
-                    />
-                    <p className="mt-5 text-miru-han-purple-1000 cursor-pointer" onClick={() => setChangePassword(true)}>CHANGE PASSWORD</p>
+                  <div>
+                    <p className=" text-miru-han-purple-1000 cursor-pointer" onClick={() => setChangePassword(true)}>CHANGE PASSWORD</p>
                   </div>
                 )
               }
@@ -291,7 +282,7 @@ const UserDetails = () => {
                 changePassword && (
                   <div>
                     <div className="flex flex-col">
-                      <div className="">
+                      <div>
                         <label>Current Password</label>
                         <div className="flex relative items-center">
                           <input
