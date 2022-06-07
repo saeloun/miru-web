@@ -7,7 +7,7 @@ const TableHeader = () => (
     <tr className="flex flex-row items-center">
       <th
         scope="col"
-        className="w-1/5 px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="w-2/5 pr-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
         PROJECT/
         <br />
@@ -15,7 +15,7 @@ const TableHeader = () => (
       </th>
       <th
         scope="col"
-        className="w-3/5 px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="w-2/5 px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
         NOTE
       </th>
@@ -29,7 +29,7 @@ const TableHeader = () => (
       </th>
       <th
         scope="col"
-        className="w-1/5 px-6 py-5 text-right text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="w-1/5 pl-6 py-5 text-right text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
         HOURS
         <br />
