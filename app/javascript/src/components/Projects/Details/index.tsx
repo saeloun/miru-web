@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
@@ -52,20 +52,21 @@ const getTableData = (project) => {
 };
 
 const ProjectDetails = () => {
+  const [editProjectData, setEditProjectData] = React.useState<any>(null);
+  const [isHeaderMenuVisible, setHeaderMenuVisibility] = React.useState<boolean>(false);
   const [project, setProject] = React.useState<any>();
   const [showAddMemberDialog, setShowAddMemberDialog] = React.useState<boolean>(false);
-  const [isHeaderMenuVisible, setHeaderMenuVisibility] = React.useState<boolean>(false);
-  const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
-  const [editProjectData, setEditProjectData] = React.useState<any>(null);
   const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
+  const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
+  const [timeframe, setTimeframe] = React.useState<any>("week");
+
   const params = useParams();
   const navigate = useNavigate();
   const projectId = parseInt(params.projectId);
 
-  const fetchProject = async () => {
+  const fetchProject = async (timeframe = null) => {
     try {
-      const res = await projectAPI
-        .show(params.projectId);
+      const res = await projectAPI.show(params.projectId, timeframe);
       setProject(unmapper(res.data.project_details));
     } catch (e) {
       console.log(e); // eslint-disable-line
@@ -76,11 +77,11 @@ const ProjectDetails = () => {
     fetchProject();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
-    fetchProject();
-  }, []);
+    fetchProject(timeframe);
+  }, [timeframe]);
 
   //check with Ajinkya why tableData is not updating
   const tableData = getTableData(project);
@@ -243,6 +244,7 @@ const ProjectDetails = () => {
               m-0
               focus:outline-none
               text-miru-han-purple-1000"
+            onChange={ ({ target: { value } }) => setTimeframe(value) }
           >
             <option className="text-miru-dark-purple-600" value="week">
               THIS WEEK
