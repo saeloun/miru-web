@@ -8,6 +8,15 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
     render :index, locals: { reports:, filter_options: }, status: :ok
   end
 
+  def download
+    authorize :report
+
+    respond_to do |format|
+      format.pdf { send_data Report::GeneratePdf.new(reports.first[:entries]).process }
+      format.csv { send_data Report::GenerateCsv.new(reports.first[:entries]).process }
+    end
+  end
+
   private
 
     def filter_options

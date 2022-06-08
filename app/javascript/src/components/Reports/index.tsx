@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import applyFilter from "./api/applyFilter";
+import reports from "apis/reports";
+import applyFilter, { getQueryParams } from "./api/applyFilter";
 import Container from "./Container";
 import EntryContext from "./context/EntryContext";
 
@@ -84,6 +85,20 @@ const Reports = () => {
     }
   };
 
+  const handleDownload = (type) => {
+    const queryParams = getQueryParams(selectedFilter).substring(1);
+    reports.download(type, `?${queryParams}`)
+      .then(response => window.URL.createObjectURL(new Blob([response.data])))
+      .then(url => {
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `report.${type}`);
+        document.body.appendChild(link);
+        link.click();
+      })
+      .catch(error => console.error(error));
+  };
+
   return (
     <div>
       <EntryContext.Provider value={{
@@ -95,6 +110,7 @@ const Reports = () => {
           setFilterVisibilty={setFilterVisibilty}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
+          handleDownload={handleDownload}
         />
         <Container />
         {isFilterVisible && <Filters

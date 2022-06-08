@@ -1,0 +1,50 @@
+<div class="main">
+  <div class="flex justify-between border-b-2 border-miru-gray-400 p-10 h-30">
+    <h2>Time Entry Report</h2>
+  </div>
+
+  <div class="flex justify-between p-10">
+    <table>
+      <thead>
+        <th class="text-left w-2/5 border border-b-1">
+          <p>Project\</p>
+          <p>Client</p>
+        </th>
+        <th class="text-left w-2/5 px-3 border border-b-1">
+          Note
+        </th>
+        <th class="text-left w-1/5 border-b-1 border">
+          <p>Team Member\</p>
+          <p>Date</p>
+        </th>
+        <th class="text-right w-1/5 p-1 border border-b-1">
+          Hours Logged
+        </th>
+      </thead>
+      <tbody>
+        <% entries.each do |entry| %>
+          <tr>
+            <td class="text-sm text-left w-2/5 p-2 border border-b-1">
+              <p class="text-miru-dark-purple-1000">
+                <%= entry.project_name %>
+              </p>
+              <p class="text-miru-dark-purple-400">
+                <%= entry.client_name %>
+              </p>
+            </td>
+            <td class="text-left text-xs px-3 w-2/5 p-2 border border-b-1">
+              <%= entry.note %>
+            </td>
+            <td class="text-xs w-1/5 p-2 border border-b-1">
+              <p class="text-miru-dark-purple-1000"><%= entry.user_full_name %></p>
+              <p class="text-miru-dark-purple-400"><%= entry.work_date.strftime("%Y-%m-%d") %></p>
+            </td>
+            <td class="text-right w-1/5 p-2 pl-3 border border-b-1">
+              <%= entry.formatted_duration %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
