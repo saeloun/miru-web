@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useCallback, useEffect, useState } from "react";
 
 import Select from "react-select";
@@ -10,7 +11,6 @@ import { currencyList } from "../../../../constants/currencyList";
 import Header from "../../Header";
 const editButton = require("../../../../../../assets/images/edit_image_button.svg");
 const img = require("../../../../../../assets/images/plus_icon.svg");
-const companyLogo = require("../../../../../../assets/images/saeloun_logo.png");
 
 const orgSchema = Yup.object().shape({
   companyName: Yup.string().required("Name cannot be blank"),
@@ -196,7 +196,7 @@ const OrgEdit = () => {
   }, [orgDetails]);
 
   const updateOrgDetails = async () => {
-    orgSchema.validate(orgDetails, { abortEarly: false }).then(async (msg) => {
+    orgSchema.validate(orgDetails, { abortEarly: false }).then(async () => {
       try {
         const formD = new FormData();
         formD.append(
