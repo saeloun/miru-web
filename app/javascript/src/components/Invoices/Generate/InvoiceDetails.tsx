@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import { currencyFormat } from "helpers/currency";
 import { PencilSimple } from "phosphor-react";
 import ClientSelection from "./ClientSelection";
-import useOutsideClick from "../../../helpers/outsideClick";
 
 const InvoiceDetails = ({
   currency,
@@ -19,12 +18,9 @@ const InvoiceDetails = ({
   optionSelected, clientVisible
 }) => {
 
-  const [isEditing, setIsEditing] = useState<boolean>(false);
   const [showDateOfIssuePicker, setShowDateOfIssuePicker] = useState<boolean>(false);
   const [showDueDatePicker, setShowDueDatePicker] = useState<boolean>(false);
   const wrapperRef = useRef(null);
-
-  useOutsideClick(wrapperRef, () => setIsEditing(false), isEditing);
 
   const getIssuedDate = dayjs(issueDate).format("DD.MM.YYYY");
   const getDueDate = dayjs(dueDate).format("DD.MM.YYYY");
@@ -79,15 +75,10 @@ const InvoiceDetails = ({
 
       <div>
         <div className="flex flex-col" ref={wrapperRef}>
-          <div className="flex flex-row">
-            <p className="font-normal text-xs text-miru-dark-purple-1000">
-              Invoice Number
-            </p>
-            <button onClick={() => { setIsEditing(!isEditing); }}>
-              <PencilSimple size={13} color="#1D1A31" />
-            </button>
-          </div>
-          <input type="text" disabled={!isEditing} value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} />
+          <p className="font-normal text-xs text-miru-dark-purple-1000">
+            Invoice Number
+          </p>
+          <input type="text" value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} className="px-2 w-3/5"/>
         </div>
         <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
           Reference
