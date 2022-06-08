@@ -77,7 +77,7 @@ class TimesheetEntry < ApplicationRecord
 
   def formatted_duration
     minutes = duration.to_i
-    Time.parse("#{(minutes / 60)}:#{(minutes % 60)}").strftime("%H:%M")
+    Time.parse("#{minutes / 60}:#{minutes % 60}").strftime("%H:%M")
   end
 
   private
