@@ -45,6 +45,7 @@ const UserDetails = () => {
     currentPasswordErr: "",
     confirmPasswordErr: ""
   };
+
   const [profileImage, setProfileImage] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [firstName, setFirstName] = useState("");
@@ -196,10 +197,10 @@ const UserDetails = () => {
             {profileImage ? (
               <div className="mt-2 flex flex-row">
                 <div className="w-20 h-20">
-                  <img src={profileImage} className={"rounded-full min-w-full h-full"}></img>
+                  <img src={profileImage} alt={"profile_pic"} className={"rounded-full min-w-full h-full"} />
                 </div>
                 <label htmlFor="file-input" className="">
-                  <img src={editButton} className={"rounded-full mt-5 cursor-pointer"} style={{ "minWidth": "40px" }}></img>
+                  <img src={editButton} alt={"edit_pencil"} className={"rounded-full mt-5 cursor-pointer"} style={{ "minWidth": "40px" }}></img>
                 </label>
                 <input id="file-input" type="file" name="myImage" className='hidden' onChange={handleProfileImageChange}>
                 </input>
@@ -215,7 +216,7 @@ const UserDetails = () => {
               <>
                 <label htmlFor="file-input">
                   <div className="w-20 h-20 border rounded border-miru-han-purple-1000 flex justify-center items-center mt-2 cursor-pointer">
-                    <img src={img}></img>
+                    <img alt="profile_box" src={img} />
                   </div>
                 </label>
                 <input id="file-input" type="file" name="myImage" className='hidden' onChange={handleProfileImageChange} />
@@ -290,7 +291,7 @@ const UserDetails = () => {
                             onChange={handleCurrentPasswordChange}
                           />
                           <button className="btn btn-outline-primary absolute mt-2 mr-3 right-0" onClick={() => setShowCurrentPassword(!showCurrentPasword)} >
-                            {!showCurrentPasword ? <img src={password_icon} /> : <img src={password_icon_text} />}
+                            {!showCurrentPasword ? <img src={password_icon} alt="pass_icon" /> : <img src={password_icon_text} alt="pass_icon_text" />}
                           </button>
                         </div>
                         {errDetails.currentPasswordErr && getErr(errDetails.currentPasswordErr)}
@@ -308,7 +309,7 @@ const UserDetails = () => {
                               onChange={handlePasswordChange}
                             />
                             <button className="btn btn-outline-primary absolute mt-2 mr-3 right-0" onClick={() => setShowPassword(!showPasword)}>
-                              {!showPasword ? <img src={password_icon} /> : <img src={password_icon_text} />}
+                              {!showPasword ? <img src={password_icon} alt="pass_icon" /> : <img src={password_icon_text} alt="pass_icon_text" />}
                             </button>
                           </div>
                           {errDetails.passwordErr && getErr(errDetails.passwordErr)}
@@ -326,7 +327,7 @@ const UserDetails = () => {
                               onChange={handleConfirmPasswordChange}
                             />
                             <button className="btn btn-outline-primary absolute mt-2 mr-3 right-0" onClick={() => setShowConfirmPassword(!showConfirmPasword)}>
-                              {!showConfirmPasword ? <img src={password_icon} /> : <img src={password_icon_text} />}
+                              {!showConfirmPasword ? <img src={password_icon} alt="pass_icon" /> : <img src={password_icon_text} alt="pass_icon_text"/>}
                             </button>
                           </div>
                           {errDetails.confirmPasswordErr && getErr(errDetails.confirmPasswordErr)}
@@ -341,7 +342,6 @@ const UserDetails = () => {
           </div>
         </div>
       </div>
-
     </div>
   );
 };
