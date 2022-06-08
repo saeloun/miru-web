@@ -47,6 +47,7 @@ const InvoiceTable = ({
   const [totalLineItems, setTotalLineItems] = useState<number>(null);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [showMultiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
+  const [manualEntryArr, setManualEntryArr] = useState([]);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
@@ -112,11 +113,15 @@ const InvoiceTable = ({
           </tr>
           {
             showItemInputs
-            && <ManualEntry
-              setShowItemInputs={setShowItemInputs}
-              setSelectedOption={setSelectedOption}
-              selectedOption={selectedOption}
-            />
+            && (manualEntryArr.map((entry) =>
+              <ManualEntry
+                entry={entry}
+                setSelectedOption={setSelectedOption}
+                selectedOption={selectedOption}
+                manualEntryArr={manualEntryArr}
+                setManualEntryArr={setManualEntryArr}
+              />
+            ))
           }
           {selectedOption.length > 0
             && selectedOption.map((item, index) => (

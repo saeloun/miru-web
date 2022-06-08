@@ -19,6 +19,7 @@ const EditInvoice = () => {
   const [invoiceDetails, getInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
   const [selectedLineItems, setSelectedLineItems] = useState<any>([]);
+  const [manualEntryArr, setManualEntryArr] = useState<any>([]);
   const [selectedClient, setSelectedClient] = useState<any>({ value: 0 });
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
   const [reference] = useState<any>("");
@@ -137,6 +138,8 @@ const EditInvoice = () => {
               setLineItems={setLineItems}
               selectedLineItems={selectedLineItems}
               setSelectedLineItems={setSelectedLineItems}
+              manualEntryArr={manualEntryArr}
+              setManualEntryArr={setManualEntryArr}
             />
           </div>
           <InvoiceTotal

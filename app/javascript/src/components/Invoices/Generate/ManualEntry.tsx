@@ -1,6 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-const ManualEntry = ({ setSelectedOption, selectedOption }) => {
+const ManualEntry = ({
+  entry,
+  manualEntryArr,
+  setManualEntryArr
+}) => {
 
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<string>("");
@@ -8,47 +12,31 @@ const ManualEntry = ({ setSelectedOption, selectedOption }) => {
   const [rate, setRate] = useState<any>("");
   const [qty, setQty] = useState<string>("");
   const [lineTotal, setLineTotal] = useState<any>("");
-  const [currentIndex, setCurrentIndex] = useState<any>(selectedOption.length);
+  const [lineItem, setLineItem] = useState<any>(entry);
   const ref = useRef();
 
-  const onEnter = () => {
-    const currentOption = selectedOption.find((option) => option.idx === currentIndex);
-
-    if (currentOption) {
-      const item = { ...currentOption,
-        idx: currentIndex,
+  useEffect(() => {
+    if (lineItem.idx) {
+      setLineItem({ ...lineItem,
         name,
         date,
         description,
         rate,
         qty: (Number(qty) * 60),
         lineTotal: (Number(qty) * Number(rate))
-      };
+      });
 
-      const newSelectedOption = selectedOption.map((option) => {
-        if (option.idx === currentIndex) {
-          return item;
+      const newManualEntryArr = manualEntryArr.map((option) => {
+        if (option.idx === lineItem.idx) {
+          return lineItem;
         }
 
         return option;
       });
 
-      setSelectedOption(newSelectedOption);
-    } else {
-      const newItem = [...selectedOption, {
-        idx: currentIndex,
-        name,
-        date, description,
-        rate,
-        qty: (Number(qty) * 60),
-        lineTotal: (Number(qty) * Number(rate))
-      }];
-
-      setSelectedOption(newItem);
+      setManualEntryArr(newManualEntryArr);
     }
-
-    setCurrentIndex(currentIndex);
-  };
+  }, [name, date, description, rate, qty, lineTotal]);
 
   return (
     <tr className="w-full my-1">
@@ -100,7 +88,6 @@ const ManualEntry = ({ setSelectedOption, selectedOption }) => {
             setQty(e.target.value);
             setLineTotal(Number(rate) * Number(e.target.value));
           }}
-          onKeyDown={e => onEnter(e)}
         />
       </td>
       <td className="text-right font-normal text-base text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000">
