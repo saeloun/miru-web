@@ -1,3 +1,15 @@
+.invoice-datepicker {
+  input {
+    @apply py-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000;
+  }
+}
+
+.invoice-datepicker-option {
+  .react-datepicker__triangle {
+    display: none;
+  }
+}
+
 .miru-calendar {
   padding: 28px;
   position: absolute !important;

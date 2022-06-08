@@ -29,9 +29,7 @@ module Report
     end
 
     def client_filter
-      clients = Client.includes(:projects).where(id: filter_params[:client])
-      project_ids = clients.map { |client| client.project_ids }.flatten
-      { project_id: project_ids }
+      { client_id: filter_params[:client] }
     end
 
     def team_member_filter

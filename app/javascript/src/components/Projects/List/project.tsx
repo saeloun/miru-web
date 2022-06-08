@@ -7,7 +7,7 @@ import { IProject } from "../interface";
 export const Project = ({
   id,
   name,
-  client,
+  clientName,
   minutesSpent,
   isBillable,
   isAdminUser,
@@ -38,7 +38,8 @@ export const Project = ({
       className={`last:border-b-0 ${grayColor}`}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-      onClick={() =>{isAdminUser && projectClickHandler(id);}}>
+      onClick={() => projectClickHandler(id)}
+    >
       <td className="table__cell text-base">
         {name}
       </td>
@@ -54,7 +55,7 @@ export const Project = ({
             e.preventDefault();
             e.stopPropagation();
             setShowProjectModal(true);
-            setEditProjectData({ id,name,client,isBillable });
+            setEditProjectData({ id, name, clientName, isBillable });
           }}
         >
           <Pen size={16} color="#5B34EA" />
@@ -67,7 +68,7 @@ export const Project = ({
             e.preventDefault();
             e.stopPropagation();
             setShowDeleteDialog(true);
-            setDeleteProjectData({ id,name });
+            setDeleteProjectData({ id, name });
           }}
         >
           <Trash size={16} color="#5B34EA" />

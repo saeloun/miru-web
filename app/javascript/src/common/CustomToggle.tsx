@@ -1,13 +1,16 @@
 import React from "react";
 
-const CustomToggle = ({ isChecked = false, setIsChecked, toggleCss, id }) => (
+const CustomToggle = ({ isChecked = false, setIsChecked, toggleCss, id, onToggle = () => {}}) => ( // eslint-disable-line
   <div className={`customToggle__container ${toggleCss}`}>
     <label>
       <input
         id={id}
         className="customToggle"
         type="checkbox"
-        onChange={()=> setIsChecked(!isChecked) }
+        onChange={() => {
+          onToggle();
+          setIsChecked(!isChecked);
+        }}
         checked={isChecked}
       />
       <div>
