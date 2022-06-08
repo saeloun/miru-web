@@ -21,7 +21,7 @@ class InternalApi::V1::ProfileController < InternalApi::V1::ApplicationControlle
       current_user.update_without_password(user_params.except(:current_password))
       render json: { notice: "user updated" }, status: :ok
     elsif validate_current_password && validate_password_length && validate_password_confirmation
-      current_user.update_with_password(user_params.except)
+      current_user.update_with_password(user_params)
       render json: { notice: "password updated" }, status: :ok
     else
       render json: { error: "something went wrong" }, status: :unprocessable_entity
