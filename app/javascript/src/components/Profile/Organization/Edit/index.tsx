@@ -15,7 +15,7 @@ const img = require("../../../../../../assets/images/plus_icon.svg");
 const orgSchema = Yup.object().shape({
   companyName: Yup.string().required("Name cannot be blank"),
   companyPhone: Yup.string().required("Phone number cannot be blank"),
-  companyRate: Yup.number().required("Rate cannot be blank")
+  companyRate: Yup.number().typeError("Amount must be a number").min(0, "please enter larger amount").required("Rate cannot be blank")
 });
 
 const fiscalYearOptions = [
