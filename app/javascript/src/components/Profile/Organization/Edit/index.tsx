@@ -289,10 +289,10 @@ const OrgEdit = () => {
             {orgDetails.logoUrl  ? (
               <div className="mt-2 flex flex-row">
                 <div className="w-20 h-20">
-                  <img src={orgDetails.logoUrl} className={"rounded-full min-w-full h-full"}></img>
+                  <img src={orgDetails.logoUrl} className={"rounded-full min-w-full h-full"} alt="org_logo" />
                 </div>
                 <label htmlFor="file-input">
-                  <img src={editButton} className={"rounded-full mt-5 cursor-pointer"} style={{ "minWidth": "40px" }}></img>
+                  <img src={editButton} className={"rounded-full mt-5 cursor-pointer"} style={{ "minWidth": "40px" }} alt="edit" />
                 </label>
                 <input id="file-input" type="file" name="myImage" className='hidden' onChange={onLogoChange}>
                 </input>
@@ -308,7 +308,7 @@ const OrgEdit = () => {
               <>
                 <label htmlFor="file-input">
                   <div className="w-20 h-20 border rounded border-miru-han-purple-1000 flex justify-center items-center mt-2 cursor-pointer">
-                    <img src={img}></img>
+                    <img src={img} alt="file_input" />
                   </div>
                 </label>
                 <input id="file-input" type="file" name="myImage" className='hidden' onChange={onLogoChange} />
