@@ -5,11 +5,11 @@ import {
   Route
 } from "react-router-dom";
 
-import UserDetails from './UserDetail';
-import Billing from './Billing';
-import OrgEdit from "./Organization/Edit";
+import Billing from "./Billing";
 import OrgBilling from "./Organization/Billing";
+import OrgEdit from "./Organization/Edit";
 import OrgPayment from "./Organization/Payment";
+import UserDetails from "./UserDetail";
 
 const RouteConfig = () => (
   <Routes>
@@ -19,7 +19,7 @@ const RouteConfig = () => (
       <Route path="paymentsettings" element={<OrgPayment />} />
       <Route path="billing" element={<OrgBilling />} />
       <Route path="organization" element={<OrgEdit />} />
-    {/* </Route> */}
+      {/* </Route> */}
     </Route>
   </Routes>
 );
