@@ -1,27 +1,26 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import Header from "../../Header";
-
-const companyLogo = require("../../../../../../assets/images/saeloun_logo.png");
-import { Divider } from "../../../../common/Divider";
 import Select from "react-select";
-import companyProfileApi from "apis/companyProfile";
-const editButton = require("../../../../../../assets/images/edit_image_button.svg");
-import { currencyList } from "../../../../constants/currencyList";
-import { CountryList } from "../../../../constants/countryList";
-import * as Yup from "yup";
 import companiesApi from "apis/companies";
+import companyProfileApi from "apis/companyProfile";
+import * as Yup from "yup";
+import { Divider } from "../../../../common/Divider";
+import { CountryList } from "../../../../constants/countryList";
+import { currencyList } from "../../../../constants/currencyList";
+import Header from "../../Header";
+const editButton = require("../../../../../../assets/images/edit_image_button.svg");
 const img = require("../../../../../../assets/images/plus_icon.svg");
+const companyLogo = require("../../../../../../assets/images/saeloun_logo.png");
 
 const orgSchema = Yup.object().shape({
   companyName: Yup.string().required("Name cannot be blank"),
   companyPhone: Yup.string().required("Phone number cannot be blank"),
-  companyRate: Yup.number().required("Rate cannot be blank"),
+  companyRate: Yup.number().required("Rate cannot be blank")
 });
 
 const fiscalYearOptions = [
   { value: "jan-dec", label: "January-December" },
-  { value: "apr-mar", label: "April-March" },
+  { value: "apr-mar", label: "April-March" }
 ];
 
 const dateFormatOptions = [
@@ -47,26 +46,26 @@ const customStyles = {
 
 const initialState = {
   id: null,
-  logoUrl: '',
-  companyName: '',
-  companyAddr: '',
-  companyPhone: '',
-  countryName: '',
-  companyCurrency: '',
+  logoUrl: "",
+  companyName: "",
+  companyAddr: "",
+  companyPhone: "",
+  countryName: "",
+  companyCurrency: "",
   companyRate: 0.0,
-  companyFiscalYear: '',
-  companyDateFormat: '',
-  companyTimezone: '',
-  logo: null,
+  companyFiscalYear: "",
+  companyDateFormat: "",
+  companyTimezone: "",
+  logo: null
 };
 
 const OrgEdit = () => {
   const [orgDetails, setOrgDetails] = useState(initialState);
 
   const [errDetails, setErrDetails] = useState({
-    companyNameErr: '',
-    companyPhoneErr: '',
-    companyRateErr: '',
+    companyNameErr: "",
+    companyPhoneErr: "",
+    companyRateErr: ""
   });
 
   const [currenciesOption, setCurrenciesOption] = useState([]);
@@ -74,37 +73,31 @@ const OrgEdit = () => {
   const [timezoneOption, setTimezoneOption] = useState([]);
   const [timezones, setTimeZones] = useState({});
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
-  const [updateMsg, setupdateMsg] = useState({ message: '', type: '' });
+  const [updateMsg, setupdateMsg] = useState({ message: "", type: "" });
 
   const getCountries = async () => {
-    const countries = CountryList.map((item) => {
-      return {
-        value: item.code,
-        label: item.name,
-      }
-    });
+    const countries = CountryList.map((item) => ({
+      value: item.code,
+      label: item.name
+    }));
     setCountriessOption(countries);
   };
 
   const getCurrencies = async () => {
-    const currencies = currencyList.map((item) => {
-      return {
-        value: item.code,
-        label: `${item.name} (${item.symbol})`,
-      }
-    });
+    const currencies = currencyList.map((item) => ({
+      value: item.code,
+      label: `${item.name} (${item.symbol})`
+    }));
     setCurrenciesOption(currencies);
-  }
+  };
 
   const countryMapTimezone = (country) => {
     const timeZonesForCountry = timezones[country];
-    const timezoneOptionList = timeZonesForCountry.map((item) => {
-      return {
-        value: item,
-        label: item,
-      }
-    })
-    setTimezoneOption(timezoneOptionList)
+    const timezoneOptionList = timeZonesForCountry.map((item) => ({
+      value: item,
+      label: item
+    }));
+    setTimezoneOption(timezoneOptionList);
   };
 
   const getData = async () => {
@@ -121,21 +114,19 @@ const OrgEdit = () => {
       companyDateFormat: resp.data.date_format,
       companyTimezone: resp.data.timezone,
       id: resp.data.id,
-      logo: null,
+      logo: null
     });
 
     const timezonesEntry = await companyProfileApi.get();
     setTimeZones(timezonesEntry.data.timezones);
 
     const timeZonesForCountry = timezonesEntry.data.timezones[resp.data.country];
-    const timezoneOptionList = timeZonesForCountry.map((item) => {
-      return {
-        value: item,
-        label: item,
-      }
-    })
-    setTimezoneOption(timezoneOptionList)
-  }
+    const timezoneOptionList = timeZonesForCountry.map((item) => ({
+      value: item,
+      label: item
+    }));
+    setTimezoneOption(timezoneOptionList);
+  };
 
   useEffect(() => {
     getCountries();
@@ -146,7 +137,7 @@ const OrgEdit = () => {
   const handleNameChange = useCallback((e) => {
     setOrgDetails({ ...orgDetails, companyName: e.target.value });
     setIsDetailUpdated(true);
-    setErrDetails({ ...errDetails, companyNameErr: '' })
+    setErrDetails({ ...errDetails, companyNameErr: "" });
   }, [orgDetails, errDetails]);
 
   const handleAddrChange = useCallback((e) => {
@@ -157,18 +148,16 @@ const OrgEdit = () => {
   const handlePhoneChange = useCallback((e) => {
     setOrgDetails({ ...orgDetails, companyPhone: e.target.value });
     setIsDetailUpdated(true);
-    setErrDetails({ ...errDetails, companyPhoneErr: '' })
+    setErrDetails({ ...errDetails, companyPhoneErr: "" });
   }, [orgDetails]);
 
   const handleCountryChange = useCallback((option) => {
     countryMapTimezone(option.value);
     const timeZonesForCountry = timezones[option.value];
-    const timezoneOptionList = timeZonesForCountry.map((item) => {
-      return {
-        value: item,
-        label: item,
-      }
-    })
+    const timezoneOptionList = timeZonesForCountry.map((item) => ({
+      value: item,
+      label: item
+    }));
     setTimezoneOption(timezoneOptionList);
     setOrgDetails({ ...orgDetails, countryName: option.value, companyTimezone: "" });
     setIsDetailUpdated(true);
@@ -182,7 +171,7 @@ const OrgEdit = () => {
   const handleRateChange = useCallback((e) => {
     setOrgDetails({ ...orgDetails, companyRate: e.target.value });
     setIsDetailUpdated(true);
-    setErrDetails({ ...errDetails, companyRateErr: '' })
+    setErrDetails({ ...errDetails, companyRateErr: "" });
   }, [orgDetails]);
 
   const handleFiscalYearChange = useCallback((option) => {
@@ -208,63 +197,63 @@ const OrgEdit = () => {
 
   const updateOrgDetails = async () => {
     orgSchema.validate(orgDetails, { abortEarly: false }).then(async (msg) => {
-      try{
-      let formD = new FormData();
-      formD.append(
-        `company[name]`, orgDetails.companyName
-      );
-      formD.append(
-        `company[address]`, orgDetails.companyAddr
-      );
-      formD.append(
-        `company[business_phone]`, orgDetails.companyPhone
-      );
-      formD.append(
-        `company[country]`, orgDetails.countryName
-      );
-      formD.append(
-        `company[base_currency]`, orgDetails.companyCurrency
-      );
-      formD.append(
-        `company[standard_price]`, orgDetails.companyRate.toString()
-      );
-      formD.append(
-        `company[fiscal_year_end]`, orgDetails.companyFiscalYear
-      );
-      formD.append(
-        `company[date_format]`, orgDetails.companyDateFormat
-      );
-      formD.append(
-        `company[timezone]`, orgDetails.companyTimezone
-      );
-      if (orgDetails.logo) {
+      try {
+        const formD = new FormData();
         formD.append(
-          `company[logo]`, orgDetails.logo
+          "company[name]", orgDetails.companyName
         );
-      }
-      const updateOrgDetails = await companiesApi.update(orgDetails.id, formD);
-      setupdateMsg({message: updateOrgDetails.data.notice, type: 'success'});
-      setTimeout(() => {
-        setupdateMsg({message: '', type: ''});
-      }, 5000);
-      setIsDetailUpdated(false);
-      } catch(err){
-        setupdateMsg({message: 'Error in Updating Org. Details', type: 'error'});
-      setTimeout(() => {
-        setupdateMsg({message: '', type: ''});
-      }, 5000);
+        formD.append(
+          "company[address]", orgDetails.companyAddr
+        );
+        formD.append(
+          "company[business_phone]", orgDetails.companyPhone
+        );
+        formD.append(
+          "company[country]", orgDetails.countryName
+        );
+        formD.append(
+          "company[base_currency]", orgDetails.companyCurrency
+        );
+        formD.append(
+          "company[standard_price]", orgDetails.companyRate.toString()
+        );
+        formD.append(
+          "company[fiscal_year_end]", orgDetails.companyFiscalYear
+        );
+        formD.append(
+          "company[date_format]", orgDetails.companyDateFormat
+        );
+        formD.append(
+          "company[timezone]", orgDetails.companyTimezone
+        );
+        if (orgDetails.logo) {
+          formD.append(
+            "company[logo]", orgDetails.logo
+          );
+        }
+        const updateOrgDetails = await companiesApi.update(orgDetails.id, formD);
+        setupdateMsg({ message: updateOrgDetails.data.notice, type: "success" });
+        setTimeout(() => {
+          setupdateMsg({ message: "", type: "" });
+        }, 5000);
+        setIsDetailUpdated(false);
+      } catch (err){
+        setupdateMsg({ message: "Error in Updating Org. Details", type: "error" });
+        setTimeout(() => {
+          setupdateMsg({ message: "", type: "" });
+        }, 5000);
       }
     }).catch(function (err) {
       const errObj = {
-        companyNameErr: '',
-        companyPhoneErr: '',
-        companyRateErr: '',
+        companyNameErr: "",
+        companyPhoneErr: "",
+        companyRateErr: ""
       };
       err.inner.map((item) => {
-        errObj[item.path + 'Err'] = item.message;
-      })
+        errObj[item.path + "Err"] = item.message;
+      });
       setErrDetails(errObj);
-    })
+    });
   };
 
   const handleCancelAction = () => {
@@ -276,16 +265,16 @@ const OrgEdit = () => {
 
   const handleDeleteLogo = async () => {
     const removeLogo = await companiesApi.removeLogo(orgDetails.id);
-    if(removeLogo.status === 200){
+    if (removeLogo.status === 200){
       setOrgDetails({ ...orgDetails, logoUrl: null, logo: null });
-    };
+    }
   };
 
   return (
     <div className="flex flex-col w-4/5">
       <Header
-        title={'Organization Settings'}
-        subTitle={'View and manage org settings'}
+        title={"Organization Settings"}
+        subTitle={"View and manage org settings"}
         showButtons={true}
         cancelAction={handleCancelAction}
         saveAction={updateOrgDetails}
@@ -378,7 +367,7 @@ const OrgEdit = () => {
                   styles={customStyles}
                   options={countriesOption}
                   onChange={handleCountryChange}
-                  value={orgDetails.countryName ? countriesOption.find(o => o.value === orgDetails.countryName) : { label: 'United States', value: 'US' }}
+                  value={orgDetails.countryName ? countriesOption.find(o => o.value === orgDetails.countryName) : { label: "United States", value: "US" }}
                 />
               </div>
               <div className="w-1/2 p-2">
@@ -389,7 +378,7 @@ const OrgEdit = () => {
                   styles={customStyles}
                   options={currenciesOption}
                   onChange={handleCurrencyChange}
-                  value={orgDetails.companyCurrency ? currenciesOption.find(o => o.value === orgDetails.companyCurrency) : { label: 'US Dollar ($)', value: 'USD' }}
+                  value={orgDetails.companyCurrency ? currenciesOption.find(o => o.value === orgDetails.companyCurrency) : { label: "US Dollar ($)", value: "USD" }}
                 />
               </div>
             </div>
