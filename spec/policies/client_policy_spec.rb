@@ -4,79 +4,67 @@ require "rails_helper"
 
 RSpec.describe ClientPolicy, type: :policy do
   let(:company) { create(:company) }
-  let(:company2) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:another_company) { create(:company) }
+
   let(:client) { create(:client, company:) }
+  let(:another_client) { create(:client, company: another_company) }
 
-  subject { described_class }
+  let(:admin) { create(:user, current_workspace_id: company.id) }
+  let(:employee) { create(:user, current_workspace_id: company.id) }
+  let(:owner) { create(:user, current_workspace_id: company.id) }
 
-  context "when user is admin" do
-    before do
-      create(:company_user, company:, user:)
-      user.add_role :admin, company
+  before do
+    owner.add_role :owner, company
+    admin.add_role :admin, company
+    employee.add_role :employee, company
+  end
+
+  permissions :index? do
+    it "grants permission to an admin, employee and owner" do
+      expect(described_class).to permit(admin)
+      expect(described_class).to permit(employee)
+    end
+  end
+
+  permissions :show?, :create?, :new_invoice_line_items? do
+    it "grants permission to an admin and an owner" do
+      expect(described_class).to permit(admin)
+      expect(described_class).to permit(owner)
     end
 
-    permissions :create? do
-      it "is permitted to create client" do
-        expect(subject).to permit(user, Client)
+    it "does not grants permission to an employee" do
+      expect(described_class).not_to permit(employee)
+    end
+  end
+
+  permissions :update?, :destroy? do
+    context "when user is an admin or owner" do
+      it "grants permission" do
+        expect(described_class).to permit(admin, client)
+        expect(described_class).to permit(owner, client)
+      end
+
+      context "when from another company" do
+        it "does not grants permission" do
+          expect(described_class).not_to permit(admin, another_client)
+          expect(described_class).not_to permit(owner, another_client)
+        end
       end
     end
 
-    permissions :update? do
-      it "is permitted to update" do
-        expect(subject).to permit(user, client)
-      end
-
-      it "is not permitted to update client in different company" do
-        client.update(company_id: company2.id)
-        expect(subject).not_to permit(user, client)
-      end
-    end
-
-    permissions :destroy? do
-      it "is permitted to destroy" do
-        expect(subject).to permit(user, client)
-      end
-
-      it "is not permitted to destroy client in different company" do
-        client.update(company_id: company2.id)
-        expect(subject).not_to permit(user, client)
+    context "when user is an employee" do
+      it "does not grant permission" do
+        expect(described_class).not_to permit(employee, client)
+        expect(described_class).not_to permit(employee, another_client)
       end
     end
   end
 
-  context "when user is employee" do
-    before do
-      create(:company_user, company:, user:)
-      user.add_role :employee, company
-    end
+  describe "#permitted_attributes" do
+    subject { described_class.new(admin, company).permitted_attributes }
 
-    permissions :create? do
-      it "is not permitted to create client" do
-        expect(subject).not_to permit(user, Client)
-      end
-    end
-
-    permissions :update? do
-      it "is not permitted to update" do
-        expect(subject).not_to permit(user, client)
-      end
-
-      it "is not permitted to update client in different company" do
-        client.update(company_id: company2.id)
-        expect(subject).not_to permit(user, client)
-      end
-    end
-
-    permissions :destroy? do
-      it "is not permitted to destroy" do
-        expect(subject).not_to permit(user, client)
-      end
-
-      it "is not permitted to destroy client in different company" do
-        client.update(company_id: company2.id)
-        expect(subject).not_to permit(user, client)
-      end
+    it "returns array of a permitted attributes" do
+      expect(subject).to match_array(%i[name email phone address])
     end
   end
 end
