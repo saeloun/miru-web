@@ -26,8 +26,8 @@ class InternalApi::V1::ProfileController < InternalApi::V1::ApplicationControlle
     else
       render json: { error: "something went wrong" }, status: :unprocessable_entity
     end
-    rescue Exception => e
-      render json: { error: e.message }, status: :unprocessable_entity
+  rescue Exception => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   private

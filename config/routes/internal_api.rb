@@ -37,8 +37,9 @@ namespace :internal_api, defaults: { format: "json" } do
       resources :providers, only: [:create, :index, :update]
     end
 
-    delete "profile/remove_avatar", to: "profile#remove_avatar"
-    put "profile", to: "profile#update"
-    get "profile", to: "profile#index"
+    resource :profile, only: [:update], controller: "profile" do
+      delete "/remove_avatar", to: "profile#remove_avatar"
+      get "/", to: "profile#index"
+    end
   end
 end

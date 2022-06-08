@@ -6,10 +6,10 @@ class ProfilePolicy < ApplicationPolicy
   end
 
   def remove_avatar?
-    true
+    user
   end
 
   def update?
-    true
-end
+    user
+  end
 end
