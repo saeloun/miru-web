@@ -1,4 +1,4 @@
-<div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
+<div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope" id="Setup Org">
   <div>
     <div>
       <%= react_component("Profile/Layout", { isAdmin: current_user.has_owner_or_admin_role?(current_company), company: current_company, userDetails: current_user.attributes }) %>
