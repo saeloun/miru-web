@@ -2,7 +2,6 @@
 
 class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
   def destroy
-    # authorize user, policy_class: TeamPolicy
     authorize current_user, policy_class: TeamPolicy
     user.discard!
     render json: {

@@ -17,9 +17,10 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
         send_request :delete, internal_api_v1_team_path(team_member)
       end
 
-      it "returns success json response" do
+      it "returns success json response with team member" do
         expect(response).to be_successful
         expect(json_response["notice"]).to eq(I18n.t("team.delete.success.message"))
+        expect(json_response["user"]["id"]).to eq(team_member.id)
       end
 
       it "Discards the team member" do
