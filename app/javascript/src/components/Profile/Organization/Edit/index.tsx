@@ -2,12 +2,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 
 import Select from "react-select";
+import { ToastContainer } from "react-toastify";
 import companiesApi from "apis/companies";
 import companyProfileApi from "apis/companyProfile";
+import Toastr from "common/Toastr";
 import * as Yup from "yup";
 import { Divider } from "../../../../common/Divider";
 import { CountryList } from "../../../../constants/countryList";
 import { currencyList } from "../../../../constants/currencyList";
+import { TOASTER_DURATION } from "../../../../constants/index";
 import Header from "../../Header";
 const editButton = require("../../../../../../assets/images/edit_image_button.svg");
 const img = require("../../../../../../assets/images/plus_icon.svg");
@@ -73,8 +76,6 @@ const OrgEdit = () => {
   const [timezoneOption, setTimezoneOption] = useState([]);
   const [timezones, setTimeZones] = useState({});
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
-  const [updateMsg, setupdateMsg] = useState({ message: "", type: "" });
-
   const getCountries = async () => {
     const countries = CountryList.map((item) => ({
       value: item.code,
@@ -232,16 +233,10 @@ const OrgEdit = () => {
           );
         }
         const updateOrgDetails = await companiesApi.update(orgDetails.id, formD);
-        setupdateMsg({ message: updateOrgDetails.data.notice, type: "success" });
-        setTimeout(() => {
-          setupdateMsg({ message: "", type: "" });
-        }, 5000);
+        Toastr.success(updateOrgDetails.data.notice);
         setIsDetailUpdated(false);
       } catch (err){
-        setupdateMsg({ message: "Error in Updating Org. Details", type: "error" });
-        setTimeout(() => {
-          setupdateMsg({ message: "", type: "" });
-        }, 5000);
+        Toastr.error("Error in Updating Org. Details");
       }
     }).catch(function (err) {
       const errObj = {
@@ -279,7 +274,6 @@ const OrgEdit = () => {
         cancelAction={handleCancelAction}
         saveAction={updateOrgDetails}
         isDisableUpdateBtn={isDetailUpdated}
-        updateMsg={updateMsg}
       />
       <div className="p-10 mt-4 bg-miru-gray-100 h-full">
         <div className="flex flex-row py-6">
@@ -439,6 +433,7 @@ const OrgEdit = () => {
           </div>
         </div>
       </div>
+      <ToastContainer autoClose={TOASTER_DURATION} />
     </div>
   );
 };
