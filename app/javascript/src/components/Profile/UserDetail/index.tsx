@@ -214,11 +214,11 @@ const UserDetails = () => {
               </div>
             ) : (
               <>
-                <label htmlFor="file-input">
-                  <div className="w-20 h-20 border rounded border-miru-han-purple-1000 flex justify-center items-center mt-2 cursor-pointer">
-                    <img alt="profile_box" src={img} />
-                  </div>
-                </label>
+                <div className="w-20 h-20 border rounded border-miru-han-purple-1000 mt-2 ">
+                  <label htmlFor="file-input" className="flex justify-center items-cente w-full h-full cursor-pointer">
+                    <img alt="profile_box" src={img} className="object-none" />
+                  </label>
+                </div>
                 <input id="file-input" type="file" name="myImage" className='hidden' onChange={handleProfileImageChange} />
               </>
             )}
