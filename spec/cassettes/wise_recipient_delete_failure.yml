@@ -69,4 +69,73 @@ http_interactions:
         Recipient with such id is not found among your recipients."}]}'
     http_version:
   recorded_at: Fri, 03 Jun 2022 14:27:30 GMT
+- request:
+    method: delete
+    uri: https://api.transferwise.tech/v1/accounts/1483
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      User-Agent:
+      - Faraday v1.10.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Date:
+      - Fri, 03 Jun 2022 14:27:30 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - 75599506-ee95-917a-b50e-5e3155bc2caf
+      X-Trace-Id:
+      - 00c039019b1e3231
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Envoy-Upstream-Service-Time:
+      - '54'
+      X-Envoy-Attempt-Count:
+      - '1'
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers,accept-encoding
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Set-Cookie:
+      - __cf_bm=HPLSs1cQtwTjoB3Q8qiD40_lfqniecwPz8fOli_CK1g-1654247984-0-AcLksbWa34ecoYVYmG+bjxrplViTvFm4d4v1EhJFQdIQ4r1gYO51AKulHW2ink0gxNgEvZ/5LnuODtAhVf+OZc4=;
+        path=/; expires=Fri, 03-Jun-22 09:49:44 GMT; domain=.transferwise.tech; HttpOnly;
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7157594d5975b2b1-MAA
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"timestamp":"2022-06-03T09:19:44.511506946Z","errors":[{"code":"RECIPIENT_MISSING","message":"[RECIPIENT_MISSING]
+        Recipient with such id is not found among your recipients."}]}'
+    http_version:
+  recorded_at: Fri, 03 Jun 2022 14:27:30 GMT
 recorded_with: VCR 3.0.3

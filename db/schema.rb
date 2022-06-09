@@ -262,8 +262,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_13_094006) do
     t.string "target_currency"
     t.bigint "user_id", null: false
     t.bigint "company_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_wise_accounts_on_company_id"
     t.index ["user_id", "company_id"], name: "index_wise_accounts_on_user_id_and_company_id", unique: true
     t.index ["user_id"], name: "index_wise_accounts_on_user_id"
