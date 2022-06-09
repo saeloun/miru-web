@@ -10,7 +10,7 @@ RSpec.describe EmploymentDetail, type: :model do
       it { is_expected.to belong_to(:user) }
     end
 
-    describe "validate presence of" do
+    describe "Presence" do
       it { is_expected.to validate_presence_of(:designation) }
       it { is_expected.to validate_presence_of(:employment_type) }
       it { is_expected.to validate_presence_of(:joined_at) }
