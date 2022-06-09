@@ -5,6 +5,7 @@ import profilesApi from "apis/profiles";
 import wiseApi from "apis/wise";
 import Loader from "common/Loader";
 import { separateAddressFields, bankFieldValidationRequirements } from "helpers/wiseUtilityFunctions";
+import { isEmpty } from "ramda";
 import BankDetails from "./BankDetails";
 import BankInfo from "./BankInfo";
 import CurrencyDropdown from "./CurrencyDropdown";
@@ -100,6 +101,38 @@ const Billing = () => {
     isUpdate ? updateRecipient(payload) : createRecipient(payload);
   };
 
+  const renderBankDetails = (billingDetails) => {
+    if (isEmpty(billingDetails)) {
+      return (<></>);
+    } else if (!billingDetails.recipientId) {
+      return (
+        <CurrencyDropdown
+          currencies={currencies}
+          setCurrencies={setCurrencies}
+          currency={currency}
+          setCurrency={setCurrency}
+          setIsLoading={setIsLoading}
+          setBankDetailsModal={setBankDetailsModal}
+          fetchAccountRequirements={fetchAccountRequirements}
+        />
+      );
+    } else {
+      return (
+        <BankInfo
+          recipientId={billingDetails.recipientId}
+          setBankDetailsModal={setBankDetailsModal}
+          setFirstName={setFirstName}
+          setLastName={setLastName}
+          setRecipientDetails={setRecipientDetails}
+          fetchAccountRequirements={fetchAccountRequirements}
+          sourceCurrency={billingDetails.sourceCurrency}
+          targetCurrency={billingDetails.targetCurrency}
+          setIsUpdate={setIsUpdate}
+        />
+      );
+    }
+  };
+
   return (
     <div className="flex flex-col w-4/5 text-sm">
       <Header
@@ -109,30 +142,7 @@ const Billing = () => {
       <div className="py-10 pl-10 mt-4 bg-miru-gray-100 h-screen inline-flex">
         {isLoading && <Loader message={"Loading..."} /> }
         <div className="w-26 h-12 float-left my-2">Bank Account Details</div>
-        {
-          !billingDetails.recipientId ?
-            <CurrencyDropdown
-              currencies={currencies}
-              setCurrencies={setCurrencies}
-              currency={currency}
-              setCurrency={setCurrency}
-              setIsLoading={setIsLoading}
-              setBankDetailsModal={setBankDetailsModal}
-              fetchAccountRequirements={fetchAccountRequirements}
-            />
-            :
-            <BankInfo
-              recipientId={billingDetails.recipientId}
-              setBankDetailsModal={setBankDetailsModal}
-              setFirstName={setFirstName}
-              setLastName={setLastName}
-              setRecipientDetails={setRecipientDetails}
-              fetchAccountRequirements={fetchAccountRequirements}
-              sourceCurrency={billingDetails.sourceCurrency}
-              targetCurrency={billingDetails.targetCurrency}
-              setIsUpdate={setIsUpdate}
-            />
-        }
+        { renderBankDetails(billingDetails) }
         {
           showBankDetailsModal &&
           <BankDetails
