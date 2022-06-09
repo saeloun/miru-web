@@ -18,7 +18,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
       expect(response).to have_http_status(:ok)
       expect(user.first_name).to eq("Sam")
       expect(user.last_name).to eq("Smith")
-      expect(json_response["notice"]).to eq("user updated")
+      expect(json_response["notice"]).to eq("User updated")
     end
 
     it "updates user data with password" do
@@ -32,7 +32,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
       expect(response).to have_http_status(:ok)
       expect(user.first_name).to eq("Example")
       expect(user.last_name).to eq("User")
-      expect(json_response["notice"]).to eq("password updated")
+      expect(json_response["notice"]).to eq("Password updated")
     end
 
     it "throws error when current password is incorrect" do
@@ -44,7 +44,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
       }
       send_request :put, internal_api_v1_profile_path, params: params
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json_response["error"]).to eq("current password is not correct")
+      expect(json_response["error"]).to eq("Current password is not correct")
     end
 
     it "throws error when password_confirmation does not match password" do
@@ -56,7 +56,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
       }
       send_request :put, internal_api_v1_profile_path, params: params
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json_response["error"]).to eq("password and password confirmation does not match")
+      expect(json_response["error"]).to eq("Password and password confirmation does not match")
     end
 
     it "throws error when password is less than 6 of characters" do
@@ -68,7 +68,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
       }
       send_request :put, internal_api_v1_profile_path, params: params
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json_response["error"]).to eq("password and password confirmation should be of minimum 6 characters")
+      expect(json_response["error"]).to eq("Password and password confirmation should be of minimum 6 characters")
     end
   end
 end
