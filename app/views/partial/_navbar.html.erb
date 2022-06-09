@@ -234,7 +234,7 @@
                     </div>
                   </div>
 
-                  <%= button_to profile_path, method: :get, class: "navbar__profile-menu_settings", id:"menu-item-0", role:"menuitem", tabindex:"-1" do %>
+                  <%= button_to profile_edit_path, method: :get, class: "navbar__profile-menu_settings", id:"menu-item-0", role:"menuitem", tabindex:"-1" do %>
                     <%= image_tag 'setting_icon.svg', class:"mr-3 h-5 w-5" %>
                     <%= t('navbar.settings') %>
                   <% end %>
