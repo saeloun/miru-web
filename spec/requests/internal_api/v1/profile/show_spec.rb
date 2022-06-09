@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Profile#index", type: :request do
+RSpec.describe "InternalApi::V1::Profile#show", type: :request do
   let(:user) { create(:user, :with_avatar) }
   let(:company) { create(:company) }
 
