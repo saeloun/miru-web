@@ -25,7 +25,7 @@ class LeadQuote < ApplicationRecord
   include Discard::Model
 
   belongs_to :lead
-  has_many :quote_line_items
+  has_many :quote_line_items, dependent: :destroy
   accepts_nested_attributes_for :quote_line_items, allow_destroy: true
 
   def render_properties

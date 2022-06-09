@@ -110,9 +110,9 @@ class Lead < ApplicationRecord
   # validates_format_of :primary_email, :other_email, :with => Devise::email_regexp
   # validates :budget_amount, numericality: { greater_than_or_equal_to: 0 }
 
-  has_many :lead_line_items
-  has_many :lead_quotes
-  has_many :lead_timelines
+  has_many :lead_line_items, dependent: :destroy
+  has_many :lead_quotes, dependent: :destroy
+  has_many :lead_timelines, dependent: :destroy
 
   def budget_status_code_name
     return "" if budget_status_code.nil?
