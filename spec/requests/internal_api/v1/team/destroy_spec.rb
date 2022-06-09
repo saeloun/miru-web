@@ -52,7 +52,7 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
         expect(response).not_to be_successful
       end
 
-      it "does not Discard the company user" do
+      it "does not discard the company user" do
         send_request :delete, internal_api_v1_team_path(@non_team_company_user.user)
 
         expect(team_user.reload.company_users.discarded.count).to eq(0)
@@ -79,7 +79,7 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
         expect(json_response["notice"]).to eq(I18n.t("errors.internal_server_error"))
       end
 
-      it "does not Discard the team member" do
+      it "does not discard the team member" do
         send_request :delete, internal_api_v1_team_path(invalid_user)
 
         expect(invalid_user.reload.company_users.discarded.count).to eq(0)
@@ -109,7 +109,7 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
     end
   end
 
-  context "when current user is employee" do
+  context "when current user is an employee" do
     let(:employee_user) { create(:user, current_workspace_id: company.id) }
     let(:team_user) { create(:user, current_workspace_id: company.id) }
 
@@ -121,21 +121,21 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       send_request :delete, internal_api_v1_team_path(team_user)
     end
 
-    it "return forbidden response with error" do
+    it "returns forbidden response with error" do
       expect(response).not_to be_successful
       expect(response).to have_http_status :forbidden
       expect(json_response["errors"]).to eq(I18n.t("pundit.team_policy.destroy?"))
     end
 
-    it "does not Discard the team member" do
+    it "does not discard the team member" do
       expect(team_user.reload.company_users.discarded.count).to eq(0)
     end
   end
 
-  context "when user is not signed In" do
+  context "when user is not signed in" do
     let(:team_user) { create(:user, current_workspace_id: company.id) }
 
-    it "return unauthorized response with error" do
+    it "returns unauthorized response with error" do
       send_request :delete, internal_api_v1_team_path(team_user)
       expect(response).not_to be_successful
       expect(response).to have_http_status :unauthorized
