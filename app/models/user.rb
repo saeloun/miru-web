@@ -60,6 +60,7 @@ class User < ApplicationRecord
   has_many :identities, dependent: :delete_all
   has_one_attached :avatar
   rolify strict: true
+  has_one :employment_detail, dependent: :destroy
 
   # Validations
   validates :first_name, :last_name,
