@@ -85,18 +85,15 @@ const Reports = () => {
     }
   };
 
-  const handleDownload = (type) => {
+  const handleDownload = async (type) => {
     const queryParams = getQueryParams(selectedFilter).substring(1);
-    reports.download(type, `?${queryParams}`)
-      .then(response => window.URL.createObjectURL(new Blob([response.data])))
-      .then(url => {
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", `report.${type}`);
-        document.body.appendChild(link);
-        link.click();
-      })
-      .catch(error => console.error(error));
+    const response = await reports.download(type, `?${queryParams}`);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `report.${type}`);
+    document.body.appendChild(link);
+    link.click();
   };
 
   return (
