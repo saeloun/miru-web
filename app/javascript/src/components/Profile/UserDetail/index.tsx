@@ -2,11 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 
+import { ToastContainer } from "react-toastify";
 import profileApi from "apis/profile";
 import { Divider } from "common/Divider";
 
+import Toastr from "common/Toastr";
 import * as Yup from "yup";
+import { TOASTER_DURATION } from "../../../constants/index";
 import Header from "../Header";
+
 const editButton = require("../../../../../assets/images/edit_image_button.svg");
 const password_icon = require("../../../../../assets/images/password_icon.svg");
 const password_icon_text = require("../../../../../assets/images/password_icon_text.svg");
@@ -58,7 +62,6 @@ const UserDetails = () => {
   const [showPasword, setShowPassword] = useState<boolean>(false);
   const [showCurrentPasword, setShowCurrentPassword] = useState<boolean>(false);
   const [showConfirmPasword, setShowConfirmPassword] = useState<boolean>(false);
-  const [updateMsg, setupdateMsg] = useState({ message: "", type: "" });
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [errDetails, setErrDetails] = useState(initialErrState);
 
@@ -96,16 +99,14 @@ const UserDetails = () => {
           );
         }
         const updateUserDetails = await profileApi.update(formD);
-        setupdateMsg({ message: updateUserDetails.data.notice, type: "success" });
-        setTimeout(() => {
-          setupdateMsg({ message: "", type: "" });
-        }, 5000);
+        Toastr.success(updateUserDetails.data.notice);
         setIsDetailUpdated(false);
       } catch (err) {
-        setupdateMsg({ message: "Error: please verify password ", type: "error" });
-        setTimeout(() => {
-          setupdateMsg({ message: "", type: "" });
-        }, 5000);
+        if (err.response){
+          Toastr.error(err.response.data.error);
+        } else {
+          Toastr.error(err.message);
+        }
       }
       setErrDetails(initialErrState);
     }).catch(function (err) {
@@ -187,7 +188,6 @@ const UserDetails = () => {
         cancelAction={handleCancelAction}
         saveAction={handleUpdateProfile}
         isDisableUpdateBtn={isDetailUpdated}
-        updateMsg={updateMsg}
       />
       <div className="pb-10 pt-10 pl-10 pr-10 mt-4 bg-miru-gray-100 min-h-80v">
         <div className="flex flex-row py-6">
@@ -342,6 +342,7 @@ const UserDetails = () => {
           </div>
         </div>
       </div>
+      <ToastContainer autoClose={TOASTER_DURATION} />
     </div>
   );
 };
