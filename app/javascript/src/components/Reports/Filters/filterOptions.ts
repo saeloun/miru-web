@@ -43,7 +43,6 @@ const getDateRangeOptions = () => {
 };
 
 const dateRangeOptions = [
-  { value: "", label: "All" },
   ...getDateRangeOptions()
 ];
 
@@ -58,11 +57,12 @@ const groupBy = [
   { value: "team_member", label: "Team member" },
   { value: "client", label: "Client" },
   { value: "project", label: "Project" },
-  { value: "Week", label: "Week" }
+  { value: "week", label: "Week" }
 ];
 
 export {
   dateRangeOptions,
   statusOption,
-  groupBy
+  groupBy,
+  getMonth
 };
