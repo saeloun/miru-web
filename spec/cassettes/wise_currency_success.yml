@@ -2,13 +2,13 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.sandbox.transferwise.tech/v2/borderless-accounts-configuration/profiles/16455649/available-currencies
+    uri: https://api.sandbox.transferwise.tech/v2/borderless-accounts-configuration/profiles/123456/available-currencies
     body:
       encoding: US-ASCII
       string: ''
     headers:
       Authorization:
-      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      - Bearer access-token-12345
       User-Agent:
       - Faraday v1.9.3
       Accept-Encoding:
@@ -71,13 +71,13 @@ http_interactions:
   recorded_at: Fri, 03 Jun 2022 07:20:26 GMT
 - request:
     method: get
-    uri: https://api.transferwise.com/v2/borderless-accounts-configuration/profiles/16455649/available-currencies
+    uri: https://api.transferwise.com/v2/borderless-accounts-configuration/profiles/123456/available-currencies
     body:
       encoding: US-ASCII
       string: ''
     headers:
       Authorization:
-      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      - Bearer access-token-12345
       User-Agent:
       - Faraday v1.9.3
       Accept-Encoding:

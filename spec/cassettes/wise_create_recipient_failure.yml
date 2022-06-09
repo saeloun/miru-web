@@ -7,10 +7,10 @@ http_interactions:
       encoding: UTF-8
       string: '{"accountHolderName":"Sudeep Anil Tarlekar","country":"GB","details":{"accountNumber":"GB46
         TRWI 2314 7025 5421 89","address":{"city":"London","country":"GB","countryCode":"GB","firstLine":"Times
-        Square","postCode":"56001"},"legalType":"BUSINESS","swiftCode":"TRWIGB2L"},"profile":"16455649","type":"swift_code"}'
+        Square","postCode":"56001"},"legalType":"BUSINESS","swiftCode":"TRWIGB2L"},"profile":"123456","type":"swift_code"}'
     headers:
       Authorization:
-      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      - Bearer access-token-12345
       User-Agent:
       - Faraday v1.9.3
       Content-Type:
@@ -79,10 +79,10 @@ http_interactions:
       encoding: UTF-8
       string: '{"accountHolderName":"Sudeep Anil Tarlekar","country":"GB","details":{"accountNumber":"GB46
         TRWI 2314 7025 5421 89","address":{"city":"London","country":"GB","countryCode":"GB","firstLine":"Times
-        Square","postCode":"56001"},"legalType":"BUSINESS","swiftCode":"TRWIGB2L"},"profile":"16455649","type":"swift_code"}'
+        Square","postCode":"56001"},"legalType":"BUSINESS","swiftCode":"TRWIGB2L"},"profile":"123456","type":"swift_code"}'
     headers:
       Authorization:
-      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      - Bearer access-token-12345
       User-Agent:
       - Faraday v1.9.3
       Content-Type:

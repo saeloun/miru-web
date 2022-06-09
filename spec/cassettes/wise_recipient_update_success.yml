@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       Authorization:
-      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      - Bearer access-token-12345
       User-Agent:
       - Faraday v1.10.0
       Accept-Encoding:
@@ -72,10 +72,10 @@ http_interactions:
     uri: https://api.sandbox.transferwise.tech/v1/accounts
     body:
       encoding: UTF-8
-      string: '{"accountHolderName":"Sudeep Tarlekar","country":"IN","currency":"INR","details":{"accountNumber":"1234567","address":{"city":"Pune","country":"IN","countryCode":"IN","firstLine":"Pune","postCode":"560015"},"ifscCode":"UTIB0002580","legalType":"PRIVATE"},"id":"148398162","profile":"16455649","type":"indian"}'
+      string: '{"accountHolderName":"Sudeep Tarlekar","country":"IN","currency":"INR","details":{"accountNumber":"1234567","address":{"city":"Pune","country":"IN","countryCode":"IN","firstLine":"Pune","postCode":"560015"},"ifscCode":"UTIB0002580","legalType":"PRIVATE"},"id":"148398162","profile":"123456","type":"indian"}'
     headers:
       Authorization:
-      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      - Bearer access-token-12345
       User-Agent:
       - Faraday v1.10.0
       Content-Type:
@@ -145,7 +145,7 @@ http_interactions:
       string: ''
     headers:
       Authorization:
-      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      - Bearer access-token-12345
       User-Agent:
       - Faraday v1.10.0
       Accept-Encoding:
@@ -209,10 +209,10 @@ http_interactions:
     uri: https://api.transferwise.com/v1/accounts
     body:
       encoding: UTF-8
-      string: '{"accountHolderName":"Sudeep Tarlekar","country":"IN","currency":"INR","details":{"accountNumber":"1234567","address":{"city":"Pune","country":"IN","countryCode":"IN","firstLine":"Pune","postCode":"560015"},"ifscCode":"UTIB0002580","legalType":"PRIVATE"},"id":"148398162","profile":"16455649","type":"indian"}'
+      string: '{"accountHolderName":"Sudeep Tarlekar","country":"IN","currency":"INR","details":{"accountNumber":"1234567","address":{"city":"Pune","country":"IN","countryCode":"IN","firstLine":"Pune","postCode":"560015"},"ifscCode":"UTIB0002580","legalType":"PRIVATE"},"id":"148398162","profile":"123456","type":"indian"}'
     headers:
       Authorization:
-      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      - Bearer access-token-12345
       User-Agent:
       - Faraday v1.10.0
       Content-Type:

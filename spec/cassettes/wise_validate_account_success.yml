@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       Authorization:
-      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      - Bearer access-token-12345
       User-Agent:
       - Faraday v1.9.3
       Accept-Encoding:
@@ -77,7 +77,7 @@ http_interactions:
       string: ''
     headers:
       Authorization:
-      - Bearer 97f82878-d248-4b5b-878a-f0b35a274456
+      - Bearer access-token-12345
       User-Agent:
       - Faraday v1.9.3
       Accept-Encoding:
