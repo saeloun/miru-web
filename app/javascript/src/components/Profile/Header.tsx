@@ -6,8 +6,7 @@ const Header = ({
   showButtons = false,
   cancelAction = function () { 0; },
   saveAction = function () { 0; },
-  isDisableUpdateBtn = false,
-  updateMsg = { message: "", type: "" }
+  isDisableUpdateBtn = false
 }) => (
   <div className="h-16 pl-10 p-4 bg-miru-han-purple-1000 flex justify-between  text-white">
     <span className="font-bold text-2xl">{title}</span>
@@ -35,12 +34,6 @@ const Header = ({
               UPDATE
             </button>
           </div>
-          {
-            updateMsg.message &&
-            <p className={`text-xs ${updateMsg.type === "success" ? "text-green-400" : "text-red-400"}`}>
-              {updateMsg.message}
-            </p>
-          }
         </div>
       )
     }
