@@ -213,3 +213,6 @@ en:
       message: "Timesheet updated"
     destroy:
       message: "Timesheet deleted"
+  user:
+    invite:
+        success: "Invitation sent successfully"
