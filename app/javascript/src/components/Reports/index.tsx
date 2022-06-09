@@ -90,8 +90,9 @@ const Reports = () => {
     const response = await reports.download(type, `?${queryParams}`);
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
+    const date = new Date();
     link.href = url;
-    link.setAttribute("download", `report.${type}`);
+    link.setAttribute("download", `${date.toISOString()}_miru_report.${type}`);
     document.body.appendChild(link);
     link.click();
   };

@@ -20,7 +20,7 @@ const Header = ({
   handleDownload
 }) => {
   const { filterCounter } = useEntry();
-  const [showExportOption, setShowExportOption] = useState<boolean>(false);
+  const [showExportOptions, setShowExportOptions] = useState<boolean>(false);
 
   return (
     <div>
@@ -38,22 +38,34 @@ const Header = ({
           <div className="px-3 relative">
             <button
               className={"border inline-flex justify-center rounded-md border-miru-han-purple-1000 p-2 bg-white text-miru-han-purple-1000 hover:bg-gray-50 menuButton__button"}
-              onClick={ () => setShowExportOption(!showExportOption) }
+              onClick={ () => setShowExportOptions(!showExportOptions) }
             >
               <Share className="" weight="bold" size={20} />
               <p className="mx-2 uppercase text-base font-medium tracking-wider">Export</p>
               <CaretDown size={20} weight={"bold"} />
             </button>
-            {showExportOption && (
+            {showExportOptions && (
               <ul className="menuButton__wrapper">
                 <li>
-                  <button className="menuButton__list-item" onClick={() => handleDownload("csv")}>
+                  <button
+                    className="menuButton__list-item"
+                    onClick={() => {
+                      setShowExportOptions(false);
+                      handleDownload("csv");
+                    }}
+                  >
                     <FileCsv size={16} color="#5B34EA" weight="bold" />
                     <span className="ml-3">Export as CSV</span>
                   </button>
                 </li>
                 <li>
-                  <button className="menuButton__list-item" onClick={() => handleDownload("pdf")}>
+                  <button
+                    className="menuButton__list-item"
+                    onClick={() => {
+                      setShowExportOptions(false);
+                      handleDownload("pdf");
+                    }}
+                  >
                     <FilePdf size={16} color="#5B34EA" weight="bold" />
                     <span className="ml-3">Export as PDF</span>
                   </button>

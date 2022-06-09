@@ -22,27 +22,36 @@
         </th>
       </thead>
       <tbody>
-        <% entries.each do |entry| %>
-          <tr>
-            <td class="text-sm text-left w-2/5 p-2 border border-b-1">
-              <p class="text-miru-dark-purple-1000">
+        <% report_entries.each do |report| %>
+          <% if report[:label].present? %>
+            <tr>
+              <td colspan="4" class="text-sm text-left p-2 border border-b-1 bg-miru-dark-purple-400">
+                <%= report[:label] %>
+              </td>
+            </tr>
+          <% end %>
+          <% report[:entries].each do |entry| %>
+            <tr>
+              <td class="text-sm text-left w-2/5 p-2 border border-b-1">
+                <p class="text-miru-dark-purple-1000">
                 <%= entry.project_name %>
-              </p>
-              <p class="text-miru-dark-purple-400">
+                </p>
+                <p class="text-miru-dark-purple-400">
                 <%= entry.client_name %>
-              </p>
-            </td>
-            <td class="text-left text-xs px-3 w-2/5 p-2 border border-b-1">
-              <%= entry.note %>
-            </td>
-            <td class="text-xs w-1/5 p-2 border border-b-1">
-              <p class="text-miru-dark-purple-1000"><%= entry.user_full_name %></p>
-              <p class="text-miru-dark-purple-400"><%= entry.work_date.strftime("%Y-%m-%d") %></p>
-            </td>
-            <td class="text-right w-1/5 p-2 pl-3 border border-b-1">
-              <%= entry.formatted_duration %>
-            </td>
-          </tr>
+                </p>
+              </td>
+              <td class="text-left text-xs px-3 w-2/5 p-2 border border-b-1">
+                <%= entry.note %>
+              </td>
+              <td class="text-xs w-1/5 p-2 border border-b-1">
+                <p class="text-miru-dark-purple-1000"><%= entry.user_full_name %></p>
+                <p class="text-miru-dark-purple-400"><%= entry.work_date.strftime("%Y-%m-%d") %></p>
+              </td>
+              <td class="text-right w-1/5 p-2 pl-3 border border-b-1">
+                <%= entry.formatted_duration %>
+              </td>
+            </tr>
+          <% end %>
         <% end %>
       </tbody>
     </table>

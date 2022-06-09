@@ -6,7 +6,7 @@ RSpec.describe Report::GeneratePdf do
   let!(:entry) { create(:timesheet_entry) }
 
   describe "#process" do
-    subject { described_class.new([entry]).process }
+    subject { described_class.new([{ label: "", entries: [entry] }]).process }
 
     it "returns PDF data" do
       expect(subject).to include("PDF")

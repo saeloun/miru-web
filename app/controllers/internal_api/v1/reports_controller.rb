@@ -11,9 +11,11 @@ class InternalApi::V1::ReportsController < InternalApi::V1::ApplicationControlle
   def download
     authorize :report
 
+    entries = reports.map { |e| e[:entries] }.flatten
+
     respond_to do |format|
-      format.pdf { send_data Report::GeneratePdf.new(reports.first[:entries]).process }
-      format.csv { send_data Report::GenerateCsv.new(reports.first[:entries]).process }
+      format.csv { send_data Report::GenerateCsv.new(entries).process }
+      format.pdf { send_data Report::GeneratePdf.new(reports).process }
     end
   end
 

@@ -2,10 +2,10 @@
 
 module Report
   class GeneratePdf
-    attr_reader :entries
+    attr_reader :report_entries
 
-    def initialize(entries)
-      @entries = entries
+    def initialize(report_entries)
+      @report_entries = report_entries
     end
 
     def process
@@ -13,7 +13,7 @@ module Report
       html = controller.render_to_string(
         template: "reports/pdf",
         layout: "layouts/pdf",
-        locals: { entries: }
+        locals: { report_entries: }
       )
 
       options = {
