@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import reports from "apis/reports";
 import applyFilter from "./api/applyFilter";
 import Container from "./Container";
 import EntryContext from "./context/EntryContext";
 
 import Filters from "./Filters";
+import { getMonth } from "./Filters/filterOptions";
 import Header from "./Header";
 
 import { ITimeEntry } from "./interface";
 
 const Reports = () => {
   const filterIntialValues = {
-    dateRange: { label: "All", value: "" },
+    dateRange: { label: getMonth(true), value: "this_week" },
     clients: [],
     teamMember: [],
     status: [],
@@ -30,18 +30,9 @@ const Reports = () => {
   const [showNavFilters, setNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
 
-  const fetchTimeEntries = async () => {
-    const res = await reports.get("");
-    if (res.status == 200) {
-      setTimeEntries(res.data.entries);
-      getFilterOptions(res.data.filterOptions);
-    }
-  };
-
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
-    fetchTimeEntries();
   }, []);
 
   const updateFilterCounter = async () => {
@@ -61,11 +52,11 @@ const Reports = () => {
 
   useEffect(() => {
     updateFilterCounter();
-    applyFilter(selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty);
+    applyFilter(selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty, getFilterOptions);
   }, [selectedFilter]);
 
   const contextValues = {
-    entries: timeEntries,
+    reports: timeEntries,
     filterOptions,
     selectedFilter,
     filterCounter
@@ -77,7 +68,6 @@ const Reports = () => {
 
   const resetFilter = () => {
     setSelectedFilter(filterIntialValues);
-    fetchTimeEntries();
     setFilterVisibilty(false);
     setNavFilters(false);
   };

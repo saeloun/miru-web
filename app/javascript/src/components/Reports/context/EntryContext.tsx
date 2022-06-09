@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 
 const EntryContext = createContext(({
-  entries: [],
+  reports: [],
   selectedFilter: {
     dateRange: { label: "All", value: "" },
     clients: [],

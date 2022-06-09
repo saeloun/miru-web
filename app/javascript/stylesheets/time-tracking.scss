@@ -1,7 +1,7 @@
 .icon-hover {
-  display: none;
+  visibility: hidden;
 }
 
 .week-card:hover .icon-hover {
-  display: inline-block;
+  visibility: visible;
 }
