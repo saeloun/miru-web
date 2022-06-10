@@ -12,7 +12,7 @@ const apiKeys = {
   teamMember: "team_member"
 };
 
-const getQueryParams = (selectedFilter) => {
+export const getQueryParams = (selectedFilter) => {
   let params = "";
   for (const filterKey in selectedFilter) {
     const filterValue = selectedFilter[filterKey];
