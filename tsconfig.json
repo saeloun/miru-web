@@ -18,6 +18,7 @@
       "helpers/*": ["./app/javascript/src/helpers/*"],
       "common/*": ["./app/javascript/src/common/*"],
       "utils/*": ["./app/javascript/src/utils/*"],
+      "context/*": ["./app/javascript/src/context/*"]
     }
   },
   "exclude": [

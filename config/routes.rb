@@ -45,8 +45,6 @@ Rails.application.routes.draw do
 
   resources :time_tracking, only: [:index], path: "time-tracking"
 
-  resources :team, only: [:index, :update, :destroy, :edit]
-
   resources :reports, only: [:index]
   resources :workspaces, only: [:update]
 
@@ -68,6 +66,9 @@ Rails.application.routes.draw do
 
   get "invoices/*path", to: "invoices#index", via: :all
   get "invoices", to: "invoices#index"
+
+  get "team/*path", to: "team#index", via: :all
+  get "team", to: "team#index"
 
   get "projects/*path", to: "projects#index", via: :all
   get "projects", to: "projects#index"
