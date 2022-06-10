@@ -67,7 +67,7 @@ const LineItemTable = () => {
   />;
 
   const getAddNewButton = () => {
-    if (quoteDetails && ["accepted", "rejected"].includes(quoteDetails.status)){
+    if (quoteDetails && ["accepted", "rejected", "sent"].includes(quoteDetails.status)){
       return "";
     }
     if (addNew) {
@@ -141,16 +141,16 @@ const LineItemTable = () => {
           <div>
             <button
               type="button"
-              className="header__button p-0"
+              className="header__button"
               onClick={handleCancel}
             >
-              <X size={12} />
+              <X size={18} />
               <span className="ml-2 inline-block">CANCEL</span>
             </button>
-            {quoteDetails && (quoteDetails.status === null || quoteDetails.status.trim() == "" || quoteDetails.status === "draft") ?
+            {quoteDetails && (!quoteDetails.status || quoteDetails.status === "draft") ?
               <button
                 type="button"
-                className="header__button bg-miru-han-purple-1000 text-white p-0 hover:text-white"
+                className="header__button bg-miru-han-purple-1000 text-white hover:text-white"
                 onClick={() => handleSubmit('draft')}
               >
                 <FloppyDisk size={18} color="white" />
@@ -160,7 +160,7 @@ const LineItemTable = () => {
             {quoteDetails && quoteDetails.quote_line_items.length > 0 && quoteDetails.status === "draft" ?
               <button
                 type="button"
-                className="header__button bg-miru-han-purple-1000 text-white p-0 hover:text-white"
+                className="header__button bg-miru-han-purple-1000 text-white hover:text-white"
                 onClick={() => handleSubmit('ready_for_approval')}
               >
                 <ArrowLineUpRight size={18} color="white" />
@@ -170,7 +170,7 @@ const LineItemTable = () => {
             {quoteDetails && quoteDetails.quote_line_items.length > 0 && quoteDetails.status === "ready_for_approval" ?
               <button
                 type="button"
-                className="header__button bg-miru-han-purple-1000 text-white p-0 hover:text-white"
+                className="header__button bg-miru-han-purple-1000 text-white hover:text-white"
                 onClick={() => handleSubmit('sent')}
               >
                 <PaperPlaneTilt size={18} color="white" />
@@ -181,7 +181,7 @@ const LineItemTable = () => {
               <>
                 <button
                   type="button"
-                  className="header__button bg-miru-han-purple-1000 text-white p-0 hover:text-white"
+                  className="header__button bg-miru-han-purple-1000 text-white hover:text-white"
                   onClick={() => handleSubmit('accepted')}
                 >
                   <ThumbsUp size={18} color="white" />
@@ -189,7 +189,7 @@ const LineItemTable = () => {
                 </button>
                 <button
                   type="button"
-                  className="header__button bg-miru-han-purple-1000 text-white p-0 hover:text-white"
+                  className="header__button bg-miru-han-purple-1000 text-white hover:text-white"
                   onClick={() => handleSubmit('rejected')}
                 >
                   <ThumbsDown size={18} color="white" />
@@ -208,7 +208,7 @@ const LineItemTable = () => {
                   {getAddNewButton()}
                 </td>
               </tr>
-              {manualEntry && !["accepted", "rejected"].includes(quoteDetails.status)
+              {manualEntry && !["accepted", "rejected", "sent"].includes(quoteDetails.status)
             && <ManualEntry
               setShowItemInputs={setManualEntry}
               setSelectedOption={setSelectedLineItems}

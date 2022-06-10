@@ -18,7 +18,7 @@ const NewLineItemRow = ({
     // setSelectedOption(sanitized);
   };
 
-  return isEdit && !["accepted", "rejected"].includes(quoteDetails.status) ? (
+  return isEdit && !["accepted", "rejected", "sent"].includes(quoteDetails.status) ? (
     <EditLineItems
       item={item}
       setSelectedOption={setSelectedOption}

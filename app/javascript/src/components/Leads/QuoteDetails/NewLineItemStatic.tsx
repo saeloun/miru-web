@@ -46,7 +46,7 @@ const NewLineItemStatic = ({
       </td>
       <td className="w-10">
         {
-          isSideMenuVisible && quoteDetails && !["accepted", "rejected"].includes(quoteDetails.status) && <div className="relative">
+          isSideMenuVisible && quoteDetails && !["accepted", "rejected", "sent"].includes(quoteDetails.status) && <div className="relative">
             <button onClick={() => { setShowEditMenu(true); }} className="w-9 h-9 m-0.5 bg-miru-gray-1000 rounded flex items-center justify-center">
               <DotsThreeVertical size={16} color="#000000" weight="bold" />
             </button>
