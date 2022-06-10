@@ -18,15 +18,15 @@
         <%# if policy(:dashboard).index? %>
 <!--          <a href="/dashboard" class="<%#= request.path == "/dashboard" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%#= t('navbar.dashboard') %></a>-->
         <%# end %>
-        <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.time_tracking') %></a>
-        <a href="/team" class="<%= request.path == "/team" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.team') %></a>
         <a href="/leads" class="<%= request.path == "/clients" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.leads') %></a>
         <a href="/clients" class="<%= request.path == "/clients" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.clients') %></a>
         <a href="/projects" class="<%= request.path == "/projects" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.projects') %></a>
+        <a href="/team" class="<%= request.path == "/team" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.team') %></a>
+        <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.time_tracking') %></a>
         <% if current_user.has_owner_or_admin_role?(current_company) %>
-        <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.reports') %></a>
-        <a href="/invoices" class="<%= request.path == "/invoices" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.invoices') %></a>
-        <a href="/payments" class="<%= request.path == "/payments" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.payments') %></a>
+          <a href="/invoices" class="<%= request.path == "/invoices" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.invoices') %></a>
+          <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.reports') %></a>
+          <a href="/payments" class="<%= request.path == "/payments" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.payments') %></a>
         <% end %>
       </div>
       <!-- dashboard time_tracking team clients projects invoice report etc. end -->
@@ -107,12 +107,6 @@
                     <%#= t('navbar.dashboard') %>
 <!--                  </a>-->
                 <%# end %>
-                <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "block" : "hidden" %> navbar__small-screen-second_titles">
-                  <%= t('navbar.time_tracking') %>
-                </a>
-                <a href="/team" class="<%= request.path == "/team" ? "block" : "hidden" %> navbar__small-screen-second_titles">
-                  <%= t('navbar.team') %>
-                </a>
                 <a href="/leads" class="<%= request.path == "/leads" ? "block" : "hidden" %> navbar__small-screen-second_titles">
                   <%= t('navbar.leads') %>
                 </a>
@@ -122,12 +116,16 @@
                 <a href="/projects" class="<%= request.path == "/projects" ? "block" : "hidden" %> navbar__small-screen-second_titles">
                   <%= t('navbar.projects') %>
                 </a>
+                <a href="/team" class="<%= request.path == "/team" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                  <%= t('navbar.team') %>
+                </a>
+                <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                  <%= t('navbar.time_tracking') %>
+                </a>
                 <% if current_user.has_owner_or_admin_role?(current_company) %>
                   <a href="/invoices" class="<%= request.path == "/invoices" ? "block" : "hidden" %> navbar__small-screen-second_titles">
                     <%= t('navbar.invoices') %>
                   </a>
-                <% end %>
-                <% if current_user.has_owner_or_admin_role?(current_company) %>
                   <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "block" : "hidden" %> navbar__small-screen-second_titles">
                     <%= t('navbar.reports') %>
                   </a>
@@ -144,27 +142,25 @@
                     <%#= t('navbar.dashboard') %>
 <!--                  </a>-->
                 <%# end %>
-                <a href="/time-tracking" data-cy="time-tracking-tab" class="<%= request.path == "/time-tracking" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                  <%= t('navbar.time_tracking') %>
-                </a>
-              <a href="/team" data-cy="team-tab" class="<%= request.path == "/team" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                  <%= t('navbar.team') %>
+                <a href="/leads" data-cy="clients-tab" class="<%= request.path == "/leads" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                  <%= t('navbar.leads') %>
                 </a>
                 <a href="/clients" data-cy="clients-tab" class="<%= request.path == "/clients" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                   <%= t('navbar.clients') %>
                 </a>
-                <a href="/leads" data-cy="clients-tab" class="<%= request.path == "/leads" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                  <%= t('navbar.leads') %>
-                </a>
                 <a href="/projects" data-cy="projects-tab" class="<%= request.path == "/projects" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                   <%= t('navbar.projects') %>
+                </a>
+                <a href="/team" data-cy="team-tab" class="<%= request.path == "/team" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                  <%= t('navbar.team') %>
+                </a>
+                <a href="/time-tracking" data-cy="time-tracking-tab" class="<%= request.path == "/time-tracking" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                  <%= t('navbar.time_tracking') %>
                 </a>
                 <% if current_user.has_owner_or_admin_role?(current_company) %>
                   <a href="/invoices" data-cy="invoices-tab" class="<%= request.path == "/invoices" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                     <%= t('navbar.invoices') %>
                   </a>
-                <% end %>
-                <% if current_user.has_owner_or_admin_role?(current_company) %>
                   <a href="<%= reports_path %>" data-cy="reports-tab" class="<%= request.path == "#{reports_path}" ? "navbar___large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                     <%= t('navbar.reports') %>
                   </a>

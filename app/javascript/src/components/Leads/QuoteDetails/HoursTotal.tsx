@@ -16,7 +16,7 @@ const HoursTotal = ({
   }, [newLineItems]);
 
   return (
-    <div className="pt-3 pb-10 mb-5 w-full flex justify-end">
+    <div className="pt-3 pb-10 px-10 mb-5 w-full flex justify-end">
       <table className="w-1/3">
         <tbody>
           <tr>

@@ -5,7 +5,7 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
     authorize Lead
     # query = Lead.all.kept.ransack({ name_or_email_cont: params[:q] })
     # leads = query.result(distinct: true)
-    leads = Lead.where(params[:q].present? ? ["name LIKE ?", "%#{params[:q]}%"] : {}).distinct
+    leads = Lead.where(params[:q].present? ? ["name LIKE ?", "%#{params[:q]}%"] : {}).where(discarded_at: nil).distinct
     lead_details = leads.map	{	|lead|	lead.lead_detail.merge(
       {
         budget_status_code_name: lead.budget_status_code_name,

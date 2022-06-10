@@ -86,7 +86,8 @@ const Summary = ({ leadDetails }) => {
   };
 
   return (
-    <>
+    <React.Fragment>
+
       <Formik
         initialValues={getInitialvalues(leadDetails)}
         validationSchema={newLeadSchema}
@@ -94,219 +95,153 @@ const Summary = ({ leadDetails }) => {
         onSubmit={handleSubmit}
       >
         {({ errors, touched }) => (
-          <Form className="mb-4 md:flex md:flex-wrap md:justify-between">
-            <div className="my-6">
-              <div className="p-4 max-w-sm bg-white rounded-lg border shadow-md sm:p-6 dark:bg-gray-800 dark:border-gray-700">
-                {/* <h5 className="mb-3 text-base font-semibold text-gray-900 lg:text-xl dark:text-white">
-                    Connect wallet
-                </h5>
-                <p className="text-sm font-normal text-gray-500 dark:text-gray-400">Connect with one of our available wallet providers or create a new one.</p> */}
-
-                <ul className="my-4 space-y-3">
-                  <li>
-                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                      <span className="flex-1 ml-3 whitespace-nowrap">Budget Amount</span>
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                        <Field className={`form__input rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none ${errors.budget_amount && touched.budget_amount && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="budget_amount" type="number" min="0" />
-                      </span>
+          <Form>
+            <div className="grid grid-cols-2 gap-6 justify-evenly">
+              <div className="relative flex flex-col items-start justify-start p-10 bg-white shadow-2xl rounded-xl">
+                <div className="relative w-full mt-6 space-y-8">
+                  {/* <h4 className="w-full text-4xl font-medium leading-snug">Details</h4> */}
+                  <div className="relative">
+                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Budget Amount</label>
+                    <Field className="block w-full px-4 py-4 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black" name="budget_amount" type="number" min="0" placeholder="Budget Amount" />
+                    <div className="tracking-wider block text-xs text-red-600">
+                      {errors.budget_amount && touched.budget_amount &&
+                        <div>{errors.budget_amount}</div>
+                      }
                     </div>
-                    {errors.budget_amount && touched.budget_amount &&
-                      <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                        <span className="flex-1 ml-3 whitespace-nowrap"></span>
-                        <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                          <div className="tracking-wider block text-xs text-red-600">
-                            {errors.budget_amount}
-                          </div>
-                        </span>
-                      </div>
-                    }
-                  </li>
-                  <li>
-                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                      <span className="flex-1 ml-3 whitespace-nowrap">Budget Status</span>
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                        <select
-                          defaultValue={leadDetails.budget_status_code}
-                          className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                          name="budget_status_code" onChange={(e) => setBudgetStatusCode(e.target.value)}>
-                          <option value=''>Select Budget Status</option>
-                          {budgetStatusCodeList &&
-                            budgetStatusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.budget_status_code}>{e.name}</option>)}
-                        </select>
-                      </span>
+                  </div>
+                  <div className="relative">
+                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Budget Status</label>
+                    <select
+                      defaultValue={leadDetails.budget_status_code}
+                      className="block w-full px-4 py-4 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      name="budget_status_code" onChange={(e) => setBudgetStatusCode(e.target.value)}>
+                      <option value=''>Select Budget Status</option>
+                      {budgetStatusCodeList &&
+              budgetStatusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.budget_status_code}>{e.name}</option>)}
+                    </select>
+                    <div className="tracking-wider block text-xs text-red-600">
+                      {errors.budget_status_code && touched.budget_status_code &&
+                        <div>{errors.budget_status_code}</div>
+                      }
                     </div>
-                    {errors.budget_status_code && touched.budget_status_code &&
-                      <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                        <span className="flex-1 ml-3 whitespace-nowrap"></span>
-                        <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                          <div className="tracking-wider block text-xs text-red-600">
-                            {errors.budget_status_code}
-                          </div>
-                        </span>
-                      </div>
-                    }
-                  </li>
-                  <li>
-                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                      <span className="flex-1 ml-3 whitespace-nowrap">Industry</span>
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                        <select
-                          defaultValue={leadDetails.industry_code}
-                          className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                          name="industry_code" onChange={(e) => setIndustryCode(e.target.value)}>
-                          <option value=''>Select Industry</option>
-                          {industryCodeList &&
-                            industryCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.industry_code}>{e.name}</option>)}
-                        </select>
-                      </span>
+                  </div>
+                  <div className="relative">
+                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Industry</label>
+                    <select
+                      defaultValue={leadDetails.industry_code}
+                      className="block w-full px-4 py-4 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      name="industry_code" onChange={(e) => setIndustryCode(e.target.value)}>
+                      <option value=''>Select Industry</option>
+                      {industryCodeList &&
+              industryCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.industry_code}>{e.name}</option>)}
+                    </select>
+                    <div className="tracking-wider block text-xs text-red-600">
+                      {errors.industry_code && touched.industry_code &&
+                        <div>{errors.industry_code}</div>
+                      }
                     </div>
-                    {errors.industry_code && touched.industry_code &&
-                      <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                        <span className="flex-1 ml-3 whitespace-nowrap"></span>
-                        <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                          <div className="tracking-wider block text-xs text-red-600">
-                            {errors.industry_code}
-                          </div>
-                        </span>
-                      </div>
-                    }
-                  </li>
-                  <li>
-                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                      <span className="flex-1 ml-3 whitespace-nowrap">Quality</span>
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                        <select
-                          defaultValue={leadDetails.quality_code}
-                          className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                          name="quality_code" onChange={(e) => setQualityCode(e.target.value)}>
-                          <option value=''>Select Quality</option>
-                          {qualityCodeList &&
-                            qualityCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.quality_code}>{e.name}</option>)}
-                        </select>
-                      </span>
+                  </div>
+                  <div className="relative">
+                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Quality</label>
+                    <select
+                      defaultValue={leadDetails.quality_code}
+                      className="block w-full px-4 py-4 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      name="quality_code" onChange={(e) => setQualityCode(e.target.value)}>
+                      <option value=''>Select Quality</option>
+                      {qualityCodeList &&
+              qualityCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.quality_code}>{e.name}</option>)}
+                    </select>
+                    <div className="tracking-wider block text-xs text-red-600">
+                      {errors.quality_code && touched.quality_code &&
+                        <div>{errors.quality_code}</div>
+                      }
                     </div>
-                    {errors.quality_code && touched.quality_code &&
-                      <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                        <span className="flex-1 ml-3 whitespace-nowrap"></span>
-                        <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                          <div className="tracking-wider block text-xs text-red-600">
-                            {errors.quality_code}
-                          </div>
-                        </span>
-                      </div>
-                    }
-                  </li>
-                  <li>
-                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                      <span className="flex-1 ml-3 whitespace-nowrap">State</span>
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                        <select
-                          defaultValue={leadDetails.state_code}
-                          className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                          name="state_code" onChange={(e) => setStateCode(e.target.value)}>
-                          <option value=''>Select State</option>
-                          {stateCodeList &&
-                            stateCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.state_code}>{e.name}</option>)}
-                        </select>
-                      </span>
+                  </div>
+                  <div className="relative">
+                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">State</label>
+                    <select
+                      defaultValue={leadDetails.state_code}
+                      className="block w-full px-4 py-4 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      name="state_code" onChange={(e) => setStateCode(e.target.value)}>
+                      <option value=''>Select State</option>
+                      {stateCodeList &&
+              stateCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.state_code}>{e.name}</option>)}
+                    </select>
+                    <div className="tracking-wider block text-xs text-red-600">
+                      {errors.state_code && touched.state_code &&
+                        <div>{errors.state_code}</div>
+                      }
                     </div>
-                    {errors.state_code && touched.state_code &&
-                      <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                        <span className="flex-1 ml-3 whitespace-nowrap"></span>
-                        <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                          <div className="tracking-wider block text-xs text-red-600">
-                            {errors.state_code}
-                          </div>
-                        </span>
-                      </div>
-                    }
-                  </li>
-                  <li>
-                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                      <span className="flex-1 ml-3 whitespace-nowrap">Status</span>
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                        <select
-                          defaultValue={leadDetails.status_code}
-                          className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                          name="status_code" onChange={(e) => setStatusCode(e.target.value)}>
-                          <option value=''>Select Status</option>
-                          {statusCodeList &&
-                            statusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.status_code}>{e.name}</option>)}
-                        </select>
-                      </span>
+                  </div>
+                  <div className="relative">
+                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Status</label>
+                    <select
+                      defaultValue={leadDetails.status_code}
+                      className="block w-full px-4 py-4 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      name="status_code" onChange={(e) => setStatusCode(e.target.value)}>
+                      <option value=''>Select Status</option>
+                      {statusCodeList &&
+              statusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.status_code}>{e.name}</option>)}
+                    </select>
+                    <div className="tracking-wider block text-xs text-red-600">
+                      {errors.status_code && touched.status_code &&
+                        <div>{errors.status_code}</div>
+                      }
                     </div>
-                    {errors.status_code && touched.status_code &&
-                      <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                        <span className="flex-1 ml-3 whitespace-nowrap"></span>
-                        <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                          <div className="tracking-wider block text-xs text-red-600">
-                            {errors.status_code}
-                          </div>
-                        </span>
-                      </div>
-                    }
-                  </li>
-                </ul>
-
-                {/* <div>
-                  <a href="#" className="inline-flex items-center text-xs font-normal text-gray-500 hover:underline dark:text-gray-400">
-                        Why do I need to connect with my wallet?</a>
-                </div> */}
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="my-6">
-              <div className="p-4 max-w-sm bg-white rounded-lg border shadow-md sm:p-6 dark:bg-gray-800 dark:border-gray-700">
-                <ul className="my-4 space-y-3">
-                  <li>
-                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                      <span className="flex-1 ml-3 whitespace-nowrap">Do not Email</span>
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                        <Field className={'form-check-input ' + (errors.donotemail && touched.donotemail ? ' is-invalid' : '')} type="checkbox" name="donotemail" />
-                      </span>
+              <div className="relative flex flex-col items-start justify-start p-10 bg-white shadow-2xl rounded-xl">
+                <p className="tracking-wider mt-3 block text-xs text-red-600">{apiError}</p>
+                <div className="actions mt-4">
+                  <input
+                    type="submit"
+                    name="commit"
+                    value="SAVE CHANGES"
+                    className="form__input_submit"
+                  />
+                </div>
+                <div className="relative w-full mt-6 space-y-8 ">
+                  {/* <h4 className="w-full text-4xl font-medium leading-snug">Preferences</h4> */}
+                  <div className="relative flex items-start mb-4">
+                    <div className="flex items-center h-5">
+                      <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotemail" />
                     </div>
-                  </li>
-                  <li>
-                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                      <span className="flex-1 ml-3 whitespace-nowrap">Do not bulk Email</span>
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                        <Field className={'form-check-input ' + (errors.donotbulkemail && touched.donotbulkemail ? ' is-invalid' : '')} type="checkbox" name="donotbulkemail" />
-                      </span>
+                    <div className="text-sm ml-3">
+                      <label className="px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Do not Email</label>
                     </div>
-                  </li>
-                  <li>
-                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                      <span className="flex-1 ml-3 whitespace-nowrap">Do not Fax</span>
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                        <Field className={'form-check-input ' + (errors.donotfax && touched.donotfax ? ' is-invalid' : '')} type="checkbox" name="donotfax" />
-                      </span>
+                  </div>
+                  <div className="relative flex items-start mb-4">
+                    <div className="flex items-center h-5">
+                      <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotbulkemail" />
                     </div>
-                  </li>
-                  <li>
-                    <div className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                      <span className="flex-1 ml-3 whitespace-nowrap">Do not Phone</span>
-                      <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded dark:bg-gray-700 dark:text-gray-400">
-                        <Field className={'form-check-input ' + (errors.donotphone && touched.donotphone ? ' is-invalid' : '')} type="checkbox" name="donotphone" />
-                      </span>
+                    <div className="text-sm ml-3">
+                      <label className="px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Do not bulk Email</label>
                     </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div className="my-6">
-              <p className="tracking-wider mt-3 block text-xs text-red-600">{apiError}</p>
-              <div className="actions mt-4">
-                <input
-                  type="submit"
-                  name="commit"
-                  value="SAVE CHANGES"
-                  className="form__input_submit"
-                />
+                  </div>
+                  <div className="relative flex items-start mb-4">
+                    <div className="flex items-center h-5">
+                      <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotfax" />
+                    </div>
+                    <div className="text-sm ml-3">
+                      <label className="px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Do not Fax</label>
+                    </div>
+                  </div>
+                  <div className="relative flex items-start mb-4">
+                    <div className="flex items-center h-5">
+                      <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotphone" />
+                    </div>
+                    <div className="text-sm ml-3">
+                      <label className="px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Do not Phone</label>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </Form>
         )}
       </Formik>
-    </>
+    </React.Fragment>
   );
 };
 
