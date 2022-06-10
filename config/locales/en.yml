@@ -156,6 +156,9 @@ en:
     first_name: First Name
     last_name: Last Name
     email: Email
+    delete:
+      success:
+        message: User removed successfully
   registration:
     sign_up: sign up
     sign_in: sign in

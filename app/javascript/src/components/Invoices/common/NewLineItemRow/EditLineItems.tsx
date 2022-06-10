@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
 
 const EditLineItems = ({
   item,
@@ -10,19 +11,18 @@ const EditLineItems = ({
   const strName = item.name || `${item.first_name} ${item.last_name}`;
   const quantity = (item.qty / 60) || (item.quantity / 60);
   const [name, setName] = useState<string>(strName);
-  const [lineItemDate, setLineItemDate] = useState<string>(item.date);
+  const newDate = Date.parse(item.date);
+  const [lineItemDate, setLineItemDate] = useState(newDate);
   const [description, setDescription] = useState<string>(item.description);
   const [rate, setRate] = useState<any>(item.rate);
   const [qty, setQty] = useState<any>(quantity);
   const [lineTotal, setLineTotal] = useState<any>((item.qty / 60) * item.rate);
-  const ref = useRef();
 
   const onEnter = e => {
     if (e.key == "Enter") {
       const sanitizedSelected = selectedOption.filter(option =>
         option.id !== item.id || option.timesheet_entry_id !== item.timesheet_entry_id
       );
-
       const names = name.split(" ");
       const newItem = {
         ...item,
@@ -53,15 +53,12 @@ const EditLineItems = ({
         />
       </td>
       <td className="w-full">
-        <input
-          type="text"
-          placeholder="Date"
-          ref={ref}
-          pattern="\d{1,2}-\d{1,2}-\d{4}"
-          onFocus={(e) => (e.target.type = "date")}
-          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          value={lineItemDate}
-          onChange={e => setLineItemDate(e.target.value)}
+        <DatePicker
+          wrapperClassName="datePicker invoice-datepicker"
+          calendarClassName="miru-calendar invoice-datepicker-option"
+          dateFormat="dd.MM.yyyy"
+          selected={lineItemDate}
+          onChange={(date) => setLineItemDate(date)}
           onKeyDown={e => onEnter(e)}
         />
       </td>

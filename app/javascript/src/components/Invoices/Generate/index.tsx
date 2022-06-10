@@ -9,7 +9,7 @@ import Toastr from "common/Toastr";
 import Container from "./Container";
 import Header from "./Header";
 
-import Invoice_settings from "./Invoice_settings";
+import InvoiceSettings from "./InvoiceSettings";
 import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
 import SendInvoice from "../popups/SendInvoice";
 
@@ -134,7 +134,7 @@ const GenerateInvoices = () => {
         />}
 
         {showInvoiceSetting && (
-          <Invoice_settings
+          <InvoiceSettings
             setShowInvoiceSetting={setShowInvoiceSetting}
           />
         )}

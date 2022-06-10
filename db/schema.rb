@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_06_135923) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_09_024351) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -79,7 +79,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_06_135923) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
     t.index ["company_id"], name: "index_company_users_on_company_id"
+    t.index ["discarded_at"], name: "index_company_users_on_discarded_at"
     t.index ["user_id"], name: "index_company_users_on_user_id"
   end
 
@@ -201,6 +203,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_06_135923) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["discarded_at"], name: "index_leads_on_discarded_at"
+  end
+
+  create_table "payments_providers", force: :cascade do |t|
+    t.string "name", null: false
+    t.boolean "connected", default: false
+    t.boolean "enabled", default: false
+    t.string "accepted_payment_methods", default: [], array: true
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payments_providers_on_company_id"
+    t.index ["name", "company_id"], name: "index_payments_providers_on_name_and_company_id", unique: true
   end
 
   create_table "project_members", force: :cascade do |t|
@@ -332,6 +346,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_06_135923) do
   add_foreign_key "lead_line_items", "leads"
   add_foreign_key "lead_quotes", "leads"
   add_foreign_key "lead_timelines", "leads"
+  add_foreign_key "payments_providers", "companies"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
