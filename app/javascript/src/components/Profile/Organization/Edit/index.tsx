@@ -160,7 +160,10 @@ const OrgEdit = () => {
       label: item
     }));
     setTimezoneOption(timezoneOptionList);
-    setOrgDetails({ ...orgDetails, countryName: option.value, companyTimezone: "" });
+    setOrgDetails({
+      ...orgDetails,
+      countryName: option.value,
+      companyTimezone: option.value === "US" ? "(GMT-05:00) Eastern Time (US & Canada)" : timezoneOptionList[0].value });
     setIsDetailUpdated(true);
   }, [orgDetails, timezones]);
 
