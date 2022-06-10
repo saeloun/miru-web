@@ -3,8 +3,8 @@
 # Company Create Start
 companies = [
   {
-    name: "Saeloun India Pvt. Ltd",
-    address: "somewhere in India",
+    name: "Atharva System Pvt. Ltd",
+    address: "805/6/7 - Shilp Epitome, Rajpath Rangoli Road, Ahmedabad - 380054, Gujarat",
     business_phone: "+91 0000000000",
     base_currency: "INR",
     standard_price: 100000,
@@ -15,8 +15,8 @@ companies = [
   },
 
   {
-    name: "Saeloun USA INC.",
-    address: "somewhere in USA",
+    name: "Atharva USA INC.",
+    address: "1451, Bayberry Park Cir, Canton, Michigan 48188",
     business_phone: "+1 111111111",
     base_currency: "USD",
     standard_price: 1000,
@@ -31,13 +31,13 @@ companies = [
 
 puts "Company Created"
 
-@saeloun_india, @saeloun_us = ["Saeloun India Pvt. Ltd", "Saeloun USA INC."].map { |company|
-  Company.find_by(name: company)
+@c1, @c2 = companies.map { |company|
+  Company.find_by(name: company[:name])
 }
 
-[@saeloun_india, @saeloun_us].each do |company|
+{ c1: @c1, c2: @c2 }.each do |key, company|
   company.logo.attach(
-    io: File.open(Rails.root.join("app/assets/images/saeloun_logo.png")),
-    filename: "saeloun_logo.png")
+    io: File.open(Rails.root.join("app/assets/images/brand/#{key}.png")),
+    filename: "brand-#{key}.png")
 end
 # Company Create End

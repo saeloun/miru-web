@@ -10,20 +10,20 @@ flipkart = {
   name: "Flipkart", email: "support@flipkart.com", phone: "+91 9999999992",
   address: "Singapore"
 }
-
-client_one = {
-  name: "client_one", email: "contact@client_one.com", phone: "+91 1010101010",
-  address: "Somewhere on Earth"
+wow = {
+  name: "WOW", email: "support@wow.com", phone: "+1 9999999991",
+  address: "Ahmedabad"
+}
+theand = {
+  name: "The And", email: "support@theand.com", phone: "+91 9999999992",
+  address: "Singapore"
 }
 
-client_two = {
-  name: "client_two", email: "contact@client_two.com", phone: "+91 2020202020"
-}
-
-@microsoft_client = @saeloun_india.clients.create!(microsoft)
-@flipkart_client = @saeloun_india.clients.create!(flipkart)
-@client_one_us = @saeloun_us.clients.create!(client_one)
-@client_two_us = @saeloun_us.clients.create!(client_two)
+@client1 = @c1.clients.create!(theand)
+@client2 = @c1.clients.create!(wow)
+@client3 = @c1.clients.create!(flipkart)
+@client4 = @c2.clients.create!(flipkart)
+@client5 = @c2.clients.create!(microsoft)
 
 puts "Clients Created"
 # Client Create End

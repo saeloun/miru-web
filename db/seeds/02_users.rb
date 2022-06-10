@@ -3,35 +3,34 @@
 # User Create Start
 users = [
   {
-    first_name: "Vipul", last_name: "A M", email: "vipul@example.com", password: "password",
+    first_name: "Dharmdip", last_name: "Owner", email: "owner1@example.com", password: "password",
     password_confirmation: "password", confirmed_at: Time.current, invitation_accepted_at: Time.current,
-    current_workspace_id: @saeloun_india.id
+    current_workspace_id: @c1.id
   },
   {
-    first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", password: "password",
+    first_name: "Natvar", last_name: "Owner", email: "owner2@example.com", password: "password",
     password_confirmation: "password", confirmed_at: Time.current, invitation_accepted_at: Time.current,
-    current_workspace_id: @saeloun_india.id
+    current_workspace_id: @c1.id
   },
   {
-    first_name: "Akhil", last_name: "G Krishnan", email: "akhil@example.com", password: "password",
+    first_name: "Dharmdip", last_name: "Admin", email: "admin1@example.com", password: "password",
     password_confirmation: "password", confirmed_at: Time.current, invitation_accepted_at: Time.current,
-    current_workspace_id: @saeloun_india.id
+    current_workspace_id: @c1.id
   },
   {
-    first_name: "Keshav", last_name: "Biswa", email: "keshav@example.com", password: "password",
+    first_name: "Natvar", last_name: "Admin", email: "admin2@example.com", password: "password",
     password_confirmation: "password", confirmed_at: Time.current, invitation_accepted_at: Time.current,
-    current_workspace_id: @saeloun_india.id
+    current_workspace_id: @c1.id
   },
   {
-    first_name: "Rohit", last_name: "Joshi", email: "rohit@example.com", password: "password",
+    first_name: "Parth", last_name: "Employee", email: "employee1@example.com", password: "password",
     password_confirmation: "password", confirmed_at: Time.current, invitation_accepted_at: Time.current,
-    current_workspace_id: @saeloun_india.id
-  }
+    current_workspace_id: @c1.id
+  },
 ]
 @users = users.map { |user| User.create!(user) }
 puts "Users Created"
-@vipul, @supriya, @akhil, @keshav, @rohit = ["vipul@example.com", "supriya@example.com", "akhil@example.com",
-                                             "keshav@example.com", "rohit@example.com"].map { |user|
-  User.find_by(email: user)
+@u1, @u2, @u3, @u4, @u5 = users.map { |user|
+  User.find_by(email: user[:email])
 }
 # User Create End
