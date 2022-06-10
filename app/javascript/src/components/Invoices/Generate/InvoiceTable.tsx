@@ -116,8 +116,6 @@ const InvoiceTable = ({
             && (manualEntryArr.map((entry) =>
               <ManualEntry
                 entry={entry}
-                setSelectedOption={setSelectedOption}
-                selectedOption={selectedOption}
                 manualEntryArr={manualEntryArr}
                 setManualEntryArr={setManualEntryArr}
               />
