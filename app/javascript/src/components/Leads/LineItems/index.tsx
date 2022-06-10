@@ -17,11 +17,11 @@ const getTableData = (lineItems) => {
     return lineItems.map((item) =>
       ({
         col1: <div className="text-base text-miru-dark-purple-1000">{item.name}</div>,
-        col2: <div className="text-base text-miru-dark-purple-1000">{item.description}</div>,
-        col3: <div className="text-base text-miru-dark-purple-1000">{item.kind_name}</div>,
-        col4: <div className="text-base text-miru-dark-purple-1000">{item.number_of_resource}</div>,
-        col5: <div className="text-base text-miru-dark-purple-1000">{item.resource_expertise_level}</div>,
-        col6: <div className="text-base text-miru-dark-purple-1000">{item.price}</div>,
+        col2: <div className="text-base text-miru-dark-purple-1000 text-center">{item.description}</div>,
+        col3: <div className="text-base text-miru-dark-purple-1000 text-center">{item.kind_name}</div>,
+        col4: <div className="text-base text-miru-dark-purple-1000 text-center">{item.number_of_resource}</div>,
+        col5: <div className="text-base text-miru-dark-purple-1000 text-center">{item.resource_expertise_level}</div>,
+        col6: <div className="text-base text-miru-dark-purple-1000 text-center">{item.price}</div>,
         rowId: item.id
       })
     );
@@ -69,27 +69,27 @@ const LineItems = ({ leadDetails }) => {
     {
       Header: "Description",
       accessor: "col2",
-      cssClass: "text-right"
+      cssClass: "text-center"
     },
     {
       Header: "Kind",
       accessor: "col3",
-      cssClass: "text-right"
+      cssClass: "text-center"
     },
     {
       Header: "Number of resource",
       accessor: "col4",
-      cssClass: "text-right"
+      cssClass: "text-center"
     },
     {
       Header: "Resource Expertise Level",
       accessor: "col5",
-      cssClass: "text-right"
+      cssClass: "text-center"
     },
     {
       Header: "Price",
       accessor: "col6",
-      cssClass: "text-right"
+      cssClass: "text-center"
     },
   ];
 

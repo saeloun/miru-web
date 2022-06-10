@@ -162,9 +162,13 @@ const ProjectDetails = () => {
             <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
               {project?.name}
             </h2>
-            {project?.is_billable && (
+            {project?.is_billable ? (
               <span className="rounded-xl text-xs self-center  tracking-widest font-semibold px-1 bg-miru-han-purple-100 text-miru-han-purple-1000">
                 BILLABLE
+              </span>
+            ) :  (
+              <span className="rounded-xl text-xs self-center  tracking-widest font-semibold px-1 bg-miru-gray-1000">
+                NON BILLABLE
               </span>
             )}
           </div>

@@ -4,11 +4,7 @@ import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leads from "apis/leads";
 
-// import AmountBoxContainer from "common/AmountBox";
-// import ChartBar from "common/ChartBar";
 import Table from "common/Table";
-// import { cashFormatter } from "helpers/cashFormater";
-// import { currencySymbol } from "helpers/currencySymbol";
 
 import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
@@ -20,15 +16,14 @@ import NewLead from "../Modals/NewLead";
 const getTableData = (leads) => {
   if (leads) {
     return leads.map((lead) =>
-      // const hours = (lead.minutes / 60).toFixed(2);
       ({
         col1: <div className="text-base text-miru-dark-purple-1000">{lead.name}</div>,
-        col2: <div className="text-base text-miru-dark-purple-1000">{lead.budget_amount}</div>,
-        col3: <div className="text-base text-miru-dark-purple-1000">{lead.budget_status_code_name}</div>,
-        col4: <div className="text-base text-miru-dark-purple-1000">{lead.industry_code_name}</div>,
-        col5: <div className="text-base text-miru-dark-purple-1000">{lead.quality_code_name}</div>,
-        col6: <div className="text-base text-miru-dark-purple-1000">{lead.state_code_name}</div>,
-        col7: <div className="text-base text-miru-dark-purple-1000">{lead.status_code_name}</div>,
+        col2: <div className="text-base text-miru-dark-purple-1000 text-center">{lead.budget_amount}</div>,
+        col3: <div className="text-base text-miru-dark-purple-1000 text-center">{lead.budget_status_code_name}</div>,
+        col4: <div className="text-base text-miru-dark-purple-1000 text-center">{lead.industry_code_name}</div>,
+        col5: <div className="text-base text-miru-dark-purple-1000 text-center">{lead.quality_code_name}</div>,
+        col6: <div className="text-base text-miru-dark-purple-1000 text-center">{lead.state_code_name}</div>,
+        col7: <div className="text-base text-miru-dark-purple-1000 text-center">{lead.status_code_name}</div>,
         rowId: lead.id
       })
     );
@@ -92,45 +87,24 @@ const Leads = ({ isAdminUser }) => {
     {
       Header: "Budget Amount",
       accessor: "col2",
-      cssClass: "text-right"
-    },
-    {
-      Header: "Budget Status",
-      accessor: "col3",
-      cssClass: "text-right"
-    },
-    {
-      Header: "Industry",
-      accessor: "col4",
-      cssClass: "text-right"
+      cssClass: "text-center"
     },
     {
       Header: "Quality",
       accessor: "col5",
-      cssClass: "text-right"
+      cssClass: "text-center"
     },
     {
       Header: "State",
       accessor: "col6",
-      cssClass: "text-right"
+      cssClass: "text-center"
     },
     {
       Header: "Status",
       accessor: "col7",
-      cssClass: "text-right"
+      cssClass: "text-center"
     }
   ];
-
-  // const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
-
-  // const amountBox = [{
-  //   title: "OVERDUE",
-  //   amount: currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount)
-  // },
-  // {
-  //   title: "OUTSTANDING",
-  //   amount: currencySymb + cashFormatter(overdueOutstandingAmount?.outstanding_amount)
-  // }];
 
   const tableData = getTableData(leadData);
 
@@ -139,34 +113,6 @@ const Leads = ({ isAdminUser }) => {
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header isAdminUser={isAdminUser} setnewLead={setnewLead} />
       <div>
-        {/* {isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
-          <div className="flex justify-end">
-            <select onChange={handleSelectChange} className="px-3
-                py-1.5
-                text-base
-                font-normal
-                bg-transparent bg-clip-padding bg-no-repeat
-                border-none
-                transition
-                ease-in-out
-                m-0
-                focus:outline-none
-                text-miru-han-purple-1000">
-              <option className="text-miru-dark-purple-600" value="week">
-                THIS WEEK
-              </option>
-              <option className="text-miru-dark-purple-600" value="month">
-                This MONTH
-              </option>
-              <option className="text-miru-dark-purple-600" value="year">
-                THIS YEAR
-              </option>
-            </select>
-          </div>
-          {leadData && <ChartBar data={leadData} totalMinutes={totalMinutes} />}
-          <AmountBoxContainer amountBox={amountBox} />
-        </div>
-        } */}
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
