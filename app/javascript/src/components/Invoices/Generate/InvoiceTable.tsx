@@ -97,7 +97,7 @@ const InvoiceTable = ({
           <tr className="w-full ">
             <td colSpan={6} className="py-4 relative">
               {
-                addNew && <div ref={wrapperRef} className="box-shadow rounded absolute m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white top-0 w-full">
+                addNew && <div ref={wrapperRef} className="box-shadow z-10 rounded absolute m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white top-0 w-full">
                   {getNewLineItemDropdown()}
                 </div>
               }
