@@ -40,6 +40,23 @@ RSpec.describe "Companies#new", type: :request do
     end
   end
 
+  context "when user is book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :get, new_company_path
+    end
+
+    it "is successful" do
+      expect(response).to be_successful
+    end
+
+    it "renders Company#new page" do
+      expect(response.body).to include("Setup Org")
+    end
+  end
+
   context "when unauthenticated" do
     it "user will be redirects to sign in path" do
       send_request :get, new_company_path

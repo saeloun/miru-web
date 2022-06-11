@@ -33,4 +33,17 @@ RSpec.describe TeamPolicy, type: :policy, test_ploi: true do
       end
     end
   end
+
+  context "when user is book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+    end
+
+    permissions :index?, :edit?, :update?, :destroy? do
+      it "is not permitted to access team" do
+        expect(subject).not_to permit(user, :team)
+      end
+    end
+  end
 end

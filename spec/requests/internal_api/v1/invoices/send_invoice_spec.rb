@@ -65,6 +65,19 @@ RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
         expect(response).to have_http_status(:forbidden)
       end
     end
+
+    context "when user is an book keeper" do
+      before do
+        user.add_role :book_keeper, company
+        sign_in user
+      end
+
+      it "returns a 403 response" do
+        post send_invoice_internal_api_v1_invoice_path(id: invoice.id)
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
   end
 
   context "when user is logged out" do

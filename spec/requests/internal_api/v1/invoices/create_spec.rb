@@ -68,6 +68,26 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
     end
   end
 
+  context "when user is book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :post, internal_api_v1_invoices_path(
+        invoice: attributes_for(
+          :invoice,
+          client: company.clients.first,
+          client_id: company.clients.first.id,
+          status: :draft
+        )
+      )
+    end
+
+    it "is not be permitted to generate an invoice" do
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
   context "when unauthenticated" do
     it "is not be permitted to generate an invoice" do
       send_request :post, internal_api_v1_invoices_path(

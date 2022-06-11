@@ -63,5 +63,19 @@ RSpec.describe SubscriptionsController, type: :request do
         expect(response).to redirect_to(root_path)
       end
     end
+
+    context "when user is an book keeper" do
+      before do
+        employee.add_role :book_keeper, company
+        sign_in employee
+      end
+
+      it "redirects user to root path with 302 status" do
+        subject
+
+        expect(response.status).to eq 302
+        expect(response).to redirect_to(root_path)
+      end
+    end
   end
 end

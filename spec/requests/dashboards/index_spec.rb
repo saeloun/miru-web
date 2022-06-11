@@ -36,6 +36,23 @@ RSpec.describe "Dashboard#index", type: :request do
     end
   end
 
+  context "when user is Book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :get, dashboard_index_path
+    end
+
+    it "redirect to root path" do
+      expect(response).to have_http_status(:redirect)
+    end
+
+    it "is not permitted to visit dashboard#index page" do
+      expect(flash[:alert]).to eq("You are not authorized to view dashboard.")
+    end
+  end
+
   context "when unauthenticated" do
     it "user will be redirects to sign in path" do
       send_request :get, dashboard_index_path

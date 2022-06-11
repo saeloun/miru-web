@@ -62,6 +62,28 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
     end
   end
 
+  context "when the user is an book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :post, internal_api_v1_timesheet_entry_index_path, params: {
+        project_id: project.id,
+        timesheet_entry: {
+          duration: 20,
+          work_date: Time.now,
+          note: "Test Note",
+          bill_status: :unbilled
+        },
+        user_id: user.id
+      }
+    end
+
+    it "is not be permitted to generate an timehseet entry" do
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
   context "when unauthenticated" do
     it "user will be redirected to sign in path" do
       send_request :post, internal_api_v1_timesheet_entry_index_path

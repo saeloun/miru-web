@@ -54,6 +54,21 @@ RSpec.describe "Client#destroy", type: :request do
       expect(JSON.parse(response.body, { object_class: OpenStruct }).errors)
         .to eq(I18n.t("pundit.default"))
     end
+
+    context "when user is book keeper" do
+      before do
+        create(:company_user, company:, user:)
+        user.add_role :book_keeper, company
+        sign_in user
+        send_request(:delete, "/internal_api/v1/clients/#{client.id}")
+      end
+
+      it "is not permitted to delete client" do
+        expect(response).to have_http_status(:forbidden)
+        expect(JSON.parse(response.body, { object_class: OpenStruct }).errors)
+          .to eq(I18n.t("pundit.default"))
+      end
+    end
   end
 
   context "when unauthenticated" do

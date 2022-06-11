@@ -6,7 +6,7 @@ RSpec.describe "Users::SessionsController#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id, password: "testing!") }
 
-  context "when user is admin owner employee" do
+  context "when user is admin owner employee book_keeper" do
     before do
       create(:company_user, company:, user:)
       send_request :post, user_session_path, params: { user: { email: user.email, password: user.password } }

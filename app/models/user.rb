@@ -99,10 +99,32 @@ class User < ApplicationRecord
     super and self.kept?
   end
 
+  def has_owner_or_admin_or_employee_role?(company)
+    return false if company.nil?
+
+    self.has_cached_role?(
+      :owner,
+      company) || self.has_cached_role?(:admin, company) || self.has_cached_role?(:employee, company)
+  end
+
+  def has_owner_or_admin_or_book_keeper_role?(company)
+    return false if company.nil?
+
+    self.has_cached_role?(
+      :owner,
+      company) || self.has_cached_role?(:admin, company) || self.has_cached_role?(:book_keeper, company)
+  end
+
   def has_owner_or_admin_role?(company)
     return false if company.nil?
 
     self.has_cached_role?(:owner, company) || self.has_cached_role?(:admin, company)
+  end
+
+  def has_book_keeper_role?(company)
+    return false if company.nil?
+
+    self.has_cached_role?(:book_keeper, company)
   end
 
   def current_workspace(load_associations: [:logo_attachment])

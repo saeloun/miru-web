@@ -111,6 +111,25 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     end
   end
 
+  context "when user is book keeper" do
+    let(:time_frame) { "last_week" }
+
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      create_list(:timesheet_entry, 5, user:, project: project_1)
+      create_list(:timesheet_entry, 5, user:, project: project_2)
+      send_request :get, internal_api_v1_clients_path, params: {
+        time_frame:
+      }
+    end
+
+    it "is not be permitted to access client" do
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
   context "when unauthenticated" do
     it "is not permitted to view time entry report" do
       send_request :get, internal_api_v1_reports_path

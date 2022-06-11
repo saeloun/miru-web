@@ -54,4 +54,17 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
     end
   end
+
+  context "when user is book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :get, internal_api_v1_generate_invoice_index_path
+    end
+
+    it "is not permitted to view time entry report" do
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
 end

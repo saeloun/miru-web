@@ -36,6 +36,20 @@ RSpec.describe "Reports#index", type: :request do
     end
   end
 
+  context "when user is book keeper" do
+    before do
+      create(:timesheet_entry, project:)
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :get, reports_path
+    end
+
+    it "does not render Reports#index page" do
+      expect(response).not_to be_successful
+    end
+  end
+
   context "when unauthenticated" do
     it "user should be redirected to sign in path" do
       send_request :get, reports_path

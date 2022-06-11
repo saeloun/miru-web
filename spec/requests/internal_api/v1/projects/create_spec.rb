@@ -49,6 +49,19 @@ RSpec.describe "InternalApi::V1::Project#create", type: :request do
     end
   end
 
+  context "when the user is an book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :post, internal_api_v1_projects_path
+    end
+
+    it "is not be permitted to generate an project" do
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
   context "when unauthenticated" do
     it "is not be permitted to generate an project" do
       send_request :post, internal_api_v1_projects_path

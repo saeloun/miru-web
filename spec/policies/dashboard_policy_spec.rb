@@ -33,4 +33,17 @@ RSpec.describe DashboardPolicy, type: :policy do
       end
     end
   end
+
+  context "when user is book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+    end
+
+    permissions :index? do
+      it "is not permitted to access index" do
+        expect(subject).not_to permit(user, :dashboard)
+      end
+    end
+  end
 end

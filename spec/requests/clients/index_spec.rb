@@ -40,6 +40,20 @@ RSpec.describe "Client#index", type: :request do
     end
   end
 
+  context "when user is book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      create(:timesheet_entry, user:, project:)
+      sign_in user
+      send_request :get, clients_path
+    end
+
+    it "is not permitted to acces index client" do
+      expect(response).to redirect_to(root_path)
+    end
+  end
+
   context "when unauthenticated" do
     it "user will be redirects to sign in path" do
       send_request :get, clients_path

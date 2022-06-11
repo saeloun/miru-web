@@ -64,4 +64,35 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
       end
     end
   end
+
+  context "when user is book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+    end
+
+    context "when company is valid" do
+      before do
+        send_request(
+          :put, "#{internal_api_v1_companies_path}/#{company[:id]}", params: {
+            company: {
+              name: "Test Company",
+              address: "test address",
+              business_phone: "Test phone",
+              country: "India",
+              timezone: "IN",
+              base_currency: "Rs",
+              standard_price: "1000",
+              fiscal_year_end: "April",
+              date_format: "DD/MM/YYYY"
+            }
+          })
+      end
+
+      it "is not be permitted to update a company" do
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
 end

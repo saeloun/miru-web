@@ -15,7 +15,7 @@ RSpec.describe "Root#index", type: :request do
     end
 
     it "redirects to Dashboard#index page" do
-      expect(response).to redirect_to(dashboard_index_path)
+      expect(response).to redirect_to(time_tracking_index_path)
     end
   end
 
@@ -28,7 +28,7 @@ RSpec.describe "Root#index", type: :request do
     end
 
     it "redirects to Dashboard#index page" do
-      expect(response).to redirect_to(dashboard_index_path)
+      expect(response).to redirect_to(time_tracking_index_path)
     end
   end
 
@@ -42,6 +42,19 @@ RSpec.describe "Root#index", type: :request do
 
     it "redirects to TimeTracking#index page" do
       expect(response).to redirect_to(time_tracking_index_path)
+    end
+  end
+
+  context "when user is book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :get, root_path
+    end
+
+    it "redirects to payments#index page" do
+      expect(response).to redirect_to(payments_path)
     end
   end
 

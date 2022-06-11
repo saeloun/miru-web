@@ -44,6 +44,25 @@ RSpec.describe "Team#destroy", type: :request do
     end
   end
 
+  context "when user is book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request(:delete, team_path(user))
+    end
+
+    it "redirect to root_path" do
+      expect(response).to have_http_status(:redirect)
+      expect(response).to redirect_to(root_path)
+    end
+
+    it "user can't be deleted" do
+      expect(response).to have_http_status(:redirect)
+      expect(flash[:alert]).to eq("You are not authorized to destroy team.")
+    end
+  end
+
   context "when unauthenticated" do
     it "user will be redirects to sign in path" do
       send_request(:delete, team_path(user))

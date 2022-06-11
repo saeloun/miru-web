@@ -63,6 +63,19 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
     end
   end
 
+  # context "when the user is an book keeper" do
+  #   before do
+  #     create(:company_user, company:, user:)
+  #     user.add_role :book_keeper, company
+  #     sign_in user
+  #     send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
+  #   end
+  #
+  #   it "is not be permitted to destroy an timehseet entry" do
+  #     expect(response).to have_http_status(:forbidden)
+  #   end
+  # end
+
   context "when unauthenticated" do
     it "user will be redirected to sign in path" do
       send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)

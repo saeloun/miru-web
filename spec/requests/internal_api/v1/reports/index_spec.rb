@@ -451,6 +451,19 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
     end
   end
 
+  context "when user is book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :get, internal_api_v1_reports_path
+    end
+
+    it "is not permitted to view time entry report" do
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
   context "when unauthenticated" do
     it "is not permitted to view time entry report" do
       send_request :get, internal_api_v1_reports_path

@@ -15,12 +15,15 @@ RSpec.describe InternalApi::V1::TimezonesController, type: :request do
   let(:company) { create(:company) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
+  let(:book_keeper) { create(:user, current_workspace_id: company.id) }
 
   before do
     create(:company_user, company:, user: admin)
     create(:company_user, company:, user: employee)
+    create(:company_user, company:, user: book_keeper)
     admin.add_role :admin, company
     employee.add_role :employee, company
+    book_keeper.add_role :book_keeper, company
   end
 
   describe "GET index" do
@@ -34,6 +37,12 @@ RSpec.describe InternalApi::V1::TimezonesController, type: :request do
 
     context "when user is an employee" do
       before { sign_in employee }
+
+      it_behaves_like "InternalApi::V1::TimezonesController index"
+    end
+
+    context "when user is an book_keeper" do
+      before { sign_in book_keeper }
 
       it_behaves_like "InternalApi::V1::TimezonesController index"
     end

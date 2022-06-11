@@ -8,6 +8,7 @@ RSpec.describe InternalApi::V1::ClientsController, type: :request do
 
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
+  let(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
@@ -15,6 +16,7 @@ RSpec.describe InternalApi::V1::ClientsController, type: :request do
     create(:company_user, company:, user: employee)
     admin.add_role :admin, company
     employee.add_role :employee, company
+    book_keeper.add_role :book_keeper, company
   end
 
   describe "GET new_invoice_line_items" do
@@ -32,6 +34,15 @@ RSpec.describe InternalApi::V1::ClientsController, type: :request do
 
     context "when user is an employee" do
       before { sign_in employee }
+
+      it "returns error with 403 status" do
+        expect(subject).to eq 403
+        expect(json_response["errors"]).to eq "You are not authorized to perform this action."
+      end
+    end
+
+    context "when user is an book keeper" do
+      before { sign_in book_keeper }
 
       it "returns error with 403 status" do
         expect(subject).to eq 403

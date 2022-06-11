@@ -104,6 +104,56 @@ RSpec.describe "Companies#create", type: :request do
     end
   end
 
+  context "when user is book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+    end
+
+    context "when company is valid" do
+      before do
+        send_request(
+          :put, company_path, params: {
+            company: {
+              name: "Updated Company",
+              address: "updated address",
+              business_phone: "1234556"
+            }
+          })
+      end
+
+      it "redirects to root_path" do
+        expect(response).to have_http_status(:redirect)
+      end
+
+      it "is not permitted to update a company" do
+        expect(flash[:alert]).to eq("You are not authorized to update company.")
+      end
+    end
+
+    context "when company is invalid" do
+      before do
+        send_request(
+          :put, company_path, params: {
+            company: {
+              name: "",
+              address: "",
+              business_phone: ""
+            }
+          })
+      end
+
+      it "redirects to root_path" do
+        expect(response).to have_http_status(:redirect)
+      end
+
+      it "is not permitted to update a company" do
+        expect(flash[:alert]).to eq("You are not authorized to update company.")
+      end
+    end
+  end
+
   context "when unauthenticated" do
     it "user will be redirects to sign in path" do
       send_request(

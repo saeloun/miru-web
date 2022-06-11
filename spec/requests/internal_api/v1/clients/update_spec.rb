@@ -84,6 +84,29 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
     end
   end
 
+  context "when user is book keeper" do
+    before do
+      client
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request(
+        :patch, internal_api_v1_client_path(client), params: {
+          client: {
+            id: client.id,
+            name: "Test Client",
+            email: "test@example.com",
+            phone: "Test phone",
+            address: "India"
+          }
+        })
+    end
+
+    it "is not permitted to update client" do
+      expect(json_response["errors"]).to match("You are not authorized to update client.")
+    end
+  end
+
   context "when unauthenticated" do
     it "user will be not be permitted to update client" do
       send_request(
