@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ClientsController < ApplicationController
-  # skip_after_action :verify_authorized, except: :create
-
   def index
     authorize :index, policy_class: ClientPolicy
     render :index, locals: {
