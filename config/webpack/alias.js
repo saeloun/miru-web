@@ -5,7 +5,8 @@ module.exports = {
       helpers: "src/helpers",
       common: "src/common",
       components: "src/components",
-      context: "src/context"
+      context: "src/context",
+      mapper: "src/mapper"
     }
   }
 };
