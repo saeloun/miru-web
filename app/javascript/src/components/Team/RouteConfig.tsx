@@ -6,6 +6,10 @@ import {
 } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import UserContext from "context/UserContext";
+import Details from "./Details";
+
+import EmploymentDetails from "./Details/EmploymentDetails";
+import PersonalDetails from "./Details/PersonalDetails";
 import List from "./List";
 
 const RouteConfig = ({ isAdminUser }) => {
@@ -20,6 +24,10 @@ const RouteConfig = ({ isAdminUser }) => {
         <Routes>
           <Route path="team">
             <Route index element={<List />} />
+            <Route path=":id" element={<Details />}>
+              <Route index element={<PersonalDetails />} />
+              <Route path="employment" element={<EmploymentDetails />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>
