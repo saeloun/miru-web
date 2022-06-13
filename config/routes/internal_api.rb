@@ -13,7 +13,11 @@ namespace :internal_api, defaults: { format: "json" } do
     end
     resources :projects, only: [:index, :show, :create, :update, :destroy]
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
-    resources :reports, only: [:index]
+    resources :reports, only: [:index] do
+      collection do
+        get :download, to: "reports#download"
+      end
+    end
     resources :workspaces, only: [:update]
     resources :invoices, only: [:index, :create, :update, :show, :destroy, :edit] do
       post :send_invoice, on: :member
@@ -40,5 +44,7 @@ namespace :internal_api, defaults: { format: "json" } do
     resource :profile, only: [:update, :show], controller: "profile" do
       delete "/remove_avatar", to: "profile#remove_avatar"
     end
+
+    resources :team, only: :destroy
   end
 end
