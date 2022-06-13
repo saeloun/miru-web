@@ -8,7 +8,6 @@ RSpec.describe User, type: :model do
 
   before do
     create(:company_user, company:, user:)
-    create(:employment_detail, user:)
   end
 
   describe "Associations" do
@@ -18,7 +17,6 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:timesheet_entries) }
     it { is_expected.to have_one_attached(:avatar) }
-    it { is_expected.to have_one(:employment_detail) }
   end
 
   describe "Validations" do

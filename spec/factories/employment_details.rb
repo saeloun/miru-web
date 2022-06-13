@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :employment_detail do
-    user
+    company_user
     designation { "SDE" }
     employment_type { "Salaried" }
     joined_at { Faker::Date.between(from: "2020-01-01", to: "2021-01-01") }

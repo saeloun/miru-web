@@ -7,7 +7,7 @@ RSpec.describe EmploymentDetail, type: :model do
 
   describe "Validations" do
     describe "Associations" do
-      it { is_expected.to belong_to(:user) }
+      it { is_expected.to belong_to(:company_user) }
     end
 
     describe "Presence" do

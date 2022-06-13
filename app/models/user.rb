@@ -59,7 +59,6 @@ class User < ApplicationRecord
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all
   has_one_attached :avatar
-  has_one :employment_detail, dependent: :destroy
   rolify strict: true
 
   # Validations
