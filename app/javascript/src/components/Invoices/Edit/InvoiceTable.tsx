@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 
+import useOutsideClick from "helpers/outsideClick";
 import NewLineItemTable from "./NewLineItemTable";
-import useOutsideClick from "../../../helpers/outsideClick";
 import TableHeader from "../common/LineItemTableHeader";
 import NewLineItemRow from "../common/NewLineItemRow";
 import ManualEntry from "../Generate/ManualEntry";

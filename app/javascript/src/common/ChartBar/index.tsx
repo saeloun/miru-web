@@ -1,7 +1,8 @@
 import React, { Fragment } from "react";
 import ReactTooltip from "react-tooltip";
+
+import { minutesToHHMM } from "helpers/hhmm-parser";
 import { IChartBarGraph, ISingleClient } from "./interface";
-import { minutesToHHMM } from "../../helpers/hhmm-parser";
 
 const Client = ({ element, totalMinutes, index }:ISingleClient) => {
   const chartColor = ["miru-chart-green", "miru-chart-blue", "miru-chart-pink", "miru-chart-orange"];

@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 import React, { useEffect, useState } from "react";
-
 import { ToastContainer } from "react-toastify";
+
 import profileApi from "apis/profile";
 import { Divider } from "common/Divider";
-
 import Toastr from "common/Toastr";
 import * as Yup from "yup";
-import { TOASTER_DURATION } from "../../../constants/index";
+import { TOASTER_DURATION } from "constants/index";
+
 import Header from "../Header";
 
 const editButton = require("../../../../../assets/images/edit_image_button.svg");
