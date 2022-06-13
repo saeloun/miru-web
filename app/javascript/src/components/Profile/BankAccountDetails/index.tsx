@@ -11,7 +11,7 @@ import BankInfo from "./BankInfo";
 import CurrencyDropdown from "./CurrencyDropdown";
 import Header from "../Header";
 
-const Billing = () => {
+const BankAccountDetails = () => {
   const [isUpdate, setIsUpdate] = useState<boolean>();
   const [billingDetails, setBillingDetails] = useState<any>({});
   const [currencies, setCurrencies] = useState<any>([]);
@@ -164,4 +164,4 @@ const Billing = () => {
   );
 };
 
-export default Billing;
+export default BankAccountDetails;

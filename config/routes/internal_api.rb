@@ -35,7 +35,7 @@ namespace :internal_api, defaults: { format: "json" } do
     end
 
     namespace :profiles do
-      resources :billing, only: [:index, :create, :update], param: :account_id
+      resources :bank_account_details, only: [:index, :create, :update], param: :account_id
     end
 
     namespace :wise do

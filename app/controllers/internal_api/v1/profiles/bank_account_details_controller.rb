@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Profiles::BillingController < InternalApi::V1::ApplicationController
+class InternalApi::V1::Profiles::BankAccountDetailsController < InternalApi::V1::ApplicationController
   before_action :load_wise_account, only: [:index]
   before_action :fetch_wise_account, only: [:update]
 

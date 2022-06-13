@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const path = "/profiles/billing";
+const path = "/profiles/bank_account_details";
 
 const get = async () => axios.get(path);
 
