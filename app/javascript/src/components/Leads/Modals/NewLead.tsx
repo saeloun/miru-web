@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import leadItemsApi from "apis/lead-items";
 import leads from "apis/leads";
 import Toastr from "common/Toastr";
@@ -34,6 +35,8 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
   const [stateCode, setStateCode] = useState<any>(null);
   const [statusCode, setStatusCode] = useState<any>(null);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const getLeadItems = async () => {
       leadItemsApi.get()
@@ -67,7 +70,7 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
     })
       .then(res => {
         setLeadData([...leadData, { ...res.data }]);
-        document.location.reload();
+        navigate("/leads");
         setnewLead(false);
         Toastr.success("Lead added successfully");
       });
