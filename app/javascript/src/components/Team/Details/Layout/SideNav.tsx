@@ -11,7 +11,7 @@ const getActiveClassName = (isActive) => {
 
 const getTeamUrls = (memberId) => [
   {
-    url: `/team/${memberId}/`,
+    url: `/team/${memberId}`,
     text: "Personal Details"
   },
   {
