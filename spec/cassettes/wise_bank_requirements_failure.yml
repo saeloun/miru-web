@@ -1,0 +1,145 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.sandbox.transferwise.tech/v1/account-requirements?source=&sourceAmount=1000&target=
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer access-token-12345
+      User-Agent:
+      - Faraday v1.9.3
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 422
+      message: Unprocessable Entity
+    headers:
+      Date:
+      - Fri, 03 Jun 2022 11:08:42 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Content-Length:
+      - '271'
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - ba6445f4-e1ce-9def-8e4e-d5c9e0935e86
+      X-Trace-Id:
+      - ff18893fb84db0f2
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Envoy-Upstream-Service-Time:
+      - '20'
+      X-Envoy-Attempt-Count:
+      - '1'
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers,accept-encoding
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Set-Cookie:
+      - __cf_bm=pE.mUE7uGyaNQT_ncIJGUO3U0gfHHDYSP.OimwcITyk-1654254522-0-ASvimDXtwH6RnrkIZXfSfqV3X6ctbfdMd+xNnXPADkgfnxKLzg5eET6ppekPAzykp7JCA2L4KPCx4uaAd9j6SyE=;
+        path=/; expires=Fri, 03-Jun-22 11:38:42 GMT; domain=.transferwise.tech; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7157f8e8dcaa0690-MAA
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"timestamp":"2022-06-03T11:08:41.975812580Z","errors":[{"code":"NOT_VALID","message":"Must
+        be an ISO 4217 alpha-3 currency code.","path":"target","arguments":[]},{"code":"NOT_VALID","message":"Must
+        be an ISO 4217 alpha-3 currency code.","path":"source","arguments":[]}]}'
+    http_version:
+  recorded_at: Fri, 03 Jun 2022 11:08:42 GMT
+- request:
+    method: get
+    uri: https://api.transferwise.com/v1/account-requirements?source=&sourceAmount=1000&target=
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer access-token-12345
+      User-Agent:
+      - Faraday v1.9.3
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 422
+      message: Unprocessable Entity
+    headers:
+      Date:
+      - Fri, 03 Jun 2022 11:08:42 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Content-Length:
+      - '271'
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - ba6445f4-e1ce-9def-8e4e-d5c9e0935e86
+      X-Trace-Id:
+      - ff18893fb84db0f2
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Envoy-Upstream-Service-Time:
+      - '20'
+      X-Envoy-Attempt-Count:
+      - '1'
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers,accept-encoding
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Set-Cookie:
+      - __cf_bm=pE.mUE7uGyaNQT_ncIJGUO3U0gfHHDYSP.OimwcITyk-1654254522-0-ASvimDXtwH6RnrkIZXfSfqV3X6ctbfdMd+xNnXPADkgfnxKLzg5eET6ppekPAzykp7JCA2L4KPCx4uaAd9j6SyE=;
+        path=/; expires=Fri, 03-Jun-22 11:38:42 GMT; domain=.transferwise.tech; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7157f8e8dcaa0690-MAA
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"timestamp":"2022-06-03T11:08:41.975812580Z","errors":[{"code":"NOT_VALID","message":"Must
+        be an ISO 4217 alpha-3 currency code.","path":"target","arguments":[]},{"code":"NOT_VALID","message":"Must
+        be an ISO 4217 alpha-3 currency code.","path":"source","arguments":[]}]}'
+    http_version:
+  recorded_at: Fri, 03 Jun 2022 11:08:42 GMT
+recorded_with: VCR 3.0.3

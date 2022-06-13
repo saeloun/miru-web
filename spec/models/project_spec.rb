@@ -40,7 +40,7 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "last_week" }
 
       it "returns data with 0 values" do
-        expect(subject).to eq([{ id: member.id, name: user.full_name, hourly_rate: 5000, minutes_logged: 0 }])
+        expect(subject).to eq([{ id: member.user_id, name: user.full_name, hourly_rate: 5000, minutes_logged: 0 }])
       end
     end
 
