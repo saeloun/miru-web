@@ -36,9 +36,8 @@ const Table = () => (
     </thead>
 
     <tbody className="min-w-full bg-miru-gray-100  divide-y divide-gray-200">
-      {data.map((data, index) => (
+      {data.map((data) => (
         <TableRow
-          key={index}
           data={data}
         />
       ))}

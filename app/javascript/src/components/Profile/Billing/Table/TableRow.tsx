@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { DownloadSimple } from "phosphor-react";
 
 const TableRow = ({
-  key,
-  data,
+  data
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
 
