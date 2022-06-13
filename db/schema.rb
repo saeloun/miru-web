@@ -255,6 +255,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_13_094006) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  create_table "wise_accounts", force: :cascade do |t|
+    t.string "profile_id"
+    t.string "recipient_id"
+    t.string "source_currency"
+    t.string "target_currency"
+    t.bigint "user_id", null: false
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_wise_accounts_on_company_id"
+    t.index ["user_id", "company_id"], name: "index_wise_accounts_on_user_id_and_company_id", unique: true
+    t.index ["user_id"], name: "index_wise_accounts_on_user_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "clients", "companies"
@@ -273,4 +287,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_13_094006) do
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies", column: "current_workspace_id"
+  add_foreign_key "wise_accounts", "companies"
+  add_foreign_key "wise_accounts", "users"
 end

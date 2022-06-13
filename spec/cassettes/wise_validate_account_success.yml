@@ -1,0 +1,141 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.sandbox.transferwise.tech/v1/validators/ifsc-code?ifscCode=UTIB0002508
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer access-token-12345
+      User-Agent:
+      - Faraday v1.9.3
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 03 Jun 2022 07:09:53 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Content-Length:
+      - '24'
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - e0fba8ce-54b8-9e39-8dad-8a935ceb0e10
+      X-Trace-Id:
+      - 655c36d137b951c1
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Envoy-Upstream-Service-Time:
+      - '47'
+      X-Envoy-Attempt-Count:
+      - '1'
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers,accept-encoding
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Set-Cookie:
+      - __cf_bm=T01i..isenwkS_kt_CE0_62Ai5VSDTeISEAYLDdxc4o-1654240193-0-AUm/t2yHBKMGHKRlMUDZScdAzNABSY2QPuN3HYTLgUUYoKb61aVdk2+ezNUScE5my6QE18qygn5gF2Zc5N7nhHk=;
+        path=/; expires=Fri, 03-Jun-22 07:39:53 GMT; domain=.transferwise.tech; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 71569b1a4a0c06b0-MAA
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"validation":"success"}'
+    http_version:
+  recorded_at: Fri, 03 Jun 2022 07:09:53 GMT
+- request:
+    method: get
+    uri: https://api.transferwise.com/v1/validators/ifsc-code?ifscCode=UTIB0002508
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer access-token-12345
+      User-Agent:
+      - Faraday v1.9.3
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 03 Jun 2022 07:09:53 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Content-Length:
+      - '24'
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - e0fba8ce-54b8-9e39-8dad-8a935ceb0e10
+      X-Trace-Id:
+      - 655c36d137b951c1
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Envoy-Upstream-Service-Time:
+      - '47'
+      X-Envoy-Attempt-Count:
+      - '1'
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers,accept-encoding
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Set-Cookie:
+      - __cf_bm=T01i..isenwkS_kt_CE0_62Ai5VSDTeISEAYLDdxc4o-1654240193-0-AUm/t2yHBKMGHKRlMUDZScdAzNABSY2QPuN3HYTLgUUYoKb61aVdk2+ezNUScE5my6QE18qygn5gF2Zc5N7nhHk=;
+        path=/; expires=Fri, 03-Jun-22 07:39:53 GMT; domain=.transferwise.tech; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 71569b1a4a0c06b0-MAA
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: UTF-8
+      string: '{"validation":"success"}'
+    http_version:
+  recorded_at: Fri, 03 Jun 2022 07:09:53 GMT
+recorded_with: VCR 3.0.3
