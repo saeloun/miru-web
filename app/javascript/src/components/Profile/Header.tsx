@@ -14,8 +14,8 @@ const Header = ({
       {subTitle}
     </span>
     {
-      showButtons && (
-        <div className="mt-1 text-center">
+      (
+        <div className={`mt-1 text-center ${showButtons ? "visible" : "invisible"}`}>
           <div>
             <button
               className="border rounded-md px-3 mx-1 "
