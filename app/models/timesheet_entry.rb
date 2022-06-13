@@ -26,14 +26,13 @@
 #
 
 class TimesheetEntry < ApplicationRecord
-  searchkick
-
   enum bill_status: [:non_billable, :unbilled, :billed]
 
   belongs_to :user
   belongs_to :project
 
   has_one :invoice_line_item, dependent: :destroy
+  has_one :client, through: :project
 
   before_validation :ensure_bill_status_is_set
   before_validation :ensure_bill_status_is_not_billed, on: :create
@@ -43,9 +42,23 @@ class TimesheetEntry < ApplicationRecord
   validates :duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
 
   scope :in_workspace, -> (company) { where(project_id: company&.project_ids) }
+  scope :during, -> (from, to) { where(work_date: from..to).order(work_date: :desc) }
 
-  def self.during(from, to)
-    where(work_date: from..to).order(work_date: :desc)
+  delegate :name, to: :project, prefix: true, allow_nil: true
+  delegate :name, to: :client, prefix: true, allow_nil: true
+  delegate :full_name, to: :user, prefix: true, allow_nil: true
+
+  searchkick
+
+  def search_data
+    {
+      id: id.to_i,
+      bill_status:,
+      project_id:,
+      client_id: self.project.client_id,
+      user_id:,
+      work_date:
+    }
   end
 
   def formatted_entry
@@ -60,6 +73,11 @@ class TimesheetEntry < ApplicationRecord
       bill_status:,
       team_member: user.full_name
     }
+  end
+
+  def formatted_duration
+    minutes = duration.to_i
+    Time.parse("#{minutes / 60}:#{minutes % 60}").strftime("%H:%M")
   end
 
   private

@@ -42,6 +42,7 @@ module ErrorHandler
           redirect_to redirect_path
         end
         format.json { render json: { errors: message }, status: :forbidden }
+        format.any(:pdf, :csv) { render json: { errors: message }, status: :forbidden }
       end
     end
 

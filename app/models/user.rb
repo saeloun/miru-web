@@ -106,6 +106,11 @@ class User < ApplicationRecord
     write_attribute(:current_workspace_id, workspace&.id)
   end
 
+  # https://github.com/scambra/devise_invitable/blob/7c4b1f6d19135b2cfed4685735a646a28bbc5191/test/rails_app/app/models/user.rb#L59
+  def send_devise_notification(notification, *args)
+    super
+  end
+
   private
 
     def discard_project_members

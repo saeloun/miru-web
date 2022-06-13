@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import clients from "apis/clients";
 
 interface IProps {
@@ -7,11 +8,13 @@ interface IProps {
 }
 
 const DeleteClient = ({ client, setShowDeleteDialog }: IProps) => {
+
+  const navigate = useNavigate();
+
   const deleteClient = async client => {
     await clients.destroy(client.id);
-    setTimeout(() => {
-      window.location.reload();
-    }, 500);
+    setShowDeleteDialog(false);
+    window.location.pathname == "/clients" ? navigate(0) : navigate("/clients");
   };
   return (
     <div className="px-4 flex items-center justify-center">

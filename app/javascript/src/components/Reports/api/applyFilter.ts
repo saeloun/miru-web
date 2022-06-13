@@ -1,4 +1,5 @@
 import reports from "apis/reports";
+import { unmapper } from "../../../mapper/report.mapper";
 
 const isValuePresent = (filterValue) => filterValue.value && filterValue.value !== "";
 const isNotEmptyArray = (value) => value && value.length > 0;
@@ -6,12 +7,12 @@ const isNotEmptyArray = (value) => value && value.length > 0;
 const apiKeys = {
   clients: "client",
   dateRange: "date_range",
-  groupBy: "groupBy",
+  groupBy: "group_by",
   status: "status",
   teamMember: "team_member"
 };
 
-const getQueryParams = (selectedFilter) => {
+export const getQueryParams = (selectedFilter) => {
   let params = "";
   for (const filterKey in selectedFilter) {
     const filterValue = selectedFilter[filterKey];
@@ -27,12 +28,14 @@ const getQueryParams = (selectedFilter) => {
   return params;
 };
 
-const applyFilter = async (selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty) => {
+const applyFilter = async (selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty, getFilterOptions) => {
   const queryParams = getQueryParams(selectedFilter);
   const sanitizedParam = queryParams.substring(1);
   const sanitizedQuery = `?${sanitizedParam}`;
   const res = await reports.get(sanitizedQuery);
-  setTimeEntries(res.data.entries);
+  const sanitizedData = unmapper(res.data);
+  setTimeEntries(sanitizedData.reports);
+  getFilterOptions(sanitizedData.filterOptions);
   setNavFilters(true);
   setFilterVisibilty(false);
 };
