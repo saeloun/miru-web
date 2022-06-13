@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import projectApi from "apis/projects";
+import Logger from "js-logger";
 import { X } from "phosphor-react";
 
 const AddEditProject = ({
@@ -8,44 +9,43 @@ const AddEditProject = ({
   setShowProjectModal,
   projectData
 }) => {
+  const [client, setClient] = useState<number>(null);
+  const [projectName, setProjectName] = useState<string>("");
+  const [projectType, setProjectType] = useState<string>("Billable");
+  const [clientList, setClientList] = useState<[]>([]);
+  const projectId = window.location.pathname.split("/").at(-1);
 
-  const [client, setClient] = useState<any>(null);
-  const [projectName, setProjectName] = useState<any>(null);
-  const [projectType, setProjectType] = useState<any>("Billable");
-  const [clientList, setClientList] = useState<any>(null);
+  const getClientList = async () => {
+    try {
+      const data = await projectApi.get();
+      setClientList(data.data.clients);
+    } catch (error) {
+      Logger.error(error);
+    }
+  };
+
+  const getProject = async () => {
+    try {
+      const { data } = await projectApi.show(projectId);
+      setEditProjectData(data.project_details);
+    } catch (error) {
+      setEditProjectData({});
+    }
+  };
 
   useEffect(() => {
-    const getClientList = async () => {
-      projectApi.get()
-        .then((data) => {
-          setClientList(data.data.clients);
-        }).catch(() => {
-          setClientList({});
-        });
-    };
-    const getProject = async () => {
-      projectApi.show(projectData.id)
-        .then((data) => {
-          setEditProjectData(data.data.project_details);
-        })
-        .catch(() => {
-          setEditProjectData({});
-        });
-    };
-
     getClientList();
     if (projectData) getProject();
   }, []);
 
   useEffect(() => {
-    if (editProjectData) {
-      if (clientList) {
-        const client = clientList.filter(clientItem => clientItem.name == editProjectData.clientName);
-        setClient(client[0].id);
-      }
-      setProjectName(editProjectData ? editProjectData.name : null);
-      setProjectType(editProjectData.isBillable ? "Billable" : "Non-Billable");
+    if (! editProjectData) return;
+    if (clientList.length) {
+      const client = clientList.filter(clientItem => clientItem["name"] == editProjectData["client"]["name"]);
+      if (client) setClient(client[0]["id"]);
     }
+    setProjectName(editProjectData ? editProjectData.name : null);
+    setProjectType(editProjectData.isBillable ? "Billable" : "Non-Billable");
   }, [editProjectData, clientList]);
 
   const handleEdit = () => {
@@ -106,7 +106,7 @@ const AddEditProject = ({
                   <select
                     defaultValue={client}
                     className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                    onChange={(e) => setClient(e.target.value)}>
+                    onChange={(e) => setClient(+ e.target.value)}>
                     <option value='0'>Select Client</option>
                     {clientList &&
                       clientList.map((e, index) => <option key={index} value={e.id} selected={e.id == client}>{e.name}</option>)}
@@ -163,7 +163,7 @@ const AddEditProject = ({
 };
 
 AddEditProject.defaultProps = {
-  projectData: null
+  projectData: {}
 };
 
 export default AddEditProject;
