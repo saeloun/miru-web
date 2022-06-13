@@ -13,7 +13,11 @@ namespace :internal_api, defaults: { format: "json" } do
     end
     resources :projects, only: [:index, :show, :create, :update, :destroy]
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
-    resources :reports, only: [:index]
+    resources :reports, only: [:index] do
+      collection do
+        get :download, to: "reports#download"
+      end
+    end
     resources :workspaces, only: [:update]
     resources :invoices, only: [:index, :create, :update, :show, :destroy, :edit] do
       post :send_invoice, on: :member
@@ -25,15 +29,35 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :project_members, only: [:update]
     resources :company_users, only: [:index]
     resources :timezones, only: [:index]
+
     resources :companies, only: [:index, :create, :update] do
       resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
     end
 
+    namespace :profiles do
+      resources :bank_account_details, only: [:index, :create, :update], param: :account_id
+    end
+
+    namespace :wise do
+      resources :recipients, only: [:create, :show, :update], param: :recipient_id
+      resources :currencies, only: [:index]
+
+      get :fetch_bank_requirements
+      get :validate_account_details
+    end
+
+    # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
 
     namespace :payments do
       resources :providers, only: [:index, :update]
     end
+
+    resource :profile, only: [:update, :show], controller: "profile" do
+      delete "/remove_avatar", to: "profile#remove_avatar"
+    end
+
+    resources :team, only: :destroy
   end
 end
