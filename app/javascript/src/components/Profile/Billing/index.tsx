@@ -11,8 +11,6 @@ const Billing = () => (
         title={"Billing"}
         subTitle={"View upcoming bill amount, due date and past bills"}
         showButtons={false}
-      // cancelAction={()=> {}}
-      // saveAction={}
       />
       <div className="max-h-70v overflow-scroll">
         <div className="pb-5 pt-5 pl-5 pr-5 mt-4 bg-miru-gray-100 max-h-40v">
