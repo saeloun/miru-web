@@ -82,6 +82,8 @@ Rails.application.routes.draw do
   get "subscriptions/*path", to: "subscriptions#index", via: :all
   resources :subscriptions, only: [:index]
 
+  resource :email_confirmation, only: :show
+
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
     get "profile/edit", to: "users/registrations#edit"

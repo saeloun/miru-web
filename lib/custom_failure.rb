@@ -5,8 +5,7 @@ class CustomFailure < Devise::FailureApp
   def redirect_url
     if warden_message == :unconfirmed
       email = params[:user][:email]
-      puts email
-      false
+      email_confirmation_path({ email: })
     else
       super
     end
