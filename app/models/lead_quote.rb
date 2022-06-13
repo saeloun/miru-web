@@ -28,9 +28,15 @@ class LeadQuote < ApplicationRecord
   has_many :quote_line_items, dependent: :destroy
   accepts_nested_attributes_for :quote_line_items, allow_destroy: true
 
+  before_create :set_status
+
   def render_properties
     {
       id:, name:, description:, status:, status_comment:, quote_line_items:
     }
+  end
+
+  def set_status
+    status = "draft" if status.blank?
   end
 end

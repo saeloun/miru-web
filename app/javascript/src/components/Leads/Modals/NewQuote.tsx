@@ -20,6 +20,7 @@ const NewQuote = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
     leadQuotes.create(leadDetails.id, {
       "name": values.name,
       "description": values.description,
+      "status": "draft"
     })
       .then(res => {
         setLeadData([...leadData, { ...res.data }]);
