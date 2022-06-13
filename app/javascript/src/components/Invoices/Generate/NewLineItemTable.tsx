@@ -13,7 +13,10 @@ const NewLineItemTable = ({
   pageNumber, setPageNumber,
   selectedOption,
   setSelectedOption,
-  setMultiLineItemModal }) => {
+  setMultiLineItemModal,
+  manualEntryArr,
+  setManualEntryArr
+}) => {
 
   const hasMoreItems = lineItems.length === totalLineItems;
   const selectRowId = (items) => {
@@ -31,6 +34,7 @@ const NewLineItemTable = ({
         <button onClick={() => {
           setShowItemInputs(!showItemInputs);
           setAddNew(!addNew);
+          setManualEntryArr([...manualEntryArr, { idx: manualEntryArr.length  + 1 }]);
         }} className="mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000">Add Manual Entry</button>
       </div>
       <div className="overflow-scroll mt-4 relative">

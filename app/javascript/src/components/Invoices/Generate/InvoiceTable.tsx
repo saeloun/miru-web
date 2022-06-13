@@ -40,14 +40,16 @@ const InvoiceTable = ({
   setSelectedOption,
   selectedOption,
   lineItems,
-  setLineItems }) => {
+  setLineItems,
+  manualEntryArr,
+  setManualEntryArr
+}) => {
 
   const [addNew, setAddNew] = useState<boolean>(false);
   const [showItemInputs, setShowItemInputs] = useState<boolean>(false);
   const [totalLineItems, setTotalLineItems] = useState<number>(null);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [showMultiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
-  const [manualEntryArr, setManualEntryArr] = useState([]);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
@@ -82,6 +84,8 @@ const InvoiceTable = ({
         setSelectedOption={setSelectedOption}
         selectedOption={selectedOption}
         setMultiLineItemModal={setMultiLineItemModal}
+        manualEntryArr={manualEntryArr}
+        setManualEntryArr={setManualEntryArr}
       />;
     }
     return (

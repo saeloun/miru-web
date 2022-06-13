@@ -32,6 +32,7 @@ const GenerateInvoices = () => {
   const [showSendInvoiceModal, setShowSendInvoiceModal] = useState<boolean>(false);
   const [invoiceId, setInvoiceId] = useState<number>(null);
   const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(true);
+  const [manualEntryArr, setManualEntryArr] = useState<any>([]);
 
   const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
     try {
@@ -120,6 +121,8 @@ const GenerateInvoices = () => {
           setTax={setTax}
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
+          manualEntryArr={manualEntryArr}
+          setManualEntryArr={setManualEntryArr}
         />
 
         {showSendInvoiceModal && <SendInvoice invoice={{

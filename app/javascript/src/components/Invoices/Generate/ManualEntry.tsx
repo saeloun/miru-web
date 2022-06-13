@@ -25,18 +25,20 @@ const ManualEntry = ({
         qty: (Number(qty) * 60),
         lineTotal: (Number(qty) * Number(rate))
       });
-
-      const newManualEntryArr = manualEntryArr.map((option) => {
-        if (option.idx === lineItem.idx) {
-          return lineItem;
-        }
-
-        return option;
-      });
-
-      setManualEntryArr(newManualEntryArr);
     }
   }, [name, date, description, rate, qty, lineTotal]);
+
+  useEffect(() => {
+    const newManualEntryArr = manualEntryArr.map((option) => {
+      if (option.idx === lineItem.idx) {
+        return lineItem;
+      }
+
+      return option;
+    });
+
+    setManualEntryArr(newManualEntryArr);
+  }, [lineItem]);
 
   return (
     <tr className="w-full my-1">
@@ -75,7 +77,9 @@ const ManualEntry = ({
           placeholder="Rate"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={rate}
-          onChange={e => setRate(e.target.value)}
+          onChange={e => {
+            setRate(e.target.value);
+          }}
         />
       </td>
       <td className="p-1 w-full">
