@@ -22,7 +22,7 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
     end
 
     it "returns success json response" do
-      expect(json_response["company"]["name"]).to eq(company1.name)
+      expect(json_response["name"]).to eq(company1.name)
     end
   end
 end
