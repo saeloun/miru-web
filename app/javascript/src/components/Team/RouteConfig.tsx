@@ -24,7 +24,7 @@ const RouteConfig = ({ isAdminUser }) => {
         <Routes>
           <Route path="team">
             <Route index element={<List />} />
-            <Route path=":id" element={<Details />}>
+            <Route path=":memberId" element={<Details />}>
               <Route index element={<PersonalDetails />} />
               <Route path="employment" element={<EmploymentDetails />} />
             </Route>

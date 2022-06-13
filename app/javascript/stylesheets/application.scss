@@ -380,6 +380,11 @@ body {
   }
 }
 
+.userAvatarWrapper {
+  @apply absolute top-0;
+  margin-top: -50px;
+}
+
 .box-shadow {
   box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
 }
