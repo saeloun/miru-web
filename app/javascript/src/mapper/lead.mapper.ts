@@ -1,6 +1,7 @@
 const getList = (input) => input.lead_details.map((lead) => ({
   id: lead.id,
   name: lead.name,
+  description: lead.description,
   budget_amount: lead.budget_amount,
   budget_status_code: lead.budget_status_code,
   industry_code: lead.industry_code,
@@ -46,6 +47,7 @@ const unmapLeadDetails = (input) => {
     leadDetails: {
       id: data.lead_details.id,
       name: data.lead_details.name,
+      description: data.lead_details.description,
       budget_amount: data.lead_details.budget_amount,
       budget_status_code: data.lead_details.budget_status_code,
       industry_code: data.lead_details.industry_code,

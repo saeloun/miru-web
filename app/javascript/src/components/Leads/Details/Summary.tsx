@@ -16,6 +16,7 @@ const newLeadSchema = Yup.object().shape({
 
 const getInitialvalues = (lead) => ({
   name: lead.name,
+  description: lead.description,
   budget_amount: lead.budget_amount,
   budget_status_code: lead.budget_status_code,
   industry_code: lead.industry_code,
@@ -68,6 +69,7 @@ const Summary = ({ leadDetails }) => {
     await leads.update(leadDetails.id, {
       lead: {
         "budget_amount": values.budget_amount,
+        "description": values.description,
         "budget_status_code": budgetStatusCode || values.budget_status_code,
         "industry_code": industryCode || values.industry_code,
         "quality_code": qualityCode || values.quality_code,
@@ -97,12 +99,13 @@ const Summary = ({ leadDetails }) => {
         {({ errors, touched }) => (
           <Form>
             <div className="grid grid-cols-2 gap-6 justify-evenly">
-              <div className="relative flex flex-col items-start justify-start p-10 bg-white shadow-2xl rounded-xl">
+              <div className="relative flex flex-col items-start justify-start p-5 bg-white">
                 <div className="relative w-full mt-6 space-y-8">
                   {/* <h4 className="w-full text-4xl font-medium leading-snug">Details</h4> */}
                   <div className="relative">
                     <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Budget Amount</label>
-                    <Field className="block w-full px-4 py-4 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black" name="budget_amount" type="number" min="0" placeholder="Budget Amount" />
+                    <Field className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      name="budget_amount" type="number" min="0" placeholder="Budget Amount" />
                     <div className="tracking-wider block text-xs text-red-600">
                       {errors.budget_amount && touched.budget_amount &&
                         <div>{errors.budget_amount}</div>
@@ -113,7 +116,7 @@ const Summary = ({ leadDetails }) => {
                     <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Budget Status</label>
                     <select
                       defaultValue={leadDetails.budget_status_code}
-                      className="block w-full px-4 py-4 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
                       name="budget_status_code" onChange={(e) => setBudgetStatusCode(e.target.value)}>
                       <option value=''>Select Budget Status</option>
                       {budgetStatusCodeList &&
@@ -129,7 +132,7 @@ const Summary = ({ leadDetails }) => {
                     <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Industry</label>
                     <select
                       defaultValue={leadDetails.industry_code}
-                      className="block w-full px-4 py-4 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
                       name="industry_code" onChange={(e) => setIndustryCode(e.target.value)}>
                       <option value=''>Select Industry</option>
                       {industryCodeList &&
@@ -145,7 +148,7 @@ const Summary = ({ leadDetails }) => {
                     <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Quality</label>
                     <select
                       defaultValue={leadDetails.quality_code}
-                      className="block w-full px-4 py-4 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
                       name="quality_code" onChange={(e) => setQualityCode(e.target.value)}>
                       <option value=''>Select Quality</option>
                       {qualityCodeList &&
@@ -161,7 +164,7 @@ const Summary = ({ leadDetails }) => {
                     <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">State</label>
                     <select
                       defaultValue={leadDetails.state_code}
-                      className="block w-full px-4 py-4 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
                       name="state_code" onChange={(e) => setStateCode(e.target.value)}>
                       <option value=''>Select State</option>
                       {stateCodeList &&
@@ -177,7 +180,7 @@ const Summary = ({ leadDetails }) => {
                     <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Status</label>
                     <select
                       defaultValue={leadDetails.status_code}
-                      className="block w-full px-4 py-4 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
                       name="status_code" onChange={(e) => setStatusCode(e.target.value)}>
                       <option value=''>Select Status</option>
                       {statusCodeList &&
@@ -191,7 +194,7 @@ const Summary = ({ leadDetails }) => {
                   </div>
                 </div>
               </div>
-              <div className="relative flex flex-col items-start justify-start p-10 bg-white shadow-2xl rounded-xl">
+              <div className="relative flex flex-col items-start justify-start p-5 bg-white">
                 <p className="tracking-wider mt-3 block text-xs text-red-600">{apiError}</p>
                 <div className="actions mt-4">
                   <input
@@ -204,35 +207,55 @@ const Summary = ({ leadDetails }) => {
                 <div className="relative w-full mt-6 space-y-8 ">
                   {/* <h4 className="w-full text-4xl font-medium leading-snug">Preferences</h4> */}
                   <div className="relative flex items-start mb-4">
-                    <div className="flex items-center h-5">
-                      <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotemail" />
-                    </div>
-                    <div className="text-sm ml-3">
-                      <label className="px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Do not Email</label>
-                    </div>
+                    <label className="flex font-medium text-gray-600 bg-white">
+                      <div className=" items-center h-5">
+                        <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotemail" />
+                      </div>
+                      <div className="text-sm ml-3">
+                        Do not email
+                      </div>
+                    </label>
                   </div>
                   <div className="relative flex items-start mb-4">
-                    <div className="flex items-center h-5">
-                      <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotbulkemail" />
-                    </div>
-                    <div className="text-sm ml-3">
-                      <label className="px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Do not bulk Email</label>
-                    </div>
+                    <label className="flex font-medium text-gray-600 bg-white">
+                      <div className=" items-center h-5">
+                        <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotbulkemail" />
+                      </div>
+                      <div className="text-sm ml-3">
+                        Do not bulk email
+                      </div>
+                    </label>
                   </div>
                   <div className="relative flex items-start mb-4">
-                    <div className="flex items-center h-5">
-                      <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotfax" />
-                    </div>
-                    <div className="text-sm ml-3">
-                      <label className="px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Do not Fax</label>
-                    </div>
+                    <label className="flex font-medium text-gray-600 bg-white">
+                      <div className=" items-center h-5">
+                        <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotfax" />
+                      </div>
+                      <div className="text-sm ml-3">
+                        Do not fax
+                      </div>
+                    </label>
                   </div>
                   <div className="relative flex items-start mb-4">
-                    <div className="flex items-center h-5">
-                      <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotphone" />
-                    </div>
-                    <div className="text-sm ml-3">
-                      <label className="px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Do not Phone</label>
+                    <label className="flex font-medium text-gray-600 bg-white">
+                      <div className=" items-center h-5">
+                        <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotphone" />
+                      </div>
+                      <div className="text-sm ml-3">
+                      Do not Phone
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                <div className="relative w-full mt-6 space-y-8">
+                  <div className="relative">
+                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Description</label>
+                    <Field className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      name="description" as="textarea" rows={8} placeholder="Description" />
+                    <div className="tracking-wider block text-xs text-red-600">
+                      {errors.description && touched.description &&
+                        <div>{errors.description}</div>
+                      }
                     </div>
                   </div>
                 </div>
