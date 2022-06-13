@@ -1,88 +1,126 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
   </head>
-  <body style="display:flex; justify-content:center">
-    <div style="width: 640px; height: 702px;" >
-      <div style="padding: 40px; background:white;" >
-        <div style=" display:flex; flex-direction:column; align-items:center; border-bottom: 2px solid #E1E6EC;" >
-          <%= image_tag @invoice.company.logo, height: 80 ,width: 80 %>
-          <span style="margin-top: 24px; margin-bottom: 40px;" >
-            <span style='font-weight:bold'> <%= @invoice.company.name %> </span>
-            has sent you an invoice.
-          </span>
-        </div>
-        <div style="display:flex; flex-direction:column; color:#1D1A31" >
-          <span style="margin: 40px; text-align: center; font-weight:bold; font-size: 24px; line-height:28px;" >
-            Invoice Summary
-          </span>
-          <div style='display:flex; justify-content:space-between'>
-            <div>
-              <div>
-                <span style='display:flex; font-weight:normal; font-size:12px;'>
-                  Date of Issue
-                </span>
-                <span style="font-weight:normal; font-size:16px;"> <%= @invoice.issue_date %> </span>
-              </div>
-              <div>
-                <span style='display:flex; margin-top:16px; font-weight:normal; font-size:12px;' >
-                  Due Date
-                </span>
-                <span style="font-weight:normal; font-size:16px;"> <%= @invoice.due_date %> </span>
-              </div>
-            </div>
-            <div>
-              <div style='display:flex; flex-direction:column'>
-                <span style="font-weight:normal; font-size:12px;">
-                  Invoice Number
-                </span>
-                <span style="font-weight:normal; font-size:16px;">
-                  <%= @invoice.invoice_number %>
-                </span>
-              </div>
-              <div style='display:flex; flex-direction:column'>
-                <span style='margin-top:16px; font-weight:normal; font-size:12px;' >
-                  Reference
-                </span>
-                <span style="font-weight:normal; font-size:16px;">
-                  -
-                </span>
-              </div>
-            </div>
-
-            <div style='display:flex; flex-direction:column'>
-              <span style='text-align:right; font-weight:normal; font-size:12px;' >
-                Total Amount
-              </span>
-              <span style="font-weight:normal; font-size:40px; margin-top:24px">
-                <%= @invoice.amount %>
-              </span>
-            </div>
+  <body style="color:#1D1A31">
+    <div style="width: 640px; height: 702px; margin: 0 auto">
+      <div id="header" style="padding:0 40px;">
+        <div
+          style="padding: 30px 40px; background:white ;border-bottom: 2px solid #E1E6EC; text-align: center"
+        >
+          <div style="padding: 10px; display: inline-block; text-align: center">
+            <%= image_tag @invoice.company.logo, height: 80 ,width: 80 %>
           </div>
-          <a href="<%= @invoice_url %>" target="_blank" style="font-weight:bold; font-size:16px; color:white; text-align:center; letter-spacing: 2px; display: flex;align-items:center; align-self:center; line-height: 22px; border-radius: 4px; border:none; margin-top:40px; padding-top:4px; padding-bottom:4px; padding-left:64px; padding-right:64px; text-decoration:none; background: #5B34EA;">
+          <div>
+            <span style='font-weight:bold'><%= @invoice.company.name %></span>
+            has sent you an invoice.
+          </div>
+        </div>
+      </div>
+      <div id="body" style="color:#1D1A31">
+        <div
+          style="margin: 40px; text-align: center; font-weight:bold; font-size: 24px; line-height:28px;"
+        >
+          Invoice Summary
+        </div>
+        <table style="width: 100%; border-collapse: separate;border-spacing: 0 15px; ">
+          <colgroup>
+            <col width="40%">
+            <col width="40%">
+            <col width="20">
+          </colgroup>
+          <tr style="width: 100%" valign="top">
+            <td>
+              <div style=' font-weight:normal; font-size:12px;'>Date of Issue</div>
+              <div style="font-weight:normal; font-size:16px;"><%= @invoice.issue_date %>
+              </div>
+            </td>
+
+            <td>
+              <div style=' font-weight:normal; font-size:12px;'>Invoice Number</div>
+              <div style="font-weight:normal; font-size:16px;"><%= @invoice.invoice_number %></div>
+            </td>
+            <td align="right">
+              <div style=' font-weight:normal; font-size:12px;'>Total</div>
+              <div style="font-weight:normal; font-size:12px;">Amount</div>
+            </td>
+          </tr>
+
+          <tr style="width: 100%; margin-top: 15px">
+            <td style="">
+
+              <div style=' font-weight:normal; font-size:12px;'>Due Date</div>
+              <div style="font-weight:normal; font-size:16px;"><%= @invoice.due_date %></div>
+            </td>
+
+            <td>
+              <div style=' font-weight:normal; font-size:12px;'>Reference</div>
+              <div style="font-weight:normal; font-size:16px;">-</div>
+            </td>
+            <td align="right">
+              <div style="font-weight:normal; font-size:40px"><%= @invoice.amount %></div>
+
+            </td>
+          </tr>
+
+        </table>
+        <div style="text-align: center">
+
+          <a
+            href="<%= @invoice_url %>"
+            target="_blank"
+            style="font-weight:bold; font-size:16px; color:white;letter-spacing: 2px;align-items:center; align-self:center; line-height: 22px; border-radius: 4px; border:none; margin:40px 0; padding:8px 64px;text-decoration:none; background: #5B34EA; display: inline-block;"
+          >
             VIEW INVOICE
           </a>
         </div>
       </div>
 
-      <div style="font-family: 'Manrope'; padding:24px; display:flex; flex-direction:column; align-items:center; background:#F5F7F9;" >
-          <span style='display:flex'>
-            <span style="padding-top:16px; font-size:14px; font-weight:normal; color:#A5A3AD;">Powered by</span>
-              <%= image_tag attachments['miruLogoWithText.svg'].url, height:'48px', width:'120px' %>
-          </span>
-          <span style="margin-top:20px; line-height:20px font-size:14px; font-weight:normal; color:#A5A3AD;">
+      <div id="footer">
+        <div
+          style="font-family: 'Manrope'; padding:24px; align-items:center; background:#F5F7F9; text-align:center;"
+        >
+          <table style=" width:80%; margin: 0 auto; padding-top:16px;">
+            <tr>
+              <td
+                align="right"
+                style="font-size:14px; font-weight:normal; color:#A5A3AD; display: inline-block;"
+              >Powered by</td>
+              <td align="left" style="vertical-align: middle; display: inline-block;">
+                <%= image_tag attachments['miruLogoWithText.png'].url, height:'48px', width:'120px' %>
+              </td>
+            </tr>
+          </table>
+          <div>
             Invoice and accounting software for every business
-          </span>
-      </div>
+          </div>
+        </div>
+        <div
+          style="font-family: 'Manrope'; padding-left:40px; padding-right:40px; padding-top:12px; padding-bottom:12px;  justify-content:space-between; color:white; background:#5B34EA;"
+        >
+          <span
+            style="font-size:12px; font-weight:normal; line-height: 16px; text-align: center;"
+          >© Miru 2022. All rights reserved.</span>
 
-      <div style="font-family: 'Manrope'; padding-left:40px; padding-right:40px; padding-top:12px; padding-bottom:12px; display:flex; justify-content:space-between; color:white; background:#5B34EA;" >
-          <span style="font-size:12px; font-weight:normal; line-height: 16px; text-align: center;" >© Miru 2022. All rights reserved.</span>
-          <span style="display:flex; justify-content:space-between; width:35%; font-size:12px; font-weight:normal; line-height: 16px; text-align: center;" >
-            www.getmiru.com/
-            <%= image_tag attachments['Instagram.svg'].url, height: '16px' ,width:'16px'%>
-            <%= image_tag attachments['Twitter.svg'].url, height: '16px' ,width:'16px' %>
+          <span
+            style=" font-size:12px; font-weight:normal; line-height: 16px; text-align: center; float:right; color: white"
+          >
+            <%= image_tag attachments['Instagram.png'].url, height: '16px' ,width:'16px', style: 'padding-left: 10px' %>
+            <%= image_tag attachments['Twitter.png'].url, height: '16px' ,width:'16px', style: 'padding-left: 10px' %>
           </span>
+          <span
+            style="padding-left: 10px; font-size:12px; font-weight:normal; line-height: 16px; text-align: center; float:right"
+          >
+            <a
+              href="http://www.getmiru.com/"
+              target="_blank"
+              style="color:#FFFFFF; vertical-align: middle; margin-bottom: 3px"
+            >
+              www.getmiru.com/
+            </a>
+          </span>
+        </div>
       </div>
     </div>
   </body>

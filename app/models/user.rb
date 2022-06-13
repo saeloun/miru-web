@@ -58,6 +58,7 @@ class User < ApplicationRecord
   has_many :project_members, dependent: :destroy
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all
+  has_one :wise_account, dependent: :destroy
   has_one_attached :avatar
   rolify strict: true
 
@@ -103,6 +104,11 @@ class User < ApplicationRecord
 
   def current_workspace=(workspace)
     write_attribute(:current_workspace_id, workspace&.id)
+  end
+
+  # https://github.com/scambra/devise_invitable/blob/7c4b1f6d19135b2cfed4685735a646a28bbc5191/test/rails_app/app/models/user.rb#L59
+  def send_devise_notification(notification, *args)
+    super
   end
 
   private
