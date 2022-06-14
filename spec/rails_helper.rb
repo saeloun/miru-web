@@ -2,6 +2,7 @@
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require "spec_helper"
+require "vcr"
 
 ENV["RAILS_ENV"] ||= "test"
 
@@ -44,6 +45,13 @@ Shoulda::Matchers.configure do |config|
     with.test_framework :rspec
     with.library :rails
   end
+end
+
+VCR.configure do |config|
+  config.cassette_library_dir = "#{::Rails.root}/spec/cassettes"
+  config.hook_into :webmock
+  config.ignore_localhost = true
+  config.configure_rspec_metadata!
 end
 
 RSpec.configure do |config|

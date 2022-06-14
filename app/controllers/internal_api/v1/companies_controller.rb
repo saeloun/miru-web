@@ -3,7 +3,11 @@
 class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationController
   def index
     authorize current_company
-    render json: { company: current_company }
+    if current_company.logo.attached?
+      render json: current_company.as_json.merge(logo_url: url_for(current_company.logo))
+    else
+      render json: current_company
+    end
   end
 
   def create
@@ -30,7 +34,7 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
     def company_params
       params.require(:company).permit(
         :name, :address, :business_phone, :country, :timezone, :base_currency,
-        :standard_price, :fiscal_year_end, :date_format
+        :standard_price, :fiscal_year_end, :date_format, :logo
       )
     end
 end
