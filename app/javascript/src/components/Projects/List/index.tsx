@@ -1,10 +1,12 @@
 import React from "react";
 import { ToastContainer } from "react-toastify";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectApi from "apis/projects";
+import { TOASTER_DURATION } from "constants/index";
+
 import Header from "./Header";
 import { Project } from "./project";
-import { TOASTER_DURATION } from "../../../constants/index";
 import { IProject } from "../interface";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";

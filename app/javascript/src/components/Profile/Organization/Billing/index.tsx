@@ -1,6 +1,7 @@
 import React from "react";
 
 import Header from "../../Header";
+
 const OrgBilling = () => (
   <div className="flex flex-col w-4/5">
     <Header

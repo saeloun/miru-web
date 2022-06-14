@@ -5,7 +5,8 @@ import dayjs from "dayjs";
 import { currencyFormat } from "helpers/currency";
 import { PaperPlaneTilt, Pen, Trash } from "phosphor-react";
 
-import getStatusCssClass from "../../../../utils/getStatusTag";
+import getStatusCssClass from "utils/getStatusTag";
+
 import SendInvoice from "../SendInvoice";
 
 const TableRow = ({
