@@ -79,6 +79,7 @@ const ManualEntry = ({
           value={rate}
           onChange={e => {
             setRate(e.target.value);
+            setLineTotal(Number(e.target.value) * Number(qty));
           }}
         />
       </td>

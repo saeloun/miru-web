@@ -11,6 +11,7 @@ import Header from "./Header";
 
 import InvoiceSettings from "./InvoiceSettings";
 import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
+import { generateInvoiceLineItems } from "../common/utils";
 import SendInvoice from "../popups/SendInvoice";
 
 const GenerateInvoices = () => {
@@ -58,7 +59,7 @@ const GenerateInvoices = () => {
       reference,
       issueDate,
       dueDate,
-      selectedOption,
+      invoiceLineItems: generateInvoiceLineItems(selectedOption, manualEntryArr),
       amount,
       amountDue,
       amountPaid,

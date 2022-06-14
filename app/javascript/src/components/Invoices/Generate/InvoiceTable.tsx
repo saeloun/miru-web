@@ -50,16 +50,35 @@ const InvoiceTable = ({
   const [totalLineItems, setTotalLineItems] = useState<number>(null);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [showMultiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
+  const [addManualLineItem, setAddManualLineItem] = useState<boolean>(false);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
+    if (addManualLineItem) return setAddManualLineItem(false);
+
     if (addNew) {
-      fetchNewLineItems(selectedClient, setLineItems, lineItems, setTotalLineItems, pageNumber, setPageNumber, selectedOption);
+      fetchNewLineItems(
+        selectedClient,
+        setLineItems,
+        lineItems,
+        setTotalLineItems,
+        pageNumber,
+        setPageNumber,
+        selectedOption
+      );
     }
   }, [addNew]);
 
   const loadMoreItems = () => {
-    fetchNewLineItems(selectedClient, setLineItems, lineItems, setTotalLineItems, pageNumber, setPageNumber, selectedOption);
+    fetchNewLineItems(
+      selectedClient,
+      setLineItems,
+      lineItems,
+      setTotalLineItems,
+      pageNumber,
+      setPageNumber,
+      selectedOption
+    );
   };
 
   useOutsideClick(wrapperRef, () => {
@@ -71,7 +90,6 @@ const InvoiceTable = ({
   const getNewLineItemDropdown = () => {
     if (selectedClient && lineItems) {
       return <NewLineItemTable
-        showItemInputs={showItemInputs}
         setShowItemInputs={setShowItemInputs}
         addNew={addNew}
         setAddNew={setAddNew}
@@ -86,6 +104,7 @@ const InvoiceTable = ({
         setMultiLineItemModal={setMultiLineItemModal}
         manualEntryArr={manualEntryArr}
         setManualEntryArr={setManualEntryArr}
+        setAddManualLineItem={setAddManualLineItem}
       />;
     }
     return (

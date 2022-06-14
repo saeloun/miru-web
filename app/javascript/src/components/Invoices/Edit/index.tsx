@@ -9,7 +9,7 @@ import Header from "./Header";
 import InvoiceTable from "./InvoiceTable";
 import InvoiceTotal from "./InvoiceTotal";
 import { unmapLineItems } from "../../../mapper/editInvoice.mapper";
-import { generate_invoice_line_items } from "../common/utils";
+import { generateInvoiceLineItems } from "../common/utils";
 import CompanyInfo from "../CompanyInfo";
 import InvoiceDetails from "../Generate/InvoiceDetails";
 
@@ -93,7 +93,7 @@ const EditInvoice = () => {
       discount: Number(discount),
       tax: tax || invoiceDetails.tax,
       client_id: selectedClient.value,
-      invoice_line_items_attributes: generate_invoice_line_items(selectedLineItems, manualEntryArr)
+      invoice_line_items_attributes: generateInvoiceLineItems(selectedLineItems, manualEntryArr)
     })
       .then(() => navigate(`/invoices/${invoiceDetails.id}`))
       .catch();
