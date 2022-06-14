@@ -1,4 +1,5 @@
 import React from "react";
+
 const stripe = require('../../../../assets/images/StripeDropdown.svg'); // eslint-disable-line
 
 const Discountmenu = ( { stripeUrl } ) => (

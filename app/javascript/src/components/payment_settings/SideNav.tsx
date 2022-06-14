@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
+
 const profile = require("../../../../assets/images/avatar_payments.svg");
 
 const SideNav = () => (
