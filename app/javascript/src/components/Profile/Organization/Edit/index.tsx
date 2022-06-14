@@ -240,8 +240,7 @@ const OrgEdit = () => {
             "company[logo]", orgDetails.logo
           );
         }
-        const updateOrgDetails = await companiesApi.update(orgDetails.id, formD);
-        Toastr.success(updateOrgDetails.data.notice);
+        await companiesApi.update(orgDetails.id, formD);
         setIsDetailUpdated(false);
       } catch (err){
         Toastr.error("Error in Updating Org. Details");
