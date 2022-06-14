@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useCallback, useEffect, useState } from "react";
 import Select from "react-select";
-import { ToastContainer } from "react-toastify";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import companiesApi from "apis/companies";
 import companyProfileApi from "apis/companyProfile";
 import { Divider } from "common/Divider";
@@ -11,7 +9,6 @@ import Toastr from "common/Toastr";
 import * as Yup from "yup";
 import { CountryList } from "constants/countryList";
 import { currencyList } from "constants/currencyList";
-import { TOASTER_DURATION } from "constants/index";
 
 import Header from "../../Header";
 
@@ -133,8 +130,6 @@ const OrgEdit = () => {
   };
 
   useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
     getCountries();
     getCurrencies();
     getData();
@@ -440,7 +435,6 @@ const OrgEdit = () => {
           </div>
         </div>
       </div>
-      <ToastContainer autoClose={TOASTER_DURATION} />
     </div>
   );
 };
