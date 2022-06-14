@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import leadItemsApi from "apis/lead-items";
 import leadLineItems from "apis/lead-line-items";
 import Toastr from "common/Toastr";
@@ -26,6 +27,8 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
   const [kindList, setKindList] = useState<any>(null);
   const [kindVal, setKindVal] = useState<any>(null);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const getLeadItems = async () => {
       leadItemsApi.get()
@@ -51,7 +54,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
     })
       .then(res => {
         setLeadData([...leadData, { ...res.data }]);
-        document.location.reload();
+        navigate(`/leads/${leadDetails.id}/line-items`)
         setnewLead(false);
         Toastr.success("Line item added successfully");
       });

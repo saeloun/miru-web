@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import leads from "apis/leads";
 
 interface IProps {
@@ -8,12 +7,11 @@ interface IProps {
 }
 
 const DeleteLead = ({ lead, setShowDeleteDialog }: IProps) => {
-  const navigate = useNavigate();
 
   const deleteLead = async lead => {
     await leads.destroy(lead.id);
     setTimeout(() => {
-      navigate("/leads");
+      window.location.reload();
     }, 500);
   };
   return (

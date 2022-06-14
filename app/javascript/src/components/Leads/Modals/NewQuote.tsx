@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import leadQuotes from "apis/lead-quotes";
 import Toastr from "common/Toastr";
 import { Formik, Form, Field } from "formik";
@@ -16,6 +17,8 @@ const initialValues = {
 };
 
 const NewQuote = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
+  const navigate = useNavigate();
+
   const handleSubmit = (values) => {
     leadQuotes.create(leadDetails.id, {
       "name": values.name,
@@ -24,7 +27,7 @@ const NewQuote = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
     })
       .then(res => {
         setLeadData([...leadData, { ...res.data }]);
-        document.location.reload();
+        navigate(`/leads/${leadDetails.id}/quotes`)
         setnewLead(false);
         Toastr.success("Line item added successfully");
       });

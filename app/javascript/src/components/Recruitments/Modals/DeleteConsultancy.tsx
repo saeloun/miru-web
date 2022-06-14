@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import consultancies from "apis/consultancies";
 
 interface IProps {
@@ -8,12 +7,11 @@ interface IProps {
 }
 
 const DeleteConsultancy = ({ consultancy, setShowDeleteDialog }: IProps) => {
-  const navigate = useNavigate();
 
   const deleteConsultancy = async consultancy => {
     await consultancies.destroy(consultancy.id);
     setTimeout(() => {
-      navigate("/recruitments/consultancies");
+      window.location.reload();
     }, 500);
   };
   return (
