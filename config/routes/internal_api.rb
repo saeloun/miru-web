@@ -10,6 +10,10 @@ namespace :internal_api, defaults: { format: "json" } do
       resources :line_items, only: [:index, :update, :destroy, :show, :create], module: :leads
       resources :quotes, only: [:index, :update, :destroy, :show, :create, :edit], module: :leads
     end
+    namespace :recruitments do
+      resources :consultancies, only: [:index, :update, :destroy, :show, :create]
+      resources :candidates, only: [:index, :update, :destroy, :show, :create, :edit]
+    end
     resources :project, only: [:index]
     resources :timesheet_entry do
       collection do

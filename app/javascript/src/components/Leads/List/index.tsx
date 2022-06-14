@@ -90,6 +90,16 @@ const Leads = ({ isAdminUser }) => {
       cssClass: "text-center"
     },
     {
+      Header: "Budget Status",
+      accessor: "col3",
+      cssClass: "text-center"
+    },
+    {
+      Header: "Industry",
+      accessor: "col4",
+      cssClass: "text-center"
+    },
+    {
       Header: "Quality",
       accessor: "col5",
       cssClass: "text-center"

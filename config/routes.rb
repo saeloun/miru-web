@@ -69,6 +69,9 @@ Rails.application.routes.draw do
   get "leads/*path", to: "leads#index", via: :all
   get "leads", to: "leads#index"
 
+  get "recruitments/*path", to: "recruitments#index", via: :all
+  get "recruitments", to: "recruitments#index"
+
   get "invoices/*path", to: "invoices#index", via: :all
   get "invoices", to: "invoices#index"
 

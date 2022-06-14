@@ -33,6 +33,9 @@ en:
   navbar:
     clients: Clients
     leads: Leads
+    recruitments: Recruitments
+    consultancies: Consultancies
+    candidates: Candidates
     dashboard: Dashboard
     invoices: Invoices
     logout: Logout
@@ -131,6 +134,58 @@ en:
       success:
         message: Lead removed successfully
     add: ADD LEAD
+  consultancy:
+    name:
+      label: Name
+      placeholder: Enter name
+    email:
+      label: Email
+      placeholder: Enter email ID
+    phone:
+      label: Phone number
+      placeholder: Enter phone number
+    address:
+      label: Address
+      placeholder: Enter address
+    create:
+      failure: "Consultancy creation failed"
+      success: "Consultancy added successfully"
+    update:
+      success:
+        message: Changes saved successfully
+      failure:
+        unauthorized: User is unauthorized to modify this consultancy's details
+        message: Failed to saved changes
+    delete:
+      success:
+        message: Consultancy removed successfully
+    add: ADD CONSUltancY
+  candidate:
+    name:
+      label: Name
+      placeholder: Enter name
+    email:
+      label: Email
+      placeholder: Enter email ID
+    phone:
+      label: Phone number
+      placeholder: Enter phone number
+    address:
+      label: Address
+      placeholder: Enter address
+    create:
+      failure: "Candidate creation failed"
+      success: "Candidate added successfully"
+    update:
+      success:
+        message: Changes saved successfully
+      failure:
+        unauthorized: User is unauthorized to modify this candidate's details
+        message: Failed to saved changes
+    delete:
+      success:
+        message: Candidate removed successfully
+    add: ADD CANDIDATE
   workspaces:
     update:
       failure: "Failed to switch workspace"
@@ -219,6 +274,12 @@ en:
     lead_policy:
       create?: You are not authorized to create lead.
       update?: You are not authorized to update lead.
+    # consultancy_policy:
+    #   create?: You are not authorized to create consultancy.
+    #   update?: You are not authorized to update consultancy.
+    # candidate_policy:
+    #   create?: You are not authorized to create candidate.
+    #   update?: You are not authorized to update candidate.
     company_policy:
       new?: You are not authorized to create new company.
       create?: You are not authorized to create company.

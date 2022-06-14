@@ -45,6 +45,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_13_094006) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "candidates", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.bigint "consultancy_id"
+    t.datetime "discarded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["consultancy_id"], name: "index_candidates_on_consultancy_id"
+    t.index ["discarded_at"], name: "index_candidates_on_discarded_at"
+  end
+
   create_table "clients", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.string "name", null: false
@@ -83,6 +95,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_13_094006) do
     t.index ["company_id"], name: "index_company_users_on_company_id"
     t.index ["discarded_at"], name: "index_company_users_on_discarded_at"
     t.index ["user_id"], name: "index_company_users_on_user_id"
+  end
+
+  create_table "consultancies", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.string "phone"
+    t.string "address"
+    t.datetime "discarded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discarded_at"], name: "index_consultancies_on_discarded_at"
   end
 
   create_table "employment_details", force: :cascade do |t|
