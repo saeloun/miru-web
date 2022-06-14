@@ -38,7 +38,7 @@ RSpec.describe "InternalApi::V1::InvoicesController", type: :request do
       end
     end
 
-    context "when user is an book keeper" do
+    context "when user is a book keeper" do
       before { sign_in book_keeper }
 
       it "returns 403 status with an error message" do

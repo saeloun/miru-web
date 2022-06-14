@@ -36,7 +36,7 @@ RSpec.describe "Dashboard#index", type: :request do
     end
   end
 
-  context "when user is Book keeper" do
+  context "when user is book keeper" do
     before do
       create(:company_user, company:, user:)
       user.add_role :book_keeper, company

@@ -5,7 +5,7 @@ class TimeTrackingController < ApplicationController
   skip_after_action :verify_authorized
 
   def index
-    is_admin = current_user.has_owner_or_admin_role?(current_company)
+    is_admin = current_user.has_owner_role?(current_company) || current_user.has_admin_role?(current_company)
     user_id = current_user.id
     employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
 

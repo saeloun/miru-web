@@ -2,6 +2,6 @@
 
 class PaymentPolicy < ApplicationPolicy
   def index?
-    user_owner_or_admin_or_book_keeper_role?
+    user_book_keeper_role? || user_owner_role? || user_admin_role?
   end
 end

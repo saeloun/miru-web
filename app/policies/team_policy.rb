@@ -2,19 +2,19 @@
 
 class TeamPolicy < ApplicationPolicy
   def index?
-    user_owner_or_admin_or_employee?
+    user_owner_role? || user_admin_role? || user_employee_role?
   end
 
   def edit?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def update?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def destroy?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def permitted_attributes

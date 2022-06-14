@@ -2,7 +2,7 @@
   <div>
     <div>
       <%= react_component("payments", {
-        isAdminUser: current_user.has_owner_or_admin_or_book_keeper_role?(current_user.current_workspace)
+        isAdminUser: current_user.has_book_keeper_role?(current_user.current_workspace) || current_user.has_owner_role?(current_user.current_workspace) || current_user.has_admin_role?(current_user.current_workspace)
       }) %>
     </div>
   </div>

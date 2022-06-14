@@ -33,7 +33,7 @@ RSpec.describe "Payments#index", type: :request do
     end
   end
 
-  context "when user is an book keeper" do
+  context "when user is a book keeper" do
     before do
       create(:company_user, company:, user:)
       user.add_role :book_keeper, company

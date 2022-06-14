@@ -66,7 +66,7 @@ RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
       end
     end
 
-    context "when user is an book keeper" do
+    context "when user is a book keeper" do
       before do
         user.add_role :book_keeper, company
         sign_in user
