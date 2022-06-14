@@ -20,6 +20,15 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
           PROFILE SETTINGS
         </NavLink>
       </li>
+      <li className='border-b-2 border-miru-gray-400'>
+        <NavLink
+          to="/profile/edit/bank_account_details"
+          type="li"
+          className={({ isActive }) => getActiveClassName(isActive)}
+        >
+          BANK ACCOUNT DETAILS
+        </NavLink>
+      </li>
       <p className='font-bold text-base mt-5 ml-4'>{company.name}</p>
       <li className='border-b-2 border-miru-gray-400 mt-4'>
         <NavLink end to="/profile/edit/organization" className={({ isActive }) => getActiveClassName(isActive)}>
@@ -44,6 +53,15 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
       <li className='border-b-2 border-miru-gray-400'>
         <NavLink end to="/profile/edit" className={({ isActive }) => getActiveClassName(isActive)}>
           PROFILE SETTINGS
+        </NavLink>
+      </li>
+      <li className='border-b-2 border-miru-gray-400'>
+        <NavLink
+          to="/profile/edit/bank_account_details"
+          type="li"
+          className={({ isActive }) => getActiveClassName(isActive)}
+        >
+          BANK ACCOUNT DETAILS
         </NavLink>
       </li>
     </ul>

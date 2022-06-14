@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const path = "/internal_api/v1/profile";
+const path = "/profile";
 
 const index = () => axios.get(path);
 
