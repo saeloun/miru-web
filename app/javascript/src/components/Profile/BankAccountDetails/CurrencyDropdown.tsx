@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import wiseApi from "apis/wise";
 import getSymbolFromCurrency from "currency-symbol-map";
 
@@ -13,8 +12,6 @@ const CurrencyDropdown = ({
 
   useEffect(() => {
     setIsLoading(true);
-    setAuthHeaders();
-    registerIntercepts();
     wiseApi.fetchCurrencies().
       then(response => response.data).
       then(data => data.map(currency => ({ label: `${currency} (${getSymbolFromCurrency(currency)})`, value: currency }))).
