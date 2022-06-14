@@ -160,6 +160,10 @@ group :development, :test do
 
   # Added rails controller to use render_template
   gem "rails-controller-testing", "~> 1.0", ">= 1.0.5"
+
+  # To record response of outgoing API calls
+  gem "vcr", "~> 3.0.1"
+  gem "webmock", "~> 3.14.0"
 end
 
 group :development do

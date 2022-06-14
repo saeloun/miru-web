@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectAPI from "apis/projects";
+
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
