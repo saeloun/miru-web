@@ -35,5 +35,7 @@ namespace :internal_api, defaults: { format: "json" } do
     namespace :payments do
       resources :providers, only: [:index, :update]
     end
+
+    resources :team, only: [:index]
   end
 end

@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class TeamPolicy < ApplicationPolicy
+  def index?
+    true
+  end
+
   def edit?
     user_owner_or_admin?
   end
