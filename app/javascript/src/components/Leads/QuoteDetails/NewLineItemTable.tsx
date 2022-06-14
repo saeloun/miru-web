@@ -10,7 +10,6 @@ const NewLineItemTable = ({
 }) => {
 
   const selectRowId = (item) => {
-    // const option = { ...item };
     const option = {
       id: "",
       name: item.name,
@@ -20,14 +19,17 @@ const NewLineItemTable = ({
       resource_expertise_level: item.resource_expertise_level,
       estimated_hours: "",
       lead_line_item_id: item.id,
-      lead_quote_id: quoteId
+      lead_quote_id: quoteId,
+      _destroy: false,
     };
-    const newLineItems = [...lineItems];
-    newLineItems.splice(item.key, 1);
 
     setAddNew(false);
     setSelectedLineItems([...selectedLineItems, option]);
-    setLineItems(newLineItems);
+
+    const sanitized = lineItems.filter(option =>
+      option.id !== item.id
+    )
+    setLineItems(sanitized);
   };
 
   const renderLineItem = (item) => (

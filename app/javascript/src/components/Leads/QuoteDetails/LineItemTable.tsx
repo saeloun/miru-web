@@ -98,7 +98,8 @@ const LineItemTable = () => {
         resource_expertise_level: item.resource_expertise_level,
         estimated_hours: item.estimated_hours,
         lead_line_item_id: item.lead_line_item_id,
-        lead_quote_id: item.lead_quote_id
+        lead_quote_id: item.lead_quote_id,
+        _destroy: item._destroy
       }))
     }).then(() => {
       navigate(`/leads/${leadId}/quotes`);
@@ -218,7 +219,7 @@ const LineItemTable = () => {
               }
               {
                 selectedLineItems.map((item, index) => (
-                  <NewLineItemRow
+                  !item._destroy && <NewLineItemRow
                     item={item}
                     selectedOption={selectedLineItems}
                     setSelectedOption={setSelectedLineItems}

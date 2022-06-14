@@ -10,12 +10,16 @@ const NewLineItemRow = ({
 }) => {
   const [isEdit, setEdit] = useState<boolean>(false);
 
-  const handleDelete = () => {
-    // const sanitized = selectedOption.filter(option =>
-    //   option.timesheet_entry_id !== item.timesheet_entry_id ||
-    //   option.id !== item.id
-    // )
-    // setSelectedOption(sanitized);
+  const handleDelete = (item) => {
+
+    const sanitizedSelected = selectedOption.filter(option =>
+      option.id !== item.id
+    );
+    const newItem = {
+      ...item,
+      _destroy: true
+    };
+    setSelectedOption([...sanitizedSelected, { ...newItem }]);
   };
 
   return isEdit && !["accepted", "rejected", "sent"].includes(quoteDetails.status) ? (

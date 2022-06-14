@@ -20,15 +20,16 @@ const EditLineItems = ({
       const sanitizedSelected = selectedOption.filter(option =>
         option.id !== item.id
       );
-
-      setSelectedOption([...sanitizedSelected, {
+      const newItem = {
+        ...item,
         name: name,
         description: description,
         comment: comment,
         number_of_resource: numberOfResource,
         resource_expertise_level: resourceExpertiseLevel,
         estimated_hours: estimatedHours
-      }]);
+      };
+      setSelectedOption([...sanitizedSelected, { ...newItem }]);
       setEdit(false);
     }
   };
