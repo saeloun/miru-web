@@ -135,6 +135,8 @@ GEM
     countries (5.0.1)
       i18n_data (~> 0.16.0)
       sixarm_ruby_unaccent (~> 1.1)
+    crack (0.4.5)
+      rexml
     crass (1.0.6)
     data_migrate (8.0.0)
       activerecord (>= 5.0)
@@ -207,6 +209,7 @@ GEM
     grover (1.1.1)
       combine_pdf (~> 1.0)
       nokogiri (~> 1.0)
+    hashdiff (1.0.1)
     hashie (5.0.0)
     honeybadger (4.12.1)
     i18n (1.10.0)
@@ -462,6 +465,7 @@ GEM
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.1.0)
+    vcr (3.0.3)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.0)
@@ -473,6 +477,10 @@ GEM
       nokogiri (~> 1.6)
       rubyzip (>= 1.3.0)
       selenium-webdriver (~> 4.0)
+    webmock (3.14.0)
+      addressable (>= 2.8.0)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
     webpacker (5.4.3)
       activesupport (>= 5.2)
       rack-proxy (>= 0.6.1)
@@ -549,8 +557,10 @@ DEPENDENCIES
   spring
   stripe
   tzinfo-data
+  vcr (~> 3.0.1)
   web-console (>= 4.1.0)
   webdrivers
+  webmock (~> 3.14.0)
   webpacker
 
 RUBY VERSION

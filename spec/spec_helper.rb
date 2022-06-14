@@ -3,6 +3,7 @@
 require "simplecov"
 require "pundit/rspec"
 require "sidekiq/testing"
+require "webmock/rspec"
 
 if ENV.fetch("COVERAGE", false)
   SimpleCov.start "rails" do
