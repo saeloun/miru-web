@@ -2,6 +2,8 @@
 
 module Report
   class Filters < ApplicationService
+    include UtilityFunctions
+
     FILTER_PARAM_LIST = %i[date_range status team_member client]
 
     attr_reader :filter_params
@@ -21,7 +23,7 @@ module Report
     end
 
     def date_range_filter
-      { work_date: from_date..to_date }
+      { work_date: range_from_timeframe(filter_params[:date_range]) }
     end
 
     def status_filter
@@ -34,32 +36,6 @@ module Report
 
     def team_member_filter
       { user_id: filter_params[:team_member] }
-    end
-
-    def from_date
-      case filter_params[:date_range]
-      when "this_month"
-        0.month.ago.beginning_of_month
-      when "last_month"
-        1.month.ago.beginning_of_month
-      when "this_week"
-        0.weeks.ago.beginning_of_week
-      when "last_week"
-        1.weeks.ago.beginning_of_week
-      end
-    end
-
-    def to_date
-      case filter_params[:date_range]
-      when "this_month"
-        0.month.ago.end_of_month
-      when "last_month"
-        1.month.ago.end_of_month
-      when "this_week"
-        0.weeks.ago.end_of_week
-      when "last_week"
-        1.weeks.ago.end_of_week
-      end
     end
   end
 end

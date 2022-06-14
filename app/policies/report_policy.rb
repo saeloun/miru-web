@@ -4,4 +4,8 @@ class ReportPolicy < ApplicationPolicy
   def index?
     user_owner_or_admin?
   end
+
+  def download?
+    user_owner_or_admin?
+  end
 end

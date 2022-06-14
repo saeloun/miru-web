@@ -1,10 +1,10 @@
 import React, { useState, useRef } from "react";
 import Select from "react-select";
+import useOutsideClick from "helpers/outsideClick";
 import { PencilSimple } from "phosphor-react";
 
 import { DropdownIndicator } from "./CustomComponents";
 import { reactSelectStyles } from "./Styles";
-import useOutsideClick from "../../../helpers/outsideClick";
 
 const ClientSelection = ({ clientList, selectedClient, setSelectedClient, optionSelected, clientVisible }) => {
   const [isOptionSelected, setOptionSelection] = useState<boolean>(optionSelected);

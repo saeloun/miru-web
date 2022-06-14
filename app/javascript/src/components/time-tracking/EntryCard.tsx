@@ -1,6 +1,8 @@
 import React from "react";
+
+import { minutesToHHMM } from "helpers/hhmm-parser";
+
 import BillTag from "./BillTag";
-import { minutesToHHMM } from "../../helpers/hhmm-parser";
 
 interface props {
   id: number;
