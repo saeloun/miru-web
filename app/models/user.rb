@@ -69,7 +69,7 @@ class User < ApplicationRecord
   store_accessor :social_accounts, :github_url, :linkedin_url
 
   # Validations
-  before_validation :set_default_social_accounts, on: :create
+  after_initialize :set_default_social_accounts, if: :new_record?
   validates :first_name, :last_name,
     presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },
@@ -118,16 +118,16 @@ class User < ApplicationRecord
     super
   end
 
-  def set_default_social_accounts
-    self.social_accounts = {
-      "github_url": "",
-      "linkedin_url": ""
-    }
-  end
-
   private
 
     def discard_project_members
       project_members.discard_all
     end
+
+    def set_default_social_accounts
+      self.social_accounts = {
+        "github_url": "",
+        "linkedin_url": ""
+      }
+  end
 end
