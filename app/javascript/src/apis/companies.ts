@@ -2,7 +2,7 @@ import axios from "axios";
 
 const path = "/companies";
 
-const index = () => axios.get(path);
+const index = async () => axios.get(`${path}`);
 
 const create = payload => axios.post(path, payload);
 

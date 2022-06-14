@@ -25,6 +25,8 @@
 
 class Project < ApplicationRecord
   include Discard::Model
+  include UtilityFunctions
+
   default_scope -> { kept }
 
   # Associations
@@ -40,31 +42,30 @@ class Project < ApplicationRecord
   after_discard :discard_project_members
 
   def project_team_member_details(time_frame)
-    from, to = week_month_year(time_frame)
-    project_members_timesheet_entries = timesheet_entries.where(
-      user_id: project_members.pluck(:user_id),
-      work_date: from..to)
-    project_members.map do |project_member|
-      minutes_logged = project_members_timesheet_entries.filter_map do |project_members_timesheet_entry|
-        project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
-      end.sum
-      {
-        id: project_member.user_id, name: project_member.full_name, hourly_rate: project_member.hourly_rate,
-        minutes_logged:
-      }
-    end
-  end
+    members = project_members.pluck(:user_id, :hourly_rate).to_h
+    entries = timesheet_entries.includes(:user)
+      .where(user_id: members.keys, work_date: range_from_timeframe(time_frame))
+      .select(:user_id, "SUM(duration) as duration")
+      .group(:user_id)
 
-  def week_month_year(time_frame)
-    case time_frame
-    when "last_week"
-      return ((Date.today.beginning_of_week) - 7), ((Date.today.end_of_week) - 7)
-    when "month"
-      return Date.today.beginning_of_month, Date.today.end_of_month
-    when "year"
-      return Date.today.beginning_of_year, Date.today.end_of_year
+    if entries.empty?
+      project_members.map do |member|
+        {
+          id: member.user_id,
+          name: member.full_name,
+          hourly_rate: member.hourly_rate,
+          minutes_logged: 0
+        }
+      end
     else
-      return Date.today.beginning_of_week, Date.today.end_of_week
+      entries.map do |entry|
+        {
+          id: entry.user_id,
+          name: entry.user.full_name,
+          hourly_rate: members[entry.user_id],
+          minutes_logged: entry.duration
+        }
+      end
     end
   end
 
@@ -76,8 +77,7 @@ class Project < ApplicationRecord
   end
 
   def total_hours_logged(time_frame = "week")
-    from, to = week_month_year(time_frame)
-    timesheet_entries.where(work_date: from..to).sum(:duration)
+    timesheet_entries.where(work_date: range_from_timeframe(time_frame)).sum(:duration)
   end
 
   private
