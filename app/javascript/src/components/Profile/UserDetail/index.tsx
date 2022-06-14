@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import profileApi from "apis/profile";
 import { Divider } from "common/Divider";
 import * as Yup from "yup";
@@ -145,8 +144,6 @@ const UserDetails = () => {
   };
 
   useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
     getData();
   }, []);
 
