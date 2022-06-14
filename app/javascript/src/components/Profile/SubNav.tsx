@@ -22,11 +22,11 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
       </li>
       <li className='border-b-2 border-miru-gray-400'>
         <NavLink
-          to="/profile/edit/billing"
+          to="/profile/edit/bank_account_details"
           type="li"
           className={({ isActive }) => getActiveClassName(isActive)}
         >
-          BILLING
+          BANK ACCOUNT DETAILS
         </NavLink>
       </li>
       <p className='font-bold text-base mt-5 ml-4'>{company.name}</p>
@@ -57,11 +57,11 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
       </li>
       <li className='border-b-2 border-miru-gray-400'>
         <NavLink
-          to="/profile/edit/billing"
+          to="/profile/edit/bank_account_details"
           type="li"
           className={({ isActive }) => getActiveClassName(isActive)}
         >
-          BILLING
+          BANK ACCOUNT DETAILS
         </NavLink>
       </li>
     </ul>
