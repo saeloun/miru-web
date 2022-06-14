@@ -3,14 +3,11 @@
 class EmailConfirmationsController < ApplicationController
   skip_before_action :authenticate_user!
   skip_after_action :verify_authorized
+  before_action :verify_confirmed_user
 
   def show
-    if user.confirmed?
-      redirect_to root_path
-    else
-      resend_url = resend_email_confirmation_path({ email: user.email })
-      render :show, locals: { user:, resend_url: }
-    end
+    resend_url = resend_email_confirmation_path({ email: user.email })
+    render :show, locals: { user:, resend_url: }
   end
 
   def resend
@@ -20,6 +17,12 @@ class EmailConfirmationsController < ApplicationController
   end
 
   private
+
+    def verify_confirmed_user
+      if user.confirmed?
+        redirect_to root_path
+      end
+    end
 
     def user
       @_user ||= User.kept.find_by_email!(params[:email])
