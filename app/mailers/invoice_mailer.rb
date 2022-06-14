@@ -8,7 +8,7 @@ class InvoiceMailer < ApplicationMailer
     recipients = params[:recipients]
     subject = params[:subject]
     @message = params[:message]
-    @invoice_url = "#{ENV.fetch("APP_BASE_URL", "getmiru.com")}/invoices/#{@invoice.id}/view"
+    @invoice_url = "http://#{ENV.fetch("APP_BASE_URL", "getmiru.com")}/invoices/#{@invoice.external_view_key}/view"
 
     pdf = InvoicePayment::PdfGeneration.process(@invoice, company_logo)
     attachments["invoice_#{@invoice.invoice_number}.pdf"] = pdf
