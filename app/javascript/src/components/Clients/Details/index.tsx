@@ -7,14 +7,14 @@ import clients from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
+import AddEditProject from "components/Projects/Modals/AddEditProject";
+import DeleteProject from "components/Projects/Modals/DeleteProject";
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
 
+import { TOASTER_DURATION } from "constants/index";
 import Header from "./Header";
-import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapClientDetails } from "../../../mapper/client.mapper";
-import AddEditProject from "../../Projects/Modals/AddEditProject";
-import DeleteProject from "../../Projects/Modals/DeleteProject";
 
 const getTableData = (clients) => {
   if (clients) {
