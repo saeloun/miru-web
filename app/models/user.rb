@@ -8,6 +8,7 @@
 #  confirmed_at           :datetime
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string
+#  date_of_birth          :date
 #  discarded_at           :datetime
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
@@ -26,11 +27,13 @@
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
 #  sign_in_count          :integer          default(0), not null
+#  social_accounts        :jsonb
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  current_workspace_id   :bigint
 #  invited_by_id          :bigint
+#  personal_email_id      :string
 #
 # Indexes
 #
@@ -62,7 +65,11 @@ class User < ApplicationRecord
   has_one_attached :avatar
   rolify strict: true
 
+  # Social account details
+  store_accessor :social_accounts, :github_url, :linkedin_url
+
   # Validations
+  before_validation :set_default_social_accounts, on: :create
   validates :first_name, :last_name,
     presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },
@@ -109,6 +116,13 @@ class User < ApplicationRecord
   # https://github.com/scambra/devise_invitable/blob/7c4b1f6d19135b2cfed4685735a646a28bbc5191/test/rails_app/app/models/user.rb#L59
   def send_devise_notification(notification, *args)
     super
+  end
+
+  def set_default_social_accounts
+    self.social_accounts = {
+      "github_url": "",
+      "linkedin_url": ""
+    }
   end
 
   private
