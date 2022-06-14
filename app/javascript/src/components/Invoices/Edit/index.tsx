@@ -5,6 +5,7 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clientsApi from "apis/clients";
 import invoicesApi from "apis/invoices";
 import dayjs from "dayjs";
+
 import Header from "./Header";
 import InvoiceTable from "./InvoiceTable";
 import InvoiceTotal from "./InvoiceTotal";

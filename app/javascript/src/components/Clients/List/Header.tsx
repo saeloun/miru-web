@@ -1,6 +1,7 @@
 import * as React from "react";
 import clients from "apis/clients";
 import { MagnifyingGlass, Plus } from "phosphor-react";
+
 import AutoComplete from "./AutoComplete";
 import { unmapClientListForDropdown } from "../../../mapper/client.mapper";
 

@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const path = "/internal_api/v1/companies";
+const path = "/companies";
 
-const index = () => axios.get(path);
+const index = async () => axios.get(`${path}`);
 
 const create = payload => axios.post(path, payload);
 
