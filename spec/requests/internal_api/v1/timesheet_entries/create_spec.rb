@@ -8,7 +8,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -35,7 +35,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
@@ -62,7 +62,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
     end
   end
 
-  context "when the user is an book keeper" do
+  context "when the user is a book keeper" do
     before do
       create(:company_user, company:, user:)
       user.add_role :book_keeper, company

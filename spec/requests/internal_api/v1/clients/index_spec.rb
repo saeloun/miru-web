@@ -11,7 +11,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   let(:project_2) { create(:project, client: client_2) }
   let(:time_frame) { "week" }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -79,7 +79,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     let(:time_frame) { "last_week" }
 
     before do
@@ -111,7 +111,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     end
   end
 
-  context "when user is book keeper" do
+  context "when user is a book keeper" do
     let(:time_frame) { "last_week" }
 
     before do

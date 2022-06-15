@@ -6,7 +6,7 @@ RSpec.describe "Companies#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -54,7 +54,7 @@ RSpec.describe "Companies#create", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
@@ -104,7 +104,7 @@ RSpec.describe "Companies#create", type: :request do
     end
   end
 
-  context "when user is book keeper" do
+  context "when user is a book keeper" do
     before do
       create(:company_user, company:, user:)
       user.add_role :book_keeper, company

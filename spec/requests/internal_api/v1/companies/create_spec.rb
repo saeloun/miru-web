@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Companies::create", type: :request do
   let(:user1) { create(:user) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       sign_in user1
     end
@@ -59,7 +59,7 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
       end
     end
 
-    context "when the user is an book keeper" do
+    context "when the user is a book keeper" do
       before do
         user1.add_role :book_keeper
         sign_in user1

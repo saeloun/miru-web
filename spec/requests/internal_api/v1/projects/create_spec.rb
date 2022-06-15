@@ -7,7 +7,7 @@ RSpec.describe "InternalApi::V1::Project#create", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -49,7 +49,7 @@ RSpec.describe "InternalApi::V1::Project#create", type: :request do
     end
   end
 
-  context "when the user is an book keeper" do
+  context "when the user is a book keeper" do
     before do
       create(:company_user, company:, user:)
       user.add_role :book_keeper, company

@@ -7,7 +7,7 @@ RSpec.describe "TimeTracking#index", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:clients) { create_list(:client, 2, company:) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -23,23 +23,6 @@ RSpec.describe "TimeTracking#index", type: :request do
       expect(response).to render_template(:index)
     end
   end
-
-  # context "when user is book keeper" do
-  #   before do
-  #     create(:company_user, company:, user:)
-  #     user.add_role :book_keeper, company
-  #     sign_in user
-  #     send_request :get, time_tracking_index_path
-  #   end
-  #
-  #   it "is successful" do
-  #     expect(response).to have_http_status(:forbidden)
-  #   end
-  #
-  #   it "renders index page" do
-  #     expect(response).to render_template(:forbidden)
-  #   end
-  # end
 
   context "when unauthenticated" do
     it "user will be redirects to sign in path" do

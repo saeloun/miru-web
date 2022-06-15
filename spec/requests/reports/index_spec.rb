@@ -8,7 +8,7 @@ RSpec.describe "Reports#index", type: :request do
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:timesheet_entry, project:)
       create(:company_user, company:, user:)
@@ -22,7 +22,7 @@ RSpec.describe "Reports#index", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:timesheet_entry, project:)
       create(:company_user, company:, user:)
@@ -36,7 +36,7 @@ RSpec.describe "Reports#index", type: :request do
     end
   end
 
-  context "when user is book keeper" do
+  context "when user is a book keeper" do
     before do
       create(:timesheet_entry, project:)
       create(:company_user, company:, user:)

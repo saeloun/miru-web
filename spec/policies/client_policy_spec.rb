@@ -39,7 +39,7 @@ RSpec.describe ClientPolicy, type: :policy do
       expect(described_class).to permit(owner)
     end
 
-    it "does not grants permission to an employee, book_keeper" do
+    it "does not grants permission to an employee and a book keeper" do
       expect(described_class).not_to permit(employee)
       expect(described_class).not_to permit(book_keeper)
     end

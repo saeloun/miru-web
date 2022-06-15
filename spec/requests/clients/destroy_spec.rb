@@ -7,7 +7,7 @@ RSpec.describe "Client#destroy", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, { id: 1, company: }) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -16,7 +16,7 @@ RSpec.describe "Client#destroy", type: :request do
 
     context "when client exists" do
       before do
-        send_request(:delete, "/internal_api/v1/clients/#{client.id}")
+        send_request(:delete, internal_api_v1_client_path(client.id))
       end
 
       it "deletes the client" do
@@ -30,7 +30,7 @@ RSpec.describe "Client#destroy", type: :request do
       client_id = rand(2...1000)
 
       before do
-        send_request(:delete, "/internal_api/v1/clients/#{client_id}")
+        send_request(:delete, internal_api_v1_client_path(client.id))
       end
 
       it "responds with client not found error" do
@@ -41,12 +41,12 @@ RSpec.describe "Client#destroy", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request(:delete, "/internal_api/v1/clients/#{client.id}")
+      send_request(:delete, internal_api_v1_client_path(client.id))
     end
 
     it "is not permitted to delete client" do
@@ -55,12 +55,12 @@ RSpec.describe "Client#destroy", type: :request do
         .to eq(I18n.t("pundit.default"))
     end
 
-    context "when user is book keeper" do
+    context "when user is a book keeper" do
       before do
         create(:company_user, company:, user:)
         user.add_role :book_keeper, company
         sign_in user
-        send_request(:delete, "/internal_api/v1/clients/#{client.id}")
+        send_request(:delete, internal_api_v1_client_path(client.id))
       end
 
       it "is not permitted to delete client" do
@@ -73,7 +73,7 @@ RSpec.describe "Client#destroy", type: :request do
 
   context "when unauthenticated" do
     it "is not permitted to delete client" do
-      send_request(:delete, "/internal_api/v1/clients/#{client.id}")
+      send_request(:delete, internal_api_v1_client_path(client.id))
       expect(response).to have_http_status(:unauthorized)
       expect(JSON.parse(response.body, { object_class: OpenStruct }).error)
         .to eq("You need to sign in or sign up before continuing.")

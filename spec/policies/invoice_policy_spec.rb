@@ -17,26 +17,26 @@ RSpec.describe InvoicePolicy, type: :policy do
   end
 
   permissions :index? do
-    it "grants permission to an admin, book_keeper and employee" do
+    it "grants Invoice#index permission to an admin and owner" do
       expect(described_class).to permit(admin)
       expect(described_class).to permit(owner)
-      expect(described_class).to permit(book_keeper)
     end
 
-    it "does not grants permission to an owner" do
+    it "does not grants Invoice#index permission to an employee and a book keeper" do
       expect(described_class).not_to permit(employee)
+      expect(described_class).to permit(book_keeper)
     end
   end
 
   permissions :create?, :update?, :show?, :destroy?, :edit?, :send_invoice? do
-    it "grants permission to an admin and employee" do
+    it "grants permission to an admin and owner" do
       expect(described_class).to permit(admin)
       expect(described_class).to permit(owner)
     end
 
-    it "does not grants permission to an employee and book keeper" do
+    it "does not grants permission to an employee and a book keeper" do
       expect(described_class).not_to permit(employee)
-      expect(described_class).not_to permit(book_keeper)
+      expect(described_class).to permit(book_keeper)
     end
   end
 

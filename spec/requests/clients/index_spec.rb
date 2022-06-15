@@ -8,7 +8,7 @@ RSpec.describe "Client#index", type: :request do
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -26,7 +26,7 @@ RSpec.describe "Client#index", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
@@ -40,7 +40,7 @@ RSpec.describe "Client#index", type: :request do
     end
   end
 
-  context "when user is book keeper" do
+  context "when user is a book keeper" do
     before do
       create(:company_user, company:, user:)
       user.add_role :book_keeper, company
@@ -49,7 +49,7 @@ RSpec.describe "Client#index", type: :request do
       send_request :get, clients_path
     end
 
-    it "is not permitted to acces index client" do
+    it "is not permitted to access Client#index" do
       expect(response).to redirect_to(root_path)
     end
   end

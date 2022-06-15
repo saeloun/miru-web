@@ -10,7 +10,7 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
     create(:company_user, company_id: company1.id, user_id: user1.id)
   end
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       user1.add_role :admin, company1
       sign_in user1
@@ -26,7 +26,7 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
     end
   end
 
-  context "when user is book keeper" do
+  context "when user is a book keeper" do
     before do
       user1.add_role :book_keeper, company1
       sign_in user1

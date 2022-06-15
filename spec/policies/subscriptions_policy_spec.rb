@@ -19,11 +19,11 @@ RSpec.describe SubscriptionsPolicy, type: :policy do
       expect(described_class).to permit(admin)
     end
 
-    it "does not grants permission to employee" do
+    it "denies permission to an employee" do
       expect(described_class).not_to permit(employee)
     end
 
-    it "does not grants permission to book_keeper" do
+    it "denies permission to a book keeper" do
       expect(described_class).not_to permit(book_keeper)
     end
   end

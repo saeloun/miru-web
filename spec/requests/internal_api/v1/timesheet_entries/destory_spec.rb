@@ -12,7 +12,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
     create(:timesheet_entry, user:, project:, work_date: Time.now - 30.days)
   }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -29,7 +29,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
@@ -62,19 +62,6 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
       expect(json_response["errors"]).to include("You are not authorized to perform this action.")
     end
   end
-
-  # context "when the user is an book keeper" do
-  #   before do
-  #     create(:company_user, company:, user:)
-  #     user.add_role :book_keeper, company
-  #     sign_in user
-  #     send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
-  #   end
-  #
-  #   it "is not be permitted to destroy an timehseet entry" do
-  #     expect(response).to have_http_status(:forbidden)
-  #   end
-  # end
 
   context "when unauthenticated" do
     it "user will be redirected to sign in path" do

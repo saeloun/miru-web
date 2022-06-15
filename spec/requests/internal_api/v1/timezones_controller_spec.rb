@@ -41,7 +41,7 @@ RSpec.describe InternalApi::V1::TimezonesController, type: :request do
       it_behaves_like "InternalApi::V1::TimezonesController index"
     end
 
-    context "when user is an book_keeper" do
+    context "when user is a book_keeper" do
       before { sign_in book_keeper }
 
       it_behaves_like "InternalApi::V1::TimezonesController index"

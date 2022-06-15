@@ -23,7 +23,7 @@ RSpec.describe TimezonePolicy, type: :policy do
       expect(described_class).to permit(employee)
     end
 
-    it "not grants permission to an book keeper" do
+    it "not grants permission to a book keeper" do
       expect(described_class).to permit(book_keeper)
     end
   end

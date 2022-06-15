@@ -42,7 +42,7 @@ RSpec.describe InvoicesController, type: :request do
       end
     end
 
-    context "when user is an book_keeper" do
+    context "when user is a book_keeper" do
       before { sign_in book_keeper }
 
       it "redirects user to invoice page with status 200" do

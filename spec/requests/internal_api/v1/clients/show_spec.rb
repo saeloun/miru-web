@@ -8,7 +8,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
   let(:client_1) { create(:client, company:) }
   let(:project_1) { create(:project, client: client_1) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       create(:project_member, user:, project_id: project_1.id)
@@ -35,7 +35,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
@@ -48,7 +48,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
     end
   end
 
-  context "when user is book keeper" do
+  context "when user is a book keeper" do
     before do
       create(:company_user, company:, user:)
       user.add_role :book_keeper, company
