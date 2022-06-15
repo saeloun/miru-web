@@ -32,7 +32,7 @@ const PlanDetails = () => {
           </div>
 
           <div className="modal__form flex-col">
-            <div className="field mt-4 flex justify-between bg-red">
+            <div className="field mt-4 flex justify-between">
               <div className="field_with_errors py-2">
                 <label className="font-normal text-xs leading-4 text-miru-dark-purple-1000">
                   Number of Team Members
