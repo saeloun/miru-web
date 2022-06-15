@@ -26,10 +26,10 @@ const NewLineItemTable = ({
     setAddNew(false);
     setSelectedLineItems([...selectedLineItems, option]);
 
-    const sanitized = lineItems.filter(option =>
+    const sanitizedLineItems = lineItems.filter(option =>
       option.id !== item.id
-    )
-    setLineItems(sanitized);
+    );
+    setLineItems(sanitizedLineItems)
   };
 
   const renderLineItem = (item) => (

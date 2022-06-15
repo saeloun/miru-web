@@ -23,7 +23,9 @@ const ManualEntry = ({
         number_of_resource: numberOfResource,
         resource_expertise_level: resourceExpertiseLevel,
         estimated_hours: estimatedHours,
-        lead_quote_id: quoteId
+        lead_quote_id: quoteId,
+        lead_line_item_id: "",
+        _destroy: false
       }];
 
       setSelectedOption(newItem);

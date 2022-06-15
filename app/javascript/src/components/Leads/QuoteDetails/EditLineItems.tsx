@@ -17,9 +17,14 @@ const EditLineItems = ({
   const onEnter = e => {
 
     if (e.key == "Enter") {
-      const sanitizedSelected = selectedOption.filter(option =>
+
+      const sanitizedSelectedNewOptions = [...selectedOption];
+      sanitizedSelectedNewOptions.splice(item.key, 1)
+
+      const sanitizedSelectedEditOptions = selectedOption.filter(option =>
         option.id !== item.id
       );
+
       const newItem = {
         ...item,
         name: name,
@@ -29,7 +34,11 @@ const EditLineItems = ({
         resource_expertise_level: resourceExpertiseLevel,
         estimated_hours: estimatedHours
       };
-      setSelectedOption([...sanitizedSelected, { ...newItem }]);
+      if (item.id){
+        setSelectedOption([...sanitizedSelectedEditOptions, newItem]);
+      } else {
+        setSelectedOption([...sanitizedSelectedNewOptions, newItem]);
+      }
       setEdit(false);
     }
   };
