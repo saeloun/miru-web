@@ -6,9 +6,11 @@ import Summary from "./Summary";
 import LineItemTable from "../../../components/Leads/QuoteDetails/LineItemTable";
 
 const Tab = ({ leadDetails, forItem, quoteId }) => {
+  // const defaultClassName = "inline-flex p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group";
+  // const activeClassName = "inline-flex p-4 text-blue-600 rounded-t-lg border-b-2 border-blue-600 active dark:text-blue-500 dark:border-blue-500 group";
 
-  const defaultClassName = "inline-flex p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group";
-  const activeClassName = "inline-flex p-4 text-blue-600 rounded-t-lg border-b-2 border-blue-600 active dark:text-blue-500 dark:border-blue-500 group";
+  const defaultClassName = "mr-10 text-base tracking-widest font-medium text-miru-han-purple-600";
+  const activeClassName = "mr-10 text-base tracking-widest font-bold text-miru-han-purple-1000 border-b-2 border-miru-han-purple-1000";
 
   const [renderTabData, setRenderTabData] = useState<any>(null);
   const [tabClassName, setTabClassName] = useState<any>(null);
@@ -102,17 +104,17 @@ const Tab = ({ leadDetails, forItem, quoteId }) => {
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
             <li className="mr-3">
               <button className={tabClassName ? tabClassName.summaryTab : activeClassName} onClick={() => handleTabChange('summary')} >
-              Summary
+                SUMMARY
               </button>
             </li>
             <li className="mr-3">
               <button className={tabClassName ? tabClassName.lineItemsTab : defaultClassName} onClick={() => handleTabChange('lineItems')} >
-              Line Items
+                LINE ITEMS
               </button>
             </li>
             <li className="mr-3">
               <button className={tabClassName ? tabClassName.quotesTab : defaultClassName} onClick={() => handleTabChange('quotes')} >
-              Quotes
+                QUOTES
               </button>
             </li>
           </ul>

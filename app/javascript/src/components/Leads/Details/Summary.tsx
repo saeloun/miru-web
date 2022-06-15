@@ -100,95 +100,94 @@ const Summary = ({ leadDetails }) => {
           <Form>
             <div className="grid grid-cols-2 gap-6 justify-evenly">
               <div className="relative flex flex-col items-start justify-start p-5 bg-white">
-                <div className="relative w-full mt-6 space-y-8">
-                  {/* <h4 className="w-full text-4xl font-medium leading-snug">Details</h4> */}
-                  <div className="relative">
-                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Budget Amount</label>
-                    <Field className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                <div>
+                  <div className="mb-6">
+                    <label className="block mb-2 text-sm text-gray-600">Budget Amount</label>
+                    <Field className="w-full px-3 py-2 bg-miru-gray-100 border border-gray-300 rounded-md  focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
                       name="budget_amount" type="number" min="0" placeholder="Budget Amount" />
                     <div className="tracking-wider block text-xs text-red-600">
                       {errors.budget_amount && touched.budget_amount &&
-                        <div>{errors.budget_amount}</div>
+            <div>{errors.budget_amount}</div>
                       }
                     </div>
                   </div>
-                  <div className="relative">
-                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Budget Status</label>
+                  <div className="mb-6">
+                    <label className="block mb-2 text-sm text-gray-600">Budget Status</label>
                     <select
                       defaultValue={leadDetails.budget_status_code}
-                      className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      className="w-full px-3 py-2 bg-miru-gray-100 border border-gray-300 rounded-md  focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
                       name="budget_status_code" onChange={(e) => setBudgetStatusCode(e.target.value)}>
                       <option value=''>Select Budget Status</option>
                       {budgetStatusCodeList &&
-              budgetStatusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.budget_status_code}>{e.name}</option>)}
+  budgetStatusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.budget_status_code}>{e.name}</option>)}
                     </select>
                     <div className="tracking-wider block text-xs text-red-600">
                       {errors.budget_status_code && touched.budget_status_code &&
-                        <div>{errors.budget_status_code}</div>
+            <div>{errors.budget_status_code}</div>
                       }
                     </div>
                   </div>
-                  <div className="relative">
-                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Industry</label>
+                  <div className="mb-6">
+                    <label className="block mb-2 text-sm text-gray-600">Industry</label>
                     <select
                       defaultValue={leadDetails.industry_code}
-                      className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      className="w-full px-3 py-2 bg-miru-gray-100 border border-gray-300 rounded-md  focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
                       name="industry_code" onChange={(e) => setIndustryCode(e.target.value)}>
                       <option value=''>Select Industry</option>
                       {industryCodeList &&
-              industryCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.industry_code}>{e.name}</option>)}
+  industryCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.industry_code}>{e.name}</option>)}
                     </select>
                     <div className="tracking-wider block text-xs text-red-600">
                       {errors.industry_code && touched.industry_code &&
-                        <div>{errors.industry_code}</div>
+            <div>{errors.industry_code}</div>
                       }
                     </div>
                   </div>
-                  <div className="relative">
-                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Quality</label>
+                  <div className="mb-6">
+                    <label className="block mb-2 text-sm text-gray-600">Quality</label>
                     <select
                       defaultValue={leadDetails.quality_code}
-                      className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      className="w-full px-3 py-2 bg-miru-gray-100 border border-gray-300 rounded-md  focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
                       name="quality_code" onChange={(e) => setQualityCode(e.target.value)}>
                       <option value=''>Select Quality</option>
                       {qualityCodeList &&
-              qualityCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.quality_code}>{e.name}</option>)}
+  qualityCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.quality_code}>{e.name}</option>)}
                     </select>
                     <div className="tracking-wider block text-xs text-red-600">
                       {errors.quality_code && touched.quality_code &&
-                        <div>{errors.quality_code}</div>
+            <div>{errors.quality_code}</div>
                       }
                     </div>
                   </div>
-                  <div className="relative">
-                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">State</label>
+                  <div className="mb-6">
+                    <label className="block mb-2 text-sm text-gray-600">State</label>
                     <select
                       defaultValue={leadDetails.state_code}
-                      className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      className="w-full px-3 py-2 bg-miru-gray-100 border border-gray-300 rounded-md  focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
                       name="state_code" onChange={(e) => setStateCode(e.target.value)}>
                       <option value=''>Select State</option>
                       {stateCodeList &&
-              stateCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.state_code}>{e.name}</option>)}
+  stateCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.state_code}>{e.name}</option>)}
                     </select>
                     <div className="tracking-wider block text-xs text-red-600">
                       {errors.state_code && touched.state_code &&
-                        <div>{errors.state_code}</div>
+            <div>{errors.state_code}</div>
                       }
                     </div>
                   </div>
-                  <div className="relative">
-                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Status</label>
+                  <div className="mb-6">
+                    <label className="block mb-2 text-sm text-gray-600">Status</label>
                     <select
                       defaultValue={leadDetails.status_code}
-                      className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                      className="w-full px-3 py-2 bg-miru-gray-100 border border-gray-300 rounded-md  focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
                       name="status_code" onChange={(e) => setStatusCode(e.target.value)}>
                       <option value=''>Select Status</option>
                       {statusCodeList &&
-              statusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.status_code}>{e.name}</option>)}
+  statusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.status_code}>{e.name}</option>)}
                     </select>
                     <div className="tracking-wider block text-xs text-red-600">
                       {errors.status_code && touched.status_code &&
-                        <div>{errors.status_code}</div>
+            <div>{errors.status_code}</div>
                       }
                     </div>
                   </div>
@@ -207,54 +206,66 @@ const Summary = ({ leadDetails }) => {
                 <div className="relative w-full mt-6 space-y-8 ">
                   {/* <h4 className="w-full text-4xl font-medium leading-snug">Preferences</h4> */}
                   <div className="relative flex items-start mb-4">
-                    <label className="flex font-medium text-gray-600 bg-white">
-                      <div className=" items-center h-5">
-                        <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotemail" />
-                      </div>
-                      <div className="text-sm ml-3">
+                    <div className=" items-center h-5">
+                      <label className="switch">
+                        <Field type="checkbox" name="donotemail" />
+                        <div className="slider"></div>
+                      </label>
+                    </div>
+                    <div className="text-base ml-3 mt-1">
+                      <label className="block mb-2 text-sm text-gray-600">
                         Do not email
-                      </div>
-                    </label>
+                      </label>
+                    </div>
                   </div>
                   <div className="relative flex items-start mb-4">
-                    <label className="flex font-medium text-gray-600 bg-white">
-                      <div className=" items-center h-5">
-                        <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotbulkemail" />
-                      </div>
-                      <div className="text-sm ml-3">
+                    <div className=" items-center h-5">
+                      <label className="switch">
+                        <Field type="checkbox" name="donotbulkemail" />
+                        <div className="slider"></div>
+                      </label>
+                    </div>
+                    <div className="text-base ml-3 mt-1">
+                      <label className="block mb-2 text-sm text-gray-600">
                         Do not bulk email
-                      </div>
-                    </label>
+                      </label>
+                    </div>
                   </div>
                   <div className="relative flex items-start mb-4">
-                    <label className="flex font-medium text-gray-600 bg-white">
-                      <div className=" items-center h-5">
-                        <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotfax" />
-                      </div>
-                      <div className="text-sm ml-3">
+                    <div className=" items-center h-5">
+                      <label className="switch">
+                        <Field type="checkbox" name="donotfax" />
+                        <div className="slider"></div>
+                      </label>
+                    </div>
+                    <div className="text-base ml-3 mt-1">
+                      <label className="block mb-2 text-sm text-gray-600">
                         Do not fax
-                      </div>
-                    </label>
+                      </label>
+                    </div>
                   </div>
                   <div className="relative flex items-start mb-4">
-                    <label className="flex font-medium text-gray-600 bg-white">
-                      <div className=" items-center h-5">
-                        <Field className="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded" type="checkbox" name="donotphone" />
-                      </div>
-                      <div className="text-sm ml-3">
-                      Do not Phone
-                      </div>
-                    </label>
+                    <div className=" items-center h-5">
+                      <label className="switch">
+                        <Field type="checkbox" name="donotphone" />
+                        <div className="slider"></div>
+                      </label>
+                    </div>
+                    <div className="text-base ml-3 mt-1">
+                      <label className="block mb-2 text-sm text-gray-600">
+                        Do not Phone
+                      </label>
+                    </div>
                   </div>
                 </div>
                 <div className="relative w-full mt-6 space-y-8">
-                  <div className="relative">
-                    <label className="absolute px-2 ml-2 -mt-3 font-medium text-gray-600 bg-white">Description</label>
-                    <Field className="block w-full px-2 py-3 mt-2 text-base placeholder-gray-400 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                  <div className="mb-6">
+                    <label className="block mb-2 text-sm text-gray-600">Description</label>
+                    <Field className="w-full px-3 py-2 bg-miru-gray-100 border border-gray-300 rounded-md  focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300"
                       name="description" as="textarea" rows={8} placeholder="Description" />
                     <div className="tracking-wider block text-xs text-red-600">
                       {errors.description && touched.description &&
-                        <div>{errors.description}</div>
+    <div>{errors.description}</div>
                       }
                     </div>
                   </div>
