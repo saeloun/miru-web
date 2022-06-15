@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
+import Select from "react-select";
 import autosize from "autosize";
 import Toastr from "common/Toastr";
 import validateTimesheetEntry from "helpers/validateTimesheetEntry";
@@ -29,6 +30,10 @@ const AddEntry: React.FC<Iprops> = ({
   const [projectId, setProjectId] = useState(0);
   const [billable, setBillable] = useState(false);
   const [projectBillable, setProjectBillable] = useState(true);
+  const [isDataFilled, setIsDataFilled] = useState(false);
+
+  const clientList = clients.map(client => ({ value: client.name, label: client.name }));
+  const projectList = project ? projects[client].map(project => ({ value: project.name, label: project.name })) : [];
 
   const handleFillData = () => {
     if (! editEntryId) return;
@@ -43,13 +48,13 @@ const AddEntry: React.FC<Iprops> = ({
       setNote(entry.note);
       if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
     }
-
   };
 
   useEffect(() => {
     const textArea = document.querySelector("textarea");
     autosize(textArea);
     handleFillData();
+    setIsDataFilled(true);
     textArea.click();
   }, []);
 
@@ -126,47 +131,50 @@ const AddEntry: React.FC<Iprops> = ({
     >
       <div className="w-1/2">
         <div className="w-129 mb-2 flex justify-between">
-          <select
-            onChange={e => {
-              setClient(e.target.value);
-              setProject(projects[e.target.value][0].name);
+          { isDataFilled && <Select
+            placeholder="Select Client"
+            options={clientList}
+            onChange={e => {setClient(e.value); setProject(projects[e.value][0]["name"]); }}
+            isClearable
+            className="w-64 bg-miru-gray-100 rounded-md h-8 text-xs text-miru-han-purple-600"
+            styles={{ menu: (base: any) => ({
+              ...base,
+              zIndex: 9999,
+              border: "none",
+              boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
+              padding: "0.1rem",
+              ...(base.isFocused && {
+                borderRadius: "0.25rem",
+                backgroundColor: "#4A485A",
+                color: "#5B34EA"
+              })
+            })
             }}
-            value={client || "Client"}
-            name="client"
-            id="client"
-            className="w-64 bg-miru-gray-100 rounded-sm h-8"
-          >
-            {!client && (
-              <option disabled selected className="text-miru-gray-100">
-              Client
-              </option>
-            )}
-            {clients.map((client, i) => (
-              <option key={i.toString()}>{client["name"]}</option>
-            ))}
-          </select>
+            {...( editEntryId && client ? { defaultValue: { value: client, label: client } } : {} ) }
+          />}
 
-          <select
-            onChange={e => {
-              setProject(e.target.value);
+          {isDataFilled && <Select
+            placeholder="Select Project"
+            options={projectList}
+            onChange={e => setProject(e["value"]) }
+            isClearable
+            className="w-64 bg-miru-gray-100 rounded-md h-8 text-xs text-miru-han-purple-600"
+            styles={{ menu: (base: any) => ({
+              ...base,
+              zIndex: 9999,
+              border: "none",
+              boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
+              padding: "0.1rem",
+              ...(base.isFocused && {
+                borderRadius: "0.25rem",
+                backgroundColor: "#4A485A",
+                color: "#5B34EA"
+              })
+            })
             }}
-            value={project}
-            name="project"
-            id="project"
-            className="w-64 bg-miru-gray-100 rounded-sm h-8"
-          >
-            {!project && (
-              <option disabled selected className="text-miru-gray-100">
-              Project
-              </option>
-            )}
-            {client &&
-            projects[client].map((project, i) => (
-              <option data-project-id={project.id} key={i.toString()}>
-                {project.name}
-              </option>
-            ))}
-          </select>
+            {...( editEntryId && project ? { defaultValue: { value: project, label: project } } : {} ) }
+          />}
+
         </div>
         <textarea
           value={note}

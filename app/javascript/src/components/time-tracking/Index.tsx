@@ -1,5 +1,6 @@
 /* eslint-disable no-unexpected-multiline */
-import React from "react";
+import React  from "react";
+import Select from "react-select";
 import { ToastContainer } from "react-toastify";
 import * as dayjs from "dayjs";
 import * as updateLocale from "dayjs/plugin/updateLocale";
@@ -52,6 +53,8 @@ const TimeTracking: React.FC<Iprops> = ({
 
   // sorting by client's name
   clients.sort((a: object, b: object) => a["name"].localeCompare(b["name"]));
+
+  const employeeOptions = employees.map(e => ({ value: e["id"] as number, label: e["first_name"] + " " + e["last_name"] }) );
 
   useEffect(() => {
     setAuthHeaders();
@@ -244,16 +247,27 @@ const TimeTracking: React.FC<Iprops> = ({
             ))}
           </nav>
           <div>
-            {isAdmin && (
-              <select value={selectedEmployeeId} onChange={(e) => setSelectedEmployeeId(Number(e.target.value))} className="items-center ">
-                {
-                  employees.map(employee =>
-                    <option value={employee["id"]} className="text-miru-han-purple-1000">
-                      {employee["first_name"] + " " + employee["last_name"]}
-                    </option>
-                  )
-                }
-              </select>
+            {isAdmin && selectedEmployeeId && (
+              <Select
+                placeholder="Select Employee"
+                options={employeeOptions as any}
+                onChange={e => setSelectedEmployeeId(+ e["value"] )}
+                isClearable
+                className="w-64 bg-miru-gray-100 rounded-md h-8 text-xs text-miru-han-purple-600"
+                styles={{ menu: (base: any) => ({
+                  ...base,
+                  zIndex: 9999,
+                  border: "none",
+                  boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
+                  padding: "0.1rem",
+                  ...(base.isFocused && {
+                    borderRadius: "0.25rem",
+                    backgroundColor: "#4A485A",
+                    color: "#5B34EA"
+                  })
+                })
+                }}
+              />
             )}
           </div>
         </div>
