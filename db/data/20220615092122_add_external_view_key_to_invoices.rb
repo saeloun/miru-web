@@ -8,7 +8,7 @@ class AddExternalViewKeyToInvoices < ActiveRecord::Migration[7.0]
       invoice.external_view_key = "#{SecureRandom.hex}"
       invoice.save!
     end
-    InvoiceDefaultExternalViewKeyVerifier
+    InvoiceDefaultExternalViewKeyVerifier.verify!
   end
 
   def down
