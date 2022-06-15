@@ -12,8 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_14_063702) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_06_15_152617) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -161,13 +160,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_063702) do
 
   create_table "previous_employment_details", force: :cascade do |t|
     t.bigint "employment_detail_id", null: false
-    t.bigint "company_user_id", null: false
     t.string "company_name"
     t.string "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["company_user_id"], name: "index_previous_employment_details_on_company_user_id"
+    t.bigint "user_id", null: false
     t.index ["employment_detail_id"], name: "index_previous_employment_details_on_employment_detail_id"
+    t.index ["user_id"], name: "index_previous_employment_details_on_user_id"
   end
 
   create_table "project_members", force: :cascade do |t|
@@ -300,8 +299,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_14_063702) do
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"
   add_foreign_key "payments_providers", "companies"
-  add_foreign_key "previous_employment_details", "company_users"
   add_foreign_key "previous_employment_details", "employment_details"
+  add_foreign_key "previous_employment_details", "users"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"

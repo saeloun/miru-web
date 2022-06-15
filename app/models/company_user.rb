@@ -29,5 +29,4 @@ class CompanyUser < ApplicationRecord
   belongs_to :company
   belongs_to :user
   has_one :employment_detail, dependent: :destroy
-  has_many :previous_employment_details, through: :employment_detail
 end
