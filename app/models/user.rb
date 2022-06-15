@@ -30,6 +30,7 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  current_workspace_id   :bigint
+#  department_id          :integer
 #  invited_by_id          :bigint
 #
 # Indexes
@@ -51,6 +52,31 @@
 
 class User < ApplicationRecord
   include Discard::Model
+
+  DepartmentOptionKlass = Struct.new(:name, :id)
+
+  DEPARTMENT_OPTIONS = [
+    DepartmentOptionKlass.new(".Net", 0),
+    DepartmentOptionKlass.new("Analytics", 1),
+    DepartmentOptionKlass.new("Design", 2),
+    DepartmentOptionKlass.new("Digital", 3),
+    DepartmentOptionKlass.new("HR", 4),
+    DepartmentOptionKlass.new("Information", 5),
+    DepartmentOptionKlass.new("Magento", 6),
+    DepartmentOptionKlass.new("Management", 7),
+    DepartmentOptionKlass.new("Meanstack", 8),
+    DepartmentOptionKlass.new("Mobile", 9),
+    DepartmentOptionKlass.new("Odoo", 10),
+    DepartmentOptionKlass.new("PHP", 11),
+    DepartmentOptionKlass.new("QA", 12),
+    DepartmentOptionKlass.new("ROR", 13),
+    DepartmentOptionKlass.new("React", 14),
+    DepartmentOptionKlass.new("SEO", 15),
+    DepartmentOptionKlass.new("SRE", 16),
+    DepartmentOptionKlass.new("Sales", 17),
+    DepartmentOptionKlass.new("Sales", 18),
+    DepartmentOptionKlass.new("Shopify", 19)
+  ]
 
   # Associations
   has_many :company_users, dependent: :destroy
@@ -86,6 +112,13 @@ class User < ApplicationRecord
 
   def full_name
     "#{first_name} #{last_name}"
+  end
+
+  def department_name
+    return "" if department_id.nil?
+
+    department_name_hash = User::DEPARTMENT_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+    department_name_hash[department_id]
   end
 
   def active_for_authentication?

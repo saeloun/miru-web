@@ -45,6 +45,14 @@
       </div>
     </div>
   </div>
+  <div class="mt-4">
+    <div class="field">
+      <label class="tracking-wider block text-xs font-normal text-miru-dark-purple-1000"><%= t('team.form_department') %></label>
+      <div class="mt-2">
+        <%= f.collection_select :department_id, User::DEPARTMENT_OPTIONS,:id,:name, { :prompt => 'Select a Department...' }, { class: "rounded tracking-wider bg-miru-gray-100 appearance-none border border-gray-100 block w-full px-3 py-2 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" } %>
+      </div>
+    </div>
+  </div>
   <div class="actions mt-4">
     <%= f.submit "SAVE", class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer"%>
   </div>

@@ -197,6 +197,7 @@ en:
     name: NAME
     email_id: EMAIL ID
     role: ROLE
+    department: DEPARTMENT
     create_new_user: Create New User
     update_user: Update User
     current_email: Current Email
@@ -206,6 +207,7 @@ en:
     form_name: Name
     form_email: Email
     form_role: Role
+    form_department: Department
     form_admin: Admin
     form_employee: Employee
     first_name: First Name

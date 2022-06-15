@@ -14,6 +14,6 @@ class TeamPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:first_name, :last_name, :email]
+    [:first_name, :last_name, :email, :department_id]
   end
 end
