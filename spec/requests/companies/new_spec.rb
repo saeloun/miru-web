@@ -6,7 +6,7 @@ RSpec.describe "Companies#new", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -23,10 +23,27 @@ RSpec.describe "Companies#new", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
+      sign_in user
+      send_request :get, new_company_path
+    end
+
+    it "is successful" do
+      expect(response).to be_successful
+    end
+
+    it "renders Company#new page" do
+      expect(response.body).to include("Setup Org")
+    end
+  end
+
+  context "when user is a book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
       sign_in user
       send_request :get, new_company_path
     end

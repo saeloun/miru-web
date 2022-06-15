@@ -8,7 +8,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -35,7 +35,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
@@ -59,6 +59,28 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
     it "returns success json response" do
       expect(json_response["entry"]["project_id"]).to match(project.id)
       expect(json_response["notice"]).to match("Timesheet created")
+    end
+  end
+
+  context "when the user is a book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :post, internal_api_v1_timesheet_entry_index_path, params: {
+        project_id: project.id,
+        timesheet_entry: {
+          duration: 20,
+          work_date: Time.now,
+          note: "Test Note",
+          bill_status: :unbilled
+        },
+        user_id: user.id
+      }
+    end
+
+    it "is not be permitted to generate an timehseet entry" do
+      expect(response).to have_http_status(:forbidden)
     end
   end
 
