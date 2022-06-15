@@ -20,7 +20,7 @@
               </div>
             <% end %>
           </div>
-          <% if current_user.has_owner_role?(current_company) || current_user.has_admin_role?(current_company)  %>
+          <% if current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)  %>
             <div class="page-content__new-user-width">
               <div class="page-content__new-user-position">
                 <button data-team-element="new-user-btn" type="button" class="page-content__new-user-button">

@@ -15,7 +15,7 @@ class TimesheetEntryPolicy < ApplicationPolicy
 
   def update?
     record.user_id == user.id ||
-      user.has_owner_role?(record.project.client.company) || user.has_admin_role?(record.project.client.company)
+      user.has_role?(:owner, record.project.client.company) || user.has_role?(:admin, record.project.client.company)
   end
 
   def destroy?

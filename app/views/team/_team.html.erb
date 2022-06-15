@@ -20,7 +20,7 @@
   <%= member.primary_role.titlecase %>
 </td>
 <td id="pending-<%= member.id %>" class="table__data">
-  <% if current_user.has_owner_role?(current_company) || current_user.has_admin_role?(current_company) %>
+  <% if current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company) %>
     <% if member.unconfirmed_email?  %>
       <span class="table__pending">
         <%= t('team.reconfirmation') %>
