@@ -22,7 +22,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
       let(:time_frame) { "week" }
 
       it "returns the total hours logged for a client in that week" do
-        client_details = { id: client_1.id, name: client_1.name, email: client_1.email }
+        client_details = { id: client_1.id, name: client_1.name, email: client_1.email, address: client_1.address }
         project_details = client_1.project_details(time_frame)
         total_minutes = (project_details.map { |project| project[:minutes_spent] }).sum
         overdue_outstanding_amount = client_1.client_overdue_and_outstanding_calculation

@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 import Select from "react-select";
+import timesheetEntryApi from "apis/timesheet-entry";
 import autosize from "autosize";
+
 import Toastr from "common/Toastr";
+import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
+import { getNumberWithOrdinal } from "helpers/ordinal";
 import validateTimesheetEntry from "helpers/validateTimesheetEntry";
-import timesheetEntryApi from "../../apis/timesheet-entry";
-import { minutesFromHHMM, minutesToHHMM } from "../../helpers/hhmm-parser";
-import { getNumberWithOrdinal } from "../../helpers/ordinal";
+
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 
