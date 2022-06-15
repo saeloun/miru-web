@@ -30,7 +30,7 @@ RSpec.describe "Client#destroy", type: :request do
       client_id = rand(2...1000)
 
       before do
-        send_request(:delete, internal_api_v1_client_path(client.id))
+        send_request(:delete, internal_api_v1_client_path(client_id))
       end
 
       it "responds with client not found error" do
