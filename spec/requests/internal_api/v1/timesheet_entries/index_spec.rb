@@ -19,7 +19,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#index", type: :request do
     create(:timesheet_entry, user:, project: project2, work_date: Time.now - 3.days)
   }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -44,7 +44,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#index", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
