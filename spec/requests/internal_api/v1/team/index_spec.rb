@@ -4,38 +4,21 @@ require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Team#index", type: :request do
   let(:company) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:user) { create(:user, :with_avatar, current_workspace_id: company.id) }
+  let(:user2) {
+  create(:user, :with_pending_invitation, current_workspace_id: company.id, current_workspace_id: company.id)
+}
 
   before do
     create(:company_user, company:, user:)
+    create(:company_user, company:, user: user2)
     user.add_role :admin, company
-    sign_in user
-    send_request(
-      :post, user_invitation_path, params: {
-        user: {
-          first_name: "firstName",
-          last_name: "lastName",
-          email: "invited@example.com",
-          roles: "employee"
-        }
-      })
-    sign_out user
+    user2.add_role :employee, company
   end
 
   context "when user is admin" do
     before do
-      create(:company_user, company:, user:)
-      user.add_role :admin, company
       sign_in user
-      send_request(
-        :post, user_invitation_path, params: {
-          user: {
-            first_name: "firstName",
-            last_name: "lastName",
-            email: "invited@example.com",
-            roles: "employee"
-          }
-        })
       send_request :get, internal_api_v1_team_index_path
     end
 
@@ -44,7 +27,8 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
     end
 
     it "checks if profile picture is there with each team member" do
-      expect(json_response["team"].pluck("profilePicture")).not_to include(nil)
+      expect(json_response["team"].first["profilePicture"]).to eq(JSON.parse(user.avatar.to_json))
+      expect(json_response["team"].last["profilePicture"]).to include("/assets/avatar")
     end
 
     it "checks if correct team members data is returned" do
@@ -56,19 +40,19 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
           "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
         },
          {
-           "name" => "firstName lastName", "email" => "invited@example.com", "role" => "employee", "status" => "pending_invitation"
+           "name" => user2.full_name, "email" => user2.email, "role" => "employee", "status" => I18n.t("team.invitation")
          }]
       expect(actual_members_data).to eq(expected_members_data)
     end
   end
 
   context "when user is employee" do
-    let(:user2) { create(:user, current_workspace_id: company.id) }
+    let(:user3) { create(:user, current_workspace_id: company.id) }
 
     before do
-      create(:company_user, company:, user: user2)
-      user2.add_role :employee, company
-      sign_in user2
+      create(:company_user, company:, user: user3)
+      user3.add_role :employee, company
+      sign_in user3
       send_request :get, internal_api_v1_team_index_path
     end
 
@@ -85,10 +69,10 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
           "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
         },
          {
-           "name" => "firstName lastName", "email" => "invited@example.com", "role" => "employee", "status" => nil
+           "name" => user2.full_name, "email" => user2.email, "role" => "employee", "status" => nil
          },
          {
-           "name" => user2.full_name, "email" => user2.email, "role" => "employee", "status" => nil
+           "name" => user3.full_name, "email" => user3.email, "role" => "employee", "status" => nil
          }
         ]
       expect(actual_members_data).to eq(expected_members_data)
@@ -96,7 +80,7 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
   end
 
   context "when unauthenticated" do
-    it "is not permitted to view teamt" do
+    it "is not permitted to view team members" do
       send_request :get, internal_api_v1_team_index_path
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
