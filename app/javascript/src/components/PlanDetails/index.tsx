@@ -1,36 +1,30 @@
 import React, { useState } from "react";
-import { ToastContainer } from "react-toastify";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
 
-import Toastr from "common/Toastr";
+import { BASIC_PLAN_CHARGE, TEAM_MEMBER_CHARGE } from "../../constants";
 
 const PlanDetails = () => {
   const [teamMembersCount, setTeamMembersCount] = useState<number>(1);
-  const [planTotal, setPlanTotal] = useState<number>(15);
+  const [planTotal, setPlanTotal] = useState<number>(
+    TEAM_MEMBER_CHARGE + BASIC_PLAN_CHARGE
+  );
 
-  const handleCountChange = (e) => {
-    if (e.target.value) {
-      const count = parseInt(e.target.value);
-      if (isNaN(count)) {
-        Toastr.error("Please enter valid data");
-        setTeamMembersCount(1);
-        setPlanTotal(15);
-      } else if (count == 0) {
-        Toastr.error("Number of team members can not be zero");
-        setTeamMembersCount(1);
-        setPlanTotal(15);
-      } else {
-        setTeamMembersCount(count);
-        setPlanTotal(count * 5 + 10);
-      }
-    } else {
-      setTeamMembersCount(e.target.value);
-      setPlanTotal(10);
-    }
+  const membersCountSchema = Yup.object().shape({
+    membersCount: Yup.number()
+      .moreThan(0, "Team members can not be 0")
+      .typeError("Enter valid data")
+      .required("Field can not be empty")
+  });
+
+  const handleCountChange = (value) => {
+    const count = value.membersCount;
+    setTeamMembersCount(count);
+    setPlanTotal(count * TEAM_MEMBER_CHARGE + BASIC_PLAN_CHARGE);
   };
 
   return (
     <div className="modal__modal main-modal font-manrope bg-miru-dark-purple-1000">
-      <ToastContainer />
       <div className="modal__container modal-container  w-96">
         <div className="modal__content modal-content">
           <div className="modal__position">
@@ -38,20 +32,35 @@ const PlanDetails = () => {
           </div>
 
           <div className="modal__form flex-col">
-            <div className="field mt-4 flex justify-between">
+            <div className="field mt-4 flex justify-between bg-red">
               <div className="field_with_errors py-2">
                 <label className="font-normal text-xs leading-4 text-miru-dark-purple-1000">
                   Number of Team Members
                 </label>
               </div>
-              <input
-                type="text"
-                value={teamMembersCount}
-                onChange={(e) => {
-                  handleCountChange(e);
+              <Formik
+                initialValues={{
+                  membersCount: 1
                 }}
-                className="px-3 w-1/2 h-8 rounded appearance-none border-0 block bg-miru-gray-100 font-medium leading-4 text-sm text-miru-dark-purple-1000 text-right focus:outline-none"
-              />
+                validationSchema={membersCountSchema}
+                validateOnChange={true}
+                onSubmit={(values) => handleCountChange(values)}
+              >
+                {({ errors, touched }) => (
+                  <Form className="w-1/2">
+                    <Field
+                      name="membersCount"
+                      type="text"
+                      className="px-3 w-full h-8 rounded appearance-none border-0 block bg-miru-gray-100 font-medium leading-4 text-sm text-miru-dark-purple-1000 text-right focus:outline-none"
+                    />
+                    {errors.membersCount && touched.membersCount ? (
+                      <div className="mt-2 font-normal text-xs leading-4 text-miru-chart-pink-600">
+                        {errors.membersCount}
+                      </div>
+                    ) : null}
+                  </Form>
+                )}
+              </Formik>
             </div>
 
             <div className="my-6 p-4 bg-miru-gray-100">
@@ -72,7 +81,7 @@ const PlanDetails = () => {
                   </div>
                   <div className="text-right">
                     <h3 className="pb-1 font-bold text-base leading-5 text-miru-dark-purple-1000">
-                      $10
+                      ${BASIC_PLAN_CHARGE}
                     </h3>
                     <h5 className="font-normal text-xs leading-4 text-miru-dark-purple-400">
                       charged <br /> once
@@ -98,7 +107,7 @@ const PlanDetails = () => {
                   </div>
                   <div className="text-right">
                     <h3 className="pb-1 font-bold text-base leading-5 text-miru-dark-purple-1000">
-                      {teamMembersCount * 5}$/mo
+                      {teamMembersCount * TEAM_MEMBER_CHARGE}$/mo
                     </h3>
                     <h5 className="font-normal text-xs leading-4 text-miru-dark-purple-400">
                       charged <br /> every month
