@@ -6,7 +6,14 @@ RSpec.describe PreviousEmploymentDetail, type: :model do
   subject(:previous_employment_detail) { build(:previous_employment_detail) }
 
   describe "Validations" do
-    it { is_expected.to validate_length_of(:company_name).is_at_most(50) }
-    it { is_expected.to validate_length_of(:role).is_at_most(50) }
+    describe "Associations" do
+        it { is_expected.to belong_to(:user) }
+        it { is_expected.to belong_to(:employment_detail) }
+      end
+
+    describe "Validations" do
+      it { is_expected.to validate_length_of(:company_name).is_at_most(50) }
+      it { is_expected.to validate_length_of(:role).is_at_most(50) }
+    end
   end
 end
