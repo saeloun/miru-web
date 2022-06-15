@@ -9,3 +9,7 @@ production:
   - action_mailbox_incineration
   - active_storage_analysis
   - active_storage_purge
+:schedule:
+  weekly_reminder:
+    cron: '0 14 * * * 1'   # Runs every monday at  14:00
+    class: WeeklyReminderToUserJob
