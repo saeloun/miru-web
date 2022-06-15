@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { X, FloppyDisk, PaperPlaneTilt, Gear } from "phosphor-react";
 
-import { TOASTER_DURATION } from "../../../constants/index";
+import { TOASTER_DURATION } from "constants/index";
 
 const Header = ({
   handleSendInvoice,

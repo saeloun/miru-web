@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 
 import BankAccountDetails from "./BankAccountDetails";
-import OrgBilling from "./Organization/Billing";
+import Billing from "./Organization/Billing";
 import OrgEdit from "./Organization/Edit";
 import OrgPayment from "./Organization/Payment";
 import UserDetails from "./UserDetail";
@@ -17,7 +17,7 @@ const RouteConfig = () => (
       <Route path="bank_account_details" element={<BankAccountDetails />} />
       <Route path="" element={<UserDetails />} />
       <Route path="paymentsettings" element={<OrgPayment />} />
-      <Route path="billing" element={<OrgBilling />} />
+      <Route path="billing" element={<Billing />} />
       <Route path="organization" element={<OrgEdit />} />
       {/* </Route> */}
     </Route>

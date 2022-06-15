@@ -2,13 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 
-import { ToastContainer } from "react-toastify";
 import profileApi from "apis/profile";
 import { Divider } from "common/Divider";
-
-import Toastr from "common/Toastr";
 import * as Yup from "yup";
-import { TOASTER_DURATION } from "../../../constants/index";
+
 import Header from "../Header";
 
 const editButton = require("../../../../../assets/images/edit_image_button.svg");
@@ -74,40 +71,31 @@ const UserDetails = () => {
 
   const handleUpdateProfile = async () => {
     userProfileSchema.validate({ firstName, lastName, changePassword, password, confirmPassword, currentPassword }, { abortEarly: false }).then(async () => {
-      try {
-        const formD = new FormData();
+      const formD = new FormData();
+      formD.append(
+        "user[first_name]", firstName
+      );
+      formD.append(
+        "user[last_name]", lastName
+      );
+      if (changePassword) {
         formD.append(
-          "user[first_name]", firstName
+          "user[current_password]", currentPassword
         );
         formD.append(
-          "user[last_name]", lastName
+          "user[password]", password
         );
-        if (changePassword) {
-          formD.append(
-            "user[current_password]", currentPassword
-          );
-          formD.append(
-            "user[password]", password
-          );
-          formD.append(
-            "user[password_confirmation]", confirmPassword
-          );
-        }
-        if (imageFile) {
-          formD.append(
-            "user[avatar]", imageFile
-          );
-        }
-        const updateUserDetails = await profileApi.update(formD);
-        Toastr.success(updateUserDetails.data.notice);
-        setIsDetailUpdated(false);
-      } catch (err) {
-        if (err.response){
-          Toastr.error(err.response.data.error);
-        } else {
-          Toastr.error(err.message);
-        }
+        formD.append(
+          "user[password_confirmation]", confirmPassword
+        );
       }
+      if (imageFile) {
+        formD.append(
+          "user[avatar]", imageFile
+        );
+      }
+      await profileApi.update(formD);
+      setIsDetailUpdated(false);
       setErrDetails(initialErrState);
     }).catch(function (err) {
       const errObj = initialErrState;
@@ -327,7 +315,7 @@ const UserDetails = () => {
                               onChange={handleConfirmPasswordChange}
                             />
                             <button className="btn btn-outline-primary absolute mt-2 mr-3 right-0" onClick={() => setShowConfirmPassword(!showConfirmPasword)}>
-                              {!showConfirmPasword ? <img src={password_icon} alt="pass_icon" /> : <img src={password_icon_text} alt="pass_icon_text"/>}
+                              {!showConfirmPasword ? <img src={password_icon} alt="pass_icon" /> : <img src={password_icon_text} alt="pass_icon_text" />}
                             </button>
                           </div>
                           {errDetails.confirmPasswordErr && getErr(errDetails.confirmPasswordErr)}
@@ -342,7 +330,6 @@ const UserDetails = () => {
           </div>
         </div>
       </div>
-      <ToastContainer autoClose={TOASTER_DURATION} />
     </div>
   );
 };

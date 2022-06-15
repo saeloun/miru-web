@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useCallback, useEffect, useState } from "react";
-
 import Select from "react-select";
-import { ToastContainer } from "react-toastify";
+
 import companiesApi from "apis/companies";
 import companyProfileApi from "apis/companyProfile";
+import { Divider } from "common/Divider";
 import Toastr from "common/Toastr";
 import * as Yup from "yup";
-import { Divider } from "../../../../common/Divider";
-import { CountryList } from "../../../../constants/countryList";
-import { currencyList } from "../../../../constants/currencyList";
-import { TOASTER_DURATION } from "../../../../constants/index";
+import { CountryList } from "constants/countryList";
+import { currencyList } from "constants/currencyList";
+
 import Header from "../../Header";
+
 const editButton = require("../../../../../../assets/images/edit_image_button.svg");
 const img = require("../../../../../../assets/images/plus_icon.svg");
 
@@ -235,8 +235,7 @@ const OrgEdit = () => {
             "company[logo]", orgDetails.logo
           );
         }
-        const updateOrgDetails = await companiesApi.update(orgDetails.id, formD);
-        Toastr.success(updateOrgDetails.data.notice);
+        await companiesApi.update(orgDetails.id, formD);
         setIsDetailUpdated(false);
       } catch (err){
         Toastr.error("Error in Updating Org. Details");
@@ -436,7 +435,6 @@ const OrgEdit = () => {
           </div>
         </div>
       </div>
-      <ToastContainer autoClose={TOASTER_DURATION} />
     </div>
   );
 };
