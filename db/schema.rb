@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_13_094006) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_14_060405) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -135,7 +135,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_13_094006) do
     t.bigint "client_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "external_view_key"
     t.index ["client_id"], name: "index_invoices_on_client_id"
+    t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
     t.index ["status"], name: "index_invoices_on_status"
@@ -238,6 +240,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_13_094006) do
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
     t.datetime "discarded_at"
+    t.string "personal_email_id"
+    t.date "date_of_birth"
+    t.jsonb "social_accounts"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true

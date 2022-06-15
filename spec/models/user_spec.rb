@@ -115,4 +115,11 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe "Default social account on create" do
+    it "checks for empty social account urls" do
+      expect(user.social_accounts["github_url"]).to eq("")
+      expect(user.social_accounts["linkedin_url"]).to eq("")
+    end
+  end
 end
