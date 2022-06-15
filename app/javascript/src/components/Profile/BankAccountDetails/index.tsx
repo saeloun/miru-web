@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import profilesApi from "apis/profiles";
 import wiseApi from "apis/wise";
 import Loader from "common/Loader";
@@ -26,8 +25,6 @@ const BankAccountDetails = () => {
   const [lastName, setLastName] = useState<any>();
 
   useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
     profilesApi.get()
       .then(response => response.data)
       .then(data => {

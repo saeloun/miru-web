@@ -65,7 +65,11 @@ class User < ApplicationRecord
   has_one_attached :avatar
   rolify strict: true
 
+  # Social account details
+  store_accessor :social_accounts, :github_url, :linkedin_url
+
   # Validations
+  after_initialize :set_default_social_accounts, if: :new_record?
   validates :first_name, :last_name,
     presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },
@@ -119,4 +123,11 @@ class User < ApplicationRecord
     def discard_project_members
       project_members.discard_all
     end
+
+    def set_default_social_accounts
+      self.social_accounts = {
+        "github_url": "",
+        "linkedin_url": ""
+      }
+  end
 end
