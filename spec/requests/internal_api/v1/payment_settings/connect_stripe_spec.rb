@@ -7,7 +7,7 @@ RSpec.describe "InternalApi::V1::PaymentSettings#connect_stripe", type: :request
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:stripe_connected_account) { build(:stripe_connected_account) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -28,10 +28,23 @@ RSpec.describe "InternalApi::V1::PaymentSettings#connect_stripe", type: :request
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
+      sign_in user
+    end
+
+    it "is not be permitted to connect stripe" do
+      send_request :post, internal_api_v1_payments_settings_stripe_connect_path
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  context "when user is a book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
       sign_in user
     end
 

@@ -16,11 +16,11 @@ class CompanyPolicy < ApplicationPolicy
   end
 
   def show?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def update?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def company_present?
@@ -33,7 +33,7 @@ class CompanyPolicy < ApplicationPolicy
   end
 
   def users?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def permitted_attributes
@@ -42,6 +42,6 @@ class CompanyPolicy < ApplicationPolicy
   end
 
   def purge_logo?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 end

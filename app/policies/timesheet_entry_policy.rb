@@ -2,7 +2,7 @@
 
 class TimesheetEntryPolicy < ApplicationPolicy
   def show?
-    true
+    user_owner_role? || user_admin_role? || user_employee_role?
   end
 
   def index?
@@ -10,12 +10,12 @@ class TimesheetEntryPolicy < ApplicationPolicy
   end
 
   def create?
-    true
+    user_owner_role? || user_admin_role? || user_employee_role?
   end
 
   def update?
     record.user_id == user.id ||
-      user.has_owner_or_admin_role?(record.project.client.company)
+      user.has_role?(:owner, record.project.client.company) || user.has_role?(:admin, record.project.client.company)
   end
 
   def destroy?
@@ -31,7 +31,7 @@ class TimesheetEntryPolicy < ApplicationPolicy
     end
 
     def resolve
-      if user_owner_or_admin?
+      if user_owner_role? || user_admin_role?
         scope = user.current_workspace.timesheet_entries
       else
         scope = user.timesheet_entries.in_workspace(user.current_workspace)

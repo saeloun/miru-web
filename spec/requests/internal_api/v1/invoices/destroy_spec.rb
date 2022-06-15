@@ -36,6 +36,19 @@ RSpec.describe "InternalApi::V1::Invoices#destroy", type: :request do
     end
   end
 
+  context "when the user is an book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :delete, internal_api_v1_invoice_path(id: invoice.id)
+    end
+
+    it "is not be permitted to delete an invoice" do
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
   context "when unauthenticated" do
     it "is not be permitted to delete an invoice" do
       send_request :delete, internal_api_v1_invoice_path(id: invoice.id)

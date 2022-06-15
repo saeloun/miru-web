@@ -2,14 +2,14 @@
 
 class Payments::ProviderPolicy < ApplicationPolicy
   def index?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def create?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def update?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 end
