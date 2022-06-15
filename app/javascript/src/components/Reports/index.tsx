@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import applyFilter from "./api/applyFilter";
+import reports from "apis/reports";
+import applyFilter, { getQueryParams } from "./api/applyFilter";
 import Container from "./Container";
 import EntryContext from "./context/EntryContext";
 
@@ -84,6 +85,18 @@ const Reports = () => {
     }
   };
 
+  const handleDownload = async (type) => {
+    const queryParams = getQueryParams(selectedFilter).substring(1);
+    const response = await reports.download(type, `?${queryParams}`);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    const date = new Date();
+    link.href = url;
+    link.setAttribute("download", `${date.toISOString()}_miru_report.${type}`);
+    document.body.appendChild(link);
+    link.click();
+  };
+
   return (
     <div>
       <EntryContext.Provider value={{
@@ -95,6 +108,7 @@ const Reports = () => {
           setFilterVisibilty={setFilterVisibilty}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
+          handleDownload={handleDownload}
         />
         <Container />
         {isFilterVisible && <Filters

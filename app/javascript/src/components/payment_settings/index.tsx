@@ -3,9 +3,11 @@ import React, { useState, useEffect } from "react";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import paymentSettings from "apis/payment-settings";
+import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+
 import Header from "./Header";
 import SideNav from "./SideNav";
-import { ApiStatus as PaymentSettingsStatus } from "../../constants";
+
 const Connect = require("../../../../assets/images/Connect.svg");
 const connectedCheck = require("../../../../assets/images/connected_check.svg");
 const Connect_Paypal = require("../../../../assets/images/ConnectPaypal.svg");

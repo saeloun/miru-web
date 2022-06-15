@@ -12,7 +12,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema[7.0].define(version: 2022_06_05_172256) do
+=======
+ActiveRecord::Schema[7.0].define(version: 2022_06_14_060405) do
+>>>>>>> fb56f33776a46f359d684a2f347b75ca58a6c2e0
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -78,8 +82,22 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_05_172256) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
     t.index ["company_id"], name: "index_company_users_on_company_id"
+    t.index ["discarded_at"], name: "index_company_users_on_discarded_at"
     t.index ["user_id"], name: "index_company_users_on_user_id"
+  end
+
+  create_table "employment_details", force: :cascade do |t|
+    t.string "employee_id"
+    t.string "designation"
+    t.string "employment_type"
+    t.date "joined_at"
+    t.date "resigned_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "company_user_id", null: false
+    t.index ["company_user_id"], name: "index_employment_details_on_company_user_id"
   end
 
   create_table "identities", force: :cascade do |t|
@@ -120,7 +138,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_05_172256) do
     t.bigint "client_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "external_view_key"
     t.index ["client_id"], name: "index_invoices_on_client_id"
+    t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
     t.index ["status"], name: "index_invoices_on_status"
@@ -223,6 +243,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_05_172256) do
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
     t.datetime "discarded_at"
+    t.string "personal_email_id"
+    t.date "date_of_birth"
+    t.jsonb "social_accounts"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -240,11 +263,26 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_05_172256) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  create_table "wise_accounts", force: :cascade do |t|
+    t.string "profile_id"
+    t.string "recipient_id"
+    t.string "source_currency"
+    t.string "target_currency"
+    t.bigint "user_id", null: false
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_wise_accounts_on_company_id"
+    t.index ["user_id", "company_id"], name: "index_wise_accounts_on_user_id_and_company_id", unique: true
+    t.index ["user_id"], name: "index_wise_accounts_on_user_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "clients", "companies"
   add_foreign_key "company_users", "companies"
   add_foreign_key "company_users", "users"
+  add_foreign_key "employment_details", "company_users"
   add_foreign_key "identities", "users"
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
@@ -257,4 +295,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_05_172256) do
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies", column: "current_workspace_id"
+  add_foreign_key "wise_accounts", "companies"
+  add_foreign_key "wise_accounts", "users"
 end

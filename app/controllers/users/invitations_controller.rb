@@ -26,7 +26,7 @@ class Users::InvitationsController < Devise::InvitationsController
   private
 
     def invite_resource
-      if invited_user.present? && invited_user.invitation_accepted_at.present?
+      if invited_user.present?
         send_confirmation_email
         return invited_user
       end

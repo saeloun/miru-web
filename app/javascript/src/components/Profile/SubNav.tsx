@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 
 const profile = require("../../../../assets/images/avatar_payments.svg");
 
-const SideNav = ({ isAdmin, firstName, lastName, email }) => {
+const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
   const getActiveClassName = (isActive) => {
     if (isActive) {
       return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block";
@@ -22,10 +22,26 @@ const SideNav = ({ isAdmin, firstName, lastName, email }) => {
       </li>
       <li className='border-b-2 border-miru-gray-400'>
         <NavLink
-          to="/profile/edit/billing"
+          to="/profile/edit/bank_account_details"
           type="li"
           className={({ isActive }) => getActiveClassName(isActive)}
         >
+          BANK ACCOUNT DETAILS
+        </NavLink>
+      </li>
+      <p className='font-bold text-base mt-5 ml-4'>{company.name}</p>
+      <li className='border-b-2 border-miru-gray-400 mt-4'>
+        <NavLink end to="/profile/edit/organization" className={({ isActive }) => getActiveClassName(isActive)}>
+          ORGANIZATION SETTINGS
+        </NavLink>
+      </li>
+      <li className='border-b-2 border-miru-gray-400'>
+        <NavLink end to="/profile/edit/paymentsettings" className={({ isActive }) => getActiveClassName(isActive)}>
+          PAYMENT SETTINGS
+        </NavLink>
+      </li>
+      <li className='border-b-2 border-miru-gray-400'>
+        <NavLink end to="/profile/edit/billing" className={({ isActive }) => getActiveClassName(isActive)}>
           BILLING
         </NavLink>
       </li>
@@ -41,11 +57,11 @@ const SideNav = ({ isAdmin, firstName, lastName, email }) => {
       </li>
       <li className='border-b-2 border-miru-gray-400'>
         <NavLink
-          to="/profile/edit/billing"
+          to="/profile/edit/bank_account_details"
           type="li"
           className={({ isActive }) => getActiveClassName(isActive)}
         >
-          BILLING
+          BANK ACCOUNT DETAILS
         </NavLink>
       </li>
     </ul>

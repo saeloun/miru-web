@@ -20,14 +20,28 @@ RSpec.describe Project, type: :model do
   end
 
   describe "#project_team_member_details" do
+    subject { project.project_team_member_details time_frame }
+
     let(:company) { create(:company) }
     let(:user) { create(:user) }
     let(:client) { create(:client, company:) }
     let(:project) { create(:project, client:) }
+    let!(:member) { create(:project_member, project:, user:, hourly_rate: 5000) }
+    let(:result) do
+      [{
+        id: user.id,
+        name: user.full_name,
+        hourly_rate: 5000,
+        minutes_logged: 480.0
+      }]
+    end
 
-    before do
-      create_list(:timesheet_entry, 5, user:, project:, work_date: Date.today.beginning_of_week + 2.days)
-      create(:project_member, project:, user:, hourly_rate: 5000)
+    context "when entries are missing" do
+      let(:time_frame) { "last_week" }
+
+      it "returns data with 0 values" do
+        expect(subject).to eq([{ id: member.user_id, name: user.full_name, hourly_rate: 5000, minutes_logged: 0 }])
+      end
     end
 
     it "can not create project with same name" do
@@ -39,8 +53,8 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "last_week" }
 
       it "returns the project_team_member_details for a project in the last week" do
-        result = project_members_details(time_frame)
-        expect(project.project_team_member_details(time_frame)).to eq(result)
+        create(:timesheet_entry, user:, project:, work_date: Date.today.last_week)
+        expect(subject).to eq(result)
       end
     end
 
@@ -48,8 +62,8 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "week" }
 
       it "returns the project_team_member_details for a project in a week" do
-        result = project_members_details(time_frame)
-        expect(project.project_team_member_details(time_frame)).to eq(result)
+        create(:timesheet_entry, user:, project:, work_date: Date.today)
+        expect(subject).to eq(result)
       end
     end
 
@@ -57,8 +71,8 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "month" }
 
       it "returns the project_team_member_details for a project in a month" do
-        result = project_members_details(time_frame)
-        expect(project.project_team_member_details(time_frame)).to eq(result)
+        create(:timesheet_entry, user:, project:, work_date: Date.today.next_week)
+        expect(subject).to eq(result)
       end
     end
 
@@ -66,25 +80,8 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "year" }
 
       it "returns the project_team_member_details for a project in a year" do
-        result = project_members_details(time_frame)
-        expect(project.project_team_member_details(time_frame)).to eq(result)
-      end
-    end
-
-    def project_members_details(time_frame)
-      from, to = project.week_month_year(time_frame)
-      project_members_timesheet_entries =
-        project.timesheet_entries.where(user_id: project.project_members.pluck(:user_id), work_date: from..to)
-      project.project_members.map do |project_member|
-        minutes_logged = project_members_timesheet_entries.filter_map do |project_members_timesheet_entry|
-          project_members_timesheet_entry.duration if project_members_timesheet_entry.user_id == project_member.user_id
-        end.sum
-        {
-          id: project_member.user_id,
-          name: project_member.full_name,
-          hourly_rate: project_member.hourly_rate,
-          minutes_logged:
-        }
+        create(:timesheet_entry, user:, project:, work_date: Date.today.last_month)
+        expect(subject).to eq(result)
       end
     end
   end
