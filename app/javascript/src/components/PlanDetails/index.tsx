@@ -101,7 +101,7 @@ const PlanDetails = () => {
                       {teamMembersCount === 1 ? "member" : "members"}
                     </h1>
                     <h5 className="font-normal text-xs leading-4 text-miru-dark-purple-400">
-                      Basic plan comes with additional <br /> 5$ per user per
+                      Basic plan comes with additional <br /> {TEAM_MEMBER_CHARGE}$ per user per
                       month
                     </h5>
                   </div>
