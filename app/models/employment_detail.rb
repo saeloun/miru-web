@@ -25,6 +25,7 @@
 
 class EmploymentDetail < ApplicationRecord
   belongs_to :company_user
+  has_many :previous_employment_details
 
   validates :designation, :employment_type, :joined_at, :employee_id, presence: true
   validates :resigned_at, comparison: { greater_than: :joined_at }, unless: -> { resigned_at.nil? }

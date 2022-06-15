@@ -8,6 +8,7 @@
 #  confirmed_at           :datetime
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string
+#  date_of_birth          :date
 #  discarded_at           :datetime
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
@@ -26,11 +27,13 @@
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
 #  sign_in_count          :integer          default(0), not null
+#  social_accounts        :jsonb
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  current_workspace_id   :bigint
 #  invited_by_id          :bigint
+#  personal_email_id      :string
 #
 # Indexes
 #
