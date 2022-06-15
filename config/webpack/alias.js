@@ -6,7 +6,9 @@ module.exports = {
       common: "src/common",
       components: "src/components",
       context: "src/context",
-      mapper: "src/mapper"
+      mapper: "src/mapper",
+      constants: "src/constants",
+      utils: "src/utils",
     }
   }
 };

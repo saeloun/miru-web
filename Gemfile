@@ -163,6 +163,10 @@ group :development, :test do
 
   # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
   gem "bullet"
+
+  # To record response of outgoing API calls
+  gem "vcr", "~> 3.0.1"
+  gem "webmock", "~> 3.14.0"
 end
 
 group :development do

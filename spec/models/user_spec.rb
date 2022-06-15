@@ -72,22 +72,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#has_owner_or_admin_role?" do
-    it "returns true if user has admin role" do
-      user.add_role :admin, company
-      expect(user.has_owner_or_admin_role?(company)).to be_truthy
-    end
-
-    it "returns true if user has owner role" do
-      user.add_role :owner, company
-      expect(user.has_owner_or_admin_role?(company)).to be_truthy
-    end
-
-    it "returns false if user has employee role" do
-      expect(user.has_owner_or_admin_role?(company)).to be_falsey
-    end
-  end
-
   describe "#active_for_authentication?" do
     context "when user is an admin/owner" do
       before { user.add_role :admin, company }
@@ -113,6 +97,13 @@ RSpec.describe User, type: :model do
         user.discard!
         expect(user.active_for_authentication?).not_to be_truthy
       end
+    end
+  end
+
+  describe "Default social account on create" do
+    it "checks for empty social account urls" do
+      expect(user.social_accounts["github_url"]).to eq("")
+      expect(user.social_accounts["linkedin_url"]).to eq("")
     end
   end
 end

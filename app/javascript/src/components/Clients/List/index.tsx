@@ -10,8 +10,8 @@ import Table from "common/Table";
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
 
+import { TOASTER_DURATION } from "constants/index";
 import Header from "./Header";
-import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapClientList } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";

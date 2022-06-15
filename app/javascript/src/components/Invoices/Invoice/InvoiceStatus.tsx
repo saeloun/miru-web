@@ -1,5 +1,6 @@
 import React from "react";
-import getStatusCssClass from "../../../utils/getStatusTag";
+
+import getStatusCssClass from "utils/getStatusTag";
 
 const InvoiceStatus = ({ invoice }) => (
   <div className="flex flex-row">
