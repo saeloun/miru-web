@@ -1,6 +1,6 @@
 import { teamPath, signInPath, mailPath } from "../../constants/routes/paths";
 import { teamTabSelector } from "../../constants/selectors/team";
-import { addNewUser } from "../../support/utils/team";
+import { addNewUser, deleteTestUser } from "../../support/utils/team";
 
 describe("Team page for Admin", () => {
   beforeEach(function () {
@@ -15,11 +15,11 @@ describe("Team page for Admin", () => {
   it("should be able to add new Admin user", function () {
     addNewUser("admin");
     cy.reload();
-    // deleteTestUser();  -- to be fixed
+    deleteTestUser();
   });
   it("should be able to add new Emp user", function () {
     addNewUser();
-    // deleteTestUser();  -- to be fixed
+    deleteTestUser();
   });
   it("should display all column names", function () {
     cy.get(teamTabSelector.teamTableHeader).contains("PHOTO");
