@@ -52,7 +52,7 @@ const mapGenerateInvoice = (input) => ({
     description: ilt.description,
     date: ilt.date,
     rate: ilt.rate,
-    quantity: ilt.qty,
+    quantity: ilt.quantity,
     timesheet_entry_id: ilt.timesheet_entry_id
   }))
 });
