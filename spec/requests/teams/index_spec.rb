@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Update the specs in internal API for team api.
 # # frozen_string_literal: true
 
