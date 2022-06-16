@@ -11,6 +11,7 @@ import AddEditProject from "components/Projects/Modals/AddEditProject";
 import DeleteProject from "components/Projects/Modals/DeleteProject";
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
+import { sendGAPageView } from "utils/googleAnalytics";
 
 import { TOASTER_DURATION } from "constants/index";
 import Header from "./Header";
@@ -67,6 +68,7 @@ const ClientList = ({ isAdminUser }) => {
   };
 
   useEffect(() => {
+    sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     clients.show(params.clientId, "?time_frame=week")

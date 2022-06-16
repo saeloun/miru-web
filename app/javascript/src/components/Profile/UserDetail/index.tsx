@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import profileApi from "apis/profile";
 import { Divider } from "common/Divider";
 import Loader from "common/Loader/index";
+import { sendGAPageView } from "utils/googleAnalytics";
 import * as Yup from "yup";
 
 import Header from "../Header";
@@ -150,6 +151,7 @@ const UserDetails = () => {
   };
 
   useEffect(() => {
+    sendGAPageView();
     getData();
   }, []);
 
