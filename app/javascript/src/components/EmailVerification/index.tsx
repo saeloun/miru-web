@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
 
 const miruLogo = require("../../../../assets/images/miru-logo.svg"); //eslint-disable-line
 
 const EmailVerification = ({ userEmail }) => {
 
-  document.addEventListener("keydown", function (event) {
+  const handleKeyPress = useCallback((event) => {
     if (event.key === "Escape") {
       location.assign(window.location.origin + "/users/sign_in");
     }
-  });
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [handleKeyPress]);
 
   return (
     <div className="modal__modal bg-miru-dark-purple-1000 flex-col justify-start pt-32">
