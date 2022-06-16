@@ -21,10 +21,20 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
       description: item.description,
       date: dayjs(item.date).format("DD/MM/YYYY"),
       rate: item.rate,
-      quantity: item.qty * 60,
+      quantity: Number(item.qty) * 60,
       timesheet_entry_id: item.time_sheet_entry
     }))
   );
 
   return invoiceLineItems;
+};
+
+export const getMaxIdx = (arr) => {
+  const ids = arr.map(object => object.idx);
+
+  if (ids.length > 0) {
+    return Math.max(...ids);
+  }
+
+  return 0;
 };
