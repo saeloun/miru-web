@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LineItems from "./../LineItems";
 import Quotes from "./../Quotes";
+import Timeline from "./../Timeline";
 import Summary from "./Summary";
 import LineItemTable from "../../../components/Leads/QuoteDetails/LineItemTable";
 
@@ -30,6 +31,7 @@ const Tab = ({ leadDetails, forItem, quoteId }) => {
       } else {
         const path = {
           summary: `/leads/${leadId}`,
+          timeline: `/leads/${leadId}/timeline`,
           lineItems: `/leads/${leadId}/line-items`,
           quotes: `/leads/${leadId}/quotes`,
         };
@@ -46,15 +48,23 @@ const Tab = ({ leadDetails, forItem, quoteId }) => {
     if (activeTab === "summary"){
       setTabClassName({
         summaryTab: activeClassName,
-        detailsTab: defaultClassName,
+        timelineTab: defaultClassName,
         lineItemsTab: defaultClassName,
         quotesTab: defaultClassName
       });
       setRenderTabData(<Summary leadDetails={leadDetails} />);
+    } else if (activeTab === "timeline"){
+      setTabClassName({
+        summaryTab: defaultClassName,
+        timelineTab: activeClassName,
+        lineItemsTab: defaultClassName,
+        quotesTab: defaultClassName
+      });
+      setRenderTabData(<Timeline leadDetails={leadDetails} />);
     } else if (activeTab === "lineItems"){
       setTabClassName({
         summaryTab: defaultClassName,
-        detailsTab: defaultClassName,
+        timelineTab: defaultClassName,
         lineItemsTab: activeClassName,
         quotesTab: defaultClassName
       });
@@ -62,7 +72,7 @@ const Tab = ({ leadDetails, forItem, quoteId }) => {
     } else if (activeTab === "quotes"){
       setTabClassName({
         summaryTab: defaultClassName,
-        detailsTab: defaultClassName,
+        timelineTab: defaultClassName,
         lineItemsTab: defaultClassName,
         quotesTab: activeClassName
       });
@@ -77,6 +87,7 @@ const Tab = ({ leadDetails, forItem, quoteId }) => {
   const handleTabChange = (key) => {
     const path = {
       summary: `/leads/${leadId}`,
+      timeline: `/leads/${leadId}/timeline`,
       lineItems: `/leads/${leadId}/line-items`,
       quotes: `/leads/${leadId}/quotes` + (quoteId ? `/${quoteId}` : ``),
     }[key];
@@ -84,17 +95,6 @@ const Tab = ({ leadDetails, forItem, quoteId }) => {
     if (location.pathname !== path) {
       navigate(path);
     }
-
-    // switch (activeItem) {
-    //   case "lineItems":
-    //     navigate(`/leads/${leadId}/line-items`);
-    //     break
-    //   case "quotes":
-    //     navigate(`/leads/${leadId}/quotes`);
-    //     break
-    //   default:
-    //     break
-    // }
   };
 
   return (
@@ -105,6 +105,11 @@ const Tab = ({ leadDetails, forItem, quoteId }) => {
             <li className="mr-3">
               <button className={tabClassName ? tabClassName.summaryTab : activeClassName} onClick={() => handleTabChange('summary')} >
                 SUMMARY
+              </button>
+            </li>
+            <li className="mr-3">
+              <button className={tabClassName ? tabClassName.timelineTab : defaultClassName} onClick={() => handleTabChange('timeline')} >
+                TIMELINE
               </button>
             </li>
             <li className="mr-3">

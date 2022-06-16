@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_16_113618) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_16_132911) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -206,8 +206,21 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_16_113618) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "discarded_at"
+    t.text "index_system_display_message"
+    t.bigint "parent_lead_timeline_id"
+    t.bigint "action_assignee_id"
+    t.bigint "action_reporter_id"
+    t.bigint "action_created_by_id"
+    t.datetime "action_due_at"
+    t.string "action_subject"
+    t.text "action_description"
+    t.integer "action_priority_code", limit: 2
+    t.index ["action_assignee_id"], name: "index_lead_timelines_on_action_assignee_id"
+    t.index ["action_created_by_id"], name: "index_lead_timelines_on_action_created_by_id"
+    t.index ["action_reporter_id"], name: "index_lead_timelines_on_action_reporter_id"
     t.index ["discarded_at"], name: "index_lead_timelines_on_discarded_at"
     t.index ["lead_id"], name: "index_lead_timelines_on_lead_id"
+    t.index ["parent_lead_timeline_id"], name: "index_lead_timelines_on_parent_lead_timeline_id"
   end
 
   create_table "leads", force: :cascade do |t|
@@ -413,7 +426,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_16_113618) do
   add_foreign_key "invoices", "clients"
   add_foreign_key "lead_line_items", "leads"
   add_foreign_key "lead_quotes", "leads"
+  add_foreign_key "lead_timelines", "lead_timelines", column: "parent_lead_timeline_id"
   add_foreign_key "lead_timelines", "leads"
+  add_foreign_key "lead_timelines", "users", column: "action_assignee_id"
+  add_foreign_key "lead_timelines", "users", column: "action_created_by_id"
+  add_foreign_key "lead_timelines", "users", column: "action_reporter_id"
   add_foreign_key "leads", "users", column: "assignee_id"
   add_foreign_key "leads", "users", column: "created_by_id"
   add_foreign_key "leads", "users", column: "reporter_id"
