@@ -4,12 +4,11 @@ json.key_format! camelize: :lower
 json.deep_format_keys!
 
 def status(member)
-
   if current_user.has_owner_or_admin_role?(current_company)
     if member.unconfirmed_email?
-      I18n.t('team.reconfirmation')
+      I18n.t("team.reconfirmation")
     elsif member.created_by_invite? && !member.invitation_accepted? && !member.has_role?(:owner, current_company)
-       I18n.t('team.invitation')
+      I18n.t("team.invitation")
     end
   end
 end
