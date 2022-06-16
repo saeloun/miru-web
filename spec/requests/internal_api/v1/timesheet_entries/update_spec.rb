@@ -20,7 +20,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
     )
   }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -48,7 +48,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company

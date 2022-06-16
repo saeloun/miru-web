@@ -8,7 +8,7 @@ RSpec.describe "InternalApi::V1::Companies::PurgeLogo#destroy", type: :request d
   let(:company_user) { create(:company_user, company:, user: user1) }
   let(:user2) { create(:user) }
 
-  context "when user is not admin" do
+  context "when user is not an admin" do
     before do
       sign_in user2
       send_request(:delete, "/internal_api/v1/companies/#{company.id}/purge_logo")
@@ -23,7 +23,7 @@ RSpec.describe "InternalApi::V1::Companies::PurgeLogo#destroy", type: :request d
     end
   end
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       user1.add_role :admin, company
       sign_in user1
