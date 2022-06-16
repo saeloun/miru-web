@@ -22,7 +22,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
 
     def after_inactive_sign_up_path_for(resource)
-      set_flash_message! :notice, :signed_up_but_unconfirmed
-      new_user_session_path
+      email = resource.email
+      email_confirmation_path({ email: })
     end
 end
