@@ -83,14 +83,17 @@ class Project < ApplicationRecord
   def overdue_and_outstanding_amounts
     currency = client.company.base_currency
     timesheet_entries_ids = timesheet_entries.ids
-    status_and_amount = Invoice
+    invoices = Invoice
       .joins(:invoice_line_items)
       .where(
         client_id: client.id,
         invoice_line_items: { timesheet_entry_id: timesheet_entries_ids }
       )
-      .group(:status)
-      .sum(:amount)
+      .distinct
+      .select(:status, :amount)
+    status_and_amount = invoices
+      .group_by { |invoice| invoice.status }
+      .transform_values { |v| v.sum(&:amount) }
     status_and_amount.default = 0
     outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
     {
