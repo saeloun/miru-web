@@ -1,11 +1,7 @@
 <div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
   <div>
     <%= react_component("Team/RouteConfig", {
-<<<<<<< HEAD
-      isAdminUser: current_user.has_owner_or_admin_role?(current_user.current_workspace) }) %>
-=======
       isAdminUser: current_user.has_role?(:book_keeper, current_user.current_workspace) || current_user.has_role?(:admin, current_user.current_workspace)
     }) %>
->>>>>>> feature-team-page-enhancement
   </div>
 </div>
