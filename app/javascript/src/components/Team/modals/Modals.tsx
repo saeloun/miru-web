@@ -13,7 +13,7 @@ const Modals = () => {
     case "delete":
       return <DeleteMember />;
     default:
-      return <></>;
+      return null;
   }
 };
 
