@@ -4,6 +4,8 @@ require "rails_helper"
 
 RSpec.describe "Users::RegistrationsController#create", type: :request do
   describe "after_inactive_sign_up_path_for" do
+    let(:email) { "sam@example.com" }
+
     before do
       user_params = {
         first_name: "First name",
