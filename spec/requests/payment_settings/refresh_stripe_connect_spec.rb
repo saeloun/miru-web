@@ -55,6 +55,20 @@ RSpec.describe "PaymentsSetting#refresh_stripe_connect", type: :request do
     end
   end
 
+  context "when the user is an book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+    end
+
+    it "is not authorized to refresh stripe connect" do
+      send_request :get, payments_settings_stripe_connect_refresh_path
+      expect(response).to have_http_status(:redirect)
+      expect(flash["alert"]).to eq("You are not authorized to perform this action.")
+    end
+  end
+
   context "when unauthenticated" do
     it "is not authorized to refresh stripe connect" do
       send_request :get, payments_settings_stripe_connect_refresh_path

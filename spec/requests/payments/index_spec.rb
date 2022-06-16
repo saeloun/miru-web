@@ -33,6 +33,19 @@ RSpec.describe "Payments#index", type: :request do
     end
   end
 
+  context "when user is a book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :get, payments_path
+    end
+
+    it "they should be able to visit payments page successfully" do
+      expect(response).to be_successful
+    end
+  end
+
   context "when unauthenticated" do
     it "is not be permitted to view the payments" do
       send_request :get, payments_path

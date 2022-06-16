@@ -7,7 +7,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -34,7 +34,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
@@ -52,6 +52,19 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
       send_request :get, internal_api_v1_reports_path
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+    end
+  end
+
+  context "when user is a book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :get, internal_api_v1_generate_invoice_index_path
+    end
+
+    it "is not permitted to view time entry report" do
+      expect(response).to have_http_status(:forbidden)
     end
   end
 end

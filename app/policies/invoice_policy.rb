@@ -2,31 +2,31 @@
 
 class InvoicePolicy < ApplicationPolicy
   def index?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role? || user_book_keeper_role?
   end
 
   def create?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def update?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def show?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def destroy?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def edit?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def send_invoice?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def permitted_attributes

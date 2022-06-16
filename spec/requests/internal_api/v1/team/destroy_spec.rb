@@ -132,6 +132,29 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
     end
   end
 
+  context "when current user is an book keeper" do
+    let(:employee_user) { create(:user, current_workspace_id: company.id) }
+    let(:team_user) { create(:user, current_workspace_id: company.id) }
+
+    before do
+      create(:company_user, company:, user: team_user)
+      create(:company_user, company:, user: employee_user)
+      employee_user.add_role :book_keeper, company
+      sign_in employee_user
+      send_request :delete, internal_api_v1_team_path(team_user)
+    end
+
+    it "returns forbidden response with error" do
+      expect(response).not_to be_successful
+      expect(response).to have_http_status :forbidden
+      expect(json_response["errors"]).to eq(I18n.t("pundit.team_policy.destroy?"))
+    end
+
+    it "does not discard the team member" do
+      expect(team_user.reload.company_users.discarded.count).to eq(0)
+    end
+  end
+
   context "when user is not signed in" do
     let(:team_user) { create(:user, current_workspace_id: company.id) }
 
