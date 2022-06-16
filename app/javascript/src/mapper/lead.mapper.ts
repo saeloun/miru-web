@@ -24,7 +24,22 @@ const getList = (input) => input.lead_details.map((lead) => ({
   assignee_name: lead.assignee_name,
   reporter_name: lead.reporter_name,
   created_by_name: lead.created_by_name,
-  updated_by_name: lead.updated_by_name
+  updated_by_name: lead.updated_by_name,
+  need: lead.need,
+  preferred_contact_method_code: lead.preferred_contact_method_code,
+  initial_communication: lead.initial_communication,
+  priority_code: lead.priority_code,
+  first_name: lead.first_name,
+  last_name: lead.last_name,
+  source_code: lead.source_code,
+  tech_stack_ids: lead.tech_stack_ids,
+  emails: lead.emails,
+  need_name: lead.need_name,
+  preferred_contact_method_code_name: lead.preferred_contact_method_code_name,
+  initial_communication_name: lead.initial_communication_name,
+  source_code_name: lead.source_code_name,
+  priority_code_name: lead.priority_code_name,
+  title: lead.title
 }));
 
 const unmapLeadList = (input) => {
@@ -78,7 +93,22 @@ const unmapLeadDetails = (input) => {
       assignee_name: data.lead_details.assignee_name,
       reporter_name: data.lead_details.reporter_name,
       created_by_name: data.lead_details.created_by_name,
-      updated_by_name: data.lead_details.updated_by_name
+      updated_by_name: data.lead_details.updated_by_name,
+      need: data.lead_details.need,
+      preferred_contact_method_code: data.lead_details.preferred_contact_method_code,
+      initial_communication: data.lead_details.initial_communication,
+      priority_code: data.lead_details.priority_code,
+      first_name: data.lead_details.first_name,
+      last_name: data.lead_details.last_name,
+      source_code: data.lead_details.source_code,
+      tech_stack_ids: data.lead_details.tech_stack_ids,
+      emails: data.lead_details.emails,
+      need_name: data.lead_details.need_name,
+      preferred_contact_method_code_name: data.lead_details.preferred_contact_method_code_name,
+      initial_communication_name: data.lead_details.initial_communication_name,
+      source_code_name: data.lead_details.source_code_name,
+      priority_code_name: data.lead_details.priority_code_name,
+      title: data.lead_details.title
     }
   };
 };

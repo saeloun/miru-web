@@ -4,37 +4,46 @@
 #
 # Table name: leads
 #
-#  id                 :bigint           not null, primary key
-#  address            :text
-#  base_currency      :string           default("USD")
-#  budget_amount      :decimal(, )      default(0.0)
-#  budget_status_code :integer
-#  country            :string
-#  description        :string
-#  discarded_at       :datetime
-#  donotbulkemail     :boolean          default(FALSE)
-#  donotemail         :boolean          default(FALSE)
-#  donotfax           :boolean          default(FALSE)
-#  donotphone         :boolean          default(FALSE)
-#  industry_code      :integer
-#  linkedinid         :string
-#  mobilephone        :string
-#  name               :string
-#  other_email        :string
-#  primary_email      :string
-#  priority           :integer
-#  quality_code       :integer
-#  skypeid            :string
-#  state_code         :integer
-#  status_code        :integer
-#  telephone          :string
-#  timezone           :string
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  assignee_id        :bigint
-#  created_by_id      :bigint
-#  reporter_id        :bigint
-#  updated_by_id      :bigint
+#  id                            :bigint           not null, primary key
+#  address                       :text
+#  base_currency                 :string           default("USD")
+#  budget_amount                 :decimal(, )      default(0.0)
+#  budget_status_code            :integer
+#  country                       :string
+#  description                   :string
+#  discarded_at                  :datetime
+#  donotbulkemail                :boolean          default(FALSE)
+#  donotemail                    :boolean          default(FALSE)
+#  donotfax                      :boolean          default(FALSE)
+#  donotphone                    :boolean          default(FALSE)
+#  emails                        :text             default([]), is an Array
+#  first_name                    :string
+#  industry_code                 :integer
+#  initial_communication         :integer
+#  last_name                     :string
+#  linkedinid                    :string
+#  mobilephone                   :string
+#  name                          :string
+#  need                          :integer
+#  other_email                   :string
+#  preferred_contact_method_code :integer
+#  primary_email                 :string
+#  priority_code                 :integer
+#  quality_code                  :integer
+#  skypeid                       :string
+#  source_code                   :integer
+#  state_code                    :integer
+#  status_code                   :integer
+#  tech_stack_ids                :text             default([]), is an Array
+#  telephone                     :string
+#  timezone                      :string
+#  title                         :string
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
+#  assignee_id                   :bigint
+#  created_by_id                 :bigint
+#  reporter_id                   :bigint
+#  updated_by_id                 :bigint
 #
 # Indexes
 #
@@ -121,6 +130,47 @@ class Lead < ApplicationRecord
     CodeOptionKlass.new("Wholesale", 32)
   ]
 
+  NEED_OPTIONS = [
+    CodeOptionKlass.new("Must have", 0),
+    CodeOptionKlass.new("Should have", 1),
+    CodeOptionKlass.new("Good to have", 2),
+    CodeOptionKlass.new("No need", 3)
+  ]
+
+  PREFERRED_CONTACT_METHOD_CODE_OPTIONS = [
+    CodeOptionKlass.new("Any", 0),
+    CodeOptionKlass.new("Email", 1),
+    CodeOptionKlass.new("Phone", 2),
+    CodeOptionKlass.new("Fax", 3),
+    CodeOptionKlass.new("Mail", 4)
+  ]
+
+  INITIAL_COMMUNICATION_OPTIONS = [
+    CodeOptionKlass.new("Contacted", 0),
+    CodeOptionKlass.new("Not Contacted", 1)
+  ]
+
+  SOURCE_CODE_OPTIONS = [
+    CodeOptionKlass.new("Advertisement", 0),
+    CodeOptionKlass.new("Employee Referral", 1),
+    CodeOptionKlass.new("External Referral", 2),
+    CodeOptionKlass.new("Partner", 3),
+    CodeOptionKlass.new("Public Relations", 4),
+    CodeOptionKlass.new("Seminar", 5),
+    CodeOptionKlass.new("Trade Show", 6),
+    CodeOptionKlass.new("Web", 7),
+    CodeOptionKlass.new("Word of Mouth", 8),
+    CodeOptionKlass.new("Other", 9)
+  ]
+
+  PRIORITY_CODE_OPTIONS = [
+    CodeOptionKlass.new("Lowest", 0),
+    CodeOptionKlass.new("Low", 1),
+    CodeOptionKlass.new("Normal", 2),
+    CodeOptionKlass.new("High", 3),
+    CodeOptionKlass.new("Highest", 4)
+  ]
+
   validates :name, presence: true
   # validates_format_of :primary_email, :other_email, :with => Devise::email_regexp
   # validates :budget_amount, numericality: { greater_than_or_equal_to: 0 }
@@ -134,7 +184,12 @@ class Lead < ApplicationRecord
   has_many :lead_quotes, dependent: :destroy
   has_many :lead_timelines, dependent: :destroy
 
-  before_create :set_updated_by
+  before_save :set_updated_by
+  before_save :set_name
+
+  def set_name
+    name = "#{self.first_name} #{self.last_name}"
+  end
 
   def set_updated_by
     updated_by_id = created_by_id if updated_by_id.blank? && created_by_id.present?
@@ -175,15 +230,54 @@ class Lead < ApplicationRecord
     code_name_hash[status_code]
   end
 
+  def need_name
+    return "" if need.nil?
+
+    code_name_hash = Lead::NEED_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+    code_name_hash[need]
+  end
+
+  def preferred_contact_method_code_name
+    return "" if preferred_contact_method_code.nil?
+
+    code_name_hash = Lead::PREFERRED_CONTACT_METHOD_CODE_OPTIONS.group_by(&:id).transform_values { |val|
+  val.first.name
+}
+    code_name_hash[preferred_contact_method_code]
+  end
+
+  def initial_communication_name
+    return "" if initial_communication.nil?
+
+    code_name_hash = Lead::INITIAL_COMMUNICATION_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+    code_name_hash[initial_communication]
+  end
+
+  def source_code_name
+    return "" if source_code.nil?
+
+    code_name_hash = Lead::SOURCE_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+    code_name_hash[source_code]
+  end
+
+  def priority_code_name
+    return "" if priority_code.nil?
+
+    code_name_hash = Lead::PRIORITY_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+    code_name_hash[priority_code]
+  end
+
   def lead_detail
     {
       id:, address:, base_currency:, budget_amount:, budget_status_code:,
       country:, description:, discarded_at:, donotbulkemail:,
       donotemail:, donotfax:, donotphone:, industry_code:,
       linkedinid:, mobilephone:, name:, other_email:, primary_email:,
-      priority:, quality_code:, skypeid:, state_code:, status_code:,
+      quality_code:, skypeid:, state_code:, status_code:,
       telephone:, timezone:, assignee_id:, reporter_id:, created_by_id:,
-      updated_by_id:
+      updated_by_id:, need:, preferred_contact_method_code:,
+      initial_communication:, first_name:, last_name:,
+      source_code:, tech_stack_ids:, emails:, priority_code:, title:
     }
   end
 end

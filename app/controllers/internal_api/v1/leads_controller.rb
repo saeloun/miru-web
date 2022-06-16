@@ -19,7 +19,12 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
         assignee_name: lead.assignee ? "#{lead.assignee.first_name} #{lead.assignee.last_name}" : "",
         reporter_name: lead.reporter ? "#{lead.reporter.first_name} #{lead.reporter.last_name}" : "",
         created_by_name: lead.created_by ? "#{lead.created_by.first_name} #{lead.created_by.last_name}" : "",
-        updated_by_name: lead.updated_by ? "#{lead.updated_by.first_name} #{lead.updated_by.last_name}" : ""
+        updated_by_name: lead.updated_by ? "#{lead.updated_by.first_name} #{lead.updated_by.last_name}" : "",
+        need_name: lead.need_name,
+        preferred_contact_method_code_name: lead.preferred_contact_method_code_name,
+        initial_communication_name: lead.initial_communication_name,
+        source_code_name: lead.source_code_name,
+        priority_code_name: lead.priority_code_name
       })
 }
     render json: { lead_details: }, status: :ok
@@ -39,9 +44,21 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
 
     line_item_kind_names = LeadLineItem::KIND_OPTIONS
 
+    needs = Lead::NEED_OPTIONS
+
+    preferred_contact_method_code_names = Lead::PREFERRED_CONTACT_METHOD_CODE_OPTIONS
+
+    initial_communications = Lead::INITIAL_COMMUNICATION_OPTIONS
+
+    source_codes = Lead::SOURCE_CODE_OPTIONS
+
+    priority_codes = Lead::PRIORITY_CODE_OPTIONS
+
     render json: {
       budget_status_codes:, quality_codes:, state_codes:,
-      status_codes:, industry_codes:, line_item_kind_names:
+      status_codes:, industry_codes:, line_item_kind_names:,
+      needs:, preferred_contact_method_code_names:,
+      initial_communications:, source_codes:, priority_codes:
     },	status: :ok
   end
 
@@ -79,7 +96,12 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
         assignee_name: lead.assignee ? "#{lead.assignee.first_name} #{lead.assignee.last_name}" : "",
         reporter_name: lead.reporter ? "#{lead.reporter.first_name} #{lead.reporter.last_name}" : "",
         created_by_name: lead.created_by ? "#{lead.created_by.first_name} #{lead.created_by.last_name}" : "",
-        updated_by_name: lead.updated_by ? "#{lead.updated_by.first_name} #{lead.updated_by.last_name}" : ""
+        updated_by_name: lead.updated_by ? "#{lead.updated_by.first_name} #{lead.updated_by.last_name}" : "",
+        need_name: lead.need_name,
+        preferred_contact_method_code_name: lead.preferred_contact_method_code_name,
+        initial_communication_name: lead.initial_communication_name,
+        source_code_name: lead.source_code_name,
+        priority_code_name: lead.priority_code_name
       })
     render json: { lead_details: }, status: :ok
   end

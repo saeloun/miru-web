@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_16_071507) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_16_113618) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -227,7 +227,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_16_071507) do
     t.boolean "donotfax", default: false
     t.boolean "donotphone", default: false
     t.integer "quality_code"
-    t.integer "priority"
     t.integer "state_code"
     t.integer "industry_code"
     t.datetime "discarded_at"
@@ -241,6 +240,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_16_071507) do
     t.bigint "reporter_id"
     t.bigint "created_by_id"
     t.bigint "updated_by_id"
+    t.integer "need"
+    t.integer "preferred_contact_method_code"
+    t.integer "initial_communication"
+    t.string "first_name"
+    t.string "last_name"
+    t.integer "source_code"
+    t.text "tech_stack_ids", default: [], array: true
+    t.text "emails", default: [], array: true
+    t.integer "priority_code"
+    t.string "title"
     t.index ["assignee_id"], name: "index_leads_on_assignee_id"
     t.index ["created_by_id"], name: "index_leads_on_created_by_id"
     t.index ["discarded_at"], name: "index_leads_on_discarded_at"

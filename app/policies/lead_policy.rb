@@ -41,9 +41,11 @@ class LeadPolicy < ApplicationPolicy
       :country, :description, :discarded_at, :donotbulkemail,
       :donotemail, :donotfax, :donotphone, :industry_code,
       :linkedinid, :mobilephone, :name, :other_email, :primary_email,
-      :priority, :quality_code, :skypeid, :state_code, :status_code,
+      :quality_code, :skypeid, :state_code, :status_code,
       :telephone, :timezone, :assignee_id, :reporter_id, :created_by_id,
-      :updated_by_id
+      :updated_by_id, :need, :preferred_contact_method_code,
+      :initial_communication, :first_name, :last_name,
+      :source_code, :priority_code, :title, tech_stack_ids: [], emails: []
     ]
   end
 end
