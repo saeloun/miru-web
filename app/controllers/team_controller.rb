@@ -10,10 +10,10 @@ class TeamController < ApplicationController
     render :index, locals: { query:, teams: }
   end
 
-  def edit
-    authorize user, policy_class: TeamPolicy
-    @user = user
-  end
+  #   def edit
+  #     authorize user, policy_class: TeamPolicy
+  #     @user = user
+  #   end
 
   def update
     authorize user, policy_class: TeamPolicy
@@ -24,28 +24,28 @@ class TeamController < ApplicationController
     redirect_to team_index_path
   end
 
-  def destroy
-    authorize user, policy_class: TeamPolicy
-    user.discard
-    redirect_to team_index_path
-  end
+  #   def destroy
+  #     authorize user, policy_class: TeamPolicy
+  #     user.discard
+  #     redirect_to team_index_path
+  #   end
 
-  private
+  #   private
 
-    def user_params
-      params.require(:user).permit(policy(:team).permitted_attributes)
-    end
+  #     def user_params
+  #       params.require(:user).permit(policy(:team).permitted_attributes)
+  #     end
 
-    def user
-      @_user ||= User.kept.find(params[:id])
-    end
+  #     def user
+  #       @_user ||= User.kept.find(params[:id])
+  #     end
 
-    def assign_role
-      return flash[:error] = I18n.t("team.update.error.role") if params.dig(:user, :roles).nil?
+# def assign_role
+#   return flash[:error] = I18n.t("team.update.error.role") if params.dig(:user, :roles).nil?
 
-      user.remove_role(user.roles.first.name) if user.roles.present?
-      if user.errors.empty? && current_company.present?
-        user.add_role(params[:user][:roles].downcase.to_sym, current_company)
-      end
-    end
+#   user.remove_role(user.roles.first.name) if user.roles.present?
+#   if user.errors.empty? && current_company.present?
+#     user.add_role(params[:user][:roles].downcase.to_sym, current_company)
+#   end
+# end
 end
