@@ -122,6 +122,7 @@ en:
     invitation: INVITATION PENDING
     form_name: Name
     form_email: Email
+    form_book_keeper: Book Keeper
     form_role: Role
     form_admin: Admin
     form_employee: Employee
@@ -145,6 +146,8 @@ en:
     signup_with_google: sign up with google
     signup_with_apple: sign up with apple
     signin_with_google: sign in with google
+  confirmation:
+    send_instructions: "A confirmation email has been sent to %{email}."
   shared_links:
     already_have_an_account: already have an account?
     dont_have_an_account: don't have an account?

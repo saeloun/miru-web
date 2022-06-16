@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { useList } from "context/TeamContext";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FormikProps } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";
 
@@ -17,6 +17,13 @@ const getInitialvalues = (client) => ({
   email: client.email,
   role: client.role ? client.role : "employee"
 });
+
+interface FormValues {
+  firstName: string,
+  lastName: string,
+  email: string,
+  role: string
+}
 
 const EditClient = ({
   client = {}
@@ -48,78 +55,81 @@ const EditClient = ({
               validationSchema={TeamMemberSchema}
               onSubmit={handleSubmit}
             >
-              {({ errors, touched }) => (
-                <Form>
-                  <div className="mt-4">
-                    <div className="field">
-                      <div className="field_with_errors">
-                        <label className="form__label">Name</label>
-                        <div className="tracking-wider block text-xs text-red-600 flex">
-                          {errors.firstName && touched.firstName &&
-                            <div>{errors.firstName}</div>
-                          }
-                          {errors.lastName && touched.lastName &&
-                            <div className="ml-2">{errors.lastName}</div>
-                          }
+              {(props: FormikProps<FormValues>) => {
+                const { touched, errors } = props;
+                return (
+                  <Form>
+                    <div className="mt-4">
+                      <div className="field">
+                        <div className="field_with_errors">
+                          <label className="form__label">Name</label>
+                          <div className="tracking-wider block text-xs text-red-600 flex">
+                            {errors.firstName && touched.firstName &&
+                              <div>{errors.firstName}</div>
+                            }
+                            {errors.lastName && touched.lastName &&
+                              <div className="ml-2">{errors.lastName}</div>
+                            }
+                          </div>
+                        </div>
+                        <div className="flex">
+                          <div className="mt-1">
+                            <Field className={`form__input ${errors.firstName && touched.firstName && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="firstName" />
+                          </div>
+                          <div className="mt-1 ml-8">
+                            <Field className={`form__input ${errors.lastName && touched.lastName && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="lastName" />
+                          </div>
                         </div>
                       </div>
-                      <div className="flex">
+                    </div>
+                    <div className="mt-4">
+                      <div className="field">
+                        <div className="field_with_errors">
+                          <label className="form__label">Email</label>
+                          <div className="tracking-wider block text-xs text-red-600">
+                            {errors.email && touched.email &&
+                              <div>{errors.email}</div>
+                            }
+                          </div>
+                        </div>
                         <div className="mt-1">
-                          <Field className={`form__input ${errors.firstName && touched.firstName && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="firstName" />
-                        </div>
-                        <div className="mt-1 ml-8">
-                          <Field className={`form__input ${errors.lastName && touched.lastName && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="lastName" />
+                          <Field className={`form__input ${errors.email && touched.email && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="email" />
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="field">
-                      <div className="field_with_errors">
-                        <label className="form__label">Email</label>
-                        <div className="tracking-wider block text-xs text-red-600">
-                          {errors.email && touched.email &&
-                            <div>{errors.email}</div>
-                          }
-                        </div>
-                      </div>
-                      <div className="mt-1">
-                        <Field className={`form__input ${errors.email && touched.email && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="email" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="field">
-                      <label className="form__label">Role</label>
-                      <div className="mt-1 flex">
-                        <div className="flex items-center">
-                          <Field type="radio" id="role-1" name="role" className="hidden custom__radio" value="admin" />
-                          <label htmlFor="role-1" className="flex items-center cursor-pointer text-xl">
-                            <i className="custom__radio-text"></i>
-                            <span className="text-sm">Admin</span>
-                          </label>
-                        </div>
-                        <div className="flex items-center ml-8">
-                          <Field type="radio" id="role-2" name="role" className="hidden custom__radio" value="employee" />
-                          <label htmlFor="role-2" className="flex items-center cursor-pointer text-xl">
-                            <i className="custom__radio-text"></i>
-                            <span className="text-sm">Employee</span>
-                          </label>
+                    <div className="mt-4">
+                      <div className="field">
+                        <label className="form__label">Role</label>
+                        <div className="mt-1 flex">
+                          <div className="flex items-center">
+                            <Field type="radio" id="role-1" name="role" className="hidden custom__radio" value="admin" />
+                            <label htmlFor="role-1" className="flex items-center cursor-pointer text-xl">
+                              <i className="custom__radio-text"></i>
+                              <span className="text-sm">Admin</span>
+                            </label>
+                          </div>
+                          <div className="flex items-center ml-8">
+                            <Field type="radio" id="role-2" name="role" className="hidden custom__radio" value="employee" />
+                            <label htmlFor="role-2" className="flex items-center cursor-pointer text-xl">
+                              <i className="custom__radio-text"></i>
+                              <span className="text-sm">Employee</span>
+                            </label>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <p className="tracking-wider mt-7 block text-xs text-red-600">{apiError}</p>
-                  <div className="actions mt-4">
-                    <input
-                      type="submit"
-                      name="commit"
-                      value="SAVE CHANGES"
-                      className="form__input_submit"
-                    />
-                  </div>
-                </Form>
-              )}
+                    <p className="tracking-wider mt-7 block text-xs text-red-600">{apiError}</p>
+                    <div className="actions mt-4">
+                      <input
+                        type="submit"
+                        name="commit"
+                        value="SAVE CHANGES"
+                        className="form__input_submit"
+                      />
+                    </div>
+                  </Form>
+                );
+              }}
             </Formik>
           </div>
         </div>

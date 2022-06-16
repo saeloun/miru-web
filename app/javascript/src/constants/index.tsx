@@ -19,7 +19,7 @@ export enum ApiStatus {
 
 export const TOASTER_DURATION = 3000;
 
-export const getToasterIcon = (type) => {
+export const GetToasterIcon = ({ type }) => {
   switch (type) {
     case "success":
       return <img
@@ -88,3 +88,7 @@ export const getToasterCloseButton = ({ closeToast, type }) => {
       />;
   }
 };
+
+export const BASIC_PLAN_CHARGE = 10;
+
+export const TEAM_MEMBER_CHARGE = 5;
