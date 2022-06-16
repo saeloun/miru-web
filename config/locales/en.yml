@@ -122,6 +122,7 @@ en:
     invitation: INVITATION PENDING
     form_name: Name
     form_email: Email
+    form_book_keeper: Book Keeper
     form_role: Role
     form_admin: Admin
     form_employee: Employee

@@ -7,7 +7,7 @@ RSpec.describe "InternalApi::V1::Workspaces#update", type: :request, tt: true do
   let(:company_2) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       create(:company_user, company_id: company_2.id, user:)
@@ -33,7 +33,7 @@ RSpec.describe "InternalApi::V1::Workspaces#update", type: :request, tt: true do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       create(:company_user, company_id: company_2.id, user:)

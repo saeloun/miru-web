@@ -16,6 +16,7 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:identities).dependent(:delete_all) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:timesheet_entries) }
+    it { is_expected.to have_many(:previous_employment_details).dependent(:destroy) }
     it { is_expected.to have_one_attached(:avatar) }
   end
 
@@ -69,22 +70,6 @@ RSpec.describe User, type: :model do
       user.first_name = "First"
       user.last_name = "Last"
       expect(user.full_name).to eq("First Last")
-    end
-  end
-
-  describe "#has_owner_or_admin_role?" do
-    it "returns true if user has admin role" do
-      user.add_role :admin, company
-      expect(user.has_owner_or_admin_role?(company)).to be_truthy
-    end
-
-    it "returns true if user has owner role" do
-      user.add_role :owner, company
-      expect(user.has_owner_or_admin_role?(company)).to be_truthy
-    end
-
-    it "returns false if user has employee role" do
-      expect(user.has_owner_or_admin_role?(company)).to be_falsey
     end
   end
 

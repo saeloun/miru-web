@@ -11,7 +11,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   let(:project_2) { create(:project, client: client_2) }
   let(:time_frame) { "week" }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -79,7 +79,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     let(:time_frame) { "last_week" }
 
     before do
@@ -108,6 +108,25 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
         expect(json_response["total_minutes"]).to eq(JSON.parse(total_minutes.to_json))
         expect(json_response["overdue_outstanding_amount"]).to eq(JSON.parse(overdue_outstanding_amount.to_json))
       end
+    end
+  end
+
+  context "when user is a book keeper" do
+    let(:time_frame) { "last_week" }
+
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      create_list(:timesheet_entry, 5, user:, project: project_1)
+      create_list(:timesheet_entry, 5, user:, project: project_2)
+      send_request :get, internal_api_v1_clients_path, params: {
+        time_frame:
+      }
+    end
+
+    it "is not be permitted to access client" do
+      expect(response).to have_http_status(:forbidden)
     end
   end
 

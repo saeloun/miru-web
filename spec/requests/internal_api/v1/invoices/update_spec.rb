@@ -9,7 +9,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
 
   let(:user) { create(:user, current_workspace_id: company.id) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -43,10 +43,28 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
+      sign_in user
+      send_request :patch, internal_api_v1_invoice_path(
+        id: company.clients.first.invoices.first.id, params: {
+          invoice: {
+            reference: "foo"
+          }
+        })
+    end
+
+    it "is not be permitted to update an invoice" do
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  context "when user is a book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
       sign_in user
       send_request :patch, internal_api_v1_invoice_path(
         id: company.clients.first.invoices.first.id, params: {
