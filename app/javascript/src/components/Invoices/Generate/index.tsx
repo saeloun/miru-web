@@ -11,6 +11,7 @@ import Header from "./Header";
 
 import InvoiceSettings from "./InvoiceSettings";
 import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
+import { generateInvoiceLineItems } from "../common/utils";
 import SendInvoice from "../popups/SendInvoice";
 
 const GenerateInvoices = () => {
@@ -32,6 +33,7 @@ const GenerateInvoices = () => {
   const [showSendInvoiceModal, setShowSendInvoiceModal] = useState<boolean>(false);
   const [invoiceId, setInvoiceId] = useState<number>(null);
   const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(true);
+  const [manualEntryArr, setManualEntryArr] = useState<any>([]);
 
   const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
     try {
@@ -57,7 +59,7 @@ const GenerateInvoices = () => {
       reference,
       issueDate,
       dueDate,
-      selectedOption,
+      invoiceLineItems: generateInvoiceLineItems(selectedOption, manualEntryArr),
       amount,
       amountDue,
       amountPaid,
@@ -120,6 +122,8 @@ const GenerateInvoices = () => {
           setTax={setTax}
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
+          manualEntryArr={manualEntryArr}
+          setManualEntryArr={setManualEntryArr}
         />
 
         {showSendInvoiceModal && <SendInvoice invoice={{

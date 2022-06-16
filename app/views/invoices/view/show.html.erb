@@ -6,7 +6,7 @@
   <%= react_component("InvoiceEmail/index",{
     url: new_invoice_payment_url(invoice),
     invoice: invoice,
-    logo: url_for(invoice.company.logo),
+    logo: invoice.company.company_logo,
     lineItems: invoice.invoice_line_items,
     company: invoice.company,
     client: invoice.client

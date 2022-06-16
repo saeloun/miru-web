@@ -9,8 +9,9 @@ class InvoiceMailer < ApplicationMailer
     subject = params[:subject]
     @message = params[:message]
     @invoice_url = view_invoice_url(@invoice.external_view_key)
+    @company_logo = company_logo
 
-    pdf = InvoicePayment::PdfGeneration.process(@invoice, company_logo)
+    pdf = InvoicePayment::PdfGeneration.process(@invoice, @company_logo)
     attachments["invoice_#{@invoice.invoice_number}.pdf"] = pdf
     attachments.inline["miruLogoWithText.png"] = File.read("public/miruLogoWithText.png")
     attachments.inline["Instagram.png"] = File.read("public/Instagram.png")

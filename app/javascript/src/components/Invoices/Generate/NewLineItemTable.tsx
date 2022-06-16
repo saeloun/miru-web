@@ -2,9 +2,9 @@ import React from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import dayjs from "dayjs";
 import { DropdownHeader } from "./CustomComponents";
+import { getMaxIdx } from "../common/utils";
 
 const NewLineItemTable = ({
-  showItemInputs,
   setShowItemInputs,
   addNew, setAddNew,
   lineItems, setLineItems,
@@ -13,7 +13,11 @@ const NewLineItemTable = ({
   pageNumber, setPageNumber,
   selectedOption,
   setSelectedOption,
-  setMultiLineItemModal }) => {
+  setMultiLineItemModal,
+  manualEntryArr,
+  setManualEntryArr,
+  setAddManualLineItem
+}) => {
 
   const hasMoreItems = lineItems.length === totalLineItems;
   const selectRowId = (items) => {
@@ -28,9 +32,11 @@ const NewLineItemTable = ({
     <div>
       <DropdownHeader setShowMultilineModal={setMultiLineItemModal} />
       <div>
-        <button onClick={() => {
-          setShowItemInputs(!showItemInputs);
+        <button onClick={async () => {
+          await setShowItemInputs(true);
           setAddNew(!addNew);
+          setAddManualLineItem(true);
+          setManualEntryArr([...manualEntryArr, { idx: getMaxIdx(manualEntryArr) + 1 }]);
         }} className="mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000">Add Manual Entry</button>
       </div>
       <div className="overflow-scroll mt-4 relative">
