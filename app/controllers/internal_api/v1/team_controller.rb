@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
-  helper :all
+  helper ApplicationHelper
 
   def index
     authorize :index, policy_class: TeamPolicy

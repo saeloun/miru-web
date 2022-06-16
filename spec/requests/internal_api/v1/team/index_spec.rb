@@ -5,9 +5,7 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Team#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, :with_avatar, current_workspace_id: company.id) }
-  let(:user2) {
-  create(:user, :with_pending_invitation, current_workspace_id: company.id, current_workspace_id: company.id)
-}
+  let(:user2) { create(:user, :with_pending_invitation, current_workspace_id: company.id) }
 
   before do
     create(:company_user, company:, user:)
