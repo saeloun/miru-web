@@ -8,31 +8,22 @@ import { X } from "phosphor-react";
 import * as Yup from "yup";
 
 const newLeadSchema = Yup.object().shape({
-  name: Yup.string().required("Name cannot be blank"),
-  budget_amount: Yup.number().typeError("Invalid budget amount")
+  first_name: Yup.string().required("First Name cannot be blank"),
+  last_name: Yup.string().required("Last Name cannot be blank"),
 });
 
 const initialValues = {
-  name: "",
-  budget_amount: 0.0,
-  budget_status_code: 0,
-  industry_code: 0,
+  first_name: "",
+  last_name: "",
   quality_code: 0,
-  state_code: 0,
   status_code: 0
 };
 
-const NewLead = ({ setnewLead, leadData, setLeadData }) => {
-  const [budgetStatusCodeList, setBudgetStatusCodeList] = useState<any>(null);
-  const [industryCodeList, setIndustryCodeList] = useState<any>(null);
+const NewLead = ({ setnewLead }) => {
   const [qualityCodeList, setQualityCodeList] = useState<any>(null);
-  const [stateCodeList, setStateCodeList] = useState<any>(null);
   const [statusCodeList, setStatusCodeList] = useState<any>(null);
 
-  const [budgetStatusCode, setBudgetStatusCode] = useState<any>(null);
-  const [industryCode, setIndustryCode] = useState<any>(null);
   const [qualityCode, setQualityCode] = useState<any>(null);
-  const [stateCode, setStateCode] = useState<any>(null);
   const [statusCode, setStatusCode] = useState<any>(null);
 
   const navigate = useNavigate();
@@ -41,16 +32,10 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
     const getLeadItems = async () => {
       leadItemsApi.get()
         .then((data) => {
-          setBudgetStatusCodeList(data.data.budget_status_codes);
-          setIndustryCodeList(data.data.industry_codes);
           setQualityCodeList(data.data.quality_codes);
-          setStateCodeList(data.data.state_codes);
-          setStatusCodeList(data.data.status_codes);
+          setStatusCodeList([data.data.status_codes[0], data.data.status_codes[1]]);
         }).catch(() => {
-          setBudgetStatusCodeList({});
-          setIndustryCodeList({});
           setQualityCodeList({});
-          setStateCodeList({});
           setStatusCodeList({});
         });
     };
@@ -60,17 +45,13 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
 
   const handleSubmit = (values) => {
     leads.create({
-      "name": values.name,
-      "budget_amount": values.budget_amount,
-      "budget_status_code": budgetStatusCode,
-      "industry_code": industryCode,
+      "first_name": values.first_name,
+      "last_name": values.last_name,
       "quality_code": qualityCode,
-      "state_code": stateCode,
       "status_code": statusCode
     })
       .then(res => {
-        setLeadData([...leadData, { ...res.data }]);
-        navigate("/leads");
+        navigate(`/leads/${res.data.id}`);
         setnewLead(false);
         Toastr.success("Lead added successfully");
       });
@@ -102,98 +83,28 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
                   <div className="mt-4">
                     <div className="field">
                       <div className="field_with_errors">
-                        <label className="form__label">Name</label>
+                        <label className="form__label">First name</label>
                         <div className="tracking-wider block text-xs text-red-600">
-                          {errors.name && touched.name &&
-                            <div>{errors.name}</div>
+                          {errors.first_name && touched.first_name &&
+                            <div>{errors.first_name}</div>
                           }
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input ${errors.name && touched.name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="name" />
+                        <Field className={`form__input ${errors.first_name && touched.first_name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="first_name" />
                       </div>
                     </div>
-                  </div>
-                  {/* <div className="mt-4">
                     <div className="field">
                       <div className="field_with_errors">
-                        <label className="form__label">Email</label>
+                        <label className="form__label">Last Name</label>
                         <div className="tracking-wider block text-xs text-red-600">
-                          {errors.primary_email && touched.primary_email &&
-                            <div>{errors.primary_email}</div>
+                          {errors.last_name && touched.last_name &&
+                            <div>{errors.last_name}</div>
                           }
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input ${errors.primary_email && touched.primary_email && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="primary_email" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="field">
-                      <div className="field_with_errors">
-                        <label className="form__label">Desciption</label>
-                        <div className="tracking-wider block text-xs text-red-600">
-                          {errors.description && touched.description &&
-                            <div>{errors.description}</div>
-                          }
-                        </div>
-                      </div>
-                      <div className="mt-1">
-                        <Field className={`form__input ${errors.description && touched.description && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="description" />
-                      </div>
-                    </div>
-                  </div> */}
-                  <div className="mt-4">
-                    <div className="field">
-                      <div className="field_with_errors">
-                        <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
-                          Budget Amount
-                        </label>
-                        <div className="tracking-wider block text-xs text-red-600">
-                          {errors.budget_amount && touched.budget_amount &&
-                            <div>{errors.budget_amount}</div>
-                          }
-                        </div>
-                      </div>
-                      <div className="mt-1">
-                        <Field className={`form__input rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none ${errors.budget_amount && touched.budget_amount && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="budget_amount" type="number" min="0" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="field">
-                      <div className="field_with_errors">
-                        <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
-                          Budget Status
-                        </label>
-                      </div>
-                      <div className="mt-1">
-                        <select
-                          className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                          name="budget_status_code" onChange={(e) => setBudgetStatusCode(e.target.value)}>
-                          <option value=''>Select Budget Status</option>
-                          {budgetStatusCodeList &&
-                            budgetStatusCodeList.map(e => <option value={e.id} key={e.id}>{e.name}</option>)}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="field">
-                      <div className="field_with_errors">
-                        <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
-                          Industry
-                        </label>
-                      </div>
-                      <div className="mt-1">
-                        <select
-                          className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                          name="industry_code" onChange={(e) => setIndustryCode(e.target.value)}>
-                          <option value=''>Select Industry</option>
-                          {industryCodeList &&
-                            industryCodeList.map(e => <option value={e.id} key={e.id}>{e.name}</option>)}
-                        </select>
+                        <Field className={`form__input ${errors.last_name && touched.last_name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="last_name" />
                       </div>
                     </div>
                   </div>
@@ -211,24 +122,6 @@ const NewLead = ({ setnewLead, leadData, setLeadData }) => {
                           <option value=''>Select Quality</option>
                           {qualityCodeList &&
                             qualityCodeList.map(e => <option value={e.id} key={e.id}>{e.name}</option>)}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="field">
-                      <div className="field_with_errors">
-                        <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
-                          State
-                        </label>
-                      </div>
-                      <div className="mt-1">
-                        <select
-                          className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                          name="state_code" onChange={(e) => setStateCode(e.target.value)}>
-                          <option value=''>Select State</option>
-                          {stateCodeList &&
-                            stateCodeList.map(e => <option value={e.id} key={e.id}>{e.name}</option>)}
                         </select>
                       </div>
                     </div>

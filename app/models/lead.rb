@@ -171,10 +171,6 @@ class Lead < ApplicationRecord
     CodeOptionKlass.new("Highest", 4)
   ]
 
-  validates :name, presence: true
-  # validates_format_of :primary_email, :other_email, :with => Devise::email_regexp
-  # validates :budget_amount, numericality: { greater_than_or_equal_to: 0 }
-
   belongs_to :assignee, class_name: :User, optional: true
   belongs_to :reporter, class_name: :User, optional: true
   belongs_to :created_by, class_name: :User, optional: true
@@ -184,11 +180,12 @@ class Lead < ApplicationRecord
   has_many :lead_quotes, dependent: :destroy
   has_many :lead_timelines, dependent: :destroy
 
+  validates :name, presence: true
+  before_validation :set_name
   before_save :set_updated_by
-  before_save :set_name
 
   def set_name
-    name = "#{self.first_name} #{self.last_name}"
+    self.name = "#{self.first_name} #{self.last_name}"
   end
 
   def set_updated_by

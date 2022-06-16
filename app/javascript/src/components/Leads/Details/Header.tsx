@@ -5,15 +5,12 @@ import leads from "apis/leads";
 import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, CaretDown, Trash, Gear } from "phosphor-react";
 import { unmapLeadList } from "../../../mapper/lead.mapper";
 import DeleteLead from "../Modals/DeleteLead";
-import EditLead from "../Modals/EditLead";
 import NewLead from "../Modals/NewLead";
 
 const Header = ({ leadDetails, setShowLeadSetting }) => {
 
-  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [newLead, setnewLead] = useState<boolean>(false);
-  const [leadToEdit, setedit] = useState({});
   const [leadToDelete, setDelete] = useState({});
   const [leadData, setLeadData] = useState<any>();
 
@@ -144,12 +141,6 @@ const Header = ({ leadDetails, setShowLeadSetting }) => {
         </div>
         }
       </div>
-      {showEditDialog &&
-      <EditLead
-        setShowEditDialog={setShowEditDialog}
-        lead={leadToEdit}
-      />
-      }
       {showDeleteDialog && (
         <DeleteLead
           setShowDeleteDialog={setShowDeleteDialog}
@@ -159,8 +150,6 @@ const Header = ({ leadDetails, setShowLeadSetting }) => {
       {newLead && (
         <NewLead
           setnewLead={setnewLead}
-          setLeadData={setLeadData}
-          leadData={leadData}
         />
       )}
     </>

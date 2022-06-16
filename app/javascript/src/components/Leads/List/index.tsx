@@ -10,7 +10,6 @@ import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapLeadList } from "../../../mapper/lead.mapper";
 import DeleteLead from "../Modals/DeleteLead";
-import EditLead from "../Modals/EditLead";
 import NewLead from "../Modals/NewLead";
 
 const getTableData = (leads) => {
@@ -32,35 +31,17 @@ const getTableData = (leads) => {
 };
 
 const Leads = ({ isAdminUser }) => {
-  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [newLead, setnewLead] = useState<boolean>(false);
-  const [leadToEdit, setedit] = useState({});
   const [leadToDelete, setDelete] = useState({});
   const [leadData, setLeadData] = useState<any>();
   const navigate = useNavigate();
-
-  const handleEditClick = (id) => {
-    setShowEditDialog(true);
-    const editSelection = leadData.find(lead => lead.id === id);
-    setedit(editSelection);
-  };
 
   const handleDeleteClick = (id) => {
     setShowDeleteDialog(true);
     const editSelection = leadData.find(lead => lead.id === id);
     setDelete(editSelection);
   };
-
-  // const handleSelectChange = (event) => {
-  //   leads.get(`?time_frame=${event.target.value}`)
-  //     .then((res) => {
-  //       const sanitized = unmapLeadList(res);
-  //       setLeadData(sanitized.leadList);
-  //       // setTotalMinutes(sanitized.totalMinutes);
-  //       // setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
-  //     });
-  // };
 
   const handleRowClick = (id) => {
     navigate(`${id}`);
@@ -73,8 +54,6 @@ const Leads = ({ isAdminUser }) => {
       .then((res) => {
         const sanitized = unmapLeadList(res);
         setLeadData(sanitized.leadList);
-        // setTotalMinutes(sanitized.totalMinutes);
-        // setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
       });
   }, []);
 
@@ -85,28 +64,8 @@ const Leads = ({ isAdminUser }) => {
       cssClass: ""
     },
     {
-      Header: "Budget Amount",
-      accessor: "col2",
-      cssClass: "text-center"
-    },
-    {
-      Header: "Budget Status",
-      accessor: "col3",
-      cssClass: "text-center"
-    },
-    {
-      Header: "Industry",
-      accessor: "col4",
-      cssClass: "text-center"
-    },
-    {
       Header: "Quality",
       accessor: "col5",
-      cssClass: "text-center"
-    },
-    {
-      Header: "State",
-      accessor: "col6",
       cssClass: "text-center"
     },
     {
@@ -128,7 +87,7 @@ const Leads = ({ isAdminUser }) => {
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
               <div className="overflow-hidden">
                 {leadData && <Table
-                  handleEditClick={handleEditClick}
+                  hasEditAction={false}
                   handleDeleteClick={handleDeleteClick}
                   hasRowIcons={isAdminUser}
                   tableHeader={tableHeader}
@@ -140,12 +99,6 @@ const Leads = ({ isAdminUser }) => {
           </div>
         </div>
       </div>
-      {showEditDialog &&
-        <EditLead
-          setShowEditDialog={setShowEditDialog}
-          lead={leadToEdit}
-        />
-      }
       {showDeleteDialog && (
         <DeleteLead
           setShowDeleteDialog={setShowDeleteDialog}
@@ -155,8 +108,6 @@ const Leads = ({ isAdminUser }) => {
       {newLead && (
         <NewLead
           setnewLead={setnewLead}
-          setLeadData={setLeadData}
-          leadData={leadData}
         />
       )}
     </>
