@@ -18,10 +18,6 @@ const ManualEntry = ({
   const ref = useRef();
 
   useEffect(() => {
-    setQty(entry.qty ? (entry.qty / 60) : 0);
-  }, [entry]);
-
-  useEffect(() => {
     if (entry.idx) {
       setLineItem({ ...lineItem,
         idx: entry.idx,
@@ -29,8 +25,8 @@ const ManualEntry = ({
         date,
         description,
         rate,
-        qty: (Number(qty) * 60),
-        lineTotal: (Number(qty) * Number(rate))
+        qty: qty,
+        lineTotal: (Number(qty) * Number(rate)).toFixed(2)
       });
     }
   }, [name, date, description, rate, qty, lineTotal]);
@@ -109,7 +105,7 @@ const ManualEntry = ({
           placeholder="Qty"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           defaultValue={entry.qty}
-          value={qty}
+          value={entry.qty}
           onChange={e => {
             setQty(e.target.value);
             setLineTotal(Number(rate) * Number(e.target.value));

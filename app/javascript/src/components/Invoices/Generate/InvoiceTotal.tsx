@@ -85,8 +85,8 @@ const InvoiceTotal = ({
   useEffect(() => {
     const newLineItemsSubTotal = newLineItems.reduce((sum, { lineTotal }) => (sum + lineTotal), 0);
     const manualEntryTotal = manualEntryArr.reduce((sum, { lineTotal }) => (sum + lineTotal), 0);
-    const subTotal = Number(newLineItemsSubTotal) + Number(manualEntryTotal);
-    const newTotal = subTotal + Number(tax) - Number(discount);
+    const subTotal = Number((Number(newLineItemsSubTotal) + Number(manualEntryTotal)).toFixed(2));
+    const newTotal = Number((subTotal + Number(tax) - Number(discount)).toFixed(2));
     setSubTotal(subTotal);
     setTotal(newTotal);
     setAmount(newTotal);

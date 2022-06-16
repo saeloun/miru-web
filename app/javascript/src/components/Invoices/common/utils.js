@@ -21,7 +21,7 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
       description: item.description,
       date: dayjs(item.date).format("DD/MM/YYYY"),
       rate: item.rate,
-      quantity: item.qty,
+      quantity: item.qty * 60,
       timesheet_entry_id: item.time_sheet_entry
     }))
   );
