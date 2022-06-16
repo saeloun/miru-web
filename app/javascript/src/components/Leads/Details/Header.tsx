@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leads from "apis/leads";
-import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, CaretDown, Trash, Gear } from "phosphor-react";
+import { ArrowLeft, DotsThreeVertical, Receipt, CaretDown, Trash, Gear } from "phosphor-react";
 import { unmapLeadList } from "../../../mapper/lead.mapper";
 import DeleteLead from "../Modals/DeleteLead";
 import NewLead from "../Modals/NewLead";
@@ -18,12 +18,6 @@ const Header = ({ leadDetails, setShowLeadSetting }) => {
   const [isLeadOpen, toggleLeadDetails] = useState<boolean>(false);
 
   const navigate = useNavigate();
-
-  const handleEditClick = (id) => {
-    setShowEditDialog(true);
-    const editSelection = leadData.find(lead => lead.id === id);
-    setedit(editSelection);
-  };
 
   const handleDeleteClick = (id) => {
     setShowDeleteDialog(true);
@@ -88,12 +82,6 @@ const Header = ({ leadDetails, setShowLeadSetting }) => {
                 <button className="menuButton__list-item" onClick={() => setnewLead(true)}>
                   <Receipt size={16} color="#5B34EA" weight="bold" />
                   <span className="ml-3">Add Lead</span>
-                </button>
-              </li>
-              <li>
-                <button className="menuButton__list-item" onClick={() => handleEditClick(leadDetails.id)} >
-                  <Pencil size={16} color="#5b34ea" weight="bold" />
-                  <span className="ml-3">Edit</span>
                 </button>
               </li>
               <li>

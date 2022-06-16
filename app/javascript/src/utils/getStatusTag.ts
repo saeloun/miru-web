@@ -9,7 +9,12 @@ const getStatusCssClass = (status) => {
     accepted: "bg-miru-alert-green-400 text-miru-alert-green-800",
     unbilled: "bg-miru-alert-yellow-400 text-miru-alert-green-1000",
     ready_for_approval: "bg-miru-alert-yellow-400 text-miru-alert-green-1000",
-    nonbilled: "bg-miru-dark-purple-100 text-miru-dark-purple-600"
+    nonbilled: "bg-miru-dark-purple-100 text-miru-dark-purple-600",
+    hot: "bg-miru-dark-purple-100 text-miru-dark-purple-600",
+    warm: "bg-miru-dark-purple-100 text-miru-dark-purple-600",
+    contacted: "bg-miru-dark-purple-100 text-miru-dark-purple-600",
+    qualified: "bg-miru-dark-purple-100 text-miru-dark-purple-600",
+    new: "bg-miru-dark-purple-100 text-miru-dark-purple-600",
   };
   const lowerCaseStatus = status.toLowerCase();
   return `rounded-xl text-xs tracking-widest font-semibold px-1 ${STATUS_LIST[lowerCaseStatus]}`;

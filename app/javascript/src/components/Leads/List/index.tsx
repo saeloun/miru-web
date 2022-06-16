@@ -9,6 +9,7 @@ import Table from "common/Table";
 import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapLeadList } from "../../../mapper/lead.mapper";
+import getStatusCssClass from "../../../utils/getStatusTag";
 import DeleteLead from "../Modals/DeleteLead";
 import NewLead from "../Modals/NewLead";
 
@@ -17,12 +18,16 @@ const getTableData = (leads) => {
     return leads.map((lead) =>
       ({
         col1: <div className="text-base text-miru-dark-purple-1000">{lead.name}</div>,
-        col2: <div className="text-base text-miru-dark-purple-1000 text-center">{lead.budget_amount}</div>,
-        col3: <div className="text-base text-miru-dark-purple-1000 text-center">{lead.budget_status_code_name}</div>,
-        col4: <div className="text-base text-miru-dark-purple-1000 text-center">{lead.industry_code_name}</div>,
-        col5: <div className="text-base text-miru-dark-purple-1000 text-center">{lead.quality_code_name}</div>,
-        col6: <div className="text-base text-miru-dark-purple-1000 text-center">{lead.state_code_name}</div>,
-        col7: <div className="text-base text-miru-dark-purple-1000 text-center">{lead.status_code_name}</div>,
+        col5: <div className="text-base text-miru-dark-purple-1000 text-center">
+          <span className={lead.quality_code_name ? `${getStatusCssClass(lead.quality_code_name)} uppercase` : ""}>
+            {lead.quality_code_name}
+          </span>
+        </div>,
+        col7: <div className="text-base text-miru-dark-purple-1000 text-center">
+          <span className={lead.status_code_name ? `${getStatusCssClass(lead.status_code_name)} uppercase` : ""}>
+            {lead.status_code_name}
+          </span>
+        </div>,
         rowId: lead.id
       })
     );
