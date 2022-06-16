@@ -16,7 +16,15 @@ const getList = (input) => input.lead_details.map((lead) => ({
   donotemail: lead.donotemail,
   donotbulkemail: lead.donotbulkemail,
   donotfax: lead.donotfax,
-  donotphone: lead.donotphone
+  donotphone: lead.donotphone,
+  assignee_id: lead.assignee_id,
+  reporter_id: lead.reporter_id,
+  created_by_id: lead.created_by_id,
+  updated_by_id: lead.updated_by_id,
+  assignee_name: lead.assignee_name,
+  reporter_name: lead.reporter_name,
+  created_by_name: lead.created_by_name,
+  updated_by_name: lead.updated_by_name
 }));
 
 const unmapLeadList = (input) => {
@@ -62,7 +70,15 @@ const unmapLeadDetails = (input) => {
       donotemail: data.lead_details.donotemail,
       donotbulkemail: data.lead_details.donotbulkemail,
       donotfax: data.lead_details.donotfax,
-      donotphone: data.lead_details.donotphone
+      donotphone: data.lead_details.donotphone,
+      assignee_id: data.lead_details.assignee_id,
+      reporter_id: data.lead_details.reporter_id,
+      created_by_id: data.lead_details.created_by_id,
+      updated_by_id: data.lead_details.updated_by_id,
+      assignee_name: data.lead_details.assignee_name,
+      reporter_name: data.lead_details.reporter_name,
+      created_by_name: data.lead_details.created_by_name,
+      updated_by_name: data.lead_details.updated_by_name
     }
   };
 };

@@ -65,7 +65,7 @@
     <div class="field">
       <label class="tracking-wider block text-xs font-normal text-miru-dark-purple-1000"><%= t('team.form_department') %></label>
       <div class="mt-2">
-        <%= f.collection_select :department_id, User::DEPARTMENT_OPTIONS,:id,:name, { :prompt => 'Select a Department...' }, { class: "rounded tracking-wider bg-miru-gray-100 appearance-none border border-gray-100 block w-full px-3 py-2 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" } %>
+        <%= f.collection_select :department_id, User::DEPARTMENT_OPTIONS,:id,:name, { :prompt => 'Select a Department...' }, { class: "w-full px-3 py-2 bg-miru-gray-100 border border-gray-300 rounded-md  focus:outline-none focus:ring focus:ring-indigo-100 focus:border-indigo-300" } %>
       </div>
     </div>
   </div>

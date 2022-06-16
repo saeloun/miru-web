@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leads from "apis/leads";
-import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, CaretDown, Trash } from "phosphor-react";
+import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, CaretDown, Trash, Gear } from "phosphor-react";
 import { unmapLeadList } from "../../../mapper/lead.mapper";
 import DeleteLead from "../Modals/DeleteLead";
 import EditLead from "../Modals/EditLead";
 import NewLead from "../Modals/NewLead";
 
-const Header = ({ leadDetails }) => {
+const Header = ({ leadDetails, setShowLeadSetting }) => {
 
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
@@ -74,6 +74,13 @@ const Header = ({ leadDetails }) => {
             <button onClick={handleLeadDetails}>
               <CaretDown size={20} weight="bold" />
             </button>
+            <button
+              onClick={() => setShowLeadSetting(true)}
+              className="font-bold text-xs text-miru-han-purple-1000 tracking-widest leading-4 flex items-center ml-5"
+            >
+              <Gear size={15} color="#5B34EA" className="mr-2.5" />
+              SETTINGS
+            </button>
           </div>
           <div className="relative h-8">
             <button onClick = {handleMenuVisibility} className={`menuButton__button ${menuBackground}`}>
@@ -103,26 +110,34 @@ const Header = ({ leadDetails }) => {
         </div>
         {isLeadOpen && <div className="flex ml-12 mt-4">
           <div className="text-xs text-miru-dark-purple-400">
+            <h6 className="font-semibold">Assignee</h6>
+            <p>{leadDetails.assignee_name}</p>
+          </div>
+          <div className="ml-22 text-xs text-miru-dark-purple-400">
+            <h6 className="font-semibold">Reporter</h6>
+            <p>{leadDetails.reporter_name}</p>
+          </div>
+          <div className="ml-22 text-xs text-miru-dark-purple-400">
             <h6 className="font-semibold">Budget Amount</h6>
             <p>{leadDetails.budget_amount}</p>
           </div>
-          <div className="ml-28 text-xs text-miru-dark-purple-400">
+          <div className="ml-22 text-xs text-miru-dark-purple-400">
             <h6 className="font-semibold">Budget Status</h6>
             <p>{leadDetails.budget_status_code_name}</p>
           </div>
-          <div className="ml-28 text-xs text-miru-dark-purple-400">
+          <div className="ml-22 text-xs text-miru-dark-purple-400">
             <h6 className="font-semibold">Industry</h6>
             <p>{leadDetails.industry_code_name}</p>
           </div>
-          <div className="ml-28 text-xs text-miru-dark-purple-400">
+          <div className="ml-22 text-xs text-miru-dark-purple-400">
             <h6 className="font-semibold">Quality</h6>
             <p>{leadDetails.quality_code_name}</p>
           </div>
-          <div className="ml-28 text-xs text-miru-dark-purple-400">
+          <div className="ml-22 text-xs text-miru-dark-purple-400">
             <h6 className="font-semibold">State</h6>
             <p>{leadDetails.state_code_name}</p>
           </div>
-          <div className="ml-28 text-xs text-miru-dark-purple-400">
+          <div className="ml-22 text-xs text-miru-dark-purple-400">
             <h6 className="font-semibold">Status</h6>
             <p>{leadDetails.status_code_name}</p>
           </div>

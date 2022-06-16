@@ -31,10 +31,25 @@
 #  timezone           :string
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
+#  assignee_id        :bigint
+#  created_by_id      :bigint
+#  reporter_id        :bigint
+#  updated_by_id      :bigint
 #
 # Indexes
 #
-#  index_leads_on_discarded_at  (discarded_at)
+#  index_leads_on_assignee_id    (assignee_id)
+#  index_leads_on_created_by_id  (created_by_id)
+#  index_leads_on_discarded_at   (discarded_at)
+#  index_leads_on_reporter_id    (reporter_id)
+#  index_leads_on_updated_by_id  (updated_by_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (assignee_id => users.id)
+#  fk_rails_...  (created_by_id => users.id)
+#  fk_rails_...  (reporter_id => users.id)
+#  fk_rails_...  (updated_by_id => users.id)
 #
 class Lead < ApplicationRecord
   include Discard::Model
@@ -110,9 +125,20 @@ class Lead < ApplicationRecord
   # validates_format_of :primary_email, :other_email, :with => Devise::email_regexp
   # validates :budget_amount, numericality: { greater_than_or_equal_to: 0 }
 
+  belongs_to :assignee, class_name: :User, optional: true
+  belongs_to :reporter, class_name: :User, optional: true
+  belongs_to :created_by, class_name: :User, optional: true
+  belongs_to :updated_by, class_name: :User, optional: true
+
   has_many :lead_line_items, dependent: :destroy
   has_many :lead_quotes, dependent: :destroy
   has_many :lead_timelines, dependent: :destroy
+
+  before_create :set_updated_by
+
+  def set_updated_by
+    updated_by_id = created_by_id if updated_by_id.blank? && created_by_id.present?
+  end
 
   def budget_status_code_name
     return "" if budget_status_code.nil?
@@ -156,7 +182,8 @@ class Lead < ApplicationRecord
       donotemail:, donotfax:, donotphone:, industry_code:,
       linkedinid:, mobilephone:, name:, other_email:, primary_email:,
       priority:, quality_code:, skypeid:, state_code:, status_code:,
-      telephone:, timezone:
+      telephone:, timezone:, assignee_id:, reporter_id:, created_by_id:,
+      updated_by_id:
     }
   end
 end

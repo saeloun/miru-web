@@ -74,8 +74,7 @@ class User < ApplicationRecord
     DepartmentOptionKlass.new("SEO", 15),
     DepartmentOptionKlass.new("SRE", 16),
     DepartmentOptionKlass.new("Sales", 17),
-    DepartmentOptionKlass.new("Sales", 18),
-    DepartmentOptionKlass.new("Shopify", 19)
+    DepartmentOptionKlass.new("Shopify", 18)
   ]
 
   # Associations

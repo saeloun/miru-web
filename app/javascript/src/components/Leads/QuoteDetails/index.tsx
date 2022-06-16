@@ -5,6 +5,7 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leadQuotes from "apis/lead-quotes";
 import leads from "apis/leads";
 import Header from "../../../components/Leads/Details/Header";
+import LeadSettings from "../../../components/Leads/Details/LeadSettings";
 import Tab from "../../../components/Leads/Details/Tab";
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapLeadDetails } from "../../../mapper/lead.mapper";
@@ -16,6 +17,7 @@ const LeadList = () => {
   const [leadInfo, setLeadInfo] = useState<any>({});
   const { leadId } = useParams();
   const { quoteId } = useParams();
+  const [showLeadSetting, setShowLeadSetting] = useState<boolean>(false);
 
   useEffect(() => {
     setAuthHeaders();
@@ -33,11 +35,14 @@ const LeadList = () => {
   }, [leadId]);
 
   return (
-    <>
+    <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header leadDetails={leadInfo} />
+      <Header leadDetails={leadInfo} setShowLeadSetting={setShowLeadSetting} />
       <Tab leadDetails={leadDetails} forItem="quoteDetails" quoteId={quoteId} />
-    </>
+      {showLeadSetting && (
+        <LeadSettings leadDetails={leadInfo} setShowLeadSetting={setShowLeadSetting} />
+      )}
+    </React.Fragment>
   );
 };
 

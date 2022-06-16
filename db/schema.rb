@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_15_070341) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_16_071507) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -237,7 +237,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_15_070341) do
     t.integer "status_code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "assignee_id"
+    t.bigint "reporter_id"
+    t.bigint "created_by_id"
+    t.bigint "updated_by_id"
+    t.index ["assignee_id"], name: "index_leads_on_assignee_id"
+    t.index ["created_by_id"], name: "index_leads_on_created_by_id"
     t.index ["discarded_at"], name: "index_leads_on_discarded_at"
+    t.index ["reporter_id"], name: "index_leads_on_reporter_id"
+    t.index ["updated_by_id"], name: "index_leads_on_updated_by_id"
   end
 
   create_table "payments_providers", force: :cascade do |t|
@@ -397,6 +405,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_15_070341) do
   add_foreign_key "lead_line_items", "leads"
   add_foreign_key "lead_quotes", "leads"
   add_foreign_key "lead_timelines", "leads"
+  add_foreign_key "leads", "users", column: "assignee_id"
+  add_foreign_key "leads", "users", column: "created_by_id"
+  add_foreign_key "leads", "users", column: "reporter_id"
+  add_foreign_key "leads", "users", column: "updated_by_id"
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"

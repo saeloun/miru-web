@@ -5,14 +5,21 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
     authorize Lead
     # query = Lead.all.kept.ransack({ name_or_email_cont: params[:q] })
     # leads = query.result(distinct: true)
-    leads = Lead.where(params[:q].present? ? ["name LIKE ?", "%#{params[:q]}%"] : {}).where(discarded_at: nil).distinct
+    leads = Lead.includes(
+      :assignee, :reporter, :created_by,
+      :updated_by).where(params[:q].present? ? ["name LIKE ?",
+                                                "%#{params[:q]}%"] : {}).where(discarded_at: nil).distinct
     lead_details = leads.map	{	|lead|	lead.lead_detail.merge(
       {
         budget_status_code_name: lead.budget_status_code_name,
         industry_code_name:	lead.industry_code_name,
         quality_code_name:	lead.quality_code_name,
         state_code_name:	lead.state_code_name,
-        status_code_name:	lead.status_code_name
+        status_code_name:	lead.status_code_name,
+        assignee_name: lead.assignee ? "#{lead.assignee.first_name} #{lead.assignee.last_name}" : "",
+        reporter_name: lead.reporter ? "#{lead.reporter.first_name} #{lead.reporter.last_name}" : "",
+        created_by_name: lead.created_by ? "#{lead.created_by.first_name} #{lead.created_by.last_name}" : "",
+        updated_by_name: lead.updated_by ? "#{lead.updated_by.first_name} #{lead.updated_by.last_name}" : ""
       })
 }
     render json: { lead_details: }, status: :ok
@@ -38,8 +45,23 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
     },	status: :ok
   end
 
+  def allowed_users
+    authorize Lead
+
+    sales_department_id = User::DEPARTMENT_OPTIONS.detect { |department| department.name == "Sales" }&.id
+
+    allowed_user_list = User.includes(:roles).where(roles: { name: ["admin", "owner"] })
+      .or(User.includes(:roles).where(
+        roles: { name: "employee" }, department_id: sales_department_id)
+                              )
+
+    render json: { allowed_user_list: },	status: :ok
+  end
+
   def create
     authorize Lead
+    lead_params[:created_by_id] = current_user.id if lead_params[:created_by_id].blank?
+    lead_params[:updated_by_id] = current_user.id if lead_params[:updated_by_id].blank?
     render :create, locals: {
       lead: Lead.create!(lead_params)
     }
@@ -53,14 +75,19 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
         industry_code_name: lead.industry_code_name,
         quality_code_name: lead.quality_code_name,
         state_code_name: lead.state_code_name,
-        status_code_name: lead.status_code_name
+        status_code_name: lead.status_code_name,
+        assignee_name: lead.assignee ? "#{lead.assignee.first_name} #{lead.assignee.last_name}" : "",
+        reporter_name: lead.reporter ? "#{lead.reporter.first_name} #{lead.reporter.last_name}" : "",
+        created_by_name: lead.created_by ? "#{lead.created_by.first_name} #{lead.created_by.last_name}" : "",
+        updated_by_name: lead.updated_by ? "#{lead.updated_by.first_name} #{lead.updated_by.last_name}" : ""
       })
     render json: { lead_details: }, status: :ok
   end
 
   def update
     authorize lead
-
+    lead_params[:created_by_id] = current_user.id if lead_params[:created_by_id].blank?
+    lead_params[:updated_by_id] = current_user.id if lead_params[:updated_by_id].blank?
     if lead.update!(lead_params)
       render json: {
         success: true,
