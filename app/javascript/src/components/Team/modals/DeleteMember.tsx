@@ -21,9 +21,21 @@ const DeleteMember = () => {
                 <X size={16} color="#CDD6DF" weight="bold" />
               </button>
             </div>
-            <p className="mt-8">
+            <p className="my-8">
               Are you sure you want to delete user John Smith? This action cannot be reversed.
             </p>
+            <div className="flex justify-between">
+              <button
+                className="button__bg_transparent"
+              >
+                CANCEL
+              </button>
+              <button
+                className="button__bg_purple"
+              >
+                DELETE
+              </button>
+            </div>
           </div>
         </div>
       </div>
