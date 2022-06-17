@@ -1,12 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
+import { get } from "apis/team";
 import { ListContext } from "context/TeamContext";
 import { unmapList } from "mapper/team.mapper";
 import Header from "./Header";
 import Table from "./Table";
 import { TOASTER_DURATION } from "../../../constants/index";
 import Modals from "../modals/Modals";
-import { get } from "apis/team";
 
 export const ProjectList = () => {
 
@@ -20,13 +20,13 @@ export const ProjectList = () => {
   const getTeamList = async () => {
     const response = await get();
     if (response.status === 200) {
-      const sanitized = unmapList(response)
+      const sanitized = unmapList(response);
       setTeamList(sanitized);
     }
-  }
+  };
 
   useEffect(() => {
-    getTeamList()
+    getTeamList();
   }, []);
 
   return (
