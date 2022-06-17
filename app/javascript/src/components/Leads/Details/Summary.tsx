@@ -21,9 +21,6 @@ const getInitialvalues = (lead) => ({
   budget_amount: lead.budget_amount,
   budget_status_code: lead.budget_status_code,
   industry_code: lead.industry_code,
-  quality_code: lead.quality_code,
-  state_code: lead.state_code,
-  status_code: lead.status_code,
   donotemail: lead.donotemail,
   donotbulkemail: lead.donotbulkemail,
   donotfax: lead.donotfax,
@@ -41,7 +38,6 @@ const getInitialvalues = (lead) => ({
   preferred_contact_method_code_name: lead.preferred_contact_method_code_name,
   initial_communication_name: lead.initial_communication_name,
   source_code_name: lead.source_code_name,
-  priority_code_name: lead.priority_code_name,
   title: lead.title
 });
 
@@ -50,25 +46,17 @@ const Summary = ({ leadDetails }) => {
 
   const [budgetStatusCodeList, setBudgetStatusCodeList] = useState<any>(null);
   const [industryCodeList, setIndustryCodeList] = useState<any>(null);
-  const [qualityCodeList, setQualityCodeList] = useState<any>(null);
-  const [stateCodeList, setStateCodeList] = useState<any>(null);
-  const [statusCodeList, setStatusCodeList] = useState<any>(null);
   const [needList, setNeedList] = useState<any>(null);
   const [preferredContactMethodCodeList, setPreferredContactMethodCodeList] = useState<any>(null);
   const [initialCommunicationList, setInitialCommunicationList] = useState<any>(null);
   const [sourceCodeList, setSourceCodeList] = useState<any>(null);
-  const [priorityCodeList, setPriorityCodeList] = useState<any>(null);
 
   const [budgetStatusCode, setBudgetStatusCode] = useState<any>(null);
   const [industryCode, setIndustryCode] = useState<any>(null);
-  const [qualityCode, setQualityCode] = useState<any>(null);
-  const [stateCode, setStateCode] = useState<any>(null);
-  const [statusCode, setStatusCode] = useState<any>(null);
   const [need, setNeed] = useState<any>(null);
   const [preferredContactMethodCode, setPreferredContactMethodCode] = useState<any>(null);
   const [initialCommunication, setInitialCommunication] = useState<any>(null);
   const [sourceCode, setSourceCode] = useState<any>(null);
-  const [priorityCode, setPriorityCode] = useState<any>(null);
 
   useEffect(() => {
     const getLeadItems = async () => {
@@ -76,25 +64,17 @@ const Summary = ({ leadDetails }) => {
         .then((data) => {
           setBudgetStatusCodeList(data.data.budget_status_codes);
           setIndustryCodeList(data.data.industry_codes);
-          setQualityCodeList(data.data.quality_codes);
-          setStateCodeList(data.data.state_codes);
-          setStatusCodeList(data.data.status_codes);
           setNeedList(data.data.needs);
           setPreferredContactMethodCodeList(data.data.preferred_contact_method_code_names);
           setInitialCommunicationList(data.data.initial_communications);
           setSourceCodeList(data.data.source_codes);
-          setPriorityCodeList(data.data.priority_codes);
         }).catch(() => {
           setBudgetStatusCodeList({});
           setIndustryCodeList({});
-          setQualityCodeList({});
-          setStateCodeList({});
-          setStatusCodeList({});
           setNeedList({});
           setPreferredContactMethodCodeList({});
           setInitialCommunicationList({});
           setSourceCodeList({});
-          setPriorityCodeList({});
         });
     };
 
@@ -111,9 +91,6 @@ const Summary = ({ leadDetails }) => {
         "description": values.description,
         "budget_status_code": budgetStatusCode || values.budget_status_code,
         "industry_code": industryCode || values.industry_code,
-        "quality_code": qualityCode || values.quality_code,
-        "state_code": stateCode || values.state_code,
-        "status_code": statusCode || values.status_code,
         "donotemail": values.donotemail,
         "donotbulkemail": values.donotbulkemail,
         "donotfax": values.donotfax,
@@ -121,8 +98,7 @@ const Summary = ({ leadDetails }) => {
         "need": need || values.need,
         "preferred_contact_method_code": preferredContactMethodCode || values.preferred_contact_method_code,
         "initial_communication": initialCommunication || values.initial_communication,
-        "source_code": sourceCode || values.source_code,
-        "priority_code": priorityCode || values.priority_code
+        "source_code": sourceCode || values.source_code
       }
     }).then(() => {
       document.location.reload();
@@ -146,7 +122,7 @@ const Summary = ({ leadDetails }) => {
               <div className="container mx-auto bg-white dark:bg-gray-800 rounded">
                 <div className="mx-auto">
                   <div className="xl:w-9/12 w-11/12 mx-auto xl:mx-0">
-                    <div className="mt-16 flex flex-col xl:w-2/6 lg:w-1/2 md:w-1/2 w-full">
+                    <div className="mt-4 flex flex-col lg:w-1/2 md:w-1/2 w-full">
                       <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Title</label>
                       <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                         name="title" placeholder="Title" />
@@ -157,7 +133,7 @@ const Summary = ({ leadDetails }) => {
                       </div>
                     </div>
 
-                    <div className="mt-16 flex flex-col xl:w-2/6 lg:w-1/2 md:w-1/2 w-full">
+                    <div className="mt-4 flex flex-col lg:w-1/2 md:w-1/2 w-full">
                       <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">First Name</label>
                       <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                         name="first_name" placeholder="First Name" />
@@ -168,7 +144,7 @@ const Summary = ({ leadDetails }) => {
                       </div>
                     </div>
 
-                    <div className="mt-16 flex flex-col xl:w-2/6 lg:w-1/2 md:w-1/2 w-full">
+                    <div className="mt-4 flex flex-col lg:w-1/2 md:w-1/2 w-full">
                       <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Last Name</label>
                       <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                         name="last_name" placeholder="Last Name" />
@@ -179,7 +155,7 @@ const Summary = ({ leadDetails }) => {
                       </div>
                     </div>
 
-                    <div className="mt-16 flex flex-col xl:w-2/6 lg:w-1/2 md:w-1/2 w-full">
+                    <div className="mt-4 flex flex-col lg:w-1/2 md:w-1/2 w-full">
                       <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Budget Amount</label>
                       <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                         name="budget_amount" type="number" min="0" placeholder="Budget Amount" />
@@ -190,7 +166,7 @@ const Summary = ({ leadDetails }) => {
                       </div>
                     </div>
 
-                    <div className="mt-16 flex flex-col xl:w-2/6 lg:w-1/2 md:w-1/2 w-full">
+                    <div className="mt-4 flex flex-col lg:w-1/2 md:w-1/2 w-full">
                       <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Budget Status</label>
                       <select
                         defaultValue={leadDetails.budget_status_code}
@@ -207,7 +183,7 @@ budgetStatusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id ===
                       </div>
                     </div>
 
-                    <div className="mt-16 flex flex-col xl:w-2/6 lg:w-1/2 md:w-1/2 w-full">
+                    <div className="mt-4 flex flex-col lg:w-1/2 md:w-1/2 w-full">
                       <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Industry</label>
                       <select
                         defaultValue={leadDetails.industry_code}
@@ -223,61 +199,10 @@ industryCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lea
                         }
                       </div>
                     </div>
-
-                    <div className="mt-16 flex flex-col xl:w-2/6 lg:w-1/2 md:w-1/2 w-full">
-                      <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Quality</label>
-                      <select
-                        defaultValue={leadDetails.quality_code}
-                        className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                        name="quality_code" onChange={(e) => setQualityCode(e.target.value)}>
-                        <option value=''>Select Quality</option>
-                        {qualityCodeList &&
-qualityCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.quality_code}>{e.name}</option>)}
-                      </select>
-                      <div className="flex justify-between items-center pt-1 text-red-700">
-                        {errors.quality_code && touched.quality_code &&
-              <p className="text-xs">{errors.quality_code}</p>
-                        }
-                      </div>
-                    </div>
-
-                    <div className="mt-16 flex flex-col xl:w-2/6 lg:w-1/2 md:w-1/2 w-full">
-                      <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">State</label>
-                      <select
-                        defaultValue={leadDetails.state_code}
-                        className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                        name="state_code" onChange={(e) => setStateCode(e.target.value)}>
-                        <option value=''>Select State</option>
-                        {stateCodeList &&
-stateCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.state_code}>{e.name}</option>)}
-                      </select>
-                      <div className="flex justify-between items-center pt-1 text-red-700">
-                        {errors.state_code && touched.state_code &&
-              <p className="text-xs">{errors.state_code}</p>
-                        }
-                      </div>
-                    </div>
-
-                    <div className="mt-16 flex flex-col xl:w-2/6 lg:w-1/2 md:w-1/2 w-full">
-                      <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Status</label>
-                      <select
-                        defaultValue={leadDetails.status_code}
-                        className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                        name="status_code" onChange={(e) => setStatusCode(e.target.value)}>
-                        <option value=''>Select Status</option>
-                        {statusCodeList &&
-statusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.status_code}>{e.name}</option>)}
-                      </select>
-                      <div className="flex justify-between items-center pt-1 text-red-700">
-                        {errors.status_code && touched.status_code &&
-              <p className="text-xs">{errors.status_code}</p>
-                        }
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
-              <div className="container mx-auto bg-white dark:bg-gray-800 mt-10 rounded px-4">
+              <div className="container mx-auto bg-white dark:bg-gray-800 mt-6 rounded px-4">
                 <div className="xl:w-full border-b border-gray-300 dark:border-gray-700 py-5">
                   <div className="flex w-11/12 mx-auto xl:w-full xl:mx-0 items-center">
                     <p className="text-lg text-gray-800 dark:text-gray-100 font-bold">More Information</p>
@@ -285,25 +210,9 @@ statusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadD
                 </div>
                 <div className="mx-auto pt-4">
                   <div className="container mx-auto">
-                    <div className="my-6 w-11/12 mx-auto xl:w-full xl:mx-0">
-                      <div className="xl:w-1/4 lg:w-1/2 md:w-1/2 flex flex-col mb-6">
-                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Priority</label>
-                        <select
-                          defaultValue={leadDetails.priority_code}
-                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm bg-transparent rounded text-sm focus:outline-none focus:border-indigo-700 placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="priority_code" onChange={(e) => setPriorityCode(e.target.value)}>
-                          <option value=''>Select Priority</option>
-                          {priorityCodeList &&
-                priorityCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.priority_code}>{e.name}</option>)}
-                        </select>
-                        <div className="flex justify-between items-center pt-1 text-red-700">
-                          {errors.priority_code && touched.priority_code &&
-                <p className="text-xs">{errors.priority_code}</p>
-                          }
-                        </div>
-                      </div>
+                    <div className="w-11/12 mx-auto xl:w-full xl:mx-0">
 
-                      <div className="xl:w-1/4 lg:w-1/2 md:w-1/2 flex flex-col mb-6">
+                      <div className="lg:w-1/2 md:w-1/2 flex flex-col mb-4">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Need</label>
                         <select
                           defaultValue={leadDetails.need}
@@ -320,7 +229,7 @@ statusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadD
                         </div>
                       </div>
 
-                      <div className="xl:w-1/4 lg:w-1/2 md:w-1/2 flex flex-col mb-6">
+                      <div className="lg:w-1/2 md:w-1/2 flex flex-col mb-4">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Contact Method</label>
                         <select
                           defaultValue={leadDetails.preferred_contact_method_code}
@@ -337,7 +246,7 @@ statusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadD
                         </div>
                       </div>
 
-                      <div className="xl:w-1/4 lg:w-1/2 md:w-1/2 flex flex-col mb-6">
+                      <div className="lg:w-1/2 md:w-1/2 flex flex-col mb-4">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Source</label>
                         <select
                           defaultValue={leadDetails.source_code}
@@ -354,13 +263,13 @@ statusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadD
                         </div>
                       </div>
 
-                      <div className="xl:w-1/4 lg:w-1/2 md:w-1/2 flex flex-col mb-6">
-                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Need</label>
+                      <div className="lg:w-1/2 md:w-1/2 flex flex-col mb-4">
+                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Intial Communication</label>
                         <select
                           defaultValue={leadDetails.initial_communication}
                           className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm bg-transparent rounded text-sm focus:outline-none focus:border-indigo-700 placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="initial_communication" onChange={(e) => setInitialCommunication(e.target.value)}>
-                          <option value=''>Select Need</option>
+                          <option value=''>Select Intial Communication</option>
                           {initialCommunicationList &&
                 initialCommunicationList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.initial_communication}>{e.name}</option>)}
                         </select>
