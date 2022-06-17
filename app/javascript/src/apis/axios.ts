@@ -32,9 +32,6 @@ const handleSuccessResponse = response => {
 };
 
 const handleErrorResponse = error => {
-  if (error.response?.status === 401) {
-    window.location.href = "/login";
-  }
   Toastr.error(
     error.response?.data?.error ||
     error.response?.data?.notice ||
