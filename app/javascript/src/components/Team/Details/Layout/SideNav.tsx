@@ -12,11 +12,27 @@ const getActiveClassName = (isActive) => {
 const getTeamUrls = (memberId) => [
   {
     url: `/team/${memberId}`,
-    text: "Personal Details"
+    text: "PERSONAL DETAILS"
   },
   {
     url: `/team/${memberId}/employment`,
-    text: "Employment Details"
+    text: "EMPLOYEMENT DETAILS"
+  },
+  {
+    url: `/team/${memberId}/devices`,
+    text: "ALLOCATED DEVICES"
+  },
+  {
+    url: `/team/${memberId}/compensation`,
+    text: "COMPENSATION"
+  },
+  {
+    url: `/team/${memberId}/documents`,
+    text: "DOCUMENTS"
+  },
+  {
+    url: `/team/${memberId}/reimburstment`,
+    text: "REIMBURSEMENTS"
   }
 ];
 

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { TeamDetailsContext } from "context/TeamDetailsContext";
 import Header from "./Layout/Header";
 import OutletWrapper from "./Layout/OutletWrapper";
 import SideNav from "./Layout/SideNav";
-import { TeamDetailsContext } from "context/TeamDetailsContext";
 
 const TeamDetails = () => {
 
@@ -17,7 +17,7 @@ const TeamDetails = () => {
 
   const updateDetails = (key, payload) => {
     setDetails({ ...details, [`${key}Details`]: payload });
-  }
+  };
 
   return (
     <TeamDetailsContext.Provider value={{
@@ -31,5 +31,5 @@ const TeamDetails = () => {
       </div>
     </TeamDetailsContext.Provider>
   );
-}
+};
 export default TeamDetails;
