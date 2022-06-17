@@ -6,6 +6,7 @@ import profileApi from "apis/profile";
 import { Divider } from "common/Divider";
 import * as Yup from "yup";
 
+import { useEntry } from "../context/EntryContext";
 import Header from "../Header";
 
 const editButton = require("../../../../../assets/images/edit_image_button.svg");
@@ -47,6 +48,7 @@ const UserDetails = () => {
     confirmPasswordErr: ""
   };
 
+  const { setUserState } = useEntry();
   const [profileImage, setProfileImage] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [firstName, setFirstName] = useState("");
@@ -97,6 +99,10 @@ const UserDetails = () => {
       await profileApi.update(formD);
       setIsDetailUpdated(false);
       setErrDetails(initialErrState);
+      setUserState("profileSettings", {
+        firstName: firstName,
+        lastName: lastName
+      });
     }).catch(function (err) {
       const errObj = initialErrState;
       err.inner.map((item) => {
@@ -141,6 +147,11 @@ const UserDetails = () => {
     setLastName(data.data.user.last_name);
     setProfileImage(data.data.user.avatar_url);
     setEmail(data.data.user.email);
+    setUserState("profileSettings", {
+      firstName: data.data.user.first_name,
+      lastName: data.data.user.last_name,
+      email: data.data.user.email
+    });
   };
 
   useEffect(() => {
