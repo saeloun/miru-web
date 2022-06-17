@@ -7,10 +7,10 @@ import * as Yup from "yup";
 const newLeadSchema = Yup.object().shape({
   first_name: Yup.string().required("First Name cannot be blank"),
   last_name: Yup.string().required("Last Name cannot be blank"),
-  budget_amount: Yup.number().typeError("Invalid budget amount"),
+  budget_amount: Yup.number().nullable().typeError("Invalid budget amount"),
   email: Yup.string().nullable().email("Invalid email ID"),
-  mobilephone: Yup.number().typeError("Invalid mobilephone"),
-  telephone: Yup.number().typeError("Invalid telephone"),
+  mobilephone: Yup.number().nullable().typeError("Invalid mobilephone"),
+  telephone: Yup.number().nullable().typeError("Invalid telephone"),
 });
 
 const getInitialvalues = (lead) => ({
@@ -284,12 +284,12 @@ const Summary = ({ leadDetails }) => {
                       </div>
 
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
-                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Intial Communication</label>
+                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Initial Communication</label>
                         <select
                           defaultValue={leadDetails.initial_communication}
                           className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="initial_communication" onChange={(e) => setInitialCommunication(e.target.value)}>
-                          <option value=''>Select Intial Communication</option>
+                          <option value=''>Select Initial Communication</option>
                           {initialCommunicationList &&
                             initialCommunicationList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.initial_communication}>{e.name}</option>)}
                         </select>
