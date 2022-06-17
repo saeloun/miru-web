@@ -16,6 +16,7 @@
 #  donotemail                    :boolean          default(FALSE)
 #  donotfax                      :boolean          default(FALSE)
 #  donotphone                    :boolean          default(FALSE)
+#  email                         :string
 #  emails                        :text             default([]), is an Array
 #  first_name                    :string
 #  industry_code                 :integer
@@ -25,9 +26,7 @@
 #  mobilephone                   :string
 #  name                          :string
 #  need                          :integer
-#  other_email                   :string
 #  preferred_contact_method_code :integer
-#  primary_email                 :string
 #  priority_code                 :integer
 #  quality_code                  :integer
 #  skypeid                       :string
@@ -41,6 +40,7 @@
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
 #  assignee_id                   :bigint
+#  company_id                    :bigint
 #  created_by_id                 :bigint
 #  reporter_id                   :bigint
 #  updated_by_id                 :bigint
@@ -48,6 +48,7 @@
 # Indexes
 #
 #  index_leads_on_assignee_id    (assignee_id)
+#  index_leads_on_company_id     (company_id)
 #  index_leads_on_created_by_id  (created_by_id)
 #  index_leads_on_discarded_at   (discarded_at)
 #  index_leads_on_reporter_id    (reporter_id)
@@ -56,6 +57,7 @@
 # Foreign Keys
 #
 #  fk_rails_...  (assignee_id => users.id)
+#  fk_rails_...  (company_id => companies.id)
 #  fk_rails_...  (created_by_id => users.id)
 #  fk_rails_...  (reporter_id => users.id)
 #  fk_rails_...  (updated_by_id => users.id)
@@ -151,16 +153,21 @@ class Lead < ApplicationRecord
   ]
 
   SOURCE_CODE_OPTIONS = [
-    CodeOptionKlass.new("Advertisement", 0),
-    CodeOptionKlass.new("Employee Referral", 1),
-    CodeOptionKlass.new("External Referral", 2),
-    CodeOptionKlass.new("Partner", 3),
-    CodeOptionKlass.new("Public Relations", 4),
-    CodeOptionKlass.new("Seminar", 5),
-    CodeOptionKlass.new("Trade Show", 6),
-    CodeOptionKlass.new("Web", 7),
-    CodeOptionKlass.new("Word of Mouth", 8),
-    CodeOptionKlass.new("Other", 9)
+    CodeOptionKlass.new("Other", 0),
+    CodeOptionKlass.new("Public", 1),
+    CodeOptionKlass.new("Atharva System Business Site", 2),
+    CodeOptionKlass.new("E-Mail Marketing", 3),
+    CodeOptionKlass.new("Facebook", 4),
+    CodeOptionKlass.new("Google", 5),
+    CodeOptionKlass.new("Internal", 6),
+    CodeOptionKlass.new("LinkedIn", 7),
+    CodeOptionKlass.new("Partner", 8),
+    CodeOptionKlass.new("Referral", 9),
+    CodeOptionKlass.new("Relations", 10),
+    CodeOptionKlass.new("Seminar", 11),
+    CodeOptionKlass.new("Trade Show", 12),
+    CodeOptionKlass.new("Web", 13),
+    CodeOptionKlass.new("Word of mouth", 14)
   ]
 
   PRIORITY_CODE_OPTIONS = [
@@ -175,21 +182,18 @@ class Lead < ApplicationRecord
   belongs_to :reporter, class_name: :User, optional: true
   belongs_to :created_by, class_name: :User, optional: true
   belongs_to :updated_by, class_name: :User, optional: true
+  belongs_to :company, optional: true
 
   has_many :lead_line_items, dependent: :destroy
   has_many :lead_quotes, dependent: :destroy
   has_many :lead_timelines, dependent: :destroy
 
-  validates :name, presence: true
-  before_validation :set_name
-  before_save :set_updated_by
+  validates :first_name, :last_name, presence: true
+  before_save :update_fields
 
-  def set_name
+  def update_fields
     self.name = "#{self.first_name} #{self.last_name}"
-  end
-
-  def set_updated_by
-    updated_by_id = created_by_id if updated_by_id.blank? && created_by_id.present?
+    self.updated_by_id = self.created_by_id if self.updated_by_id.blank? && self.created_by_id.present?
   end
 
   def budget_status_code_name
@@ -269,12 +273,13 @@ class Lead < ApplicationRecord
       id:, address:, base_currency:, budget_amount:, budget_status_code:,
       country:, description:, discarded_at:, donotbulkemail:,
       donotemail:, donotfax:, donotphone:, industry_code:,
-      linkedinid:, mobilephone:, name:, other_email:, primary_email:,
+      linkedinid:, mobilephone:, name:, email:,
       quality_code:, skypeid:, state_code:, status_code:,
       telephone:, timezone:, assignee_id:, reporter_id:, created_by_id:,
       updated_by_id:, need:, preferred_contact_method_code:,
       initial_communication:, first_name:, last_name:,
-      source_code:, tech_stack_ids:, emails:, priority_code:, title:
+      source_code:, tech_stack_ids:, emails:, priority_code:, title:,
+      company_id:
     }
   end
 end

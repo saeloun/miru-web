@@ -83,28 +83,23 @@ const NewLead = ({ setnewLead }) => {
                   <div className="mt-4">
                     <div className="field">
                       <div className="field_with_errors">
-                        <label className="form__label">First name</label>
-                        <div className="tracking-wider block text-xs text-red-600">
+                        <label className="form__label">Name</label>
+                      </div>
+                      <div className="mt-2 flex -space-x-px">
+                        <div className="mr-4 w-1/2 flex-1 min-w-0">
+                          <Field className={`form__input ${errors.first_name && touched.first_name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="first_name" placeholder="First Name" />
                           {errors.first_name && touched.first_name &&
                             <div>{errors.first_name}</div>
                           }
                         </div>
-                      </div>
-                      <div className="mt-1">
-                        <Field className={`form__input ${errors.first_name && touched.first_name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="first_name" />
-                      </div>
-                    </div>
-                    <div className="field">
-                      <div className="field_with_errors">
-                        <label className="form__label">Last Name</label>
-                        <div className="tracking-wider block text-xs text-red-600">
-                          {errors.last_name && touched.last_name &&
-                            <div>{errors.last_name}</div>
-                          }
+                        <div className="w-1/2 flex-1 min-w-0">
+                          <Field className={`form__input ${errors.last_name && touched.last_name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="last_name" placeholder="Last Name" />
+                          <div className="tracking-wider block text-xs text-red-600">
+                            {errors.last_name && touched.last_name &&
+                              <div>{errors.last_name}</div>
+                            }
+                          </div>
                         </div>
-                      </div>
-                      <div className="mt-1">
-                        <Field className={`form__input ${errors.last_name && touched.last_name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="last_name" />
                       </div>
                     </div>
                   </div>

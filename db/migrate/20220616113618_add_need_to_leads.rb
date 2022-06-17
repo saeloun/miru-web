@@ -2,7 +2,7 @@
 
 class AddNeedToLeads < ActiveRecord::Migration[7.0]
   def change
-    remove_column :leads, :priority
+    remove_column :leads, :priority, :integer
     add_column :leads, :need, :integer
     add_column :leads, :preferred_contact_method_code, :integer
     add_column :leads, :initial_communication, :integer

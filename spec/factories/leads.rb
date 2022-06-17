@@ -3,8 +3,7 @@
 FactoryBot.define do
   factory :lead do
     name { "MyString" }
-    primary_email { "MyString" }
-    other_email { "MyString" }
+    email { "MyString" }
     address { "MyText" }
     mobilephone { "MyString" }
     telephone { "MyString" }

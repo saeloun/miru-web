@@ -40,12 +40,13 @@ class LeadPolicy < ApplicationPolicy
       :address, :base_currency, :budget_amount, :budget_status_code,
       :country, :description, :discarded_at, :donotbulkemail,
       :donotemail, :donotfax, :donotphone, :industry_code,
-      :linkedinid, :mobilephone, :name, :other_email, :primary_email,
+      :linkedinid, :mobilephone, :name, :email,
       :quality_code, :skypeid, :state_code, :status_code,
       :telephone, :timezone, :assignee_id, :reporter_id, :created_by_id,
       :updated_by_id, :need, :preferred_contact_method_code,
       :initial_communication, :first_name, :last_name,
-      :source_code, :priority_code, :title, tech_stack_ids: [], emails: []
+      :source_code, :priority_code, :title, :company_id,
+      tech_stack_ids: [], emails: []
     ]
   end
 end

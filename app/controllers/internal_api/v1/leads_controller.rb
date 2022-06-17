@@ -54,11 +54,14 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
 
     priority_codes = Lead::PRIORITY_CODE_OPTIONS
 
+    countries = ISO3166::Country.pluck(:alpha2, :iso_short_name)
+
     render json: {
       budget_status_codes:, quality_codes:, state_codes:,
       status_codes:, industry_codes:, line_item_kind_names:,
       needs:, preferred_contact_method_code_names:,
-      initial_communications:, source_codes:, priority_codes:
+      initial_communications:, source_codes:, priority_codes:,
+      countries:
     },	status: :ok
   end
 
@@ -79,6 +82,7 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
     authorize Lead
     lead_params[:created_by_id] = current_user.id if lead_params[:created_by_id].blank?
     lead_params[:updated_by_id] = current_user.id if lead_params[:updated_by_id].blank?
+    lead_params[:company_id] = current_company.id if lead_params[:company_id].blank?
     render :create, locals: {
       lead: Lead.create!(lead_params)
     }
@@ -110,6 +114,7 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
     authorize lead
     lead_params[:created_by_id] = current_user.id if lead_params[:created_by_id].blank?
     lead_params[:updated_by_id] = current_user.id if lead_params[:updated_by_id].blank?
+    lead_params[:company_id] = current_company.id if lead_params[:company_id].blank?
     if lead.update!(lead_params)
       render json: {
         success: true,

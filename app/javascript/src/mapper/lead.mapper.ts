@@ -39,7 +39,14 @@ const getList = (input) => input.lead_details.map((lead) => ({
   initial_communication_name: lead.initial_communication_name,
   source_code_name: lead.source_code_name,
   priority_code_name: lead.priority_code_name,
-  title: lead.title
+  title: lead.title,
+  email: lead.email,
+  mobilephone: lead.mobilephone,
+  telephone: lead.telephone,
+  country: lead.country,
+  skypeid: lead.skypeid,
+  linkedinid: lead.linkedinid,
+  company_id: lead.company_id
 }));
 
 const unmapLeadList = (input) => {
@@ -108,7 +115,14 @@ const unmapLeadDetails = (input) => {
       initial_communication_name: data.lead_details.initial_communication_name,
       source_code_name: data.lead_details.source_code_name,
       priority_code_name: data.lead_details.priority_code_name,
-      title: data.lead_details.title
+      title: data.lead_details.title,
+      email: data.lead_details.email,
+      mobilephone: data.lead_details.mobilephone,
+      telephone: data.lead_details.telephone,
+      country: data.lead_details.country,
+      skypeid: data.lead_details.skypeid,
+      linkedinid: data.lead_details.linkedinid,
+      company_id: data.lead_details.company_id
     }
   };
 };

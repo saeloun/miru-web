@@ -227,8 +227,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_16_132911) do
 
   create_table "leads", force: :cascade do |t|
     t.string "name"
-    t.string "primary_email"
-    t.string "other_email"
+    t.string "email"
     t.text "address"
     t.string "mobilephone"
     t.string "telephone"
@@ -265,7 +264,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_16_132911) do
     t.text "emails", default: [], array: true
     t.integer "priority_code"
     t.string "title"
+    t.bigint "company_id"
     t.index ["assignee_id"], name: "index_leads_on_assignee_id"
+    t.index ["company_id"], name: "index_leads_on_company_id"
     t.index ["created_by_id"], name: "index_leads_on_created_by_id"
     t.index ["discarded_at"], name: "index_leads_on_discarded_at"
     t.index ["reporter_id"], name: "index_leads_on_reporter_id"
@@ -447,6 +448,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_16_132911) do
   add_foreign_key "lead_timelines", "users", column: "action_assignee_id"
   add_foreign_key "lead_timelines", "users", column: "action_created_by_id"
   add_foreign_key "lead_timelines", "users", column: "action_reporter_id"
+  add_foreign_key "leads", "companies"
   add_foreign_key "leads", "users", column: "assignee_id"
   add_foreign_key "leads", "users", column: "created_by_id"
   add_foreign_key "leads", "users", column: "reporter_id"
