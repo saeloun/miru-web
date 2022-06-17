@@ -92,7 +92,7 @@ class Project < ApplicationRecord
       .distinct
       .select(:status, :amount)
     status_and_amount = invoices
-      .group_by { |invoice| invoice.status }
+      .group_by(&:status)
       .transform_values { |v| v.sum(&:amount) }
     status_and_amount.default = 0
     outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
