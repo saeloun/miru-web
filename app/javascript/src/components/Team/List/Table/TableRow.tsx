@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { useNavigate } from "react-router-dom";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
 import { PencilSimple, Trash, ArrowCounterClockwise } from "phosphor-react";
@@ -7,8 +8,12 @@ const avatar = require("../../../../../../assets/images/avatar_payments.svg"); /
 const TableRow = ({ item }) => {
   const { isAdminUser } = useUserContext();
   const { setModalState } = useList();
+  const navigate = useNavigate();
+
   return (
-    <tr className="border-b last:border-0 border-miru-gray-200 hoverIcon">
+    <tr className="border-b last:border-0 border-miru-gray-200 hoverIcon" onClick={() => {
+      navigate("1");
+    }}>
       <td className="table__data p-6">
         <img src={avatar} className="table__avatar" />
       </td>
@@ -33,10 +38,18 @@ const TableRow = ({ item }) => {
               <button>
                 <ArrowCounterClockwise size={16} color="#5b34ea" weight="bold" />
               </button>
-              <button className="ml-12" onClick={() => { setModalState("addEdit"); }}>
+              <button className="ml-12" onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setModalState("addEdit");
+              }}>
                 <PencilSimple size={16} color="#5b34ea" weight="bold" />
               </button>
-              <button className="ml-12" onClick={() => { setModalState("delete"); }}>
+              <button className="ml-12" onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setModalState("delete");
+              }}>
                 <Trash size={16} color="#5b34ea" weight="bold" />
               </button>
             </div>
