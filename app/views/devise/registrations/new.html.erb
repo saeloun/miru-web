@@ -92,6 +92,8 @@
                   </span>
                 </div>
               </div>
+              <%
+=begin %>
               <div>
                 <div class="mt-4">
                   <%= button_to user_google_oauth2_omniauth_authorize_path, class: "form__button",  data: { cy: "sign-up-with-google-button" } do %>
@@ -100,6 +102,8 @@
                   <% end %>
                 </div>
               </div>
+              <%
+=end %>
               <div>
                 <%= render "devise/shared/links" %>
               </div>
