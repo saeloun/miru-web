@@ -74,7 +74,7 @@ const Header = ({ clientDetails }) => {
               </button>
             </li>
             <li onClick={handleDelete}>
-              <button className="menuButton__list-item text-miru-red-400">
+              <button className="menuButton__list-item text-col-red-400">
                 <Trash size={16} color="#E04646" weight="bold" />
                 <span className="ml-3">Delete</span>
               </button>

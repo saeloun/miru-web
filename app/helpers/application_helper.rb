@@ -31,6 +31,14 @@ module ApplicationHelper
     end
   end
 
+  def auth_brand_logo
+    content_tag(:div, class: "mx-auto h-16 w-auto text-center") do
+      content_tag(:span, class: "text-col-red-400 font-bold text-5xl") do
+        "A#{content_tag(:span, "∝C", class: "text-col-black-1000 font-bold text-5xl")}".html_safe
+      end
+    end
+  end
+
   private
 
     def field_error(resource, attribute)

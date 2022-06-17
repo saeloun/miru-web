@@ -61,7 +61,7 @@ const NewLineItemStatic = ({
                 <li>
                   <button onClick={() => { handleDelete(item); }} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
                     <Trash size={16} color="#E04646" weight="bold" />
-                    <span className="text-miru-red-400 ml-2">Delete</span>
+                    <span className="text-col-red-400 ml-2">Delete</span>
                   </button>
                 </li>
               </ul>

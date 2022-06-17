@@ -46,7 +46,10 @@ const handleErrorResponse = error => {
 };
 
 export const registerIntercepts = () => {
-  axios.interceptors.response.use(handleSuccessResponse, error =>
+  const myInterceptor = axios.interceptors.response.use(handleSuccessResponse, error =>
     handleErrorResponse(error)
   );
+  if ((myInterceptor - 1) >= 0) {
+    axios.interceptors.response.eject(myInterceptor - 1);
+  }
 };

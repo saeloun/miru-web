@@ -69,7 +69,7 @@ const Header = ({
             onClick={()=> {
               setShowBulkDeleteDialog(true);
             }}
-            className="header__button border-miru-red-400 text-miru-red-400"
+            className="header__button border-col-red-400 text-col-red-400"
           >
             <Trash weight="fill" size={16} />
             <span className="inline-block ml-2">DELETE</span>

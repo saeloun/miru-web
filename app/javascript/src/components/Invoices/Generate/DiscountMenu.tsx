@@ -25,7 +25,7 @@ const Discountmenu = ({ setShowDiscount, setShowDiscountMenu, setAddDiscount, se
         }}
       >
         <Trash size={18} color="#E04646" />
-        <span className="pl-2 font-medium text-sm text-miru-red-400">Remove</span>
+        <span className="pl-2 font-medium text-sm text-col-red-400">Remove</span>
       </li>
     </ul>
   </div>

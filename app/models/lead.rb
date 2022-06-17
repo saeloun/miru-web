@@ -155,19 +155,20 @@ class Lead < ApplicationRecord
   SOURCE_CODE_OPTIONS = [
     CodeOptionKlass.new("Other", 0),
     CodeOptionKlass.new("Public", 1),
-    CodeOptionKlass.new("Atharva System Business Site", 2),
+    CodeOptionKlass.new("Company Business Site", 2),
     CodeOptionKlass.new("E-Mail Marketing", 3),
     CodeOptionKlass.new("Facebook", 4),
     CodeOptionKlass.new("Google", 5),
     CodeOptionKlass.new("Internal", 6),
     CodeOptionKlass.new("LinkedIn", 7),
     CodeOptionKlass.new("Partner", 8),
-    CodeOptionKlass.new("Referral", 9),
-    CodeOptionKlass.new("Relations", 10),
-    CodeOptionKlass.new("Seminar", 11),
-    CodeOptionKlass.new("Trade Show", 12),
-    CodeOptionKlass.new("Web", 13),
-    CodeOptionKlass.new("Word of mouth", 14)
+    CodeOptionKlass.new("Employee Referral", 9),
+    CodeOptionKlass.new("External Referral", 10),
+    CodeOptionKlass.new("Public Relations", 11),
+    CodeOptionKlass.new("Seminar", 12),
+    CodeOptionKlass.new("Trade Show", 13),
+    CodeOptionKlass.new("Web", 14),
+    CodeOptionKlass.new("Word of Mouth", 15)
   ]
 
   PRIORITY_CODE_OPTIONS = [

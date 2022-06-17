@@ -85,7 +85,7 @@ const Header = ({ leadDetails, setShowLeadSetting }) => {
                 </button>
               </li>
               <li>
-                <button className="menuButton__list-item text-miru-red-400" onClick={() => handleDeleteClick(leadDetails.id)}>
+                <button className="menuButton__list-item text-col-red-400" onClick={() => handleDeleteClick(leadDetails.id)}>
                   <Trash size={16} color="#E04646" weight="bold" />
                   <span className="ml-3">Delete</span>
                 </button>

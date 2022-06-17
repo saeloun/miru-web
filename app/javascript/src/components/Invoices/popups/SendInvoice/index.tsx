@@ -37,7 +37,7 @@ const Recipient: React.FC<{ email: string; handleClick: any }> = ({
 
     <button
       type="button"
-      className="text-miru-black-1000 hover:text-miru-red-400"
+      className="text-miru-black-1000 hover:text-col-red-400"
       onClick={handleClick}
     >
       <X size={14} weight="bold" />
@@ -173,7 +173,7 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
                     className={cn(
                       "py-2 mx-1.5 rounded bg-miru-gray-100 w-fit cursor-text focus:outline-none",
                       {
-                        "text-miru-red-400": !isEmailValid(newRecipient)
+                        "text-col-red-400": !isEmailValid(newRecipient)
                       }
                     )}
                     type="email"

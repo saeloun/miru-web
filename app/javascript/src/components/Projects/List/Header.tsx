@@ -48,7 +48,7 @@ const Header = ({ setShowProjectModal, isAdminUser }) => (
           <div className="flex">
             <button
               type="button"
-              className="header__button border-miru-red-400 text-miru-red-400"
+              className="header__button border-col-red-400 text-col-red-400"
             >
               <Trash weight="fill" size={16} />
               <span className="ml-2 inline-block">DELETE</span>

@@ -71,6 +71,9 @@ module.exports = {
         "100v": "100vh",
       },
       colors: {
+        "col-black": {
+          1000: "#303A4B",
+        },
         "miru-black": {
           1000: "#303A4B",
         },
@@ -81,7 +84,7 @@ module.exports = {
           200: "#EBEFF2",
           100: "#F5F7F9",
         },
-        "miru-red": {
+        "col-red": {
           400: "#E04646"
         },
         "miru-white": {
