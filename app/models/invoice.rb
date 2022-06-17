@@ -38,7 +38,7 @@ class Invoice < ApplicationRecord
   include InvoiceSendable
   require "securerandom"
 
-  before_create do
+  before_validation do
     self.external_view_key = "#{SecureRandom.hex}"
   end
 
