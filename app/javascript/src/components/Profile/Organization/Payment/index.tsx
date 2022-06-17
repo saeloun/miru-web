@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader/index";
 import { ApiStatus as PaymentSettingsStatus } from "constants/index";
@@ -42,8 +41,6 @@ const PaymentSettings = () => {
   }, [accountLink]);
 
   useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
     fetchPaymentSettings();
   }, [isStripeConnected]);
 
