@@ -8,6 +8,7 @@
 #  confirmed_at           :datetime
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string
+#  date_of_birth          :date
 #  discarded_at           :datetime
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
@@ -26,12 +27,14 @@
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
 #  sign_in_count          :integer          default(0), not null
+#  social_accounts        :jsonb
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  current_workspace_id   :bigint
 #  department_id          :integer
 #  invited_by_id          :bigint
+#  personal_email_id      :string
 #
 # Indexes
 #
@@ -84,10 +87,15 @@ class User < ApplicationRecord
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all
   has_one :wise_account, dependent: :destroy
+  has_many :previous_employment_details, dependent: :destroy
   has_one_attached :avatar
   rolify strict: true
 
+  # Social account details
+  store_accessor :social_accounts, :github_url, :linkedin_url
+
   # Validations
+  after_initialize :set_default_social_accounts, if: :new_record?
   validates :first_name, :last_name,
     presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },
@@ -124,12 +132,6 @@ class User < ApplicationRecord
     super and self.kept?
   end
 
-  def has_owner_or_admin_role?(company)
-    return false if company.nil?
-
-    self.has_cached_role?(:owner, company) || self.has_cached_role?(:admin, company)
-  end
-
   def current_workspace(load_associations: [:logo_attachment])
     @_current_workspace ||= Company.includes(load_associations).find_by(id: current_workspace_id)
   end
@@ -148,4 +150,11 @@ class User < ApplicationRecord
     def discard_project_members
       project_members.discard_all
     end
+
+    def set_default_social_accounts
+      self.social_accounts = {
+        "github_url": "",
+        "linkedin_url": ""
+      }
+  end
 end

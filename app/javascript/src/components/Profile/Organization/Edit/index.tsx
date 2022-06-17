@@ -1,17 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useCallback, useEffect, useState } from "react";
 import Select from "react-select";
-import { ToastContainer } from "react-toastify";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import companiesApi from "apis/companies";
 import companyProfileApi from "apis/companyProfile";
 import { Divider } from "common/Divider";
+import Loader from "common/Loader/index";
 import Toastr from "common/Toastr";
 import * as Yup from "yup";
 import { CountryList } from "constants/countryList";
 import { currencyList } from "constants/currencyList";
-import { TOASTER_DURATION } from "constants/index";
 
 import Header from "../../Header";
 
@@ -79,6 +77,8 @@ const OrgEdit = () => {
   const [timezoneOption, setTimezoneOption] = useState([]);
   const [timezones, setTimeZones] = useState({});
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
+
   const getCountries = async () => {
     const countries = CountryList.map((item) => ({
       value: item.code,
@@ -105,6 +105,7 @@ const OrgEdit = () => {
   };
 
   const getData = async () => {
+    setisLoading(true);
     const resp = await companiesApi.index();
     setOrgDetails({
       logoUrl: resp.data.logo_url,
@@ -130,11 +131,10 @@ const OrgEdit = () => {
       label: item
     }));
     setTimezoneOption(timezoneOptionList);
+    setisLoading(false);
   };
 
   useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
     getCountries();
     getCurrencies();
     getData();
@@ -168,7 +168,8 @@ const OrgEdit = () => {
     setOrgDetails({
       ...orgDetails,
       countryName: option.value,
-      companyTimezone: option.value === "US" ? "(GMT-05:00) Eastern Time (US & Canada)" : timezoneOptionList[0].value });
+      companyTimezone: option.value === "US" ? "(GMT-05:00) Eastern Time (US & Canada)" : timezoneOptionList[0].value
+    });
     setIsDetailUpdated(true);
   }, [orgDetails, timezones]);
 
@@ -207,6 +208,7 @@ const OrgEdit = () => {
   const updateOrgDetails = async () => {
     orgSchema.validate(orgDetails, { abortEarly: false }).then(async () => {
       try {
+        setisLoading(true);
         const formD = new FormData();
         formD.append(
           "company[name]", orgDetails.companyName
@@ -242,7 +244,8 @@ const OrgEdit = () => {
         }
         await companiesApi.update(orgDetails.id, formD);
         setIsDetailUpdated(false);
-      } catch (err){
+        setisLoading(false);
+      } catch (err) {
         Toastr.error("Error in Updating Org. Details");
       }
     }).catch(function (err) {
@@ -267,7 +270,7 @@ const OrgEdit = () => {
 
   const handleDeleteLogo = async () => {
     const removeLogo = await companiesApi.removeLogo(orgDetails.id);
-    if (removeLogo.status === 200){
+    if (removeLogo.status === 200) {
       setOrgDetails({ ...orgDetails, logoUrl: null, logo: null });
     }
   };
@@ -282,165 +285,166 @@ const OrgEdit = () => {
         saveAction={updateOrgDetails}
         isDisableUpdateBtn={isDetailUpdated}
       />
-      <div className="p-10 mt-4 bg-miru-gray-100 h-full">
-        <div className="flex flex-row py-6">
-          <div className="w-4/12 font-bold p-2">Basic Details</div>
-          <div className="w-full p-2">
-            Logo
-            {orgDetails.logoUrl  ? (
-              <div className="mt-2 flex flex-row">
-                <div className="w-20 h-20">
-                  <img src={orgDetails.logoUrl} className={"rounded-full min-w-full h-full"} alt="org_logo" />
-                </div>
-                <label htmlFor="file-input">
-                  <img src={editButton} className={"rounded-full mt-5 cursor-pointer"} style={{ "minWidth": "40px" }} alt="edit" />
-                </label>
-                <input id="file-input" type="file" name="myImage" className='hidden' onChange={onLogoChange}>
-                </input>
-                <button onClick={handleDeleteLogo}>
-                  <img
-                    src="/delete.svg"
-                    alt="delete"
-                    style={{ "minWidth": "20px" }}
-                  />
-                </button>
-              </div>
-            ) : (
-              <>
-                <div className="w-20 h-20 border rounded border-miru-han-purple-1000 mt-2">
-                  <label htmlFor="file-input" className="flex justify-center items-cente w-full h-full cursor-pointer">
-                    <img src={img} alt="file_input" className="object-none" />
+      {isLoading ? <Loader /> : (
+        <div className="p-10 mt-4 bg-miru-gray-100 h-full">
+          <div className="flex flex-row py-6">
+            <div className="w-4/12 font-bold p-2">Basic Details</div>
+            <div className="w-full p-2">
+              Logo
+              {orgDetails.logoUrl ? (
+                <div className="mt-2 flex flex-row">
+                  <div className="w-20 h-20">
+                    <img src={orgDetails.logoUrl} className={"rounded-full min-w-full h-full"} alt="org_logo" />
+                  </div>
+                  <label htmlFor="file-input">
+                    <img src={editButton} className={"rounded-full mt-5 cursor-pointer"} style={{ "minWidth": "40px" }} alt="edit" />
                   </label>
+                  <input id="file-input" type="file" name="myImage" className='hidden' onChange={onLogoChange}>
+                  </input>
+                  <button onClick={handleDeleteLogo}>
+                    <img
+                      src="/delete.svg"
+                      alt="delete"
+                      style={{ "minWidth": "20px" }}
+                    />
+                  </button>
                 </div>
-                <input id="file-input" type="file" name="myImage" className='hidden' onChange={onLogoChange} />
-              </>
-            )}
-            <div className="flex flex-col mt-4 w-1/2">
-              <label className="mb-2">Company Name</label>
-              <input
-                type="text"
-                id="company_name"
-                name="company_name"
-                value={orgDetails.companyName}
-                className="border py-1 px-1 w-full"
-                onChange={handleNameChange}
-              />
-              {errDetails.companyNameErr && (<span className="text-red-600 text-sm">{errDetails.companyNameErr}</span>)}
+              ) : (
+                <>
+                  <div className="w-20 h-20 border rounded border-miru-han-purple-1000 mt-2">
+                    <label htmlFor="file-input" className="flex justify-center items-cente w-full h-full cursor-pointer">
+                      <img src={img} alt="file_input" className="object-none" />
+                    </label>
+                  </div>
+                  <input id="file-input" type="file" name="myImage" className='hidden' onChange={onLogoChange} />
+                </>
+              )}
+              <div className="flex flex-col mt-4 w-1/2">
+                <label className="mb-2">Company Name</label>
+                <input
+                  type="text"
+                  id="company_name"
+                  name="company_name"
+                  value={orgDetails.companyName}
+                  className="border py-1 px-1 w-full"
+                  onChange={handleNameChange}
+                />
+                {errDetails.companyNameErr && (<span className="text-red-600 text-sm">{errDetails.companyNameErr}</span>)}
+              </div>
             </div>
           </div>
-        </div>
-        <Divider />
-        <div className="flex flex-row py-6">
-          <div className="w-4/12 font-bold p-2">Contact Details</div>
-          <div className="p-2 w-full">
-            <div className="flex flex-col ">
-              <label className="mb-2">Address</label>
-              <textarea
-                id="company_addr"
-                name="company_addr"
-                value={orgDetails.companyAddr}
-                className="border py-1 px-1 w-5/6	"
-                onChange={handleAddrChange}
-              />
-              <label className="mb-2 mt-4">Business Phone</label>
-              <input
-                type="text"
-                id="company_phone"
-                name="company_phone"
-                value={orgDetails.companyPhone}
-                className="border py-1 px-1 w-80"
-                onChange={handlePhoneChange}
-              />
-              {errDetails.companyPhoneErr && (<span className="text-red-600 text-sm">{errDetails.companyPhoneErr}</span>)}
+          <Divider />
+          <div className="flex flex-row py-6">
+            <div className="w-4/12 font-bold p-2">Contact Details</div>
+            <div className="p-2 w-full">
+              <div className="flex flex-col ">
+                <label className="mb-2">Address</label>
+                <textarea
+                  id="company_addr"
+                  name="company_addr"
+                  value={orgDetails.companyAddr}
+                  className="border py-1 px-1 w-5/6	"
+                  onChange={handleAddrChange}
+                />
+                <label className="mb-2 mt-4">Business Phone</label>
+                <input
+                  type="text"
+                  id="company_phone"
+                  name="company_phone"
+                  value={orgDetails.companyPhone}
+                  className="border py-1 px-1 w-80"
+                  onChange={handlePhoneChange}
+                />
+                {errDetails.companyPhoneErr && (<span className="text-red-600 text-sm">{errDetails.companyPhoneErr}</span>)}
+              </div>
             </div>
           </div>
-        </div>
-        <Divider />
-        <div className="flex flex-row py-6">
-          <div className="w-4/12 font-bold p-2 mt-2">Location and Currency</div>
-          <div className=" p-2 w-full">
-            <div className="flex flex-row ">
-              <div className="w-1/2 p-2">
-                <label className="mb-2">Country</label>
+          <Divider />
+          <div className="flex flex-row py-6">
+            <div className="w-4/12 font-bold p-2 mt-2">Location and Currency</div>
+            <div className=" p-2 w-full">
+              <div className="flex flex-row ">
+                <div className="w-1/2 p-2">
+                  <label className="mb-2">Country</label>
+                  <Select
+                    className="mt-2"
+                    classNamePrefix="react-select-filter"
+                    styles={customStyles}
+                    options={countriesOption}
+                    onChange={handleCountryChange}
+                    value={orgDetails.countryName ? countriesOption.find(o => o.value === orgDetails.countryName) : { label: "United States", value: "US" }}
+                  />
+                </div>
+                <div className="w-1/2 p-2">
+                  <label className="mb-2">Base Currency</label>
+                  <Select
+                    className="mt-2"
+                    classNamePrefix="react-select-filter"
+                    styles={customStyles}
+                    options={currenciesOption}
+                    onChange={handleCurrencyChange}
+                    value={orgDetails.companyCurrency ? currenciesOption.find(o => o.value === orgDetails.companyCurrency) : { label: "US Dollar ($)", value: "USD" }}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col p-2 w-1/2">
+                <label className="mb-2">Standard Rate</label>
+                <input
+                  type="number"
+                  min={0}
+                  id="company_rate"
+                  name="company_rate"
+                  value={orgDetails.companyRate}
+                  className="border py-1 px-1 w-full"
+                  onChange={handleRateChange}
+                />
+                {errDetails.companyRateErr && (<span className="text-red-600 text-sm">{errDetails.companyRateErr}</span>)}
+              </div>
+            </div>
+          </div>
+          <Divider />
+          <div className="flex flex-row py-6">
+            <div className="w-4/12 font-bold p-2 mt-2">Date and Time</div>
+            <div className="p-2 w-full">
+              <div className="flex flex-row ">
+                <div className="w-1/2 p-2">
+                  <label className="mb-2">Timezone</label>
+                  <Select
+                    className="mt-2"
+                    classNamePrefix="react-select-filter"
+                    styles={customStyles}
+                    options={timezoneOption}
+                    value={orgDetails.companyTimezone ? timezoneOption.find(o => o.value === orgDetails.companyTimezone) : timezoneOption[0]}
+                    onChange={handleTimezoneChange}
+                  />
+                </div>
+                <div className="w-1/2 p-2">
+                  <label className="mb-2">Date Format</label>
+                  <Select
+                    className="mt-2"
+                    classNamePrefix="react-select-filter"
+                    styles={customStyles}
+                    options={dateFormatOptions}
+                    value={orgDetails.companyDateFormat ? dateFormatOptions.find(o => o.value === orgDetails.companyDateFormat) : dateFormatOptions[1]}
+                    onChange={handleDateFormatChange}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col w-1/2 p-2">
+                <label className="mb-2"> Fiscal Year End</label>
                 <Select
                   className="mt-2"
                   classNamePrefix="react-select-filter"
                   styles={customStyles}
-                  options={countriesOption}
-                  onChange={handleCountryChange}
-                  value={orgDetails.countryName ? countriesOption.find(o => o.value === orgDetails.countryName) : { label: "United States", value: "US" }}
+                  options={fiscalYearOptions}
+                  onChange={handleFiscalYearChange}
+                  value={orgDetails.companyFiscalYear ? fiscalYearOptions.find(o => o.value === orgDetails.companyFiscalYear) : fiscalYearOptions[0]}
                 />
               </div>
-              <div className="w-1/2 p-2">
-                <label className="mb-2">Base Currency</label>
-                <Select
-                  className="mt-2"
-                  classNamePrefix="react-select-filter"
-                  styles={customStyles}
-                  options={currenciesOption}
-                  onChange={handleCurrencyChange}
-                  value={orgDetails.companyCurrency ? currenciesOption.find(o => o.value === orgDetails.companyCurrency) : { label: "US Dollar ($)", value: "USD" }}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col p-2 w-1/2">
-              <label className="mb-2">Standard Rate</label>
-              <input
-                type="number"
-                min={0}
-                id="company_rate"
-                name="company_rate"
-                value={orgDetails.companyRate}
-                className="border py-1 px-1 w-full"
-                onChange={handleRateChange}
-              />
-              {errDetails.companyRateErr && (<span className="text-red-600 text-sm">{errDetails.companyRateErr}</span>)}
             </div>
           </div>
         </div>
-        <Divider />
-        <div className="flex flex-row py-6">
-          <div className="w-4/12 font-bold p-2 mt-2">Date and Time</div>
-          <div className="p-2 w-full">
-            <div className="flex flex-row ">
-              <div className="w-1/2 p-2">
-                <label className="mb-2">Timezone</label>
-                <Select
-                  className="mt-2"
-                  classNamePrefix="react-select-filter"
-                  styles={customStyles}
-                  options={timezoneOption}
-                  value={orgDetails.companyTimezone ? timezoneOption.find(o => o.value === orgDetails.companyTimezone) : timezoneOption[0]}
-                  onChange={handleTimezoneChange}
-                />
-              </div>
-              <div className="w-1/2 p-2">
-                <label className="mb-2">Date Format</label>
-                <Select
-                  className="mt-2"
-                  classNamePrefix="react-select-filter"
-                  styles={customStyles}
-                  options={dateFormatOptions}
-                  value={orgDetails.companyDateFormat ? dateFormatOptions.find(o => o.value === orgDetails.companyDateFormat) : dateFormatOptions[1]}
-                  onChange={handleDateFormatChange}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col w-1/2 p-2">
-              <label className="mb-2"> Fiscal Year End</label>
-              <Select
-                className="mt-2"
-                classNamePrefix="react-select-filter"
-                styles={customStyles}
-                options={fiscalYearOptions}
-                onChange={handleFiscalYearChange}
-                value={orgDetails.companyFiscalYear ? fiscalYearOptions.find(o => o.value === orgDetails.companyFiscalYear) : fiscalYearOptions[0]}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <ToastContainer autoClose={TOASTER_DURATION} />
+      )}
     </div>
   );
 };

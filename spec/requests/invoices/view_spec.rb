@@ -10,7 +10,7 @@ RSpec.describe "Invoices::View", type: :request do
 
     context "when unauthenticated" do
       it "is able to view the client invoice successfully" do
-        send_request :get, view_invoice_path(invoice)
+        send_request :get, view_invoice_path(invoice.external_view_key)
         expect(response).to be_successful
       end
     end

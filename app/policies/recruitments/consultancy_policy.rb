@@ -12,23 +12,23 @@ class Recruitments::ConsultancyPolicy < ApplicationPolicy
   end
 
   def show?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def create?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def new_invoice_line_items?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def update?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def destroy?
-    user_owner_or_admin?
+    user_owner_role? || user_admin_role?
   end
 
   def permitted_attributes
