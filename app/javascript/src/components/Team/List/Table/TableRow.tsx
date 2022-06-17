@@ -2,8 +2,7 @@ import React, { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
-import { PencilSimple, Trash, ArrowCounterClockwise } from "phosphor-react";
-const avatar = require("../../../../../../assets/images/avatar_payments.svg"); // eslint-disable-line
+import { PencilSimple, Trash } from "phosphor-react";
 
 const TableRow = ({ item }) => {
   const { isAdminUser } = useUserContext();
@@ -15,7 +14,7 @@ const TableRow = ({ item }) => {
       navigate("1");
     }}>
       <td className="table__data p-6">
-        <img src={avatar} className="table__avatar" />
+        <img src={item.profilePicture} className="table__avatar" />
       </td>
       <td className="table__data p-6">
         {item.name}
@@ -29,15 +28,14 @@ const TableRow = ({ item }) => {
       {isAdminUser &&
         <Fragment>
           <td className="pr-6 py-6 text-right w-48">
-            <span className="table__pending">
-              Pending Invitation
-            </span>
+            {
+              item.status && <span className="table__pending">
+                Pending Invitation
+              </span>
+            }
           </td>
           <td className="pr-6 py-6 text-right w-44">
             <div className="invisible iconWrapper">
-              <button>
-                <ArrowCounterClockwise size={16} color="#5b34ea" weight="bold" />
-              </button>
               <button className="ml-12" onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
