@@ -1,29 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
+import { get } from "apis/team";
 import { ListContext } from "context/TeamContext";
 import { unmapList } from "mapper/team.mapper";
 import Header from "./Header";
 import Table from "./Table";
 import { TOASTER_DURATION } from "../../../constants/index";
 import Modals from "../modals/Modals";
-
-const list = [{
-  first_name: "Ajinkya",
-  last_name: "Deshmukh",
-  role: "Admin",
-  email: "ajinkya@saeloun.com"
-}, {
-  first_name: "Ajinkya",
-  last_name: "Deshmukh",
-  role: "Admin",
-  email: "ajinkya@saeloun.com"
-},
-{
-  first_name: "Ajinkya",
-  last_name: "Deshmukh",
-  role: "Admin",
-  email: "ajinkya@saeloun.com"
-}];
 
 export const ProjectList = () => {
 
@@ -34,9 +17,16 @@ export const ProjectList = () => {
     setModal(modalName);
   };
 
+  const getTeamList = async () => {
+    const response = await get();
+    if (response.status === 200) {
+      const sanitized = unmapList(response);
+      setTeamList(sanitized);
+    }
+  };
+
   useEffect(() => {
-    const sanitizedData = unmapList(list);
-    setTeamList(sanitizedData);
+    getTeamList();
   }, []);
 
   return (
