@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import paymentSettings from "apis/payment-settings";
+import Loader from "common/Loader/index";
 import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 
 import Header from "../../Header";
@@ -46,7 +47,7 @@ const PaymentSettings = () => {
     fetchPaymentSettings();
   }, [isStripeConnected]);
 
-  return status === PaymentSettingsStatus.SUCCESS && (
+  return (
     <React.Fragment>
       <div className="flex flex-col w-4/5">
         <Header
@@ -54,47 +55,50 @@ const PaymentSettings = () => {
           subTitle={"Connect payment gateways"}
           showButtons={false}
         />
-        <div className="flex">
-          <div className="flex flex-col">
-            <div className="py-10 px-20 mt-4 bg-miru-gray-100 h-screen">
-              <div className="h-36 p-5 bg-white flex flex-row items-center">
-                <div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
-                  <img src={Stripe_Logo} />
+        {(status === PaymentSettingsStatus.LOADING) ? <Loader /> : (status === PaymentSettingsStatus.SUCCESS) && (
+          <div className="flex">
+            <div className="flex flex-col">
+              <div className="py-10 px-20 mt-4 bg-miru-gray-100 h-screen">
+                <div className="h-36 p-5 bg-white flex flex-row items-center">
+                  <div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
+                    <img src={Stripe_Logo} />
+                  </div>
+                  <span className="px-4 font-normal text-sm text-miru-dark-purple-1000 leading-5 w-2/5">
+                    {isStripeConnected ? "Your stripe account is now connected and ready to accept online payments" : "Connect with your existing stripe account or create a new account"}
+                  </span>
+                  {
+                    isStripeConnected ?
+                      <div className="flex flex-row">
+                        <div className="logo-container mr-1">
+                          <img src={connectedCheck} />
+                        </div>
+                        <p className="ml-1 text-miru-alert-green-800 font-extrabold text-base">Connected</p>
+                      </div> :
+                      <button
+                        onClick={connectStripe}
+                      >
+                        <img src={Connect} className="pr-5" />
+                      </button>
+                  }
                 </div>
-                <span className="px-4 font-normal text-sm text-miru-dark-purple-1000 leading-5 w-2/5">
-                  { isStripeConnected ? "Your stripe account is now connected and ready to accept online payments" : "Connect with your existing stripe account or create a new account" }
-                </span>
-                {
-                  isStripeConnected ?
-                    <div className="flex flex-row">
-                      <div className="logo-container mr-1">
-                        <img src={connectedCheck} />
-                      </div>
-                      <p className="ml-1 text-miru-alert-green-800 font-extrabold text-base">Connected</p>
-                    </div> :
-                    <button
-                      onClick={connectStripe}
-                    >
-                      <img src={Connect} className="pr-5" />
-                    </button>
-                }
-              </div>
-              <div className="h-36 p-5 mt-6 bg-white flex justify-between items-center">
-                <div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
-                  <img src={Paypal_Logo} />
+                <div className="h-36 p-5 mt-6 bg-white flex justify-between items-center">
+                  <div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
+                    <img src={Paypal_Logo} />
+                  </div>
+                  <span className="px-4 font-normal text-sm text-miru-dark-purple-1000 leading-5 w-2/5">
+                    Connect with your existing paypal account or create a new account
+                  </span>
+                  <button>
+                    <img src={Connect_Paypal} className="pr-5" />
+                  </button>
                 </div>
-                <span className="px-4 font-normal text-sm text-miru-dark-purple-1000 leading-5 w-2/5">
-              Connect with your existing paypal account or create a new account
-                </span>
-                <button>
-                  <img src={Connect_Paypal} className="pr-5" />
-                </button>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </React.Fragment>
-  );};
+  );
+};
 
 export default PaymentSettings;
