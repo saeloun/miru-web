@@ -80,11 +80,12 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
 
   def create
     authorize Lead
-    lead_params[:created_by_id] = current_user.id if lead_params[:created_by_id].blank?
-    lead_params[:updated_by_id] = current_user.id if lead_params[:updated_by_id].blank?
-    lead_params[:company_id] = current_company.id if lead_params[:company_id].blank?
+    actual_lead_params = lead_params
+    actual_lead_params[:created_by_id] = current_user.id
+    actual_lead_params[:updated_by_id] = current_user.id
+    actual_lead_params[:company_id] = current_company.id
     render :create, locals: {
-      lead: Lead.create!(lead_params)
+      lead: Lead.create!(actual_lead_params)
     }
   end
 
@@ -112,10 +113,11 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
 
   def update
     authorize lead
-    lead_params[:created_by_id] = current_user.id if lead_params[:created_by_id].blank?
-    lead_params[:updated_by_id] = current_user.id if lead_params[:updated_by_id].blank?
-    lead_params[:company_id] = current_company.id if lead_params[:company_id].blank?
-    if lead.update!(lead_params)
+    actual_lead_params = lead_params
+    actual_lead_params[:created_by_id] = current_user.id if lead.created_by_id.blank?
+    actual_lead_params[:updated_by_id] = current_user.id if lead.updated_by_id.blank?
+    actual_lead_params[:company_id] = current_company.id if lead.company_id.blank?
+    if lead.update!(actual_lead_params)
       render json: {
         success: true,
         lead:,
