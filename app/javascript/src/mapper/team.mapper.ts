@@ -1,9 +1,13 @@
-const unmapList = (input) => input.map(item => ({
-  name: `${item.first_name} ${item.last_name}`,
-  email: item.email,
-  role: item.role
-})
-);
+const unmapList = (input) => {
+  const { team } = input.data
+  return team.map(item => ({
+    name: item.name,
+    email: item.email,
+    role: item.role,
+    status: item.status,
+    profilePicture: item.profilePicture
+  }))
+}
 
 export {
   unmapList

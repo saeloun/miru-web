@@ -6,24 +6,7 @@ import Header from "./Header";
 import Table from "./Table";
 import { TOASTER_DURATION } from "../../../constants/index";
 import Modals from "../modals/Modals";
-
-const list = [{
-  first_name: "Ajinkya",
-  last_name: "Deshmukh",
-  role: "Admin",
-  email: "ajinkya@saeloun.com"
-}, {
-  first_name: "Ajinkya",
-  last_name: "Deshmukh",
-  role: "Admin",
-  email: "ajinkya@saeloun.com"
-},
-{
-  first_name: "Ajinkya",
-  last_name: "Deshmukh",
-  role: "Admin",
-  email: "ajinkya@saeloun.com"
-}];
+import { get } from "apis/team";
 
 export const ProjectList = () => {
 
@@ -34,9 +17,16 @@ export const ProjectList = () => {
     setModal(modalName);
   };
 
+  const getTeamList = async () => {
+    const response = await get();
+    if (response.status === 200) {
+      const sanitized = unmapList(response)
+      setTeamList(sanitized);
+    }
+  }
+
   useEffect(() => {
-    const sanitizedData = unmapList(list);
-    setTeamList(sanitizedData);
+    getTeamList()
   }, []);
 
   return (
