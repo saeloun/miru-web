@@ -2,6 +2,6 @@
 
 class WeeklyReminderToUserJob < ApplicationJob
   def perform(*args)
-    SendWeeklyReminderForMissedEntriesService.new.process
+    WeeklyReminderForMissedEntriesService.new.process
   end
 end
