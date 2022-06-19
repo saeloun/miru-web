@@ -31,7 +31,7 @@ en:
       email_changed:
         subject: "Email Changed"
       password_change:
-        subject: "Password Changed"
+        subject: "Miru Password Reset Successfully!"
     omniauth_callbacks:
       failure: 'Could not authenticate you from %{kind} because "%{reason}".'
       success: "Successfully authenticated from %{kind} account."
