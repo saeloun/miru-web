@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
+
 import DatePicker from "react-datepicker";
+import { Trash } from "phosphor-react";
 
 const EditLineItems = ({
   item,
   setSelectedOption,
-  selectedOption
+  selectedOption,
+  handleDelete
 }) => {
 
   const strName = item.name || `${item.first_name} ${item.last_name}`;
@@ -14,7 +17,7 @@ const EditLineItems = ({
   const [lineItemDate, setLineItemDate] = useState(newDate);
   const [description, setDescription] = useState<string>(item.description);
   const rate = item.rate;
-  const lineTotal = (quantity / 60) * item.rate;
+  const lineTotal = quantity * item.rate;
 
   useEffect(() => {
     const names = name.split(" ");
@@ -31,7 +34,8 @@ const EditLineItems = ({
     };
 
     const selectedOptionArr = selectedOption.map((option) => {
-      if (option.id === item.id) {
+      if ((option.id && option.id === item.id) ||
+        (option.timesheet_entry_id && option.timesheet_entry_id === item.timesheet_entry_id)) {
         return newItem;
       }
 
@@ -90,6 +94,11 @@ const EditLineItems = ({
       </td>
       <td className="text-right font-normal text-base text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000">
         {lineTotal.toFixed(2)}
+      </td>
+      <td>
+        <button onClick={() => handleDelete(item)} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
+          <Trash size={16} color="#E04646" weight="bold" />
+        </button>
       </td>
     </tr>
   );

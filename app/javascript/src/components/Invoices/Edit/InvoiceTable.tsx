@@ -73,8 +73,7 @@ const InvoiceTable = ({
               manualEntryArr={manualEntryArr}
               setManualEntryArr={setManualEntryArr}
             />
-          )
-          }
+          )}
           {
             selectedLineItems.map((item, index) => (
               item._destroy ? (

@@ -5,7 +5,8 @@ import NewLineItemStatic from "./NewLineItemStatic";
 const NewLineItemRow = ({
   item,
   setSelectedOption,
-  selectedOption
+  selectedOption,
+  removeElement = false
 }) => {
   const [isEdit, setEdit] = useState<boolean>(false);
 
@@ -16,14 +17,16 @@ const NewLineItemRow = ({
     };
 
     const selectedOptionArr = selectedOption.map((option) => {
-      if (option.id === item.id) {
-        return deleteItem;
+      if ((item.id && option.id === item.id) ||
+        (option.timesheet_entry_id && option.timesheet_entry_id === item.timesheet_entry_id)) {
+        return removeElement ? null : deleteItem;
       }
 
       return option;
     });
 
-    setSelectedOption(selectedOptionArr);
+    setEdit(false);
+    setSelectedOption(selectedOptionArr.filter(n => n));
   };
 
   return isEdit ? (
@@ -31,6 +34,7 @@ const NewLineItemRow = ({
       item={item}
       setSelectedOption={setSelectedOption}
       selectedOption={selectedOption}
+      handleDelete={handleDelete}
     />
   ) : (
     <NewLineItemStatic
