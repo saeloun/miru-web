@@ -11,5 +11,5 @@ production:
   - active_storage_purge
 :schedule:
   weekly_reminder:
-    cron: '0 14 * * * 1 Asia/Kolkata'   # Runs every monday at  14:00
+    cron: '0 14 * * 1 Asia/Kolkata'   # Runs every monday at  14:00
     class: WeeklyReminderToUserJob
