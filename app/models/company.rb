@@ -107,4 +107,10 @@ class Company < ApplicationRecord
       }
     end
   end
+
+  def company_logo
+    return nil if !logo.attached?
+
+    Rails.application.routes.url_helpers.polymorphic_url(logo, only_path: true)
+  end
 end

@@ -9,6 +9,6 @@ class Invoices::ViewController < ApplicationController
   end
 
   def invoice
-    @_invoice ||= Invoice.includes(:client, :invoice_line_items).find(params[:id])
+    @_invoice ||= Invoice.includes(:client, :invoice_line_items).find_by!(external_view_key: params[:id])
   end
 end
