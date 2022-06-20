@@ -22,7 +22,6 @@ const NewLineItemRow = ({
       item={item}
       setSelectedOption={setSelectedOption}
       selectedOption={selectedOption}
-      setEdit={setEdit}
     />
   ) : (
     <NewLineItemStatic
