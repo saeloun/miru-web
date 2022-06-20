@@ -16,7 +16,7 @@ const EditLineItems = ({
   const [description, setDescription] = useState<string>(item.description);
   const [rate, setRate] = useState<any>(item.rate);
   const [qty, setQty] = useState<any>(quantity);
-  const [lineTotal, setLineTotal] = useState<any>((quantity / 60) * item.rate);
+  const [lineTotal, setLineTotal] = useState<any>(quantity * item.rate);
 
   const onEnter = e => {
     if (e.key == "Enter") {
