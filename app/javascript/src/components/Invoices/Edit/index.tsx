@@ -142,7 +142,7 @@ const EditInvoice = () => {
             newLineItems={selectedLineItems}
             manualEntryArr={manualEntryArr}
             setAmount={setAmount}
-            amountPaid={amountPaid || invoiceDetails.amountPaid}
+            amountPaid={amountPaid}
             amountDue={amountDue}
             setAmountDue={setAmountDue}
             discount={discount}
