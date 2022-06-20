@@ -9,12 +9,21 @@ const NewLineItemRow = ({
 }) => {
   const [isEdit, setEdit] = useState<boolean>(false);
 
-  const handleDelete = () => {
-    // const sanitized = selectedOption.filter(option =>
-    //   option.timesheet_entry_id !== item.timesheet_entry_id ||
-    //   option.id !== item.id
-    // )
-    // setSelectedOption(sanitized);
+  const handleDelete = (item) => {
+    const deleteItem = {
+      ...item,
+      _destroy: true
+    };
+
+    const selectedOptionArr = selectedOption.map((option) => {
+      if (option.id === item.id) {
+        return deleteItem;
+      }
+
+      return option;
+    });
+
+    setSelectedOption(selectedOptionArr);
   };
 
   return isEdit ? (
