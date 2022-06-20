@@ -10,6 +10,7 @@ import Header from "./Header";
 import InvoiceTable from "./InvoiceTable";
 import InvoiceTotal from "./InvoiceTotal";
 import { unmapLineItems } from "../../../mapper/editInvoice.mapper";
+import { generateInvoiceLineItems } from "../common/utils";
 import CompanyInfo from "../CompanyInfo";
 import InvoiceDetails from "../Generate/InvoiceDetails";
 
@@ -20,6 +21,7 @@ const EditInvoice = () => {
   const [invoiceDetails, getInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
   const [selectedLineItems, setSelectedLineItems] = useState<any>([]);
+  const [manualEntryArr, setManualEntryArr] = useState<any>([]);
   const [selectedClient, setSelectedClient] = useState<any>({ value: 0 });
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
   const [reference] = useState<any>("");
@@ -92,15 +94,7 @@ const EditInvoice = () => {
       discount: Number(discount),
       tax: tax || invoiceDetails.tax,
       client_id: selectedClient.value,
-      invoice_line_items_attributes: selectedLineItems.map(item => ({
-        id: item.id,
-        name: item.name,
-        description: item.description,
-        date: item.date,
-        rate: item.rate,
-        quantity: item.qty,
-        timesheet_entry_id: item.time_sheet_entry
-      }))
+      invoice_line_items_attributes: generateInvoiceLineItems(selectedLineItems, manualEntryArr)
     })
       .then(() => navigate(`/invoices/${invoiceDetails.id}`))
       .catch();
@@ -138,11 +132,14 @@ const EditInvoice = () => {
               setLineItems={setLineItems}
               selectedLineItems={selectedLineItems}
               setSelectedLineItems={setSelectedLineItems}
+              manualEntryArr={manualEntryArr}
+              setManualEntryArr={setManualEntryArr}
             />
           </div>
           <InvoiceTotal
             currency={invoiceDetails.company.currency}
             newLineItems={selectedLineItems}
+            manualEntryArr={manualEntryArr}
             setAmount={setAmount}
             amountPaid={amountPaid || invoiceDetails.amountPaid}
             amountDue={amountDue || invoiceDetails.amountDue}
