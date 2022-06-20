@@ -2,13 +2,12 @@
 
 require "rails_helper"
 
-RSpec.describe PreviousEmploymentDetail, type: :model do
-  subject(:previous_employment_detail) { build(:previous_employment_detail) }
+RSpec.describe PreviousEmployment, type: :model do
+  subject(:previous_employment) { build(:previous_employment) }
 
   describe "Validations" do
     describe "Associations" do
         it { is_expected.to belong_to(:user) }
-        it { is_expected.to belong_to(:employment_detail) }
       end
 
     describe "Validations" do
