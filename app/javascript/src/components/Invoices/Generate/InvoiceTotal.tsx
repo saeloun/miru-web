@@ -12,7 +12,8 @@ const InvoiceTotal = ({
   setAmount,
   discount, setDiscount,
   tax, setTax,
-  showDiscountInput, showTax
+  showDiscountInput, showTax,
+  manualEntryArr
 }) => {
 
   const [addDiscount, setAddDiscount] = useState<boolean>(false);
@@ -82,14 +83,16 @@ const InvoiceTotal = ({
   };
 
   useEffect(() => {
-    const newLineItemsSubTotal = newLineItems.reduce((sum, { lineTotal }) => (sum + lineTotal), 0);
+    const newLineItemsSubTotal = newLineItems.reduce((sum, { lineTotal }) => (sum + Number(lineTotal)), 0);
+    const manualEntryTotal = manualEntryArr.reduce((sum, { lineTotal }) => (sum + Number(lineTotal)), 0);
 
-    const newTotal = Number(newLineItemsSubTotal) + Number(tax) - Number(discount);
-    setSubTotal(newLineItemsSubTotal);
+    const subTotal = Number((newLineItemsSubTotal + manualEntryTotal).toFixed(2));
+    const newTotal = Number((subTotal + Number(tax) - Number(discount)).toFixed(2));
+    setSubTotal(subTotal);
     setTotal(newTotal);
     setAmount(newTotal);
     setAmountDue(newTotal - amountPaid);
-  }, [newLineItems, discount, subTotal, tax]);
+  }, [newLineItems, manualEntryArr, discount, subTotal, tax]);
 
   return (
     <div className="pt-3 pb-10 mb-5 w-full flex justify-end">

@@ -36,7 +36,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
         </NavLink>
       </li>
       <li className='border-b-2 border-miru-gray-400'>
-        <NavLink end to="/profile/edit/paymentsettings" className={({ isActive }) => getActiveClassName(isActive)}>
+        <NavLink end to="/profile/edit/payment" className={({ isActive }) => getActiveClassName(isActive)}>
           PAYMENT SETTINGS
         </NavLink>
       </li>
