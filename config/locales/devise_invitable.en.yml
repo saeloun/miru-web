@@ -17,12 +17,19 @@ en:
         submit_button: "Set my password"
     mailer:
       invitation_instructions:
-        subject: "Invitation instructions"
-        hello: "Hello %{email}"
-        someone_invited_you: "Someone has invited you to %{url}, you can accept it through the link below."
-        accept: "Accept invitation"
+        subject: "Welcome to Miru!"
+        hi: "Hi %{name},"
+        info: "We are so delighted to have you onboard. We want to let you know some of the best ways to get up and running on our portal - "
+        info_points: "Send professional invoices Instantly Send and accept payments from clients seamlessly Manage your team and track their progress. Track your time and overall expenses easily"
+        info_point_1: "Send professional invoices Instantly"
+        info_point_2: "Send and accept payments from clients seamlessly "
+        info_point_3: "Manage your team and track their progress."
+        info_point_4: "Track your time and overall expenses easily"
+        confirm: "We’d like to make sure we got your email address right!"
+        confirm_link: "Yes, it’s me. Confirm my email address"
+        cheers: "Cheers,"
+        team_miru: "Team Miru"
         accept_until: "This invitation will be due in %{due_date}."
-        ignore: "If you don't want to accept the invitation, please ignore this email. Your account won't be created until you access the link above and set your password."
   time:
     formats:
       devise:
