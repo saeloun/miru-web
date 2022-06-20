@@ -27,7 +27,7 @@ const EditInvoice = () => {
   const [reference] = useState<any>("");
   const [amount, setAmount] = useState<any>(0);
   const [amountDue, setAmountDue] = useState<any>(0);
-  const [amountPaid] = useState<any>(0);
+  const [amountPaid, setAmountPaid] = useState<any>(0);
   const [discount, setDiscount] = useState<any>(0);
   const [tax, setTax] = useState<any>(0);
   const [issueDate, setIssueDate] = useState();
@@ -50,6 +50,7 @@ const EditInvoice = () => {
       setDiscount(res.data.discount);
       setSelectedClient(res.data.client);
       setAmountDue(res.data.amountDue);
+      setAmountPaid(res.data.amountPaid);
     } catch (e) {
       navigate("/invoices/error");
       return {};
@@ -88,8 +89,8 @@ const EditInvoice = () => {
       invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
       issue_date: dayjs(issueDate || invoiceDetails.issueDate).format("DD.MM.YYYY"),
       due_date: dayjs(dueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
-      amount_due: amountDue || invoiceDetails.amountDue,
-      amount_paid: amountPaid || invoiceDetails.amountPaid,
+      amount_due: amountDue,
+      amount_paid: amountPaid,
       amount: amount,
       discount: Number(discount),
       tax: tax || invoiceDetails.tax,
@@ -142,7 +143,7 @@ const EditInvoice = () => {
             manualEntryArr={manualEntryArr}
             setAmount={setAmount}
             amountPaid={amountPaid || invoiceDetails.amountPaid}
-            amountDue={amountDue || invoiceDetails.amountDue}
+            amountDue={amountDue}
             setAmountDue={setAmountDue}
             discount={discount}
             setDiscount={setDiscount}
