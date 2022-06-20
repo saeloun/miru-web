@@ -38,10 +38,6 @@ class Invoice < ApplicationRecord
   include InvoiceSendable
   require "securerandom"
 
-  before_create do
-    self.external_view_key = "#{SecureRandom.hex}"
-  end
-
   attr_accessor :sub_total
 
   enum status: [
@@ -58,12 +54,13 @@ class Invoice < ApplicationRecord
   has_one :company, through: :client
   accepts_nested_attributes_for :invoice_line_items, allow_destroy: true
 
+  before_validation :set_external_view_key, on: :create
+
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }
   validates :amount, :outstanding_amount, :tax,
     :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
   validates :invoice_number, uniqueness: true
-  validates :external_view_key, uniqueness: true
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :from_date, -> (from) { where("issue_date >= ?", from) if from.present? }
@@ -89,4 +86,10 @@ class Invoice < ApplicationRecord
   def unit_amount(base_currency)
     (amount * Money::Currency.new(base_currency).subunit_to_unit).to_i
   end
+
+  private
+
+    def set_external_view_key
+      self.external_view_key = "#{SecureRandom.hex}"
+    end
 end
