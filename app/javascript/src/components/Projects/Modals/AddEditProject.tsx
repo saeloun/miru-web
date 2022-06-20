@@ -107,10 +107,10 @@ const AddEditProject = ({
                   <select
                     defaultValue={client}
                     className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                    onChange={(e) => setClient(+ e.target.value)}>
+                    onChange={(event) => setClient(+ event.target.value)}>
                     <option value='0'>Select Client</option>
                     {clientList &&
-                      clientList.map((e, index) => <option key={index} value={e.id} selected={e.id == client}>{e.name}</option>)}
+                      clientList.map((event, index) => <option key={index} value={event["id"]} selected={event["id"] == client}>{event["name"]}</option>)}
                   </select>
                 </div>
               </div>
@@ -123,7 +123,7 @@ const AddEditProject = ({
                   </label>
                 </div>
                 <div className="mt-1">
-                  <input type="text" placeholder=" Enter Project Name" className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base" value={projectName} onChange={(e) => setProjectName(e.target.value)} />
+                  <input type="text" placeholder=" Enter Project Name" className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base" value={projectName} onChange={(event) => setProjectName(event.target.value)} />
                 </div>
               </div>
             </div>
