@@ -4,6 +4,7 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leads from "apis/leads";
 import { ArrowLeft, DotsThreeVertical, Receipt, CaretDown, Trash, Gear } from "phosphor-react";
 import { unmapLeadList } from "../../../mapper/lead.mapper";
+import getStatusCssClass from "../../../utils/getStatusTag";
 import DeleteLead from "../Modals/DeleteLead";
 import NewLead from "../Modals/NewLead";
 
@@ -59,9 +60,11 @@ const Header = ({ leadDetails, setShowLeadSetting }) => {
             <button className="button-icon__back" onClick={handleBackButtonClick}>
               <ArrowLeft size={20} color="#5b34ea" weight="bold" />
             </button>
-            <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
+            {(leadDetails.discarded_at) ? (<h2 className="text-3xl mr-6 font-extrabold text-red-600 sm:text-4xl sm:truncate py-1">
               {leadDetails.name}
-            </h2>
+            </h2>) : (<h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
+              {leadDetails.name}
+            </h2>)}
             <button onClick={handleLeadDetails}>
               <CaretDown size={20} weight="bold" />
             </button>
@@ -96,35 +99,36 @@ const Header = ({ leadDetails, setShowLeadSetting }) => {
         {isLeadOpen && <div className="flex ml-12 mt-4">
           <div className="text-xs text-miru-dark-purple-400">
             <h6 className="font-semibold">Assignee</h6>
-            <p>{leadDetails.assignee_name}</p>
+            <p>{leadDetails.assignee_name ? leadDetails.assignee_name : "UNASSIGNED"}</p>
           </div>
           <div className="ml-22 text-xs text-miru-dark-purple-400">
             <h6 className="font-semibold">Reporter</h6>
-            <p>{leadDetails.reporter_name}</p>
-          </div>
-          <div className="ml-22 text-xs text-miru-dark-purple-400">
-            <h6 className="font-semibold">Budget Amount</h6>
-            <p>{leadDetails.budget_amount}</p>
-          </div>
-          <div className="ml-22 text-xs text-miru-dark-purple-400">
-            <h6 className="font-semibold">Budget Status</h6>
-            <p>{leadDetails.budget_status_code_name}</p>
+            <p>{leadDetails.reporter_name ? leadDetails.reporter_name : "UNREPORTED"}</p>
           </div>
           <div className="ml-22 text-xs text-miru-dark-purple-400">
             <h6 className="font-semibold">Industry</h6>
             <p>{leadDetails.industry_code_name}</p>
           </div>
+
           <div className="ml-22 text-xs text-miru-dark-purple-400">
             <h6 className="font-semibold">Quality</h6>
-            <p>{leadDetails.quality_code_name}</p>
+            <p>
+              <span className={leadDetails.quality_code_name ? `${getStatusCssClass(leadDetails.quality_code_name)} uppercase` : ""}>
+                {leadDetails.quality_code_name}
+              </span>
+            </p>
           </div>
           <div className="ml-22 text-xs text-miru-dark-purple-400">
-            <h6 className="font-semibold">State</h6>
-            <p>{leadDetails.state_code_name}</p>
+            <h6 className="font-semibold">Priority</h6>
+            <p className="uppercase">{leadDetails.priority_code_name}</p>
           </div>
           <div className="ml-22 text-xs text-miru-dark-purple-400">
             <h6 className="font-semibold">Status</h6>
-            <p>{leadDetails.status_code_name}</p>
+            <p>
+              <span className={leadDetails.status_code_name ? `${getStatusCssClass(leadDetails.status_code_name)} uppercase` : ""}>
+                {leadDetails.status_code_name}
+              </span>
+            </p>
           </div>
         </div>
         }

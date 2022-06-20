@@ -28,9 +28,9 @@ const LeadList = () => {
     <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header leadDetails={leadDetails} setShowLeadSetting={setShowLeadSetting} />
-      <Tab leadDetails={leadDetails} forItem="leads" quoteId={null} />
+      <Tab leadDetails={leadDetails} setLeadDetails={setLeadDetails} forItem="leads" quoteId={null} />
       {showLeadSetting && (
-        <LeadSettings leadDetails={leadDetails} setShowLeadSetting={setShowLeadSetting} />
+        <LeadSettings leadDetails={leadDetails} setLeadDetails={setLeadDetails} setShowLeadSetting={setShowLeadSetting} />
       )}
     </React.Fragment>
   );

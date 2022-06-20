@@ -57,7 +57,8 @@ const Table = ({
   hasDeleteAction=true,
   handleDeleteClick = (id) => {}, // eslint-disable-line
   handleEditClick = (id) => {}, // eslint-disable-line
-  rowOnClick = (id) => {} // eslint-disable-line
+  rowOnClick = (id) => {}, // eslint-disable-line
+  rowOnDoubleClick = (id) => {}, // eslint-disable-line
 }) => {
 
   const data = React.useMemo(() => tableRowArray, [tableRowArray]);
@@ -99,7 +100,7 @@ const Table = ({
             const cssClassLastRow = rows.length - 1 !== index ? "border-b": "";
             const cssClassRowHover = hasRowIcons ? "hoverIcon" : "";
             return (
-              <tr {...row.getRowProps()} onClick={() => rowOnClick(row.original.rowId)} className={`${cssClassLastRow} ${cssClassRowHover}`}>
+              <tr {...row.getRowProps()} onDoubleClick={() => rowOnDoubleClick(row.original.rowId)}  onClick={() => rowOnClick(row.original.rowId)} className={`${cssClassLastRow} ${cssClassRowHover} cursor-pointer`}>
                 {row.cells.map(cell => <td className="table__cell" {...cell.getCellProps()}>{cell.render("Cell")}</td>)}
 
                 {hasRowIcons && <td className="table__cell">
@@ -139,5 +140,6 @@ Table.proptypes = {
   hasRowIcons: PropTypes.bool,
   handleDeleteClick: PropTypes.func,
   handleEditClick: PropTypes.func,
-  rowOnClick: PropTypes.func
+  rowOnClick: PropTypes.func,
+  rowOnDoubleClick: PropTypes.func,
 };

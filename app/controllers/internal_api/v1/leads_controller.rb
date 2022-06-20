@@ -87,6 +87,7 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
     actual_lead_params = lead_params
     actual_lead_params[:created_by_id] = current_user.id
     actual_lead_params[:updated_by_id] = current_user.id
+    actual_lead_params[:reporter_id] = current_user.id if actual_lead_params[:reporter_id].blank?
     actual_lead_params[:company_id] = current_company.id
     render :create, locals: {
       lead: Lead.create!(actual_lead_params)
@@ -95,25 +96,7 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
 
   def show
     authorize lead
-    lead_details = lead.lead_detail.merge(
-      {
-        budget_status_code_name: lead.budget_status_code_name,
-        industry_code_name: lead.industry_code_name,
-        quality_code_name: lead.quality_code_name,
-        state_code_name: lead.state_code_name,
-        status_code_name: lead.status_code_name,
-        assignee_name: lead.assignee ? "#{lead.assignee.first_name} #{lead.assignee.last_name}" : "",
-        reporter_name: lead.reporter ? "#{lead.reporter.first_name} #{lead.reporter.last_name}" : "",
-        created_by_name: lead.created_by ? "#{lead.created_by.first_name} #{lead.created_by.last_name}" : "",
-        updated_by_name: lead.updated_by ? "#{lead.updated_by.first_name} #{lead.updated_by.last_name}" : "",
-        need_name: lead.need_name,
-        preferred_contact_method_code_name: lead.preferred_contact_method_code_name,
-        initial_communication_name: lead.initial_communication_name,
-        source_code_name: lead.source_code_name,
-        priority_code_name: lead.priority_code_name,
-        tech_stack_names: lead.tech_stack_names
-      })
-    render json: { lead_details: }, status: :ok
+    render json: { lead_details: generate_details(lead) }, status: :ok
   end
 
   def update
@@ -125,7 +108,7 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
     if lead.update!(actual_lead_params)
       render json: {
         success: true,
-        lead:,
+        lead_details: generate_details(lead),
         notice: I18n.t("lead.update.success.message")
       }, status: :ok
     end
@@ -136,7 +119,7 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
 
     if lead.discard!
       render json: {
-        lead:,
+        lead_details: generate_details(lead),
         notice: I18n.t("lead.delete.success.message")
       }, status: :ok
     end
@@ -152,5 +135,26 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
       params.require(:lead).permit(
         policy(Lead).permitted_attributes
       )
+    end
+
+    def generate_details(lead)
+      lead.lead_detail.merge(
+        {
+          budget_status_code_name: lead.budget_status_code_name,
+          industry_code_name: lead.industry_code_name,
+          quality_code_name: lead.quality_code_name,
+          state_code_name: lead.state_code_name,
+          status_code_name: lead.status_code_name,
+          assignee_name: lead.assignee ? "#{lead.assignee.first_name} #{lead.assignee.last_name}" : "",
+          reporter_name: lead.reporter ? "#{lead.reporter.first_name} #{lead.reporter.last_name}" : "",
+          created_by_name: lead.created_by ? "#{lead.created_by.first_name} #{lead.created_by.last_name}" : "",
+          updated_by_name: lead.updated_by ? "#{lead.updated_by.first_name} #{lead.updated_by.last_name}" : "",
+          need_name: lead.need_name,
+          preferred_contact_method_code_name: lead.preferred_contact_method_code_name,
+          initial_communication_name: lead.initial_communication_name,
+          source_code_name: lead.source_code_name,
+          priority_code_name: lead.priority_code_name,
+          tech_stack_names: lead.tech_stack_names
+        })
     end
 end

@@ -6,6 +6,7 @@ import leadItemsApi from "apis/lead-items";
 import leads from "apis/leads";
 import { Formik, Form } from "formik";
 import { X } from "phosphor-react";
+import { unmapLeadDetails } from "../../../mapper/lead.mapper";
 
 const getInitialvalues = (lead) => ({
   assignee_id: lead.assignee_id,
@@ -16,7 +17,7 @@ const getInitialvalues = (lead) => ({
   priority_code: lead.priority_code
 });
 
-const LeadSettings = ({ leadDetails, setShowLeadSetting }) => {
+const LeadSettings = ({ leadDetails, setLeadDetails, setShowLeadSetting }) => {
   const [qualityCodeList, setQualityCodeList] = useState<any>(null);
   const [stateCodeList, setStateCodeList] = useState<any>(null);
   const [statusCodeList, setStatusCodeList] = useState<any>(null);
@@ -47,6 +48,7 @@ const LeadSettings = ({ leadDetails, setShowLeadSetting }) => {
     };
 
     getAllowedUsers();
+    setLeadDetails(leadDetails);
   }, []);
 
   const handleSubmit = async values => {
@@ -59,9 +61,9 @@ const LeadSettings = ({ leadDetails, setShowLeadSetting }) => {
         "status_code": values.status_code,
         "priority_code": values.priority_code
       }
-    }).then(() => {
-      // navigate(`/leads/${leadDetails.id}`);
-      document.location.reload();
+    }).then((res) => {
+      setShowLeadSetting(false);
+      setLeadDetails(unmapLeadDetails(res).leadDetails);
     })
   };
 
@@ -70,9 +72,9 @@ const LeadSettings = ({ leadDetails, setShowLeadSetting }) => {
       lead: {
         "assignee_id": val
       }
-    }).then(() => {
-      // navigate(`/leads/${leadDetails.id}`);
-      document.location.reload();
+    }).then((res) => {
+      setShowLeadSetting(false);
+      setLeadDetails(unmapLeadDetails(res).leadDetails);
     })
   };
 
@@ -81,9 +83,9 @@ const LeadSettings = ({ leadDetails, setShowLeadSetting }) => {
       lead: {
         "reporter_id": val
       }
-    }).then(() => {
-      // navigate(`/leads/${leadDetails.id}`);
-      document.location.reload();
+    }).then((res) => {
+      setShowLeadSetting(false);
+      setLeadDetails(unmapLeadDetails(res).leadDetails);
     })
   };
 
@@ -92,9 +94,9 @@ const LeadSettings = ({ leadDetails, setShowLeadSetting }) => {
       lead: {
         "quality_code": val
       }
-    }).then(() => {
-      // navigate(`/leads/${leadDetails.id}`);
-      document.location.reload();
+    }).then((res) => {
+      setShowLeadSetting(false);
+      setLeadDetails(unmapLeadDetails(res).leadDetails);
     })
   };
 
@@ -103,9 +105,9 @@ const LeadSettings = ({ leadDetails, setShowLeadSetting }) => {
       lead: {
         "state_code": val
       }
-    }).then(() => {
-      // navigate(`/leads/${leadDetails.id}`);
-      document.location.reload();
+    }).then((res) => {
+      setShowLeadSetting(false);
+      setLeadDetails(unmapLeadDetails(res).leadDetails);
     })
   };
 
@@ -114,9 +116,9 @@ const LeadSettings = ({ leadDetails, setShowLeadSetting }) => {
       lead: {
         "status_code": val
       }
-    }).then(() => {
-      // navigate(`/leads/${leadDetails.id}`);
-      document.location.reload();
+    }).then((res) => {
+      setShowLeadSetting(false);
+      setLeadDetails(unmapLeadDetails(res).leadDetails);
     })
   };
 
@@ -125,9 +127,9 @@ const LeadSettings = ({ leadDetails, setShowLeadSetting }) => {
       lead: {
         "priority_code": val
       }
-    }).then(() => {
-      // navigate(`/leads/${leadDetails.id}`);
-      document.location.reload();
+    }).then((res) => {
+      setShowLeadSetting(false);
+      setLeadDetails(unmapLeadDetails(res).leadDetails);
     })
   };
 

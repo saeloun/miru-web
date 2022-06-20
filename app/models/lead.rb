@@ -181,51 +181,49 @@ class Lead < ApplicationRecord
 
   TECH_STACK_OPTIONS = [
     CodeOptionKlass.new("API Integration", 0),
-    CodeOptionKlass.new("ASP .NET Development", 1),
-    CodeOptionKlass.new("Android App Development", 2),
-    CodeOptionKlass.new("AngularJS Development", 3),
-    CodeOptionKlass.new("Beacon App Development", 4),
-    CodeOptionKlass.new("CakePHP Development", 5),
-    CodeOptionKlass.new("Codeigniter Development", 6),
+    CodeOptionKlass.new("ASP .NET", 1),
+    CodeOptionKlass.new("Android App", 2),
+    CodeOptionKlass.new("AngularJS", 3),
+    CodeOptionKlass.new("Beacon App", 4),
+    CodeOptionKlass.new("CakePHP", 5),
+    CodeOptionKlass.new("Codeigniter", 6),
     CodeOptionKlass.new("Content Management", 7),
-    CodeOptionKlass.new("Custom Web Development", 8),
+    CodeOptionKlass.new("Custom Web", 8),
     CodeOptionKlass.new("DevOps", 9),
     CodeOptionKlass.new("DevOps Services", 10),
-    CodeOptionKlass.new("Drupal Development", 11),
-    CodeOptionKlass.new("Enterprise App Development", 12),
-    CodeOptionKlass.new("Firebase Development", 13),
-    CodeOptionKlass.new("Flutter App Development", 14),
+    CodeOptionKlass.new("Drupal", 11),
+    CodeOptionKlass.new("Enterprise App", 12),
+    CodeOptionKlass.new("Flutter App", 14),
     CodeOptionKlass.new("Full Stack Development", 15),
-    CodeOptionKlass.new("HTML5 Development", 16),
-    CodeOptionKlass.new("Hybrid App Development", 17),
-    CodeOptionKlass.new("IoT App Development", 18),
-    CodeOptionKlass.new("Ionic Development", 19),
-    CodeOptionKlass.new("Laravel Development", 20),
-    CodeOptionKlass.new("Magento App Development", 21),
+    CodeOptionKlass.new("HTML5", 16),
+    CodeOptionKlass.new("Hybrid App", 17),
+    CodeOptionKlass.new("IoT App", 18),
+    CodeOptionKlass.new("Ionic", 19),
+    CodeOptionKlass.new("Laravel", 20),
+    CodeOptionKlass.new("Magento App", 21),
     CodeOptionKlass.new("Maintenance and Support", 22),
     CodeOptionKlass.new("Mean Stack Development", 23),
     CodeOptionKlass.new("Microsoft ", 24),
-    CodeOptionKlass.new("Mobile App Development", 25),
-    CodeOptionKlass.new("NodeJS Development", 26),
+    CodeOptionKlass.new("Mobile App", 25),
+    CodeOptionKlass.new("NodeJS", 26),
     CodeOptionKlass.new("PERL", 27),
-    CodeOptionKlass.new("PHP Development", 28),
+    CodeOptionKlass.new("PHP", 28),
     CodeOptionKlass.new("Power BI", 29),
-    CodeOptionKlass.new("Python Development", 30),
+    CodeOptionKlass.new("Python", 30),
     CodeOptionKlass.new("QA", 31),
-    CodeOptionKlass.new("Rails/React Leads", 32),
-    CodeOptionKlass.new("React Native App Development", 33),
-    CodeOptionKlass.new("ReactJS Development", 34),
-    CodeOptionKlass.new("Ruby On Rails Development", 35),
-    CodeOptionKlass.new("Shopify App Development", 36),
-    CodeOptionKlass.new("Swift Development", 37),
-    CodeOptionKlass.new("VueJS Development", 38),
-    CodeOptionKlass.new("Wearable App Development", 39),
-    CodeOptionKlass.new("Web Portal Development", 40),
-    CodeOptionKlass.new("WebRTC Application Development", 41),
-    CodeOptionKlass.new("Xamarin App Development", 42),
-    CodeOptionKlass.new("iOS App Development", 43),
-    CodeOptionKlass.new("iPad App Development", 44),
-    CodeOptionKlass.new("iPhone App Development", 45)
+    CodeOptionKlass.new("React Native App", 33),
+    CodeOptionKlass.new("ReactJS", 34),
+    CodeOptionKlass.new("Ruby On Rails", 35),
+    CodeOptionKlass.new("Shopify App", 36),
+    CodeOptionKlass.new("Swift", 37),
+    CodeOptionKlass.new("VueJS", 38),
+    CodeOptionKlass.new("Wearable App", 39),
+    CodeOptionKlass.new("Web Portal", 40),
+    CodeOptionKlass.new("WebRTC Application", 41),
+    CodeOptionKlass.new("Xamarin App", 42),
+    CodeOptionKlass.new("iOS App", 43),
+    CodeOptionKlass.new("iPad App", 44),
+    CodeOptionKlass.new("iPhone App", 45)
   ]
 
   belongs_to :assignee, class_name: :User, optional: true
@@ -239,11 +237,12 @@ class Lead < ApplicationRecord
   has_many :lead_timelines, dependent: :destroy
 
   validates :first_name, :last_name, presence: true
-  before_save :update_fields
+  before_validation :assign_default_values
 
-  def update_fields
+  def assign_default_values
     self.name = "#{self.first_name} #{self.last_name}"
     self.updated_by_id = self.created_by_id if self.updated_by_id.blank? && self.created_by_id.present?
+    self.status_code = Lead::STATUS_CODE_OPTIONS.group_by(&:name)["New"].first.id if self.status_code.blank?
   end
 
   def budget_status_code_name

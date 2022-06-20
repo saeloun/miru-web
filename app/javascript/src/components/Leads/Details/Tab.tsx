@@ -6,7 +6,7 @@ import Timeline from "./../Timeline";
 import Summary from "./Summary";
 import LineItemTable from "../../../components/Leads/QuoteDetails/LineItemTable";
 
-const Tab = ({ leadDetails, forItem, quoteId }) => {
+const Tab = ({ leadDetails, setLeadDetails, forItem, quoteId }) => {
   // const defaultClassName = "inline-flex p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 group";
   // const activeClassName = "inline-flex p-4 text-blue-600 rounded-t-lg border-b-2 border-blue-600 active dark:text-blue-500 dark:border-blue-500 group";
 
@@ -52,7 +52,7 @@ const Tab = ({ leadDetails, forItem, quoteId }) => {
         lineItemsTab: defaultClassName,
         quotesTab: defaultClassName
       });
-      setRenderTabData(<Summary leadDetails={leadDetails} />);
+      setRenderTabData(<Summary leadDetails={leadDetails} setLeadDetails={setLeadDetails} />);
     } else if (activeTab === "timeline"){
       setTabClassName({
         summaryTab: defaultClassName,
@@ -124,7 +124,7 @@ const Tab = ({ leadDetails, forItem, quoteId }) => {
             </li>
           </ul>
         </div>
-        {renderTabData ? renderTabData : <Summary leadDetails={leadDetails} />}
+        {renderTabData ? renderTabData : <Summary leadDetails={leadDetails} setLeadDetails={setLeadDetails} />}
       </div>
     </>
   );

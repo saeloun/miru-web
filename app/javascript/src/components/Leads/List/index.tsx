@@ -9,7 +9,6 @@ import Table from "common/Table";
 import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapLeadList } from "../../../mapper/lead.mapper";
-import getStatusCssClass from "../../../utils/getStatusTag";
 import DeleteLead from "../Modals/DeleteLead";
 import NewLead from "../Modals/NewLead";
 
@@ -17,16 +16,18 @@ const getTableData = (leads) => {
   if (leads) {
     return leads.map((lead) =>
       ({
-        col1: <div className="text-base text-miru-dark-purple-1000">{lead.name}</div>,
-        col5: <div className="text-base text-miru-dark-purple-1000 text-center">
-          <span className={lead.quality_code_name ? `${getStatusCssClass(lead.quality_code_name)} uppercase` : ""}>
-            {lead.quality_code_name}
-          </span>
+        col1: <div className="text-xs tracking-widest">{lead.name}</div>,
+        col2: <div className="text-xs tracking-widest text-center">
+          {lead.assignee_name ? lead.assignee_name : "UNASSIGNED"}
         </div>,
-        col7: <div className="text-base text-miru-dark-purple-1000 text-center">
-          <span className={lead.status_code_name ? `${getStatusCssClass(lead.status_code_name)} uppercase` : ""}>
-            {lead.status_code_name}
-          </span>
+        col3: <div className="text-xs tracking-widest text-center">
+          {lead.reporter_name ? lead.reporter_name : "UNREPORTED"}
+        </div>,
+        col4: <div className="text-xs tracking-widest text-center">
+          {lead.quality_code_name}
+        </div>,
+        col5: <div className="text-xs tracking-widest text-center">
+          {lead.status_code_name}
         </div>,
         rowId: lead.id
       })
@@ -69,13 +70,23 @@ const Leads = ({ isAdminUser }) => {
       cssClass: ""
     },
     {
+      Header: "Assignee",
+      accessor: "col2",
+      cssClass: "text-center"
+    },
+    {
+      Header: "Reporter",
+      accessor: "col3",
+      cssClass: "text-center"
+    },
+    {
       Header: "Quality",
-      accessor: "col5",
+      accessor: "col4",
       cssClass: "text-center"
     },
     {
       Header: "Status",
-      accessor: "col7",
+      accessor: "col5",
       cssClass: "text-center"
     }
   ];
@@ -97,7 +108,7 @@ const Leads = ({ isAdminUser }) => {
                   hasRowIcons={isAdminUser}
                   tableHeader={tableHeader}
                   tableRowArray={tableData}
-                  rowOnClick={isAdminUser ? handleRowClick : () => { }}// eslint-disable-line
+                  rowOnDoubleClick={isAdminUser ? handleRowClick : () => { }}// eslint-disable-line
                 />}
               </div>
             </div>

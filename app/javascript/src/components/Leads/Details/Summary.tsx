@@ -3,6 +3,7 @@ import leadItemsApi from "apis/lead-items";
 import leads from "apis/leads";
 import { Formik, Form, Field, FieldArray } from "formik";
 import * as Yup from "yup";
+import { unmapLeadDetails } from "../../../mapper/lead.mapper";
 
 const newLeadSchema = Yup.object().shape({
   first_name: Yup.string().required("First Name cannot be blank"),
@@ -47,7 +48,7 @@ const getInitialvalues = (lead) => ({
   linkedinid: lead.linkedinid
 });
 
-const Summary = ({ leadDetails }) => {
+const Summary = ({ leadDetails, setLeadDetails }) => {
   const [apiError, setApiError] = useState<string>("");
 
   const [budgetStatusCodeList, setBudgetStatusCodeList] = useState<any>(null);
@@ -132,8 +133,8 @@ const Summary = ({ leadDetails }) => {
         "emails": values.emails || [],
         "tech_stack_ids": techStacks.map((e) => e.id)
       }
-    }).then(() => {
-      document.location.reload();
+    }).then((res) => {
+      setLeadDetails(unmapLeadDetails(res).leadDetails);
     }).catch((e) => {
       setApiError(e.message);
     });
