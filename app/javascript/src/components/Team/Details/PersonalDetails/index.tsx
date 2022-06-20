@@ -1,32 +1,11 @@
-import React, { Fragment } from "react";
-import { useEffect } from "react";
-import { Formik, Form, Field, FormikProps } from "formik";
+import React, { useEffect, useState } from "react";
 import { useTeamDetails } from "context/TeamDetailsContext";
-import StaticPage from "./StaticPage";
 import FormPage from "./FormPage";
-import * as Yup from "yup";
-
-const TeamPersonalDetailSchema = Yup.object().shape({
-  firstName: Yup.string().required("First Name cannot be blank"),
-  lastName: Yup.string().required("Last Name cannot be blank"),
-  dob: Yup.date()
-});
-
-
-interface FormValues {
-  firstName: string;
-  lastName: string;
-  dob: Date;
-}
-
-const getInitialValues = () => ({
-  firstName: "",
-  lastName: "",
-  dob: new Date()
-});
+import StaticPage from "./StaticPage";
 
 const PersonalDetails = () => {
   const { updateDetails } = useTeamDetails();
+  const [isFormVisible, setFormVisible] = useState(false);
 
   useEffect(() => {
     updateDetails("personal", {
@@ -37,28 +16,7 @@ const PersonalDetails = () => {
     });
   }, []);
 
-  return (
-    <Fragment>
-      <Formik
-        initialValues={getInitialValues()}
-        validationSchema={TeamPersonalDetailSchema}
-        onSubmit={(values) => { console.log("values ===> ", values) }}
-      >
-        {(props: FormikProps<FormValues>) => {
-          return (
-            <Form>
-              <div className="px-10 py-4 bg-miru-han-purple-1000 flex items-center justify-between">
-                <h1 className="text-white font-bold text-2xl">Personal Details</h1>
-                <button type="submit">Update</button>
-              </div>
-              <FormPage props={props} />
-            </Form>
-          )
-        }
-        }
-      </Formik>
+  return isFormVisible ? <FormPage setFormVisible={setFormVisible} /> : <StaticPage setFormVisible={setFormVisible} />;
 
-    </Fragment>
-  );
 };
 export default PersonalDetails;
