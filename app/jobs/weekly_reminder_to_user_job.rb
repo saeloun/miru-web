@@ -2,6 +2,8 @@
 
 class WeeklyReminderToUserJob < ApplicationJob
   def perform(*args)
-    WeeklyReminderForMissedEntriesService.new.process
+    if ENV["RAILS_LOG_TO_STDOUT"].present?
+      WeeklyReminderForMissedEntriesService.new.process
+    end
   end
 end
