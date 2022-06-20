@@ -7,7 +7,7 @@ RSpec.describe SendWeeklyReminderToUserMailer, type: :mailer do
     let(:user) { create(:user) }
     let(:start_date) { 1.week.ago.beginning_of_week }
     let(:end_date) { 1.week.ago.end_of_week }
-    let(:subject) { "Missed time entries report for the week ending on #{end_date}" }
+    let(:subject) { "Reminder to Update your Timesheet in Miru" }
 
     it "add mail to default queue" do
       mailer = described_class.with(
