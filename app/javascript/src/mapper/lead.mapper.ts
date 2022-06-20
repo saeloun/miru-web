@@ -32,8 +32,8 @@ const getList = (input) => input.lead_details.map((lead) => ({
   first_name: lead.first_name,
   last_name: lead.last_name,
   source_code: lead.source_code,
-  tech_stack_ids: lead.tech_stack_ids,
-  emails: lead.emails,
+  tech_stack_ids: lead.tech_stack_ids || [],
+  emails: lead.emails || [],
   need_name: lead.need_name,
   preferred_contact_method_code_name: lead.preferred_contact_method_code_name,
   initial_communication_name: lead.initial_communication_name,
@@ -46,7 +46,8 @@ const getList = (input) => input.lead_details.map((lead) => ({
   country: lead.country,
   skypeid: lead.skypeid,
   linkedinid: lead.linkedinid,
-  company_id: lead.company_id
+  company_id: lead.company_id,
+  tech_stack_names: lead.tech_stack_names
 }));
 
 const unmapLeadList = (input) => {
@@ -108,8 +109,8 @@ const unmapLeadDetails = (input) => {
       first_name: data.lead_details.first_name,
       last_name: data.lead_details.last_name,
       source_code: data.lead_details.source_code,
-      tech_stack_ids: data.lead_details.tech_stack_ids,
-      emails: data.lead_details.emails,
+      tech_stack_ids: data.lead_details.tech_stack_ids || [],
+      emails: data.lead_details.emails || [],
       need_name: data.lead_details.need_name,
       preferred_contact_method_code_name: data.lead_details.preferred_contact_method_code_name,
       initial_communication_name: data.lead_details.initial_communication_name,
@@ -122,7 +123,8 @@ const unmapLeadDetails = (input) => {
       country: data.lead_details.country,
       skypeid: data.lead_details.skypeid,
       linkedinid: data.lead_details.linkedinid,
-      company_id: data.lead_details.company_id
+      company_id: data.lead_details.company_id,
+      tech_stack_names: data.lead_details.tech_stack_names
     }
   };
 };

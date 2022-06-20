@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import leadItemsApi from "apis/lead-items";
 import leads from "apis/leads";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FieldArray } from "formik";
 import * as Yup from "yup";
 
 const newLeadSchema = Yup.object().shape({
@@ -11,6 +11,7 @@ const newLeadSchema = Yup.object().shape({
   email: Yup.string().nullable().email("Invalid email ID"),
   mobilephone: Yup.number().nullable().typeError("Invalid mobilephone"),
   telephone: Yup.number().nullable().typeError("Invalid telephone"),
+  emails: Yup.array().min(0).of(Yup.string().nullable().email("Invalid email ID"))
 });
 
 const getInitialvalues = (lead) => ({
@@ -30,8 +31,8 @@ const getInitialvalues = (lead) => ({
   first_name: lead.first_name,
   last_name: lead.last_name,
   source_code: lead.source_code,
-  tech_stack_ids: lead.tech_stack_ids,
-  emails: lead.emails,
+  tech_stack_ids: lead.tech_stack_ids || [],
+  emails: lead.emails || [],
   need_name: lead.need_name,
   preferred_contact_method_code_name: lead.preferred_contact_method_code_name,
   initial_communication_name: lead.initial_communication_name,
@@ -56,6 +57,7 @@ const Summary = ({ leadDetails }) => {
   const [initialCommunicationList, setInitialCommunicationList] = useState<any>(null);
   const [sourceCodeList, setSourceCodeList] = useState<any>(null);
   const [countryList, setCountryList] = useState<any>(null);
+  const [techStackList, setTechStackList] = useState<any>(null);
 
   const [budgetStatusCode, setBudgetStatusCode] = useState<any>(null);
   const [industryCode, setIndustryCode] = useState<any>(null);
@@ -64,6 +66,7 @@ const Summary = ({ leadDetails }) => {
   const [initialCommunication, setInitialCommunication] = useState<any>(null);
   const [sourceCode, setSourceCode] = useState<any>(null);
   const [country, setCountry] = useState<any>(null);
+  const [techStacks, setTechStacks] = useState<any>([{}]);
 
   useEffect(() => {
     const getLeadItems = async () => {
@@ -76,6 +79,7 @@ const Summary = ({ leadDetails }) => {
           setInitialCommunicationList(data.data.initial_communications);
           setSourceCodeList(data.data.source_codes);
           setCountryList(data.data.countries);
+          setTechStackList(data.data.tech_stacks);
         }).catch(() => {
           setBudgetStatusCodeList({});
           setIndustryCodeList({});
@@ -84,11 +88,23 @@ const Summary = ({ leadDetails }) => {
           setInitialCommunicationList({});
           setSourceCodeList({});
           setCountryList({});
+          setTechStackList({});
         });
     };
 
     getLeadItems();
   }, []);
+
+  useEffect(() => {
+    if (leadDetails && leadDetails.tech_stack_ids && leadDetails.tech_stack_ids.length > 0){
+      leadDetails.tech_stack_ids.map((tech_stack_id, index) => {
+        const newArr = [...techStacks];
+        newArr[index] = { id: parseInt(tech_stack_id) };
+
+        setTechStacks(newArr);
+      });
+    }
+  }, [leadDetails]);
 
   const handleSubmit = async values => {
     await leads.update(leadDetails.id, {
@@ -112,13 +128,35 @@ const Summary = ({ leadDetails }) => {
         "address": values.address,
         "country": country || values.country,
         "skypeid": values.skypeid,
-        "linkedinid": values.linkedinid
+        "linkedinid": values.linkedinid,
+        "emails": values.emails || [],
+        "tech_stack_ids": techStacks.map((e) => e.id)
       }
     }).then(() => {
       document.location.reload();
     }).catch((e) => {
       setApiError(e.message);
     });
+  };
+
+  const isTechStackFound = techStackVal => techStacks.some(element => {
+    if (element.id === parseInt(techStackVal)) {
+      return true;
+    }
+
+    return false;
+  });
+
+  const updateTechStacks = index => e => {
+    if (isTechStackFound(e.target.value)) {
+      alert("Already selected.")
+      e.target.value = ""
+    } else {
+      const newArr = [...techStacks];
+      newArr[index] = { id: parseInt(e.target.value) };
+
+      setTechStacks(newArr);
+    }
   };
 
   return (
@@ -130,7 +168,7 @@ const Summary = ({ leadDetails }) => {
         enableReinitialize={true}
         onSubmit={handleSubmit}
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, values }) => (
           <Form>
             <div className="bg-white dark:bg-gray-800">
               <div className="container mx-auto bg-white dark:bg-gray-800 rounded">
@@ -225,6 +263,44 @@ const Summary = ({ leadDetails }) => {
                           }
                         </div>
                       </div>
+                      <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
+                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Other Emails</label>
+                        <FieldArray name="emails">
+                          {({ remove, push }) => (
+                            <div>
+                              {
+                                values.emails && values.emails.length > 0 &&
+                                  values.emails.map((email, index) => (
+                                    <div className="grid grid-flow-row-dense grid-cols-12 gap-2" key={index}>
+                                      <div className="col-span-11">
+                                        <Field
+                                          className="w-full border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                                          name={`emails.${index}`}
+                                          placeholder="Email"
+                                        />
+                                        <div className="flex justify-between items-center pt-1 text-red-700">
+                                          {errors.emails && touched.emails &&
+                                          <p className="text-xs">{errors.emails}</p>
+                                          }
+                                        </div>
+                                      </div>
+                                      <div>
+                                        <svg onClick={() => remove(index)} className="mt-2 fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                                      </div>
+                                    </div>
+                                  ))
+                              }
+                              <button
+                                type="button"
+                                className="mt-4 w-2/6 header__button text-sm"
+                                onClick={() => push('')}
+                              >
+                                Add Email
+                              </button>
+                            </div>
+                          )}
+                        </FieldArray>
+                      </div>
                     </div>
                     <div className="mx-auto xl:mx-0">
                       <div className="xl:w-full border-b border-gray-300 dark:border-gray-700 py-5">
@@ -311,6 +387,42 @@ const Summary = ({ leadDetails }) => {
                         </div>
                       </div>
 
+                      <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
+                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Tech Stacks</label>
+                        <FieldArray name="tech_stack_ids">
+                          {({ remove, push }) => (
+                            <div>
+                              {
+                                values.tech_stack_ids && values.tech_stack_ids.length > 0 &&
+                                  values.tech_stack_ids.map((tech_stack_id, index) => (
+                                    <div className="grid grid-flow-row-dense grid-cols-12 gap-2" key={index}>
+                                      <div className="col-span-11">
+                                        <select
+                                          defaultValue={tech_stack_id}
+                                          className="w-full mt-1 border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                                          name={`tech_stack_ids.${index}`} onChange={updateTechStacks(index)} >
+                                          <option value=''>Select Tech Stack</option>
+                                          {techStackList &&
+                                            techStackList.map(e => <option value={e.id} key={e.id} selected={e.id === tech_stack_id}>{e.name}</option>)}
+                                        </select>
+                                      </div>
+                                      <div>
+                                        <svg onClick={() => remove(index)} className="mt-2 fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                                      </div>
+                                    </div>
+                                  ))
+                              }
+                              <button
+                                type="button"
+                                className="mt-4 w-2/6 header__button text-sm"
+                                onClick={() => push('')}
+                              >
+                                Add Stack
+                              </button>
+                            </div>
+                          )}
+                        </FieldArray>
+                      </div>
                     </div>
                   </div>
                 </div>

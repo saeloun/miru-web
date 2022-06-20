@@ -179,6 +179,55 @@ class Lead < ApplicationRecord
     CodeOptionKlass.new("Highest", 4)
   ]
 
+  TECH_STACK_OPTIONS = [
+    CodeOptionKlass.new("API Integration", 0),
+    CodeOptionKlass.new("ASP .NET Development", 1),
+    CodeOptionKlass.new("Android App Development", 2),
+    CodeOptionKlass.new("AngularJS Development", 3),
+    CodeOptionKlass.new("Beacon App Development", 4),
+    CodeOptionKlass.new("CakePHP Development", 5),
+    CodeOptionKlass.new("Codeigniter Development", 6),
+    CodeOptionKlass.new("Content Management", 7),
+    CodeOptionKlass.new("Custom Web Development", 8),
+    CodeOptionKlass.new("DevOps", 9),
+    CodeOptionKlass.new("DevOps Services", 10),
+    CodeOptionKlass.new("Drupal Development", 11),
+    CodeOptionKlass.new("Enterprise App Development", 12),
+    CodeOptionKlass.new("Firebase Development", 13),
+    CodeOptionKlass.new("Flutter App Development", 14),
+    CodeOptionKlass.new("Full Stack Development", 15),
+    CodeOptionKlass.new("HTML5 Development", 16),
+    CodeOptionKlass.new("Hybrid App Development", 17),
+    CodeOptionKlass.new("IoT App Development", 18),
+    CodeOptionKlass.new("Ionic Development", 19),
+    CodeOptionKlass.new("Laravel Development", 20),
+    CodeOptionKlass.new("Magento App Development", 21),
+    CodeOptionKlass.new("Maintenance and Support", 22),
+    CodeOptionKlass.new("Mean Stack Development", 23),
+    CodeOptionKlass.new("Microsoft ", 24),
+    CodeOptionKlass.new("Mobile App Development", 25),
+    CodeOptionKlass.new("NodeJS Development", 26),
+    CodeOptionKlass.new("PERL", 27),
+    CodeOptionKlass.new("PHP Development", 28),
+    CodeOptionKlass.new("Power BI", 29),
+    CodeOptionKlass.new("Python Development", 30),
+    CodeOptionKlass.new("QA", 31),
+    CodeOptionKlass.new("Rails/React Leads", 32),
+    CodeOptionKlass.new("React Native App Development", 33),
+    CodeOptionKlass.new("ReactJS Development", 34),
+    CodeOptionKlass.new("Ruby On Rails Development", 35),
+    CodeOptionKlass.new("Shopify App Development", 36),
+    CodeOptionKlass.new("Swift Development", 37),
+    CodeOptionKlass.new("VueJS Development", 38),
+    CodeOptionKlass.new("Wearable App Development", 39),
+    CodeOptionKlass.new("Web Portal Development", 40),
+    CodeOptionKlass.new("WebRTC Application Development", 41),
+    CodeOptionKlass.new("Xamarin App Development", 42),
+    CodeOptionKlass.new("iOS App Development", 43),
+    CodeOptionKlass.new("iPad App Development", 44),
+    CodeOptionKlass.new("iPhone App Development", 45)
+  ]
+
   belongs_to :assignee, class_name: :User, optional: true
   belongs_to :reporter, class_name: :User, optional: true
   belongs_to :created_by, class_name: :User, optional: true
@@ -267,6 +316,13 @@ class Lead < ApplicationRecord
 
     code_name_hash = Lead::PRIORITY_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
     code_name_hash[priority_code]
+  end
+
+  def tech_stack_names
+    return "" unless tech_stack_ids.present?
+
+    code_name_hash = Lead::PRIORITY_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+    (code_name_hash.select { |k, v| tech_stack_ids.include?(k) } || {}).values.flatten.compact.uniq
   end
 
   def lead_detail

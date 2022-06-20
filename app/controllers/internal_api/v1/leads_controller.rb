@@ -25,7 +25,8 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
         preferred_contact_method_code_name: lead.preferred_contact_method_code_name,
         initial_communication_name: lead.initial_communication_name,
         source_code_name: lead.source_code_name,
-        priority_code_name: lead.priority_code_name
+        priority_code_name: lead.priority_code_name,
+        tech_stack_names: lead.tech_stack_names
       })
 }
     render json: { lead_details: }, status: :ok
@@ -55,6 +56,8 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
 
     priority_codes = Lead::PRIORITY_CODE_OPTIONS
 
+    tech_stacks = Lead::TECH_STACK_OPTIONS
+
     countries = ISO3166::Country.pluck(:alpha2, :iso_short_name)
 
     render json: {
@@ -62,7 +65,7 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
       status_codes:, industry_codes:, line_item_kind_names:,
       needs:, preferred_contact_method_code_names:,
       initial_communications:, source_codes:, priority_codes:,
-      countries:
+      tech_stacks:, countries:
     },	status: :ok
   end
 
@@ -107,7 +110,8 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
         preferred_contact_method_code_name: lead.preferred_contact_method_code_name,
         initial_communication_name: lead.initial_communication_name,
         source_code_name: lead.source_code_name,
-        priority_code_name: lead.priority_code_name
+        priority_code_name: lead.priority_code_name,
+        tech_stack_names: lead.tech_stack_names
       })
     render json: { lead_details: }, status: :ok
   end
