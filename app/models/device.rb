@@ -25,17 +25,17 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Device < ApplicationRecord
-  # associations
+  # Associations
   belongs_to :issued_by, class_name: "Company", foreign_key: "company_id"
   belongs_to :issued_to, class_name: "User", foreign_key: "user_id"
 
-  # device type values
+  # Device type values
   enum device_type: { laptop: "laptop", mobile: "mobile" }
 
-  # specifications values
+  # Specifications values
   store_accessor :specifications, :processor, :ram, :graphics
 
-  # validations
+  # Validations
   after_initialize :set_default_specifications, if: :new_record?
   validates :model, length: { maximum: 100 }
 
