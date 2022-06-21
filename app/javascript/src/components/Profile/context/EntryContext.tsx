@@ -9,6 +9,6 @@ const EntryContext = createContext(({
   setUserState: (key, value) => { }  //eslint-disable-line
 }));
 
-export const useEntry = () => useContext(EntryContext);
+export const useProfile = () => useContext(EntryContext);
 
 export default EntryContext;
