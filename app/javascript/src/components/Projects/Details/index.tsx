@@ -8,6 +8,7 @@ import projectAPI from "apis/projects";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
+
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
 import {
@@ -19,6 +20,7 @@ import {
   Trash
 } from "phosphor-react";
 import EditMembersList from "./EditMembersList";
+import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapper } from "../../../mapper/project.mapper";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
@@ -154,7 +156,7 @@ const ProjectDetails = () => {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="my-6">
         <div className="flex min-w-0 items-center justify-between">
           <div className="flex items-center">

@@ -85,9 +85,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_20_122048) do
     t.index ["user_id"], name: "index_company_users_on_user_id"
   end
 
-  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
-  end
-
   create_table "employment_details", force: :cascade do |t|
     t.string "employee_id"
     t.string "designation"
