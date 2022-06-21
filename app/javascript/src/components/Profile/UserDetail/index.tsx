@@ -7,7 +7,7 @@ import { Divider } from "common/Divider";
 import Loader from "common/Loader/index";
 import * as Yup from "yup";
 
-import { useEntry } from "../context/EntryContext";
+import { useProfile } from "../context/EntryContext";
 import Header from "../Header";
 
 const editButton = require("../../../../../assets/images/edit_image_button.svg");
@@ -49,7 +49,7 @@ const UserDetails = () => {
     confirmPasswordErr: ""
   };
 
-  const { setUserState } = useEntry();
+  const { setUserState } = useProfile();
   const [profileImage, setProfileImage] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [firstName, setFirstName] = useState("");
@@ -108,6 +108,7 @@ const UserDetails = () => {
       });
       setisLoading(false);
     }).catch(function (err) {
+      setisLoading(false);
       const errObj = initialErrState;
       err.inner.map((item) => {
         errObj[item.path + "Err"] = item.message;
@@ -148,16 +149,24 @@ const UserDetails = () => {
   const getData = async () => {
     setisLoading(true);
     const data = await profileApi.index();
-    setFirstName(data.data.user.first_name);
-    setLastName(data.data.user.last_name);
-    setProfileImage(data.data.user.avatar_url);
-    setEmail(data.data.user.email);
-    setUserState("profileSettings", {
-      firstName: data.data.user.first_name,
-      lastName: data.data.user.last_name,
-      email: data.data.user.email
-    });
-    setisLoading(false);
+    if (data.status && data.status == 200) {
+      setFirstName(data.data.user.first_name);
+      setLastName(data.data.user.last_name);
+      setProfileImage(data.data.user.avatar_url);
+      setEmail(data.data.user.email);
+      setUserState("profileSettings", {
+        firstName: data.data.user.first_name,
+        lastName: data.data.user.last_name,
+        email: data.data.user.email
+      });
+      setisLoading(false);
+    } else {
+      setFirstName("");
+      setLastName("");
+      setProfileImage("");
+      setEmail("");
+      setisLoading(false);
+    }
   };
 
   useEffect(() => {
