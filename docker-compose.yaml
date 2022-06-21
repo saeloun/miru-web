@@ -1,0 +1,58 @@
+version: '2'
+
+services:
+  postgres:
+    image: 'postgres:14.2-alpine'
+    volumes:
+      - 'postgres:/var/lib/postgresql/data'
+    ports:
+      - "5432:5432"
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+
+
+  redis:
+    hostname: redis
+    image: 'redis:6.2-alpine'
+    ports:
+      - "6379:6379"
+    volumes:
+      - 'redis:/data'
+    command: redis-server
+
+  website:
+    depends_on:
+      - 'postgres'
+      - 'redis'
+    build: .
+    links:
+      - redis
+    ports:
+      - "80:3000"
+    volumes:
+      - '.:/app'
+
+  sidekiq:
+    depends_on:
+      - 'postgres'
+      - 'redis'
+    build: .
+    volumes:
+      - '.:/app'
+    command: bundle exec sidekiq -C config/sidekiq.yml
+  
+#  cable:
+#    depends_on:
+#      - 'redis'
+#    build: .
+#    command: puma -p 28080 cable/config.ru
+#    ports:
+#      - '28080:28080'
+#    volumes:
+#      - '.:/app'
+  
+
+volumes:
+  redis:
+  postgres:
+
