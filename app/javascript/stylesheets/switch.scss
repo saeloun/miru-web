@@ -58,11 +58,15 @@
 	&:checked {
 		right: 0;
 		& + .toggle-label {
-			background-color: #4c51bf;
+			background-color: #5B34EA !important;
 		}
 	}
 }
 
 .switch-checkbox{
 	margin-right: 0px !important;
+}
+
+.chip {
+	background: #5B34EA !important;
 }

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leads from "apis/leads";
+import Pagination from "common/Pagination";
 
 import Table from "common/Table";
 
@@ -40,7 +41,16 @@ const Leads = ({ isAdminUser }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [newLead, setnewLead] = useState<boolean>(false);
   const [leadToDelete, setDelete] = useState({});
-  const [leadData, setLeadData] = useState<any>();
+  const [leadData, setLeadData] = useState<any>([{}]);
+
+  const [pagy, setPagy] = React.useState<any>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [params, setParams] = React.useState<any>({
+    leads_per_page: searchParams.get("leads_per_page") || 10,
+    page: searchParams.get("page") || 1
+  });
+  const queryParams = () => new URLSearchParams(params).toString();
+
   const navigate = useNavigate();
 
   const handleDeleteClick = (id) => {
@@ -53,14 +63,24 @@ const Leads = ({ isAdminUser }) => {
     navigate(`${id}`);
   };
 
-  useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
-    leads.get("")
+  const fetchLeads = () => {
+    leads.get(queryParams())
       .then((res) => {
         const sanitized = unmapLeadList(res);
         setLeadData(sanitized.leadList);
+        setPagy(res.data.pagy);
       });
+  };
+
+  useEffect(() => {
+    fetchLeads();
+    setSearchParams(params);
+  }, [params.leads_per_page, params.page]);
+
+  useEffect(() => {
+    setAuthHeaders();
+    registerIntercepts();
+    fetchLeads();
   }, []);
 
   const tableHeader = [
@@ -110,6 +130,9 @@ const Leads = ({ isAdminUser }) => {
                   tableRowArray={tableData}
                   rowOnDoubleClick={isAdminUser ? handleRowClick : () => { }}// eslint-disable-line
                 />}
+                {leadData && leadData.length && (
+                  <Pagination pagy={pagy} params={params} setParams={setParams} forPage="leads" />
+                )}
               </div>
             </div>
           </div>

@@ -100,7 +100,7 @@ const Invoices: React.FC = () => {
         )}
 
         {invoices.length && (
-          <Pagination pagy={pagy} params={params} setParams={setParams} />
+          <Pagination pagy={pagy} params={params} setParams={setParams} forPage="invoices" />
         )}
         {showDeleteDialog && (
           <DeleteInvoice

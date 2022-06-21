@@ -2,7 +2,7 @@ import * as React from "react";
 import cn from "classnames";
 import { CaretCircleLeft, CaretCircleRight } from "phosphor-react";
 
-const Pagination = ({ pagy, params, setParams }) => (
+const Pagination = ({ pagy, params, setParams, forPage }) => (
   <div className="w-full py-2 mt-5">
     <div className="grid w-full grid-cols-6 gap-4 bg-grey-400">
       <div className="col-span-3 col-start-2">
@@ -48,7 +48,7 @@ const Pagination = ({ pagy, params, setParams }) => (
         )}
       </div>
 
-      <div className="flex items-center justify-end col-span-2">
+      {forPage !== "leads" && <div className="flex items-center justify-end col-span-2">
         <select
           onChange={(e) =>
             setParams({ page: 1, invoices_per_page: Number(e.target.value) })
@@ -65,6 +65,7 @@ const Pagination = ({ pagy, params, setParams }) => (
 
         <span className="p-2 text-xs">invoices per page</span>
       </div>
+      }
     </div>
   </div>
 );

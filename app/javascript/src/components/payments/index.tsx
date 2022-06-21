@@ -106,6 +106,7 @@ const Payments = () => {
         }}
         params=""
         setParams=""
+        forPage="payments"
       />
     </div>
   );

@@ -2,7 +2,8 @@ import axios from "axios";
 
 const path = "/leads";
 
-const get = async (queryParam) => axios.get(`${path}${queryParam}`);
+const get = async (query = "") =>
+  axios.get(query ? `${path}?${query}` : `${path}`);
 
 const create = async (payload) => axios.post(`${path}`, payload);
 
