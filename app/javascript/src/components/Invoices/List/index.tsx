@@ -38,6 +38,7 @@ const Invoices: React.FC = () => {
   const [showBulkDeleteDialaog, setShowBulkDeleteDialog] =
     React.useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = React.useState(null);
+  const [searchText, setSearchText] = React.useState<string>("");
 
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
@@ -79,50 +80,52 @@ const Invoices: React.FC = () => {
 
   return (
     <>
-      <ToastContainer autoClose={TOASTER_DURATION} />
-      {status === InvoicesStatus.SUCCESS && (
-        <React.Fragment>
-          <Header
-            setFilterVisibilty={setFilterVisibilty}
-            clearCheckboxes={() =>
-              deselectInvoices(invoices.map((invoice) => invoice.id))
-            }
-            selectedInvoiceCount={selectedInvoiceCount}
-            isInvoiceSelected={isInvoiceSelected}
-            setShowBulkDeleteDialog={setShowBulkDeleteDialog}
-          />
+    <ToastContainer autoClose={TOASTER_DURATION} />
+    {status === InvoicesStatus.SUCCESS && (
+      <React.Fragment>
+        <Header
+          searchText={searchText}
+          setSearchText={setSearchText}
+          setFilterVisibilty={setFilterVisibilty}
+          clearCheckboxes={() =>
+            deselectInvoices(invoices.map((invoice) => invoice.id))
+          }
+          selectedInvoiceCount={selectedInvoiceCount}
+          isInvoiceSelected={isInvoiceSelected}
+          setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+        />
 
-          <Container
-            summary={summary}
-            invoices={invoices}
-            selectedInvoices={selectedInvoices}
-            selectInvoices={selectInvoices}
-            deselectInvoices={deselectInvoices}
+        <Container
+          summary={summary}
+          invoices={invoices}
+          selectedInvoices={selectedInvoices}
+          selectInvoices={selectInvoices}
+          deselectInvoices={deselectInvoices}
+          setShowDeleteDialog={setShowDeleteDialog}
+          setInvoiceToDelete={setInvoiceToDelete}
+        />
+
+        {isFilterVisible && (
+          <FilterSideBar setFilterVisibilty={setFilterVisibilty} />
+        )}
+
+        {invoices.length && (
+          <Pagination pagy={pagy} params={params} setParams={setParams} />
+        )}
+        {showDeleteDialog && (
+          <DeleteInvoice
+            invoice={invoiceToDelete}
             setShowDeleteDialog={setShowDeleteDialog}
-            setInvoiceToDelete={setInvoiceToDelete}
+            fetchInvoices={fetchInvoices}
           />
-
-          {isFilterVisible && (
-            <FilterSideBar setFilterVisibilty={setFilterVisibilty} />
-          )}
-
-          {invoices.length && (
-            <Pagination pagy={pagy} params={params} setParams={setParams} />
-          )}
-          {showDeleteDialog && (
-            <DeleteInvoice
-              invoice={invoiceToDelete}
-              setShowDeleteDialog={setShowDeleteDialog}
-              fetchInvoices={fetchInvoices}
-            />
-          )}
-          {showBulkDeleteDialaog && (
-            <BulkDeleteInvoices
-              invoices_ids={selectedInvoices}
-              setShowBulkDeleteDialog={setShowBulkDeleteDialog}
-              fetchInvoices={fetchInvoices}
-            />
-          )}
+        )}
+        {showBulkDeleteDialaog && (
+          <BulkDeleteInvoices
+            invoices_ids={selectedInvoices}
+            setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+            fetchInvoices={fetchInvoices}
+          />
+        )}
         </React.Fragment>
       )}
     </>

@@ -15,7 +15,9 @@ const Header = ({
   isInvoiceSelected,
   selectedInvoiceCount,
   clearCheckboxes,
-  setShowBulkDeleteDialog
+  setShowBulkDeleteDialog,
+  searchText,
+  setSearchText
 }) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
     <h2 className="header__title">Invoices</h2>
@@ -27,6 +29,8 @@ const Header = ({
               type="search"
               className="header__searchInput"
               placeholder="Search"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
             />
 
             <button className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
