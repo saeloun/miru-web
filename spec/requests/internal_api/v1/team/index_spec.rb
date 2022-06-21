@@ -31,14 +31,14 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
 
     it "checks if correct team members data is returned" do
       actual_members_data = json_response["team"].map do |member|
-                              member.slice("name", "email", "role", "status")
+                              member.slice("id", "name", "email", "role", "status")
                             end
       expected_members_data =
         [{
-          "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
+          "id" => user.id, "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
         },
          {
-           "name" => user2.full_name, "email" => user2.email, "role" => "employee", "status" => I18n.t("team.invitation")
+           "id" => user2.id, "name" => user2.full_name, "email" => user2.email, "role" => "employee", "status" => I18n.t("team.invitation")
          }]
       expect(actual_members_data).to eq(expected_members_data)
     end
