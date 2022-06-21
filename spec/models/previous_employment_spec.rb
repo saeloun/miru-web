@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe PreviousEmployment, type: :model do
-  subject(:previous_employment) { build(:previous_employment) }
+  subject { build(:previous_employment) }
 
   describe "Validations" do
     describe "Associations" do
