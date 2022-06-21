@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import leadItemsApi from "apis/lead-items";
 import leads from "apis/leads";
 import { Formik, Form, Field, FieldArray } from "formik";
+import { Multiselect } from 'multiselect-react-dropdown';
 import * as Yup from "yup";
 import { unmapLeadDetails } from "../../../mapper/lead.mapper";
 
@@ -59,6 +60,7 @@ const Summary = ({ leadDetails, setLeadDetails }) => {
   const [sourceCodeList, setSourceCodeList] = useState<any>(null);
   const [countryList, setCountryList] = useState<any>(null);
   const [techStackList, setTechStackList] = useState<any>(null);
+  const [selectedTechStacks, setSelectedTechStacks] = useState<any>(null);
 
   const [budgetStatusCode, setBudgetStatusCode] = useState<any>(null);
   const [industryCode, setIndustryCode] = useState<any>(null);
@@ -67,7 +69,7 @@ const Summary = ({ leadDetails, setLeadDetails }) => {
   const [initialCommunication, setInitialCommunication] = useState<any>(null);
   const [sourceCode, setSourceCode] = useState<any>(null);
   const [country, setCountry] = useState<any>(null);
-  const [techStacks, setTechStacks] = useState<any>([{}]);
+  const [techStacks, setTechStacks] = useState<any>([]);
 
   useEffect(() => {
     const getLeadItems = async () => {
@@ -94,20 +96,23 @@ const Summary = ({ leadDetails, setLeadDetails }) => {
     };
 
     getLeadItems();
-  }, []);
+  }, [leadDetails]);
 
   useEffect(() => {
     if (leadDetails && leadDetails.tech_stack_ids && leadDetails.tech_stack_ids.length > 0){
-      leadDetails.tech_stack_ids.map((tech_stack_id, index) => {
-        const newArr = [...techStacks];
-        newArr[index] = { id: parseInt(tech_stack_id) };
-
-        setTechStacks(newArr);
+      leadDetails.tech_stack_ids.map(Number).map((tech_stack_id) => {
+        setTechStacks([...techStacks, parseInt(tech_stack_id)]);
       });
+
+      const sanitizedSelectedStackList = techStackList.filter(option =>
+        leadDetails.tech_stack_ids.map(Number).includes(parseInt(option.id))
+      );
+      setSelectedTechStacks([...sanitizedSelectedStackList]);
     }
-  }, [leadDetails]);
+  }, [techStackList]);
 
   const handleSubmit = async values => {
+
     await leads.update(leadDetails.id, {
       lead: {
         "title": values.title,
@@ -131,7 +136,7 @@ const Summary = ({ leadDetails, setLeadDetails }) => {
         "skypeid": values.skypeid,
         "linkedinid": values.linkedinid,
         "emails": values.emails || [],
-        "tech_stack_ids": techStacks.map((e) => e.id)
+        "tech_stack_ids": techStacks.map(Number)
       }
     }).then((res) => {
       setLeadDetails(unmapLeadDetails(res).leadDetails);
@@ -140,24 +145,12 @@ const Summary = ({ leadDetails, setLeadDetails }) => {
     });
   };
 
-  const isTechStackFound = techStackVal => techStacks.some(element => {
-    if (element.id === parseInt(techStackVal)) {
-      return true;
-    }
-
-    return false;
-  });
-
-  const updateTechStacks = index => e => {
-    if (isTechStackFound(e.target.value)) {
-      alert("Already selected.")
-      e.target.value = ""
-    } else {
-      const newArr = [...techStacks];
-      newArr[index] = { id: parseInt(e.target.value) };
-
-      setTechStacks(newArr);
-    }
+  const addRemoveStack = (selectedList) => {
+    const newArray = []
+    selectedList.filter(option =>
+      newArray.push(parseInt(option.id))
+    );
+    setTechStacks(newArray);
   };
 
   return (
@@ -390,39 +383,13 @@ const Summary = ({ leadDetails, setLeadDetails }) => {
 
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Tech Stacks</label>
-                        <FieldArray name="tech_stack_ids">
-                          {({ remove, push }) => (
-                            <div>
-                              {
-                                values.tech_stack_ids && values.tech_stack_ids.length > 0 &&
-                                  values.tech_stack_ids.map((tech_stack_id, index) => (
-                                    <div className="grid grid-flow-row-dense grid-cols-12 gap-2" key={index}>
-                                      <div className="col-span-11">
-                                        <select
-                                          defaultValue={tech_stack_id}
-                                          className="w-full mt-1 border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-indigo-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                                          name={`tech_stack_ids.${index}`} onChange={updateTechStacks(index)} >
-                                          <option value=''>Select Tech Stack</option>
-                                          {techStackList &&
-                                            techStackList.map(e => <option value={e.id} key={e.id} selected={e.id === tech_stack_id}>{e.name}</option>)}
-                                        </select>
-                                      </div>
-                                      <div>
-                                        <svg onClick={() => remove(index)} className="mt-2 fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
-                                      </div>
-                                    </div>
-                                  ))
-                              }
-                              <button
-                                type="button"
-                                className="mt-4 w-2/6 header__button text-sm"
-                                onClick={() => push('')}
-                              >
-                                Add Stack
-                              </button>
-                            </div>
-                          )}
-                        </FieldArray>
+                        <Multiselect
+                          selectedValues={selectedTechStacks}
+                          options={techStackList ? techStackList : [{}]}
+                          name="tech_stack_ids"
+                          onSelect={((selectedList) => addRemoveStack(selectedList))}
+                          onRemove={((selectedList) => addRemoveStack(selectedList))}
+                          displayValue="name" />
                       </div>
                     </div>
                   </div>
@@ -534,7 +501,7 @@ const Summary = ({ leadDetails, setLeadDetails }) => {
                         <p className="text-sm text-gray-800 dark:text-gray-100 pb-1">Do not email</p>
                       </div>
                       <div className="cursor-pointer rounded-full bg-gray-200 relative shadow-sm">
-                        <Field aria-labelledby="cb1" type="checkbox" name="donotemail" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto" />
+                        <Field aria-labelledby="cb1" type="checkbox" name="donotemail" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" />
                         <label className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
                       </div>
                     </div>
@@ -543,7 +510,7 @@ const Summary = ({ leadDetails, setLeadDetails }) => {
                         <p className="text-sm text-gray-800 dark:text-gray-100 pb-1">Do not bulk email</p>
                       </div>
                       <div className="cursor-pointer rounded-full bg-gray-200 relative shadow-sm">
-                        <Field aria-labelledby="cb1" type="checkbox" name="donotbulkemail" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto" />
+                        <Field aria-labelledby="cb1" type="checkbox" name="donotbulkemail" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" />
                         <label className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
                       </div>
                     </div>
@@ -552,7 +519,7 @@ const Summary = ({ leadDetails, setLeadDetails }) => {
                         <p className="text-sm text-gray-800 dark:text-gray-100 pb-1">Do not fax</p>
                       </div>
                       <div className="cursor-pointer rounded-full bg-gray-200 relative shadow-sm">
-                        <Field aria-labelledby="cb1" type="checkbox" name="donotfax" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto" />
+                        <Field aria-labelledby="cb1" type="checkbox" name="donotfax" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" />
                         <label className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
                       </div>
                     </div>
@@ -561,7 +528,7 @@ const Summary = ({ leadDetails, setLeadDetails }) => {
                         <p className="text-sm text-gray-800 dark:text-gray-100 pb-1">Do not Phone</p>
                       </div>
                       <div className="cursor-pointer rounded-full bg-gray-200 relative shadow-sm">
-                        <Field aria-labelledby="cb1" type="checkbox" name="donotphone" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto" />
+                        <Field aria-labelledby="cb1" type="checkbox" name="donotphone" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" />
                         <label className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
                       </div>
                     </div>

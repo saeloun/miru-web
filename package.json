@@ -20,6 +20,7 @@
     "formik": "^2.2.9",
     "jquery": "^3.6.0",
     "js-logger": "^1.6.1",
+    "multiselect-react-dropdown": "^2.0.22",
     "phosphor-react": "^1.4.1",
     "prop-types": "^15.7.2",
     "puppeteer": "^13.6.0",
