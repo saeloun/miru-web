@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class WeeklyReminderForMissedEntriesService
+  WEEKLY_LIMIT = 40.hours.in_minutes
+
   def process
     Company.find_each do |company|
       company.users.kept.find_each do |user|
@@ -19,9 +21,9 @@ class WeeklyReminderForMissedEntriesService
 
     entries = get_user_company_entries(user:, company:, start_date:, end_date:)
 
-    sum = entries.sum(:duration)
+    total_company_entries_durations = entries.sum(:duration)
 
-    if sum < 40.hours.in_minutes
+    if total_company_entries_durations < WEEKLY_LIMIT
       send_mail(recipients: user.email, name:, start_date:, end_date:, company_name:)
     end
   end
