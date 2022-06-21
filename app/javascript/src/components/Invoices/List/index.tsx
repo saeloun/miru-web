@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import invoicesApi from "apis/invoices";
 import Pagination from "common/Pagination";
 import { sendGAPageView } from "utils/googleAnalytics";
+import useDebounce from "helpers/debounce";
 import { ApiStatus as InvoicesStatus } from "constants/index";
 
 import Container from "./container";
@@ -39,17 +40,27 @@ const Invoices: React.FC = () => {
   const [showBulkDeleteDialaog, setShowBulkDeleteDialog] =
     React.useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = React.useState(null);
+  const [searchQuery, setSearchQuery] = React.useState(searchParams.get("query") || "");
 
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   React.useEffect(() => sendGAPageView(), []);
 
   React.useEffect(() => {
     fetchInvoices();
-
     setSearchParams(cleanParams(params));
   }, [params.invoices_per_page, params.page, params.query]);
+
+  React.useEffect(() => {
+    if (debouncedSearchQuery) {
+      setParams({
+        ...params,
+        query: debouncedSearchQuery
+      });
+    }
+  }, [debouncedSearchQuery]);
 
   const cleanParams = (params: any) => {
     const newParams = { ...params };
@@ -92,8 +103,8 @@ const Invoices: React.FC = () => {
   return (
     <React.Fragment>
       <Header
-        searchText={params.query}
-        setSearchText={(text) => setParams({ ...params, query: text })}
+        searchText={searchQuery}
+        setSearchText={setSearchQuery}
         setFilterVisibilty={setFilterVisibilty}
         clearCheckboxes={() =>
           deselectInvoices(invoices.map((invoice) => invoice.id))
