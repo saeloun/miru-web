@@ -15,6 +15,7 @@ end
 
 json.team team do |member|
   json.profile_picture user_avatar(member)
+  json.id member.id
   json.name member.full_name
   json.email member.email
   json.role member.primary_role
