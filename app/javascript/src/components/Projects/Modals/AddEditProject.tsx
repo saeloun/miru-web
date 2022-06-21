@@ -9,17 +9,17 @@ const AddEditProject = ({
   setShowProjectModal,
   projectData
 }) => {
-  const [client, setClient] = useState<number>(null);
+  const [client, setClient] = useState<number>(0);
   const [projectName, setProjectName] = useState<string>("");
   const [projectType, setProjectType] = useState<string>("Billable");
   const [clientList, setClientList] = useState<[]>([]);
 
-  const projectId = window.location.pathname.split("/").at(-1);
+  const projectId = Number(window.location.pathname.split("/").at(-1)) || editProjectData["id"];
 
   const getClientList = async () => {
     try {
-      const data = await projectApi.get();
-      setClientList(data.data.clients);
+      const { data } = await projectApi.get();
+      setClientList(data.clients);
     } catch (error) {
       Logger.error(error);
     }
@@ -39,14 +39,17 @@ const AddEditProject = ({
     if (projectData) getProject();
   }, []);
 
+  const handleProjectData = () => {
+    if (!editProjectData?.name || !clientList.length) return;
+    const clientName = editProjectData?.client.name || editProjectData?.clientName;
+    const currentClient = clientList.find(clientItem => clientItem["name"] === clientName);
+    if (currentClient) setClient(currentClient["id"]);
+    setProjectName(editProjectData ? editProjectData.name : "");
+    setProjectType(editProjectData.is_billable || editProjectData.isBillable ? "Billable" : "Non-Billable");
+  };
+
   useEffect(() => {
-    if (! editProjectData) return;
-    if (clientList.length) {
-      const currentClient = clientList.find(clientItem => clientItem["name"] === editProjectData["client"]["name"]);
-      if (currentClient) setClient(currentClient["id"]);
-    }
-    setProjectName(editProjectData ? editProjectData.name : null);
-    setProjectType(editProjectData.isBillable ? "Billable" : "Non-Billable");
+    handleProjectData();
   }, [editProjectData, clientList]);
 
   const handleEdit = () => {
