@@ -6,7 +6,7 @@
 #
 #  id             :bigint           not null, primary key
 #  device_type    :string           default("laptop")
-#  model          :string
+#  name           :string
 #  serial_number  :string
 #  specifications :jsonb
 #  created_at     :datetime         not null
@@ -37,7 +37,7 @@ class Device < ApplicationRecord
 
   # Validations
   after_initialize :set_default_specifications, if: :new_record?
-  validates :model, length: { maximum: 100 }
+  validates :name, length: { maximum: 100 }
 
   private
 

@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_21_054843) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_21_150746) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -92,7 +92,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_21_054843) do
     t.bigint "user_id", null: false
     t.bigint "company_id", null: false
     t.string "device_type", default: "laptop"
-    t.string "model"
+    t.string "name"
     t.string "serial_number"
     t.jsonb "specifications"
     t.datetime "created_at", null: false
@@ -227,7 +227,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_21_054843) do
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
     t.float "duration", null: false
-    t.text "note"
+    t.text "note", default: ""
     t.date "work_date", null: false
     t.integer "bill_status", null: false
     t.datetime "created_at", null: false

@@ -12,7 +12,7 @@ RSpec.describe Device, type: :model do
     end
 
     describe "Length" do
-      it { is_expected.to validate_length_of(:model).is_at_most(100) }
+      it { is_expected.to validate_length_of(:name).is_at_most(100) }
     end
 
     describe "Defaults" do
