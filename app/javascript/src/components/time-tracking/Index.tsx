@@ -137,11 +137,10 @@ const TimeTracking: React.FC<Iprops> = ({
   const handleDeleteEntry = async id => {
     const res = await timesheetEntryApi.destroy(id);
     if (!(res.status === 200)) return;
-    setEntryList(pv => {
-      const nv = { ...pv };
-      nv[selectedFullDate] = nv[selectedFullDate].filter(e => e.id !== id);
-      return nv;
-    });
+    const newValue = { ...entryList };
+    newValue[selectedFullDate] = newValue[selectedFullDate].filter(e => e.id !== id);
+    setAllEmployeesEntries({ ...allEmployeesEntries, [selectedEmployeeId]: newValue });
+    setEntryList(newValue);
   };
 
   const calculateTotalHours = () => {

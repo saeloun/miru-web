@@ -29,6 +29,7 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
           is_billable: project.billable,
           client: { name: project.client.name },
           members: project_team_member_details,
+          overdue_and_outstanding_amounts: project.overdue_and_outstanding_amounts,
           total_minutes_logged: (
                               project_team_member_details.map { |user_details|user_details[:minutes_logged] }
                             ).sum

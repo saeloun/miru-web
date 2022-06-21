@@ -1,4 +1,3 @@
-<br/>
-<br/>
-<h1><%= user.email %></h1>
-<a href="<%= resend_url %>">resend</a>
+<div>
+  <%= react_component("EmailVerification", {userEmail: user.email , resendUrl: resend_url }) %>
+</div>

@@ -8,6 +8,8 @@ import projectAPI from "apis/projects";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
+import { cashFormatter } from "helpers/cashFormater";
+import { currencySymbol } from "helpers/currencySymbol";
 import {
   ArrowLeft,
   DotsThreeVertical,
@@ -61,6 +63,7 @@ const ProjectDetails = () => {
   const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
   const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
   const [timeframe, setTimeframe] = React.useState<any>("week");
+  const [overdueOutstandingAmount, setOverDueOutstandingAmt]= React.useState<any>(null);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -69,7 +72,9 @@ const ProjectDetails = () => {
   const fetchProject = async (timeframe = null) => {
     try {
       const res = await projectAPI.show(params.projectId, timeframe);
-      setProject(unmapper(res.data.project_details));
+      const sanitized = unmapper(res.data.project_details);
+      setProject(sanitized);
+      setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
     } catch (e) {
       console.log(e); // eslint-disable-line
     }
@@ -111,16 +116,16 @@ const ProjectDetails = () => {
     }
   ];
 
-  const amountBox = [
-    {
-      title: "OVERDUE",
-      amount: "$35.5k"
-    },
-    {
-      title: "OUTSTANDING",
-      amount: "$24.3k"
-    }
-  ];
+  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
+
+  const amountBox = [{
+    title: "OVERDUE",
+    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount)
+  },
+  {
+    title: "OUTSTANDING",
+    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.outstanding_amount)
+  }];
 
   const handleMenuVisibility = () => {
     setHeaderMenuVisibility(!isHeaderMenuVisible);
