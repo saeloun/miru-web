@@ -35,7 +35,7 @@ class Users::InvitationsController < Devise::InvitationsController
     end
 
     def invited_user
-      User.find_by(email: invite_params[:email])
+      resource || User.find_by(email: invite_params[:email])
     end
 
     def send_confirmation_email
