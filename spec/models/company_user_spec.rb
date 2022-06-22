@@ -6,7 +6,6 @@ RSpec.describe CompanyUser, type: :model do
   describe "Associations" do
     it { is_expected.to belong_to(:company) }
     it { is_expected.to belong_to(:user) }
-    it { is_expected.to have_one(:employment_detail) }
   end
 
   describe "Discard" do
