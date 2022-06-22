@@ -17,14 +17,20 @@ RSpec.describe Address, type: :model do
     it { is_expected.to validate_presence_of(:city) }
     it { is_expected.to validate_presence_of(:country) }
     it { is_expected.to validate_presence_of(:pin) }
-    it { is_expected.to validate_uniqueness_of(:address_type).scoped_to(:addressable_id, :addressable_type) }
+
+    it do
+      expect(subject).to validate_uniqueness_of(:address_type)
+        .scoped_to(:addressable_id, :addressable_type)
+        .ignoring_case_sensitivity
+    end
   end
 
   describe "Enums" do
-    it {
-  expect(subject).to define_enum_for(:address_type).with_values(
-    current: "current",
-    permanent: "permanent").backed_by_column_of_type(:string)
-}
+    it do
+      expect(subject).to define_enum_for(:address_type).with_values(
+        current: "current",
+        permanent: "permanent"
+      ).backed_by_column_of_type(:string)
+    end
   end
 end
