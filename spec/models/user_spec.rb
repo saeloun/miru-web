@@ -7,12 +7,12 @@ RSpec.describe User, type: :model do
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
-    create(:company_user, company:, user:)
+    create(:employment, company:, user:)
   end
 
   describe "Associations" do
-    it { is_expected.to have_many(:companies).through(:company_users) }
-    it { is_expected.to have_many(:company_users).dependent(:destroy) }
+    it { is_expected.to have_many(:companies).through(:employments) }
+    it { is_expected.to have_many(:employments).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:delete_all) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:timesheet_entries) }
