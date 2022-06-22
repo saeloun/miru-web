@@ -62,8 +62,9 @@ class User < ApplicationRecord
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all
   has_one :wise_account, dependent: :destroy
-  has_many :previous_employment_details, dependent: :destroy
+  has_many :previous_employments, dependent: :destroy
   has_one_attached :avatar
+  has_many :devices, dependent: :destroy
   rolify strict: true
 
   # Social account details
@@ -124,5 +125,5 @@ class User < ApplicationRecord
         "github_url": "",
         "linkedin_url": ""
       }
-  end
+    end
 end

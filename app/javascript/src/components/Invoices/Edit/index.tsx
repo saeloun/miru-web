@@ -5,6 +5,7 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clientsApi from "apis/clients";
 import invoicesApi from "apis/invoices";
 import dayjs from "dayjs";
+import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
 import InvoiceTable from "./InvoiceTable";
@@ -71,6 +72,7 @@ const EditInvoice = () => {
   };
 
   useEffect(() => {
+    sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     fetchInvoice(navigate, getInvoiceDetails);

@@ -8,6 +8,7 @@ import projectAPI from "apis/projects";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
+
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
 import {
@@ -18,7 +19,9 @@ import {
   UsersThree,
   Trash
 } from "phosphor-react";
+import { sendGAPageView } from "utils/googleAnalytics";
 import EditMembersList from "./EditMembersList";
+import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapper } from "../../../mapper/project.mapper";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
@@ -28,7 +31,7 @@ const getTableData = (project) => {
     return project.members.map((member) => {
       const hours = member.minutes / 60;
       const hour = hours.toFixed(2);
-      const cost = hours * parseInt(member.hourlyRate);
+      const cost = (hours * parseInt(member.hourlyRate)).toFixed(2);
       return {
         col1: (
           <div className="text-base text-miru-dark-purple-1000">
@@ -85,6 +88,7 @@ const ProjectDetails = () => {
   };
 
   useEffect(() => {
+    sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     fetchProject(timeframe);
@@ -154,7 +158,7 @@ const ProjectDetails = () => {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="my-6">
         <div className="flex min-w-0 items-center justify-between">
           <div className="flex items-center">
