@@ -85,6 +85,22 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_22_064230) do
     t.index ["user_id"], name: "index_company_users_on_user_id"
   end
 
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
+  create_table "devices", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "company_id", null: false
+    t.string "device_type", default: "laptop"
+    t.string "name"
+    t.string "serial_number"
+    t.jsonb "specifications"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_devices_on_company_id"
+    t.index ["user_id"], name: "index_devices_on_user_id"
+  end
+
   create_table "employment_details", force: :cascade do |t|
     t.string "employee_id"
     t.string "designation"
@@ -289,6 +305,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_22_064230) do
   add_foreign_key "clients", "companies"
   add_foreign_key "company_users", "companies"
   add_foreign_key "company_users", "users"
+  add_foreign_key "devices", "companies"
+  add_foreign_key "devices", "users"
   add_foreign_key "employment_details", "company_users"
   add_foreign_key "identities", "users"
   add_foreign_key "invoice_line_items", "invoices"
