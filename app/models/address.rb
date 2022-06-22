@@ -12,6 +12,7 @@
 #  city             :string           not null
 #  country          :string           not null
 #  pin              :string           not null
+#  state            :string
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  addressable_id   :bigint
@@ -29,6 +30,6 @@ class Address < ApplicationRecord
   enum address_type: { current: "current", permanent: "permanent" }
 
   # Validations
-  validates :address_type, :address_line_1, :city, :country, :pin, presence: true
+  validates :address_type, :address_line_1, :state, :city, :country, :pin, presence: true
   validates :address_type, uniqueness: { scope: [ :addressable_id, :addressable_type ] }
 end

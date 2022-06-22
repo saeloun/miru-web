@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_21_150746) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_22_080507) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -56,6 +56,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_21_150746) do
     t.string "pin", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "state"
     t.index ["addressable_type", "addressable_id", "address_type"],
       name: "index_addresses_on_addressable_and_address_type", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
