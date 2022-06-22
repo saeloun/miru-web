@@ -29,7 +29,7 @@ module Report
         buckets = es_response.aggs["grouped_reports"]["buckets"]
         buckets.map do |bucket|
           timesheet_entry_ids = bucket["top_report_hits"]["hits"]["hits"].pluck("_id")
-          timesheet_entries = id_to_timesheet_entry.fetch_values(*timesheet_entry_ids)
+          timesheet_entries = id_to_timesheet_entry.slice(*timesheet_entry_ids).values
           {
             label: group_label(timesheet_entries.first, bucket["key_as_string"]),
             entries: timesheet_entries
