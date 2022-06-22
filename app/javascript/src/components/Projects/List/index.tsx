@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectApi from "apis/projects";
 import Logger from "js-logger";
+import { sendGAPageView } from "utils/googleAnalytics";
 import { TOASTER_DURATION } from "constants/index";
 
 import Header from "./Header";
@@ -30,6 +31,7 @@ export const ProjectList = ({ isAdminUser }) => {
   };
 
   React.useEffect(() => {
+    sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     fetchProjects();
