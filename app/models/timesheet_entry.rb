@@ -7,7 +7,7 @@
 #  id          :bigint           not null, primary key
 #  bill_status :integer          not null
 #  duration    :float            not null
-#  note        :text             default("")
+#  note        :text
 #  work_date   :date             not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
@@ -18,6 +18,7 @@
 #
 #  index_timesheet_entries_on_project_id  (project_id)
 #  index_timesheet_entries_on_user_id     (user_id)
+#  index_timesheet_entries_on_work_date   (work_date)
 #
 # Foreign Keys
 #
