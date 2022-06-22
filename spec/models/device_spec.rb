@@ -26,5 +26,13 @@ RSpec.describe Device, type: :model do
         expect(device.device_type).to eq("laptop")
       end
     end
+
+    describe "Enums" do
+      it {
+  expect(subject).to define_enum_for(:device_type).with_values(
+    laptop: "laptop",
+    mobile: "mobile").backed_by_column_of_type(:string)
+}
+    end
   end
 end
