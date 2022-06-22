@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 
 import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader/index";
+import { sendGAPageView } from "utils/googleAnalytics";
 import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 
 import Header from "../../Header";
@@ -33,6 +34,8 @@ const PaymentSettings = () => {
       setStatus(PaymentSettingsStatus.ERROR);
     }
   };
+
+  useEffect(() => sendGAPageView(), []);
 
   useEffect(() => {
     if (accountLink) {

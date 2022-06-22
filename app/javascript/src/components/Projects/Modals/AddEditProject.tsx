@@ -9,17 +9,17 @@ const AddEditProject = ({
   setShowProjectModal,
   projectData
 }) => {
-  const [client, setClient] = useState<number>(null);
+  const [client, setClient] = useState<number>(0);
   const [projectName, setProjectName] = useState<string>("");
   const [projectType, setProjectType] = useState<string>("Billable");
   const [clientList, setClientList] = useState<[]>([]);
 
-  const projectId = window.location.pathname.split("/").at(-1);
+  const projectId = Number(window.location.pathname.split("/").at(-1)) || editProjectData["id"];
 
   const getClientList = async () => {
     try {
-      const data = await projectApi.get();
-      setClientList(data.data.clients);
+      const { data } = await projectApi.get();
+      setClientList(data.clients);
     } catch (error) {
       Logger.error(error);
     }
@@ -39,14 +39,17 @@ const AddEditProject = ({
     if (projectData) getProject();
   }, []);
 
+  const handleProjectData = () => {
+    if (!editProjectData?.name || !clientList.length) return;
+    const clientName = editProjectData?.client.name || editProjectData?.clientName;
+    const currentClient = clientList.find(clientItem => clientItem["name"] === clientName);
+    if (currentClient) setClient(currentClient["id"]);
+    setProjectName(editProjectData ? editProjectData.name : "");
+    setProjectType(editProjectData.is_billable || editProjectData.isBillable ? "Billable" : "Non-Billable");
+  };
+
   useEffect(() => {
-    if (! editProjectData) return;
-    if (clientList.length) {
-      const currentClient = clientList.find(clientItem => clientItem["name"] === editProjectData["client"]["name"]);
-      if (currentClient) setClient(currentClient["id"]);
-    }
-    setProjectName(editProjectData ? editProjectData.name : null);
-    setProjectType(editProjectData.isBillable ? "Billable" : "Non-Billable");
+    handleProjectData();
   }, [editProjectData, clientList]);
 
   const handleEdit = () => {
@@ -107,10 +110,10 @@ const AddEditProject = ({
                   <select
                     defaultValue={client}
                     className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                    onChange={(e) => setClient(+ e.target.value)}>
+                    onChange={(event) => setClient(+ event.target.value)}>
                     <option value='0'>Select Client</option>
                     {clientList &&
-                      clientList.map((e, index) => <option key={index} value={e.id} selected={e.id == client}>{e.name}</option>)}
+                      clientList.map((event, index) => <option key={index} value={event["id"]} selected={event["id"] == client}>{event["name"]}</option>)}
                   </select>
                 </div>
               </div>
@@ -123,7 +126,7 @@ const AddEditProject = ({
                   </label>
                 </div>
                 <div className="mt-1">
-                  <input type="text" placeholder=" Enter Project Name" className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base" value={projectName} onChange={(e) => setProjectName(e.target.value)} />
+                  <input type="text" placeholder=" Enter Project Name" className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base" value={projectName} onChange={(event) => setProjectName(event.target.value)} />
                 </div>
               </div>
             </div>

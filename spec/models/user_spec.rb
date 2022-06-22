@@ -16,8 +16,9 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:identities).dependent(:delete_all) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:timesheet_entries) }
-    it { is_expected.to have_many(:previous_employment_details).dependent(:destroy) }
+    it { is_expected.to have_many(:previous_employments).dependent(:destroy) }
     it { is_expected.to have_one_attached(:avatar) }
+    it { is_expected.to have_many(:devices).dependent(:destroy) }
   end
 
   describe "Validations" do

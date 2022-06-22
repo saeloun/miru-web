@@ -58,7 +58,7 @@ class Client < ApplicationRecord
          timesheet_entries.note as description,
          project_members.hourly_rate as rate,
          timesheet_entries.duration as qty"
-      ).where.not(id: selected_entries)
+      ).where.not(id: selected_entries).order("timesheet_entries.work_date").distinct
   end
 
   def total_hours_logged(time_frame = "week")
