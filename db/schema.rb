@@ -56,7 +56,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_22_080507) do
     t.string "pin", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "state"
+    t.string "state", null: false
     t.index ["addressable_type", "addressable_id", "address_type"],
       name: "index_addresses_on_addressable_and_address_type", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
