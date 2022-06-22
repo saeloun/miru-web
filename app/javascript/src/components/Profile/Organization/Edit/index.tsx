@@ -7,6 +7,7 @@ import companyProfileApi from "apis/companyProfile";
 import { Divider } from "common/Divider";
 import Loader from "common/Loader/index";
 import Toastr from "common/Toastr";
+import { sendGAPageView } from "utils/googleAnalytics";
 import * as Yup from "yup";
 import { CountryList } from "constants/countryList";
 import { currencyList } from "constants/currencyList";
@@ -135,6 +136,7 @@ const OrgEdit = () => {
   };
 
   useEffect(() => {
+    sendGAPageView();
     getCountries();
     getCurrencies();
     getData();
@@ -246,6 +248,7 @@ const OrgEdit = () => {
         setIsDetailUpdated(false);
         setisLoading(false);
       } catch (err) {
+        setisLoading(false);
         Toastr.error("Error in Updating Org. Details");
       }
     }).catch(function (err) {

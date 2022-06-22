@@ -8,6 +8,7 @@ import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
 
 import { minutesToHHMM } from "helpers/hhmm-parser";
+import { sendGAPageView } from "utils/googleAnalytics";
 import { TOASTER_DURATION } from "constants/index";
 
 import AddEntry from "./AddEntry";
@@ -56,6 +57,7 @@ const TimeTracking: React.FC<Iprops> = ({
   clients.sort((a: object, b: object) => a["name"].localeCompare(b["name"]));
 
   useEffect(() => {
+    sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     const currentEmployeeEntries = {};
@@ -137,11 +139,10 @@ const TimeTracking: React.FC<Iprops> = ({
   const handleDeleteEntry = async id => {
     const res = await timesheetEntryApi.destroy(id);
     if (!(res.status === 200)) return;
-    setEntryList(pv => {
-      const nv = { ...pv };
-      nv[selectedFullDate] = nv[selectedFullDate].filter(e => e.id !== id);
-      return nv;
-    });
+    const newValue = { ...entryList };
+    newValue[selectedFullDate] = newValue[selectedFullDate].filter(e => e.id !== id);
+    setAllEmployeesEntries({ ...allEmployeesEntries, [selectedEmployeeId]: newValue });
+    setEntryList(newValue);
   };
 
   const calculateTotalHours = () => {

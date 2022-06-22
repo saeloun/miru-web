@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_15_152617) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_22_064230) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -82,6 +82,22 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_15_152617) do
     t.index ["company_id"], name: "index_company_users_on_company_id"
     t.index ["discarded_at"], name: "index_company_users_on_discarded_at"
     t.index ["user_id"], name: "index_company_users_on_user_id"
+  end
+
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
+  create_table "devices", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "company_id", null: false
+    t.string "device_type", default: "laptop"
+    t.string "name"
+    t.string "serial_number"
+    t.jsonb "specifications"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_devices_on_company_id"
+    t.index ["user_id"], name: "index_devices_on_user_id"
   end
 
   create_table "employment_details", force: :cascade do |t|
@@ -154,15 +170,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_15_152617) do
     t.index ["name", "company_id"], name: "index_payments_providers_on_name_and_company_id", unique: true
   end
 
-  create_table "previous_employment_details", force: :cascade do |t|
-    t.bigint "employment_detail_id", null: false
+  create_table "previous_employments", force: :cascade do |t|
     t.string "company_name"
     t.string "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["employment_detail_id"], name: "index_previous_employment_details_on_employment_detail_id"
-    t.index ["user_id"], name: "index_previous_employment_details_on_user_id"
+    t.index ["user_id"], name: "index_previous_employments_on_user_id"
   end
 
   create_table "project_members", force: :cascade do |t|
@@ -219,6 +233,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_15_152617) do
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
     t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
+    t.index ["work_date"], name: "index_timesheet_entries_on_work_date"
   end
 
   create_table "users", force: :cascade do |t|
@@ -289,14 +304,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_15_152617) do
   add_foreign_key "clients", "companies"
   add_foreign_key "company_users", "companies"
   add_foreign_key "company_users", "users"
+  add_foreign_key "devices", "companies"
+  add_foreign_key "devices", "users"
   add_foreign_key "employment_details", "company_users"
   add_foreign_key "identities", "users"
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"
   add_foreign_key "payments_providers", "companies"
-  add_foreign_key "previous_employment_details", "employment_details"
-  add_foreign_key "previous_employment_details", "users"
+  add_foreign_key "previous_employments", "users"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"

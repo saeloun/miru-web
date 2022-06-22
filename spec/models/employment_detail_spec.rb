@@ -8,7 +8,6 @@ RSpec.describe EmploymentDetail, type: :model do
   describe "Validations" do
     describe "Associations" do
       it { is_expected.to belong_to(:company_user) }
-      it { is_expected.to have_many(:previous_employment_details).dependent(:destroy) }
     end
 
     describe "Presence" do
