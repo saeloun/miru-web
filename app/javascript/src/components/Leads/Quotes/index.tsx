@@ -32,7 +32,7 @@ const getTableData = (quotes) => {
   return [{}];
 };
 
-const LineItems = ({ leadDetails }) => {
+const Quotes = ({ leadDetails }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [newLead, setnewLead] = useState<boolean>(false);
@@ -136,4 +136,4 @@ const LineItems = ({ leadDetails }) => {
   );
 };
 
-export default LineItems;
+export default Quotes;

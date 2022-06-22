@@ -47,6 +47,7 @@ const getList = (input) => input.lead_details.map((lead) => ({
   skypeid: lead.skypeid,
   linkedinid: lead.linkedinid,
   company_id: lead.company_id,
+  address: lead.address,
   tech_stack_names: lead.tech_stack_names,
   discarded_at: lead.discarded_at,
 }));
@@ -125,6 +126,7 @@ const unmapLeadDetails = (input) => {
       skypeid: data.lead_details.skypeid,
       linkedinid: data.lead_details.linkedinid,
       company_id: data.lead_details.company_id,
+      address: data.lead_details.address,
       tech_stack_names: data.lead_details.tech_stack_names,
       discarded_at: data.lead_details.discarded_at,
     }
