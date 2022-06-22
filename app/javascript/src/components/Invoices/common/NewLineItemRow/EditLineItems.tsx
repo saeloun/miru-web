@@ -7,14 +7,15 @@ const EditLineItems = ({
   item,
   setSelectedOption,
   selectedOption,
-  handleDelete
+  handleDelete,
+  setEdit
 }) => {
 
   const strName = item.name || `${item.first_name} ${item.last_name}`;
   const quantity = (item.qty / 60) || (item.quantity / 60);
   const [name, setName] = useState<string>(strName);
-  const newDate = Date.parse(item.date);
-  const [lineItemDate, setLineItemDate] = useState(newDate);
+  const formatedDate = new Date(item.date);
+  const [lineItemDate, setLineItemDate] = useState(formatedDate);
   const [description, setDescription] = useState<string>(item.description);
   const rate = item.rate;
   const lineTotal = quantity * item.rate;
@@ -45,6 +46,10 @@ const EditLineItems = ({
     setSelectedOption(selectedOptionArr);
   }, [name, lineItemDate, description]);
 
+  const closeEditField = (event) => {
+    if (event.key === "Enter") setEdit(false);
+  };
+
   return (
     <tr className="w-full my-1">
       <td className="p-1 w-full">
@@ -54,6 +59,7 @@ const EditLineItems = ({
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={name}
           onChange={e => setName(e.target.value)}
+          onKeyDown={closeEditField}
         />
       </td>
       <td className="w-full">
@@ -63,6 +69,7 @@ const EditLineItems = ({
           dateFormat="dd.MM.yyyy"
           selected={lineItemDate}
           onChange={(date) => setLineItemDate(date)}
+          onKeyDown={closeEditField}
         />
       </td>
       <td className="p-1 w-full">
@@ -72,6 +79,7 @@ const EditLineItems = ({
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={description}
           onChange={e => setDescription(e.target.value)}
+          onKeyDown={closeEditField}
         />
       </td>
       <td className=" w-full">

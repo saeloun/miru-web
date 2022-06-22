@@ -35,6 +35,7 @@ const NewLineItemRow = ({
       setSelectedOption={setSelectedOption}
       selectedOption={selectedOption}
       handleDelete={handleDelete}
+      setEdit={setEdit}
     />
   ) : (
     <NewLineItemStatic
