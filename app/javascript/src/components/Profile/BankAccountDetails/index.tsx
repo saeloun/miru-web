@@ -5,6 +5,7 @@ import wiseApi from "apis/wise";
 import Loader from "common/Loader";
 import { separateAddressFields, bankFieldValidationRequirements } from "helpers/wiseUtilityFunctions";
 import { isEmpty } from "ramda";
+import { sendGAPageView } from "utils/googleAnalytics";
 import BankDetails from "./BankDetails";
 import BankInfo from "./BankInfo";
 import CurrencyDropdown from "./CurrencyDropdown";
@@ -25,6 +26,7 @@ const BankAccountDetails = () => {
   const [lastName, setLastName] = useState<any>();
 
   useEffect(() => {
+    sendGAPageView();
     profilesApi.get()
       .then(response => response.data)
       .then(data => {
