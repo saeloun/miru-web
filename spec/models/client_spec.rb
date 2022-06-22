@@ -183,7 +183,7 @@ RSpec.describe Client, type: :model do
                  timesheet_entries.note as description,
                  project_members.hourly_rate as rate,
                  timesheet_entries.duration as qty"
-              ).where.not(id: selected_entries)
+              ).where.not(id: selected_entries).order("timesheet_entries.work_date").distinct
           expect(client.new_line_item_entries(selected_entries)).to eq(result)
         end
       end
@@ -205,7 +205,7 @@ RSpec.describe Client, type: :model do
                  timesheet_entries.note as description,
                  project_members.hourly_rate as rate,
                  timesheet_entries.duration as qty"
-              ).where.not(id: selected_entries)
+              ).where.not(id: selected_entries).order("timesheet_entries.work_date").distinct
           expect(client.new_line_item_entries(selected_entries)).to eq(result)
         end
       end
