@@ -6,6 +6,7 @@ import generateInvoice from "apis/generateInvoice";
 
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
+import { sendGAPageView } from "utils/googleAnalytics";
 import Container from "./Container";
 import Header from "./Header";
 
@@ -47,6 +48,7 @@ const GenerateInvoices = () => {
   };
 
   useEffect(() => {
+    sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     fetchGenerateInvoice(navigate, getInvoiceDetails);

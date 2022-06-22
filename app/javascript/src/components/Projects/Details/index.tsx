@@ -19,6 +19,7 @@ import {
   UsersThree,
   Trash
 } from "phosphor-react";
+import { sendGAPageView } from "utils/googleAnalytics";
 import EditMembersList from "./EditMembersList";
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapper } from "../../../mapper/project.mapper";
@@ -87,6 +88,7 @@ const ProjectDetails = () => {
   };
 
   useEffect(() => {
+    sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     fetchProject(timeframe);
