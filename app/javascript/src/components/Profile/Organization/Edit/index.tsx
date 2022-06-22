@@ -246,6 +246,7 @@ const OrgEdit = () => {
         setIsDetailUpdated(false);
         setisLoading(false);
       } catch (err) {
+        setisLoading(false);
         Toastr.error("Error in Updating Org. Details");
       }
     }).catch(function (err) {
