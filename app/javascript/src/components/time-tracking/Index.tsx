@@ -8,6 +8,7 @@ import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
 
 import { minutesToHHMM } from "helpers/hhmm-parser";
+import { sendGAPageView } from "utils/googleAnalytics";
 import { TOASTER_DURATION } from "constants/index";
 
 import AddEntry from "./AddEntry";
@@ -56,6 +57,7 @@ const TimeTracking: React.FC<Iprops> = ({
   clients.sort((a: object, b: object) => a["name"].localeCompare(b["name"]));
 
   useEffect(() => {
+    sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     const currentEmployeeEntries = {};
