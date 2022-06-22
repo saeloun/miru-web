@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leads from "apis/leads";
-import { X, FloppyDisk, ArrowLeft, DotsThreeVertical, Receipt, CaretDown, Trash, Gear } from "phosphor-react";
+import { X, Pencil, FloppyDisk, ArrowLeft, DotsThreeVertical, Receipt, CaretDown, Trash, Gear } from "phosphor-react";
 import { unmapLeadList } from "../../../mapper/lead.mapper";
 import getStatusCssClass from "../../../utils/getStatusTag";
 import DeleteLead from "../Modals/DeleteLead";
 import NewLead from "../Modals/NewLead";
 
-const Header = ({ leadDetails, setShowLeadSetting, handleSubmit, forItem, apiError }) => {
+const Header = ({ leadDetails, setShowLeadSetting, handleSubmit, forItem, apiError, isEdit, setIsEdit }) => {
 
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [newLead, setnewLead] = useState<boolean>(false);
@@ -63,7 +63,7 @@ const Header = ({ leadDetails, setShowLeadSetting, handleSubmit, forItem, apiErr
             </h2>) : (<h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
               {leadDetails.name}
             </h2>)}
-            {forItem === "summary" &&
+            {forItem === "summary" && isEdit &&
               <>
                 <button onClick={handleLeadDetails}>
                   <CaretDown size={20} weight="bold" />
@@ -89,14 +89,28 @@ const Header = ({ leadDetails, setShowLeadSetting, handleSubmit, forItem, apiErr
                   <X size={12} />
                   <span className="ml-2 inline-block">CANCEL</span>
                 </Link>
-                <button
-                  type="button"
-                  className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
-                  onClick={handleSubmit}
-                >
-                  <FloppyDisk size={18} color="white" />
-                  <span className="ml-2 inline-block">SAVE</span>
-                </button>
+                {isEdit ?
+
+                  <button
+                    type="button"
+                    className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
+                    onClick={() => {handleSubmit(); setIsEdit(false);}}
+                  >
+                    <FloppyDisk size={18} color="white" />
+                    <span className="ml-2 inline-block">SAVE</span>
+                  </button>
+                  :
+
+                  <button
+                    type="button"
+                    className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
+                    onClick={() => setIsEdit(true)}
+                  >
+                    <Pencil size={18} color="white" />
+                    <span className="ml-2 inline-block">EDIT</span>
+                  </button>
+
+                }
                 <button onClick = {handleMenuVisibility} className={`menuButton__button ${menuBackground}`}>
                   <DotsThreeVertical size={20} color="#000000" />
                 </button>

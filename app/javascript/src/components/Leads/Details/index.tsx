@@ -15,6 +15,7 @@ const LeadList = () => {
   const [showLeadSetting, setShowLeadSetting] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string>("");
   const [forItem, setForItem] = useState<string>("summary");
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const [title, setTitle] = useState<any>(null);
   const [firstName, setFirstName] = useState<any>(null);
@@ -52,7 +53,7 @@ const LeadList = () => {
         const sanitized = unmapLeadDetails(res);
         setLeadDetails(sanitized.leadDetails);
       });
-  }, [leadId]);
+  }, [leadId, isEdit]);
 
   const handleSubmit = async () => {
 
@@ -93,7 +94,7 @@ const LeadList = () => {
   return (
     <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header leadDetails={leadDetails} setShowLeadSetting={setShowLeadSetting} handleSubmit={handleSubmit} forItem={forItem} apiError={apiError} />
+      <Header leadDetails={leadDetails} setShowLeadSetting={setShowLeadSetting} handleSubmit={handleSubmit} forItem={forItem} apiError={apiError} isEdit={isEdit} setIsEdit={setIsEdit} />
       <Tab leadDetails={leadDetails} forItem="leads"
         quoteId={null}
         setTitle={setTitle}
@@ -121,7 +122,8 @@ const LeadList = () => {
         setCountry={setCountry}
         setTechStacks={setTechStacks}
         handleSubmit={handleSubmit}
-        setForItem={setForItem} />
+        setForItem={setForItem}
+        isEdit={isEdit} />
       {showLeadSetting && (
         <LeadSettings leadDetails={leadDetails} setLeadDetails={setLeadDetails} setShowLeadSetting={setShowLeadSetting} />
       )}

@@ -73,7 +73,8 @@ const Summary = ({
   setSourceCode,
   setCountry,
   setTechStacks,
-  handleSubmit }) => {
+  handleSubmit,
+  isEdit }) => {
 
   const [budgetStatusCodeList, setBudgetStatusCodeList] = useState<any>(null);
   const [industryCodeList, setIndustryCodeList] = useState<any>(null);
@@ -197,7 +198,7 @@ const Summary = ({
                       <div className="mt-8 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Title</label>
                         <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="title" placeholder="Title" onKeyUp={e => setTitle(e.target.value)} />
+                          name="title" placeholder="Title" onKeyUp={e => setTitle(e.target.value)} disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.title && touched.title &&
                             <p className="text-xs">{errors.title}</p>
@@ -208,7 +209,7 @@ const Summary = ({
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">First Name</label>
                         <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="first_name" placeholder="First Name" onKeyUp={e => setFirstName(e.target.value)} />
+                          name="first_name" placeholder="First Name" onKeyUp={e => setFirstName(e.target.value)} disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.first_name && touched.first_name &&
                             <p className="text-xs">{errors.first_name}</p>
@@ -219,7 +220,7 @@ const Summary = ({
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Last Name</label>
                         <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="last_name" placeholder="Last Name" onKeyUp={e => setLastName(e.target.value)} />
+                          name="last_name" placeholder="Last Name" onKeyUp={e => setLastName(e.target.value)} disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.last_name && touched.last_name &&
                             <p className="text-xs">{errors.last_name}</p>
@@ -230,7 +231,7 @@ const Summary = ({
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Primary Email</label>
                         <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="email" placeholder="Primary Email" onKeyUp={e => setEmail(e.target.value)} />
+                          name="email" placeholder="Primary Email" onKeyUp={e => setEmail(e.target.value)} disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.email && touched.email &&
                             <p className="text-xs">{errors.email}</p>
@@ -241,7 +242,7 @@ const Summary = ({
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Budget Amount</label>
                         <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="budget_amount" type="number" min="0" placeholder="Budget Amount" onKeyUp={e => setBudgetAmount(e.target.value)} />
+                          name="budget_amount" type="number" min="0" placeholder="Budget Amount" onKeyUp={e => setBudgetAmount(e.target.value)} disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.budget_amount && touched.budget_amount &&
                             <p className="text-xs">{errors.budget_amount}</p>
@@ -254,7 +255,7 @@ const Summary = ({
                         <select
                           defaultValue={leadDetails.budget_status_code}
                           className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="budget_status_code" onChange={(e) => setBudgetStatusCode(e.target.value)}>
+                          name="budget_status_code" onChange={(e) => setBudgetStatusCode(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Budget Status</option>
                           {budgetStatusCodeList &&
                             budgetStatusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.budget_status_code}>{e.name}</option>)}
@@ -271,7 +272,7 @@ const Summary = ({
                         <select
                           defaultValue={leadDetails.industry_code}
                           className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="industry_code" onChange={(e) => setIndustryCode(e.target.value)}>
+                          name="industry_code" onChange={(e) => setIndustryCode(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Industry</option>
                           {industryCodeList &&
                             industryCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.industry_code}>{e.name}</option>)}
@@ -297,6 +298,7 @@ const Summary = ({
                                           name={`emails.${index}`}
                                           placeholder="Email"
                                           onKeyUp={(e) => onAddEmail(index, e.target.value)}
+                                          disabled={!isEdit}
                                         />
                                         <div className="flex justify-between items-center pt-1 text-red-700">
                                           {errors.emails && touched.emails &&
@@ -304,19 +306,21 @@ const Summary = ({
                                           }
                                         </div>
                                       </div>
-                                      <div>
-                                        <svg onClick={() => {remove(index); onRemoveEmail(index)}} className="mt-2 fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
-                                      </div>
+                                      {isEdit &&
+                                        <div>
+                                          <svg onClick={() => {remove(index); onRemoveEmail(index)}} className="mt-2 fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                                        </div>
+                                      }
                                     </div>
                                   ))
                               }
-                              <button
+                              {isEdit && <button
                                 type="button"
                                 className="mt-4 w-2/6 header__button text-sm"
                                 onClick={() => push('')}
                               >
-                                Add Email
-                              </button>
+                                  Add Email
+                              </button>}
                             </div>
                           )}
                         </FieldArray>
@@ -333,7 +337,7 @@ const Summary = ({
                         <select
                           defaultValue={leadDetails.need}
                           className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="need" onChange={(e) => setNeed(e.target.value)}>
+                          name="need" onChange={(e) => setNeed(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Need</option>
                           {needList &&
                             needList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.need}>{e.name}</option>)}
@@ -350,7 +354,7 @@ const Summary = ({
                         <select
                           defaultValue={leadDetails.preferred_contact_method_code}
                           className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="preferred_contact_method_code" onChange={(e) => setPreferredContactMethodCode(e.target.value)}>
+                          name="preferred_contact_method_code" onChange={(e) => setPreferredContactMethodCode(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Contact Method</option>
                           {preferredContactMethodCodeList &&
                             preferredContactMethodCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.preferred_contact_method_code}>{e.name}</option>)}
@@ -367,7 +371,7 @@ const Summary = ({
                         <select
                           defaultValue={leadDetails.source_code}
                           className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="source_code" onChange={(e) => setSourceCode(e.target.value)}>
+                          name="source_code" onChange={(e) => setSourceCode(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Source</option>
                           {sourceCodeList &&
                             sourceCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.source_code}>{e.name}</option>)}
@@ -384,7 +388,7 @@ const Summary = ({
                         <select
                           defaultValue={leadDetails.initial_communication}
                           className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="initial_communication" onChange={(e) => setInitialCommunication(e.target.value)}>
+                          name="initial_communication" onChange={(e) => setInitialCommunication(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Initial Communication</option>
                           {initialCommunicationList &&
                             initialCommunicationList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.initial_communication}>{e.name}</option>)}
@@ -399,7 +403,7 @@ const Summary = ({
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Description</label>
                         <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="description" as="textarea" rows={8} placeholder="Description" onKeyUp={e => setDescription(e.target.value)} />
+                          name="description" as="textarea" rows={8} placeholder="Description" onKeyUp={e => setDescription(e.target.value)} disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.description && touched.description &&
                             <p className="text-xs">{errors.description}</p>
@@ -415,7 +419,8 @@ const Summary = ({
                           name="tech_stack_ids"
                           onSelect={((selectedList) => addRemoveStack(selectedList))}
                           onRemove={((selectedList) => addRemoveStack(selectedList))}
-                          displayValue="name" />
+                          displayValue="name"
+                          disable={!isEdit} />
                       </div>
                     </div>
                   </div>
@@ -435,7 +440,7 @@ const Summary = ({
                         <select
                           defaultValue={leadDetails.country}
                           className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="industry_code" onChange={(e) => setCountry(e.target.value)}>
+                          name="industry_code" onChange={(e) => setCountry(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Country</option>
                           <option value="US" key="US">United States of America</option>
                           <option value="CA" key="CA">Canada</option>
@@ -453,7 +458,7 @@ const Summary = ({
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Address</label>
                         <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="address" as="textarea" rows={8} placeholder="Address" onKeyUp={(e) => setAddress(e.target.value)} />
+                          name="address" as="textarea" rows={8} placeholder="Address" onKeyUp={(e) => setAddress(e.target.value)} disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.address && touched.address &&
                             <p className="text-xs">{errors.address}</p>
@@ -464,7 +469,7 @@ const Summary = ({
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Moobile Phone</label>
                         <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="mobilephone" placeholder="Moobile Phone" onKeyUp={(e) => setMobilePhone(e.target.value)} />
+                          name="mobilephone" placeholder="Moobile Phone" onKeyUp={(e) => setMobilePhone(e.target.value)} disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.mobilephone && touched.mobilephone &&
                             <p className="text-xs">{errors.mobilephone}</p>
@@ -475,7 +480,7 @@ const Summary = ({
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Tele Phone</label>
                         <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="telephone" placeholder="Tele Phone" onKeyUp={(e) => setTelePhone(e.target.value)} />
+                          name="telephone" placeholder="Tele Phone" onKeyUp={(e) => setTelePhone(e.target.value)} disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.telephone && touched.telephone &&
                             <p className="text-xs">{errors.telephone}</p>
@@ -487,7 +492,7 @@ const Summary = ({
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Skype ID</label>
                         <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="skypeid" placeholder="Skpe ID" onKeyUp={(e) => setSkypeId(e.target.value)} />
+                          name="skypeid" placeholder="Skpe ID" onKeyUp={(e) => setSkypeId(e.target.value)} disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.skypeid && touched.skypeid &&
                             <p className="text-xs">{errors.skypeid}</p>
@@ -498,7 +503,7 @@ const Summary = ({
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Linkedin ID</label>
                         <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="linkedinid" placeholder="Linkedin ID" onKeyUp={(e) => setLinkedinId(e.target.value)} />
+                          name="linkedinid" placeholder="Linkedin ID" onKeyUp={(e) => setLinkedinId(e.target.value)} disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.linkedinid && touched.linkedinid &&
                             <p className="text-xs">{errors.linkedinid}</p>
@@ -527,7 +532,7 @@ const Summary = ({
                         <p className="text-sm text-gray-800 dark:text-gray-100 pb-1">Do not email</p>
                       </div>
                       <div className="cursor-pointer rounded-full bg-gray-200 relative shadow-sm">
-                        <Field aria-labelledby="cb1" type="checkbox" name="donotemail" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" onClick={(e) => setDoNotEmail(e.target.checked)} />
+                        <Field aria-labelledby="cb1" type="checkbox" name="donotemail" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" onClick={(e) => setDoNotEmail(e.target.checked)} disabled={!isEdit} />
                         <label className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
                       </div>
                     </div>
@@ -536,7 +541,7 @@ const Summary = ({
                         <p className="text-sm text-gray-800 dark:text-gray-100 pb-1">Do not bulk email</p>
                       </div>
                       <div className="cursor-pointer rounded-full bg-gray-200 relative shadow-sm">
-                        <Field aria-labelledby="cb1" type="checkbox" name="donotbulkemail" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" onClick={(e) => setDoNotBulkEmail(e.target.checked)} />
+                        <Field aria-labelledby="cb1" type="checkbox" name="donotbulkemail" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" onClick={(e) => setDoNotBulkEmail(e.target.checked)} disabled={!isEdit} />
                         <label className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
                       </div>
                     </div>
@@ -545,7 +550,7 @@ const Summary = ({
                         <p className="text-sm text-gray-800 dark:text-gray-100 pb-1">Do not fax</p>
                       </div>
                       <div className="cursor-pointer rounded-full bg-gray-200 relative shadow-sm">
-                        <Field aria-labelledby="cb1" type="checkbox" name="donotfax" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" onClick={(e) => setDoNotFax(e.target.checked)} />
+                        <Field aria-labelledby="cb1" type="checkbox" name="donotfax" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" onClick={(e) => setDoNotFax(e.target.checked)} disabled={!isEdit} />
                         <label className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
                       </div>
                     </div>
@@ -554,7 +559,7 @@ const Summary = ({
                         <p className="text-sm text-gray-800 dark:text-gray-100 pb-1">Do not Phone</p>
                       </div>
                       <div className="cursor-pointer rounded-full bg-gray-200 relative shadow-sm">
-                        <Field aria-labelledby="cb1" type="checkbox" name="donotphone" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" onClick={(e) => setDoNotPhone(e.target.checked)} />
+                        <Field aria-labelledby="cb1" type="checkbox" name="donotphone" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" onClick={(e) => setDoNotPhone(e.target.checked)} disabled={!isEdit} />
                         <label className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
                       </div>
                     </div>

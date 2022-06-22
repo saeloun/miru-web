@@ -37,7 +37,7 @@ const LeadList = () => {
   return (
     <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header leadDetails={leadInfo} setShowLeadSetting={setShowLeadSetting} handleSubmit={null} forItem="quoteDetails" apiError={null} />
+      <Header leadDetails={leadInfo} setShowLeadSetting={setShowLeadSetting} handleSubmit={null} forItem="quoteDetails" apiError={null} isEdit={false} setIsEdit={null} />
       <Tab leadDetails={leadDetails} forItem="quoteDetails"
         quoteId={quoteId}
         setTitle={null}
@@ -65,7 +65,8 @@ const LeadList = () => {
         setCountry={null}
         setTechStacks={null}
         handleSubmit={null}
-        setForItem="quoteDetails" />
+        setForItem="quoteDetails"
+        isEdit={false} />
       {showLeadSetting && (
         <LeadSettings leadDetails={leadInfo} setLeadDetails={setLeadDetails} setShowLeadSetting={setShowLeadSetting} />
       )}
