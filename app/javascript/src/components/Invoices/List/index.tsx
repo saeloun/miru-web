@@ -4,8 +4,8 @@ import { ToastContainer } from "react-toastify";
 
 import invoicesApi from "apis/invoices";
 import Pagination from "common/Pagination";
-import { sendGAPageView } from "utils/googleAnalytics";
 import useDebounce from "helpers/debounce";
+import { sendGAPageView } from "utils/googleAnalytics";
 import { ApiStatus as InvoicesStatus } from "constants/index";
 
 import Container from "./container";
@@ -54,13 +54,15 @@ const Invoices: React.FC = () => {
   }, [params.invoices_per_page, params.page, params.query]);
 
   React.useEffect(() => {
-    if (debouncedSearchQuery) {
-      setParams({
-        ...params,
-        query: debouncedSearchQuery
-      });
-    }
+    setParams({
+      ...params,
+      query: debouncedSearchQuery
+    });
   }, [debouncedSearchQuery]);
+
+  const clearSearchText = () => {
+    setSearchQuery("");
+  };
 
   const cleanParams = (params: any) => {
     const newParams = { ...params };
@@ -105,6 +107,7 @@ const Invoices: React.FC = () => {
       <Header
         searchText={searchQuery}
         setSearchText={setSearchQuery}
+        onSearchClear={clearSearchText}
         setFilterVisibilty={setFilterVisibilty}
         clearCheckboxes={() =>
           deselectInvoices(invoices.map((invoice) => invoice.id))

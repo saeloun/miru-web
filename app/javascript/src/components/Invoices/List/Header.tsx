@@ -17,7 +17,8 @@ const Header = ({
   clearCheckboxes,
   setShowBulkDeleteDialog,
   searchText,
-  setSearchText
+  setSearchText,
+  onSearchClear
 }) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
     <h2 className="header__title">Invoices</h2>
@@ -26,15 +27,15 @@ const Header = ({
         <div className="header__searchWrap">
           <div className="header__searchInnerWrapper">
             <input
-              type="search"
+              type="text"
               className="header__searchInput"
               placeholder="Search"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              value={ searchText }
+              onChange={ (e) => setSearchText(e.target.value) }
             />
 
-            <button className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
-              <MagnifyingGlass size={12} />
+            <button className=" absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer ">
+              {searchText ? (<X size={12} onClick={onSearchClear} />) : (<MagnifyingGlass size={12} />) }
             </button>
           </div>
 
