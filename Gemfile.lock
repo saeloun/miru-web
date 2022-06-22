@@ -174,6 +174,8 @@ GEM
       faraday (~> 1)
       multi_json
     erubi (1.10.0)
+    et-orbi (1.2.7)
+      tzinfo
     execjs (2.8.1)
     factory_bot (6.2.1)
       activesupport (>= 5.0.0)
@@ -207,6 +209,9 @@ GEM
     faraday-retry (1.0.3)
     ffi (1.15.5)
     foreman (0.87.2)
+    fugit (1.5.3)
+      et-orbi (~> 1, >= 1.2.7)
+      raabro (~> 1.4)
     globalid (1.0.0)
       activesupport (>= 5.0)
     grover (1.1.1)
@@ -311,6 +316,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.2.0)
       activesupport (>= 3.0.0)
+    raabro (1.4.0)
     racc (1.6.0)
     rack (2.2.3.1)
     rack-mini-profiler (3.0.0)
@@ -419,6 +425,8 @@ GEM
     ruby_audit (2.1.0)
       bundler-audit (~> 0.9.0)
     rubyzip (2.3.2)
+    rufus-scheduler (3.8.1)
+      fugit (~> 1.1, >= 1.1.6)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.4.0)
@@ -446,6 +454,11 @@ GEM
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
       redis (>= 4.2.0)
+    sidekiq-scheduler (4.0.1)
+      redis (>= 4.2.0)
+      rufus-scheduler (~> 3.2)
+      sidekiq (>= 4)
+      tilt (>= 1.4.0)
     simple_po_parser (1.1.6)
     simplecov (0.21.2)
       docile (~> 1.1)
@@ -561,6 +574,7 @@ DEPENDENCIES
   shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers (~> 5.1)
   sidekiq
+  sidekiq-scheduler
   simplecov
   spring
   stripe
