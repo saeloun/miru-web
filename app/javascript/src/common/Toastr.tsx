@@ -3,6 +3,8 @@ import React from "react";
 import { toast, Slide } from "react-toastify";
 import { getToasterIcon, getToasterCloseButton } from "../constants/index";
 
+const customId = "custom-toaster-id";
+
 const ToastrComponent = ({ message }) => (
   <div className="text-center">
     {message}
@@ -11,6 +13,7 @@ const ToastrComponent = ({ message }) => (
 
 const showToastr = message => {
   toast.success(<ToastrComponent message={message} />, {
+    toastId: customId,
     position: toast.POSITION.BOTTOM_CENTER,
     transition: Slide,
     theme: "colored",
@@ -25,6 +28,7 @@ const isError = e => e && e.stack && e.message;
 const showErrorToastr = error => {
   const errorMessage = isError(error) ? error.message : error;
   toast.error(<ToastrComponent message={errorMessage} />, {
+    toastId: customId,
     position: toast.POSITION.BOTTOM_CENTER,
     transition: Slide,
     theme: "colored",
@@ -36,6 +40,7 @@ const showErrorToastr = error => {
 
 const showWarningToastr = warning => {
   toast.warn(<ToastrComponent message={warning} />, {
+    toastId: customId,
     position: toast.POSITION.BOTTOM_CENTER,
     transition: Slide,
     theme: "colored",
@@ -47,6 +52,7 @@ const showWarningToastr = warning => {
 
 const showInfoToastr = info => {
   toast.info(<ToastrComponent message={info} />, {
+    toastId: customId,
     position: toast.POSITION.BOTTOM_CENTER,
     transition: Slide,
     theme: "colored",

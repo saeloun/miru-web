@@ -118,6 +118,9 @@ gem "stripe"
 # Background job processing adapter
 gem "sidekiq"
 
+#  job scheduler extension for Sidekiq
+gem "sidekiq-scheduler"
+
 # searchkick for elasticsearch
 gem "elasticsearch", "< 7.14" # select one
 gem "searchkick"
@@ -163,6 +166,10 @@ group :development, :test do
 
   # help to kill N+1 queries and unused eager loading. https://github.com/flyerhzm/bullet
   gem "bullet"
+
+  # To record response of outgoing API calls
+  gem "vcr", "~> 3.0.1"
+  gem "webmock", "~> 3.14.0"
 end
 
 group :development do

@@ -8,6 +8,7 @@
 #  amount_paid        :decimal(20, 2)   default(0.0)
 #  discount           :decimal(20, 2)   default(0.0)
 #  due_date           :date
+#  external_view_key  :string
 #  invoice_number     :string
 #  issue_date         :date
 #  outstanding_amount :decimal(20, 2)   default(0.0)
@@ -20,10 +21,11 @@
 #
 # Indexes
 #
-#  index_invoices_on_client_id       (client_id)
-#  index_invoices_on_invoice_number  (invoice_number) UNIQUE
-#  index_invoices_on_issue_date      (issue_date)
-#  index_invoices_on_status          (status)
+#  index_invoices_on_client_id          (client_id)
+#  index_invoices_on_external_view_key  (external_view_key) UNIQUE
+#  index_invoices_on_invoice_number     (invoice_number) UNIQUE
+#  index_invoices_on_issue_date         (issue_date)
+#  index_invoices_on_status             (status)
 #
 # Foreign Keys
 #
@@ -34,6 +36,7 @@
 
 class Invoice < ApplicationRecord
   include InvoiceSendable
+  require "securerandom"
 
   attr_accessor :sub_total
 
@@ -50,6 +53,8 @@ class Invoice < ApplicationRecord
   has_many :invoice_line_items, dependent: :destroy
   has_one :company, through: :client
   accepts_nested_attributes_for :invoice_line_items, allow_destroy: true
+
+  before_validation :set_external_view_key, on: :create
 
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }
@@ -81,4 +86,10 @@ class Invoice < ApplicationRecord
   def unit_amount(base_currency)
     (amount * Money::Currency.new(base_currency).subunit_to_unit).to_i
   end
+
+  private
+
+    def set_external_view_key
+      self.external_view_key = "#{SecureRandom.hex}"
+    end
 end

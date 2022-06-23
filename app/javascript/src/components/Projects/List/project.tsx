@@ -41,7 +41,12 @@ export const Project = ({
       onClick={() => projectClickHandler(id)}
     >
       <td className="table__cell text-base">
-        {name}
+        <div className="flex items-center justify-between">
+          {name}
+        </div>
+        <p className="max-h-32 overflow-scroll text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
+          {clientName}
+        </p>
       </td>
       <td className="table__cell text-right">
         {isBillable && <span className="px-1 tracking-widest rounded-lg text-xs font-semibold leading-4 bg-miru-han-purple-100 text-miru-han-purple-1000">Billable</span>}

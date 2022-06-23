@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import invoicesApi from "apis/invoices";
+import { sendGAPageView } from "utils/googleAnalytics";
+import { ApiStatus as InvoiceStatus } from "constants/index";
+
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
-import { ApiStatus as InvoiceStatus } from "../../../constants";
 import DeleteInvoice from "../popups/DeleteInvoice";
 import SendInvoice from "../popups/SendInvoice";
 
@@ -30,6 +33,7 @@ const Invoice = () => {
   };
 
   useEffect(() => {
+    sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     fetchInvoice();

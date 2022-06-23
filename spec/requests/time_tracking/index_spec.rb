@@ -7,7 +7,7 @@ RSpec.describe "TimeTracking#index", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:clients) { create_list(:client, 2, company:) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company

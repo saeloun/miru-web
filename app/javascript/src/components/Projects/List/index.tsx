@@ -1,10 +1,14 @@
 import React from "react";
 import { ToastContainer } from "react-toastify";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectApi from "apis/projects";
+import Logger from "js-logger";
+import { sendGAPageView } from "utils/googleAnalytics";
+import { TOASTER_DURATION } from "constants/index";
+
 import Header from "./Header";
 import { Project } from "./project";
-import { TOASTER_DURATION } from "../../../constants/index";
 import { IProject } from "../interface";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
@@ -13,7 +17,7 @@ export const ProjectList = ({ isAdminUser }) => {
 
   const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
-  const [editProjectData, setEditProjectData] = React.useState<any>(null);
+  const [editProjectData, setEditProjectData] = React.useState<any>({});
   const [deleteProjectData, setDeleteProjectData] = React.useState({});
   const [projects, setProjects] = React.useState<IProject[]>([]);
 
@@ -21,12 +25,13 @@ export const ProjectList = ({ isAdminUser }) => {
     try {
       const res = await projectApi.get();
       setProjects(res.data.projects);
-    } catch (e) {
-      console.log(e) // eslint-disable-line
+    } catch (err) {
+      Logger.error(err);
     }
   };
 
   React.useEffect(() => {
+    sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     fetchProjects();

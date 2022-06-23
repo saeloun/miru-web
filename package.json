@@ -1,6 +1,6 @@
 {
   "name": "@saeloun/miru-web",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "^7.16.5",
     "@babel/preset-react": "^7.16.5",
@@ -24,6 +24,7 @@
     "babel-plugin-js-logger": "^1.0.17",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "classnames": "^2.3.1",
+    "currency-symbol-map": "^5.0.1",
     "date-fns": "^2.28.0",
     "dayjs": "^1.11.0",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
@@ -34,10 +35,12 @@
     "postcss": "~7",
     "prop-types": "^15.7.2",
     "puppeteer": "^13.6.0",
+    "ramda": "^0.28.0",
     "react": "^17.0.2",
     "react-autocomplete": "^1.8.1",
     "react-datepicker": "^4.7.0",
     "react-dom": "^17.0.2",
+    "react-ga4": "^1.4.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.2.2",
     "react-select": "^5.2.2",

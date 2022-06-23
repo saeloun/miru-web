@@ -9,9 +9,9 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   let(:client_2) { create(:client, company:) }
   let(:project_1) { create(:project, client: client_1) }
   let(:project_2) { create(:project, client: client_2) }
-  let(:time_frame) { "last_week" }
+  let(:time_frame) { "week" }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -79,19 +79,21 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
+    let(:time_frame) { "last_week" }
+
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
       sign_in user
       create_list(:timesheet_entry, 5, user:, project: project_1)
       create_list(:timesheet_entry, 5, user:, project: project_2)
-      send_request :get, internal_api_v1_clients_path
+      send_request :get, internal_api_v1_clients_path, params: {
+        time_frame:
+      }
     end
 
     context "when time_frame is week" do
-      let(:time_frame) { "last_week" }
-
       it "returns the total hours logged for a Company in the last_week" do
         client_details = user.current_workspace.clients.kept.map do |client|
           {
@@ -106,6 +108,25 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
         expect(json_response["total_minutes"]).to eq(JSON.parse(total_minutes.to_json))
         expect(json_response["overdue_outstanding_amount"]).to eq(JSON.parse(overdue_outstanding_amount.to_json))
       end
+    end
+  end
+
+  context "when user is a book keeper" do
+    let(:time_frame) { "last_week" }
+
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      create_list(:timesheet_entry, 5, user:, project: project_1)
+      create_list(:timesheet_entry, 5, user:, project: project_2)
+      send_request :get, internal_api_v1_clients_path, params: {
+        time_frame:
+      }
+    end
+
+    it "is not be permitted to access client" do
+      expect(response).to have_http_status(:forbidden)
     end
   end
 

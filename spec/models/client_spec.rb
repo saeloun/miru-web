@@ -55,9 +55,9 @@ RSpec.describe Client, type: :model do
         let(:time_frame) { "last_week" }
 
         it "returns the total hours logged for a client in the last week" do
-          from, to = client.week_month_year(time_frame)
+          range = 1.week.ago.beginning_of_week..1.week.ago.end_of_week
           result = ([project_1, project_2].map { |project|
-            project.timesheet_entries.where(work_date: from..to).sum(:duration)
+            project.timesheet_entries.where(work_date: range).sum(:duration)
           }).sum
           expect(client.total_hours_logged(time_frame)).to eq(result)
         end
@@ -67,9 +67,9 @@ RSpec.describe Client, type: :model do
         let(:time_frame) { "week" }
 
         it "returns the total hours logged for a client in that week" do
-          from, to = client.week_month_year(time_frame)
+          range = 0.week.ago.beginning_of_week..0.week.ago.end_of_week
           result = ([project_1, project_2].map { |project|
-            project.timesheet_entries.where(work_date: from..to).sum(:duration)
+            project.timesheet_entries.where(work_date: range).sum(:duration)
           }).sum
           expect(client.total_hours_logged(time_frame)).to eq(result)
         end
@@ -79,9 +79,9 @@ RSpec.describe Client, type: :model do
         let(:time_frame) { "month" }
 
         it "returns the total hours logged for a client in that month" do
-          from, to = client.week_month_year(time_frame)
+          range = 0.month.ago.beginning_of_week..0.month.ago.end_of_week
           result = ([project_1, project_2].map { |project|
-            project.timesheet_entries.where(work_date: from..to).sum(:duration)
+            project.timesheet_entries.where(work_date: range).sum(:duration)
           }).sum
           expect(client.total_hours_logged(time_frame)).to eq(result)
         end
@@ -91,9 +91,9 @@ RSpec.describe Client, type: :model do
         let(:time_frame) { "year" }
 
         it "returns the total hours logged for a client in that year" do
-          from, to = client.week_month_year(time_frame)
+          range = 0.year.ago.beginning_of_week..0.year.ago.end_of_week
           result = ([project_1, project_2].map { |project|
-            project.timesheet_entries.where(work_date: from..to).sum(:duration)
+            project.timesheet_entries.where(work_date: range).sum(:duration)
           }).sum
           expect(client.total_hours_logged(time_frame)).to eq(result)
         end
@@ -106,12 +106,13 @@ RSpec.describe Client, type: :model do
       let(:client) { create(:client, company:) }
       let(:project_1) { create(:project, client:) }
       let(:project_2) { create(:project, client:) }
+      let(:date_range_class) { Class.new { extend UtilityFunctions } }
       let(:results) do
-        from, to = client.week_month_year(time_frame)
+        range = date_range_class.range_from_timeframe(time_frame)
         [project_1, project_2].map do | project |
           {
             id: project.id, name: project.name, team: project.project_member_full_names,
-            minutes_spent: project.timesheet_entries.where(work_date: from..to).sum(:duration)
+            minutes_spent: project.timesheet_entries.where(work_date: range).sum(:duration)
           }
         end
       end
@@ -182,7 +183,7 @@ RSpec.describe Client, type: :model do
                  timesheet_entries.note as description,
                  project_members.hourly_rate as rate,
                  timesheet_entries.duration as qty"
-              ).where.not(id: selected_entries)
+              ).where.not(id: selected_entries).order("timesheet_entries.work_date").distinct
           expect(client.new_line_item_entries(selected_entries)).to eq(result)
         end
       end
@@ -204,7 +205,7 @@ RSpec.describe Client, type: :model do
                  timesheet_entries.note as description,
                  project_members.hourly_rate as rate,
                  timesheet_entries.duration as qty"
-              ).where.not(id: selected_entries)
+              ).where.not(id: selected_entries).order("timesheet_entries.work_date").distinct
           expect(client.new_line_item_entries(selected_entries)).to eq(result)
         end
       end

@@ -1,6 +1,8 @@
 import React from "react";
+
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
+
 const Instagram = require("../../../../assets/images/Instagram.svg"); // eslint-disable-line
 const Twitter = require("../../../../assets/images/Twitter.svg"); // eslint-disable-line
 const MiruLogowithText = require("../../../../assets/images/MiruWhiteLogowithText.svg"); // eslint-disable-line

@@ -7,7 +7,7 @@ RSpec.describe "InternalApi::V1::Project#create", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -40,6 +40,19 @@ RSpec.describe "InternalApi::V1::Project#create", type: :request do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
+      sign_in user
+      send_request :post, internal_api_v1_projects_path
+    end
+
+    it "is not be permitted to generate an project" do
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  context "when the user is a book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
       sign_in user
       send_request :post, internal_api_v1_projects_path
     end

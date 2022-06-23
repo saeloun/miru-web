@@ -2,10 +2,17 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, CaretDown, Trash } from "phosphor-react";
 
+import AddProject from "../Modals/AddProject";
+import DeleteClient from "../Modals/DeleteClient";
+import EditClient from "../Modals/EditClient";
+
 const Header = ({ clientDetails }) => {
 
   const [isHeaderMenuVisible, setHeaderMenuVisibility] = useState<boolean>(false);
   const [isClientOpen, toggleClientDetails] = useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
+  const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -19,6 +26,19 @@ const Header = ({ clientDetails }) => {
 
   const handleBackButtonClick = () => {
     navigate("/clients");
+  };
+
+  const handleDelete = () => {
+    setShowDeleteDialog(true);
+  };
+
+  const handleEdit = () => {
+    setShowEditDialog(true);
+  };
+
+  const handleAddProject = () => {
+    setShowProjectModal(true);
+    setHeaderMenuVisibility(false);
   };
 
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
@@ -41,19 +61,19 @@ const Header = ({ clientDetails }) => {
             <DotsThreeVertical size={20} color="#000000" />
           </button>
           { isHeaderMenuVisible && <ul className="menuButton__wrapper">
-            <li>
+            <li onClick={handleAddProject}>
               <button className="menuButton__list-item">
                 <Receipt size={16} color="#5B34EA" weight="bold" />
-                <span className="ml-3">Add Client</span>
+                <span className="ml-3">Add Project</span>
               </button>
             </li>
-            <li>
+            <li onClick={handleEdit}>
               <button className="menuButton__list-item">
                 <Pencil size={16} color="#5b34ea" weight="bold" />
                 <span className="ml-3">Edit</span>
               </button>
             </li>
-            <li>
+            <li onClick={handleDelete}>
               <button className="menuButton__list-item text-miru-red-400">
                 <Trash size={16} color="#E04646" weight="bold" />
                 <span className="ml-3">Delete</span>
@@ -76,6 +96,24 @@ const Header = ({ clientDetails }) => {
           <p>{clientDetails.phone}</p>
         </div>
       </div>
+      }
+      { showDeleteDialog &&
+          <DeleteClient
+            client={clientDetails}
+            setShowDeleteDialog={setShowDeleteDialog}
+          />
+      }
+      { showEditDialog &&
+          <EditClient
+            client={clientDetails}
+            setShowEditDialog={setShowEditDialog}
+          />
+      }
+      { showProjectModal &&
+          <AddProject
+            setShowProjectModal = {setShowProjectModal}
+            clientDetails = {clientDetails}
+          />
       }
     </div>
   );
