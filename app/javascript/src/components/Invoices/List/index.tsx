@@ -104,6 +104,7 @@ const Invoices: React.FC = () => {
 
   return (
     <React.Fragment>
+      <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         searchText={searchQuery}
         setSearchText={setSearchQuery}
