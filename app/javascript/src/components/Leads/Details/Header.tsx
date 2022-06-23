@@ -8,7 +8,7 @@ import getStatusCssClass from "../../../utils/getStatusTag";
 import DeleteLead from "../Modals/DeleteLead";
 import NewLead from "../Modals/NewLead";
 
-const Header = ({ leadDetails, setShowLeadSetting, handleSubmit, forItem, apiError, isEdit, setIsEdit }) => {
+const Header = ({ leadDetails, setShowLeadSetting, submitLeadForm, forItem, isEdit, setIsEdit }) => {
 
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [newLead, setnewLead] = useState<boolean>(false);
@@ -63,24 +63,22 @@ const Header = ({ leadDetails, setShowLeadSetting, handleSubmit, forItem, apiErr
             </h2>) : (<h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
               {leadDetails.name}
             </h2>)}
+            <button onClick={handleLeadDetails}>
+              <CaretDown size={20} weight="bold" />
+            </button>
             {forItem === "summary" && isEdit &&
-              <>
-                <button onClick={handleLeadDetails}>
-                  <CaretDown size={20} weight="bold" />
-                </button><button
-                  onClick={() => setShowLeadSetting(true)}
-                  className="font-bold text-xs text-miru-han-purple-1000 tracking-widest leading-4 flex items-center ml-5"
-                >
-                  <Gear size={15} color="#5B34EA" className="mr-2.5" />
-                    SETTINGS
-                </button>
-              </>
+              <button
+                onClick={() => setShowLeadSetting(true)}
+                className="font-bold text-xs text-miru-han-purple-1000 tracking-widest leading-4 flex items-center ml-5"
+              >
+                <Gear size={15} color="#5B34EA" className="mr-2.5" />
+                SETTINGS
+              </button>
             }
           </div>
           {forItem === "summary" &&
             <>
               <div className="flex w-2/5">
-                <p className="tracking-wider mt-3 block text-xs text-red-600">{apiError}</p>
                 <Link
                   to="/leads"
                   type="button"
@@ -94,7 +92,7 @@ const Header = ({ leadDetails, setShowLeadSetting, handleSubmit, forItem, apiErr
                   <button
                     type="button"
                     className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
-                    onClick={() => {handleSubmit(); setIsEdit(false);}}
+                    onClick={() => {submitLeadForm(); setIsEdit(false);}}
                   >
                     <FloppyDisk size={18} color="white" />
                     <span className="ml-2 inline-block">SAVE</span>
