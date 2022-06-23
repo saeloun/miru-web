@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Reports#index", type: :request do
+RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
@@ -27,7 +27,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       before do
         @timesheet_entry1 = create(:timesheet_entry, project:)
         TimesheetEntry.search_index.refresh
-        get internal_api_v1_reports_path
+        get internal_api_v1_reports_time_entry_index_path
       end
 
       it "returns the time entry report" do
@@ -55,7 +55,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports in given date range in descending order" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           date_range: "this_week"
         }
         expect(response).to have_http_status(:ok)
@@ -77,7 +77,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given single status value" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           status: ["unbilled"]
         }
         expect(response).to have_http_status(:ok)
@@ -89,7 +89,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given multiple status values" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           status: ["unbilled", "non_billable"]
         }
         expect(response).to have_http_status(:ok)
@@ -111,10 +111,9 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given single client value" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           client: [client.id]
         }
-        get "/internal_api/v1/reports?client[]=#{client.id}"
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
@@ -124,7 +123,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given multiple client values" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           client: [client.id, client2.id]
         }
         expect(response).to have_http_status(:ok)
@@ -149,7 +148,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given single team member value" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           team_member: [@user1.id]
         }
         expect(response).to have_http_status(:ok)
@@ -161,7 +160,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given multiple team members values" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           team_member: [@user1.id, @user2.id]
         }
         expect(response).to have_http_status(:ok)
@@ -217,7 +216,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports with given filter values" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           date_range: "last_month",
           status: ["unbilled"],
           team_member: [@user1.id],
@@ -252,7 +251,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports grouped by team members" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           group_by: "team_member"
         }
         expect(response).to have_http_status(:ok)
@@ -274,7 +273,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports grouped by clients" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           group_by: "client"
         }
         expect(response).to have_http_status(:ok)
@@ -296,7 +295,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports grouped by projects" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           group_by: "project"
         }
         expect(response).to have_http_status(:ok)
@@ -322,7 +321,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports grouped by week" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           group_by: "week"
         }
         expect(response).to have_http_status(:ok)
@@ -348,7 +347,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports grouped by team members for selected team members" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           group_by: "team_member",
           team_member: [@user1.id, @user2.id]
         }
@@ -372,7 +371,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports grouped by clients for selected clients" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           group_by: "client",
           client: [client.id, client2.id]
         }
@@ -396,7 +395,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports grouped by projects for selected clients" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           group_by: "project",
           client: [client.id, client2.id]
         }
@@ -424,7 +423,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       end
 
       it "returns the time entry reports grouped by week for the last month" do
-        send_request :get, internal_api_v1_reports_path, params: {
+        send_request :get, internal_api_v1_reports_time_entry_index_path, params: {
           group_by: "week",
           date_range: "last_month"
         }
@@ -443,7 +442,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       create(:company_user, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_reports_path
+      send_request :get, internal_api_v1_reports_time_entry_index_path
     end
 
     it "is not permitted to view time entry report" do
@@ -456,7 +455,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
       create(:company_user, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :get, internal_api_v1_reports_path
+      send_request :get, internal_api_v1_reports_time_entry_index_path
     end
 
     it "is not permitted to view time entry report" do
@@ -466,7 +465,7 @@ RSpec.describe "InternalApi::V1::Reports#index", type: :request do
 
   context "when unauthenticated" do
     it "is not permitted to view time entry report" do
-      send_request :get, internal_api_v1_reports_path
+      send_request :get, internal_api_v1_reports_time_entry_index_path
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
     end

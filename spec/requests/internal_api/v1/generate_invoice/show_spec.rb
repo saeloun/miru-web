@@ -47,7 +47,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#show", type: :request do
       send_request :get, internal_api_v1_generate_invoice_index_path
     end
 
-    it "is not permitted to view time entry report" do
+    it "is not permitted to view invoice details" do
       expect(response).to have_http_status(:forbidden)
     end
   end
@@ -60,14 +60,14 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#show", type: :request do
       send_request :get, internal_api_v1_generate_invoice_index_path
     end
 
-    it "is not permitted to view time entry report" do
+    it "is not permitted to view invoice details" do
       expect(response).to have_http_status(:forbidden)
     end
   end
 
   context "when unauthenticated" do
     it "is not permitted to view time entry report" do
-      send_request :get, internal_api_v1_reports_path
+      send_request :get, internal_api_v1_generate_invoice_index_path
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
     end

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Report::GenerateCsv do
+RSpec.describe "GenerateCsv", type: :service do
   let!(:entry) { create(:timesheet_entry) }
 
   describe "#process" do
