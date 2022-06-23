@@ -37,36 +37,15 @@ const LeadList = () => {
   return (
     <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header leadDetails={leadInfo} setShowLeadSetting={setShowLeadSetting} handleSubmit={null} forItem="quoteDetails" apiError={null} isEdit={false} setIsEdit={null} />
-      <Tab leadDetails={leadDetails} forItem="quoteDetails"
+      <Header leadDetails={leadInfo} setShowLeadSetting={setShowLeadSetting} submitLeadForm={null} forItem="quoteDetails" isEdit={false} setIsEdit={null} />
+      <Tab
+        leadDetails={leadDetails}
+        setLeadDetails={setLeadDetails}
+        forItem="quoteDetails"
         quoteId={quoteId}
-        setTitle={null}
-        setFirstName={null}
-        setLastName={null}
-        setEmail={null}
-        setBudgetAmount={null}
-        setDescription={null}
-        setAddress={null}
-        setSkypeId={null}
-        setLinkedinId={null}
-        setEmails={null}
-        setMobilePhone={null}
-        setTelePhone={null}
-        setDoNotEmail={null}
-        setDoNotBulkEmail={null}
-        setDoNotFax={null}
-        setDoNotPhone={null}
-        setBudgetStatusCode={null}
-        setIndustryCode={null}
-        setNeed={null}
-        setPreferredContactMethodCode={null}
-        setInitialCommunication={null}
-        setSourceCode={null}
-        setCountry={null}
-        setTechStacks={null}
-        handleSubmit={null}
         setForItem="quoteDetails"
-        isEdit={false} />
+        isEdit={false}
+        setFormRef={null} />
       {showLeadSetting && (
         <LeadSettings leadDetails={leadInfo} setLeadDetails={setLeadDetails} setShowLeadSetting={setShowLeadSetting} />
       )}

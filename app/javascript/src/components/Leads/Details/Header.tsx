@@ -8,7 +8,7 @@ import getStatusCssClass from "../../../utils/getStatusTag";
 import DeleteLead from "../Modals/DeleteLead";
 import NewLead from "../Modals/NewLead";
 
-const Header = ({ leadDetails, setShowLeadSetting, handleSubmit, forItem, apiError, isEdit, setIsEdit }) => {
+const Header = ({ leadDetails, setShowLeadSetting, submitLeadForm, forItem, isEdit, setIsEdit }) => {
 
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [newLead, setnewLead] = useState<boolean>(false);
@@ -80,7 +80,6 @@ const Header = ({ leadDetails, setShowLeadSetting, handleSubmit, forItem, apiErr
           {forItem === "summary" &&
             <>
               <div className="flex w-2/5">
-                <p className="tracking-wider mt-3 block text-xs text-red-600">{apiError}</p>
                 <Link
                   to="/leads"
                   type="button"
@@ -94,7 +93,7 @@ const Header = ({ leadDetails, setShowLeadSetting, handleSubmit, forItem, apiErr
                   <button
                     type="button"
                     className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
-                    onClick={() => {handleSubmit(); setIsEdit(false);}}
+                    onClick={() => {submitLeadForm(); setIsEdit(false);}}
                   >
                     <FloppyDisk size={18} color="white" />
                     <span className="ml-2 inline-block">SAVE</span>
