@@ -2,6 +2,7 @@ import React from "react";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
 import { MagnifyingGlass, Plus } from "phosphor-react";
+import { TeamModalType } from "constants/index";
 
 const Header = () => {
   const { isAdminUser } = useUserContext();
@@ -27,7 +28,7 @@ const Header = () => {
           <button
             type="button"
             className="header__button"
-            onClick={() => setModalState("addEdit")}
+            onClick={() => setModalState(TeamModalType.ADD_EDIT)}
           >
             <Plus weight="fill" size={16} />
             <span className="ml-2 inline-block">NEW USER</span>

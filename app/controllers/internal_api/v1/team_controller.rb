@@ -19,9 +19,29 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
     }, status: :ok
   end
 
+  def update
+    authorize :team
+    update_company_user_role
+    render json: {
+      user: company_user.user,
+      notice: I18n.t("team.update.success.message")
+    }, status: :ok
+  end
+
   private
 
     def employment
       @employment ||= current_company.employments.kept.find_by!(user_id: params[:id])
+    end
+
+    def update_company_user_role
+      current_role = current_company_role(company_user.user)
+
+      company_user.user.remove_role(current_role.name.to_sym, current_company) if current_role.present?
+      company_user.user.add_role(params[:role].downcase.to_sym, current_company)
+    end
+
+    def current_company_role(user)
+      user.roles.find_by(resource: current_company)
     end
 end

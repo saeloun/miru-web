@@ -4,14 +4,14 @@ import { useList } from "context/TeamContext";
 import AddEditMember from "./AddEditMember";
 import DeleteMember from "./DeleteMember";
 
-const Modals = () => {
+const Modals = ({ user }) => {
   const { modal } = useList();
 
   switch (modal) {
     case "addEdit":
-      return <AddEditMember />;
+      return <AddEditMember user={user} isEdit={user?.id} />;
     case "delete":
-      return <DeleteMember />;
+      return <DeleteMember user={user} />;
     default:
       return null;
   }
