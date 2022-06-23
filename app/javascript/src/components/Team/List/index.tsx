@@ -12,8 +12,10 @@ export const ProjectList = () => {
 
   const [teamList, setTeamList] = useState([]);
   const [modal, setModal] = useState("");
+  const [modalUser, setModaluser] = useState({});
 
-  const setModalState = (modalName) => {
+  const setModalState = (modalName, user = {}) => {
+    setModaluser(user);
     setModal(modalName);
   };
 
@@ -26,8 +28,10 @@ export const ProjectList = () => {
   };
 
   useEffect(() => {
-    getTeamList();
-  }, []);
+    if (modal == ""){
+      getTeamList();
+    }
+  }, [modal]);
 
   return (
     <Fragment>
@@ -49,7 +53,7 @@ export const ProjectList = () => {
             </div>
           </div>
         </div>
-        <Modals />
+        <Modals user={modalUser} />
       </ListContext.Provider>
     </Fragment>
   );
