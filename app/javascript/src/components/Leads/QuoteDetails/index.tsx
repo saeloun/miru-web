@@ -27,6 +27,12 @@ const LeadList = () => {
     )
   };
 
+  const resetLeadForm = () => {
+    formRef.dispatchEvent(
+      new Event("reset", { bubbles: true, cancelable: true })
+    )
+  };
+
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
@@ -45,7 +51,7 @@ const LeadList = () => {
   return (
     <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header leadDetails={leadInfo} setShowLeadSetting={setShowLeadSetting} submitLeadForm={submitLeadForm} forItem="quoteDetails" isEdit={false} setIsEdit={null} />
+      <Header leadDetails={leadInfo} setShowLeadSetting={setShowLeadSetting} submitLeadForm={submitLeadForm} resetLeadForm={resetLeadForm} forItem="quoteDetails" isEdit={false} setIsEdit={null} />
       <Tab
         leadDetails={leadDetails}
         setLeadDetails={setLeadDetails}

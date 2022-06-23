@@ -34,10 +34,16 @@ const LeadList = () => {
     )
   };
 
+  const resetLeadForm = () => {
+    formRef.dispatchEvent(
+      new Event("reset", { bubbles: true, cancelable: true })
+    )
+  };
+
   return (
     <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header leadDetails={leadDetails} setShowLeadSetting={setShowLeadSetting} submitLeadForm={submitLeadForm} forItem={forItem} isEdit={isEdit} setIsEdit={setIsEdit} />
+      <Header leadDetails={leadDetails} setShowLeadSetting={setShowLeadSetting} submitLeadForm={submitLeadForm} resetLeadForm={resetLeadForm} forItem={forItem} isEdit={isEdit} setIsEdit={setIsEdit} />
       <Tab
         leadDetails={leadDetails}
         setLeadDetails={setLeadDetails}

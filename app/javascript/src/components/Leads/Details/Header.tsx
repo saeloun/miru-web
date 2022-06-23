@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leads from "apis/leads";
 import { X, Pencil, FloppyDisk, ArrowLeft, DotsThreeVertical, Receipt, CaretDown, Trash, Gear } from "phosphor-react";
@@ -8,7 +8,14 @@ import getStatusCssClass from "../../../utils/getStatusTag";
 import DeleteLead from "../Modals/DeleteLead";
 import NewLead from "../Modals/NewLead";
 
-const Header = ({ leadDetails, setShowLeadSetting, submitLeadForm, forItem, isEdit, setIsEdit }) => {
+const Header = ({
+  leadDetails,
+  setShowLeadSetting,
+  submitLeadForm,
+  resetLeadForm,
+  forItem,
+  isEdit,
+  setIsEdit }) => {
 
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [newLead, setnewLead] = useState<boolean>(false);
@@ -19,6 +26,16 @@ const Header = ({ leadDetails, setShowLeadSetting, submitLeadForm, forItem, isEd
   const [isLeadOpen, toggleLeadDetails] = useState<boolean>(false);
 
   const navigate = useNavigate();
+
+  const wrapperRef = React.useRef(null);
+
+  const closeOpenHeaderMenu = (e)=>{
+    if (wrapperRef.current && isHeaderMenuVisible && !wrapperRef.current.contains(e.target)){
+      setHeaderMenuVisibility(false)
+    }
+  };
+
+  document.addEventListener('click',closeOpenHeaderMenu)
 
   const handleDeleteClick = (id) => {
     setShowDeleteDialog(true);
@@ -66,7 +83,7 @@ const Header = ({ leadDetails, setShowLeadSetting, submitLeadForm, forItem, isEd
             <button onClick={handleLeadDetails}>
               <CaretDown size={20} weight="bold" />
             </button>
-            {forItem === "summary" && isEdit &&
+            {forItem === "summary" &&
               <button
                 onClick={() => setShowLeadSetting(true)}
                 className="font-bold text-xs text-miru-han-purple-1000 tracking-widest leading-4 flex items-center ml-5"
@@ -78,27 +95,27 @@ const Header = ({ leadDetails, setShowLeadSetting, submitLeadForm, forItem, isEd
           </div>
           {forItem === "summary" &&
             <>
-              <div className="flex w-2/5">
-                <Link
-                  to="/leads"
-                  type="button"
-                  className="header__button w-1/3 p-0"
-                >
-                  <X size={12} />
-                  <span className="ml-2 inline-block">CANCEL</span>
-                </Link>
+              <div className="relative flex justify-end w-2/5">
                 {isEdit ?
-
-                  <button
-                    type="button"
-                    className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
-                    onClick={() => {submitLeadForm(); setIsEdit(false);}}
-                  >
-                    <FloppyDisk size={18} color="white" />
-                    <span className="ml-2 inline-block">SAVE</span>
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      className="header__button w-1/3 p-0"
+                      onClick={() => { resetLeadForm(); setIsEdit(false); } }
+                    >
+                      <X size={12} />
+                      <span className="ml-2 inline-block">CANCEL</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
+                      onClick={() => { submitLeadForm(); setIsEdit(false); } }
+                    >
+                      <FloppyDisk size={18} color="white" />
+                      <span className="ml-2 inline-block">SAVE</span>
+                    </button>
+                  </>
                   :
-
                   <button
                     type="button"
                     className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
@@ -109,23 +126,25 @@ const Header = ({ leadDetails, setShowLeadSetting, submitLeadForm, forItem, isEd
                   </button>
 
                 }
-                <button onClick = {handleMenuVisibility} className={`menuButton__button ${menuBackground}`}>
-                  <DotsThreeVertical size={20} color="#000000" />
-                </button>
-                { isHeaderMenuVisible && <ul className="menuButton__wrapper">
-                  <li>
-                    <button className="menuButton__list-item" onClick={() => setnewLead(true)}>
-                      <Receipt size={16} color="#5B34EA" weight="bold" />
-                      <span className="ml-3">Add Lead</span>
-                    </button>
-                  </li>
-                  <li>
-                    <button className="menuButton__list-item text-col-red-400" onClick={() => handleDeleteClick(leadDetails.id)}>
-                      <Trash size={16} color="#E04646" weight="bold" />
-                      <span className="ml-3">Delete</span>
-                    </button>
-                  </li>
-                </ul> }
+                <div ref={wrapperRef}>
+                  <button onClick = {handleMenuVisibility} className={`menuButton__button ${menuBackground}`}>
+                    <DotsThreeVertical size={20} color="#000000" />
+                  </button>
+                  { isHeaderMenuVisible && <ul className="menuButton__wrapper">
+                    <li>
+                      <button className="menuButton__list-item" onClick={() => setnewLead(true)}>
+                        <Receipt size={16} color="#5B34EA" weight="bold" />
+                        <span className="ml-3">Add Lead</span>
+                      </button>
+                    </li>
+                    <li>
+                      <button className="menuButton__list-item text-col-red-400" onClick={() => handleDeleteClick(leadDetails.id)}>
+                        <Trash size={16} color="#E04646" weight="bold" />
+                        <span className="ml-3">Delete</span>
+                      </button>
+                    </li>
+                  </ul> }
+                </div>
               </div>
             </>
           }
