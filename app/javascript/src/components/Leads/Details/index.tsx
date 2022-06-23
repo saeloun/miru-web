@@ -45,6 +45,7 @@ const LeadList = () => {
         quoteId={null}
         setForItem={setForItem}
         isEdit={isEdit}
+        setIsEdit={setIsEdit}
         setFormRef={setFormRef} />
       {showLeadSetting && (
         <LeadSettings leadDetails={leadDetails} setLeadDetails={setLeadDetails} setShowLeadSetting={setShowLeadSetting} />

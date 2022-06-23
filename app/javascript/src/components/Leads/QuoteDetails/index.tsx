@@ -19,6 +19,14 @@ const LeadList = () => {
   const { quoteId } = useParams();
   const [showLeadSetting, setShowLeadSetting] = useState<boolean>(false);
 
+  const [formRef, setFormRef]  = useState<any>(React.createRef());
+
+  const submitLeadForm = () => {
+    formRef.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    )
+  };
+
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
@@ -37,7 +45,7 @@ const LeadList = () => {
   return (
     <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header leadDetails={leadInfo} setShowLeadSetting={setShowLeadSetting} submitLeadForm={null} forItem="quoteDetails" isEdit={false} setIsEdit={null} />
+      <Header leadDetails={leadInfo} setShowLeadSetting={setShowLeadSetting} submitLeadForm={submitLeadForm} forItem="quoteDetails" isEdit={false} setIsEdit={null} />
       <Tab
         leadDetails={leadDetails}
         setLeadDetails={setLeadDetails}
@@ -45,7 +53,8 @@ const LeadList = () => {
         quoteId={quoteId}
         setForItem="quoteDetails"
         isEdit={false}
-        setFormRef={null} />
+        setIsEdit={false}
+        setFormRef={setFormRef} />
       {showLeadSetting && (
         <LeadSettings leadDetails={leadInfo} setLeadDetails={setLeadDetails} setShowLeadSetting={setShowLeadSetting} />
       )}

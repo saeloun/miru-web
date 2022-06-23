@@ -63,18 +63,17 @@ const Header = ({ leadDetails, setShowLeadSetting, submitLeadForm, forItem, isEd
             </h2>) : (<h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
               {leadDetails.name}
             </h2>)}
+            <button onClick={handleLeadDetails}>
+              <CaretDown size={20} weight="bold" />
+            </button>
             {forItem === "summary" && isEdit &&
-              <>
-                <button onClick={handleLeadDetails}>
-                  <CaretDown size={20} weight="bold" />
-                </button><button
-                  onClick={() => setShowLeadSetting(true)}
-                  className="font-bold text-xs text-miru-han-purple-1000 tracking-widest leading-4 flex items-center ml-5"
-                >
-                  <Gear size={15} color="#5B34EA" className="mr-2.5" />
-                    SETTINGS
-                </button>
-              </>
+              <button
+                onClick={() => setShowLeadSetting(true)}
+                className="font-bold text-xs text-miru-han-purple-1000 tracking-widest leading-4 flex items-center ml-5"
+              >
+                <Gear size={15} color="#5B34EA" className="mr-2.5" />
+                SETTINGS
+              </button>
             }
           </div>
           {forItem === "summary" &&
