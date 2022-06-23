@@ -2,7 +2,7 @@ import React from "react";
 import { currencyFormat } from "helpers/currency";
 
 const InvoiceTotalSummary = ({ invoice, company, lineItems }) => {
-  const subTotal = lineItems.reduce((prev, curr) => prev + curr.rate * curr.quantity/60, 0);
+  const subTotal = lineItems.reduce((prev, curr) => prev + curr.rate * curr.quantity/60, 0).toFixed(2);
   const tax = invoice.tax;
   const discount = invoice.discount;
   const total = Number(subTotal) + Number(tax) - Number(discount);

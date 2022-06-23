@@ -1,9 +1,11 @@
 import React from "react";
 
+import { getMaxIdx } from "../common/utils";
+
 const NewLineItemTable = ({
   lineItems, setLineItems,
   selectedLineItems, setSelectedLineItems,
-  addNew, setAddNew, setManualEntry
+  addNew, setAddNew, manualEntryArr, setManualEntryArr
 }) => {
 
   const selectRowId = (item) => {
@@ -39,7 +41,7 @@ const NewLineItemTable = ({
         <button
           onClick={() => {
             setAddNew(!addNew);
-            setManualEntry(true);
+            setManualEntryArr([...manualEntryArr, { idx: getMaxIdx(manualEntryArr) + 1 }]);
           }}
           className="mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000"
         >

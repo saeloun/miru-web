@@ -1,0 +1,149 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.sandbox.transferwise.tech/v1/accounts
+    body:
+      encoding: UTF-8
+      string: '{"accountHolderName":"Sudeep Anil Tarlekar","country":"GB","currency":"USD","details":{"accountNumber":"GB46
+        TRWI 2314 7025 5421 89","address":{"city":"London","country":"GB","countryCode":"GB","firstLine":"Times
+        Square","postCode":"56001"},"legalType":"BUSINESS","swiftCode":"TRWIGB2L"},"profile":"123456","type":"swift_code"}'
+    headers:
+      Authorization:
+      - Bearer access-token-12345
+      User-Agent:
+      - Faraday v1.9.3
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 03 Jun 2022 08:13:02 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - e5d050a21002184f
+      X-Envoy-Upstream-Service-Time:
+      - '94'
+      X-Envoy-Attempt-Count:
+      - '1'
+      Vary:
+      - origin,access-control-request-method,access-control-request-headers,accept-encoding
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Set-Cookie:
+      - __cf_bm=1ycFqECmcj1jAmNfCRTJXf3zDd0sGc2HW_havtPfkdc-1654243982-0-ATEEaQGdbWlRZ5nAP9JnQqWZH0PlDi15El+PjcmXS6G4w9uoGj1qRdKwG+Vnz8YbSPOD6ne6DLZ5Jc7KlH1FPNM=;
+        path=/; expires=Fri, 03-Jun-22 08:43:02 GMT; domain=.transferwise.tech; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7156f79af806a907-MAA
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":148397619,"business":16455649,"profile":16455649,"accountHolderName":"Sudeep
+        Anil Tarlekar","currency":"USD","country":"GB","type":"swift_code","details":{"address":{"country":"GB","countryCode":"GB","firstLine":"Times
+        Square","postCode":"56001","city":"London","state":null},"email":null,"legalType":"BUSINESS","accountHolderName":null,"accountNumber":"GB46TRWI23147025542189","sortCode":null,"abartn":null,"accountType":null,"bankgiroNumber":null,"ifscCode":null,"bsbCode":null,"institutionNumber":null,"transitNumber":null,"phoneNumber":null,"bankCode":null,"russiaRegion":null,"routingNumber":null,"branchCode":null,"cpf":null,"cardToken":null,"idType":null,"idNumber":null,"idCountryIso3":null,"idValidFrom":null,"idValidTo":null,"clabe":null,"swiftCode":"TRWIGB2L","dateOfBirth":null,"clearingNumber":null,"bankName":null,"branchName":null,"businessNumber":null,"province":null,"city":null,"rut":null,"token":null,"cnpj":null,"payinReference":null,"pspReference":null,"orderId":null,"idDocumentType":null,"idDocumentNumber":null,"targetProfile":null,"targetUserId":null,"taxId":null,"job":null,"nationality":null,"interacAccount":null,"bban":null,"town":null,"postCode":null,"language":null,"billerCode":null,"customerReferenceNumber":null,"prefix":null,"IBAN":null,"iban":null,"BIC":"TRWIGB2L","bic":"TRWIGB2L"},"user":5967985,"active":true,"ownedByCustomer":false}'
+    http_version:
+  recorded_at: Fri, 03 Jun 2022 08:13:02 GMT
+- request:
+    method: post
+    uri: https://api.transferwise.com/v1/accounts
+    body:
+      encoding: UTF-8
+      string: '{"accountHolderName":"Sudeep Anil Tarlekar","country":"GB","currency":"USD","details":{"accountNumber":"GB46
+        TRWI 2314 7025 5421 89","address":{"city":"London","country":"GB","countryCode":"GB","firstLine":"Times
+        Square","postCode":"56001"},"legalType":"BUSINESS","swiftCode":"TRWIGB2L"},"profile":"123456","type":"swift_code"}'
+    headers:
+      Authorization:
+      - Bearer access-token-12345
+      User-Agent:
+      - Faraday v1.9.3
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 03 Jun 2022 08:13:02 GMT
+      Content-Type:
+      - application/json;charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Trace-Id:
+      - e5d050a21002184f
+      X-Envoy-Upstream-Service-Time:
+      - '94'
+      X-Envoy-Attempt-Count:
+      - '1'
+      Vary:
+      - origin,access-control-request-method,access-control-request-headers,accept-encoding
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Set-Cookie:
+      - __cf_bm=1ycFqECmcj1jAmNfCRTJXf3zDd0sGc2HW_havtPfkdc-1654243982-0-ATEEaQGdbWlRZ5nAP9JnQqWZH0PlDi15El+PjcmXS6G4w9uoGj1qRdKwG+Vnz8YbSPOD6ne6DLZ5Jc7KlH1FPNM=;
+        path=/; expires=Fri, 03-Jun-22 08:43:02 GMT; domain=.transferwise.tech; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 7156f79af806a907-MAA
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":148397619,"business":16455649,"profile":16455649,"accountHolderName":"Sudeep
+        Anil Tarlekar","currency":"USD","country":"GB","type":"swift_code","details":{"address":{"country":"GB","countryCode":"GB","firstLine":"Times
+        Square","postCode":"56001","city":"London","state":null},"email":null,"legalType":"BUSINESS","accountHolderName":null,"accountNumber":"GB46TRWI23147025542189","sortCode":null,"abartn":null,"accountType":null,"bankgiroNumber":null,"ifscCode":null,"bsbCode":null,"institutionNumber":null,"transitNumber":null,"phoneNumber":null,"bankCode":null,"russiaRegion":null,"routingNumber":null,"branchCode":null,"cpf":null,"cardToken":null,"idType":null,"idNumber":null,"idCountryIso3":null,"idValidFrom":null,"idValidTo":null,"clabe":null,"swiftCode":"TRWIGB2L","dateOfBirth":null,"clearingNumber":null,"bankName":null,"branchName":null,"businessNumber":null,"province":null,"city":null,"rut":null,"token":null,"cnpj":null,"payinReference":null,"pspReference":null,"orderId":null,"idDocumentType":null,"idDocumentNumber":null,"targetProfile":null,"targetUserId":null,"taxId":null,"job":null,"nationality":null,"interacAccount":null,"bban":null,"town":null,"postCode":null,"language":null,"billerCode":null,"customerReferenceNumber":null,"prefix":null,"IBAN":null,"iban":null,"BIC":"TRWIGB2L","bic":"TRWIGB2L"},"user":5967985,"active":true,"ownedByCustomer":false}'
+    http_version:
+  recorded_at: Fri, 03 Jun 2022 08:13:02 GMT
+recorded_with: VCR 3.0.3

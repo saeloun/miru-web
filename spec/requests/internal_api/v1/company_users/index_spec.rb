@@ -17,7 +17,7 @@ RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
     create(:company_user, company_id: company1.id, user_id: user4.id)
   end
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       user1.add_role :admin, company1
       sign_in user1
@@ -43,9 +43,22 @@ RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       user1.add_role :employee, company1
+      sign_in user1
+      send_request :get, internal_api_v1_company_users_path
+    end
+
+    it "forbids the user to access the list of users of company" do
+      expect(response).to have_http_status(:forbidden)
+      expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
+    end
+  end
+
+  context "when user is a book keeper" do
+    before do
+      user1.add_role :book_keeper, company1
       sign_in user1
       send_request :get, internal_api_v1_company_users_path
     end

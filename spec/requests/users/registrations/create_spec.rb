@@ -4,11 +4,13 @@ require "rails_helper"
 
 RSpec.describe "Users::RegistrationsController#create", type: :request do
   describe "after_inactive_sign_up_path_for" do
+    let(:email) { "sam@example.com" }
+
     before do
       user_params = {
         first_name: "First name",
         last_name: "Last name",
-        email: "sam@example.com",
+        email:,
         password: "testing!@",
         password_confirmation: "testing!@"
       }
@@ -19,7 +21,7 @@ RSpec.describe "Users::RegistrationsController#create", type: :request do
       message = "A message with a confirmation link has been sent to your email address. " \
                 "Please follow the link to activate your account."
       expect(flash[:notice]).to eq(message)
-      expect(response).to redirect_to(new_user_session_path)
+      expect(response).to redirect_to(email_confirmation_path({ email: }))
     end
   end
 end

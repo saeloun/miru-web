@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 
+import useOutsideClick from "helpers/outsideClick";
 import NewLineItemTable from "./NewLineItemTable";
-import useOutsideClick from "../../../helpers/outsideClick";
 import TableHeader from "../common/LineItemTableHeader";
 import NewLineItemRow from "../common/NewLineItemRow";
 import ManualEntry from "../Generate/ManualEntry";
@@ -10,10 +10,11 @@ const InvoiceTable = ({
   lineItems,
   selectedLineItems,
   setLineItems,
-  setSelectedLineItems
+  setSelectedLineItems,
+  manualEntryArr,
+  setManualEntryArr
 }) => {
   const [addNew, setAddNew] = useState<boolean>(false);
-  const [manualEntry, setManualEntry] = useState<boolean>(false);
 
   const wrapperRef = useRef(null);
 
@@ -26,7 +27,8 @@ const InvoiceTable = ({
         setSelectedLineItems={setSelectedLineItems}
         addNew={addNew}
         setAddNew={setAddNew}
-        setManualEntry={setManualEntry}
+        manualEntryArr={manualEntryArr}
+        setManualEntryArr={setManualEntryArr}
       />;
     }
     return (
@@ -52,7 +54,7 @@ const InvoiceTable = ({
   };
 
   useOutsideClick(wrapperRef, () => {
-    setAddNew(false);
+    setAddNew(addNew);
   }, addNew);
 
   return (
@@ -65,12 +67,13 @@ const InvoiceTable = ({
               {getAddNewButton()}
             </td>
           </tr>
-          {manualEntry
-            && <ManualEntry
-              setShowItemInputs={setManualEntry}
-              setSelectedOption={setSelectedLineItems}
-              selectedOption={selectedLineItems}
+          {manualEntryArr.map((entry) =>
+            <ManualEntry
+              entry={entry}
+              manualEntryArr={manualEntryArr}
+              setManualEntryArr={setManualEntryArr}
             />
+          )
           }
           {
             selectedLineItems.map((item, index) => (

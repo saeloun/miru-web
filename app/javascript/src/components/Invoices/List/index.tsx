@@ -3,12 +3,13 @@ import { useSearchParams } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
 import Pagination from "common/Pagination";
+import { sendGAPageView } from "utils/googleAnalytics";
+import { ApiStatus as InvoicesStatus } from "constants/index";
 
 import Container from "./container";
 import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
 
-import { ApiStatus as InvoicesStatus } from "../../../constants";
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
 
@@ -38,6 +39,8 @@ const Invoices: React.FC = () => {
 
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
+
+  React.useEffect(() => sendGAPageView(), []);
 
   React.useEffect(() => {
     fetchInvoices();

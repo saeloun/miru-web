@@ -47,12 +47,12 @@ const mapGenerateInvoice = (input) => ({
   amount: input.amount,
   discount: input.discount,
   tax: input.tax,
-  invoice_line_items_attributes: input.selectedOption.map(ilt => ({
-    name: `${ilt.first_name} ${ilt.last_name}`,
+  invoice_line_items_attributes: input.invoiceLineItems.map(ilt => ({
+    name: ilt.name,
     description: ilt.description,
     date: ilt.date,
     rate: ilt.rate,
-    quantity: ilt.qty,
+    quantity: ilt.quantity,
     timesheet_entry_id: ilt.timesheet_entry_id
   }))
 });

@@ -10,7 +10,7 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
     create(:company_user, company_id: company1.id, user_id: user1.id)
   end
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       user1.add_role :admin, company1
       sign_in user1
@@ -22,7 +22,23 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
     end
 
     it "returns success json response" do
-      expect(json_response["company"]["name"]).to eq(company1.name)
+      expect(json_response["name"]).to eq(company1.name)
+    end
+  end
+
+  context "when user is a book keeper" do
+    before do
+      user1.add_role :book_keeper, company1
+      sign_in user1
+      send_request :get, internal_api_v1_companies_path
+    end
+
+    it "response should be successful" do
+      expect(response).to be_successful
+    end
+
+    it "returns success json response" do
+      expect(json_response["name"]).to eq(company1.name)
     end
   end
 end

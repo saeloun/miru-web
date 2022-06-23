@@ -31,6 +31,7 @@ class Company < ApplicationRecord
   has_many :invoices, through: :clients
   has_one :stripe_connected_account, dependent: :destroy
   has_many :payments_providers, dependent: :destroy
+  has_many :devices, dependent: :destroy
   resourcify
 
   # Validations
@@ -106,5 +107,11 @@ class Company < ApplicationRecord
         name: user.full_name
       }
     end
+  end
+
+  def company_logo
+    return nil if !logo.attached?
+
+    Rails.application.routes.url_helpers.polymorphic_url(logo, only_path: true)
   end
 end
