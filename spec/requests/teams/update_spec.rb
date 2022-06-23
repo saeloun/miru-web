@@ -6,7 +6,7 @@ RSpec.describe "Team#update", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       create(:company_user, company:, user:)
       user.add_role :admin, company
@@ -34,10 +34,36 @@ RSpec.describe "Team#update", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       create(:company_user, company:, user:)
       user.add_role :employee, company
+      sign_in user
+      send_request(
+        :put, team_path(user), params: {
+          user: {
+            first_name: "test",
+            last_name: "example",
+            email: "test@example.com",
+            roles: "admin"
+          }
+        })
+    end
+
+    it "redirect to root_path" do
+      expect(response).to have_http_status(:redirect)
+      expect(response).to redirect_to(root_path)
+    end
+
+    it "is not permitter to update user" do
+      expect(flash[:alert]).to eq("You are not authorized to update team.")
+    end
+  end
+
+  context "when user is a book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
       sign_in user
       send_request(
         :put, team_path(user), params: {

@@ -1,36 +1,55 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) => {
+import { Trash } from "phosphor-react";
+
+const ManualEntry = ({
+  entry,
+  manualEntryArr,
+  setManualEntryArr
+}) => {
 
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [rate, setRate] = useState<any>("");
-  const [qty, setQty] = useState<string>("");
-  const [lineTotal, setLineTotal] = useState<any>("");
+  const [qty, setQty] = useState<any>("");
+  const [lineTotal, setLineTotal] = useState<any>(entry.lineTotal ? entry.lineTotal : 0);
+  const [lineItem, setLineItem] = useState<any>({});
   const ref = useRef();
 
-  const onEnter = e => {
-    if (e.key == "Enter") {
-      const names = name.split(" ");
-      const newItem = [...selectedOption, {
-        first_name: names.splice(0, 1)[0],
-        last_name: names.join(" "),
-        date, description,
+  useEffect(() => {
+    if (entry.idx) {
+      setLineItem({ ...lineItem,
+        idx: entry.idx,
+        name,
+        date,
+        description,
         rate,
-        qty: (Number(qty) * 60),
-        lineTotal: (Number(qty) * Number(rate))
-      }];
-
-      setSelectedOption(newItem);
-      setName("");
-      setDate("");
-      setDescription("");
-      setRate("");
-      setQty("");
-      setLineTotal("");
-      setShowItemInputs(false);
+        qty: qty,
+        lineTotal: (Number(qty) * Number(rate)).toFixed(2)
+      });
     }
+  }, [name, date, description, rate, qty, lineTotal]);
+
+  useEffect(() => {
+    const newManualEntryArr = manualEntryArr.map((option) => {
+      if (option.idx === lineItem.idx) {
+        return lineItem;
+      }
+
+      return option;
+    });
+
+    setManualEntryArr(newManualEntryArr);
+  }, [lineItem]);
+
+  const handleDelete = async () => {
+    const tempManualEntryArr = [...manualEntryArr];
+
+    const indexOfItem = tempManualEntryArr.findIndex(object => object.idx === entry.idx);
+    indexOfItem !== -1 && tempManualEntryArr.splice(indexOfItem, 1);
+
+    await setManualEntryArr(tempManualEntryArr);
   };
 
   return (
@@ -40,7 +59,8 @@ const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) =
           type="text"
           placeholder="Name"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          value={name}
+          defaultValue={entry.name}
+          value={entry.name}
           onChange={e => setName(e.target.value)}
         />
       </td>
@@ -51,7 +71,8 @@ const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) =
           ref={ref}
           onFocus={(e) => (e.target.type = "date")}
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          value={date}
+          defaultValue={entry.date}
+          value={entry.date}
           onChange={e => setDate(e.target.value)}
         />
       </td>
@@ -60,7 +81,8 @@ const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) =
           type="text"
           placeholder="Description"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          value={description}
+          defaultValue={entry.description}
+          value={entry.description}
           onChange={e => setDescription(e.target.value)}
         />
       </td>
@@ -69,8 +91,12 @@ const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) =
           type="text"
           placeholder="Rate"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          value={rate}
-          onChange={e => setRate(e.target.value)}
+          defaultValue={entry.rate}
+          value={entry.rate}
+          onChange={e => {
+            setRate(e.target.value);
+            setLineTotal(Number(e.target.value) * Number(qty));
+          }}
         />
       </td>
       <td className="p-1 w-full">
@@ -78,16 +104,21 @@ const ManualEntry = ({ setShowItemInputs, setSelectedOption, selectedOption }) =
           type="text"
           placeholder="Qty"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          value={qty}
+          defaultValue={entry.qty}
+          value={entry.qty}
           onChange={e => {
             setQty(e.target.value);
             setLineTotal(Number(rate) * Number(e.target.value));
           }}
-          onKeyDown={e => onEnter(e)}
         />
       </td>
       <td className="text-right font-normal text-base text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000">
-        {lineTotal}
+        {entry.lineTotal}
+      </td>
+      <td>
+        <button onClick={handleDelete} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
+          <Trash size={16} color="#E04646" weight="bold" />
+        </button>
       </td>
     </tr>
   );

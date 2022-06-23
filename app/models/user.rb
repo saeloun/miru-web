@@ -62,7 +62,9 @@ class User < ApplicationRecord
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all
   has_one :wise_account, dependent: :destroy
+  has_many :previous_employments, dependent: :destroy
   has_one_attached :avatar
+  has_many :devices, dependent: :destroy
   rolify strict: true
 
   # Social account details
@@ -99,12 +101,6 @@ class User < ApplicationRecord
     super and self.kept?
   end
 
-  def has_owner_or_admin_role?(company)
-    return false if company.nil?
-
-    self.has_cached_role?(:owner, company) || self.has_cached_role?(:admin, company)
-  end
-
   def current_workspace(load_associations: [:logo_attachment])
     @_current_workspace ||= Company.includes(load_associations).find_by(id: current_workspace_id)
   end
@@ -129,5 +125,5 @@ class User < ApplicationRecord
         "github_url": "",
         "linkedin_url": ""
       }
-  end
+    end
 end

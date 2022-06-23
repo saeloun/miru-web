@@ -118,6 +118,9 @@ gem "stripe"
 # Background job processing adapter
 gem "sidekiq"
 
+#  job scheduler extension for Sidekiq
+gem "sidekiq-scheduler"
+
 # searchkick for elasticsearch
 gem "elasticsearch", "< 7.14" # select one
 gem "searchkick"
