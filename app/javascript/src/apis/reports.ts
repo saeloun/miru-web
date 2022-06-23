@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const path = "/reports";
+const path = "/reports/time_entry/";
 
 const get = (queryParams) => axios.get(`${path}${queryParams}`);
 
