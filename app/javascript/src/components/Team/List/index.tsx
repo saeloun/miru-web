@@ -3,6 +3,7 @@ import { ToastContainer } from "react-toastify";
 import { get } from "apis/team";
 import { ListContext } from "context/TeamContext";
 import { unmapList } from "mapper/team.mapper";
+import { TeamModalType } from "constants/index";
 import Header from "./Header";
 import Table from "./Table";
 import { TOASTER_DURATION } from "../../../constants/index";
@@ -12,8 +13,10 @@ export const ProjectList = () => {
 
   const [teamList, setTeamList] = useState([]);
   const [modal, setModal] = useState("");
+  const [modalUser, setModaluser] = useState({});
 
-  const setModalState = (modalName) => {
+  const setModalState = (modalName, user = {}) => {
+    setModaluser(user);
     setModal(modalName);
   };
 
@@ -26,8 +29,10 @@ export const ProjectList = () => {
   };
 
   useEffect(() => {
-    getTeamList();
-  }, []);
+    if (modal == TeamModalType.NONE){
+      getTeamList();
+    }
+  }, [modal]);
 
   return (
     <Fragment>
@@ -49,7 +54,7 @@ export const ProjectList = () => {
             </div>
           </div>
         </div>
-        <Modals />
+        <Modals user={modalUser} />
       </ListContext.Provider>
     </Fragment>
   );
