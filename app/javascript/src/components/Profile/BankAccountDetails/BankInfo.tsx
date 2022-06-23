@@ -6,27 +6,34 @@ const BankInfo = ({
   recipientId,
   sourceCurrency, targetCurrency,
   fetchAccountRequirements,
-  setBankDetailsModal,
+  setBankDetailsModal, setIsLoading,
   setFirstName, setLastName,
   setRecipientDetails, setIsUpdate
 }) => {
 
   useEffect(() => {
-    wiseApi.fetchRecipient(recipientId)
-      .then(response => {
-        const name = response.data["accountHolderName"].split(" ");
-
-        setRecipientDetails(response.data);
-        setFirstName(name.shift());
-        setLastName(name.join(" "));
-        setIsUpdate(true);
-      })
-      .catch(error => console.error(error));
+    fetchRecipientDetails(recipientId);
   }, []);
 
   useEffect(() => {
     fetchAccountRequirements(sourceCurrency, targetCurrency, true);
   }, []);
+
+  const fetchRecipientDetails = async (recipientId) => {
+    try {
+      setIsLoading(true);
+      const response = await wiseApi.fetchRecipient(recipientId);
+      const name = response.data["accountHolderName"].split(" ");
+      setRecipientDetails(response.data);
+      setFirstName(name.shift());
+      setLastName(name.join(" "));
+      setIsUpdate(true);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="mx-2 w-5/8 h-12 px-8 py-3.5 bg-gray-200 flex justify-center">
