@@ -1,22 +1,29 @@
 # frozen_string_literal: true
 
 # Client Create Start
-client_1_india = {
-  name: "client_1_saeloun_India", email: "client_one@saeloun_india.com", phone: "+91 9999999991",
-  address: "Somewhere on Earth"
+microsoft = {
+  name: "Microsoft", email: "support@microsoft.com", phone: "+1 9999999991",
+  address: "California, USA"
 }
-client_2_india = {
-  name: "client_2_saeloun_India", email: "client_two@saeloun_india.com", phone: "+91 9999999992",
-  address: "Somewhere on Earth"
+
+flipkart = {
+  name: "Flipkart", email: "support@flipkart.com", phone: "+91 9999999992",
+  address: "Singapore"
 }
-client_us = {
-  name: "client_1_saeloun_US", email: "client_one@saeloun_us.com", phone: "+91 9999999993",
+
+client_one = {
+  name: "client_one", email: "contact@client_one.com", phone: "+91 1010101010",
   address: "Somewhere on Earth"
 }
 
-@client_1_saeloun_india = @saeloun_india.clients.create!(client_1_india)
-@client_2_saeloun_india = @saeloun_india.clients.create!(client_2_india)
-@client_1_saeloun_us = @saeloun_us.clients.create!(client_us)
+client_two = {
+  name: "client_two", email: "contact@client_two.com", phone: "+91 2020202020"
+}
+
+@microsoft_client = @saeloun_india.clients.create!(microsoft)
+@flipkart_client = @saeloun_india.clients.create!(flipkart)
+@client_one_us = @saeloun_us.clients.create!(client_one)
+@client_two_us = @saeloun_us.clients.create!(client_two)
 
 puts "Clients Created"
 # Client Create End

@@ -16,7 +16,7 @@ RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
     create(:company_user, company_id: company.id, user_id: user3.id)
   end
 
-  context "when user is admin" do
+  context "when user is an admin" do
     before do
       user1.add_role :admin, company
       sign_in user1
@@ -110,9 +110,37 @@ RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
     end
   end
 
-  context "when user is employee" do
+  context "when user is an employee" do
     before do
       user1.add_role :employee, company
+      sign_in user1
+    end
+
+    context "when adding, updating and removing members from the project" do
+      before do
+        create(:project_member, project_id: project.id, user_id: user1.id, hourly_rate: 10)
+        create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: 20)
+      end
+
+      it "action is not allowed" do
+        params = {
+          members: {
+            added_members: [{ id: user3.id, hourlyRate: 30 }],
+            updated_members: [{ id: user2.id, hourlyRate: 100 }],
+            removed_member_ids: [user1.id]
+          }
+        }
+        send_request(:put, internal_api_v1_project_member_path(project.id), params:)
+
+        expect(response).to have_http_status(:forbidden)
+        expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
+      end
+    end
+  end
+
+  context "when user is a book keeper" do
+    before do
+      user1.add_role :book_keeper, company
       sign_in user1
     end
 

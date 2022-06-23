@@ -12,5 +12,6 @@ export const unmapper = (data:any = {}) => ({
   id: data.id,
   is_billable: data.is_billable,
   members: getMember(data.members),
-  name: data.name
+  name: data.name,
+  overdueOutstandingAmount: data.overdue_and_outstanding_amounts
 });

@@ -9,9 +9,10 @@ import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
+import { sendGAPageView } from "utils/googleAnalytics";
 
+import { TOASTER_DURATION } from "constants/index";
 import Header from "./Header";
-import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapClientList } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
@@ -70,6 +71,7 @@ const Clients = ({ isAdminUser }) => {
   };
 
   useEffect(() => {
+    sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     clients.get("?time_frame=week")

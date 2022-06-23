@@ -18,7 +18,8 @@ const Container = ({
   amountPaid,
   discount, setDiscount,
   tax, setTax,
-  selectedOption, setSelectedOption
+  selectedOption, setSelectedOption,
+  manualEntryArr, setManualEntryArr
 }) => (
   <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
     <CompanyInfo companyDetails={invoiceDetails.companyDetails} />
@@ -45,10 +46,13 @@ const Container = ({
         setSelectedOption={setSelectedOption}
         setLineItems={setLineItems}
         lineItems={lineItems}
+        manualEntryArr={manualEntryArr}
+        setManualEntryArr={setManualEntryArr}
       />
     </div>
     <InvoiceTotal
       currency={invoiceDetails.companyDetails.currency}
+      manualEntryArr={manualEntryArr}
       newLineItems={selectedOption}
       amountPaid={amountPaid}
       amountDue={amountDue}

@@ -1,0 +1,137 @@
+---
+http_interactions:
+- request:
+    method: delete
+    uri: https://api.sandbox.transferwise.tech/v1/accounts/148398162
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer access-token-12345
+      User-Agent:
+      - Faraday v1.10.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 03 Jun 2022 14:27:30 GMT
+      Content-Length:
+      - '0'
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - 478fd5c9-00e1-960d-887c-f1113ed6f70c
+      X-Trace-Id:
+      - 8b70210544345cc5
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Envoy-Upstream-Service-Time:
+      - '76'
+      X-Envoy-Attempt-Count:
+      - '1'
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Set-Cookie:
+      - __cf_bm=fJ_xd2KmYIlf.ChqwQ0Ev5lvwu_QY4VQUZBkB5qS3YU-1654266450-0-AafddEHJbN21Yj2a2T7mpzA7DLyEujKAxz1A6nJyXG+QnNb9lini+i+EuBTnDQTN/JcVCsef7NYWvvzUtA4x21M=;
+        path=/; expires=Fri, 03-Jun-22 14:57:30 GMT; domain=.transferwise.tech; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 71591c22bf2383f3-BLR
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version:
+  recorded_at: Fri, 03 Jun 2022 14:27:30 GMT
+- request:
+    method: delete
+    uri: https://api.transferwise.tech/v1/accounts/148398162
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - Bearer access-token-12345
+      User-Agent:
+      - Faraday v1.10.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 03 Jun 2022 14:27:30 GMT
+      Content-Length:
+      - '0'
+      Connection:
+      - keep-alive
+      X-Request-Id:
+      - 478fd5c9-00e1-960d-887c-f1113ed6f70c
+      X-Trace-Id:
+      - 8b70210544345cc5
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      X-Frame-Options:
+      - DENY
+      X-Envoy-Upstream-Service-Time:
+      - '76'
+      X-Envoy-Attempt-Count:
+      - '1'
+      Vary:
+      - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Set-Cookie:
+      - __cf_bm=fJ_xd2KmYIlf.ChqwQ0Ev5lvwu_QY4VQUZBkB5qS3YU-1654266450-0-AafddEHJbN21Yj2a2T7mpzA7DLyEujKAxz1A6nJyXG+QnNb9lini+i+EuBTnDQTN/JcVCsef7NYWvvzUtA4x21M=;
+        path=/; expires=Fri, 03-Jun-22 14:57:30 GMT; domain=.transferwise.tech; HttpOnly;
+        Secure; SameSite=None
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 71591c22bf2383f3-BLR
+      Alt-Svc:
+      - h3=":443"; ma=86400, h3-29=":443"; ma=86400
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version:
+  recorded_at: Fri, 03 Jun 2022 14:27:30 GMT
+recorded_with: VCR 3.0.3

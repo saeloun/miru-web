@@ -88,3 +88,7 @@ export const getToasterCloseButton = ({ closeToast, type }) => {
       />;
   }
 };
+
+export const BASIC_PLAN_CHARGE = 10;
+
+export const TEAM_MEMBER_CHARGE = 5;

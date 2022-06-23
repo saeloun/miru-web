@@ -33,6 +33,20 @@ RSpec.describe "PaymentsSetting#index", type: :request do
     end
   end
 
+  context "when the user is an book_keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :get, payments_settings_path
+    end
+
+    it "they should not be permitted to visit index page" do
+      expect(response).to have_http_status(:redirect)
+      expect(flash["alert"]).to eq("You are not authorized to perform this action.")
+    end
+  end
+
   context "when unauthenticated" do
     it "is not be permitted to view the payments" do
       send_request :get, payments_settings_path
