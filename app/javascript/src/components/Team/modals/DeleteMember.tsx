@@ -1,10 +1,20 @@
 
 import React from "react";
+import { destroy } from "apis/team";
 import { useList } from "context/TeamContext";
 import { X } from "phosphor-react";
 
-const DeleteMember = () => {
+const DeleteMember = ({ user }) => {
   const { setModalState } = useList();
+  const deleteTeamMember = async () => {
+    try {
+      await destroy(user.id);
+      setModalState("");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="px-4 flex items-center justify-center">
       <div
@@ -22,16 +32,18 @@ const DeleteMember = () => {
               </button>
             </div>
             <p className="my-8">
-              Are you sure you want to delete user John Smith? This action cannot be reversed.
+              Are you sure you want to delete user {user?.name}? This action cannot be reversed.
             </p>
             <div className="flex justify-between">
               <button
+                onClick={() => setModalState("")}
                 className="button__bg_transparent"
               >
                 CANCEL
               </button>
               <button
                 className="button__bg_purple"
+                onClick={() => deleteTeamMember()}
               >
                 DELETE
               </button>

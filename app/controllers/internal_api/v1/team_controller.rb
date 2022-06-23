@@ -5,7 +5,7 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
 
   def index
     authorize :index, policy_class: TeamPolicy
-    query = current_company.users.includes([:avatar_attachment, :roles]).ransack(params[:q])
+    query = current_company.company_users.kept.includes(user: [:roles, :avatar_attachment]).ransack(params[:q])
     team = query.result(distinct: true)
     render :index, locals: { team: }, status: :ok
   end

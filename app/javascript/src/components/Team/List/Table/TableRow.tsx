@@ -46,7 +46,7 @@ const TableRow = ({ item }) => {
               <button className="ml-12" onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setModalState("delete");
+                setModalState("delete", item);
               }}>
                 <Trash size={16} color="#5b34ea" weight="bold" />
               </button>
