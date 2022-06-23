@@ -131,8 +131,10 @@ en:
     email: Email
     delete:
       success:
-        message: User removed successfully
+        message: Team Member removed successfully
     update:
+      success:
+        message: Changes saved successfully
       error:
         role: There was an error while updating role
   registration:
