@@ -25,7 +25,7 @@ RSpec.describe CompanyUser, type: :model do
     end
   end
 
-  describe "Presence" do
+  describe "Validations" do
     it { is_expected.to validate_presence_of(:designation) }
     it { is_expected.to validate_presence_of(:employment_type) }
     it { is_expected.to validate_presence_of(:joined_at) }
