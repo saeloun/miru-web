@@ -90,9 +90,6 @@ gem "ransack"
 # For Soft deletion
 gem "discard", "~> 1.2"
 
-# Use newrelic for monitoring
-gem "newrelic_rpm", "~> 8.4"
-
 # Role management library with resource scoping
 gem "rolify", "~> 6.0"
 
@@ -127,8 +124,11 @@ gem "grover"
 
 gem "activerecord-import"
 
+# Use newrelic for monitoring
+# gem "newrelic_rpm", "~> 8.4"
+
 # Honeybadger for error reporting
-gem "honeybadger"
+# gem "honeybadger"
 
 # For finding the vulnerabilities in the gems
 gem "bundler-audit", require: false

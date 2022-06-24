@@ -211,7 +211,6 @@ GEM
       nokogiri (~> 1.0)
     hashdiff (1.0.1)
     hashie (5.0.0)
-    honeybadger (4.12.1)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
     i18n_data (0.16.0)
@@ -267,7 +266,6 @@ GEM
       digest
       net-protocol
       timeout
-    newrelic_rpm (8.7.0)
     nio4r (2.5.8)
     nokogiri (1.13.6-arm64-darwin)
       racc (~> 1.4)
@@ -521,13 +519,11 @@ DEPENDENCIES
   faker
   foreman
   grover
-  honeybadger
   image_processing (>= 1.2)
   jbuilder (~> 2.11)
   letter_opener
   letter_opener_web
   money
-  newrelic_rpm (~> 8.4)
   omniauth-google-oauth2 (~> 1.0)
   omniauth-rails_csrf_protection (~> 1.0)
   pagy (~> 5.10)
