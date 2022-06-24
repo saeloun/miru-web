@@ -45,23 +45,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_22_160123) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "addresses", force: :cascade do |t|
-    t.string "addressable_type"
-    t.bigint "addressable_id"
-    t.string "address_type"
-    t.string "address_line_1", null: false
-    t.string "address_line_2"
-    t.string "city", null: false
-    t.string "country", null: false
-    t.string "pin", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "state", null: false
-    t.index ["addressable_type", "addressable_id", "address_type"],
-      name: "index_addresses_on_addressable_and_address_type", unique: true
-    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
-  end
-
   create_table "clients", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.string "name", null: false
