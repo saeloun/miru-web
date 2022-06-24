@@ -41,7 +41,7 @@ RSpec.describe CurrentCompanyConcern do
   describe "when current user doesn't have current workspace id and not associated with any company" do
     before do
       user.update(current_workspace_id: nil)
-      user.company_users.destroy
+      user.employments.destroy
     end
 
     it "returns nil" do
@@ -52,7 +52,7 @@ RSpec.describe CurrentCompanyConcern do
   describe "when current user is nil" do
     before do
       user.update(current_workspace_id: nil)
-      user.company_users.destroy
+      user.employments.destroy
     end
 
     it "returns nil" do

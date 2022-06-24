@@ -22,6 +22,6 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
   private
 
     def company_user
-      @company_user ||= current_company.company_users.kept.find_by!(user_id: params[:id])
+      @company_user ||= current_company.employments.kept.find_by!(user_id: params[:id])
     end
 end
