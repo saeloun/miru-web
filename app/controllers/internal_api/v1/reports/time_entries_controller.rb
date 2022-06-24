@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Reports::TimeEntryController < InternalApi::V1::ApplicationController
+class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::ApplicationController
   include Timesheet
 
   def index
@@ -14,8 +14,8 @@ class InternalApi::V1::Reports::TimeEntryController < InternalApi::V1::Applicati
     entries = reports.map { |e| e[:entries] }.flatten
 
     respond_to do |format|
-      format.csv { send_data TimeEntryReport::GenerateCsv.new(entries).process }
-      format.pdf { send_data TimeEntryReport::GeneratePdf.new(reports).process }
+      format.csv { send_data Reports::TimeEntries::GenerateCsv.new(entries).process }
+      format.pdf { send_data Reports::TimeEntries::GeneratePdf.new(reports).process }
     end
   end
 
@@ -27,8 +27,8 @@ class InternalApi::V1::Reports::TimeEntryController < InternalApi::V1::Applicati
 
     def reports
       default_filter = current_company_filter.merge(this_month_filter)
-      where_clause = default_filter.merge(TimeEntryReport::Filters.process(params))
-      group_by_clause = TimeEntryReport::GroupBy.process(params["group_by"])
+      where_clause = default_filter.merge(Reports::TimeEntries::Filters.process(params))
+      group_by_clause = Reports::TimeEntries::GroupBy.process(params["group_by"])
 
       search_result = TimesheetEntry.search(
         where: where_clause,
@@ -36,7 +36,7 @@ class InternalApi::V1::Reports::TimeEntryController < InternalApi::V1::Applicati
         body_options: group_by_clause,
         includes: [:user, { project: :client } ])
 
-      TimeEntryReport::Result.process(search_result, params["group_by"])
+      Reports::TimeEntries::Result.process(search_result, params["group_by"])
     end
 
     def current_company_filter

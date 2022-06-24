@@ -39,14 +39,14 @@ RSpec.describe "GroupBy", type: :service do
   end
 
   context "when group_by_field is not present" do
-    res = TimeEntryReport::GroupBy.process(nil)
+    res = Reports::TimeEntries::GroupBy.process(nil)
     it "returns the empty group_by query" do
       expect(res).to eq({})
     end
   end
 
   context "when invalid group_by_field is passed" do
-    res = TimeEntryReport::GroupBy.process("day")
+    res = Reports::TimeEntries::GroupBy.process("day")
     it "returns the empty group_by query" do
       expect(res).to eq({})
     end
@@ -54,7 +54,7 @@ RSpec.describe "GroupBy", type: :service do
 
   context "when group_by_field is `team_member`" do
     group_by = "team_member"
-    res = TimeEntryReport::GroupBy.process(group_by)
+    res = Reports::TimeEntries::GroupBy.process(group_by)
     it "returns the expected group_by query" do
       expect(res).to eq(group_by_query(group_by))
     end
@@ -62,7 +62,7 @@ RSpec.describe "GroupBy", type: :service do
 
   context "when group_by_field is `client`" do
     group_by = "client"
-    res = TimeEntryReport::GroupBy.process(group_by)
+    res = Reports::TimeEntries::GroupBy.process(group_by)
     it "returns the expected group_by query" do
       expect(res).to eq(group_by_query(group_by))
     end
@@ -70,7 +70,7 @@ RSpec.describe "GroupBy", type: :service do
 
   context "when group_by_field is `project`" do
     group_by = "project"
-    res = TimeEntryReport::GroupBy.process(group_by)
+    res = Reports::TimeEntries::GroupBy.process(group_by)
     it "returns the expected group_by query" do
       expect(res).to eq(group_by_query(group_by))
     end
@@ -78,7 +78,7 @@ RSpec.describe "GroupBy", type: :service do
 
   context "when group_by_field is `week`" do
     group_by = "week"
-    res = TimeEntryReport::GroupBy.process(group_by)
+    res = Reports::TimeEntries::GroupBy.process(group_by)
     expected_query =
       {
         aggs:
