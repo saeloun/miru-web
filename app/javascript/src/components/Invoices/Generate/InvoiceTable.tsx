@@ -151,6 +151,7 @@ const InvoiceTable = ({
                 key={index}
                 setSelectedOption={setSelectedOption}
                 selectedOption={selectedOption}
+                removeElement
               />
             ))}
         </tbody>
