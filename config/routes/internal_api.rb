@@ -20,6 +20,8 @@ namespace :internal_api, defaults: { format: "json" } do
           get :download
         end
       end
+
+      resources :client_revenue, only: [:index]
     end
 
     resources :workspaces, only: [:update]
