@@ -40,7 +40,6 @@ def send_mail(recipients:, name:, start_date:, end_date:, company_name:)
     start_date:,
     end_date:,
     company_name:
-
   ).notify_user_about_missed_entries.deliver_later
 end
 

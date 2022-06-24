@@ -33,10 +33,14 @@ const InvoiceLineItems = ({ items, showHeader }) => {
         <tbody className="w-full">
           {items.length > 0
             && items.map(item => (
-              <LineItem
-                key={item.id}
-                item={item}
-              />
+              item._destroy ? (
+                <></>
+              ) : (
+                <LineItem
+                  key={item.id}
+                  item={item}
+                />
+              )
             ))}
         </tbody>
       </table>
