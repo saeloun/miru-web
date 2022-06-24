@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :employment do
+  factory :company_user do
     company
     user
     employee_id { Faker::Alphanumeric.alphanumeric(number: 10, min_alpha: 3) }

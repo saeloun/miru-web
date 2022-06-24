@@ -2,10 +2,10 @@
 
 require "rails_helper"
 
-RSpec.describe Employment, type: :model do
-  let(:employment) { create(:employment) }
-  let(:company) { employment.company }
-  let(:user) { employment.user }
+RSpec.describe CompanyUser, type: :model do
+  let(:company_user) { create(:company_user) }
+  let(:company) { company_user.company }
+  let(:user) { company_user.user }
 
   describe "Associations" do
     it { is_expected.to belong_to(:company) }
@@ -14,14 +14,14 @@ RSpec.describe Employment, type: :model do
 
   describe "Discard" do
     it "discards the company user" do
-      expect { employment.discard! }.to change(company.employments.discarded, :count).by(1)
-      expect(employment.reload.discarded?).to be_truthy
-      expect(user.reload.employments.discarded.count).to eq(1)
+      expect { company_user.discard! }.to change(company.company_users.discarded, :count).by(1)
+      expect(company_user.reload.discarded?).to be_truthy
+      expect(user.reload.company_users.discarded.count).to eq(1)
     end
 
     it "does not discard the company user if already discarded" do
-      employment.discard!
-      expect { employment.discard! }.to raise_error(Discard::RecordNotDiscarded)
+      company_user.discard!
+      expect { company_user.discard! }.to raise_error(Discard::RecordNotDiscarded)
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe Employment, type: :model do
 
   describe "Comparisons" do
     it "resignation date should be nil by default" do
-      expect(employment.resigned_at).to be nil
+      expect(company_user.resigned_at).to be nil
     end
   end
 end

@@ -2,7 +2,7 @@
 
 # == Schema Information
 #
-# Table name: employments
+# Table name: company_users
 #
 #  id              :bigint           not null, primary key
 #  designation     :string
@@ -18,9 +18,9 @@
 #
 # Indexes
 #
-#  index_employments_on_company_id    (company_id)
-#  index_employments_on_discarded_at  (discarded_at)
-#  index_employments_on_user_id       (user_id)
+#  index_company_users_on_company_id    (company_id)
+#  index_company_users_on_discarded_at  (discarded_at)
+#  index_company_users_on_user_id       (user_id)
 #
 # Foreign Keys
 #
@@ -28,7 +28,7 @@
 #  fk_rails_...  (user_id => users.id)
 #
 
-class Employment < ApplicationRecord
+class CompanyUser < ApplicationRecord
   include Discard::Model
 
   # Associations
