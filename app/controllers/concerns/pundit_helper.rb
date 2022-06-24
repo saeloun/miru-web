@@ -7,8 +7,4 @@ module PunditHelper
   included do
     after_action :verify_authorized, unless: :devise_controller?
   end
-
-  def devise_controller?
-    super
-  end
 end
