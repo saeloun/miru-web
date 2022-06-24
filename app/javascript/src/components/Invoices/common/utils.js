@@ -10,7 +10,8 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
       date: dayjs(item.date).format("DD/MM/YYYY"),
       rate: item.rate,
       quantity: item.qty,
-      timesheet_entry_id: item.time_sheet_entry ? item.time_sheet_entry : item.timesheet_entry_id
+      timesheet_entry_id: item.time_sheet_entry ? item.time_sheet_entry : item.timesheet_entry_id,
+      _destroy: !!item._destroy
     }))
   );
 
@@ -22,7 +23,8 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
       date: dayjs(item.date).format("DD/MM/YYYY"),
       rate: item.rate,
       quantity: Number(item.qty) * 60,
-      timesheet_entry_id: item.time_sheet_entry
+      timesheet_entry_id: item.time_sheet_entry,
+      _destroy: !!item._destroy
     }))
   );
 
