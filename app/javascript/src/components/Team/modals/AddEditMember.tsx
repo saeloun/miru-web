@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { post, put } from "apis/team";
 import { useList } from "context/TeamContext";
 import { Formik, Form, Field, FormikProps } from "formik";
 import { X } from "phosphor-react";
@@ -11,27 +12,55 @@ const TeamMemberSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email ID").required("Email ID cannot be blank")
 });
 
-const getInitialvalues = (client) => ({
-  firstName: client.firstName,
-  lastName: client.lastName,
-  email: client.email,
-  role: client.role ? client.role : "employee"
+const getInitialvalues = (user) => ({
+  id: user?.id,
+  firstName: user.firstName,
+  lastName: user.lastName,
+  email: user.email,
+  role: user.role ? user.role : "employee"
 });
 
 interface FormValues {
+  id?: string
   firstName: string,
   lastName: string,
   email: string,
   role: string
 }
+interface Props {
+  user: any,
+  isEdit: boolean
+}
 
 const EditClient = ({
-  client = {}
-}) => {
+  user = {},
+  isEdit = false
+}: Props) => {
 
   const [apiError, setApiError] = useState<string>(""); // eslint-disable-line
   const { setModalState } = useList();
-  const handleSubmit = async values => { // eslint-disable-line
+
+  const handleSubmit = async values => {
+    const { id, firstName, lastName, email, role } = values;
+    const payload = {
+      firstName,
+      lastName,
+      email,
+      role
+    };
+    if (isEdit) {
+      payload["id"] = id;
+    }
+    try {
+      if (isEdit) {
+        await put(user.id, payload);
+      } else {
+        await post(payload);
+      }
+      setModalState("");
+    } catch (err) {
+      setApiError(err.message);
+    }
   };
 
   return (
@@ -45,13 +74,13 @@ const EditClient = ({
         <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
-              <h6 className="text-base font-extrabold">Add Member</h6>
+              <h6 className="text-base font-extrabold">{isEdit ? "Edit Member": "Add Member"}</h6>
               <button type="button" onClick={() => { setModalState(""); }}>
                 <X size={16} color="#CDD6DF" weight="bold" />
               </button>
             </div>
             <Formik
-              initialValues={getInitialvalues(client)}
+              initialValues={getInitialvalues(user)}
               validationSchema={TeamMemberSchema}
               onSubmit={handleSubmit}
             >
@@ -74,10 +103,10 @@ const EditClient = ({
                         </div>
                         <div className="flex">
                           <div className="mt-1">
-                            <Field className={`form__input ${errors.firstName && touched.firstName && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="firstName" />
+                            <Field className={`form__input ${errors.firstName && touched.firstName && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="firstName" disabled={isEdit} />
                           </div>
                           <div className="mt-1 ml-8">
-                            <Field className={`form__input ${errors.lastName && touched.lastName && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="lastName" />
+                            <Field className={`form__input ${errors.lastName && touched.lastName && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="lastName" disabled={isEdit} />
                           </div>
                         </div>
                       </div>
@@ -93,7 +122,7 @@ const EditClient = ({
                           </div>
                         </div>
                         <div className="mt-1">
-                          <Field className={`form__input ${errors.email && touched.email && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="email" />
+                          <Field className={`form__input ${errors.email && touched.email && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="email" disabled={isEdit} />
                         </div>
                       </div>
                     </div>
