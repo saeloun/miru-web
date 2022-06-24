@@ -6,11 +6,7 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
     # query = Lead.all.kept.ransack({ name_or_email_cont: params[:q] })
     # leads = query.result(distinct: true)
     pagy, leads = pagy(
-      Lead.includes(:assignee, :reporter, :created_by, :updated_by).where(
-        params[:q].present? ? ["name LIKE ?", "%#{params[:q]}%"] :
-          ["assignee_id = ? OR created_by_id = ? AND company_id = ?",
-           current_user.id, current_user.id, current_company.id
-          ]).where(discarded_at: nil).order(created_at: :desc),
+      Lead.filter(params).order(created_at: :desc),
       items_param: :leads_per_page)
     lead_details = leads.map(&:lead_detail)
 

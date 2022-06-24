@@ -239,6 +239,16 @@ class Lead < ApplicationRecord
   validates :first_name, :last_name, presence: true
   before_validation :assign_default_values
 
+  def self.filter(params = {})
+    allow_leads = Lead.includes(:assignee, :reporter, :created_by, :updated_by).where(discarded_at: nil)
+    allow_leads = allow_leads.where("name LIKE ?", "%#{params[:q]}%") if params[:q].present?
+    allow_leads = allow_leads.where(country: params[:country_alphas]) if params[:country_alphas].present?
+    allow_leads = allow_leads.where(industry_code: params[:industry_codes]) if params[:industry_codes].present?
+    allow_leads = allow_leads.where(source_code: params[:source_codes]) if params[:source_codes].present?
+    allow_leads = allow_leads.where(status_code: params[:status_codes]) if params[:status_codes].present?
+    allow_leads
+  end
+
   def assign_default_values
     self.name = "#{self.first_name} #{self.last_name}"
     self.updated_by_id = self.created_by_id if self.updated_by_id.blank? && self.created_by_id.present?

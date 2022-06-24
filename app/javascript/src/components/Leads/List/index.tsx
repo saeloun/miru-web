@@ -4,8 +4,8 @@ import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leads from "apis/leads";
 import Pagination from "common/Pagination";
-
 import Table from "common/Table";
+import FilterSideBar from "./FilterSideBar";
 
 import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
@@ -38,6 +38,8 @@ const getTableData = (leads) => {
 };
 
 const Leads = ({ isAdminUser }) => {
+  const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
+
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [newLead, setnewLead] = useState<boolean>(false);
   const [leadToDelete, setDelete] = useState({});
@@ -116,7 +118,7 @@ const Leads = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header isAdminUser={isAdminUser} setnewLead={setnewLead} />
+      <Header isAdminUser={isAdminUser} setnewLead={setnewLead} setFilterVisibilty={setFilterVisibilty} />
       <div>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -138,6 +140,9 @@ const Leads = ({ isAdminUser }) => {
           </div>
         </div>
       </div>
+      {isFilterVisible && (
+        <FilterSideBar setLeadData={setLeadData} setFilterVisibilty={setFilterVisibilty} />
+      )}
       {showDeleteDialog && (
         <DeleteLead
           setShowDeleteDialog={setShowDeleteDialog}

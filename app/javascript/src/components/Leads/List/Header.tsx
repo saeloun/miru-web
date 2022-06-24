@@ -1,16 +1,17 @@
 import * as React from "react";
 import leads from "apis/leads";
-import { MagnifyingGlass, Plus } from "phosphor-react";
+import { Funnel, MagnifyingGlass, Plus } from "phosphor-react";
 import AutoComplete from "./AutoComplete";
 import { unmapLeadListForDropdown } from "../../../mapper/lead.mapper";
 
 const Header = ({
   setnewLead,
-  isAdminUser
+  isAdminUser,
+  setFilterVisibilty
 }) => {
 
   const searchCallBack = async (searchString, setDropdownItems) => {
-    await leads.get(searchString)
+    await leads.get(new URLSearchParams(searchString).toString())
       .then((res) => {
         const dropdownList = unmapLeadListForDropdown(res);
         setDropdownItems(dropdownList);
@@ -32,6 +33,9 @@ const Header = ({
             <MagnifyingGlass size={12} />
           </button>
         </div>
+        <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
+          <Funnel size={16} />
+        </button>
       </div>
       {isAdminUser && (
         <div className="flex">
