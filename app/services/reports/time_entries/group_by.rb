@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module TimeEntryReport
+module Reports::TimeEntries
   class GroupBy < ApplicationService
     attr_reader :group_by_field
 

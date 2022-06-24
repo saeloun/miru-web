@@ -15,7 +15,7 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
 
     namespace :reports do
-      resources :time_entry, only: [:index] do
+      resources :time_entries, only: [:index] do
         collection do
           get :download
         end

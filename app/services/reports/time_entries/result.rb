@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module TimeEntryReport
+module Reports::TimeEntries
   class Result < ApplicationService
     attr_reader :es_response, :group_by
 

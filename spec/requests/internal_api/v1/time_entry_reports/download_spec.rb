@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Reports::TimeEntryController#download", type: :request do
-  subject { get "/internal_api/v1/reports/time_entry/download.#{type}" }
+  subject { get "/internal_api/v1/reports/time_entries/download.#{type}" }
 
   let(:company) { create(:company) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
