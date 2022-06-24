@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_22_080507) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_22_160123) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,6 +98,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_22_080507) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "discarded_at"
+    t.string "employee_id"
+    t.string "designation"
+    t.string "employment_type"
+    t.date "joined_at"
+    t.date "resigned_at"
     t.index ["company_id"], name: "index_company_users_on_company_id"
     t.index ["discarded_at"], name: "index_company_users_on_discarded_at"
     t.index ["user_id"], name: "index_company_users_on_user_id"
@@ -117,18 +122,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_22_080507) do
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_devices_on_company_id"
     t.index ["user_id"], name: "index_devices_on_user_id"
-  end
-
-  create_table "employment_details", force: :cascade do |t|
-    t.string "employee_id"
-    t.string "designation"
-    t.string "employment_type"
-    t.date "joined_at"
-    t.date "resigned_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "company_user_id", null: false
-    t.index ["company_user_id"], name: "index_employment_details_on_company_user_id"
   end
 
   create_table "identities", force: :cascade do |t|
@@ -325,7 +318,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_22_080507) do
   add_foreign_key "company_users", "users"
   add_foreign_key "devices", "companies"
   add_foreign_key "devices", "users"
-  add_foreign_key "employment_details", "company_users"
   add_foreign_key "identities", "users"
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
