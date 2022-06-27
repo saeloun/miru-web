@@ -3,8 +3,6 @@
 class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
   def index
     authorize Lead
-    # query = Lead.all.kept.ransack({ name_or_email_cont: params[:q] })
-    # leads = query.result(distinct: true)
     pagy, leads = pagy(
       Lead.filter(params).order(created_at: :desc),
       items_param: :leads_per_page)
@@ -58,7 +56,7 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
     allowed_user_list = User.includes(:roles).where(roles: { name: ["admin", "owner"] })
       .or(User.includes(:roles).where(
         roles: { name: "employee" }, department_id: sales_department_id)
-                              )
+                              ).map { |user| user.attributes.merge({ full_name: user.full_name }) }
 
     render json: { allowed_user_list: },	status: :ok
   end

@@ -240,6 +240,9 @@ class Lead < ApplicationRecord
   before_validation :assign_default_values
 
   def self.filter(params = {})
+    quality_codes = params[:quality_codes].present? ? params[:quality_codes].split(",").map(&:to_i) : []
+    assignees = params[:assignees].present? ? params[:assignees].split(",").map(&:to_i) : []
+    reporters = params[:reporters].present? ? params[:reporters].split(",").map(&:to_i) : []
     country_alphas = params[:country_alphas].present? ? params[:country_alphas].split(",") : []
     industry_codes = params[:industry_codes].present? ? params[:industry_codes].split(",").map(&:to_i) : []
     source_codes = params[:source_codes].present? ? params[:source_codes].split(",").map(&:to_i) : []
@@ -247,6 +250,9 @@ class Lead < ApplicationRecord
 
     allow_leads = Lead.includes(:assignee, :reporter, :created_by, :updated_by).where(discarded_at: nil)
     allow_leads = allow_leads.where("name LIKE ?", "%#{params[:q]}%") if params[:q].present?
+    allow_leads = allow_leads.where(assignee_id: assignees) if assignees.present?
+    allow_leads = allow_leads.where(reporter_id: reporters) if reporters.present?
+    allow_leads = allow_leads.where(quality_code: quality_codes) if quality_codes.present?
     allow_leads = allow_leads.where(country: country_alphas) if country_alphas.present?
     allow_leads = allow_leads.where(industry_code: industry_codes) if industry_codes.present?
     allow_leads = allow_leads.where(source_code: source_codes) if source_codes.present?
@@ -384,10 +390,10 @@ class Lead < ApplicationRecord
       quality_code_name:	self.quality_code_name,
       state_code_name:	self.state_code_name,
       status_code_name:	self.status_code_name,
-      assignee_name: self.assignee ? "#{self.assignee.first_name} #{self.assignee.last_name}" : "",
-      reporter_name: self.reporter ? "#{self.reporter.first_name} #{self.reporter.last_name}" : "",
-      created_by_name: self.created_by ? "#{self.created_by.first_name} #{self.created_by.last_name}" : "",
-      updated_by_name: self.updated_by ? "#{self.updated_by.first_name} #{self.updated_by.last_name}" : "",
+      assignee_name: self.assignee ? self.assignee.full_name : "",
+      reporter_name: self.reporter ? self.reporter.full_name : "",
+      created_by_name: self.created_by ? self.created_by.full_name : "",
+      updated_by_name: self.updated_by ? self.updated_by.full_name : "",
       need_name: self.need_name,
       preferred_contact_method_code_name: self.preferred_contact_method_code_name,
       initial_communication_name: self.initial_communication_name,

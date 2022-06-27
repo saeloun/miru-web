@@ -66,12 +66,22 @@ const Leads = ({ isAdminUser }) => {
   };
 
   const fetchLeads = () => {
-    leads.get(queryParams())
-      .then((res) => {
-        const sanitized = unmapLeadList(res);
-        setLeadData(sanitized.leadList);
-        setPagy(res.data.pagy);
-      });
+    const localRememberFilter = JSON.parse(localStorage.getItem('rememberFilter'));
+    if (localRememberFilter){
+      leads.get(new URLSearchParams(localRememberFilter).toString())
+        .then((res) => {
+          const sanitized = unmapLeadList(res);
+          setLeadData(sanitized.leadList);
+          setPagy(res.data.pagy);
+        });
+    } else {
+      leads.get(queryParams())
+        .then((res) => {
+          const sanitized = unmapLeadList(res);
+          setLeadData(sanitized.leadList);
+          setPagy(res.data.pagy);
+        });
+    }
   };
 
   useEffect(() => {
