@@ -12,26 +12,26 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       let(:team_user) { create(:user, current_workspace_id: company.id) }
 
       before do
-        @team_company_user = create(:company_user, company:, user: team_user)
-        create(:company_user, company:, user: admin_user)
+        @team_company_user = create(:employment, company:, user: team_user)
+        create(:employment, company:, user: admin_user)
         admin_user.add_role :admin, company
         sign_in admin_user
       end
 
       it "returns success json response with team member" do
         expect { send_request :delete, internal_api_v1_team_path(@team_company_user.user) }
-          .to change(company.company_users.kept, :count).by(-1)
+          .to change(company.employments.kept, :count).by(-1)
 
         expect(response).to be_successful
         expect(json_response["notice"]).to eq(I18n.t("team.delete.success.message"))
         expect(json_response["user"]["id"]).to eq(team_user.id)
       end
 
-      it "Discards the company user" do
+      it "Discards the employments" do
         send_request :delete, internal_api_v1_team_path(@team_company_user.user)
 
         expect(@team_company_user.reload.discarded?).to be_truthy
-        expect(team_user.reload.company_users.discarded.count).to eq(1)
+        expect(team_user.reload.employments.discarded.count).to eq(1)
       end
     end
 
@@ -39,8 +39,8 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       let(:team_user) { create(:user) }
 
       before do
-        @non_team_company_user = create(:company_user, user: team_user)
-        create(:company_user, company:, user: admin_user)
+        @non_team_company_user = create(:employment, user: team_user)
+        create(:employment, company:, user: admin_user)
         admin_user.add_role :admin, company
         sign_in admin_user
       end
@@ -52,10 +52,10 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
         expect(response).not_to be_successful
       end
 
-      it "does not discard the company user" do
+      it "does not discard the employments" do
         send_request :delete, internal_api_v1_team_path(@non_team_company_user.user)
 
-        expect(team_user.reload.company_users.discarded.count).to eq(0)
+        expect(team_user.reload.employments.discarded.count).to eq(0)
       end
     end
 
@@ -63,10 +63,10 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       let(:invalid_user) { create(:user) }
 
       before do
-        allow_any_instance_of(CompanyUser).to receive(:discard!).and_raise(Discard::RecordNotDiscarded)
+        allow_any_instance_of(employment).to receive(:discard!).and_raise(Discard::RecordNotDiscarded)
 
-        create(:company_user, company:, user: admin_user)
-        @team_company_user = create(:company_user, company:, user: invalid_user)
+        create(:employment, company:, user: admin_user)
+        @team_company_user = create(:employment, company:, user: invalid_user)
         admin_user.add_role :admin, company
         sign_in admin_user
       end
@@ -82,7 +82,7 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       it "does not discard the team member" do
         send_request :delete, internal_api_v1_team_path(invalid_user)
 
-        expect(invalid_user.reload.company_users.discarded.count).to eq(0)
+        expect(invalid_user.reload.employments.discarded.count).to eq(0)
       end
     end
 
@@ -92,17 +92,17 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       let(:other_company_2) { create(:company) }
 
       before do
-        @team_company_user = create(:company_user, company:, user: team_user)
-        create(:company_user, company: other_company_1, user: team_user)
-        create(:company_user, company: other_company_2, user: team_user)
+        @team_company_user = create(:employment, company:, user: team_user)
+        create(:employment, company: other_company_1, user: team_user)
+        create(:employment, company: other_company_2, user: team_user)
         admin_user.add_role :admin, company
         sign_in admin_user
       end
 
       it "discard team member from only current company" do
         expect { send_request :delete, internal_api_v1_team_path(team_user) }
-          .to change(team_user.company_users.kept, :count).from(3).to(2)
-          .and change(team_user.company_users.discarded, :count).from(0).to(1)
+          .to change(team_user.employments.kept, :count).from(3).to(2)
+          .and change(team_user.employments.discarded, :count).from(0).to(1)
 
         expect(@team_company_user.reload.discarded?).to be_truthy
       end
@@ -114,8 +114,8 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
     let(:team_user) { create(:user, current_workspace_id: company.id) }
 
     before do
-      create(:company_user, company:, user: team_user)
-      create(:company_user, company:, user: employee_user)
+      create(:employment, company:, user: team_user)
+      create(:employment, company:, user: employee_user)
       employee_user.add_role :employee, company
       sign_in employee_user
       send_request :delete, internal_api_v1_team_path(team_user)
@@ -128,7 +128,7 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
     end
 
     it "does not discard the team member" do
-      expect(team_user.reload.company_users.discarded.count).to eq(0)
+      expect(team_user.reload.employments.discarded.count).to eq(0)
     end
   end
 
@@ -137,8 +137,8 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
     let(:team_user) { create(:user, current_workspace_id: company.id) }
 
     before do
-      create(:company_user, company:, user: team_user)
-      create(:company_user, company:, user: employee_user)
+      create(:employment, company:, user: team_user)
+      create(:employment, company:, user: employee_user)
       employee_user.add_role :book_keeper, company
       sign_in employee_user
       send_request :delete, internal_api_v1_team_path(team_user)
@@ -151,7 +151,7 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
     end
 
     it "does not discard the team member" do
-      expect(team_user.reload.company_users.discarded.count).to eq(0)
+      expect(team_user.reload.employments.discarded.count).to eq(0)
     end
   end
 

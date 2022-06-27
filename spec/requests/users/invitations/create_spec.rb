@@ -8,7 +8,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
 
   context "when new user is invited" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
       send_request(
