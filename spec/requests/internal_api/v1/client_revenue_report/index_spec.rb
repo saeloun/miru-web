@@ -67,4 +67,38 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       end
     end
   end
+
+  context "when user is an employee" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :employee, company
+      sign_in user
+      send_request :get, internal_api_v1_reports_client_revenues_path
+    end
+
+    it "is not permitted to view client revenue report" do
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  context "when user is a book keeper" do
+    before do
+      create(:company_user, company:, user:)
+      user.add_role :book_keeper, company
+      sign_in user
+      send_request :get, internal_api_v1_reports_client_revenues_path
+    end
+
+    it "is not permitted to view client revenue report" do
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  context "when unauthenticated" do
+    it "is not permitted to view client revenue report" do
+      send_request :get, internal_api_v1_reports_client_revenues_path
+      expect(response).to have_http_status(:unauthorized)
+      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+    end
+  end
 end
