@@ -59,7 +59,7 @@
               <div style="font-weight:normal; font-size:16px;">-</div>
             </td>
             <td align="right">
-              <div style="font-weight:normal; font-size:40px"><%= @invoice.amount %></div>
+              <div style="font-weight:normal; font-size:40px"><%= @amount %></div>
 
             </td>
           </tr>
@@ -102,8 +102,20 @@
           <span
             style=" font-size:12px; font-weight:normal; line-height: 16px; text-align: center; float:right; color: white"
           >
-            <%= image_tag attachments['Instagram.png'].url, height: '16px' ,width:'16px', style: 'padding-left: 10px' %>
-            <%= image_tag attachments['Twitter.png'].url, height: '16px' ,width:'16px', style: 'padding-left: 10px' %>
+            <a
+              href="https://www.instagram.com/getmiru/"
+              target="_blank"
+              style="color:#FFFFFF; vertical-align: middle; margin-bottom: 3px"
+            >
+              <%= image_tag attachments['Instagram.png'].url, height: '16px' ,width:'16px', style: 'padding-left: 10px' %>
+            </a>
+            <a
+              href="https://twitter.com/getmiru"
+              target="_blank"
+              style="color:#FFFFFF; vertical-align: middle; margin-bottom: 3px"
+            >
+              <%= image_tag attachments['Twitter.png'].url, height: '16px' ,width:'16px', style: 'padding-left: 10px' %>
+            </a>
           </span>
           <span
             style="padding-left: 10px; font-size:12px; font-weight:normal; line-height: 16px; text-align: center; float:right"
