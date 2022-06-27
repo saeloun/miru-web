@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Report::GeneratePdf do
+RSpec.describe Reports::TimeEntries::GeneratePdf do
   let!(:entry) { create(:timesheet_entry) }
 
   describe "#process" do
