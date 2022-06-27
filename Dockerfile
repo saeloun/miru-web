@@ -22,9 +22,9 @@ ENV RAILS_ENV='production'
 ENV RACK_ENV='production'
 
 # RUN rails db:migrate
-# RUN RAILS_ENV=production bin/webpack
-# RUN RAILS_ENV=production rails assets:precompile
-# RUN RAILS_ENV=production rails assets:clean
+RUN RAILS_ENV=production bin/webpack
+RUN RAILS_ENV=production rails assets:precompile
+RUN RAILS_ENV=production rails assets:clean
 
 # Add a script to be executed every time the container starts.
 COPY entrypoint.sh /usr/bin/
