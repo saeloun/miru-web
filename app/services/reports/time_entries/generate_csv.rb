@@ -2,7 +2,7 @@
 
 require "csv"
 
-module Report
+module Reports::TimeEntries
   class GenerateCsv
     attr_reader :entries
 
