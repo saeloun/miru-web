@@ -13,13 +13,13 @@ RSpec.describe Employment, type: :model do
   end
 
   describe "Discard" do
-    it "discards the employments" do
+    it "discards the company user" do
       expect { employment.discard! }.to change(company.employments.discarded, :count).by(1)
       expect(employment.reload.discarded?).to be_truthy
       expect(user.reload.employments.discarded.count).to eq(1)
     end
 
-    it "does not discard the employments if already discarded" do
+    it "does not discard the company user if already discarded" do
       employment.discard!
       expect { employment.discard! }.to raise_error(Discard::RecordNotDiscarded)
     end
