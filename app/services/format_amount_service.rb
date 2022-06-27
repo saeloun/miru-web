@@ -11,5 +11,7 @@ class FormatAmountService
   def process
     Money.locale_backend = :currency
     Money.from_amount(amount, currency).format
+  rescue Money::Currency::UnknownCurrency, ArgumentError
+    amount.to_f
   end
 end
