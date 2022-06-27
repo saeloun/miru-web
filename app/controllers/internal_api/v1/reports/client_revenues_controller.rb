@@ -1,7 +1,7 @@
 
 # frozen_string_literal: true
 
-class InternalApi::V1::Reports::ClientRevenueController < InternalApi::V1::ApplicationController
+class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::ApplicationController
   def index
     authorize :report
     render :index, locals: { clients:, summary: }, status: :ok

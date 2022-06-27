@@ -21,7 +21,7 @@ namespace :internal_api, defaults: { format: "json" } do
         end
       end
 
-      resources :client_revenue, only: [:index]
+      resources :client_revenues, only: [:index]
     end
 
     resources :workspaces, only: [:update]

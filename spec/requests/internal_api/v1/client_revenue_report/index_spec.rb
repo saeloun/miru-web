@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Reports::ClientRevenueController::#index", type: :request do
+RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client1) { create(:client, company:, name: "bob") }
@@ -28,7 +28,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenueController::#index", type
                                  client1_sent_invoice2.amount
         @client2_paid_amount = 0
         @client2_unpaid_amount = client2_overdue_invoice1.amount
-        get internal_api_v1_reports_client_revenue_index_path
+        get internal_api_v1_reports_client_revenues_path
       end
 
       it "returns the 200 http response" do
