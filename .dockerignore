@@ -1,12 +1,27 @@
 # For docker
-.git
-.dockerignore
-.eslintrc
-.github/*
-.husky/*
-.vscode/*
-/spec/*
-/cypress/*
+/.browserslistrc
+/.env.example
+/.gitattributes
+/.github
+/.gitignore
+/.husky
+/.git
+/.rspec
+/.dockerignore
+/.eslintrc
+/.rspec
+/.rubocop.yml
+/.vscode
+Dockerfile
+docker-compose.yaml
+LICENSE
+Procfile
+Procfile.dev
+README.md
+spec
+cypress
+public/assets
+public/packs
 
 # ==================================================================
 # GIT IGNORE COPY
@@ -15,12 +30,12 @@
 /.bundle
 
 # Ignore the default SQLite database.
-/db/*.sqlite3
-/db/*.sqlite3-*
+db/*.sqlite3
+db/*.sqlite3-*
 
 # Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
+log/*
+tmp/*
 # !/log/.keep
 # !/tmp/.keep
 
@@ -30,7 +45,7 @@
 # !/tmp/pids/.keep
 
 # Ignore uploaded files in development.
-/storage/*
+/storage
 # !/storage/.keep
 # /tmp/storage/*
 # !/tmp/storage/
@@ -54,10 +69,10 @@ yarn-debug.log*
 .env
 
 # Ignore the test folder since the app is using RSpec
-/test
+test
 
 # Avoid code coverage report to be pushed to GitHub
-/coverage
+coverage
 
 # Ignore cypress screenshots and videos
 # cypress/artifacts/screenshots

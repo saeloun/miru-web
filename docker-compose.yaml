@@ -8,8 +8,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - "POSTGRES_HOST_AUTH_METHOD=trust"
-
+      - "POSTGRES_PASSWORD=password"
 
   redis:
     hostname: redis
@@ -29,23 +28,14 @@ services:
       - redis
     ports:
       - "80:3000"
-    volumes:
-      - '.:/app'
-    env_file:
-      - '.env'
-      - '.env.production'
-
   sidekiq:
     depends_on:
       - 'postgres'
       - 'redis'
     build: .
+    command: bundle exec sidekiq -C config/sidekiq.yml
     volumes:
       - '.:/app'
-    command: bundle exec sidekiq -C config/sidekiq.yml
-    env_file:
-      - '.env'
-      - '.env.production'
 
 #  cable:
 #    depends_on:
