@@ -240,12 +240,17 @@ class Lead < ApplicationRecord
   before_validation :assign_default_values
 
   def self.filter(params = {})
+    country_alphas = params[:country_alphas].present? ? params[:country_alphas].split(",") : []
+    industry_codes = params[:industry_codes].present? ? params[:industry_codes].split(",").map(&:to_i) : []
+    source_codes = params[:source_codes].present? ? params[:source_codes].split(",").map(&:to_i) : []
+    status_codes = params[:status_codes].present? ? params[:status_codes].split(",").map(&:to_i) : []
+
     allow_leads = Lead.includes(:assignee, :reporter, :created_by, :updated_by).where(discarded_at: nil)
     allow_leads = allow_leads.where("name LIKE ?", "%#{params[:q]}%") if params[:q].present?
-    allow_leads = allow_leads.where(country: params[:country_alphas]) if params[:country_alphas].present?
-    allow_leads = allow_leads.where(industry_code: params[:industry_codes]) if params[:industry_codes].present?
-    allow_leads = allow_leads.where(source_code: params[:source_codes]) if params[:source_codes].present?
-    allow_leads = allow_leads.where(status_code: params[:status_codes]) if params[:status_codes].present?
+    allow_leads = allow_leads.where(country: country_alphas) if country_alphas.present?
+    allow_leads = allow_leads.where(industry_code: industry_codes) if industry_codes.present?
+    allow_leads = allow_leads.where(source_code: source_codes) if source_codes.present?
+    allow_leads = allow_leads.where(status_code: status_codes) if status_codes.present?
     allow_leads
   end
 

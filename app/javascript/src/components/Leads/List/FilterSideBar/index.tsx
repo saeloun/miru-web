@@ -20,6 +20,8 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty }) => {
   });
   const [stringQueryParams, setStringQueryParams] = useState<any>(null);
 
+  const [isApplyFilter, setIsApplyFilter] = useState<boolean>(false);
+
   const [selectCountryRef, setSelectCountryRef] = useState<any>(React.createRef());
   const [selectIndustryRef, setSelectIndustryRef] = useState<any>(React.createRef());
   const [selectSourceRef, setSelectSourceRef] = useState<any>(React.createRef());
@@ -73,8 +75,23 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty }) => {
   };
 
   useEffect(() => {
+    if (isApplyFilter){
+      const applyFilter = async () => {
+        leads.get(stringQueryParams)
+          .then((res) => {
+            const sanitized = unmapLeadList(res);
+            setLeadData(sanitized.leadList);
+            setIsApplyFilter(false);
+          });
+      };
+
+      applyFilter();
+    }
+  }, [stringQueryParams, isApplyFilter]);
+
+  useEffect(() => {
     setStringQueryParams(new URLSearchParams(queryParams).toString())
-  }, [queryParams]);
+  }, [queryParams, isApplyFilter]);
 
   const resetFilter = async () => {
     setQueryParams({
@@ -88,16 +105,7 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty }) => {
     selectIndustryRef.clearValue();
     selectSourceRef.clearValue();
     selectStatusRef.clearValue();
-    applyFilter();
-  };
-
-  const applyFilter = async () => {
-
-    await leads.get(stringQueryParams)
-      .then((res) => {
-        const sanitized = unmapLeadList(res);
-        setLeadData(sanitized.leadList);
-      });
+    setIsApplyFilter(true);
   };
 
   return (
@@ -180,10 +188,10 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty }) => {
       <div className="sidebar__footer">
         <button
           className="sidebar__reset"
-          onClick={resetFilter} >
+          onClick={() => resetFilter()} >
             RESET
         </button>
-        <button className="sidebar__apply" onClick={applyFilter}>APPLY</button>
+        <button className="sidebar__apply" onClick={() => setIsApplyFilter(true)}>APPLY</button>
       </div>
     </div>
   );
