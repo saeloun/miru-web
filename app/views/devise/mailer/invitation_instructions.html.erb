@@ -2,10 +2,9 @@
 
 <p><%= t("devise.mailer.invitation_instructions.info") %></p>
 <ul>
-<li><%= t("devise.mailer.invitation_instructions.info_point_1") %></li>
-<li><%= t("devise.mailer.invitation_instructions.info_point_2") %></li>
-<li><%= t("devise.mailer.invitation_instructions.info_point_3") %></li>
-<li><%= t("devise.mailer.invitation_instructions.info_point_4") %></li>
+  <%- t("devise.mailer.invitation_instructions.info_points", default: []).each do |point| %>
+    <li><%= point %></li>
+  <% end %>
 </ul>
 
 <p><%= t("devise.mailer.invitation_instructions.confirm") %></p>
@@ -15,6 +14,4 @@
 <% else %>
   <p><%= link_to t("devise.mailer.invitation_instructions.confirm_link"), root_url %></p>
 <% end %>
-</br>
-<p><%= t("devise.mailer.invitation_instructions.cheers") %></p>
-<%= t("devise.mailer.invitation_instructions.team_miru") %>
+<p><%= t("devise.mailer.sign") %></p>
