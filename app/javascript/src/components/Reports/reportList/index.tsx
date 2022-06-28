@@ -11,38 +11,44 @@ const listDetails = [{
   icon: calendar,
   title: "Time entry report",
   description: "A summary of the time entries added by your team.",
-  url: "time-entry"
+  url: "time-entry",
+  show: true
 }, {
   icon: overdueOutstandingIcon,
   title: "Outstanding & overdue invoices",
   description: "A detailed summary of outstanding and overdue of all clients for a period of time.",
-  url: "outstanding-overdue-invoice"
+  url: "outstanding-overdue-invoice",
+  show: false
 }, {
   icon: hours,
   title: "Total hours logged",
   description: "A detailed summary of billed, unbilled and non-billable hours by team grouped by project.",
-  url: "total-hours"
+  url: "total-hours",
+  show: false
 }, {
   icon: revenue,
   title: "Revenue by client",
   description: "A detailed report of revenue from each client.",
-  url: "revenue-by-client"
+  url: "revenue-by-client",
+  show: false
 }];
 
 const ReportsList = () => (
   <div>
     <div className="text-3xl font-bold mt-4">
-        Reports
+      Reports
     </div>
     <div className="grid grid-cols-2">
-      {listDetails.map((item, key) => <div key={key} className="">
-        <ReportCard
-          icon={item.icon}
-          title={item.title}
-          description={item.description}
-          url={item.url}
-        />
-      </div>)
+      {listDetails.map((item, key) => (
+        item.show && <div key={key} className="">
+          <ReportCard
+            icon={item.icon}
+            title={item.title}
+            description={item.description}
+            url={item.url}
+          />
+        </div>
+      ))
       }
     </div>
   </div>
