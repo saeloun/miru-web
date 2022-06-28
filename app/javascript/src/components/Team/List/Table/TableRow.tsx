@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
 import { PencilSimple, Trash } from "phosphor-react";
+import { TeamModalType } from "constants/index";
 
 const TableRow = ({ item }) => {
   const { isAdminUser } = useUserContext();
@@ -39,14 +40,14 @@ const TableRow = ({ item }) => {
               <button className="ml-12" onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setModalState("addEdit", item);
+                setModalState(TeamModalType.ADD_EDIT, item);
               }}>
                 <PencilSimple size={16} color="#5b34ea" weight="bold" />
               </button>
               <button className="ml-12" onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setModalState("delete", item);
+                setModalState(TeamModalType.DELETE, item);
               }}>
                 <Trash size={16} color="#5b34ea" weight="bold" />
               </button>

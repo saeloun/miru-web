@@ -5,6 +5,7 @@ import { useList } from "context/TeamContext";
 import { Formik, Form, Field, FormikProps } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";
+import { TeamModalType } from "constants/index";
 
 const TeamMemberSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name cannot be blank"),
@@ -75,7 +76,7 @@ const EditClient = ({
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
               <h6 className="text-base font-extrabold">{isEdit ? "Edit Member": "Add Member"}</h6>
-              <button type="button" onClick={() => { setModalState(""); }}>
+              <button type="button" onClick={() => { setModalState(TeamModalType.NONE); }}>
                 <X size={16} color="#CDD6DF" weight="bold" />
               </button>
             </div>
