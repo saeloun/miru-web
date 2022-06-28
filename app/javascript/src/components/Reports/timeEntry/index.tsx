@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import reports from "apis/reports";
 import { sendGAPageView } from "utils/googleAnalytics";
 import applyFilter, { getQueryParams } from "../api/applyFilter";
@@ -34,8 +33,6 @@ const TimeEntryReports = () => {
 
   useEffect(() => {
     sendGAPageView();
-    setAuthHeaders();
-    registerIntercepts();
   }, []);
 
   const updateFilterCounter = async () => {
