@@ -31,7 +31,6 @@ const getTableData = (project) => {
     return project.members.map((member) => {
       const hours = member.minutes / 60;
       const hour = hours.toFixed(2);
-      const cost = (hours * parseInt(member.hourlyRate)).toFixed(2);
       return {
         col1: (
           <div className="text-base text-miru-dark-purple-1000">
@@ -40,7 +39,7 @@ const getTableData = (project) => {
         ),
         col2: (
           <div className="text-base text-miru-dark-purple-1000 text-right">
-            ${member.hourlyRate}
+            {member.formattedHourlyRate}
           </div>
         ),
         col3: (
@@ -50,7 +49,7 @@ const getTableData = (project) => {
         ),
         col4: (
           <div className="text-lg font-bold text-miru-dark-purple-1000 text-right">
-            ${cost}
+            {member.formattedCost}
           </div>
         )
       };
