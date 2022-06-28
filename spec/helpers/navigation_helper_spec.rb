@@ -20,7 +20,7 @@ RSpec.describe NavigationHelper, type: :helper do
 
       expect(helper.nav_helper(style:, active_style:, inactive_style:)).to include("test", "inactive")
       expect(helper.nav_helper(style:, active_style:, inactive_style:))
-        .to include("team", "clients", "projects", "reports", "invoices", "payments")
+        .to include("team", "clients", "projects", "reports", "invoices")
     end
   end
 end
