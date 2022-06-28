@@ -42,9 +42,12 @@ module.exports = {
       },
       width: {
         fit: "fit-content",
+        120: "120px",
+        512: "512px",
       },
       height: {
         '128': '40rem',
+        120: "120px",
       },
       minHeight: {
         "10v": "10vh",
