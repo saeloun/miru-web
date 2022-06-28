@@ -3,7 +3,8 @@ const getMember = (input:any) => input.map((elem) => ({
   hourlyRate: elem.hourly_rate,
   id: elem.id,
   minutes: elem.minutes_logged,
-  name: elem.name
+  name: elem.name,
+  currency: elem.currency
 }));
 
 export const unmapper = (data:any = {}) => ({

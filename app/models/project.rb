@@ -54,7 +54,8 @@ class Project < ApplicationRecord
           id: member.user_id,
           name: member.full_name,
           hourly_rate: member.hourly_rate,
-          minutes_logged: 0
+          minutes_logged: 0,
+          currency: client.company.base_currency
         }
       end
     else
@@ -63,7 +64,8 @@ class Project < ApplicationRecord
           id: entry.user_id,
           name: entry.user.full_name,
           hourly_rate: members[entry.user_id],
-          minutes_logged: entry.duration
+          minutes_logged: entry.duration,
+          currency: client.company.base_currency
         }
       end
     end
