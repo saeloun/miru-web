@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# # frozen_string_literal: true
+# TODO:- Fix wise tests
 
 # require "rails_helper"
 
