@@ -57,7 +57,7 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "week" }
 
       it "returns the project_team_member_details for a project in a week" do
-        create(:timesheet_entry, user:, project:, work_date: Date.today)
+        create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_week)
         expect(subject).to eq(result)
       end
     end
@@ -66,7 +66,7 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "month" }
 
       it "returns the project_team_member_details for a project in a month" do
-        create(:timesheet_entry, user:, project:, work_date: Date.today.next_week)
+        create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_month)
         expect(subject).to eq(result)
       end
     end
@@ -75,7 +75,7 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "year" }
 
       it "returns the project_team_member_details for a project in a year" do
-        create(:timesheet_entry, user:, project:, work_date: Date.today.last_month)
+        create(:timesheet_entry, user:, project:, work_date: Date.today.beginning_of_year)
         expect(subject).to eq(result)
       end
     end
