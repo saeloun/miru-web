@@ -179,7 +179,7 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty }) => {
   };
 
   return (
-    <div className="sidebar__container flex flex-col">
+    <div className="sidebar__container flex flex-col overflow-y-auto h-max">
       <div>
         <div className="flex px-5 pt-5 mb-7 justify-between items-center">
           <h4 className="text-base font-bold">

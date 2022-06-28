@@ -67,12 +67,13 @@ const Leads = ({ isAdminUser }) => {
 
   const fetchLeads = () => {
     const localRememberFilter = JSON.parse(localStorage.getItem('rememberFilter'));
-    if (localRememberFilter){
+    if (Object.values(localRememberFilter).flat().length > 0){
       leads.get(new URLSearchParams(localRememberFilter).toString())
         .then((res) => {
           const sanitized = unmapLeadList(res);
           setLeadData(sanitized.leadList);
           setPagy(res.data.pagy);
+          setFilterVisibilty(true);
         });
     } else {
       leads.get(queryParams())
