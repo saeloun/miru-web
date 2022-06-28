@@ -132,6 +132,9 @@ en:
     delete:
       success:
         message: User removed successfully
+    update:
+      error:
+        role: There was an error while updating role
   registration:
     sign_up: sign up
     sign_in: sign in
