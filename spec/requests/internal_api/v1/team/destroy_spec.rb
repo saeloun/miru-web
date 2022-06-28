@@ -63,7 +63,7 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       let(:invalid_user) { create(:user) }
 
       before do
-        allow_any_instance_of(employment).to receive(:discard!).and_raise(Discard::RecordNotDiscarded)
+        allow_any_instance_of(Employment).to receive(:discard!).and_raise(Discard::RecordNotDiscarded)
 
         create(:employment, company:, user: admin_user)
         @team_company_user = create(:employment, company:, user: invalid_user)
