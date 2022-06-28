@@ -144,13 +144,6 @@ const EditClient = ({
                               <span className="text-sm">Employee</span>
                             </label>
                           </div>
-                          <div className="flex items-center">
-                            <Field type="radio" id="role-1" name="role" className="hidden custom__radio" value="book_keeper" />
-                            <label htmlFor="role-1" className="flex items-center cursor-pointer text-xl">
-                              <i className="custom__radio-text"></i>
-                              <span className="text-sm">Book Keeper</span>
-                            </label>
-                          </div>
                         </div>
                       </div>
                     </div>
