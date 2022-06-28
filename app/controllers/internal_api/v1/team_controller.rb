@@ -42,6 +42,6 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
     end
 
     def current_company_role(user)
-      user.roles.where(resource: current_company).first
+      user.roles.find_by(resource: current_company)
     end
 end

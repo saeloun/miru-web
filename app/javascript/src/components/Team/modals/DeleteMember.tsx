@@ -3,13 +3,14 @@ import React from "react";
 import { destroy } from "apis/team";
 import { useList } from "context/TeamContext";
 import { X } from "phosphor-react";
+import { TeamModalType } from "constants/index";
 
 const DeleteMember = ({ user }) => {
   const { setModalState } = useList();
   const deleteTeamMember = async () => {
     try {
       await destroy(user.id);
-      setModalState("");
+      setModalState(TeamModalType);
     } catch (error) {
       console.error(error);
     }
@@ -27,7 +28,7 @@ const DeleteMember = ({ user }) => {
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
               <h6 className="text-2xl font-bold">Delete User</h6>
-              <button type="button" onClick={() => { setModalState(""); }}>
+              <button type="button" onClick={() => { setModalState(TeamModalType.NONE); }}>
                 <X size={16} color="#CDD6DF" weight="bold" />
               </button>
             </div>
@@ -36,7 +37,7 @@ const DeleteMember = ({ user }) => {
             </p>
             <div className="flex justify-between">
               <button
-                onClick={() => setModalState("")}
+                onClick={() => setModalState(TeamModalType.NONE)}
                 className="button__bg_transparent"
               >
                 CANCEL
