@@ -134,7 +134,7 @@
                 </a>
                 <% end %>
                 <% if policy(:report).index? %>
-                  <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "block" : "hidden" %> navbar__small-screen-second_titles">
+                  <a href="/reports" class="<%= request.path == "/reports" ? "block" : "hidden" %> navbar__small-screen-second_titles">
                     <%= t('navbar.reports') %>
                   </a>
                 <% end %>
@@ -176,7 +176,7 @@
                   </a>
                 <% end %>
                 <% if policy(:report).index? %>
-                  <a href="<%= reports_path %>" data-cy="reports-tab" class="<%= request.path == "#{reports_path}" ? "navbar___large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
+                  <a href="/reports" data-cy="reports-tab" class="<%= request.path == "/reports" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
                     <%= t('navbar.reports') %>
                   </a>
                 <% end %>
