@@ -4,7 +4,7 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
   def index
     authorize Lead
     pagy, leads = pagy(
-      Lead.filter(params).order(created_at: :desc),
+      Lead.filter(params, current_user).order(created_at: :desc),
       items_param: :leads_per_page)
     lead_details = leads.map(&:lead_detail)
 

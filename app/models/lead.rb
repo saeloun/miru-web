@@ -239,24 +239,36 @@ class Lead < ApplicationRecord
   validates :first_name, :last_name, presence: true
   before_validation :assign_default_values
 
-  def self.filter(params = {})
-    quality_codes = params[:quality_codes].present? ? params[:quality_codes].split(",").map(&:to_i) : []
-    assignees = params[:assignees].present? ? params[:assignees].split(",").map(&:to_i) : []
-    reporters = params[:reporters].present? ? params[:reporters].split(",").map(&:to_i) : []
-    country_alphas = params[:country_alphas].present? ? params[:country_alphas].split(",") : []
-    industry_codes = params[:industry_codes].present? ? params[:industry_codes].split(",").map(&:to_i) : []
-    source_codes = params[:source_codes].present? ? params[:source_codes].split(",").map(&:to_i) : []
-    status_codes = params[:status_codes].present? ? params[:status_codes].split(",").map(&:to_i) : []
+  def self.filter(params = {}, user = User.none)
+    allow_leads = Lead.none
 
-    allow_leads = Lead.includes(:assignee, :reporter, :created_by, :updated_by).where(discarded_at: nil)
-    allow_leads = allow_leads.where("name LIKE ?", "%#{params[:q]}%") if params[:q].present?
-    allow_leads = allow_leads.where(assignee_id: assignees) if assignees.present?
-    allow_leads = allow_leads.where(reporter_id: reporters) if reporters.present?
-    allow_leads = allow_leads.where(quality_code: quality_codes) if quality_codes.present?
-    allow_leads = allow_leads.where(country: country_alphas) if country_alphas.present?
-    allow_leads = allow_leads.where(industry_code: industry_codes) if industry_codes.present?
-    allow_leads = allow_leads.where(source_code: source_codes) if source_codes.present?
-    allow_leads = allow_leads.where(status_code: status_codes) if status_codes.present?
+    if user.present? && user.can_access_lead?
+      quality_codes = params[:quality_codes].present? ? params[:quality_codes].split(",").map(&:to_i) : []
+      assignees = params[:assignees].present? ? params[:assignees].split(",").map(&:to_i) : []
+      reporters = params[:reporters].present? ? params[:reporters].split(",").map(&:to_i) : []
+      country_alphas = params[:country_alphas].present? ? params[:country_alphas].split(",") : []
+      industry_codes = params[:industry_codes].present? ? params[:industry_codes].split(",").map(&:to_i) : []
+      source_codes = params[:source_codes].present? ? params[:source_codes].split(",").map(&:to_i) : []
+      status_codes = params[:status_codes].present? ? params[:status_codes].split(",").map(&:to_i) : []
+
+      allow_leads = Lead.includes(:assignee, :reporter, :created_by, :updated_by).where(discarded_at: nil)
+
+      if user.under_sales_department?
+        allow_leads = allow_leads.where(
+          "assignee_id = ? OR reporter_id = ? OR created_by_id = ?", user.id, user.id,
+          user.id)
+      end
+
+      allow_leads = allow_leads.where("name LIKE ?", "%#{params[:q]}%") if params[:q].present?
+      allow_leads = allow_leads.where(assignee_id: assignees) if assignees.present?
+      allow_leads = allow_leads.where(reporter_id: reporters) if reporters.present?
+      allow_leads = allow_leads.where(quality_code: quality_codes) if quality_codes.present?
+      allow_leads = allow_leads.where(country: country_alphas) if country_alphas.present?
+      allow_leads = allow_leads.where(industry_code: industry_codes) if industry_codes.present?
+      allow_leads = allow_leads.where(source_code: source_codes) if source_codes.present?
+      allow_leads = allow_leads.where(status_code: status_codes) if status_codes.present?
+    end
+
     allow_leads
   end
 
