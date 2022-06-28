@@ -27,12 +27,13 @@ RSpec.describe Project, type: :model do
     let(:client) { create(:client, company:) }
     let(:project) { create(:project, client:) }
     let!(:member) { create(:project_member, project:, user:, hourly_rate: 5000) }
+    let(:formatted_hourly_rate) { FormatAmountService.new(company.base_currency, member.hourly_rate).process }
     let(:result) do
       [{
         id: user.id,
         name: user.full_name,
-        hourly_rate: 5000,
-        minutes_logged: 480.0
+        minutes_logged: 480.0,
+        formatted_hourly_rate:
       }]
     end
 
@@ -44,9 +45,9 @@ RSpec.describe Project, type: :model do
           [{
             id: member.user_id,
             name: user.full_name,
-            hourly_rate: 5000,
+            formatted_hourly_rate:,
             minutes_logged: 0,
-            currency: company.base_currency
+            formatted_cost: format_amount(company.base_currency, 0)
           }])
       end
     end
@@ -55,8 +56,10 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "last_week" }
 
       it "returns the project_team_member_details for a project in the last week" do
-        create(:timesheet_entry, user:, project:, work_date: Date.today.last_week)
-        result.first[:currency] = company.base_currency
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.last_week)
+        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        cost = (timesheet_entry.duration / 60) * member.hourly_rate
+        result.first[:formatted_cost] = format_amount(company.base_currency, cost)
         expect(subject).to eq(result)
       end
     end
@@ -65,8 +68,10 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "week" }
 
       it "returns the project_team_member_details for a project in a week" do
-        result.first[:currency] = company.base_currency
-        create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_week)
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_week)
+        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        cost = (timesheet_entry.duration / 60) * member.hourly_rate
+        result.first[:formatted_cost] = format_amount(company.base_currency, cost)
         expect(subject).to eq(result)
       end
     end
@@ -75,8 +80,10 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "month" }
 
       it "returns the project_team_member_details for a project in a month" do
-        result.first[:currency] = company.base_currency
-        create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_month)
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_month)
+        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        cost = (timesheet_entry.duration / 60) * member.hourly_rate
+        result.first[:formatted_cost] = format_amount(company.base_currency, cost)
         expect(subject).to eq(result)
       end
     end
@@ -85,8 +92,10 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "year" }
 
       it "returns the project_team_member_details for a project in a year" do
-        result.first[:currency] = company.base_currency
-        create(:timesheet_entry, user:, project:, work_date: Date.today.beginning_of_year)
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.beginning_of_year)
+        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        cost = (timesheet_entry.duration / 60) * member.hourly_rate
+        result.first[:formatted_cost] = format_amount(company.base_currency, cost)
         expect(subject).to eq(result)
       end
     end
@@ -217,5 +226,9 @@ RSpec.describe Project, type: :model do
         expect(overdue_and_outstanding_amounts[:outstanding_amount]).to eq(outstanding_amount)
       end
     end
+  end
+
+  def format_amount(currency, amount)
+    FormatAmountService.new(currency, amount).process
   end
 end

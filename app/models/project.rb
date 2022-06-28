@@ -53,19 +53,21 @@ class Project < ApplicationRecord
         {
           id: member.user_id,
           name: member.full_name,
-          hourly_rate: member.hourly_rate,
+          formatted_hourly_rate: format_amount(member.hourly_rate),
           minutes_logged: 0,
-          currency: client.company.base_currency
+          formatted_cost: format_amount(0)
         }
       end
     else
       entries.map do |entry|
+        hourly_rate = members[entry.user_id]
+        cost = (entry.duration / 60) * hourly_rate
         {
           id: entry.user_id,
           name: entry.user.full_name,
-          hourly_rate: members[entry.user_id],
+          formatted_hourly_rate: format_amount(hourly_rate),
           minutes_logged: entry.duration,
-          currency: client.company.base_currency
+          formatted_cost: format_amount(cost)
         }
       end
     end
@@ -109,5 +111,9 @@ class Project < ApplicationRecord
 
     def discard_project_members
       project_members.discard_all
+    end
+
+    def format_amount(amount)
+      FormatAmountService.new(client.company.base_currency, amount).process
     end
 end
