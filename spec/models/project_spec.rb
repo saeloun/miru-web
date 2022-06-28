@@ -41,15 +41,13 @@ RSpec.describe Project, type: :model do
 
       it "returns data with 0 values" do
         expect(subject).to eq(
-          [
-                    {
-                      id: member.user_id,
-                      name: user.full_name,
-                      hourly_rate: 5000,
-                      minutes_logged: 0,
-                      currency: company.base_currency
-                    }
-                  ])
+          [{
+            id: member.user_id,
+            name: user.full_name,
+            hourly_rate: 5000,
+            minutes_logged: 0,
+            currency: company.base_currency
+          }])
       end
     end
 
