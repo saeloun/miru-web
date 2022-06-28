@@ -31,6 +31,8 @@ class Company < ApplicationRecord
   has_many :invoices, through: :clients
   has_one :stripe_connected_account, dependent: :destroy
   has_many :payments_providers, dependent: :destroy
+  has_many :addresses, as: :addressable, dependent: :destroy
+  has_many :devices, dependent: :destroy
   resourcify
 
   # Validations

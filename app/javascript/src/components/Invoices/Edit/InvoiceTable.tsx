@@ -73,16 +73,19 @@ const InvoiceTable = ({
               manualEntryArr={manualEntryArr}
               setManualEntryArr={setManualEntryArr}
             />
-          )
-          }
+          )}
           {
             selectedLineItems.map((item, index) => (
-              <NewLineItemRow
-                item={item}
-                selectedOption={selectedLineItems}
-                setSelectedOption={setSelectedLineItems}
-                key={index}
-              />
+              item._destroy ? (
+                <></>
+              ) : (
+                <NewLineItemRow
+                  item={item}
+                  selectedOption={selectedLineItems}
+                  setSelectedOption={setSelectedLineItems}
+                  key={index}
+                />
+              )
             ))}
         </tbody>
       </table>

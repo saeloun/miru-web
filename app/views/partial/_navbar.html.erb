@@ -36,9 +36,10 @@
         <% if policy(:invoice).index? %>
         <a href="/invoices" class="<%= request.path == "/invoices" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.invoices') %></a>
         <% end %>
-        <% if policy(:payment).index? %>
-        <a href="/payments" class="<%= request.path == "/payments" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.payments') %></a>
-        <% end %>
+        <!-- # TODO: Temprary disabling this feature (navebar payment links) -->
+        <%# if policy(:payment).index? %>
+<!--        <a href="/payments" class="<%# request.path == "/payments" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%# t('navbar.payments') %></a> -->
+        <%# end %>
       </div>
       <!-- dashboard time_tracking team clients projects invoice report etc. end -->
     <% end %>
@@ -180,11 +181,12 @@
                     <%= t('navbar.reports') %>
                   </a>
                 <% end %>
-                <% if policy(:payment).index? %>
-                  <a href="/payments" data-cy="invoices-tab" class="<%= request.path == "/payments" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                    <%= t('navbar.payments') %>
-                  </a>
-                <% end %>
+                <!-- # TODO: Temprary disabling this feature (navebar payment links) -->
+                <%# if policy(:payment).index? %>
+<!--                     <a href="/payments" data-cy="invoices-tab" class="<%# request.path == "/payments" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title"> -->
+                <%# t('navbar.payments') %>
+<!--                     </a>  -->
+                <%# end %>
               </div>
             </div>
             <!-- dashboard time_tracking team clients projects invoices report etc. end -->

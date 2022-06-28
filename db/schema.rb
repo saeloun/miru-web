@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_20_122048) do
+ActiveRecord::Schema[7.0].define(version: 2022_06_22_160123) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -43,6 +43,23 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_20_122048) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "addresses", force: :cascade do |t|
+    t.string "addressable_type"
+    t.bigint "addressable_id"
+    t.string "address_type"
+    t.string "address_line_1", null: false
+    t.string "address_line_2"
+    t.string "city", null: false
+    t.string "country", null: false
+    t.string "pin", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "state", null: false
+    t.index ["addressable_type", "addressable_id", "address_type"],
+      name: "index_addresses_on_addressable_and_address_type", unique: true
+    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
 
   create_table "clients", force: :cascade do |t|
@@ -80,21 +97,30 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_20_122048) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "discarded_at"
-    t.index ["company_id"], name: "index_company_users_on_company_id"
-    t.index ["discarded_at"], name: "index_company_users_on_discarded_at"
-    t.index ["user_id"], name: "index_company_users_on_user_id"
-  end
-
-  create_table "employment_details", force: :cascade do |t|
     t.string "employee_id"
     t.string "designation"
     t.string "employment_type"
     t.date "joined_at"
     t.date "resigned_at"
+    t.index ["company_id"], name: "index_company_users_on_company_id"
+    t.index ["discarded_at"], name: "index_company_users_on_discarded_at"
+    t.index ["user_id"], name: "index_company_users_on_user_id"
+  end
+
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
+  create_table "devices", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "company_id", null: false
+    t.string "device_type", default: "laptop"
+    t.string "name"
+    t.string "serial_number"
+    t.jsonb "specifications"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "company_user_id", null: false
-    t.index ["company_user_id"], name: "index_employment_details_on_company_user_id"
+    t.index ["company_id"], name: "index_devices_on_company_id"
+    t.index ["user_id"], name: "index_devices_on_user_id"
   end
 
   create_table "identities", force: :cascade do |t|
@@ -218,6 +244,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_20_122048) do
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
     t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
+    t.index ["work_date"], name: "index_timesheet_entries_on_work_date"
   end
 
   create_table "users", force: :cascade do |t|
@@ -288,7 +315,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_20_122048) do
   add_foreign_key "clients", "companies"
   add_foreign_key "company_users", "companies"
   add_foreign_key "company_users", "users"
-  add_foreign_key "employment_details", "company_users"
+  add_foreign_key "devices", "companies"
+  add_foreign_key "devices", "users"
   add_foreign_key "identities", "users"
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
