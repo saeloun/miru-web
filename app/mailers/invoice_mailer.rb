@@ -9,7 +9,9 @@ class InvoiceMailer < ApplicationMailer
     subject = params[:subject]
     @message = params[:message]
     @invoice_url = view_invoice_url(@invoice.external_view_key)
+    @company = @invoice.company
     @company_logo = company_logo
+    @amount = FormatAmountService.new(@company.base_currency, @invoice.amount).process
 
     pdf = InvoicePayment::PdfGeneration.process(@invoice, @company_logo)
     attachments["invoice_#{@invoice.invoice_number}.pdf"] = pdf
