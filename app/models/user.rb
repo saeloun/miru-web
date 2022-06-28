@@ -111,6 +111,19 @@ class User < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
 
+  def under_sales_department?
+    sales_department_id = User::DEPARTMENT_OPTIONS.detect { |department| department.name == "Sales" }&.id
+    self.department_id == sales_department_id
+  end
+
+  def can_access_lead?
+    self.has_role?(
+      :owner,
+      self.current_workspace) || self.has_role?(
+        :admin,
+        self.current_workspace) || (self.has_role?(:employee, self.current_workspace) && self.under_sales_department?)
+  end
+
   def primary_role
     return "employee" if roles.empty?
 

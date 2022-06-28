@@ -242,50 +242,6 @@ const Summary = ({
                       </div>
 
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
-                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Budget Amount</label>
-                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="budget_amount" type="number" min="0" placeholder="Budget Amount" disabled={!isEdit} />
-                        <div className="flex justify-between items-center pt-1 text-red-700">
-                          {errors.budget_amount && touched.budget_amount &&
-                            <p className="text-xs">{errors.budget_amount}</p>
-                          }
-                        </div>
-                      </div>
-
-                      <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
-                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Budget Status</label>
-                        <select
-                          defaultValue={leadDetails.budget_status_code}
-                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="budget_status_code" onChange={(e) => setBudgetStatusCode(e.target.value)} disabled={!isEdit} >
-                          <option value=''>Select Budget Status</option>
-                          {budgetStatusCodeList &&
-                            budgetStatusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.budget_status_code}>{e.name}</option>)}
-                        </select>
-                        <div className="flex justify-between items-center pt-1 text-red-700">
-                          {errors.budget_status_code && touched.budget_status_code &&
-                            <p className="text-xs">{errors.budget_status_code}</p>
-                          }
-                        </div>
-                      </div>
-
-                      <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
-                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Industry</label>
-                        <select
-                          defaultValue={leadDetails.industry_code}
-                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-                          name="industry_code" onChange={(e) => setIndustryCode(e.target.value)} disabled={!isEdit} >
-                          <option value=''>Select Industry</option>
-                          {industryCodeList &&
-                            industryCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.industry_code}>{e.name}</option>)}
-                        </select>
-                        <div className="flex justify-between items-center pt-1 text-red-700">
-                          {errors.industry_code && touched.industry_code &&
-                            <p className="text-xs">{errors.industry_code}</p>
-                          }
-                        </div>
-                      </div>
-                      <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Other Emails</label>
                         <FieldArray name="emails">
                           {({ remove, push }) => (
@@ -315,16 +271,62 @@ const Summary = ({
                                     </div>
                                   ))
                               }
-                              {isEdit && <button
+                              <button
                                 type="button"
                                 className="mt-4 w-2/6 header__button text-sm"
                                 onClick={() => push('')}
+                                disabled={!isEdit}
                               >
                                   Add Email
-                              </button>}
+                              </button>
                             </div>
                           )}
                         </FieldArray>
+                      </div>
+
+                      <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
+                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Budget Status</label>
+                        <select
+                          defaultValue={leadDetails.budget_status_code}
+                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          name="budget_status_code" onChange={(e) => setBudgetStatusCode(e.target.value)} disabled={!isEdit} >
+                          <option value=''>Select Budget Status</option>
+                          {budgetStatusCodeList &&
+                            budgetStatusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.budget_status_code}>{e.name}</option>)}
+                        </select>
+                        <div className="flex justify-between items-center pt-1 text-red-700">
+                          {errors.budget_status_code && touched.budget_status_code &&
+                            <p className="text-xs">{errors.budget_status_code}</p>
+                          }
+                        </div>
+                      </div>
+
+                      <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
+                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Budget Amount</label>
+                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          name="budget_amount" type="number" min="0" placeholder="Budget Amount" disabled={!isEdit} />
+                        <div className="flex justify-between items-center pt-1 text-red-700">
+                          {errors.budget_amount && touched.budget_amount &&
+                            <p className="text-xs">{errors.budget_amount}</p>
+                          }
+                        </div>
+                      </div>
+
+                      <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
+                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Industry</label>
+                        <select
+                          defaultValue={leadDetails.industry_code}
+                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          name="industry_code" onChange={(e) => setIndustryCode(e.target.value)} disabled={!isEdit} >
+                          <option value=''>Select Industry</option>
+                          {industryCodeList &&
+                            industryCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDetails.industry_code}>{e.name}</option>)}
+                        </select>
+                        <div className="flex justify-between items-center pt-1 text-red-700">
+                          {errors.industry_code && touched.industry_code &&
+                            <p className="text-xs">{errors.industry_code}</p>
+                          }
+                        </div>
                       </div>
                     </div>
                     <div className="mx-auto xl:mx-0">
