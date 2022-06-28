@@ -40,7 +40,16 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "last_week" }
 
       it "returns data with 0 values" do
-        expect(subject).to eq([{ id: member.user_id, name: user.full_name, hourly_rate: 5000, minutes_logged: 0 }])
+        expect(subject).to eq(
+          [
+                    {
+                      id: member.user_id,
+                      name: user.full_name,
+                      hourly_rate: 5000,
+                      minutes_logged: 0,
+                      currency: company.base_currency
+                    }
+                  ])
       end
     end
 
@@ -49,6 +58,7 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in the last week" do
         create(:timesheet_entry, user:, project:, work_date: Date.today.last_week)
+        result.first[:currency] = company.base_currency
         expect(subject).to eq(result)
       end
     end
@@ -58,6 +68,7 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a week" do
         create(:timesheet_entry, user:, project:, work_date: Date.today)
+        result.first[:currency] = company.base_currency
         expect(subject).to eq(result)
       end
     end
@@ -67,6 +78,7 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a month" do
         create(:timesheet_entry, user:, project:, work_date: Date.today.next_week)
+        result.first[:currency] = company.base_currency
         expect(subject).to eq(result)
       end
     end
@@ -76,6 +88,7 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a year" do
         create(:timesheet_entry, user:, project:, work_date: Date.today.last_month)
+        result.first[:currency] = company.base_currency
         expect(subject).to eq(result)
       end
     end
