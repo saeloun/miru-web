@@ -42,6 +42,6 @@ class CompanyUser < ApplicationRecord
   def user_role
     return "employee" if user.roles.empty?
 
-    user.roles.find_by(resource: company).name
+    user.roles.find_by(resource: company)&.name
     end
 end
