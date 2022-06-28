@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
-import Select from "react-select";
 import timesheetEntryApi from "apis/timesheet-entry";
 import autosize from "autosize";
 
+import SyncAutoComplete from "common/SyncAutoComplete";
 import Toastr from "common/Toastr";
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "helpers/ordinal";
@@ -133,49 +133,23 @@ const AddEntry: React.FC<Iprops> = ({
     >
       <div className="w-1/2">
         <div className="w-129 mb-2 flex justify-between">
-          { isDataFilled && <Select
-            placeholder="Select Client"
+          { isDataFilled && <SyncAutoComplete
             options={clientList}
-            onChange={e => {setClient(e.value); setProject(projects[e.value][0]["name"]); }}
-            isClearable
-            className="w-64 bg-miru-gray-100 rounded-md h-8 text-xs text-miru-han-purple-600"
-            styles={{ menu: (base: any) => ({
-              ...base,
-              zIndex: 9999,
-              border: "none",
-              boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
-              padding: "0.1rem",
-              ...(base.isFocused && {
-                borderRadius: "0.25rem",
-                backgroundColor: "#4A485A",
-                color: "#5B34EA"
-              })
-            })
+            handleValue={(clientName: string) => {
+              if (clientName) {
+                setClient(clientName);
+                setProject(projects[clientName][0]["name"]);
+              }
             }}
-            {...( editEntryId && client ? { defaultValue: { value: client, label: client } } : {} ) }
+            defaultValue={{ value: client, label: client }}
           />}
 
-          {isDataFilled && <Select
-            placeholder="Select Project"
+          {isDataFilled && <SyncAutoComplete
             options={projectList}
-            onChange={e => setProject(e["value"]) }
-            isClearable
-            className="w-64 bg-miru-gray-100 rounded-md h-8 text-xs text-miru-han-purple-600"
-            styles={{ menu: (base: any) => ({
-              ...base,
-              zIndex: 9999,
-              border: "none",
-              boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
-              padding: "0.1rem",
-              ...(base.isFocused && {
-                borderRadius: "0.25rem",
-                backgroundColor: "#4A485A",
-                color: "#5B34EA"
-              })
-            })
-            }}
-            {...( editEntryId && project ? { defaultValue: { value: project, label: project } } : {} ) }
-          />}
+            handleValue={setProject}
+            defaultValue={{ value: project, label: project }}
+          />
+          }
 
         </div>
         <textarea

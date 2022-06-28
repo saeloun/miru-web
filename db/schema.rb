@@ -85,9 +85,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_22_064230) do
     t.index ["user_id"], name: "index_company_users_on_user_id"
   end
 
-  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
-  end
-
   create_table "devices", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "company_id", null: false
@@ -227,7 +224,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_22_064230) do
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
     t.float "duration", null: false
-    t.text "note"
+    t.text "note", default: ""
     t.date "work_date", null: false
     t.integer "bill_status", null: false
     t.datetime "created_at", null: false

@@ -1,9 +1,9 @@
 /* eslint-disable no-unexpected-multiline */
 import React  from "react";
-import Select from "react-select";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import timesheetEntryApi from "apis/timesheet-entry";
+import SyncAutoComplete from "common/SyncAutoComplete";
 import * as dayjs from "dayjs";
 import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
@@ -34,7 +34,8 @@ const TimeTracking: React.FC<Iprops> = ({
   entries,
   isAdmin,
   userId,
-  employees
+  employees,
+  fullName
 }) => {
   const [dayInfo, setDayInfo] = useState<any[]>([]);
   const [view, setView] = useState<string>("day");
@@ -57,7 +58,7 @@ const TimeTracking: React.FC<Iprops> = ({
   // sorting by client's name
   clients.sort((a: object, b: object) => a["name"].localeCompare(b["name"]));
 
-  const employeeOptions = employees.map(e => ({ value: e["id"] as number, label: e["first_name"] + " " + e["last_name"] }) );
+  const employeeOptions = employees.map(e => ({ value: `${e["id"]}`, label: e["first_name"] + " " + e["last_name"] }) );
 
   useEffect(() => {
     sendGAPageView();
@@ -251,26 +252,13 @@ const TimeTracking: React.FC<Iprops> = ({
           </nav>
           <div>
             {isAdmin && selectedEmployeeId && (
-              <Select
-                placeholder="Select Employee"
-                options={employeeOptions as any}
-                onChange={e => setSelectedEmployeeId(+ e["value"] )}
-                isClearable
-                className="w-64 bg-miru-gray-100 rounded-md h-8 text-xs text-miru-han-purple-600"
-                styles={{ menu: (base: any) => ({
-                  ...base,
-                  zIndex: 9999,
-                  border: "none",
-                  boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
-                  padding: "0.1rem",
-                  ...(base.isFocused && {
-                    borderRadius: "0.25rem",
-                    backgroundColor: "#4A485A",
-                    color: "#5B34EA"
-                  })
-                })
-                }}
-              />
+              <div className="flex items-center">
+                <SyncAutoComplete
+                  options={employeeOptions}
+                  handleValue={value => setSelectedEmployeeId(+ value)}
+                  defaultValue={{ value: selectedEmployeeId, label: fullName }}
+                />
+              </div>
             )}
           </div>
         </div>
@@ -459,6 +447,7 @@ interface Iprops {
   isAdmin: boolean;
   userId: number;
   employees: [];
+  fullName: string;
 }
 
 export default TimeTracking;
