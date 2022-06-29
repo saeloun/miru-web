@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :invitation do
-    company { nil }
-    user { nil }
+    company
+    user
   end
 end
