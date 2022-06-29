@@ -1,6 +1,5 @@
-<%= form_for(resource, as: resource_name, url: invitation_path(resource_name), html: { method: :post }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
-
+<!-- TODO: This form will be updated later when custom invitation controller are added --->
+<%= form_with(model: Invitation.new, url: "#", html: { method: :post }) do |f| %>
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
