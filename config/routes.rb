@@ -13,7 +13,6 @@ Rails.application.routes.draw do
     registrations: "users/registrations",
     sessions: "users/sessions",
     passwords: "users/passwords",
-    invitations: "users/invitations",
     omniauth_callbacks: "users/omniauth_callbacks"
   }
 
