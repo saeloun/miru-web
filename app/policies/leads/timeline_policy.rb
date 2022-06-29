@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Leads::LineItemPolicy < ApplicationPolicy
+class Leads::TimelinePolicy < ApplicationPolicy
   attr_reader :error_message_key
 
   def index?
@@ -37,8 +37,19 @@ class Leads::LineItemPolicy < ApplicationPolicy
 
   def permitted_attributes
     [
-      :name, :kind, :description, :price,
-      :number_of_resource, :resource_expertise_level
+      :action_description,
+      :action_due_at,
+      :action_priority_code,
+      :action_subject,
+      :comment,
+      :discarded_at,
+      :index_system_display_message,
+      :kind,
+      :action_assignee_id,
+      :action_created_by_id,
+      :action_reporter_id,
+      :lead_id,
+      :parent_lead_timeline_id
     ]
   end
 end

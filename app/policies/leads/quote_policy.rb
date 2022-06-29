@@ -12,23 +12,27 @@ class Leads::QuotePolicy < ApplicationPolicy
   end
 
   def show?
-    user_owner_role? || user_admin_role?
+    can_access?
   end
 
   def create?
-    user_owner_role? || user_admin_role?
+    can_access?
   end
 
   def new_invoice_line_items?
-    user_owner_role? || user_admin_role?
+    can_access?
   end
 
   def update?
-    user_owner_role? || user_admin_role?
+    can_access?
   end
 
   def destroy?
-    user_owner_role? || user_admin_role?
+    can_access?
+  end
+
+  def can_access?
+    user_owner_role? || user_admin_role? || (user_employee_role? && user_under_sales_department?)
   end
 
   def permitted_attributes

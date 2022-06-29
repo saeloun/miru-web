@@ -16,7 +16,7 @@ const RouteConfig = ({ isAdminUser }) => (
       <Route path="leads">
         <Route index element={<LeadList isAdminUser={isAdminUser} />} />
         <Route path=":leadId" element={<Details />} />
-        <Route path=":leadId/timeline" element={<Details />} />
+        <Route path=":leadId/timelines" element={<Details />} />
         <Route path=":leadId/line-items" element={<Details />} />
         <Route path=":leadId/quotes" element={<Details />} />
         <Route path=":leadId/quotes/:quoteId" element={<QuoteDetails />} />

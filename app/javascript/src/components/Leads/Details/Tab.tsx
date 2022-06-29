@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LineItems from "./../LineItems";
 import Quotes from "./../Quotes";
-import Timeline from "./../Timeline";
+import Timelines from "./../Timelines";
 import Summary from "./Summary";
 import LineItemTable from "../../../components/Leads/QuoteDetails/LineItemTable";
 
@@ -39,7 +39,7 @@ const Tab = ({
       } else {
         const path = {
           summary: `/leads/${leadId}`,
-          timeline: `/leads/${leadId}/timeline`,
+          timelines: `/leads/${leadId}/timelines`,
           lineItems: `/leads/${leadId}/line-items`,
           quotes: `/leads/${leadId}/quotes`,
         };
@@ -57,7 +57,7 @@ const Tab = ({
       setForItem("summary");
       setTabClassName({
         summaryTab: activeClassName,
-        timelineTab: defaultClassName,
+        timelinesTab: defaultClassName,
         lineItemsTab: defaultClassName,
         quotesTab: defaultClassName
       });
@@ -66,20 +66,20 @@ const Tab = ({
         setLeadDetails={setLeadDetails}
         isEdit={isEdit}
         setFormRef={setFormRef} />);
-    } else if (activeTab === "timeline"){
-      setForItem("timeline");
+    } else if (activeTab === "timelines"){
+      setForItem("timelines");
       setTabClassName({
         summaryTab: defaultClassName,
-        timelineTab: activeClassName,
+        timelinesTab: activeClassName,
         lineItemsTab: defaultClassName,
         quotesTab: defaultClassName
       });
-      setRenderTabData(<Timeline leadDetails={leadDetails} />);
+      setRenderTabData(<Timelines leadDetails={leadDetails} />);
     } else if (activeTab === "lineItems"){
       setForItem("lineItems");
       setTabClassName({
         summaryTab: defaultClassName,
-        timelineTab: defaultClassName,
+        timelinesTab: defaultClassName,
         lineItemsTab: activeClassName,
         quotesTab: defaultClassName
       });
@@ -87,7 +87,7 @@ const Tab = ({
     } else if (activeTab === "quotes"){
       setTabClassName({
         summaryTab: defaultClassName,
-        timelineTab: defaultClassName,
+        timelinesTab: defaultClassName,
         lineItemsTab: defaultClassName,
         quotesTab: activeClassName
       });
@@ -103,7 +103,7 @@ const Tab = ({
   const handleTabChange = (key) => {
     const path = {
       summary: `/leads/${leadId}`,
-      timeline: `/leads/${leadId}/timeline`,
+      timelines: `/leads/${leadId}/timelines`,
       lineItems: `/leads/${leadId}/line-items`,
       quotes: `/leads/${leadId}/quotes` + (quoteId ? `/${quoteId}` : ``),
     }[key];
@@ -125,8 +125,8 @@ const Tab = ({
               </button>
             </li>
             <li className="mr-3">
-              <button className={tabClassName ? tabClassName.timelineTab : defaultClassName} onClick={() => handleTabChange('timeline')} >
-                TIMELINE
+              <button className={tabClassName ? tabClassName.timelinesTab : defaultClassName} onClick={() => handleTabChange('timelines')} >
+                TIMELINEs
               </button>
             </li>
             <li className="mr-3">

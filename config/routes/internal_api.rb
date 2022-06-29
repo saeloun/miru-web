@@ -10,6 +10,7 @@ namespace :internal_api, defaults: { format: "json" } do
       get "allowed_users", to: "/lead_allowed_users", on: :collection
       resources :line_items, only: [:index, :update, :destroy, :show, :create], module: :leads
       resources :quotes, only: [:index, :update, :destroy, :show, :create, :edit], module: :leads
+      resources :timelines, only: [:index, :update, :destroy, :show, :create, :edit], module: :leads
     end
     namespace :recruitments do
       resources :consultancies, only: [:index, :update, :destroy, :show, :create]

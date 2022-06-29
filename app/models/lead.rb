@@ -238,6 +238,13 @@ class Lead < ApplicationRecord
 
   validates :first_name, :last_name, presence: true
   before_validation :assign_default_values
+  after_update :create_lead_timelines
+
+  def create_lead_timelines
+    LeadTimeline.create!(
+      action_subject: "update", index_system_display_message: "updated Lead", lead_id: self.id,
+      action_created_by_id: self.created_by_id, action_reporter_id: self.reporter_id)
+  end
 
   def self.filter(params = {}, user = User.none)
     allow_leads = Lead.none
