@@ -10,7 +10,7 @@ task move_devise_invitation_to_invitation_table: :environment do
 
       Invitation.create!(
         company: role.resource,
-        sender_id: user.invited_by.id,
+        sender: user.invited_by,
         recipient_email: user.email,
         role: role.name.to_sym,
         token: user.invitation_token,
