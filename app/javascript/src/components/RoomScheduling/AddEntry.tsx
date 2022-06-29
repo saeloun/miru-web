@@ -15,7 +15,7 @@ const AddEntry: React.FC<Iprops> = ({
   selectedEmployeeId,
   fetchEntries,
   setNewEntryView,
-  clients,
+  // clients,
   projects,
   selectedDateInfo,
   entryList,
@@ -133,17 +133,17 @@ const AddEntry: React.FC<Iprops> = ({
               setClient(e.target.value);
               setProject(projects[e.target.value][0].name);
             }}
-            value={client || "Client"}
+            value={client || "Room"}
             name="client"
             id="client"
             className="w-64 bg-miru-gray-100 rounded-sm h-8"
           >
             {!client && (
               <option disabled selected className="text-miru-gray-100">
-              Client
+              Room
               </option>
             )}
-            {clients.map((client, i) => (
+            {[{ name: "HR Cabin" }, { name: "Conference Room" }, { name: "Sales Cabin" }].map((client, i) => (
               <option key={i.toString()}>{client["name"]}</option>
             ))}
           </select>
@@ -159,13 +159,12 @@ const AddEntry: React.FC<Iprops> = ({
           >
             {!project && (
               <option disabled selected className="text-miru-gray-100">
-              Project
+              Capacity
               </option>
             )}
-            {client &&
-            projects[client].map((project, i) => (
-              <option data-project-id={project.id} key={i.toString()}>
-                {project.name}
+            {[1,2,3,4,5,6,6,7,8,9,10].map((capacity, i) => (
+              <option data-project-id={capacity} key={i.toString()}>
+                {capacity}
               </option>
             ))}
           </select>
@@ -214,7 +213,7 @@ const AddEntry: React.FC<Iprops> = ({
               alt="checkbox"
             />
           )}
-          <h4>Billable</h4>
+          <h4>Restricted</h4>
         </div>
       </div>
       <div className="max-w-min">

@@ -44,6 +44,7 @@ Rails.application.routes.draw do
   end
 
   resources :time_tracking, only: [:index], path: "time-tracking"
+  resources :room_scheduling, only: [:index], path: "room-scheduling"
 
   resources :team, only: [:index, :update, :destroy, :edit]
 
