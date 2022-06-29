@@ -30,6 +30,11 @@
 class Invitation < ApplicationRecord
   enum role: [:owner, :admin, :employee, :book_keeper]
 
+  # Associations
   belongs_to :company
-  belongs_to :sender, foreign_key: "sender_id", class_name: "User"
+  belongs_to :sender, class_name: "User"
+
+  # Validations
+  validates :recipient_email, :role, :token, presence: true
+  validates_uniqueness_of :token
 end
