@@ -33,6 +33,7 @@ class Company < ApplicationRecord
   has_many :payments_providers, dependent: :destroy
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
+  has_many :invitations, dependent: :destroy
   resourcify
 
   # Validations
