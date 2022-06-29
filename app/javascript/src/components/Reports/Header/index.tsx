@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   CaretDown,
   FileCsv,
@@ -12,12 +14,15 @@ import {
 import NavigationFilter from "./NavigationFilter";
 import { useEntry } from "../context/EntryContext";
 
+const leftArrow = require("../../../../images/back-arrow.svg");
+
 const Header = ({
   setFilterVisibilty,
   isFilterVisible,
   showNavFilters,
   resetFilter,
-  handleDownload
+  handleDownload,
+  type
 }) => {
   const { filterCounter } = useEntry();
   const [showExportOptions, setShowExportOptions] = useState<boolean>(false);
@@ -26,8 +31,14 @@ const Header = ({
     <div>
       <div className="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
         <div className="flex items-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
-            Time entry report
+          <Link
+            to={"/reports"}
+            type="button"
+          >
+            <img src={leftArrow}></img>
+          </Link>
+          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1 ml-5">
+            {type}
           </h2>
           <button className="ml-7 p-3 rounded hover:bg-miru-gray-1000 relative" onClick={() => { setFilterVisibilty(!isFilterVisible); }}>
             <Funnel size={16} color="#7C5DEE" />

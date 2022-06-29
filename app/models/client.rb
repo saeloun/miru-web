@@ -118,6 +118,16 @@ class Client < ApplicationRecord
     end
   end
 
+  def payment_summary
+    status_and_amount = invoices.group(:status).sum(:amount)
+    status_and_amount.default = 0
+    {
+      name:,
+      paid_amount: status_and_amount["paid"],
+      unpaid_amount: status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
+    }
+  end
+
   private
 
     def stripe_connected_account

@@ -14,7 +14,9 @@ const AddEditProject = ({
   const [projectType, setProjectType] = useState<string>("Billable");
   const [clientList, setClientList] = useState<[]>([]);
 
-  const projectId = Number(window.location.pathname.split("/").at(-1)) || editProjectData["id"];
+  const projectId = (projectData && projectData["id"])
+    || (editProjectData && editProjectData["id"])
+    || Number(window.location.pathname.split("/").at(-1));
 
   const getClientList = async () => {
     try {
@@ -41,7 +43,7 @@ const AddEditProject = ({
 
   const handleProjectData = () => {
     if (!editProjectData?.name || !clientList.length) return;
-    const clientName = editProjectData?.client.name || editProjectData?.clientName;
+    const clientName = editProjectData?.client?.name || editProjectData?.clientName;
     const currentClient = clientList.find(clientItem => clientItem["name"] === clientName);
     if (currentClient) setClient(currentClient["id"]);
     setProjectName(editProjectData ? editProjectData.name : "");
