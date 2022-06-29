@@ -107,6 +107,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_28_121346) do
     t.index ["user_id"], name: "index_company_users_on_user_id"
   end
 
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
   create_table "devices", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "company_id", null: false
@@ -143,6 +146,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_28_121346) do
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_invitations_on_company_id"
     t.index ["sender_id"], name: "index_invitations_on_sender_id"
+    t.index ["token"], name: "index_invitations_on_token", unique: true
   end
 
   create_table "invoice_line_items", force: :cascade do |t|

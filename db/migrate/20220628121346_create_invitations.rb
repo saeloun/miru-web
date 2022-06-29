@@ -6,7 +6,7 @@ class CreateInvitations < ActiveRecord::Migration[7.0]
       t.references :company, null: false, foreign_key: true
       t.references :sender, references: :users, foreign_key: { to_table: :users }, null: false
       t.string :recipient_email, null: false
-      t.string :token, null: false
+      t.string :token, null: false, index: { unique: true }
       t.datetime :accepted_at
       t.datetime :expired_at
       t.string :first_name
