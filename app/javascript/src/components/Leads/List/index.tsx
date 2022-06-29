@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useCookies } from 'react-cookie';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
@@ -55,6 +56,8 @@ const Leads = ({ isAdminUser }) => {
 
   const navigate = useNavigate();
 
+  const [rememberFilter, setRememberFilter] = useCookies();
+
   const handleDeleteClick = (id) => {
     setShowDeleteDialog(true);
     const editSelection = leadData.find(lead => lead.id === id);
@@ -66,9 +69,8 @@ const Leads = ({ isAdminUser }) => {
   };
 
   const fetchLeads = () => {
-    const localRememberFilter = JSON.parse(localStorage.getItem('rememberFilter'));
-    if (localRememberFilter && Object.values(localRememberFilter).flat().length > 0){
-      leads.get(new URLSearchParams(localRememberFilter).toString())
+    if (rememberFilter.filterData && Object.values(rememberFilter.filterData).flat().length > 0){
+      leads.get(new URLSearchParams(rememberFilter.filterData).toString())
         .then((res) => {
           const sanitized = unmapLeadList(res);
           setLeadData(sanitized.leadList);
@@ -152,7 +154,7 @@ const Leads = ({ isAdminUser }) => {
         </div>
       </div>
       {isFilterVisible && (
-        <FilterSideBar setLeadData={setLeadData} setFilterVisibilty={setFilterVisibilty} />
+        <FilterSideBar setLeadData={setLeadData} setFilterVisibilty={setFilterVisibilty} rememberFilter={rememberFilter} setRememberFilter={setRememberFilter} />
       )}
       {showDeleteDialog && (
         <DeleteLead

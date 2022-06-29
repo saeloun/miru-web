@@ -6,7 +6,7 @@ import { Multiselect } from 'multiselect-react-dropdown';
 import { X } from "phosphor-react";
 import { unmapLeadList } from "../../../../mapper/lead.mapper";
 
-const FilterSideBar = ({ setLeadData, setFilterVisibilty }) => {
+const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRememberFilter }) => {
   const [allowUserList, setAllowUserLIst] = useState<any>([{}]);
   const [qualityOptions, setQualityOptions] = useState<any>([{}]);
   const [statusOptions, setStatusOptions] = useState<any>([{}]);
@@ -35,15 +35,13 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty }) => {
 
   const [isApplyFilter, setIsApplyFilter] = useState<boolean>(false);
 
-  const [rememberFilter, setRememberFilter] = useState<any>(null);
-
-  const [rememberAssignees, setRememberAssignees] = useState<any>([{}]);
-  const [rememberReporters, setRememberReporters] = useState<any>([{}]);
-  const [rememberQualities, setRememberQualities] = useState<any>([{}]);
-  const [rememberStatus, setRememberStatus] = useState<any>([{}]);
-  const [rememberSources, setRememberSources] = useState<any>([{}]);
-  const [rememberCountries, setRememberCountries] = useState<any>([{}]);
-  const [rememberIndustries, setRememberIndustries] = useState<any>([{}]);
+  const [rememberAssignees, setRememberAssignees] = useState<any>(null);
+  const [rememberReporters, setRememberReporters] = useState<any>(null);
+  const [rememberQualities, setRememberQualities] = useState<any>(null);
+  const [rememberStatus, setRememberStatus] = useState<any>(null);
+  const [rememberSources, setRememberSources] = useState<any>(null);
+  const [rememberCountries, setRememberCountries] = useState<any>(null);
+  const [rememberIndustries, setRememberIndustries] = useState<any>(null);
 
   useEffect(() => {
     const getLeadItems = async () => {
@@ -55,69 +53,67 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty }) => {
           setSourceOptions(data.data.source_codes)
           setStatusOptions(data.data.status_codes)
         }).catch(() => {
-          setCountryOptions([{}])
-          setIndustryOptions([{}])
-          setSourceOptions([{}])
-          setStatusOptions([{}])
+          setCountryOptions({})
+          setIndustryOptions({})
+          setSourceOptions({})
+          setStatusOptions({})
         });
       leadAllowedUsersApi.get()
         .then((data) => {
           setAllowUserLIst(data.data.allowed_user_list);
         }).catch(() => {
-          setAllowUserLIst([{}]);
+          setAllowUserLIst({});
         });
     };
 
     getLeadItems();
-    const localRememberFilter = JSON.parse(localStorage.getItem('rememberFilter'));
-    setRememberFilter(localRememberFilter)
   }, []);
 
   useEffect(() => {
-    if (rememberFilter){
+    if (rememberFilter.filterData){
       if (allowUserList){
         const fallowAssigneeList = allowUserList.filter(assignee =>
-          rememberFilter.assignees.map(Number).includes(parseInt(assignee.id))
+          rememberFilter.filterData.assignees.map(Number).includes(parseInt(assignee.id))
         );
         setRememberAssignees([...fallowAssigneeList])
 
         const fallowReporterList = allowUserList.filter(reporter =>
-          rememberFilter.reporters.map(Number).includes(parseInt(reporter.id))
+          rememberFilter.filterData.reporters.map(Number).includes(parseInt(reporter.id))
         );
         setRememberReporters([...fallowReporterList])
       }
       if (qualityOptions){
         const fqualityOptions = qualityOptions.filter(quality =>
-          rememberFilter.quality_codes.map(Number).includes(parseInt(quality.id))
+          rememberFilter.filterData.quality_codes.map(Number).includes(parseInt(quality.id))
         );
         setRememberQualities([...fqualityOptions])
       }
       if (countryOptions){
         const fcountryOptions = countryOptions.filter(country =>
-          rememberFilter.country_alphas.map(Number).includes(parseInt(country[0]))
+          rememberFilter.filterData.country_alphas.map(Number).includes(parseInt(country[0]))
         );
         setRememberCountries([...fcountryOptions])
       }
       if (industryOptions){
         const findustryOptions = industryOptions.filter(industry =>
-          rememberFilter.industry_codes.map(Number).includes(parseInt(industry.id))
+          rememberFilter.filterData.industry_codes.map(Number).includes(parseInt(industry.id))
         );
         setRememberIndustries([...findustryOptions])
       }
       if (sourceOptions){
         const fsourceOptions = sourceOptions.filter(source =>
-          rememberFilter.source_codes.map(Number).includes(parseInt(source.id))
+          rememberFilter.filterData.source_codes.map(Number).includes(parseInt(source.id))
         );
         setRememberSources([...fsourceOptions])
       }
       if (statusOptions){
         const fstatusOptions = statusOptions.filter(status =>
-          rememberFilter.status_codes.map(Number).includes(parseInt(status.id))
+          rememberFilter.filterData.status_codes.map(Number).includes(parseInt(status.id))
         );
         setRememberStatus([...fstatusOptions])
       }
     }
-  }, [rememberFilter, allowUserList, qualityOptions, countryOptions,
+  }, [rememberFilter.filterData, allowUserList, qualityOptions, countryOptions,
     industryOptions, sourceOptions, statusOptions]);
 
   const customStyles = {
@@ -138,6 +134,7 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty }) => {
 
   useEffect(() => {
     if (isApplyFilter){
+      setRememberFilter('filterData', queryParams);
       const applyFilter = async () => {
         leads.get(stringQueryParams)
           .then((res) => {
@@ -153,8 +150,6 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty }) => {
 
   useEffect(() => {
     setStringQueryParams(new URLSearchParams(queryParams).toString())
-    const localFilter = JSON.stringify(queryParams);
-    localStorage.setItem('rememberFilter', localFilter);
   }, [queryParams, isApplyFilter]);
 
   const resetFilter = async () => {
