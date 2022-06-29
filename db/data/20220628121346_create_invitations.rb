@@ -23,9 +23,9 @@ class CreateInvitations < ActiveRecord::Migration[7.0]
           last_name: user.last_name
         )
       end
-
-      InvitationVerifier.verify!
     end
+
+    InvitationVerifier.verify!
   end
 
   def down
