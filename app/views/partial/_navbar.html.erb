@@ -166,8 +166,8 @@
             <!-- title smaller screen end -->
 
             <!-- dashboard time_tracking team clients projects invoices report etc. start -->
-            <div class="relative z-0 flex-auto flex items-center justify-center sm:absolute sm:inset-0">
-              <div class="ml-12 hidden lg:block lg:flex lg:space-x-10 xl:pr-80">
+            <div class="relative z-0 flex-auto flex items-center justify-start sm:absolute sm:inset-0">
+              <div class="ml-36 hidden lg:block lg:flex lg:space-x-10 xl:pr-80">
                 <% if policy(:lead).index? %>
                   <a href="/leads" data-cy="clients-tab" class="<%= request.path.include?('/leads') ? 'navbar__large-screen_selected' : 'navbar__large-screen_unselected' %> navbar__large-screen_title">
                     <%= t('navbar.leads') %>
@@ -232,7 +232,62 @@
           <!-- hamburger icons end -->
 
             <!-- switch workspace, notification and profile icons start -->
-            <div class="hidden lg:relative lg:z-10 lg:ml-4 lg:flex lg:items-center">
+            <div class="hidden lg:relative lg:z-10 lg:ml-4 lg:flex lg:items-center"><div class="cursor-pointer" x-data="{ isOpen: false}">
+              <div class="flex p-1" @click="isOpen = !isOpen">
+                <p class: "mr-1 h-6 w-6 rounded-md">Others</p>
+                <p class="py-1.5 px-1">
+                  <img src="<%= image_url 'down_arrow.svg' %>" class="mr-3 h-3 w-3" alt="down_arrow" />
+                </p>
+              </div>
+
+              <div x-show="isOpen" @click.away="isOpen = false">
+                <div class="flex flex-col absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                  <% if policy(:timesheet_entry).index? %>
+                    <div class="bg-miru-gray-100 items-center px-4 py-4 hover:bg-miru-gray-100 text-miru-dark-purple-1000 cursor-pointer rounded-sm" role="menuitem" tabindex="-1" id="menu-item-0">
+                      <a href="/time-tracking" data-cy="time-tracking-tab" class="flex">
+                        <%= t('navbar.time_tracking') %>
+                      </a>
+                    </div>
+                  <% end %>
+                  <% if policy(:client).index? %>
+                    <div class="bg-miru-gray-100 items-center px-4 py-4 hover:bg-miru-gray-100 text-miru-dark-purple-1000 cursor-pointer rounded-sm" role="menuitem" tabindex="-1" id="menu-item-0">
+                      <a href="/clients" data-cy="clients-tab" class="flex">
+                        <%= t('navbar.clients') %>
+                      </a>
+                    </div>
+                  <% end %>
+                  <% if policy(:project).index? %>
+                    <div class="bg-miru-gray-100 items-center px-4 py-4 hover:bg-miru-gray-100 text-miru-dark-purple-1000 cursor-pointer rounded-sm" role="menuitem" tabindex="-1" id="menu-item-0">
+                      <a href="/projects" data-cy="projects-tab" class="flex">
+                        <%= t('navbar.projects') %>
+                      </a>
+                    </div>
+                  <% end %>
+                  <% if policy(:invoice).index? %>
+                    <div class="bg-miru-gray-100 items-center px-4 py-4 hover:bg-miru-gray-100 text-miru-dark-purple-1000 cursor-pointer rounded-sm" role="menuitem" tabindex="-1" id="menu-item-0">
+                      <a href="/invoices" data-cy="invoices-tab" class="flex">
+                        <%= t('navbar.invoices') %>
+                      </a>
+                    </div>
+                  <% end %>
+                  <% if policy(:report).index? %>
+                    <div class="bg-miru-gray-100 items-center px-4 py-4 hover:bg-miru-gray-100 text-miru-dark-purple-1000 cursor-pointer rounded-sm" role="menuitem" tabindex="-1" id="menu-item-0">
+                      <a href="<%= reports_path %>" data-cy="reports-tab" class="flex">
+                        <%= t('navbar.reports') %>
+                      </a>
+                    </div>
+                  <% end %>
+                  <% if policy(:payment).index? %>
+                    <div class="bg-miru-gray-100 items-center px-4 py-4 hover:bg-miru-gray-100 text-miru-dark-purple-1000 cursor-pointer rounded-sm" role="menuitem" tabindex="-1" id="menu-item-0">
+                      <a href="/payments" data-cy="invoices-tab" class="flex">
+                        <%= t('navbar.payments') %>
+                      </a>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+
               <% if current_company %>
                 <!-- switch workspace dropdown start -->
                 <div class="cursor-pointer" x-data="{ isOpen: false}">

@@ -95,7 +95,7 @@ const Header = ({
           </div>
           {forItem === "summary" &&
             <>
-              <div className="relative flex justify-end w-2/5">
+              <div className="flex justify-end w-2/5">
                 {isEdit ?
                   <>
                     <button
