@@ -21,6 +21,7 @@
 #
 #  index_invitations_on_company_id  (company_id)
 #  index_invitations_on_sender_id   (sender_id)
+#  index_invitations_on_token       (token) UNIQUE
 #
 # Foreign Keys
 #
