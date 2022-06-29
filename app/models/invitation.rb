@@ -38,4 +38,11 @@ class Invitation < ApplicationRecord
   # Validations
   validates :recipient_email, :role, :token, presence: true
   validates_uniqueness_of :token
+
+  # Scopes
+  scope :valid_invitations, -> { where(accepted_at: nil, expired_at: Time.current...(Time.current + 14.days)) }
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 end

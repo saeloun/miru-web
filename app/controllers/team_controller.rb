@@ -5,9 +5,13 @@ class TeamController < ApplicationController
   after_action :assign_role, only: [:update]
 
   def index
+    # TODO: need to update either the search form or search logic in later PRs
     query = current_company.users.includes([:avatar_attachment, :roles]).ransack(params[:q])
+    invitations_query = current_company.invitations
+      .ransack(first_name_or_last_name_or_recipient_email_cont: params.dig(:q, :first_name_or_last_name_or_email_cont))
     teams = query.result(distinct: true)
-    render :index, locals: { query:, teams: }
+    invitations = invitations_query.result(distinct: true)
+    render :index, locals: { query:, teams:, invitations: }
   end
 
   def edit
@@ -17,10 +21,7 @@ class TeamController < ApplicationController
 
   def update
     authorize user, policy_class: TeamPolicy
-    user.skip_reconfirmation! unless user.invitation_accepted?
-    user_email = user.email
     user.update(user_params)
-    user.invite! if user_email != (user_params[:email]) && !user.invitation_accepted?
     redirect_to team_index_path
   end
 

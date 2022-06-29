@@ -67,6 +67,11 @@
                           <%= render partial: "team", locals: { member: member } %>
                         </tr>
                     <% end %>
+                    <% invitations.each do |member| %>
+                      <tr id="member-<%= member.id %>" data-cy="team-table-row">
+                        <%= render partial: "invitation", locals: { member: member } %>
+                      </tr>
+                    <% end %>
                   </tbody>
                 </table>
               </div>

@@ -35,9 +35,6 @@ gem "jbuilder", "~> 2.11"
 # Use devise for authentication
 gem "devise", git: "https://github.com/heartcombo/devise", branch: "main"
 
-# Use devise_invitable for inviting users
-gem "devise_invitable", "~> 2.0", ">= 2.0.6"
-
 # Use Redis adapter to run Action Cable in production
 gem "redis", "~> 4.0"
 
