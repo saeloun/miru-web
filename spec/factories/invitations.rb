@@ -6,7 +6,7 @@ FactoryBot.define do
     sender { build(:user) }
     recipient_email { Faker::Internet.safe_email }
     role { "employee" }
-    token { Faker::String.random(length: 10) }
+    token { Faker::Lorem.characters(number: 10) }
     expired_at { Date.current + 1.day }
   end
 end
