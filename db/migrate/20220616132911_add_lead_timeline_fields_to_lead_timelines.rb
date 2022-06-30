@@ -14,5 +14,6 @@ class AddLeadTimelineFieldsToLeadTimelines < ActiveRecord::Migration[7.0]
     rename_column :leads, :primary_email, :email
     remove_column :leads, :other_email, :string
     add_reference :leads, :company, foreign_key: true
+    add_column :lead_timelines, :index_system_display_title, :text
   end
 end

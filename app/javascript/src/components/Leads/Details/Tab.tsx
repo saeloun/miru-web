@@ -126,7 +126,7 @@ const Tab = ({
             </li>
             <li className="mr-3">
               <button className={tabClassName ? tabClassName.timelinesTab : defaultClassName} onClick={() => handleTabChange('timelines')} >
-                TIMELINEs
+                TIMELINES
               </button>
             </li>
             <li className="mr-3">

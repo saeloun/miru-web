@@ -44,6 +44,7 @@ class Leads::TimelinePolicy < ApplicationPolicy
       :comment,
       :discarded_at,
       :index_system_display_message,
+      :index_system_display_title,
       :kind,
       :action_assignee_id,
       :action_created_by_id,

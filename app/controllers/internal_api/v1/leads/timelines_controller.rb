@@ -4,16 +4,18 @@ class InternalApi::V1::Leads::TimelinesController < InternalApi::V1::Application
   def index
     authorize lead
     lead_timelines = lead.lead_timelines.kept.where(
-      params[:q].present? ? ["name LIKE ?",
-                             "%#{params[:q]}%"] : {}).distinct
+      params[:q].present? ? ["index_system_display_message LIKE ?",
+                             "%#{params[:q]}%"] : {}).distinct.order(created_at: :desc)
     timeline_details = lead_timelines.map(&:render_properties)
     render json: { timeline_details: }, status: :ok
   end
 
   def create
     authorize lead
+    actual_timeline_params = timeline_params
+    actual_timeline_params[:action_created_by_id] = current_user.id
     render :create, locals: {
-      timeline: lead.lead_timelines.create!(timeline_params)
+      timeline: lead.lead_timelines.create!(actual_timeline_params)
     }
   end
 

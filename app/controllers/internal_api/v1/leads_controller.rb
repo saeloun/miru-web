@@ -81,9 +81,9 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
   def update
     authorize lead
     actual_lead_params = lead_params
-    actual_lead_params[:created_by_id] = current_user.id if lead.created_by_id.blank?
-    actual_lead_params[:updated_by_id] = current_user.id if lead.updated_by_id.blank?
     actual_lead_params[:company_id] = current_company.id if lead.company_id.blank?
+    actual_lead_params[:created_by_id] = current_user.id if lead.created_by_id.blank?
+    actual_lead_params[:updated_by_id] = current_user.id
     if lead.update!(actual_lead_params)
       render json: {
         success: true,

@@ -12,6 +12,7 @@
 #  comment                      :text
 #  discarded_at                 :datetime
 #  index_system_display_message :text
+#  index_system_display_title   :text
 #  kind                         :integer
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
@@ -76,6 +77,24 @@ class LeadTimeline < ApplicationRecord
     CodeOptionKlass.new("Highest", 4),
   ]
 
+  before_create :set_index_system_display_message_and_title, if: -> { self.kind != 0 }
+
+  def created_at_formated
+    self.created_at.strftime("#{self.created_at.day.ordinalize} %b %Y at %H:%M")
+  end
+
+  def action_assignee_name
+    self.action_assignee ? self.action_assignee.full_name : ""
+  end
+
+  def action_created_by_name
+    self.action_created_by ? self.action_created_by.full_name : ""
+  end
+
+  def action_reporter_name
+    self.action_reporter ? self.action_reporter.full_name : ""
+  end
+
   def render_properties
     {
       id: self.id,
@@ -86,6 +105,7 @@ class LeadTimeline < ApplicationRecord
       comment: self.comment,
       discarded_at: self.discarded_at,
       index_system_display_message: self.index_system_display_message,
+      index_system_display_title: self.index_system_display_title,
       kind: self.kind,
       action_assignee_id: self.action_assignee_id,
       action_created_by_id: self.action_created_by_id,
@@ -93,10 +113,19 @@ class LeadTimeline < ApplicationRecord
       lead_id: self.lead_id,
       parent_lead_timeline_id: self.parent_lead_timeline_id,
       created_at: self.created_at,
-      created_at_formated: self.created_at.strftime("#{self.created_at.day.ordinalize} %b %Y at %H:%M"),
-      action_assignee_name: self.action_assignee ? self.action_assignee.full_name : "",
-      action_created_by_name: self.action_created_by ? self.action_created_by.full_name : "",
-      action_reporter_name: self.action_reporter ? self.action_reporter.full_name : ""
+      created_at_formated: self.created_at_formated,
+      action_assignee_name: self.action_assignee_name,
+      action_created_by_name: self.action_created_by_name,
+      action_reporter_name: self.action_reporter_name
     }
   end
+
+  private
+
+    def set_index_system_display_message_and_title
+      if self.kind == 1
+        self.index_system_display_title = "<b>#{self.action_created_by.full_name}</b> added an comment"
+        self.index_system_display_message = "<comment>#{self.comment}</comment>"
+      end
+    end
 end

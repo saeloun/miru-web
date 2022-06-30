@@ -1,16 +1,18 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import leadTimelines from "apis/lead-timelines";
-import { MagnifyingGlass, Plus } from "phosphor-react";
+import { MagnifyingGlass, CaretDown } from "phosphor-react";
 import AutoComplete from "./AutoComplete";
 import { unmapLeadTimelineListForDropdown } from "../../../mapper/lead.timeline.mapper";
 
 const Header = ({
-  setnewTimeline,
+  setNewCommentTimeline,
   isAdminUser
 }) => {
 
   const { leadId } = useParams();
+  const [toggleMenu, setToggleMenu] = useState<boolean>(false);
+  const wrapperRef = React.useRef(null);
 
   const searchCallBack = async (searchString, setDropdownItems) => {
     await leadTimelines.index(leadId, searchString)
@@ -19,6 +21,14 @@ const Header = ({
         setDropdownItems(dropdownList);
       });
   };
+
+  const closeOpenToggleMenu = (e)=>{
+    if (wrapperRef.current && toggleMenu && !wrapperRef.current.contains(e.target)){
+      setToggleMenu(false)
+    }
+  };
+
+  document.addEventListener('click',closeOpenToggleMenu)
 
   return (
     <div
@@ -37,15 +47,44 @@ const Header = ({
         </div>
       </div>
       {isAdminUser && (
-        <div className="flex">
+        <div className="flex relative flex-col">
           <button
+            ref={wrapperRef}
             type="button"
             className="header__button"
-            onClick={() => setnewTimeline(true)}
+            onClick={() => setToggleMenu(!toggleMenu)}
           >
-            <Plus weight="fill" size={16} />
             <span className="ml-2 inline-block">NEW TIMELINE</span>
+            <CaretDown weight="fill" size={16} />
           </button>
+          {toggleMenu && <div className="my-10 ml-1 w-full absolute bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700">
+            <ul className="cursor-pointer py-1 text-sm text-gray-700 dark:text-gray-200">
+              <li>
+                <a onClick={() => setNewCommentTimeline(true)} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Comment</a>
+              </li>
+              <li>
+                <a onClick={null} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Appointment</a>
+              </li>
+              <li>
+                <a onClick={null} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Email</a>
+              </li>
+              <li>
+                <a onClick={null} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Phone Call</a>
+              </li>
+              <li>
+                <a onClick={null} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Skype DM</a>
+              </li>
+              <li>
+                <a onClick={null} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">LinkedIn DM</a>
+              </li>
+              <li>
+                <a onClick={null} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Other DM</a>
+              </li>
+              <li>
+                <a onClick={null} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Task</a>
+              </li>
+            </ul>
+          </div>}
         </div>
       )}
     </div>

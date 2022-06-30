@@ -238,13 +238,9 @@ class Lead < ApplicationRecord
 
   validates :first_name, :last_name, presence: true
   before_validation :assign_default_values
-  after_update :create_lead_timelines
 
-  def create_lead_timelines
-    LeadTimeline.create!(
-      action_subject: "update", index_system_display_message: "updated Lead", lead_id: self.id,
-      action_created_by_id: self.created_by_id, action_reporter_id: self.reporter_id)
-  end
+  after_create :add_timelines_for_action_create
+  after_update :add_timelines_for_action_update
 
   def self.filter(params = {}, user = User.none)
     allow_leads = Lead.none
@@ -285,83 +281,130 @@ class Lead < ApplicationRecord
     self.status_code = Lead::STATUS_CODE_OPTIONS.group_by(&:name)["New"].first.id if self.status_code.blank?
   end
 
+  def budget_status_code_name_hash
+    Lead::BUDGET_STATUS_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
+  def industry_code_name_hash
+    Lead::INDUSTRY_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
+  def quality_code_name_hash
+    Lead::QUALITY_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
+  def state_code_name_hash
+    Lead::STATE_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
+  def status_code_name_hash
+    Lead::STATUS_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
+  def preferred_contact_method_code_name_hash
+    Lead::PREFERRED_CONTACT_METHOD_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
+  def initial_communication_name_hash
+    Lead::INITIAL_COMMUNICATION_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
+  def source_code_name_hash
+    Lead::SOURCE_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
+  def priority_code_name_hash
+    Lead::PRIORITY_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
+  def need_name_hash
+    Lead::NEED_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
+  def tech_stack_name_hash
+    Lead::TECH_STACK_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
   def budget_status_code_name
     return "" if budget_status_code.nil?
 
-    code_name_hash = Lead::BUDGET_STATUS_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
-    code_name_hash[budget_status_code]
+    self.budget_status_code_name_hash[budget_status_code]
   end
 
   def industry_code_name
     return "" if industry_code.nil?
 
-    code_name_hash = Lead::INDUSTRY_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
-    code_name_hash[industry_code]
+    self.industry_code_name_hash[industry_code]
   end
 
   def quality_code_name
     return "" if quality_code.nil?
 
-    code_name_hash = Lead::QUALITY_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
-    code_name_hash[quality_code]
+    self.quality_code_name_hash[quality_code]
   end
 
   def state_code_name
     return "" if state_code.nil?
 
-    code_name_hash = Lead::STATE_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
-    code_name_hash[state_code]
+    self.state_code_name_hash[state_code]
   end
 
   def status_code_name
     return "" if status_code.nil?
 
-    code_name_hash = Lead::STATUS_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
-    code_name_hash[status_code]
+    self.status_code_name_hash[status_code]
   end
 
   def need_name
     return "" if need.nil?
 
-    code_name_hash = Lead::NEED_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
-    code_name_hash[need]
+    self.need_name_hash[need]
   end
 
   def preferred_contact_method_code_name
     return "" if preferred_contact_method_code.nil?
 
-    code_name_hash = Lead::PREFERRED_CONTACT_METHOD_CODE_OPTIONS.group_by(&:id).transform_values { |val|
-  val.first.name
-}
-    code_name_hash[preferred_contact_method_code]
+    self.preferred_contact_method_code_name_hash[preferred_contact_method_code]
   end
 
   def initial_communication_name
     return "" if initial_communication.nil?
 
-    code_name_hash = Lead::INITIAL_COMMUNICATION_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
-    code_name_hash[initial_communication]
+    self.initial_communication_name_hash[initial_communication]
   end
 
   def source_code_name
     return "" if source_code.nil?
 
-    code_name_hash = Lead::SOURCE_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
-    code_name_hash[source_code]
+    self.source_code_name_hash[source_code]
   end
 
   def priority_code_name
     return "" if priority_code.nil?
 
-    code_name_hash = Lead::PRIORITY_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
-    code_name_hash[priority_code]
+    self.priority_code_name_hash[priority_code]
   end
 
   def tech_stack_names
-    return "" unless tech_stack_ids.present?
+    return [] unless tech_stack_ids.present?
 
-    code_name_hash = Lead::PRIORITY_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
-    (code_name_hash.select { |k, v| tech_stack_ids.include?(k) } || {}).values.flatten.compact.uniq
+    (self.tech_stack_name_hash.select { |k, v| tech_stack_ids.include?(k) } || {}).values.flatten.compact.uniq
+  end
+
+  def assignee_name
+    self.assignee ? self.assignee.full_name : ""
+  end
+
+  def reporter_name
+    self.reporter ? self.reporter.full_name : ""
+  end
+
+  def created_by_name
+    self.created_by ? self.created_by.full_name : ""
+  end
+
+  def updated_by_name
+    self.updated_by ? self.updated_by.full_name : ""
   end
 
   def lead_detail
@@ -409,10 +452,10 @@ class Lead < ApplicationRecord
       quality_code_name:	self.quality_code_name,
       state_code_name:	self.state_code_name,
       status_code_name:	self.status_code_name,
-      assignee_name: self.assignee ? self.assignee.full_name : "",
-      reporter_name: self.reporter ? self.reporter.full_name : "",
-      created_by_name: self.created_by ? self.created_by.full_name : "",
-      updated_by_name: self.updated_by ? self.updated_by.full_name : "",
+      assignee_name: self.assignee_name,
+      reporter_name: self.reporter_name,
+      created_by_name: self.created_by_name,
+      updated_by_name: self.updated_by_name,
       need_name: self.need_name,
       preferred_contact_method_code_name: self.preferred_contact_method_code_name,
       initial_communication_name: self.initial_communication_name,
@@ -421,4 +464,102 @@ class Lead < ApplicationRecord
       tech_stack_names: self.tech_stack_names
     }
   end
+
+  private
+
+    def add_timelines_for_action_create
+      index_system_display_title = "<b>#{self.created_by_name}</b> added the lead <b>#{self.name}</b>"
+      self.lead_timelines.create!(
+        action_created_by_id: self.created_by_id, kind: 0,
+        action_subject: "added_lead",
+        index_system_display_title:
+                              )
+    end
+
+    def add_timelines_for_action_update
+      lead_timeline_arr = []
+
+      (self.previous_changes || {}).each do |field_name, old_new_val_arr|
+        next if field_name == "updated_at"
+
+        display_field_name = field_name
+        old_val = old_new_val_arr[0] || "None"
+        new_val = old_new_val_arr[1]
+
+        if field_name == "budget_status_code"
+          display_field_name = "budget_status"
+          old_val = self.budget_status_code_name_hash[old_val.to_i] if old_val != "None"
+          new_val = self.budget_status_code_name_hash[new_val.to_i]
+        elsif field_name == "industry_code"
+          display_field_name = "industry"
+          old_val = self.industry_code_name_hash[old_val.to_i] if old_val != "None"
+          new_val = self.industry_code_name_hash[new_val.to_i]
+        elsif field_name == "quality_code"
+          display_field_name = "quality"
+          old_val = self.quality_code_name_hash[old_val.to_i] if old_val != "None"
+          new_val = self.quality_code_name_hash[new_val.to_i]
+        elsif field_name == "state_code"
+          display_field_name = "state"
+          old_val = self.state_code_name_hash[old_val.to_i] if old_val != "None"
+          new_val = self.state_code_name_hash[new_val.to_i]
+        elsif field_name == "status_code"
+          display_field_name = "status"
+          old_val = self.status_code_name_hash[old_val.to_i] if old_val != "None"
+          new_val = self.status_code_name_hash[new_val.to_i]
+        elsif field_name == "preferred_contact_method_code"
+          display_field_name = "preferred_contact_method"
+          old_val = self.preferred_contact_method_code_name_hash[old_val.to_i] if old_val != "None"
+          new_val = self.preferred_contact_method_code_name_hash[new_val.to_i]
+        elsif field_name == "initial_communication"
+          old_val = self.initial_communication_name_hash[old_val.to_i] if old_val != "None"
+          new_val = self.initial_communication_name_hash[new_val.to_i]
+        elsif field_name == "source_code"
+          display_field_name = "source"
+          old_val = self.source_code_name_hash[old_val.to_i] if old_val != "None"
+          new_val = self.source_code_name_hash[new_val.to_i]
+        elsif field_name == "priority_code"
+          display_field_name = "priority"
+          old_val = self.priority_code_name_hash[old_val.to_i] if old_val != "None"
+          new_val = self.priority_code_name_hash[new_val.to_i]
+        elsif field_name == "need"
+          old_val = self.need_name_hash[old_val.to_i] if old_val != "None"
+          new_val = self.need_name_hash[new_val.to_i]
+        elsif field_name == "tech_stack_ids"
+          if old_val.kind_of?(Array)
+            old_val = (self.tech_stack_name_hash.select { |k, v|
+  old_val.map(&:to_i).include?(k)
+} || {}).values.flatten.compact.uniq
+          else
+            old_val = self.tech_stack_name_hash[old_val] if old_val != "None"
+          end
+          if new_val.kind_of?(Array)
+            new_val = (self.tech_stack_name_hash.select { |k, v|
+  new_val.map(&:to_i).include?(k)
+} || {}).values.flatten.compact.uniq
+          else
+            new_val = self.tech_stack_name_hash[new_val]
+          end
+        elsif field_name == "assignee_id"
+          display_field_name = "assignee"
+          old_val = self.assignee_name if old_val != "None"
+          new_val = self.assignee_name
+        elsif field_name == "reporter_id"
+          display_field_name = "reporter"
+          old_val = self.reporter_name if old_val != "None"
+          new_val = self.reporter_name
+        end
+
+        index_system_display_title = "<b>#{self.updated_by_name}</b> updated the <b>#{display_field_name.tr('_', ' ').capitalize}</b>"
+        index_system_display_message = "<comment>#{old_val.kind_of?(Array) ? old_val.join(",") : old_val} -> #{new_val.kind_of?(Array) ? new_val.join(",") : new_val}</comment>"
+
+        lead_timeline_arr << self.lead_timelines.new(
+          action_created_by_id: self.updated_by_id, kind: 0,
+          action_subject: "updated_lead",
+          index_system_display_title:,
+          index_system_display_message:
+                                                )
+      end
+
+      LeadTimeline.import(lead_timeline_arr) if lead_timeline_arr.present?
+    end
 end
