@@ -21,7 +21,8 @@ class TeamController < ApplicationController
 
   def update
     authorize user, policy_class: TeamPolicy
-    user.update(user_params)
+    user.skip_reconfirmation!
+    user.update!(user_params)
     redirect_to team_index_path
   end
 
