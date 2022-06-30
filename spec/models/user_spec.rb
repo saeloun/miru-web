@@ -109,4 +109,26 @@ RSpec.describe User, type: :model do
       expect(user.social_accounts["linkedin_url"]).to eq("")
     end
   end
+
+  describe "#assign_company_and_role" do
+    before do
+      user.remove_role :admin, company
+      user.company_users.destroy_all
+    end
+
+    it "user will be added as a company member with employee role" do
+      user.current_company = company
+      user.role = "employee"
+      user.assign_company_and_role
+      expect(company.company_users.pluck(:user_id).include?(user.id)).to be_truthy
+    end
+
+    it "when role is nil user won't be added as a company member with employee role" do
+      user.current_company = company
+      user.role = nil
+      user.assign_company_and_role
+      expect(user.errors.messages.size).to eq(1)
+      expect(user.errors.full_messages).to include("Something went wrong")
+    end
+  end
 end
