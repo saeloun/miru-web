@@ -63,7 +63,7 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    it "checks if correct members data is returned" do
+    it "checks if correct team members data is returned" do
       actual_members_data = json_response["team"].map do |member|
                               member.slice("name", "email", "role", "status")
                             end
