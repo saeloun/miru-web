@@ -66,6 +66,7 @@ class User < ApplicationRecord
   has_one_attached :avatar
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
+  has_many :invitations, foreign_key: "sender_id", dependent: :destroy
   rolify strict: true
 
   # Social account details
