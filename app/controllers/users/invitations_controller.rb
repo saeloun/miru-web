@@ -23,7 +23,7 @@ class Users::InvitationsController < Devise::InvitationsController
     end
 
     def after_invite_path_for(inviter)
-      team_index_path
+      team_path
     end
 
   private

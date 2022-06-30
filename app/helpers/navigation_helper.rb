@@ -25,7 +25,7 @@ module NavigationHelper
           data: { cy: "time-tracking-tab" }
         },
         {
-          url: team_index_path,
+          url: team_path,
           title: I18n.t("navbar.team"),
           permitted: Pundit.policy!(current_user, :team).index?,
           data: { cy: "team-tab" }

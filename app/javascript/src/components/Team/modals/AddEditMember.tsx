@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { post, put } from "apis/team";
+import { invite, put } from "apis/team";
 import { useList } from "context/TeamContext";
 import { Formik, Form, Field, FormikProps } from "formik";
 import { X } from "phosphor-react";
@@ -56,7 +56,7 @@ const EditClient = ({
       if (isEdit) {
         await put(user.id, payload);
       } else {
-        await post(payload);
+        await invite(payload);
       }
       setModalState("");
     } catch (err) {
