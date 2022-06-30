@@ -42,7 +42,19 @@ class Invitation < ApplicationRecord
   # Scopes
   scope :valid_invitations, -> { where(accepted_at: nil, expired_at: Time.current...(Time.current + 14.days)) }
 
+  # Callbacks
+  before_validation :set_token, only: :create
+
   def full_name
     "#{first_name} #{last_name}"
   end
+
+  private
+
+    def set_token
+      # loop do
+      #   self.token = Devise.friendly_token
+      #   break unless Invitation.exists?(token: self.token)
+      # end
+    end
 end
