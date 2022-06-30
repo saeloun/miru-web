@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Report
+module Reports::TimeEntries
   class GeneratePdf
     attr_reader :report_entries
 

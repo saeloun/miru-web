@@ -8,12 +8,11 @@
 <li><%= t("devise.mailer.invitation_instructions.info_point_4") %></li>
 </ul>
 
-<p><%= t("devise.mailer.invitation_instructions.confirm") %></p>
-
 <% if @token.present? %>
+  <p><%= t("devise.mailer.invitation_instructions.confirm") %></p>
   <p><%= link_to t("devise.mailer.invitation_instructions.confirm_link"), accept_invitation_url(@resource, invitation_token: @token) %></p>
 <% else %>
-  <p><%= link_to t("devise.mailer.invitation_instructions.confirm_link"), root_url %></p>
+  <p><%= link_to "Visit workspace", root_url %></p>
 <% end %>
 </br>
 <p><%= t("devise.mailer.invitation_instructions.cheers") %></p>

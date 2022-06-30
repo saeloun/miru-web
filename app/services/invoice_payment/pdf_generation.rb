@@ -63,8 +63,7 @@ module InvoicePayment
       end
 
       def format_currency(base_currency, amount)
-        Money.locale_backend = :currency
-        Money.from_amount(amount, base_currency).format
+        FormatAmountService.new(base_currency, amount).process
       end
   end
 end

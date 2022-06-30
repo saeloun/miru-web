@@ -4,12 +4,17 @@
 #
 # Table name: company_users
 #
-#  id           :bigint           not null, primary key
-#  discarded_at :datetime
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  company_id   :bigint           not null
-#  user_id      :bigint           not null
+#  id              :bigint           not null, primary key
+#  designation     :string
+#  discarded_at    :datetime
+#  employment_type :string
+#  joined_at       :date
+#  resigned_at     :date
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  company_id      :bigint           not null
+#  employee_id     :string
+#  user_id         :bigint           not null
 #
 # Indexes
 #
@@ -26,7 +31,11 @@
 class CompanyUser < ApplicationRecord
   include Discard::Model
 
+  # Associations
   belongs_to :company
   belongs_to :user
-  has_one :employment_detail, dependent: :destroy
+
+  # Validations
+  # validates :designation, :employment_type, :joined_at, :employee_id, presence: true
+  # validates :resigned_at, comparison: { greater_than: :joined_at }, unless: -> { resigned_at.nil? }
 end

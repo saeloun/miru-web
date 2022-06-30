@@ -44,7 +44,8 @@ module.exports = {
         fit: "fit-content",
       },
       height: {
-        128: "40rem",
+        120: "120px",
+        160: "40rem",
       },
       minHeight: {
         "10v": "10vh",
@@ -155,7 +156,7 @@ module.exports = {
         50: "12.5rem",
         104: "26rem",
         112: "28rem",
-        127: "32.5rem",
+        129: "33rem",
         138: "34.5rem",
       },
       padding: {
