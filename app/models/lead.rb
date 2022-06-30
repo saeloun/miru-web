@@ -525,6 +525,7 @@ class Lead < ApplicationRecord
           old_val = self.need_name_hash[old_val.to_i] if old_val != "None"
           new_val = self.need_name_hash[new_val.to_i]
         elsif field_name == "tech_stack_ids"
+          display_field_name = "tech_stacks"
           if old_val.kind_of?(Array)
             old_val = (self.tech_stack_name_hash.select { |k, v|
   old_val.map(&:to_i).include?(k)
