@@ -175,6 +175,11 @@ en:
     save_org: save org details
   reports:
     heading: Time entry report
+  users:
+    invitations:
+      create:
+        success: Invitation will be sent
+        failure: Failed to saved changes
   settings:
     settings: settings
     cancel : cancel

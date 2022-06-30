@@ -31,19 +31,27 @@
 class Invitation < ApplicationRecord
   enum role: [:owner, :admin, :employee, :book_keeper]
 
+  # Constant
+  MAX_EXPIRATION_DAY = 14.days
+
   # Associations
   belongs_to :company
   belongs_to :sender, class_name: "User"
 
   # Validations
   validates :recipient_email, :role, :token, presence: true
+  validates :recipient_email, format: { with: Devise.email_regexp }
   validates_uniqueness_of :token
 
   # Scopes
-  scope :valid_invitations, -> { where(accepted_at: nil, expired_at: Time.current...(Time.current + 14.days)) }
+  scope :valid_invitations,
+    -> { where(accepted_at: nil, expired_at: Time.current...(Time.current + MAX_EXPIRATION_DAY)) }
 
   # Callbacks
   before_validation :set_token, only: :create
+  before_create :set_expired_at
+
+  after_create :send_invitation_mail
 
   def full_name
     "#{first_name} #{last_name}"
@@ -52,9 +60,17 @@ class Invitation < ApplicationRecord
   private
 
     def set_token
-      # loop do
-      #   self.token = Devise.friendly_token
-      #   break unless Invitation.exists?(token: self.token)
-      # end
+      loop do
+        self.token = Devise.friendly_token
+        break unless Invitation.exists?(token: self.token)
+      end
+    end
+
+    def set_expired_at
+      self.expired_at = Time.current + MAX_EXPIRATION_DAY
+    end
+
+    def send_invitation_mail
+      UserInvitationMailer.with(recipient: recipient_email).send_user_invitation.deliver_later
     end
 end
