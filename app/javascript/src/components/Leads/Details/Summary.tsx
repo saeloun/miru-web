@@ -535,8 +535,8 @@ const Summary = ({
                         <p className="text-sm text-gray-800 dark:text-gray-100 pb-1">Do not email</p>
                       </div>
                       <div className="cursor-pointer rounded-full bg-gray-200 relative shadow-sm">
-                        <Field aria-labelledby="cb1" type="checkbox" name="donotemail" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" disabled={!isEdit} />
-                        <label className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
+                        <Field id="cb1" type="checkbox" name="donotemail" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" disabled={!isEdit} />
+                        <label htmlFor="cb1" className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
                       </div>
                     </div>
                     <div className="flex justify-between items-center mb-8 mt-4">
@@ -544,8 +544,8 @@ const Summary = ({
                         <p className="text-sm text-gray-800 dark:text-gray-100 pb-1">Do not bulk email</p>
                       </div>
                       <div className="cursor-pointer rounded-full bg-gray-200 relative shadow-sm">
-                        <Field aria-labelledby="cb1" type="checkbox" name="donotbulkemail" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" disabled={!isEdit} />
-                        <label className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
+                        <Field id="cb2" type="checkbox" name="donotbulkemail" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" disabled={!isEdit} />
+                        <label htmlFor="cb2" className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
                       </div>
                     </div>
                     <div className="flex justify-between items-center mb-8 mt-4">
@@ -553,8 +553,8 @@ const Summary = ({
                         <p className="text-sm text-gray-800 dark:text-gray-100 pb-1">Do not fax</p>
                       </div>
                       <div className="cursor-pointer rounded-full bg-gray-200 relative shadow-sm">
-                        <Field aria-labelledby="cb1" type="checkbox" name="donotfax" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" disabled={!isEdit} />
-                        <label className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
+                        <Field id="cb3" type="checkbox" name="donotfax" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" disabled={!isEdit} />
+                        <label htmlFor="cb3" className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
                       </div>
                     </div>
                     <div className="flex justify-between items-center mb-8 mt-4">
@@ -562,8 +562,8 @@ const Summary = ({
                         <p className="text-sm text-gray-800 dark:text-gray-100 pb-1">Do not Phone</p>
                       </div>
                       <div className="cursor-pointer rounded-full bg-gray-200 relative shadow-sm">
-                        <Field aria-labelledby="cb1" type="checkbox" name="donotphone" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" disabled={!isEdit} />
-                        <label className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
+                        <Field id="cb4" type="checkbox" name="donotphone" className="focus:outline-none checkbox w-6 h-6 rounded-full bg-white dark:bg-gray-400 absolute shadow-sm appearance-none cursor-pointer border border-transparent top-0 bottom-0 m-auto switch-checkbox" disabled={!isEdit} />
+                        <label htmlFor="cb4" className="toggle-label block w-12 h-4 overflow-hidden rounded-full bg-gray-300 dark:bg-gray-800 cursor-pointer"></label>
                       </div>
                     </div>
                   </div>
