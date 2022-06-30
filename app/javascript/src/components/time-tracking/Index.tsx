@@ -252,13 +252,12 @@ const TimeTracking: React.FC<Iprops> = ({
           </nav>
           <div>
             {isAdmin && selectedEmployeeId && (
-              <div className="flex items-center">
-                <SyncAutoComplete
-                  options={employeeOptions}
-                  handleValue={value => setSelectedEmployeeId(+ value)}
-                  defaultValue={{ value: selectedEmployeeId, label: fullName }}
-                />
-              </div>
+              <SyncAutoComplete
+                options={employeeOptions}
+                handleValue={value => setSelectedEmployeeId(+ value)}
+                defaultValue={{ value: selectedEmployeeId, label: fullName }}
+                size="md"
+              />
             )}
           </div>
         </div>

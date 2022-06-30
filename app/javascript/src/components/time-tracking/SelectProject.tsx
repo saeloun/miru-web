@@ -1,5 +1,5 @@
 import * as React from "react";
-import Select from "react-select";
+import SyncAutoComplete from "common/SyncAutoComplete";
 
 const SelectProject: React.FC<Iprops> = ({
   clients,
@@ -18,7 +18,7 @@ const SelectProject: React.FC<Iprops> = ({
   isWeeklyEditing, // eslint-disable-line
   setIsWeeklyEditing
 }) => {
-  const clientList = clients.map(client => ({ value: client.name, label: client.name }));
+  const clientList = clients.map(client => ({ value: client["name"], label: client["name"] }));
   const projectList = project ? projects[client].map(project => ({ value: project.name, label: project.name })) : [];
 
   const handleCancelButton = () => {
@@ -43,47 +43,23 @@ const SelectProject: React.FC<Iprops> = ({
   return (
     <div className="flex justify-between p-4 rounded-md shadow-2xl content-center">
       {/* Clients */}
-      <Select
-        placeholder="Select Client"
+      <SyncAutoComplete
         options={clientList}
-        onChange={e => {setClient(e.value); setProject(projects[e.value][0]["name"]); }}
-        isClearable
-        className="w-80 h-8 bg-miru-gray-100 rounded-md text-xs text-miru-han-purple-600"
-        styles={{ menu: (base: any) => ({
-          ...base,
-          zIndex: 9999,
-          border: "none",
-          boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
-          ...(base.isFocused && {
-            borderRadius: "0.25rem",
-            backgroundColor: "#4A485A",
-            color: "#5B34EA"
-          })
-        })
+        handleValue={(clientName: string) => {
+          if (clientName) {
+            setClient(clientName);
+            setProject(projects[clientName][0]["name"]);
+          }
         }}
-        {...( client ? { defaultValue: { value: client, label: client } } : {} ) }
+        defaultValue={{ value: client, label: client }}
+        size="lg"
       />
       {/* Projects */}
-      <Select
-        placeholder="Select Project"
+      <SyncAutoComplete
         options={projectList}
-        onChange={e => setProject(e["value"]) }
-        isClearable
-        className="w-80 h-8 bg-miru-gray-100 rounded-md text-xs text-miru-han-purple-600"
-        styles={{ menu: (base: any) => ({
-          ...base,
-          zIndex: 9999,
-          height: "32px",
-          border: "none",
-          boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
-          ...(base.isFocused && {
-            borderRadius: "0.25rem",
-            backgroundColor: "#4A485A",
-            color: "#5B34EA"
-          })
-        })
-        }}
-        {...( project ? { defaultValue: { value: project, label: project } } : {} ) }
+        handleValue={setProject}
+        defaultValue={{ value: project, label: project }}
+        size="lg"
       />
       {/* Buttons */}
       <button

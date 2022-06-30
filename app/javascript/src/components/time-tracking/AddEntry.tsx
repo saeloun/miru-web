@@ -131,8 +131,8 @@ const AddEntry: React.FC<Iprops> = ({
         (editEntryId ? "mt-10" : "")
       }
     >
-      <div className="w-1/2">
-        <div className="w-129 mb-2 flex justify-between">
+      <div>
+        <div className="mb-2 flex justify-between">
           { isDataFilled && <SyncAutoComplete
             options={clientList}
             handleValue={(clientName: string) => {
@@ -142,15 +142,17 @@ const AddEntry: React.FC<Iprops> = ({
               }
             }}
             defaultValue={{ value: client, label: client }}
-          />}
-
-          {isDataFilled && <SyncAutoComplete
-            options={projectList}
-            handleValue={setProject}
-            defaultValue={{ value: project, label: project }}
+            size="md"
           />
           }
 
+          {isDataFilled &&<SyncAutoComplete
+            options={projectList}
+            handleValue={setProject}
+            defaultValue={{ value: project, label: project }}
+            size="md"
+          />
+          }
         </div>
         <textarea
           value={note}
@@ -159,7 +161,7 @@ const AddEntry: React.FC<Iprops> = ({
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
+          className={("w-127 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
         ></textarea>
       </div>
       <div className="w-60">

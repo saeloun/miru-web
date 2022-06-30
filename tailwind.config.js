@@ -35,7 +35,7 @@ module.exports = {
     },
     extend: {
       boxShadow: {
-        c1: "0px 0px 40px rgba(0, 0, 0, 0.1);"
+        c1: "0px 0px 40px rgba(0, 0, 0, 0.1);",
       },
       margin: {
         86: "342px",
@@ -44,7 +44,7 @@ module.exports = {
         fit: "fit-content",
       },
       height: {
-        '128': '40rem',
+        128: "40rem",
       },
       minHeight: {
         "10v": "10vh",
@@ -82,7 +82,7 @@ module.exports = {
           100: "#F5F7F9",
         },
         "miru-red": {
-          400: "#E04646"
+          400: "#E04646",
         },
         "miru-white": {
           1000: "#FFFFFF",
@@ -155,7 +155,7 @@ module.exports = {
         50: "12.5rem",
         104: "26rem",
         112: "28rem",
-        129: "33rem",
+        127: "32.5rem",
         138: "34.5rem",
       },
       padding: {

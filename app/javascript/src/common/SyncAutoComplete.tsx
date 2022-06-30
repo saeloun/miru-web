@@ -1,5 +1,6 @@
 import * as React from "react";
 import Autocomplete from "react-autocomplete";
+import { MagnifyingGlass } from "phosphor-react";
 
 const { useState, useEffect } = React;
 
@@ -29,7 +30,8 @@ const cssStyles = {
 const SyncAutoComplete: React.FC<Iprops> = ({
   options,
   handleValue,
-  defaultValue
+  defaultValue,
+  size
 }) => {
   const [searchValue, setValue] = useState<string>("");
   const [dropdownItems, setDropdownItems] = useState([]);
@@ -58,7 +60,7 @@ const SyncAutoComplete: React.FC<Iprops> = ({
   }, [searchValue]);
 
   return (
-    <div className="block bg-gray-200">
+    <div className={`${size}-auto-complete-container`}>
       <Autocomplete
         getItemValue={(item) => item["value"]}
         items={dropdownItems}
@@ -92,6 +94,9 @@ const SyncAutoComplete: React.FC<Iprops> = ({
           }
         }
       />
+      <button className="absolute inset-y-0 right-0 px-3 flex items-center cursor-pointer">
+        <MagnifyingGlass size={12} />
+      </button>
     </div>
   );
 };
@@ -100,6 +105,7 @@ interface Iprops {
   options: any[];
   handleValue: (value: string) => void;
   defaultValue?: object;
+  size: string;
 }
 
 export default SyncAutoComplete;
