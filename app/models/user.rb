@@ -56,10 +56,14 @@ class User < ApplicationRecord
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_many :invitations, -> { Invitation.valid_invitations }, foreign_key: "sender_id", dependent: :destroy
+
   rolify strict: true
 
   # Social account details
   store_accessor :social_accounts, :github_url, :linkedin_url
+
+  # Attribute accessor
+  attr_accessor :current_company, :role
 
   # Validations
   after_initialize :set_default_social_accounts, if: :new_record?
@@ -100,6 +104,15 @@ class User < ApplicationRecord
     write_attribute(:current_workspace_id, workspace&.id)
   end
 
+  def assign_company_and_role
+    return self.errors.add(:base, I18n.t("errors.internal_server_error")) if current_company.nil? || role.nil?
+
+    ActiveRecord::Base.transaction do
+      assign_company
+      assign_role
+    end
+  end
+
   private
 
     def discard_project_members
@@ -111,5 +124,18 @@ class User < ApplicationRecord
         "github_url": "",
         "linkedin_url": ""
       }
+    end
+
+    def assign_company
+      unless errors.present? ||
+          companies.exists?(id: current_company.id)
+        self.companies << current_company
+      end
+    end
+
+    def assign_role
+      if errors.empty? && current_company
+        self.add_role(role.downcase.to_sym, current_company)
+      end
     end
 end
