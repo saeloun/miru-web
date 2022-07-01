@@ -480,7 +480,7 @@ class Lead < ApplicationRecord
       lead_timeline_arr = []
 
       (self.previous_changes || {}).each do |field_name, old_new_val_arr|
-        next if field_name == "updated_at"
+        next if ["updated_at", "updated_by_id"].include?(field_name)
 
         display_field_name = field_name
         old_val = old_new_val_arr[0] || "None"
