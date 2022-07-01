@@ -13,9 +13,9 @@ RSpec.describe InvoicesController, type: :request do
   let(:invoice) { create(:invoice, client:) }
 
   before do
-    create(:company_user, company:, user: admin)
-    create(:company_user, company:, user: employee)
-    create(:company_user, company:, user: book_keeper)
+    create(:employment, company:, user: admin)
+    create(:employment, company:, user: employee)
+    create(:employment, company:, user: book_keeper)
     admin.add_role :admin, company
     employee.add_role :employee, company
     book_keeper.add_role :book_keeper, company

@@ -1,22 +1,25 @@
 # frozen_string_literal: true
 
 class Users::InvitationsController < Devise::InvitationsController
-  after_action :assign_company, only: [:create]
-  after_action :assign_role, only: [:create]
+  def create
+    authorize current_user, policy_class: Users::InvitationsPolicy
+
+    if User.exists?(email: invite_params[:email])
+      add_company_user_and_role
+      send_confirmation_email(nil)
+      respond_with invited_user, location: after_invite_path_for(invited_user)
+    else
+      super
+      add_company_user_and_role
+    end
+  end
 
   protected
 
-    def assign_company
-      unless invited_user.errors.present? ||
-          invited_user.companies.exists?(id: current_company.id)
-        invited_user.companies << current_company
-      end
-    end
-
-    def assign_role
-      if invited_user.errors.empty? && current_company
-        invited_user.add_role(params[:user][:roles].downcase.to_sym, current_company)
-      end
+    def add_company_user_and_role
+      invited_user.current_company = current_company
+      invited_user.role = params[:user][:roles]
+      invited_user.assign_company_and_role
     end
 
     def after_invite_path_for(inviter)
@@ -35,11 +38,15 @@ class Users::InvitationsController < Devise::InvitationsController
     end
 
     def invited_user
-      User.find_by(email: invite_params[:email])
+      find_invited_user || resource
     end
 
-    def send_confirmation_email
+    def find_invited_user
+      @_find_invited_user ||= User.find_by(email: invite_params[:email])
+    end
+
+    def send_confirmation_email(invitation_token = invited_user.invitation_token)
       # https://github.com/scambra/devise_invitable/blob/7c4b1f6d19135b2cfed4685735a646a28bbc5191/lib/devise_invitable/models.rb#L211
-      invited_user.send_devise_notification(:invitation_instructions, invited_user.invitation_token)
+      invited_user.send_devise_notification(:invitation_instructions, invitation_token)
     end
 end

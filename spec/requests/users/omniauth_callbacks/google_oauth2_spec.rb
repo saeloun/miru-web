@@ -9,7 +9,7 @@ RSpec.describe "Users::OmniauthCallbacks#google_oauth2", type: :request do
   context "when the user oauth is valid" do
     before do
       OmniAuth.config.mock_auth[:google_oauth2] = build(:google_user_data)
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
 
       send_request :post, user_google_oauth2_omniauth_callback_path
@@ -28,7 +28,7 @@ RSpec.describe "Users::OmniauthCallbacks#google_oauth2", type: :request do
   context "when the user oauth is invalid" do
     before do
       OmniAuth.config.mock_auth[:google_oauth2] = :invalid_credentials
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
 
       send_request :post, user_google_oauth2_omniauth_callback_path
@@ -49,7 +49,7 @@ RSpec.describe "Users::OmniauthCallbacks#google_oauth2", type: :request do
       google_user_data = build(:google_user_data)
       google_user_data.uid = nil
       OmniAuth.config.mock_auth[:google_oauth2] = google_user_data
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
 
       send_request :post, user_google_oauth2_omniauth_callback_path
