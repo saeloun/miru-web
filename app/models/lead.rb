@@ -486,6 +486,12 @@ class Lead < ApplicationRecord
         old_val = old_new_val_arr[0] || "None"
         new_val = old_new_val_arr[1]
 
+        puts "========old_val============"
+        puts old_val
+        puts "========new_val============"
+        puts new_val
+        puts "==========================="
+
         if field_name == "budget_status_code"
           display_field_name = "budget_status"
           old_val = self.budget_status_code_name_hash[old_val.to_i] if old_val != "None"
@@ -542,11 +548,11 @@ class Lead < ApplicationRecord
           end
         elsif field_name == "assignee_id"
           display_field_name = "assignee"
-          old_val = User.find_by(self.assignee_id)&.name if old_val != "None"
+          old_val = User.find(old_val)&.full_name if old_val != "None"
           new_val = self.assignee_name
         elsif field_name == "reporter_id"
           display_field_name = "reporter"
-          old_val = User.find_by(self.reporter_id)&.name if old_val != "None"
+          old_val = User.find(old_val)&.full_name if old_val != "None"
           new_val = self.reporter_name
         end
 
