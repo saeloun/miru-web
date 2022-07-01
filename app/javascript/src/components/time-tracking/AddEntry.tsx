@@ -143,16 +143,14 @@ const AddEntry: React.FC<Iprops> = ({
             }}
             defaultValue={{ value: client, label: client }}
             size="md"
-          />
-          }
+          /> }
 
-          {isDataFilled &&<SyncAutoComplete
+          {isDataFilled && <SyncAutoComplete
             options={projectList}
             handleValue={setProject}
             defaultValue={{ value: project, label: project }}
             size="md"
-          />
-          }
+          /> }
         </div>
         <textarea
           value={note}
