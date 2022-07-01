@@ -30,7 +30,31 @@ const getDayWithSuffix = (day) => {
   }
 };
 
+const quarters = {
+  1: {
+    months: ["Jan", "Feb", "Mar"],
+    startDay: "1st Jan",
+    endDay: "31st Mar"
+  },
+  2: {
+    months: ["Apr", "May", "Jun"],
+    startDay: "1st Apr",
+    endDay: "30th Jun"
+  },
+  3: {
+    months: ["Jul", "Aug", "Sep"],
+    startDay: "1st Jul",
+    endDay: "30th Sep"
+  },
+  4: {
+    months: ["Oct", "Nov", "Dec"],
+    startDay: "1st Jul",
+    endDay: "30th Sep"
+  }
+};
+
 export {
   month,
-  getDayWithSuffix
+  getDayWithSuffix,
+  quarters
 };
