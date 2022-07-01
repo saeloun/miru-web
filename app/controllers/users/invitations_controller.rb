@@ -81,7 +81,7 @@ class Users::InvitationsController < ApplicationController
       flash[:error] = if @invitation.errors.empty?
         t(".failure")
       else
-        @invitation.errors.full_messages.join(",")
+        @invitation.errors.full_messages.join(", ")
       end
     end
 end

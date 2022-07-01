@@ -50,15 +50,15 @@ class Invitation < ApplicationRecord
     length: { maximum: 50 }
 
   # Scopes
-  scope :valid_invitations,
-    -> { where(accepted_at: nil, expired_at: Time.current...(Time.current + MAX_EXPIRATION_DAY)) }
+  scope :valid_invitations, -> {
+  where(accepted_at: nil, expired_at: Time.current...(Time.current + MAX_EXPIRATION_DAY))
+}
+  scope :sender_invitations, -> (sender) { where(sender:).valid_invitations }
+  scope :company_invitations, -> (company) { where(company:).valid_invitations }
 
   # Callbacks
   before_validation :set_token, on: :create
   before_validation :set_expired_at, on: :create
-
-  before_create :downcase_role
-
   after_create :send_invitation_mail
 
   def full_name
@@ -80,10 +80,6 @@ class Invitation < ApplicationRecord
 
     def set_expired_at
       self.expired_at = Time.current + MAX_EXPIRATION_DAY
-    end
-
-    def downcase_role
-      self.role = role.to_s.downcase
     end
 
     def send_invitation_mail
