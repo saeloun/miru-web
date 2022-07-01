@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Companies::PurgeLogo#destroy", type: :request do
   let(:company) { create(:company, :with_logo) }
   let(:user1) { create(:user, current_workspace: company) }
-  let(:company_user) { create(:company_user, company:, user: user1) }
+  let(:employment) { create(:employment, company:, user: user1) }
   let(:user2) { create(:user) }
 
   context "when user is not an admin" do
