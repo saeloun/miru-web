@@ -53,9 +53,9 @@ const SyncAutoComplete: React.FC<Iprops> = ({
     setValue(event.target.value);
   };
 
-  const handleSelectChange = (event) => {
-    setValue(event.target.value);
-    handleSelect(event.target.value);
+  const handleSelectChange = (value) => {
+    setValue(value);
+    handleSelect(value);
   };
 
   useEffect(() => {
