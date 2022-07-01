@@ -164,7 +164,7 @@ const ProjectDetails = () => {
                 navigate("/projects");
               }}
             >
-              <ArrowLeft size={20} color="#5b34ea" weight="bold" />
+              <ArrowLeft size={20} color="#0033CC" weight="bold" />
             </button>
             <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
               {project?.name}
@@ -199,7 +199,7 @@ const ProjectDetails = () => {
                     }
                     className="menuButton__list-item"
                   >
-                    <Receipt size={16} color="#5B34EA" weight="bold" />
+                    <Receipt size={16} color="#0033CC" weight="bold" />
                     <span className="ml-3">Generate Invoice</span>
                   </button>
                 </li>
@@ -211,7 +211,7 @@ const ProjectDetails = () => {
                     }}
                     className="menuButton__list-item"
                   >
-                    <Pencil size={16} color="#5b34ea" weight="bold" />
+                    <Pencil size={16} color="#0033CC" weight="bold" />
                     <span className="ml-3">Edit Project Details</span>
                   </button>
                 </li>
@@ -220,7 +220,7 @@ const ProjectDetails = () => {
                     className="menuButton__list-item"
                     onClick={handleAddRemoveMembers}
                   >
-                    <UsersThree size={16} color="#5b34ea" weight="bold" />
+                    <UsersThree size={16} color="#0033CC" weight="bold" />
                     <span className="ml-3">Add/Remove Team Members</span>
                   </button>
                 </li>

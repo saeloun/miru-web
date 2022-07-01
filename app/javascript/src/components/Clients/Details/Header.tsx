@@ -47,7 +47,7 @@ const Header = ({ clientDetails }) => {
       <div className="flex min-w-0 items-center justify-between">
         <div className="flex items-center">
           <button className="button-icon__back" onClick={handleBackButtonClick}>
-            <ArrowLeft size={20} color="#5b34ea" weight="bold" />
+            <ArrowLeft size={20} color="#0033CC" weight="bold" />
           </button>
           <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
             {clientDetails.name}
@@ -63,13 +63,13 @@ const Header = ({ clientDetails }) => {
           { isHeaderMenuVisible && <ul className="menuButton__wrapper">
             <li onClick={handleAddProject}>
               <button className="menuButton__list-item">
-                <Receipt size={16} color="#5B34EA" weight="bold" />
+                <Receipt size={16} color="#0033CC" weight="bold" />
                 <span className="ml-3">Add Project</span>
               </button>
             </li>
             <li onClick={handleEdit}>
               <button className="menuButton__list-item">
-                <Pencil size={16} color="#5b34ea" weight="bold" />
+                <Pencil size={16} color="#0033CC" weight="bold" />
                 <span className="ml-3">Edit</span>
               </button>
             </li>

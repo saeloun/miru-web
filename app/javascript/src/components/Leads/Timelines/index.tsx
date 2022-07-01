@@ -32,7 +32,7 @@ const Timelines = ({ leadDetails }) => {
             {timelineData && timelineData.map((timeline) => (
               <div className="flex justify-beetween w-full h-full bg-white dark:bg-gray-800">
                 <div className="w-full bg-white dark:bg-gray-800 text-black dark:text-gray-200 p-4 antialiased flex">
-                  <img className="rounded-full h-8 w-8 mr-2 mt-1 " src="/avatar.svg"/>
+                  <img className="rounded-full h-8 w-8 mr-2 mt-1 " src="/assets/avatar.svg"/>
                   <div className="w-full">
                     <div className="bg-gray-100 dark:bg-gray-700 rounded-3xl px-4 pt-2 pb-2.5">
                       <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: timeline.index_system_display_title }} />

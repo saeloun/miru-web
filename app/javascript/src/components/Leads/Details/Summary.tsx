@@ -575,7 +575,7 @@ const Summary = ({
                   onClick={scrollToTop}
                   data-mdb-ripple="true"
                   data-mdb-ripple-color="light"
-                  className="inline-block p-3 bg-purple-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out bottom-5 right-5 fixed"
+                  className="inline-block p-3 bg-miru-han-purple-1000 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-miru-han-purple-700 hover:shadow-lg focus:bg-miru-han-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out bottom-5 right-5 fixed"
                   id="btn-back-to-top"
                 >
                   <svg

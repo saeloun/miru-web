@@ -12,7 +12,7 @@ const Discountmenu = ({ setShowDiscount, setShowDiscountMenu, setAddDiscount, se
           setAddDiscount(true);
         }}
       >
-        <PencilSimple size={18} color="#5B34EA" />
+        <PencilSimple size={18} color="#0033CC" />
         <span className="pl-2 font-medium text-sm text-miru-han-purple-1000">Edit</span>
       </li>
       <li

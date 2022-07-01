@@ -48,7 +48,7 @@ const CustomDatePicker = ({ handleChange, dueDate }) => {
           className="headerWrapper"
         >
           <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
-            <CaretCircleLeft color="#5b34ea" size={16} />
+            <CaretCircleLeft color="#0033CC" size={16} />
           </button>
           <div>
             <select
@@ -76,7 +76,7 @@ const CustomDatePicker = ({ handleChange, dueDate }) => {
             </select>
           </div>
           <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
-            <CaretCircleRight color="#5b34ea" size={16} />
+            <CaretCircleRight color="#0033CC" size={16} />
           </button>
         </div>
       )}

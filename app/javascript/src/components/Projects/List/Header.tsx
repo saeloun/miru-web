@@ -43,7 +43,7 @@ const Header = ({ setShowProjectModal, isAdminUser }) => (
         isInvoiceSelected && <div className="flex justify-center items-center">
           <span>{selectedInvoiceCount} invoices selected</span>
           <button className="ml-2" onClick={handleCloseButton}>
-            <X size={16} color="#5b34ea" weight="bold" />
+            <X size={16} color="#0033CC" weight="bold" />
           </button>
           <div className="flex">
             <button

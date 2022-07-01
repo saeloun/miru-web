@@ -27,7 +27,7 @@ const Header = ({ leadDetails }) => {
       <div className="flex min-w-0 items-center justify-between">
         <div className="flex items-center">
           <button className="button-icon__back" onClick={handleBackButtonClick}>
-            <ArrowLeft size={20} color="#5b34ea" weight="bold" />
+            <ArrowLeft size={20} color="#0033CC" weight="bold" />
           </button>
           <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
             {leadDetails.name}

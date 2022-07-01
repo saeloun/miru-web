@@ -24,7 +24,7 @@
     padding: 0 14px;
     margin-bottom: 12px;
     select {
-      color: #5b34ea;
+      color: #0033CC;
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
@@ -38,7 +38,7 @@
     font-weight: 700;
   }
   .react-datepicker__day--keyboard-selected {
-    color: #5B34EA;
+    color: #0033CC;
     background-color: transparent;
   }
   .react-datepicker__day {
@@ -48,13 +48,13 @@
     padding: 8px;
     font-weight: 700;
     &:hover {
-      color: #5B34EA;
+      color: #0033CC;
       background-color: #F5F7F9;
       border-radius: 4px;
     }
   }
   .react-datepicker__day--today {
-    color: #5B34EA;
+    color: #0033CC;
     background-color: transparent;
     &:hover {
       background-color: #F5F7F9;

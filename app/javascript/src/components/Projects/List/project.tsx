@@ -66,7 +66,7 @@ export const Project = ({
             setEditProjectData({ id, name, clientName, isBillable });
           }}
         >
-          <Pen size={16} color="#5B34EA" />
+          <Pen size={16} color="#0033CC" />
         </button>
         }
       </td>
@@ -79,7 +79,7 @@ export const Project = ({
             setDeleteProjectData({ id, name });
           }}
         >
-          <Trash size={16} color="#5B34EA" />
+          <Trash size={16} color="#0033CC" />
         </button>
         }
       </td>

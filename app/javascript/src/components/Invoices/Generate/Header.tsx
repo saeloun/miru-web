@@ -19,7 +19,7 @@ const Header = ({
           onClick={() => setShowInvoiceSetting(true)}
           className="font-bold text-xs text-miru-han-purple-1000 tracking-widest leading-4 flex items-center ml-5"
         >
-          <Gear size={15} color="#5B34EA" className="mr-2.5" />
+          <Gear size={15} color="#0033CC" className="mr-2.5" />
           SETTINGS
         </button>
       </div>

@@ -30,7 +30,7 @@ const Header = ({
             Time entry report
           </h2>
           <button className="ml-7 p-3 rounded hover:bg-miru-gray-1000 relative" onClick={() => { setFilterVisibilty(!isFilterVisible); }}>
-            <Funnel size={16} color="#7C5DEE" />
+            <Funnel size={16} color="#0033CC" />
             {filterCounter > 0 && <sup className="filter__counter">{filterCounter}</sup>}
           </button>
         </div>
@@ -54,7 +54,7 @@ const Header = ({
                       handleDownload("csv");
                     }}
                   >
-                    <FileCsv size={16} color="#5B34EA" weight="bold" />
+                    <FileCsv size={16} color="#0033CC" weight="bold" />
                     <span className="ml-3">Export as CSV</span>
                   </button>
                 </li>
@@ -66,13 +66,13 @@ const Header = ({
                       handleDownload("pdf");
                     }}
                   >
-                    <FilePdf size={16} color="#5B34EA" weight="bold" />
+                    <FilePdf size={16} color="#0033CC" weight="bold" />
                     <span className="ml-3">Export as PDF</span>
                   </button>
                 </li>
                 <li>
                   <button className="menuButton__list-item" onClick={ () => window.print() }>
-                    <Printer size={16} color="#5B34EA" weight="bold" />
+                    <Printer size={16} color="#0033CC" weight="bold" />
                     <span className="ml-3">Print</span>
                   </button>
                 </li>
@@ -97,7 +97,7 @@ const Header = ({
             {
               filterCounter > 0 && <li key={"clear_all"} className="flex px-2 mr-4 py-1 px-1 ">
                 <button onClick={resetFilter} className="inline-block ml-1 flex items-center">
-                  <X size={12} color="#5B34EA" className="inline-block" weight="bold" />
+                  <X size={12} color="#0033CC" className="inline-block" weight="bold" />
                   <span className="text-miru-han-purple-1000 ml-1 text-xs tracking-widest font-bold">CLEAR ALL</span>
                 </button>
               </li>

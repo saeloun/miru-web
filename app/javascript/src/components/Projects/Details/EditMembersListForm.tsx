@@ -61,7 +61,7 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
           <div className="w-6 text-right">
             <button type="button"
               onClick={() => removeMemberHandler(idx)}>
-              <Trash size={15} fill="#5B34EA" />
+              <Trash size={15} fill="#0033CC" />
             </button>
           </div>
         </div>

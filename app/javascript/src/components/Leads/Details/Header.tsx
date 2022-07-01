@@ -73,7 +73,7 @@ const Header = ({
         <div className="flex min-w-0 items-center justify-between">
           <div className="flex items-center">
             <button className="button-icon__back" onClick={handleBackButtonClick}>
-              <ArrowLeft size={20} color="#5b34ea" weight="bold" />
+              <ArrowLeft size={20} color="#0033CC" weight="bold" />
             </button>
             {(leadDetails.discarded_at) ? (<h2 className="text-3xl mr-6 font-extrabold text-red-600 sm:text-4xl sm:truncate py-1">
               {leadDetails.name}
@@ -88,7 +88,7 @@ const Header = ({
                 onClick={() => setShowLeadSetting(true)}
                 className="font-bold text-xs text-miru-han-purple-1000 tracking-widest leading-4 flex items-center ml-5"
               >
-                <Gear size={15} color="#5B34EA" className="mr-2.5" />
+                <Gear size={15} color="#0033CC" className="mr-2.5" />
                 SETTINGS
               </button>
             }
@@ -133,7 +133,7 @@ const Header = ({
                   { isHeaderMenuVisible && <ul className="menuButton__wrapper">
                     <li>
                       <button className="menuButton__list-item" onClick={() => setnewLead(true)}>
-                        <Receipt size={16} color="#5B34EA" weight="bold" />
+                        <Receipt size={16} color="#0033CC" weight="bold" />
                         <span className="ml-3">Add Lead</span>
                       </button>
                     </li>
