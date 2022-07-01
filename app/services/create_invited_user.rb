@@ -2,7 +2,7 @@
 
 class CreateInvitedUser
   attr_reader :token
-  attr_accessor :success, :error, :error_message, :user, :reset_password_token
+  attr_accessor :success, :error, :error_message, :user, :reset_password_token, :new_user
 
   def initialize(token)
     @token = token
@@ -10,15 +10,15 @@ class CreateInvitedUser
     @error_message = nil
     @user = nil
     @reset_password_token = nil
+    @new_user = false
   end
 
   def process
     if invitation_valid?
       ActiveRecord::Base.transaction do
         update_invitation!
-        create_invited_user!
+        find_or_create_user!
         add_role_to_invited_user
-        create_reset_password_token
       end
     else
       service_failed("Invitation expired")
@@ -41,6 +41,17 @@ class CreateInvitedUser
 
     def update_invitation!
       invitation.update!(accepted_at: Time.current)
+    end
+
+    def find_or_create_user!
+      if User.exists?(email: invitation.recipient_email)
+        @user = User.find_by!(email: invitation.recipient_email)
+        @user.update!(current_workspace_id: invitation.company.id)
+      else
+        create_invited_user!
+        create_reset_password_token
+        @new_user = true
+      end
     end
 
     def create_invited_user!

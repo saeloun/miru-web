@@ -180,6 +180,9 @@ en:
       create:
         success: Invitation will be sent
         failure: Failed to saved changes
+      update:
+        success: Invitation updated
+        failure: Failed to saved changes
       accept:
         success: Invitation accepted
   settings:

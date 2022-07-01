@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_29_105511) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_01_064720) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -144,6 +144,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_105511) do
     t.integer "role", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["company_id", "recipient_email"], name: "index_invitations_on_company_id_and_recipient_email", unique: true
     t.index ["company_id"], name: "index_invitations_on_company_id"
     t.index ["sender_id"], name: "index_invitations_on_sender_id"
     t.index ["token"], name: "index_invitations_on_token", unique: true
