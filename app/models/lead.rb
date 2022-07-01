@@ -483,46 +483,46 @@ class Lead < ApplicationRecord
         next if ["updated_at", "updated_by_id"].include?(field_name)
 
         display_field_name = field_name
-        old_val = old_new_val_arr[0] || "None"
+        old_val = old_new_val_arr[0] || "Unassigned"
         new_val = old_new_val_arr[1]
 
         if field_name == "budget_status_code"
           display_field_name = "budget_status"
-          old_val = self.budget_status_code_name_hash[old_val.to_i] if old_val != "None"
+          old_val = self.budget_status_code_name_hash[old_val.to_i] if old_val != "Unassigned"
           new_val = self.budget_status_code_name_hash[new_val.to_i]
         elsif field_name == "industry_code"
           display_field_name = "industry"
-          old_val = self.industry_code_name_hash[old_val.to_i] if old_val != "None"
+          old_val = self.industry_code_name_hash[old_val.to_i] if old_val != "Unassigned"
           new_val = self.industry_code_name_hash[new_val.to_i]
         elsif field_name == "quality_code"
           display_field_name = "quality"
-          old_val = self.quality_code_name_hash[old_val.to_i] if old_val != "None"
+          old_val = self.quality_code_name_hash[old_val.to_i] if old_val != "Unassigned"
           new_val = self.quality_code_name_hash[new_val.to_i]
         elsif field_name == "state_code"
           display_field_name = "state"
-          old_val = self.state_code_name_hash[old_val.to_i] if old_val != "None"
+          old_val = self.state_code_name_hash[old_val.to_i] if old_val != "Unassigned"
           new_val = self.state_code_name_hash[new_val.to_i]
         elsif field_name == "status_code"
           display_field_name = "status"
-          old_val = self.status_code_name_hash[old_val.to_i] if old_val != "None"
+          old_val = self.status_code_name_hash[old_val.to_i] if old_val != "Unassigned"
           new_val = self.status_code_name_hash[new_val.to_i]
         elsif field_name == "preferred_contact_method_code"
           display_field_name = "preferred_contact_method"
-          old_val = self.preferred_contact_method_code_name_hash[old_val.to_i] if old_val != "None"
+          old_val = self.preferred_contact_method_code_name_hash[old_val.to_i] if old_val != "Unassigned"
           new_val = self.preferred_contact_method_code_name_hash[new_val.to_i]
         elsif field_name == "initial_communication"
-          old_val = self.initial_communication_name_hash[old_val.to_i] if old_val != "None"
+          old_val = self.initial_communication_name_hash[old_val.to_i] if old_val != "Unassigned"
           new_val = self.initial_communication_name_hash[new_val.to_i]
         elsif field_name == "source_code"
           display_field_name = "source"
-          old_val = self.source_code_name_hash[old_val.to_i] if old_val != "None"
+          old_val = self.source_code_name_hash[old_val.to_i] if old_val != "Unassigned"
           new_val = self.source_code_name_hash[new_val.to_i]
         elsif field_name == "priority_code"
           display_field_name = "priority"
-          old_val = self.priority_code_name_hash[old_val.to_i] if old_val != "None"
+          old_val = self.priority_code_name_hash[old_val.to_i] if old_val != "Unassigned"
           new_val = self.priority_code_name_hash[new_val.to_i]
         elsif field_name == "need"
-          old_val = self.need_name_hash[old_val.to_i] if old_val != "None"
+          old_val = self.need_name_hash[old_val.to_i] if old_val != "Unassigned"
           new_val = self.need_name_hash[new_val.to_i]
         elsif field_name == "tech_stack_ids"
           display_field_name = "tech_stacks"
@@ -531,7 +531,7 @@ class Lead < ApplicationRecord
   old_val.map(&:to_i).include?(k)
 } || {}).values.flatten.compact.uniq
           else
-            old_val = self.tech_stack_name_hash[old_val] if old_val != "None"
+            old_val = self.tech_stack_name_hash[old_val] if old_val != "Unassigned"
           end
           if new_val.kind_of?(Array)
             new_val = (self.tech_stack_name_hash.select { |k, v|
@@ -542,11 +542,11 @@ class Lead < ApplicationRecord
           end
         elsif field_name == "assignee_id"
           display_field_name = "assignee"
-          old_val = User.find(old_val)&.full_name if old_val != "None"
+          old_val = User.find(old_val)&.full_name if old_val != "Unassigned"
           new_val = self.assignee_name
         elsif field_name == "reporter_id"
           display_field_name = "reporter"
-          old_val = User.find(old_val)&.full_name if old_val != "None"
+          old_val = User.find(old_val)&.full_name if old_val != "Unassigned"
           new_val = self.reporter_name
         end
 
