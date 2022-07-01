@@ -1,76 +1,76 @@
 # frozen_string_literal: true
-# TODO:- Fix wise tests
-# require "rails_helper"
 
-# RSpec.describe InternalApi::V1::WiseController, type: :controller do
-#   let(:company) { create(:company) }
-#   let(:employee) { create(:user, current_workspace_id: company.id) }
+require "rails_helper"
 
-#   before do
-#     create(:employment, company:, user: employee)
-#     employee.add_role :employee, company
-#     sign_in employee
-#   end
+RSpec.describe InternalApi::V1::WiseController, type: :controller do
+  let(:company) { create(:company) }
+  let(:employee) { create(:user, current_workspace_id: company.id) }
 
-#   describe "GET fetch_bank_requirements" do
-#     subject { get :fetch_bank_requirements, params: }
+  before do
+    create(:employment, company:, user: employee)
+    employee.add_role :employee, company
+    sign_in employee
+  end
 
-#     let(:params) do
-#       {
-#         source_currency: "USD",
-#         target_currency: "INR",
-#         source_amount: 1000
-#       }
-#     end
+  describe "GET fetch_bank_requirements" do
+    subject { get :fetch_bank_requirements, params: }
 
-#     context "when response from wise is success", vcr: { cassette_name: "wise_bank_requirements_success" } do
-#       it "returns json data for bank requirements" do
-#         subject
-#         expect(response.status).to eq 200
-#         expect(JSON.parse(response.body).first["fields"].count).to eq 7
-#         expect(JSON.parse(response.body).first["type"]).to eq "indian"
-#       end
-#     end
+    let(:params) do
+      {
+        source_currency: "USD",
+        target_currency: "INR",
+        source_amount: 1000
+      }
+    end
 
-#     context "when wise returns an error" do
-#       let(:status) { 500 }
+    context "when response from wise is success", vcr: { cassette_name: "wise_bank_requirements_success" } do
+      it "returns json data for bank requirements" do
+        subject
+        expect(response.status).to eq 200
+        expect(JSON.parse(response.body).first["fields"].count).to eq 7
+        expect(JSON.parse(response.body).first["type"]).to eq "indian"
+      end
+    end
 
-#       it_behaves_like "Internal::V1::WiseController error response from wise"
-#     end
-#   end
+    context "when wise returns an error" do
+      let(:status) { 500 }
 
-#   describe "GET validate_account_details" do
-#     subject { get :validate_account_details, params: }
+      it_behaves_like "Internal::V1::WiseController error response from wise"
+    end
+  end
 
-#     let(:params) do
-#       {
-#         pathname: "/v1/validators/ifsc-code",
-#         search: "?ifscCode=#{ifsc_code}"
-#       }
-#     end
-#     let(:ifsc_code) { "UTIB0002508" }
+  describe "GET validate_account_details" do
+    subject { get :validate_account_details, params: }
 
-#     context "when param is valid", vcr: { cassette_name: "wise_validate_account_success" } do
-#       it "returns success response" do
-#         expect(subject.status).to eq 200
+    let(:params) do
+      {
+        pathname: "/v1/validators/ifsc-code",
+        search: "?ifscCode=#{ifsc_code}"
+      }
+    end
+    let(:ifsc_code) { "UTIB0002508" }
 
-#         expect(JSON.parse(response.body)["validation"]).to eq "success"
-#       end
-#     end
+    context "when param is valid", vcr: { cassette_name: "wise_validate_account_success" } do
+      it "returns success response" do
+        expect(subject.status).to eq 200
 
-#     context "when param is not valid", vcr: { cassette_name: "wise_validate_account_error" } do
-#       let(:ifsc_code) { "UTIB" }
+        expect(JSON.parse(response.body)["validation"]).to eq "success"
+      end
+    end
 
-#       it "returns error response" do
-#         expect(subject.status).to eq 400
-#         expect(JSON.parse(response.body)["errors"].first["code"]).to eq "VALIDATION_NOT_SUCCESSFUL"
-#       end
-#     end
+    context "when param is not valid", vcr: { cassette_name: "wise_validate_account_error" } do
+      let(:ifsc_code) { "UTIB" }
 
-#     context "when wise returns error" do
-#       let(:status) { 500 }
+      it "returns error response" do
+        expect(subject.status).to eq 400
+        expect(JSON.parse(response.body)["errors"].first["code"]).to eq "VALIDATION_NOT_SUCCESSFUL"
+      end
+    end
 
-#       it_behaves_like "Internal::V1::WiseController error response from wise"
-#     end
-#   end
-# end
+    context "when wise returns error" do
+      let(:status) { 500 }
+
+      it_behaves_like "Internal::V1::WiseController error response from wise"
+    end
+  end
+end
