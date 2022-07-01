@@ -183,6 +183,9 @@ en:
       update:
         success: Invitation updated
         failure: Failed to saved changes
+      destroy:
+        success: Invitation deleted
+        failure: Failed to delete invitation
       accept:
         success: Invitation accepted
   settings:

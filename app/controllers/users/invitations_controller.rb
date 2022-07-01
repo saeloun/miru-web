@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Users::InvitationsController < ApplicationController
-  before_action :set_invitation, only: [:edit, :update]
+  before_action :set_invitation, only: [:edit, :update, :destroy]
   skip_before_action :authenticate_user!, only: [:accept]
   skip_before_action :validate_company!, only: [:accept]
   skip_after_action :verify_authorized, only: [:accept]
@@ -29,6 +29,18 @@ class Users::InvitationsController < ApplicationController
     authorize current_user, policy_class: InvitationPolicy
 
     if @invitation.update(invitation_params)
+      flash[:success] = t(".success")
+    else
+      set_error_flash
+    end
+
+    redirect_to team_index_path
+  end
+
+  def destroy
+    authorize current_user, policy_class: InvitationPolicy
+
+    if @invitation.destroy
       flash[:success] = t(".success")
     else
       set_error_flash

@@ -32,11 +32,10 @@
 </td>
 <td id="delete-<%= invitation.id %>" class="table__data table__button_design">
   <% if policy(invitation).destroy? %>
-    <!-- TODO: link will be readded in later PRs -->
-    <%# <%= link_to team_path(invitation), data: { confirm: "Are you sure?" }, method: :delete do %>
+    <%= link_to users_invitation_path(invitation), data: { confirm: "Are you sure?" }, method: :delete do %>
       <div class="w-6">
-        <%= image_tag 'delete_image_button.svg', class:"table__button", "data-cy": "delete-team-member-button" %>
+        <%= image_tag 'delete_image_button.svg', class:"table__button", "data-cy": "delete-invitation-button" %>
       </div>
-    <%# <% end %>
+    <% end %>
   <% end %>
 </td>
