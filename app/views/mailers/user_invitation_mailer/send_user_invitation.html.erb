@@ -18,12 +18,12 @@
   </ul>
 
   <p>
-    Please click <%= link_to "here", "#", target: "_blank" %> to accept the invitation.
+    Please <%= link_to "click here", accept_users_invitations_url(token: @token), target: "_blank" %> to accept the invitation.
     <small>(This link will be valid only for 14 days)</small>
   </p>
 
-  <p>Cheers </p>
+  <p>Cheers,</p>
 
-  <p>Miru Team</p>
+  <p>Team Miru</p>
   </body>
 </html>

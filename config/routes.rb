@@ -63,7 +63,11 @@ Rails.application.routes.draw do
   end
 
   namespace :users do
-    resources :invitations, only: [:create]
+    resources :invitations, only: [:create] do
+      collection do
+        get :accept
+      end
+    end
   end
 
   get "clients/*path", to: "clients#index", via: :all
