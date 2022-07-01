@@ -24,7 +24,7 @@ const Header = ({
   handleDownload,
   type
 }) => {
-  const { filterCounter } = useEntry();
+  const { timeEntryReport } = useEntry();
   const [showExportOptions, setShowExportOptions] = useState<boolean>(false);
 
   return (
@@ -42,7 +42,7 @@ const Header = ({
           </h2>
           <button className="ml-7 p-3 rounded hover:bg-miru-gray-1000 relative" onClick={() => { setFilterVisibilty(!isFilterVisible); }}>
             <Funnel size={16} color="#7C5DEE" />
-            {filterCounter > 0 && <sup className="filter__counter">{filterCounter}</sup>}
+            {timeEntryReport.filterCounter > 0 && <sup className="filter__counter">{timeEntryReport.filterCounter}</sup>}
           </button>
         </div>
         <div className="inline-flex">
@@ -106,7 +106,7 @@ const Header = ({
           <ul className="flex">
             <NavigationFilter />
             {
-              filterCounter > 0 && <li key={"clear_all"} className="flex px-2 mr-4 py-1 px-1 ">
+              timeEntryReport.filterCounter > 0 && <li key={"clear_all"} className="flex px-2 mr-4 py-1 px-1 ">
                 <button onClick={resetFilter} className="inline-block ml-1 flex items-center">
                   <X size={12} color="#5B34EA" className="inline-block" weight="bold" />
                   <span className="text-miru-han-purple-1000 ml-1 text-xs tracking-widest font-bold">CLEAR ALL</span>
