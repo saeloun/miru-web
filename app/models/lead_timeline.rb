@@ -83,18 +83,6 @@ class LeadTimeline < ApplicationRecord
     self.created_at.strftime("#{self.created_at.day.ordinalize} %b %Y at %H:%M")
   end
 
-  def action_assignee_name
-    self.action_assignee ? self.action_assignee.full_name : ""
-  end
-
-  def action_created_by_name
-    self.action_created_by ? self.action_created_by.full_name : ""
-  end
-
-  def action_reporter_name
-    self.action_reporter ? self.action_reporter.full_name : ""
-  end
-
   def render_properties
     {
       id: self.id,
@@ -107,16 +95,25 @@ class LeadTimeline < ApplicationRecord
       index_system_display_message: self.index_system_display_message,
       index_system_display_title: self.index_system_display_title,
       kind: self.kind,
-      action_assignee_id: self.action_assignee_id,
-      action_created_by_id: self.action_created_by_id,
-      action_reporter_id: self.action_reporter_id,
-      lead_id: self.lead_id,
+      action_assignee: self.action_assignee&.attributes&.merge(
+        {
+          full_name: self.action_assignee&.full_name,
+          avatar: self.action_assignee&.avatar_url
+        }),
+      action_created_by: self.action_created_by&.attributes&.merge(
+        {
+          full_name: self.action_created_by&.full_name,
+          avatar: self.action_created_by&.avatar_url
+        }),
+      action_reporter: self.action_reporter&.attributes&.merge(
+        {
+          full_name: self.action_reporter&.full_name,
+          avatar: self.action_reporter&.avatar_url
+        }),
+      lead: self.lead,
       parent_lead_timeline_id: self.parent_lead_timeline_id,
       created_at: self.created_at,
-      created_at_formated: self.created_at_formated,
-      action_assignee_name: self.action_assignee_name,
-      action_created_by_name: self.action_created_by_name,
-      action_reporter_name: self.action_reporter_name
+      created_at_formated: self.created_at_formated
     }
   end
 
@@ -124,7 +121,7 @@ class LeadTimeline < ApplicationRecord
 
     def set_index_system_display_message_and_title
       if self.kind == 1
-        self.index_system_display_title = "<b>#{self.action_created_by.full_name}</b> added an comment"
+        self.index_system_display_title = "<b>#{self.action_created_by&.full_name}</b> added an comment"
         self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.comment}</p>"
       end
     end

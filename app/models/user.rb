@@ -55,6 +55,7 @@
 
 class User < ApplicationRecord
   include Discard::Model
+  include Rails.application.routes.url_helpers
 
   DepartmentOptionKlass = Struct.new(:name, :id)
 
@@ -156,6 +157,10 @@ class User < ApplicationRecord
   # https://github.com/scambra/devise_invitable/blob/7c4b1f6d19135b2cfed4685735a646a28bbc5191/test/rails_app/app/models/user.rb#L59
   def send_devise_notification(notification, *args)
     super
+  end
+
+  def avatar_url
+    self.avatar.attached? ? rails_blob_path(self.avatar, disposition: "attachment", only_path: true) : "/assets/avatar.svg"
   end
 
   private

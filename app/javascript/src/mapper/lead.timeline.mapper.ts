@@ -9,16 +9,13 @@ const getList = (input) => input.timeline_details.map((item) => ({
   index_system_display_message: item.index_system_display_message,
   index_system_display_title: item.index_system_display_title,
   kind: item.kind,
-  action_assignee_id: item.action_assignee_id,
-  action_created_by_id: item.action_created_by_id,
-  action_reporter_id: item.action_reporter_id,
+  action_assignee: item.action_assignee,
+  action_created_by: item.action_created_by,
+  action_reporter: item.action_reporter,
   lead_id: item.lead_id,
   parent_lead_timeline_id: item.parent_lead_timeline_id,
   created_at: item.created_at,
-  created_at_formated: item.created_at_formated,
-  action_assignee_name: item.action_assignee_name,
-  action_created_by_name: item.action_created_by_name,
-  action_reporter_name: item.action_reporter_name
+  created_at_formated: item.created_at_formated
 }));
 
 const unmapLeadTimelineList = (input) => {
@@ -50,16 +47,13 @@ const unmapLeadTimelineDetails = (input) => {
       index_system_display_message: data.timeline_details.index_system_display_message,
       index_system_display_title: data.timeline_details.index_system_display_title,
       kind: data.timeline_details.kind,
-      action_assignee_id: data.timeline_details.action_assignee_id,
-      action_created_by_id: data.timeline_details.action_created_by_id,
-      action_reporter_id: data.timeline_details.action_reporter_id,
+      action_assignee: data.timeline_details.action_assignee,
+      action_created_by: data.timeline_details.action_created_by,
+      action_reporter: data.timeline_details.action_reporter,
       lead_id: data.timeline_details.lead_id,
       parent_lead_timeline_id: data.timeline_details.parent_lead_timeline_id,
       created_at: data.timeline_details.created_at,
-      created_at_formated: data.timeline_details.created_at_formated,
-      action_assignee_name: data.timeline_details.action_assignee_name,
-      action_created_by_name: data.timeline_details.action_created_by_name,
-      action_reporter_name: data.timeline_details.action_reporter_name
+      created_at_formated: data.timeline_details.created_at_formated
     }
   };
 };

@@ -77,6 +77,16 @@
       </div>
     </div>
   </div>
+  <div class="mt-4">
+    <div class="field">
+      <label class="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+        <%= t('team.form_photo') %>
+      </label>
+      <div class="mt-2">
+        <%= f.file_field :avatar, direct_upload: true, accept: "image/png,image/gif,image/jpeg", class: "rounded tracking-wider bg-miru-gray-100 appearance-none border border-gray-100 block w-full h-full px-3 py-2 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-base" %>
+      </div>
+    </div>
+  </div>
 
   <%= f.hidden_field :current_workspace_id, value: current_company.id %>
 

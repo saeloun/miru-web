@@ -14,9 +14,10 @@ def status(member)
 end
 
 json.team team do |member|
-  json.profile_picture user_avatar(member)
+  json.avatar user_avatar(member)
   json.name member.full_name
   json.email member.email
   json.role member.primary_role
   json.status status(member)
+  json.department_id member.department_id
 end
