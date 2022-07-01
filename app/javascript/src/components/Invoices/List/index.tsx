@@ -4,7 +4,6 @@ import { ToastContainer } from "react-toastify";
 
 import invoicesApi from "apis/invoices";
 import Pagination from "common/Pagination";
-import useDebounce from "helpers/debounce";
 import { sendGAPageView } from "utils/googleAnalytics";
 import { ApiStatus as InvoicesStatus } from "constants/index";
 
@@ -26,8 +25,7 @@ const Invoices: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = React.useState<any>({
     invoices_per_page: searchParams.get("invoices_per_page") || 20,
-    page: searchParams.get("page") || 1,
-    query: searchParams.get("query") || ""
+    page: searchParams.get("page") || 1
   });
 
   const queryParams = () => new URLSearchParams(params).toString();
@@ -40,29 +38,16 @@ const Invoices: React.FC = () => {
   const [showBulkDeleteDialaog, setShowBulkDeleteDialog] =
     React.useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = React.useState(null);
-  const [searchQuery, setSearchQuery] = React.useState(searchParams.get("query") || "");
 
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
-  const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   React.useEffect(() => sendGAPageView(), []);
 
   React.useEffect(() => {
     fetchInvoices();
     setSearchParams(cleanParams(params));
-  }, [params.invoices_per_page, params.page, params.query]);
-
-  React.useEffect(() => {
-    setParams({
-      ...params,
-      query: debouncedSearchQuery
-    });
-  }, [debouncedSearchQuery]);
-
-  const clearSearchText = () => {
-    setSearchQuery("");
-  };
+  }, [params.invoices_per_page, params.page]);
 
   const cleanParams = (params: any) => {
     const newParams = { ...params };
@@ -106,9 +91,6 @@ const Invoices: React.FC = () => {
     <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
-        searchText={searchQuery}
-        setSearchText={setSearchQuery}
-        onSearchClear={clearSearchText}
         setFilterVisibilty={setFilterVisibilty}
         clearCheckboxes={() =>
           deselectInvoices(invoices.map((invoice) => invoice.id))
