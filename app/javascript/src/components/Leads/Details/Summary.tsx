@@ -199,7 +199,7 @@ const Summary = ({
                     <div className="mx-auto xl:mx-0">
                       <div className="mt-8 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Title</label>
-                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="title" placeholder="Title" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.title && touched.title &&
@@ -210,7 +210,7 @@ const Summary = ({
 
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">First Name</label>
-                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="first_name" placeholder="First Name" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.first_name && touched.first_name &&
@@ -221,7 +221,7 @@ const Summary = ({
 
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Last Name</label>
-                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="last_name" placeholder="Last Name" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.last_name && touched.last_name &&
@@ -232,7 +232,7 @@ const Summary = ({
 
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Primary Email</label>
-                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="email" placeholder="Primary Email" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.email && touched.email &&
@@ -252,7 +252,7 @@ const Summary = ({
                                     <div className="grid grid-flow-row-dense grid-cols-12 gap-2" key={index}>
                                       <div className="col-span-11">
                                         <Field
-                                          className="w-full border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                                          className="w-full border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                                           name={`emails.${index}`}
                                           placeholder="Email"
                                           disabled={!isEdit}
@@ -288,7 +288,7 @@ const Summary = ({
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Budget Status</label>
                         <select
                           defaultValue={leadDetails.budget_status_code}
-                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="budget_status_code" onChange={(e) => setBudgetStatusCode(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Budget Status</option>
                           {budgetStatusCodeList &&
@@ -303,7 +303,7 @@ const Summary = ({
 
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Budget Amount</label>
-                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="budget_amount" type="number" min="0" placeholder="Budget Amount" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.budget_amount && touched.budget_amount &&
@@ -316,7 +316,7 @@ const Summary = ({
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Industry</label>
                         <select
                           defaultValue={leadDetails.industry_code}
-                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="industry_code" onChange={(e) => setIndustryCode(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Industry</option>
                           {industryCodeList &&
@@ -339,7 +339,7 @@ const Summary = ({
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Need</label>
                         <select
                           defaultValue={leadDetails.need}
-                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="need" onChange={(e) => setNeed(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Need</option>
                           {needList &&
@@ -356,7 +356,7 @@ const Summary = ({
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Contact Method</label>
                         <select
                           defaultValue={leadDetails.preferred_contact_method_code}
-                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="preferred_contact_method_code" onChange={(e) => setPreferredContactMethodCode(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Contact Method</option>
                           {preferredContactMethodCodeList &&
@@ -373,7 +373,7 @@ const Summary = ({
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Source</label>
                         <select
                           defaultValue={leadDetails.source_code}
-                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="source_code" onChange={(e) => setSourceCode(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Source</option>
                           {sourceCodeList &&
@@ -390,7 +390,7 @@ const Summary = ({
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Initial Communication</label>
                         <select
                           defaultValue={leadDetails.initial_communication}
-                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="initial_communication" onChange={(e) => setInitialCommunication(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Initial Communication</option>
                           {initialCommunicationList &&
@@ -405,7 +405,7 @@ const Summary = ({
 
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Description</label>
-                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="description" as="textarea" rows={8} placeholder="Description" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.description && touched.description &&
@@ -442,7 +442,7 @@ const Summary = ({
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Country</label>
                         <select
                           defaultValue={leadDetails.country}
-                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="industry_code" onChange={(e) => setCountry(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Country</option>
                           <option value="US" key="US">United States of America</option>
@@ -460,7 +460,7 @@ const Summary = ({
 
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Address</label>
-                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="address" as="textarea" rows={8} placeholder="Address" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.address && touched.address &&
@@ -471,7 +471,7 @@ const Summary = ({
 
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Moobile Phone</label>
-                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="mobilephone" placeholder="Moobile Phone" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.mobilephone && touched.mobilephone &&
@@ -482,7 +482,7 @@ const Summary = ({
 
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Tele Phone</label>
-                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="telephone" placeholder="Tele Phone" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.telephone && touched.telephone &&
@@ -494,7 +494,7 @@ const Summary = ({
                     <div className="mx-auto xl:mx-0">
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Skype ID</label>
-                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="skypeid" placeholder="Skpe ID" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.skypeid && touched.skypeid &&
@@ -505,7 +505,7 @@ const Summary = ({
 
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Linkedin ID</label>
-                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-purple-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                        <Field className="border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="linkedinid" placeholder="Linkedin ID" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.linkedinid && touched.linkedinid &&
