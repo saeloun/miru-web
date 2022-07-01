@@ -17,7 +17,7 @@ RSpec.describe TestController, type: :controller do
   describe "#record_not_discarded" do
     before do
       routes.draw { get "show" => "test#show" }
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
     end

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const path = "/company_users";
+const path = "/employments";
 
 const get = async () => axios.get(`${path}`);
 

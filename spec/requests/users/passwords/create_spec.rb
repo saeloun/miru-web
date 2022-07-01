@@ -8,7 +8,7 @@ RSpec.describe "Users::Passwords#create", type: :request do
 
   context "when user email address is valid" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       send_request :post, user_password_path, params: { user: { email: user.email } }
     end
@@ -29,7 +29,7 @@ RSpec.describe "Users::Passwords#create", type: :request do
 
   context "when user email address is invalid" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       send_request :post, user_password_path, params: { user: { email: "test#{user.email}" } }
     end
