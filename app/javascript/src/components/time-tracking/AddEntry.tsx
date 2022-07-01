@@ -167,9 +167,7 @@ const AddEntry: React.FC<Iprops> = ({
       <div className="w-60">
         <div className="mb-2 flex justify-between">
           <div className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center">
-            {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${
-              selectedDateInfo["month"]
-            }, ${selectedDateInfo["year"]}`}
+            {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${ selectedDateInfo["month"]}, ${selectedDateInfo["year"]}`}
           </div>
           <input
             value={duration}

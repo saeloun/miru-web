@@ -8,7 +8,7 @@ class TimeTrackingController < ApplicationController
     is_admin = current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
     user_id = current_user.id
     employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
-    full_name = current_user.first_name + " " + current_user.last_name
+    full_name = `${current_user.first_name} ${current_user.last_name}`
 
     clients = current_company.clients.includes(:projects)
     projects = {}

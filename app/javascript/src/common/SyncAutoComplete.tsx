@@ -1,8 +1,8 @@
-import * as React from "react";
+// NOTE: This file is for synchronous auto complete.
+
+import React, { useState, useEffect } from "react";
 import Autocomplete from "react-autocomplete";
 import { MagnifyingGlass } from "phosphor-react";
-
-const { useState, useEffect } = React;
 
 const cssStyles = {
   menuStyles: {
@@ -49,6 +49,15 @@ const SyncAutoComplete: React.FC<Iprops> = ({
     }
   };
 
+  const handleEventChange = (event) => {
+    setValue(event.target.value);
+  };
+
+  const handleSelectChange = (event) => {
+    setValue(event.target.value);
+    handleSelect(event.target.value);
+  };
+
   useEffect(() => {
     handleDefaultValue();
   }, []);
@@ -66,13 +75,8 @@ const SyncAutoComplete: React.FC<Iprops> = ({
         items={dropdownItems}
         menuStyle={cssStyles.menuStyles}
         value={searchValue}
-        onChange={(event) => {
-          setValue(event.target.value);
-        }}
-        onSelect={(value) => {
-          setValue(value);
-          handleSelect(value);
-        }}
+        onChange={handleEventChange}
+        onSelect={handleSelectChange}
         renderItem={(item, isHighlighted) =>
           <div style={cssStyles.getDivStyles(isHighlighted)} onClick={() => setValue(item["label"])} >
             {item.label}
