@@ -29,28 +29,25 @@ const Timelines = ({ leadDetails }) => {
         <Header isAdminUser={true} setNewCommentTimeline={setNewCommentTimeline} />
         <div className="my-6">
           <div className="flex flex-col w-full">
-            {timelineData &&
-              <div className="flex-1 flex flex-col py-3 bg-gray-200">
-                <div>
-                  {timelineData.map((timeline) => (
-                    <div className="shadow-lg pt-4 ml-2 mr-2 rounded-lg">
-                      <div className="block bg-white py-3 border-t pb-4">
-                        <div className="px-4 py-2 flex  justify-between">
-                          <span className="text-sm font-semibold text-gray-700" dangerouslySetInnerHTML={{ __html: timeline.index_system_display_title }} />
-                          <div className="flex">
-                            <span className="px-4 text-sm font-semibold text-gray-600">{timeline.created_at_formated}</span>
-                            <img className="h-6 w-6 rounded-full object-cover"
-                              src="/avatar.svg"
-                              alt="" />
-                          </div>
-                        </div>
-                        <p className="px-4 py-2 text-sm font-semibold text-gray-700" dangerouslySetInnerHTML={{ __html: timeline.index_system_display_message }} />
-                      </div>
+            {timelineData && timelineData.map((timeline) => (
+              <div className="flex justify-beetween w-full h-full bg-white dark:bg-gray-800">
+                <div className="w-full bg-white dark:bg-gray-800 text-black dark:text-gray-200 p-4 antialiased flex">
+                  <img className="rounded-full h-8 w-8 mr-2 mt-1 " src="/avatar.svg"/>
+                  <div className="w-full">
+                    <div className="bg-gray-100 dark:bg-gray-700 rounded-3xl px-4 pt-2 pb-2.5">
+                      <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: timeline.index_system_display_title }} />
+                      <div className="mt-0.5 text-normal leading-snug md:leading-normal" dangerouslySetInnerHTML={{ __html: timeline.index_system_display_message }} />
                     </div>
-                  ))}
+                    <div className="text-sm ml-4 mt-0.5 text-gray-500 dark:text-gray-400">{timeline.created_at_formated}</div>
+                    {/* <div className="bg-white dark:bg-gray-700 border border-white dark:border-gray-700 rounded-full float-right -mt-8 mr-0.5 flex shadow items-center ">
+                      <svg className="p-0.5 h-5 w-5 rounded-full z-20 bg-white dark:bg-gray-700" />
+                      <svg className="p-0.5 h-5 w-5 rounded-full -ml-1.5 bg-white dark:bg-gray-700" />
+                      <span className="text-sm ml-1 pr-1.5 text-gray-500 dark:text-gray-300">3</span>
+                    </div> */}
+                  </div>
                 </div>
               </div>
-            }
+            ))}
           </div>
         </div>
         {newCommentTimeline && (

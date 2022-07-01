@@ -125,7 +125,7 @@ class LeadTimeline < ApplicationRecord
     def set_index_system_display_message_and_title
       if self.kind == 1
         self.index_system_display_title = "<b>#{self.action_created_by.full_name}</b> added an comment"
-        self.index_system_display_message = "<comment>#{self.comment}</comment>"
+        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.comment}</p>"
       end
     end
 end

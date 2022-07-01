@@ -551,7 +551,7 @@ class Lead < ApplicationRecord
         end
 
         index_system_display_title = "<b>#{self.updated_by_name}</b> updated the <b>#{display_field_name.tr('_', ' ').capitalize}</b>"
-        index_system_display_message = "<comment>#{old_val.kind_of?(Array) ? old_val.join(",") : old_val} -> #{new_val.kind_of?(Array) ? new_val.join(",") : new_val}</comment>"
+        index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{old_val.kind_of?(Array) ? old_val.join(",") : old_val}&nbsp; -> &nbsp;#{new_val.kind_of?(Array) ? new_val.join(",") : new_val}</p>"
 
         lead_timeline_arr << self.lead_timelines.new(
           action_created_by_id: self.updated_by_id, kind: 0,

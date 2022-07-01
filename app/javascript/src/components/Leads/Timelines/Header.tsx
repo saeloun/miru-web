@@ -1,26 +1,13 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
-import leadTimelines from "apis/lead-timelines";
-import { MagnifyingGlass, CaretDown } from "phosphor-react";
-import AutoComplete from "./AutoComplete";
-import { unmapLeadTimelineListForDropdown } from "../../../mapper/lead.timeline.mapper";
+import { CaretDown } from "phosphor-react";
 
 const Header = ({
   setNewCommentTimeline,
   isAdminUser
 }) => {
 
-  const { leadId } = useParams();
   const [toggleMenu, setToggleMenu] = useState<boolean>(false);
   const wrapperRef = React.useRef(null);
-
-  const searchCallBack = async (searchString, setDropdownItems) => {
-    await leadTimelines.index(leadId, searchString)
-      .then((res) => {
-        const dropdownList = unmapLeadTimelineListForDropdown(res);
-        setDropdownItems(dropdownList);
-      });
-  };
 
   const closeOpenToggleMenu = (e)=>{
     if (wrapperRef.current && toggleMenu && !wrapperRef.current.contains(e.target)){
@@ -38,14 +25,6 @@ const Header = ({
           : "sm:flex mt-6 mb-3 sm:items-center"
       }>
       <h2 className="header__title"></h2>
-      <div className="header__searchWrap">
-        <div className="header__searchInnerWrapper">
-          <AutoComplete searchCallBack={searchCallBack} />
-          <button className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
-            <MagnifyingGlass size={12} />
-          </button>
-        </div>
-      </div>
       {isAdminUser && (
         <div className="flex relative flex-col">
           <button
