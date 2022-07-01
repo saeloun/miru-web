@@ -542,11 +542,11 @@ class Lead < ApplicationRecord
           end
         elsif field_name == "assignee_id"
           display_field_name = "assignee"
-          old_val = self.assignee_name if old_val != "None"
+          old_val = User.find_by(self.assignee_id)&.name if old_val != "None"
           new_val = self.assignee_name
         elsif field_name == "reporter_id"
           display_field_name = "reporter"
-          old_val = self.reporter_name if old_val != "None"
+          old_val = User.find_by(self.reporter_id)&.name if old_val != "None"
           new_val = self.reporter_name
         end
 
