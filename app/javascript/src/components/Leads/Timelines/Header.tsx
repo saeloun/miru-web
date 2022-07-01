@@ -3,6 +3,7 @@ import { CaretDown } from "phosphor-react";
 
 const Header = ({
   setNewCommentTimeline,
+  setNewAppointmentTimeline,
   isAdminUser
 }) => {
 
@@ -43,7 +44,7 @@ const Header = ({
                   <a onClick={() => setNewCommentTimeline(true)} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Comment</a>
                 </li>
                 <li>
-                  <a onClick={null} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Appointment</a>
+                  <a onClick={() => setNewAppointmentTimeline(true)} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Appointment</a>
                 </li>
                 <li>
                   <a onClick={null} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Email</a>

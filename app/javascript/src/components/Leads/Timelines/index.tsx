@@ -10,6 +10,7 @@ import { unmapLeadTimelineList } from "../../../mapper/lead.timeline.mapper";
 const Timelines = ({ leadDetails }) => {
   const [timelineData, setTimelineData] = useState<any>(null);
   const [newCommentTimeline, setNewCommentTimeline] = useState<boolean>(false);
+  const [newAppointmentTimeline, setNewAppointmentTimeline] = useState<boolean>(false);
 
   useEffect(() => {
     setAuthHeaders();
@@ -26,13 +27,13 @@ const Timelines = ({ leadDetails }) => {
     <>
       <React.Fragment>
         <ToastContainer autoClose={TOASTER_DURATION} />
-        <Header isAdminUser={true} setNewCommentTimeline={setNewCommentTimeline} />
+        <Header isAdminUser={true} setNewCommentTimeline={setNewCommentTimeline} setNewAppointmentTimeline={setNewAppointmentTimeline} />
         <div className="my-6">
           <div className="flex flex-col w-full">
             {timelineData && timelineData.map((timeline) => (
               <div className="flex justify-beetween w-full h-full bg-white dark:bg-gray-800">
                 <div className="w-full bg-white dark:bg-gray-800 text-black dark:text-gray-200 p-4 antialiased flex">
-                  <img className="rounded-full h-8 w-8 mr-2 mt-1 " src={`${timeline.action_created_by && timeline.action_created_by.avatar ? timeline.action_created_by.avatar : "/assets/avatar.svg"}`}/>
+                  <img className="rounded-full h-8 w-8 mr-2 mt-1 " src={`${timeline.action_created_by && timeline.action_created_by.avatar_url ? timeline.action_created_by.avatar_url : "/assets/avatar.svg"}`}/>
                   <div className="w-full">
                     <div className="bg-gray-100 dark:bg-gray-700 rounded-3xl px-4 pt-2 pb-2.5">
                       <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: timeline.index_system_display_title }} />
@@ -58,6 +59,7 @@ const Timelines = ({ leadDetails }) => {
             setTimelineData={setTimelineData}
           />
         )}
+        {newAppointmentTimeline && ('')}
       </React.Fragment>
     </>
   );

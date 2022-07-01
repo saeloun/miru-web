@@ -98,17 +98,17 @@ class LeadTimeline < ApplicationRecord
       action_assignee: self.action_assignee&.attributes&.merge(
         {
           full_name: self.action_assignee&.full_name,
-          avatar: self.action_assignee&.avatar_url
+          avatar_url: self.action_assignee ? self.action_assignee.avatar_url : "/assets/avatar.svg"
         }),
       action_created_by: self.action_created_by&.attributes&.merge(
         {
           full_name: self.action_created_by&.full_name,
-          avatar: self.action_created_by&.avatar_url
+          avatar_url: self.action_created_by ? self.action_created_by.avatar_url : "/assets/avatar.svg"
         }),
       action_reporter: self.action_reporter&.attributes&.merge(
         {
           full_name: self.action_reporter&.full_name,
-          avatar: self.action_reporter&.avatar_url
+          avatar_url: self.action_reporter ? self.action_reporter.avatar_url : "/assets/avatar.svg"
         }),
       lead: self.lead,
       parent_lead_timeline_id: self.parent_lead_timeline_id,
