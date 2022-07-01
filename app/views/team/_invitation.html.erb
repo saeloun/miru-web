@@ -1,40 +1,39 @@
-<td id="profilepicture-<%= member.id %>" class="table__data">
+<td id="profilepicture-<%= invitation.id %>" class="table__data">
   <%= image_tag image_url("avatar.svg"), class: "table__avatar" %>
 </td>
-<td id="full_name-<%= member.id %>" class="table__data">
+<td id="full_name-<%= invitation.id %>" class="table__data">
   <div class="flex items-center">
     <div class="table__name">
-      <%= member.full_name.titleize %>
+      <%= invitation.full_name.titleize %>
     </div>
   </div>
 </td>
-<td id="email-<%= member.id %>" class="table__data table__text">
-    <%= member.recipient_email %>
+<td id="email-<%= invitation.id %>" class="table__data table__text">
+    <%= invitation.recipient_email %>
 </td>
-<td id="role-<%= member.id %>" class="table__data table__text">
-  <%= member.role.titlecase %>
+<td id="role-<%= invitation.id %>" class="table__data table__text">
+  <%= invitation.role.titlecase %>
 </td>
-<td id="pending-<%= member.id %>" class="table__data">
+<td id="pending-<%= invitation.id %>" class="table__data">
   <% if current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company) %>
     <span class="table__pending">
       <%= t('team.invitation') %>
     </span>
   <% end %>
 </td>
-<td id="edit-<%= member.id %>" class="table__data table__button_design">
-  <% if policy(:team).edit? %>
-    <!-- TODO: link will be readded in later PRs -->
-    <%# <%= link_to edit_team_path(member), remote: true do %>
+<td id="edit-<%= invitation.id %>" class="table__data table__button_design">
+  <% if policy(invitation).edit? %>
+    <%= link_to edit_users_invitation_path(invitation), remote: true do %>
       <div class="w-6">
-        <img id="mid-<%= member.id %>" class="table__button" data-team-element="edit-member" data-cy="edit-team-member-button" src="<%= image_url 'edit_image_button.svg' %>">
+        <img id="mid-<%= invitation.id %>" class="table__button" data-invitation-element="edit-invitation" data-cy="edit-invitation-button" src="<%= image_url 'edit_image_button.svg' %>">
       </div>
     <% end %>
-  <%# <% end %>
+  <% end %>
 </td>
-<td id="delete-<%= member.id %>" class="table__data table__button_design">
-  <% if policy(:team).destroy? %>
+<td id="delete-<%= invitation.id %>" class="table__data table__button_design">
+  <% if policy(invitation).destroy? %>
     <!-- TODO: link will be readded in later PRs -->
-    <%# <%= link_to team_path(member), data: { confirm: "Are you sure?" }, method: :delete do %>
+    <%# <%= link_to team_path(invitation), data: { confirm: "Are you sure?" }, method: :delete do %>
       <div class="w-6">
         <%= image_tag 'delete_image_button.svg', class:"table__button", "data-cy": "delete-team-member-button" %>
       </div>

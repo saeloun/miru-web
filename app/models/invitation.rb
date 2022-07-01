@@ -51,6 +51,8 @@ class Invitation < ApplicationRecord
   before_validation :set_token, on: :create
   before_validation :set_expired_at, on: :create
 
+  before_create :downcase_role
+
   after_create :send_invitation_mail
 
   def full_name
@@ -72,6 +74,10 @@ class Invitation < ApplicationRecord
 
     def set_expired_at
       self.expired_at = Time.current + MAX_EXPIRATION_DAY
+    end
+
+    def downcase_role
+      self.role = role.to_s.downcase
     end
 
     def send_invitation_mail

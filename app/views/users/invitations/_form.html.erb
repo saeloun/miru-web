@@ -1,4 +1,4 @@
-<%= form_with model: Invitation.new, url: users_invitations_path, method: :post do |f| %>
+<%= form_with model: [:users, invitation] do |f| %>
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
@@ -41,21 +41,21 @@
       <div class="mt-1">
         <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
           <div class="flex items-center">
-            <%= f.radio_button :role, 'Admin', class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" , "data-cy": "admin-radio-button" %>
+            <%= f.radio_button :role, 'admin', class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" , "data-cy": "admin-radio-button" %>
             <label for="admin" class="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
               <%= t('team.form_admin') %>
             </label>
           </div>
 
           <div class="flex items-center">
-            <%= f.radio_button :role, 'Employee', :checked=>true , class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" , "data-cy": "employee-radio-button" %>
+            <%= f.radio_button :role, 'employee', :checked=>true , class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" , "data-cy": "employee-radio-button" %>
             <label for="Employee" class="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
               <%= t('team.form_employee')%>
             </label>
           </div>
 
           <div class="flex items-center">
-            <%= f.radio_button :role, 'Book_keeper', class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" , "data-cy": "employee-radio-button" %>
+            <%= f.radio_button :role, 'book_keeper', class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" , "data-cy": "employee-radio-button" %>
             <label for="Book_keeper" class="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
               <%= t('team.form_book_keeper')%>
             </label>

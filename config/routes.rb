@@ -63,7 +63,7 @@ Rails.application.routes.draw do
   end
 
   namespace :users do
-    resources :invitations, only: [:create] do
+    resources :invitations, only: [:create, :edit, :update] do
       collection do
         get :accept
       end

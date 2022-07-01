@@ -11,7 +11,8 @@ class TeamController < ApplicationController
       .ransack(first_name_or_last_name_or_recipient_email_cont: params.dig(:q, :first_name_or_last_name_or_email_cont))
     teams = query.result(distinct: true)
     invitations = invitations_query.result(distinct: true)
-    render :index, locals: { query:, teams:, invitations: }
+    invitation = Invitation.new
+    render :index, locals: { query:, teams:, invitations:, invitation: }
   end
 
   def edit

@@ -67,9 +67,9 @@
                           <%= render partial: "team", locals: { member: member } %>
                         </tr>
                     <% end %>
-                    <% invitations.each do |member| %>
-                      <tr id="member-<%= member.id %>" data-cy="team-table-row">
-                        <%= render partial: "invitation", locals: { member: member } %>
+                    <% invitations.each do |invitation| %>
+                      <tr id="invitation-<%= invitation.id %>" data-cy="team-table-row">
+                        <%= render partial: "invitation", locals: { invitation: invitation } %>
                       </tr>
                     <% end %>
                   </tbody>
@@ -95,7 +95,7 @@
               </div>
             </div>
             <div id="invitation-modal" class="modal__form">
-              <%= render "users/invitations/form" %>
+              <%= render partial: "users/invitations/form", locals: { invitation: invitation } %>
             </div>
           </div>
         </div>

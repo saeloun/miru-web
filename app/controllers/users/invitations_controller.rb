@@ -19,6 +19,23 @@ class Users::InvitationsController < ApplicationController
     redirect_to team_index_path
   end
 
+  def edit
+    authorize current_user, policy_class: InvitationPolicy
+    @invitation = invitation
+  end
+
+  def update
+    authorize current_user, policy_class: InvitationPolicy
+
+    if invitation.update(invitation_params)
+      flash[:success] = t(".success")
+    else
+      flash[:error] = t(".failure")
+    end
+
+    redirect_to team_index_path
+  end
+
   def accept
     service = CreateInvitedUser.new(params[:token])
     service.process
@@ -36,5 +53,9 @@ class Users::InvitationsController < ApplicationController
 
     def invitation_params
       params.require(:invitation).permit(policy(:invitation).permitted_attributes)
+    end
+
+    def invitation
+      @_invitation ||= Invitation.find(params[:id])
     end
 end
