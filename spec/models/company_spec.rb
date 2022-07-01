@@ -6,8 +6,8 @@ RSpec.describe Company, type: :model do
   subject { create(:company) }
 
   describe "Associations" do
-    it { is_expected.to have_many(:users).through(:company_users) }
-    it { is_expected.to have_many(:company_users).dependent(:destroy) }
+    it { is_expected.to have_many(:users).through(:employments) }
+    it { is_expected.to have_many(:employments).dependent(:destroy) }
     it { is_expected.to have_many(:clients).dependent(:destroy) }
     it { is_expected.to have_many(:projects).through(:clients).dependent(:destroy) }
     it { is_expected.to have_one_attached(:logo) }
@@ -58,8 +58,8 @@ RSpec.describe Company, type: :model do
     end
 
     before do
-      create(:company_user, company_id: company.id, user_id: user_1.id)
-      create(:company_user, company_id: company.id, user_id: user_2.id)
+      create(:employment, company_id: company.id, user_id: user_1.id)
+      create(:employment, company_id: company.id, user_id: user_2.id)
       create(:project_member, user_id: user_1.id, project_id: project_1.id)
       create(:project_member, user_id: user_1.id, project_id: project_2.id)
       create(:project_member, user_id: user_2.id, project_id: project_1.id)

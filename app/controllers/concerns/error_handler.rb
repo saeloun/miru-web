@@ -59,6 +59,8 @@ module ErrorHandler
     end
 
     def record_invalid(exception)
+      message = exception.message
+
       respond_to do |format|
         format.json {
           render json: {
