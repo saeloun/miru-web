@@ -83,7 +83,7 @@ class User < ApplicationRecord
   after_discard :discard_project_members
 
   # scopes
-  scope :valid_invitation, -> { invitations.where(sender: self).valid_invitations }
+  scope :valid_invitations, -> { invitations.where(sender: self).valid_invitations }
 
   def primary_role
     return "employee" if roles.empty?
