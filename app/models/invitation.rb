@@ -82,7 +82,7 @@ class Invitation < ApplicationRecord
     end
 
     def non_existing_company_user
-      if company.users.exists?(email: recipient_email)
+      if company && company.users.exists?(email: recipient_email)
         self.errors.add(:base, "User is already a team member in workspace")
       end
     end
