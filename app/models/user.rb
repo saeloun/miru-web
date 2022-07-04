@@ -100,7 +100,7 @@ class User < ApplicationRecord
   end
 
   def admin_or_owner?(company)
-    @admin_or_owner ||= has_any_role?({ name: :owner, resource: company }, { name: :admin, resouce: company })
+    @admin_or_owner ||= has_any_role?({ name: :owner, resource: company }, { name: :admin, resource: company })
   end
 
   def current_workspace(load_associations: [:logo_attachment])
