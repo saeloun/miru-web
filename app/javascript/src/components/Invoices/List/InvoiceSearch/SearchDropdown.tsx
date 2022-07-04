@@ -6,8 +6,10 @@ const SearchDropdown = ({ list=[], status }) => {
 
   if (status == ApiStatus.SUCCESS  && list.length == 0) {
     return (
-      <section className="absolute top-8 drop-shadow-md shadow top-1 w-full bg-miru-white-1000">
-      No result
+      <section className="absolute top-8 drop-shadow-md shadow w-full bg-miru-white-1000 py-2 flex items-center">
+        <div className="text-center mx-auto">
+          No results found
+        </div>
       </section>
     );
   }

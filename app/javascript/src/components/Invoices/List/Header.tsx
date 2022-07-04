@@ -20,8 +20,8 @@ const Header = ({
   clearCheckboxes,
   setShowBulkDeleteDialog
 }) => {
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const [searchResult, setSearchResult] = React.useState([]);
+  const [searchQuery, setSearchQuery] = React.useState<string>("");
+  const [searchResult, setSearchResult] = React.useState<any[]>([]);
   const [status, setStatus] = React.useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
