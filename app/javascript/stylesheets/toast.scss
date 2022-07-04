@@ -30,6 +30,12 @@
 #toast-container {
   box-shadow: 0;
 
+  &.toast-bottom-center > div {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .toast {
     background-image: none !important;;
     background-repeat: no-repeat;

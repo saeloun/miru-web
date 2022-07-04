@@ -17,6 +17,8 @@
     <%= link_to t('shared_links.forgot_password').upcase, new_password_path(resource_name), class: "text-center text-miru-han-purple-1000 font-sans font-normal text-sm hover:text-miru-han-purple-600",  data: { cy: "forgot-password-link" } %><br />
   </div>
 <% end %>
+<%
+=begin%>
 <%- if devise_mapping.registerable? && controller_name != 'registrations' && controller_name != 'passwords' %>
   <div class="mt-2 text-center">
     <p class="form__label">
@@ -25,8 +27,6 @@
     </p>
   </div>
 <% end %>
-<%
-=begin%>
 <%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
   <%= link_to t('shared_links.confirmation_instruction').capitalize, new_confirmation_path(resource_name), class:"miru_form_link" %><br />
 <% end %>
