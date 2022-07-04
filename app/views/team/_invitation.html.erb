@@ -15,7 +15,7 @@
   <%= invitation.role.titlecase %>
 </td>
 <td id="pending-<%= invitation.id %>" class="table__data">
-  <% if current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company) %>
+  <% if current_user.admin_or_owner?(current_company) %>
     <span class="table__pending">
       <%= t('team.invitation') %>
     </span>

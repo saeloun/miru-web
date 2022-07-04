@@ -99,6 +99,10 @@ class User < ApplicationRecord
     super and self.kept?
   end
 
+  def admin_or_owner?(company)
+    @admin_or_owner ||= has_any_role?({ name: :owner, resource: company }, { name: :admin, resource: company })
+  end
+
   def current_workspace(load_associations: [:logo_attachment])
     @_current_workspace ||= Company.includes(load_associations).find_by(id: current_workspace_id)
   end
