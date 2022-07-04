@@ -50,7 +50,7 @@ class Users::InvitationsController < ApplicationController
   end
 
   def accept
-    service = CreateInvitedUser.new(params[:token])
+    service = CreateInvitedUserService.new(params[:token])
     service.process
 
     if service.success

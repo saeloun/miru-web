@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateInvitedUser
+class CreateInvitedUserService
   attr_reader :token
   attr_accessor :success, :error, :error_message, :user, :reset_password_token, :new_user
 

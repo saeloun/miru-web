@@ -209,5 +209,39 @@ RSpec.describe "Users::Invitations#create", type: :request do
         expect(Invitation.count).to eq(0)
       end
     end
+
+    describe "passed invalid role" do
+      before do
+        create(:company_user, company:, user:)
+        user.add_role :admin, company
+        existing_user = create(:user)
+        sign_in user
+
+        send_request :post, users_invitations_path, params: {
+          invitation: {
+            first_name: existing_user.first_name,
+            last_name: existing_user.last_name,
+            recipient_email: "test@example.com",
+            role: ""
+          }
+        }
+      end
+
+      it "returns redirect status" do
+        expect(response).to have_http_status(:redirect)
+      end
+
+      it "redirects to root page" do
+        expect(response).to redirect_to(team_index_path)
+      end
+
+      it "return success flash message" do
+        expect(flash[:error]).to eq("Role can't be blank")
+      end
+
+      it "creates invitation record" do
+        expect(Invitation.count).to eq(0)
+      end
+    end
   end
 end
