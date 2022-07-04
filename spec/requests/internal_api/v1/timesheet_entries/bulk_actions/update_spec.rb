@@ -14,7 +14,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry::BulkActionController#update", t
 
   describe "#update" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
       params = { ids: [timesheet_entry1.id, timesheet_entry2.id], project_id: project2.id }

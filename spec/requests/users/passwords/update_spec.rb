@@ -8,7 +8,7 @@ RSpec.describe "Users::Passwords#update", type: :request do
 
   context "when the password token is valid" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       send_request :patch, user_password_path, params: {
         user: {
@@ -35,7 +35,7 @@ RSpec.describe "Users::Passwords#update", type: :request do
 
   context "when the password token is invalid" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       send_request :patch, user_password_path, params: {
         user: {

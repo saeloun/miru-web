@@ -14,8 +14,8 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController#download", type: :
   let(:type) { "csv" }
 
   before do
-    create(:company_user, user: admin, company:)
-    create(:company_user, user: employee, company:)
+    create(:employment, user: admin, company:)
+    create(:employment, user: employee, company:)
     admin.add_role :admin, company
     employee.add_role :employee, company
     book_keeper.add_role :book_keeper, company

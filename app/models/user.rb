@@ -56,8 +56,8 @@ class User < ApplicationRecord
   include Discard::Model
 
   # Associations
-  has_many :company_users, dependent: :destroy
-  has_many :companies, through: :company_users
+  has_many :employments, dependent: :destroy
+  has_many :companies, through: :employments
   has_many :project_members, dependent: :destroy
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all
