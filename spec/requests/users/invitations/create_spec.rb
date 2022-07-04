@@ -9,7 +9,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
   context "when new user is invited" do
     describe "passed valid first_name, last_name, email and role" do
       before do
-        create(:company_user, company:, user:)
+        create(:employment, company:, user:)
         user.add_role :admin, company
         sign_in user
 
@@ -42,7 +42,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
 
     describe "passed invalid first_name and last_name" do
       before do
-        create(:company_user, company:, user:)
+        create(:employment, company:, user:)
         user.add_role :admin, company
         sign_in user
 
@@ -75,7 +75,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
 
     describe "passed invalid recipient_email" do
       before do
-        create(:company_user, company:, user:)
+        create(:employment, company:, user:)
         user.add_role :admin, company
         sign_in user
 
@@ -144,7 +144,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
 
     describe "passed invalid first_name and last_name" do
       before do
-        create(:company_user, company:, user:)
+        create(:employment, company:, user:)
         user.add_role :admin, company
         existing_user = create(:user)
         sign_in user
@@ -178,7 +178,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
 
     describe "passed invalid recipient_email" do
       before do
-        create(:company_user, company:, user:)
+        create(:employment, company:, user:)
         user.add_role :admin, company
         existing_user = create(:user)
         sign_in user
@@ -212,7 +212,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
 
     describe "passed invalid role" do
       before do
-        create(:company_user, company:, user:)
+        create(:employment, company:, user:)
         user.add_role :admin, company
         existing_user = create(:user)
         sign_in user

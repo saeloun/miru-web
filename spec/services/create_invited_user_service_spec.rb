@@ -47,7 +47,7 @@ RSpec.describe CreateInvitedUserService do
 
       it "adds new user as company member" do
         user = User.find_by(email: invitation.recipient_email)
-        expect(company.company_users.pluck(:user_id)).to include(user.id)
+        expect(company.employments.pluck(:user_id)).to include(user.id)
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe CreateInvitedUserService do
       end
 
       it "adds new user as company member" do
-        expect(company.company_users.pluck(:user_id)).to include(user.id)
+        expect(company.employments.pluck(:user_id)).to include(user.id)
       end
     end
 
@@ -85,7 +85,7 @@ RSpec.describe CreateInvitedUserService do
 
         user = User.find_by(email: invitation.recipient_email)
         role = user.roles.first
-        expect(company.company_users.pluck(:user_id)).to include(user.id)
+        expect(company.employments.pluck(:user_id)).to include(user.id)
         expect(role.resource).to eq(invitation.company)
         expect(role.name).to eq("employee")
       end
@@ -97,7 +97,7 @@ RSpec.describe CreateInvitedUserService do
 
         user = User.find_by(email: invitation.recipient_email)
         role = user.roles.first
-        expect(company.company_users.pluck(:user_id)).to include(user.id)
+        expect(company.employments.pluck(:user_id)).to include(user.id)
         expect(role.resource).to eq(invitation.company)
         expect(role.name).to eq("owner")
       end
@@ -109,7 +109,7 @@ RSpec.describe CreateInvitedUserService do
 
         user = User.find_by(email: invitation.recipient_email)
         role = user.roles.first
-        expect(company.company_users.pluck(:user_id)).to include(user.id)
+        expect(company.employments.pluck(:user_id)).to include(user.id)
         expect(role.resource).to eq(invitation.company)
         expect(role.name).to eq("admin")
       end
@@ -121,7 +121,7 @@ RSpec.describe CreateInvitedUserService do
 
         user = User.find_by(email: invitation.recipient_email)
         role = user.roles.first
-        expect(company.company_users.pluck(:user_id)).to include(user.id)
+        expect(company.employments.pluck(:user_id)).to include(user.id)
         expect(role.resource).to eq(invitation.company)
         expect(role.name).to eq("book_keeper")
       end

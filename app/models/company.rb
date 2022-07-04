@@ -33,12 +33,15 @@ class Company < ApplicationRecord
   has_many :payments_providers, dependent: :destroy
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
-  has_many :invitations, -> { Invitation.company_invitations(company) }, dependent: :destroy
+  has_many :invitations, dependent: :destroy
   resourcify
 
   # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
+
+  # scopes
+  scope :valid_invitation, -> { invitations.where(company: self).valid_invitations }
 
   def project_list(client_id = nil, user_id = nil, billable = nil, search)
     project_list = project_list_query(client_id, user_id, billable)

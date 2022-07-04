@@ -9,7 +9,6 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
 
   before do
     create(:employment, company:, user:)
-    create(:employment, company:, user: user2)
     user.add_role :admin, company
   end
 
@@ -78,11 +77,11 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
         "name" => user3.full_name, "email" => user3.email, "role" => "employee", "status" => nil
       }]
 
-      exoected_invitated_user_data = [{
+      expected_invitated_user_data = [{
         "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => nil
       }]
       expect(actual_members_data).to eq(expected_members_data)
-      expect(actual_invitated_user_data).to eq(exoected_invitated_user_data)
+      expect(actual_invitated_user_data).to eq(expected_invitated_user_data)
     end
   end
 

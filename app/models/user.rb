@@ -55,7 +55,7 @@ class User < ApplicationRecord
   has_one_attached :avatar
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
-  has_many :invitations, -> { Invitation.sender_invitations(self) }, foreign_key: "sender_id", dependent: :destroy
+  has_many :invitations, foreign_key: "sender_id", dependent: :destroy
 
   rolify strict: true
 
@@ -81,6 +81,9 @@ class User < ApplicationRecord
 
   # Callbacks
   after_discard :discard_project_members
+
+  # scopes
+  scope :valid_invitation, -> { invitations.where(sender: self).valid_invitations }
 
   def primary_role
     return "employee" if roles.empty?

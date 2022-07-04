@@ -51,10 +51,8 @@ class Invitation < ApplicationRecord
 
   # Scopes
   scope :valid_invitations, -> {
-  where(accepted_at: nil, expired_at: Time.current...(Time.current + MAX_EXPIRATION_DAY))
-}
-  scope :sender_invitations, -> (sender) { where(sender:).valid_invitations }
-  scope :company_invitations, -> (company) { where(company:).valid_invitations }
+    where(accepted_at: nil, expired_at: Time.current...(Time.current + MAX_EXPIRATION_DAY))
+  }
 
   # Callbacks
   before_validation :set_token, on: :create
