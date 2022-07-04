@@ -48,6 +48,7 @@ class Invitation < ApplicationRecord
     presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },
     length: { maximum: 50 }
+  validate :non_existing_company_user
 
   # Scopes
   scope :valid_invitations, -> {
@@ -78,6 +79,12 @@ class Invitation < ApplicationRecord
 
     def set_expired_at
       self.expired_at = Time.current + MAX_EXPIRATION_DAY
+    end
+
+    def non_existing_company_user
+      if company.users.exists?(email: recipient_email)
+        self.errors.add(:base, "User is already a team member in workspace")
+      end
     end
 
     def send_invitation_mail
