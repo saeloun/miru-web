@@ -10,7 +10,7 @@ RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
 
   context "when user is signed in" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
     end
 
     let(:invoice_email) do
