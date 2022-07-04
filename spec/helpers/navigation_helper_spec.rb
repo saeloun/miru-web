@@ -7,7 +7,7 @@ RSpec.describe NavigationHelper, type: :helper do
     let(:user) { create(:user) }
 
     before do
-      create(:company_user, user:)
+      create(:employment, user:)
       user.add_role(:owner, user.current_workspace)
       allow(controller).to receive(:current_user).and_return(user)
     end

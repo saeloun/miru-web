@@ -8,7 +8,8 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
   let!(:invitation) { create(:invitation, company_id: company.id, sender_id: user.id) }
 
   before do
-    create(:company_user, company:, user:)
+    create(:employment, company:, user:)
+    create(:employment, company:, user: user2)
     user.add_role :admin, company
   end
 
@@ -53,7 +54,7 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
     let(:user3) { create(:user, current_workspace_id: company.id) }
 
     before do
-      create(:company_user, company:, user: user3)
+      create(:employment, company:, user: user3)
       user3.add_role :employee, company
       sign_in user3
       send_request :get, internal_api_v1_team_index_path

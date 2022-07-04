@@ -6,7 +6,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
-  context "when user doesn't exists in application" do
+  context "when new user is invited" do
     describe "passed valid first_name, last_name, email and role" do
       before do
         create(:company_user, company:, user:)
@@ -110,7 +110,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
   context "when user already exists in application" do
     describe "passed valid first_name, last_name, email and role" do
       before do
-        create(:company_user, company:, user:)
+        create(:employment, company:, user:)
         user.add_role :admin, company
         existing_user = create(:user)
         sign_in user

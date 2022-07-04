@@ -7,7 +7,7 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
   let(:user1) { create(:user, current_workspace_id: company1.id) }
 
   before do
-    create(:company_user, company_id: company1.id, user_id: user1.id)
+    create(:employment, company_id: company1.id, user_id: user1.id)
   end
 
   context "when user is an admin" do
