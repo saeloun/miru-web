@@ -2,7 +2,7 @@
 
 # == Schema Information
 #
-# Table name: company_users
+# Table name: employments
 #
 #  id              :bigint           not null, primary key
 #  designation     :string
@@ -18,9 +18,9 @@
 #
 # Indexes
 #
-#  index_company_users_on_company_id    (company_id)
-#  index_company_users_on_discarded_at  (discarded_at)
-#  index_company_users_on_user_id       (user_id)
+#  index_employments_on_company_id    (company_id)
+#  index_employments_on_discarded_at  (discarded_at)
+#  index_employments_on_user_id       (user_id)
 #
 # Foreign Keys
 #
@@ -28,7 +28,7 @@
 #  fk_rails_...  (user_id => users.id)
 #
 
-class CompanyUser < ApplicationRecord
+class Employment < ApplicationRecord
   include Discard::Model
 
   # Associations
@@ -36,6 +36,7 @@ class CompanyUser < ApplicationRecord
   belongs_to :user
 
   # Validations
+  # TODO:- To be uncommented after UI integration is done
   # validates :designation, :employment_type, :joined_at, :employee_id, presence: true
   # validates :resigned_at, comparison: { greater_than: :joined_at }, unless: -> { resigned_at.nil? }
 end

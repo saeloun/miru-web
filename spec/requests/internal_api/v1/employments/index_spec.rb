@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
+RSpec.describe "InternalApi::V1::Employments#index", type: :request do
   let(:company1) { create(:company) }
   let(:company2) { create(:company) }
   let(:user1) { create(:user, current_workspace_id: company1.id) }
@@ -11,10 +11,10 @@ RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
   let(:user4) { create(:user) }
 
   before do
-    create(:company_user, company_id: company1.id, user_id: user1.id)
-    create(:company_user, company_id: company1.id, user_id: user2.id)
-    create(:company_user, company_id: company2.id, user_id: user3.id)
-    create(:company_user, company_id: company1.id, user_id: user4.id)
+    create(:employment, company_id: company1.id, user_id: user1.id)
+    create(:employment, company_id: company1.id, user_id: user2.id)
+    create(:employment, company_id: company2.id, user_id: user3.id)
+    create(:employment, company_id: company1.id, user_id: user4.id)
   end
 
   context "when user is an admin" do
@@ -22,7 +22,7 @@ RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
       user1.add_role :admin, company1
       sign_in user1
       user4.discard
-      send_request :get, internal_api_v1_company_users_path
+      send_request :get, internal_api_v1_employments_path
     end
 
     it "returns the success" do
@@ -47,7 +47,7 @@ RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
     before do
       user1.add_role :employee, company1
       sign_in user1
-      send_request :get, internal_api_v1_company_users_path
+      send_request :get, internal_api_v1_employments_path
     end
 
     it "forbids the user to access the list of users of company" do
@@ -60,7 +60,7 @@ RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
     before do
       user1.add_role :book_keeper, company1
       sign_in user1
-      send_request :get, internal_api_v1_company_users_path
+      send_request :get, internal_api_v1_employments_path
     end
 
     it "forbids the user to access the list of users of company" do

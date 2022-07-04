@@ -13,8 +13,8 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
 
   context "when the user is an admin" do
     before do
-      create(:company_user, company:, user: user_1)
-      create(:company_user, company:, user: user_2)
+      create(:employment, company:, user: user_1)
+      create(:employment, company:, user: user_2)
       user_1.add_role :admin, company
       sign_in user_1
       create(:project_member, user: user_1, project: project_1)
@@ -100,8 +100,8 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
 
   context "when the user is an employee" do
     before do
-      create(:company_user, company:, user: user_1)
-      create(:company_user, company:, user: user_2)
+      create(:employment, company:, user: user_1)
+      create(:employment, company:, user: user_2)
       user_1.add_role :employee, company
       sign_in user_1
       create(:project_member, user: user_1, project: project_1)
@@ -187,8 +187,8 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
 
   context "when the user is an book keeper" do
     before do
-      create(:company_user, company:, user: user_1)
-      create(:company_user, company:, user: user_2)
+      create(:employment, company:, user: user_1)
+      create(:employment, company:, user: user_2)
       user_1.add_role :book_keeper, company
       sign_in user_1
       create(:project_member, user: user_1, project: project_1)
@@ -233,8 +233,8 @@ end
 #   before do
 #     create(:role)
 #     create(:role, name: "employee")
-#     create(:company_user, company:, user: user_1)
-#     create(:company_user, company:, user: user_2)
+#     create(:employment, company:, user: user_1)
+#     create(:employment, company:, user: user_2)
 #     create(:project_member, user: user_1, project: project_1)
 #     create(:project_member, user: user_1, project: project_2)
 #     create(:project_member, user: user_2, project: project_1)
