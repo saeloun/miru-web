@@ -11,7 +11,7 @@ class InternalApi::V1::Reports::OutstandingOverdueInvoicesController < InternalA
 
     def clients
       @_clients ||= current_company.clients.order("name asc").includes(:invoices).map do |client|
-                      client.outstanding_and_overdue_invoices.merge(name: client.name)
+                      client.outstanding_and_overdue_invoices
                     end
     end
 
