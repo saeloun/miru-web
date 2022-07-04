@@ -83,6 +83,10 @@ class LeadTimeline < ApplicationRecord
     self.created_at.strftime("#{self.created_at.day.ordinalize} %b %Y at %H:%M")
   end
 
+  def action_due_at_formated
+    self.action_due_at ? self.action_due_at.strftime("#{self.action_due_at.day.ordinalize} %b %Y at %H:%M") : ""
+  end
+
   def render_properties
     {
       id: self.id,
@@ -113,7 +117,8 @@ class LeadTimeline < ApplicationRecord
       lead: self.lead,
       parent_lead_timeline_id: self.parent_lead_timeline_id,
       created_at: self.created_at,
-      created_at_formated: self.created_at_formated
+      created_at_formated: self.created_at_formated,
+      action_due_at_formated: self.action_due_at_formated
     }
   end
 
@@ -123,6 +128,9 @@ class LeadTimeline < ApplicationRecord
       if self.kind == 1
         self.index_system_display_title = "<b>#{self.action_created_by&.full_name}</b> added an comment"
         self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.comment}</p>"
+      elsif self.kind == 2
+        self.index_system_display_title = "<b>#{self.action_created_by&.full_name}</b> schedule an appointment on <b>#{self.action_due_at_formated}</b>"
+        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.action_description}</p>"
       end
     end
 end

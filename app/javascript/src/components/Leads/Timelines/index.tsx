@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders } from "apis/axios";
 import leadTimelines from "apis/lead-timelines";
+import NewAppointmentTimeline from "./../Modals/NewAppointmentTimeline";
 import NewCommentTimeline from "./../Modals/NewCommentTimeline";
 import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
@@ -59,7 +60,12 @@ const Timelines = ({ leadDetails }) => {
             setTimelineData={setTimelineData}
           />
         )}
-        {newAppointmentTimeline && ('')}
+        {newAppointmentTimeline && (<NewAppointmentTimeline
+          leadDetails={leadDetails}
+          timelineData={timelineData}
+          setNewAppointmentTimeline={setNewAppointmentTimeline}
+          setTimelineData={setTimelineData}
+        />)}
       </React.Fragment>
     </>
   );

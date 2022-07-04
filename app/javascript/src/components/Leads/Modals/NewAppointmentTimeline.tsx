@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import DateTimePicker from 'react-datetime-picker';
 import { useNavigate } from "react-router-dom";
 import leadTimelines from "apis/lead-timelines";
 import Toastr from "common/Toastr";
@@ -7,21 +8,24 @@ import { X } from "phosphor-react";
 import * as Yup from "yup";
 
 const newAppointmentTimelineSchema = Yup.object().shape({
-  comment: Yup.string().required("Comment cannot be blank")
+  // action_due_at: Yup.date().nullable().required('Date is required').min(new Date(), "Date cannot be in the past")
 });
 
 const initialValues = {
-  comment: "",
-  kind: ""
+  action_due_at: "",
+  kind: "",
+  action_description: ""
 };
 
 const NewAppointmentTimeline = ({ leadDetails, setNewAppointmentTimeline, timelineData, setTimelineData }) => {
   const navigate = useNavigate();
+  const [actionDueAt, setActionDueAt] = useState(new Date());
 
   const handleSubmit = (values) => {
     leadTimelines.create(leadDetails.id, {
-      "comment": values.comment,
-      "kind": 1,
+      "action_due_at": actionDueAt,
+      "action_description": values.action_description,
+      "kind": 2,
       "action_subject": "added_form"
     })
       .then(res => {
@@ -30,6 +34,24 @@ const NewAppointmentTimeline = ({ leadDetails, setNewAppointmentTimeline, timeli
         setNewAppointmentTimeline(false);
         Toastr.success("Timeline added successfully");
       });
+  };
+
+  const changeDueAt = (val) => {
+    const todayDate = new Date();
+
+    if (val){
+      const valDate = new Date(val);
+
+      if (valDate.getTime() > todayDate.getTime()){
+        setActionDueAt(val);
+      } else {
+        alert("Date cannot be in the past");
+        setActionDueAt(todayDate);
+      }
+    } else {
+      alert("Date is required");
+      setActionDueAt(todayDate);
+    }
   };
 
   return (
@@ -58,16 +80,36 @@ const NewAppointmentTimeline = ({ leadDetails, setNewAppointmentTimeline, timeli
                   <div className="mt-4">
                     <div className="field">
                       <div className="field_with_errors">
-                        <label className="form__label">Comment</label>
+                        <label className="form__label">Due at</label>
                         <div className="tracking-wider block text-xs text-red-600">
-                          {errors.comment && touched.comment &&
-                            <div>{errors.comment}</div>
+                          {errors.action_due_at && touched.action_due_at &&
+                            <div>{errors.action_due_at}</div>
                           }
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`w-full border rounded bg-gray-200 ${errors.comment && touched.comment && "border-red-600 focus:ring-red-600 focus:border-red-600"}`}
-                          name="comment" as="textarea" rows={8} />
+                        <DateTimePicker
+                          onChange={(val) => changeDueAt(val)}
+                          value={actionDueAt}
+                          format={"dd-MM-yyyy hh:mm:ss a"}
+                          className={`w-full border rounded bg-gray-200 ${errors.action_due_at && touched.action_due_at && "border-red-600 focus:ring-red-600 focus:border-red-600"}`}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="field">
+                      <div className="field_with_errors">
+                        <label className="form__label">Description</label>
+                        <div className="tracking-wider block text-xs text-red-600">
+                          {errors.action_description && touched.action_description &&
+                            <div>{errors.action_description}</div>
+                          }
+                        </div>
+                      </div>
+                      <div className="mt-1">
+                        <Field className={`w-full border rounded bg-gray-200 ${errors.action_description && touched.action_description && "border-red-600 focus:ring-red-600 focus:border-red-600"}`}
+                          name="action_description" as="textarea" rows={8} />
                       </div>
                     </div>
                   </div>

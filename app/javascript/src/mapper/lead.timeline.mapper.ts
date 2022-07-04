@@ -15,7 +15,8 @@ const getList = (input) => input.timeline_details.map((item) => ({
   lead_id: item.lead_id,
   parent_lead_timeline_id: item.parent_lead_timeline_id,
   created_at: item.created_at,
-  created_at_formated: item.created_at_formated
+  created_at_formated: item.created_at_formated,
+  action_due_at_formated: item.action_due_at_formated
 }));
 
 const unmapLeadTimelineList = (input) => {
@@ -53,7 +54,8 @@ const unmapLeadTimelineDetails = (input) => {
       lead_id: data.timeline_details.lead_id,
       parent_lead_timeline_id: data.timeline_details.parent_lead_timeline_id,
       created_at: data.timeline_details.created_at,
-      created_at_formated: data.timeline_details.created_at_formated
+      created_at_formated: data.timeline_details.created_at_formated,
+      action_due_at_formated: data.timeline_details.action_due_at_formated
     }
   };
 };
