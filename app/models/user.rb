@@ -55,7 +55,7 @@ class User < ApplicationRecord
   has_one_attached :avatar
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
-  has_many :invitations, -> { Invitation.valid_invitations }, foreign_key: "sender_id", dependent: :destroy
+  has_many :invitations, foreign_key: "sender_id", dependent: :destroy
 
   rolify strict: true
 
@@ -82,6 +82,9 @@ class User < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
 
+  # scopes
+  scope :valid_invitations, -> { invitations.where(sender: self).valid_invitations }
+
   def primary_role
     return "employee" if roles.empty?
 
@@ -94,6 +97,10 @@ class User < ApplicationRecord
 
   def active_for_authentication?
     super and self.kept?
+  end
+
+  def admin_or_owner?(company)
+    @admin_or_owner ||= has_any_role?({ name: :owner, resource: company }, { name: :admin, resouce: company })
   end
 
   def current_workspace(load_associations: [:logo_attachment])
