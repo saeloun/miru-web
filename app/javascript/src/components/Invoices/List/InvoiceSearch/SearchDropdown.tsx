@@ -2,7 +2,9 @@ import * as React from "react";
 import { ApiStatus } from "constants/index";
 import SearchedDataRow from "./SearchedDataRow";
 
-const SearchDropdown = ({ list=[], status }) => {
+const SearchDropdown = ({ list=[], status, display }) => {
+
+  if (!display)  return null;
 
   if (status == ApiStatus.SUCCESS  && list.length == 0) {
     return (

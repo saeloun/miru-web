@@ -18,7 +18,9 @@ const Header = ({
   isInvoiceSelected,
   selectedInvoiceCount,
   clearCheckboxes,
-  setShowBulkDeleteDialog
+  setShowBulkDeleteDialog,
+  params,
+  setParams
 }) => {
   const [searchQuery, setSearchQuery] = React.useState<string>("");
   const [searchResult, setSearchResult] = React.useState<any[]>([]);
@@ -51,6 +53,13 @@ const Header = ({
 
   const onSearchClear = () => {
     setSearchQuery("");
+    setParams({ ...params, query: "" });
+  };
+
+  const onKeydownHandler = (e) => {
+    if (e.key === "Enter") {
+      setParams({ ...params, query: searchQuery });
+    }
   };
 
   return (
@@ -67,6 +76,7 @@ const Header = ({
                   placeholder="Search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => onKeydownHandler(e)}
                 />
                 <button className=" absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer ">
                   {searchQuery ? (
@@ -76,7 +86,7 @@ const Header = ({
                   )}
                 </button>
 
-                <SearchDropdown status={status} list={searchResult} />
+                <SearchDropdown display={(params.query !== searchQuery)} status={status} list={searchResult} />
               </div>
             </div>
 
