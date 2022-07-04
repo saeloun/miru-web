@@ -2,11 +2,9 @@
 
 require "rails_helper"
 
-RSpec.describe ProjectPolicy, type: :policy do
+RSpec.describe Users::InvitationsPolicy, type: :policy do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-
-  subject { described_class }
 
   context "when user is an admin" do
     before do
@@ -15,17 +13,23 @@ RSpec.describe ProjectPolicy, type: :policy do
     end
 
     permissions :create? do
-      it "is permitted to create project" do
-        expect(subject).to permit(user, Project)
+      it "is permitted to create invitation" do
+        expect(described_class).to permit(user)
       end
     end
+  end
 
-    # Will move this to correct file once commit changes get approved
-    # permissions :update_members? do
-    #   it "is permitted to update project members" do
-    #     expect(subject).to permit(user, Project)
-    #   end
-    # end
+  context "when user is an owner" do
+    before do
+      create(:employment, company:, user:)
+      user.add_role :owner, company
+    end
+
+    permissions :create? do
+      it "is permitted to create invitation" do
+        expect(described_class).to permit(user)
+      end
+    end
   end
 
   context "when user is an employee" do
@@ -35,8 +39,8 @@ RSpec.describe ProjectPolicy, type: :policy do
     end
 
     permissions :create? do
-      it "is not permitted to create project" do
-        expect(subject).not_to permit(user, Project)
+      it "is not permitted to create invitation" do
+        expect(described_class).not_to permit(user)
       end
     end
   end
@@ -47,9 +51,9 @@ RSpec.describe ProjectPolicy, type: :policy do
       user.add_role :book_keeper, company
     end
 
-    permissions :index?, :create?, :update?, :show?, :destroy? do
-      it "is not permitted to create project" do
-        expect(subject).not_to permit(user, Project)
+    permissions :create? do
+      it "is not permitted to create invitation" do
+        expect(described_class).not_to permit(user)
       end
     end
   end
