@@ -13,11 +13,17 @@ namespace :internal_api, defaults: { format: "json" } do
     end
     resources :projects, only: [:index, :show, :create, :update, :destroy]
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
-    resources :reports, only: [:index] do
-      collection do
-        get :download, to: "reports#download"
+
+    namespace :reports do
+      resources :time_entries, only: [:index] do
+        collection do
+          get :download
+        end
       end
+
+      resources :client_revenues, only: [:index]
     end
+
     resources :workspaces, only: [:update]
     resources :invoices, only: [:index, :create, :update, :show, :destroy, :edit] do
       post :send_invoice, on: :member
@@ -27,7 +33,7 @@ namespace :internal_api, defaults: { format: "json" } do
     end
     resources :generate_invoice, only: [:index, :show]
     resources :project_members, only: [:update]
-    resources :company_users, only: [:index]
+    resources :employments, only: [:index]
     resources :timezones, only: [:index]
 
     resources :companies, only: [:index, :create, :update] do

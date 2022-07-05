@@ -9,7 +9,7 @@ RSpec.describe "TimeTracking#index", type: :request do
 
   context "when user is an admin" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
       send_request :get, time_tracking_index_path
