@@ -48,13 +48,13 @@ const Pagination = ({ pagy, params, setParams, forPage }) => (
         )}
       </div>
 
-      {forPage !== "leads" && <div className="flex items-center justify-end col-span-2">
+      {forPage == "invoices" && <div className="flex items-center justify-end col-span-2">
         <select
           onChange={(e) =>
             setParams({ page: 1, invoices_per_page: Number(e.target.value) })
           }
           className="p-2 text-xs font-bold text-miru-han-purple-1000"
-          defaultValue={pagy?.items}
+          value={pagy?.items}
         >
           <option value="10">10</option>
           <option value="20">20</option>
@@ -64,6 +64,24 @@ const Pagination = ({ pagy, params, setParams, forPage }) => (
         </select>
 
         <span className="p-2 text-xs">invoices per page</span>
+      </div>
+      }
+      {forPage == "lead_timelines" && <div className="flex items-center justify-end col-span-2">
+        <select
+          onChange={(e) =>
+            setParams({ page: 1, timelines_per_page: Number(e.target.value) })
+          }
+          className="p-2 text-xs font-bold text-miru-han-purple-1000"
+          value={pagy?.items}
+        >
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+          <option value="40">40</option>
+          <option value="50">50</option>
+        </select>
+
+        <span className="p-2 text-xs">timelines per page</span>
       </div>
       }
     </div>

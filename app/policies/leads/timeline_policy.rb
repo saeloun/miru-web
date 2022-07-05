@@ -50,7 +50,10 @@ class Leads::TimelinePolicy < ApplicationPolicy
       :action_created_by_id,
       :action_reporter_id,
       :lead_id,
-      :parent_lead_timeline_id
+      :parent_lead_timeline_id,
+      :action_email,
+      :action_phone_number,
+      :action_schedule_status_code
     ]
   end
 end

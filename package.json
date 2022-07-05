@@ -40,7 +40,8 @@
     "react_ujs": "^2.6.1",
     "toastr": "^2.1.4",
     "typescript": "^4.5.4",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "yup-phone": "^1.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.18.2",

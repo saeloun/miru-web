@@ -7,7 +7,10 @@
 #  id                           :bigint           not null, primary key
 #  action_description           :text
 #  action_due_at                :datetime
+#  action_email                 :string
+#  action_phone_number          :string
 #  action_priority_code         :integer
+#  action_schedule_status_code  :integer
 #  action_subject               :string
 #  comment                      :text
 #  discarded_at                 :datetime
@@ -118,7 +121,10 @@ class LeadTimeline < ApplicationRecord
       parent_lead_timeline_id: self.parent_lead_timeline_id,
       created_at: self.created_at,
       created_at_formated: self.created_at_formated,
-      action_due_at_formated: self.action_due_at_formated
+      action_due_at_formated: self.action_due_at_formated,
+      action_email: self.action_email,
+      action_phone_number: self.action_phone_number,
+      action_schedule_status_code: self.action_schedule_status_code
     }
   end
 
@@ -130,6 +136,12 @@ class LeadTimeline < ApplicationRecord
         self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.comment}</p>"
       elsif self.kind == 2
         self.index_system_display_title = "<b>#{self.action_created_by&.full_name}</b> schedule an appointment on <b>#{self.action_due_at_formated}</b>"
+        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.action_description}</p>"
+      elsif self.kind == 3
+        self.index_system_display_title = "<b>#{self.action_created_by&.full_name}</b> connect with email <b>#{self.action_email}</b> on <b>#{self.action_due_at_formated}</b>"
+        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.action_description}</p>"
+      elsif self.kind == 4
+        self.index_system_display_title = "<b>#{self.action_created_by&.full_name}</b> connect with phone number <b>#{self.action_phone_number}</b> on <b>#{self.action_due_at_formated}</b>"
         self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.action_description}</p>"
       end
     end

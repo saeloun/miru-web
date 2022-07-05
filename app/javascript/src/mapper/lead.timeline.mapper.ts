@@ -16,7 +16,10 @@ const getList = (input) => input.timeline_details.map((item) => ({
   parent_lead_timeline_id: item.parent_lead_timeline_id,
   created_at: item.created_at,
   created_at_formated: item.created_at_formated,
-  action_due_at_formated: item.action_due_at_formated
+  action_due_at_formated: item.action_due_at_formated,
+  action_email: item.action_email,
+  action_phone_number: item.action_phone_number,
+  action_schedule_status_code: item.action_schedule_status_code
 }));
 
 const unmapLeadTimelineList = (input) => {
@@ -55,7 +58,10 @@ const unmapLeadTimelineDetails = (input) => {
       parent_lead_timeline_id: data.timeline_details.parent_lead_timeline_id,
       created_at: data.timeline_details.created_at,
       created_at_formated: data.timeline_details.created_at_formated,
-      action_due_at_formated: data.timeline_details.action_due_at_formated
+      action_due_at_formated: data.timeline_details.action_due_at_formated,
+      action_email: data.timeline_details.action_email,
+      action_phone_number: data.timeline_details.action_phone_number,
+      action_schedule_status_code: data.timeline_details.action_schedule_status_code
     }
   };
 };

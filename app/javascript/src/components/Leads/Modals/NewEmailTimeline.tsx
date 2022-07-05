@@ -7,8 +7,8 @@ import { Formik, Form, Field } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";
 
-const newAppointmentTimelineSchema = Yup.object().shape({
-  // action_due_at: Yup.date().nullable().required('Date is required').min(new Date(), "Date cannot be in the past")
+const newEmailTimelineSchema = Yup.object().shape({
+  action_email: Yup.string().required("Email cannot be blank").email("Invalid email ID")
 });
 
 const initialValues = {
@@ -16,10 +16,10 @@ const initialValues = {
   kind: "",
   action_description: "",
   action_subject: "",
-  action_schedule_status_code: ""
+  action_email: ""
 };
 
-const NewAppointmentTimeline = ({ leadDetails, setNewAppointmentTimeline, timelineData, setTimelineData }) => {
+const NewEmailTimeline = ({ leadDetails, setNewEmailTimeline, timelineData, setTimelineData }) => {
   const navigate = useNavigate();
   const [actionDueAt, setActionDueAt] = useState(new Date());
 
@@ -27,14 +27,14 @@ const NewAppointmentTimeline = ({ leadDetails, setNewAppointmentTimeline, timeli
     leadTimelines.create(leadDetails.id, {
       "action_due_at": actionDueAt,
       "action_description": values.action_description,
-      "kind": 2,
+      "kind": 3,
       "action_subject": values.action_subject,
-      "action_schedule_status_code": 0
+      "action_email": values.action_email
     })
       .then(res => {
         setTimelineData([{ ...res.data }, ...timelineData]);
         navigate(`/leads/${leadDetails.id}/timelines`)
-        setNewAppointmentTimeline(false);
+        setNewEmailTimeline(false);
         Toastr.success("Timeline added successfully");
       });
   };
@@ -69,13 +69,13 @@ const NewAppointmentTimeline = ({ leadDetails, setNewAppointmentTimeline, timeli
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
               <h6 className="text-base font-extrabold">Add New Timeline</h6>
-              <button type="button" onClick={() => { setNewAppointmentTimeline(false); }}>
+              <button type="button" onClick={() => { setNewEmailTimeline(false); }}>
                 <X size={16} color="#CDD6DF" weight="bold" />
               </button>
             </div>
             <Formik
               initialValues={initialValues}
-              validationSchema={newAppointmentTimelineSchema}
+              validationSchema={newEmailTimelineSchema}
               onSubmit={handleSubmit}
             >
               {({ errors, touched }) => (
@@ -92,6 +92,21 @@ const NewAppointmentTimeline = ({ leadDetails, setNewAppointmentTimeline, timeli
                       </div>
                       <div className="mt-1">
                         <Field className={`form__input bg-gray-200 ${errors.action_subject && touched.action_subject && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="action_subject" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="field">
+                      <div className="field_with_errors">
+                        <label className="form__label">Email</label>
+                        <div className="tracking-wider block text-xs text-red-600">
+                          {errors.action_email && touched.action_email &&
+                            <div>{errors.action_email}</div>
+                          }
+                        </div>
+                      </div>
+                      <div className="mt-1">
+                        <Field className={`form__input bg-gray-200 ${errors.action_email && touched.action_email && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="action_email" />
                       </div>
                     </div>
                   </div>
@@ -149,4 +164,4 @@ const NewAppointmentTimeline = ({ leadDetails, setNewAppointmentTimeline, timeli
   );
 };
 
-export default NewAppointmentTimeline;
+export default NewEmailTimeline;

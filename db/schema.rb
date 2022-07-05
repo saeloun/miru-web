@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_16_132911) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_04_144306) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -218,6 +218,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_16_132911) do
     t.text "action_description"
     t.integer "action_priority_code", limit: 2
     t.text "index_system_display_title"
+    t.string "action_email"
+    t.string "action_phone_number"
+    t.integer "action_schedule_status_code"
     t.index ["action_assignee_id"], name: "index_lead_timelines_on_action_assignee_id"
     t.index ["action_created_by_id"], name: "index_lead_timelines_on_action_created_by_id"
     t.index ["action_reporter_id"], name: "index_lead_timelines_on_action_reporter_id"

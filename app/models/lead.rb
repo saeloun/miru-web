@@ -471,7 +471,7 @@ class Lead < ApplicationRecord
       index_system_display_title = "<b>#{self.created_by_name}</b> added the lead <b>#{self.name}</b>"
       self.lead_timelines.create!(
         action_created_by_id: self.created_by_id, kind: 0,
-        action_subject: "added_lead",
+        action_reporter_id: self.created_by_id,
         index_system_display_title:
                               )
     end
