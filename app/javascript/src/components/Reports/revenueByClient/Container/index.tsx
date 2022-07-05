@@ -1,46 +1,45 @@
 import React, { Fragment } from "react";
+import TotalHeader from "common/TotalHeader";
 import TableRow from "./TableRow";
-import { useEntry } from "../context/EntryContext";
 
 const TableHeader = () => (
   <thead>
     <tr className="flex flex-row items-center">
       <th
         scope="col"
-        className="w-2/5 pr-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="w-3/5 pr-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
-        PROJECT/
-        <br />
         CLIENT
       </th>
       <th
         scope="col"
-        className="w-2/5 px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="w-2/5 px-0 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
-        NOTE
+        UNPAID AMOUNT
       </th>
       <th
         scope="col"
         className="w-1/5 px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
-        TEAM MEMBER/
-        <br />
-        DATE
+        PAID AMOUNT
       </th>
       <th
         scope="col"
         className="w-1/5 pl-6 py-5 text-right text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
-        HOURS
-        <br />
-        LOGGED
+        TOTAL AMOUNT
       </th>
     </tr>
   </thead>
 );
 
 const Container = () => {
-  const { timeEntryReport } = useEntry();
+  const dumRep = [{
+    "name": "Neflix",
+    "unpaidAmt": "$446.41",
+    "paidAmt": "$60113",
+    "total": "$655.29"
+  }];
 
   const getEntryList = (entries) =>
     entries.map((timeEntry, index) => (
@@ -49,14 +48,23 @@ const Container = () => {
 
   return (
     <Fragment>
+      <TotalHeader
+        firstTitle={"TOTAL UNPAID AMOUNT"}
+        firstAmount={"$35.5K"}
+        secondTitle={"TOTAL PAID AMOUNT"}
+        secondAmount={"$35.5K"}
+        thirdTitle={"TOTAL REVENUE"}
+        thirdAmount={"$71.0K"}
+      />
+      <div>
+      </div>
       {
-        timeEntryReport.reports.map((report, index) => (
+        dumRep.map((report, index) => (
           <Fragment key={index}>
-            {report.label !== "" && <h1 className="text-miru-han-purple-1000 font-bold text-xl py-5 border-b border-miru-han-purple-1000">{report.label}</h1>}
             <table className="min-w-full divide-y divide-gray-200 mt-4">
               <TableHeader />
               <tbody className="bg-white divide-y divide-gray-200">
-                {report.entries.length > 0 && getEntryList(report.entries)}
+                {dumRep.length > 0 && getEntryList(dumRep)}
               </tbody>
             </table>
           </Fragment>
