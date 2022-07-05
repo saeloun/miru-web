@@ -58,7 +58,7 @@ const TimeTracking: React.FC<Iprops> = ({
   // sorting by client's name
   clients.sort((a: object, b: object) => a["name"].localeCompare(b["name"]));
 
-  const employeeOptions = employees.map(e => ({ value: `${e["id"]}`, label: e["first_name"] + " " + e["last_name"] }) );
+  const employeeOptions = employees.map(e => ({ value: String(e["id"]), label: e["first_name"] + " " + e["last_name"] }) );
 
   useEffect(() => {
     sendGAPageView();
