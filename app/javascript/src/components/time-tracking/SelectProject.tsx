@@ -18,7 +18,7 @@ const SelectProject: React.FC<Iprops> = ({
   isWeeklyEditing, // eslint-disable-line
   setIsWeeklyEditing
 }) => {
-  const clientList = clients.map(client => ({ value: client.name, label: client.name }));
+  const clientList = clients.map(client => ({ value: client["name"], label: client["name"] }));
   const projectList = project ? projects[client].map(project => ({ value: project.name, label: project.name })) : [];
 
   const handleCancelButton = () => {

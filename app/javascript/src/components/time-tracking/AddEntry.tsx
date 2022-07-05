@@ -34,7 +34,7 @@ const AddEntry: React.FC<Iprops> = ({
   const [projectBillable, setProjectBillable] = useState(true);
   const [isDataFilled, setIsDataFilled] = useState(false);
 
-  const clientList = clients.map(client => ({ value: client.name, label: client.name }));
+  const clientList = clients.map(client => ({ value: client["name"], label: client["name"] }));
   const projectList = project ? projects[client].map(project => ({ value: project.name, label: project.name })) : [];
 
   const handleFillData = () => {
