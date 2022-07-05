@@ -37,6 +37,27 @@ RSpec.describe User, type: :model do
     it { is_expected.to callback(:discard_project_members).after(:discard) }
   end
 
+  describe "Scopes" do
+    let(:company) { create(:company) }
+
+    before do
+      @valid_invitation1 = create(:invitation, sender: user)
+      @valid_invitation2 = create(:invitation)
+      create(:invitation, sender: user, expired_at: Time.current - 1.day)
+      create(:invitation, expired_at: Time.current - 1.day)
+      create(:invitation, sender: user, accepted_at: Time.current - 1.day)
+      create(:invitation, accepted_at: Time.current - 1.day)
+    end
+
+    describe ".valid_invitations" do
+      it "returns all valid invitations" do
+        expect(user.invitations.valid_invitations.size).to eq(1)
+        expect(user.invitations.valid_invitations).to match_array(@valid_invitation1)
+        expect(user.invitations.valid_invitations).not_to match_array(@valid_invitation2)
+      end
+    end
+  end
+
   it "checks if it is an owner" do
     user.add_role :owner, company
     expect(user.has_role?(:owner, company)).to be_truthy

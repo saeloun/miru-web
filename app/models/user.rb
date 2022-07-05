@@ -100,7 +100,15 @@ class User < ApplicationRecord
   end
 
   def admin_or_owner?(company)
-    @admin_or_owner ||= has_any_role?({ name: :owner, resource: company }, { name: :admin, resource: company })
+    unless defined? @admin_or_owner
+      @admin_or_owner = {}
+    end
+
+    return @admin_or_owner[company.id] if @admin_or_owner[company.id]
+
+    @admin_or_owner[company.id] = has_any_role?(
+      { name: :owner, resource: company }, { name: :admin, resource: company }
+    )
   end
 
   def current_workspace(load_associations: [:logo_attachment])

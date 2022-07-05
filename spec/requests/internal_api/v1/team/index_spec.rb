@@ -31,7 +31,7 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
       actual_team_data = json_response["team"].map do |member|
                               member.slice("id", "name", "email", "role", "status")
                             end
-      actual_invitated_user_data = json_response["invitation"].map do |member|
+      actual_invited_user_data = json_response["invitation"].map do |member|
                             member.slice("id", "name", "email", "role", "status")
                           end
 
@@ -39,13 +39,13 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
         [{
           "id" => user.id, "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
         }]
-      expected_invitated_user_data =
+      expected_invited_user_data =
         [{
           "id" => invitation.id, "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => I18n.t("team.invitation")
         }]
 
       expect(actual_team_data).to eq(expected_team_data)
-      expect(actual_invitated_user_data).to eq(expected_invitated_user_data)
+      expect(actual_invited_user_data).to eq(expected_invited_user_data)
     end
   end
 
@@ -67,7 +67,7 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
       actual_members_data = json_response["team"].map do |member|
                               member.slice("name", "email", "role", "status")
                             end
-      actual_invitated_user_data = json_response["invitation"].map do |member|
+      actual_invited_user_data = json_response["invitation"].map do |member|
                                       member.slice("name", "email", "role", "status")
                                     end
 
@@ -77,11 +77,11 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
         "name" => user3.full_name, "email" => user3.email, "role" => "employee", "status" => nil
       }]
 
-      exoected_invitated_user_data = [{
+      expected_invited_user_data = [{
         "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => nil
       }]
       expect(actual_members_data).to eq(expected_members_data)
-      expect(actual_invitated_user_data).to eq(exoected_invitated_user_data)
+      expect(actual_invited_user_data).to eq(expected_invited_user_data)
     end
   end
 
