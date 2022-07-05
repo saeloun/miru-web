@@ -8,6 +8,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     authorize Invoice
     pagy, invoices = pagy(
       current_company.invoices.includes(:client)
+            .search(params[:query])
             .from_date(params[:from])
             .to_date(params[:to])
             .for_clients(params[:client_ids])
