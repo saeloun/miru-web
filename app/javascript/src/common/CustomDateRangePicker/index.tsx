@@ -13,18 +13,15 @@ const CustomDateRangePicker = ({
   selectedInput,
   dateRange
 }) => {
-  const range = (start, end) => {
-    const ans = [];
-    for (let i = start; i <= end; i++) {
-      ans.push(i);
-    }
-    return ans;
-  };
+  const fromInput = "from-input";
+  const toInput = "to-input";
+
+  const range = (start, end) => Array.from({ length: (end - start) }, (v, k) => k + start);
 
   const years = range(1990, getYear(new Date()) + 1);
   const months = [
     "Jan",
-    "Febr",
+    "Feb",
     "Mar",
     "Apr",
     "May",
@@ -47,8 +44,8 @@ const CustomDateRangePicker = ({
       wrapperClassName="datePicker absolute"
       inline
       calendarClassName="miru-calendar-date-range"
-      minDate={(selectedInput === "to-input" && dateRange.from) ? new Date(dateRange.from) : null}
-      maxDate={(selectedInput === "from-input" && dateRange.to) ? new Date(dateRange.to) : null}
+      minDate={(selectedInput === toInput && dateRange.from) ? new Date(dateRange.from) : null}
+      maxDate={(selectedInput === fromInput && dateRange.to) ? new Date(dateRange.to) : null}
       renderCustomHeader={({
         date,
         changeYear,
@@ -71,19 +68,19 @@ const CustomDateRangePicker = ({
               placeholder={" From "}
               value={dateRange.from ? dayjs(dateRange.from).format("DD MMM YYYY") : null}
               ref={textInput}
-              className={`bg-miru-gray-100 h-8 w-32 mr-1 rounded p-1 ${selectedInput === "from-input" && "border-2 border-miru-han-purple-1000"}`}
+              className={`bg-miru-gray-100 h-8 w-32 mr-1 rounded p-1 ${selectedInput === fromInput && "border-2 border-miru-han-purple-1000"}`}
               onClick={onClickInput}
-              id={"from-input"}
-              name={"from-input"}
+              id={fromInput}
+              name={fromInput}
             />
             <input
               type={"text"}
               placeholder={" To "}
               value={dateRange.to ? dayjs(dateRange.to).format("DD MMM YYYY") : null}
-              className={`bg-miru-gray-100 h-8 w-32 ml-1 rounded p-1 ${selectedInput === "to-input" && "border-2 border-miru-han-purple-1000"}`}
+              className={`bg-miru-gray-100 h-8 w-32 ml-1 rounded p-1 ${selectedInput === toInput && "border-2 border-miru-han-purple-1000"}`}
               onClick={onClickInput}
-              id={"to-input"}
-              name={"to-input"}
+              id={toInput}
+              name={toInput}
             />
           </div>
           <div
