@@ -25,7 +25,8 @@ const Invoices: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = React.useState<any>({
     invoices_per_page: searchParams.get("invoices_per_page") || 20,
-    page: searchParams.get("page") || 1
+    page: searchParams.get("page") || 1,
+    query: searchParams.get("query") || ""
   });
 
   const queryParams = () => new URLSearchParams(params).toString();
@@ -46,8 +47,18 @@ const Invoices: React.FC = () => {
 
   React.useEffect(() => {
     fetchInvoices();
-    setSearchParams(params);
-  }, [params.invoices_per_page, params.page]);
+    setSearchParams(cleanParams(params));
+  }, [params.invoices_per_page, params.page, params.query]);
+
+  const cleanParams = (params: any) => {
+    const newParams = { ...params };
+    for (const key in newParams) {
+      if (!newParams[key]) {
+        delete newParams[key];
+      }
+    }
+    return newParams;
+  };
 
   const fetchInvoices = async () => {
     try {
@@ -78,19 +89,22 @@ const Invoices: React.FC = () => {
     );
 
   return (
-    <>
+    <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
+      <Header
+        params={params}
+        setParams={setParams}
+        setFilterVisibilty={setFilterVisibilty}
+        clearCheckboxes={() =>
+          deselectInvoices(invoices.map((invoice) => invoice.id))
+        }
+        selectedInvoiceCount={selectedInvoiceCount}
+        isInvoiceSelected={isInvoiceSelected}
+        setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+      />
+
       {status === InvoicesStatus.SUCCESS && (
         <React.Fragment>
-          <Header
-            setFilterVisibilty={setFilterVisibilty}
-            clearCheckboxes={() =>
-              deselectInvoices(invoices.map((invoice) => invoice.id))
-            }
-            selectedInvoiceCount={selectedInvoiceCount}
-            isInvoiceSelected={isInvoiceSelected}
-            setShowBulkDeleteDialog={setShowBulkDeleteDialog}
-          />
 
           <Container
             summary={summary}
@@ -125,7 +139,7 @@ const Invoices: React.FC = () => {
           )}
         </React.Fragment>
       )}
-    </>
+    </React.Fragment>
   );
 };
 
