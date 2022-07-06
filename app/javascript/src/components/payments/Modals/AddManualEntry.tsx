@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import { X, Calendar } from "phosphor-react";
 import { MagnifyingGlass } from "phosphor-react";
 
-const AddManualEntry = ({ setShowManualEntryModal }) => {
+const AddManualEntry = ({ setShowManualEntryModal, Invoiceoptions }) => {
   const [invoice, setInvoice] = useState<any>(null);
   const [transcationDate, setTranscationDate] = useState<any>(null);
   const [transcationType, setTranscationType] = useState<any>(null);
@@ -20,42 +20,73 @@ const AddManualEntry = ({ setShowManualEntryModal }) => {
     setShowDatePicker(false);
   };
 
+  const handleInvoiceSelect = (val) => {
+    setInvoice(val);
+  };
+
   const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
     <components.DropdownIndicator {...props}>
       {isOpen && <MagnifyingGlass size={20} color="#1D1A31" />}
     </components.DropdownIndicator>
   );
 
+  const customStyles = {
+    placeholder: (defaultStyles) => ({
+      ...defaultStyles,
+      background: "#F5F7F9",
+      color: "#A5A3AD"
+    }),
+    menu: (base) => ({
+      ...base,
+      border: 0
+    }),
+    control: (provided) => ({
+      ...provided,
+      border: 0,
+      background: "#F5F7F9",
+      boxShadow: "none"
+    }),
+    option: (styles, { isSelected }) => ({
+      ...styles,
+      backgroundColor: isSelected ? "#F5F7F9" : null,
+      "&:hover": {
+        backgroundColor: "#F5F7F9"
+      }
+    })
+  };
+
   const CustomOption = (props) => {
     const { innerProps, innerRef } = props;
     return (
-      <div ref={innerRef} {...innerProps} className=" p-2 flex justify-between items-center">
+      <div
+        ref={innerRef}
+        {...innerProps}
+        className=" p-2 flex justify-between items-center"
+      >
         <div className="pr-6 pl-0 py-2.5 text-left">
           <h1 className="text-base font-bold leading-5 text-miru-dark-purple-1000">
             {props.data.label}
           </h1>
           <h3 className="pt-1 font-normal text-sm text-miru-dark-purple-400 leading-5">
-                      CB680
+            CB680
           </h3>
         </div>
         <div className="px-6 py-2.5 text-left">
           <h1 className="text-base font-bold leading-5 text-miru-dark-purple-1000">
-                      $275.43
+            $275.43
           </h1>
           <h3 className="pt-1 font-normal text-sm text-miru-dark-purple-400 leading-5">
-                      07.07.2022
+            07.07.2022
           </h3>
         </div>
         <div className="pl-6 pr-0 py-2.5 text-sm font-semibold tracking-wider leading-4 text-right">
           <span className="bg-miru-alert-green-400 text-miru-alert-green-800 rounded-lg px-1">
-                      Sent
+            Sent
           </span>
         </div>
       </div>
     );
   };
-
-  const Invoiceoptions = [{ options: [], value: "invoice1", label: "Invoice1" }];
 
   return (
     <div
@@ -88,15 +119,17 @@ const AddManualEntry = ({ setShowManualEntryModal }) => {
                     onMenuOpen={() => setOpen(true)}
                     onMenuClose={() => setOpen(false)}
                     defaultValue={null}
+                    onChange={handleInvoiceSelect}
                     options={Invoiceoptions}
                     placeholder="Search by client name or invoice ID"
                     isSearchable={true}
-                    className="m-0 mt-2 w-full text-miru-dark-purple-1000 border-0 bg-miru-gray-100 focus:outline-none"
-                    classNamePrefix="bg-miru-gray-100 border-0 text-miru-dark-purple-1000 focus:outline-none"
+                    className="m-0 mt-2 w-full font-medium text-miru-dark-purple-1000 border-0"
+                    classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
+                    styles={customStyles}
                     components={{
+                      Option: CustomOption,
                       DropdownIndicator,
-                      IndicatorSeparator: () => null,
-                      Option: CustomOption
+                      IndicatorSeparator: () => null
                     }}
                   />
                 </div>
@@ -143,8 +176,19 @@ const AddManualEntry = ({ setShowManualEntryModal }) => {
                   </label>
                 </div>
                 <div className="mt-1">
-                  <select className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base">
-                    <option value="" disabled hidden selected className="text-miru-gray-100">Select</option>
+                  <select
+                    className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
+                    onChange={(e) => setTranscationType(e.target.value)}
+                  >
+                    <option
+                      value=""
+                      disabled
+                      hidden
+                      selected
+                      style={{ color: "#A5A3AD" }}
+                    >
+                      Select
+                    </option>
                     <option value="Visa">Visa</option>
                     <option value="Mastercard">Mastercard</option>
                     <option value="Bank Transfer">Bank Transfer</option>
@@ -171,6 +215,7 @@ const AddManualEntry = ({ setShowManualEntryModal }) => {
                   <input
                     type="text"
                     placeholder="Payment Amount"
+                    onChange={(e) => setAmount(e.target.value)}
                     className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
                   />
                 </div>

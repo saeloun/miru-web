@@ -8,6 +8,8 @@ const Payments = () => {
 
   const [showManualEntryModal, setShowManualEntryModal] = React.useState<boolean>(false);
 
+  const Invoiceoptions = [{ value: "invoice1", label: "Invoice1" },{ value: "invoice2", label: "Invoice2" },{ value: "invoice3", label: "Invoice3" }];
+
   const payments = [
     {
       invoice_number: "1",
@@ -112,7 +114,7 @@ const Payments = () => {
         setParams=""
       />
       {
-        showManualEntryModal && <AddManualEntry setShowManualEntryModal={setShowManualEntryModal}/>
+        showManualEntryModal && <AddManualEntry setShowManualEntryModal={setShowManualEntryModal} Invoiceoptions={Invoiceoptions}/>
       }
     </div>
   );
