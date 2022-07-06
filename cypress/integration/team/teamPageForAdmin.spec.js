@@ -15,11 +15,10 @@ describe("Team page for Admin", () => {
   it("should be able to add new Admin user", function () {
     addNewUser("admin");
     cy.reload();
-    deleteTestUser();
+    // deleteTestUser();
   });
   it("should be able to add new Emp user", function () {
     addNewUser();
-    deleteTestUser();
   });
   it("should display all column names", function () {
     cy.get(teamTabSelector.teamTableHeader).contains("PHOTO");
