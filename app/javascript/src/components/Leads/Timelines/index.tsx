@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders } from "apis/axios";
 import leadTimelines from "apis/lead-timelines";
 import Pagination from "common/Pagination";
+import { MessengerLogo } from "phosphor-react";
 import NewAppointmentTimeline from "./../Modals/NewAppointmentTimeline";
 import NewCommentTimeline from "./../Modals/NewCommentTimeline";
 import NewEmailTimeline from "./../Modals/NewEmailTimeline";
@@ -11,6 +13,8 @@ import NewPhoneCallTimeline from "./../Modals/NewPhoneCallTimeline";
 import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapLeadTimelineList } from "../../../mapper/lead.timeline.mapper";
+
+const profileDefaultAvatar = require("../../../../../assets/images/avatar.svg");
 
 const Timelines = ({ leadDetails }) => {
   const [showButton, setShowButton] = useState(false);
@@ -77,18 +81,18 @@ const Timelines = ({ leadDetails }) => {
             {timelineData && timelineData.map((timeline) => (
               <div className="flex justify-beetween w-full h-full bg-white dark:bg-gray-800">
                 <div className="w-full bg-white dark:bg-gray-800 text-black dark:text-gray-200 p-4 antialiased flex">
-                  <img className="rounded-full h-8 w-8 mr-2 mt-1 " src={`${timeline.action_created_by && timeline.action_created_by.avatar_url ? timeline.action_created_by.avatar_url : "/assets/avatar.svg"}`}/>
+                  <img className="rounded-full h-8 w-8 mr-2 mt-1 " src={`${timeline.action_created_by && timeline.action_created_by.avatar_url ? timeline.action_created_by.avatar_url : profileDefaultAvatar}`}/>
                   <div className="w-full">
                     <div className="bg-gray-100 dark:bg-gray-700 rounded-3xl px-4 pt-2 pb-2.5">
                       <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: timeline.index_system_display_title }} />
                       <div className="mt-0.5 text-normal leading-snug md:leading-normal" dangerouslySetInnerHTML={{ __html: timeline.index_system_display_message }} />
                     </div>
                     <div className="text-sm ml-4 mt-0.5 text-gray-500 dark:text-gray-400">{timeline.created_at_formated}</div>
-                    {/* <div className="bg-white dark:bg-gray-700 border border-white dark:border-gray-700 rounded-full float-right -mt-8 mr-0.5 flex shadow items-center ">
-                      <svg className="p-0.5 h-5 w-5 rounded-full z-20 bg-white dark:bg-gray-700" />
-                      <svg className="p-0.5 h-5 w-5 rounded-full -ml-1.5 bg-white dark:bg-gray-700" />
-                      <span className="text-sm ml-1 pr-1.5 text-gray-500 dark:text-gray-300">3</span>
-                    </div> */}
+                    <div className="bg-white dark:bg-gray-700 border border-white dark:border-gray-700 rounded-full float-right -mt-8 mr-0.5 flex shadow items-center ">
+                      <MessengerLogo size={18} className="p-0.5 h-5 w-5 rounded-full z-20 bg-white dark:bg-gray-700" />
+                      {/* <svg className="p-0.5 h-5 w-5 rounded-full -ml-1.5 bg-white dark:bg-gray-700"></svg> */}
+                      <span className="text-sm ml-1 pr-1.5 text-gray-500 dark:text-gray-300">0</span>
+                    </div>
                   </div>
                 </div>
               </div>

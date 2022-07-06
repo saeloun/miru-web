@@ -160,7 +160,7 @@ class User < ApplicationRecord
   end
 
   def avatar_url
-    self.avatar.attached? ? rails_blob_path(self.avatar, disposition: "attachment", only_path: true) : "/assets/avatar.svg"
+    self.avatar.attached? ? rails_blob_path(self.avatar, disposition: "attachment", only_path: true) : ""
   end
 
   private

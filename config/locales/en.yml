@@ -212,6 +212,7 @@ en:
     form_department: Department
     form_admin: Admin
     form_employee: Employee
+    form_owner: Owner
     first_name: First Name
     last_name: Last Name
     email: Email

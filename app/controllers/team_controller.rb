@@ -43,7 +43,7 @@ class TeamController < ApplicationController
     def assign_role
       user.remove_role(user.roles.first.name) if user.roles.present?
       if user.errors.empty? && current_company.present?
-        user.add_role(params[:user][:roles].downcase.to_sym, current_company) if params[:user][:roles]
+        user.add_role(params[:user][:roles].downcase.to_sym, current_company)
       end
     end
 end
