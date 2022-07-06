@@ -26,17 +26,17 @@ const EntryCard: React.FC<props> = ({
   bill_status
 }) => (
   <div className="week-card flex justify-between items-center shadow-2xl w-full p-4 mt-10 rounded-lg">
-    <div className="flex-auto">
+    <div className="pr-5 max-w-1/2">
       <div className="flex">
         <p className="text-lg">{client}</p>
         <p className="text-lg mx-2">•</p>
         <p className="text-lg">{project}</p>
       </div>
-      <p className="max-h-32 overflow-scroll text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
+      <p className="text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap text-justify ">
         {note}
       </p>
     </div>
-    <div className="flex items-center">
+    <div className="flex-1 flex max-w-fit items-center flex-wrap justify-end">
       {bill_status === "unbilled" ? (
         <BillTag color="miru-alert-yellow-400" text="unbilled" />
       ) : bill_status === "non_billable" ? (
@@ -45,20 +45,22 @@ const EntryCard: React.FC<props> = ({
         <BillTag color="miru-alert-green-400" text="billed" />
       )}
       <p className="text-4xl">{minutesToHHMM(duration)}</p>
-      <button onClick={() => setEditEntryId(id)} className="mx-10">
-        <img
-          src="/edit.svg"
-          alt="edit"
-          className="icon-hover text-miru-han-purple-600 hover:text-miru-han-purple-1000"
-        />
-      </button>
-      <button onClick={() => handleDeleteEntry(id)} className="mr-10">
-        <img
-          src="/delete.svg"
-          alt="delete"
-          className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000"
-        />
-      </button>
+      <section className="flex items-center">
+        <button onClick={() => setEditEntryId(id)} className="mx-7">
+          <img
+            src="/edit.svg"
+            alt="edit"
+            className="icon-hover text-miru-han-purple-600 text-miru-han-purple-1000"
+          />
+        </button>
+        <button onClick={() => handleDeleteEntry(id)} className="mr-10">
+          <img
+            src="/delete.svg"
+            alt="delete"
+            className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000"
+          />
+        </button>
+      </section>
     </div>
   </div>
 );

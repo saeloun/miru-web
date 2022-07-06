@@ -44,7 +44,7 @@ export const Project = ({
         <div className="flex items-center justify-between">
           {name}
         </div>
-        <p className="max-h-32 overflow-scroll text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
+        <p className="text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
           {clientName}
         </p>
       </td>

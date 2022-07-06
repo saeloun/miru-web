@@ -167,13 +167,13 @@ const WeeklyEntriesCard = ({
 
   return (
     <div className="week-card p-6 w-full mt-4 shadow-xl rounded-lg">
-      <div className="flex items-center">
-        <div className="flex mr-10 w-44 overflow-scroll">
+      <div className="flex items-center justify-between">
+        <div className="flex mr-10">
           <p className="text-lg">{client}</p>
           <p className="text-lg mx-2">•</p>
           <p className="text-lg">{project}</p>
         </div>
-        <div className="w-138 flex justify-between items-center mr-7">
+        <div className=" flex flex-auto justify-end items-center mr-7">
           {[0, 1, 2, 3, 4, 5, 6].map((num: number) =>
             num === selectedInputBox ? (
               <input
@@ -190,7 +190,7 @@ const WeeklyEntriesCard = ({
               <div
                 key={num}
                 onClick={() => handleDurationClick(num)}
-                className={`bold text-xl content-center px-1 py-4 w-18 h-15 border-2 border-transparent rounded bg-miru-gray-100 ${currentEntries[num] ? "text-miru-gray-500" : "text-miru-dark-purple-200"}`}
+                className={`bold text-xl content-center px-1 mx-1 py-4 w-18 h-15 border-2 border-transparent rounded bg-miru-gray-100 ${currentEntries[num] ? "text-miru-gray-500" : "text-miru-dark-purple-200"}`}
               >
                 {currentEntries[num]
                   ? minutesToHHMM(currentEntries[num]["duration"])

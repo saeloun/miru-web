@@ -230,7 +230,7 @@ const TimeTracking: React.FC<Iprops> = ({
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <div className="mx-50 mt-6">
+      <div className="mx-50 my-6">
         <div className="flex justify-between">
           <nav className="flex mb-6">
             {["day", "week", "month"].map(item => (
