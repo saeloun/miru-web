@@ -6,6 +6,7 @@ import applyFilter, { getQueryParams } from "../api/applyFilter";
 import Container from "../Container";
 import EntryContext from "../context/EntryContext";
 
+import RevenueByClientReportContext from "../context/RevenueByClientContext";
 import Filters from "../Filters";
 import { getMonth } from "../Filters/filterOptions";
 import Header from "../Header";
@@ -55,13 +56,6 @@ const TimeEntryReports = () => {
     applyFilter(selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty, getFilterOptions);
   }, [selectedFilter]);
 
-  const contextValues = {
-    reports: timeEntries,
-    filterOptions,
-    selectedFilter,
-    filterCounter
-  };
-
   const handleApplyFilter = async (filters) => {
     setSelectedFilter(filters);
   };
@@ -96,11 +90,22 @@ const TimeEntryReports = () => {
     link.click();
   };
 
+  const contextValues = {
+    timeEntryReport: {
+      reports: timeEntries,
+      filterOptions,
+      selectedFilter,
+      filterCounter,
+      handleRemoveSingleFilter: handleRemoveSingleFilter
+    },
+    currentReport: "TimeEntryReport",
+    revenueByClientReport: RevenueByClientReportContext
+  };
+
   return (
     <div>
       <EntryContext.Provider value={{
-        ...contextValues,
-        handleRemoveSingleFilter
+        ...contextValues
       }}>
         <Header
           showNavFilters={showNavFilters}
