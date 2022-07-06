@@ -18,6 +18,9 @@ const AddEditProject = ({
     || (editProjectData && editProjectData["id"])
     || Number(window.location.pathname.split("/").at(-1));
 
+  const isEdit = !!projectId;
+  const isFormFilled = client && projectName && projectType;
+
   const getClientList = async () => {
     try {
       const { data } = await projectApi.get();
@@ -38,7 +41,7 @@ const AddEditProject = ({
 
   useEffect(() => {
     getClientList();
-    if (projectData) getProject();
+    if (isEdit) getProject();
   }, []);
 
   const handleProjectData = () => {
@@ -46,7 +49,7 @@ const AddEditProject = ({
     const clientName = editProjectData?.client?.name || editProjectData?.clientName;
     const currentClient = clientList.find(clientItem => clientItem["name"] === clientName);
     if (currentClient) setClient(currentClient["id"]);
-    setProjectName(editProjectData ? editProjectData.name : "");
+    setProjectName(isEdit ? editProjectData.name : "");
     setProjectType(editProjectData.is_billable || editProjectData.isBillable ? "Billable" : "Non-Billable");
   };
 
@@ -54,7 +57,7 @@ const AddEditProject = ({
     handleProjectData();
   }, [editProjectData, clientList]);
 
-  const handleEdit = () => {
+  const editProject = () => {
     projectApi.update(editProjectData.id, {
       project: {
         "client_id": client,
@@ -68,7 +71,7 @@ const AddEditProject = ({
     });
   };
 
-  const handleSubmit = () => {
+  const createProject = () => {
     projectApi.create({
       project: {
         "client_id": client,
@@ -82,12 +85,20 @@ const AddEditProject = ({
     });
   };
 
+  const handleSubmit = () => {
+    if (isEdit) {
+      editProject();
+    } else {
+      createProject();
+    }
+  };
+
   return (
     <div className="modal__modal main-modal" style={{ background: "rgba(29, 26, 49,0.6)" }}>
       <div className="modal__container modal-container">
         <div className="modal__content modal-content">
           <div className="modal__position">
-            <h6 className="modal__title">{editProjectData ? "Edit Project Details" : "Add New Project"}</h6>
+            <h6 className="modal__title">{isEdit ? "Edit Project Details" : "Add New Project"}</h6>
             <div className="modal__close">
               <button
                 className="modal__button"
@@ -138,14 +149,14 @@ const AddEditProject = ({
                 <div className="mt-1">
                   <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
                     <div className="flex items-center">
-                      <input type="radio" id='billable' name='project_type' defaultChecked={editProjectData ? editProjectData.isBillable : true} className="focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Billable")} />
+                      <input type="radio" id='billable' name='project_type' defaultChecked={isEdit ? editProjectData.isBillable : true} className="focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Billable")} />
                       <label htmlFor="billable" className="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
                         Billable
                       </label>
                     </div>
 
                     <div className="flex items-center">
-                      <input type="radio" id='non-billable' name='project_type' defaultChecked={editProjectData ? !editProjectData.isBillable : false} className="focus:ring-miru-han-purple-1000 h-4 w-4 bg--miru-han-purple-1000 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Non-Billable")} />
+                      <input type="radio" id='non-billable' name='project_type' defaultChecked={isEdit ? !editProjectData.isBillable : false} className="focus:ring-miru-han-purple-1000 h-4 w-4 bg--miru-han-purple-1000 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Non-Billable")} />
                       <label htmlFor="non-billable" className="ml-3 block text-sm font-medium text-miru-dark-purple-1000 ">
                         Non-billable
                       </label>
@@ -156,10 +167,14 @@ const AddEditProject = ({
             </div>
 
             <div className="actions mt-4">
-              {client && projectName && projectType ?
-                <button type="submit" className="tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer" onClick={() => editProjectData ? handleEdit() : handleSubmit()}>{editProjectData ? " SAVE CHANGES" : "ADD PROJECT"}</button>
-                : <button type="submit" className="tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-gray-1000 focus:outline-none rounded cursor-pointer" disabled>{editProjectData ? "SAVE CHANGES" : "ADD PROJECT"}</button>
-              }
+              <button
+                type="submit"
+                className={`tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 focus:outline-none rounded cursor-pointer ${isFormFilled ? "bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 " : " bg-miru-gray-1000"}`  }
+                onClick={handleSubmit}
+                disabled={!isFormFilled}
+              >
+                {isEdit ? "SAVE CHANGES" : "ADD PROJECT"}
+              </button>
             </div>
           </div>
         </div>
