@@ -30,18 +30,21 @@ RSpec.describe Invitation, type: :model do
   end
 
   describe "Scopes" do
+    let(:company) { create(:company) }
+    let!(:valid_invitations) { create_list(:invitation, 2, company:) }
+    let!(:invalid_invitations) { create_list(:invitation, 2, company:) }
+
     before do
-      @invitation1 = create(:invitation, company:)
-      @invitation2 = create(:invitation, company:)
-      @accepted_invitation = create(:invitation, company:, accepted_at: Time.current)
-      @expired_invitation = create(:invitation, company:)
-      @expired_invitation.update(expired_at: Time.current - 1.day)
+      create_list(:invitation, 2, accepted_at: Time.current - 1.day, company:)
+      invalid_invitations.each do |invalid_invitation|
+        invalid_invitation.update_columns(expired_at: Time.current - 1.day)
+      end
     end
 
     describe ".valid_invitations" do
-      it "returns valid invitations" do
-        expect(described_class.valid_invitations).to include(@invitation1, @invitation2)
-        expect(described_class.valid_invitations).not_to include(@accepted_invitation, @expired_invitation)
+      it "returns all valid invitations" do
+        expect(company.invitations.valid_invitations.size).to eq(2)
+        expect(company.invitations.valid_invitations).to match_array(valid_invitations)
       end
     end
   end
