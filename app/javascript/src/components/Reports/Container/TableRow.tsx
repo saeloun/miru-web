@@ -22,7 +22,7 @@ const TableRow = ({
         {client}
       </p>
     </td>
-    <td className="w-2/5 max-w-xs	 px-6 py-4 text-xs font-normal text-miru-dark-purple-1000 whitespace-pre-wrap break-words	text-justify">
+    <td className="w-2/5 max-w-xs px-6 py-4 text-xs font-normal text-miru-dark-purple-1000 whitespace-pre-wrap break-words text-justify">
       {note}
     </td>
     <td className="w-1/5 px-6 py-4 text-left whitespace-nowrap">
