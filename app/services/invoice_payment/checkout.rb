@@ -2,19 +2,25 @@
 
 module InvoicePayment
   class Checkout < ApplicationService
+    attr_accessor :checkout_session
+
     def initialize(params)
       @invoice = params[:invoice]
       @company = invoice.client.company
       @client = invoice.client
       @success_url = params[:success_url]
       @cancel_url = params[:cancel_url]
+      @checkout_session = nil
     end
 
     def process
       Invoice.transaction do
         ensure_client_registered!
         checkout!
+        update_invoice!
       end
+
+      @checkout_session
     end
 
     private
@@ -40,7 +46,7 @@ module InvoicePayment
       end
 
       def checkout!
-        Stripe::Checkout::Session.create(
+        @checkout_session = Stripe::Checkout::Session.create(
           {
             line_items: [{
               price_data: {
@@ -60,6 +66,10 @@ module InvoicePayment
           }, {
             stripe_account: stripe_connected_account.account_id
           })
+      end
+
+      def update_invoice!
+        invoice.update(stripe_payment_intent: @checkout_session.payment_intent)
       end
   end
 end

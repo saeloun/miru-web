@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_24_121802) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_06_105004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -91,6 +91,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_24_121802) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
   create_table "devices", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "company_id", null: false
@@ -129,6 +132,24 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_24_121802) do
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
+  create_table "invitations", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "sender_id", null: false
+    t.string "recipient_email", null: false
+    t.string "token", null: false
+    t.datetime "accepted_at"
+    t.datetime "expired_at"
+    t.string "first_name"
+    t.string "last_name"
+    t.integer "role", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "recipient_email"], name: "index_invitations_on_company_id_and_recipient_email", unique: true
+    t.index ["company_id"], name: "index_invitations_on_company_id"
+    t.index ["sender_id"], name: "index_invitations_on_sender_id"
+    t.index ["token"], name: "index_invitations_on_token", unique: true
+  end
+
   create_table "invoice_line_items", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -159,6 +180,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_24_121802) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "external_view_key"
+    t.string "stripe_payment_intent"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
