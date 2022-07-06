@@ -40,6 +40,9 @@ class Company < ApplicationRecord
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
 
+  # scopes
+  scope :valid_invitations, -> { where(company: self).valid_invitations }
+
   def project_list(client_id = nil, user_id = nil, billable = nil, search)
     project_list = project_list_query(client_id, user_id, billable)
     minutes_spent = timesheet_entries.group(:project_id).sum(:duration)

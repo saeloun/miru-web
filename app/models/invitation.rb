@@ -21,6 +21,7 @@
 #
 #  index_invitations_on_company_id  (company_id)
 #  index_invitations_on_sender_id   (sender_id)
+#  index_invitations_on_token       (token) UNIQUE
 #
 # Foreign Keys
 #
@@ -37,4 +38,11 @@ class Invitation < ApplicationRecord
   # Validations
   validates :recipient_email, :role, :token, presence: true
   validates_uniqueness_of :token
+
+  # Scopes
+  scope :valid_invitations, -> { where(accepted_at: nil, expired_at: Time.current...(Time.current + 14.days)) }
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 end
