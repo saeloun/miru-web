@@ -4,17 +4,25 @@ class InternalApi::V1::Projects::SearchAllController < InternalApi::V1::Applicat
   skip_after_action :verify_authorized, only: [:index]
 
   def index
-    search_term = search_params[:search_term]
-    search_term = search_term.downcase.strip
+    projects = []
+    search_term = search_params.downcase.strip
     search_term = search_term.gsub(/\s+/, "%")
     search_term = "%#{search_term}%"
-    projects = current_company.projects.where("lower(name) LIKE ?", search_term)
-    render json: { projects: projects.map(&:formatted_project) }
+    projects += current_company.projects.where("lower(projects.name) LIKE ?", search_term)
+    projects += current_company.clients.where("lower(clients.name) LIKE ?", search_term)
+    # projects += current_company.users.where("lower(concat(users.first_name, " ", users.last_name))  LIKE ?", search_term).projects
+    render json: { projects: }
   end
 
   private
 
     def search_params
-      params.permit(:search_term)
+      params.require(:search_term)
+    end
+
+    def get_data_from_users
+      users = current_company.users.where(
+        "lower(concat(users.first_name, " ", users.last_name)) LIKE ?",
+        "%#{search_term}%")
     end
 end
