@@ -2,7 +2,6 @@
 
 FactoryBot.define do
   factory :address do
-    address_type { Address.address_types.keys.sample }
     address_line_1 { Faker::Address.full_address }
     address_line_2 { Faker::Address.full_address }
     state { Faker::Address.state }
