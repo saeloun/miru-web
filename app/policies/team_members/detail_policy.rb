@@ -2,6 +2,10 @@
 
 class TeamMembers::DetailPolicy < ApplicationPolicy
   def show?
-    user_owner_role? || user_admin_role? || user_employee_role?
+    (user.has_any_role? :admin, :owner) || user == record.user
+  end
+
+  def update?
+    (user.has_any_role? :admin, :owner) || user == record.user
   end
 end
