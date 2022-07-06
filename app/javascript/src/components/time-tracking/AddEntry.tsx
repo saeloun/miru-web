@@ -3,7 +3,6 @@ import React from "react";
 import timesheetEntryApi from "apis/timesheet-entry";
 import autosize from "autosize";
 
-import SyncAutoComplete from "common/SyncAutoComplete";
 import Toastr from "common/Toastr";
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "helpers/ordinal";
@@ -32,10 +31,6 @@ const AddEntry: React.FC<Iprops> = ({
   const [projectId, setProjectId] = useState(0);
   const [billable, setBillable] = useState(false);
   const [projectBillable, setProjectBillable] = useState(true);
-  const [isDataFilled, setIsDataFilled] = useState(false);
-
-  const clientList = clients.map(client => ({ value: client.name, label: client.name }));
-  const projectList = project ? projects[client].map(project => ({ value: project.name, label: project.name })) : [];
 
   const handleFillData = () => {
     if (! editEntryId) return;
@@ -50,13 +45,13 @@ const AddEntry: React.FC<Iprops> = ({
       setNote(entry.note);
       if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
     }
+
   };
 
   useEffect(() => {
     const textArea = document.querySelector("textarea");
     autosize(textArea);
     handleFillData();
-    setIsDataFilled(true);
     textArea.click();
   }, []);
 
@@ -131,26 +126,49 @@ const AddEntry: React.FC<Iprops> = ({
         (editEntryId ? "mt-10" : "")
       }
     >
-      <div>
-        <div className="mb-2 flex justify-between">
-          { isDataFilled && <SyncAutoComplete
-            options={clientList}
-            handleValue={(clientName: string) => {
-              if (clientName) {
-                setClient(clientName);
-                setProject(projects[clientName][0]["name"]);
-              }
+      <div className="w-1/2">
+        <div className="w-129 mb-2 flex justify-between">
+          <select
+            onChange={e => {
+              setClient(e.target.value);
+              setProject(projects[e.target.value][0].name);
             }}
-            defaultValue={{ value: client, label: client }}
-            size="md"
-          /> }
+            value={client || "Client"}
+            name="client"
+            id="client"
+            className="w-64 bg-miru-gray-100 rounded-sm h-8"
+          >
+            {!client && (
+              <option disabled selected className="text-miru-gray-100">
+              Client
+              </option>
+            )}
+            {clients.map((client, i) => (
+              <option key={i.toString()}>{client["name"]}</option>
+            ))}
+          </select>
 
-          {isDataFilled && <SyncAutoComplete
-            options={projectList}
-            handleValue={setProject}
-            defaultValue={{ value: project, label: project }}
-            size="md"
-          /> }
+          <select
+            onChange={e => {
+              setProject(e.target.value);
+            }}
+            value={project}
+            name="project"
+            id="project"
+            className="w-64 bg-miru-gray-100 rounded-sm h-8"
+          >
+            {!project && (
+              <option disabled selected className="text-miru-gray-100">
+              Project
+              </option>
+            )}
+            {client &&
+            projects[client].map((project, i) => (
+              <option data-project-id={project.id} key={i.toString()}>
+                {project.name}
+              </option>
+            ))}
+          </select>
         </div>
         <textarea
           value={note}
@@ -159,13 +177,15 @@ const AddEntry: React.FC<Iprops> = ({
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className={("w-127 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
+          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
         ></textarea>
       </div>
       <div className="w-60">
         <div className="mb-2 flex justify-between">
           <div className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center">
-            {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${ selectedDateInfo["month"]}, ${selectedDateInfo["year"]}`}
+            {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${
+              selectedDateInfo["month"]
+            }, ${selectedDateInfo["year"]}`}
           </div>
           <input
             value={duration}
