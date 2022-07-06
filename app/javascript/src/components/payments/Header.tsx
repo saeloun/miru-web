@@ -1,5 +1,5 @@
 import React from "react";
-import { MagnifyingGlass,Plus } from "phosphor-react";
+import { MagnifyingGlass, Plus } from "phosphor-react";
 
 const Header = ( { setShowManualEntryModal } ) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center justify-between">

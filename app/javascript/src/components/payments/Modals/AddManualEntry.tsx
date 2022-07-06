@@ -6,13 +6,26 @@ import dayjs from "dayjs";
 import { X, Calendar } from "phosphor-react";
 import { MagnifyingGlass } from "phosphor-react";
 
-const AddManualEntry = ({ setShowManualEntryModal, Invoiceoptions }) => {
+const AddManualEntry = ({ setShowManualEntryModal, invoiceOptions }) => {
   const [invoice, setInvoice] = useState<any>(null);
   const [transcationDate, setTranscationDate] = useState<any>(null);
   const [transcationType, setTranscationType] = useState<any>(null);
   const [amount, setAmount] = useState<any>(null);
   const [showDatePicker, setShowDatePicker] = useState<any>(false);
   const [isOpen, setOpen] = useState<any>(false);
+
+  const transcationTypes = [
+    "Visa",
+    "Mastercard",
+    "Bank Transfer",
+    "ACH",
+    "Amex",
+    "Cash",
+    "Cheque",
+    "Credit Card",
+    "Debit",
+    "PayPal"
+  ];
 
   const handleDatePicker = (date) => {
     const formattedDate = dayjs(date).format("DD.MM.YYYY");
@@ -68,20 +81,20 @@ const AddManualEntry = ({ setShowManualEntryModal, Invoiceoptions }) => {
             {props.data.label}
           </h1>
           <h3 className="pt-1 font-normal text-sm text-miru-dark-purple-400 leading-5">
-            CB680
+            {props.data.number}
           </h3>
         </div>
         <div className="px-6 py-2.5 text-left">
           <h1 className="text-base font-bold leading-5 text-miru-dark-purple-1000">
-            $275.43
+            {props.data.amount}
           </h1>
           <h3 className="pt-1 font-normal text-sm text-miru-dark-purple-400 leading-5">
-            07.07.2022
+            {props.data.date}
           </h3>
         </div>
         <div className="pl-6 pr-0 py-2.5 text-sm font-semibold tracking-wider leading-4 text-right">
           <span className="bg-miru-alert-green-400 text-miru-alert-green-800 rounded-lg px-1">
-            Sent
+            {props.data.status}
           </span>
         </div>
       </div>
@@ -120,7 +133,7 @@ const AddManualEntry = ({ setShowManualEntryModal, Invoiceoptions }) => {
                     onMenuClose={() => setOpen(false)}
                     defaultValue={null}
                     onChange={handleInvoiceSelect}
-                    options={Invoiceoptions}
+                    options={invoiceOptions}
                     placeholder="Search by client name or invoice ID"
                     isSearchable={true}
                     className="m-0 mt-2 w-full font-medium text-miru-dark-purple-1000 border-0"
@@ -189,16 +202,7 @@ const AddManualEntry = ({ setShowManualEntryModal, Invoiceoptions }) => {
                     >
                       Select
                     </option>
-                    <option value="Visa">Visa</option>
-                    <option value="Mastercard">Mastercard</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
-                    <option value="ACH">ACH</option>
-                    <option value="Amex">Amex</option>
-                    <option value="Cash">Cash</option>
-                    <option value="Cheque">Cheque</option>
-                    <option value="Credit Card">Credit Card</option>
-                    <option value="Debit">Debit</option>
-                    <option value="PayPal">PayPal</option>
+                    {transcationTypes.map((type) => <option value={type}>{type}</option>)}
                   </select>
                 </div>
               </div>
