@@ -16,10 +16,5 @@ FactoryBot.define do
         user.avatar.attach(io: File.open(file_path), filename: file_name, content_type: "image/png")
       end
     end
-
-    trait :with_pending_invitation do
-      invitation_token { Faker::String.random(length: 10) }
-      invitation_created_at { Time.current }
-    end
   end
 end

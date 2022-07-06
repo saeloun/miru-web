@@ -1,6 +1,5 @@
-<%= form_for(resource, as: resource_name, url: invitation_path(resource_name), html: { method: :post }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
-
+<!-- TODO: This form will be updated later when custom invitation controller are added --->
+<%= form_with(model: Invitation.new, url: "#", html: { method: :post }) do |f| %>
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
@@ -23,21 +22,19 @@
       </div>
     </div>
   </div>
-  <% resource.class.invite_key_fields.each do |field| -%>
-    <div class="mt-4">
-      <div class="field">
-        <div class="field_with_errors">
-          <label class="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
-            <%= t('team.form_email') %>
-          </label>
-          <%= error_message_on(f.object, field) %>
-        </div>
-        <div class="mt-1">
-          <%= f.text_field field, id:"team_email",required: true, placeholder: t('team.email'), class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, field)}" , "data-cy": "new-member-email" %>
-        </div>
+  <div class="mt-4">
+    <div class="field">
+      <div class="field_with_errors">
+        <label class="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+          <%= t('team.form_email') %>
+        </label>
+        <%= error_message_on(f.object, :recipient_email) %>
+      </div>
+      <div class="mt-1">
+        <%= f.text_field :recipient_email, id:"team_email",required: true, placeholder: t('team.email'), class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :recipient_email)}" , "data-cy": "new-member-email" %>
       </div>
     </div>
-  <% end -%>
+  </div>
 
   <div class="mt-4">
     <div class="field">
