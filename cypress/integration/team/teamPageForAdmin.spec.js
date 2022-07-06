@@ -15,7 +15,6 @@ describe("Team page for Admin", () => {
   it("should be able to add new Admin user", function () {
     addNewUser("admin");
     cy.reload();
-    // deleteTestUser();
   });
   it("should be able to add new Emp user", function () {
     addNewUser();
