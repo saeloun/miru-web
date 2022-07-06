@@ -1,7 +1,7 @@
 export interface RevenueByClients {
   id: number;
   name: string,
-  unpaidAmt: string,
-  paidAmt: string,
-  total: string,
+  unpaidAmount: string,
+  paidAmount: string,
+  totalAmount: string,
 }

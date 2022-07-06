@@ -11,7 +11,14 @@ const RevenueByClientReportContext =  {
     to: ""
   },
   filterCounter: 0,
-    handleRemoveSingleFilter: (key, value) => { }, //eslint-disable-line
+  clientList: [],
+  currency: "",
+  summary: {
+    totalPaidAmount: 0,
+    totalUnpaidAmount: 0,
+    totalRevenue: 0
+  },
+  handleRemoveSingleFilter: (key, value) => { }, //eslint-disable-line
 };
 
 export default RevenueByClientReportContext;
