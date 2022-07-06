@@ -10,7 +10,7 @@ RSpec.describe "Client#index", type: :request do
 
   context "when user is an admin" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       create(:timesheet_entry, user:, project:)
       sign_in user
@@ -28,7 +28,7 @@ RSpec.describe "Client#index", type: :request do
 
   context "when user is an employee" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :employee, company
       create(:timesheet_entry, user:, project:)
       sign_in user
@@ -42,7 +42,7 @@ RSpec.describe "Client#index", type: :request do
 
   context "when user is a book keeper" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :book_keeper, company
       create(:timesheet_entry, user:, project:)
       sign_in user

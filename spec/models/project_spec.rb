@@ -27,12 +27,13 @@ RSpec.describe Project, type: :model do
     let(:client) { create(:client, company:) }
     let(:project) { create(:project, client:) }
     let!(:member) { create(:project_member, project:, user:, hourly_rate: 5000) }
+    let(:formatted_hourly_rate) { FormatAmountService.new(company.base_currency, member.hourly_rate).process }
     let(:result) do
       [{
         id: user.id,
         name: user.full_name,
-        hourly_rate: 5000,
-        minutes_logged: 480.0
+        minutes_logged: 480.0,
+        formatted_hourly_rate:
       }]
     end
 
@@ -40,7 +41,14 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "last_week" }
 
       it "returns data with 0 values" do
-        expect(subject).to eq([{ id: member.user_id, name: user.full_name, hourly_rate: 5000, minutes_logged: 0 }])
+        expect(subject).to eq(
+          [{
+            id: member.user_id,
+            name: user.full_name,
+            formatted_hourly_rate:,
+            minutes_logged: 0,
+            formatted_cost: project.format_amount(0)
+          }])
       end
     end
 
@@ -48,7 +56,10 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "last_week" }
 
       it "returns the project_team_member_details for a project in the last week" do
-        create(:timesheet_entry, user:, project:, work_date: Date.today.last_week)
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.last_week)
+        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        cost = (timesheet_entry.duration / 60) * member.hourly_rate
+        result.first[:formatted_cost] = project.format_amount(cost)
         expect(subject).to eq(result)
       end
     end
@@ -57,7 +68,10 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "week" }
 
       it "returns the project_team_member_details for a project in a week" do
-        create(:timesheet_entry, user:, project:, work_date: Date.today)
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_week)
+        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        cost = (timesheet_entry.duration / 60) * member.hourly_rate
+        result.first[:formatted_cost] = project.format_amount(cost)
         expect(subject).to eq(result)
       end
     end
@@ -66,7 +80,10 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "month" }
 
       it "returns the project_team_member_details for a project in a month" do
-        create(:timesheet_entry, user:, project:, work_date: Date.today.next_week)
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_month)
+        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        cost = (timesheet_entry.duration / 60) * member.hourly_rate
+        result.first[:formatted_cost] = project.format_amount(cost)
         expect(subject).to eq(result)
       end
     end
@@ -75,7 +92,10 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "year" }
 
       it "returns the project_team_member_details for a project in a year" do
-        create(:timesheet_entry, user:, project:, work_date: Date.today.last_month)
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.beginning_of_year)
+        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        cost = (timesheet_entry.duration / 60) * member.hourly_rate
+        result.first[:formatted_cost] = project.format_amount(cost)
         expect(subject).to eq(result)
       end
     end
@@ -168,6 +188,42 @@ RSpec.describe Project, type: :model do
         expect(project.project_members.kept.pluck(:id)).to match_array([project_member1.id, project_member2.id])
         project.discard!
         expect(project.reload.project_members.kept.pluck(:id)).to eq([])
+      end
+    end
+
+    describe "#overdue_and_outstanding_amounts" do
+      let(:company) { create(:company) }
+      let(:user) { create(:user) }
+      let(:client) { create(:client, company:) }
+      let(:project) { create(:project, client:) }
+      let(:sent_invoice1) { create(:invoice, client:, status: "sent") }
+      let(:viewed_invoice1) { create(:invoice, client:, status: "sent") }
+      let(:overdue_invoice1) { create(:invoice, client:, status: "overdue") }
+      let(:overdue_invoice2) { create(:invoice, client:, status: "overdue") }
+
+      before do
+        create(:project_member, user:, project:)
+        create_list(:timesheet_entry, 20, user:, project:)
+        project.timesheet_entries.each_with_index do |timesheet_entry, index|
+          invoice = if (index % 2) == 0
+            index > 10 ? sent_invoice1 : overdue_invoice1
+          else
+            index > 10 ? viewed_invoice1 : overdue_invoice2
+          end
+          create(:invoice_line_item, invoice:, timesheet_entry:)
+        end
+      end
+
+      it "return outstanding_amount overdue_amount amounts" do
+        outstanding_amount = sent_invoice1.amount +
+          viewed_invoice1.amount +
+          overdue_invoice1.amount +
+          overdue_invoice2.amount
+        overdue_amount = overdue_invoice1.amount + overdue_invoice2.amount
+        overdue_and_outstanding_amounts = project.overdue_and_outstanding_amounts
+
+        expect(overdue_and_outstanding_amounts[:overdue_amount]).to eq(overdue_amount)
+        expect(overdue_and_outstanding_amounts[:outstanding_amount]).to eq(outstanding_amount)
       end
     end
   end

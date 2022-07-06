@@ -21,13 +21,13 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
         </NavLink>
       </li>
       <li className='border-b-2 border-miru-gray-400'>
-        <NavLink
+        {/* <NavLink
           to="/profile/edit/bank_account_details"
           type="li"
           className={({ isActive }) => getActiveClassName(isActive)}
         >
           BANK ACCOUNT DETAILS
-        </NavLink>
+        </NavLink> TODO: Temporary disabling*/}
       </li>
       <p className='font-bold text-base mt-5 ml-4'>{company.name}</p>
       <li className='border-b-2 border-miru-gray-400 mt-4'>
@@ -36,7 +36,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
         </NavLink>
       </li>
       <li className='border-b-2 border-miru-gray-400'>
-        <NavLink end to="/profile/edit/paymentsettings" className={({ isActive }) => getActiveClassName(isActive)}>
+        <NavLink end to="/profile/edit/payment" className={({ isActive }) => getActiveClassName(isActive)}>
           PAYMENT SETTINGS
         </NavLink>
       </li>

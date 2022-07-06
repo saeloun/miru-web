@@ -8,6 +8,9 @@ import projectAPI from "apis/projects";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
+
+import { cashFormatter } from "helpers/cashFormater";
+import { currencySymbol } from "helpers/currencySymbol";
 import {
   ArrowLeft,
   DotsThreeVertical,
@@ -16,7 +19,9 @@ import {
   UsersThree,
   Trash
 } from "phosphor-react";
+import { sendGAPageView } from "utils/googleAnalytics";
 import EditMembersList from "./EditMembersList";
+import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapper } from "../../../mapper/project.mapper";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
@@ -26,7 +31,6 @@ const getTableData = (project) => {
     return project.members.map((member) => {
       const hours = member.minutes / 60;
       const hour = hours.toFixed(2);
-      const cost = hours * parseInt(member.hourlyRate);
       return {
         col1: (
           <div className="text-base text-miru-dark-purple-1000">
@@ -35,7 +39,7 @@ const getTableData = (project) => {
         ),
         col2: (
           <div className="text-base text-miru-dark-purple-1000 text-right">
-            ${member.hourlyRate}
+            {member.formattedHourlyRate}
           </div>
         ),
         col3: (
@@ -45,7 +49,7 @@ const getTableData = (project) => {
         ),
         col4: (
           <div className="text-lg font-bold text-miru-dark-purple-1000 text-right">
-            ${cost}
+            {member.formattedCost}
           </div>
         )
       };
@@ -61,6 +65,7 @@ const ProjectDetails = () => {
   const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
   const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
   const [timeframe, setTimeframe] = React.useState<any>("week");
+  const [overdueOutstandingAmount, setOverDueOutstandingAmt]= React.useState<any>(null);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -69,7 +74,9 @@ const ProjectDetails = () => {
   const fetchProject = async (timeframe = null) => {
     try {
       const res = await projectAPI.show(params.projectId, timeframe);
-      setProject(unmapper(res.data.project_details));
+      const sanitized = unmapper(res.data.project_details);
+      setProject(sanitized);
+      setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
     } catch (e) {
       console.log(e); // eslint-disable-line
     }
@@ -80,6 +87,7 @@ const ProjectDetails = () => {
   };
 
   useEffect(() => {
+    sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     fetchProject(timeframe);
@@ -111,16 +119,16 @@ const ProjectDetails = () => {
     }
   ];
 
-  const amountBox = [
-    {
-      title: "OVERDUE",
-      amount: "$35.5k"
-    },
-    {
-      title: "OUTSTANDING",
-      amount: "$24.3k"
-    }
-  ];
+  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
+
+  const amountBox = [{
+    title: "OVERDUE",
+    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount)
+  },
+  {
+    title: "OUTSTANDING",
+    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.outstanding_amount)
+  }];
 
   const handleMenuVisibility = () => {
     setHeaderMenuVisibility(!isHeaderMenuVisible);
@@ -149,7 +157,7 @@ const ProjectDetails = () => {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="my-6">
         <div className="flex min-w-0 items-center justify-between">
           <div className="flex items-center">

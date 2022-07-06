@@ -11,8 +11,8 @@ RSpec.describe Invoices::PaymentsController, type: :request do
   let(:params) { { invoice_id: invoice.id } }
 
   before do
-    create(:company_user, company:, user: admin)
-    create(:company_user, company:, user: employee)
+    create(:employment, company:, user: admin)
+    create(:employment, company:, user: employee)
   end
 
   describe "GET new" do

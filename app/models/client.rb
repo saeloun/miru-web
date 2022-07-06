@@ -59,7 +59,7 @@ class Client < ApplicationRecord
          timesheet_entries.note as description,
          project_members.hourly_rate as rate,
          timesheet_entries.duration as qty"
-      ).where.not(id: selected_entries)
+      ).where.not(id: selected_entries).order("timesheet_entries.work_date").distinct
   end
 
   def total_hours_logged(time_frame = "week")
@@ -116,6 +116,30 @@ class Client < ApplicationRecord
 
       update!(stripe_id: customer.id)
     end
+  end
+
+  def payment_summary
+    status_and_amount = invoices.group(:status).sum(:amount)
+    status_and_amount.default = 0
+    {
+      name:,
+      paid_amount: status_and_amount["paid"],
+      unpaid_amount: status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
+    }
+  end
+
+  def outstanding_and_overdue_invoices
+    outstanding_overdue_statuses = ["overdue", "sent", "viewed"]
+    filtered_invoices = invoices.select { |invoice| outstanding_overdue_statuses.include?(invoice.status) }
+    status_and_amount = invoices.group(:status).sum(:amount)
+    status_and_amount.default = 0
+
+    {
+      name:,
+      invoices: filtered_invoices,
+      total_outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
+      total_overdue_amount: status_and_amount["overdue"]
+    }
   end
 
   private

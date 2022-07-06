@@ -11,7 +11,7 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
 
   context "when user is an admin" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
       create_list(:timesheet_entry, 5, user:, project:)
@@ -29,6 +29,7 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
           is_billable: project.billable,
           client: { name: project.client.name },
           members: project_team_member_details,
+          overdue_and_outstanding_amounts: project.overdue_and_outstanding_amounts,
           total_minutes_logged: (
                               project_team_member_details.map { |user_details|user_details[:minutes_logged] }
                             ).sum
@@ -41,7 +42,7 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
 
   context "when the user is an employee" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
       create_list(:timesheet_entry, 5, user:, project:)
@@ -56,7 +57,7 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
 
   context "when the user is an book keeper" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
       create_list(:timesheet_entry, 5, user:, project:)

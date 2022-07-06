@@ -18,6 +18,7 @@
 #
 #  index_timesheet_entries_on_project_id  (project_id)
 #  index_timesheet_entries_on_user_id     (user_id)
+#  index_timesheet_entries_on_work_date   (work_date)
 #
 # Foreign Keys
 #

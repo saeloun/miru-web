@@ -53,17 +53,21 @@ class Project < ApplicationRecord
         {
           id: member.user_id,
           name: member.full_name,
-          hourly_rate: member.hourly_rate,
-          minutes_logged: 0
+          formatted_hourly_rate: format_amount(member.hourly_rate),
+          minutes_logged: 0,
+          formatted_cost: format_amount(0)
         }
       end
     else
       entries.map do |entry|
+        hourly_rate = members[entry.user_id]
+        cost = (entry.duration / 60) * hourly_rate
         {
           id: entry.user_id,
           name: entry.user.full_name,
-          hourly_rate: members[entry.user_id],
-          minutes_logged: entry.duration
+          formatted_hourly_rate: format_amount(hourly_rate),
+          minutes_logged: entry.duration,
+          formatted_cost: format_amount(cost)
         }
       end
     end
@@ -78,6 +82,33 @@ class Project < ApplicationRecord
 
   def total_hours_logged(time_frame = "week")
     timesheet_entries.where(work_date: range_from_timeframe(time_frame)).sum(:duration)
+  end
+
+  def overdue_and_outstanding_amounts
+    currency = client.company.base_currency
+    timesheet_entries_ids = timesheet_entries.ids
+    invoices = Invoice
+      .joins(:invoice_line_items)
+      .where(
+        client_id: client.id,
+        invoice_line_items: { timesheet_entry_id: timesheet_entries_ids }
+      )
+      .distinct
+      .select(:status, :amount)
+    status_and_amount = invoices
+      .group_by(&:status)
+      .transform_values { |v| v.sum(&:amount) }
+    status_and_amount.default = 0
+    outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
+    {
+      overdue_amount: status_and_amount["overdue"],
+      outstanding_amount:,
+      currency:
+    }
+  end
+
+  def format_amount(amount)
+    FormatAmountService.new(client.company.base_currency, amount).process
   end
 
   private

@@ -13,7 +13,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry::BulkActionController#destroy", 
 
   describe "#destroy" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
       params = { source: { ids: [timesheet_entry1.id, timesheet_entry2.id] } }

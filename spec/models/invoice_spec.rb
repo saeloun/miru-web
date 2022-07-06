@@ -14,7 +14,6 @@ RSpec.describe Invoice, type: :model do
 
     describe "validate uniqueness of" do
       it { is_expected.to validate_uniqueness_of(:invoice_number) }
-      it { is_expected.to validate_uniqueness_of(:external_view_key) }
     end
 
     describe "validate comparisons" do

@@ -8,7 +8,7 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
 
   context "when user is an admin" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
     end
@@ -67,7 +67,7 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
 
   context "when user is a book keeper" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
     end

@@ -41,6 +41,8 @@ class TeamController < ApplicationController
     end
 
     def assign_role
+      return flash[:error] = I18n.t("team.update.error.role") if params.dig(:user, :roles).nil?
+
       user.remove_role(user.roles.first.name) if user.roles.present?
       if user.errors.empty? && current_company.present?
         user.add_role(params[:user][:roles].downcase.to_sym, current_company)
