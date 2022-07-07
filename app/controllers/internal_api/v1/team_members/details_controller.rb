@@ -4,21 +4,15 @@ class InternalApi::V1::TeamMembers::DetailsController < InternalApi::V1::Applica
   def show
     employment = Employment.find(params[:team_id])
     authorize employment, policy_class: TeamMembers::DetailPolicy
-    user = employment.user
-    render :show, locals: { user: }, status: :ok
+    render :show, locals: { user: employment.user }, status: :ok
   end
 
   def update
     employment = Employment.find(params[:team_id])
     authorize employment, policy_class: TeamMembers::DetailPolicy
     user = employment.user
-    if user.update!(detail_params)
-      render json: {
-        success: true,
-        user:,
-        notice: I18n.t("client.update.success.message")
-      }, status: :ok
-    end
+    user.update!(detail_params)
+    render :update, locals: { user: }, status: :ok
   end
 
   private
