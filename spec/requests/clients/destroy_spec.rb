@@ -9,7 +9,7 @@ RSpec.describe "Client#destroy", type: :request do
 
   context "when user is an admin" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
     end
@@ -43,7 +43,7 @@ RSpec.describe "Client#destroy", type: :request do
 
   context "when user is an employee" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
       send_request(:delete, internal_api_v1_client_path(client.id))
@@ -57,7 +57,7 @@ RSpec.describe "Client#destroy", type: :request do
 
     context "when user is a book keeper" do
       before do
-        create(:company_user, company:, user:)
+        create(:employment, company:, user:)
         user.add_role :book_keeper, company
         sign_in user
         send_request(:delete, internal_api_v1_client_path(client.id))

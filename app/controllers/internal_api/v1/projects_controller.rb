@@ -38,7 +38,7 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
     end
 
     def current_company_users
-      @_current_company_users = current_company.company_users.joins(:user)
+      @_current_company_users = current_company.employments.joins(:user)
         .select("users.id as id, users.first_name as first_name, users.last_name as last_name")
     end
 

@@ -14,7 +14,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
 
   context "when user is an admin" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
       send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
@@ -31,7 +31,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
 
   context "when user is an employee" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
       send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
@@ -48,7 +48,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
 
   context "when employee tries to delete other user's timesheet entry" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user2.add_role :employee, company
       sign_in user2
       send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)

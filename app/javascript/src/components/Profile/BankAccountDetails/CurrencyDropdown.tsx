@@ -11,23 +11,29 @@ const CurrencyDropdown = ({
 }) => {
 
   useEffect(() => {
-    setIsLoading(true);
-    wiseApi.fetchCurrencies().
-      then(response => response.data).
-      then(data => data.map(currency => ({ label: `${currency} (${getSymbolFromCurrency(currency)})`, value: currency }))).
-      then(options => {
-        setCurrencies(options);
-        setIsLoading(false);
-      }).
-      catch(error => console.error(error));
+    fetchCurrencyList();
   }, []);
 
   useEffect(() => {
-    setIsLoading(true);
     if (currency) {
       fetchAccountRequirements("USD", currency);
     }
   }, [currency]);
+
+  const fetchCurrencyList = async () => {
+    try {
+      setIsLoading(true);
+      const response = await wiseApi.fetchCurrencies();
+      const list = response.data.map(currency => (
+        { label: `${currency} (${getSymbolFromCurrency(currency)})`, value: currency }
+      ));
+      setCurrencies(list);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="block px-5 w-4/5 text-sm">
