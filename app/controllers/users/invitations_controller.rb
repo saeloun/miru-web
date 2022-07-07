@@ -7,7 +7,7 @@ class Users::InvitationsController < ApplicationController
   skip_after_action :verify_authorized, only: [:accept]
 
   def create
-    authorize current_user, policy_class: InvitationPolicy
+    authorize :invitation
     @invitation = Invitation.new(invitation_params)
     @invitation.company = current_company
     @invitation.sender = current_user
@@ -22,11 +22,11 @@ class Users::InvitationsController < ApplicationController
   end
 
   def edit
-    authorize current_user, policy_class: InvitationPolicy
+    authorize @invitation
   end
 
   def update
-    authorize current_user, policy_class: InvitationPolicy
+    authorize @invitation
 
     if @invitation.update(invitation_params)
       flash[:success] = t(".success")
@@ -38,7 +38,7 @@ class Users::InvitationsController < ApplicationController
   end
 
   def destroy
-    authorize current_user, policy_class: InvitationPolicy
+    authorize @invitation
 
     if @invitation.destroy
       flash[:success] = t(".success")
