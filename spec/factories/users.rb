@@ -7,6 +7,9 @@ FactoryBot.define do
     email { Faker::Internet.safe_email }
     password { Faker::Internet.password }
     confirmed_at { Date.today }
+    date_of_birth { Date.today }
+    phone { Faker::PhoneNumber.phone_number_with_country_code }
+    personal_email_id { Faker::Internet.safe_email }
     current_workspace factory: :company
 
     trait :with_avatar do
