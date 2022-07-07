@@ -1,20 +1,11 @@
 import { createContext, useContext } from "react";
+import RevenueByClientReportContext from "./RevenueByClientContext";
+import TimeEntryReportContext from "./TimeEntryReportContext";
 
 const EntryContext = createContext(({
-  reports: [],
-  selectedFilter: {
-    dateRange: { label: "All", value: "" },
-    clients: [],
-    teamMember: [],
-    status: [],
-    groupBy: { label: "None", value: "" }
-  },
-  filterOptions: {
-    clients: [],
-    teamMembers: []
-  },
-  filterCounter: 0,
-  handleRemoveSingleFilter: (key, value) => { }, //eslint-disable-line
+  currentReport: "",
+  revenueByClientReport: RevenueByClientReportContext,
+  timeEntryReport: TimeEntryReportContext
 }));
 
 export const useEntry = () => useContext(EntryContext);

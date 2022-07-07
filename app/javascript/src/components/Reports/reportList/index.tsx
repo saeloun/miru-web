@@ -30,7 +30,7 @@ const listDetails = [{
   title: "Revenue by client",
   description: "A detailed report of revenue from each client.",
   url: "revenue-by-client",
-  show: false
+  show: true
 }];
 
 const ReportsList = () => (

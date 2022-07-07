@@ -1,6 +1,6 @@
 {
   "name": "@saeloun/miru-web",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "^7.16.5",
     "@babel/preset-react": "^7.16.5",
@@ -27,6 +27,7 @@
     "currency-symbol-map": "^5.0.1",
     "date-fns": "^2.28.0",
     "dayjs": "^1.11.0",
+    "faker": "5.5.3",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
     "formik": "^2.2.9",
     "jquery": "^3.6.0",

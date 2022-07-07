@@ -16,8 +16,8 @@ const FilterSideBar = ({
   handleApplyFilter
 }) => {
 
-  const { filterOptions, selectedFilter } = useEntry();
-  const [filters, setFilters] = useState(selectedFilter);
+  const { timeEntryReport } = useEntry();
+  const [filters, setFilters] = useState(timeEntryReport.selectedFilter);
 
   const handleSelectFilter = (selectedValue, field) => {
     if (Array.isArray(selectedValue)) {
@@ -75,11 +75,11 @@ const FilterSideBar = ({
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Clients</h5>
-              <Select isMulti={true} value={filters.clients} classNamePrefix="react-select-filter" name="clients" onChange={handleSelectFilter} styles={customStyles} options={filterOptions.clients} />
+              <Select isMulti={true} value={filters.clients} classNamePrefix="react-select-filter" name="clients" onChange={handleSelectFilter} styles={customStyles} options={timeEntryReport.filterOptions.clients} />
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Team Members</h5>
-              <Select isMulti={true} value={filters.teamMember} classNamePrefix="react-select-filter" name="teamMember" onChange={handleSelectFilter} styles={customStyles} options={filterOptions.teamMembers} />
+              <Select isMulti={true} value={filters.teamMember} classNamePrefix="react-select-filter" name="teamMember" onChange={handleSelectFilter} styles={customStyles} options={timeEntryReport.filterOptions.teamMembers} />
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Status</h5>
