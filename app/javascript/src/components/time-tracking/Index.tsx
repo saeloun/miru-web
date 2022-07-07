@@ -251,15 +251,17 @@ const TimeTracking: React.FC<Iprops> = ({
             ))}
           </nav>
           <div>
-            {isAdmin && selectedEmployeeId && (
+            {isAdmin && selectedEmployeeId && <div className="flex justify-center items-center">
+              <p className="text-xs font-medium justify-center mr-2">Viewing time entries for</p>
               <SyncAutoComplete
                 options={employeeOptions}
                 handleValue={value => setSelectedEmployeeId(+ value)}
                 defaultValue={{ value: selectedEmployeeId, label: fullName }}
                 size="md"
               />
-            )}
+            </div>}
           </div>
+          <div className="w-50"></div>
         </div>
 
         <div>
