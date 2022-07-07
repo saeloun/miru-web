@@ -10,6 +10,12 @@ class InvoicePayment::Success < ApplicationService
     end
   end
 
+  class PaymentIntentNotSucceededError < StandardError
+    def initialize(msg = "Payment Intent Not Succeeded Error")
+      super
+    end
+  end
+
   def initialize(invoice)
     @invoice = invoice
     @client = @invoice.client
@@ -23,7 +29,9 @@ class InvoicePayment::Success < ApplicationService
   def process
     retrieve_payment_intent
     update_invoice!
-  rescue StandardError
+  rescue StandardError => error
+    Rails.logger.error error.message
+    Rails.logger.error error.backtrace.join("\n")
     false
   end
 
@@ -51,6 +59,8 @@ class InvoicePayment::Success < ApplicationService
     def update_invoice!
       if payment_intent.status == "succeeded"
         invoice.paid!
+      else
+        raise PaymentIntentNotSucceededError
       end
     end
 
