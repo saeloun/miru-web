@@ -242,7 +242,7 @@ class Lead < ApplicationRecord
   after_create :add_timelines_for_action_create
   after_update :add_timelines_for_action_update
 
-  def self.filter(params = {}, user = User.none)
+  def self.filter(params: {}, user: User.none, ids: false)
     allow_leads = Lead.none
 
     if user.present? && user.can_access_lead?
@@ -477,7 +477,8 @@ class Lead < ApplicationRecord
     end
 
     def add_timelines_for_action_update
-      lead_timeline_arr = []
+      display_field_name_arr = []
+      display_field_value_arr = []
 
       (self.previous_changes || {}).each do |field_name, old_new_val_arr|
         next if ["updated_at", "updated_by_id"].include?(field_name)
@@ -550,17 +551,19 @@ class Lead < ApplicationRecord
           new_val = self.reporter_name
         end
 
-        index_system_display_title = "<b>#{self.updated_by_name}</b> updated the <b>#{display_field_name.tr('_', ' ').capitalize}</b>"
-        index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{old_val.kind_of?(Array) ? old_val.join(",") : old_val}&nbsp; -> &nbsp;#{new_val.kind_of?(Array) ? new_val.join(",") : new_val}</p>"
+        display_field_name_arr << display_field_name.tr("_", " ").capitalize
 
-        lead_timeline_arr << self.lead_timelines.new(
-          action_created_by_id: self.updated_by_id, kind: 0,
-          action_subject: "updated_lead",
-          index_system_display_title:,
-          index_system_display_message:
-                                                )
+        display_field_value_arr << "#{old_val.kind_of?(Array) ? old_val.join(",") : old_val}&nbsp; -> &nbsp;#{new_val.kind_of?(Array) ? new_val.join(",") : new_val}"
       end
 
-      LeadTimeline.import(lead_timeline_arr) if lead_timeline_arr.present?
+      index_system_display_title = "<b>#{self.updated_by_name}</b> updated the <b>#{display_field_name_arr.join(', ')}</b>"
+      index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{display_field_value_arr.join('<br />')}</p>"
+
+      self.lead_timelines.create!(
+        action_created_by_id: self.updated_by_id,
+        kind: 0,
+        index_system_display_title:,
+        index_system_display_message:
+                                              )
     end
 end

@@ -6,6 +6,7 @@ import {
   Route
 } from "react-router-dom";
 
+// import Actions from "./Actions";
 import Details from "./Details";
 import LeadList from "./List";
 import QuoteDetails from "./QuoteDetails";
@@ -15,6 +16,7 @@ const RouteConfig = ({ isAdminUser }) => (
     <Routes>
       <Route path="leads">
         <Route index element={<LeadList isAdminUser={isAdminUser} />} />
+        {/* <Route path="actions" element={<Actions />} /> */}
         <Route path=":leadId" element={<Details />} />
         <Route path=":leadId/timelines" element={<Details />} />
         <Route path=":leadId/line-items" element={<Details />} />

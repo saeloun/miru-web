@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DateTimePicker from 'react-datetime-picker';
 import { useNavigate } from "react-router-dom";
+import leadTimelineItemsApi from "apis/lead-timeline-items";
 import leadTimelines from "apis/lead-timelines";
 import Toastr from "common/Toastr";
 import { Formik, Form, Field } from "formik";
@@ -16,12 +17,29 @@ const initialValues = {
   kind: "",
   action_description: "",
   action_subject: "",
-  action_schedule_status_code: ""
+  action_schedule_status_code: "",
+  action_priority_code: ""
 };
 
 const NewAppointmentTimeline = ({ leadDetails, setNewAppointmentTimeline, timelineData, setTimelineData }) => {
   const navigate = useNavigate();
   const [actionDueAt, setActionDueAt] = useState(new Date());
+
+  const [priorityCodeList, setPriorityCodeList] = useState<any>(null);
+  const [priorityCode, setPriorityCode] = useState<any>(null);
+
+  useEffect(() => {
+    const getLeadTimelineItems = async () => {
+      leadTimelineItemsApi.get()
+        .then((data) => {
+          setPriorityCodeList(data.data.priority_codes);
+        }).catch(() => {
+          setPriorityCodeList({});
+        });
+    };
+
+    getLeadTimelineItems();
+  }, [leadDetails]);
 
   const handleSubmit = (values) => {
     leadTimelines.create(leadDetails.id, {
@@ -29,7 +47,8 @@ const NewAppointmentTimeline = ({ leadDetails, setNewAppointmentTimeline, timeli
       "action_description": values.action_description,
       "kind": 2,
       "action_subject": values.action_subject,
-      "action_schedule_status_code": 0
+      "action_schedule_status_code": 0,
+      "action_priority_code": priorityCode
     })
       .then(res => {
         setTimelineData([{ ...res.data }, ...timelineData]);
@@ -128,6 +147,27 @@ const NewAppointmentTimeline = ({ leadDetails, setNewAppointmentTimeline, timeli
                       <div className="mt-1">
                         <Field className={`w-full border rounded bg-gray-200 ${errors.action_description && touched.action_description && "border-red-600 focus:ring-red-600 focus:border-red-600"}`}
                           name="action_description" as="textarea" rows={8} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="field">
+                      <div className="field_with_errors">
+                        <label className="form__label">Priority</label>
+                        <div className="tracking-wider block text-xs text-red-600">
+                          {errors.action_priority_code && touched.action_priority_code &&
+                            <div>{errors.action_priority_code}</div>
+                          }
+                        </div>
+                      </div>
+                      <div className="mt-1">
+                        <select
+                          className="w-full border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          name="action_priority_code" onChange={(e) => setPriorityCode(e.target.value)} >
+                          <option value=''>Select Priority</option>
+                          {priorityCodeList &&
+                            priorityCodeList.map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
+                        </select>
                       </div>
                     </div>
                   </div>

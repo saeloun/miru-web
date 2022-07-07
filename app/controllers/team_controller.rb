@@ -24,6 +24,12 @@ class TeamController < ApplicationController
     redirect_to team_index_path
   end
 
+  def delete_avatar
+    avatar = ActiveStorage::Attachment.find(params[:avatar_id])
+    avatar.purge
+    redirect_back(fallback_location: edit_team_path(id: params[:id]))
+  end
+
   def destroy
     authorize user, policy_class: TeamPolicy
     user.discard

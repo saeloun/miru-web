@@ -11,6 +11,10 @@ class LeadPolicy < ApplicationPolicy
     true
   end
 
+  def timeline_items?
+    true
+  end
+
   def allowed_users?
     true
   end

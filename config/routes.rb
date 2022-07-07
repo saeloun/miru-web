@@ -46,7 +46,11 @@ Rails.application.routes.draw do
   resources :time_tracking, only: [:index], path: "time-tracking"
   resources :room_scheduling, only: [:index], path: "room-scheduling"
 
-  resources :team, only: [:index, :update, :destroy, :edit]
+  resources :team, only: [:index, :update, :destroy, :edit] do
+    member do
+      delete "delete_avatar/:avatar_id", action: :delete_avatar
+    end
+  end
 
   resources :reports, only: [:index]
   resources :workspaces, only: [:update]

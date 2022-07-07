@@ -4,11 +4,22 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
   def index
     authorize Lead
     pagy, leads = pagy(
-      Lead.filter(params, current_user).order(created_at: :desc),
+      Lead.filter(params:, user: current_user, ids: false).order(created_at: :desc),
       items_param: :leads_per_page)
     lead_details = leads.map(&:lead_detail)
 
     render json: { lead_details:, pagy: pagy_metadata(pagy) }, status: :ok
+  end
+
+  def actions
+    authorize Lead
+
+    pagy, lead_actions = pagy(
+      LeadTimeline.with_actions(Lead.filter(params:, user: current_user, ids: true)),
+      items_param: :timelines_per_page)
+    action_details = lead_actions.map(&:render_properties)
+
+    render json: { action_details:, pagy: pagy_metadata(pagy) }, status: :ok
   end
 
   def items
@@ -46,6 +57,15 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
       initial_communications:, source_codes:, priority_codes:,
       tech_stacks:, countries:
     },	status: :ok
+  end
+
+  def timeline_items
+    authorize Lead
+    kind_options = LeadTimeline::KIND_OPTIONS
+    schedule_action_status_codes = LeadTimeline::SCHEDULE_ACTION_STATUS_OPTIONS
+    priority_codes = LeadTimeline::PRIORITY_CODE_OPTIONS
+
+    render json: { kind_options:, schedule_action_status_codes:, priority_codes: },	status: :ok
   end
 
   def allowed_users

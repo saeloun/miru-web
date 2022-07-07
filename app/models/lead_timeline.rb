@@ -11,6 +11,7 @@
 #  action_phone_number          :string
 #  action_priority_code         :integer
 #  action_schedule_status_code  :integer
+#  action_social_type           :string
 #  action_subject               :string
 #  comment                      :text
 #  discarded_at                 :datetime
@@ -22,6 +23,7 @@
 #  action_assignee_id           :bigint
 #  action_created_by_id         :bigint
 #  action_reporter_id           :bigint
+#  action_social_id             :string
 #  lead_id                      :bigint           not null
 #  parent_lead_timeline_id      :bigint
 #
@@ -82,6 +84,8 @@ class LeadTimeline < ApplicationRecord
 
   before_create :set_index_system_display_message_and_title, if: -> { self.kind != 0 }
 
+  scope :with_actions, ->(lead_ids) { where(lead_id: lead_ids).order(action_due_at: :desc) }
+
   def created_at_formated
     self.created_at.strftime("#{self.created_at.day.ordinalize} %b %Y at %H:%M")
   end
@@ -133,16 +137,22 @@ class LeadTimeline < ApplicationRecord
     def set_index_system_display_message_and_title
       if self.kind == 1
         self.index_system_display_title = "<b>#{self.action_created_by&.full_name}</b> added an comment"
-        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.comment}</p>"
+        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.comment.gsub(/\n/, '<br/>')}</p>"
       elsif self.kind == 2
         self.index_system_display_title = "<b>#{self.action_created_by&.full_name}</b> schedule an appointment on <b>#{self.action_due_at_formated}</b>"
-        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.action_description}</p>"
+        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.action_description.gsub(/\n/, '<br/>')}</p>"
       elsif self.kind == 3
         self.index_system_display_title = "<b>#{self.action_created_by&.full_name}</b> connect with email <b>#{self.action_email}</b> on <b>#{self.action_due_at_formated}</b>"
-        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.action_description}</p>"
+        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.action_description.gsub(/\n/, '<br/>')}</p>"
       elsif self.kind == 4
         self.index_system_display_title = "<b>#{self.action_created_by&.full_name}</b> connect with phone number <b>#{self.action_phone_number}</b> on <b>#{self.action_due_at_formated}</b>"
-        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.action_description}</p>"
+        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.action_description.gsub(/\n/, '<br/>')}</p>"
+      elsif [5, 6, 7].include?(self.kind)
+        self.index_system_display_title = "<b>#{self.action_created_by&.full_name}</b> connect with #{self.action_social_type} <b>#{self.action_social_id}</b> on <b>#{self.action_due_at_formated}</b>"
+        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.action_description.gsub(/\n/, '<br/>')}</p>"
+      elsif self.kind == 8
+        self.index_system_display_title = "<b>#{self.action_created_by&.full_name}</b> schedule a task on <b>#{self.action_due_at_formated}</b>"
+        self.index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{self.action_description.gsub(/\n/, '<br/>')}</p>"
       end
     end
 end

@@ -53,7 +53,9 @@ class Leads::TimelinePolicy < ApplicationPolicy
       :parent_lead_timeline_id,
       :action_email,
       :action_phone_number,
-      :action_schedule_status_code
+      :action_schedule_status_code,
+      :action_social_type,
+      :action_social_id
     ]
   end
 end

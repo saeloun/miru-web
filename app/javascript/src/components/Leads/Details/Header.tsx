@@ -126,7 +126,7 @@ const Header = ({
                   </button>
 
                 }
-                <div ref={wrapperRef}>
+                <div className="relative" ref={wrapperRef}>
                   <button onClick = {handleMenuVisibility} className={`menuButton__button ${menuBackground}`}>
                     <DotsThreeVertical size={20} color="#000000" />
                   </button>

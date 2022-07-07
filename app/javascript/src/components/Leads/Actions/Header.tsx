@@ -1,22 +1,21 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
-import leads from "apis/leads";
-import { Funnel, MagnifyingGlass, Plus } from "phosphor-react";
+import { useParams } from "react-router-dom";
+import leadQuotes from "apis/lead-quotes";
+import { MagnifyingGlass, Plus } from "phosphor-react";
 import AutoComplete from "./AutoComplete";
-import { unmapLeadListForDropdown } from "../../../mapper/lead.mapper";
-const taskAssignmentIcon = require("../../../../../assets/images/task_assignment.svg");
+import { unmapLeadQuoteListForDropdown } from "../../../mapper/lead.quote.mapper";
 
 const Header = ({
   setnewLead,
-  isAdminUser,
-  setFilterVisibilty,
-  setDisplayActions
+  isAdminUser
 }) => {
 
+  const { leadId } = useParams();
+
   const searchCallBack = async (searchString, setDropdownItems) => {
-    await leads.get(new URLSearchParams(searchString).toString())
+    await leadQuotes.index(leadId, searchString)
       .then((res) => {
-        const dropdownList = unmapLeadListForDropdown(res);
+        const dropdownList = unmapLeadQuoteListForDropdown(res);
         setDropdownItems(dropdownList);
       });
   };
@@ -28,8 +27,7 @@ const Header = ({
           ? "sm:flex mt-6 mb-3 sm:items-center sm:justify-between"
           : "sm:flex mt-6 mb-3 sm:items-center"
       }>
-      <h2 className="header__title">Leads</h2>
-      <img className="rounded-lg h-8 w-8 mr-2 mt-1 cursor-pointer" title="Coming soon..." src={taskAssignmentIcon} onClick={() => setDisplayActions(false)}/>
+      <h2 className="header__title"></h2>
       <div className="header__searchWrap">
         <div className="header__searchInnerWrapper">
           <AutoComplete searchCallBack={searchCallBack} />
@@ -37,9 +35,6 @@ const Header = ({
             <MagnifyingGlass size={12} />
           </button>
         </div>
-        <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
-          <Funnel size={16} />
-        </button>
       </div>
       {isAdminUser && (
         <div className="flex">
@@ -49,7 +44,7 @@ const Header = ({
             onClick={() => setnewLead(true)}
           >
             <Plus weight="fill" size={16} />
-            <span className="ml-2 inline-block">NEW LEAD</span>
+            <span className="ml-2 inline-block">NEW QUOTE</span>
           </button>
         </div>
       )}

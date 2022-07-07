@@ -45,6 +45,7 @@ const Leads = ({ isAdminUser }) => {
   const [newLead, setnewLead] = useState<boolean>(false);
   const [leadToDelete, setDelete] = useState({});
   const [leadData, setLeadData] = useState<any>([{}]);
+  const [displayActions, setDisplayActions] = useState<boolean>(false);
 
   const [pagy, setPagy] = React.useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -86,6 +87,12 @@ const Leads = ({ isAdminUser }) => {
         });
     }
   };
+
+  useEffect(() => {
+    if (displayActions){
+      navigate(`/actions`);
+    }
+  }, [displayActions]);
 
   useEffect(() => {
     fetchLeads();
@@ -131,7 +138,7 @@ const Leads = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header isAdminUser={isAdminUser} setnewLead={setnewLead} setFilterVisibilty={setFilterVisibilty} />
+      <Header isAdminUser={isAdminUser} setnewLead={setnewLead} setFilterVisibilty={setFilterVisibilty} setDisplayActions={setDisplayActions} />
       <div>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

@@ -8,8 +8,8 @@ import { Formik, Form, Field } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";
 
-const newEmailTimelineSchema = Yup.object().shape({
-  action_email: Yup.string().required("Email cannot be blank").email("Invalid email ID")
+const newLinkedinDMTimelineSchema = Yup.object().shape({
+  // action_social_id: Yup.string().required("Email cannot be blank").email("Invalid email ID")
 });
 
 const initialValues = {
@@ -17,11 +17,12 @@ const initialValues = {
   kind: "",
   action_description: "",
   action_subject: "",
-  action_email: "",
+  action_social_id: "",
+  action_social_type: "",
   action_priority_code: ""
 };
 
-const NewEmailTimeline = ({ leadDetails, setNewEmailTimeline, timelineData, setTimelineData }) => {
+const NewLinkedinDMTimeline = ({ leadDetails, setNewLinkedinDMTimeline, timelineData, setTimelineData }) => {
   const navigate = useNavigate();
   const [actionDueAt, setActionDueAt] = useState(new Date());
 
@@ -45,15 +46,16 @@ const NewEmailTimeline = ({ leadDetails, setNewEmailTimeline, timelineData, setT
     leadTimelines.create(leadDetails.id, {
       "action_due_at": actionDueAt,
       "action_description": values.action_description,
-      "kind": 3,
+      "kind": 6,
       "action_subject": values.action_subject,
-      "action_email": values.action_email,
+      "action_social_id": values.action_social_id,
+      "action_social_type": "linkedin",
       "action_priority_code": priorityCode
     })
       .then(res => {
         setTimelineData([{ ...res.data }, ...timelineData]);
         navigate(`/leads/${leadDetails.id}/timelines`)
-        setNewEmailTimeline(false);
+        setNewLinkedinDMTimeline(false);
         Toastr.success("Timeline added successfully");
       });
   };
@@ -88,13 +90,13 @@ const NewEmailTimeline = ({ leadDetails, setNewEmailTimeline, timelineData, setT
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
               <h6 className="text-base font-extrabold">Add New Timeline</h6>
-              <button type="button" onClick={() => { setNewEmailTimeline(false); }}>
+              <button type="button" onClick={() => { setNewLinkedinDMTimeline(false); }}>
                 <X size={16} color="#CDD6DF" weight="bold" />
               </button>
             </div>
             <Formik
               initialValues={initialValues}
-              validationSchema={newEmailTimelineSchema}
+              validationSchema={newLinkedinDMTimelineSchema}
               onSubmit={handleSubmit}
             >
               {({ errors, touched }) => (
@@ -117,15 +119,15 @@ const NewEmailTimeline = ({ leadDetails, setNewEmailTimeline, timelineData, setT
                   <div className="mt-4">
                     <div className="field">
                       <div className="field_with_errors">
-                        <label className="form__label">Email</label>
+                        <label className="form__label">Linkedin ID</label>
                         <div className="tracking-wider block text-xs text-red-600">
-                          {errors.action_email && touched.action_email &&
-                            <div>{errors.action_email}</div>
+                          {errors.action_social_id && touched.action_social_id &&
+                            <div>{errors.action_social_id}</div>
                           }
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input bg-gray-200 ${errors.action_email && touched.action_email && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="action_email" />
+                        <Field className={`form__input bg-gray-200 ${errors.action_social_id && touched.action_social_id && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="action_social_id" />
                       </div>
                     </div>
                   </div>
@@ -204,4 +206,4 @@ const NewEmailTimeline = ({ leadDetails, setNewEmailTimeline, timelineData, setT
   );
 };
 
-export default NewEmailTimeline;
+export default NewLinkedinDMTimeline;

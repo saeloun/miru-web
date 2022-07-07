@@ -19,7 +19,9 @@ const getList = (input) => input.timeline_details.map((item) => ({
   action_due_at_formated: item.action_due_at_formated,
   action_email: item.action_email,
   action_phone_number: item.action_phone_number,
-  action_schedule_status_code: item.action_schedule_status_code
+  action_schedule_status_code: item.action_schedule_status_code,
+  action_social_type: item.action_social_type,
+  action_social_id: item.action_social_id
 }));
 
 const unmapLeadTimelineList = (input) => {
@@ -61,7 +63,9 @@ const unmapLeadTimelineDetails = (input) => {
       action_due_at_formated: data.timeline_details.action_due_at_formated,
       action_email: data.timeline_details.action_email,
       action_phone_number: data.timeline_details.action_phone_number,
-      action_schedule_status_code: data.timeline_details.action_schedule_status_code
+      action_schedule_status_code: data.timeline_details.action_schedule_status_code,
+      action_social_type: data.timeline_details.action_social_type,
+      action_social_id: data.timeline_details.action_social_id
     }
   };
 };

@@ -75,6 +75,7 @@
         </label>
         <% if @user.avatar.attached? %>
           <%= image_tag user_avatar(@user), class: "table__avatar", style: "margin-left: 10px;" %>
+          <%= link_to 'Remove', url_for(controller: :team, action: :delete_avatar, id: @user.id, avatar_id: @user.avatar.id), method: :delete, data: { confirm: 'Are you sure?' }, style: "margin-left: 10px;color: #0033CC;" %>
         <% end %>
       </div>
       <div class="mt-2">

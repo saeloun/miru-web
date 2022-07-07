@@ -7,10 +7,12 @@ namespace :internal_api, defaults: { format: "json" } do
     end
     resources :leads, only: [:index, :update, :destroy, :show, :create] do
       get "items", to: "/lead_items", on: :collection
+      get "actions", to: "/lead_actions", on: :collection
       get "allowed_users", to: "/lead_allowed_users", on: :collection
       resources :line_items, only: [:index, :update, :destroy, :show, :create], module: :leads
       resources :quotes, only: [:index, :update, :destroy, :show, :create, :edit], module: :leads
       resources :timelines, only: [:index, :update, :destroy, :show, :create, :edit], module: :leads
+      get "timeline_items", to: "/lead_timeline_items", on: :collection
     end
     namespace :recruitments do
       resources :consultancies, only: [:index, :update, :destroy, :show, :create]

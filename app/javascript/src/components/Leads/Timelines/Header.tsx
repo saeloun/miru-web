@@ -6,6 +6,10 @@ const Header = ({
   setNewAppointmentTimeline,
   setNewEmailTimeline,
   setNewPhoneCallTimeline,
+  setNewSkypeDMTimeline,
+  setNewLinkedinDMTimeline,
+  setNewOtherDMTimeline,
+  setNewTaskTimeline,
   isAdminUser
 }) => {
 
@@ -55,16 +59,16 @@ const Header = ({
                   <a onClick={() => setNewPhoneCallTimeline(true)} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Phone Call</a>
                 </li>
                 <li>
-                  <a onClick={null} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Skype DM</a>
+                  <a onClick={() => setNewSkypeDMTimeline(true)} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Skype DM</a>
                 </li>
                 <li>
-                  <a onClick={null} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">LinkedIn DM</a>
+                  <a onClick={() => setNewLinkedinDMTimeline(true)} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">LinkedIn DM</a>
                 </li>
                 <li>
-                  <a onClick={null} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Other DM</a>
+                  <a onClick={() => setNewOtherDMTimeline(true)} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Other DM</a>
                 </li>
                 <li>
-                  <a onClick={null} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Task</a>
+                  <a onClick={() => setNewTaskTimeline(true)} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Task</a>
                 </li>
               </ul>
             </div>}
