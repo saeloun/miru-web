@@ -7,7 +7,7 @@
 #  id               :bigint           not null, primary key
 #  address_line_1   :string           not null
 #  address_line_2   :string
-#  address_type     :string
+#  address_type     :string           default("current")
 #  addressable_type :string
 #  city             :string           not null
 #  country          :string           not null

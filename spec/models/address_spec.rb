@@ -34,4 +34,10 @@ RSpec.describe Address, type: :model do
       ).backed_by_column_of_type(:string)
     end
   end
+
+  describe "Defaults" do
+     it "default address_type to be current" do
+       expect(subject.address_type).to eq("current")
+     end
+   end
 end

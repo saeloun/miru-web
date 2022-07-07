@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_29_105511) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_04_070130) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -48,7 +48,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_105511) do
   create_table "addresses", force: :cascade do |t|
     t.string "addressable_type"
     t.bigint "addressable_id"
-    t.string "address_type"
+    t.string "address_type", default: "current"
     t.string "address_line_1", null: false
     t.string "address_line_2"
     t.string "city", null: false
@@ -285,6 +285,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_29_105511) do
     t.string "personal_email_id"
     t.date "date_of_birth"
     t.jsonb "social_accounts"
+    t.string "phone"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
