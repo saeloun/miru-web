@@ -8,4 +8,10 @@ class Payments::InvoicePolicy < ApplicationPolicy
   def create?
     user_owner_role? || user_admin_role?
   end
+
+  def permitted_attributes
+    [
+      :invoice_id, :transaction_date, :transaction_type, :amount, :note
+    ]
+  end
 end
