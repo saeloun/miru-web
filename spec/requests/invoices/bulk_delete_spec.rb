@@ -12,7 +12,7 @@ RSpec.describe "InternalApi::V1::Invoices::BulkDeletionController", type: :reque
 
   context "when the user is an admin" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
     end

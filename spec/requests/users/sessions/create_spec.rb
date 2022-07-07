@@ -8,7 +8,7 @@ RSpec.describe "Users::SessionsController#create", type: :request do
 
   context "when user is an admin, owner, employee" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       send_request :post, user_session_path, params: { user: { email: user.email, password: user.password } }
     end
 

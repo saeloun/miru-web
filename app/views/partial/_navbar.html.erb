@@ -15,30 +15,7 @@
     <% if current_company %>
       <!-- dashboard time_tracking team clients projects invoices report etc. Start -->
       <div class="border-t border-gray-200 pt-4 pb-3 pl-3">
-        <%# if policy(:dashboard).index? %>
-<!--          <a href="/dashboard" class="<%#= request.path == "/dashboard" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%#= t('navbar.dashboard') %></a>-->
-        <%# end %>
-        <% if policy(:timesheet_entry).index? %>
-        <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.time_tracking') %></a>
-        <% end %>
-        <% if policy(:team).index? %>
-        <a href="/team" class="<%= request.path == "/team" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.team') %></a>
-        <% end %>
-        <% if policy(:client).index? %>
-        <a href="/clients" class="<%= request.path == "/clients" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.clients') %></a>
-        <% end %>
-        <% if policy(:project).index? %>
-        <a href="/projects" class="<%= request.path == "/projects" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.projects') %></a>
-        <% end %>
-        <% if policy(:report).index? %>
-        <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.reports') %></a>
-        <% end %>
-        <% if policy(:invoice).index? %>
-        <a href="/invoices" class="<%= request.path == "/invoices" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.invoices') %></a>
-        <% end %>
-        <% if policy(:payment).index? %>
-        <a href="/payments" class="<%= request.path == "/payments" ? "navbar__smaller-screen_selected" : "navbar__smaller-screen_unselected" %> navbar__smaller-screen_titles"><%= t('navbar.payments') %></a>
-        <% end %>
+        <%= nav_helper(style: 'navbar__smaller-screen_titles', active_style: "navbar__smaller-screen_selected", inactive_style: "navbar__smaller-screen_unselected") %>
       </div>
       <!-- dashboard time_tracking team clients projects invoice report etc. end -->
     <% end %>
@@ -104,40 +81,7 @@
             <!-- title smaller screen size -->
             <div class="relative z-0 flex-1 flex items-center justify-center xsm:absolute xsm:inset-0">
               <div class="block lg:hidden">
-                <%# if policy(:dashboard).index? %>
-<!--                  <a href="/dashboard" class="<%#= request.path == "/dashboard" ? "block" : "hidden" %> navbar__small-screen-second_titles">-->
-                    <%#= t('navbar.dashboard') %>
-<!--                  </a>-->
-                <%# end %>
-                <% if policy(:timesheet_entry).index? %>
-                <a href="/time-tracking" class="<%= request.path == "/time-tracking" ? "block" : "hidden" %> navbar__small-screen-second_titles">
-                  <%= t('navbar.time_tracking') %>
-                </a>
-                <% end %>
-                <% if policy(:team).index? %>
-                <a href="/team" class="<%= request.path == "/team" ? "block" : "hidden" %> navbar__small-screen-second_titles">
-                  <%= t('navbar.team') %>
-                </a>
-                <% end %>
-                <% if policy(:client).index? %>
-                <a href="/clients" class="<%= request.path == "/clients" ? "block" : "hidden" %> navbar__small-screen-second_titles">
-                  <%= t('navbar.clients') %>
-                </a>
-                <% end %>
-                <% if policy(:project).index? %>
-                <a href="/projects" class="<%= request.path == "/projects" ? "block" : "hidden" %> navbar__small-screen-second_titles">
-                  <%= t('navbar.projects') %>
-                </a><% end %>
-                <% if policy(:invoice).index? %>
-                <a href="/invoices" class="<%= request.path == "/invoices" ? "block" : "hidden" %> navbar__small-screen-second_titles">
-                  <%= t('navbar.invoices') %>
-                </a>
-                <% end %>
-                <% if policy(:report).index? %>
-                  <a href="<%= reports_path %>" class="<%= request.path == "#{reports_path}" ? "block" : "hidden" %> navbar__small-screen-second_titles">
-                    <%= t('navbar.reports') %>
-                  </a>
-                <% end %>
+                <%= nav_helper(style: 'navbar__small-screen-second_titles') %>
               </div>
             </div>
             <!-- title smaller screen end -->
@@ -145,46 +89,7 @@
             <!-- dashboard time_tracking team clients projects invoices report etc. start -->
             <div class="relative z-0 flex-auto flex items-center justify-center sm:absolute sm:inset-0">
               <div class="ml-12 hidden lg:block lg:flex lg:space-x-10 xl:pr-80 <%= "lg:mr-86" if current_user.has_role?(:employee, current_company) %>">
-                <%# if policy(:dashboard).index? %>
-<!--                  <a href="/dashboard" data-cy="dashboard-tab" class="<%#= request.path == "/dashboard" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">-->
-                    <%#= t('navbar.dashboard') %>
-<!--                  </a>-->
-                <%# end %>
-                <% if policy(:timesheet_entry).index? %>
-                <a href="/time-tracking" data-cy="time-tracking-tab" class="<%= request.path == "/time-tracking" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                  <%= t('navbar.time_tracking') %>
-                </a>
-                <% end %>
-                <% if policy(:team).index? %>
-                <a href="/team" data-cy="team-tab" class="<%= request.path == "/team" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                  <%= t('navbar.team') %>
-                </a>
-                <% end %>
-                <% if policy(:client).index? %>
-                <a href="/clients" data-cy="clients-tab" class="<%= request.path == "/clients" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                  <%= t('navbar.clients') %>
-                </a>
-                <% end %>
-                <% if policy(:project).index? %>
-                <a href="/projects" data-cy="projects-tab" class="<%= request.path == "/projects" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                  <%= t('navbar.projects') %>
-                </a>
-                <% end %>
-                <% if policy(:invoice).index? %>
-                  <a href="/invoices" data-cy="invoices-tab" class="<%= request.path == "/invoices" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                    <%= t('navbar.invoices') %>
-                  </a>
-                <% end %>
-                <% if policy(:report).index? %>
-                  <a href="<%= reports_path %>" data-cy="reports-tab" class="<%= request.path == "#{reports_path}" ? "navbar___large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                    <%= t('navbar.reports') %>
-                  </a>
-                <% end %>
-                <% if policy(:payment).index? %>
-                  <a href="/payments" data-cy="invoices-tab" class="<%= request.path == "/payments" ? "navbar__large-screen_selected" : "navbar__large-screen_unselected" %> navbar__large-screen_title">
-                    <%= t('navbar.payments') %>
-                  </a>
-                <% end %>
+                <%= nav_helper(style: "navbar__large-screen_title", active_style: "navbar__large-screen_selected", inactive_style: "navbar__large-screen_unselected") %>
               </div>
             </div>
             <!-- dashboard time_tracking team clients projects invoices report etc. end -->

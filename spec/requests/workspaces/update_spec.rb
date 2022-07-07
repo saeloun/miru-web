@@ -9,8 +9,8 @@ RSpec.describe "Workspaces#update", type: :request do
 
   context "when user is an admin" do
     before do
-      create(:company_user, company:, user:)
-      create(:company_user, company_id: company_2.id, user:)
+      create(:employment, company:, user:)
+      create(:employment, company_id: company_2.id, user:)
       user.add_role :admin, company
       user.add_role :employee, company
       sign_in user
@@ -31,8 +31,8 @@ RSpec.describe "Workspaces#update", type: :request do
 
   context "when user is an employee" do
     before do
-      create(:company_user, company:, user:)
-      create(:company_user, company_id: company_2.id, user:)
+      create(:employment, company:, user:)
+      create(:employment, company_id: company_2.id, user:)
       user.add_role :employee, company
       sign_in user
       send_request :patch, workspace_path(company_2)
@@ -52,8 +52,8 @@ RSpec.describe "Workspaces#update", type: :request do
 
   context "when user is a book keeper" do
     before do
-      create(:company_user, company:, user:)
-      create(:company_user, company_id: company_2.id, user:)
+      create(:employment, company:, user:)
+      create(:employment, company_id: company_2.id, user:)
       user.add_role :book_keeper, company
       sign_in user
       send_request :patch, workspace_path(company_2)

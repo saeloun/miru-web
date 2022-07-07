@@ -11,7 +11,7 @@ describe("Sign In", () => {
 
   it("should give error on clicking signin with blank values", function () {
     cy.get(authSelectors.signInButton).click();
-    cy.contains("Invalid Email or password");
+    cy.contains("You need to sign in or sign up before continuing.");
   });
 
   it("should give error with incorrect credentials", function () {

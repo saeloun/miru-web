@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
+RSpec.describe "InternalApi::V1::Employments#index", type: :request do
   let(:company) { create(:company) }
   let(:user1) { create(:user, current_workspace_id: company.id) }
   let(:user2) { create(:user) }
@@ -11,9 +11,9 @@ RSpec.describe "InternalApi::V1::CompanyUsers#index", type: :request do
   let(:project) { create(:project, client:) }
 
   before do
-    create(:company_user, company_id: company.id, user_id: user1.id)
-    create(:company_user, company_id: company.id, user_id: user2.id)
-    create(:company_user, company_id: company.id, user_id: user3.id)
+    create(:employment, company_id: company.id, user_id: user1.id)
+    create(:employment, company_id: company.id, user_id: user2.id)
+    create(:employment, company_id: company.id, user_id: user3.id)
   end
 
   context "when user is an admin" do
