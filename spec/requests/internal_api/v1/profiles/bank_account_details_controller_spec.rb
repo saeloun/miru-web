@@ -7,7 +7,7 @@ RSpec.describe "InternalApi::V1::Profiles::BankAccountDetailsController", type: 
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
-    create(:company_user, company:, user:)
+    create(:employment, company:, user:)
     user.add_role :employee, company
     sign_in user
   end

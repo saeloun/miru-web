@@ -1,43 +1,53 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import DatePicker from "react-datepicker";
+import { Trash } from "phosphor-react";
 
 const EditLineItems = ({
   item,
   setSelectedOption,
   selectedOption,
+  handleDelete,
   setEdit
 }) => {
 
   const strName = item.name || `${item.first_name} ${item.last_name}`;
   const quantity = (item.qty / 60) || (item.quantity / 60);
   const [name, setName] = useState<string>(strName);
-  const newDate = Date.parse(item.date);
-  const [lineItemDate, setLineItemDate] = useState(newDate);
+  const formatedDate = new Date(item.date);
+  const [lineItemDate, setLineItemDate] = useState(formatedDate);
   const [description, setDescription] = useState<string>(item.description);
-  const [rate, setRate] = useState<any>(item.rate);
-  const [qty, setQty] = useState<any>(quantity);
-  const [lineTotal, setLineTotal] = useState<any>(quantity * item.rate);
+  const rate = item.rate;
+  const lineTotal = quantity * item.rate;
 
-  const onEnter = e => {
-    if (e.key == "Enter") {
-      const sanitizedSelected = selectedOption.filter(option =>
-        option.id !== item.id || option.timesheet_entry_id !== item.timesheet_entry_id
-      );
-      const names = name.split(" ");
-      const newItem = {
-        ...item,
-        first_name: names.splice(0, 1)[0],
-        last_name: names.join(" "),
-        name: name,
-        date: lineItemDate,
-        description,
-        rate,
-        qty: Number(qty) * 60,
-        lineTotal: Number(qty) * Number(rate)
-      };
-      setSelectedOption([...sanitizedSelected, { ...newItem }]);
-      setEdit(false);
-    }
+  useEffect(() => {
+    const names = name.split(" ");
+    const newItem = {
+      ...item,
+      first_name: names.splice(0, 1)[0],
+      last_name: names.join(" "),
+      name: name,
+      date: lineItemDate,
+      description,
+      rate,
+      qty: Number(quantity) * 60,
+      lineTotal: Number(quantity) * Number(rate)
+    };
+
+    const selectedOptionArr = selectedOption.map((option) => {
+      if ((option.id && option.id === item.id) ||
+        (option.timesheet_entry_id && option.timesheet_entry_id === item.timesheet_entry_id)) {
+        return newItem;
+      }
+
+      return option;
+    });
+
+    setSelectedOption(selectedOptionArr);
+  }, [name, lineItemDate, description]);
+
+  const closeEditField = (event) => {
+    if (event.key === "Enter") setEdit(false);
   };
 
   return (
@@ -49,7 +59,7 @@ const EditLineItems = ({
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={name}
           onChange={e => setName(e.target.value)}
-          onKeyDown={e => onEnter(e)}
+          onKeyDown={closeEditField}
         />
       </td>
       <td className="w-full">
@@ -59,7 +69,7 @@ const EditLineItems = ({
           dateFormat="dd.MM.yyyy"
           selected={lineItemDate}
           onChange={(date) => setLineItemDate(date)}
-          onKeyDown={e => onEnter(e)}
+          onKeyDown={closeEditField}
         />
       </td>
       <td className="p-1 w-full">
@@ -69,7 +79,7 @@ const EditLineItems = ({
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={description}
           onChange={e => setDescription(e.target.value)}
-          onKeyDown={e => onEnter(e)}
+          onKeyDown={closeEditField}
         />
       </td>
       <td className=" w-full">
@@ -77,10 +87,8 @@ const EditLineItems = ({
           type="text"
           placeholder="Rate"
           className=" p-1 px-2 bg-miru-gray-600 rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          value={rate}
+          value={item.rate}
           disabled={true}
-          onChange={e => setRate(e.target.value)}
-          onKeyDown={e => onEnter(e)}
         />
       </td>
       <td className="p-1 w-full">
@@ -88,17 +96,17 @@ const EditLineItems = ({
           type="text"
           placeholder="Qty"
           className=" p-1 px-2 bg-miru-gray-600 rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          value={qty}
+          value={quantity}
           disabled={true}
-          onChange={e => {
-            setQty(e.target.value);
-            setLineTotal(Number(rate) * Number(e.target.value));
-          }}
-          onKeyDown={e => onEnter(e)}
         />
       </td>
       <td className="text-right font-normal text-base text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000">
         {lineTotal.toFixed(2)}
+      </td>
+      <td>
+        <button onClick={() => handleDelete(item)} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
+          <Trash size={16} color="#E04646" weight="bold" />
+        </button>
       </td>
     </tr>
   );

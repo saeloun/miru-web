@@ -8,8 +8,8 @@ RSpec.describe SubscriptionsController, type: :request do
   let(:employee) { create(:user, current_workspace_id: company.id) }
 
   before do
-    create(:company_user, company:, user: admin)
-    create(:company_user, company:, user: employee)
+    create(:employment, company:, user: admin)
+    create(:employment, company:, user: employee)
     employee.add_role :employee, company
   end
 
