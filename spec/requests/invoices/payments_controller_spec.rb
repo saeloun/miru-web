@@ -3,10 +3,10 @@
 require "rails_helper"
 
 RSpec.describe Invoices::PaymentsController, type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, base_currency: "inr") }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
-  let(:client) { create(:client, company:) }
+  let(:client) { create(:client_with_phone_number_without_country_code, company:) }
   let!(:invoice) { create(:invoice, status: "sent", client:) }
   let(:params) { { invoice_id: invoice.id } }
 
@@ -47,12 +47,20 @@ RSpec.describe Invoices::PaymentsController, type: :request do
   end
 
   describe "GET success" do
+    before do
+      StripeConnectedAccount.create!({ company: })
+      invoice.create_checkout_session!(
+        success_url: success_invoice_payments_url(invoice),
+        cancel_url: cancel_invoice_payments_url(invoice)
+      )
+    end
+
     subject { send_request :get, success_invoice_payments_path(params) }
 
     it "marks invoice status as paid" do
       expect(invoice.status).not_to eq "paid"
       subject
-      expect(response.status).to eq 200
+      expect(response.status).to eq 302
       invoice.reload
       expect(invoice.status).to eq "paid"
     end
