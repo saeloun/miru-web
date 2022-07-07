@@ -95,4 +95,6 @@ Rails.application.routes.draw do
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
     get "profile/edit/*path", to: "users/registrations#edit"
   end
+
+  get "*path", to: "home#index", via: :all
 end
