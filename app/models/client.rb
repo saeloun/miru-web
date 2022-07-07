@@ -117,6 +117,30 @@ class Client < ApplicationRecord
     end
   end
 
+  def payment_summary
+    status_and_amount = invoices.group(:status).sum(:amount)
+    status_and_amount.default = 0
+    {
+      name:,
+      paid_amount: status_and_amount["paid"],
+      unpaid_amount: status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
+    }
+  end
+
+  def outstanding_and_overdue_invoices
+    outstanding_overdue_statuses = ["overdue", "sent", "viewed"]
+    filtered_invoices = invoices.select { |invoice| outstanding_overdue_statuses.include?(invoice.status) }
+    status_and_amount = invoices.group(:status).sum(:amount)
+    status_and_amount.default = 0
+
+    {
+      name:,
+      invoices: filtered_invoices,
+      total_outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
+      total_overdue_amount: status_and_amount["overdue"]
+    }
+  end
+
   private
 
     def stripe_connected_account
