@@ -12,8 +12,8 @@ RSpec.describe InternalApi::V1::ClientsController, type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
-    create(:company_user, company:, user: admin)
-    create(:company_user, company:, user: employee)
+    create(:employment, company:, user: admin)
+    create(:employment, company:, user: employee)
     admin.add_role :admin, company
     employee.add_role :employee, company
     book_keeper.add_role :book_keeper, company

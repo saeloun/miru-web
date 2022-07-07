@@ -15,7 +15,7 @@ const TableHeader = () => (
       </th>
       <th
         scope="col"
-        className="w-2/5 px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="w-2/5 px-10 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
         NOTE
       </th>
@@ -40,7 +40,7 @@ const TableHeader = () => (
 );
 
 const Container = () => {
-  const { reports } = useEntry();
+  const { timeEntryReport } = useEntry();
 
   const getEntryList = (entries) =>
     entries.map((timeEntry, index) => (
@@ -50,7 +50,7 @@ const Container = () => {
   return (
     <Fragment>
       {
-        reports.map((report, index) => (
+        timeEntryReport.reports.map((report, index) => (
           <Fragment key={index}>
             {report.label !== "" && <h1 className="text-miru-han-purple-1000 font-bold text-xl py-5 border-b border-miru-han-purple-1000">{report.label}</h1>}
             <table className="min-w-full divide-y divide-gray-200 mt-4">

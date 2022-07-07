@@ -27,14 +27,20 @@ const BankAccountDetails = () => {
 
   useEffect(() => {
     sendGAPageView();
-    profilesApi.get()
-      .then(response => response.data)
-      .then(data => {
-        setBillingDetails(data);
-        setIsLoading(false);
-      })
-      .catch(error => console.error(error));
+    fetchProfileDetails();
   }, []);
+
+  const fetchProfileDetails = async () => {
+    try {
+      setIsLoading(true);
+      const response = await profilesApi.get();
+      setBillingDetails(response.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const createRecipient = async (payload) => {
     try {
@@ -64,29 +70,23 @@ const BankAccountDetails = () => {
   };
 
   // TODO: Try to remove duplicate code as much as possible and optimize
-  const fetchAccountRequirements = (sourceCurrency, targetCurrency, isUpdate = false) => {
-    wiseApi.fetchAccountRequirements(sourceCurrency, targetCurrency)
-      .then(response => response.data)
-      .then(data => {
-        // Considering only first requirement for now. e.g. USD has two account types
-        // Change this if we need to consider swift account
-        const validRecipientDetails = bankFieldValidationRequirements(data, isUpdate);
-
-        setValidRecipientDetails(validRecipientDetails);
-        if (!isUpdate) {
-          setRecipientDetails({ details: { address: {} } });
-        }
-        return data;
-      })
-      .then(data => data.map(requirement => separateAddressFields(requirement)))
-      .then(data => {
-        setBankRequirements(data);
-        setIsLoading(false);
-      })
-      .catch(error => {
-        setIsLoading(false);
-        console.error(error);
-      });
+  const fetchAccountRequirements = async (sourceCurrency, targetCurrency, isUpdate = false) => {
+    try {
+      setIsLoading(true);
+      const response = await wiseApi.fetchAccountRequirements(sourceCurrency, targetCurrency);
+      const data = response.data;
+      const validRecipientDetails = bankFieldValidationRequirements(data, isUpdate);
+      setValidRecipientDetails(validRecipientDetails);
+      if (!isUpdate) {
+        setRecipientDetails({ details: { address: {} } });
+      }
+      const fields = data.map(requirement => separateAddressFields(requirement));
+      setBankRequirements(fields);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const submitBankDetails = () => {
@@ -127,6 +127,7 @@ const BankAccountDetails = () => {
           sourceCurrency={billingDetails.sourceCurrency}
           targetCurrency={billingDetails.targetCurrency}
           setIsUpdate={setIsUpdate}
+          setIsLoading={setIsLoading}
         />
       );
     }
