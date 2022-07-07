@@ -34,7 +34,7 @@ const listDetails = [{
 }];
 
 const ReportsList = () => (
-  <div>
+  <div className="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
     <div className="text-3xl font-bold mt-4">
       Reports
     </div>

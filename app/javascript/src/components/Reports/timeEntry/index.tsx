@@ -103,7 +103,7 @@ const TimeEntryReports = () => {
   };
 
   return (
-    <div>
+    <div className="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
       <EntryContext.Provider value={{
         ...contextValues
       }}>

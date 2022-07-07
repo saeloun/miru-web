@@ -3,8 +3,9 @@ import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import { TOASTER_DURATION } from "constants/index";
+import Main from "./Main";
 
-const App = () => {
+const App = (props) => {
 
   useEffect(() => {
     setAuthHeaders();
@@ -15,7 +16,7 @@ const App = () => {
     <Fragment>
       <BrowserRouter>
         <ToastContainer autoClose={TOASTER_DURATION} />
-        <h1>hello world</h1>
+        <Main {...props} />
       </BrowserRouter>
     </Fragment>
   );

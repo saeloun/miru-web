@@ -43,7 +43,7 @@ module NavigationHelper
           data: { cy: "projects-tab" }
         },
         {
-          url: reports_path,
+          url: "#{root_url}reports",
           title: I18n.t("navbar.reports"),
           permitted: Pundit.policy!(current_user, :report).index?,
           data: { cy: "reports-tab" }
