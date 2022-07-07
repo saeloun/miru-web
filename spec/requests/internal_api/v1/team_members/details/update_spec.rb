@@ -3,19 +3,18 @@
 require "rails_helper"
 
 RSpec.describe "Details#update", type: :request do
-  let(:employment) { create(:employment, user:, company:) }
   let(:company) { create(:company) }
   let(:company2) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:user2) { create(:user, current_workspace_id: company2.id) }
+  let(:employment) { create(:employment, user:, company:) }
 
   context "when Owner wants to update details of employee of his company" do
     before do
-      create(:employment, user:, company:)
       user.add_role :owner, company
       sign_in user
       send_request(
-        :patch, "/internal_api/v1/team/#{user.id}/details",
+        :patch, "/internal_api/v1/team/#{employment.id}/details",
         params: {
           user: {
             first_name: Faker::Name.first_name,
@@ -35,11 +34,10 @@ RSpec.describe "Details#update", type: :request do
 
   context "when Admin wants to update details of employee of his company" do
     before do
-      create(:employment, user:, company:)
       user.add_role :admin, company
       sign_in user
       send_request(
-        :patch, "/internal_api/v1/team/#{user.id}/details",
+        :patch, "/internal_api/v1/team/#{employment.id}/details",
         params: {
           user: {
             first_name: Faker::Name.first_name,
@@ -59,11 +57,10 @@ RSpec.describe "Details#update", type: :request do
 
   context "when Employee wants to update his own details" do
     before do
-      create(:employment, user:, company:)
       user.add_role :employee, company
       sign_in user
       send_request(
-        :patch, "/internal_api/v1/team/#{user.id}/details",
+        :patch, "/internal_api/v1/team/#{employment.id}/details",
         params: {
           user: {
             first_name: Faker::Name.first_name,
@@ -83,13 +80,12 @@ RSpec.describe "Details#update", type: :request do
 
   context "when logged in user wants to update details of another employee from a different company" do
     before do
-      create(:employment, user:, company:)
-      create(:employment, user: user2, company: company2)
+      employment2 = create(:employment, user: user2, company: company2)
       user.add_role :employee, company
       user2.add_role :employee, company2
       sign_in user
       send_request(
-        :patch, "/internal_api/v1/team/#{user2.id}/details",
+        :patch, "/internal_api/v1/team/#{employment2.id}/details",
         params: {
           user: {
             first_name: Faker::Name.first_name,
@@ -109,13 +105,12 @@ RSpec.describe "Details#update", type: :request do
 
   context "when logged in user wants to update details of another employee from his own company" do
     before do
-      create(:employment, user:, company:)
-      create(:employment, user: user2, company:)
+      employment2 = create(:employment, user: user2, company:)
       user.add_role :employee, company
       user2.add_role :employee, company
       sign_in user
       send_request(
-        :patch, "/internal_api/v1/team/#{user2.id}/details",
+        :patch, "/internal_api/v1/team/#{employment2.id}/details",
         params: {
           user: {
             first_name: Faker::Name.first_name,
@@ -135,13 +130,12 @@ RSpec.describe "Details#update", type: :request do
 
   context "when logged in Owner wants to update details of another employee from a different company" do
     before do
-      create(:employment, user:, company:)
-      create(:employment, user: user2, company: company2)
+      employment2 = create(:employment, user: user2, company: company2)
       user.add_role :owner, company
       user2.add_role :employee, company2
       sign_in user
       send_request(
-        :patch, "/internal_api/v1/team/#{user2.id}/details",
+        :patch, "/internal_api/v1/team/#{employment2.id}/details",
         params: {
           user: {
             first_name: Faker::Name.first_name,
@@ -161,13 +155,12 @@ RSpec.describe "Details#update", type: :request do
 
   context "when logged in Admin wants to update details of another employee from a different company" do
     before do
-      create(:employment, user:, company:)
-      create(:employment, user: user2, company: company2)
+      employment2 = create(:employment, user: user2, company: company2)
       user.add_role :admin, company
       user2.add_role :employee, company2
       sign_in user
       send_request(
-        :patch, "/internal_api/v1/team/#{user2.id}/details",
+        :patch, "/internal_api/v1/team/#{employment2.id}/details",
         params: {
           user: {
             first_name: Faker::Name.first_name,

@@ -3,18 +3,17 @@
 require "rails_helper"
 
 RSpec.describe "Details#show", type: :request do
-  let(:employment) { create(:employment, user:, company:) }
   let(:company) { create(:company) }
   let(:company2) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:user2) { create(:user, current_workspace_id: company2.id) }
+  let(:employment) { create(:employment, user:, company:) }
 
   context "when Owner wants to see details of employee of his company" do
     before do
-      create(:employment, user:, company:)
       user.add_role :owner, company
       sign_in user
-      get "/internal_api/v1/team/#{user.id}/details#show"
+      get "/internal_api/v1/team/#{employment.id}/details"
     end
 
     it "is successful" do
@@ -24,10 +23,9 @@ RSpec.describe "Details#show", type: :request do
 
   context "when Admin wants to see details of employee of his company" do
     before do
-      create(:employment, user:, company:)
       user.add_role :admin, company
       sign_in user
-      get "/internal_api/v1/team/#{user.id}/details#show"
+      get "/internal_api/v1/team/#{employment.id}/details"
     end
 
     it "is successful" do
@@ -37,10 +35,9 @@ RSpec.describe "Details#show", type: :request do
 
   context "when logged in user checks his own details" do
     before do
-      create(:employment, user:, company:)
       user.add_role :employee, company
       sign_in user
-      get "/internal_api/v1/team/#{user.id}/details#show"
+      get "/internal_api/v1/team/#{employment.id}/details"
     end
 
     it "is successful" do
@@ -50,12 +47,11 @@ RSpec.describe "Details#show", type: :request do
 
   context "when Owner of a company accesses employee details of another company" do
     before do
-      create(:employment, user:, company:)
-      create(:employment, user: user2, company: company2)
+      employment2 = create(:employment, user: user2, company: company2)
       user.add_role :owner, company
       user2.add_role :employee, company2
       sign_in user
-      get "/internal_api/v1/team/#{user2.id}/details#show"
+      get "/internal_api/v1/team/#{employment2.id}/details"
     end
 
     it "is unsuccessful" do
@@ -66,12 +62,11 @@ RSpec.describe "Details#show", type: :request do
 
   context "when Admin of a company accesses employee details of another company" do
     before do
-      create(:employment, user:, company:)
-      create(:employment, user: user2, company: company2)
+      employment2 = create(:employment, user: user2, company: company2)
       user.add_role :admin, company
       user2.add_role :employee, company2
       sign_in user
-      get "/internal_api/v1/team/#{user2.id}/details#show"
+      get "/internal_api/v1/team/#{employment2.id}/details"
     end
 
     it "is unsuccessful" do
@@ -82,12 +77,11 @@ RSpec.describe "Details#show", type: :request do
 
   context "when Employee wants to see details of another employee from different company" do
     before do
-      create(:employment, user:, company:)
-      create(:employment, user: user2, company: company2)
+      employment2 = create(:employment, user: user2, company: company2)
       user.add_role :employee, company
       user2.add_role :employee, company2
       sign_in user
-      get "/internal_api/v1/team/#{user2.id}/details#show"
+      get "/internal_api/v1/team/#{employment2.id}/details"
     end
 
     it "is unsuccessful" do
@@ -98,12 +92,12 @@ RSpec.describe "Details#show", type: :request do
 
   context "when Employee wants to see details of another employee from same company" do
     before do
-      create(:employment, user:, company:)
-      create(:employment, user: user2, company:)
+      employment = create(:employment, user:, company:)
+      employment2 = create(:employment, user: user2, company:)
       user.add_role :employee, company
       user2.add_role :employee, company
       sign_in user
-      get "/internal_api/v1/team/#{user2.id}/details#show"
+      get "/internal_api/v1/team/#{employment2.id}/details"
     end
 
     it "is unsuccessful" do
