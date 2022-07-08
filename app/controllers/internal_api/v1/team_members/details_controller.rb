@@ -3,7 +3,7 @@
 class InternalApi::V1::TeamMembers::DetailsController < InternalApi::V1::ApplicationController
   def show
     authorize employment, policy_class: TeamMembers::DetailPolicy
-    render :show, locals: { user: employment.user, success: true }, status: :ok
+    render :show, locals: { user: employment.user }, status: :ok
   end
 
   def update
@@ -11,7 +11,6 @@ class InternalApi::V1::TeamMembers::DetailsController < InternalApi::V1::Applica
     user = employment.user
     user.update!(detail_params)
     render json: {
-      success: true,
       user:,
       notice: ("User updated successfully.")
     }, status: :ok
