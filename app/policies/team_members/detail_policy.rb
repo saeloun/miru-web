@@ -10,6 +10,6 @@ class TeamMembers::DetailPolicy < ApplicationPolicy
   def update?
     user.has_any_role?(
       { name: :admin, resource: record.company },
-      { name: :employee, resource: record.company }) || user == record.user
+      { name: :owner, resource: record.company }) || user == record.user
   end
 end

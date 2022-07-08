@@ -2,20 +2,26 @@
 
 class InternalApi::V1::TeamMembers::DetailsController < InternalApi::V1::ApplicationController
   def show
-    employment = Employment.find(params[:team_id])
     authorize employment, policy_class: TeamMembers::DetailPolicy
-    render :show, locals: { user: employment.user }, status: :ok
+    render :show, locals: { user: employment.user, success: true }, status: :ok
   end
 
   def update
-    employment = Employment.find(params[:team_id])
     authorize employment, policy_class: TeamMembers::DetailPolicy
     user = employment.user
     user.update!(detail_params)
-    render :update, locals: { user: }, status: :ok
+    render json: {
+      success: true,
+      user:,
+      notice: ("User updated successfully.")
+    }, status: :ok
   end
 
   private
+
+    def employment
+      @employment ||= Employment.find(params[:team_id])
+    end
 
     def detail_params
       params.require(:user).permit(

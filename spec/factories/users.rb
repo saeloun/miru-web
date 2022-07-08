@@ -11,6 +11,7 @@ FactoryBot.define do
     phone { Faker::PhoneNumber.phone_number_with_country_code }
     personal_email_id { Faker::Internet.safe_email }
     current_workspace factory: :company
+    social_accounts {}
 
     trait :with_avatar do
       after :build do |user|

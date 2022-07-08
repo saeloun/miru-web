@@ -9,6 +9,19 @@ RSpec.describe "Details#update", type: :request do
   let(:user2) { create(:user, current_workspace_id: company2.id) }
   let(:employment) { create(:employment, user:, company:) }
 
+  before {
+    @user_details = {
+      last_name: Faker::Name.first_name,
+      phone: Faker::PhoneNumber.phone_number_with_country_code,
+      date_of_birth: Faker::Date.between(from: "1990-01-01", to: "2000-01-01"),
+      personal_email_id: Faker::Internet.safe_email,
+      social_accounts: {
+        "github_url": "#{user.first_name}.github",
+        "linkedin_url": "#{user.first_name}.linkedin"
+      }
+    }
+  }
+
   context "when Owner wants to update details of employee of his company" do
     before do
       user.add_role :owner, company
@@ -16,13 +29,7 @@ RSpec.describe "Details#update", type: :request do
       send_request(
         :patch, "/internal_api/v1/team/#{employment.id}/details",
         params: {
-          user: {
-            first_name: Faker::Name.first_name,
-            last_name: Faker::Name.first_name,
-            phone: Faker::PhoneNumber.phone_number_with_country_code,
-            date_of_birth: Date.today,
-            personal_email_id: Faker::Internet.safe_email
-          }
+          user: @user_details
         })
     end
 
@@ -39,13 +46,7 @@ RSpec.describe "Details#update", type: :request do
       send_request(
         :patch, "/internal_api/v1/team/#{employment.id}/details",
         params: {
-          user: {
-            first_name: Faker::Name.first_name,
-            last_name: Faker::Name.first_name,
-            phone: Faker::PhoneNumber.phone_number_with_country_code,
-            date_of_birth: Date.today,
-            personal_email_id: Faker::Internet.safe_email
-          }
+          user: @user_details
         })
     end
 
@@ -62,13 +63,7 @@ RSpec.describe "Details#update", type: :request do
       send_request(
         :patch, "/internal_api/v1/team/#{employment.id}/details",
         params: {
-          user: {
-            first_name: Faker::Name.first_name,
-            last_name: Faker::Name.first_name,
-            phone: Faker::PhoneNumber.phone_number_with_country_code,
-            date_of_birth: Date.today,
-            personal_email_id: Faker::Internet.safe_email
-          }
+          user: @user_details
         })
     end
 
@@ -87,13 +82,7 @@ RSpec.describe "Details#update", type: :request do
       send_request(
         :patch, "/internal_api/v1/team/#{employment2.id}/details",
         params: {
-          user: {
-            first_name: Faker::Name.first_name,
-            last_name: Faker::Name.first_name,
-            phone: Faker::PhoneNumber.phone_number_with_country_code,
-            date_of_birth: Date.today,
-            personal_email_id: Faker::Internet.safe_email
-          }
+          user: @user_details
         })
     end
 
@@ -112,13 +101,7 @@ RSpec.describe "Details#update", type: :request do
       send_request(
         :patch, "/internal_api/v1/team/#{employment2.id}/details",
         params: {
-          user: {
-            first_name: Faker::Name.first_name,
-            last_name: Faker::Name.first_name,
-            phone: Faker::PhoneNumber.phone_number_with_country_code,
-            date_of_birth: Date.today,
-            personal_email_id: Faker::Internet.safe_email
-          }
+          user: @user_details
         })
     end
 
@@ -137,13 +120,7 @@ RSpec.describe "Details#update", type: :request do
       send_request(
         :patch, "/internal_api/v1/team/#{employment2.id}/details",
         params: {
-          user: {
-            first_name: Faker::Name.first_name,
-            last_name: Faker::Name.first_name,
-            phone: Faker::PhoneNumber.phone_number_with_country_code,
-            date_of_birth: Date.today,
-            personal_email_id: Faker::Internet.safe_email
-          }
+          user: @user_details
         })
     end
 
@@ -162,13 +139,7 @@ RSpec.describe "Details#update", type: :request do
       send_request(
         :patch, "/internal_api/v1/team/#{employment2.id}/details",
         params: {
-          user: {
-            first_name: Faker::Name.first_name,
-            last_name: Faker::Name.first_name,
-            phone: Faker::PhoneNumber.phone_number_with_country_code,
-            date_of_birth: Date.today,
-            personal_email_id: Faker::Internet.safe_email
-          }
+          user: @user_details
         })
     end
 
