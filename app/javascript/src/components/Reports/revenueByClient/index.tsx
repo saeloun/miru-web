@@ -5,17 +5,17 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import Container from "./Container";
 
 import Filters from "./Filters";
-import { getQuarter } from "./Filters/filterOptions";
+import { RevenueByClients } from "./interface";
+import getReportData from "../api/revenueByClient";
 import EntryContext from "../context/EntryContext";
 
 import TimeEntryReportContext from "../context/TimeEntryReportContext";
 import Header from "../Header";
 
 const RevenueByClientReport = () => {
-
   const filterIntialValues = {
-    dateRange: { label: getQuarter(true), value: "this_quarter" },
-    clients: []
+    dateRange: { label: "All", value: "" },
+    clients: [{ label: "All Clients", value: "" }]
   };
 
   const [filterOptions, getFilterOptions] = useState({ clients: [] }); //eslint-disable-line
@@ -25,6 +25,13 @@ const RevenueByClientReport = () => {
   const [filterCounter, setFilterCounter] = useState(0);
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
   const [selectedInput, setSelectedInput] = useState("from-input");
+  const [clientList, setClientList] = useState<Array<RevenueByClients>>([]);
+  const [currency, setCurrency] = useState("");
+  const [summary, setSummary] = useState({
+    totalPaidAmount: 0,
+    totalUnpaidAmount: 0,
+    totalRevenue: 0
+  });
 
   useEffect(() => {
     sendGAPageView();
@@ -62,15 +69,14 @@ const RevenueByClientReport = () => {
 
   useEffect(() => {
     updateFilterCounter();
-    setNavFilters(true);
-    setFilterVisibilty(false);
+    getReportData({ selectedFilter, setClientList, setNavFilters, setFilterVisibilty, setSummary, setCurrency });
   }, [selectedFilter]);
 
   const contextValues = {
     timeEntryReport: TimeEntryReportContext,
     revenueByClientReport: {
       filterOptions: {
-        clients: [{ label: "Microsoft", value: 1 }, { label: "Flipkart", value: 2 }]
+        clients: [{ label: "All Clients", value: "" }]
       },
       selectedFilter: selectedFilter,
       customDateFilter: {
@@ -78,12 +84,15 @@ const RevenueByClientReport = () => {
         to: dateRange.to
       },
       filterCounter: filterCounter,
+      clientList: clientList,
       handleRemoveSingleFilter: handleRemoveSingleFilter, //eslint-disable-line
+      currency: currency,
+      summary: summary
     },
     currentReport: "RevenueByClientReport"
   };
 
-  const handleApplyFilter = async (filters) => {
+  const handleApplyFilter = (filters) => {
     setSelectedFilter(filters);
   };
 

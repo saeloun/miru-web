@@ -54,7 +54,7 @@ const InvoiceTable = ({
   };
 
   useOutsideClick(wrapperRef, () => {
-    setAddNew(addNew);
+    setAddNew(false);
   }, addNew);
 
   return (
