@@ -53,7 +53,7 @@ RSpec.describe CreateInvitedUserService do
 
     context "when invited user already exists in application" do
       before do
-        invitation.update(recipient_email: user.email)
+        invitation.update_columns(recipient_email: user.email)
         @service = CreateInvitedUserService.new(invitation.token)
         @service.process
       end
