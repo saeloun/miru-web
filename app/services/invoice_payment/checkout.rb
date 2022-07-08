@@ -69,7 +69,7 @@ module InvoicePayment
       end
 
       def update_invoice!
-        invoice.update(stripe_payment_intent: @checkout_session.payment_intent)
+        invoice.update!(stripe_payment_intent: @checkout_session.payment_intent)
       end
   end
 end
