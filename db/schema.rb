@@ -256,7 +256,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_06_105004) do
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
     t.float "duration", null: false
-    t.text "note"
+    t.text "note", default: ""
     t.date "work_date", null: false
     t.integer "bill_status", null: false
     t.datetime "created_at", null: false
