@@ -23,6 +23,7 @@
 #  last_name              :string           not null
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string
+#  phone                  :string
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
@@ -82,19 +83,24 @@ class User < ApplicationRecord
   ]
 
   # Associations
-  has_many :company_users, dependent: :destroy
-  has_many :companies, through: :company_users
+  has_many :employments, dependent: :destroy
+  has_many :companies, through: :employments
   has_many :project_members, dependent: :destroy
   has_many :timesheet_entries
   has_many :space_usages
   has_many :identities, dependent: :delete_all
   has_one :wise_account, dependent: :destroy
-  has_many :previous_employment_details, dependent: :destroy
+  has_many :previous_employments, dependent: :destroy
   has_one_attached :avatar
+  has_many :addresses, as: :addressable, dependent: :destroy
+  has_many :devices, dependent: :destroy
   rolify strict: true
 
   # Social account details
   store_accessor :social_accounts, :github_url, :linkedin_url
+
+  # Attribute accessor
+  attr_accessor :current_company, :role
 
   # Validations
   after_initialize :set_default_social_accounts, if: :new_record?
@@ -160,6 +166,15 @@ class User < ApplicationRecord
     super
   end
 
+  def assign_company_and_role
+    return self.errors.add(:base, I18n.t("errors.internal_server_error")) if current_company.nil? || role.nil?
+
+    ActiveRecord::Base.transaction do
+      assign_company
+      assign_role
+    end
+  end
+
   def avatar_url
     self.avatar.attached? ? rails_blob_path(self.avatar, disposition: "attachment", only_path: true) : ""
   end
@@ -175,5 +190,18 @@ class User < ApplicationRecord
         "github_url": "",
         "linkedin_url": ""
       }
-  end
+    end
+
+    def assign_company
+      unless errors.present? ||
+          companies.exists?(id: current_company.id)
+        self.companies << current_company
+      end
+    end
+
+    def assign_role
+      if errors.empty? && current_company
+        self.add_role(role.downcase.to_sym, current_company)
+      end
+    end
 end

@@ -7,16 +7,17 @@ RSpec.describe User, type: :model do
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
-    create(:company_user, company:, user:)
+    create(:employment, company:, user:)
   end
 
   describe "Associations" do
-    it { is_expected.to have_many(:companies).through(:company_users) }
-    it { is_expected.to have_many(:company_users).dependent(:destroy) }
+    it { is_expected.to have_many(:companies).through(:employments) }
+    it { is_expected.to have_many(:employments).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:delete_all) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:timesheet_entries) }
-    it { is_expected.to have_many(:previous_employment_details).dependent(:destroy) }
+    it { is_expected.to have_many(:previous_employments).dependent(:destroy) }
+    it { is_expected.to have_many(:addresses).dependent(:destroy) }
     it { is_expected.to have_one_attached(:avatar) }
   end
 
@@ -105,6 +106,28 @@ RSpec.describe User, type: :model do
     it "checks for empty social account urls" do
       expect(user.social_accounts["github_url"]).to eq("")
       expect(user.social_accounts["linkedin_url"]).to eq("")
+    end
+  end
+
+  describe "#assign_company_and_role" do
+    before do
+      user.remove_role :admin, company
+      user.employments.destroy_all
+    end
+
+    it "user will be added as a company member with employee role" do
+      user.current_company = company
+      user.role = "employee"
+      user.assign_company_and_role
+      expect(company.employments.pluck(:user_id).include?(user.id)).to be_truthy
+    end
+
+    it "when role is nil user won't be added as a company member with employee role" do
+      user.current_company = company
+      user.role = nil
+      user.assign_company_and_role
+      expect(user.errors.messages.size).to eq(1)
+      expect(user.errors.full_messages).to include("Something went wrong")
     end
   end
 end

@@ -22,7 +22,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
 
   context "when user is an admin" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
       send_request :patch, internal_api_v1_timesheet_entry_path(timesheet_entry.id), params: {
@@ -50,7 +50,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
 
   context "when user is an employee" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
       send_request :patch, internal_api_v1_timesheet_entry_path(timesheet_entry.id), params: {
@@ -78,7 +78,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
 
   context "when employee tries to update other user's timesheet entry" do
     before do
-      create(:company_user, company:, user: user2)
+      create(:employment, company:, user: user2)
       user2.add_role :employee, company
       sign_in user2
       send_request :patch, internal_api_v1_timesheet_entry_path(timesheet_entry.id), params: {

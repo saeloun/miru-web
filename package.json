@@ -16,6 +16,7 @@
     "currency-symbol-map": "^5.0.1",
     "date-fns": "^2.28.0",
     "dayjs": "^1.11.0",
+    "faker": "5.5.3",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
     "formik": "^2.2.9",
     "jquery": "^3.6.0",

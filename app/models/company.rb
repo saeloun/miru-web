@@ -20,8 +20,8 @@
 
 class Company < ApplicationRecord
   # Associations
-  has_many :company_users, dependent: :destroy
-  has_many :users, through: :company_users
+  has_many :employments, dependent: :destroy
+  has_many :users, through: :employments
   has_many :timesheet_entries, through: :users
   has_many :clients, dependent: :destroy
   has_many :projects, through: :clients, dependent: :destroy
@@ -33,7 +33,8 @@ class Company < ApplicationRecord
   has_many :payments_providers, dependent: :destroy
   has_many :leads, dependent: :destroy
   has_many :space_usages, dependent: :destroy
-
+  has_many :addresses, as: :addressable, dependent: :destroy
+  has_many :devices, dependent: :destroy
   resourcify
 
   # Validations

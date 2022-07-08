@@ -13,7 +13,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
 
   context "when user is an admin" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
       create_list(:timesheet_entry, 5, user:, project: project_1)
@@ -51,7 +51,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
 
     context "for ransack search" do
       before do
-        create(:company_user, company:, user:)
+        create(:employment, company:, user:)
         user.add_role :admin, company
         sign_in user
         send_request :get, internal_api_v1_clients_path, params: { q: client_1.name }
@@ -83,7 +83,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     let(:time_frame) { "last_week" }
 
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
       create_list(:timesheet_entry, 5, user:, project: project_1)
@@ -115,7 +115,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
     let(:time_frame) { "last_week" }
 
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
       create_list(:timesheet_entry, 5, user:, project: project_1)
@@ -131,8 +131,10 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   end
 
   context "when unauthenticated" do
-    it "is not permitted to view time entry report" do
-      send_request :get, internal_api_v1_reports_path
+    it "is not permitted to view clients" do
+      send_request :get, internal_api_v1_clients_path, params: {
+        time_frame:
+      }
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
     end

@@ -10,7 +10,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
   context "when user is an admin" do
     before do
       client
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
     end
@@ -64,7 +64,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
   context "when user is an employee" do
     before do
       client
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
       send_request(
@@ -87,7 +87,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
   context "when user is a book keeper" do
     before do
       client
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
       send_request(
@@ -125,10 +125,10 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
 
   context "when user's current workspace is different" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :employee, company
       company2 = create(:company)
-      create(:company_user, company: company2, user:)
+      create(:employment, company: company2, user:)
       user.add_role :employee, company2
       user.update!(current_workspace_id: company2)
       sign_in user
