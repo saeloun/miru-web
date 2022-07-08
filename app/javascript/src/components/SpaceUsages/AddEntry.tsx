@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
-import timesheetEntryApi from "apis/timesheet-entry";
+import spaceUsagesApi from "apis/space-usages";
 import autosize from "autosize";
 
 import Toastr from "common/Toastr";
@@ -8,15 +8,13 @@ import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "helpers/ordinal";
 import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 
-const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
-const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
+// const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
+// const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 
 const AddEntry: React.FC<Iprops> = ({
   selectedEmployeeId,
   fetchEntries,
   setNewEntryView,
-  // clients,
-  projects,
   selectedDateInfo,
   entryList,
   selectedFullDate,
@@ -25,12 +23,11 @@ const AddEntry: React.FC<Iprops> = ({
 }) => {
   const { useState, useEffect } = React;
   const [note, setNote] = useState("");
-  const [duration, setDuration] = useState("00:00");
-  const [client, setClient] = useState("");
-  const [project, setProject] = useState("");
-  const [projectId, setProjectId] = useState(0);
-  const [billable, setBillable] = useState(false);
-  const [projectBillable, setProjectBillable] = useState(true);
+  const [startDuration, setStartDuration] = useState("00:00");
+  const [endDuration, setEndDuration] = useState("00:00");
+  const [space, setSpace] = useState("");
+  const [purpose, setPurpose] = useState("");
+  // const [restricted, setRestricted] = useState(false);
 
   const handleFillData = () => {
     if (! editEntryId) return;
@@ -38,12 +35,12 @@ const AddEntry: React.FC<Iprops> = ({
       entry => entry.id === editEntryId
     );
     if (entry) {
-      setDuration(minutesToHHMM(entry.duration));
-      setClient(entry.client);
-      setProject(entry.project);
-      setProjectId(entry.project_id);
+      setStartDuration(minutesToHHMM(entry.start_duration));
+      setEndDuration(minutesToHHMM(entry.end_duration));
+      setSpace(entry.space_code);
+      setPurpose(entry.purpose_code);
       setNote(entry.note);
-      if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
+      // setRestricted(entry.restricted);
     }
 
   };
@@ -55,27 +52,14 @@ const AddEntry: React.FC<Iprops> = ({
     textArea.click();
   }, []);
 
-  useEffect(() => {
-    if (!project) return;
-    const selectedProject = projects[client].find(
-      currentProject => currentProject.name === project
-    );
-    if (selectedProject) {
-      setProjectId(Number(selectedProject.id));
-      setProjectBillable(selectedProject.billable);
-      setBillable(selectedProject.billable);
-    }
-  }, [project]);
-
-  const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDuration(e.target.value);
-  };
-
   const getPayload = () => ({
     work_date: selectedFullDate,
-    duration: minutesFromHHMM(duration),
+    start_duration: minutesFromHHMM(startDuration),
+    end_duration: minutesFromHHMM(endDuration),
+    space_code: space,
+    purpose_code: purpose,
     note: note,
-    bill_status: billable ? "unbilled" : "non_billable"
+    // restricted: restricted
   });
 
   const handleSave = async () => {
@@ -85,9 +69,8 @@ const AddEntry: React.FC<Iprops> = ({
       Toastr.error(message);
       return;
     }
-    const res = await timesheetEntryApi.create({
-      project_id: projectId,
-      timesheet_entry: tse
+    const res = await spaceUsagesApi.create({
+      space_usage: tse
     }, selectedEmployeeId);
 
     if (res.status === 200) {
@@ -105,9 +88,8 @@ const AddEntry: React.FC<Iprops> = ({
       Toastr.error(message);
       return;
     }
-    const res = await timesheetEntryApi.update(editEntryId, {
-      project_id: projectId,
-      timesheet_entry: tse
+    const res = await spaceUsagesApi.update(editEntryId, {
+      space_usage: tse
     });
 
     if (res.status === 200) {
@@ -130,42 +112,50 @@ const AddEntry: React.FC<Iprops> = ({
         <div className="w-129 mb-2 flex justify-between">
           <select
             onChange={e => {
-              setClient(e.target.value);
-              setProject(projects[e.target.value][0].name);
+              setSpace(e.target.value);
             }}
-            value={client || "Room"}
-            name="client"
-            id="client"
+            value={space || ""}
+            name="space"
+            id="space"
             className="w-64 bg-miru-gray-100 rounded-sm h-8"
           >
-            {!client && (
-              <option disabled selected className="text-miru-gray-100">
-              Room
+            {!space && (
+              <option disabled className="text-miru-gray-100" value="">
+              Please select space
               </option>
             )}
-            {[{ name: "HR Cabin" }, { name: "Conference Room" }, { name: "Sales Cabin" }].map((client, i) => (
-              <option key={i.toString()}>{client["name"]}</option>
+            {[{ id: "1", name: "Conference Room" },
+              { id: "2", name: "HR Cabin" },
+              { id: "3", name: "Sales Cabin" },
+              { id: "4", name: "My Place" }].map((a) => (
+              <option key={`space-${a.id}`} value={a.id}>{a["name"]}</option>
             ))}
           </select>
 
           <select
             onChange={e => {
-              setProject(e.target.value);
+              setPurpose(e.target.value);
             }}
-            value={project}
-            name="project"
-            id="project"
+            value={purpose || ""}
+            name="purpose"
+            id="purpose"
             className="w-64 bg-miru-gray-100 rounded-sm h-8"
           >
-            {!project && (
-              <option disabled selected className="text-miru-gray-100">
-              Capacity
+            {!purpose && (
+              <option disabled className="text-miru-gray-100" value="">
+              Please select purpose
               </option>
             )}
-            {[1,2,3,4,5,6,6,7,8,9,10].map((capacity, i) => (
-              <option data-project-id={capacity} key={i.toString()}>
-                {capacity}
-              </option>
+            {[
+              { id: "1", name: "Client / Standup" },
+              { id: "2", name: "Client / All Hands" },
+              { id: "3", name: "Client / Other" },
+              { id: "4", name: "Internal / Standup" },
+              { id: "5", name: "Internal / All Hands" },
+              { id: "6", name: "Internal / Project Discussion" },
+              { id: "7", name: "Internal / Other" },
+            ].map((a, _i) => (
+              <option key={`purpose-${a.id}`} value={a.id}>{a["name"]}</option>
             ))}
           </select>
         </div>
@@ -179,25 +169,33 @@ const AddEntry: React.FC<Iprops> = ({
           className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
         ></textarea>
       </div>
-      <div className="w-60">
+      <div className="w-1/3">
         <div className="mb-2 flex justify-between">
           <div className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center">
             {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${
               selectedDateInfo["month"]
             }, ${selectedDateInfo["year"]}`}
           </div>
+          <div className="p-1 h-8 text-sm flex justify-center items-center">From</div>
           <input
-            value={duration}
-            onChange={handleDurationChange}
+            value={startDuration}
+            onChange={(e) => setStartDuration(e.target.value)}
             type="text"
-            className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm"
+            className="p-1 h-8 w-19 bg-miru-gray-100 rounded-sm text-sm"
+          />
+          <div className="p-1 h-8 text-sm flex justify-center items-center">To</div>
+          <input
+            value={endDuration}
+            onChange={(e) => setEndDuration(e.target.value)}
+            type="text"
+            className="p-1 h-8 w-19 bg-miru-gray-100 rounded-sm text-sm"
           />
         </div>
-        <div className="flex items-center mt-2">
-          {billable ? (
+        {/* <div className="flex items-center mt-2">
+          {restricted ? (
             <img
               onClick={() => {
-                setBillable(false);
+                setRestricted(false);
               }}
               className="inline"
               src={checkedIcon}
@@ -206,7 +204,7 @@ const AddEntry: React.FC<Iprops> = ({
           ) : (
             <img
               onClick={() => {
-                if (projectBillable) setBillable(true);
+                if (restricted) setRestricted(true);
               }}
               className="inline"
               src={uncheckedIcon}
@@ -214,7 +212,7 @@ const AddEntry: React.FC<Iprops> = ({
             />
           )}
           <h4>Restricted</h4>
-        </div>
+        </div> */}
       </div>
       <div className="max-w-min">
         {editEntryId === 0 ? (
@@ -222,7 +220,7 @@ const AddEntry: React.FC<Iprops> = ({
             onClick={handleSave}
             className={
               "mb-1 h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-              (note && client && project
+              (space && note
                 ? "bg-miru-han-purple-1000 hover:border-transparent"
                 : "bg-miru-gray-1000")
             }
@@ -234,7 +232,7 @@ const AddEntry: React.FC<Iprops> = ({
             onClick={() => handleEdit()}
             className={
               "mb-1 h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-              (note && client && project
+              (space && note
                 ? "bg-miru-han-purple-1000 hover:border-transparent"
                 : "bg-miru-gray-1000")
             }
@@ -260,8 +258,6 @@ interface Iprops {
   selectedEmployeeId: number;
   fetchEntries: (from: string, to: string) => Promise<any>
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
-  clients: any[];
-  projects: object;
   selectedDateInfo: object;
   setEntryList: React.Dispatch<React.SetStateAction<object[]>>;
   entryList: object;

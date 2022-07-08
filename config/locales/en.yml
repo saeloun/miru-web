@@ -315,3 +315,10 @@ en:
       message: "Timesheet updated"
     destroy:
       message: "Timesheet deleted"
+  space_usage:
+    create:
+      message: "Space occupied"
+    update:
+      message: "Space usage updated"
+    destroy:
+      message: "Space usage deleted"

@@ -86,6 +86,7 @@ class User < ApplicationRecord
   has_many :companies, through: :company_users
   has_many :project_members, dependent: :destroy
   has_many :timesheet_entries
+  has_many :space_usages
   has_many :identities, dependent: :delete_all
   has_one :wise_account, dependent: :destroy
   has_many :previous_employment_details, dependent: :destroy

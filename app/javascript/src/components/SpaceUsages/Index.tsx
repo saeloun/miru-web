@@ -2,7 +2,7 @@
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import timesheetEntryApi from "apis/timesheet-entry";
+import spaceUsagesApi from "apis/space-usages";
 import * as dayjs from "dayjs";
 import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
@@ -26,9 +26,7 @@ dayjs.updateLocale("en", { monthShort: monthsAbbr });
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
 
-const RoomScheduling: React.FC<Iprops> = ({
-  clients,
-  projects,
+const TimeReserving: React.FC<Iprops> = ({
   entries,
   // isAdmin,
   userId,
@@ -51,9 +49,6 @@ const RoomScheduling: React.FC<Iprops> = ({
   // const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
   // const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(userId);
   const [allEmployeesEntries, setAllEmployeesEntries] = useState<object>({});
-
-  // sorting by client's name
-  clients.sort((a: object, b: object) => a["name"].localeCompare(b["name"]));
 
   useEffect(() => {
     setAuthHeaders();
@@ -121,7 +116,7 @@ const RoomScheduling: React.FC<Iprops> = ({
   };
 
   const fetchEntries = async (from: string, to: string) => {
-    const res = await timesheetEntryApi.list(from, to, 1);
+    const res = await spaceUsagesApi.list(from, to, 1);
     if (res.status >= 200 && res.status < 300) {
       const ns = { ...allEmployeesEntries };
       ns[1] = { ...ns[1], ...res.data.entries };
@@ -134,7 +129,7 @@ const RoomScheduling: React.FC<Iprops> = ({
   };
 
   const handleDeleteEntry = async id => {
-    const res = await timesheetEntryApi.destroy(id);
+    const res = await spaceUsagesApi.destroy(id);
     if (!(res.status === 200)) return;
     const newValue = { ...entryList };
     newValue[selectedFullDate] = newValue[selectedFullDate].filter(e => e.id !== id);
@@ -278,11 +273,9 @@ const RoomScheduling: React.FC<Iprops> = ({
           </div>
           {!editEntryId && newEntryView && (
             <AddEntry
-              selectedEmployeeId={1}
+              selectedEmployeeId={userId}
               fetchEntries={fetchEntries}
               setNewEntryView={setNewEntryView}
-              clients={clients}
-              projects={projects}
               selectedDateInfo={dayInfo[selectDate]}
               selectedFullDate={selectedFullDate}
               setEntryList={setEntryList}
@@ -307,11 +300,9 @@ const RoomScheduling: React.FC<Iprops> = ({
           entryList[selectedFullDate].map((entry, weekCounter) =>
             editEntryId === entry.id ? (
               <AddEntry
-                selectedEmployeeId={1}
+                selectedEmployeeId={userId}
                 fetchEntries={fetchEntries}
                 setNewEntryView={setNewEntryView}
-                clients={clients}
-                projects={projects}
                 selectedDateInfo={dayInfo[selectDate]}
                 selectedFullDate={selectedFullDate}
                 setEntryList={setEntryList}
@@ -343,4 +334,4 @@ interface Iprops {
   employees: [];
 }
 
-export default RoomScheduling;
+export default TimeReserving;

@@ -6,45 +6,43 @@ import BillTag from "./BillTag";
 
 interface props {
   id: number;
-  client: string;
-  project: string;
   note: string;
-  duration: number;
+  start_duration: number;
+  end_duration: number;
+  space_name: string;
+  purpose_name: string;
+  user_name: string;
   handleDeleteEntry: (id: number) => void;
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
-  bill_status: string;
 }
 
 const EntryCard: React.FC<props> = ({
   id,
-  client,
-  project,
   note,
-  duration,
+  start_duration,
+  end_duration,
+  space_name,
+  purpose_name,
+  user_name,
   handleDeleteEntry,
   setEditEntryId,
-  bill_status
 }) => (
-  <div className="week-card flex justify-between items-center shadow-2xl w-full p-4 mt-10 rounded-lg">
+  <div className="week-card flex justify-between items-center shadow-sm w-full p-4 mt-10 rounded-sm">
     <div className="flex-auto">
       <div className="flex">
-        <p className="text-lg">{client}</p>
+        <p className="text-lg">{space_name}</p>
         <p className="text-lg mx-2">•</p>
-        <p className="text-lg">{project}</p>
+        <p className="text-lg">{purpose_name}</p>
       </div>
       <p className="max-h-32 overflow-scroll text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
         {note}
       </p>
     </div>
     <div className="flex items-center">
-      {bill_status === "unbilled" ? (
-        <BillTag color="miru-alert-yellow-400" text="unbilled" />
-      ) : bill_status === "non_billable" ? (
-        <BillTag color="miru-dark-purple-100" text="non billable" />
-      ) : (
-        <BillTag color="miru-alert-green-400" text="billed" />
-      )}
-      <p className="text-4xl">{minutesToHHMM(duration)}</p>
+      <BillTag color="miru-alert-green-400" text={user_name || "unknown"} />
+      <p className="pr-1 text-4xl">{minutesToHHMM(start_duration)}</p>
+      TO
+      <p className="pl-1 text-4xl">{minutesToHHMM(end_duration)}</p>
       <button onClick={() => setEditEntryId(id)} className="mx-10">
         <img
           src="/edit.svg"

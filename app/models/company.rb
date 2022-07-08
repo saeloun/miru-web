@@ -32,6 +32,8 @@ class Company < ApplicationRecord
   has_one :stripe_connected_account, dependent: :destroy
   has_many :payments_providers, dependent: :destroy
   has_many :leads, dependent: :destroy
+  has_many :space_usages, dependent: :destroy
+
   resourcify
 
   # Validations

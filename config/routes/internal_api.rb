@@ -18,6 +18,8 @@ namespace :internal_api, defaults: { format: "json" } do
       resources :consultancies, only: [:index, :update, :destroy, :show, :create]
       resources :candidates, only: [:index, :update, :destroy, :show, :create, :edit]
     end
+    resources :space_usages, only: [:index, :create, :update, :destroy]
+
     resources :project, only: [:index]
     resources :timesheet_entry do
       collection do

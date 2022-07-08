@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_07_111813) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_08_112650) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -351,6 +351,22 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_07_111813) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
+  create_table "space_usages", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "space_code"
+    t.integer "purpose_code"
+    t.float "start_duration"
+    t.float "end_duration"
+    t.date "work_date"
+    t.text "note"
+    t.boolean "restricted"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_space_usages_on_company_id"
+    t.index ["user_id"], name: "index_space_usages_on_user_id"
+  end
+
   create_table "stripe_connected_accounts", force: :cascade do |t|
     t.string "account_id", null: false
     t.bigint "company_id", null: false
@@ -466,6 +482,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_07_111813) do
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
   add_foreign_key "quote_line_items", "lead_quotes"
+  add_foreign_key "space_usages", "companies"
+  add_foreign_key "space_usages", "users"
   add_foreign_key "stripe_connected_accounts", "companies"
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
