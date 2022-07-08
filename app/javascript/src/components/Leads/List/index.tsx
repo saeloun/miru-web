@@ -90,7 +90,7 @@ const Leads = ({ isAdminUser }) => {
 
   useEffect(() => {
     if (displayActions){
-      navigate(`/actions`);
+      navigate(`actions`);
     }
   }, [displayActions]);
 

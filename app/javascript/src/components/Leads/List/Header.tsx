@@ -28,8 +28,10 @@ const Header = ({
           ? "sm:flex mt-6 mb-3 sm:items-center sm:justify-between"
           : "sm:flex mt-6 mb-3 sm:items-center"
       }>
-      <h2 className="header__title">Leads</h2>
-      <img className="rounded-lg h-8 w-8 mr-2 mt-1 cursor-pointer" title="Coming soon..." src={taskAssignmentIcon} onClick={() => setDisplayActions(false)}/>
+      <span className="inline-flex">
+        <h2 className="header__title">Leads</h2>
+        <img className="rounded-lg h-8 w-8 ml-2 mr-2 cursor-pointer" title="Actions" src={taskAssignmentIcon} onClick={() => setDisplayActions(true)}/>
+      </span>
       <div className="header__searchWrap">
         <div className="header__searchInnerWrapper">
           <AutoComplete searchCallBack={searchCallBack} />

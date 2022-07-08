@@ -11,6 +11,10 @@ class LeadPolicy < ApplicationPolicy
     true
   end
 
+  def actions?
+    true
+  end
+
   def timeline_items?
     true
   end

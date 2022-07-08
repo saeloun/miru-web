@@ -84,6 +84,24 @@ const Pagination = ({ pagy, params, setParams, forPage }) => (
         <span className="p-2 text-xs">timelines per page</span>
       </div>
       }
+      {forPage == "lead_actions" && <div className="flex items-center justify-end col-span-2">
+        <select
+          onChange={(e) =>
+            setParams({ page: 1, lead_actions_per_page: Number(e.target.value) })
+          }
+          className="p-2 text-xs font-bold text-miru-han-purple-1000"
+          value={pagy?.items}
+        >
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+          <option value="40">40</option>
+          <option value="50">50</option>
+        </select>
+
+        <span className="p-2 text-xs">actions per page</span>
+      </div>
+      }
     </div>
   </div>
 );

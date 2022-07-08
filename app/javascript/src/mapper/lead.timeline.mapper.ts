@@ -21,7 +21,10 @@ const getList = (input) => input.timeline_details.map((item) => ({
   action_phone_number: item.action_phone_number,
   action_schedule_status_code: item.action_schedule_status_code,
   action_social_type: item.action_social_type,
-  action_social_id: item.action_social_id
+  action_social_id: item.action_social_id,
+  action_schedule_status_code_name: item.action_schedule_status_code_name,
+  kind_name: item.kind_name,
+  action_priority_code_name: item.action_priority_code_name
 }));
 
 const unmapLeadTimelineList = (input) => {
@@ -65,7 +68,10 @@ const unmapLeadTimelineDetails = (input) => {
       action_phone_number: data.timeline_details.action_phone_number,
       action_schedule_status_code: data.timeline_details.action_schedule_status_code,
       action_social_type: data.timeline_details.action_social_type,
-      action_social_id: data.timeline_details.action_social_id
+      action_social_id: data.timeline_details.action_social_id,
+      action_schedule_status_code_name: data.timeline_details.action_schedule_status_code_name,
+      kind_name: data.timeline_details.kind_name,
+      action_priority_code_name: data.timeline_details.action_priority_code_name
     }
   };
 };

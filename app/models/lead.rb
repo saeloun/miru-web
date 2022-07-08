@@ -272,7 +272,7 @@ class Lead < ApplicationRecord
       allow_leads = allow_leads.where(status_code: status_codes) if status_codes.present?
     end
 
-    allow_leads
+    ids ? allow_leads.pluck(:id).uniq : allow_leads
   end
 
   def assign_default_values

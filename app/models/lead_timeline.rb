@@ -84,7 +84,11 @@ class LeadTimeline < ApplicationRecord
 
   before_create :set_index_system_display_message_and_title, if: -> { self.kind != 0 }
 
-  scope :with_actions, ->(lead_ids) { where(lead_id: lead_ids).order(action_due_at: :desc) }
+  scope :with_actions, ->(lead_ids, user) {
+                              where(lead_id: lead_ids)
+                                .where("action_assignee_id = ? OR action_reporter_id = ?", user.id, user.id)
+                                .where.not(kind: [0, nil]).order(action_due_at: :asc)
+                            }
 
   def created_at_formated
     self.created_at.strftime("#{self.created_at.day.ordinalize} %b %Y at %H:%M")
@@ -94,10 +98,42 @@ class LeadTimeline < ApplicationRecord
     self.action_due_at ? self.action_due_at.strftime("#{self.action_due_at.day.ordinalize} %b %Y at %H:%M") : ""
   end
 
+  def kind_name_hash
+    LeadTimeline::KIND_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
+  def action_schedule_status_code_name_hash
+    LeadTimeline::SCHEDULE_ACTION_STATUS_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
+  def action_priority_code_name_hash
+    LeadTimeline::PRIORITY_CODE_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
+  end
+
+  def kind_name
+    return "" if kind.nil?
+
+    self.kind_name_hash[kind]
+  end
+
+  def action_schedule_status_code_name
+    return "" if action_schedule_status_code.nil?
+
+    self.action_schedule_status_code_name_hash[action_schedule_status_code]
+  end
+
+  def action_priority_code_name
+    return "" if action_priority_code.nil?
+
+    self.action_priority_code_name_hash[action_priority_code]
+  end
+
   def render_properties
     {
       id: self.id,
-      action_description: self.action_description,
+      action_description: self.action_description ? self.action_description.gsub(
+        /\n/,
+        "<br/>") : self.action_description,
       action_due_at: self.action_due_at,
       action_priority_code: self.action_priority_code,
       action_subject: self.action_subject,
@@ -106,21 +142,21 @@ class LeadTimeline < ApplicationRecord
       index_system_display_message: self.index_system_display_message,
       index_system_display_title: self.index_system_display_title,
       kind: self.kind,
-      action_assignee: self.action_assignee&.attributes&.merge(
+      action_assignee: self.action_assignee ? self.action_assignee.attributes.merge(
         {
-          full_name: self.action_assignee&.full_name,
-          avatar_url: self.action_assignee ? self.action_assignee.avatar_url : ""
-        }),
-      action_created_by: self.action_created_by&.attributes&.merge(
+          full_name: self.action_assignee.full_name,
+          avatar_url: self.action_assignee.avatar_url
+        }) : { full_name: "", avatar_url: "" },
+      action_created_by: self.action_created_by ? self.action_created_by.attributes.merge(
         {
-          full_name: self.action_created_by&.full_name,
-          avatar_url: self.action_created_by ? self.action_created_by.avatar_url : ""
-        }),
-      action_reporter: self.action_reporter&.attributes&.merge(
+          full_name: self.action_created_by.full_name,
+          avatar_url: self.action_created_by.avatar_url
+        }) : { full_name: "", avatar_url: "" },
+      action_reporter: self.action_reporter ? self.action_reporter.attributes.merge(
         {
-          full_name: self.action_reporter&.full_name,
-          avatar_url: self.action_reporter ? self.action_reporter.avatar_url : ""
-        }),
+          full_name: self.action_reporter.full_name,
+          avatar_url: self.action_reporter.avatar_url
+        }) : { full_name: "", avatar_url: "" },
       lead: self.lead,
       parent_lead_timeline_id: self.parent_lead_timeline_id,
       created_at: self.created_at,
@@ -128,7 +164,10 @@ class LeadTimeline < ApplicationRecord
       action_due_at_formated: self.action_due_at_formated,
       action_email: self.action_email,
       action_phone_number: self.action_phone_number,
-      action_schedule_status_code: self.action_schedule_status_code
+      action_schedule_status_code: self.action_schedule_status_code,
+      action_schedule_status_code_name: self.action_schedule_status_code_name,
+      kind_name: self.kind_name,
+      action_priority_code_name: self.action_priority_code_name
     }
   end
 
