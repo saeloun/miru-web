@@ -54,13 +54,12 @@ module NavigationHelper
           permitted: Pundit.policy!(current_user, :invoice).index?,
           data: { cy: "invoices-tab" }
         },
-        # TODO:- Temprary disabling this feature (navbar payment links)
-        # {
-        #   url: payments_path,
-        #   title: I18n.t("navbar.payments"),
-        #   permitted: Pundit.policy!(current_user, :payment).index?,
-        #   data: { cy: "payments-tab" }
-        # }
+        {
+          url: payments_path,
+          title: I18n.t("navbar.payments"),
+          permitted: Pundit.policy!(current_user, :payment).index?,
+          data: { cy: "payments-tab" }
+        }
       ]
     end
 
