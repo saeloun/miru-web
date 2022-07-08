@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_04_070130) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_07_125827) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -144,7 +144,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_070130) do
     t.integer "role", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["company_id", "recipient_email"], name: "index_invitations_on_company_id_and_recipient_email", unique: true
     t.index ["company_id"], name: "index_invitations_on_company_id"
     t.index ["sender_id"], name: "index_invitations_on_sender_id"
     t.index ["token"], name: "index_invitations_on_token", unique: true
@@ -180,6 +179,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_070130) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "external_view_key"
+    t.string "stripe_payment_intent"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
@@ -285,6 +285,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_070130) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "current_workspace_id"
+    t.string "invitation_token"
+    t.datetime "invitation_created_at"
+    t.datetime "invitation_sent_at"
+    t.datetime "invitation_accepted_at"
+    t.integer "invitation_limit"
+    t.string "invited_by_type"
+    t.bigint "invited_by_id"
+    t.integer "invitations_count", default: 0
     t.datetime "discarded_at"
     t.string "personal_email_id"
     t.date "date_of_birth"
@@ -293,6 +301,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_070130) do
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
+    t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
+    t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
@@ -326,8 +337,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_070130) do
   add_foreign_key "employments", "companies"
   add_foreign_key "employments", "users"
   add_foreign_key "identities", "users"
-  add_foreign_key "invitations", "companies"
-  add_foreign_key "invitations", "users", column: "sender_id"
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"

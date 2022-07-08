@@ -44,7 +44,7 @@ Rails.application.routes.draw do
 
   resources :time_tracking, only: [:index], path: "time-tracking"
 
-  resources :team, only: [:index, :update, :destroy, :edit]
+  resources :team, only: [:new, :index, :update, :destroy, :edit]
 
   resources :reports, only: [:index]
   resources :workspaces, only: [:update]

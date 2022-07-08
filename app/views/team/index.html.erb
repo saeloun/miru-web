@@ -23,10 +23,13 @@
           <% if current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)  %>
             <div class="page-content__new-user-width">
               <div class="page-content__new-user-position">
-                <button data-team-element="new-user-btn" type="button" class="page-content__new-user-button">
+                <%= link_to new_team_path,
+                  data: { "team-element": "new-user-btn" },
+                  class: "page-content__new-user-button",
+                  remote: true do %>
                   <img src="<%= image_url 'plus_icon.svg' %>" class="page-content__button-image" data-cy="add-new-user-button">
                   <%= t('team.new_user') %>
-                </button>
+                <% end %>
               </div>
             </div>
           <% end %>
@@ -95,7 +98,6 @@
               </div>
             </div>
             <div id="invitation-modal" class="modal__form">
-              <%= render partial: "users/invitations/form", locals: { invitation: invitation } %>
             </div>
           </div>
         </div>

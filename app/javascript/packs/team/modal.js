@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   const newUserBtn = document.querySelector(
-    "button[data-team-element=\"new-user-btn\"]"
+    "a[data-team-element=\"new-user-btn\"]"
   );
   const inviteModalClose = document.querySelector(
     "div[data-team-element=\"invite-modal-close\"]"

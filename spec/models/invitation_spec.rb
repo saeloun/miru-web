@@ -17,12 +17,11 @@ RSpec.describe Invitation, type: :model do
     it { is_expected.to validate_presence_of(:recipient_email) }
     it { is_expected.to validate_presence_of(:role) }
     it { is_expected.to validate_presence_of(:token) }
-    it { is_expected.to validate_uniqueness_of(:recipient_email).scoped_to(:company_id) }
     it { is_expected.to allow_value(Faker::Lorem.characters(number: 10)).for(:token) }
     it { is_expected.not_to allow_value(invitation.token).for(:token) }
-    it { is_expected.not_to validate_uniqueness_of(:recipient_email) }
+    it { is_expected.to validate_uniqueness_of(:recipient_email).on(:create) }
     it { is_expected.not_to allow_value("test").for(:recipient_email) }
-    it { is_expected.to allow_value("test@example.com").for(:recipient_email) }
+    it { is_expected.not_to allow_value("test@example.com").for(:recipient_email) }
     it { is_expected.to allow_value("foo").for(:first_name) }
     it { is_expected.not_to allow_value("foo&23423").for(:first_name) }
     it { is_expected.to allow_value("foo").for(:last_name) }
@@ -82,6 +81,19 @@ RSpec.describe Invitation, type: :model do
     end
   end
 
+  describe "#user_invitation_present?" do
+    it "returns true if user with recipient email is not present" do
+      invitation = build(:invitation, company:, expired_at: nil)
+      expect(invitation.user_invitation_present?).to be_falsey
+    end
+
+    it "returns false if user with recipient email is present" do
+      existing_invitation = create(:invitation, company:)
+      invitation = build(:invitation, company:, recipient_email: existing_invitation.recipient_email)
+      expect(invitation.user_invitation_present?).to be_truthy
+    end
+  end
+
   describe "#set_token" do
     it "sets token while creating invitation" do
       invitation = build(:invitation, company:, token: nil)
@@ -102,6 +114,15 @@ RSpec.describe Invitation, type: :model do
     it "sends user invitaiton mail" do
       invitation = build(:invitation, company:)
       expect { invitation.save }.to have_enqueued_job.exactly(1).and have_enqueued_job(ActionMailer::MailDeliveryJob)
+    end
+  end
+
+  describe "#recipient_email_not_changed" do
+    it "raises error when invitation recipient_email is updated" do
+      invitation = create(:invitation, company:)
+      expect { invitation.update!(recipient_email: "test@example.com") }
+        .to raise_error(ActiveRecord::RecordInvalid)
+        .with_message("Validation failed: Recipient email updation is not allowed")
     end
   end
 end

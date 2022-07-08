@@ -4,6 +4,10 @@ class TeamController < ApplicationController
   skip_after_action :verify_authorized, only: :index
   after_action :assign_role, only: [:update]
 
+  def new
+    @invitation = Invitation.new
+  end
+
   def index
     # TODO: need to update either the search form or search logic in later PRs
     query = current_company.users.includes([:avatar_attachment, :roles]).ransack(params[:q])
@@ -11,8 +15,7 @@ class TeamController < ApplicationController
       .ransack(first_name_or_last_name_or_recipient_email_cont: params.dig(:q, :first_name_or_last_name_or_email_cont))
     teams = query.result(distinct: true)
     invitations = invitations_query.result(distinct: true)
-    invitation = Invitation.new
-    render :index, locals: { query:, teams:, invitations:, invitation: }
+    render :index, locals: { query:, teams:, invitations: }
   end
 
   def edit

@@ -19,15 +19,9 @@
 #
 # Indexes
 #
-#  index_invitations_on_company_id                      (company_id)
-#  index_invitations_on_company_id_and_recipient_email  (company_id,recipient_email) UNIQUE
-#  index_invitations_on_sender_id                       (sender_id)
-#  index_invitations_on_token                           (token) UNIQUE
-#
-# Foreign Keys
-#
-#  fk_rails_...  (company_id => companies.id)
-#  fk_rails_...  (sender_id => users.id)
+#  index_invitations_on_company_id  (company_id)
+#  index_invitations_on_sender_id   (sender_id)
+#  index_invitations_on_token       (token) UNIQUE
 #
 class Invitation < ApplicationRecord
   enum role: [:owner, :admin, :employee, :book_keeper]
@@ -43,12 +37,13 @@ class Invitation < ApplicationRecord
   validates :recipient_email, :role, :token, :expired_at, presence: true
   validates :recipient_email, format: { with: Devise.email_regexp }
   validates_uniqueness_of :token
-  validates_uniqueness_of :recipient_email, scope: :company_id
+  validates_uniqueness_of :recipient_email, on: :create, if: -> { user_invitation_present? }
   validates :first_name, :last_name,
     presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },
     length: { maximum: 50 }
   validate :non_existing_company_user
+  validate :recipient_email_not_changed
 
   # Scopes
   scope :valid_invitations, -> {
@@ -68,6 +63,10 @@ class Invitation < ApplicationRecord
     (expired_at >= Time.current) && accepted_at.nil?
   end
 
+  def user_invitation_present?
+    Invitation.where(company_id: company.id, recipient_email:).valid_invitations.any?
+  end
+
   private
 
     def set_token
@@ -84,6 +83,12 @@ class Invitation < ApplicationRecord
     def non_existing_company_user
       if company && company.users.exists?(email: recipient_email)
         self.errors.add(:base, "User is already a team member in workspace")
+      end
+    end
+
+    def recipient_email_not_changed
+      if recipient_email_changed? && self.persisted?
+        self.errors.add(:recipient_email, "updation is not allowed")
       end
     end
 

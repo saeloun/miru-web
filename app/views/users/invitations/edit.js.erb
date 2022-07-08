@@ -1,1 +1,5 @@
+var modal = $("#invitation-modal").parent();
+var modal_header = modal.find(".modal__title");
+
+modal_header.text("<%= I18n.t("team.update_user") %>");
 $("#invitation-modal").html("<%= j(render partial: 'form', locals: { invitation: @invitation }) %>");
