@@ -8,9 +8,10 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
 
   const searchCallBack = async (searchString, setDropdownItems) => {
     try {
-      const res = await projectApi.get();
+      if (!searchString) return;
+      const res = await projectApi.search(searchString);
       const dropdownList = res.data.projects.map((project) => ({
-        label: project.name,
+        label: `${project.name} • ${project.client_name}`,
         value: project.id
       }));
       const searchList = dropdownList.filter(item => item.label.toLowerCase().includes(searchString.toLowerCase()));
