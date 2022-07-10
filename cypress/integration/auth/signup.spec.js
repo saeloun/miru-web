@@ -20,10 +20,6 @@ describe("Sign Up", () => {
     cy.get(authSelectors.signUpwithGoogleButton).should("be.visible");
   });
 
-  // it("should contain signUp with Apple Link", function () {
-  //   cy.get(authSelectors.signUpwithAppleButton).should("be.visible");
-  // });
-
   it("should contain signIn Link", function () {
     cy.get(authSelectors.signInLink).should("be.visible");
     cy.get(authSelectors.signInLink).click();
