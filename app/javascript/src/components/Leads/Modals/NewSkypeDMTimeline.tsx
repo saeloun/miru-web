@@ -67,7 +67,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
       "action_subject": values.action_subject,
       "action_social_id": values.action_social_id,
       "action_social_type": "skype",
-      "action_priority_code": priorityCode,
+      "action_priority_code": priorityCode || 0,
       "action_assignee_id": assigneeId,
       "action_reporter_id": reporterId
     })

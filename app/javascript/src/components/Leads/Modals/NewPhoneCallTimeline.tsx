@@ -64,7 +64,7 @@ const NewPhoneCallTimeline = ({ leadDetails, setNewPhoneCallTimeline, timelineDa
       "kind": 4,
       "action_subject": values.action_subject,
       "action_phone_number": values.action_phone_number,
-      "action_priority_code": priorityCode,
+      "action_priority_code": priorityCode || 0,
       "action_assignee_id": assigneeId,
       "action_reporter_id": reporterId
     })

@@ -157,7 +157,7 @@ class LeadTimeline < ApplicationRecord
           full_name: self.action_reporter.full_name,
           avatar_url: self.action_reporter.avatar_url
         }) : { full_name: "", avatar_url: "" },
-      lead: self.lead,
+      lead: self.lead ? { id: self.lead.id, name: self.lead.name } : { id: "", name: "" },
       parent_lead_timeline_id: self.parent_lead_timeline_id,
       created_at: self.created_at,
       created_at_formated: self.created_at_formated,

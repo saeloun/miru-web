@@ -12,7 +12,7 @@ const getList = (input) => input.timeline_details.map((item) => ({
   action_assignee: item.action_assignee,
   action_created_by: item.action_created_by,
   action_reporter: item.action_reporter,
-  lead_id: item.lead_id,
+  lead: item.lead,
   parent_lead_timeline_id: item.parent_lead_timeline_id,
   created_at: item.created_at,
   created_at_formated: item.created_at_formated,
@@ -45,7 +45,7 @@ const unmapLeadTimelineListForDropdown = (input) => {
 const unmapLeadTimelineDetails = (input) => {
   const { data } = input;
   return {
-    leadDetails: {
+    timelineDetails: {
       id: data.timeline_details.id,
       action_description: data.timeline_details.action_description,
       action_due_at: data.timeline_details.action_due_at,
@@ -59,7 +59,7 @@ const unmapLeadTimelineDetails = (input) => {
       action_assignee: data.timeline_details.action_assignee,
       action_created_by: data.timeline_details.action_created_by,
       action_reporter: data.timeline_details.action_reporter,
-      lead_id: data.timeline_details.lead_id,
+      lead: data.timeline_details.lead,
       parent_lead_timeline_id: data.timeline_details.parent_lead_timeline_id,
       created_at: data.timeline_details.created_at,
       created_at_formated: data.timeline_details.created_at_formated,

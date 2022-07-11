@@ -38,7 +38,7 @@ class InternalApi::V1::Leads::TimelinesController < InternalApi::V1::Application
     if timeline.update!(timeline_params)
       render json: {
         success: true,
-        lead:,
+        timeline_details: timeline.render_properties,
         notice: I18n.t("lead.update.success.message")
       }, status: :ok
     end

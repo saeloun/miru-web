@@ -65,7 +65,7 @@ const NewEmailTimeline = ({ leadDetails, setNewEmailTimeline, timelineData, setT
       "kind": 3,
       "action_subject": values.action_subject,
       "action_email": values.action_email,
-      "action_priority_code": priorityCode,
+      "action_priority_code": priorityCode || 0,
       "action_assignee_id": assigneeId,
       "action_reporter_id": reporterId
     })

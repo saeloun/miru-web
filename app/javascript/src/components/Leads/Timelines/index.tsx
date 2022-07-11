@@ -108,7 +108,7 @@ const Timelines = ({ leadDetails }) => {
         <div className="my-6">
           <div className="flex flex-col w-full">
             {timelineData && timelineData.map((timeline) => (
-              <div className="flex justify-beetween w-full h-full bg-white dark:bg-gray-800">
+              <div key={`${timeline.id}-timeline-section`} className="flex justify-beetween w-full h-full bg-white dark:bg-gray-800">
                 <div className="w-full bg-white dark:bg-gray-800 text-black dark:text-gray-200 p-4 antialiased flex">
                   {timeline.kind === 0 ?
                     <img className="rounded-lg h-8 w-8 mr-2 mt-1 " src={systemMessageIcon}/>

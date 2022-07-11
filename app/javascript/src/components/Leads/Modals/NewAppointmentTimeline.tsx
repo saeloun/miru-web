@@ -65,7 +65,7 @@ const NewAppointmentTimeline = ({ leadDetails, setNewAppointmentTimeline, timeli
       "kind": 2,
       "action_subject": values.action_subject,
       "action_schedule_status_code": 0,
-      "action_priority_code": priorityCode,
+      "action_priority_code": priorityCode || 0,
       "action_assignee_id": assigneeId,
       "action_reporter_id": reporterId
     })
