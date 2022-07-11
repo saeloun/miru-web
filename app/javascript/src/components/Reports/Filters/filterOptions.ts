@@ -9,7 +9,8 @@ const getWeek = (isCurrentWeek) => {
   const last = weekFirstDay + 6;
 
   const firstday = dayjs(new Date(currentDate.setDate(weekFirstDay)));
-  const lastday = dayjs(new Date(currentDate.setDate(last)));
+  // currentDate wont have current date after the above step
+  const lastday = dayjs(new Date(new Date().setDate(last)));
   const completeCurrentDay = `${getDayWithSuffix(firstday.date())} ${month[firstday.month()]}`;
   const completeLastWeekDay = `${getDayWithSuffix(lastday.date())} ${month[lastday.month()]}`;
   return isCurrentWeek ? `This Week (${completeCurrentDay} - ${completeLastWeekDay})` :
