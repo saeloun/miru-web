@@ -5,7 +5,7 @@ class Users::SessionsController < Devise::SessionsController
     if user.has_role?(:owner) && user.companies.empty?
       new_company_path
     elsif user.has_role?(:book_keeper, current_company)
-      payments_path
+      root_path + "payments"
     else
       time_tracking_index_path
     end
