@@ -25,6 +25,7 @@
 class InvoicePayment < ApplicationRecord
   enum status: [
     :paid,
+    :partially_paid,
     :failed
   ]
 

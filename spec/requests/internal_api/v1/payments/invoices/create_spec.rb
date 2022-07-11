@@ -2,11 +2,10 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Payments::Providers#index", type: :request do
+RSpec.describe "InternalApi::V1::Payments::Invoices#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client1) { create(:client, company:, name: "bob") }
-  let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent") }
 
   context "when user is an admin" do
     before do
@@ -15,23 +14,82 @@ RSpec.describe "InternalApi::V1::Payments::Providers#index", type: :request do
       sign_in user
     end
 
-    it "adds the payment entry successfully" do
-      payment = {
-        invoice_id: client1_sent_invoice1.id, transaction_date: Date.current,
-        transaction_type: "visa", amount: 200, note: "This is transaction ID - 123"
+    context "when adds the manual payment entry with total invoice amount" do
+      let!(:client1_sent_invoice1) { create(
+        :invoice,
+        client: client1, status: "sent",
+        amount: 100, amount_due: 100, amount_paid: 0)
+        }
+
+      before do
+        @payment = {
+          invoice_id: client1_sent_invoice1.id,
+          transaction_date: Date.current,
+          transaction_type: "visa",
+          amount: 100,
+          note: "This is transaction ID - 123"
+        }
+        send_request :post, internal_api_v1_payments_invoices_path(payment: @payment)
+      end
+
+      it "return the success" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "adds the payment entry to the database" do
+        expect(InvoicePayment.last.invoice.id).to eq(client1_sent_invoice1.id)
+      end
+
+      it "returns the expected payment entry response" do
+        expected_payment_response = {
+          invoiceNumber: client1_sent_invoice1.invoice_number,
+          transactionDate: Date.current,
+          note: @payment[:note],
+          transactionType: @payment[:transaction_type],
+          clientName: client1.name,
+          amount: @payment[:amount].to_f.to_s,
+          status: "paid"
+        }
+        expect(json_response["payment"].except("id")).to eq(JSON.parse(expected_payment_response.to_json))
+        expect(json_response["baseCurrency"]).to eq(company.base_currency)
+      end
+
+      it "updates the invoice details correctly in the database" do
+        client1_sent_invoice1.reload
+        expect(client1_sent_invoice1.amount_due).to eq(0)
+        expect(client1_sent_invoice1.amount_paid).to eq(100)
+        expect(client1_sent_invoice1.status).to eq("paid")
+      end
+    end
+
+    context "when adds the manual payment entry with partial invoice amount" do
+      let!(:client1_sent_invoice1) { create(
+        :invoice,
+        client: client1, status: "sent",
+        amount: 100, amount_due: 100, amount_paid: 0)
       }
-      expected_payment_response = {
-        payment: {
-          id: 1, invoiceNumber: client1_sent_invoice1.invoice_number,
-          transactionDate: Date.current, note: payment[:note],
-          transactionType: payment[:transaction_type], clientName: client1.name,
-          amount: payment[:amount].to_f.to_s, status: "paid"
-        },
-        baseCurrency: company.base_currency
-      }
-      send_request :post, internal_api_v1_payments_invoices_path(payment:)
-      expect(response).to have_http_status(:ok)
-      expect(json_response).to eq(JSON.parse(expected_payment_response.to_json))
+
+      before do
+        @payment = {
+          invoice_id: client1_sent_invoice1.id,
+          transaction_date: Date.current,
+          transaction_type: "visa",
+          amount: 80,
+          note: "This is transaction ID - 123"
+        }
+        send_request :post, internal_api_v1_payments_invoices_path(payment: @payment)
+      end
+
+      it "sets the payment status as partial" do
+        expect(InvoicePayment.last.status).to eq("partially_paid")
+      end
+
+      it "updates the invoice details correctly in the database" do
+        client1_sent_invoice1.reload
+        expect(client1_sent_invoice1.amount_due).to eq(20)
+        expect(client1_sent_invoice1.amount_paid).to eq(80)
+        expect(client1_sent_invoice1.status).to eq("sent")
+      end
     end
   end
 
