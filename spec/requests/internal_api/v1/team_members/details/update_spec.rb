@@ -28,8 +28,8 @@ RSpec.describe "Details#update", type: :request do
     before do
       user.add_role :owner, company
       sign_in user
-      send_request(
-        :patch, "/internal_api/v1/team/#{employment.id}/details",
+      send_request :patch, internal_api_v1_team_details_path(
+        team_id: employment.id,
         params: {
           user: @user_details
         })
@@ -45,8 +45,8 @@ RSpec.describe "Details#update", type: :request do
     before do
       user.add_role :admin, company
       sign_in user
-      send_request(
-        :patch, "/internal_api/v1/team/#{employment.id}/details",
+      send_request :patch, internal_api_v1_team_details_path(
+        team_id: employment.id,
         params: {
           user: @user_details
         })
@@ -62,8 +62,8 @@ RSpec.describe "Details#update", type: :request do
     before do
       user.add_role :employee, company
       sign_in user
-      send_request(
-        :patch, "/internal_api/v1/team/#{employment.id}/details",
+      send_request :patch, internal_api_v1_team_details_path(
+        team_id: employment.id,
         params: {
           user: @user_details
         })
@@ -81,8 +81,8 @@ RSpec.describe "Details#update", type: :request do
       user.add_role :employee, company
       user2.add_role :employee, company2
       sign_in user
-      send_request(
-        :patch, "/internal_api/v1/team/#{employment2.id}/details",
+      send_request :patch, internal_api_v1_team_details_path(
+        team_id: employment2.id,
         params: {
           user: @user_details
         })
@@ -100,8 +100,8 @@ RSpec.describe "Details#update", type: :request do
       user.add_role :employee, company
       user2.add_role :employee, company
       sign_in user
-      send_request(
-        :patch, "/internal_api/v1/team/#{employment2.id}/details",
+      send_request :patch, internal_api_v1_team_details_path(
+        team_id: employment2.id,
         params: {
           user: @user_details
         })
@@ -119,8 +119,8 @@ RSpec.describe "Details#update", type: :request do
       user.add_role :owner, company
       user2.add_role :employee, company2
       sign_in user
-      send_request(
-        :patch, "/internal_api/v1/team/#{employment2.id}/details",
+      send_request :patch, internal_api_v1_team_details_path(
+        team_id: employment2.id,
         params: {
           user: @user_details
         })
@@ -138,8 +138,8 @@ RSpec.describe "Details#update", type: :request do
       user.add_role :admin, company
       user2.add_role :employee, company2
       sign_in user
-      send_request(
-        :patch, "/internal_api/v1/team/#{employment2.id}/details",
+      send_request :patch, internal_api_v1_team_details_path(
+        team_id: employment2.id,
         params: {
           user: @user_details
         })

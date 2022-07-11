@@ -7,7 +7,7 @@ FactoryBot.define do
     email { Faker::Internet.safe_email }
     password { Faker::Internet.password }
     confirmed_at { Date.today }
-    date_of_birth { Date.today }
+    date_of_birth { Faker::Date.between(from: "1990-01-01", to: "2000-01-01") }
     phone { Faker::PhoneNumber.phone_number_with_country_code }
     personal_email_id { Faker::Internet.safe_email }
     current_workspace factory: :company

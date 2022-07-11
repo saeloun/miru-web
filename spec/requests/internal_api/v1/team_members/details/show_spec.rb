@@ -13,7 +13,7 @@ RSpec.describe "Details#show", type: :request do
     before do
       user.add_role :owner, company
       sign_in user
-      get "/internal_api/v1/team/#{employment.id}/details"
+      send_request :get, internal_api_v1_team_details_path(employment)
     end
 
     it "is successful" do
@@ -25,7 +25,7 @@ RSpec.describe "Details#show", type: :request do
     before do
       user.add_role :admin, company
       sign_in user
-      get "/internal_api/v1/team/#{employment.id}/details"
+      send_request :get, internal_api_v1_team_details_path(employment)
     end
 
     it "is successful" do
@@ -37,7 +37,7 @@ RSpec.describe "Details#show", type: :request do
     before do
       user.add_role :employee, company
       sign_in user
-      get "/internal_api/v1/team/#{employment.id}/details"
+      send_request :get, internal_api_v1_team_details_path(employment)
     end
 
     it "is successful" do
@@ -51,7 +51,7 @@ RSpec.describe "Details#show", type: :request do
       user.add_role :owner, company
       user2.add_role :employee, company2
       sign_in user
-      get "/internal_api/v1/team/#{employment2.id}/details"
+      send_request :get, internal_api_v1_team_details_path(employment2)
     end
 
     it "is unsuccessful" do
@@ -66,7 +66,7 @@ RSpec.describe "Details#show", type: :request do
       user.add_role :admin, company
       user2.add_role :employee, company2
       sign_in user
-      get "/internal_api/v1/team/#{employment2.id}/details"
+      send_request :get, internal_api_v1_team_details_path(employment2)
     end
 
     it "is unsuccessful" do
@@ -81,7 +81,7 @@ RSpec.describe "Details#show", type: :request do
       user.add_role :employee, company
       user2.add_role :employee, company2
       sign_in user
-      get "/internal_api/v1/team/#{employment2.id}/details"
+      send_request :get, internal_api_v1_team_details_path(employment2)
     end
 
     it "is unsuccessful" do
@@ -97,7 +97,7 @@ RSpec.describe "Details#show", type: :request do
       user.add_role :employee, company
       user2.add_role :employee, company
       sign_in user
-      get "/internal_api/v1/team/#{employment2.id}/details"
+      send_request :get, internal_api_v1_team_details_path(employment2)
     end
 
     it "is unsuccessful" do
