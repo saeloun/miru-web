@@ -45,7 +45,7 @@ class CreateInvitedUserService
 
     def find_or_create_user!
       if User.exists?(email: invitation.recipient_email)
-        @user = User.find_by!(email: invitation.recipient_email)
+        @user = User.find_by(email: invitation.recipient_email)
         @user.update!(current_workspace_id: invitation.company.id)
       else
         create_invited_user!
