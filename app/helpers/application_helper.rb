@@ -31,6 +31,13 @@ module ApplicationHelper
     end
   end
 
+  def get_client_props
+    {
+      user: current_user,
+      company_role: current_user.roles.find_by(resource: current_company)&.name
+    }
+  end
+
   private
 
     def field_error(resource, attribute)

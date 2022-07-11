@@ -31,7 +31,7 @@ module NavigationHelper
           data: { cy: "team-tab" }
         },
         {
-          url: clients_path,
+          url: "#{root_url}clients",
           title: I18n.t("navbar.clients"),
           permitted: Pundit.policy!(current_user, :client).index?,
           data: { cy: "clients-tab" }

@@ -2,7 +2,7 @@ import React from "react";
 import Header from "../Header";
 
 const OutstandingInvoiceReport = () => (
-  <div className="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
+  <div>
     <Header
       showNavFilters={true}
       setFilterVisibilty={true}

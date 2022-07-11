@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
+# delete file
+
 class ClientsController < ApplicationController
   def index
     authorize :index, policy_class: ClientPolicy
-    render :index, locals: {
-      clients:,
-      new_client: Client.new,
-      keep_new_client_dialog_open: false
-    }
   end
 
   private
