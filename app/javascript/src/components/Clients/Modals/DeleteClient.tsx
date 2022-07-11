@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import clients from "apis/clients";
+import clientApi from "apis/clients";
 
 interface IProps {
   client: any;
@@ -12,7 +12,7 @@ const DeleteClient = ({ client, setShowDeleteDialog }: IProps) => {
   const navigate = useNavigate();
 
   const deleteClient = async client => {
-    await clients.destroy(client.id);
+    await clientApi.destroy(client.id);
     setShowDeleteDialog(false);
     window.location.pathname == "/clients" ? navigate(0) : navigate("/clients");
   };

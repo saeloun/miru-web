@@ -120,8 +120,7 @@ class Project < ApplicationRecord
       JOIN projects ON projects.id = project_members.project_id
       JOIN clients ON projects.client_id = clients.id"
     ).where(
-      "projects.discarded_at IS NULL
-      AND clients.company_id = ?
+      "clients.company_id = ?
       AND (
       lower(projects.name) LIKE ?
       OR lower(clients.name) LIKE ?
