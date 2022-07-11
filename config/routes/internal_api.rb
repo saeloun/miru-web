@@ -13,7 +13,7 @@ namespace :internal_api, defaults: { format: "json" } do
     end
     resources :projects, only: [:index, :show, :create, :update, :destroy] do
       collection do
-        get "search_all", to: "projects/search_all#index"
+        get "search", to: "projects/search#index"
       end
     end
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]

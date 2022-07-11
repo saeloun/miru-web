@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Projects::SearchAll#index", type: :request do
+RSpec.describe "InternalApi::V1::Projects::Search#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
@@ -19,7 +19,7 @@ RSpec.describe "InternalApi::V1::Projects::SearchAll#index", type: :request do
 
     describe "when user search with project name" do
       it "returns list of projects matching the search term" do
-        send_request :get, "/internal_api/v1/projects/search_all?search_term=#{project.name.first}"
+        send_request :get, "/internal_api/v1/projects/search?search_term=#{project.name.first}"
         expect(response).to have_http_status(:ok)
       end
     end
@@ -35,7 +35,7 @@ RSpec.describe "InternalApi::V1::Projects::SearchAll#index", type: :request do
 
     describe "when user search with an invalid search term" do
       it "returns list of projects matching the search term" do
-        send_request :get, "/internal_api/v1/projects/search_all?search_term=invalid"
+        send_request :get, "/internal_api/v1/projects/search?search_term=invalid"
         expect(response).to have_http_status(:ok)
       end
     end

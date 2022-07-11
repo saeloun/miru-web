@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Projects::SearchAllController < InternalApi::V1::ApplicationController
+class InternalApi::V1::Projects::SearchController < InternalApi::V1::ApplicationController
   skip_after_action :verify_authorized, only: [:index]
 
   def index
-    projects = helpers.search_all_projects(search_params)
+    projects = Project.search_all_projects(search_params, current_company.id)
     render json: { projects: }
   end
 
