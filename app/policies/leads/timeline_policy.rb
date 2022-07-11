@@ -4,11 +4,11 @@ class Leads::TimelinePolicy < ApplicationPolicy
   attr_reader :error_message_key
 
   def index?
-    true
+    can_access?
   end
 
   def items?
-    true
+    can_access?
   end
 
   def show?

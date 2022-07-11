@@ -114,17 +114,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_08_112650) do
     t.index ["discarded_at"], name: "index_consultancies_on_discarded_at"
   end
 
-  create_table "devices", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "company_id", null: false
-    t.string "device_type", default: "laptop"
-    t.string "name"
-    t.string "serial_number"
-    t.jsonb "specifications"
+  create_table "employment_details", force: :cascade do |t|
+    t.string "employee_id"
+    t.string "designation"
+    t.string "employment_type"
+    t.date "joined_at"
+    t.date "resigned_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["company_id"], name: "index_devices_on_company_id"
-    t.index ["user_id"], name: "index_devices_on_user_id"
+    t.bigint "company_user_id", null: false
+    t.index ["company_user_id"], name: "index_employment_details_on_company_user_id"
   end
 
   create_table "employments", force: :cascade do |t|
@@ -314,13 +313,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_08_112650) do
     t.index ["name", "company_id"], name: "index_payments_providers_on_name_and_company_id", unique: true
   end
 
-  create_table "previous_employments", force: :cascade do |t|
+  create_table "previous_employment_details", force: :cascade do |t|
+    t.bigint "employment_detail_id", null: false
     t.string "company_name"
     t.string "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_previous_employments_on_user_id"
+    t.index ["employment_detail_id"], name: "index_previous_employment_details_on_employment_detail_id"
+    t.index ["user_id"], name: "index_previous_employment_details_on_user_id"
   end
 
   create_table "project_members", force: :cascade do |t|
@@ -408,7 +409,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_08_112650) do
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
     t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
-    t.index ["work_date"], name: "index_timesheet_entries_on_work_date"
   end
 
   create_table "users", force: :cascade do |t|
@@ -479,8 +479,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_08_112650) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "clients", "companies"
-  add_foreign_key "devices", "companies"
-  add_foreign_key "devices", "users"
+  add_foreign_key "employment_details", "employments", column: "company_user_id"
   add_foreign_key "employments", "companies"
   add_foreign_key "employments", "users"
   add_foreign_key "identities", "users"
@@ -500,7 +499,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_08_112650) do
   add_foreign_key "leads", "users", column: "reporter_id"
   add_foreign_key "leads", "users", column: "updated_by_id"
   add_foreign_key "payments_providers", "companies"
-  add_foreign_key "previous_employments", "users"
+  add_foreign_key "previous_employment_details", "employment_details"
+  add_foreign_key "previous_employment_details", "users"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"

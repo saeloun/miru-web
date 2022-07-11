@@ -2,6 +2,6 @@
 
 class DashboardPolicy < ApplicationPolicy
   def index?
-    user_owner_role? || user_admin_role?
+    true
   end
 end

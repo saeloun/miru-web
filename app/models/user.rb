@@ -132,6 +132,14 @@ class User < ApplicationRecord
         self.current_workspace) || (self.has_role?(:employee, self.current_workspace) && self.under_sales_department?)
   end
 
+  def can_access_space_usage?
+    self.has_role?(
+      :owner,
+      self.current_workspace) || self.has_role?(
+        :admin,
+        self.current_workspace) || self.has_role?(:employee, self.current_workspace)
+  end
+
   def primary_role
     return "employee" if roles.empty?
 

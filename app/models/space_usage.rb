@@ -59,7 +59,7 @@ class SpaceUsage < ApplicationRecord
 
   delegate :full_name, to: :user, prefix: true, allow_nil: true
 
-  searchkick
+  # searchkick
 
   def search_data
     {
