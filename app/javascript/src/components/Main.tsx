@@ -11,11 +11,15 @@ import EditInvoice from "./Invoices/Edit";
 import Generate from "./Invoices/Generate";
 import Invoice from "./Invoices/Invoice";
 import List from "./Invoices/List";
+import Payments from "./payments";
+import ProjectDetails from "./Projects/Details";
+import ProjectList from "./Projects/List";
 import OutstandingInvoiceReport from "./Reports/outstandingInvoices";
 import ReportList from "./Reports/reportList";
 import RevenueByClientReport from "./Reports/revenueByClient";
 import TimeEntryReports from "./Reports/timeEntry";
 import TotalHoursReport from "./Reports/totalHoursLogged";
+import PlanSelection from "./Subscriptions/PlanSelection";
 
 const Main = ({ company_role }) => {
   const isAdminUser = ["admin","owner"].includes(company_role);
@@ -40,6 +44,16 @@ const Main = ({ company_role }) => {
           <Route path=":id" element={<Invoice />} />
           <Route path="*" element={<ErrorPage />} />
         </Route>
+        <Route path="projects">
+          <Route index element={ <ProjectList isAdminUser={isAdminUser} />} />
+          <Route path=":projectId" element={<ProjectDetails />} />
+          <Route path="*" element={<ErrorPage />} />
+        </Route>
+        <Route path="subscriptions">
+          <Route index element={<PlanSelection />} />
+          <Route path="*" element={<ErrorPage />} />
+        </Route>
+        <Route path="payments" element={<Payments />} />
       </Routes>
     </div>
   );};

@@ -37,7 +37,7 @@ module NavigationHelper
           data: { cy: "clients-tab" }
         },
         {
-          url: projects_path,
+          url: "#{root_url}projects",
           title: I18n.t("navbar.projects"),
           permitted: Pundit.policy!(current_user, :project).index?,
           data: { cy: "projects-tab" }
@@ -55,7 +55,7 @@ module NavigationHelper
           data: { cy: "invoices-tab" }
         },
         {
-          url: payments_path,
+          url: "#{root_url}payments",
           title: I18n.t("navbar.payments"),
           permitted: Pundit.policy!(current_user, :payment).index?,
           data: { cy: "payments-tab" }
