@@ -36,6 +36,7 @@ const Header = ({
           type="button"
           className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
           onClick={handleSaveInvoice}
+          data-cy='save-invoice'
         >
           <FloppyDisk size={18} color="white" />
           <span className="ml-2 inline-block">SAVE</span>

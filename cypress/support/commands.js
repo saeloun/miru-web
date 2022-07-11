@@ -1,4 +1,5 @@
 import { authSelectors } from "../constants/selectors/auth";
+import { invoicesSelector } from "../constants/selectors/invoices";
 import { teamTabSelector } from "../constants/selectors/team";
 
 Cypress.Commands.add("loginAsOwner", function () {
@@ -27,3 +28,13 @@ Cypress.Commands.add("loginAsEmployee", function () {
   cy.get(authSelectors.signInButton).click();
   cy.location("pathname").should("eq", "/time-tracking");
 });
+
+Cypress.Commands.add("generateNewInvoice", function(){
+  cy.get(invoicesSelector.newInvoiceButton).click()
+  cy.get(invoicesSelector.addClientButton).click()
+  cy.contains("Flipkart").click()
+  cy.get(invoicesSelector.invoiceNumberField).click().type("SA-0012")
+  cy.get(invoicesSelector.newLineItemButton).click()
+  cy.get(invoicesSelector.entriesList).first().click()
+  cy.get(invoicesSelector.saveInvoice).click()
+})
