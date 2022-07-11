@@ -13,7 +13,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
         user.add_role :admin, company
         sign_in user
 
-        send_request :post, users_invitations_path, params: {
+        send_request :post, invitations_path, params: {
           invitation: {
             first_name: "test",
             last_name: "example",
@@ -46,7 +46,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
         user.add_role :admin, company
         sign_in user
 
-        send_request :post, users_invitations_path, params: {
+        send_request :post, invitations_path, params: {
           invitation: {
             first_name: "test1",
             last_name: "example2",
@@ -79,7 +79,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
         user.add_role :admin, company
         sign_in user
 
-        send_request :post, users_invitations_path, params: {
+        send_request :post, invitations_path, params: {
           invitation: {
             first_name: "test",
             last_name: "example",
@@ -115,7 +115,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
         existing_user = create(:user)
         sign_in user
 
-        send_request :post, users_invitations_path, params: {
+        send_request :post, invitations_path, params: {
           invitation: {
             first_name: existing_user.first_name,
             last_name: existing_user.last_name,
@@ -149,7 +149,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
         existing_user = create(:user)
         sign_in user
 
-        send_request :post, users_invitations_path, params: {
+        send_request :post, invitations_path, params: {
           invitation: {
             first_name: "test1",
             last_name: "example2",
@@ -183,7 +183,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
         existing_user = create(:user)
         sign_in user
 
-        send_request :post, users_invitations_path, params: {
+        send_request :post, invitations_path, params: {
           invitation: {
             first_name: existing_user.first_name,
             last_name: existing_user.last_name,
@@ -217,7 +217,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
         existing_user = create(:user)
         sign_in user
 
-        send_request :post, users_invitations_path, params: {
+        send_request :post, invitations_path, params: {
           invitation: {
             first_name: existing_user.first_name,
             last_name: existing_user.last_name,
