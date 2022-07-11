@@ -4,8 +4,13 @@ import {
   Route
 } from "react-router-dom";
 
+import ErrorPage from "common/Error";
 import Details from "./Clients/Details";
 import ClientList from "./Clients/List";
+import EditInvoice from "./Invoices/Edit";
+import Generate from "./Invoices/Generate";
+import Invoice from "./Invoices/Invoice";
+import List from "./Invoices/List";
 import OutstandingInvoiceReport from "./Reports/outstandingInvoices";
 import ReportList from "./Reports/reportList";
 import RevenueByClientReport from "./Reports/revenueByClient";
@@ -27,6 +32,13 @@ const Main = ({ company_role }) => {
         <Route path="clients">
           <Route index element={<ClientList isAdminUser={isAdminUser} />} />
           <Route path=":clientId" element={<Details isAdminUser={isAdminUser}  />} />
+        </Route>
+        <Route path="invoices">
+          <Route index element={<List />} />
+          <Route path="generate" element={<Generate />} />
+          <Route path=":id/edit" element={<EditInvoice />} />
+          <Route path=":id" element={<Invoice />} />
+          <Route path="*" element={<ErrorPage />} />
         </Route>
       </Routes>
     </div>

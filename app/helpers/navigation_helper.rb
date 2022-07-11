@@ -49,7 +49,7 @@ module NavigationHelper
           data: { cy: "reports-tab" }
         },
         {
-          url: invoices_path,
+          url: "#{root_url}invoices",
           title: I18n.t("navbar.invoices"),
           permitted: Pundit.policy!(current_user, :invoice).index?,
           data: { cy: "invoices-tab" }
