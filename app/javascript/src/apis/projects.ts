@@ -12,7 +12,7 @@ const update = async (id, payload) => axios.patch(`${path}/${id}`, payload);
 
 const destroy = async id => axios.delete(`${path}/${id}`);
 
-const search = async term => axios.get(`${path}/search_all?search_term=${term}`);
+const search = async term => axios.get(`${path}/search?search_term=${term}`);
 
 const projectApi = { get, show, create, update, destroy, search };
 
