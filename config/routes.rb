@@ -62,11 +62,9 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :users do
-    resources :invitations, only: [:create, :edit, :update, :destroy] do
-      collection do
-        get :accept
-      end
+  resources :invitations, only: [:create, :edit, :update, :destroy] do
+    collection do
+      resources :accepts, only: [:index], controller: "invitations/accept"
     end
   end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Users::InvitationsController < ApplicationController
+class InvitationsController < ApplicationController
   before_action :set_invitation, only: [:edit, :update, :destroy]
   skip_before_action :authenticate_user!, only: [:accept]
   skip_before_action :validate_company!, only: [:accept]
@@ -47,24 +47,6 @@ class Users::InvitationsController < ApplicationController
     end
 
     redirect_to team_index_path
-  end
-
-  def accept
-    service = CreateInvitedUserService.new(params[:token])
-    service.process
-
-    if service.success
-      flash[:success] = t(".success")
-      if service.new_user
-        return redirect_to edit_user_password_path(reset_password_token: service.reset_password_token)
-      elsif current_user
-        return redirect_to root_path
-      end
-    else
-      flash[:error] = service.error_message
-    end
-
-    redirect_to user_session_path
   end
 
   private

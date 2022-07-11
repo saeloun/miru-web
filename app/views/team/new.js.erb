@@ -2,4 +2,4 @@ var modal = $("#invitation-modal").parent();
 var modal_header = modal.find(".modal__title");
 
 modal_header.text("<%= I18n.t("team.create_new_user") %>");
-$("#invitation-modal").html("<%= j(render partial: "users/invitations/form", locals: { invitation: @invitation }) %>");
+$("#invitation-modal").html("<%= j(render partial: "invitations/form", locals: { invitation: @invitation }) %>");

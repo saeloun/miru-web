@@ -23,7 +23,7 @@
 </td>
 <td id="edit-<%= invitation.id %>" class="table__data table__button_design">
   <% if policy(invitation).edit? %>
-    <%= link_to edit_users_invitation_path(invitation), remote: true do %>
+    <%= link_to edit_invitation_path(invitation), remote: true do %>
       <div class="w-6">
         <img id="mid-<%= invitation.id %>" class="table__button" data-invitation-element="edit-invitation" data-cy="edit-invitation-button" src="<%= image_url 'edit_image_button.svg' %>">
       </div>
@@ -32,7 +32,7 @@
 </td>
 <td id="delete-<%= invitation.id %>" class="table__data table__button_design">
   <% if policy(invitation).destroy? %>
-    <%= link_to users_invitation_path(invitation), data: { confirm: "Are you sure?" }, method: :delete do %>
+    <%= link_to invitation_path(invitation), data: { confirm: "Are you sure?" }, method: :delete do %>
       <div class="w-6">
         <%= image_tag 'delete_image_button.svg', class:"table__button", "data-cy": "delete-invitation-button" %>
       </div>
