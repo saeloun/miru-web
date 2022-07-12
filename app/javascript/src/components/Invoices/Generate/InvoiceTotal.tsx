@@ -41,7 +41,7 @@ const InvoiceTotal = ({
   const getDiscount = () => {
     if (showDiscount && discount) {
       return (
-        <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">{discount}</td>
+        <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">{parseFloat(discount).toFixed(2)}</td>
       );
     }
     else if (addDiscount) {
@@ -103,7 +103,7 @@ const InvoiceTotal = ({
               Sub total
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
-              {subTotal}
+              {subTotal.toFixed(2)}
             </td>
           </tr>
           <tr
