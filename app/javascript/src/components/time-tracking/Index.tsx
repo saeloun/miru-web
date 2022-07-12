@@ -1,14 +1,13 @@
 /* eslint-disable no-unexpected-multiline */
 import React  from "react";
 import { ToastContainer } from "react-toastify";
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import timeTrackingApi from "apis/time-tracking";
+
 import timesheetEntryApi from "apis/timesheet-entry";
+import timeTrackingApi from "apis/timeTracking";
 import SyncAutoComplete from "common/SyncAutoComplete";
 import * as dayjs from "dayjs";
 import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
-
 import { minutesToHHMM } from "helpers/hhmm-parser";
 import Logger from "js-logger";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -58,8 +57,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   useEffect(() => {
     sendGAPageView();
-    setAuthHeaders();
-    registerIntercepts();
     fetchTimeTrackingData();
   }, []);
 

@@ -2,26 +2,24 @@ import React from "react";
 import {
   Routes,
   Route,
-  Outlet
+  Outlet,
+  Navigate
 } from "react-router-dom";
 
 import ErrorPage from "common/Error";
-import { Roles } from "constants/index";
-import ROUTES from "./routes";
+import { Roles, Paths } from "constants/index";
+import ROUTES from "constants/routes";
 
 const RestrictedRoute = ({ user, role, authorisedRoles }) => {
   if (!user) {
-    window.location.href = "/user/sign_in";
+    window.location.href = Paths.SIGN_IN;
     return;
   }
   if (authorisedRoles.includes(role)){
     return <Outlet />;
   }
-  else { //unauthorised user
-    const url = role === "book_keeper" ? "/payments" : "/time-tracking";
-    window.location.href = url;
-    return;
-  }
+  const url = role === Roles.BOOK_KEEPER ? Paths.PAYMENTS : Paths.TIME_TRACKING;
+  return <Navigate to={url} />;
 };
 
 const Main = (props) => {
