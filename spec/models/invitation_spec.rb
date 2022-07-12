@@ -51,7 +51,7 @@ RSpec.describe Invitation, type: :model do
   describe "Callbacks" do
     it { is_expected.to callback(:set_token).before(:validation) }
     it { is_expected.to callback(:set_expired_at).before(:validation) }
-    it { is_expected.to callback(:send_invitation_mail).after(:create) }
+    it { is_expected.to callback(:send_invitation_mail).after(:commit) }
   end
 
   describe "#full_name" do
