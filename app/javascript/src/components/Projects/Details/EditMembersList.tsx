@@ -57,7 +57,11 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, hand
     const alreadyAddedMembersMap = {};
     existingMembers.forEach((member) => { alreadyAddedMembersMap[member.id] = member.hourlyRate; });
     const newlyAddedMembers = members.filter((member) => !alreadyAddedMembersMap[member.id]);
-    const updatedMembers = members.filter((member) => alreadyAddedMembersMap[member.id] && alreadyAddedMembersMap[member.id] != member.hourlyRate);
+    const updatedMembers = members.filter(
+      (member) =>
+        alreadyAddedMembersMap[member.id] &&
+        alreadyAddedMembersMap[member.id] != member.hourlyRate
+    );
     if (newlyAddedMembers.length > 0 || updatedMembers.length > 0 || removedIds.length > 0) {
       try {
         await projectMembersApi.update(projectId, {
