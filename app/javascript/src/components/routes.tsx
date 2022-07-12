@@ -1,4 +1,5 @@
 import ErrorPage from "common/Error";
+import { Roles } from "constants/index";
 import ClientDetails from "./Clients/Details";
 import ClientList from "./Clients/List";
 import EditInvoice from "./Invoices/Edit";
@@ -58,14 +59,16 @@ const TimeTrackingRoutes = [
   { path: "*" ,Component: ErrorPage }
 ];
 
+const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
+
 const ROUTES = [
-  { path: "clients" ,subRoutes: ClientsRoutes, authorisedRoles: ["admin","owner", "employee"] },
-  { path: "invoices" ,subRoutes: InvoicesRoutes, authorisedRoles: ["admin","owner", "book_keeper"] },
-  { path: "reports" ,subRoutes: ReportsRoutes, authorisedRoles: ["admin","owner"] },
-  { path: "projects" ,subRoutes: ProjectsRoutes, authorisedRoles: ["admin","owner", "employee"] },
-  { path: "subscriptions" ,subRoutes: SubscriptionsRoutes, authorisedRoles: ["admin","owner"] },
-  { path: "payments" ,subRoutes: PaymentsRoutes, authorisedRoles: ["admin","owner", "book_keeper"] }
-  ,{ path: "time-tracking" ,subRoutes: TimeTrackingRoutes, authorisedRoles: ["admin","owner", "employee", "book_keeper"] }
+  { path: "clients" ,subRoutes: ClientsRoutes, authorisedRoles: [ADMIN, OWNER, EMPLOYEE] },
+  { path: "invoices" ,subRoutes: InvoicesRoutes, authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER] },
+  { path: "reports" ,subRoutes: ReportsRoutes, authorisedRoles: [ADMIN, OWNER] },
+  { path: "projects" ,subRoutes: ProjectsRoutes, authorisedRoles: [ADMIN, OWNER, EMPLOYEE] },
+  { path: "subscriptions" ,subRoutes: SubscriptionsRoutes, authorisedRoles: [ADMIN, OWNER] },
+  { path: "payments" ,subRoutes: PaymentsRoutes, authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER] }
+  ,{ path: "time-tracking" ,subRoutes: TimeTrackingRoutes, authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER] }
 ];
 
 export default ROUTES;

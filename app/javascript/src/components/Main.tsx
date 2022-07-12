@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import ErrorPage from "common/Error";
+import { Roles } from "constants/index";
 import ROUTES from "./routes";
 
 const RestrictedRoute = ({ user, role, authorisedRoles }) => {
@@ -25,7 +26,7 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
 
 const Main = (props) => {
   const { user, companyRole } = props;
-  const isAdminUser = ["admin","owner"].includes(companyRole);
+  const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
   return (
     <div className="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
       <Routes>
