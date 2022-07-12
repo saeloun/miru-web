@@ -61,7 +61,7 @@ class Project < ApplicationRecord
     else
       entries.map do |entry|
         hourly_rate = members[entry.user_id]
-        cost = (entry.duration / 60) * hourly_rate
+        cost = (entry.duration / 60) * hourly_rate.to_i
         {
           id: entry.user_id,
           name: entry.user.full_name,
@@ -108,7 +108,7 @@ class Project < ApplicationRecord
   end
 
   def format_amount(amount)
-    FormatAmountService.new(client.company.base_currency, amount).process
+    FormatAmountService.new(client.company.base_currency, amount.to_i).process
   end
 
   private
