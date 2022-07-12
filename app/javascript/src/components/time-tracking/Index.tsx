@@ -12,7 +12,6 @@ import { minutesToHHMM } from "helpers/hhmm-parser";
 import Logger from "js-logger";
 import { sendGAPageView } from "utils/googleAnalytics";
 import { TOASTER_DURATION } from "constants/index";
-
 import AddEntry from "./AddEntry";
 import DatesInWeek from "./DatesInWeek";
 import EntryCard from "./EntryCard";
