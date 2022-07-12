@@ -43,11 +43,8 @@ Rails.application.routes.draw do
     resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
   end
 
-  # resources :time_tracking, only: [:index], path: "time-tracking" # TODO: remove this and add api/v1/time_tracking
-
   resources :team, only: [:index, :update, :destroy, :edit]
 
-  # resources :reports, only: [:index]
   resources :workspaces, only: [:update]
 
   resources :invoices, only: [], module: :invoices do
@@ -63,27 +60,9 @@ Rails.application.routes.draw do
     end
   end
 
-  # get "clients/*path", to: "clients#index", via: :all
-  # get "clients", to: "clients#index"
-
-  # get "invoices/*path", to: "invoices#index", via: :all
-  # get "invoices", to: "invoices#index"
-
-  # get "projects/*path", to: "projects#index", via: :all
-  # get "projects", to: "projects#index"
-
   get "payments/settings/stripe/connect/refresh", to: "payment_settings#refresh_stripe_connect"
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"
-
-  # get "payments/*path", to: "payments#index", via: :all
-  # get "payments", to: "payments#index"
-
-  # get "reports/*path", to: "reports#index", via: :all
-  # get "reports", to: "home#index"
-
-  # get "subscriptions/*path", to: "subscriptions#index", via: :all
-  # resources :subscriptions, only: [:index]
 
   resource :email_confirmation, only: :show do
     get :resend
