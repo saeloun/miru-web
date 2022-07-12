@@ -26,8 +26,8 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
       it "creates project_members associated with the project and the added user" do
         params = {
           members: {
-            added_members: [{ id: user1.id, hourlyRate: 10 },
-                            { id: user2.id, hourlyRate: 20 }]
+            added_members: [{ id: user1.id, hourlyRate: "10" },
+                            { id: user2.id, hourlyRate: "20" }]
           }
         }
         send_request(:put, internal_api_v1_project_member_path(project.id), params:)
@@ -35,16 +35,16 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
         db_added_users = ProjectMember
           .where(project_id: project.id)
           .map { |project_member| project_member.slice(:user_id, :hourly_rate) }
-        expected_added_users = [ { user_id: user1.id, hourly_rate: 10 },
-                                 { user_id: user2.id, hourly_rate: 20 } ]
+        expected_added_users = [ { user_id: user1.id, hourly_rate: "10" },
+                                 { user_id: user2.id, hourly_rate: "20" } ]
         expect(db_added_users).to match_array(expected_added_users)
       end
     end
 
     context "when updating hourly rate of a existing project member" do
       before do
-        create(:project_member, project_id: project.id, user_id: user1.id, hourly_rate: 10)
-        create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: 20)
+        create(:project_member, project_id: project.id, user_id: user1.id, hourly_rate: "10")
+        create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: "20")
       end
 
       it "updates the hourly rate of the project member" do
@@ -56,16 +56,16 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
         db_users = ProjectMember
           .where(project_id: project.id)
           .map { |project_member| project_member.slice(:user_id, :hourly_rate) }
-        expected_users = [{ user_id: user1.id, hourly_rate: 100 },
-                          { user_id: user2.id, hourly_rate: 20 } ]
+        expected_users = [{ user_id: user1.id, hourly_rate: "100" },
+                          { user_id: user2.id, hourly_rate: "20" } ]
         expect(db_users).to match_array(expected_users)
       end
     end
 
     context "when removing the existing member from the project" do
       before do
-        create(:project_member, project_id: project.id, user_id: user1.id, hourly_rate: 10)
-        create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: 20)
+        create(:project_member, project_id: project.id, user_id: user1.id, hourly_rate: "10")
+        create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: "20")
       end
 
       it "destroys the respective project_members" do
@@ -77,7 +77,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
         db_users = ProjectMember
           .where(project_id: project.id)
           .map { |project_member| project_member.slice(:user_id, :hourly_rate) }
-        expected_users = [{ user_id: user2.id, hourly_rate: 20 }]
+        expected_users = [{ user_id: user2.id, hourly_rate: "20" }]
         expect(db_users).to match_array(expected_users)
       end
     end
@@ -85,7 +85,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
     context "when adding, updating and removing members from the project" do
       before do
         create(:project_member, project_id: project.id, user_id: user1.id, hourly_rate: 10)
-        create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: 20)
+        create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: "20")
       end
 
       it "creates, updates and destroyes the respective project_members associated wih the project" do
@@ -119,7 +119,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
     context "when adding, updating and removing members from the project" do
       before do
         create(:project_member, project_id: project.id, user_id: user1.id, hourly_rate: 10)
-        create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: 20)
+        create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: "20")
       end
 
       it "action is not allowed" do
@@ -147,7 +147,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
     context "when adding, updating and removing members from the project" do
       before do
         create(:project_member, project_id: project.id, user_id: user1.id, hourly_rate: 10)
-        create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: 20)
+        create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: "20")
       end
 
       it "action is not allowed" do
