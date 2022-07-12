@@ -2,7 +2,7 @@
 
 class InternalApi::V1::PaymentsController < ApplicationController
   def create
-    authorize :create, policy_class: PaymentsPolicy
+    authorize :create, policy_class: PaymentPolicy
     invoice = Invoice.find(params[:payment][:invoice_id])
     payment = Payment.create!(create_payment_params.merge(status: payment_status(invoice)))
     update_invoice(invoice)
