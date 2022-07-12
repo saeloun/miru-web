@@ -3,7 +3,7 @@ import React from "react";
 import { minutesToHHMM } from "helpers/hhmm-parser";
 import { ITimeEntry } from "../interface";
 
-const TableRow = ({
+const ReportRow = ({
   id,
   project,
   client,
@@ -39,4 +39,4 @@ const TableRow = ({
   </div>
 );
 
-export default TableRow;
+export default ReportRow;

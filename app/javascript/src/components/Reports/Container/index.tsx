@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
-import TableRow from "./TableRow";
+import ReportRow from "./ReportRow";
 import { useEntry } from "../context/EntryContext";
 
-const TableHeader = () => (
+const ReportHeader = () => (
   <div className="grid grid-cols-5 gap-2">
     <div className="pr-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
       PROJECT/
@@ -30,7 +30,7 @@ const Container = () => {
 
   const getEntryList = (entries) =>
     entries.map((timeEntry, index) => (
-      <TableRow key={`${timeEntry.client}-${index}`} {...timeEntry} />
+      <ReportRow key={`${timeEntry.client}-${index}`} {...timeEntry} />
     ));
 
   return (
@@ -39,12 +39,8 @@ const Container = () => {
         timeEntryReport.reports.map((report, index) => (
           <Fragment key={index}>
             {report.label !== "" && <h1 className="text-miru-han-purple-1000 font-bold text-xl py-5 border-b border-miru-han-purple-1000">{report.label}</h1>}
-            {/* <table className="min-w-full divide-y divide-gray-200 mt-4"> */}
-            <TableHeader />
-            {/* <tbody className="bg-white divide-y divide-gray-200"> */}
+            <ReportHeader />
             {report.entries.length > 0 && getEntryList(report.entries)}
-            {/* </tbody> */}
-            {/* </table> */}
           </Fragment>
         ))
       }
