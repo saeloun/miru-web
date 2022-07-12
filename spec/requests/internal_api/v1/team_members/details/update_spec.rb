@@ -38,6 +38,12 @@ RSpec.describe "Details#update", type: :request do
     it "is successful" do
       user.reload
       expect(response).to have_http_status(:ok)
+      expect(json_response["first_name"]).to eq(JSON.parse(@user_details["first_name"].to_json))
+      expect(json_response["last_name"]).to eq(JSON.parse(@user_details["last_name"].to_json))
+      expect(json_response["personal_email_id"]).to eq(JSON.parse(@user_details["personal_email_id"].to_json))
+      expect(json_response["date_of_birth"]).to eq(JSON.parse(@user_details["date_of_birth"].to_json))
+      expect(json_response["phone"]).to eq(JSON.parse(@user_details["phone"].to_json))
+      expect(json_response["social_accounts"]).to eq(JSON.parse(@user_details["social_accounts"].to_json))
     end
   end
 
@@ -55,6 +61,12 @@ RSpec.describe "Details#update", type: :request do
     it "is successful" do
       user.reload
       expect(response).to have_http_status(:ok)
+      expect(json_response["first_name"]).to eq(JSON.parse(@user_details["first_name"].to_json))
+      expect(json_response["last_name"]).to eq(JSON.parse(@user_details["last_name"].to_json))
+      expect(json_response["personal_email_id"]).to eq(JSON.parse(@user_details["personal_email_id"].to_json))
+      expect(json_response["date_of_birth"]).to eq(JSON.parse(@user_details["date_of_birth"].to_json))
+      expect(json_response["phone"]).to eq(JSON.parse(@user_details["phone"].to_json))
+      expect(json_response["social_accounts"]).to eq(JSON.parse(@user_details["social_accounts"].to_json))
     end
   end
 
@@ -72,6 +84,12 @@ RSpec.describe "Details#update", type: :request do
     it "is successful" do
       user.reload
       expect(response).to have_http_status(:ok)
+      expect(json_response["first_name"]).to eq(JSON.parse(@user_details["first_name"].to_json))
+      expect(json_response["last_name"]).to eq(JSON.parse(@user_details["last_name"].to_json))
+      expect(json_response["personal_email_id"]).to eq(JSON.parse(@user_details["personal_email_id"].to_json))
+      expect(json_response["date_of_birth"]).to eq(JSON.parse(@user_details["date_of_birth"].to_json))
+      expect(json_response["phone"]).to eq(JSON.parse(@user_details["phone"].to_json))
+      expect(json_response["social_accounts"]).to eq(JSON.parse(@user_details["social_accounts"].to_json))
     end
   end
 
