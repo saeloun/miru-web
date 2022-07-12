@@ -13,12 +13,10 @@ class InvitationsController < ApplicationController
     @invitation.sender = current_user
 
     if @invitation.save
-      flash[:success] = t(".success")
+      redirect_to team_index_path, notice: t(".success")
     else
-      set_error_flash
+      redirect_to team_index_path, alert: set_error_flash
     end
-
-    redirect_to team_index_path
   end
 
   def edit
@@ -29,24 +27,20 @@ class InvitationsController < ApplicationController
     authorize @invitation
 
     if @invitation.update(invitation_params)
-      flash[:success] = t(".success")
+      redirect_to team_index_path, notice: t(".success")
     else
-      set_error_flash
+      redirect_to team_index_path, alert: set_error_flash
     end
-
-    redirect_to team_index_path
   end
 
   def destroy
     authorize @invitation
 
     if @invitation.destroy
-      flash[:success] = t(".success")
+      redirect_to team_index_path, notice: t(".success")
     else
-      set_error_flash
+      redirect_to team_index_path, alert: set_error_flash
     end
-
-    redirect_to team_index_path
   end
 
   private
@@ -60,7 +54,7 @@ class InvitationsController < ApplicationController
     end
 
     def set_error_flash
-      flash[:error] = if @invitation.errors.empty?
+      if @invitation.errors.empty?
         t(".failure")
       else
         @invitation.errors.full_messages.join(", ")

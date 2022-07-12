@@ -32,7 +32,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
       end
 
       it "return success flash message" do
-        expect(flash[:success]).to eq("Invitation will be sent")
+        expect(flash[:notice]).to eq("Invitation will be sent")
       end
 
       it "creates invitation record" do
@@ -65,7 +65,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
       end
 
       it "return success flash message" do
-        expect(flash[:error]).to eq("First name is invalid, Last name is invalid")
+        expect(flash[:alert]).to eq("First name is invalid, Last name is invalid")
       end
 
       it "creates invitation record" do
@@ -98,7 +98,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
       end
 
       it "return success flash message" do
-        expect(flash[:error]).to eq("Recipient email is invalid")
+        expect(flash[:alert]).to eq("Recipient email is invalid")
       end
 
       it "creates invitation record" do
@@ -134,7 +134,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
       end
 
       it "return success flash message" do
-        expect(flash[:success]).to eq("Invitation will be sent")
+        expect(flash[:notice]).to eq("Invitation will be sent")
       end
 
       it "creates invitation record" do
@@ -168,7 +168,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
       end
 
       it "return success flash message" do
-        expect(flash[:error]).to eq("First name is invalid, Last name is invalid")
+        expect(flash[:alert]).to eq("First name is invalid, Last name is invalid")
       end
 
       it "creates invitation record" do
@@ -202,7 +202,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
       end
 
       it "return success flash message" do
-        expect(flash[:error]).to eq("Recipient email is invalid")
+        expect(flash[:alert]).to eq("Recipient email is invalid")
       end
 
       it "creates invitation record" do
@@ -236,7 +236,7 @@ RSpec.describe "Users::Invitations#create", type: :request do
       end
 
       it "return success flash message" do
-        expect(flash[:error]).to eq("Role can't be blank")
+        expect(flash[:alert]).to eq("Role can't be blank")
       end
 
       it "creates invitation record" do

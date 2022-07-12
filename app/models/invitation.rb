@@ -53,7 +53,7 @@ class Invitation < ApplicationRecord
   # Callbacks
   before_validation :set_token, on: :create
   before_validation :set_expired_at, on: :create
-  after_create :send_invitation_mail
+  after_create_commit :send_invitation_mail
 
   def full_name
     "#{first_name} #{last_name}"
