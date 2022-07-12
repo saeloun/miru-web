@@ -40,7 +40,7 @@ const Header = ({
             className="header__button"
             onClick={() => setToggleMenu(!toggleMenu)}
           >
-            <span className="ml-2 inline-block">NEW TIMELINE</span>
+            <span className="ml-2 inline-block">NEW ACTION</span>
             <CaretDown weight="fill" size={16} />
           </button>
           <div className="relative">

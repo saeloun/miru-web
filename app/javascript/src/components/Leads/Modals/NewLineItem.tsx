@@ -94,7 +94,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input ${errors.name && touched.name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="name" />
+                        <Field className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.name && touched.name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="name" />
                       </div>
                     </div>
                   </div>
@@ -107,7 +107,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                       </div>
                       <div className="mt-1">
                         <select
-                          className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
+                          className="w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="kind" onChange={(e) => setKindVal(e.target.value)}>
                           <option value=''>Select Kind</option>
                           {kindList &&
@@ -129,7 +129,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none ${errors.number_of_resource && touched.number_of_resource && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="number_of_resource" type="number" min="0" />
+                        <Field className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.number_of_resource && touched.number_of_resource && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="number_of_resource" type="number" min="0" />
                       </div>
                     </div>
                   </div>
@@ -146,7 +146,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none ${errors.resource_expertise_level && touched.resource_expertise_level && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="resource_expertise_level" type="number" min="0" />
+                        <Field className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.resource_expertise_level && touched.resource_expertise_level && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="resource_expertise_level" type="number" min="0" />
                       </div>
                     </div>
                   </div>
@@ -161,7 +161,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input ${errors.description && touched.description && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="description" />
+                        <Field className={`w-full border border-gray-300 dark:border-gray-700 p-2 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.description && touched.description && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="description" />
                       </div>
                     </div>
                   </div>
@@ -178,7 +178,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 shadow-sm text-xs text-miru-dark-purple-1000 focus:outline-none ${errors.price && touched.price && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="price" type="number" min="0" />
+                        <Field className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.price && touched.price && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="price" type="number" min="0" />
                       </div>
                     </div>
                   </div>

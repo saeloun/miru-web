@@ -183,6 +183,10 @@ module.exports = {
   variants: {
     extend: {
       display: ["group-hover"],
+      textColor: ["disabled"],
+      backgroundColor: ["disabled"],
+      borderColor: ["disabled"],
+      boxShadow: ["disabled"],
     },
   },
   plugins: [],

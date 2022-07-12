@@ -110,7 +110,7 @@ const Actions = () => {
             {item.lead && <select
               key={index}
               defaultValue={item.action_assignee.id}
-              className="w-full border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+              className="w-full border border-gray-300 dark:border-gray-700 py-1 shadow-sm rounded text-xs focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
               onChange={(e) => changeAssignee(item.lead.id, item.id, e.target.value)}>
               <option value=''>Select Assignee</option>
               {allowUserList &&
@@ -122,7 +122,7 @@ const Actions = () => {
             {item.lead && <select
               key={index}
               defaultValue={item.action_priority_code}
-              className="w-full border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+              className="w-full border border-gray-300 dark:border-gray-700 py-1 shadow-sm rounded text-xs focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
               onChange={(e) => changePriorityCode(item.lead.id, item.id, e.target.value)} >
               <option value=''>Select Priority</option>
               {priorityCodeList &&

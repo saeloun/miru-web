@@ -1,6 +1,7 @@
 {
-  "name": "@saeloun/miru-web",
+  "name": "AC",
   "version": "0.1.14",
+  "license": "MIT",
   "dependencies": {
     "@fontsource/plus-jakarta-sans": "^4.5.0",
     "@rails/actioncable": "^7.0.1",

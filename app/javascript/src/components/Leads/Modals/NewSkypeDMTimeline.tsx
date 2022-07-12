@@ -108,7 +108,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
         <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
-              <h6 className="text-base font-extrabold">Add New Timeline</h6>
+              <h6 className="text-base font-extrabold">Add New Action : Skype DM</h6>
               <button type="button" onClick={() => { setNewSkypeDMTimeline(false); }}>
                 <X size={16} color="#CDD6DF" weight="bold" />
               </button>
@@ -131,7 +131,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input bg-gray-200 ${errors.action_subject && touched.action_subject && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="action_subject" />
+                        <Field className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.action_subject && touched.action_subject && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="action_subject" />
                       </div>
                     </div>
                   </div>
@@ -146,7 +146,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input bg-gray-200 ${errors.action_social_id && touched.action_social_id && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="action_social_id" />
+                        <Field className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.action_social_id && touched.action_social_id && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="action_social_id" />
                       </div>
                     </div>
                   </div>
@@ -165,7 +165,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                           onChange={(val) => changeDueAt(val)}
                           value={actionDueAt}
                           format={"dd-MM-yyyy hh:mm:ss a"}
-                          className={`w-full border rounded bg-gray-200 ${errors.action_due_at && touched.action_due_at && "border-red-600 focus:ring-red-600 focus:border-red-600"}`}
+                          className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.action_due_at && touched.action_due_at && "border-red-600 focus:ring-red-600 focus:border-red-600"}`}
                         />
                       </div>
                     </div>
@@ -182,7 +182,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                       </div>
                       <div className="mt-1">
                         <select
-                          className="w-full border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          className="w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="action_assignee_id" onChange={(e) => setAssigneeId(e.target.value)}>
                           <option value=''>Select Assignee</option>
                           {allowUserList &&
@@ -203,7 +203,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                       </div>
                       <div className="mt-1">
                         <select
-                          className="w-full border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          className="w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="action_reporter_id" onChange={(e) => setReporterId(e.target.value)}>
                           <option value=''>Select Reporter</option>
                           {allowUserList &&
@@ -223,7 +223,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`w-full border rounded bg-gray-200 ${errors.action_description && touched.action_description && "border-red-600 focus:ring-red-600 focus:border-red-600"}`}
+                        <Field className={`w-full border border-gray-300 dark:border-gray-700 p-2 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.action_description && touched.action_description && "border-red-600 focus:ring-red-600 focus:border-red-600"}`}
                           name="action_description" as="textarea" rows={4} />
                       </div>
                     </div>
@@ -240,7 +240,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                       </div>
                       <div className="mt-1">
                         <select
-                          className="w-full border border-gray-300 dark:border-gray-700 pl-3 py-3 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          className="w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                           name="action_priority_code" onChange={(e) => setPriorityCode(e.target.value)} >
                           <option value=''>Select Priority</option>
                           {priorityCodeList &&
