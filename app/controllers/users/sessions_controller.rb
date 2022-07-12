@@ -7,7 +7,7 @@ class Users::SessionsController < Devise::SessionsController
     elsif user.has_role?(:book_keeper, current_company)
       root_path + "payments"
     else
-      time_tracking_index_path
+      root_path + "time-tracking"
     end
   end
 end

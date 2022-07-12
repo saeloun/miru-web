@@ -43,7 +43,7 @@ Rails.application.routes.draw do
     resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
   end
 
-  resources :time_tracking, only: [:index], path: "time-tracking" # TODO: remove this and add api/v1/time_tracking
+  # resources :time_tracking, only: [:index], path: "time-tracking" # TODO: remove this and add api/v1/time_tracking
 
   resources :team, only: [:index, :update, :destroy, :edit]
 

@@ -14,6 +14,7 @@ import RevenueByClientReport from "./Reports/revenueByClient";
 import TimeEntryReports from "./Reports/timeEntry";
 import TotalHoursReport from "./Reports/totalHoursLogged";
 import PlanSelection from "./Subscriptions/PlanSelection";
+import TimeTracking from "./time-tracking/Index";
 
 const ClientsRoutes = [
   { path: "" ,Component: ClientList },
@@ -52,6 +53,11 @@ const PaymentsRoutes = [
   { path: "*" ,Component: ErrorPage }
 ];
 
+const TimeTrackingRoutes = [
+  { path: "" ,Component: TimeTracking },
+  { path: "*" ,Component: ErrorPage }
+];
+
 const ROUTES = [
   { path: "clients" ,subRoutes: ClientsRoutes, authorisedRoles: ["admin","owner", "employee"] },
   { path: "invoices" ,subRoutes: InvoicesRoutes, authorisedRoles: ["admin","owner", "book_keeper"] },
@@ -59,6 +65,7 @@ const ROUTES = [
   { path: "projects" ,subRoutes: ProjectsRoutes, authorisedRoles: ["admin","owner", "employee"] },
   { path: "subscriptions" ,subRoutes: SubscriptionsRoutes, authorisedRoles: ["admin","owner"] },
   { path: "payments" ,subRoutes: PaymentsRoutes, authorisedRoles: ["admin","owner", "book_keeper"] }
+  ,{ path: "time-tracking" ,subRoutes: TimeTrackingRoutes, authorisedRoles: ["admin","owner", "employee", "book_keeper"] }
 ];
 
 export default ROUTES;

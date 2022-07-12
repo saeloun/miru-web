@@ -19,7 +19,7 @@ module NavigationHelper
     def nav_items
       [
         {
-          url: time_tracking_index_path,
+          url: "#{root_path}time-tracking",
           title: I18n.t("navbar.time_tracking"),
           permitted: Pundit.policy!(current_user, :timesheet_entry).index?,
           data: { cy: "time-tracking-tab" }

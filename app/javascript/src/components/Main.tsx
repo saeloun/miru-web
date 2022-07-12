@@ -10,7 +10,7 @@ import ROUTES from "./routes";
 
 const RestrictedRoute = ({ user, role, authorisedRoles }) => {
   if (!user) {
-    window.location.href = "/login";
+    window.location.href = "/user/sign_in";
     return;
   }
   if (authorisedRoles.includes(role)){
@@ -37,7 +37,7 @@ const Main = (props) => {
               <RestrictedRoute authorisedRoles={parentRoute.authorisedRoles} role={companyRole} user={user} />
             } >
             {parentRoute.subRoutes.map(({ path, Component }) => (
-              <Route key={path} path={path} element={<Component isAdminUser={isAdminUser} />} />
+              <Route key={path} path={path} element={<Component isAdminUser={isAdminUser} user={user} />} /> //TODO: Move user data to context
             ))}
           </Route>
         ))}

@@ -2,6 +2,7 @@
 import React  from "react";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import timeTrackingApi from "apis/time-tracking";
 import timesheetEntryApi from "apis/timesheet-entry";
 import SyncAutoComplete from "common/SyncAutoComplete";
 import * as dayjs from "dayjs";
@@ -9,6 +10,7 @@ import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
 
 import { minutesToHHMM } from "helpers/hhmm-parser";
+import Logger from "js-logger";
 import { sendGAPageView } from "utils/googleAnalytics";
 import { TOASTER_DURATION } from "constants/index";
 
@@ -28,15 +30,10 @@ dayjs.updateLocale("en", { monthShort: monthsAbbr });
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
 
-const TimeTracking: React.FC<Iprops> = ({
-  clients,
-  projects,
-  entries,
-  isAdmin,
-  userId,
-  employees,
-  fullName
-}) => {
+const fullName = (user) => `${user.first_name} ${user.last_name}`;
+
+const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
+  console.log(user)
   const [dayInfo, setDayInfo] = useState<any[]>([]);
   const [view, setView] = useState<string>("day");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
@@ -45,18 +42,18 @@ const TimeTracking: React.FC<Iprops> = ({
   const [weekDay, setWeekDay] = useState<number>(0);
   const [weeklyTotalHours, setWeeklyTotalHours] = useState<string>("00:00");
   const [dailyTotalHours, setDailyTotalHours] = useState<number[]>([]);
-  const [entryList, setEntryList] = useState<object>(entries);
+  const [entryList, setEntryList] = useState<object>({});
   const [selectedFullDate, setSelectedFullDate] = useState<string>(
     dayjs().format("YYYY-MM-DD")
   );
   const [editEntryId, setEditEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
   const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(userId);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(user?.id);
   const [allEmployeesEntries, setAllEmployeesEntries] = useState<object>({});
-
-  // sorting by client's name
-  clients.sort((a: object, b: object) => a["name"].localeCompare(b["name"]));
+  const [clients, setClients] = useState<any>({});
+  const [projects, setProjects] = useState<any>({});
+  const [employees, setEmployees] = useState<any>([]);
 
   const employeeOptions = employees.map(e => ({ value: `${e["id"]}`, label: e["first_name"] + " " + e["last_name"] }) );
 
@@ -64,10 +61,28 @@ const TimeTracking: React.FC<Iprops> = ({
     sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
-    const currentEmployeeEntries = {};
-    currentEmployeeEntries[userId] = entries;
-    setAllEmployeesEntries(currentEmployeeEntries);
+    fetchTimeTrackingData();
   }, []);
+
+  const fetchTimeTrackingData = async () => {
+    try {
+      const { data } = await timeTrackingApi.get();
+      const { clients,
+        projects,
+        entries,
+        employees } = data;
+
+      setClients(clients);
+      setProjects(projects);
+      setEmployees(employees);
+      setEntryList(entries);
+      const currentEmployeeEntries = {};
+      currentEmployeeEntries[user.id] = entries;
+      setAllEmployeesEntries(currentEmployeeEntries);
+    } catch (error) {
+      Logger.error(error);
+    }
+  };
 
   useEffect(() => {
     handleWeekInfo();
@@ -251,12 +266,12 @@ const TimeTracking: React.FC<Iprops> = ({
             ))}
           </nav>
           <div>
-            {isAdmin && selectedEmployeeId && <div className="flex justify-center items-center">
+            {isAdminUser && selectedEmployeeId && <div className="flex justify-center items-center">
               <p className="text-xs font-medium justify-center mr-2">Viewing time entries for</p>
               <SyncAutoComplete
                 options={employeeOptions}
                 handleValue={value => setSelectedEmployeeId(+ value)}
-                defaultValue={{ value: selectedEmployeeId, label: fullName }}
+                defaultValue={{ value: selectedEmployeeId, label: fullName(user) }}
                 size="md"
               />
             </div>}
@@ -442,13 +457,8 @@ const TimeTracking: React.FC<Iprops> = ({
 };
 
 interface Iprops {
-  clients: [];
-  projects: object;
-  entries: object;
-  isAdmin: boolean;
-  userId: number;
-  employees: [];
-  fullName: string;
+  isAdminUser: boolean;
+  user: any;
 }
 
 export default TimeTracking;

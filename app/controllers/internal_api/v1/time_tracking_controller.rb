@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TimeTrackingController < ApplicationController
+class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationController
   include Timesheet
   skip_after_action :verify_authorized
 
@@ -8,9 +8,8 @@ class TimeTrackingController < ApplicationController
     is_admin = current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
     user_id = current_user.id
     employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
-    full_name = current_user.full_name
 
-    clients = current_company.clients.includes(:projects)
+    clients = current_company.clients.order(name: :asc).includes(:projects)
     projects = {}
     clients.map { |client| projects[client.name] = client.projects }
 
@@ -23,6 +22,6 @@ class TimeTrackingController < ApplicationController
         1.month.since.end_of_month
         )
     entries = formatted_entries_by_date(timesheet_entries)
-    render :index, locals: { is_admin:, clients:, projects:, entries:, employees:, user_id:, full_name: }
+    render json: { clients:, projects:, entries:, employees: }
   end
 end
