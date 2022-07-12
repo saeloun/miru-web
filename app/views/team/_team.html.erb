@@ -17,7 +17,7 @@
   <% end %>
 </td>
 <td id="role-<%= member.id %>" class="table__data table__text">
-  <%= member.primary_role.titlecase %>
+  <%= member.primary_role(current_company).titlecase %>
 </td>
 <td id="pending-<%= member.id %>" class="table__data">
   <% if current_user.has_any_role?({ name: :owner, resource: current_company }, { name: :admin, resource: current_company }) %>

@@ -78,14 +78,14 @@ RSpec.describe User, type: :model do
     it "shows the first role name" do
       user.add_role :admin, company
       user.add_role :owner, company
-      expect(user.primary_role).to eq("admin")
-      expect(user.primary_role).not_to eq("owner")
+      expect(user.primary_role(company)).to eq("admin")
+      expect(user.primary_role(company)).not_to eq("owner")
     end
 
     it "returns employee as default role" do
-      expect(user.primary_role).to eq("employee")
-      expect(user.primary_role).not_to eq("admin")
-      expect(user.primary_role).not_to eq("owner")
+      expect(user.primary_role(company)).to eq("employee")
+      expect(user.primary_role(company)).not_to eq("admin")
+      expect(user.primary_role(company)).not_to eq("owner")
     end
   end
 

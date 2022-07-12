@@ -23,7 +23,7 @@ json.team teams do |member|
   json.id member.id
   json.name member.full_name
   json.email member.email
-  json.role member.primary_role
+  json.role member.primary_role(current_company)
   json.status team_member_status(member)
 end
 

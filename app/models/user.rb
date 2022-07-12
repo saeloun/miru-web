@@ -86,7 +86,8 @@ class User < ApplicationRecord
   # scopes
   scope :valid_invitations, -> { invitations.where(sender: self).valid_invitations }
 
-  def primary_role
+  def primary_role(company)
+    roles = self.roles.where(resource: company)
     return "employee" if roles.empty?
 
     roles.first.name
