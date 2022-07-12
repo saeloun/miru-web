@@ -2,7 +2,7 @@
 
 # == Schema Information
 #
-# Table name: invoice_payments
+# Table name: payments
 #
 #  id               :bigint           not null, primary key
 #  amount           :decimal(20, 2)   default(0.0)
@@ -16,13 +16,13 @@
 #
 # Indexes
 #
-#  index_invoice_payments_on_invoice_id  (invoice_id)
+#  index_payments_on_invoice_id  (invoice_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (invoice_id => invoices.id)
 #
-class InvoicePayment < ApplicationRecord
+class Payment < ApplicationRecord
   enum status: [
     :paid,
     :partially_paid,

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class CreateInvoicePayments < ActiveRecord::Migration[7.0]
+class CreatePayments < ActiveRecord::Migration[7.0]
   def up
-    create_table :invoice_payments do |t|
+    create_table :payments do |t|
       t.references :invoice, null: false, foreign_key: true
       t.date :transaction_date, null: false
       t.text :note
@@ -15,6 +15,6 @@ class CreateInvoicePayments < ActiveRecord::Migration[7.0]
   end
 
   def down
-    drop_table :invoice_payments
+    drop_table :payments
   end
 end

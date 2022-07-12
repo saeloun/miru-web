@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Payments::Invoices#create", type: :request do
+RSpec.describe "InternalApi::V1::Payments#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client1) { create(:client, company:, name: "bob") }
@@ -29,7 +29,7 @@ RSpec.describe "InternalApi::V1::Payments::Invoices#create", type: :request do
           amount: 100,
           note: "This is transaction ID - 123"
         }
-        send_request :post, internal_api_v1_payments_invoices_path(payment: @payment)
+        send_request :post, internal_api_v1_payments_path(payment: @payment)
       end
 
       it "return the success" do
@@ -37,7 +37,7 @@ RSpec.describe "InternalApi::V1::Payments::Invoices#create", type: :request do
       end
 
       it "adds the payment entry to the database" do
-        expect(InvoicePayment.last.invoice.id).to eq(client1_sent_invoice1.id)
+        expect(Payment.last.invoice.id).to eq(client1_sent_invoice1.id)
       end
 
       it "returns the expected payment entry response" do
@@ -77,11 +77,11 @@ RSpec.describe "InternalApi::V1::Payments::Invoices#create", type: :request do
           amount: 80,
           note: "This is transaction ID - 123"
         }
-        send_request :post, internal_api_v1_payments_invoices_path(payment: @payment)
+        send_request :post, internal_api_v1_payments_path(payment: @payment)
       end
 
       it "sets the payment status as partial" do
-        expect(InvoicePayment.last.status).to eq("partially_paid")
+        expect(Payment.last.status).to eq("partially_paid")
       end
 
       it "updates the invoice details correctly in the database" do
@@ -102,7 +102,7 @@ RSpec.describe "InternalApi::V1::Payments::Invoices#create", type: :request do
 
     describe "when tries to create manual payment entry" do
       it "returns forbidden" do
-        send_request :post, internal_api_v1_payments_invoices_path(payment: {})
+        send_request :post, internal_api_v1_payments_path(payment: {})
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -117,7 +117,7 @@ RSpec.describe "InternalApi::V1::Payments::Invoices#create", type: :request do
 
     describe "when tries to create manual payment entry" do
       it "returns forbidden" do
-        send_request :post, internal_api_v1_payments_invoices_path(payment: {})
+        send_request :post, internal_api_v1_payments_path(payment: {})
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -126,7 +126,7 @@ RSpec.describe "InternalApi::V1::Payments::Invoices#create", type: :request do
   context "when unauthenticated" do
     describe "when tries to create manual payment entry" do
       it "returns unauthorized" do
-        send_request :post, internal_api_v1_payments_invoices_path(payment: {})
+        send_request :post, internal_api_v1_payments_path(payment: {})
         expect(response).to have_http_status(:unauthorized)
         expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
       end
