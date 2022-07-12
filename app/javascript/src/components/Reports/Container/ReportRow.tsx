@@ -13,7 +13,7 @@ const ReportRow = ({
   duration
 }: ITimeEntry) => (
 
-  <div key={id} className="grid grid-cols-5 gap-2">
+  <div key={id} className="grid grid-cols-5 gap-2 border-b">
     <div className="pr-6 py-4 text-left whitespace-nowrap">
       <p className="font-semibold whitespace-normal text-base text-miru-dark-purple-1000">
         {project}

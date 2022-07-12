@@ -3,7 +3,7 @@ import ReportRow from "./ReportRow";
 import { useEntry } from "../context/EntryContext";
 
 const ReportHeader = () => (
-  <div className="grid grid-cols-5 gap-2">
+  <div className="grid grid-cols-5 gap-2 border-b">
     <div className="pr-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest">
       PROJECT/
       <br />
