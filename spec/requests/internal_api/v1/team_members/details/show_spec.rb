@@ -18,6 +18,7 @@ RSpec.describe "Details#show", type: :request do
 
     it "is successful" do
       expect(response).to have_http_status(:ok)
+      response.body == user.to_json
     end
   end
 
@@ -30,6 +31,7 @@ RSpec.describe "Details#show", type: :request do
 
     it "is successful" do
       expect(response).to have_http_status(:ok)
+      response.body == user.to_json
     end
   end
 
@@ -42,6 +44,7 @@ RSpec.describe "Details#show", type: :request do
 
     it "is successful" do
       expect(response).to have_http_status(:ok)
+      response.body == user.to_json
     end
   end
 
