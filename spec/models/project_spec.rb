@@ -57,7 +57,7 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in the last week" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.last_week)
-        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        result.first[:formatted_hourly_rate] = formatted_hourly_rate.to_i
         cost = (timesheet_entry.duration / 60) * member.hourly_rate.to_i
         result.first[:formatted_cost] = project.format_amount(cost)
         expect(subject).to eq(result)
@@ -69,7 +69,7 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a week" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_week)
-        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        result.first[:formatted_hourly_rate] = formatted_hourly_rate.to_i
         cost = (timesheet_entry.duration / 60) * member.hourly_rate.to_i
         result.first[:formatted_cost] = project.format_amount(cost)
         expect(subject).to eq(result)
@@ -81,7 +81,7 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a month" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_month)
-        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        result.first[:formatted_hourly_rate] = formatted_hourly_rate.to_i
         cost = (timesheet_entry.duration / 60) * member.hourly_rate.to_i
         result.first[:formatted_cost] = project.format_amount(cost)
         expect(subject).to eq(result)
@@ -93,7 +93,7 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a year" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.beginning_of_year)
-        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        result.first[:formatted_hourly_rate] = formatted_hourly_rate.to_i
         cost = (timesheet_entry.duration / 60) * member.hourly_rate.to_i
         result.first[:formatted_cost] = project.format_amount(cost)
         expect(subject).to eq(result)
