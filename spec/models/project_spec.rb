@@ -27,7 +27,7 @@ RSpec.describe Project, type: :model do
     let(:client) { create(:client, company:) }
     let(:project) { create(:project, client:) }
     let!(:member) { create(:project_member, project:, user:, hourly_rate: 5000) }
-    let(:formatted_hourly_rate) { FormatAmountService.new(company.base_currency, member.hourly_rate).process }
+    let(:formatted_hourly_rate) { FormatAmountService.new(company.base_currency, member.hourly_rate.to_i).process }
     let(:result) do
       [{
         id: user.id,
