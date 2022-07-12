@@ -33,7 +33,6 @@ dayjs.Ls.en.weekStart = 1;
 const fullName = (user) => `${user.first_name} ${user.last_name}`;
 
 const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
-  console.log(user)
   const [dayInfo, setDayInfo] = useState<any[]>([]);
   const [view, setView] = useState<string>("day");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
