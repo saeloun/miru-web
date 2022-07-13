@@ -227,4 +227,38 @@ RSpec.describe Project, type: :model do
       end
     end
   end
+
+  describe "#search_all_projects_by_name" do
+    let(:employment) { create(:employment) }
+    let(:user) { employment.user }
+    let(:company) { employment.company }
+    let(:users_role) { create(:users_role, user: employment.user, company: employment.company) }
+    let(:client) { create(:client, company: employment.company) }
+    let(:project) { create(:project, client:) }
+
+    it "returns projects with matching project name" do
+      expect(
+        Project.search_all_projects_by_name(
+          project.name,
+          company.id)).to eq([{ id: project.id, name: project.name, client_name: client.name }])
+    end
+
+    it "returns projects with matching client name" do
+      expect(
+        Project.search_all_projects_by_name(
+          client.name,
+          company.id)).to eq([{ id: project.id, name: project.name, client_name: client.name }])
+    end
+
+    it "returns projects with matching user name" do
+      expect(
+        Project.search_all_projects_by_name(
+          user.name,
+          company.id)).to eq([{ id: project.id, name: project.name, client_name: client.name }])
+    end
+
+    it "returns empty array when no projects found" do
+      expect(Project.search_all_projects_by_name("no_project", company.id)).to eq([])
+    end
+  end
 end

@@ -111,7 +111,7 @@ class Project < ApplicationRecord
     FormatAmountService.new(client.company.base_currency, amount).process
   end
 
-  def self.search_all_projects(search_term, company_id)
+  def self.search_all_projects_by_name(search_term, company_id)
     search_term = search_term.downcase.strip
     search_term = search_term.gsub(/\s+/, "%")
     search_term = "#{search_term}%"
