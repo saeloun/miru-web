@@ -25,9 +25,9 @@ const Header = ({
   handleDownload,
   type
 }) => {
-  const { timeEntryReport, revenueByClientReport, currentReport } = useEntry();
+  const { timeEntryReport, revenueByClientReport, currentReport, totalHoursLoggedReport } = useEntry();
 
-  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport });
+  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport, totalHoursLoggedReport });
 
   const [showExportOptions, setShowExportOptions] = useState<boolean>(false);
 
