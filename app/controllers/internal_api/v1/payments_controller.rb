@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::PaymentsController < ApplicationController
+  def new
+    authorize :new, policy_class: PaymentPolicy
+    render :new, locals: {
+      invoices: current_company.invoices.includes(:client)
+        .with_statuses(["sent", "viewed"])
+        .order(created_at: :asc)
+    }
+  end
+
   def create
     authorize :create, policy_class: PaymentPolicy
     invoice = Invoice.find(params[:payment][:invoice_id])
