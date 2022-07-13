@@ -10,6 +10,7 @@ import getReportData from "../api/revenueByClient";
 import EntryContext from "../context/EntryContext";
 
 import TimeEntryReportContext from "../context/TimeEntryReportContext";
+import TotalHoursLoggedReportContext from "../context/TotalHoursLoggedReportContext";
 import Header from "../Header";
 
 const RevenueByClientReport = () => {
@@ -73,6 +74,7 @@ const RevenueByClientReport = () => {
   }, [selectedFilter]);
 
   const contextValues = {
+    totalHoursLoggedReport: TotalHoursLoggedReportContext,
     timeEntryReport: TimeEntryReportContext,
     revenueByClientReport: {
       filterOptions: {

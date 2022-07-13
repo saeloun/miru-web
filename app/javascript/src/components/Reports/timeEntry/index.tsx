@@ -5,8 +5,8 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import applyFilter, { getQueryParams } from "../api/applyFilter";
 import Container from "../Container";
 import EntryContext from "../context/EntryContext";
-
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
+import TotalHoursLoggedReportContext from "../context/TotalHoursLoggedReportContext";
 import Filters from "../Filters";
 import { getMonth } from "../Filters/filterOptions";
 import Header from "../Header";
@@ -99,7 +99,8 @@ const TimeEntryReports = () => {
       handleRemoveSingleFilter: handleRemoveSingleFilter
     },
     currentReport: "TimeEntryReport",
-    revenueByClientReport: RevenueByClientReportContext
+    revenueByClientReport: RevenueByClientReportContext,
+    totalHoursLoggedReport: TotalHoursLoggedReportContext
   };
 
   return (
