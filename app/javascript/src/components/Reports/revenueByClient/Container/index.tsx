@@ -57,9 +57,9 @@ const Container = () => {
         <TableHeader />
         <tbody className="bg-white divide-y divide-gray-200">
           {
-            revenueByClientReport.clientList.map((report, index) => (
+            revenueByClientReport.clientList.length && revenueByClientReport.currency && revenueByClientReport.clientList.map((client, index) => (
               <Fragment key={index}>
-                <TableRow key={"index"} {...report} />
+                <TableRow key={index} currency={revenueByClientReport.currency} report={client} />
               </Fragment>
             ))
           }
