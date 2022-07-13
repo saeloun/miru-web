@@ -74,6 +74,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_070130) do
     t.string "stripe_id"
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
+    t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true
   end
 
   create_table "companies", force: :cascade do |t|
