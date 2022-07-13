@@ -15,9 +15,9 @@ RSpec.describe "Devices#update", type: :request do
     name: Faker::Alphanumeric.alphanumeric,
     serial_number: Faker::Number.number(digits: 10),
     specifications: {
-      "ram": "RAM 8GB",
-      "graphics": "XYZ",
-      "processor": "ABC"
+      "ram": Faker::Alphanumeric.alphanumeric,
+      "graphics": Faker::Alphanumeric.alphanumeric,
+      "processor": Faker::Alphanumeric.alphanumeric
     }
     )
   }
@@ -30,9 +30,9 @@ RSpec.describe "Devices#update", type: :request do
       name: Faker::Alphanumeric.alphanumeric,
       serial_number: Faker::Number.number(digits: 10),
       specifications: {
-        "ram": "RAM 16GB",
-        "graphics": "1233`",
-        "processor": "4355"
+        "ram": Faker::Alphanumeric.alphanumeric,
+        "graphics": Faker::Alphanumeric.alphanumeric,
+        "processor": Faker::Alphanumeric.alphanumeric
       }
     }
   }
@@ -51,7 +51,6 @@ RSpec.describe "Devices#update", type: :request do
     it "is successful" do
       device.reload
       expect(response).to have_http_status(:ok)
-      debugger
     end
   end
 
