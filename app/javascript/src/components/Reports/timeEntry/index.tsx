@@ -8,6 +8,7 @@ import EntryContext from "../context/EntryContext";
 
 import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
+import TotalHoursLoggedReportContext from "../context/TotalHoursLoggedReportContext";
 import Filters from "../Filters";
 import { getMonth } from "../Filters/filterOptions";
 import Header from "../Header";
@@ -101,7 +102,8 @@ const TimeEntryReports = () => {
     },
     currentReport: "TimeEntryReport",
     revenueByClientReport: RevenueByClientReportContext,
-    outstandingOverdueInvoice: OutstandingOverdueInvoiceContext
+    outstandingOverdueInvoice: OutstandingOverdueInvoiceContext,
+    totalHoursLoggedReport: TotalHoursLoggedReportContext
   };
 
   return (
