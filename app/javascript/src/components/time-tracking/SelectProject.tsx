@@ -1,5 +1,4 @@
 import * as React from "react";
-import Select from "react-select";
 
 const SelectProject: React.FC<Iprops> = ({
   clients,
@@ -18,9 +17,6 @@ const SelectProject: React.FC<Iprops> = ({
   isWeeklyEditing, // eslint-disable-line
   setIsWeeklyEditing
 }) => {
-  const clientList = clients.map(client => ({ value: client["name"], label: client["name"] }));
-  const projectList = project ? projects[client].map(project => ({ value: project.name, label: project.name })) : [];
-
   const handleCancelButton = () => {
     if (newRowView) {
       setNewRowView(false);
@@ -40,52 +36,53 @@ const SelectProject: React.FC<Iprops> = ({
     }
   };
 
+  const handleClientChange = (e) => {
+    setClient(e.target.value);
+    setProject(projects[e.target.value][0]["name"]);
+  };
+
   return (
     <div className="flex justify-between p-4 rounded-md shadow-2xl content-center">
       {/* Clients */}
-      <Select
-        placeholder="Select Client"
-        options={clientList}
-        onChange={e => {setClient(e.value); setProject(projects[e.value][0]["name"]); }}
-        isClearable
-        className="w-80 h-8 bg-miru-gray-100 rounded-md text-xs text-miru-han-purple-600"
-        styles={{ menu: (base: any) => ({
-          ...base,
-          zIndex: 9999,
-          border: "none",
-          boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
-          ...(base.isFocused && {
-            borderRadius: "0.25rem",
-            backgroundColor: "#4A485A",
-            color: "#5B34EA"
-          })
-        })
-        }}
-        {...( client ? { defaultValue: { value: client, label: client } } : {} ) }
-      />
+      <select
+        onChange={handleClientChange}
+        value={client || "Client"}
+        name="client"
+        id="client"
+        className="w-80 bg-miru-gray-100 rounded-sm h-8"
+      >
+        {!client && (
+          <option disabled selected className="text-miru-gray-100">
+            Client
+          </option>
+        )}
+        {clients.map((c, i) => (
+          <option key={i.toString()}>{c["name"]}</option>
+        ))}
+      </select>
       {/* Projects */}
-      <Select
-        placeholder="Select Project"
-        options={projectList}
-        onChange={e => setProject(e["value"]) }
-        isClearable
-        className="w-80 h-8 bg-miru-gray-100 rounded-md text-xs text-miru-han-purple-600"
-        styles={{ menu: (base: any) => ({
-          ...base,
-          zIndex: 9999,
-          height: "32px",
-          border: "none",
-          boxShadow: "1px 1px 5px rgba(0, 0, 0, 0.1)",
-          ...(base.isFocused && {
-            borderRadius: "0.25rem",
-            backgroundColor: "#4A485A",
-            color: "#5B34EA"
-          })
-        })
+      <select
+        onChange={e => {
+          setProject(e.target.value);
+          setProjectId();
         }}
-        {...( project ? { defaultValue: { value: project, label: project } } : {} ) }
-      />
-      {/* Buttons */}
+        value={project}
+        name="project"
+        id="project"
+        className="w-80 bg-miru-gray-100 rounded-sm h-8"
+      >
+        {!project && (
+          <option disabled selected className="text-miru-gray-100">
+            Project
+          </option>
+        )}
+        {client && projects[client] &&
+          projects[client].map((p, i) => (
+            <option data-project-id={p.id} key={i.toString()}>
+              {p.name}
+            </option>
+          ))}
+      </select>
       <button
         onClick={handleCancelButton}
         className="h-8 w-38 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest"

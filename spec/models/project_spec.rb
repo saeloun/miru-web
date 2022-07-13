@@ -240,21 +240,27 @@ RSpec.describe Project, type: :model do
       expect(
         Project.search_all_projects_by_name(
           project.name,
-          company.id)).to eq([{ id: project.id, name: project.name, client_name: client.name }])
+          company.id
+          )
+        ).to eq([{ id: project.id, name: project.name, client_name: client.name }])
     end
 
     it "returns projects with matching client name" do
       expect(
         Project.search_all_projects_by_name(
           client.name,
-          company.id)).to eq([{ id: project.id, name: project.name, client_name: client.name }])
+          company.id
+          )
+        ).to eq([{ id: project.id, name: project.name, client_name: client.name }])
     end
 
     it "returns projects with matching user name" do
       expect(
         Project.search_all_projects_by_name(
           user.name,
-          company.id)).to eq([{ id: project.id, name: project.name, client_name: client.name }])
+          company.id
+        )
+        ).to eq([{ id: project.id, name: project.name, client_name: client.name }])
     end
 
     it "returns empty array when no projects found" do
