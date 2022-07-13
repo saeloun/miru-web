@@ -25,9 +25,9 @@ const Header = ({
   handleDownload,
   type
 }) => {
-  const { timeEntryReport, revenueByClientReport, currentReport, outstandingOverdueInvoice } = useEntry();
+  const { timeEntryReport, revenueByClientReport, currentReport, outstandingOverdueInvoice, totalHoursLoggedReport } = useEntry();
 
-  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport, outstandingOverdueInvoice });
+  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport, outstandingOverdueInvoice, totalHoursLoggedReport });
 
   const [showExportOptions, setShowExportOptions] = useState<boolean>(false);
 

@@ -24,7 +24,7 @@ const listDetails = [{
   title: "Total hours logged",
   description: "A detailed summary of billed, unbilled and non-billable hours by team grouped by project.",
   url: "total-hours",
-  show: false
+  show: true
 }, {
   icon: revenue,
   title: "Revenue by client",
