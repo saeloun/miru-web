@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import TableRow from "./TableRow";
 import { useEntry } from "../context/EntryContext";
+import { getReports } from "../Header/fetchReport";
 
 const TableHeader = () => (
   <thead>
@@ -40,7 +41,9 @@ const TableHeader = () => (
 );
 
 const Container = () => {
-  const { timeEntryReport } = useEntry();
+  const { timeEntryReport, revenueByClientReport, currentReport, totalHoursLoggedReport } = useEntry();
+
+  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport, totalHoursLoggedReport });
 
   const getEntryList = (entries) =>
     entries.map((timeEntry, index) => (
@@ -50,7 +53,7 @@ const Container = () => {
   return (
     <Fragment>
       {
-        timeEntryReport.reports.map((report, index) => (
+        selectedReport.reports.map((report, index) => (
           <Fragment key={index}>
             {report.label !== "" && <h1 className="text-miru-han-purple-1000 font-bold text-xl py-5 border-b border-miru-han-purple-1000">{report.label}</h1>}
             <table className="min-w-full divide-y divide-gray-200 mt-4">
