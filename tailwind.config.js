@@ -42,6 +42,8 @@ module.exports = {
       },
       width: {
         fit: "fit-content",
+        30: "7.5rem", //120px
+        128: "32rem", // 512px
       },
       height: {
         120: "120px",
@@ -168,7 +170,7 @@ module.exports = {
         "10/100": "10%",
       },
       zIndex: {
-        "15": "15",
+        15: "15",
       },
     },
   },
