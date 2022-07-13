@@ -91,7 +91,7 @@ const MultipleEntriesModal = ({
 
   return (
     <div style={{ background: "rgba(29, 26, 49,0.6)" }} className="px-52 py-20 w-full h-full fixed inset-0 flex justify-center z-50">
-      <div className="bg-white rounded-lg w-full h-128 flex flex-col justify-between">
+      <div className="bg-white rounded-lg w-full h-160 flex flex-col justify-between">
         <Header
           setMultiLineItemModal={setMultiLineItemModal}
         />

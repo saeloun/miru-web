@@ -16,7 +16,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               Sub total
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
-              {subTotal}
+              {parseFloat(subTotal).toFixed(2)}
             </td>
           </tr>
           <tr
@@ -24,7 +24,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
             <td className="py-2 pr-10 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
               Discount
             </td>
-            <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">{discount}</td>
+            <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">{parseFloat(discount).toFixed(2)}</td>
           </tr>
           <tr>
             <td className="pt-4 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
