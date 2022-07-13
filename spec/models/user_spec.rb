@@ -41,12 +41,13 @@ RSpec.describe User, type: :model do
     let(:company) { create(:company) }
     let!(:valid_invitation1) { create(:invitation, sender: user) }
     let!(:valid_invitation2) { create(:invitation) }
+    let!(:invalid_invitations) { create_list(:invitation, 2) }
+    let!(:invalid_invitations_with_sender) { create_list(:invitation, 2, sender: user) }
 
     before do
-      create(:invitation, sender: user, expired_at: Time.current - 1.day)
-      create(:invitation, expired_at: Time.current - 1.day)
-      create(:invitation, sender: user, accepted_at: Time.current - 1.day)
-      create(:invitation, accepted_at: Time.current - 1.day)
+      invalid_invitations.concat(invalid_invitations_with_sender).each do |invalid_invitation|
+        invalid_invitation.update_columns(expired_at: Time.current - 1.day)
+      end
     end
 
     describe ".valid_invitations" do
@@ -77,14 +78,14 @@ RSpec.describe User, type: :model do
     it "shows the first role name" do
       user.add_role :admin, company
       user.add_role :owner, company
-      expect(user.primary_role).to eq("admin")
-      expect(user.primary_role).not_to eq("owner")
+      expect(user.primary_role(company)).to eq("admin")
+      expect(user.primary_role(company)).not_to eq("owner")
     end
 
     it "returns employee as default role" do
-      expect(user.primary_role).to eq("employee")
-      expect(user.primary_role).not_to eq("admin")
-      expect(user.primary_role).not_to eq("owner")
+      expect(user.primary_role(company)).to eq("employee")
+      expect(user.primary_role(company)).not_to eq("admin")
+      expect(user.primary_role(company)).not_to eq("owner")
     end
   end
 

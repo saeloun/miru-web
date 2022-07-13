@@ -44,7 +44,7 @@ Rails.application.routes.draw do
 
   resources :time_tracking, only: [:index], path: "time-tracking"
 
-  resources :team, only: [:index, :update, :destroy, :edit]
+  resources :team, only: [:new, :index, :update, :destroy, :edit]
 
   resources :reports, only: [:index]
   resources :workspaces, only: [:update]
@@ -59,6 +59,12 @@ Rails.application.routes.draw do
 
     member do
       get :view, to: "view#show", as: :view
+    end
+  end
+
+  resources :invitations, only: [:create, :edit, :update, :destroy] do
+    collection do
+      resources :accepts, only: [:index], controller: "invitations/accept"
     end
   end
 

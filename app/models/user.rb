@@ -64,7 +64,7 @@ class User < ApplicationRecord
   store_accessor :social_accounts, :github_url, :linkedin_url
 
   # Attribute accessor
-  attr_accessor :current_company, :role
+  attr_accessor :current_company, :role, :skip_password_validation
 
   # Validations
   after_initialize :set_default_social_accounts, if: :new_record?
@@ -86,7 +86,8 @@ class User < ApplicationRecord
   # scopes
   scope :valid_invitations, -> { invitations.where(sender: self).valid_invitations }
 
-  def primary_role
+  def primary_role(company)
+    roles = self.roles.where(resource: company)
     return "employee" if roles.empty?
 
     roles.first.name
@@ -98,10 +99,6 @@ class User < ApplicationRecord
 
   def active_for_authentication?
     super and self.kept?
-  end
-
-  def admin_or_owner?(company)
-    @admin_or_owner ||= has_any_role?({ name: :owner, resource: company }, { name: :admin, resource: company })
   end
 
   def current_workspace(load_associations: [:logo_attachment])
@@ -120,6 +117,14 @@ class User < ApplicationRecord
       assign_role
     end
   end
+
+  def create_reset_password_token
+    raw, hashed = Devise.token_generator.generate(User, :reset_password_token)
+    self.reset_password_token = hashed
+    self.reset_password_sent_at = Time.now.utc
+    self.save
+    raw # This value will be used to redirect users to the reset password page
+ end
 
   private
 
@@ -145,5 +150,11 @@ class User < ApplicationRecord
       if errors.empty? && current_company
         self.add_role(role.downcase.to_sym, current_company)
       end
+    end
+
+    def password_required?
+      return false if skip_password_validation
+
+      super
     end
 end

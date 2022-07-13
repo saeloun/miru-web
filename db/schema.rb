@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_04_070130) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_07_125827) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -89,6 +89,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_070130) do
     t.string "timezone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
   create_table "devices", force: :cascade do |t|
@@ -322,8 +325,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_070130) do
   add_foreign_key "employments", "companies"
   add_foreign_key "employments", "users"
   add_foreign_key "identities", "users"
-  add_foreign_key "invitations", "companies"
-  add_foreign_key "invitations", "users", column: "sender_id"
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"

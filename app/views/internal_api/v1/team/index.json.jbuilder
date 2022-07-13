@@ -4,14 +4,16 @@ json.key_format! camelize: :lower
 json.deep_format_keys!
 
 def team_member_status(member)
-  return unless current_user.admin_or_owner?(current_company) &&
+  return unless current_user
+    .has_any_role?({ name: :owner, resource: current_company }, { name: :admin, resource: current_company }) &&
     member.unconfirmed_email?
 
   I18n.t("team.reconfirmation")
 end
 
 def invited_user_status
-  return unless current_user.admin_or_owner?(current_company)
+  return unless current_user
+    .has_any_role?({ name: :owner, resource: current_company }, { name: :admin, resource: current_company })
 
   I18n.t("team.invitation")
 end
@@ -21,7 +23,7 @@ json.team teams do |member|
   json.id member.id
   json.name member.full_name
   json.email member.email
-  json.role member.primary_role
+  json.role member.primary_role(current_company)
   json.status team_member_status(member)
 end
 
