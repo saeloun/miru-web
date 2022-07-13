@@ -80,8 +80,8 @@ const GenerateInvoices = () => {
       });
     } else {
       selectedClient
-        ? Toastr.error("Please enter Invoice Number to proceed")
-        : Toastr.error("Please Add Client to proceed");
+        ? Toastr.error("Please enter invoice number to proceed")
+        : Toastr.error("Please select client and enter invoice number to proceed");
     }
   };
 
@@ -90,8 +90,8 @@ const GenerateInvoices = () => {
       saveInvoice().then(() => navigate("/invoices"));
     } else {
       selectedClient
-        ? Toastr.error("Please enter Invoice Number to proceed")
-        : Toastr.error("Please Add Client to proceed");
+        ? Toastr.error("Please enter invoice number to proceed")
+        : Toastr.error("Please select client and enter invoice number to proceed");
     }
   };
 
