@@ -62,7 +62,7 @@ const Container = () => {
             report && !!report.invoices.length && (<Fragment key={index}>
               <div className="flex justify-between border-b border-miru-han-purple-1000 pt-5 pb-2 items-center mt-3">
                 <h1 className="text-miru-han-purple-1000 font-bold text-xl ">{report.name}</h1>
-                <p>Total outstanding amount : {`${currencySymb}${cashFormatter(report.totalOutstandingAmount)}`} • Total overdue amount : {`${currencySymb}${cashFormatter(report.totalOverdueAmount)}`}</p>
+                <p>Total outstanding amount : <span className="font-semibold">{`${currencySymb}${cashFormatter(report.totalOutstandingAmount)}`} • </span>Total overdue amount :  <span className="font-semibold">{`${currencySymb}${cashFormatter(report.totalOverdueAmount)}`}</span></p>
               </div>
               <table className="min-w-full divide-y divide-gray-200 mt-1">
                 <TableHeader />
