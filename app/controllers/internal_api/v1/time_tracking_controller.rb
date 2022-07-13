@@ -22,6 +22,6 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
         1.month.since.end_of_month
         )
     entries = formatted_entries_by_date(timesheet_entries)
-    render json: { clients:, projects:, entries:, employees: }
+    render json: { clients:, projects:, entries:, employees: }, status: :ok
   end
 end

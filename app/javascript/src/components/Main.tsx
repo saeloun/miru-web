@@ -22,7 +22,7 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
   return <Navigate to={url} />;
 };
 
-const Main = (props) => {
+const Main: React.FC<Iprops> = (props) => {
   const { user, companyRole } = props;
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
   return (
@@ -44,5 +44,11 @@ const Main = (props) => {
       </Routes>
     </div>
   );};
+
+  interface Iprops {
+    user: object;
+    companyRole: Roles;
+    company: object;
+  }
 
 export default Main;
