@@ -108,7 +108,7 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input p-2 h-12 ${errors.address && touched.address && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="address" as='teaxtarea'/>
+                        <Field className={`form__input p-2 h-12 ${errors.address && touched.address && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="address" as='textarea'/>
                       </div>
                     </div>
                   </div>
