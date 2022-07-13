@@ -108,7 +108,7 @@ class Project < ApplicationRecord
   end
 
   def format_amount(amount)
-    FormatAmountService.new(client.company.base_currency, amount).process
+    FormatAmountService.new(client.company.base_currency, amount.to_i).process
   end
 
   private

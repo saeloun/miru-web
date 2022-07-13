@@ -4,7 +4,7 @@ class FormatAmountService
   attr_reader :amount, :currency
 
   def initialize(currency, amount)
-    @amount = amount
+    @amount = amount.to_s
     @currency = currency
   end
 
