@@ -5,6 +5,7 @@ class Users::SessionsController < Devise::SessionsController
     if user.has_role?(:owner) && user.companies.empty?
       new_company_path
     elsif user.has_role?(:book_keeper, current_company)
+      # TODO: redirect to root and handle role based conditional redirection in react router
       root_path + "payments"
     else
       root_path + "time-tracking"
