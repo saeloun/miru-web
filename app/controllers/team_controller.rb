@@ -4,6 +4,10 @@ class TeamController < ApplicationController
   skip_after_action :verify_authorized, only: :index
   after_action :assign_role, only: [:update]
 
+  def new
+    @invitation = Invitation.new
+  end
+
   def index
     # TODO: need to update either the search form or search logic in later PRs
     query = current_company.users.includes([:avatar_attachment, :roles]).ransack(params[:q])
