@@ -1,9 +1,15 @@
 import React from "react";
 import Pagination from "common/Pagination";
 import Header from "./Header";
+import AddManualEntry from "./Modals/AddManualEntry";
 import Table from "./Table/index";
 
 const Payments = () => {
+
+  const [showManualEntryModal, setShowManualEntryModal] = React.useState<boolean>(false);
+
+  const invoiceOptions = [];
+
   const payments = [
     {
       invoice_number: "1",
@@ -90,7 +96,7 @@ const Payments = () => {
 
   return (
     <div className="flex-col">
-      <Header />
+      <Header setShowManualEntryModal={setShowManualEntryModal}/>
       <Table payments={payments} />
       <Pagination
         pagy={{
@@ -107,6 +113,9 @@ const Payments = () => {
         params=""
         setParams=""
       />
+      {
+        showManualEntryModal && <AddManualEntry setShowManualEntryModal={setShowManualEntryModal} invoiceOptions={invoiceOptions}/>
+      }
     </div>
   );
 };
