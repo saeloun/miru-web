@@ -106,9 +106,9 @@ const OutstandingInvoiceReport = () => {
 
   const handleSelectDate = (date) => {
     if (selectedInput === "from-input") {
-      setDateRange({ ...dateRange, ...{ from: date } });
+      setDateRange({ ...dateRange, from: date });
     } else {
-      setDateRange({ ...dateRange, ...{ to: date } });
+      setDateRange({ ...dateRange, to: date });
     }
   };
 
