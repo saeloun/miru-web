@@ -18,7 +18,7 @@ const listDetails = [{
   title: "Outstanding & overdue invoices",
   description: "A detailed summary of outstanding and overdue of all clients for a period of time.",
   url: "outstanding-overdue-invoice",
-  show: false
+  show: true
 }, {
   icon: hours,
   title: "Total hours logged",
