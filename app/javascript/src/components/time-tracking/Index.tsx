@@ -1,8 +1,9 @@
 /* eslint-disable no-unexpected-multiline */
-import React from "react";
+import React  from "react";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import timesheetEntryApi from "apis/timesheet-entry";
+import SyncAutoComplete from "common/SyncAutoComplete";
 import * as dayjs from "dayjs";
 import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
@@ -33,7 +34,8 @@ const TimeTracking: React.FC<Iprops> = ({
   entries,
   isAdmin,
   userId,
-  employees
+  employees,
+  fullName
 }) => {
   const [dayInfo, setDayInfo] = useState<any[]>([]);
   const [view, setView] = useState<string>("day");
@@ -55,6 +57,8 @@ const TimeTracking: React.FC<Iprops> = ({
 
   // sorting by client's name
   clients.sort((a: object, b: object) => a["name"].localeCompare(b["name"]));
+
+  const employeeOptions = employees.map(e => ({ value: `${e["id"]}`, label: e["first_name"] + " " + e["last_name"] }) );
 
   useEffect(() => {
     sendGAPageView();
@@ -247,18 +251,17 @@ const TimeTracking: React.FC<Iprops> = ({
             ))}
           </nav>
           <div>
-            {isAdmin && (
-              <select value={selectedEmployeeId} onChange={(e) => setSelectedEmployeeId(Number(e.target.value))} className="items-center ">
-                {
-                  employees.map(employee =>
-                    <option value={employee["id"]} className="text-miru-han-purple-1000">
-                      {employee["first_name"] + " " + employee["last_name"]}
-                    </option>
-                  )
-                }
-              </select>
-            )}
+            {isAdmin && selectedEmployeeId && <div className="flex justify-center items-center">
+              <p className="text-xs font-medium justify-center mr-2">Viewing time entries for</p>
+              <SyncAutoComplete
+                options={employeeOptions}
+                handleValue={value => setSelectedEmployeeId(+ value)}
+                defaultValue={{ value: selectedEmployeeId, label: fullName }}
+                size="md"
+              />
+            </div>}
           </div>
+          <div className="w-50"></div>
         </div>
 
         <div>
@@ -445,6 +448,7 @@ interface Iprops {
   isAdmin: boolean;
   userId: number;
   employees: [];
+  fullName: string;
 }
 
 export default TimeTracking;
