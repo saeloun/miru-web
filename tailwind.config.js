@@ -35,19 +35,19 @@ module.exports = {
     },
     extend: {
       boxShadow: {
-        c1: "0px 0px 40px rgba(0, 0, 0, 0.1);"
+        c1: "0px 0px 40px rgba(0, 0, 0, 0.1);",
       },
       margin: {
         86: "342px",
       },
       width: {
         fit: "fit-content",
-        120: "120px",
-        512: "512px",
+        30: "7.5rem", //120px
+        128: "32rem", // 512px
       },
       height: {
-        '128': '40rem',
         120: "120px",
+        160: "40rem",
       },
       minHeight: {
         "10v": "10vh",
@@ -85,7 +85,7 @@ module.exports = {
           100: "#F5F7F9",
         },
         "miru-red": {
-          400: "#E04646"
+          400: "#E04646",
         },
         "miru-white": {
           1000: "#FFFFFF",
@@ -170,7 +170,7 @@ module.exports = {
         "10/100": "10%",
       },
       zIndex: {
-        "15": "15",
+        15: "15",
       },
     },
   },
