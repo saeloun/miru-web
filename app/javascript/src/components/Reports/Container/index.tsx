@@ -15,7 +15,7 @@ const TableHeader = () => (
       </th>
       <th
         scope="col"
-        className="w-2/5 px-6 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="w-2/5 px-10 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
         NOTE
       </th>

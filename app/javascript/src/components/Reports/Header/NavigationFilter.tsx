@@ -1,21 +1,12 @@
 import React, { Fragment } from "react";
 import { X } from "phosphor-react";
+import { getReports } from "./fetchReport";
 import { useEntry } from "../context/EntryContext";
 
 const NavigationFilter = () => {
   const { revenueByClientReport, currentReport, timeEntryReport } = useEntry();
-  const getReport = (currentReport) => {
-    switch (currentReport) {
-      case "RevenueByClientReport":
-        return revenueByClientReport;
-      case "TimeEntryReport":
-        return timeEntryReport;
-      default:
-        break;
-    }
-  };
 
-  const selectedReport = getReport(currentReport);
+  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport });
 
   const filterHtml = (value, key, filterKey) => (
     <li key={key} className="flex px-2 mr-4 py-1 rounded-xl tracking-widest font-semibold px-1 text-xs tracking-widest bg-miru-gray-400 text-miru-dark-purple-1000">

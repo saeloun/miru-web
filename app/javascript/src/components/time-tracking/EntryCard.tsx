@@ -32,7 +32,7 @@ const EntryCard: React.FC<props> = ({
         <p className="text-lg mx-2">•</p>
         <p className="text-lg">{project}</p>
       </div>
-      <p className="max-h-32 overflow-scroll text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
+      <p className="max-h-32 overflow-auto text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
         {note}
       </p>
     </div>
