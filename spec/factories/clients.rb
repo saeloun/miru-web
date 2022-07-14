@@ -10,5 +10,8 @@ FactoryBot.define do
     factory :client_with_invoices do
       invoices { Array.new(5) { association(:invoice) } }
     end
+    factory :client_with_phone_number_without_country_code do
+      phone { Faker::PhoneNumber.cell_phone_in_e164 }
+    end
   end
 end
