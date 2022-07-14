@@ -187,6 +187,11 @@ en:
       failure: Failed to delete invitation
     accept:
       success: Invitation accepted
+  invoices:
+    payments:
+      success:
+        success: "Payment successful"
+        failure: "Something went wrong, please contact support"
   settings:
     settings: settings
     cancel : cancel
