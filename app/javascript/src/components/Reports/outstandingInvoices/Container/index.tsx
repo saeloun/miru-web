@@ -19,21 +19,21 @@ const TableHeader = () => (
       </th>
       <th
         scope="col"
-        className="col-span-4 py-2 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="col-span-3 py-2 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
-        Issued Date /
+        ISSUED DATE /
         <br />
-        Due date
+        DUE DATE
       </th>
       <th
         scope="col"
-        className="col-span-2 py-2 text-center text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="col-span-2 py-2 text-right text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
         AMOUNT
       </th>
       <th
         scope="col"
-        className="col-span-2 py-2 text-right text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="col-span-3 py-2 text-right text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
         STATUS
       </th>

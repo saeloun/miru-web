@@ -35,7 +35,7 @@ const TableRow = ({
           {invoiceNo}
         </p>
       </td>
-      <td className="col-span-4 py-2 text-left text-base font-normal whitespace-pre-wrap">
+      <td className="col-span-3 py-2 text-left text-base font-normal whitespace-pre-wrap">
         <h1 className="font-semibold text-miru-dark-purple-1000">
           {formattedDate(issueDate)}
         </h1>
@@ -43,10 +43,10 @@ const TableRow = ({
           Due on {formattedDate(dueDate)}
         </h3>
       </td>
-      <td className="col-span-2 py-2 text-center text-xl font-bold tracking-wider text-miru-dark-purple-1000">
+      <td className="col-span-2 py-2 text-right text-xl font-bold tracking-wider text-miru-dark-purple-1000">
         {formattedAmount}
       </td>
-      <td className="col-span-2 py-2 font-medium text-right">
+      <td className="col-span-3 py-2 font-medium text-right">
         <span className={getStatusCssClass(status) + " uppercase"}>
           {status}
         </span>
