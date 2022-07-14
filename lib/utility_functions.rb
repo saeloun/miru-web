@@ -7,7 +7,7 @@ module UtilityFunctions
     end
   end
 
-  def range_from_timeframe(timeframe, from, to)
+  def range_from_timeframe(timeframe, from = nil, to = nil)
     case timeframe
     when "last_week"
       1.weeks.ago.beginning_of_week..1.weeks.ago.end_of_week
