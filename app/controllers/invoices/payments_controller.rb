@@ -16,7 +16,12 @@ class Invoices::PaymentsController < ApplicationController
   end
 
   def success
-    @invoice.paid!
+    if InvoicePayment::Success.new(@invoice).process
+      flash[:notice] = t(".success")
+    else
+      flash[:error] = t(".failure")
+      redirect_to root_path
+    end
   end
 
   def cancel
