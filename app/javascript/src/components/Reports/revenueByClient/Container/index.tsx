@@ -1,5 +1,8 @@
 import React, { Fragment } from "react";
 import TotalHeader from "common/TotalHeader";
+import { useEntry } from "components/Reports/context/EntryContext";
+import { cashFormatter } from "helpers/cashFormater";
+import { currencySymbol } from "helpers/currencySymbol";
 import TableRow from "./TableRow";
 
 const TableHeader = () => (
@@ -34,42 +37,34 @@ const TableHeader = () => (
 );
 
 const Container = () => {
-  const dumRep = [{
-    "name": "Neflix",
-    "unpaidAmt": "$446.41",
-    "paidAmt": "$60113",
-    "total": "$655.29"
-  }];
+  const { revenueByClientReport } = useEntry();
 
-  const getEntryList = (entries) =>
-    entries.map((timeEntry, index) => (
-      <TableRow key={`${timeEntry.client}-${index}`} {...timeEntry} />
-    ));
+  const currencySymb = currencySymbol(revenueByClientReport.currency);
 
   return (
     <Fragment>
       <TotalHeader
         firstTitle={"TOTAL UNPAID AMOUNT"}
-        firstAmount={"$35.5K"}
+        firstAmount={`${currencySymb}${cashFormatter(revenueByClientReport.summary.totalUnpaidAmount)}`}
         secondTitle={"TOTAL PAID AMOUNT"}
-        secondAmount={"$35.5K"}
+        secondAmount={`${currencySymb}${cashFormatter(revenueByClientReport.summary.totalPaidAmount)}`}
         thirdTitle={"TOTAL REVENUE"}
-        thirdAmount={"$71.0K"}
+        thirdAmount={`${currencySymb}${cashFormatter(revenueByClientReport.summary.totalRevenue)}`}
       />
       <div>
       </div>
-      {
-        dumRep.map((report, index) => (
-          <Fragment key={index}>
-            <table className="min-w-full divide-y divide-gray-200 mt-4">
-              <TableHeader />
-              <tbody className="bg-white divide-y divide-gray-200">
-                {dumRep.length > 0 && getEntryList(dumRep)}
-              </tbody>
-            </table>
-          </Fragment>
-        ))
-      }
+      <table className="min-w-full divide-y divide-gray-200 mt-4">
+        <TableHeader />
+        <tbody className="bg-white divide-y divide-gray-200">
+          {
+            revenueByClientReport.clientList.length && revenueByClientReport.currency && revenueByClientReport.clientList.map((client, index) => (
+              <Fragment key={index}>
+                <TableRow key={index} currency={revenueByClientReport.currency} report={client} />
+              </Fragment>
+            ))
+          }
+        </tbody>
+      </table>
     </Fragment>
   );
 };

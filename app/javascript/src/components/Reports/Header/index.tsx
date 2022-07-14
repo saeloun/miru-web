@@ -11,6 +11,7 @@ import {
   Share,
   X
 } from "phosphor-react";
+import { getReports } from "./fetchReport";
 import NavigationFilter from "./NavigationFilter";
 import { useEntry } from "../context/EntryContext";
 
@@ -25,18 +26,8 @@ const Header = ({
   type
 }) => {
   const { timeEntryReport, revenueByClientReport, currentReport } = useEntry();
-  const getReport = (currentReport) => {
-    switch (currentReport) {
-      case "RevenueByClientReport":
-        return revenueByClientReport;
-      case "TimeEntryReport":
-        return timeEntryReport;
-      default:
-        break;
-    }
-  };
 
-  const selectedReport = getReport(currentReport);
+  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport });
 
   const [showExportOptions, setShowExportOptions] = useState<boolean>(false);
 
