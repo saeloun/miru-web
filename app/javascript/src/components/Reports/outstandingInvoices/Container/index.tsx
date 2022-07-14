@@ -8,10 +8,10 @@ import { ClientList } from "../interface";
 
 const TableHeader = () => (
   <thead>
-    <tr className="flex flex-row items-center">
+    <tr className="grid grid-cols-12 gap-4 items-center">
       <th
         scope="col"
-        className="w-2/5 pr-0 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="col-span-4 py-2 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
         CLIENT /
         <br />
@@ -19,7 +19,7 @@ const TableHeader = () => (
       </th>
       <th
         scope="col"
-        className="w-1/5 px-3 py-5 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="col-span-4 py-2 text-left text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
         Issued Date /
         <br />
@@ -27,13 +27,13 @@ const TableHeader = () => (
       </th>
       <th
         scope="col"
-        className="w-1/5 px-7 py-5 text-center text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="col-span-2 py-2 text-center text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
         AMOUNT
       </th>
       <th
         scope="col"
-        className="w-1/5 pl-6 py-5 text-right text-xs font-normal text-miru-dark-purple-600 tracking-widest"
+        className="col-span-2 py-2 text-right text-xs font-normal text-miru-dark-purple-600 tracking-widest"
       >
         STATUS
       </th>
