@@ -39,7 +39,8 @@ const getDateRangeOptions = () => {
     { value: "this_month", label: thisMonth },
     { value: "last_month", label: previousMonth },
     { value: "this_week", label: thisWeek },
-    { value: "last_week", label: previousweek }
+    { value: "last_week", label: previousweek },
+    { value: "custom", label: "Custom" }
   ];
 };
 

@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
+import CustomDateRangePicker from "common/CustomDateRangePicker";
 import { X } from "phosphor-react";
+import * as Yup from "yup";
 import {
   dateRangeOptions,
   statusOption,
@@ -10,16 +12,47 @@ import { customStyles } from "./style";
 import getStatusCssClass from "../../../utils/getStatusTag";
 import { useEntry } from "../context/EntryContext";
 
+const dateSchema = Yup.object().shape({
+  fromDate: Yup.string().required("Must include From date"),
+  toDate: Yup.string().required("Must include To date")
+});
+
 const FilterSideBar = ({
   setFilterVisibilty,
   resetFilter,
-  handleApplyFilter
+  handleApplyFilter,
+  onClickInput,
+  selectedInput
 }) => {
 
   const { timeEntryReport } = useEntry();
   const [filters, setFilters] = useState(timeEntryReport.selectedFilter);
+  const [showCustomFilter, setShowCustomFilter] = useState(false);
+  const [errorMessage, setErrorMessage] = useState({
+    fromDateErr: "",
+    toDateErr: ""
+  });
+  const [dateRange, setDateRange] = useState({ from: "", to: "" });
+
+  useEffect(() => {
+    setFilters({
+      ...filters,
+      customDateFilter: dateRange
+    });
+  }, [dateRange]);
+
+  const handleSelectDate = (date) => {
+    if (selectedInput === "from-input") {
+      setDateRange({ ...dateRange, ...{ from: date } });
+    } else {
+      setDateRange({ ...dateRange, ...{ to: date } });
+    }
+  };
 
   const handleSelectFilter = (selectedValue, field) => {
+    if (selectedValue.value === "custom"){
+      setShowCustomFilter(true);
+    }
     if (Array.isArray(selectedValue)) {
       setFilters({
         ...filters,
@@ -38,6 +71,10 @@ const FilterSideBar = ({
     handleApplyFilter(filters);
   };
 
+  const hideCustomFilter = () => {
+    setShowCustomFilter(false);
+  };
+
   const CustomOption = (props) => {
     const { innerProps, innerRef } = props;
     return (
@@ -47,6 +84,26 @@ const FilterSideBar = ({
         </span>
       </div>
     );
+  };
+
+  const submitCustomDatePicker = () => {
+    dateSchema.validate({ fromDate: dateRange.from, toDate: dateRange.to }, { abortEarly: false }).then(async () => {
+      hideCustomFilter();
+    }).catch(function (err) {
+      const errObj = {
+        fromDateErr: "",
+        toDateErr: ""
+      };
+      err.inner.map((item) => {
+        errObj[item.path + "Err"] = item.message;
+      });
+      setErrorMessage(errObj);
+      hideCustomFilter();
+    });
+  };
+
+  const resetCustomDatePicker = () => {
+    hideCustomFilter();
   };
 
   return (
@@ -72,6 +129,25 @@ const FilterSideBar = ({
                 styles={customStyles}
                 options={dateRangeOptions}
               />
+              {showCustomFilter &&
+                <div className="mt-1 absolute flex flex-col bg-miru-white-1000 z-20 shadow-c1 rounded-lg">
+                  <CustomDateRangePicker
+                    hideCustomFilter={hideCustomFilter}
+                    handleSelectDate={handleSelectDate}
+                    onClickInput={onClickInput}
+                    selectedInput={selectedInput}
+                    dateRange={dateRange}
+                  />
+                  <div className="flex flex-col text-center">
+                    <span className="text-red-600 text-sm">{errorMessage.fromDateErr}</span>
+                    <span className="text-red-600 text-sm">{errorMessage.toDateErr}</span>
+                  </div>
+                  <div className="p-6 flex h-full items-end justify-center bg-miru-white-1000 ">
+                    <button onClick={resetCustomDatePicker} className="sidebar__reset">Cancel</button>
+                    <button onClick={submitCustomDatePicker} className="sidebar__apply">Done</button>
+                  </div>
+                </div>
+              }
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Clients</h5>

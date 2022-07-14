@@ -31,6 +31,7 @@ const TimeEntryReports = () => {
   const [isFilterVisible, setFilterVisibilty] = useState<boolean>(false);
   const [showNavFilters, setNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
+  const [selectedInput, setSelectedInput] = useState("from-input");
 
   useEffect(() => {
     sendGAPageView();
@@ -55,6 +56,10 @@ const TimeEntryReports = () => {
     updateFilterCounter();
     applyFilter(selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty, getFilterOptions);
   }, [selectedFilter]);
+
+  const onClickInput = (e) => {
+    setSelectedInput(e.target.name);
+  };
 
   const handleApplyFilter = async (filters) => {
     setSelectedFilter(filters);
@@ -94,10 +99,16 @@ const TimeEntryReports = () => {
     timeEntryReport: {
       reports: timeEntries,
       filterOptions,
-      selectedFilter,
+      selectedFilter: { ...selectedFilter,
+        customDateFilter: {
+          from: "",
+          to: ""
+        }
+      },
       filterCounter,
       handleRemoveSingleFilter: handleRemoveSingleFilter
     },
+
     currentReport: "TimeEntryReport",
     revenueByClientReport: RevenueByClientReportContext
   };
@@ -120,6 +131,8 @@ const TimeEntryReports = () => {
           handleApplyFilter={handleApplyFilter}
           resetFilter={resetFilter}
           setFilterVisibilty={setFilterVisibilty}
+          onClickInput={onClickInput}
+          selectedInput={selectedInput}
         />}
       </EntryContext.Provider>
     </div>
