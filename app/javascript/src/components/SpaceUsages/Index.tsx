@@ -8,11 +8,13 @@ import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
 
 // import { minutesToHHMM } from "helpers/hhmm-parser";
+import _ from "lodash";
 import { TOASTER_DURATION } from "constants/index";
 
 import AddEntry from "./AddEntry";
 import DatesInWeek from "./DatesInWeek";
-import EntryCard from "./EntryCard";
+// import EntryCard from "./EntryCard";
+import EntryCardDayView from "./EntryCardDayView";
 // import MonthCalender from "./MonthCalender";
 // import WeeklyEntries from "./WeeklyEntries";
 
@@ -41,9 +43,11 @@ const TimeReserving: React.FC<Iprops> = ({
   // const [weeklyTotalHours, setWeeklyTotalHours] = useState<string>("00:00");
   // const [dailyTotalHours, setDailyTotalHours] = useState<number[]>([]);
   const [entryList, setEntryList] = useState<object>(entries);
+  // const [timeArray, setTimeArray] = useState<any>([]);
   const [selectedFullDate, setSelectedFullDate] = useState<string>(
     dayjs().format("YYYY-MM-DD")
   );
+  const [groupingEntryList, setGroupingEntryList] = useState<object>({});
   const [editEntryId, setEditEntryId] = useState<number>(0);
   // const [weeklyData, setWeeklyData] = useState<any[]>([]);
   // const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
@@ -128,14 +132,14 @@ const TimeReserving: React.FC<Iprops> = ({
     }
   };
 
-  const handleDeleteEntry = async id => {
-    const res = await spaceUsagesApi.destroy(id);
-    if (!(res.status === 200)) return;
-    const newValue = { ...entryList };
-    newValue[selectedFullDate] = newValue[selectedFullDate].filter(e => e.id !== id);
-    setAllEmployeesEntries({ ...allEmployeesEntries, [1]: newValue });
-    setEntryList(newValue);
-  };
+  // const handleDeleteEntry = async id => {
+  //   const res = await spaceUsagesApi.destroy(id);
+  //   if (!(res.status === 200)) return;
+  //   const newValue = { ...entryList };
+  //   newValue[selectedFullDate] = newValue[selectedFullDate].filter(e => e.id !== id);
+  //   setAllEmployeesEntries({ ...allEmployeesEntries, [1]: newValue });
+  //   setEntryList(newValue);
+  // };
 
   // const calculateTotalHours = () => {
   //   // let total = 0;
@@ -219,6 +223,20 @@ const TimeReserving: React.FC<Iprops> = ({
     // setWeeklyData(() => weekArr);
   };
 
+  useEffect(() => {
+    if (entryList[selectedFullDate]){
+      setGroupingEntryList(_.groupBy(entryList[selectedFullDate], "space_name"))
+
+      // const availableTimeArray = []
+      // entryList[selectedFullDate].map((entry) =>{
+      //   availableTimeArray.push(entry.start_duration)
+      //   availableTimeArray.push(entry.end_duration)
+      // });
+      // setTimeArray(availableTimeArray.filter((item,
+      //   index) => availableTimeArray.indexOf(item) === index).sort())
+    }
+  }, [entryList, selectedFullDate]);
+
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
@@ -296,7 +314,7 @@ const TimeReserving: React.FC<Iprops> = ({
         </div>
 
         {/* entry cards for day and month */}
-        {entryList[selectedFullDate] &&
+        {/* {entryList[selectedFullDate] &&
           entryList[selectedFullDate].map((entry, weekCounter) =>
             editEntryId === entry.id ? (
               <AddEntry
@@ -319,7 +337,14 @@ const TimeReserving: React.FC<Iprops> = ({
                 {...entry}
               />
             )
-          )}
+          )} */}
+        {Object.entries(groupingEntryList).length > 0 &&
+          Object.entries(groupingEntryList).map(([key, value], listIndex) => (<EntryCardDayView
+            key={listIndex}
+            listIndex={listIndex}
+            groupingKey={key}
+            groupingValues={value}
+          />))}
       </div>
     </>
   );
