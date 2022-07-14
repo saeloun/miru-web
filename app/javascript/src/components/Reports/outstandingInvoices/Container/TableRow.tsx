@@ -26,8 +26,8 @@ const TableRow = ({
   });
 
   return (
-    <tr key={id} className="flex flex-row items-center">
-      <td className="w-2/5 pr-2 py-4 text-left whitespace-nowrap">
+    <tr key={id} className="grid grid-cols-12 gap-4 items-center hover:bg-miru-gray-100">
+      <td className="col-span-4 py-2 text-left whitespace-nowrap">
         <p className="font-semibold whitespace-normal text-base text-miru-dark-purple-1000">
           {clientName}
         </p>
@@ -35,7 +35,7 @@ const TableRow = ({
           {invoiceNo}
         </p>
       </td>
-      <td className="w-1/5 px-2 py-4 text-left text-base font-normal whitespace-pre-wrap">
+      <td className="col-span-4 py-2 text-left text-base font-normal whitespace-pre-wrap">
         <h1 className="font-semibold text-miru-dark-purple-1000">
           {formattedDate(issueDate)}
         </h1>
@@ -43,10 +43,10 @@ const TableRow = ({
           Due on {formattedDate(dueDate)}
         </h3>
       </td>
-      <td className="w-1/5 px-6 py-4 text-center text-xl font-bold tracking-wider text-miru-dark-purple-1000">
+      <td className="col-span-2 py-2 text-center text-xl font-bold tracking-wider text-miru-dark-purple-1000">
         {formattedAmount}
       </td>
-      <td className="w-1/5 py-4 px-2 font-medium text-right">
+      <td className="col-span-2 py-2 font-medium text-right">
         <span className={getStatusCssClass(status) + " uppercase"}>
           {status}
         </span>
