@@ -13,7 +13,7 @@ RSpec.describe "Users::SessionsController#create", type: :request do
     end
 
     it "then after_sign_in_path_for returns the time_tracking path" do
-      expect(response).to redirect_to(time_tracking_index_path)
+      expect(response).to redirect_to(root_path + "time-tracking")
     end
   end
 
