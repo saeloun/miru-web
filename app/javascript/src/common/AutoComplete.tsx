@@ -31,7 +31,7 @@ const AutoComplete = ({
 
   const handleChange = async (e) => {
     setValue(e.target.value);
-    searchCallBack(`?q=${e.target.value}`, setDropdownItems);
+    searchCallBack(e.target.value, setDropdownItems);
   };
 
   const handleSelect = (value) => {
