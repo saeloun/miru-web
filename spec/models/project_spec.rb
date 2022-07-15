@@ -229,20 +229,23 @@ RSpec.describe Project, type: :model do
   end
 
   describe "#search_all_projects_by_name" do
-    let(:employment) { create(:employment) }
-    let(:user) { employment.user }
-    let(:company) { employment.company }
-    let(:users_role) { create(:users_role, user: employment.user, company: employment.company) }
-    let(:client) { create(:client, company: employment.company) }
-    let(:project) { create(:project, client:) }
+    let!(:company) { create(:company) }
+    let!(:user) { create(:user, current_workspace_id: company.id) }
+    let!(:client) { create(:client, company:) }
+    let!(:project) { create(:project, client:) }
+    let!(:project_member) { create(:project_member, project:, user:) }
+
+    it "created project member" do
+      expect(project_member.user).to eq(user)
+    end
 
     it "returns projects with matching project name" do
       expect(
         Project.search_all_projects_by_name(
           project.name,
           company.id
-          )
-        ).to eq([{ id: project.id, name: project.name, client_name: client.name }])
+        ).as_json
+      ).to eq([{ id: project.id, name: project.name, client_name: client.name }].as_json)
     end
 
     it "returns projects with matching client name" do
@@ -250,17 +253,17 @@ RSpec.describe Project, type: :model do
         Project.search_all_projects_by_name(
           client.name,
           company.id
-          )
-        ).to eq([{ id: project.id, name: project.name, client_name: client.name }])
+          ).as_json
+        ).to eq([{ id: project.id, name: project.name, client_name: client.name }].as_json)
     end
 
     it "returns projects with matching user name" do
       expect(
         Project.search_all_projects_by_name(
-          user.name,
+          user.full_name,
           company.id
-        )
-        ).to eq([{ id: project.id, name: project.name, client_name: client.name }])
+        ).as_json
+      ).to eq([{ id: project.id, name: project.name, client_name: client.name }].as_json)
     end
 
     it "returns empty array when no projects found" do
