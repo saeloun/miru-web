@@ -2,8 +2,6 @@
 
 module InvoicePayment
   class UpdateInvoice < ApplicationService
-    attr_reader :es_response, :group_by
-
     def initialize(payment, invoice)
       @payment = payment
       @invoice = invoice
