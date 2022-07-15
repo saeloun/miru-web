@@ -175,18 +175,6 @@ en:
     save_org: save org details
   reports:
     heading: Time entry report
-  invitations:
-    create:
-      success: Invitation will be sent
-      failure: Failed to saved changes
-    update:
-      success: Invitation updated
-      failure: Failed to saved changes
-    destroy:
-      success: Invitation deleted
-      failure: Failed to delete invitation
-    accept:
-      success: Invitation accepted
   invoices:
     payments:
       success:
