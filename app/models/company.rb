@@ -33,11 +33,15 @@ class Company < ApplicationRecord
   has_many :payments_providers, dependent: :destroy
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
+  has_many :invitations, dependent: :destroy
   resourcify
 
   # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
+
+  # scopes
+  scope :valid_invitations, -> { where(company: self).valid_invitations }
 
   def project_list(client_id = nil, user_id = nil, billable = nil, search)
     project_list = project_list_query(client_id, user_id, billable)
@@ -114,5 +118,9 @@ class Company < ApplicationRecord
     return nil if !logo.attached?
 
     Rails.application.routes.url_helpers.polymorphic_url(logo, only_path: true)
+  end
+
+  def stripe_account_id
+    stripe_connected_account&.account_id
   end
 end

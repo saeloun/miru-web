@@ -83,6 +83,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
                         }
                       ]
            }]
+        @expected_clients = @expected_clients.sort_by { |client| client[:name] }
         get internal_api_v1_reports_outstanding_overdue_invoices_path
       end
 
