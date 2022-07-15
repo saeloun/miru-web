@@ -1,0 +1,38 @@
+en:
+  devise:
+    failure:
+      invited: "You have a pending invitation, accept it to finish creating your account."
+    invitations:
+      send_instructions: "An invitation email has been sent to %{email}."
+      invitation_token_invalid: "The invitation token provided is not valid!"
+      updated: "Your password was set successfully. You are now signed in."
+      updated_not_active: "Your password was set successfully."
+      no_invitations_remaining: "No invitations remaining"
+      invitation_removed: "Your invitation was removed."
+      new:
+        header: "Send invitation"
+        submit_button: "Send an invitation"
+      edit:
+        header: "Set your password"
+        submit_button: "Set my password"
+    mailer:
+      invitation_instructions:
+        subject: "Welcome to Miru!"
+        hi: "Hi %{name},"
+        info: "We are so delighted to have you onboard. We want to let you know some of the best ways to get up and running on our portal - "
+        info_points: "Send professional invoices Instantly Send and accept payments from clients seamlessly Manage your team and track their progress. Track your time and overall expenses easily"
+        info_point_1: "Send professional invoices Instantly"
+        info_point_2: "Send and accept payments from clients seamlessly "
+        info_point_3: "Manage your team and track their progress."
+        info_point_4: "Track your time and overall expenses easily"
+        confirm: "We’d like to make sure we got your email address right!"
+        confirm_link: "Yes, it’s me. Confirm my email address"
+        cheers: "Cheers,"
+        team_miru: "Team Miru"
+        accept_until: "This invitation will be due in %{due_date}."
+  time:
+    formats:
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: "%B %d, %Y %I:%M %p"
