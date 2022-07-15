@@ -11,7 +11,11 @@ namespace :internal_api, defaults: { format: "json" } do
         resource :bulk_action, only: [:update, :destroy], controller: "timesheet_entry/bulk_action"
       end
     end
-    resources :projects, only: [:index, :show, :create, :update, :destroy]
+    resources :projects, only: [:index, :show, :create, :update, :destroy] do
+      collection do
+        get "search", to: "projects/search#index"
+      end
+    end
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
 
     namespace :reports do
