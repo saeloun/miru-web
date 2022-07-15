@@ -6,7 +6,7 @@
 #
 #  id           :bigint           not null, primary key
 #  discarded_at :datetime
-#  hourly_rate  :string           default("0.0"), not null
+#  hourly_rate  :decimal(, )      default(0.0), not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  project_id   :bigint           not null
