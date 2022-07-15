@@ -53,16 +53,17 @@ namespace :internal_api, defaults: { format: "json" } do
       get :validate_account_details
     end
 
+    resources :team, only: [:index, :destroy] do
+      resource :details, only: [:show, :update], controller: "team_members/details"
+    end
+    resources :time_tracking, only: [:index], path: "time-tracking"
+
     # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
 
     namespace :payments do
       resources :providers, only: [:index, :update]
-    end
-
-    resources :team, only: [:index, :destroy] do
-      resource :details, only: [:show, :update], controller: "team_members/details"
     end
 
     resource :profile, only: [:update, :show], controller: "profile" do
