@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   const newUserBtn = document.querySelector(
-    "a[data-team-element=\"new-user-btn\"]"
+    "button[data-team-element=\"new-user-btn\"]"
   );
   const inviteModalClose = document.querySelector(
     "div[data-team-element=\"invite-modal-close\"]"
@@ -46,9 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const editMembers = document.querySelectorAll(
     "img[data-team-element=\"edit-member\"]"
   );
-  const editInvitations = document.querySelectorAll(
-    "img[data-invitation-element=\"edit-invitation\"]"
-  );
 
   if (newUserBtn)
     newUserBtn.addEventListener("click", () => openModal("main-modal"));
@@ -61,9 +58,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
   editMembers.forEach(editMember => {
     editMember.addEventListener("click", () => openModal("another-modal"));
-  });
-
-  editInvitations.forEach(editMember => {
-    editMember.addEventListener("click", () => openModal("main-modal"));
   });
 });

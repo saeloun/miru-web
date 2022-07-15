@@ -1,0 +1,19 @@
+<%= t("devise.mailer.invitation_instructions.hi", name: @resource.first_name) %>
+
+<%= t("devise.mailer.invitation_instructions.info") %>
+<%= t("devise.mailer.invitation_instructions.info_point_1") %>
+<%= t("devise.mailer.invitation_instructions.info_point_2") %>
+<%= t("devise.mailer.invitation_instructions.info_point_3") %>
+<%= t("devise.mailer.invitation_instructions.info_point_4") %>
+
+
+<%= t("devise.mailer.invitation_instructions.confirm") %>
+
+<% if @token.present? %>
+  <%= accept_invitation_url(@resource, invitation_token: @token) %>
+<% else %>
+  <%= root_url %>
+<% end %>
+
+<%= t("devise.mailer.invitation_instructions.cheers") %>
+<%= t("devise.mailer.invitation_instructions.team_miru") %>

@@ -29,14 +29,14 @@
       <div class="mt-1">
         <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
           <div class="flex items-center">
-            <%= f.radio_button :roles, "admin", :checked=>(@user.primary_role(current_company).titlecase == "Admin"), class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" %>
+            <%= f.radio_button :roles, "admin", :checked=>(@user.primary_role.titlecase == "Admin"), class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" %>
             <label for="admin" class="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
               <%= t('team.form_admin') %>
             </label>
           </div>
 
           <div class="flex items-center">
-            <%= f.radio_button :roles, "employee", :checked=>(@user.primary_role(current_company).titlecase == "Employee"), class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" %>
+            <%= f.radio_button :roles, "employee", :checked=>(@user.primary_role.titlecase == "Employee"), class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" %>
             <label for="Employee" class="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
               <%= t('team.form_employee') %>
             </label>
