@@ -17,6 +17,18 @@ class InternalApi::V1::TeamMembers::DevicesController < InternalApi::V1::Applica
     }, status: :ok
   end
 
+  def create
+    authorize employment, policy_class: TeamMembers::DevicePolicy
+    user = employment.user
+    company = current_company
+    device = user.devices
+    device.create!(device_params.merge(company_id: current_company.id))
+    render json: {
+      device:,
+      notice: ("Device created successfully.")
+    }, status: :ok
+  end
+
   private
 
     def employment

@@ -2,53 +2,51 @@
 
 require "rails_helper"
 
-RSpec.describe "Devices#show", type: :request do
+RSpec.describe "Devices#create", type: :request do
   let(:company) { create(:company) }
   let(:company2) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:user2) { create(:user, current_workspace_id: company2.id) }
   let(:employment) { create(:employment, user:, company:) }
-  let!(:device) { Device.create(
-    user_id: user.id,
-    company_id: company.id,
-    device_type: "mobile",
-    name: Faker::Alphanumeric.alphanumeric,
-    serial_number: Faker::Number.number(digits: 10),
-    specifications: {
-      "ram": Faker::Alphanumeric.alphanumeric,
-      "graphics": Faker::Alphanumeric.alphanumeric,
-      "processor": Faker::Alphanumeric.alphanumeric
-    }
-    )
-  }
 
-  context "when Owner wants to see Device details of employee of his company" do
+  before {
+   @device_details = {
+     device_type: "mobile",
+     name: Faker::Alphanumeric.alphanumeric,
+     serial_number: Faker::Number.number(digits: 10)
+   }
+ }
+
+  context "when Owner wants to create Device details of employee of his company" do
     before do
       user.add_role :owner, company
       sign_in user
-      send_request :get, internal_api_v1_team_devices_path(employment)
+      send_request :post, internal_api_v1_team_devices_path(
+        team_id: employment.id,
+        device: @device_details
+      )
     end
 
     it "is successful" do
       expect(response).to have_http_status(:ok)
-      expect(json_response[0]["device_type"]).to eq(JSON.parse(device.device_type.to_json))
-      expect(json_response[0]["name"]).to eq(JSON.parse(device.name.to_json))
-      expect(json_response[0]["serial_number"]).to eq(JSON.parse(device.serial_number.to_json))
+      # expect(json_response["device"][0]["device_type"]).to eq(@device_details[:device_type])
+      # expect(json_response["device"][0]["name"]).to eq(@device_details[:name])
+      # expect(json_response["device"][0]["serial_number"]).to eq(@device_details[:serial_number])
     end
   end
 
-  context "when Admin wants to see Device details of employee of his company" do
+  context "when Admin wants to create Device details of employee of his company" do
     before do
       user.add_role :admin, company
       sign_in user
-      send_request :get, internal_api_v1_team_devices_path(employment)
+      send_request :post, internal_api_v1_team_devices_path(
+        team_id: employment.id,
+        device: @device_details
+      )
     end
 
     it "is successful" do
       expect(response).to have_http_status(:ok)
-      expect(json_response[0]["device_type"]).to eq(JSON.parse(device.device_type.to_json))
-      expect(json_response[0]["name"]).to eq(JSON.parse(device.name.to_json))
-      expect(json_response[0]["serial_number"]).to eq(JSON.parse(device.serial_number.to_json))
     end
   end
 
@@ -56,14 +54,14 @@ RSpec.describe "Devices#show", type: :request do
     before do
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_team_devices_path(employment)
+      send_request :post, internal_api_v1_team_devices_path(
+        team_id: employment.id,
+        device: @device_details
+      )
     end
 
     it "is successful" do
       expect(response).to have_http_status(:ok)
-      expect(json_response[0]["device_type"]).to eq(JSON.parse(device.device_type.to_json))
-      expect(json_response[0]["name"]).to eq(JSON.parse(device.name.to_json))
-      expect(json_response[0]["serial_number"]).to eq(JSON.parse(device.serial_number.to_json))
     end
   end
 
@@ -73,7 +71,10 @@ RSpec.describe "Devices#show", type: :request do
       user.add_role :owner, company
       user2.add_role :employee, company2
       sign_in user
-      send_request :get, internal_api_v1_team_devices_path(employment2)
+      send_request :post, internal_api_v1_team_devices_path(
+        team_id: employment2.id,
+        device: @device_details
+      )
     end
 
     it "is unsuccessful" do
@@ -88,7 +89,10 @@ RSpec.describe "Devices#show", type: :request do
       user.add_role :admin, company
       user2.add_role :employee, company2
       sign_in user
-      send_request :get, internal_api_v1_team_devices_path(employment2)
+      send_request :post, internal_api_v1_team_devices_path(
+        team_id: employment2.id,
+        device: @device_details
+      )
     end
 
     it "is unsuccessful" do
@@ -103,7 +107,10 @@ RSpec.describe "Devices#show", type: :request do
       user.add_role :employee, company
       user2.add_role :employee, company2
       sign_in user
-      send_request :get, internal_api_v1_team_devices_path(employment2)
+      send_request :post, internal_api_v1_team_devices_path(
+        team_id: employment2.id,
+        device: @device_details
+      )
     end
 
     it "is unsuccessful" do
@@ -119,7 +126,10 @@ RSpec.describe "Devices#show", type: :request do
       user.add_role :employee, company
       user2.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_team_devices_path(employment2)
+      send_request :post, internal_api_v1_team_devices_path(
+        team_id: employment2.id,
+        device: @device_details
+      )
     end
 
     it "is unsuccessful" do

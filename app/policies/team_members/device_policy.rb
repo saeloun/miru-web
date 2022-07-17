@@ -12,4 +12,10 @@ class TeamMembers::DevicePolicy < ApplicationPolicy
       { name: :admin, resource: record.company },
       { name: :owner, resource: record.company }) || user == record.user
   end
+
+  def create?
+    user.has_any_role?(
+      { name: :admin, resource: record.company },
+      { name: :owner, resource: record.company }) || user == record.user
+  end
 end
