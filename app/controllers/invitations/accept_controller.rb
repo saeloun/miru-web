@@ -22,4 +22,8 @@ class Invitations::AcceptController < ApplicationController
 
     redirect_to user_session_path
   end
+
+  def show
+    redirect_to user_session_path, notice: t(".success")
+  end
 end

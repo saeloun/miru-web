@@ -28,6 +28,7 @@ class CreateInvitations < ActiveRecord::Migration[7.0]
           accepted_at: user.invitation_accepted_at
         )
 
+        invitation.accepted_at = Time.current if invitation.accepted_at.nil?
         invitation.set_token if invitation.token.nil?
         invitation.save!(validate: false)
       end
