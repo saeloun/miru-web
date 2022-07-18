@@ -6,7 +6,7 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
   def index
     authorize :index, policy_class: TeamPolicy
     # TODO: need to update either the search form or search logic in later PRs
-    query = current_company.users.includes([:avatar_attachment, :roles]).ransack(params[:q])
+    query = current_company.employments.kept.includes(user: [:roles, :avatar_attachment]).ransack(params[:q])
     invitations_query = current_company.invitations.valid_invitations
       .ransack(first_name_or_last_name_or_recipient_email_cont: params.dig(:q, :first_name_or_last_name_or_email_cont))
     teams = query.result(distinct: true)
