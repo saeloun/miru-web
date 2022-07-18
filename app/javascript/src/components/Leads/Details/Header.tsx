@@ -84,11 +84,18 @@ const Header = ({
               <CaretDown size={20} weight="bold" />
             </button>
             {forItem === "summary" &&
+              leadDetails.discarded_at ?
               <button
                 onClick={() => setShowLeadSetting(true)}
-                className="font-bold text-xs text-miru-han-purple-1000 tracking-widest leading-4 flex items-center ml-5"
+                className="font-bold text-xs text-red-800 tracking-widest leading-4 flex items-center ml-5"
               >
-                <Gear size={15} color="#0033CC" className="mr-2.5" />
+                <Gear size={15} className="mr-2.5 text-red-800" />
+                  SETTINGS
+              </button> : <button
+                onClick={() => setShowLeadSetting(true)}
+                className="font-bold text-xs text-col-han-app-1000 tracking-widest leading-4 flex items-center ml-5"
+              >
+                <Gear size={15} className="mr-2.5 text-col-han-app-1000" />
                 SETTINGS
               </button>
             }
@@ -108,23 +115,28 @@ const Header = ({
                     </button>
                     <button
                       type="button"
-                      className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
+                      className="header__button bg-col-han-app-1000 text-white w-1/3 p-0 hover:text-white"
                       onClick={() => { submitLeadForm(); setIsEdit(false); } }
                     >
                       <FloppyDisk size={18} color="white" />
                       <span className="ml-2 inline-block">SAVE</span>
                     </button>
                   </>
-                  :
-                  <button
+                  : (leadDetails.discarded_at ? <button
                     type="button"
-                    className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
+                    className="header__button bg-red-800 text-white w-1/3 p-0 hover:text-white"
                     onClick={() => setIsEdit(true)}
                   >
                     <Pencil size={18} color="white" />
                     <span className="ml-2 inline-block">EDIT</span>
-                  </button>
-
+                  </button> : <button
+                    type="button"
+                    className="header__button bg-col-han-app-1000 text-white w-1/3 p-0 hover:text-white"
+                    onClick={() => setIsEdit(true)}
+                  >
+                    <Pencil size={18} color="white" />
+                    <span className="ml-2 inline-block">EDIT</span>
+                  </button>)
                 }
                 <div className="relative" ref={wrapperRef}>
                   <button onClick = {handleMenuVisibility} className={`menuButton__button ${menuBackground}`}>
@@ -133,37 +145,44 @@ const Header = ({
                   { isHeaderMenuVisible && <ul className="menuButton__wrapper">
                     <li>
                       <button className="menuButton__list-item" onClick={() => setnewLead(true)}>
-                        <Receipt size={16} color="#0033CC" weight="bold" />
+                        <Receipt size={16} className="text-col-han-app-1000" weight="bold" />
                         <span className="ml-3">Add Lead</span>
                       </button>
                     </li>
-                    <li>
-                      <button className="menuButton__list-item text-col-red-400" onClick={() => handleDeleteClick(leadDetails.id)}>
-                        <Trash size={16} color="#E04646" weight="bold" />
-                        <span className="ml-3">Delete</span>
-                      </button>
-                    </li>
+                    { leadDetails.discarded_at ? null :
+                      <li>
+                        <button className="menuButton__list-item text-col-red-400" onClick={() => handleDeleteClick(leadDetails.id)}>
+                          <Trash size={16} color="#E04646" weight="bold" />
+                          <span className="ml-3">Delete</span>
+                        </button>
+                      </li>
+                    }
                   </ul> }
                 </div>
               </div>
             </>
           }
         </div>
+        {leadDetails.discarded_at &&
+          <p className="font-bold leading-4 text-center items-center m-5 rounded-xs text-xs tracking-widest p-1 bg-col-yellow-600 text-miru-alert-green-1000">
+            The Lead is deleted, Kept for future use!!!
+          </p>
+        }
         {isLeadOpen && <div className="flex ml-12 mt-4">
-          <div className="text-xs text-miru-dark-purple-400">
+          <div className="text-xs text-col-dark-app-400">
             <h6 className="font-semibold">Assignee</h6>
             <p>{leadDetails.assignee_name ? leadDetails.assignee_name : "UNASSIGNED"}</p>
           </div>
-          <div className="ml-22 text-xs text-miru-dark-purple-400">
+          <div className="ml-22 text-xs text-col-dark-app-400">
             <h6 className="font-semibold">Reporter</h6>
             <p>{leadDetails.reporter_name ? leadDetails.reporter_name : "UNREPORTED"}</p>
           </div>
-          <div className="ml-22 text-xs text-miru-dark-purple-400">
+          <div className="ml-22 text-xs text-col-dark-app-400">
             <h6 className="font-semibold">Industry</h6>
             <p>{leadDetails.industry_code_name}</p>
           </div>
 
-          <div className="ml-22 text-xs text-miru-dark-purple-400">
+          <div className="ml-22 text-xs text-col-dark-app-400">
             <h6 className="font-semibold">Quality</h6>
             <p>
               <span className={leadDetails.quality_code_name ? `${getStatusCssClass(leadDetails.quality_code_name)} uppercase` : ""}>
@@ -171,11 +190,11 @@ const Header = ({
               </span>
             </p>
           </div>
-          <div className="ml-22 text-xs text-miru-dark-purple-400">
+          <div className="ml-22 text-xs text-col-dark-app-400">
             <h6 className="font-semibold">Priority</h6>
             <p className="uppercase">{leadDetails.priority_code_name}</p>
           </div>
-          <div className="ml-22 text-xs text-miru-dark-purple-400">
+          <div className="ml-22 text-xs text-col-dark-app-400">
             <h6 className="font-semibold">Status</h6>
             <p>
               <span className={leadDetails.status_code_name ? `${getStatusCssClass(leadDetails.status_code_name)} uppercase` : ""}>

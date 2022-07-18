@@ -351,7 +351,7 @@ const TimeReserving: React.FC<Iprops> = ({
             setEditEntryColor={setEditEntryColor}
           />))}
       </div>
-      {editEntryId && <EditEntry
+      {editEntryId ? <EditEntry
         fetchEntries={fetchEntries}
         setNewEntryView={setNewEntryView}
         selectedDateInfo={dayInfo[selectDate]}
@@ -363,7 +363,7 @@ const TimeReserving: React.FC<Iprops> = ({
         dayInfo={dayInfo}
         handleDeleteEntry={handleDeleteEntry}
         editEntryColor={editEntryColor}
-      />}
+      /> : ""}
     </>
   );
 };

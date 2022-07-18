@@ -18,6 +18,8 @@
 #  index_system_display_message :text
 #  index_system_display_title   :text
 #  kind                         :integer
+#  meta_action                  :integer
+#  meta_previous_changes        :text
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
 #  action_assignee_id           :bigint
@@ -51,7 +53,7 @@ class LeadTimeline < ApplicationRecord
   belongs_to :action_created_by, class_name: :User, optional: true
   belongs_to :action_reporter, class_name: :User, optional: true
 
-  CodeOptionKlass = Struct.new(:name, :id)
+  CodeOptionKlass = Struct.new(:name, :id, :key)
 
   KIND_OPTIONS = [
     CodeOptionKlass.new("System Message", 0),
@@ -63,6 +65,13 @@ class LeadTimeline < ApplicationRecord
     CodeOptionKlass.new("LinkedIn DM", 6),
     CodeOptionKlass.new("Other DM", 7),
     CodeOptionKlass.new("Task", 8),
+  ]
+
+  META_ACTION_OPTIONS = [
+    CodeOptionKlass.new("Other", 0, :other),
+    CodeOptionKlass.new("Create", 1, :create),
+    CodeOptionKlass.new("Update", 2, :update),
+    CodeOptionKlass.new("Destroy", 3, :destroy),
   ]
 
   SCHEDULE_ACTION_STATUS_OPTIONS = [

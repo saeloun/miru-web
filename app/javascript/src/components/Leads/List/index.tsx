@@ -18,7 +18,7 @@ const getTableData = (leads) => {
   if (leads) {
     return leads.map((lead) =>
       ({
-        col1: <div className="text-xs tracking-widest">{lead.name}</div>,
+        col1: lead.discarded_at ? <div className="text-xs text-red-600 tracking-widest">{lead.name}</div> : <div className="text-xs tracking-widest">{lead.name}</div>,
         col2: <div className="text-xs tracking-widest text-center">
           {lead.assignee_name ? lead.assignee_name : "UNASSIGNED"}
         </div>,

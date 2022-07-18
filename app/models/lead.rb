@@ -24,7 +24,6 @@
 #  last_name                     :string
 #  linkedinid                    :string
 #  mobilephone                   :string
-#  name                          :string
 #  need                          :integer
 #  preferred_contact_method_code :integer
 #  priority_code                 :integer
@@ -64,6 +63,7 @@
 #
 class Lead < ApplicationRecord
   include Discard::Model
+  include LeadTimeliness
 
   CodeOptionKlass = Struct.new(:name, :id)
 
@@ -239,9 +239,6 @@ class Lead < ApplicationRecord
   validates :first_name, :last_name, presence: true
   before_validation :assign_default_values
 
-  after_create :add_timelines_for_action_create
-  after_update :add_timelines_for_action_update
-
   def self.filter(params: {}, user: User.none, ids: false)
     allow_leads = Lead.none
 
@@ -276,7 +273,6 @@ class Lead < ApplicationRecord
   end
 
   def assign_default_values
-    self.name = "#{self.first_name} #{self.last_name}"
     self.updated_by_id = self.created_by_id if self.updated_by_id.blank? && self.created_by_id.present?
     self.status_code = Lead::STATUS_CODE_OPTIONS.group_by(&:name)["New"].first.id if self.status_code.blank?
   end
@@ -407,6 +403,10 @@ class Lead < ApplicationRecord
     self.updated_by ? self.updated_by.full_name : ""
   end
 
+  def name
+    [first_name, last_name].compact.join(" ")
+  end
+
   def lead_detail
     {
       id: self.id,
@@ -464,106 +464,4 @@ class Lead < ApplicationRecord
       tech_stack_names: self.tech_stack_names
     }
   end
-
-  private
-
-    def add_timelines_for_action_create
-      index_system_display_title = "<b>#{self.created_by_name}</b> added the lead <b>#{self.name}</b>"
-      self.lead_timelines.create!(
-        action_created_by_id: self.created_by_id, kind: 0,
-        action_reporter_id: self.created_by_id,
-        index_system_display_title:
-                              )
-    end
-
-    def add_timelines_for_action_update
-      display_field_name_arr = []
-      display_field_value_arr = []
-
-      (self.previous_changes || {}).each do |field_name, old_new_val_arr|
-        next if ["updated_at", "updated_by_id"].include?(field_name)
-
-        display_field_name = field_name
-        old_val = old_new_val_arr[0] || "Unassigned"
-        new_val = old_new_val_arr[1]
-
-        if field_name == "budget_status_code"
-          display_field_name = "budget_status"
-          old_val = self.budget_status_code_name_hash[old_val.to_i] if old_val != "Unassigned"
-          new_val = self.budget_status_code_name_hash[new_val.to_i]
-        elsif field_name == "industry_code"
-          display_field_name = "industry"
-          old_val = self.industry_code_name_hash[old_val.to_i] if old_val != "Unassigned"
-          new_val = self.industry_code_name_hash[new_val.to_i]
-        elsif field_name == "quality_code"
-          display_field_name = "quality"
-          old_val = self.quality_code_name_hash[old_val.to_i] if old_val != "Unassigned"
-          new_val = self.quality_code_name_hash[new_val.to_i]
-        elsif field_name == "state_code"
-          display_field_name = "state"
-          old_val = self.state_code_name_hash[old_val.to_i] if old_val != "Unassigned"
-          new_val = self.state_code_name_hash[new_val.to_i]
-        elsif field_name == "status_code"
-          display_field_name = "status"
-          old_val = self.status_code_name_hash[old_val.to_i] if old_val != "Unassigned"
-          new_val = self.status_code_name_hash[new_val.to_i]
-        elsif field_name == "preferred_contact_method_code"
-          display_field_name = "preferred_contact_method"
-          old_val = self.preferred_contact_method_code_name_hash[old_val.to_i] if old_val != "Unassigned"
-          new_val = self.preferred_contact_method_code_name_hash[new_val.to_i]
-        elsif field_name == "initial_communication"
-          old_val = self.initial_communication_name_hash[old_val.to_i] if old_val != "Unassigned"
-          new_val = self.initial_communication_name_hash[new_val.to_i]
-        elsif field_name == "source_code"
-          display_field_name = "source"
-          old_val = self.source_code_name_hash[old_val.to_i] if old_val != "Unassigned"
-          new_val = self.source_code_name_hash[new_val.to_i]
-        elsif field_name == "priority_code"
-          display_field_name = "priority"
-          old_val = self.priority_code_name_hash[old_val.to_i] if old_val != "Unassigned"
-          new_val = self.priority_code_name_hash[new_val.to_i]
-        elsif field_name == "need"
-          old_val = self.need_name_hash[old_val.to_i] if old_val != "Unassigned"
-          new_val = self.need_name_hash[new_val.to_i]
-        elsif field_name == "tech_stack_ids"
-          display_field_name = "tech_stacks"
-          if old_val.kind_of?(Array)
-            old_val = (self.tech_stack_name_hash.select { |k, v|
-  old_val.map(&:to_i).include?(k)
-} || {}).values.flatten.compact.uniq
-          else
-            old_val = self.tech_stack_name_hash[old_val] if old_val != "Unassigned"
-          end
-          if new_val.kind_of?(Array)
-            new_val = (self.tech_stack_name_hash.select { |k, v|
-  new_val.map(&:to_i).include?(k)
-} || {}).values.flatten.compact.uniq
-          else
-            new_val = self.tech_stack_name_hash[new_val]
-          end
-        elsif field_name == "assignee_id"
-          display_field_name = "assignee"
-          old_val = User.find(old_val)&.full_name if old_val != "Unassigned"
-          new_val = self.assignee_name
-        elsif field_name == "reporter_id"
-          display_field_name = "reporter"
-          old_val = User.find(old_val)&.full_name if old_val != "Unassigned"
-          new_val = self.reporter_name
-        end
-
-        display_field_name_arr << display_field_name.tr("_", " ").capitalize
-
-        display_field_value_arr << "#{old_val.kind_of?(Array) ? old_val.join(",") : old_val}&nbsp; -> &nbsp;#{new_val.kind_of?(Array) ? new_val.join(",") : new_val}"
-      end
-
-      index_system_display_title = "<b>#{self.updated_by_name}</b> updated the <b>#{display_field_name_arr.join(', ')}</b>"
-      index_system_display_message = "<p style='font-size: 0.875rem;line-height: 1.25rem;'>#{display_field_value_arr.join('<br />')}</p>"
-
-      self.lead_timelines.create!(
-        action_created_by_id: self.updated_by_id,
-        kind: 0,
-        index_system_display_title:,
-        index_system_display_message:
-                                              )
-    end
 end
