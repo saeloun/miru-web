@@ -18,7 +18,7 @@ const showToastr = message => {
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="success" />,
-    closeButton: (closeToast) => getToasterCloseButton({ closeToast, type: "success" }),
+    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "success" }),
     hideProgressBar: true
   });
 };
@@ -33,7 +33,7 @@ const showErrorToastr = error => {
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="error" />,
-    closeButton: (closeToast) => getToasterCloseButton({ closeToast, type: "error" }),
+    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "error" }),
     hideProgressBar: true
   });
 };
@@ -45,7 +45,7 @@ const showWarningToastr = warning => {
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="warning" />,
-    closeButton: (closeToast) => getToasterCloseButton({ closeToast, type: "warning" }),
+    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "warning" }),
     hideProgressBar: true
   });
 };
@@ -57,7 +57,7 @@ const showInfoToastr = info => {
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="info" />,
-    closeButton: (closeToast) => getToasterCloseButton({ closeToast, type: "info" }),
+    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "info" }),
     hideProgressBar: true
   });
 };
