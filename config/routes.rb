@@ -68,7 +68,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get "users/invitation/accept", to: "invitations/accept#index"
+  get "users/invitation/accept", to: "invitations/accept#show"
 
   get "clients/*path", to: "clients#index", via: :all
   get "clients", to: "clients#index"
