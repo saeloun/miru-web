@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import clients from "apis/clients";
+import clientApi from "apis/clients";
 import { Formik, Form, Field, FormikProps } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";

@@ -42,8 +42,6 @@ Rails.application.routes.draw do
     resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
   end
 
-  resources :time_tracking, only: [:index], path: "time-tracking"
-
   resources :team, only: [:new, :index, :update, :destroy, :edit]
 
   resources :workspaces, only: [:update]
@@ -68,15 +66,6 @@ Rails.application.routes.draw do
   end
 
   get "users/invitation/accept", to: "invitations/accept#show"
-
-  get "clients/*path", to: "clients#index", via: :all
-  get "clients", to: "clients#index"
-
-  get "invoices/*path", to: "invoices#index", via: :all
-  get "invoices", to: "invoices#index"
-
-  get "projects/*path", to: "projects#index", via: :all
-  get "projects", to: "projects#index"
 
   get "payments/settings/stripe/connect/refresh", to: "payment_settings#refresh_stripe_connect"
   get "payments/settings/*path", to: "payment_settings#index", via: :all

@@ -57,7 +57,7 @@ namespace :internal_api, defaults: { format: "json" } do
       get :validate_account_details
     end
 
-    resources :team, only: [:index, :destroy, update] do
+    resources :team, only: [:index, :destroy, :update] do
       resource :details, only: [:show, :update], controller: "team_members/details"
     end
     resources :time_tracking, only: [:index], path: "time-tracking"

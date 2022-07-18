@@ -18,9 +18,12 @@ def invited_user_status
   I18n.t("team.invitation")
 end
 
-json.team teams do |member|
+json.team teams do |company_user|
+  member = company_user.user
   json.profile_picture user_avatar(member)
   json.id member.id
+  json.first_name member.first_name
+  json.last_name member.last_name
   json.name member.full_name
   json.email member.email
   json.role member.primary_role(current_company)
