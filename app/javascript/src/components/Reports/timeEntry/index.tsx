@@ -6,6 +6,7 @@ import applyFilter, { getQueryParams } from "../api/applyFilter";
 import Container from "../Container";
 import EntryContext from "../context/EntryContext";
 
+import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
 import Filters from "../Filters";
 import { getMonth } from "../Filters/filterOptions";
@@ -99,7 +100,8 @@ const TimeEntryReports = () => {
       handleRemoveSingleFilter: handleRemoveSingleFilter
     },
     currentReport: "TimeEntryReport",
-    revenueByClientReport: RevenueByClientReportContext
+    revenueByClientReport: RevenueByClientReportContext,
+    outstandingOverdueInvoice: OutstandingOverdueInvoiceContext
   };
 
   return (

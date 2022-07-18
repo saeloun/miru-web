@@ -1,0 +1,559 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/accounts
+    body:
+      encoding: UTF-8
+      string: type=standard
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/6.2.0
+      Authorization:
+      - Bearer sk_test_51EXIAiEQYiNu1q8E22PeN6N5pMswpv0Q5dwRApDrqfIuGvyoKTCX5KaKdWWIEZht8LjSF85v7lxPOKrxBFFs7vLp00QvWOAKgM
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_m7M8EtMncHPlqw","request_duration_ms":1186}}'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"6.2.0","lang":"ruby","lang_version":"3.1.2 p20 (2022-04-12)","platform":"x86_64-darwin21","engine":"ruby","publisher":"stripe","uname":"Darwin
+        gowsiks-MacBook-Pro.local 21.4.0 Darwin Kernel Version 21.4.0: Fri Mar 18
+        00:45:05 PDT 2022; root:xnu-8020.101.4~15/RELEASE_X86_64 x86_64","hostname":"gowsiks-MacBook-Pro.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Thu, 07 Jul 2022 10:18:25 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '2934'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Idempotency-Key:
+      - 8068a1c2-0604-4a9c-8728-9d9b434b3538
+      Original-Request:
+      - req_d8ww4tnEBVWKzg
+      Request-Id:
+      - req_d8ww4tnEBVWKzg
+      Stripe-Should-Retry:
+      - 'false'
+      Stripe-Version:
+      - '2019-03-14'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "acct_1LIrmt2QSbFbrKNb",
+          "object": "account",
+          "business_profile": {
+            "mcc": null,
+            "name": null,
+            "product_description": null,
+            "support_address": null,
+            "support_email": null,
+            "support_phone": null,
+            "support_url": null,
+            "url": null
+          },
+          "business_type": null,
+          "capabilities": {
+          },
+          "charges_enabled": false,
+          "controller": {
+            "is_controller": true,
+            "type": "application"
+          },
+          "country": "US",
+          "created": 1657189104,
+          "default_currency": "usd",
+          "details_submitted": false,
+          "email": null,
+          "external_accounts": {
+            "object": "list",
+            "data": [
+
+            ],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/accounts/acct_1LIrmt2QSbFbrKNb/external_accounts"
+          },
+          "future_requirements": {
+            "alternatives": [
+
+            ],
+            "current_deadline": null,
+            "currently_due": [
+
+            ],
+            "disabled_reason": null,
+            "errors": [
+
+            ],
+            "eventually_due": [
+
+            ],
+            "past_due": [
+
+            ],
+            "pending_verification": [
+
+            ]
+          },
+          "metadata": {
+          },
+          "payouts_enabled": false,
+          "requirements": {
+            "alternatives": [
+
+            ],
+            "current_deadline": null,
+            "currently_due": [
+              "business_profile.product_description",
+              "business_profile.support_phone",
+              "business_profile.url",
+              "email",
+              "external_account",
+              "tos_acceptance.date",
+              "tos_acceptance.ip"
+            ],
+            "disabled_reason": "requirements.past_due",
+            "errors": [
+
+            ],
+            "eventually_due": [
+              "business_profile.product_description",
+              "business_profile.support_phone",
+              "business_profile.url",
+              "email",
+              "external_account",
+              "tos_acceptance.date",
+              "tos_acceptance.ip"
+            ],
+            "past_due": [
+              "external_account",
+              "tos_acceptance.date",
+              "tos_acceptance.ip"
+            ],
+            "pending_verification": [
+
+            ]
+          },
+          "settings": {
+            "bacs_debit_payments": {
+            },
+            "branding": {
+              "icon": null,
+              "logo": null,
+              "primary_color": null,
+              "secondary_color": null
+            },
+            "card_issuing": {
+              "tos_acceptance": {
+                "date": null,
+                "ip": null
+              }
+            },
+            "card_payments": {
+              "decline_on": {
+                "avs_failure": false,
+                "cvc_failure": false
+              },
+              "statement_descriptor_prefix": null,
+              "statement_descriptor_prefix_kanji": null,
+              "statement_descriptor_prefix_kana": null
+            },
+            "dashboard": {
+              "display_name": null,
+              "timezone": "Etc/UTC"
+            },
+            "payments": {
+              "statement_descriptor": null,
+              "statement_descriptor_kana": null,
+              "statement_descriptor_kanji": null
+            },
+            "payouts": {
+              "debit_negative_balances": true,
+              "schedule": {
+                "delay_days": 2,
+                "interval": "daily"
+              },
+              "statement_descriptor": null
+            },
+            "sepa_debit_payments": {
+            }
+          },
+          "tos_acceptance": {
+            "date": null,
+            "ip": null,
+            "user_agent": null
+          },
+          "type": "standard"
+        }
+    http_version:
+  recorded_at: Thu, 07 Jul 2022 10:18:25 GMT
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/accounts
+    body:
+      encoding: UTF-8
+      string: type=custom&country=US&email=jenny.rosen%40example.com&business_type=company&company[name]=test+company&business_profile[name]=test+company&business_profile[url]=https%3A%2F%2Fexampletest.com&capabilities[card_payments][requested]=true&capabilities[transfers][requested]=true
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/6.2.0
+      Authorization:
+      - Bearer sk_test_51EXIAiEQYiNu1q8E22PeN6N5pMswpv0Q5dwRApDrqfIuGvyoKTCX5KaKdWWIEZht8LjSF85v7lxPOKrxBFFs7vLp00QvWOAKgM
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_d8ww4tnEBVWKzg","request_duration_ms":2734}}'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"6.2.0","lang":"ruby","lang_version":"3.1.2 p20 (2022-04-12)","platform":"x86_64-darwin21","engine":"ruby","publisher":"stripe","uname":"Darwin
+        gowsiks-MacBook-Pro.local 21.4.0 Darwin Kernel Version 21.4.0: Fri Mar 18
+        00:45:05 PDT 2022; root:xnu-8020.101.4~15/RELEASE_X86_64 x86_64","hostname":"gowsiks-MacBook-Pro.local"}'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Thu, 07 Jul 2022 10:18:28 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '4412'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Idempotency-Key:
+      - b4f83139-501c-4c43-ab68-f87e816d4322
+      Original-Request:
+      - req_XOOYGmUAKD3p78
+      Request-Id:
+      - req_XOOYGmUAKD3p78
+      Stripe-Should-Retry:
+      - 'false'
+      Stripe-Version:
+      - '2019-03-14'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "acct_1LIrmw2SfWxpOxPP",
+          "object": "account",
+          "business_profile": {
+            "mcc": null,
+            "name": "test company",
+            "product_description": null,
+            "support_address": null,
+            "support_email": null,
+            "support_phone": null,
+            "support_url": null,
+            "url": "https://exampletest.com"
+          },
+          "business_type": "company",
+          "capabilities": {
+            "card_payments": "inactive",
+            "platform_payments": "inactive"
+          },
+          "charges_enabled": false,
+          "company": {
+            "address": {
+              "city": null,
+              "country": "US",
+              "line1": null,
+              "line2": null,
+              "postal_code": null,
+              "state": null
+            },
+            "directors_provided": false,
+            "executives_provided": false,
+            "name": "test company",
+            "owners_provided": false,
+            "tax_id_provided": false,
+            "verification": {
+              "document": {
+                "back": null,
+                "details": null,
+                "details_code": null,
+                "front": null
+              }
+            }
+          },
+          "country": "US",
+          "created": 1657189107,
+          "default_currency": "usd",
+          "details_submitted": false,
+          "email": "jenny.rosen@example.com",
+          "external_accounts": {
+            "object": "list",
+            "data": [
+
+            ],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/accounts/acct_1LIrmw2SfWxpOxPP/external_accounts"
+          },
+          "future_requirements": {
+            "alternatives": [
+
+            ],
+            "current_deadline": null,
+            "currently_due": [
+
+            ],
+            "disabled_reason": null,
+            "errors": [
+
+            ],
+            "eventually_due": [
+
+            ],
+            "past_due": [
+
+            ],
+            "pending_verification": [
+
+            ]
+          },
+          "metadata": {
+          },
+          "payouts_enabled": false,
+          "requirements": {
+            "alternatives": [
+              {
+                "alternative_fields_due": [
+                  "owners.verification.document"
+                ],
+                "original_fields_due": [
+                  "owners.ssn_last_4"
+                ]
+              },
+              {
+                "alternative_fields_due": [
+                  "representative.verification.document"
+                ],
+                "original_fields_due": [
+                  "representative.ssn_last_4"
+                ]
+              }
+            ],
+            "current_deadline": null,
+            "currently_due": [
+              "business_profile.mcc",
+              "company.address.city",
+              "company.address.line1",
+              "company.address.postal_code",
+              "company.address.state",
+              "company.phone",
+              "company.tax_id",
+              "external_account",
+              "relationship.account_opener",
+              "relationship.owner",
+              "tos_acceptance.date",
+              "tos_acceptance.ip"
+            ],
+            "disabled_reason": "requirements.past_due",
+            "errors": [
+
+            ],
+            "eventually_due": [
+              "business_profile.mcc",
+              "company.address.city",
+              "company.address.line1",
+              "company.address.postal_code",
+              "company.address.state",
+              "company.phone",
+              "company.tax_id",
+              "external_account",
+              "relationship.account_opener",
+              "relationship.owner",
+              "tos_acceptance.date",
+              "tos_acceptance.ip"
+            ],
+            "past_due": [
+              "business_profile.mcc",
+              "company.address.city",
+              "company.address.line1",
+              "company.address.postal_code",
+              "company.address.state",
+              "company.phone",
+              "company.tax_id",
+              "external_account",
+              "relationship.account_opener",
+              "relationship.owner",
+              "tos_acceptance.date",
+              "tos_acceptance.ip"
+            ],
+            "pending_verification": [
+
+            ]
+          },
+          "settings": {
+            "bacs_debit_payments": {
+            },
+            "branding": {
+              "icon": null,
+              "logo": null,
+              "primary_color": null,
+              "secondary_color": null
+            },
+            "card_issuing": {
+              "tos_acceptance": {
+                "date": null,
+                "ip": null
+              }
+            },
+            "card_payments": {
+              "decline_on": {
+                "avs_failure": false,
+                "cvc_failure": false
+              },
+              "statement_descriptor_prefix": null,
+              "statement_descriptor_prefix_kanji": null,
+              "statement_descriptor_prefix_kana": null
+            },
+            "dashboard": {
+              "display_name": "Exampletest",
+              "timezone": "Etc/UTC"
+            },
+            "payments": {
+              "statement_descriptor": "EXAMPLETEST.COM",
+              "statement_descriptor_kana": null,
+              "statement_descriptor_kanji": null
+            },
+            "payouts": {
+              "debit_negative_balances": false,
+              "schedule": {
+                "delay_days": 2,
+                "interval": "daily"
+              },
+              "statement_descriptor": null
+            },
+            "sepa_debit_payments": {
+            }
+          },
+          "tos_acceptance": {
+            "date": null,
+            "ip": null,
+            "user_agent": null
+          },
+          "type": "custom"
+        }
+    http_version:
+  recorded_at: Thu, 07 Jul 2022 10:18:28 GMT
+- request:
+    method: get
+    uri: https://api.stripe.com/v1/checkout/sessions
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Stripe/v1 RubyBindings/6.2.0
+      Authorization:
+      - Bearer sk_test_51EXIAiEQYiNu1q8E22PeN6N5pMswpv0Q5dwRApDrqfIuGvyoKTCX5KaKdWWIEZht8LjSF85v7lxPOKrxBFFs7vLp00QvWOAKgM
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics":{"request_id":"req_XOOYGmUAKD3p78","request_duration_ms":3189}}'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"6.2.0","lang":"ruby","lang_version":"3.1.2 p20 (2022-04-12)","platform":"x86_64-darwin21","engine":"ruby","publisher":"stripe","uname":"Darwin
+        gowsiks-MacBook-Pro.local 21.4.0 Darwin Kernel Version 21.4.0: Fri Mar 18
+        00:45:05 PDT 2022; root:xnu-8020.101.4~15/RELEASE_X86_64 x86_64","hostname":"gowsiks-MacBook-Pro.local"}'
+      Stripe-Account:
+      - acct_1LIrmw2SfWxpOxPP
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Thu, 07 Jul 2022 10:18:29 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '96'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_grg2osznZZuDcz
+      Stripe-Account:
+      - acct_1LIrmw2SfWxpOxPP
+      Stripe-Version:
+      - '2019-03-14'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "object": "list",
+          "data": [
+
+          ],
+          "has_more": false,
+          "url": "/v1/checkout/sessions"
+        }
+    http_version:
+  recorded_at: Thu, 07 Jul 2022 10:18:29 GMT
+recorded_with: VCR 3.0.3

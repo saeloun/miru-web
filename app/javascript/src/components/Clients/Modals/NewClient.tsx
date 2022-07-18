@@ -1,5 +1,5 @@
 import React from "react";
-import clients from "apis/clients";
+import clientApi from "apis/clients";
 import Toastr from "common/Toastr";
 import { Formik, Form, Field } from "formik";
 import { X } from "phosphor-react";
@@ -21,7 +21,7 @@ const initialValues = {
 
 const EditClient = ({ setnewClient, clientData, setClientData }) => {
   const handleSubmit = (values) => {
-    clients.create(values)
+    clientApi.create(values)
       .then(res => {
         setClientData([...clientData, { ...res.data, minutes: 0 }]);
         setnewClient(false);
@@ -108,7 +108,7 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`form__input ${errors.address && touched.address && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="address" />
+                        <Field className={`form__input p-2 h-12 ${errors.address && touched.address && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="address" as='textarea'/>
                       </div>
                     </div>
                   </div>
