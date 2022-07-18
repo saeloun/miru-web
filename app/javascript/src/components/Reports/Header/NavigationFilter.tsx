@@ -4,9 +4,9 @@ import { getReports } from "./fetchReport";
 import { useEntry } from "../context/EntryContext";
 
 const NavigationFilter = () => {
-  const { revenueByClientReport, currentReport, timeEntryReport } = useEntry();
+  const { revenueByClientReport, currentReport, timeEntryReport, outstandingOverdueInvoice } = useEntry();
 
-  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport });
+  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport, outstandingOverdueInvoice });
 
   const filterHtml = (value, key, filterKey) => (
     <li key={key} className="flex px-2 mr-4 py-1 rounded-xl tracking-widest font-semibold px-1 text-xs tracking-widest bg-miru-gray-400 text-miru-dark-purple-1000">
