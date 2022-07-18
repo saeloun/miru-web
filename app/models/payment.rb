@@ -44,6 +44,7 @@ class Payment < ApplicationRecord
   ]
 
   belongs_to :invoice
+  has_one :company, through: :invoice
 
   validates :invoice, :transaction_date, :transaction_type, :amount, :status, presence: true
   validates :amount, numericality: { greater_than: 0 }

@@ -57,7 +57,7 @@ namespace :internal_api, defaults: { format: "json" } do
     get "payments/settings", to: "payment_settings#index"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
 
-    resources :payments, only: [:create]
+    resources :payments, only: [:create, :index]
 
     namespace :payments do
       resources :providers, only: [:index, :update]
