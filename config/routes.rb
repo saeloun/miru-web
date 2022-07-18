@@ -42,13 +42,9 @@ Rails.application.routes.draw do
     resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
   end
 
-<<<<<<< HEAD
   resources :time_tracking, only: [:index], path: "time-tracking"
 
   resources :team, only: [:new, :index, :update, :destroy, :edit]
-=======
-  resources :team, only: [:index, :update, :destroy, :edit]
->>>>>>> develop
 
   resources :workspaces, only: [:update]
 
