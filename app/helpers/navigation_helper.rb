@@ -19,7 +19,7 @@ module NavigationHelper
     def nav_items
       [
         {
-          url: time_tracking_index_path,
+          url: "/time-tracking",
           title: I18n.t("navbar.time_tracking"),
           permitted: Pundit.policy!(current_user, :timesheet_entry).index?,
           data: { cy: "time-tracking-tab" }
@@ -31,31 +31,31 @@ module NavigationHelper
           data: { cy: "team-tab" }
         },
         {
-          url: clients_path,
+          url: "/clients",
           title: I18n.t("navbar.clients"),
           permitted: Pundit.policy!(current_user, :client).index?,
           data: { cy: "clients-tab" }
         },
         {
-          url: projects_path,
+          url: "/projects",
           title: I18n.t("navbar.projects"),
           permitted: Pundit.policy!(current_user, :project).index?,
           data: { cy: "projects-tab" }
         },
         {
-          url: reports_path,
+          url: "/reports",
           title: I18n.t("navbar.reports"),
           permitted: Pundit.policy!(current_user, :report).index?,
           data: { cy: "reports-tab" }
         },
         {
-          url: invoices_path,
+          url: "/invoices",
           title: I18n.t("navbar.invoices"),
           permitted: Pundit.policy!(current_user, :invoice).index?,
           data: { cy: "invoices-tab" }
         },
         {
-          url: payments_path,
+          url: "/payments",
           title: I18n.t("navbar.payments"),
           permitted: Pundit.policy!(current_user, :payment).index?,
           data: { cy: "payments-tab" }

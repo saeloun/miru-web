@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import clients from "apis/clients";
+import clientApi from "apis/clients";
 import { Formik, Form, Field } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";
@@ -30,7 +30,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
   const [apiError, setApiError] = useState<string>("");
 
   const handleSubmit = async values => {
-    await clients.update(client.id, {
+    await clientApi.update(client.id, {
       client: {
         ...values
       }

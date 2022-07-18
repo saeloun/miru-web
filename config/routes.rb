@@ -42,11 +42,14 @@ Rails.application.routes.draw do
     resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
   end
 
+<<<<<<< HEAD
   resources :time_tracking, only: [:index], path: "time-tracking"
 
   resources :team, only: [:new, :index, :update, :destroy, :edit]
+=======
+  resources :team, only: [:index, :update, :destroy, :edit]
+>>>>>>> develop
 
-  resources :reports, only: [:index]
   resources :workspaces, only: [:update]
 
   resources :invoices, only: [], module: :invoices do
@@ -83,15 +86,6 @@ Rails.application.routes.draw do
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"
 
-  get "payments/*path", to: "payments#index", via: :all
-  get "payments", to: "payments#index"
-
-  get "reports/*path", to: "reports#index", via: :all
-  get "reports", to: "reports#index"
-
-  get "subscriptions/*path", to: "subscriptions#index", via: :all
-  resources :subscriptions, only: [:index]
-
   resource :email_confirmation, only: :show do
     get :resend
   end
@@ -102,4 +96,8 @@ Rails.application.routes.draw do
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
     get "profile/edit/*path", to: "users/registrations#edit"
   end
+
+  match "*path", via: :all, to: "home#index", constraints: lambda { |req|
+    req.path.exclude? "rails/active_storage"
+  }
 end

@@ -17,6 +17,24 @@ export enum ApiStatus {
   ERROR = "error",
 }
 
+export enum Roles {
+  ADMIN = "admin",
+  OWNER = "owner",
+  BOOK_KEEPER = "book_keeper",
+  EMPLOYEE = "employee",
+}
+
+export enum Paths {
+  SIGN_IN = "/user/sign_in",
+  CLIENTS = "/clients",
+  INVOICES = "/invoices",
+  REPORTS = "/reports",
+  PROJECTS = "/projects",
+  SUBSCRIPTIONS = "/subscriptions",
+  PAYMENTS = "/payments",
+  TIME_TRACKING = "/time-tracking",
+}
+
 export const TOASTER_DURATION = 3000;
 
 export const getToasterIcon = (type) => {
