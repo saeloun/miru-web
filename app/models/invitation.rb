@@ -67,14 +67,14 @@ class Invitation < ApplicationRecord
     Invitation.where(company_id: company.id, recipient_email:).valid_invitations.any?
   end
 
-  private
-
-    def set_token
-      loop do
-        self.token = Devise.friendly_token
-        break unless Invitation.exists?(token: self.token)
-      end
+  def set_token
+    loop do
+      self.token = Devise.friendly_token
+      break unless Invitation.exists?(token: self.token)
     end
+  end
+
+  private
 
     def set_expired_at
       self.expired_at = Time.current + MAX_EXPIRATION_DAY

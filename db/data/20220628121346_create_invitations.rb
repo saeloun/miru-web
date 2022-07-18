@@ -8,7 +8,7 @@ class CreateInvitations < ActiveRecord::Migration[7.0]
     Invitation.skip_callback(:validation, :before, :set_token)
     Invitation.skip_callback(:commit, :after, :send_invitation_mail)
 
-    User.where.not(invitation_token: nil).find_each do |user|
+    User.where.not(invitation_created_at: nil).find_each do |user|
       user.roles.find_each do |role|
         expiration_date = if user.invitation_sent_at.is_a? ActiveSupport::TimeWithZone
           user.invitation_sent_at + 14.days
@@ -28,6 +28,7 @@ class CreateInvitations < ActiveRecord::Migration[7.0]
           accepted_at: user.invitation_accepted_at
         )
 
+        invitation.set_token if invitation.token.nil?
         invitation.save!(validate: false)
       end
     end
