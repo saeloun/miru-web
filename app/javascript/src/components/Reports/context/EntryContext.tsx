@@ -1,11 +1,13 @@
 import { createContext, useContext } from "react";
+import OutstandingOverdueInvoiceContext from "./outstandingOverdueInvoiceContext";
 import RevenueByClientReportContext from "./RevenueByClientContext";
 import TimeEntryReportContext from "./TimeEntryReportContext";
 
 const EntryContext = createContext(({
   currentReport: "",
   revenueByClientReport: RevenueByClientReportContext,
-  timeEntryReport: TimeEntryReportContext
+  timeEntryReport: TimeEntryReportContext,
+  outstandingOverdueInvoice: OutstandingOverdueInvoiceContext
 }));
 
 export const useEntry = () => useContext(EntryContext);
