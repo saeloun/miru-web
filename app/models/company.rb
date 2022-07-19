@@ -115,4 +115,8 @@ class Company < ApplicationRecord
 
     Rails.application.routes.url_helpers.polymorphic_url(logo, only_path: true)
   end
+
+  def stripe_account_id
+    stripe_connected_account&.account_id
+  end
 end

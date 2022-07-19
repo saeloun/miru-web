@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import clients from "apis/clients";
+import clientApi from "apis/clients";
 
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
@@ -57,7 +57,7 @@ const Clients = ({ isAdminUser }) => {
   };
 
   const handleSelectChange = (event) => {
-    clients.get(`?time_frame=${event.target.value}`)
+    clientApi.get(`?time_frame=${event.target.value}`)
       .then((res) => {
         const sanitized = unmapClientList(res);
         setClientData(sanitized.clientList);
@@ -74,7 +74,7 @@ const Clients = ({ isAdminUser }) => {
     sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
-    clients.get("?time_frame=week")
+    clientApi.get("?time_frame=week")
       .then((res) => {
         const sanitized = unmapClientList(res);
         setClientData(sanitized.clientList);

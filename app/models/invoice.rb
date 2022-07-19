@@ -12,6 +12,7 @@
 #  invoice_number     :string
 #  issue_date         :date
 #  outstanding_amount :decimal(20, 2)   default(0.0)
+#  payment_infos      :jsonb
 #  reference          :text
 #  status             :integer          default("draft"), not null
 #  tax                :decimal(20, 2)   default(0.0)
@@ -53,6 +54,9 @@ class Invoice < ApplicationRecord
   has_many :invoice_line_items, dependent: :destroy
   has_one :company, through: :client
   accepts_nested_attributes_for :invoice_line_items, allow_destroy: true
+
+  # Payment info details
+  store_accessor :payment_infos, :stripe_payment_intent
 
   before_validation :set_external_view_key, on: :create
 

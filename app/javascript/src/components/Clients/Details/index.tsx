@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import clients from "apis/clients";
+import clientApi from "apis/clients";
 
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
@@ -57,7 +57,7 @@ const ClientList = ({ isAdminUser }) => {
   };
 
   const handleSelectChange = (event) => {
-    clients.show(params.clientId,`?time_frame=${event.target.value}`)
+    clientApi.show(params.clientId,`?time_frame=${event.target.value}`)
       .then((res) => {
         const sanitized = unmapClientDetails(res);
         setProjectDetails(sanitized.projectDetails);
@@ -71,7 +71,7 @@ const ClientList = ({ isAdminUser }) => {
     sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
-    clients.show(params.clientId, "?time_frame=week")
+    clientApi.show(params.clientId, "?time_frame=week")
       .then((res) => {
         const sanitized = unmapClientDetails(res);
         setClientDetails(sanitized.clientDetails);
