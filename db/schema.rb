@@ -91,9 +91,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_12_065450) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
-  end
-
   create_table "devices", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "company_id", null: false

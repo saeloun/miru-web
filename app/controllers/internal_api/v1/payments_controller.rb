@@ -3,9 +3,7 @@
 class InternalApi::V1::PaymentsController < ApplicationController
   def create
     authorize :create, policy_class: PaymentPolicy
-    invoice = Invoice.find(params[:payment][:invoice_id])
-    payment = Payment.create!(payment_params.merge(status: payment_status(invoice)))
-    InvoicePayment::UpdateInvoice.process(payment, invoice)
+    payment = InvoicePayment::AddPayment.process(payment_params)
     render :create, locals: {
       payment:
     }
@@ -24,13 +22,5 @@ class InternalApi::V1::PaymentsController < ApplicationController
       params.require(:payment).permit(
         :invoice_id, :transaction_date, :transaction_type, :amount, :note
       )
-    end
-
-    def payment_status(invoice)
-      if invoice.amount_due <= payment_params[:amount].to_f
-        "paid"
-      else
-        "partially_paid"
-      end
     end
 end

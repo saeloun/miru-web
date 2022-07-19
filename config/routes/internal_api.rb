@@ -11,7 +11,11 @@ namespace :internal_api, defaults: { format: "json" } do
         resource :bulk_action, only: [:update, :destroy], controller: "timesheet_entry/bulk_action"
       end
     end
-    resources :projects, only: [:index, :show, :create, :update, :destroy]
+    resources :projects, only: [:index, :show, :create, :update, :destroy] do
+      collection do
+        get "search", to: "projects/search#index"
+      end
+    end
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
 
     namespace :reports do
@@ -53,6 +57,11 @@ namespace :internal_api, defaults: { format: "json" } do
       get :validate_account_details
     end
 
+    resources :team, only: [:index, :destroy] do
+      resource :details, only: [:show, :update], controller: "team_members/details"
+    end
+    resources :time_tracking, only: [:index], path: "time-tracking"
+
     # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
@@ -61,10 +70,6 @@ namespace :internal_api, defaults: { format: "json" } do
 
     namespace :payments do
       resources :providers, only: [:index, :update]
-    end
-
-    resources :team, only: [:index, :destroy] do
-      resource :details, only: [:show, :update], controller: "team_members/details"
     end
 
     resource :profile, only: [:update, :show], controller: "profile" do

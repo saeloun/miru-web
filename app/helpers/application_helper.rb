@@ -31,6 +31,14 @@ module ApplicationHelper
     end
   end
 
+  def get_initial_props
+    {
+      user: current_user,
+      company_role: current_user.roles.find_by(resource: current_company)&.name,
+      company: current_company
+    }
+  end
+
   private
 
     def field_error(resource, attribute)
