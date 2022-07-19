@@ -60,6 +60,13 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :team, only: [:index, :destroy, :update] do
       resource :details, only: [:show, :update], controller: "team_members/details"
     end
+
+    resources :invitations, only: [:create, :update, :destroy]
+    # collection do
+    # resources :accepts, only: [:index], controller: "invitations/accept"
+    # end
+    # end
+
     resources :time_tracking, only: [:index], path: "time-tracking"
 
     # Non-Resourceful Routes
