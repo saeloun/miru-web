@@ -62,10 +62,6 @@ namespace :internal_api, defaults: { format: "json" } do
     end
 
     resources :invitations, only: [:create, :update, :destroy]
-    # collection do
-    # resources :accepts, only: [:index], controller: "invitations/accept"
-    # end
-    # end
 
     resources :time_tracking, only: [:index], path: "time-tracking"
 
