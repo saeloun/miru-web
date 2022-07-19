@@ -60,7 +60,7 @@ Rails.application.routes.draw do
   end
 
   namespace :invitations do
-    resources :accepts, only: [:index], controller: "invitations/accept"
+    resources :accepts, only: [:index], controller: "accept"
   end
 
   get "users/invitation/accept", to: "invitations/accept#show"

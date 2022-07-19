@@ -20,7 +20,7 @@ end
 
 json.team teams do |company_user|
   member = company_user.user
-  json.id company_user.id
+  json.id member.id
   json.profile_picture user_avatar(member)
   json.first_name member.first_name
   json.last_name member.last_name

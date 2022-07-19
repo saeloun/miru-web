@@ -10,6 +10,8 @@ const TableRow = ({ item }) => {
   const { setModalState } = useList();
   const navigate = useNavigate();
 
+  const actionIconVisible = isAdminUser && item.role !== "owner";
+
   return (
     <tr className="border-b last:border-0 border-miru-gray-200 hoverIcon" onClick={() => {
       navigate("1");
@@ -36,22 +38,23 @@ const TableRow = ({ item }) => {
             }
           </td>
           <td className="pr-6 py-6 text-right w-44">
-            <div className="invisible iconWrapper">
-              <button className="ml-12" onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setModalState(TeamModalType.ADD_EDIT, item);
-              }}>
-                <PencilSimple size={16} color="#5b34ea" weight="bold" />
-              </button>
-              <button className="ml-12" onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setModalState(TeamModalType.DELETE, item);
-              }}>
-                <Trash size={16} color="#5b34ea" weight="bold" />
-              </button>
-            </div>
+            {actionIconVisible && (
+              <div className="invisible iconWrapper">
+                <button className="ml-12" onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setModalState(TeamModalType.ADD_EDIT, item);
+                }}>
+                  <PencilSimple size={16} color="#5b34ea" weight="bold" />
+                </button>
+                <button className="ml-12" onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setModalState(TeamModalType.DELETE, item);
+                }}>
+                  <Trash size={16} color="#5b34ea" weight="bold" />
+                </button>
+              </div>)}
           </td>
         </Fragment>
       }

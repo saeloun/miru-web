@@ -9,25 +9,22 @@ class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationContr
     @invitation.company = current_company
     @invitation.sender = current_user
 
-    if @invitation.save!
-      render json: { success: true, message: I18n.t(".success") }, status: :created
-    end
+    @invitation.save!
+    render json: { notice: I18n.t("invitation.create.success.message") }, status: :created
   end
 
   def update
     authorize @invitation
 
-    if @invitation.update!(invitation_params)
-      render json: { success: true, message: I18n.t(".success") }
-    end
+    @invitation.update!(invitation_params)
+    render json: { notice: I18n.t("invitation.update.success.message") }, status: :ok
   end
 
   def destroy
     authorize @invitation
 
-    if @invitation.destroy!
-      render json: { success: true, message: I18n.t(".success") }
-    end
+    @invitation.destroy!
+    render json: { notice: I18n.t("invitation.delete.success.message") }, status: :ok
   end
 
   private

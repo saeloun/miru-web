@@ -147,7 +147,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         </div>
                         <div className="mt-1">
                           <Field
-                            className={`form__input ${
+                            className={`form__input disabled:opacity-50 ${
                               errors.email &&
                               touched.email &&
                               "border-red-600 focus:ring-red-600 focus:border-red-600"
