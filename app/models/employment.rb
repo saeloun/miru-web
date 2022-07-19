@@ -43,15 +43,15 @@ class Employment < ApplicationRecord
   # Callbacks
   before_destroy :remove_user_invitations
 
+  def user_role
+    return "employee" if user.roles.empty?
+
+    user.roles.find_by(resource: company)&.name
+  end
+
   private
 
     def remove_user_invitations
       company.invitations.where(recipient_email: user.email).destroy_all
-    end
-
-    def user_role
-      return "employee" if user.roles.empty?
-
-      user.roles.find_by(resource: company)&.name
     end
 end
