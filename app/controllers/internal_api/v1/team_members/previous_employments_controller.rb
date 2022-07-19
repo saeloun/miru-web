@@ -17,6 +17,17 @@ class InternalApi::V1::TeamMembers::PreviousEmploymentsController < InternalApi:
     }, status: :ok
   end
 
+  def create
+    authorize employment, policy_class: TeamMembers::PreviousEmploymentPolicy
+    user = employment.user
+    previous_employments = user.previous_employments
+    previous_employments.create!(previous_employment_params)
+    render json: {
+      previous_employments:,
+      notice: ("Previous employment created successfully.")
+    }, status: :ok
+ end
+
   private
 
     def employment

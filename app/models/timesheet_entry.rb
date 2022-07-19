@@ -7,7 +7,7 @@
 #  id          :bigint           not null, primary key
 #  bill_status :integer          not null
 #  duration    :float            not null
-#  note        :text             default("")
+#  note        :text
 #  work_date   :date             not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
