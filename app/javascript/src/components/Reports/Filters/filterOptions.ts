@@ -6,7 +6,7 @@ const getWeek = (isCurrentWeek) => {
 
   const first = currentDate.getDate() - currentDate.getDay();
   const weekFirstDay = isCurrentWeek ? first : first - 7;
-  const last = weekFirstDay + 6;
+  const last = weekFirstDay + 7;
 
   const firstday = dayjs(new Date(currentDate.setDate(weekFirstDay)));
   // currentDate wont have current date after the above step
