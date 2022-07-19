@@ -1,14 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
+import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import payment from "apis/payments/payments";
 import Pagination from "common/Pagination";
+import Logger from "js-logger";
+
 import Header from "./Header";
 import AddManualEntry from "./Modals/AddManualEntry";
 import Table from "./Table/index";
+import { unmapPayment } from "../../mapper/payment.mapper";
 
 const Payments = () => {
 
-  const [showManualEntryModal, setShowManualEntryModal] = React.useState<boolean>(false);
+  const [showManualEntryModal, setShowManualEntryModal] = useState<boolean>(false);
+  const [invoiceList, setInvoiceList] = useState<any>([]);
 
-  const invoiceOptions = [];
+  const fetchInvoiceList = async () => {
+    try {
+      const res = await payment.getInvoiceList();
+      const sanitzed = await unmapPayment(res.data);
+      setInvoiceList(sanitzed);
+    } catch (err) {
+      Logger.error(err);
+    }
+  };
+
+  React.useEffect(() => {
+    setAuthHeaders();
+    registerIntercepts();
+    fetchInvoiceList();
+  }, []);
 
   const payments = [
     {
@@ -114,7 +134,7 @@ const Payments = () => {
         setParams=""
       />
       {
-        showManualEntryModal && <AddManualEntry setShowManualEntryModal={setShowManualEntryModal} invoiceOptions={invoiceOptions}/>
+        showManualEntryModal && <AddManualEntry setShowManualEntryModal={setShowManualEntryModal} invoiceList={invoiceList}/>
       }
     </div>
   );
