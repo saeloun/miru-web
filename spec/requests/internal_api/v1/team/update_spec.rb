@@ -6,11 +6,11 @@ RSpec.describe "InternalApi::V1::Team#update", type: :request do
   let(:company) { create(:company) }
   let(:admin_user) { create(:user, current_workspace_id: company.id) }
   let(:employee_user) { create(:user, current_workspace_id: company.id) }
-  let(:employee_company_user) { create(:company_user, company:, user: employee_user) }
+  let(:employee_company_user) { create(:employment, company:, user: employee_user) }
 
   context "when user is admin" do
     before do
-      create(:company_user, company:, user: admin_user)
+      create(:employment, company:, user: admin_user)
       admin_user.add_role :admin, company
       sign_in admin_user
     end
@@ -26,7 +26,7 @@ RSpec.describe "InternalApi::V1::Team#update", type: :request do
 
     it "updates the company user" do
       expect { send_request :put, internal_api_v1_team_path(employee_company_user.user), params: { role: "admin" } }
-        .to change (employee_company_user, :user_role).from("employee").to("admin")
+        .to change(employee_company_user, :user_role).from("employee").to("admin")
     end
 
     context "when team member is present in multiple company" do
@@ -34,24 +34,24 @@ RSpec.describe "InternalApi::V1::Team#update", type: :request do
       let(:other_company_1) { create(:company) }
 
       before do
-        @team_company_user = create(:company_user, company:, user: team_user)
+        @team_company_user = create(:employment, company:, user: team_user)
         team_user.add_role :employee, company
-        @other_team_company_user = create(:company_user, company: other_company_1, user: team_user)
+        @other_team_company_user = create(:employment, company: other_company_1, user: team_user)
         team_user.add_role :employee, other_company_1
       end
 
       it "update team member from only current company" do
         expect { send_request :put, internal_api_v1_team_path(@team_company_user.user), params: { role: "admin" } }
-          .to change(@team_company_user, :user_role ).from("employee").to("admin")
+          .to change(@team_company_user, :user_role).from("employee").to("admin")
 
-          expect(@other_team_company_user.user_role).to eq("employee")
+        expect(@other_team_company_user.user_role).to eq("employee")
       end
     end
   end
 
   context "when user is not admin" do
     before do
-      create(:company_user, company: company, user: employee_user)
+      create(:employment, company:, user: employee_user)
       sign_in employee_user
     end
 
@@ -64,7 +64,7 @@ RSpec.describe "InternalApi::V1::Team#update", type: :request do
 
     it "does not update the company user" do
       expect { send_request :put, internal_api_v1_team_path(employee_company_user.user), params: { role: "admin" } }
-        .not_to change(employee_company_user, :user_role ).from("employee")
+        .not_to change(employee_company_user, :user_role).from("employee")
     end
   end
 end

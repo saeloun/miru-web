@@ -4,17 +4,20 @@ const path = "/team";
 
 const get = () => axios.get(path);
 
-const destroy = id => axios.delete(`${path}/${id}`);
+const destroyTeamMember = id => axios.delete(`${path}/${id}`);
 
-const put = (id,payload) => axios.put(`${path}/${id}`,payload);
+const updateTeamMember = (id,payload) => axios.put(`${path}/${id}`,payload);
 
 //TODO: connect Invitation flow
-const post = payload => { console.log(payload, "invite user"); return true}; // eslint-disable-line
-// const post = payload => axios.post(`${path}`, payload);
+const inviteMember = payload => axios.post("/invitations",payload);
+const updateInvitedMember = (id,payload) => axios.put(`/invitations/${id}`,payload);
+const deleteInvitedMember = id => axios.delete(`/invitations/${id}`);
 
 export {
   get,
-  destroy,
-  put,
-  post
+  destroyTeamMember,
+  updateTeamMember,
+  updateInvitedMember,
+  deleteInvitedMember,
+  inviteMember
 };

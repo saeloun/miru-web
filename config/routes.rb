@@ -42,7 +42,7 @@ Rails.application.routes.draw do
     resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
   end
 
-  resources :team, only: [:new, :index, :update, :destroy, :edit]
+  resources :team, only: [:index] # TODO: - Move to react-routes with context
 
   resources :workspaces, only: [:update]
 
@@ -59,10 +59,8 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :invitations, only: [:create, :edit, :update, :destroy] do
-    collection do
-      resources :accepts, only: [:index], controller: "invitations/accept"
-    end
+  namespace :invitations do
+    resources :accepts, only: [:index], controller: "accept"
   end
 
   get "users/invitation/accept", to: "invitations/accept#show"
