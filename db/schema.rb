@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_08_095031) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_12_065450) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -184,6 +184,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_08_095031) do
     t.index ["status"], name: "index_invoices_on_status"
   end
 
+  create_table "payments", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.date "transaction_date", null: false
+    t.text "note"
+    t.decimal "amount", precision: 20, scale: 2, default: "0.0"
+    t.integer "status", null: false
+    t.integer "transaction_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_payments_on_invoice_id"
+  end
+
   create_table "payments_providers", force: :cascade do |t|
     t.string "name", null: false
     t.boolean "connected", default: false
@@ -328,6 +340,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_08_095031) do
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"
+  add_foreign_key "payments", "invoices"
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "previous_employments", "users"
   add_foreign_key "project_members", "projects"
