@@ -1,6 +1,4 @@
-<%= form_for(resource, as: resource_name, url: invitation_path(resource_name), html: { method: :post }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
-
+<%= form_with model: invitation do |f| %>
   <div class="mt-4">
     <div class="field">
       <div class="field_with_errors">
@@ -23,21 +21,19 @@
       </div>
     </div>
   </div>
-  <% resource.class.invite_key_fields.each do |field| -%>
-    <div class="mt-4">
-      <div class="field">
-        <div class="field_with_errors">
-          <label class="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
-            <%= t('team.form_email') %>
-          </label>
-          <%= error_message_on(f.object, field) %>
-        </div>
-        <div class="mt-1">
-          <%= f.text_field field, id:"team_email",required: true, placeholder: t('team.email'), class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, field)}" , "data-cy": "new-member-email" %>
-        </div>
+  <div class="mt-4">
+    <div class="field">
+      <div class="field_with_errors">
+        <label class="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+          <%= t('team.form_email') %>
+        </label>
+        <%= error_message_on(f.object, :recipient_email) %>
+      </div>
+      <div class="mt-1">
+        <%= f.text_field :recipient_email, id:"team_email", readonly: f.object.persisted?, required: true, placeholder: t('team.email'), class: "rounded tracking-wider appearance-none border block w-full px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base #{error_message_class(f.object, :recipient_email)}" , "data-cy": "new-member-email" %>
       </div>
     </div>
-  <% end -%>
+  </div>
 
   <div class="mt-4">
     <div class="field">
@@ -45,21 +41,21 @@
       <div class="mt-1">
         <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
           <div class="flex items-center">
-            <%= f.radio_button :roles, 'Admin', class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" , "data-cy": "admin-radio-button" %>
+            <%= f.radio_button :role, 'admin', class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" , "data-cy": "admin-radio-button" %>
             <label for="admin" class="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
               <%= t('team.form_admin') %>
             </label>
           </div>
 
           <div class="flex items-center">
-            <%= f.radio_button :roles, 'Employee', :checked=>true , class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" , "data-cy": "employee-radio-button" %>
+            <%= f.radio_button :role, 'employee', :checked=>true , class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" , "data-cy": "employee-radio-button" %>
             <label for="Employee" class="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
               <%= t('team.form_employee')%>
             </label>
           </div>
 
           <div class="flex items-center">
-            <%= f.radio_button :roles, 'Book_keeper', class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" %>
+            <%= f.radio_button :role, 'book_keeper', class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" %>
             <label for="Book_keeper" class="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
               <%= t('team.form_book_keeper')%>
             </label>
@@ -73,7 +69,11 @@
   <%= f.hidden_field :current_workspace_id, value: current_company.id %>
 
   <div class="actions mt-4">
-    <%= f.submit "SEND INVITE", class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer" , "data-cy": "send-invite-button" %>
+    <% if f.object.persisted? %>
+      <%= f.submit "UPDATE INVITE", class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer" , "data-cy": "send-invite-button" %>
+    <% else %>
+      <%= f.submit "SEND INVITE", class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer" , "data-cy": "send-invite-button" %>
+    <% end %>
   </div>
 
 <% end %>
