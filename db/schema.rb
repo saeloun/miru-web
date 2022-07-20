@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_11_175235) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_12_065450) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -129,6 +129,23 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_11_175235) do
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
+  create_table "invitations", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "sender_id", null: false
+    t.string "recipient_email", null: false
+    t.string "token", null: false
+    t.datetime "accepted_at"
+    t.datetime "expired_at"
+    t.string "first_name"
+    t.string "last_name"
+    t.integer "role", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_invitations_on_company_id"
+    t.index ["sender_id"], name: "index_invitations_on_sender_id"
+    t.index ["token"], name: "index_invitations_on_token", unique: true
+  end
+
   create_table "invoice_line_items", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -165,6 +182,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_11_175235) do
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
     t.index ["status"], name: "index_invoices_on_status"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.date "transaction_date", null: false
+    t.text "note"
+    t.decimal "amount", precision: 20, scale: 2, default: "0.0"
+    t.integer "status", null: false
+    t.integer "transaction_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_payments_on_invoice_id"
   end
 
   create_table "payments_providers", force: :cascade do |t|
@@ -265,14 +294,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_11_175235) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "current_workspace_id"
-    t.string "invitation_token"
-    t.datetime "invitation_created_at"
-    t.datetime "invitation_sent_at"
-    t.datetime "invitation_accepted_at"
-    t.integer "invitation_limit"
-    t.string "invited_by_type"
-    t.bigint "invited_by_id"
-    t.integer "invitations_count", default: 0
     t.datetime "discarded_at"
     t.string "personal_email_id"
     t.date "date_of_birth"
@@ -281,9 +302,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_11_175235) do
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
-    t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
-    t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
@@ -322,6 +340,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_11_175235) do
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"
+  add_foreign_key "payments", "invoices"
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "previous_employments", "users"
   add_foreign_key "project_members", "projects"

@@ -14,7 +14,7 @@ RSpec.describe InvoiceLineItem, type: :model do
     end
 
     describe "validate numericality of" do
-      it { is_expected.to validate_numericality_of(:quantity).is_greater_than(0).only_integer }
+      it { is_expected.to validate_numericality_of(:quantity).is_greater_than(0) }
       it { is_expected.to validate_numericality_of(:rate).is_greater_than_or_equal_to(0) }
     end
   end
