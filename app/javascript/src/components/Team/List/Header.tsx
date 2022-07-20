@@ -43,6 +43,7 @@ const Header = () => {
           <button
             type="button"
             className="header__button"
+            data-cy="add-new-user-button"
             onClick={() => setModalState(TeamModalType.ADD_EDIT)}
           >
             <Plus weight="fill" size={16} />

@@ -119,6 +119,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                                 touched.firstName &&
                                 "border-red-600 focus:ring-red-600 focus:border-red-600"
                               } `}
+                              data-cy="new-member-firstName"
                               name="firstName"
                             />
                           </div>
@@ -129,6 +130,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                                 touched.lastName &&
                                 "border-red-600 focus:ring-red-600 focus:border-red-600"
                               } `}
+                              data-cy="new-member-lastName"
                               name="lastName"
                             />
                           </div>
@@ -173,9 +175,9 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                                 name="role"
                                 className="hidden custom__radio"
                                 value="admin"
-                                data-cy="admin-radio-button"
                               />
                               <label
+                                data-cy="admin-radio-button"
                                 htmlFor="role-1"
                                 className="flex items-center cursor-pointer text-xl"
                               >
@@ -192,6 +194,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                                 value="employee"
                               />
                               <label
+                                data-cy="employee-radio-button"
                                 htmlFor="role-2"
                                 className="flex items-center cursor-pointer text-xl"
                               >
@@ -226,8 +229,9 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       <input
                         type="submit"
                         name="commit"
-                        value="SAVE CHANGES"
+                        value={isEdit ? "SAVE CHANGES": "SEND INVITATION"}
                         className="form__input_submit"
+                        data-cy="send-invite-button"
                       />
                     </div>
                   </Form>

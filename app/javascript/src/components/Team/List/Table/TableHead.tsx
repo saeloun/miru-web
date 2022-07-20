@@ -4,7 +4,7 @@ import { useUserContext } from "context/UserContext";
 const TableHead = () => {
   const { isAdminUser } = useUserContext();
   return (
-    <thead className="" data-cy="team-table-header  border-miru-gray-200">
+    <thead  className=" border-miru-gray-200" data-cy="team-table-header">
       <tr>
         <th scope="col" className="table__header p-6">
           PHOTO

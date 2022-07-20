@@ -13,7 +13,7 @@ const TableRow = ({ item }) => {
   const actionIconVisible = isAdminUser && item.role !== "owner";
 
   return (
-    <tr className="border-b last:border-0 border-miru-gray-200 hoverIcon" onClick={() => {
+    <tr data-cy="team-table-row" className="border-b last:border-0 border-miru-gray-200 hoverIcon" onClick={() => {
       navigate("1");
     }}>
       <td className="table__data p-6">
@@ -40,14 +40,14 @@ const TableRow = ({ item }) => {
           <td className="pr-6 py-6 text-right w-44">
             {actionIconVisible && (
               <div className="invisible iconWrapper">
-                <button className="ml-12" onClick={(e) => {
+                <button data-cy="edit-team-member-button" className="ml-12" onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setModalState(TeamModalType.ADD_EDIT, item);
                 }}>
                   <PencilSimple size={16} color="#5b34ea" weight="bold" />
                 </button>
-                <button className="ml-12" onClick={(e) => {
+                <button data-cy="delete-team-member-button" className="ml-12" onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setModalState(TeamModalType.DELETE, item);
