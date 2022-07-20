@@ -18,6 +18,13 @@ class InternalApi::V1::PaymentsController < ApplicationController
     }
   end
 
+  def index
+    authorize :index, policy_class: PaymentPolicy
+    render :index, locals: {
+      payments: current_company.payments.order(created_at: :desc)
+    }
+  end
+
   private
 
     def payment_params
