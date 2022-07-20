@@ -33,6 +33,7 @@ export enum Paths {
   SUBSCRIPTIONS = "/subscriptions",
   PAYMENTS = "/payments",
   TIME_TRACKING = "/time-tracking",
+  TEAM = "/team/*",
 }
 
 export const TOASTER_DURATION = 3000;

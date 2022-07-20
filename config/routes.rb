@@ -42,8 +42,6 @@ Rails.application.routes.draw do
     resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
   end
 
-  resources :team, only: [:index] # TODO: - Move to react-routes with context
-
   resources :workspaces, only: [:update]
 
   resources :invoices, only: [], module: :invoices do
