@@ -1,9 +1,11 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect } from "react";
 
+import TotalHoursSection from "./TotalHoursSection";
 import applyFilter from "../api/applyFilter";
 import Container from "../Container";
 import EntryContext from "../context/EntryContext";
+import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
 import TimeEntryReportContext from "../context/TimeEntryReportContext";
 import { getMonth } from "../Filters/filterOptions";
@@ -25,7 +27,6 @@ const TotalHoursReport = () => {
   const [filterCounter, setFilterCounter] = useState(0);
   const [showNavFilters, setNavFilters] = useState<boolean>(false);
   const [isFilterVisible, setFilterVisibilty] = useState<boolean>(false);
-  console.log(timeEntries, "Inside TotalHoursReport");
 
   useEffect(() => {
     updateFilterCounter();
@@ -69,7 +70,8 @@ const TotalHoursReport = () => {
       selectedFilter,
       filterCounter,
       handleRemoveSingleFilter: handleRemoveSingleFilter
-    }
+    },
+    outstandingOverdueInvoice: OutstandingOverdueInvoiceContext
   };
 
   return (
@@ -85,6 +87,7 @@ const TotalHoursReport = () => {
           handleDownload={() => { }} // eslint-disable-line  @typescript-eslint/no-empty-function
           type={"Total Hours Logged"}
         />
+        {timeEntries.length > 0 && (<TotalHoursSection reports={timeEntries}/>)}
         <Container />
       </EntryContext.Provider>
     </div>

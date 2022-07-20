@@ -9,6 +9,7 @@ import getReportData from "../api/outstandingOverdueInvoice";
 import EntryContext from "../context/EntryContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
 import TimeEntryReportContext from "../context/TimeEntryReportContext";
+import TotalHoursLoggedReportContext from "../context/TotalHoursLoggedReportContext";
 import Header from "../Header";
 
 const OutstandingInvoiceReport = () => {
@@ -89,6 +90,7 @@ const OutstandingInvoiceReport = () => {
       currency: currency,
       summary: summary
     },
+    totalHoursLoggedReport: TotalHoursLoggedReportContext,
     currentReport: "outstandingOverdueInvoiceReport"
   };
 
