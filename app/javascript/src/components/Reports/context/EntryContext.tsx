@@ -9,7 +9,7 @@ const EntryContext = createContext(({
   revenueByClientReport: RevenueByClientReportContext,
   timeEntryReport: TimeEntryReportContext,
   outstandingOverdueInvoice: OutstandingOverdueInvoiceContext,
-  totalhoursLoggedReport: TotalHoursLoggedReportContext
+  totalHoursLoggedReport: TotalHoursLoggedReportContext
 }));
 
 export const useEntry = () => useContext(EntryContext);
