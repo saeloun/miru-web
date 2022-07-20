@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import TotalHeaderSingleAmt from "common/TotalHeaderSingleAmt";
 import ReportRow from "./ReportRow";
 import { useEntry } from "../context/EntryContext";
 
@@ -35,9 +36,14 @@ const Container = () => {
 
   return (
     <Fragment>
+      {false && <TotalHeaderSingleAmt firstTitle={"TOTAL LOGGED HOURS"} firstAmount={"120:45"} />}
       {
         timeEntryReport.reports.map((report, index) => (
           <Fragment key={index}>
+            {false && <div className="flex justify-between border-b border-miru-han-purple-1000 pt-5 pb-2 items-center mt-3">
+              <h1 className="text-miru-han-purple-1000 font-bold text-xl ">{report.label}</h1>
+              <p>Total Hours {report.label && `for ${report.label}`} : 66:09</p>
+            </div> }
             {report.label !== "" && <h1 className="text-miru-han-purple-1000 font-bold text-xl py-5 border-b border-miru-han-purple-1000">{report.label}</h1>}
             <ReportHeader />
             {report.entries.length > 0 && getEntryList(report.entries)}
