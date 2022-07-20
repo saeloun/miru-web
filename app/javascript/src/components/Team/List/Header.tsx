@@ -1,23 +1,38 @@
 import React from "react";
+import { search } from "apis/team";
+import AutoComplete from "common/AutoComplete";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
+import Logger from "js-logger";
+import { unmapList } from "mapper/team.mapper";
 import { MagnifyingGlass, Plus } from "phosphor-react";
 import { TeamModalType } from "constants/index";
 
 const Header = () => {
   const { isAdminUser } = useUserContext();
   const { setModalState } = useList();
+
+  const searchCallBack = async (searchString, setDropdownItems) => {
+    try {
+      if (!searchString) return;
+      const res = await search(searchString);
+      const dropdownList = unmapList(res);
+      const searchList = dropdownList.map(item => ({
+        label: item.name,
+        value: item.id
+      }));
+      setDropdownItems(searchList);
+    } catch (err) {
+      Logger.error(err);
+    }
+  };
+
   return (
     <div className="sm:flex mt-6 mb-3 sm:items-center sm:justify-between">
       <h2 className="header__title">Team</h2>
       <div className="header__searchWrap">
         <div className="header__searchInnerWrapper">
-          <input
-            type="search"
-            className="header__searchInput"
-            placeholder="Search"
-          />
-
+          <AutoComplete searchCallBack={searchCallBack} />
           <button className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
             <MagnifyingGlass size={12} />
           </button>

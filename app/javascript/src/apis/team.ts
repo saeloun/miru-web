@@ -3,6 +3,11 @@ import axios from "axios";
 const path = "/team";
 
 const get = () => axios.get(path);
+const search = term =>{
+  const payload =  { "q[first_name_or_last_name_or_email_cont]": term };
+  const queryParams = new URLSearchParams(payload).toString();
+  return axios.get(`${path}?${queryParams}`);
+};
 
 const destroyTeamMember = id => axios.delete(`${path}/${id}`);
 
@@ -15,6 +20,7 @@ const deleteInvitedMember = id => axios.delete(`/invitations/${id}`);
 
 export {
   get,
+  search,
   destroyTeamMember,
   updateTeamMember,
   updateInvitedMember,
