@@ -10,7 +10,7 @@ const Table = ({ payments }) => (
     </thead>
 
     <tbody className="min-w-full bg-white divide-y divide-gray-200">
-      {payments.map((member) => member && <TableRow member={member} />)}
+      {payments.map((payment) => payment && <TableRow payment={payment} />)}
     </tbody>
   </table>
 );
