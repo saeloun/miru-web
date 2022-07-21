@@ -1,8 +1,10 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect } from "react";
 
+import reports from "apis/reports";
+import Filters from "./Filters";
 import TotalHoursSection from "./TotalHoursSection";
-import applyFilter from "../api/applyFilter";
+import applyFilter, { getQueryParams } from "../api/applyFilter";
 import Container from "../Container";
 import EntryContext from "../context/EntryContext";
 import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
@@ -27,11 +29,27 @@ const TotalHoursReport = () => {
   const [filterCounter, setFilterCounter] = useState(0);
   const [showNavFilters, setNavFilters] = useState<boolean>(false);
   const [isFilterVisible, setFilterVisibilty] = useState<boolean>(false);
+  const [selectedInput, setSelectedInput] = useState("from-input");
+  const [dateRange, setDateRange] = useState({ from: "", to: "" });
 
   useEffect(() => {
     updateFilterCounter();
     applyFilter(selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty, getFilterOptions);
   }, [selectedFilter]);
+
+  const onClickInput = (e) => {
+    setSelectedInput(e.target.name);
+  };
+
+  const handleApplyFilter = async (filters) => {
+    setSelectedFilter(filters);
+  };
+
+  const resetFilter = () => {
+    setSelectedFilter(filterIntialValues);
+    setFilterVisibilty(false);
+    setNavFilters(false);
+  };
 
   const updateFilterCounter = async () => {
     let counter = 0;
@@ -60,6 +78,26 @@ const TotalHoursReport = () => {
     }
   };
 
+  const handleDownload = async (type) => {
+    const queryParams = getQueryParams(selectedFilter).substring(1);
+    const response = await reports.download(type, `?${queryParams}`);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    const date = new Date();
+    link.href = url;
+    link.setAttribute("download", `${date.toISOString()}_miru_report.${type}`);
+    document.body.appendChild(link);
+    link.click();
+  };
+
+  const handleSelectDate = (date) => {
+    if (selectedInput === "from-input") {
+      setDateRange({ ...dateRange, ...{ from: date } });
+    } else {
+      setDateRange({ ...dateRange, ...{ to: date } });
+    }
+  };
+
   const contextValues = {
     timeEntryReport: TimeEntryReportContext,
     revenueByClientReport: RevenueByClientReportContext,
@@ -82,13 +120,22 @@ const TotalHoursReport = () => {
         <Header
           showNavFilters={showNavFilters}
           setFilterVisibilty={setFilterVisibilty}
-          isFilterVisible={isFilterVisible} // eslint-disable-line  @typescript-eslint/no-empty-function
-          resetFilter={() => { }} // eslint-disable-line  @typescript-eslint/no-empty-function
-          handleDownload={() => { }} // eslint-disable-line  @typescript-eslint/no-empty-function
+          isFilterVisible={isFilterVisible}
+          resetFilter={resetFilter}
+          handleDownload={handleDownload}
           type={"Total Hours Logged"}
         />
         {timeEntries.length > 0 && (<TotalHoursSection reports={timeEntries}/>)}
         <Container />
+        {isFilterVisible && <Filters
+          handleApplyFilter={handleApplyFilter}
+          resetFilter={resetFilter}
+          setFilterVisibilty={setFilterVisibilty}
+          onClickInput={onClickInput}
+          handleSelectDate={handleSelectDate}
+          selectedInput={selectedInput}
+          dateRange={dateRange}
+        />}
       </EntryContext.Provider>
     </div>
   );
