@@ -15,7 +15,7 @@ class InternalApi::V1::AddressesController < InternalApi::V1::ApplicationControl
   private
 
     def address
-      @address ||= current_user.addresses.find(params[:id])
+      @address ||= Address.find(params[:id])
     end
 
     def address_params

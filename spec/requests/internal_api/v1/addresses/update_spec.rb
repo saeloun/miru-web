@@ -29,7 +29,7 @@ RSpec.describe "Addresses#update", type: :request do
     )
   }
 
-  before {
+  before do
     @updated_address_details = {
       address_type: "current",
       address_line_1: Faker::Address.full_address,
@@ -39,7 +39,7 @@ RSpec.describe "Addresses#update", type: :request do
       country: Faker::Address.country,
       pin: Faker::Address.postcode
     }
-  }
+  end
 
   context "when Owner wants to update Address details of employee of his company" do
     before do
@@ -124,7 +124,8 @@ RSpec.describe "Addresses#update", type: :request do
     end
 
     it "is unsuccessful" do
-      expect(response).to have_http_status(:not_found)
+      expect(response).to have_http_status(:forbidden)
+      expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
     end
   end
 end

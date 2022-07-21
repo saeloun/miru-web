@@ -2,10 +2,14 @@
 
 class AddressPolicy < ApplicationPolicy
   def show?
-    user_owner_role? || user_admin_role? || user_employee_role?
+    user.has_any_role?(
+      { name: :admin, resource: user.current_workspace },
+      { name: :owner, resource: user.current_workspace }) || user.id == record.addressable_id
   end
 
   def update?
-    user_owner_role? || user_admin_role? || user_employee_role?
+    user.has_any_role?(
+      { name: :admin, resource: user.current_workspace },
+      { name: :owner, resource: user.current_workspace }) || user.id == record.addressable_id
   end
 end
