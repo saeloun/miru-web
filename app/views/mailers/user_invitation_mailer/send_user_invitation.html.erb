@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+  </head>
+  <body style="color:#1D1A31">
+  <p>Hi <%= @name %>, </p>
+
+  <p>
+    We are so delighted to have you onboard. We want to let you know some of the best ways to get up and running on our portal -
+  </p>
+
+  <ul>
+    <li>Send professional invoices Instantly</li>
+    <li>Send and accept payments from clients seamlessly</li>
+    <li>Manage your team and track their progress.</li>
+    <li>Track your time and overall expenses easily</li>
+  </ul>
+
+  <p>
+    Please <%= link_to "click here", accepts_url(token: @token), target: "_blank" %> to accept the invitation.
+    <small>(This link will be valid only for 14 days)</small>
+  </p>
+
+  <p>Cheers,</p>
+
+  <p>Team Miru</p>
+  </body>
+</html>
