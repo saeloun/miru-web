@@ -2,7 +2,7 @@ import axios from "axios";
 
 const path = "/payments";
 
-const get = async () => axios.get(`${path}`);
+const get = () => axios.get(`${path}`);
 
 const create = async (payload) => axios.post(`${path}`, payload);
 

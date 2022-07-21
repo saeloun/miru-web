@@ -1,11 +1,4 @@
-interface InvoiceList {
-  id: number;
-  clientName: string;
-  invoiceNumber: string;
-  invoiceDate: string;
-  amount: string;
-  status: string;
-}
+import { InvoiceList } from "./interface";
 
 const getInvoiceList = (invoiceList: Array<InvoiceList>) =>
   invoiceList.map((invoice) => ({

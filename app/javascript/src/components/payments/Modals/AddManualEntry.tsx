@@ -43,7 +43,6 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList }) => {
         note
       });
       await payment.create(sanitized);
-
       Toastr.success("Manual entry added successfully.");
       setInvoice("");
       setTransactionDate("");
