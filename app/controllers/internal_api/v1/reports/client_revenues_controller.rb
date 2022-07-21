@@ -10,9 +10,9 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
   private
 
     def clients
-      @_clients ||= current_company.clients.order("name asc").includes(:invoices).map do |client|
-                      client.payment_summary
-                    end
+      current_company.clients.where(id: client_ids_params).order("name asc").includes(:invoices).map do |client|
+        client.payment_summary(duration_params)
+      end
     end
 
     def summary
@@ -23,5 +23,13 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
         total_unpaid_amount:,
         total_revenue: total_paid_amount + total_unpaid_amount
       }
+    end
+
+    def client_ids_params
+      JSON.parse(params.require(:client_ids))
+    end
+
+    def duration_params
+      params.require(:duration_from).to_date..params.require(:duration_to).to_date
     end
 end
