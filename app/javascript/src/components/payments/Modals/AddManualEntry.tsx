@@ -10,7 +10,7 @@ import { X, Calendar } from "phosphor-react";
 import { MagnifyingGlass } from "phosphor-react";
 import { mapPayment } from "../../../mapper/payment.mapper";
 
-const AddManualEntry = ({ setShowManualEntryModal, invoiceList }) => {
+const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList }) => {
   const [invoice, setInvoice] = useState<any>(null);
   const [transactionDate, setTransactionDate] = useState<any>(null);
   const [transactionType, setTransactionType] = useState<any>(null);
@@ -44,6 +44,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList }) => {
       });
       await payment.create(sanitized);
       Toastr.success("Manual entry added successfully.");
+      fetchPaymentList();
       setInvoice("");
       setTransactionDate("");
       setTransactionType("");
@@ -57,8 +58,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList }) => {
   };
 
   const handleDatePicker = (date) => {
-    const formattedDate = dayjs(date).format("DD.MM.YYYY");
-    setTransactionDate(formattedDate);
+    setTransactionDate(date);
     setShowDatePicker(false);
   };
 
@@ -193,7 +193,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList }) => {
                     disabled
                     placeholder="DD.MM.YYYY"
                     className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                    value={transactionDate}
+                    value={transactionDate && dayjs(transactionDate).format("DD.MM.YYYY") }
                   />
                   <Calendar
                     size={20}
