@@ -5,7 +5,7 @@ import autosize from "autosize";
 
 import Toastr from "common/Toastr";
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
-import { getNumberWithOrdinal } from "helpers/ordinal";
+// import { getNumberWithOrdinal } from "helpers/ordinal";
 import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 
 // const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
@@ -15,7 +15,7 @@ const AddEntry: React.FC<Iprops> = ({
   selectedEmployeeId,
   fetchEntries,
   setNewEntryView,
-  selectedDateInfo,
+  // selectedDateInfo,
   entryList,
   selectedFullDate,
   setEditEntryId,
@@ -28,6 +28,22 @@ const AddEntry: React.FC<Iprops> = ({
   const [space, setSpace] = useState("");
   const [purpose, setPurpose] = useState("");
   // const [restricted, setRestricted] = useState(false);
+
+  const calendarTimes = () => {
+    const product = (...a: any[][]) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
+    return product([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24], [0, 15, 30, 45]).map((k) => {
+      const [i, m] = [k[0], k[1]]
+      if (i>=24 && m > 0)
+        return (null)
+
+      let ii = i - 12
+      ii = (i === 0 || ii === 0) ? 12 : (ii < 0) ? i : ii
+      return ({
+        id: `${i<10 ? 0 : '' }${i}:${m<10 ? 0 : ''}${m}`,
+        name: `${ii < 10 ? 0 : '' }${ii}:${m<10 ? 0 : ''}${m} ${i < 12 || i == 24 ? 'AM' : 'PM'}`
+      })
+    }).filter((el) => el != null)
+  }
 
   const handleFillData = () => {
     if (! editEntryId) return;
@@ -171,25 +187,18 @@ const AddEntry: React.FC<Iprops> = ({
       </div>
       <div className="w-1/3">
         <div className="mb-2 flex justify-between">
-          <div className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center">
-            {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${
-              selectedDateInfo["month"]
-            }, ${selectedDateInfo["year"]}`}
-          </div>
           <div className="p-1 h-8 text-sm flex justify-center items-center">From</div>
-          <input
-            value={startDuration}
-            onChange={(e) => setStartDuration(e.target.value)}
-            type="text"
-            className="p-1 h-8 w-19 bg-miru-gray-100 rounded-sm text-sm"
-          />
+          <select
+            className="w-40 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+            name="action_assignee_id" onChange={(e) => setStartDuration(e.target.value)}>
+            {calendarTimes().map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
+          </select>
           <div className="p-1 h-8 text-sm flex justify-center items-center">To</div>
-          <input
-            value={endDuration}
-            onChange={(e) => setEndDuration(e.target.value)}
-            type="text"
-            className="p-1 h-8 w-19 bg-miru-gray-100 rounded-sm text-sm"
-          />
+          <select
+            className="w-40 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+            name="action_assignee_id" onChange={(e) => setEndDuration(e.target.value)}>
+            {calendarTimes().map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
+          </select>
         </div>
         {/* <div className="flex items-center mt-2">
           {restricted ? (

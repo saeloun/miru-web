@@ -36,7 +36,7 @@ const EntryCardDayView = ({
     if (timeArray){
 
       let startTime = minutesToHHMM(timeArray[0]) + ":00"
-      const endTime = minutesToHHMM(timeArray[timeArray.length - 1]) + ":00"
+      const endTime = minutesToHHMM(timeArray.reverse()[0]) + ":00"
       const interval = "15";
       const timeslotsNew = [startTime];
 
@@ -79,6 +79,13 @@ const EntryCardDayView = ({
 
   return (
     <>
+      <div className="px-6 pb-6">
+        <div className="container mx-auto grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 pt-6 gap-8">
+          <div className="rounded border-gray-300 dark:border-gray-700 border-dashed border-2 h-24"></div>
+          <div className="rounded border-gray-300 dark:border-gray-700 border-dashed border-2 h-24"></div>
+          <div className="rounded border-gray-300 dark:border-gray-700 border-dashed border-2 h-24"></div>
+        </div>
+      </div>
       <div className="flex justify-between items-center w-full p-4 mt-10 rounded-sm">
         <div className="w-full overflow-x-auto bg-white rounded-xl p-1 flex h-4/5 divide-x divide-dashed divide-gray-300 shadow-lg">
           <div className="px-2 w-fit flex flex-col justify-center items-center">

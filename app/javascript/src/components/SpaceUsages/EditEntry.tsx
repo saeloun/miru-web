@@ -31,6 +31,22 @@ const EditEntry: React.FC<Iprops> = ({
   const [purposeName, setPurposeName] = useState("");
   // const [restricted, setRestricted] = useState(false);
 
+  const calendarTimes = () => {
+    const product = (...a: any[][]) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
+    return product([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24], [0, 15, 30, 45]).map((k) => {
+      const [i, m] = [k[0], k[1]]
+      if (i>=24 && m > 0)
+        return (null)
+
+      let ii = i - 12
+      ii = (i === 0 || ii === 0) ? 12 : (ii < 0) ? i : ii
+      return ({
+        id: `${i<10 ? 0 : '' }${i}:${m<10 ? 0 : ''}${m}`,
+        name: `${ii < 10 ? 0 : '' }${ii}:${m<10 ? 0 : ''}${m} ${i < 12 || i == 24 ? 'AM' : 'PM'}`
+      })
+    }).filter((el) => el != null)
+  }
+
   const handleFillData = () => {
     if (! editEntryId) return;
     const entry = entryList[selectedFullDate].find(
@@ -172,25 +188,21 @@ const EditEntry: React.FC<Iprops> = ({
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                 ></textarea>
               </div>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                  From
-                </label>
-                <input
+              <div className="mb-2 flex justify-between">
+                <div className="p-1 h-8 text-sm flex justify-center items-center">From</div>
+                <select
+                  className="w-30 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                   value={startDuration}
-                  onChange={(e) => setStartDuration(e.target.value)}
-                  type="text"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                />
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                  To
-                </label>
-                <input
+                  onChange={(e) => setStartDuration(e.target.value)}>
+                  {calendarTimes().map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
+                </select>
+                <div className="p-1 h-8 text-sm flex justify-center items-center">To</div>
+                <select
+                  className="w-30 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                   value={endDuration}
-                  onChange={(e) => setEndDuration(e.target.value)}
-                  type="text"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                />
+                  onChange={(e) => setEndDuration(e.target.value)}>
+                  {calendarTimes().map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
+                </select>
               </div>
               <div className="flex justify-between">
                 <a
