@@ -18,7 +18,9 @@
       "helpers/*": ["./app/javascript/src/helpers/*"],
       "common/*": ["./app/javascript/src/common/*"],
       "utils/*": ["./app/javascript/src/utils/*"],
-      "constants/*": ["./app/javascript/src/constants/*"],
+      "context/*": ["./app/javascript/src/context/*"],
+      "mapper/*": ["./app/javascript/src/mapper/*"],
+      "constants/*": ["./app/javascript/src/constants/*"]
     }
   },
   "exclude": [

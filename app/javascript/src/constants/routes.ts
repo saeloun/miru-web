@@ -15,6 +15,7 @@ import RevenueByClientReport from "../components/Reports/revenueByClient";
 import TimeEntryReports from "../components/Reports/timeEntry";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
+import TeamRouteConfig from "../components/Team/RouteConfig";
 import TimeTracking from "../components/time-tracking/Index";
 
 const ClientsRoutes = [
@@ -59,6 +60,10 @@ const TimeTrackingRoutes = [
   { path: "*" ,Component: ErrorPage }
 ];
 
+const TeamRoutes = [
+  { path: "*" ,Component: TeamRouteConfig }
+];
+
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
 
 const ROUTES = [
@@ -67,8 +72,9 @@ const ROUTES = [
   { path: Paths.REPORTS ,subRoutes: ReportsRoutes, authorisedRoles: [ADMIN, OWNER] },
   { path: Paths.PROJECTS ,subRoutes: ProjectsRoutes, authorisedRoles: [ADMIN, OWNER, EMPLOYEE] },
   { path: Paths.SUBSCRIPTIONS ,subRoutes: SubscriptionsRoutes, authorisedRoles: [ADMIN, OWNER] },
-  { path: Paths.PAYMENTS ,subRoutes: PaymentsRoutes, authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER] }
-  ,{ path: Paths.TIME_TRACKING ,subRoutes: TimeTrackingRoutes, authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER] }
+  { path: Paths.PAYMENTS ,subRoutes: PaymentsRoutes, authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER] },
+  { path: Paths.TIME_TRACKING ,subRoutes: TimeTrackingRoutes, authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER] },
+  { path: Paths.TEAM, subRoutes: TeamRoutes , authorisedRoles: [ADMIN, OWNER, EMPLOYEE] }
 ];
 
 export default ROUTES;
