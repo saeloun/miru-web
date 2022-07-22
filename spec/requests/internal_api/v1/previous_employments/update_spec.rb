@@ -6,8 +6,8 @@ RSpec.describe "PreviousEmployments#update", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:user2) { create(:user, current_workspace_id: company.id) }
-  let!(:previous_employment) { create(:previous_employment, :user) }
-  let!(:previous_employment2) { create(:previous_employment, :user2) }
+  let!(:previous_employment) { create(:previous_employment, user:) }
+  let!(:previous_employment2) { create(:previous_employment, user: user2) }
   let!(:updated_previous_employment_details) { attributes_for(:previous_employment) }
 
   context "when Owner wants to update Previous Employments details of employee of his company" do
