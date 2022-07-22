@@ -18,9 +18,6 @@ RSpec.describe "Users::RegistrationsController#create", type: :request do
     end
 
     it "sets flash message to signed_up_but_unconfirmed and return new_user_session_path" do
-      message = "A message with a confirmation link has been sent to your email address. " \
-                "Please follow the link to activate your account."
-      expect(flash[:notice]).to eq(message)
       expect(response).to redirect_to(email_confirmation_path({ email: }))
     end
   end
