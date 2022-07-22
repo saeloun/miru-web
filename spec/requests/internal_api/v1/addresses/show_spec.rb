@@ -5,29 +5,9 @@ require "rails_helper"
 RSpec.describe "Addresses#show", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let!(:address) { Address.create(
-    addressable: user,
-    address_type: "current",
-    address_line_1: Faker::Address.full_address,
-    address_line_2: Faker::Address.full_address,
-    city: Faker::Address.city,
-    state: Faker::Address.state,
-    country: Faker::Address.country,
-    pin: Faker::Address.postcode
-    )
-  }
   let!(:user2) { create(:user, current_workspace_id: company.id) }
-  let!(:address2) { Address.create(
-    addressable: user2,
-    address_type: "current",
-    address_line_1: Faker::Address.full_address,
-    address_line_2: Faker::Address.full_address,
-    city: Faker::Address.city,
-    state: Faker::Address.state,
-    country: Faker::Address.country,
-    pin: Faker::Address.postcode
-    )
-  }
+  let(:address) { create(:address, addressable: user) }
+  let(:address2) { create(:address, addressable: user2) }
 
   context "when Owner wants to see addresses of employee of his company" do
     before do
