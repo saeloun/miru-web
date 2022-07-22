@@ -72,8 +72,8 @@ namespace :internal_api, defaults: { format: "json" } do
 
     resources :team, only: [:index, :destroy] do
       resource :details, only: [:show, :update], controller: "team_members/details"
-      resource :devices, only: [:show, :update, :create], controller: "team_members/devices"
     end
+    resources :devices, only: [:show, :update, :create], controller: "devices"
 
     resource :profile, only: [:update, :show], controller: "profile" do
       delete "/remove_avatar", to: "profile#remove_avatar"
