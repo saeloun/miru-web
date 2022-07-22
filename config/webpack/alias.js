@@ -5,6 +5,8 @@ module.exports = {
       helpers: "src/helpers",
       common: "src/common",
       components: "src/components",
+      context: "src/context",
+      mapper: "src/mapper",
       constants: "src/constants",
       utils: "src/utils",
     }

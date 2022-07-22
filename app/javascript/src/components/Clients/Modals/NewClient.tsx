@@ -1,7 +1,7 @@
 import React from "react";
 import clientApi from "apis/clients";
 import Toastr from "common/Toastr";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FormikProps } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";
 
@@ -18,6 +18,13 @@ const initialValues = {
   phoneNo: "",
   address: ""
 };
+
+interface FormValues {
+  name: string;
+  email: string;
+  phoneNo: string;
+  address: string;
+}
 
 const EditClient = ({ setnewClient, clientData, setClientData }) => {
   const handleSubmit = (values) => {
@@ -50,78 +57,81 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
               validationSchema={newClientSchema}
               onSubmit={handleSubmit}
             >
-              {({ errors, touched }) => (
-                <Form>
-                  <div className="mt-4">
-                    <div className="field">
-                      <div className="field_with_errors">
-                        <label className="form__label">Name</label>
-                        <div className="tracking-wider block text-xs text-red-600">
-                          {errors.name && touched.name &&
-                            <div>{errors.name}</div>
-                          }
+              {(props: FormikProps<FormValues>) => {
+                const { touched, errors } = props;
+                return (
+                  <Form>
+                    <div className="mt-4">
+                      <div className="field">
+                        <div className="field_with_errors">
+                          <label className="form__label">Name</label>
+                          <div className="tracking-wider block text-xs text-red-600">
+                            {errors.name && touched.name &&
+                              <div>{errors.name}</div>
+                            }
+                          </div>
+                        </div>
+                        <div className="mt-1">
+                          <Field className={`form__input ${errors.name && touched.name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="name" />
                         </div>
                       </div>
-                      <div className="mt-1">
-                        <Field className={`form__input ${errors.name && touched.name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="name" />
-                      </div>
                     </div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="field">
-                      <div className="field_with_errors">
-                        <label className="form__label">Email</label>
-                        <div className="tracking-wider block text-xs text-red-600">
-                          {errors.email && touched.email &&
-                            <div>{errors.email}</div>
-                          }
+                    <div className="mt-4">
+                      <div className="field">
+                        <div className="field_with_errors">
+                          <label className="form__label">Email</label>
+                          <div className="tracking-wider block text-xs text-red-600">
+                            {errors.email && touched.email &&
+                              <div>{errors.email}</div>
+                            }
+                          </div>
+                        </div>
+                        <div className="mt-1">
+                          <Field className={`form__input ${errors.email && touched.email && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="email" />
                         </div>
                       </div>
-                      <div className="mt-1">
-                        <Field className={`form__input ${errors.email && touched.email && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="email" />
-                      </div>
                     </div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="field">
-                      <div className="field_with_errors">
-                        <label className="form__label">Phone number</label>
-                        <div className="tracking-wider block text-xs text-red-600">
-                          {errors.phoneNo && touched.phoneNo &&
-                            <div>{errors.phoneNo}</div>
-                          }
+                    <div className="mt-4">
+                      <div className="field">
+                        <div className="field_with_errors">
+                          <label className="form__label">Phone number</label>
+                          <div className="tracking-wider block text-xs text-red-600">
+                            {errors.phoneNo && touched.phoneNo &&
+                              <div>{errors.phoneNo}</div>
+                            }
+                          </div>
+                        </div>
+                        <div className="mt-1">
+                          <Field className={`form__input ${errors.phoneNo && touched.phoneNo && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="phoneNo" />
                         </div>
                       </div>
-                      <div className="mt-1">
-                        <Field className={`form__input ${errors.phoneNo && touched.phoneNo && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="phoneNo" />
-                      </div>
                     </div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="field">
-                      <div className="field_with_errors">
-                        <label className="form__label">Address</label>
-                        <div className="tracking-wider block text-xs text-red-600">
-                          {errors.address && touched.address &&
-                            <div>{errors.address}</div>
-                          }
+                    <div className="mt-4">
+                      <div className="field">
+                        <div className="field_with_errors">
+                          <label className="form__label">Address</label>
+                          <div className="tracking-wider block text-xs text-red-600">
+                            {errors.address && touched.address &&
+                              <div>{errors.address}</div>
+                            }
+                          </div>
+                        </div>
+                        <div className="mt-1">
+                          <Field className={`form__input p-2 h-12 ${errors.address && touched.address && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="address" as='textarea' />
                         </div>
                       </div>
-                      <div className="mt-1">
-                        <Field className={`form__input p-2 h-12 ${errors.address && touched.address && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="address" as='textarea'/>
-                      </div>
                     </div>
-                  </div>
-                  <div className="actions mt-4">
-                    <input
-                      type="submit"
-                      name="commit"
-                      value="SAVE CHANGES"
-                      className="form__input_submit"
-                    />
-                  </div>
-                </Form>
-              )}
+                    <div className="actions mt-4">
+                      <input
+                        type="submit"
+                        name="commit"
+                        value="SAVE CHANGES"
+                        className="form__input_submit"
+                      />
+                    </div>
+                  </Form>
+                );
+              }}
             </Formik>
           </div>
         </div>
