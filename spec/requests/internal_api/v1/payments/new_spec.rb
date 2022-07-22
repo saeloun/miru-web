@@ -9,7 +9,9 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
   let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent") }
   let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent") }
   let!(:client1_viewed_invoice1) { create(:invoice, client: client1, status: "viewed") }
-  let(:client1_paid_invoice1) { create(:invoice, client: client1, status: "paid") }
+  let!(:client1_paid_invoice1) { create(:invoice, client: client1, status: "paid") }
+  let!(:client1_overdue_invoice1) { create(:invoice, client: client1, status: "overdue") }
+  let!(:client1_draft_invoice1) { create(:invoice, client: client1, status: "draft") }
 
   context "when user is an admin" do
     before do
@@ -23,7 +25,8 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
       expect(response).to have_http_status(:ok)
       expect(json_response["invoices"].pluck("id")).to eq(
         [client1_sent_invoice1.id, client1_sent_invoice2.id,
-         client1_viewed_invoice1.id])
+         client1_viewed_invoice1.id, client1_overdue_invoice1.id])
+      expect(json_response["invoices"].pluck("id")).not_to include(client1_paid_invoice1.id, client1_draft_invoice1.id)
     end
   end
 
