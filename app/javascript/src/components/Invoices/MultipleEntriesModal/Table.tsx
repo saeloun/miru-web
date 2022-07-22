@@ -1,5 +1,7 @@
 import React from "react";
+
 import InfiniteScroll from "react-infinite-scroll-component";
+
 import dayjs from "dayjs";
 
 const CheckboxIcon = () => <div className="bg-white border-2 border-miru-han-purple-1000 w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">

@@ -1,9 +1,11 @@
 import React from "react";
-import clientApi from "apis/clients";
-import Toastr from "common/Toastr";
+
 import { Formik, Form, Field } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";
+
+import clientApi from "apis/clients";
+import Toastr from "common/Toastr";
 
 const newClientSchema = Yup.object().shape({
   name: Yup.string().required("Name cannot be blank"),

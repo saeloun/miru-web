@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
-import projectApi from "apis/projects";
+
 import { X } from "phosphor-react";
+
+import projectApi from "apis/projects";
 
 const AddProject = ({ setShowProjectModal, clientDetails }) => {
 

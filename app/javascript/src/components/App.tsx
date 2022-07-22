@@ -1,8 +1,11 @@
 import React, { Fragment, useEffect } from "react";
+
+import { TOASTER_DURATION } from "constants/index";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import { TOASTER_DURATION } from "constants/index";
+
 import Main from "./Main";
 
 const App = (props) => {

@@ -1,7 +1,9 @@
 // NOTE: This file is for synchronous auto complete.
 
 import React, { useState, useEffect } from "react";
+
 import Autocomplete from "react-autocomplete";
+
 import { MagnifyingGlass } from "phosphor-react";
 
 const cssStyles = {

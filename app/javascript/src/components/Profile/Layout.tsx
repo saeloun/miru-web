@@ -1,13 +1,14 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { BrowserRouter } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 
 import { TOASTER_DURATION } from "constants/index";
-import EntryContext from "./context/EntryContext";
+import { BrowserRouter } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
+import { setAuthHeaders, registerIntercepts } from "apis/axios";
+
+import EntryContext from "./context/EntryContext";
 import RouteConfig from "./RouteConfig";
 import SideNav from "./SubNav";
 

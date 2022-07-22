@@ -1,5 +1,7 @@
 import React, { Fragment } from "react";
+
 import TableRow from "./TableRow";
+
 import { useEntry } from "../context/EntryContext";
 
 const TableHeader = () => (

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState } from "react";
+
 import { Link } from "react-router-dom";
+
 import {
   CaretDown,
   FileCsv,
@@ -11,8 +13,10 @@ import {
   Share,
   X
 } from "phosphor-react";
+
 import { getReports } from "./fetchReport";
 import NavigationFilter from "./NavigationFilter";
+
 import { useEntry } from "../context/EntryContext";
 
 const leftArrow = require("../../../../images/back-arrow.svg");

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 
-import clientApi from "apis/clients";
 import { Formik, Form, Field } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";
+
+import clientApi from "apis/clients";
 
 const newClientSchema = Yup.object().shape({
   name: Yup.string().required("Name cannot be blank"),
