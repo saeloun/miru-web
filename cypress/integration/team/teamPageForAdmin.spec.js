@@ -29,6 +29,6 @@
 //     cy.get(teamTabSelector.teamTableRow)
 //       .find(teamTabSelector.editTeamMemberButton)
 //       .first()
-//       .click();
+//       .click(); //TODO: fix cannot click as button invisible
 //   });
 // });

@@ -13,7 +13,6 @@ Rails.application.routes.draw do
     registrations: "users/registrations",
     sessions: "users/sessions",
     passwords: "users/passwords",
-    invitations: "users/invitations",
     omniauth_callbacks: "users/omniauth_callbacks"
   }
 
@@ -43,8 +42,6 @@ Rails.application.routes.draw do
     resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
   end
 
-  resources :team, only: [:index, :update, :destroy, :edit]
-
   resources :workspaces, only: [:update]
 
   resources :invoices, only: [], module: :invoices do
@@ -59,6 +56,12 @@ Rails.application.routes.draw do
       get :view, to: "view#show", as: :view
     end
   end
+
+  namespace :invitations do
+    resources :accepts, only: [:index], controller: "accept"
+  end
+
+  get "users/invitation/accept", to: "invitations/accept#show"
 
   get "payments/settings/stripe/connect/refresh", to: "payment_settings#refresh_stripe_connect"
   get "payments/settings/*path", to: "payment_settings#index", via: :all
