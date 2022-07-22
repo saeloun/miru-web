@@ -131,10 +131,22 @@ en:
     email: Email
     delete:
       success:
-        message: User removed successfully
+        message: Team Member removed successfully
     update:
+      success:
+        message: Changes saved successfully
       error:
         role: There was an error while updating role
+  invitation:
+    create:
+      success:
+        message: Invitation Sent successfully
+    delete:
+      success:
+        message: Invitation removed successfully
+    update:
+      success:
+        message: Changes saved successfully
   registration:
     sign_up: sign up
     sign_in: sign in
