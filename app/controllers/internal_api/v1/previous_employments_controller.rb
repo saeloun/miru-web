@@ -14,7 +14,7 @@ class InternalApi::V1::PreviousEmploymentsController < InternalApi::V1::Applicat
 
   def create
     authorize PreviousEmployment
-    previous_employment = PreviousEmployment.create!(previous_employment_params.merge(user_id: current_user.id))
+    previous_employment = current_user.previous_employments.create!(previous_employment_params)
     render :create, locals: { previous_employment: }, status: :ok
  end
 
