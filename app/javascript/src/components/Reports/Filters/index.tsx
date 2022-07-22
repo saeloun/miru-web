@@ -1,12 +1,16 @@
 import React, { useState } from "react";
+
 import Select from "react-select";
+
 import { X } from "phosphor-react";
+
 import {
   dateRangeOptions,
   statusOption,
   groupBy
 } from "./filterOptions";
 import { customStyles } from "./style";
+
 import getStatusCssClass from "../../../utils/getStatusTag";
 import { useEntry } from "../context/EntryContext";
 

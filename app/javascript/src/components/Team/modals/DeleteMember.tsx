@@ -1,10 +1,13 @@
 
 import React from "react";
-import { destroyTeamMember, deleteInvitedMember } from "apis/team";
-import Toastr from "common/Toastr";
+
+import { TeamModalType } from "constants/index";
+
 import { useList } from "context/TeamContext";
 import { X } from "phosphor-react";
-import { TeamModalType } from "constants/index";
+
+import { destroyTeamMember, deleteInvitedMember } from "apis/team";
+import Toastr from "common/Toastr";
 
 const DeleteMember = ({ user }) => {
   const { setModalState } = useList();

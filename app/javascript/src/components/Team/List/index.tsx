@@ -1,11 +1,16 @@
 import React, { Fragment, useEffect, useState } from "react";
+
+import { TeamModalType } from "constants/index";
 import { ToastContainer } from "react-toastify";
-import { get } from "apis/team";
+
 import { ListContext } from "context/TeamContext";
 import { unmapList } from "mapper/team.mapper";
-import { TeamModalType } from "constants/index";
+
+import { get } from "apis/team";
+
 import Header from "./Header";
 import Table from "./Table";
+
 import { TOASTER_DURATION } from "../../../constants/index";
 import Modals from "../modals/Modals";
 

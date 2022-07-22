@@ -1,14 +1,13 @@
-import "../stylesheets/application.scss";
-
+import "@fontsource/plus-jakarta-sans";
 import * as ActiveStorage from "@rails/activestorage";
 import Rails from "@rails/ujs";
+import "alpine-turbo-drive-adapter";
 import * as ReactRailsUJS from "react_ujs";
 
-import "alpine-turbo-drive-adapter";
 require("alpinejs");
 require("jquery");
 
-import "@fontsource/plus-jakarta-sans";
+import "../stylesheets/application.scss";
 
 global.toastr = require("toastr");
 global.toastr.options = {

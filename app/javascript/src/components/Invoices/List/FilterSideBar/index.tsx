@@ -1,5 +1,7 @@
 import * as React from "react";
+
 import Select from "react-select";
+
 import { X } from "phosphor-react";
 
 import getStatusCssClass from "utils/getStatusTag";

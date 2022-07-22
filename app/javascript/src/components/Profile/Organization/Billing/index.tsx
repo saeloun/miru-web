@@ -1,8 +1,10 @@
 import React from "react";
+
 import { Divider } from "common/Divider";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Table from "./Table";
+
 import Header from "../../Header";
 
 const Billing = () => {

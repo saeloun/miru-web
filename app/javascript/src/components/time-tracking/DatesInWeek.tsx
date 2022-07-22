@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import { getNumberWithOrdinal } from "helpers/ordinal";
 
 const WeeklyEntries: React.FC<Iprops> = ({

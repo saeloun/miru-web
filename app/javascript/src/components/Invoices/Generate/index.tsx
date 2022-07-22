@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import generateInvoice from "apis/generateInvoice";
-
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
 import { sendGAPageView } from "utils/googleAnalytics";
+
 import Container from "./Container";
 import Header from "./Header";
-
 import InvoiceSettings from "./InvoiceSettings";
+
 import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
 import { generateInvoiceLineItems } from "../common/utils";
 import SendInvoice from "../popups/SendInvoice";

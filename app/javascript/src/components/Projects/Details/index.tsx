@@ -1,16 +1,8 @@
 import React, { useEffect } from "react";
+
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import projectAPI from "apis/projects";
-
-import AmountBoxContainer from "common/AmountBox";
-import ChartBar from "common/ChartBar";
-import Table from "common/Table";
-
-import { cashFormatter } from "helpers/cashFormater";
-import { currencySymbol } from "helpers/currencySymbol";
 import {
   ArrowLeft,
   DotsThreeVertical,
@@ -19,8 +11,18 @@ import {
   UsersThree,
   Trash
 } from "phosphor-react";
+
+import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import projectAPI from "apis/projects";
+import AmountBoxContainer from "common/AmountBox";
+import ChartBar from "common/ChartBar";
+import Table from "common/Table";
+import { cashFormatter } from "helpers/cashFormater";
+import { currencySymbol } from "helpers/currencySymbol";
 import { sendGAPageView } from "utils/googleAnalytics";
+
 import EditMembersList from "./EditMembersList";
+
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapper } from "../../../mapper/project.mapper";
 import AddEditProject from "../Modals/AddEditProject";

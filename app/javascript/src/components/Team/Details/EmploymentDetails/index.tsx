@@ -1,5 +1,7 @@
 import React, { Fragment, useEffect } from "react";
+
 import { useTeamDetails } from "context/TeamDetailsContext";
+
 import StaticPage from "./StaticPage";
 
 const EmploymentDetails = () => {

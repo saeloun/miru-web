@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 
+import { isEmpty } from "ramda";
+
 import profilesApi from "apis/profiles";
 import wiseApi from "apis/wise";
 import Loader from "common/Loader";
 import { separateAddressFields, bankFieldValidationRequirements } from "helpers/wiseUtilityFunctions";
-import { isEmpty } from "ramda";
 import { sendGAPageView } from "utils/googleAnalytics";
+
 import BankDetails from "./BankDetails";
 import BankInfo from "./BankInfo";
 import CurrencyDropdown from "./CurrencyDropdown";
+
 import Header from "../Header";
 
 const BankAccountDetails = () => {

@@ -1,7 +1,9 @@
 import React from "react";
+
 import { useTable, useRowSelect } from "react-table";
-import PropTypes from "prop-types";
+
 import { Pencil, Trash } from "phosphor-react";
+import PropTypes from "prop-types";
 
 const IndeterminateCheckbox = React.forwardRef( // eslint-disable-line react/display-name
   ({ indeterminate, ...rest }:any, ref) => {

@@ -1,6 +1,7 @@
 import React from "react";
 
 import { toast, Slide } from "react-toastify";
+
 import { GetToasterIcon, getToasterCloseButton } from "../constants/index";
 
 const customId = "custom-toaster-id";

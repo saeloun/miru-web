@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { updateInvitedMember, inviteMember, updateTeamMember } from "apis/team";
+
+import { TeamModalType } from "constants/index";
+
 import { useList } from "context/TeamContext";
 import { Formik, Form, Field, FormikProps } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";
-import { TeamModalType } from "constants/index";
+
+import { updateInvitedMember, inviteMember, updateTeamMember } from "apis/team";
 
 const TeamMemberSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name cannot be blank"),

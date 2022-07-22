@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
-import generateInvoice from "apis/generateInvoice";
+
 import dayjs from "dayjs";
 
+import generateInvoice from "apis/generateInvoice";
 import useOutsideClick from "helpers/outsideClick";
 
 import ManualEntry from "./ManualEntry";
 import NewLineItemTable from "./NewLineItemTable";
+
 import TableHeader from "../common/LineItemTableHeader";
 import NewLineItemRows from "../common/NewLineItemRow";
 import MultipleEntriesModal from "../MultipleEntriesModal";

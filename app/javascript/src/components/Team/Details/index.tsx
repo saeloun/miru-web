@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+
 import { TeamDetailsContext } from "context/TeamDetailsContext";
+
 import Header from "./Layout/Header";
 import OutletWrapper from "./Layout/OutletWrapper";
 import SideNav from "./Layout/SideNav";

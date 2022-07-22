@@ -1,8 +1,10 @@
 import React from "react";
+
 import {
   Route,
   Routes
 } from "react-router-dom";
+
 // import Details from "./Details";
 // import CompensationDetails from "./Details/CompensationDetails";
 // import DeviceDetails from "./Details/DeviceDetails";

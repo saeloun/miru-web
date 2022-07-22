@@ -1,7 +1,10 @@
 import React, { useState, useRef } from "react";
+
 import Select from "react-select";
-import useOutsideClick from "helpers/outsideClick";
+
 import { PencilSimple } from "phosphor-react";
+
+import useOutsideClick from "helpers/outsideClick";
 
 import { DropdownIndicator } from "./CustomComponents";
 import { reactSelectStyles } from "./Styles";

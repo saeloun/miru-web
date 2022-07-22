@@ -1,8 +1,9 @@
 import React from "react";
+
 import DatePicker from "react-datepicker";
+
 import { getMonth, getYear } from "date-fns";
 import { CaretCircleLeft, CaretCircleRight } from "phosphor-react";
-
 import "react-datepicker/dist/react-datepicker.css";
 
 const CustomDatePicker = ({ handleChange, dueDate }) => {

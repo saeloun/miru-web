@@ -1,12 +1,15 @@
 import React from "react";
-import { search } from "apis/team";
-import AutoComplete from "common/AutoComplete";
+
+import { TeamModalType } from "constants/index";
+
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
 import Logger from "js-logger";
 import { unmapList } from "mapper/team.mapper";
 import { MagnifyingGlass, Plus } from "phosphor-react";
-import { TeamModalType } from "constants/index";
+
+import { search } from "apis/team";
+import AutoComplete from "common/AutoComplete";
 
 const Header = () => {
   const { isAdminUser } = useUserContext();

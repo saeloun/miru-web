@@ -1,7 +1,9 @@
 import React from "react";
+
 import { Divider } from "common/Divider";
 
 import Table from "./Table";
+
 import Header from "../Header";
 
 const Billing = () => (

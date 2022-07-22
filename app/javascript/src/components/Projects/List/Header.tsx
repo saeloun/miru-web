@@ -1,8 +1,10 @@
 import * as React from "react";
-import projectApi from "apis/projects";
-import AutoComplete from "common/AutoComplete";
+
 import Logger from "js-logger";
 import { Funnel, MagnifyingGlass, Plus } from "phosphor-react";
+
+import projectApi from "apis/projects";
+import AutoComplete from "common/AutoComplete";
 
 const Header = ({ setShowProjectModal, isAdminUser }) => {
 

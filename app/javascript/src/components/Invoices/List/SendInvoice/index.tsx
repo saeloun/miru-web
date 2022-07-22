@@ -6,13 +6,15 @@ import React, {
   useState
 } from "react";
 
-import invoicesApi from "apis/invoices";
+import { ApiStatus as InvoiceStatus } from "constants/index";
+
 import cn from "classnames";
-import Toastr from "common/Toastr";
-import useOutsideClick from "helpers/outsideClick";
 import { X } from "phosphor-react";
 
-import { ApiStatus as InvoiceStatus } from "constants/index";
+import invoicesApi from "apis/invoices";
+import Toastr from "common/Toastr";
+import useOutsideClick from "helpers/outsideClick";
+
 import {
   isEmailValid,
   emailSubject,
