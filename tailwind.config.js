@@ -181,6 +181,7 @@ module.exports = {
     extend: {
       display: ["group-hover"],
     },
+    opacity: ({ after }) => after(['disabled'])
   },
   plugins: [],
 };
