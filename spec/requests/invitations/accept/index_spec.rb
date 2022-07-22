@@ -9,7 +9,7 @@ RSpec.describe "Invitations::Accept#create", type: :request do
 
   context "when new user accepts invitation" do
     before do
-      send_request :get, accepts_url(token: invitation.token)
+      send_request :get, invitations_accepts_url(token: invitation.token)
     end
 
     it "returns redirect status" do
@@ -32,7 +32,7 @@ RSpec.describe "Invitations::Accept#create", type: :request do
   context "when existing user accepts invitation" do
     before do
       invitation.update_columns(recipient_email: user.email)
-      send_request :get, accepts_url(token: invitation.token)
+      send_request :get, invitations_accepts_url(token: invitation.token)
     end
 
     it "returns redirect status" do

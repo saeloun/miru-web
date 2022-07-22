@@ -46,10 +46,18 @@ class CreateInvitedUserService
     def find_or_create_user!
       if (@user = User.find_by(email: invitation.recipient_email))
         @user.update!(current_workspace_id: invitation.company.id)
+        activate_employment_status
       else
         create_invited_user!
         create_reset_password_token
         @new_user = true
+      end
+    end
+
+    def activate_employment_status
+      @employment = Employment.find_by(user: @user, company: invitation.company)
+      if @employment.present? && @employment.discarded?
+        @employment.undiscard!
       end
     end
 
