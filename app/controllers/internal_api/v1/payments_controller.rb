@@ -5,7 +5,7 @@ class InternalApi::V1::PaymentsController < ApplicationController
     authorize :new, policy_class: PaymentPolicy
     render :new, locals: {
       invoices: current_company.invoices.includes(:client)
-        .with_statuses(["sent", "viewed"])
+        .with_statuses(["sent", "viewed", "overdue"])
         .order(created_at: :asc)
     }
   end
