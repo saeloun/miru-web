@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { minutesToHHMM } from "helpers/hhmm-parser";
+import './style.scss';
 
 // import BillTag from "./BillTag";
 
@@ -79,11 +80,90 @@ const EntryCardDayView = ({
 
   return (
     <>
-      <div className="px-6 pb-6">
-        <div className="container mx-auto grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 pt-6 gap-8">
-          <div className="rounded border-gray-300 dark:border-gray-700 border-dashed border-2 h-24"></div>
-          <div className="rounded border-gray-300 dark:border-gray-700 border-dashed border-2 h-24"></div>
-          <div className="rounded border-gray-300 dark:border-gray-700 border-dashed border-2 h-24"></div>
+      <div className="ac-calendar-view">
+        <div className="ac-calendar">
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>12 AM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>01 AM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>02 AM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>03 AM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>04 AM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>05 AM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>06 AM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>07 AM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>08 AM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>09 AM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>10 AM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>11 AM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>12 PM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>01 PM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>02 PM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>03 PM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>04 PM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>05 PM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>06 PM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>07 PM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>08 PM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>09 PM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>10 PM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>11 PM</span></div></div>
+          <div className="ac-cv-time-row"><div className="ac-cv-time"><span>12 AM</span></div></div>
+        </div>
+
+        {/* {[{ id: "1", name: "Conference Room" },
+          { id: "2", name: "HR Cabin" },
+          { id: "3", name: "Sales Cabin" }].map((a) => (
+          <option key={`space-${a.id}`} value={a.id}>{a["name"]}</option>
+        ))} */}
+        <div className="ac-calendar-clone grid grid-cols-4 gap-0">
+          <div className="ac-clone-col">
+            <div className="ac-user-name">
+              <span>Conference Room</span>
+              <i>CR</i>
+            </div>
+            <div className="as-meeting-point bg-blue-500 bg-opacity-80">
+              <h6>Booking HR Cabin</h6>
+              <span>3:30 PM - 5:00 PM</span>
+            </div>
+
+            <div className="as-meeting-point bg-red-500 bg-opacity-80" style={ { height: "24px", top: "12px" } }>
+              <h6>Booking HR Cabin</h6>
+              <span>3:30 PM - 5:00 PM</span>
+            </div>
+
+            <div className="as-meeting-point bg-pink-500 bg-opacity-80" style={ { height: "48px", top: "48px", width: "50%" }}>
+              <h6>Booking HR Cabin</h6>
+              <span>3:30 PM - 5:00 PM</span>
+            </div>
+
+            <div className="as-meeting-point bg-indigo-500 bg-opacity-80" style={ { height: "48px", top: "48px", left: "50%", width: "50%" }}>
+              <h6>Booking HR Cabin</h6>
+              <span>3:30 PM - 5:00 PM</span>
+            </div>
+          </div>
+
+          <div className="ac-clone-col">
+            <div className="ac-user-name">
+              <span>HR Cabin</span>
+              <i>HRC</i>
+            </div>
+
+            <div className="as-meeting-point bg-red-600 bg-opacity-80" style={{ height: "48px", top: "192px" }}>
+              <h6>Booking HR Cabin 123</h6>
+              <span>3:30 PM - 5:00 PM</span>
+            </div>
+          </div>
+          <div className="ac-clone-col">
+            <div className="ac-user-name">
+              <span>Sales Cabin</span>
+              <i>SC</i>
+            </div>
+          </div>
+          <div className="ac-clone-col">
+            <div className="ac-user-name">
+              <span>My Place</span>
+              <i>MP</i>
+            </div>
+          </div>
         </div>
       </div>
       <div className="flex justify-between items-center w-full p-4 mt-10 rounded-sm">

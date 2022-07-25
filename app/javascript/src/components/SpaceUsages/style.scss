@@ -1,0 +1,47 @@
+.ac-calendar-view {
+	@apply relative;
+}
+.ac-calendar {
+	@apply flex flex-col pl-12 mt-18 mb-13;
+
+}
+.ac-calendar .ac-cv-time-row {
+	@apply border-t relative h-12 flex;
+}
+.ac-calendar .ac-cv-time-row:last-child {
+	@apply border-b;
+}
+.ac-calendar .ac-cv-time {
+	@apply border-r w-15;
+	margin-left: -45px;
+}
+.ac-calendar .ac-cv-time span {
+	@apply text-xs relative;
+	top: -10px;
+}
+.ac-calendar-clone {
+	@apply absolute top-0 bottom-0 left-15 right-0;
+}
+
+.ac-calendar-clone .ac-clone-col {
+	@apply border-r relative;
+}
+.ac-calendar-clone .ac-clone-col .ac-user-name {
+	@apply flex items-center justify-end relative;
+	top: -50px;
+}
+.ac-calendar-clone .ac-clone-col .ac-user-name span {
+	@apply font-semibold pr-3;
+}
+.ac-calendar-clone .ac-clone-col .ac-user-name i {
+	@apply w-10 h-10 inline-flex items-center justify-center bg-blue-500 text-white rounded-full;
+}
+
+.ac-calendar-clone .as-meeting-point {
+	@apply absolute top-0 left-0 flex items-center justify-center text-white w-full;
+	padding-left: 6px;
+	padding-right: 6px;
+	font-size: 12px;
+	min-height: 12px;
+	line-height: 12px;
+}

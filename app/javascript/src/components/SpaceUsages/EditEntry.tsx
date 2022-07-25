@@ -141,8 +141,7 @@ const EditEntry: React.FC<Iprops> = ({
                   )}
                   {[{ id: "1", name: "Conference Room" },
                     { id: "2", name: "HR Cabin" },
-                    { id: "3", name: "Sales Cabin" },
-                    { id: "4", name: "My Place" }].map((a) => (
+                    { id: "3", name: "Sales Cabin" }].map((a) => (
                     <option key={`space-${a.id}`} value={a.id}>{a["name"]}</option>
                   ))}
                 </select>
