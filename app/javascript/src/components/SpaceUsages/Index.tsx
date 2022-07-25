@@ -6,18 +6,15 @@ import spaceUsagesApi from "apis/space-usages";
 import * as dayjs from "dayjs";
 import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
-
-// import { minutesToHHMM } from "helpers/hhmm-parser";
 import _ from "lodash";
+
 import { TOASTER_DURATION } from "constants/index";
 
 import AddEntry from "./AddEntry";
 import DatesInWeek from "./DatesInWeek";
 import EditEntry from "./EditEntry";
-// import EntryCard from "./EntryCard";
 import EntryCardDayView from "./EntryCardDayView";
-// import MonthCalender from "./MonthCalender";
-// import WeeklyEntries from "./WeeklyEntries";
+import './style.scss';
 
 const { useState, useEffect } = React;
 dayjs.extend(updateLocale);
@@ -31,30 +28,36 @@ dayjs.Ls.en.weekStart = 1;
 
 const TimeReserving: React.FC<Iprops> = ({
   entries,
-  // isAdmin,
   userId,
-  // employees
 }) => {
   const [dayInfo, setDayInfo] = useState<any[]>([]);
-  // const [view, setView] = useState<string>("day");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
-  // const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
   const [weekDay, setWeekDay] = useState<number>(0);
-  // const [weeklyTotalHours, setWeeklyTotalHours] = useState<string>("00:00");
-  // const [dailyTotalHours, setDailyTotalHours] = useState<number[]>([]);
   const [entryList, setEntryList] = useState<object>(entries);
-  const [timeArray, setTimeArray] = useState<any>([]);
   const [selectedFullDate, setSelectedFullDate] = useState<string>(
     dayjs().format("YYYY-MM-DD")
   );
   const [groupingEntryList, setGroupingEntryList] = useState<object>({});
   const [editEntryId, setEditEntryId] = useState<number>(0);
   const [editEntryColor, setEditEntryColor] = useState<string>("");
-  // const [weeklyData, setWeeklyData] = useState<any[]>([]);
-  // const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
-  // const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(userId);
   const [allEmployeesEntries, setAllEmployeesEntries] = useState<object>({});
+
+  const calendarTimes = () => {
+    const product = (...a: any[][]) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
+    return product([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24], [0]).map((k) => {
+      const [i, m] = [k[0], k[1]]
+      if (i>=24 && m > 0)
+        return (null)
+
+      let ii = i - 12
+      ii = (i === 0 || ii === 0) ? 12 : (ii < 0) ? i : ii
+      return ({
+        id: `${i<10 ? 0 : '' }${i}:${m<10 ? 0 : ''}${m}`,
+        name: `${ii < 10 ? 0 : '' }${ii}:${m<10 ? 0 : ''}${m} ${i < 12 || i == 24 ? 'AM' : 'PM'}`
+      })
+    }).filter((el) => el != null)
+  }
 
   useEffect(() => {
     setAuthHeaders();
@@ -70,12 +73,7 @@ const TimeReserving: React.FC<Iprops> = ({
 
   useEffect(() => {
     parseWeeklyViewData();
-    // calculateTotalHours();
   }, [weekDay, entryList]);
-
-  // useEffect(() => {
-  //   setIsWeeklyEditing(false);
-  // }, [view]);
 
   useEffect(() => {
     setSelectedFullDate(
@@ -84,22 +82,6 @@ const TimeReserving: React.FC<Iprops> = ({
         .format("YYYY-MM-DD")
     );
   }, [selectDate, weekDay]);
-
-  // useEffect(() => {
-  //   if (dayInfo.length <= 0) return;
-
-  //   fetchEntries(
-  //     dayjs(dayInfo[0]["fullDate"]).startOf("month").subtract(1, "month").format("DD-MM-YYYY"),
-  //     dayjs(dayInfo[0]["fullDate"]).endOf("month").add(1, "month").format("DD-MM-YYYY"),
-  //   );
-
-  //   if (allEmployeesEntries[selectedEmployeeId]) setEntryList(allEmployeesEntries[selectedEmployeeId]);
-  // }, [selectedEmployeeId]);
-
-  // const handleWeekTodayButton = () => {
-  //   setSelectDate(0);
-  //   setWeekDay(dayjs().weekday());
-  // };
 
   const handleWeekInfo = () => {
     const daysInWeek = Array.from(Array(7).keys()).map((weekCounter) => {
@@ -142,28 +124,6 @@ const TimeReserving: React.FC<Iprops> = ({
     setAllEmployeesEntries({ ...allEmployeesEntries, [1]: newValue });
     setEntryList(newValue);
   };
-
-  // const calculateTotalHours = () => {
-  //   // let total = 0;
-  //   // const dailyTotal = [];
-  //   // for (let weekCounter = 0; weekCounter < 7; weekCounter++) {
-  //   //   const day = dayjs()
-  //   //     .weekday(weekCounter + weekDay)
-  //   //     .format("YYYY-MM-DD");
-  //   //   if (entryList[day]) {
-  //   //     let dayTotal = 0;
-  //   //     entryList[day].forEach(e => {
-  //   //       dayTotal += e.duration;
-  //   //     });
-  //   //     dailyTotal.push(minutesToHHMM(dayTotal));
-  //   //     total += dayTotal;
-  //   //   } else {
-  //   //     dailyTotal.push("00:00");
-  //   //   }
-  //   // }
-  //   // setDailyTotalHours(dailyTotal);
-  //   // setWeeklyTotalHours(minutesToHHMM(total));
-  // };
 
   const handleNextWeek = () => {
     setWeekDay(p => p + 7);
@@ -227,16 +187,7 @@ const TimeReserving: React.FC<Iprops> = ({
 
   useEffect(() => {
     if (entryList[selectedFullDate]){
-      setGroupingEntryList(_.groupBy(entryList[selectedFullDate], "space_name"))
-
-      const availableTimeArray = []
-
-      entryList[selectedFullDate].map((entry) =>{
-        availableTimeArray.push(entry.start_duration)
-        availableTimeArray.push(entry.end_duration)
-      });
-      setTimeArray(availableTimeArray.filter((item,
-        index) => availableTimeArray.indexOf(item) === index).sort())
+      setGroupingEntryList(_.groupBy(entryList[selectedFullDate], "space_code"))
     }
   }, [entryList, selectedFullDate]);
 
@@ -281,8 +232,6 @@ const TimeReserving: React.FC<Iprops> = ({
                 </button>
               </div>
               <div className="flex mr-12">
-                {/* <p className="text-white mr-2">Total</p>
-                <p className="text-white font-extrabold">{ view === "week" ? weeklyTotalHours : dailyTotalHours[selectDate] }</p> */}
               </div>
             </div>
             <DatesInWeek
@@ -316,40 +265,27 @@ const TimeReserving: React.FC<Iprops> = ({
           )}
         </div>
 
-        {/* entry cards for day and month */}
-        {/* {entryList[selectedFullDate] &&
-          entryList[selectedFullDate].map((entry, weekCounter) =>
-            editEntryId === entry.id ? (
-              <AddEntry
-                selectedEmployeeId={userId}
-                fetchEntries={fetchEntries}
-                setNewEntryView={setNewEntryView}
-                selectedDateInfo={dayInfo[selectDate]}
-                selectedFullDate={selectedFullDate}
-                setEntryList={setEntryList}
-                entryList={entryList}
-                setEditEntryId={setEditEntryId}
-                editEntryId={editEntryId}
-                dayInfo={dayInfo}
-              />
-            ) : (
-              <EntryCard
-                key={weekCounter}
-                handleDeleteEntry={handleDeleteEntry}
-                setEditEntryId={setEditEntryId}
-                {...entry}
-              />
-            )
-          )} */}
-        {Object.entries(groupingEntryList).length > 0 && timeArray &&
-          Object.entries(groupingEntryList).map(([key, value], listIndex) => (<EntryCardDayView
-            key={listIndex}
-            timeArray={timeArray}
-            groupingKey={key}
-            groupingValues={value}
-            setEditEntryId={setEditEntryId}
-            setEditEntryColor={setEditEntryColor}
-          />))}
+        <div className="ac-calendar-view">
+          <div className="ac-calendar">
+            {calendarTimes().map((i) => (
+              <div className="ac-cv-time-row"><div className="ac-cv-time"><span>{i.name}</span></div></div>
+            ))}
+          </div>
+          {Object.entries(groupingEntryList).length > 0 ?
+            <div className="ac-calendar-clone grid grid-cols-4 gap-0">
+              {
+                Object.entries(groupingEntryList).map(([spaceCode, value], listIndex) => (<EntryCardDayView
+                  key={listIndex}
+                  spaceCode={spaceCode}
+                  spaceUsages={value}
+                  setEditEntryId={setEditEntryId}
+                  setEditEntryColor={setEditEntryColor}
+                />))
+              }
+            </div>
+            : ""}
+        </div>
+
       </div>
       {editEntryId ? <EditEntry
         fetchEntries={fetchEntries}

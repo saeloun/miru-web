@@ -22,6 +22,20 @@ const EditEntry: React.FC<Iprops> = ({
   handleDeleteEntry,
   editEntryColor
 }) => {
+  const PURPOSES = [
+    { id: "1", name: "Client / Standup" },
+    { id: "2", name: "Client / All Hands" },
+    { id: "3", name: "Client / Other" },
+    { id: "4", name: "Internal / Standup" },
+    { id: "5", name: "Internal / All Hands" },
+    { id: "6", name: "Internal / Project Discussion" },
+    { id: "7", name: "Internal / Other" },
+  ];
+  const SPACES = [
+    { id: "1", name: "Conference Room", alias: "CR" },
+    { id: "2", name: "HR Cabin", alias: "HRC" },
+    { id: "3", name: "Sales Cabin", alias: "SC" }
+  ];
   const { useState, useEffect } = React;
   const [note, setNote] = useState("");
   const [startDuration, setStartDuration] = useState("00:00");
@@ -113,7 +127,7 @@ const EditEntry: React.FC<Iprops> = ({
             <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
             <span className="sr-only">Close modal</span>
           </button>
-          <div className="w-full" style={{ backgroundColor: editEntryColor }}>
+          <div className="w-full p-6" style={{ backgroundColor: editEntryColor }}>
             <p className="px-6 text-xl font-medium text-gray-900 dark:text-white">
               {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${selectedDateInfo["month"]}, ${selectedDateInfo["year"]}`}
             </p>
@@ -139,9 +153,7 @@ const EditEntry: React.FC<Iprops> = ({
                               Please select space
                     </option>
                   )}
-                  {[{ id: "1", name: "Conference Room" },
-                    { id: "2", name: "HR Cabin" },
-                    { id: "3", name: "Sales Cabin" }].map((a) => (
+                  {SPACES.map((a) => (
                     <option key={`space-${a.id}`} value={a.id}>{a["name"]}</option>
                   ))}
                 </select>
@@ -162,15 +174,7 @@ const EditEntry: React.FC<Iprops> = ({
                       Please select purpose
                     </option>
                   )}
-                  {[
-                    { id: "1", name: "Client / Standup" },
-                    { id: "2", name: "Client / All Hands" },
-                    { id: "3", name: "Client / Other" },
-                    { id: "4", name: "Internal / Standup" },
-                    { id: "5", name: "Internal / All Hands" },
-                    { id: "6", name: "Internal / Project Discussion" },
-                    { id: "7", name: "Internal / Other" },
-                  ].map((a, _i) => (
+                  {PURPOSES.map((a, _i) => (
                     <option key={`purpose-${a.id}`} value={a.id}>{a["name"]}</option>
                   ))}
                 </select>

@@ -10,7 +10,7 @@ class SpaceOccupyingController < ApplicationController
     user_id = current_user.id
     employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
 
-    space_usages = policy_scope(SpaceUsage)
+    space_usages = SpaceUsage
       .includes([:user])
       .during(
         1.month.ago.beginning_of_month,

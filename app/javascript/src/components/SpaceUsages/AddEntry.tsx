@@ -21,6 +21,21 @@ const AddEntry: React.FC<Iprops> = ({
   setEditEntryId,
   editEntryId
 }) => {
+  const PURPOSES = [
+    { id: "1", name: "Client / Standup" },
+    { id: "2", name: "Client / All Hands" },
+    { id: "3", name: "Client / Other" },
+    { id: "4", name: "Internal / Standup" },
+    { id: "5", name: "Internal / All Hands" },
+    { id: "6", name: "Internal / Project Discussion" },
+    { id: "7", name: "Internal / Other" },
+  ];
+  const SPACES = [
+    { id: "1", name: "Conference Room", alias: "CR" },
+    { id: "2", name: "HR Cabin", alias: "HRC" },
+    { id: "3", name: "Sales Cabin", alias: "SC" }
+  ];
+
   const { useState, useEffect } = React;
   const [note, setNote] = useState("");
   const [startDuration, setStartDuration] = useState("00:00");
@@ -140,10 +155,8 @@ const AddEntry: React.FC<Iprops> = ({
               Please select space
               </option>
             )}
-            {[{ id: "1", name: "Conference Room" },
-              { id: "2", name: "HR Cabin" },
-              { id: "3", name: "Sales Cabin" }].map((a) => (
-              <option key={`space-${a.id}`} value={a.id}>{a["name"]}</option>
+            {SPACES.map((a) => (
+              <option key={`space-${a.id}`} value={a.id}>{a.name}</option>
             ))}
           </select>
 
@@ -161,15 +174,7 @@ const AddEntry: React.FC<Iprops> = ({
               Please select purpose
               </option>
             )}
-            {[
-              { id: "1", name: "Client / Standup" },
-              { id: "2", name: "Client / All Hands" },
-              { id: "3", name: "Client / Other" },
-              { id: "4", name: "Internal / Standup" },
-              { id: "5", name: "Internal / All Hands" },
-              { id: "6", name: "Internal / Project Discussion" },
-              { id: "7", name: "Internal / Other" },
-            ].map((a, _i) => (
+            {PURPOSES.map((a, _i) => (
               <option key={`purpose-${a.id}`} value={a.id}>{a["name"]}</option>
             ))}
           </select>

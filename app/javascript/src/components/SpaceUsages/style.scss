@@ -6,7 +6,8 @@
 
 }
 .ac-calendar .ac-cv-time-row {
-	@apply border-t relative h-12 flex;
+	@apply border-t relative flex;
+	height: 60px;
 }
 .ac-calendar .ac-cv-time-row:last-child {
 	@apply border-b;
@@ -34,11 +35,11 @@
 	@apply font-semibold pr-3;
 }
 .ac-calendar-clone .ac-clone-col .ac-user-name i {
-	@apply w-10 h-10 inline-flex items-center justify-center bg-blue-500 text-white rounded-full;
+	@apply w-10 h-10 inline-flex items-center justify-center bg-col-han-app-600 text-white rounded-full;
 }
 
 .ac-calendar-clone .as-meeting-point {
-	@apply absolute top-0 left-0 flex items-center justify-center text-white w-full;
+	@apply absolute top-0 left-0 flex items-center justify-center text-col-han-app-400 w-full shadow-lg;
 	padding-left: 6px;
 	padding-right: 6px;
 	font-size: 12px;

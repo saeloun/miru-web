@@ -34,7 +34,6 @@ class SpaceUsage < ApplicationRecord
     CodeOptionKlass.new("Conference Room", 1),
     CodeOptionKlass.new("HR Cabin", 2),
     CodeOptionKlass.new("Sales Cabin", 3),
-    CodeOptionKlass.new("My Place", 4)
   ]
 
   PURPOSE_CODE_OPTIONS = [
@@ -53,6 +52,7 @@ class SpaceUsage < ApplicationRecord
   validates :start_duration, :end_duration, :work_date, presence: true
   validates :start_duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
   validates :end_duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
+  validate :valid_end_duration
 
   scope :in_workspace, -> (company) { where(company_id: company&.id) }
   scope :during, -> (from, to) { where(work_date: from..to).order(work_date: :desc) }
@@ -77,7 +77,8 @@ class SpaceUsage < ApplicationRecord
 
   def formatted_entry
     {
-      id:,
+      id: id.to_i,
+      user_id:,
       work_date:,
       start_duration:,
       end_duration:,
@@ -93,6 +94,12 @@ class SpaceUsage < ApplicationRecord
   def formatted_duration(type = :start)
     minutes = (type == :end ? end_duration : start_duration).to_i
     Time.parse("#{minutes / 60}:#{minutes % 60}").strftime("%H:%M")
+  end
+
+  def valid_end_duration
+    return if self.start_duration.to_i < self.end_duration
+
+    errors.add(:end_duration, "should be more then Start time")
   end
 
   # private
