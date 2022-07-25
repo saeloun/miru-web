@@ -71,7 +71,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                         <label className="form__label">Name</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.name && touched.name &&
-                          <div>{errors.name}</div>
+                          <div>{`${errors.name}`}</div>
                           }
                         </div>
                       </div>
@@ -86,7 +86,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                         <label className="form__label">Email</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.email && touched.email &&
-                          <div>{errors.email}</div>
+                          <div>{`${errors.email}`}</div>
                           }
                         </div>
                       </div>
@@ -101,7 +101,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                         <label className="form__label">Phone number</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.phoneNo && touched.phoneNo &&
-                          <div>{errors.phoneNo}</div>
+                          <div>{`${errors.phoneNo}`}</div>
                           }
                         </div>
                       </div>
@@ -116,7 +116,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                         <label className="form__label">Address</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.address && touched.address &&
-                          <div>{errors.address}</div>
+                          <div>{`${errors.address}`}</div>
                           }
                         </div>
                       </div>

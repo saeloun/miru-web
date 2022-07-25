@@ -69,7 +69,7 @@ const NewCandidate = ({ setnewCandidate, candidateData, setCandidateData }) => {
                         <label className="form__label">First Name</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.first_name && touched.first_name &&
-                          <div>{errors.first_name}</div>
+                          <div>{`${errors.first_name}`}</div>
                           }
                         </div>
                       </div>
@@ -84,7 +84,7 @@ const NewCandidate = ({ setnewCandidate, candidateData, setCandidateData }) => {
                         <label className="form__label">Last Name</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.last_name && touched.last_name &&
-                          <div>{errors.last_name}</div>
+                          <div>{`${errors.last_name}`}</div>
                           }
                         </div>
                       </div>
@@ -99,7 +99,7 @@ const NewCandidate = ({ setnewCandidate, candidateData, setCandidateData }) => {
                         <label className="form__label">Email</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.email && touched.email &&
-                          <div>{errors.email}</div>
+                          <div>{`${errors.email}`}</div>
                           }
                         </div>
                       </div>

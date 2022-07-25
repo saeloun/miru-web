@@ -90,7 +90,7 @@ const NewLead = ({ setnewLead }) => {
                           <Field className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.first_name && touched.first_name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="first_name" placeholder="First Name" />
                           <div className="tracking-wider block text-xs text-red-600">
                             {errors.first_name && touched.first_name &&
-                            <div>{errors.first_name}</div>
+                            <div>{`${errors.first_name}`}</div>
                             }
                           </div>
                         </div>
@@ -98,7 +98,7 @@ const NewLead = ({ setnewLead }) => {
                           <Field className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.last_name && touched.last_name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="last_name" placeholder="Last Name" />
                           <div className="tracking-wider block text-xs text-red-600">
                             {errors.last_name && touched.last_name &&
-                              <div>{errors.last_name}</div>
+                              <div>{`${errors.last_name}`}</div>
                             }
                           </div>
                         </div>

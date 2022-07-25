@@ -162,7 +162,7 @@ const LeadSettings = ({ leadDetails, setLeadDetails, setShowLeadSetting }) => {
                 </select>
                 <div className="tracking-wider block text-xs text-red-600">
                   {errors.assignee_id && touched.assignee_id &&
-            <div>{errors.assignee_id}</div>
+            <div>{`${errors.assignee_id}`}</div>
                   }
                 </div>
               </div>
@@ -178,7 +178,7 @@ const LeadSettings = ({ leadDetails, setLeadDetails, setShowLeadSetting }) => {
                 </select>
                 <div className="tracking-wider block text-xs text-red-600">
                   {errors.reporter_id && touched.reporter_id &&
-            <div>{errors.reporter_id}</div>
+            <div>{`${errors.reporter_id}`}</div>
                   }
                 </div>
               </div>
@@ -194,7 +194,7 @@ qualityCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === lead
                 </select>
                 <div className="flex justify-between items-center pt-1 text-red-700">
                   {errors.quality_code && touched.quality_code &&
-              <p className="text-xs">{errors.quality_code}</p>
+              <p className="text-xs">{`${errors.quality_code}`}</p>
                   }
                 </div>
               </div>
@@ -211,7 +211,7 @@ stateCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadDe
                 </select>
                 <div className="flex justify-between items-center pt-1 text-red-700">
                   {errors.state_code && touched.state_code &&
-              <p className="text-xs">{errors.state_code}</p>
+              <p className="text-xs">{`${errors.state_code}`}</p>
                   }
                 </div>
               </div>
@@ -228,7 +228,7 @@ statusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadD
                 </select>
                 <div className="flex justify-between items-center pt-1 text-red-700">
                   {errors.status_code && touched.status_code &&
-              <p className="text-xs">{errors.status_code}</p>
+              <p className="text-xs">{`${errors.status_code}`}</p>
                   }
                 </div>
               </div>
@@ -245,7 +245,7 @@ statusCodeList.map(e => <option value={e.id} key={e.id} selected={e.id === leadD
                 </select>
                 <div className="flex justify-between items-center pt-1 text-red-700">
                   {errors.priority_code && touched.priority_code &&
-                <p className="text-xs">{errors.priority_code}</p>
+                <p className="text-xs">{`${errors.priority_code}`}</p>
                   }
                 </div>
               </div>

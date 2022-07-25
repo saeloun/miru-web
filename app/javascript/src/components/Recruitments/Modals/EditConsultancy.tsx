@@ -69,7 +69,7 @@ const EditConsultancy = ({ setShowEditDialog, consultancy }: IEditConsultancy) =
                         <label className="form__label">Name</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.name && touched.name &&
-                          <div>{errors.name}</div>
+                          <div>{`${errors.name}`}</div>
                           }
                         </div>
                       </div>
@@ -84,7 +84,7 @@ const EditConsultancy = ({ setShowEditDialog, consultancy }: IEditConsultancy) =
                         <label className="form__label">Email</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.email && touched.email &&
-                          <div>{errors.email}</div>
+                          <div>{`${errors.email}`}</div>
                           }
                         </div>
                       </div>
@@ -99,7 +99,7 @@ const EditConsultancy = ({ setShowEditDialog, consultancy }: IEditConsultancy) =
                         <label className="form__label">Address</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.address && touched.address &&
-                          <div>{errors.address}</div>
+                          <div>{`${errors.address}`}</div>
                           }
                         </div>
                       </div>
@@ -114,7 +114,7 @@ const EditConsultancy = ({ setShowEditDialog, consultancy }: IEditConsultancy) =
                         <label className="form__label">Phone</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.phone && touched.phone &&
-                          <div>{errors.phone}</div>
+                          <div>{`${errors.phone}`}</div>
                           }
                         </div>
                       </div>

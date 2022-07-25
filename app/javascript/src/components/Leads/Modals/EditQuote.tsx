@@ -66,7 +66,7 @@ const EditQuote = ({ leadDetails, item, setShowEditDialog }: IProps) => {
                         <label className="form__label">Name</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.name && touched.name &&
-                          <div>{errors.name}</div>
+                          <div>{`${errors.name}`}</div>
                           }
                         </div>
                       </div>
@@ -81,7 +81,7 @@ const EditQuote = ({ leadDetails, item, setShowEditDialog }: IProps) => {
                         <label className="form__label">Description</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.description && touched.description &&
-                            <div>{errors.description}</div>
+                            <div>{`${errors.description}`}</div>
                           }
                         </div>
                       </div>

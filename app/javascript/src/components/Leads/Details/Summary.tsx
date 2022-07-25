@@ -203,7 +203,7 @@ const Summary = ({
                           name="title" placeholder="Title" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.title && touched.title &&
-                            <p className="text-xs">{errors.title}</p>
+                            <p className="text-xs">{`${errors.title}`}</p>
                           }
                         </div>
                       </div>
@@ -214,7 +214,7 @@ const Summary = ({
                           name="first_name" placeholder="First Name" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.first_name && touched.first_name &&
-                            <p className="text-xs">{errors.first_name}</p>
+                            <p className="text-xs">{`${errors.first_name}`}</p>
                           }
                         </div>
                       </div>
@@ -225,7 +225,7 @@ const Summary = ({
                           name="last_name" placeholder="Last Name" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.last_name && touched.last_name &&
-                            <p className="text-xs">{errors.last_name}</p>
+                            <p className="text-xs">{`${errors.last_name}`}</p>
                           }
                         </div>
                       </div>
@@ -236,7 +236,7 @@ const Summary = ({
                           name="email" placeholder="Primary Email" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.email && touched.email &&
-                            <p className="text-xs">{errors.email}</p>
+                            <p className="text-xs">{`${errors.email}`}</p>
                           }
                         </div>
                       </div>
@@ -259,7 +259,7 @@ const Summary = ({
                                         />
                                         <div className="flex justify-between items-center pt-1 text-red-700">
                                           {errors.emails && touched.emails &&
-                                          <p className="text-xs">{errors.emails}</p>
+                                          <p className="text-xs">{`${errors.emails}`}</p>
                                           }
                                         </div>
                                       </div>
@@ -296,7 +296,7 @@ const Summary = ({
                         </select>
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.budget_status_code && touched.budget_status_code &&
-                            <p className="text-xs">{errors.budget_status_code}</p>
+                            <p className="text-xs">{`${errors.budget_status_code}`}</p>
                           }
                         </div>
                       </div>
@@ -307,7 +307,7 @@ const Summary = ({
                           name="budget_amount" type="number" min="0" placeholder="Budget Amount" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.budget_amount && touched.budget_amount &&
-                            <p className="text-xs">{errors.budget_amount}</p>
+                            <p className="text-xs">{`${errors.budget_amount}`}</p>
                           }
                         </div>
                       </div>
@@ -324,7 +324,7 @@ const Summary = ({
                         </select>
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.industry_code && touched.industry_code &&
-                            <p className="text-xs">{errors.industry_code}</p>
+                            <p className="text-xs">{`${errors.industry_code}`}</p>
                           }
                         </div>
                       </div>
@@ -348,7 +348,7 @@ const Summary = ({
                         </select>
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.need && touched.need &&
-                            <p className="text-xs">{errors.need}</p>
+                            <p className="text-xs">{`${errors.need}`}</p>
                           }
                         </div>
                       </div>
@@ -365,7 +365,7 @@ const Summary = ({
                         </select>
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.preferred_contact_method_code && touched.preferred_contact_method_code &&
-                            <p className="text-xs">{errors.preferred_contact_method_code}</p>
+                            <p className="text-xs">{`${errors.preferred_contact_method_code}`}</p>
                           }
                         </div>
                       </div>
@@ -382,7 +382,7 @@ const Summary = ({
                         </select>
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.source_code && touched.source_code &&
-                            <p className="text-xs">{errors.source_code}</p>
+                            <p className="text-xs">{`${errors.source_code}`}</p>
                           }
                         </div>
                       </div>
@@ -399,7 +399,7 @@ const Summary = ({
                         </select>
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.initial_communication && touched.initial_communication &&
-                            <p className="text-xs">{errors.initial_communication}</p>
+                            <p className="text-xs">{`${errors.initial_communication}`}</p>
                           }
                         </div>
                       </div>
@@ -410,7 +410,7 @@ const Summary = ({
                           name="description" as="textarea" rows={8} placeholder="Description" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.description && touched.description &&
-                            <p className="text-xs">{errors.description}</p>
+                            <p className="text-xs">{`${errors.description}`}</p>
                           }
                         </div>
                       </div>
@@ -454,7 +454,7 @@ const Summary = ({
                         </select>
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.country && touched.country &&
-                            <p className="text-xs">{errors.country}</p>
+                            <p className="text-xs">{`${errors.country}`}</p>
                           }
                         </div>
                       </div>
@@ -465,7 +465,7 @@ const Summary = ({
                           name="address" as="textarea" rows={8} placeholder="Address" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.address && touched.address &&
-                            <p className="text-xs">{errors.address}</p>
+                            <p className="text-xs">{`${errors.address}`}</p>
                           }
                         </div>
                       </div>
@@ -476,7 +476,7 @@ const Summary = ({
                           name="mobilephone" placeholder="Moobile Phone" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.mobilephone && touched.mobilephone &&
-                            <p className="text-xs">{errors.mobilephone}</p>
+                            <p className="text-xs">{`${errors.mobilephone}`}</p>
                           }
                         </div>
                       </div>
@@ -487,7 +487,7 @@ const Summary = ({
                           name="telephone" placeholder="Tele Phone" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.telephone && touched.telephone &&
-                            <p className="text-xs">{errors.telephone}</p>
+                            <p className="text-xs">{`${errors.telephone}`}</p>
                           }
                         </div>
                       </div>
@@ -499,7 +499,7 @@ const Summary = ({
                           name="skypeid" placeholder="Skpe ID" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.skypeid && touched.skypeid &&
-                            <p className="text-xs">{errors.skypeid}</p>
+                            <p className="text-xs">{`${errors.skypeid}`}</p>
                           }
                         </div>
                       </div>
@@ -510,7 +510,7 @@ const Summary = ({
                           name="linkedinid" placeholder="Linkedin ID" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.linkedinid && touched.linkedinid &&
-                            <p className="text-xs">{errors.linkedinid}</p>
+                            <p className="text-xs">{`${errors.linkedinid}`}</p>
                           }
                         </div>
                       </div>

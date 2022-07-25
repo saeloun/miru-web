@@ -89,7 +89,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         <label className="form__label">Name</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.name && touched.name &&
-                            <div>{errors.name}</div>
+                            <div>{`${errors.name}`}</div>
                           }
                         </div>
                       </div>
@@ -124,7 +124,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         </label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.number_of_resource && touched.number_of_resource &&
-                            <div>{errors.number_of_resource}</div>
+                            <div>{`${errors.number_of_resource}`}</div>
                           }
                         </div>
                       </div>
@@ -141,7 +141,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         </label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.resource_expertise_level && touched.resource_expertise_level &&
-                            <div>{errors.resource_expertise_level}</div>
+                            <div>{`${errors.resource_expertise_level}`}</div>
                           }
                         </div>
                       </div>
@@ -156,7 +156,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         <label className="form__label">Description</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.description && touched.description &&
-                            <div>{errors.description}</div>
+                            <div>{`${errors.description}`}</div>
                           }
                         </div>
                       </div>
@@ -173,7 +173,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         </label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.price && touched.price &&
-                            <div>{errors.price}</div>
+                            <div>{`${errors.price}`}</div>
                           }
                         </div>
                       </div>

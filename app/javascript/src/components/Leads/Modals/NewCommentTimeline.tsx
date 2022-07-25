@@ -61,7 +61,7 @@ const NewCommentTimeline = ({ leadDetails, setNewCommentTimeline, timelineData, 
                         <label className="form__label">Comment</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.comment && touched.comment &&
-                            <div>{errors.comment}</div>
+                            <div>{`${errors.comment}`}</div>
                           }
                         </div>
                       </div>

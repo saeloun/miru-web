@@ -1,3 +1,19 @@
+.marquee {
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+.marquee p {
+	display: inline-block;
+	padding-left: 100%;
+	animation: marquee 25s linear infinite;
+}
+@keyframes marquee {
+	0%   { transform: translate(0, 0); }
+	100% { transform: translate(-100%, 0); }
+}
+
 .ac-calendar-view {
 	@apply relative;
 }

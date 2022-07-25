@@ -126,7 +126,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                         <label className="form__label">Subject</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.action_subject && touched.action_subject &&
-                            <div>{errors.action_subject}</div>
+                            <div>{`${errors.action_subject}`}</div>
                           }
                         </div>
                       </div>
@@ -141,7 +141,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                         <label className="form__label">Skype ID</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.action_social_id && touched.action_social_id &&
-                            <div>{errors.action_social_id}</div>
+                            <div>{`${errors.action_social_id}`}</div>
                           }
                         </div>
                       </div>
@@ -156,7 +156,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                         <label className="form__label">Due at</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.action_due_at && touched.action_due_at &&
-                            <div>{errors.action_due_at}</div>
+                            <div>{`${errors.action_due_at}`}</div>
                           }
                         </div>
                       </div>
@@ -176,7 +176,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                         <label className="form__label">Assignee</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.action_assignee_id && touched.action_assignee_id &&
-                            <div>{errors.action_assignee_id}</div>
+                            <div>{`${errors.action_assignee_id}`}</div>
                           }
                         </div>
                       </div>
@@ -197,7 +197,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                         <label className="form__label">Reporter</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.action_reporter_id && touched.action_reporter_id &&
-                            <div>{errors.action_reporter_id}</div>
+                            <div>{`${errors.action_reporter_id}`}</div>
                           }
                         </div>
                       </div>
@@ -218,7 +218,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                         <label className="form__label">Description</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.action_description && touched.action_description &&
-                            <div>{errors.action_description}</div>
+                            <div>{`${errors.action_description}`}</div>
                           }
                         </div>
                       </div>
@@ -234,7 +234,7 @@ const NewSkypeDMTimeline = ({ leadDetails, setNewSkypeDMTimeline, timelineData, 
                         <label className="form__label">Priority</label>
                         <div className="tracking-wider block text-xs text-red-600">
                           {errors.action_priority_code && touched.action_priority_code &&
-                            <div>{errors.action_priority_code}</div>
+                            <div>{`${errors.action_priority_code}`}</div>
                           }
                         </div>
                       </div>

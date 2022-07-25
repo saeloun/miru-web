@@ -1,5 +1,5 @@
 /* eslint-disable no-unexpected-multiline */
-import React from "react";
+import React, { } from "react";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import spaceUsagesApi from "apis/space-usages";
@@ -196,7 +196,12 @@ const TimeReserving: React.FC<Iprops> = ({
       <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="mx-50 mt-6">
         <div className="bg-miru-alert-yellow-400 text-miru-alert-green-1000 px-1 flex justify-center font-semibold tracking-widest rounded-lg w-auto h-auto text-xs mt-3 mb-3 p-3">
-          <b><i>Yes! We need your help. Be a part of the <i className="text-xl">A∝C</i>.</i></b>
+          <div className="marquee">
+            <p>
+              <b><i>Yes! We need your help. Be a part of the <i className="text-xl">A∝C</i> team.</i></b>
+              Special Thanks to Gyandip, Kishan.
+            </p>
+          </div>
         </div>
         <div>
           <div className="mb-6">
