@@ -10,7 +10,7 @@ import { X, Calendar } from "phosphor-react";
 import { MagnifyingGlass } from "phosphor-react";
 import { mapPayment } from "../../../mapper/payment.mapper";
 
-const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList }) => {
+const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList, fetchInvoiceList }) => {
   const [invoice, setInvoice] = useState<any>(null);
   const [transactionDate, setTransactionDate] = useState<any>(null);
   const [transactionType, setTransactionType] = useState<any>(null);
@@ -45,6 +45,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
       await payment.create(sanitized);
       Toastr.success("Manual entry added successfully.");
       fetchPaymentList();
+      fetchInvoiceList();
       setInvoice("");
       setTransactionDate("");
       setTransactionType("");
@@ -64,6 +65,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
 
   const handleInvoiceSelect = (val) => {
     setInvoice(val);
+    setAmount(val.amount);
   };
 
   const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
@@ -248,9 +250,10 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
                 </div>
                 <div className="mt-1">
                   <input
+                    disabled
                     type="text"
+                    value={amount}
                     placeholder="Payment Amount"
-                    onChange={(e) => setAmount(e.target.value)}
                     className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
                   />
                 </div>

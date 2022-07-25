@@ -45,7 +45,7 @@ const Payments = () => {
       <Header setShowManualEntryModal={setShowManualEntryModal}/>
       <Table payments={paymentList} />
       {
-        showManualEntryModal && <AddManualEntry setShowManualEntryModal={setShowManualEntryModal} invoiceList={invoiceList} fetchPaymentList={fetchPaymentList}/>
+        showManualEntryModal && <AddManualEntry setShowManualEntryModal={setShowManualEntryModal} invoiceList={invoiceList} fetchPaymentList={fetchPaymentList} fetchInvoiceList={fetchInvoiceList}/>
       }
     </div>
   );
