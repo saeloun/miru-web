@@ -1,6 +1,7 @@
 import React from "react";
+import { currencyFormat } from "helpers/currency";
 
-const TableRow = ({ payment }) => {
+const TableRow = ({ payment, baseCurrency }) => {
   const getStatusCss = (status) => {
     const STATUS_LIST = {
       paid: "bg-miru-han-purple-100 text-miru-han-purple-1000",
@@ -10,6 +11,11 @@ const TableRow = ({ payment }) => {
     const lowerCaseStatus = status.toLowerCase();
     return `rounded-lg px-1 ${STATUS_LIST[lowerCaseStatus]}`;
   };
+
+  const formattedAmount = baseCurrency && currencyFormat({
+    baseCurrency: baseCurrency,
+    amount: payment.amount
+  });
 
   return (
     <tr className="last:border-b-0 hover:bg-miru-gray-100 group">
@@ -36,7 +42,7 @@ const TableRow = ({ payment }) => {
       </td>
 
       <td className="px-6 py-2.5 text-xl font-bold text-miru-dark-purple-1000 leading-7 text-right">
-        ${payment.amount}
+        {formattedAmount}
       </td>
 
       <td className="pl-6 pr-0 py-2.5 text-sm font-semibold tracking-wider leading-4 text-right">
