@@ -125,27 +125,27 @@ const TimeReserving: React.FC<Iprops> = ({
     setEntryList(newValue);
   };
 
-  const handleNextWeek = () => {
-    setWeekDay(p => p + 7);
-    const from = dayjs()
-      .weekday(weekDay + 7)
-      .format("YYYY-MM-DD");
-    const to = dayjs()
-      .weekday(weekDay + 13)
-      .format("YYYY-MM-DD");
-    fetchEntries(from, to);
-  };
+  // const handleNextWeek = () => {
+  //   setWeekDay(p => p + 7);
+  //   const from = dayjs()
+  //     .weekday(weekDay + 7)
+  //     .format("YYYY-MM-DD");
+  //   const to = dayjs()
+  //     .weekday(weekDay + 13)
+  //     .format("YYYY-MM-DD");
+  //   fetchEntries(from, to);
+  // };
 
-  const handlePrevWeek = () => {
-    setWeekDay(p => p - 7);
-    const from = dayjs()
-      .weekday(weekDay - 7)
-      .format("YYYY-MM-DD");
-    const to = dayjs()
-      .weekday(weekDay - 1)
-      .format("YYYY-MM-DD");
-    fetchEntries(from, to);
-  };
+  // const handlePrevWeek = () => {
+  //   setWeekDay(p => p - 7);
+  //   const from = dayjs()
+  //     .weekday(weekDay - 7)
+  //     .format("YYYY-MM-DD");
+  //   const to = dayjs()
+  //     .weekday(weekDay - 1)
+  //     .format("YYYY-MM-DD");
+  //   fetchEntries(from, to);
+  // };
 
   const parseWeeklyViewData = () => {
     const weekArr = [];
@@ -186,8 +186,10 @@ const TimeReserving: React.FC<Iprops> = ({
   };
 
   useEffect(() => {
-    if (entryList[selectedFullDate]){
+    if (entryList && entryList[selectedFullDate]){
       setGroupingEntryList(_.groupBy(entryList[selectedFullDate], "space_code"))
+    } else {
+      setGroupingEntryList({})
     }
   }, [entryList, selectedFullDate]);
 
@@ -216,12 +218,12 @@ const TimeReserving: React.FC<Iprops> = ({
               TODAY
               </button>
               <div className="flex">
-                <button
+                {/*<button
                   onClick={handlePrevWeek}
                   className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
                 >
                   &lt;
-                </button>
+                </button>*/}
                 {!!dayInfo.length && (
                   <p className="text-white mx-6 w-40">
                     {dayInfo[0]["date"]} {dayInfo[0].month} -{" "}
@@ -229,12 +231,12 @@ const TimeReserving: React.FC<Iprops> = ({
                     {dayInfo[6]["year"]}
                   </p>
                 )}
-                <button
+                {/*<button
                   onClick={handleNextWeek}
                   className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
                 >
                   &gt;
-                </button>
+                </button>*/}
               </div>
               <div className="flex mr-12">
               </div>
@@ -272,8 +274,8 @@ const TimeReserving: React.FC<Iprops> = ({
 
         <div className="ac-calendar-view">
           <div className="ac-calendar">
-            {calendarTimes().map((i) => (
-              <div className="ac-cv-time-row"><div className="ac-cv-time"><span>{i.name}</span></div></div>
+            {calendarTimes().map((i, index) => (
+              <div className="ac-cv-time-row" key={index}><div className="ac-cv-time"><span>{i.name}</span></div></div>
             ))}
           </div>
           {Object.entries(groupingEntryList).length > 0 ?

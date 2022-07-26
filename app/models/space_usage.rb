@@ -44,6 +44,7 @@ class SpaceUsage < ApplicationRecord
     CodeOptionKlass.new("Internal / All Hands Meeting", 5),
     CodeOptionKlass.new("Client / Project Discussion", 6),
     CodeOptionKlass.new("Client / Other", 7),
+    CodeOptionKlass.new("Interview", 8)
   ]
 
   belongs_to :user

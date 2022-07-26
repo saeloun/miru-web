@@ -36,6 +36,7 @@ const EntryCardDayView = ({
         const displayColor = getRandomColor(space.user_id)
 
         return (<div className="as-meeting-point w-7 relative opacity-90 cursor-pointer"
+          key={_index}
           title={displayTitle}
           style={ { height: `${space.end_duration - space.start_duration}px`, top: `${space.start_duration}px`, backgroundColor: displayColor } }
           onClick={() => {setEditEntryColor(displayColor); setEditEntryId(space.id);}} >

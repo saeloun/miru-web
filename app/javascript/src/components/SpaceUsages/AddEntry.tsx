@@ -29,6 +29,7 @@ const AddEntry: React.FC<Iprops> = ({
     { id: "5", name: "Internal / All Hands" },
     { id: "6", name: "Internal / Project Discussion" },
     { id: "7", name: "Internal / Other" },
+    { id: "8", name: "Interview" }
   ];
   const SPACES = [
     { id: "1", name: "Conference Room", alias: "CR" },
