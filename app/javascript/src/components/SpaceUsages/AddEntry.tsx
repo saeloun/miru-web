@@ -39,10 +39,13 @@ const AddEntry: React.FC<Iprops> = ({
 
   const { useState, useEffect } = React;
   const [note, setNote] = useState("");
-  const [startDuration, setStartDuration] = useState("00:00");
-  const [endDuration, setEndDuration] = useState("00:00");
+  const [startDuration, setStartDuration] = useState("12:00");
+  const [endDuration, setEndDuration] = useState("12:15");
   const [space, setSpace] = useState("");
   const [purpose, setPurpose] = useState("");
+
+  const regex = new RegExp(':', 'g')
+
   // const [restricted, setRestricted] = useState(false);
 
   const calendarTimes = () => {
@@ -141,7 +144,7 @@ const AddEntry: React.FC<Iprops> = ({
       }
     >
       <div className="w-1/2">
-        <div className="w-129 mb-2 flex justify-between">
+        <div className="w-auto mb-2 flex justify-between">
           <select
             onChange={e => {
               setSpace(e.target.value);
@@ -187,7 +190,7 @@ const AddEntry: React.FC<Iprops> = ({
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
+          className={("w-auto px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
         ></textarea>
       </div>
       <div className="w-1/3">
@@ -195,14 +198,24 @@ const AddEntry: React.FC<Iprops> = ({
           <div className="p-1 h-8 text-sm flex justify-center items-center">From</div>
           <select
             className="w-40 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-            name="action_assignee_id" onChange={(e) => setStartDuration(e.target.value)}>
-            {calendarTimes().map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
+            onChange={(e) => setStartDuration(e.target.value)}>
+            {calendarTimes().map(e =>
+              <option
+                value={e.id}
+                key={e.id}
+                disabled={!(parseInt(e.id.replace(regex, ''), 10) < parseInt(endDuration.replace(regex, ''), 10))}
+              >{e.name}</option>)}
           </select>
           <div className="p-1 h-8 text-sm flex justify-center items-center">To</div>
           <select
             className="w-40 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-            name="action_assignee_id" onChange={(e) => setEndDuration(e.target.value)}>
-            {calendarTimes().map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
+            onChange={(e) => setEndDuration(e.target.value)}>
+            {calendarTimes().map(e =>
+              <option
+                value={e.id}
+                key={e.id}
+                disabled={!(parseInt(e.id.replace(regex, ''), 10) > parseInt(startDuration.replace(regex, ''), 10))}
+              >{e.name}</option>)}
           </select>
         </div>
         {/* <div className="flex items-center mt-2">
