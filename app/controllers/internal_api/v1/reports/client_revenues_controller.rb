@@ -10,7 +10,7 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
   private
 
     def clients
-      current_company.clients.where(id: client_ids_params).order("name asc").includes(:invoices).map do |client|
+      current_company.clients.where(id: client_ids).order("name asc").includes(:invoices).map do |client|
         client.payment_summary(duration_params)
       end
     end
@@ -25,11 +25,19 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
       }
     end
 
+    def client_ids
+      client_ids_params.empty? ? current_company.clients.pluck(:id) : client_ids_params
+    end
+
     def client_ids_params
       JSON.parse(params.require(:client_ids))
     end
 
     def duration_params
-      params.require(:duration_from).to_date..params.require(:duration_to).to_date
+      if params[:duration_from].present?
+        params[:duration_from].to_date..params[:duration_to].to_date
+      else
+        current_company.created_at..Date.today
+      end
     end
 end

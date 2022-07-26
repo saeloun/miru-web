@@ -35,10 +35,10 @@ const FilterSideBar = ({
   const [clientList, setClientList] = useState([]);
 
   useEffect(() => {
-    fetchClients();
+    fetchAndSetClients();
   }, []);
 
-  const fetchClients = async () => {
+  const fetchAndSetClients = async () => {
     try {
       const { data } = await clients.get("");
       setClientList(
@@ -140,7 +140,7 @@ const FilterSideBar = ({
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Clients</h5>
-              <Select isMulti={true} value={clientList} classNamePrefix="react-select-filter" name="clients" onChange={handleSelectFilter} styles={customStyles} options={revenueByClientReport.filterOptions.clients} />
+              <Select isMulti={true} options={clientList} classNamePrefix="react-select-filter" name="clients" onChange={handleSelectFilter} styles={customStyles}/>
             </li>
           </ul>
         </div>

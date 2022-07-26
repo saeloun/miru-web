@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 
 import { sendGAPageView } from "utils/googleAnalytics";
 import Container from "./Container";
-
 import Filters from "./Filters";
 import { RevenueByClients } from "./interface";
 import getReportData from "../api/revenueByClient";
@@ -13,12 +12,11 @@ import TimeEntryReportContext from "../context/TimeEntryReportContext";
 import Header from "../Header";
 
 const RevenueByClientReport = () => {
-  const filterIntialValues = {
+  const filterIntialValues = { // TODO: fix typo filterInitialValues
     dateRange: { label: "All", value: "" },
     clients: [{ label: "All Clients", value: "" }]
   };
 
-  const [filterOptions, getFilterOptions] = useState({ clients: [] }); //eslint-disable-line
   const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
   const [isFilterVisible, setFilterVisibilty] = useState<boolean>(false);
   const [showNavFilters, setNavFilters] = useState<boolean>(false);
@@ -43,8 +41,8 @@ const RevenueByClientReport = () => {
 
   const updateFilterCounter = async () => {
     let counter = 0;
-    for (const filterkey in selectedFilter) {
-      const filterValue = selectedFilter[filterkey];
+    for (const filter in selectedFilter) {
+      const filterValue = selectedFilter[filter];
       if (Array.isArray(filterValue)) {
         counter = counter + filterValue.length;
       } else {
