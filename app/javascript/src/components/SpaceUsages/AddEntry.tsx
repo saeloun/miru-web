@@ -40,7 +40,7 @@ const AddEntry: React.FC<Iprops> = ({
 
   const { useState, useEffect } = React;
   const [note, setNote] = useState("");
-  const [startDuration, setStartDuration] = useState("00:00");
+  const [startDuration, setStartDuration] = useState(minutesToHHMM(minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) - (minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) % 15)));
   const [endDuration, setEndDuration] = useState("00:00");
   const [space, setSpace] = useState("");
   const [purpose, setPurpose] = useState("");
@@ -198,13 +198,16 @@ const AddEntry: React.FC<Iprops> = ({
           <select
             className="w-40 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
             value={startDuration}
-            name="action_assignee_id" onChange={(e) => setStartDuration(e.target.value)}>
+            name="action_assignee_id" onChange={(e) => {
+              setStartDuration(e.target.value)
+              setEndDuration((minutesToHHMM(minutesFromHHMM(e.target.value) + 15)))
+            }}>
             {calendarTimes(null).map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
           </select>
           <div className="p-1 h-8 text-sm flex justify-center items-center">To</div>
           <select
             className="w-40 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-            value={ minutesFromHHMM(endDuration) > 0 ? endDuration : (minutesToHHMM(minutesFromHHMM(startDuration || "00:00") + 15)) }
+            value={endDuration}
             name="action_assignee_id" onChange={(e) => setEndDuration(e.target.value)}>
             {calendarTimes(startDuration).map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
           </select>

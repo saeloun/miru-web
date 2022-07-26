@@ -39,14 +39,15 @@ const EditEntry: React.FC<Iprops> = ({
   ];
   const { useState, useEffect } = React;
   const [note, setNote] = useState("");
-  const [startDuration, setStartDuration] = useState("00:00");
+  const [startDuration, setStartDuration] = useState(minutesToHHMM(minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) - (minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) % 15)));
   const [endDuration, setEndDuration] = useState("00:00");
   const [space, setSpace] = useState("");
   const [purpose, setPurpose] = useState("");
   const [purposeName, setPurposeName] = useState("");
   // const [restricted, setRestricted] = useState(false);
 
-  const calendarTimes = () => {
+  const calendarTimes = (durationFrom) => {
+    durationFrom = durationFrom || "00:00"
     const product = (...a: any[][]) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
     return product([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24], [0, 15, 30, 45]).map((k) => {
       const [i, m] = [k[0], k[1]]
@@ -59,7 +60,7 @@ const EditEntry: React.FC<Iprops> = ({
         id: `${i<10 ? 0 : '' }${i}:${m<10 ? 0 : ''}${m}`,
         name: `${ii < 10 ? 0 : '' }${ii}:${m<10 ? 0 : ''}${m} ${i < 12 || i == 24 ? 'AM' : 'PM'}`
       })
-    }).filter((el) => el != null)
+    }).filter((el) => (el != null && minutesFromHHMM(el.id) >= minutesFromHHMM(durationFrom)) )
   }
 
   const handleFillData = () => {
@@ -197,15 +198,18 @@ const EditEntry: React.FC<Iprops> = ({
                 <select
                   className="w-30 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                   value={startDuration}
-                  onChange={(e) => setStartDuration(e.target.value)}>
-                  {calendarTimes().map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
+                  onChange={(e) => {
+                    setStartDuration(e.target.value)
+                    setEndDuration((minutesToHHMM(minutesFromHHMM(e.target.value) + 15)))
+                  }}>
+                  {calendarTimes(null).map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
                 </select>
                 <div className="p-1 h-8 text-sm flex justify-center items-center">To</div>
                 <select
                   className="w-30 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
                   value={endDuration}
                   onChange={(e) => setEndDuration(e.target.value)}>
-                  {calendarTimes().map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
+                  {calendarTimes(startDuration).map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
                 </select>
               </div>
               <div className="flex justify-between">
