@@ -19,11 +19,19 @@ module InvoicePayment
 
       def update_invoice(invoice, payment)
         invoice_updates = {
-          amount_due: invoice.amount_due - payment.amount,
+          amount_due: due_amount(invoice.amount_due, payment.amount),
           amount_paid: invoice.amount_paid + payment.amount
         }
           .merge(invoice_status(invoice, payment))
         invoice.update!(invoice_updates)
+      end
+
+      def due_amount(invoice_due_amount, payment_amount)
+        if payment_amount > invoice_due_amount
+          0
+        else
+          invoice_due_amount - payment_amount
+        end
       end
 
       def invoice_status(invoice, payment)
