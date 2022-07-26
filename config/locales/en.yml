@@ -131,10 +131,22 @@ en:
     email: Email
     delete:
       success:
-        message: User removed successfully
+        message: Team Member removed successfully
     update:
+      success:
+        message: Changes saved successfully
       error:
         role: There was an error while updating role
+  invitation:
+    create:
+      success:
+        message: Invitation Sent successfully
+    delete:
+      success:
+        message: Invitation removed successfully
+    update:
+      success:
+        message: Changes saved successfully
   registration:
     sign_up: sign up
     sign_in: sign in
@@ -175,6 +187,23 @@ en:
     save_org: save org details
   reports:
     heading: Time entry report
+  invitations:
+    create:
+      success: Invitation will be sent
+      failure: Failed to saved changes
+    update:
+      success: Invitation updated
+      failure: Failed to saved changes
+    destroy:
+      success: Invitation deleted
+      failure: Failed to delete invitation
+    accept:
+      success: Invitation accepted
+  invoices:
+    payments:
+      success:
+        success: "Payment successful"
+        failure: "Something went wrong, please contact support"
   settings:
     settings: settings
     cancel : cancel

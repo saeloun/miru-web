@@ -1,6 +1,5 @@
 import { teamPath, signInPath } from "../../constants/routes/paths";
 import { teamTabSelector } from "../../constants/selectors/team";
-import { addNewUser } from "../../support/utils/team";
 
 describe("Team page for Employee", () => {
   beforeEach(function () {

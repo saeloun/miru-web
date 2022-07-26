@@ -15,7 +15,7 @@ RSpec.describe "Root#index", type: :request do
     end
 
     it "redirects to Dashboard#index page" do
-      expect(response).to redirect_to(time_tracking_index_path)
+      expect(response).to redirect_to(root_path + "time-tracking")
     end
   end
 
@@ -28,7 +28,7 @@ RSpec.describe "Root#index", type: :request do
     end
 
     it "redirects to Dashboard#index page" do
-      expect(response).to redirect_to(time_tracking_index_path)
+      expect(response).to redirect_to(root_path + "time-tracking")
     end
   end
 
@@ -41,7 +41,7 @@ RSpec.describe "Root#index", type: :request do
     end
 
     it "redirects to TimeTracking#index page" do
-      expect(response).to redirect_to(time_tracking_index_path)
+      expect(response).to redirect_to(root_path + "time-tracking")
     end
   end
 
@@ -54,7 +54,7 @@ RSpec.describe "Root#index", type: :request do
     end
 
     it "redirects to payments#index page" do
-      expect(response).to redirect_to(payments_path)
+      expect(response).to redirect_to(root_path + "payments")
     end
   end
 

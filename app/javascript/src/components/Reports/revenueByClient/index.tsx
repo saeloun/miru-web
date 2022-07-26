@@ -8,6 +8,7 @@ import { RevenueByClients } from "./interface";
 import getReportData from "../api/revenueByClient";
 import EntryContext from "../context/EntryContext";
 
+import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
 import TimeEntryReportContext from "../context/TimeEntryReportContext";
 import Header from "../Header";
 
@@ -72,6 +73,7 @@ const RevenueByClientReport = () => {
 
   const contextValues = {
     timeEntryReport: TimeEntryReportContext,
+    outstandingOverdueInvoice: OutstandingOverdueInvoiceContext,
     revenueByClientReport: {
       filterOptions: {
         clients: [{ label: "All Clients", value: "" }]

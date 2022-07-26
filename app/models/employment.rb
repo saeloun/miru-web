@@ -39,4 +39,19 @@ class Employment < ApplicationRecord
   # TODO:- To be uncommented after UI integration is done
   # validates :designation, :employment_type, :joined_at, :employee_id, presence: true
   # validates :resigned_at, comparison: { greater_than: :joined_at }, unless: -> { resigned_at.nil? }
+
+  # Callbacks
+  before_destroy :remove_user_invitations
+
+  def user_role
+    return "employee" if user.roles.empty?
+
+    user.roles.find_by(resource: company)&.name
+  end
+
+  private
+
+    def remove_user_invitations
+      company.invitations.where(recipient_email: user.email).destroy_all
+    end
 end
