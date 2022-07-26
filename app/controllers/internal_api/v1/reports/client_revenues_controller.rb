@@ -30,7 +30,7 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
     end
 
     def client_ids_params
-      JSON.parse(params.require(:client_ids))
+      JSON.parse(params[:client_ids]) if params[:client_ids].present?
     end
 
     def duration_params
