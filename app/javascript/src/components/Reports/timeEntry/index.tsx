@@ -16,7 +16,7 @@ import { ITimeEntry } from "../interface";
 
 const TimeEntryReports = () => {
   const filterIntialValues = {
-    dateRange: { label: getMonth(true), value: "this_week" },
+    dateRange: { label: getMonth(true), value: "this_month" },
     clients: [],
     teamMember: [],
     status: [],
@@ -32,6 +32,7 @@ const TimeEntryReports = () => {
   const [isFilterVisible, setFilterVisibilty] = useState<boolean>(false);
   const [showNavFilters, setNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
+  const [selectedInput, setSelectedInput] = useState("from-input");
 
   useEffect(() => {
     sendGAPageView();
@@ -41,7 +42,9 @@ const TimeEntryReports = () => {
     let counter = 0;
     for (const filterkey in selectedFilter) {
       const filterValue = selectedFilter[filterkey];
-      if (Array.isArray(filterValue)) {
+      if (filterkey !== "customDateFilter") {
+        continue;
+      } else if (Array.isArray(filterValue)) {
         counter = counter + filterValue.length;
       } else {
         if (filterValue.value !== "") {
@@ -56,6 +59,10 @@ const TimeEntryReports = () => {
     updateFilterCounter();
     applyFilter(selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty, getFilterOptions);
   }, [selectedFilter]);
+
+  const onClickInput = (e) => {
+    setSelectedInput(e.target.name);
+  };
 
   const handleApplyFilter = async (filters) => {
     setSelectedFilter(filters);
@@ -74,8 +81,12 @@ const TimeEntryReports = () => {
       setSelectedFilter({ ...selectedFilter, [key]: closedFilter });
     }
     else {
-      const label = key === "dateRange" ? "All" : "None";
-      setSelectedFilter({ ...selectedFilter, [key]: { label, value: "" } });
+      if (key === "dateRange") {
+        setSelectedFilter({ ...selectedFilter, [key]: filterIntialValues.dateRange });
+      } else {
+        const label = "None";
+        setSelectedFilter({ ...selectedFilter, [key]: { label, value: "" } });
+      }
     }
   };
 
@@ -95,10 +106,16 @@ const TimeEntryReports = () => {
     timeEntryReport: {
       reports: timeEntries,
       filterOptions,
-      selectedFilter,
+      selectedFilter: { ...selectedFilter,
+        customDateFilter: {
+          from: "",
+          to: ""
+        }
+      },
       filterCounter,
       handleRemoveSingleFilter: handleRemoveSingleFilter
     },
+
     currentReport: "TimeEntryReport",
     revenueByClientReport: RevenueByClientReportContext,
     outstandingOverdueInvoice: OutstandingOverdueInvoiceContext
@@ -122,6 +139,8 @@ const TimeEntryReports = () => {
           handleApplyFilter={handleApplyFilter}
           resetFilter={resetFilter}
           setFilterVisibilty={setFilterVisibilty}
+          onClickInput={onClickInput}
+          selectedInput={selectedInput}
         />}
       </EntryContext.Provider>
     </div>
