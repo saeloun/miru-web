@@ -14,4 +14,8 @@ class ApplicationPolicy
       user.has_cached_role?("#{role}".to_sym, resource)
     end
   end
+
+  def record_belongs_to_user?
+    user.id == record.user_id
+  end
 end

@@ -2,27 +2,29 @@
 
 class PreviousEmploymentPolicy < ApplicationPolicy
   def show?
+    (record_user_employee_of?(user.current_workspace.id) &&
     user.has_any_role?(
       { name: :admin, resource: user.current_workspace },
-      { name: :owner, resource: user.current_workspace }) || user_checks_his_own_previous_employment?
+      { name: :owner, resource: user.current_workspace })) || record_belongs_to_user?
   end
 
   def update?
+    (record_user_employee_of?(user.current_workspace.id) &&
     user.has_any_role?(
       { name: :admin, resource: user.current_workspace },
-      { name: :owner, resource: user.current_workspace }) || user_checks_his_own_previous_employment?
+      { name: :owner, resource: user.current_workspace })) || record_belongs_to_user?
   end
 
   def create?
+    (record_user_employee_of?(user.current_workspace.id) &&
     user.has_any_role?(
       { name: :admin, resource: user.current_workspace },
-      { name: :owner, resource: user.current_workspace },
-      { name: :employee, resource: user.current_workspace })
+      { name: :owner, resource: user.current_workspace })) || record_belongs_to_user?
   end
 
   private
 
-    def user_checks_his_own_previous_employment?
-      user.id == record.user_id
+    def record_user_employee_of?(company_id)
+      record.user.employments.ids.include?(company_id)
     end
 end
