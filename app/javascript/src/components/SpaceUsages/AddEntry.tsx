@@ -7,6 +7,7 @@ import Toastr from "common/Toastr";
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 // import { getNumberWithOrdinal } from "helpers/ordinal";
 import validateTimesheetEntry from "helpers/validateTimesheetEntry";
+// import { minutesInHour } from "date-fns";
 
 // const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 // const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
@@ -39,16 +40,14 @@ const AddEntry: React.FC<Iprops> = ({
 
   const { useState, useEffect } = React;
   const [note, setNote] = useState("");
-  const [startDuration, setStartDuration] = useState("12:00");
-  const [endDuration, setEndDuration] = useState("12:15");
+  const [startDuration, setStartDuration] = useState("00:00");
+  const [endDuration, setEndDuration] = useState("00:00");
   const [space, setSpace] = useState("");
   const [purpose, setPurpose] = useState("");
-
-  const regex = new RegExp(':', 'g')
-
   // const [restricted, setRestricted] = useState(false);
 
-  const calendarTimes = () => {
+  const calendarTimes = (durationFrom) => {
+    durationFrom = durationFrom || "00:00"
     const product = (...a: any[][]) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
     return product([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24], [0, 15, 30, 45]).map((k) => {
       const [i, m] = [k[0], k[1]]
@@ -61,7 +60,7 @@ const AddEntry: React.FC<Iprops> = ({
         id: `${i<10 ? 0 : '' }${i}:${m<10 ? 0 : ''}${m}`,
         name: `${ii < 10 ? 0 : '' }${ii}:${m<10 ? 0 : ''}${m} ${i < 12 || i == 24 ? 'AM' : 'PM'}`
       })
-    }).filter((el) => el != null)
+    }).filter((el) => (el != null && minutesFromHHMM(el.id) >= minutesFromHHMM(durationFrom)) )
   }
 
   const handleFillData = () => {
@@ -144,7 +143,7 @@ const AddEntry: React.FC<Iprops> = ({
       }
     >
       <div className="w-1/2">
-        <div className="w-auto mb-2 flex justify-between">
+        <div className="w-129 mb-2 flex justify-between">
           <select
             onChange={e => {
               setSpace(e.target.value);
@@ -190,7 +189,7 @@ const AddEntry: React.FC<Iprops> = ({
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className={("w-auto px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
+          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
         ></textarea>
       </div>
       <div className="w-1/3">
@@ -198,24 +197,16 @@ const AddEntry: React.FC<Iprops> = ({
           <div className="p-1 h-8 text-sm flex justify-center items-center">From</div>
           <select
             className="w-40 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-            onChange={(e) => setStartDuration(e.target.value)}>
-            {calendarTimes().map(e =>
-              <option
-                value={e.id}
-                key={e.id}
-                disabled={!(parseInt(e.id.replace(regex, ''), 10) < parseInt(endDuration.replace(regex, ''), 10))}
-              >{e.name}</option>)}
+            value={startDuration}
+            name="action_assignee_id" onChange={(e) => setStartDuration(e.target.value)}>
+            {calendarTimes(null).map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
           </select>
           <div className="p-1 h-8 text-sm flex justify-center items-center">To</div>
           <select
             className="w-40 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
-            onChange={(e) => setEndDuration(e.target.value)}>
-            {calendarTimes().map(e =>
-              <option
-                value={e.id}
-                key={e.id}
-                disabled={!(parseInt(e.id.replace(regex, ''), 10) > parseInt(startDuration.replace(regex, ''), 10))}
-              >{e.name}</option>)}
+            value={ minutesFromHHMM(endDuration) > 0 ? endDuration : (minutesToHHMM(minutesFromHHMM(startDuration || "00:00") + 15)) }
+            name="action_assignee_id" onChange={(e) => setEndDuration(e.target.value)}>
+            {calendarTimes(startDuration).map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
           </select>
         </div>
         {/* <div className="flex items-center mt-2">
