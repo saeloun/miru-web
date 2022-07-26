@@ -13,8 +13,7 @@ const TableHeader = () => (
       scope="col"
       className="px-6 py-5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
     >
-        TRANSACTION <br />
-        DATE {"&"} TIME
+        TRANSACTION DATE
     </th>
     <th
       scope="col"
