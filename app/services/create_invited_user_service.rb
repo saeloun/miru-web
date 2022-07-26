@@ -16,7 +16,7 @@ class CreateInvitedUserService
     end
   end
 
-  def initialize(token, current_user)
+  def initialize(token, current_user = nil)
     @token = token
     @success = true
     @error_message = nil
