@@ -53,6 +53,7 @@ class Invoice < ApplicationRecord
   belongs_to :client
   has_many :invoice_line_items, dependent: :destroy
   has_one :company, through: :client
+  has_many :payments, dependent: :destroy
   accepts_nested_attributes_for :invoice_line_items, allow_destroy: true
 
   # Payment info details

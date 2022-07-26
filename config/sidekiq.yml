@@ -13,3 +13,6 @@ production:
   weekly_reminder:
     cron: '0 14 * * 1 Asia/Kolkata'   # Runs every monday at  14:00
     class: WeeklyReminderToUserJob
+  update_invoice_status:
+    cron: '0 0 * * *'   # Runs every day at 12AM UTC
+    class: UpdateInvoiceStatusToOverdueJob

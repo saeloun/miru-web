@@ -57,20 +57,28 @@ namespace :internal_api, defaults: { format: "json" } do
       get :validate_account_details
     end
 
-    resources :team, only: [:index, :destroy] do
+    resources :team, only: [:index, :destroy, :update] do
       resource :details, only: [:show, :update], controller: "team_members/details"
     end
+
+    resources :invitations, only: [:create, :update, :destroy]
+
     resources :time_tracking, only: [:index], path: "time-tracking"
 
     # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
 
-    resources :payments, only: [:create]
+    resources :payments, only: [:new, :create, :index]
 
     namespace :payments do
       resources :providers, only: [:index, :update]
     end
+
+    resources :team, only: [:index, :destroy] do
+      resource :details, only: [:show, :update], controller: "team_members/details"
+    end
+    resources :addresses, only: [:show, :update], controller: "addresses"
 
     resource :profile, only: [:update, :show], controller: "profile" do
       delete "/remove_avatar", to: "profile#remove_avatar"
