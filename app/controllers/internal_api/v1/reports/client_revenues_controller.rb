@@ -26,7 +26,7 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
     end
 
     def client_ids
-      client_ids_params.empty? ? current_company.clients.pluck(:id) : client_ids_params
+      client_ids_params.nil? || client_ids_params.empty? ? current_company.clients.pluck(:id) : client_ids_params
     end
 
     def client_ids_params
