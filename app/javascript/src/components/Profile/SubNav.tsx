@@ -46,9 +46,9 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
         </NavLink>
       </li>
       <li className='border-b-2 border-miru-gray-400'>
-        <NavLink end to="/profile/edit/import" className={({ isActive }) => getActiveClassName(isActive)}>
+        {/* <NavLink end to="/profile/edit/import" className={({ isActive }) => getActiveClassName(isActive)}>
           IMPORT
-        </NavLink>
+        </NavLink> */}
       </li>
     </ul>
   );
