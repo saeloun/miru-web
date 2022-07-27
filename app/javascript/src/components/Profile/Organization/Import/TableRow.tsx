@@ -18,7 +18,7 @@ const TableRow = ({
           defaultValue={column[id]}
           onChange={handleColumnChange}
           options={column}
-          className="py-3 text-white"
+          className="py-3 px-1 text-white"
           classNamePrefix="m-0 font-medium text-sm rounded max-h-8 text-miru-dark-purple-1000 bg-white"
           defaultMenuIsOpen={false}
           bg-miru-gray-100
