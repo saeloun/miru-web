@@ -7,6 +7,7 @@ import GenerateInvoices from "../components/Invoices/Generate";
 import Invoice from "../components/Invoices/Invoice";
 import InvoicesList  from "../components/Invoices/List";
 import Payments from "../components/payments";
+import Profile from "../components/Profile/Layout";
 import ProjectDetails from "../components/Projects/Details";
 import ProjectList from "../components/Projects/List";
 import OutstandingInvoiceReport from "../components/Reports/outstandingInvoices";
@@ -64,6 +65,10 @@ const TeamRoutes = [
   { path: "*" ,Component: TeamRouteConfig }
 ];
 
+const ProfileRoutes = [
+  { path: "*" ,Component: Profile }
+];
+
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
 
 const ROUTES = [
@@ -74,7 +79,8 @@ const ROUTES = [
   { path: Paths.SUBSCRIPTIONS ,subRoutes: SubscriptionsRoutes, authorisedRoles: [ADMIN, OWNER] },
   { path: Paths.PAYMENTS ,subRoutes: PaymentsRoutes, authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER] },
   { path: Paths.TIME_TRACKING ,subRoutes: TimeTrackingRoutes, authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER] },
-  { path: Paths.TEAM, subRoutes: TeamRoutes , authorisedRoles: [ADMIN, OWNER, EMPLOYEE] }
+  { path: Paths.TEAM, subRoutes: TeamRoutes , authorisedRoles: [ADMIN, OWNER, EMPLOYEE] },
+  { path: Paths.PROFILE, subRoutes: ProfileRoutes,  authorisedRoles: [ADMIN, OWNER, EMPLOYEE] }
 ];
 
 export default ROUTES;
