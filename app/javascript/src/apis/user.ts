@@ -2,7 +2,7 @@ import axios from "axios";
 
 const path = "/user";
 
-const destroy = () => axios.delete(`${path}/signout`);
+const destroy = (id) => axios.delete(`${path}/signout`); // eslint-disable-line
 
 const userApi = { destroy };
 
