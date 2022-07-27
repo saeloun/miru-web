@@ -258,6 +258,9 @@
     &__avatar {
       @apply h-6 w-6 rounded-full;
     }
+    &__import_header {
+      @apply px-2 py-1 w-1/2 text-xs font-normal tracking-widest text-left text-miru-dark-purple-600
+    }
   }
 
   .modal {
@@ -289,6 +292,8 @@
       @apply mb-3 mx-3 flex justify-center;
     }
   }
+
+
 }
 
 .custom {
@@ -515,5 +520,11 @@ body {
   }
   to {
     background-position: 60px 30px;
+  }
+}
+
+.import-modal {
+  &__header-number{
+    @apply w-5 h-5 flex justify-center items-center text-xs font-semibold rounded-full bg-miru-han-purple-1000 text-white
   }
 }
