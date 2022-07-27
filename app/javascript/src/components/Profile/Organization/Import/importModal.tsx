@@ -159,7 +159,7 @@ const ImportModal = ({
 
   return (
     <div className="modal__modal main-modal" style={{ background: "rgba(29, 26, 49,0.6)" }}>
-      <div className="modal__container modal-container">
+      <div className="modal__container__import__modal modal-container">
         <div className="modal__content modal-content mt-2">
           <div className="modal__position w-352 ml-9">
             <h6 className="modal__title"> Import {title} </h6>

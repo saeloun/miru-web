@@ -267,6 +267,9 @@
     &__container {
       @apply shadow-lg bg-white w-full max-w-md mx-auto rounded-xl z-50 overflow-y-auto;
     }
+    &__container__import__modal {
+      @apply shadow-lg bg-white w-full max-w-400 mx-auto rounded-xl z-50 overflow-y-auto;
+    }
     &__content {
       @apply py-4 text-left px-3;
     }
