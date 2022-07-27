@@ -7,7 +7,7 @@ import GenerateInvoices from "../components/Invoices/Generate";
 import Invoice from "../components/Invoices/Invoice";
 import InvoicesList  from "../components/Invoices/List";
 import Payments from "../components/payments";
-import Profile from "../components/Profile/Layout";
+import ProfileLayout from "../components/Profile/Layout";
 import ProjectDetails from "../components/Projects/Details";
 import ProjectList from "../components/Projects/List";
 import OutstandingInvoiceReport from "../components/Reports/outstandingInvoices";
@@ -66,7 +66,7 @@ const TeamRoutes = [
 ];
 
 const ProfileRoutes = [
-  { path: "*" ,Component: Profile }
+  { path: "*" ,Component: ProfileLayout }
 ];
 
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
