@@ -37,13 +37,13 @@ class SpaceUsage < ApplicationRecord
   ]
 
   PURPOSE_CODE_OPTIONS = [
-    CodeOptionKlass.new("Client / Standup Meeting", 1),
-    CodeOptionKlass.new("Client / All Hands Meeting", 2),
+    CodeOptionKlass.new("Client / Standup", 1),
+    CodeOptionKlass.new("Client / All Hands", 2),
     CodeOptionKlass.new("Client / Other", 3),
-    CodeOptionKlass.new("Internal / Standup Meeting", 4),
-    CodeOptionKlass.new("Internal / All Hands Meeting", 5),
-    CodeOptionKlass.new("Client / Project Discussion", 6),
-    CodeOptionKlass.new("Client / Other", 7),
+    CodeOptionKlass.new("Internal / Standup", 4),
+    CodeOptionKlass.new("Internal / All Hands", 5),
+    CodeOptionKlass.new("Internal / Project Discussion", 6),
+    CodeOptionKlass.new("Internal / Other", 7),
     CodeOptionKlass.new("Interview", 8)
   ]
 
