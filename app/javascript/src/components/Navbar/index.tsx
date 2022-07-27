@@ -1,6 +1,5 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import userApi from "apis/user";
 import {
   Timer,
   Gauge,
@@ -90,41 +89,37 @@ const Navbar = ({ isAdminUser, user }) => {
   const activeClassName =
     "flex py-3 px-4 items-center text-miru-han-purple-1000 bg-miru-gray-100 border-l-8 border-miru-han-purple-1000";
 
-  const getEmployeeOptions = () => navEmployeeOptions.map((option) => (
-    <li className="items-center hover:bg-miru-gray-100">
-      <NavLink
-        to={option.path}
-        className={({ isActive }) =>
-          isActive
-            ? activeClassName
-            : "flex py-3 px-6 items-center hover:bg-miru-gray-100"
-        }
-      >
-        {option.logo} {option.label}
-      </NavLink>
-    </li>
-  ));
+  const getEmployeeOptions = () =>
+    navEmployeeOptions.map((option) => (
+      <li className="items-center hover:bg-miru-gray-100">
+        <NavLink
+          to={option.path}
+          className={({ isActive }) =>
+            isActive
+              ? activeClassName
+              : "flex py-3 px-6 items-center hover:bg-miru-gray-100"
+          }
+        >
+          {option.logo} {option.label}
+        </NavLink>
+      </li>
+    ));
 
-  const getAdminOption = () => navAdminOptions.map((option) => (
-    <li className="items-center hover:bg-miru-gray-100">
-      <NavLink
-        to={option.path}
-        className={({ isActive }) =>
-          isActive
-            ? activeClassName
-            : "flex py-3 px-6 items-center hover:bg-miru-gray-100"
-        }
-      >
-        {option.logo} {option.label}
-      </NavLink>
-    </li>
-  ));
-
-  const handleSignOut = async () => {
-    try {
-      await userApi.destroy(user.id);
-    } catch (err) {} // eslint-disable-line
-  };
+  const getAdminOption = () =>
+    navAdminOptions.map((option) => (
+      <li className="items-center hover:bg-miru-gray-100">
+        <NavLink
+          to={option.path}
+          className={({ isActive }) =>
+            isActive
+              ? activeClassName
+              : "flex py-3 px-6 items-center hover:bg-miru-gray-100"
+          }
+        >
+          {option.logo} {option.label}
+        </NavLink>
+      </li>
+    ));
 
   return (
     <div className="shadow-2xl w-1/6 h-full flex flex-col justify-between ">
@@ -154,11 +149,8 @@ const Navbar = ({ isAdminUser, user }) => {
               <Question size={26} className="mr-4" /> Help
             </li>
           </a>
-          <a>
-            <li
-              className="flex py-3 px-6 items-center hover:bg-miru-gray-100"
-              onClick={handleSignOut}
-            >
+          <a data-method="delete" href="/users/sign_out" rel="nofollow">
+            <li className="flex py-3 px-6 items-center hover:bg-miru-gray-100">
               <SignOut size={26} className="mr-4" /> Logout
             </li>
           </a>
