@@ -72,6 +72,7 @@ Rails.application.routes.draw do
   end
 
   devise_scope :user do
+    # TODO: verify if this is path is in use otherwise remove it.
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
   end
 
