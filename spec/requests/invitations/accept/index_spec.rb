@@ -4,6 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Invitations::Accept#create", type: :request do
   let(:user) { create(:user) }
+  let(:user1) { create(:user) }
   let(:company) { create(:company) }
   let!(:invitation) { create(:invitation, company:) }
 
@@ -24,7 +25,7 @@ RSpec.describe "Invitations::Accept#create", type: :request do
       expect(flash[:success]).to eq("Invitation accepted")
     end
 
-    it "creates invitation record" do
+    it "creates user record" do
       expect(User.count).to eq(2)
     end
   end
@@ -32,6 +33,7 @@ RSpec.describe "Invitations::Accept#create", type: :request do
   context "when existing user accepts invitation" do
     before do
       invitation.update_columns(recipient_email: user.email)
+      sign_in user
       send_request :get, invitations_accepts_url(token: invitation.token)
     end
 
@@ -40,15 +42,31 @@ RSpec.describe "Invitations::Accept#create", type: :request do
     end
 
     it "redirects to sign in page" do
-      expect(response.location).to include(user_session_path)
+      expect(response.location).to include(root_path)
     end
 
     it "return success flash message" do
       expect(flash[:success]).to eq("Invitation accepted")
     end
+  end
 
-    it "creates invitation record" do
-      expect(User.count).to eq(2)
+  context "when existing user tries to accepts different user invitation" do
+    before do
+      invitation.update_columns(recipient_email: user.email)
+      sign_in user1
+      send_request :get, invitations_accepts_url(token: invitation.token)
+    end
+
+    it "returns redirect status" do
+      expect(response).to have_http_status(:redirect)
+    end
+
+    it "redirects to sign in page" do
+      expect(response.location).to include(root_path)
+    end
+
+    it "return success flash message" do
+      expect(flash[:error]).to eq("You are already signed in.")
     end
   end
 end
