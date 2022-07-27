@@ -54,6 +54,8 @@ yarn-debug.log*
 # Ignore cypress screenshots and videos
 cypress/artifacts/screenshots
 cypress/artifacts/videos
+cypress/screenshots
+cypress/videos
 
 .DS_Store
 
