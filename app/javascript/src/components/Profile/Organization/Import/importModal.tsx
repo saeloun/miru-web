@@ -113,7 +113,7 @@ const ImportModal = ({
             This might take some time to complete. We will continue importing in the background even if you close this window and send an email to you when it is completed.
           </div>
           <button
-            className="mt-22 w-352 bg-miru-han-purple-1000 text-white rounded py-2 text-base tracking-widest font-bold "
+            className="mt-22 w-352 bg-miru-han-purple-1000 text-white rounded py-2 text-base tracking-widest font-bold"
             onClick={handleToggleModal}
           >
             CLOSE WINDOW
@@ -161,7 +161,7 @@ const ImportModal = ({
     <div className="modal__modal main-modal" style={{ background: "rgba(29, 26, 49,0.6)" }}>
       <div className="modal__container__import__modal modal-container">
         <div className="modal__content modal-content mt-2">
-          <div className="modal__position w-352 ml-9">
+          <div className="modal__position w-352">
             <h6 className="modal__title"> Import {title} </h6>
             <div className="modal__close">
               <button
@@ -174,7 +174,7 @@ const ImportModal = ({
           </div>
           <div className="modal__form flex-col justify-center items-center mt-4">
             <div className="w-352 flex flex-row justify-between items-center">
-              {step === 1 ? (<div className="w-5	h-5	flex justify-center items-center text-xs	font-semibold	 rounded-full bg-miru-han-purple-1000 text-white">
+              {step === 1 ? (<div className="import-modal__header-number">
                 1
               </div>) : (
                 <img src={Step} alt={"step"} height="20px" width="20px"></img>
@@ -184,7 +184,7 @@ const ImportModal = ({
               </div>
               <div className="min-w-24 border border-miru-gray-200 bg-miru-gray-200 h-px">
               </div>
-              {step <= 2 ? (<div className="w-5	h-5	flex justify-center items-center text-xs	font-semibold	 rounded-full bg-miru-han-purple-1000 text-white">
+              {step <= 2 ? (<div className="mport-modal__header-number">
                 2
               </div>) : (
                 <img src={Step} alt={"step"} height="20px" width="20px"></img>
@@ -196,7 +196,7 @@ const ImportModal = ({
               <div className="min-w-24 border border-miru-gray-200 bg-miru-gray-200 h-px">
 
               </div>
-              {step <= 3 ? (<div className="w-5	h-5	flex justify-center items-center text-xs	font-semibold	 rounded-full bg-miru-han-purple-1000 text-white">
+              {step <= 3 ? (<div className="mport-modal__header-number">
                 3
               </div>) : (
                 <img src={Step} alt={"step"} height="20px" width="20px"></img>
