@@ -1,40 +1,71 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import Select, { DropdownIndicatorProps, components } from "react-select";
+import payment from "apis/payments/payments";
 import CustomDatePicker from "common/CustomDatePicker";
+import Toastr from "common/Toastr";
 import dayjs from "dayjs";
+
 import { X, Calendar } from "phosphor-react";
 import { MagnifyingGlass } from "phosphor-react";
+import { mapPayment } from "../../../mapper/payment.mapper";
 
-const AddManualEntry = ({ setShowManualEntryModal, invoiceOptions }) => {
+const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList, fetchInvoiceList }) => {
   const [invoice, setInvoice] = useState<any>(null);
-  const [transcationDate, setTranscationDate] = useState<any>(null);
-  const [transcationType, setTranscationType] = useState<any>(null);
+  const [transactionDate, setTransactionDate] = useState<any>(null);
+  const [transactionType, setTransactionType] = useState<any>(null);
   const [amount, setAmount] = useState<any>(null);
+  const [note, setNote] = useState<any>(null);
   const [showDatePicker, setShowDatePicker] = useState<any>(false);
   const [isOpen, setOpen] = useState<any>(false);
 
-  const transcationTypes = [
-    "Visa",
-    "Mastercard",
-    "Bank Transfer",
-    "ACH",
-    "Amex",
-    "Cash",
-    "Cheque",
-    "Credit Card",
-    "Debit",
-    "PayPal"
+  const transactionTypes = [
+    { label: "Visa", value: "visa" },
+    { label: "Mastercard", value: "mastercard" },
+    { label: "Bank Transfer", value: "bank_transfer" },
+    { label: "ACH", value: "ach" },
+    { label: "Amex", value: "amex" },
+    { label: "Cash", value: "cash" },
+    { label: "Cheque", value: "cheque" },
+    { label: "Credit Card", value: "credit_card" },
+    { label: "Debit Card", value: "debit_card" },
+    { label: "Paypal", value: "paypal" },
+    { label: "Stripe", value: "stripe" }
   ];
 
+  const handleAddPayment = async () => {
+    try {
+      const sanitized = mapPayment({
+        invoice,
+        transactionDate,
+        transactionType,
+        amount,
+        note
+      });
+      await payment.create(sanitized);
+      Toastr.success("Manual entry added successfully.");
+      fetchPaymentList();
+      fetchInvoiceList();
+      setInvoice("");
+      setTransactionDate("");
+      setTransactionType("");
+      setAmount("");
+      setNote("");
+      setShowManualEntryModal(false);
+
+    } catch (err) {
+      Toastr.error("Failed to add manual entry");
+    }
+  };
+
   const handleDatePicker = (date) => {
-    const formattedDate = dayjs(date).format("DD.MM.YYYY");
-    setTranscationDate(formattedDate);
+    setTransactionDate(date);
     setShowDatePicker(false);
   };
 
   const handleInvoiceSelect = (val) => {
     setInvoice(val);
+    setAmount(val.amount);
   };
 
   const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
@@ -81,7 +112,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceOptions }) => {
             {props.data.label}
           </h1>
           <h3 className="pt-1 font-normal text-sm text-miru-dark-purple-400 leading-5">
-            {props.data.number}
+            {props.data.invoiceNumber}
           </h3>
         </div>
         <div className="px-6 py-2.5 text-left">
@@ -89,7 +120,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceOptions }) => {
             {props.data.amount}
           </h1>
           <h3 className="pt-1 font-normal text-sm text-miru-dark-purple-400 leading-5">
-            {props.data.date}
+            {props.data.invoiceDate}
           </h3>
         </div>
         <div className="pl-6 pr-0 py-2.5 text-sm font-semibold tracking-wider leading-4 text-right">
@@ -133,7 +164,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceOptions }) => {
                     onMenuClose={() => setOpen(false)}
                     defaultValue={null}
                     onChange={handleInvoiceSelect}
-                    options={invoiceOptions}
+                    options={invoiceList.invoiceList}
                     placeholder="Search by client name or invoice ID"
                     isSearchable={true}
                     className="m-0 mt-2 w-full font-medium text-miru-dark-purple-1000 border-0"
@@ -152,7 +183,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceOptions }) => {
               <div className="field">
                 <div className="field_with_errors">
                   <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
-                    Transcation Date
+                    Transaction Date
                   </label>
                 </div>
                 <div
@@ -164,7 +195,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceOptions }) => {
                     disabled
                     placeholder="DD.MM.YYYY"
                     className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                    value={transcationDate}
+                    value={transactionDate && dayjs(transactionDate).format("DD.MM.YYYY") }
                   />
                   <Calendar
                     size={20}
@@ -174,7 +205,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceOptions }) => {
                   {showDatePicker && (
                     <CustomDatePicker
                       handleChange={handleDatePicker}
-                      dueDate={transcationDate}
+                      dueDate={transactionDate}
                     />
                   )}
                 </div>
@@ -185,13 +216,13 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceOptions }) => {
               <div className="field">
                 <div className="field_with_errors">
                   <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
-                    Transcation Type
+                    Transaction Type
                   </label>
                 </div>
                 <div className="mt-1">
                   <select
                     className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                    onChange={(e) => setTranscationType(e.target.value)}
+                    onChange={(e) => setTransactionType(e.target.value)}
                   >
                     <option
                       value=""
@@ -202,7 +233,9 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceOptions }) => {
                     >
                       Select
                     </option>
-                    {transcationTypes.map((type) => <option value={type}>{type}</option>)}
+                    {transactionTypes.map((type) => (
+                      <option value={type.value}>{type.label}</option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -217,9 +250,10 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceOptions }) => {
                 </div>
                 <div className="mt-1">
                   <input
+                    disabled
                     type="text"
+                    value={amount}
                     placeholder="Payment Amount"
-                    onChange={(e) => setAmount(e.target.value)}
                     className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
                   />
                 </div>
@@ -236,7 +270,8 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceOptions }) => {
                 <div className="mt-1">
                   <textarea
                     rows={3}
-                    placeholder="Payment Amount"
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="Note"
                     className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
                   />
                 </div>
@@ -244,8 +279,9 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceOptions }) => {
             </div>
 
             <div className="actions mt-4">
-              {invoice && transcationDate && transcationType && amount ? (
+              {invoice && transactionDate && transactionType && amount ? (
                 <button
+                  onClick={handleAddPayment}
                   type="submit"
                   className="tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer"
                 >

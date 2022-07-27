@@ -22,28 +22,25 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
   return <Navigate to={url} />;
 };
 
-const Main: React.FC<Iprops> = (props) => {
-  const { user, companyRole } = props;
-  const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
-  return (
-    <div className="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
-      <Routes>
-        {ROUTES.map(parentRoute => (
-          <Route
-            key={parentRoute.path}
-            path={parentRoute.path}
-            element={
-              <RestrictedRoute authorisedRoles={parentRoute.authorisedRoles} role={companyRole} user={user} />
-            } >
-            {parentRoute.subRoutes.map(({ path, Component }) => (
-              <Route key={path} path={path} element={<Component isAdminUser={isAdminUser} user={user} />} /> //TODO: Move user data to context
-            ))}
-          </Route>
-        ))}
-        <Route path="*" element={<ErrorPage />} />
-      </Routes>
-    </div>
-  );};
+const Main: React.FC<Iprops> = (props) => (
+  <div className="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
+    <Routes>
+      {ROUTES.map(parentRoute => (
+        <Route
+          key={parentRoute.path}
+          path={parentRoute.path}
+          element={
+            <RestrictedRoute authorisedRoles={parentRoute.authorisedRoles} role={props.companyRole} user={props.user} />
+          } >
+          {parentRoute.subRoutes.map(({ path, Component }) => (
+            <Route key={path} path={path} element={<Component {...props} />} /> //TODO: Move user data to context
+          ))}
+        </Route>
+      ))}
+      <Route path="*" element={<ErrorPage />} />
+    </Routes>
+  </div>
+);
 
   interface Iprops {
     user: object;

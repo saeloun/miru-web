@@ -351,6 +351,15 @@
   }
 }
 
+.reiTable {
+  &__th {
+    @apply text-left text-xs tracking-widest text-miru-dark-purple-600 font-normal py-5;
+  }
+  &__tr {
+    @apply text-xs text-miru-dark-purple-1000 py-6;
+  }
+}
+
 body {
   font-family: "Manrope", "sans-serif";
 }
@@ -378,6 +387,11 @@ body {
   .iconWrapper {
     @apply visible;
   }
+}
+
+.userAvatarWrapper {
+  @apply absolute top-0;
+  margin-top: -50px;
 }
 
 .box-shadow {
