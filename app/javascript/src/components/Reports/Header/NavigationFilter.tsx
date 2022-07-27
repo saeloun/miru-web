@@ -2,11 +2,12 @@ import React, { Fragment } from "react";
 import { X } from "phosphor-react";
 import { getReports } from "./fetchReport";
 import { useEntry } from "../context/EntryContext";
+import { customDateFilter } from "../revenueByClient/Filters/filterOptions";
 
 const NavigationFilter = () => {
-  const { revenueByClientReport, currentReport, timeEntryReport } = useEntry();
+  const { revenueByClientReport, currentReport, timeEntryReport, outstandingOverdueInvoice } = useEntry();
 
-  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport });
+  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport, outstandingOverdueInvoice });
 
   const filterHtml = (value, key, filterKey) => (
     <li key={key} className="flex px-2 mr-4 py-1 rounded-xl tracking-widest font-semibold px-1 text-xs tracking-widest bg-miru-gray-400 text-miru-dark-purple-1000">
@@ -20,7 +21,9 @@ const NavigationFilter = () => {
     let filterOptions = [];
     for (const filterKey in selectedReport.selectedFilter) {
       const filterValue = selectedReport.selectedFilter[filterKey];
-      if (Array.isArray(filterValue)) {
+      if (filterKey === customDateFilter) {
+        continue;
+      } else if (Array.isArray(filterValue)) {
         filterOptions = [...filterOptions, filterValue.map((item, index) => filterHtml(item.label, `${item}-${index}`, filterKey))];
       }
       else if (filterValue.value !== "") {
