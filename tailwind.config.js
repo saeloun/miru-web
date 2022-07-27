@@ -44,10 +44,19 @@ module.exports = {
         fit: "fit-content",
         30: "7.5rem", //120px
         128: "32rem", // 512px
+        352: "22rem", //352px
+        228: "14.25rem", //228px
+        180: "11.25rem", //180px
+      },
+      minWidth: {
+        24: "24px",
       },
       height: {
         120: "120px",
         160: "40rem",
+        512: "32rem",
+        304: "19rem",
+        87: "5.4rem",
       },
       minHeight: {
         "10v": "10vh",
