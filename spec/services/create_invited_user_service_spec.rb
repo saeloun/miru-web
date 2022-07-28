@@ -4,6 +4,7 @@ require "rails_helper"
 
 RSpec.describe CreateInvitedUserService do
   let(:user) { create(:user) }
+  let(:user1) { create(:user) }
   let(:company) { create(:company) }
   let!(:invitation) { create(:invitation, company:) }
 
@@ -137,6 +138,19 @@ RSpec.describe CreateInvitedUserService do
       it "returns error when inivitation expired" do
         expect(@service.success).to be_falsey
         expect(@service.error_message).to eq("Invitation expired")
+      end
+    end
+
+    context "when different user accepts invitation" do
+      before do
+        invitation.update_columns(recipient_email: user.email)
+        @service = CreateInvitedUserService.new(invitation.token, user1)
+        @service.process
+      end
+
+      it "returns error when different user accepts invitation" do
+        expect(@service.success).to be_falsey
+        expect(@service.error_message).to eq("You are already signed in.")
       end
     end
 
