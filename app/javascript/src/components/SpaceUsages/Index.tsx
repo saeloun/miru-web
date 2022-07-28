@@ -206,8 +206,7 @@ const TimeReserving: React.FC<Iprops> = ({
         <div className="bg-miru-alert-yellow-400 text-miru-alert-green-1000 px-1 flex justify-center font-semibold tracking-widest rounded-lg w-auto h-auto text-xs mt-3 mb-3 p-3">
           <div className="marquee">
             <p>
-              <b><i>Yes! We need your help. Be a part of the <i className="text-xl">A∝C</i> team.</i></b>
-              Special Thanks to Gyandip, Kishan.
+              Yes! We need your help. Be a part of the <i className="text-xl">A∝C</i> team. Special Thanks to Gyandip, Kishan.
             </p>
           </div>
         </div>
@@ -244,14 +243,17 @@ const TimeReserving: React.FC<Iprops> = ({
                   &gt;
                 </button>*/}
               </div>
-              {!newEntryView && (
-                <button
-                  onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
-                  className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold mr-4"
-                >
+              <div className="flex">
+                {!newEntryView && (
+                  <button
+                    onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
+                    className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold mr-4"
+                  >
                 + NEW
-                </button>
-              )}
+                  </button>
+                )}
+              </div>
+
             </div>
             <DatesInWeek
               view={"day"}
