@@ -286,7 +286,7 @@ const ProjectDetails = () => {
           </div>
         </div>
       </div>
-      {showAddMemberDialog ? (
+      {showAddMemberDialog && (
         <EditMembersList
           setShowAddMemberDialog={setShowAddMemberDialog}
           addedMembers={project?.members}
@@ -294,7 +294,7 @@ const ProjectDetails = () => {
           closeAddRemoveMembers={closeAddRemoveMembers}
           projectId={projectId}
         />
-      ) : null}
+      )}
       {showProjectModal && (
         <AddEditProject
           editProjectData={editProjectData}
