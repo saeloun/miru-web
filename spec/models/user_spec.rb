@@ -35,6 +35,7 @@ RSpec.describe User, type: :model do
 
   describe "Callbacks" do
     it { is_expected.to callback(:discard_project_members).after(:discard) }
+    it { is_expected.to callback(:create_employment_from_current_workspace).after(:save) }
   end
 
   describe "Scopes" do
@@ -151,6 +152,35 @@ RSpec.describe User, type: :model do
       user.assign_company_and_role
       expect(user.errors.messages.size).to eq(1)
       expect(user.errors.full_messages).to include("Something went wrong")
+    end
+  end
+
+  describe "#current_workspace=" do
+    it "raises error if current_workspace is not company" do
+      expect { user.current_workspace = Invoice.first }.to raise_error(ArgumentError)
+        .with_message("Workspace must be a Company")
+      expect { user.current_workspace = nil }.to raise_error(ArgumentError)
+        .with_message("Workspace must be a Company")
+      expect { user.current_workspace = Company.new }.to raise_error(ArgumentError).with_message("Workspace must exist")
+    end
+
+    context "when user belongs to the current_workspace" do
+      before do
+        create(:employment, user:, company:)
+      end
+
+      it "sets current_workspace" do
+        user.current_workspace = company
+        expect(user.current_workspace).to eq(company)
+      end
+    end
+
+    context "when user does not belong to the current_workspace" do
+      it "creates the employment and sets current_workspace" do
+        user.current_workspace = company
+        expect(user.current_workspace).to eq(company)
+        expect(user.employments.pluck(:company_id).include?(company.id)).to be_truthy
+      end
     end
   end
 end

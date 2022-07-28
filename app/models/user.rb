@@ -44,6 +44,7 @@
 
 class User < ApplicationRecord
   include Discard::Model
+  include CurrentWorkspaceable
 
   # Associations
   has_many :employments, dependent: :destroy
@@ -99,14 +100,6 @@ class User < ApplicationRecord
 
   def active_for_authentication?
     super and self.kept?
-  end
-
-  def current_workspace(load_associations: [:logo_attachment])
-    @_current_workspace ||= Company.includes(load_associations).find_by(id: current_workspace_id)
-  end
-
-  def current_workspace=(workspace)
-    write_attribute(:current_workspace_id, workspace&.id)
   end
 
   def assign_company_and_role
