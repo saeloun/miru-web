@@ -20,6 +20,6 @@ class PreviousEmploymentPolicy < ApplicationPolicy
   end
 
   def create?
-    show?
+    index?
   end
 end

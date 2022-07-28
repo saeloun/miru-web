@@ -79,8 +79,9 @@ namespace :internal_api, defaults: { format: "json" } do
       resource :details, only: [:show, :update], controller: "team_members/details"
     end
 
-    resources :previous_employments, only: [:create, :index, :show, :update]
-
+    resources :user do
+      resources :previous_employments, only: [:create, :index, :show, :update], controller: "previous_employments"
+    end
     resources :addresses, only: [:show, :update], controller: "addresses"
 
     resource :profile, only: [:update, :show], controller: "profile" do
