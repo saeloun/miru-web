@@ -92,4 +92,6 @@ Rails.application.routes.draw do
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
     get "profile/edit/*path", to: "users/registrations#edit"
   end
+
+  post "webhooks", to: "webhooks#fulfill_stripe_checkout"
 end

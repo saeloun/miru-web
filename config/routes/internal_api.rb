@@ -59,7 +59,5 @@ namespace :internal_api, defaults: { format: "json" } do
     resource :profile, only: [:update, :show], controller: "profile" do
       delete "/remove_avatar", to: "profile#remove_avatar"
     end
-
-    post "webhooks/stripe/checkout/fulfillment", to: "webhooks#fulfill_stripe_checkout"
   end
 end
