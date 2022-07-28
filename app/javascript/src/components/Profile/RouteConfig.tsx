@@ -8,6 +8,7 @@ import {
 // import BankAccountDetails from "./BankAccountDetails";
 import Billing from "./Organization/Billing";
 import OrgEdit from "./Organization/Edit";
+import Import from "./Organization/Import";
 import PaymentSettings from "./Organization/Payment";
 import UserDetails from "./UserDetail";
 
@@ -19,6 +20,7 @@ const RouteConfig = () => (
       <Route path="payment" element={<PaymentSettings />} />
       <Route path="billing" element={<Billing />} />
       <Route path="organization" element={<OrgEdit />} />
+      <Route path="import" element={<Import />} />
       {/* </Route> */}
     </Route>
   </Routes>
