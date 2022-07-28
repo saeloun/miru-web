@@ -5,3 +5,32 @@
 .week-card:hover .icon-hover {
   visibility: visible;
 }
+
+.auto-complete-container {
+  @apply relative rounded-md shadow-sm;
+  input {
+    @apply bg-miru-gray-100 text-tiny font-medium;
+  }
+}
+
+.md-auto-complete-container {
+  @apply auto-complete-container;
+  input {
+    width: 256px;
+    height: 32px;
+    padding:  6px;
+    padding-right: 2.25rem;
+  }
+  position: dynamic;
+}
+
+.lg-auto-complete-container {
+  @apply auto-complete-container;
+  input {
+    width: 324px;
+    height: 32px;
+    padding: 6px;
+    padding-right: 2.25rem;
+  }
+  position: dynamic;
+}

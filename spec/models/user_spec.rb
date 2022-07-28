@@ -7,12 +7,12 @@ RSpec.describe User, type: :model do
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
-    create(:company_user, company:, user:)
+    create(:employment, company:, user:)
   end
 
   describe "Associations" do
-    it { is_expected.to have_many(:companies).through(:company_users) }
-    it { is_expected.to have_many(:company_users).dependent(:destroy) }
+    it { is_expected.to have_many(:companies).through(:employments) }
+    it { is_expected.to have_many(:employments).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:delete_all) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
     it { is_expected.to have_many(:timesheet_entries) }
@@ -37,6 +37,28 @@ RSpec.describe User, type: :model do
     it { is_expected.to callback(:discard_project_members).after(:discard) }
   end
 
+  describe "Scopes" do
+    let(:company) { create(:company) }
+    let!(:valid_invitation1) { create(:invitation, sender: user) }
+    let!(:valid_invitation2) { create(:invitation) }
+    let!(:invalid_invitations) { create_list(:invitation, 2) }
+    let!(:invalid_invitations_with_sender) { create_list(:invitation, 2, sender: user) }
+
+    before do
+      invalid_invitations.concat(invalid_invitations_with_sender).each do |invalid_invitation|
+        invalid_invitation.update_columns(expired_at: Time.current - 1.day)
+      end
+    end
+
+    describe ".valid_invitations" do
+      it "returns all valid invitations" do
+        expect(user.invitations.valid_invitations.size).to eq(1)
+        expect(user.invitations.valid_invitations).to match_array(valid_invitation1)
+        expect(user.invitations.valid_invitations).not_to match_array(valid_invitation2)
+      end
+    end
+  end
+
   it "checks if it is an owner" do
     user.add_role :owner, company
     expect(user.has_role?(:owner, company)).to be_truthy
@@ -56,14 +78,14 @@ RSpec.describe User, type: :model do
     it "shows the first role name" do
       user.add_role :admin, company
       user.add_role :owner, company
-      expect(user.primary_role).to eq("admin")
-      expect(user.primary_role).not_to eq("owner")
+      expect(user.primary_role(company)).to eq("admin")
+      expect(user.primary_role(company)).not_to eq("owner")
     end
 
     it "returns employee as default role" do
-      expect(user.primary_role).to eq("employee")
-      expect(user.primary_role).not_to eq("admin")
-      expect(user.primary_role).not_to eq("owner")
+      expect(user.primary_role(company)).to eq("employee")
+      expect(user.primary_role(company)).not_to eq("admin")
+      expect(user.primary_role(company)).not_to eq("owner")
     end
   end
 
@@ -107,6 +129,28 @@ RSpec.describe User, type: :model do
     it "checks for empty social account urls" do
       expect(user.social_accounts["github_url"]).to eq("")
       expect(user.social_accounts["linkedin_url"]).to eq("")
+    end
+  end
+
+  describe "#assign_company_and_role" do
+    before do
+      user.remove_role :admin, company
+      user.employments.destroy_all
+    end
+
+    it "user will be added as a company member with employee role" do
+      user.current_company = company
+      user.role = "employee"
+      user.assign_company_and_role
+      expect(company.employments.pluck(:user_id).include?(user.id)).to be_truthy
+    end
+
+    it "when role is nil user won't be added as a company member with employee role" do
+      user.current_company = company
+      user.role = nil
+      user.assign_company_and_role
+      expect(user.errors.messages.size).to eq(1)
+      expect(user.errors.full_messages).to include("Something went wrong")
     end
   end
 end

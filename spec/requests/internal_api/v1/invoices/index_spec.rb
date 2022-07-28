@@ -11,7 +11,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
 
   context "when user is a book keeper" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
     end
@@ -107,11 +107,54 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         expect(response).to have_http_status(:ok)
       end
     end
+
+    describe "search query param" do
+      let(:flipkart) { build(:client, company:, name: "flipkart") }
+      let(:invoice) { build(:invoice, client: flipkart, invoice_number: "SAI-01") }
+
+      before do
+        flipkart.invoices << invoice
+        company.clients << flipkart
+        company.save!
+        company.reload
+      end
+
+      it "returns invoices with client.name specified by query" do
+        query = "flip"
+        send_request :get, internal_api_v1_invoices_path(query:)
+        expected_invoices = company.invoices.select { |inv| inv.client.name.include?(query) }
+
+        expect(response).to have_http_status(:ok)
+        expect(json_response["invoices"].length) .to be_positive
+        expect(
+          json_response["invoices"].map { |inv|
+            inv["id"]
+          }).to match_array(
+            expected_invoices.map { |inv|
+            inv["id"]
+          })
+      end
+
+      it "returns invoices with invoice_number specified by query" do
+        query = "SAI"
+        send_request :get, internal_api_v1_invoices_path(query:)
+        expected_invoices = company.invoices.select { |inv| inv.invoice_number.include?(query) }
+        expect(response).to have_http_status(:ok)
+        expect(json_response["invoices"].length) .to be_positive
+        expect(
+          json_response["invoices"].map { |invoice|
+            invoice["id"]
+          }).to match_array(
+            expected_invoices.map { |invoice|
+            invoice["id"]
+          })
+      end
+    end
   end
 
   context "when user is an admin" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
     end
@@ -211,7 +254,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
 
   context "when user is an employee" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
       send_request :get, internal_api_v1_invoices_path

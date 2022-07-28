@@ -49,7 +49,7 @@ const dateRangeOptions = [
 const statusOption = [
   { value: "billed", label: "BILLED" },
   { value: "unbilled", label: "UNBILLED" },
-  { value: "nonBilled", label: "NON BILLABLE" }
+  { value: "non_billable", label: "NON BILLABLE" }
 ];
 
 const groupBy = [

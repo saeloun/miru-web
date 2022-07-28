@@ -3,19 +3,20 @@
 require "rails_helper"
 
 RSpec.describe Invoices::PaymentsController, type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, base_currency: "inr") }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
-  let(:client) { create(:client, company:) }
+  let(:client) { create(:client_with_phone_number_without_country_code, company:) }
   let!(:invoice) { create(:invoice, status: "sent", client:) }
+  let!(:stripe_connected_account) { create(:stripe_connected_account, company:) }
   let(:params) { { invoice_id: invoice.id } }
 
   before do
-    create(:company_user, company:, user: admin)
-    create(:company_user, company:, user: employee)
+    create(:employment, company:, user: admin)
+    create(:employment, company:, user: employee)
   end
 
-  describe "GET new" do
+  describe "GET new", :vcr do
     subject { send_request :get, new_invoice_payment_path(params) }
 
     let(:success_path) { success_invoice_payments_path(params) }
@@ -37,7 +38,7 @@ RSpec.describe Invoices::PaymentsController, type: :request do
     context "when invoice is paid" do
       before { invoice.update(status: "paid") }
 
-      it "refirects user to success path" do
+      it "redirects user to success path" do
         subject
 
         expect(response.status).to eq 302
@@ -46,7 +47,37 @@ RSpec.describe Invoices::PaymentsController, type: :request do
     end
   end
 
-  describe "GET success" do
+  describe "GET success", :vcr do
+    before do
+      # Using custom account creation to make this test pass and skip
+      # account setup process involved in normal stripe account creation
+      account = Stripe::Account.create(
+        {
+          type: "custom",
+          country: "US",
+          email: "jenny.rosen@example.com",
+          business_type: "company",
+          company: {
+            name: "test company"
+          },
+          business_profile: {
+            name: "test company",
+            url: "https://exampletest.com"
+          },
+          capabilities: {
+            card_payments: { requested: true },
+            transfers: { requested: true }
+          }
+        })
+
+      stripe_connected_account.update_columns(account_id: account.id)
+
+      invoice.create_checkout_session!(
+        success_url: success_invoice_payments_url(invoice),
+        cancel_url: cancel_invoice_payments_url(invoice)
+      )
+    end
+
     subject { send_request :get, success_invoice_payments_path(params) }
 
     it "marks invoice status as paid" do
@@ -56,9 +87,17 @@ RSpec.describe Invoices::PaymentsController, type: :request do
       invoice.reload
       expect(invoice.status).to eq "paid"
     end
+
+    it "invoice status will remain as sent" do
+      expect(invoice.status).not_to eq "paid"
+      subject
+      expect(response.status).to eq 302
+      invoice.reload
+      expect(invoice.status).to eq "sent"
+    end
   end
 
-  describe "GET cancel" do
+  describe "GET cancel", :vcr do
     subject { send_request :get, cancel_invoice_payments_path(params) }
 
     it "renders time tracking page with status 200" do

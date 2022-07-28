@@ -8,12 +8,12 @@ RSpec.describe "Users::SessionsController#create", type: :request do
 
   context "when user is an admin, owner, employee" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       send_request :post, user_session_path, params: { user: { email: user.email, password: user.password } }
     end
 
     it "then after_sign_in_path_for returns the time_tracking path" do
-      expect(response).to redirect_to(time_tracking_index_path)
+      expect(response).to redirect_to(root_path + "time-tracking")
     end
   end
 

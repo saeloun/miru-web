@@ -21,13 +21,13 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
         </NavLink>
       </li>
       <li className='border-b-2 border-miru-gray-400'>
-        <NavLink
+        {/* <NavLink
           to="/profile/edit/bank_account_details"
           type="li"
           className={({ isActive }) => getActiveClassName(isActive)}
         >
           BANK ACCOUNT DETAILS
-        </NavLink>
+        </NavLink> TODO: Temporary disabling*/}
       </li>
       <p className='font-bold text-base mt-5 ml-4'>{company.name}</p>
       <li className='border-b-2 border-miru-gray-400 mt-4'>
@@ -71,7 +71,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
     <div className='flex flex-col '>
       <div className='mr-2 w-60 h-16 p-4 bg-miru-han-purple-1000 flex text-white items-center'>
         <img src={profile} className='mr-2' />
-        <div className='flex flex-col'>
+        <div className='flex flex-col overflow-x-auto'>
           <span className='font-bold text-base leading-5 pt-1'>{`${firstName} ${lastName}`}</span>
           <span className='font-normal text-xs leading-4'>{email}</span>
         </div>

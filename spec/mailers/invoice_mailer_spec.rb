@@ -17,7 +17,7 @@ RSpec.describe InvoiceMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to match("You have an invoice")
+      expect(mail.body.encoded).to match("sent you an invoice")
     end
   end
 end

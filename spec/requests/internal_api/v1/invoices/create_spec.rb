@@ -11,18 +11,29 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
 
   context "when user is an admin" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
     end
 
     describe "invoice creation" do
-      it "creates invoice successfully" do
-        invoice = attributes_for(
+      let(:invoice) {
+        attributes_for(
           :invoice,
           client: company.clients.first,
           client_id: company.clients.first.id,
-          status: :draft)
+          status: :draft,
+          invoice_line_item: {
+            name: "Test",
+            description: "test description",
+            data: Faker::Date.in_date_period,
+            rate: 12.4,
+            quantity: 34.54
+          }
+        )
+      }
+
+      it "creates invoice successfully" do
         send_request :post, internal_api_v1_invoices_path(invoice:)
         expect(response).to have_http_status(:ok)
         expected_attrs = ["amount", "amountDue", "amountPaid",
@@ -50,7 +61,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
 
   context "when user is an employee" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
       send_request :post, internal_api_v1_invoices_path(
@@ -58,7 +69,14 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
           :invoice,
           client: company.clients.first,
           client_id: company.clients.first.id,
-          status: :draft
+          status: :draft,
+          invoice_line_item: {
+            name: "Test",
+            description: "test description",
+            data: Faker::Date.in_date_period,
+            rate: 12.4,
+            quantity: 34.54
+          }
         )
       )
     end
@@ -70,7 +88,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
 
   context "when user is a book keeper" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
       send_request :post, internal_api_v1_invoices_path(
@@ -78,7 +96,14 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
           :invoice,
           client: company.clients.first,
           client_id: company.clients.first.id,
-          status: :draft
+          status: :draft,
+          invoice_line_item: {
+            name: "Test",
+            description: "test description",
+            data: Faker::Date.in_date_period,
+            rate: 12.4,
+            quantity: 34.54
+          }
         )
       )
     end

@@ -13,16 +13,10 @@
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  first_name             :string           not null
-#  invitation_accepted_at :datetime
-#  invitation_created_at  :datetime
-#  invitation_limit       :integer
-#  invitation_sent_at     :datetime
-#  invitation_token       :string
-#  invitations_count      :integer          default(0)
-#  invited_by_type        :string
 #  last_name              :string           not null
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string
+#  phone                  :string
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
@@ -32,7 +26,6 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  current_workspace_id   :bigint
-#  invited_by_id          :bigint
 #  personal_email_id      :string
 #
 # Indexes
@@ -40,9 +33,6 @@
 #  index_users_on_current_workspace_id  (current_workspace_id)
 #  index_users_on_discarded_at          (discarded_at)
 #  index_users_on_email                 (email) UNIQUE
-#  index_users_on_invitation_token      (invitation_token) UNIQUE
-#  index_users_on_invited_by            (invited_by_type,invited_by_id)
-#  index_users_on_invited_by_id         (invited_by_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
 # Foreign Keys
@@ -56,8 +46,8 @@ class User < ApplicationRecord
   include Discard::Model
 
   # Associations
-  has_many :company_users, dependent: :destroy
-  has_many :companies, through: :company_users
+  has_many :employments, dependent: :destroy
+  has_many :companies, through: :employments
   has_many :project_members, dependent: :destroy
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all
@@ -66,10 +56,15 @@ class User < ApplicationRecord
   has_one_attached :avatar
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
+  has_many :invitations, foreign_key: "sender_id", dependent: :destroy
+
   rolify strict: true
 
   # Social account details
   store_accessor :social_accounts, :github_url, :linkedin_url
+
+  # Attribute accessor
+  attr_accessor :current_company, :role, :skip_password_validation
 
   # Validations
   after_initialize :set_default_social_accounts, if: :new_record?
@@ -80,7 +75,7 @@ class User < ApplicationRecord
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :invitable, :database_authenticatable, :registerable,
+  devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :validatable,
     :trackable, :confirmable,
     :omniauthable, omniauth_providers: [:google_oauth2]
@@ -88,7 +83,11 @@ class User < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
 
-  def primary_role
+  # scopes
+  scope :valid_invitations, -> { invitations.where(sender: self).valid_invitations }
+
+  def primary_role(company)
+    roles = self.roles.where(resource: company)
     return "employee" if roles.empty?
 
     roles.first.name
@@ -110,10 +109,22 @@ class User < ApplicationRecord
     write_attribute(:current_workspace_id, workspace&.id)
   end
 
-  # https://github.com/scambra/devise_invitable/blob/7c4b1f6d19135b2cfed4685735a646a28bbc5191/test/rails_app/app/models/user.rb#L59
-  def send_devise_notification(notification, *args)
-    super
+  def assign_company_and_role
+    return self.errors.add(:base, I18n.t("errors.internal_server_error")) if current_company.nil? || role.nil?
+
+    ActiveRecord::Base.transaction do
+      assign_company
+      assign_role
+    end
   end
+
+  def create_reset_password_token
+    raw, hashed = Devise.token_generator.generate(User, :reset_password_token)
+    self.reset_password_token = hashed
+    self.reset_password_sent_at = Time.now.utc
+    self.save
+    raw # This value will be used to redirect users to the reset password page
+ end
 
   private
 
@@ -126,5 +137,24 @@ class User < ApplicationRecord
         "github_url": "",
         "linkedin_url": ""
       }
+    end
+
+    def assign_company
+      unless errors.present? ||
+          companies.exists?(id: current_company.id)
+        self.companies << current_company
+      end
+    end
+
+    def assign_role
+      if errors.empty? && current_company
+        self.add_role(role.downcase.to_sym, current_company)
+      end
+    end
+
+    def password_required?
+      return false if skip_password_validation
+
+      super
     end
 end

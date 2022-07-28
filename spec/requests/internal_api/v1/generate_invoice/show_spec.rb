@@ -11,7 +11,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#show", type: :request do
 
   context "when user is an admin" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
       create_list(:timesheet_entry, 5, user:, project:)
@@ -41,33 +41,33 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#show", type: :request do
 
   context "when user is an employee" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
       send_request :get, internal_api_v1_generate_invoice_index_path
     end
 
-    it "is not permitted to view time entry report" do
+    it "is not permitted to view invoice details" do
       expect(response).to have_http_status(:forbidden)
     end
   end
 
   context "when user is a book keeper" do
     before do
-      create(:company_user, company:, user:)
+      create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
       send_request :get, internal_api_v1_generate_invoice_index_path
     end
 
-    it "is not permitted to view time entry report" do
+    it "is not permitted to view invoice details" do
       expect(response).to have_http_status(:forbidden)
     end
   end
 
   context "when unauthenticated" do
     it "is not permitted to view time entry report" do
-      send_request :get, internal_api_v1_reports_path
+      send_request :get, internal_api_v1_generate_invoice_index_path
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
     end

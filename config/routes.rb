@@ -13,7 +13,6 @@ Rails.application.routes.draw do
     registrations: "users/registrations",
     sessions: "users/sessions",
     passwords: "users/passwords",
-    invitations: "users/invitations",
     omniauth_callbacks: "users/omniauth_callbacks"
   }
 
@@ -43,11 +42,6 @@ Rails.application.routes.draw do
     resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
   end
 
-  resources :time_tracking, only: [:index], path: "time-tracking"
-
-  resources :team, only: [:index, :update, :destroy, :edit]
-
-  resources :reports, only: [:index]
   resources :workspaces, only: [:update]
 
   resources :invoices, only: [], module: :invoices do
@@ -63,24 +57,15 @@ Rails.application.routes.draw do
     end
   end
 
-  get "clients/*path", to: "clients#index", via: :all
-  get "clients", to: "clients#index"
+  namespace :invitations do
+    resources :accepts, only: [:index], controller: "accept"
+  end
 
-  get "invoices/*path", to: "invoices#index", via: :all
-  get "invoices", to: "invoices#index"
-
-  get "projects/*path", to: "projects#index", via: :all
-  get "projects", to: "projects#index"
+  get "users/invitation/accept", to: "invitations/accept#show"
 
   get "payments/settings/stripe/connect/refresh", to: "payment_settings#refresh_stripe_connect"
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"
-
-  get "payments/*path", to: "payments#index", via: :all
-  get "payments", to: "payments#index"
-
-  get "subscriptions/*path", to: "subscriptions#index", via: :all
-  resources :subscriptions, only: [:index]
 
   resource :email_confirmation, only: :show do
     get :resend
@@ -94,4 +79,8 @@ Rails.application.routes.draw do
   end
 
   post "webhooks", to: "webhooks#fulfill_stripe_checkout"
+
+  match "*path", via: :all, to: "home#index", constraints: lambda { |req|
+    req.path.exclude? "rails/active_storage"
+  }
 end
