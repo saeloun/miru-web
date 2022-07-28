@@ -127,7 +127,7 @@ class User < ApplicationRecord
  end
 
   def employee_of?(company_id)
-    employments.pluck(:company_id).include?(company_id)
+    employments.exists?(company_id:)
   end
 
   private
