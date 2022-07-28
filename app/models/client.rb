@@ -16,9 +16,8 @@
 #
 # Indexes
 #
-#  index_clients_on_company_id            (company_id)
-#  index_clients_on_discarded_at          (discarded_at)
-#  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
+#  index_clients_on_company_id    (company_id)
+#  index_clients_on_discarded_at  (discarded_at)
 #
 # Foreign Keys
 #
@@ -118,8 +117,8 @@ class Client < ApplicationRecord
     end
   end
 
-  def payment_summary
-    status_and_amount = invoices.group(:status).sum(:amount)
+  def payment_summary(duration)
+    status_and_amount = invoices.during(duration).group(:status).sum(:amount)
     status_and_amount.default = 0
     {
       name:,
