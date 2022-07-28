@@ -20,7 +20,7 @@ const TimeEntryReports = () => {
     clients: [],
     teamMember: [],
     status: [],
-    groupBy: { label: "None", value: "" }
+    groupBy: { label: "Project", value: "project" }
   };
 
   const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
