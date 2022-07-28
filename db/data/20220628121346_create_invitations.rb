@@ -4,6 +4,8 @@ require_relative("./verifiers/invitation_verifier.rb")
 
 class CreateInvitations < ActiveRecord::Migration[7.0]
   def up
+    return unless User.has_attribute?(:invitation_created_at)
+
     Invitation.skip_callback(:validation, :before, :set_expired_at)
     Invitation.skip_callback(:validation, :before, :set_token)
     Invitation.skip_callback(:commit, :after, :send_invitation_mail)
