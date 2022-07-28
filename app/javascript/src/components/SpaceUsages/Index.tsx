@@ -193,10 +193,16 @@ const TimeReserving: React.FC<Iprops> = ({
     }
   }, [entryList, selectedFullDate]);
 
+  const SPACES = [
+    { id: "1", name: "Conference Room", alias: "CR" },
+    { id: "2", name: "HR Cabin", alias: "HRC" },
+    { id: "3", name: "Sales Cabin", alias: "SC" }
+  ];
+
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <div className="mx-50 mt-6">
+      <div className="mx-50 mt-1">
         <div className="bg-miru-alert-yellow-400 text-miru-alert-green-1000 px-1 flex justify-center font-semibold tracking-widest rounded-lg w-auto h-auto text-xs mt-3 mb-3 p-3">
           <div className="marquee">
             <p>
@@ -206,7 +212,7 @@ const TimeReserving: React.FC<Iprops> = ({
           </div>
         </div>
         <div>
-          <div className="mb-6">
+          <div className="mb-1">
             <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
               <button
                 onClick={() => {
@@ -238,8 +244,14 @@ const TimeReserving: React.FC<Iprops> = ({
                   &gt;
                 </button>*/}
               </div>
-              <div className="flex mr-12">
-              </div>
+              {!newEntryView && (
+                <button
+                  onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
+                  className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold mr-4"
+                >
+                + NEW
+                </button>
+              )}
             </div>
             <DatesInWeek
               view={"day"}
@@ -262,37 +274,39 @@ const TimeReserving: React.FC<Iprops> = ({
               dayInfo={dayInfo}
             />
           )}
-          {!newEntryView && (
-            <button
-              onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
-              className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
-            >
-                + NEW
-            </button>
-          )}
         </div>
 
-        <div className="ac-calendar-view">
-          <div className="ac-calendar">
-            {calendarTimes().map((i, index) => (
-              <div className="ac-cv-time-row" key={index}><div className="ac-cv-time"><span>{i.name}</span></div></div>
+        <div className="ac-calendar-container">
+          <div className="ac-calendar-users grid grid-cols-4 gap-0">
+            {SPACES.map((i, _index) => (
+              <div className="ac-clone-col">
+                <div className="ac-user-name">
+                  <span>{i.name}</span>
+                  <i>{i.alias}</i>
+                </div>
+              </div>
             ))}
           </div>
-          {Object.entries(groupingEntryList).length > 0 ?
-            <div className="ac-calendar-clone grid grid-cols-4 gap-0">
-              {
-                Object.entries(groupingEntryList).map(([spaceCode, value], listIndex) => (<EntryCardDayView
-                  key={listIndex}
-                  spaceCode={spaceCode}
-                  spaceUsages={value}
-                  setEditEntryId={setEditEntryId}
-                  setEditEntryColor={setEditEntryColor}
-                />))
-              }
+          <div className="ac-calendar-view">
+            <div className="ac-calendar">
+              {calendarTimes().map((i, index) => (
+                <div className="ac-cv-time-row" key={index}><div className="ac-cv-time"><span>{i.name}</span></div></div>
+              ))}
             </div>
-            : ""}
+            {Object.entries(groupingEntryList).length > 0 ?
+              <div className="ac-calendar-clone grid grid-cols-4 gap-0">
+                {
+                  Object.entries(groupingEntryList).map(([_spaceCode, value], listIndex) => (<EntryCardDayView
+                    key={listIndex}
+                    spaceUsages={value}
+                    setEditEntryId={setEditEntryId}
+                    setEditEntryColor={setEditEntryColor}
+                  />))
+                }
+              </div>
+              : ""}
+          </div>
         </div>
-
       </div>
       {editEntryId ? <EditEntry
         fetchEntries={fetchEntries}

@@ -14,12 +14,38 @@
 	100% { transform: translate(-100%, 0); }
 }
 
+.ac-calendar-container::-webkit-scrollbar {
+	-webkit-appearance: none;
+}
+
+.ac-calendar-container::-webkit-scrollbar:vertical {
+	width: 11px;
+}
+
+.ac-calendar-container::-webkit-scrollbar:horizontal {
+	height: 11px;
+}
+
+.ac-calendar-container::-webkit-scrollbar-thumb {
+	border-radius: 8px;
+	border: 2px solid white; /* should match background, can't be transparent */
+	background-color: rgba(0, 0, 0, .5);
+}
+
+.ac-calendar-container::-webkit-scrollbar-track {
+	background-color: #fff;
+	border-radius: 8px;
+}
+
+.ac-calendar-container {
+	max-height: calc(100vh - 250px);
+	overflow-y: auto;
+}
 .ac-calendar-view {
 	@apply relative;
 }
 .ac-calendar {
-	@apply flex flex-col pl-12 mt-18 mb-13;
-
+	@apply flex flex-col pl-12 mt-1 mb-1;
 }
 .ac-calendar .ac-cv-time-row {
 	@apply border-t relative flex;
@@ -43,16 +69,6 @@
 .ac-calendar-clone .ac-clone-col {
 	@apply border-r relative;
 }
-.ac-calendar-clone .ac-clone-col .ac-user-name {
-	@apply flex items-center justify-end relative;
-	top: -50px;
-}
-.ac-calendar-clone .ac-clone-col .ac-user-name span {
-	@apply font-semibold pr-3;
-}
-.ac-calendar-clone .ac-clone-col .ac-user-name i {
-	@apply w-10 h-10 inline-flex items-center justify-center bg-col-han-app-600 text-white rounded-full;
-}
 
 .ac-calendar-clone .as-meeting-point {
 	@apply absolute top-0 left-0 flex items-center justify-center text-col-han-app-400 w-full shadow-lg;
@@ -62,3 +78,24 @@
 	min-height: 12px;
 	line-height: 12px;
 }
+
+.ac-calendar-container .ac-calendar-users {
+	@apply sticky bg-white shadow pl-15;
+	z-index: 1;
+	top: 0px;
+}
+.ac-calendar-container .ac-user-name {
+	@apply border-r;
+	@apply flex items-center justify-end relative;
+	padding: 10px 0;
+}
+.ac-calendar-container .ac-user-name span {
+	@apply font-semibold pr-3;
+}
+.ac-calendar-container .ac-clone-col .ac-user-name i {
+	@apply w-10 h-10 inline-flex items-center justify-center bg-col-han-app-600 text-white rounded-full;
+}
+// .ac-calendar-container .ac-cv-time {
+// 	@apply border-r w-15;
+// 	margin-left: -45px;
+// }
