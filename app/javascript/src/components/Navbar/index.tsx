@@ -90,8 +90,8 @@ const Navbar = ({ isAdminUser, user }) => {
     "flex py-3 px-4 items-center text-miru-han-purple-1000 bg-miru-gray-100 border-l-8 border-miru-han-purple-1000";
 
   const getEmployeeOptions = () =>
-    navEmployeeOptions.map((option) => (
-      <li className="items-center hover:bg-miru-gray-100">
+    navEmployeeOptions.map((option, index) => (
+      <li key={index} className="items-center hover:bg-miru-gray-100">
         <NavLink
           to={option.path}
           className={({ isActive }) =>
@@ -106,8 +106,8 @@ const Navbar = ({ isAdminUser, user }) => {
     ));
 
   const getAdminOption = () =>
-    navAdminOptions.map((option) => (
-      <li className="items-center hover:bg-miru-gray-100">
+    navAdminOptions.map((option, index) => (
+      <li key={index} className="items-center hover:bg-miru-gray-100">
         <NavLink
           to={option.path}
           className={({ isActive }) =>
@@ -125,13 +125,12 @@ const Navbar = ({ isAdminUser, user }) => {
     <div className="shadow-2xl w-1/6 h-full flex flex-col justify-between ">
       <div>
         <div className="h-20 bg-miru-gray-100 flex items-center justify-center">
-          <img src={miruLogo} />
+          <img src={miruLogo} alt="miru-logo"/>
         </div>
         <ul className="mt-8">
           {isAdminUser ? getAdminOption() : getEmployeeOptions()}
         </ul>
       </div>
-
       <div>
         <ul className="mt-32">
           <a>
@@ -156,7 +155,7 @@ const Navbar = ({ isAdminUser, user }) => {
           </a>
         </ul>
         <div className="mr-2 w-full h-16 p-4 bg-miru-gray-100 flex items-center">
-          <img src={avatar} className="mr-2" />
+          <img src={avatar} className="mr-2" alt="avatar" />
           <div className="flex flex-col overflow-x-auto">
             <span className="font-bold text-base leading-5 pt-1">{`${user.first_name} ${user.last_name}`}</span>
             <span className="font-normal text-xs leading-4">{user.email}</span>
