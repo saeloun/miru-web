@@ -126,6 +126,10 @@ class User < ApplicationRecord
     raw # This value will be used to redirect users to the reset password page
  end
 
+  def employee_of?(company_id)
+    employments.pluck(:company_id).include?(company_id)
+  end
+
   private
 
     def discard_project_members
