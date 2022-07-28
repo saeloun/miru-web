@@ -25,6 +25,6 @@ class PreviousEmploymentPolicy < ApplicationPolicy
   private
 
     def record_user_employee_of?(company_id)
-      record.user.employments.ids.include?(company_id)
+      record.user.employments.pluck(:company_id).include?(company_id)
     end
 end

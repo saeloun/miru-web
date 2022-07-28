@@ -9,9 +9,12 @@ RSpec.describe PreviousEmploymentPolicy, type: :policy do
   let(:previous_employment) { create(:previous_employment, user: employee) }
 
   context "when user is within the same workspace as the previous_employment user" do
+    before do
+      create(:employment, company:, user: employee)
+    end
+
     context "when user is an admin" do
       before do
-        create(:employment, company:, user: employee)
         user.add_role(:admin, company)
       end
 
@@ -24,7 +27,6 @@ RSpec.describe PreviousEmploymentPolicy, type: :policy do
 
     context "when user is an owner" do
       before do
-        create(:employment, company:, user: employee)
         user.add_role :owner, company
       end
 
@@ -37,7 +39,6 @@ RSpec.describe PreviousEmploymentPolicy, type: :policy do
 
     context "when user is an employee" do
       before do
-        create(:employment, company:, user: employee)
         user.add_role :employee, company
       end
 
