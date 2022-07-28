@@ -72,10 +72,8 @@ Rails.application.routes.draw do
   end
 
   devise_scope :user do
-    get "profile", to: "users/registrations#edit"
-    get "profile/edit", to: "users/registrations#edit"
+    # TODO: verify if this is path is in use otherwise remove it.
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
-    get "profile/edit/*path", to: "users/registrations#edit"
   end
 
   match "*path", via: :all, to: "home#index", constraints: lambda { |req|
