@@ -10,7 +10,7 @@ import _ from "lodash";
 
 import { TOASTER_DURATION } from "constants/index";
 
-import AddEntry from "./AddEntry";
+// import AddEntry from "./AddEntry";
 import DatesInWeek from "./DatesInWeek";
 import EditEntry from "./EditEntry";
 import EntryCardDayView from "./EntryCardDayView";
@@ -243,17 +243,14 @@ const TimeReserving: React.FC<Iprops> = ({
                   &gt;
                 </button>*/}
               </div>
-              <div className="flex">
-                {!newEntryView && (
-                  <button
-                    onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
-                    className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold mr-4"
-                  >
-                + NEW
-                  </button>
-                )}
-              </div>
-
+              <button
+                onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
+                className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold mr-4"
+              >
+                NEW
+              </button>
+              {/* <div className="flex mr-1">
+              </div> */}
             </div>
             <DatesInWeek
               view={"day"}
@@ -262,7 +259,7 @@ const TimeReserving: React.FC<Iprops> = ({
               setSelectDate={setSelectDate}
             />
           </div>
-          {!editEntryId && newEntryView && (
+          {/* {!editEntryId && newEntryView && (
             <AddEntry
               selectedEmployeeId={userId}
               fetchEntries={fetchEntries}
@@ -275,7 +272,15 @@ const TimeReserving: React.FC<Iprops> = ({
               editEntryId={editEntryId}
               dayInfo={dayInfo}
             />
-          )}
+          )} */}
+          {/* {!newEntryView && (
+            <button
+              onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
+              className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
+            >
+                + NEW
+            </button>
+          )} */}
         </div>
 
         <div className="ac-calendar-container">
@@ -310,7 +315,8 @@ const TimeReserving: React.FC<Iprops> = ({
           </div>
         </div>
       </div>
-      {editEntryId ? <EditEntry
+      {editEntryId || newEntryView ? <EditEntry
+        selectedEmployeeId={userId}
         fetchEntries={fetchEntries}
         setNewEntryView={setNewEntryView}
         selectedDateInfo={dayInfo[selectDate]}

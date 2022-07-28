@@ -12,6 +12,7 @@ import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 // const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 
 const EditEntry: React.FC<Iprops> = ({
+  selectedEmployeeId,
   fetchEntries,
   setNewEntryView,
   selectedDateInfo,
@@ -41,6 +42,8 @@ const EditEntry: React.FC<Iprops> = ({
   const [note, setNote] = useState("");
   const [startDuration, setStartDuration] = useState(minutesToHHMM(minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) - (minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) % 15)));
   const [endDuration, setEndDuration] = useState("00:00");
+  const [displayStartDuration, setDisplayStartDuration] = useState("");
+  const [displayEndDuration, setDisplayEndDuration] = useState("");
   const [space, setSpace] = useState("");
   const [purpose, setPurpose] = useState("");
   const [purposeName, setPurposeName] = useState("");
@@ -87,6 +90,15 @@ const EditEntry: React.FC<Iprops> = ({
     textArea.click();
   }, []);
 
+  useEffect(() => {
+    if (startDuration){
+      setDisplayStartDuration(calendarTimes(null).filter((el) => minutesFromHHMM(startDuration) === minutesFromHHMM(el.id))[0].name)
+    }
+    if (endDuration){
+      setDisplayEndDuration(calendarTimes(null).filter((el) => minutesFromHHMM(endDuration) === minutesFromHHMM(el.id))[0].name)
+    }
+  }, [startDuration, endDuration]);
+
   const getPayload = () => ({
     work_date: selectedFullDate,
     start_duration: minutesFromHHMM(startDuration),
@@ -96,6 +108,25 @@ const EditEntry: React.FC<Iprops> = ({
     note: note,
     // restricted: restricted
   });
+
+  const handleSave = async () => {
+    const tse = getPayload();
+    const message = validateTimesheetEntry(tse);
+    if (message) {
+      Toastr.error(message);
+      return;
+    }
+    const res = await spaceUsagesApi.create({
+      space_usage: tse
+    }, selectedEmployeeId);
+
+    if (res.status === 200) {
+      const fetchEntriesRes = await fetchEntries(selectedFullDate, selectedFullDate);
+      if (fetchEntriesRes) {
+        setNewEntryView(false);
+      }
+    }
+  };
 
   const handleEdit = async () => {
     const tse = getPayload();
@@ -129,14 +160,23 @@ const EditEntry: React.FC<Iprops> = ({
             <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
             <span className="sr-only">Close modal</span>
           </button>
-          <div className="w-full p-6" style={{ backgroundColor: editEntryColor }}>
-            <p className="px-6 text-xl font-medium text-gray-900 dark:text-white">
+          {editEntryId === 0 ? (<div className="w-full p-6" style={{ backgroundColor: "#335CD6" }}>
+            <p className="px-6 text-xl font-medium text-white dark:text-white">
               {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${selectedDateInfo["month"]}, ${selectedDateInfo["year"]}`}
             </p>
-            <p className="px-6 text-sm font-medium text-gray-900 dark:text-white">
-              {startDuration} ~ {endDuration} • {purposeName}
+            <p className="px-6 text-sm font-medium text-white dark:text-white">
+              {displayStartDuration} ~ {displayEndDuration}
             </p>
-          </div>
+          </div>) : (
+            <div className="w-full p-6" style={{ backgroundColor: editEntryColor }}>
+              <p className="px-6 text-xl font-medium text-gray-900 dark:text-white">
+                {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${selectedDateInfo["month"]}, ${selectedDateInfo["year"]}`}
+              </p>
+              <p className="px-6 text-sm font-medium text-gray-900 dark:text-white">
+                {displayStartDuration} ~ {displayEndDuration} • {purposeName}
+              </p>
+            </div>
+          )}
           <div className="py-6 px-6 lg:px-8">
             <div className="space-y-6">
               <div>
@@ -212,28 +252,45 @@ const EditEntry: React.FC<Iprops> = ({
                   {calendarTimes(startDuration).map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
                 </select>
               </div>
-              <div className="flex justify-between">
-                <a
-                  onClick={() => {
-                    handleDeleteEntry(editEntryId);
-                    setNewEntryView(false);
-                    setEditEntryId(0);
-                  }}
-                  className="cursor-pointer text-sm text-blue-700 hover:underline dark:text-blue-500">
-                    Delete Event?
-                </a>
-              </div>
-              <button
-                onClick={() => handleEdit()}
-                className={
-                  "mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
+              {editEntryId === 0 ? (
+                <button
+                  onClick={handleSave}
+                  className={
+                    "mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
+                    (space && note
+                      ? "bg-miru-han-purple-1000 hover:border-transparent"
+                      : "bg-miru-gray-1000")
+                  }
+                >
+                  SAVE
+                </button>
+              ) :
+                (
+                  <>
+                    <div className="flex justify-between">
+                      <a
+                        onClick={() => {
+                          handleDeleteEntry(editEntryId);
+                          setNewEntryView(false);
+                          setEditEntryId(0);
+                        }}
+                        className="cursor-pointer text-sm text-blue-700 hover:underline dark:text-blue-500">
+                          Delete Event?
+                      </a>
+                    </div>
+                    <button
+                      onClick={() => handleEdit()}
+                      className={
+                        "mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
                       (space && note
                         ? "bg-miru-han-purple-1000 hover:border-transparent"
                         : "bg-miru-gray-1000")
-                }
-              >
-                UPDATE
-              </button>
+                      }
+                    >
+                      UPDATE
+                    </button>
+                  </>
+                )}
               <button
                 onClick={() => {
                   setNewEntryView(false);
@@ -252,6 +309,7 @@ const EditEntry: React.FC<Iprops> = ({
 };
 
 interface Iprops {
+  selectedEmployeeId: number;
   fetchEntries: (from: string, to: string) => Promise<any>
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
   selectedDateInfo: object;
