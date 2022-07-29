@@ -1,5 +1,5 @@
 /* eslint-disable no-unexpected-multiline */
-import React, { } from "react";
+import React from "react";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import spaceUsagesApi from "apis/space-usages";
@@ -11,6 +11,7 @@ import _ from "lodash";
 import { TOASTER_DURATION } from "constants/index";
 
 // import AddEntry from "./AddEntry";
+import CurrentHourLine from "./CurrentHourLine";
 import DatesInWeek from "./DatesInWeek";
 import EditEntry from "./EditEntry";
 import EntryCardDayView from "./EntryCardDayView";
@@ -42,6 +43,12 @@ const TimeReserving: React.FC<Iprops> = ({
   const [editEntryId, setEditEntryId] = useState<number>(0);
   const [editEntryColor, setEditEntryColor] = useState<string>("");
   const [allEmployeesEntries, setAllEmployeesEntries] = useState<object>({});
+  const [currentTime, setCurrentTime] = useState<any>({
+    hour: dayjs().hour(),
+    minute: dayjs().minute(),
+    second: dayjs().second(),
+    ampm: dayjs().format("A")
+  });
 
   const calendarTimes = () => {
     const product = (...a: any[][]) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
@@ -65,6 +72,17 @@ const TimeReserving: React.FC<Iprops> = ({
     const currentEmployeeEntries = {};
     currentEmployeeEntries[userId] = entries;
     setAllEmployeesEntries(currentEmployeeEntries);
+    const timer = setInterval(() => {
+      setCurrentTime({
+        hour: dayjs().hour(),
+        minute: dayjs().minute(),
+        second: dayjs().second(),
+        ampm: dayjs().format("A")
+      });
+    }, 1000);
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
 
   useEffect(() => {
@@ -202,8 +220,8 @@ const TimeReserving: React.FC<Iprops> = ({
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <div className="mx-50 mt-1">
-        <div className="bg-miru-alert-yellow-400 text-miru-alert-green-1000 px-1 flex justify-center font-semibold tracking-widest rounded-lg w-auto h-auto text-xs mt-3 mb-3 p-3">
+      <div className="mt-1 mx-50">
+        <div className="flex justify-center w-auto h-auto p-3 px-1 mt-3 mb-3 text-xs font-semibold tracking-widest rounded-lg bg-miru-alert-yellow-400 text-miru-alert-green-1000">
           <div className="marquee">
             <p>
               Yes! We need your help. Be a part of the <i className="text-xl">A∝C</i> team. Special Thanks to Gyandip, Kishan.
@@ -212,25 +230,25 @@ const TimeReserving: React.FC<Iprops> = ({
         </div>
         <div>
           <div className="mb-1">
-            <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
+            <div className="flex items-center justify-between w-full h-10 bg-miru-han-purple-1000">
               <button
                 onClick={() => {
                   setWeekDay(0);
                   setSelectDate(dayjs().weekday());
                 }}
-                className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold ml-4"
+                className="flex items-center justify-center w-20 h-6 ml-4 text-xs font-bold tracking-widest text-white border-2 rounded"
               >
               TODAY
               </button>
               <div className="flex">
                 {/*<button
                   onClick={handlePrevWeek}
-                  className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
+                  className="flex flex-col items-center justify-center w-6 h-6 text-white border-2 rounded-xl"
                 >
                   &lt;
                 </button>*/}
                 {!!dayInfo.length && (
-                  <p className="text-white mx-6 w-40">
+                  <p className="w-40 mx-6 text-white">
                     {dayInfo[0]["date"]} {dayInfo[0].month} -{" "}
                     {dayInfo[6]["date"]} {dayInfo[6]["month"]}{" "}
                     {dayInfo[6]["year"]}
@@ -238,14 +256,14 @@ const TimeReserving: React.FC<Iprops> = ({
                 )}
                 {/*<button
                   onClick={handleNextWeek}
-                  className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
+                  className="flex flex-col items-center justify-center w-6 h-6 text-white border-2 rounded-xl"
                 >
                   &gt;
                 </button>*/}
               </div>
               <button
                 onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
-                className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold mr-4"
+                className="flex items-center justify-center w-20 h-6 mr-4 text-xs font-bold tracking-widest text-white border-2 rounded"
               >
                 NEW
               </button>
@@ -276,7 +294,7 @@ const TimeReserving: React.FC<Iprops> = ({
           {/* {!newEntryView && (
             <button
               onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
-              className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
+              className="w-full p-4 text-lg font-bold tracking-widest border-2 h-14 border-miru-han-purple-600 text-miru-han-purple-600"
             >
                 + NEW
             </button>
@@ -284,7 +302,7 @@ const TimeReserving: React.FC<Iprops> = ({
         </div>
 
         <div className="ac-calendar-container">
-          <div className="ac-calendar-users grid grid-cols-4 gap-0">
+          <div className="grid grid-cols-4 gap-0 ac-calendar-users">
             {SPACES.map((i, _index) => (
               <div className="ac-clone-col">
                 <div className="ac-user-name">
@@ -301,7 +319,7 @@ const TimeReserving: React.FC<Iprops> = ({
               ))}
             </div>
             {Object.entries(groupingEntryList).length > 0 ?
-              <div className="ac-calendar-clone grid grid-cols-4 gap-0">
+              <div className="grid grid-cols-4 gap-0 ac-calendar-clone">
                 {
                   Object.entries(groupingEntryList).map(([_spaceCode, value], listIndex) => (<EntryCardDayView
                     key={listIndex}
@@ -310,6 +328,7 @@ const TimeReserving: React.FC<Iprops> = ({
                     setEditEntryColor={setEditEntryColor}
                   />))
                 }
+                <CurrentHourLine currentTime={currentTime} />
               </div>
               : ""}
           </div>

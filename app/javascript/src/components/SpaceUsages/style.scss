@@ -55,7 +55,7 @@
 	@apply border-b;
 }
 .ac-calendar .ac-cv-time {
-	@apply border-r w-15;
+	@apply border-r w-15 h-15;
 	margin-left: -45px;
 }
 .ac-calendar .ac-cv-time span {
@@ -99,3 +99,20 @@
 // 	@apply border-r w-15;
 // 	margin-left: -45px;
 // }
+.ac-calendar-view {
+	.current-hour-line {
+		@apply w-full absolute flex flex-row;
+		z-index: 0.5;
+		.circle, .line {
+			@apply bg-col-red-400;
+		}
+		.circle {
+			@apply h-3 w-3 rounded-3xl absolute top-2/4;
+			left: -3.3px;
+			transform: translateY(-50%);
+		}
+		.line {
+			@apply h-1 w-full rounded-tr-md rounded-br-md;
+		}
+	}
+}
