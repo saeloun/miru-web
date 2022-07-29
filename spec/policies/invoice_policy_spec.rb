@@ -28,7 +28,7 @@ RSpec.describe InvoicePolicy, type: :policy do
     end
   end
 
-  permissions :create?, :update?, :show?, :destroy?, :edit?, :send_invoice? do
+  permissions :create?, :update?, :show?, :destroy?, :edit?, :send_invoice?, :download? do
     it "grants permission to an admin and owner" do
       expect(described_class).to permit(admin)
       expect(described_class).to permit(owner)

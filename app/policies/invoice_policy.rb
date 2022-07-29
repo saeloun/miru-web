@@ -29,6 +29,10 @@ class InvoicePolicy < ApplicationPolicy
     user_owner_role? || user_admin_role?
   end
 
+  def download?
+    user_owner_role? || user_admin_role?
+  end
+
   def permitted_attributes
     [
       :issue_date, :due_date,
