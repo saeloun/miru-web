@@ -126,7 +126,7 @@ class User < ApplicationRecord
     raw # This value will be used to redirect users to the reset password page
  end
 
-  def employee_of?(company_id)
+  def employed_at?(company_id)
     employments.exists?(company_id:)
   end
 

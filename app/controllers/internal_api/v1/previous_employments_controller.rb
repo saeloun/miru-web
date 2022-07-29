@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::PreviousEmploymentsController < InternalApi::V1::ApplicationController
-  before_action :set_user, only: %i[index create]
+  before_action :set_user, only: %i[index create show update]
 
   def index
     authorize PreviousEmployment
@@ -22,7 +22,7 @@ class InternalApi::V1::PreviousEmploymentsController < InternalApi::V1::Applicat
 
   def create
     authorize PreviousEmployment
-    previous_employment = current_user.previous_employments.new(previous_employment_params)
+    previous_employment = @user.previous_employments.new(previous_employment_params)
     previous_employment.save!
     render :create, locals: { previous_employment: }, status: :ok
  end
@@ -34,7 +34,7 @@ class InternalApi::V1::PreviousEmploymentsController < InternalApi::V1::Applicat
     end
 
     def previous_employment
-      @previous_employment ||= PreviousEmployment.find(params[:id])
+      @previous_employment ||= @user.previous_employments.find(params[:id])
     end
 
     def previous_employment_params

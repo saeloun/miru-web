@@ -68,11 +68,7 @@ RSpec.describe PreviousEmploymentPolicy, type: :policy do
       end
     end
 
-    context "when user is a fellow employee but the record does not belong to him" do
-      before do
-        user.add_role :employee, company
-      end
-
+    context "when user is an employee but the record does not belong to him" do
       permissions :index?, :create? do
         it "grants permission for index and create" do
           expect(described_class).not_to permit(user)
