@@ -1,30 +1,48 @@
 # frozen_string_literal: true
 
 class PreviousEmploymentPolicy < ApplicationPolicy
+  class Scope
+    def initialize(user, scope)
+      @user = user
+      @scope = scope
+    end
+
+    def resolve
+      if id_admin_or_owner?
+        scope.all
+      else
+        scope.where(user_id: user.id)
+      end
+    end
+
+    private
+
+      attr_reader :user, :scope, :queried_user
+
+      def id_admin_or_owner?
+        user.has_any_role?(
+          { name: :admin, resource: user.current_workspace },
+          { name: :owner, resource: user.current_workspace })
+      end
+  end
+
   def show?
-    (record_user_employee_of?(user.current_workspace_id) &&
+    (record.user.employee_of?(user.current_workspace_id) &&
+    id_admin_or_owner?) || record_belongs_to_user?
+  end
+
+  def index?
+    user.employee_of?(user.current_workspace_id) ||
     user.has_any_role?(
       { name: :admin, resource: user.current_workspace },
-      { name: :owner, resource: user.current_workspace })) || record_belongs_to_user?
+      { name: :owner, resource: user.current_workspace })
   end
 
   def update?
-    (record_user_employee_of?(user.current_workspace_id) &&
-    user.has_any_role?(
-      { name: :admin, resource: user.current_workspace },
-      { name: :owner, resource: user.current_workspace })) || record_belongs_to_user?
+    show?
   end
 
   def create?
-    (record_user_employee_of?(user.current_workspace_id) &&
-    user.has_any_role?(
-      { name: :admin, resource: user.current_workspace },
-      { name: :owner, resource: user.current_workspace })) || record_belongs_to_user?
+    index?
   end
-
-  private
-
-    def record_user_employee_of?(company_id)
-      record.user.employments.pluck(:company_id).include?(company_id)
-    end
 end
