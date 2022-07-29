@@ -328,9 +328,11 @@ const TimeReserving: React.FC<Iprops> = ({
                     setEditEntryColor={setEditEntryColor}
                   />))
                 }
-                <CurrentHourLine currentTime={currentTime} />
               </div>
               : ""}
+            <div className="grid grid-cols-4 gap-0 ac-calendar-clone">
+              <CurrentHourLine currentTime={currentTime} />
+            </div>
           </div>
         </div>
       </div>
