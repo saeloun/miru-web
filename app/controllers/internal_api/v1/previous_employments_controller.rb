@@ -4,8 +4,8 @@ class InternalApi::V1::PreviousEmploymentsController < InternalApi::V1::Applicat
   before_action :set_user, only: %i[index create]
 
   def index
-    authorize @user, policy_class: PreviousEmploymentPolicy
-    previous_employments = current_user.previous_employments
+    authorize PreviousEmployment
+    previous_employments = policy_scope(@user.previous_employments)
     render :index, locals: { previous_employments: }, status: :ok
   end
 
@@ -21,7 +21,7 @@ class InternalApi::V1::PreviousEmploymentsController < InternalApi::V1::Applicat
   end
 
   def create
-    authorize @user, policy_class: PreviousEmploymentPolicy
+    authorize PreviousEmployment
     previous_employment = current_user.previous_employments.new(previous_employment_params)
     previous_employment.save!
     render :create, locals: { previous_employment: }, status: :ok
