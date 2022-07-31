@@ -113,11 +113,12 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :invitable, :database_authenticatable, :registerable,
     :recoverable, :rememberable, :validatable,
-    :trackable, :confirmable,
+    :trackable,
     :omniauthable, omniauth_providers: [:google_oauth2]
 
   # Callbacks
   after_discard :discard_project_members
+  after_commit :set_employee_role_and_workspace, on: [:create]
 
   def under_sales_department?
     sales_department_id = User::DEPARTMENT_OPTIONS.detect { |department| department.name == "Sales" }&.id
@@ -210,6 +211,18 @@ class User < ApplicationRecord
     def assign_role
       if errors.empty? && current_company
         self.add_role(role.downcase.to_sym, current_company)
+      end
+    end
+
+    def set_employee_role_and_workspace # TODO : Please fix
+      company = Company.first
+
+      ActiveRecord::Base.transaction do
+        self.current_workspace_id = company.id
+        self.companies << company
+        self.add_role(:employee, company)
+
+        self.save!
       end
     end
 end
