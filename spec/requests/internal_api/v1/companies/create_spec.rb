@@ -55,7 +55,7 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
       end
 
       it "will not be created" do
-        expect(Company.count).to eq(1)
+        expect(Company.count).to eq(0)
       end
     end
 
@@ -110,7 +110,7 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
         end
 
         it "will not be created" do
-          expect(Company.count).to eq(1)
+          expect(Company.count).to eq(0)
         end
       end
     end

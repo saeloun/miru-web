@@ -6,7 +6,7 @@ RSpec.describe "InternalApi::V1::Companies::PurgeLogo#destroy", type: :request d
   let(:company) { create(:company, :with_logo) }
   let(:user1) { create(:user, current_workspace: company) }
   let(:employment) { create(:employment, company:, user: user1) }
-  let(:user2) { create(:user) }
+  let(:user2) { create(:user, current_workspace: company) }
 
   context "when user is not an admin" do
     before do
