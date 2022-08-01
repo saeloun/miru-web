@@ -94,10 +94,10 @@ const EditEntry: React.FC<Iprops> = ({
 
   useEffect(() => {
     if (startDuration){
-      setDisplayStartDuration(calendarTimes(null).filter((el) => minutesFromHHMM(startDuration) === minutesFromHHMM(el.id))[0].name)
+      setDisplayStartDuration(calendarTimes(startDuration)[0].name)
     }
     if (endDuration){
-      setDisplayEndDuration(calendarTimes(null).filter((el) => minutesFromHHMM(endDuration) === minutesFromHHMM(el.id))[0].name)
+      setDisplayEndDuration(calendarTimes(endDuration)[0].name)
     }
   }, [startDuration, endDuration]);
 
@@ -242,7 +242,8 @@ const EditEntry: React.FC<Iprops> = ({
                   value={startDuration}
                   onChange={(e) => {
                     setStartDuration(e.target.value)
-                    setEndDuration((minutesToHHMM(minutesFromHHMM(e.target.value) + 15)))
+                    const addNextMinutes = minutesFromHHMM(e.target.value) >= 1440 ? 0 : 15
+                    setEndDuration((minutesToHHMM(minutesFromHHMM(e.target.value) + addNextMinutes)))
                   }}>
                   {calendarTimes(null).map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
                 </select>
