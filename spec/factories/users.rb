@@ -10,7 +10,7 @@ FactoryBot.define do
     date_of_birth { Faker::Date.between(from: "1990-01-01", to: "2000-01-01") }
     phone { Faker::PhoneNumber.phone_number_with_country_code }
     personal_email_id { Faker::Internet.safe_email }
-    current_workspace_id { create(:company).id }
+    current_workspace_id { nil }
 
     trait :with_avatar do
       after :build do |user|

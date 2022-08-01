@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe CurrentCompanyConcern do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:user_2) { create(:user, current_workspace: nil) }
+  let(:user_2) { create(:user, current_workspace_id: nil) }
 
   before do
     create(:employment, company:, user:)

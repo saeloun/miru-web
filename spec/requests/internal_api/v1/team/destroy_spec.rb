@@ -87,9 +87,9 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
     end
 
     context "when team member is present in multiple company" do
-      let(:team_user) { create(:user) }
       let(:other_company_1) { create(:company) }
       let(:other_company_2) { create(:company) }
+      let(:team_user) { create(:user) }
 
       before do
         @team_company_user = create(:employment, company:, user: team_user)

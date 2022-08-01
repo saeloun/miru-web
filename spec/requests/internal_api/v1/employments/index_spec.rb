@@ -11,7 +11,6 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
   let(:user4) { create(:user) }
 
   before do
-    create(:employment, company_id: company1.id, user_id: user1.id)
     create(:employment, company_id: company1.id, user_id: user2.id)
     create(:employment, company_id: company2.id, user_id: user3.id)
     create(:employment, company_id: company1.id, user_id: user4.id)

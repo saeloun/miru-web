@@ -50,7 +50,7 @@ RSpec.describe TestController, type: :controller do
   describe "#company_not_present" do
     before do
       routes.draw { get "show" => "test#show" }
-      user.update(current_workspace_id: nil)
+      user.update!(current_workspace_id: nil)
       sign_in user
     end
 

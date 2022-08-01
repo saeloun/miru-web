@@ -51,6 +51,10 @@ RSpec.describe PreviousEmploymentPolicy, type: :policy do
   end
 
   context "when user is not within the same workspace as the previous_employment user" do
+    before do
+      employee.employments.destroy_all
+    end
+
     context "when user is an admin, owner and employee" do
       before do
         user.add_role(:admin, company)

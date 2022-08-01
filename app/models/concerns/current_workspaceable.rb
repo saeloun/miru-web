@@ -23,7 +23,7 @@ module CurrentWorkspaceable
   private
 
     def create_employment_from_current_workspace
-      return unless saved_change_to_attribute?(:current_workspace_id)
+      return unless saved_change_to_attribute?(:current_workspace_id) && current_workspace_id.present?
 
       employment = employments.find_by(company_id: current_workspace_id)
       employment ||= employments.create!(company_id: current_workspace_id)
