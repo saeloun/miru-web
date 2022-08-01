@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PreviousEmploymentPolicy < ApplicationPolicy
+class Users::PreviousEmploymentPolicy < ApplicationPolicy
   def show?
     (record.user.employed_at?(user.current_workspace_id) &&
     user.has_any_role?(

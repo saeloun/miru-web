@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe PreviousEmploymentPolicy, type: :policy do
+RSpec.describe Users::PreviousEmploymentPolicy, type: :policy do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace: company) }
   let(:employee) { create(:user, current_workspace: company) }

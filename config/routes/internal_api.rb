@@ -80,7 +80,7 @@ namespace :internal_api, defaults: { format: "json" } do
     end
 
     resources :user do
-      resources :previous_employments, only: [:create, :index, :show, :update], controller: "previous_employments"
+      resources :previous_employments, only: [:create, :index, :show, :update], controller: "users/previous_employments"
     end
     resources :addresses, only: [:show, :update], controller: "addresses"
 
