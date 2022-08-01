@@ -15,8 +15,8 @@ import {
 } from "phosphor-react";
 
 import { Paths } from "constants/index";
-const miruLogo = require("../../../../assets/images/PurpleMiruLogoWithText.png"); //eslint-disable-line
-const avatar = require("../../../../assets/images/NavAvatar.png"); //eslint-disable-line
+const miruLogo = require("../../../../assets/images/PurpleMiruLogoWithText.svg"); //eslint-disable-line
+const avatar = require("../../../../assets/images/NavAvatar.svg"); //eslint-disable-line
 
 const Navbar = ({ isAdminUser, user }) => {
   const navEmployeeOptions = [
@@ -81,7 +81,7 @@ const Navbar = ({ isAdminUser, user }) => {
   ];
 
   const activeClassName =
-    "flex py-3 px-4 items-center text-miru-han-purple-1000 bg-miru-gray-100 border-l-8 border-miru-han-purple-1000";
+    "flex py-3 px-4 items-center text-miru-han-purple-1000 bg-miru-gray-100 border-l-8 border-miru-han-purple-1000 font-extrabold";
 
   const getEmployeeOptions = () =>
     navEmployeeOptions.map((option, index) => (
@@ -134,7 +134,7 @@ const Navbar = ({ isAdminUser, user }) => {
           </a>
           <a href="/profile/edit">
             <li className="flex py-3 px-6 items-center hover:bg-miru-gray-100">
-              <Gear size={26} className="mr-4" /> Setting
+              <Gear size={26} className="mr-4" /> Settings
             </li>
           </a>
           <a>
@@ -148,7 +148,7 @@ const Navbar = ({ isAdminUser, user }) => {
             </li>
           </a>
         </ul>
-        <div className="mr-2 w-full h-16 p-4 bg-miru-gray-100 flex items-center">
+        <div className="mt-6 w-full h-16 p-4 bg-miru-gray-100 flex items-center">
           <img src={avatar} className="mr-2" alt="avatar" />
           <div className="flex flex-col overflow-x-auto">
             <span className="font-bold text-base leading-5 pt-1">{`${user.first_name} ${user.last_name}`}</span>
