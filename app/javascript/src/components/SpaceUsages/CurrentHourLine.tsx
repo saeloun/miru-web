@@ -22,8 +22,8 @@ const CurrentHourLine: React.FC<ICurrentHourLineProps> = ({ className, currentTi
 
   useEffect(() => {
     if (currentHourLineRef && currentHourLineRef.current) {
-      const scrollToTop = currentHourLineRef.current.offsetTop;
-      currentHourLineRef.current.scrollIntoView({ top: scrollToTop });
+      // const scrollToTop = currentHourLineRef.current.offsetTop;
+      currentHourLineRef.current.scrollIntoView({ behavior: "smooth", block: 'center' })
     }
   }, []);
 
