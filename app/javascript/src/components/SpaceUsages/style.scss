@@ -66,6 +66,10 @@
 	@apply absolute top-0 bottom-0 left-15 right-0;
 }
 
+.ac-calendar-clone.current-line {
+	pointer-events: none;
+}
+
 .ac-calendar-clone .ac-clone-col {
 	@apply border-r relative;
 }

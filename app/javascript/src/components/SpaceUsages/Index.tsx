@@ -330,7 +330,7 @@ const TimeReserving: React.FC<Iprops> = ({
                 }
               </div>
               : ""}
-            <div className="grid grid-cols-4 gap-0 ac-calendar-clone">
+            <div className="grid grid-cols-4 gap-0 ac-calendar-clone current-line">
               <CurrentHourLine currentTime={currentTime} />
             </div>
           </div>
