@@ -11,6 +11,7 @@ RSpec.describe PreviousEmploymentPolicy, type: :policy do
   context "when user is within the same workspace as the previous_employment user" do
     before do
       create(:employment, company:, user: employee)
+      create(:employment, company:, user:)
     end
 
     context "when user is an admin" do
@@ -49,26 +50,12 @@ RSpec.describe PreviousEmploymentPolicy, type: :policy do
       end
     end
 
-    context "when user is checking his own record" do
+    context "when employee is logged in" do
       before do
         user.add_role :employee, company
         create(:previous_employment, user:)
       end
 
-      permissions :index?, :create? do
-        it "grants permission for index and create" do
-          expect(described_class).not_to permit(user)
-        end
-      end
-
-      permissions :show?, :update? do
-        it "grants permission for show and update" do
-          expect(described_class).not_to permit(user, previous_employment)
-        end
-      end
-    end
-
-    context "when user is an employee but the record does not belong to him" do
       permissions :index?, :create? do
         it "grants permission for index and create" do
           expect(described_class).not_to permit(user)

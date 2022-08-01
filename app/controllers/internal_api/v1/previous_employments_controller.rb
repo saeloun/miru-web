@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+# API for Admin and Owner only
+
 class InternalApi::V1::PreviousEmploymentsController < InternalApi::V1::ApplicationController
-  before_action :set_user, only: %i[index create show update]
+  before_action :set_user
 
   def index
     authorize PreviousEmployment
-    previous_employments = policy_scope(@user.previous_employments)
+    previous_employments = @user.previous_employments
     render :index, locals: { previous_employments: }, status: :ok
   end
 
