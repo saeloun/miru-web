@@ -78,7 +78,7 @@ Rails.application.routes.draw do
     get "profile/edit/*path", to: "users/registrations#edit"
   end
 
-  post "webhooks", to: "webhooks#fulfill_stripe_checkout"
+  post "webhooks/stripe/checkout/fulfillment", to: "webhooks#fulfill_stripe_checkout"
 
   match "*path", via: :all, to: "home#index", constraints: lambda { |req|
     req.path.exclude? "rails/active_storage"
