@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
+import clients from "apis/clients";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import Logger from "js-logger";
 import { X } from "phosphor-react";
@@ -8,7 +9,6 @@ import {
   dateRangeOptions
 } from "./filterOptions";
 import { customStyles } from "./style";
-import clients from "../../../../apis/clients";
 import { useEntry } from "../../context/EntryContext";
 
 const dateSchema = Yup.object().shape({
