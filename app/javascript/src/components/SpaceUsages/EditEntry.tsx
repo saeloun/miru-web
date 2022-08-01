@@ -47,6 +47,7 @@ const EditEntry: React.FC<Iprops> = ({
   const [space, setSpace] = useState("");
   const [purpose, setPurpose] = useState("");
   const [purposeName, setPurposeName] = useState("");
+  const [userName, setUserName] = useState("");
   // const [restricted, setRestricted] = useState(false);
 
   const calendarTimes = (durationFrom) => {
@@ -78,6 +79,7 @@ const EditEntry: React.FC<Iprops> = ({
       setPurpose(entry.purpose_code);
       setPurposeName(entry.purpose_name);
       setNote(entry.note);
+      setUserName(entry.user_name);
       // setRestricted(entry.restricted);
     }
 
@@ -165,7 +167,7 @@ const EditEntry: React.FC<Iprops> = ({
               {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${selectedDateInfo["month"]}, ${selectedDateInfo["year"]}`}
             </p>
             <p className="px-6 text-sm font-medium text-white dark:text-white">
-              {displayStartDuration} ~ {displayEndDuration}
+              Occupy new space for you
             </p>
           </div>) : (
             <div className="w-full p-6" style={{ backgroundColor: editEntryColor }}>
@@ -173,7 +175,7 @@ const EditEntry: React.FC<Iprops> = ({
                 {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${selectedDateInfo["month"]}, ${selectedDateInfo["year"]}`}
               </p>
               <p className="px-6 text-sm font-medium text-gray-900 dark:text-white">
-                {displayStartDuration} ~ {displayEndDuration} • {purposeName}
+                {displayStartDuration} ~ {displayEndDuration} • {purposeName}, By <b>{userName}</b>
               </p>
             </div>
           )}
@@ -255,11 +257,9 @@ const EditEntry: React.FC<Iprops> = ({
               {editEntryId === 0 ? (
                 <button
                   onClick={handleSave}
+                  disabled={!(space && purpose && note)}
                   className={
-                    "mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-                    (space && note
-                      ? "bg-miru-han-purple-1000 hover:border-transparent"
-                      : "bg-miru-gray-1000")
+                    "mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest bg-miru-han-purple-1000 hover:border-transparent disabled:bg-miru-gray-1000"
                   }
                 >
                   SAVE
@@ -279,12 +279,10 @@ const EditEntry: React.FC<Iprops> = ({
                       </a>
                     </div>
                     <button
-                      onClick={() => handleEdit()}
+                      onClick={handleEdit}
+                      disabled={!(space && purpose && note)}
                       className={
-                        "mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-                      (space && note
-                        ? "bg-miru-han-purple-1000 hover:border-transparent"
-                        : "bg-miru-gray-1000")
+                        "mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest bg-miru-han-purple-1000 hover:border-transparent disabled:bg-miru-gray-1000"
                       }
                     >
                       UPDATE
