@@ -2,7 +2,6 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import {
   Timer,
-  Gauge,
   UsersThree,
   Buildings,
   Briefcase,
@@ -44,11 +43,6 @@ const Navbar = ({ isAdminUser, user }) => {
   ];
 
   const navAdminOptions = [
-    {
-      logo: <Gauge size={26} className="mr-4" />,
-      label: "Dashboard",
-      path: ""
-    },
     {
       logo: <Timer size={26} className="mr-4" />,
       label: "Time Tracking",
