@@ -21,7 +21,7 @@ RSpec.describe Users::PreviousEmploymentPolicy, type: :policy do
 
       permissions :index?, :create? do
         it "grants permission for index and create" do
-          expect(described_class).to permit(user)
+          expect(described_class).to permit(user, user)
         end
       end
 
@@ -39,7 +39,7 @@ RSpec.describe Users::PreviousEmploymentPolicy, type: :policy do
 
       permissions :index?, :create? do
         it "grants permission for index and create" do
-          expect(described_class).to permit(user)
+          expect(described_class).to permit(user, user)
         end
       end
 
@@ -58,7 +58,7 @@ RSpec.describe Users::PreviousEmploymentPolicy, type: :policy do
 
       permissions :index?, :create? do
         it "grants permission for index and create" do
-          expect(described_class).not_to permit(user)
+          expect(described_class).not_to permit(user, user)
         end
       end
 

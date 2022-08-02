@@ -4,8 +4,10 @@ require "rails_helper"
 
 RSpec.describe "PreviousEmployments#index", type: :request do
   let(:company) { create(:company) }
+  let(:company2) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
+  let(:employee2) { create(:user, current_workspace_id: company2.id) }
   let!(:previous_employment_of_employee) { create(:previous_employment, user: employee) }
   let!(:previous_employment_of_user) { create(:previous_employment, user:) }
 
@@ -32,7 +34,7 @@ RSpec.describe "PreviousEmployments#index", type: :request do
       end
 
       context "when owner and wants to check record of an employee" do
-        context "when owner sends valid request" do
+        context "when owner wants to see record of an employee of his own workspace" do
           before do
             create(:employment, company:, user: employee)
             user.add_role :owner, company
@@ -46,6 +48,19 @@ RSpec.describe "PreviousEmployments#index", type: :request do
               ).to eq(previous_employment_of_employee.company_name)
             expect(json_response["previous_employments"][0]["role"]
               ).to eq(previous_employment_of_employee.role)
+          end
+        end
+
+        context "when owner and wants to check record of an employee of a different workspace" do
+          before do
+            create(:employment, company: company2, user: employee2)
+            user.add_role :owner, company
+            sign_in user
+            send_request :get, internal_api_v1_user_previous_employments_path(employee2)
+          end
+
+          it "is forbidden" do
+            expect(response).to have_http_status(:forbidden)
           end
         end
 
@@ -129,7 +144,20 @@ RSpec.describe "PreviousEmployments#index", type: :request do
       end
     end
 
-    context "when employee see someone else's record" do
+    context "when employee wants to see his own record" do
+      before do
+        create(:employment, company:, user:)
+        user.add_role :employee, company
+        sign_in user
+        send_request :get, internal_api_v1_user_previous_employments_path(user)
+      end
+
+      it "is forbidden" do
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context "when employee wants to see someone else's record" do
       before do
         create(:employment, company:, user:)
         create(:employment, company:, user: employee)
