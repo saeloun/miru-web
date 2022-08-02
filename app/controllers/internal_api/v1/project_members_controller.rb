@@ -44,7 +44,7 @@ class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationCo
 
       member_ids.each do |member_id|
           ProjectMember.where(user_id: member_id, project_id: params[:id])
-            .delete_all
+            .delete_all #FIXME: Use Soft delete
         end
     end
 
