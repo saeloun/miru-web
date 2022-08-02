@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires  */
 import dayjs from "dayjs";
 import { month, quarters } from "../../../../utils/dateUtil";
+
 const quarterOfYear = require("dayjs/plugin/quarterOfYear");
 dayjs.extend(quarterOfYear);
 
@@ -43,7 +44,10 @@ const dateRangeOptions = [
   ...getDateRangeOptions()
 ];
 
+const customDateFilter = "customDateFilter";
+
 export {
   dateRangeOptions,
+  customDateFilter,
   getQuarter
 };

@@ -23,7 +23,7 @@ module Reports::TimeEntries
     end
 
     def date_range_filter
-      { work_date: range_from_timeframe(filter_params[:date_range]) }
+      { work_date: range_from_timeframe(filter_params[:date_range], filter_params[:from], filter_params[:to]) }
     end
 
     def status_filter
