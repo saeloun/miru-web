@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
+# API for user to check his own record
+
 class InternalApi::V1::PreviousEmploymentsController < InternalApi::V1::ApplicationController
+  def index
+    authorize PreviousEmployment
+    previous_employments = current_user.previous_employments
+    render :index, locals: { previous_employments: }, status: :ok
+  end
+
   def show
     authorize previous_employment
     render :show, locals: { previous_employment: }, status: :ok
@@ -13,8 +21,8 @@ class InternalApi::V1::PreviousEmploymentsController < InternalApi::V1::Applicat
   end
 
   def create
+    authorize PreviousEmployment
     previous_employment = current_user.previous_employments.new(previous_employment_params)
-    authorize previous_employment
     previous_employment.save!
     render :create, locals: { previous_employment: }, status: :ok
  end
