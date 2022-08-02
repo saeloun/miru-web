@@ -6,7 +6,7 @@ class InternalApi::V1::Users::PreviousEmploymentsController < InternalApi::V1::A
   before_action :set_user
 
   def index
-    authorize PreviousEmployment, policy_class: Users::PreviousEmploymentPolicy
+    authorize @user, policy_class: Users::PreviousEmploymentPolicy
     previous_employments = @user.previous_employments
     render :index, locals: { previous_employments: }, status: :ok
   end
@@ -23,7 +23,7 @@ class InternalApi::V1::Users::PreviousEmploymentsController < InternalApi::V1::A
   end
 
   def create
-    authorize PreviousEmployment, policy_class: Users::PreviousEmploymentPolicy
+    authorize @user, policy_class: Users::PreviousEmploymentPolicy
     previous_employment = @user.previous_employments.new(previous_employment_params)
     previous_employment.save!
     render :create, locals: { previous_employment: }, status: :ok

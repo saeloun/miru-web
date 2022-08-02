@@ -115,15 +115,32 @@ RSpec.describe "PreviousEmployments#index", type: :request do
   end
 
   context "when user is Employee" do
-    before do
-      create(:employment, company:, user:)
-      user.add_role :employee, company
-      sign_in user
-      send_request :get, internal_api_v1_user_previous_employments_path(user)
+    context "when employee updates his own record" do
+      # should not allow as we have a separate API for index and create for employee only
+      before do
+        create(:employment, company:, user:)
+        user.add_role :employee, company
+        sign_in user
+        send_request :get, internal_api_v1_user_previous_employments_path(user)
+      end
+
+      it "is forbidden" do
+        expect(response).to have_http_status(:forbidden)
+      end
     end
 
-    it "is successful" do
-      expect(response).to have_http_status(:forbidden)
+    context "when employee see someone else's record" do
+      before do
+        create(:employment, company:, user:)
+        create(:employment, company:, user: employee)
+        user.add_role :employee, company
+        sign_in user
+        send_request :get, internal_api_v1_user_previous_employments_path(employee)
+      end
+
+      it "is forbidden" do
+        expect(response).to have_http_status(:forbidden)
+      end
     end
   end
 end
