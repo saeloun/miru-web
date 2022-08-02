@@ -5,7 +5,6 @@ require "rails_helper"
 RSpec.describe PreviousEmploymentPolicy, type: :policy do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace: company) }
-  let(:previous_employment) { create(:previous_employment, user:) }
 
   context "when user is employed in the current workspace" do
     before do
@@ -17,9 +16,9 @@ RSpec.describe PreviousEmploymentPolicy, type: :policy do
         user.add_role(:admin, company)
       end
 
-      permissions :index?, :create?, :show?, :update? do
+      permissions :index?, :create? do
         it "grants permission" do
-          expect(described_class).to permit(user, previous_employment)
+          expect(described_class).to permit(user)
         end
       end
     end
@@ -29,9 +28,9 @@ RSpec.describe PreviousEmploymentPolicy, type: :policy do
         user.add_role(:owner, company)
       end
 
-      permissions :index?, :create?, :show?, :update? do
+      permissions :index?, :create? do
         it "grants permission" do
-          expect(described_class).to permit(user, previous_employment)
+          expect(described_class).to permit(user)
         end
       end
     end
@@ -41,9 +40,9 @@ RSpec.describe PreviousEmploymentPolicy, type: :policy do
         user.add_role(:employee, company)
       end
 
-      permissions :index?, :create?, :show?, :update? do
+      permissions :index?, :create? do
         it "grants permission" do
-          expect(described_class).to permit(user, previous_employment)
+          expect(described_class).to permit(user)
         end
       end
     end
@@ -57,9 +56,9 @@ RSpec.describe PreviousEmploymentPolicy, type: :policy do
         user.add_role(:employee, company)
       end
 
-      permissions :index?, :create?, :show?, :update? do
+      permissions :index?, :create? do
         it "does not grant permission" do
-          expect(described_class).not_to permit(user, previous_employment)
+          expect(described_class).not_to permit(user)
         end
       end
     end
