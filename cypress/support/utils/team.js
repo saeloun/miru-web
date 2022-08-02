@@ -16,13 +16,13 @@ export const addNewUser = (role) => {
   cy.get(teamTabSelector.newMemberFirstName).type(firstName);
   cy.get(teamTabSelector.newMemberLastname).type(lastName);
   cy.get(teamTabSelector.newMemberEmail).type(email);
-  cy.get(teamTabSelector.adminRadioButton).check();
+  cy.get(teamTabSelector.adminRadioButton).click();
 
   if (role == "admin") {
-    cy.get(teamTabSelector.adminRadioButton).check();
+    cy.get(teamTabSelector.adminRadioButton).click();
   } else {
-    cy.get(teamTabSelector.employeeRadioButton).check();
+    cy.get(teamTabSelector.employeeRadioButton).click();
   }
   cy.get(teamTabSelector.sendInviteButton).click();
-  deleteTestUser(firstName)
+  // deleteTestUser(firstName) //TODO: fix delete test user for new search component
 };
