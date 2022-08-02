@@ -9,17 +9,6 @@ class InternalApi::V1::PreviousEmploymentsController < InternalApi::V1::Applicat
     render :index, locals: { previous_employments: }, status: :ok
   end
 
-  def show
-    authorize previous_employment
-    render :show, locals: { previous_employment: }, status: :ok
-  end
-
-  def update
-    authorize previous_employment
-    previous_employment.update!(previous_employment_params)
-    render :update, locals: { previous_employment: }, status: :ok
-  end
-
   def create
     authorize PreviousEmployment
     previous_employment = current_user.previous_employments.new(previous_employment_params)
