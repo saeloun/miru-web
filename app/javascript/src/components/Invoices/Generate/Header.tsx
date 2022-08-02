@@ -36,6 +36,7 @@ const Header = ({
           type="button"
           className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
           onClick={handleSaveInvoice}
+          data-cy='save-invoice'
         >
           <FloppyDisk size={18} color="white" />
           <span className="ml-2 inline-block">SAVE</span>
@@ -46,7 +47,7 @@ const Header = ({
           className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
         >
           <PaperPlaneTilt size={18} color="White" />
-          <span className="ml-2 inline-block">SEND TO</span>
+          <span className="ml-2 inline-block" data-cy="send-invoice">SEND TO</span>
         </button>
       </div>
     </div>
