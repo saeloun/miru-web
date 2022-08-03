@@ -5,9 +5,10 @@ require "rails_helper"
 RSpec.describe Users::PreviousEmploymentPolicy, type: :policy do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace: company) }
-  let(:previous_employment) { create(:previous_employment, user:) }
+  let(:employee) { create(:user, current_workspace: company) }
+  let(:previous_employment) { create(:previous_employment, user: employee) }
 
-  context "when user is employed in the current workspace" do
+  context "when user is within the same workspace as the previous_employment user" do
     before do
       create(:employment, company:, user: employee)
       create(:employment, company:, user:)
@@ -33,7 +34,7 @@ RSpec.describe Users::PreviousEmploymentPolicy, type: :policy do
 
     context "when user is an owner" do
       before do
-        user.add_role(:owner, company)
+        user.add_role :owner, company
       end
 
       permissions :index?, :create? do
@@ -69,7 +70,7 @@ RSpec.describe Users::PreviousEmploymentPolicy, type: :policy do
     end
   end
 
-  context "when user is not employed in the current workspace" do
+  context "when user is not within the same workspace as the previous_employment user" do
     context "when user is an admin, owner and employee" do
       before do
         user.add_role(:admin, company)
