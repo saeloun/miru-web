@@ -34,7 +34,7 @@ RSpec.describe "PreviousEmployments#index", type: :request do
       end
 
       context "when owner and wants to check record of an employee" do
-        context "when owner wants to see record of an employee of his own workspace" do
+        context "when owner/admin wants to see record of an employee of his own workspace" do
           before do
             create(:employment, company:, user: employee)
             user.add_role :owner, company
