@@ -205,7 +205,10 @@ const TimeReserving: React.FC<Iprops> = ({
 
   useEffect(() => {
     if (entryList && entryList[selectedFullDate]){
-      setGroupingEntryList(_.groupBy(entryList[selectedFullDate], "space_code"))
+      const spaces = {}
+      const thisGroupEntries = _.groupBy(entryList[selectedFullDate], "space_code")
+      SPACES.map((i) => spaces[i.id] = thisGroupEntries[i.id] || [])
+      setGroupingEntryList(spaces)
     } else {
       setGroupingEntryList({})
     }
