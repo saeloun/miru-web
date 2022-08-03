@@ -54,37 +54,42 @@ export const getToasterIcon = (type) => {
   }
 };
 
-export const getToasterCloseButton = ({ closeToast, type }) => {
+interface IToasterCloseButton {
+  closeToast?: any
+  type: string
+}
+
+export const getToasterCloseButton = ({ type } : IToasterCloseButton) => {
   switch (type) {
     case "success":
       return <img
         src={successCloseIcon}
         alt="success"
-        onClick={closeToast}
+        // onClick={closeToast}
       />;
     case "error":
       return <img
         src={alertErrorClose}
         alt="error"
-        onClick={closeToast}
+        // onClick={closeToast}
       />;
     case "warning":
       return <img
         src={warningCloseIcon}
         alt="warning"
-        onClick={closeToast}
+        // onClick={closeToast}
       />;
     case "info":
       return <img
         src={infoCloseIcon}
         alt="info"
-        onClick={closeToast}
+        // onClick={closeToast}
       />;
     default:
       return <img
         src={successCloseIcon}
         alt="success"
-        onClick={closeToast}
+        // onClick={closeToast}
       />;
   }
 };

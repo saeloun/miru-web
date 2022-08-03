@@ -304,7 +304,7 @@ const TimeReserving: React.FC<Iprops> = ({
         <div className="ac-calendar-container">
           <div className="grid grid-cols-4 gap-0 ac-calendar-users">
             {SPACES.map((i, _index) => (
-              <div className="ac-clone-col">
+              <div key={`ac-user-name-${_index}`} className="ac-clone-col">
                 <div className="ac-user-name">
                   <span>{i.name}</span>
                   <i>{i.alias}</i>
