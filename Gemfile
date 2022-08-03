@@ -196,3 +196,5 @@ group :test do
   # Strategies for cleaning databases in Ruby.
   gem "database_cleaner", "~> 2.0"
 end
+
+gem "rest-client", "~> 2.1"

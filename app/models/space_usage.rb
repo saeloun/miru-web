@@ -97,6 +97,11 @@ class SpaceUsage < ApplicationRecord
     Time.parse("#{minutes / 60}:#{minutes % 60}").strftime("%H:%M")
   end
 
+  def formatted_duration_12hr(type = :start)
+    minutes = (type == :end ? end_duration : start_duration).to_i
+    Time.parse("#{minutes / 60}:#{minutes % 60}").strftime("%I:%M %p")
+  end
+
   def valid_end_duration
     return if self.start_duration.to_i < self.end_duration
 
