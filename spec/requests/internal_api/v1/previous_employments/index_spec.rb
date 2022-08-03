@@ -2,10 +2,10 @@
 
 require "rails_helper"
 
-RSpec.describe "PreviousEmployments#create", type: :request do
+RSpec.describe "PreviousEmployments#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:previous_employment_details) { attributes_for(:previous_employment) }
+  let!(:previous_employment) { create(:previous_employment, user:) }
 
   context "when user is employed in the current workspace" do
     before do
@@ -14,15 +14,15 @@ RSpec.describe "PreviousEmployments#create", type: :request do
       user.add_role(:owner, company)
       user.add_role(:employee, company)
       sign_in user
-      send_request :post, internal_api_v1_previous_employments_path(
-        previous_employment: previous_employment_details
-      )
+      send_request :get, internal_api_v1_previous_employments_path
     end
 
     it "is successful" do
       expect(response).to have_http_status(:ok)
-      expect(json_response["company_name"]).to eq(previous_employment_details[:company_name])
-      expect(json_response["role"]).to eq(previous_employment_details[:role])
+      expect(json_response["previous_employments"][0]["company_name"]
+        ).to eq(previous_employment.company_name)
+      expect(json_response["previous_employments"][0]["role"]
+        ).to eq(previous_employment.role)
     end
   end
 
@@ -32,9 +32,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
       user.add_role(:owner, company)
       user.add_role(:employee, company)
       sign_in user
-      send_request :post, internal_api_v1_previous_employments_path(
-        previous_employment: previous_employment_details
-      )
+      send_request :get, internal_api_v1_previous_employments_path
     end
 
     it "is forbidden" do
