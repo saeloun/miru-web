@@ -1,4 +1,7 @@
-document.addEventListener("DOMContentLoaded", function (event) {
+/* eslint-disable space-before-function-paren */
+/* eslint-disable func-style */
+
+document.addEventListener("DOMContentLoaded", function () {
   let timezones = [];
 
   function setTimeZoneOptions(options) {
@@ -36,5 +39,3 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
   main();
 });
-
-console.info("org_timezones.js loaded");
