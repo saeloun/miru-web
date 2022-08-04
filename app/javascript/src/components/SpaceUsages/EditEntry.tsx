@@ -23,7 +23,8 @@ const EditEntry: React.FC<Iprops> = ({
   handleDeleteEntry,
   editEntryColor,
   setSelectedSpaceId,
-  selectedSpaceId
+  selectedSpaceId,
+  setNewEntryId
 }) => {
   const PURPOSES = [
     { id: "1", name: "Client / Standup" },
@@ -129,6 +130,7 @@ const EditEntry: React.FC<Iprops> = ({
       if (fetchEntriesRes) {
         setNewEntryView(false);
         setSelectedSpaceId(undefined);
+        setNewEntryId(res.data.entry.id)
       }
     }
   };
@@ -329,6 +331,7 @@ interface Iprops {
   editEntryColor: string;
   setSelectedSpaceId: React.Dispatch<React.SetStateAction<number>>;
   selectedSpaceId?: 1 | 2 | 3;
+  setNewEntryId: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default EditEntry;
