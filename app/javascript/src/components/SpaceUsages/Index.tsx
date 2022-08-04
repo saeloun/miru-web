@@ -268,7 +268,7 @@ const TimeReserving: React.FC<Iprops> = ({
               </div>
               <button
                 onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
-                className={`flex items-center justify-center w-20 h-6 mr-4 text-xs font-bold tracking-widest text-white border-2 rounded ${!editEntryId || newEntryView && 'active-from'}`}
+                className={`flex items-center justify-center w-20 h-6 mr-4 text-xs font-bold tracking-widest text-white border-2 rounded ${newEntryView && 'active-from'}`}
               >
                 NEW
               </button>

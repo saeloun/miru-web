@@ -45,14 +45,18 @@
 	@apply relative;
 }
 .ac-calendar {
-	@apply flex flex-col pl-12 mt-1 mb-1;
+	@apply flex flex-col pl-12 mt-1 mb-2;
+	height: 1440px;
 }
 .ac-calendar .ac-cv-time-row {
 	@apply border-t relative flex;
 	height: 60px;
 }
 .ac-calendar .ac-cv-time-row:last-child {
-	@apply border-b;
+	@apply border-b h-0;
+	.ac-cv-time {
+		@apply h-0;
+	}
 }
 .ac-calendar .ac-cv-time {
 	@apply border-r w-15 h-15;
