@@ -12,13 +12,13 @@ const EditLineItems = ({
 }) => {
 
   const strName = item.name || `${item.first_name} ${item.last_name}`;
-  const actualQuantity = (item.qty / 60) || (item.quantity / 60);
+  const actualQuantity = ((item.qty / 60) || (item.quantity / 60)).toFixed(2);
   const [name, setName] = useState<string>(strName);
   const formatedDate = new Date(item.date);
   const [lineItemDate, setLineItemDate] = useState(formatedDate);
   const [description, setDescription] = useState<string>(item.description);
   const [rate, setRate] = useState<number>(item.rate);
-  const [quantity, setQuantity] = useState<number>(actualQuantity);
+  const [quantity, setQuantity] = useState<number>(Number(actualQuantity));
   const lineTotal = quantity * rate;
 
   useEffect(() => {
