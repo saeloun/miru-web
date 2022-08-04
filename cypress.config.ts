@@ -5,7 +5,6 @@ export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:3000',
     specPattern: 'cypress/e2e/**/*.{js,jsx,ts,tsx}',
-    execTimeout:1800000,
     defaultCommandTimeout: 10000,
     requestTimeout:30000,
     pageLoadTimeout:60000,
