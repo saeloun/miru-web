@@ -89,9 +89,7 @@
 	top: 0px;
 }
 .ac-calendar-container .ac-user-name {
-	@apply border-r;
-	@apply flex items-center justify-end relative;
-	padding: 10px 0;
+	@apply border-r flex items-center justify-end relative py-2 pr-2;
 }
 .ac-calendar-container .ac-user-name span {
 	@apply font-semibold pr-3;
@@ -119,4 +117,11 @@
 			@apply h-1 w-full rounded-tr-md rounded-br-md;
 		}
 	}
+}
+
+.active-from:after {
+	@apply fixed top-0 left-0 bottom-0 right-0;
+	content: "";
+	background: rgba(0,0,0,0.5);
+	z-index: 2;
 }

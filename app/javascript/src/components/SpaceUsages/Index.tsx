@@ -49,6 +49,7 @@ const TimeReserving: React.FC<Iprops> = ({
     second: dayjs().second(),
     ampm: dayjs().format("A")
   });
+  const [selectedSpaceId, setSelectedSpaceId] = useState<1|2|3|undefined>();
 
   const calendarTimes = () => {
     const product = (...a: any[][]) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
@@ -210,7 +211,7 @@ const TimeReserving: React.FC<Iprops> = ({
       SPACES.map((i) => spaces[i.id] = thisGroupEntries[i.id] || [])
       setGroupingEntryList(spaces)
     } else {
-      setGroupingEntryList({})
+      setGroupingEntryList({ 0: [], 1: [], 2: [] })
     }
   }, [entryList, selectedFullDate]);
 
@@ -266,7 +267,7 @@ const TimeReserving: React.FC<Iprops> = ({
               </div>
               <button
                 onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
-                className="flex items-center justify-center w-20 h-6 mr-4 text-xs font-bold tracking-widest text-white border-2 rounded"
+                className={`flex items-center justify-center w-20 h-6 mr-4 text-xs font-bold tracking-widest text-white border-2 rounded ${editEntryId || newEntryView && 'active-from'}`}
               >
                 NEW
               </button>
@@ -329,6 +330,10 @@ const TimeReserving: React.FC<Iprops> = ({
                     spaceUsages={value}
                     setEditEntryId={setEditEntryId}
                     setEditEntryColor={setEditEntryColor}
+                    editEntryId={editEntryId}
+                    setNewEntryView={setNewEntryView}
+                    setSelectedSpaceId={setSelectedSpaceId}
+                    spaceCode={listIndex}
                   />))
                 }
               </div>
@@ -352,6 +357,8 @@ const TimeReserving: React.FC<Iprops> = ({
         dayInfo={dayInfo}
         handleDeleteEntry={handleDeleteEntry}
         editEntryColor={editEntryColor}
+        setSelectedSpaceId={setSelectedSpaceId}
+        selectedSpaceId={selectedSpaceId}
       /> : ""}
     </>
   );

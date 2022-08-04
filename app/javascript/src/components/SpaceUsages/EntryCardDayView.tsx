@@ -3,7 +3,11 @@ import React, { } from "react";
 const EntryCardDayView = ({
   spaceUsages,
   setEditEntryId,
-  setEditEntryColor
+  setEditEntryColor,
+  editEntryId,
+  setNewEntryView,
+  setSelectedSpaceId,
+  spaceCode
 }) => {
   const getRandomColor = (spaceID) => {
     const letters = 'BCDEF'.split('');
@@ -15,12 +19,17 @@ const EntryCardDayView = ({
   }
 
   return (
-    <div className="ac-clone-col">
+    <div className="ac-clone-col" onClick={() => {
+      if (!editEntryId) {
+        setNewEntryView(true)
+        setSelectedSpaceId(spaceCode + 1)
+      }
+    }}>
       {spaceUsages && spaceUsages.map((space, _index) => {
         const displayTitle = `${space.user_name} • ${space.purpose_name}`;
         const displayColor = getRandomColor(space.user_id)
 
-        return (<div className="as-meeting-point w-7 relative opacity-90 cursor-pointer"
+        return (<div className="relative cursor-pointer as-meeting-point w-7 opacity-90"
           key={_index}
           title={displayTitle}
           style={ { height: `${space.end_duration - space.start_duration}px`, top: `${space.start_duration}px`, backgroundColor: displayColor } }

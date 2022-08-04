@@ -21,7 +21,9 @@ const EditEntry: React.FC<Iprops> = ({
   setEditEntryId,
   editEntryId,
   handleDeleteEntry,
-  editEntryColor
+  editEntryColor,
+  setSelectedSpaceId,
+  selectedSpaceId
 }) => {
   const PURPOSES = [
     { id: "1", name: "Client / Standup" },
@@ -44,7 +46,7 @@ const EditEntry: React.FC<Iprops> = ({
   const [endDuration, setEndDuration] = useState("00:00");
   const [displayStartDuration, setDisplayStartDuration] = useState("");
   const [displayEndDuration, setDisplayEndDuration] = useState("");
-  const [space, setSpace] = useState("");
+  const [space, setSpace] = useState(selectedSpaceId ? selectedSpaceId.toString() : "");
   const [purpose, setPurpose] = useState("");
   const [purposeName, setPurposeName] = useState("");
   const [userName, setUserName] = useState("");
@@ -126,6 +128,7 @@ const EditEntry: React.FC<Iprops> = ({
       const fetchEntriesRes = await fetchEntries(selectedFullDate, selectedFullDate);
       if (fetchEntriesRes) {
         setNewEntryView(false);
+        setSelectedSpaceId(undefined);
       }
     }
   };
@@ -146,18 +149,20 @@ const EditEntry: React.FC<Iprops> = ({
       if (fetchEntriesRes) {
         setNewEntryView(false);
         setEditEntryId(0);
+        setSelectedSpaceId(undefined);
       }
     }
   };
 
   return (
-    <div aria-hidden="true" className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
-      <div className="relative w-full max-w-md h-full md:h-auto float-right">
+    <div aria-hidden="true" className="fixed top-0 left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
+      <div className="relative float-right w-full h-full max-w-md md:h-auto">
         <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
           <button type="button" className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
             onClick={() => {
               setNewEntryView(false);
               setEditEntryId(0);
+              setSelectedSpaceId(undefined);
             }}>
             <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
             <span className="sr-only">Close modal</span>
@@ -179,7 +184,7 @@ const EditEntry: React.FC<Iprops> = ({
               </p>
             </div>
           )}
-          <div className="py-6 px-6 lg:px-8">
+          <div className="px-6 py-6 lg:px-8">
             <div className="space-y-6">
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Space</label>
@@ -235,10 +240,10 @@ const EditEntry: React.FC<Iprops> = ({
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                 ></textarea>
               </div>
-              <div className="mb-2 flex justify-between">
-                <div className="p-1 h-8 text-sm flex justify-center items-center">From</div>
+              <div className="flex justify-between mb-2">
+                <div className="flex items-center justify-center h-8 p-1 text-sm">From</div>
                 <select
-                  className="w-30 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                  className="p-1 text-sm text-gray-600 placeholder-gray-500 bg-transparent border border-gray-300 rounded shadow-sm w-30 dark:border-gray-700 focus:outline-none focus:border-blue-700 dark:text-gray-400"
                   value={startDuration}
                   onChange={(e) => {
                     setStartDuration(e.target.value)
@@ -247,9 +252,9 @@ const EditEntry: React.FC<Iprops> = ({
                   }}>
                   {calendarTimes(null).map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
                 </select>
-                <div className="p-1 h-8 text-sm flex justify-center items-center">To</div>
+                <div className="flex items-center justify-center h-8 p-1 text-sm">To</div>
                 <select
-                  className="w-30 border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                  className="p-1 text-sm text-gray-600 placeholder-gray-500 bg-transparent border border-gray-300 rounded shadow-sm w-30 dark:border-gray-700 focus:outline-none focus:border-blue-700 dark:text-gray-400"
                   value={endDuration}
                   onChange={(e) => setEndDuration(e.target.value)}>
                   {calendarTimes(startDuration).map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
@@ -274,8 +279,9 @@ const EditEntry: React.FC<Iprops> = ({
                           handleDeleteEntry(editEntryId);
                           setNewEntryView(false);
                           setEditEntryId(0);
+                          setSelectedSpaceId(undefined);
                         }}
-                        className="cursor-pointer text-sm text-blue-700 hover:underline dark:text-blue-500">
+                        className="text-sm text-blue-700 cursor-pointer hover:underline dark:text-blue-500">
                           Delete Event?
                       </a>
                     </div>
@@ -294,8 +300,9 @@ const EditEntry: React.FC<Iprops> = ({
                 onClick={() => {
                   setNewEntryView(false);
                   setEditEntryId(0);
+                  setSelectedSpaceId(undefined);
                 }}
-                className="mt-1 h-8 w-full text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest"
+                className="w-full h-8 px-6 py-1 mt-1 text-xs font-bold tracking-widest bg-transparent border rounded border-miru-han-purple-1000 hover:bg-miru-han-purple-1000 text-miru-han-purple-600 hover:text-white hover:border-transparent"
               >
                 CANCEL
               </button>
@@ -320,6 +327,8 @@ interface Iprops {
   dayInfo: object;
   handleDeleteEntry: (id: number) => void;
   editEntryColor: string;
+  setSelectedSpaceId: React.Dispatch<React.SetStateAction<number>>;
+  selectedSpaceId?: 1 | 2 | 3;
 }
 
 export default EditEntry;
