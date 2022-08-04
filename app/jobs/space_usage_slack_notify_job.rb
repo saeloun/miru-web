@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SpaceUsageSlackNotifyJob < ApplicationJob
-  SLACK_WEBHOOK_URL = ENV.fetch("SLACK_WEBHOOK_URL")
+  SLACK_WEBHOOK_URL = ENV.fetch("SLACK_WEBHOOK_URL", nil)
 
   queue_as :default
 
@@ -81,7 +81,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
           type: "header",
           text: {
             type: "plain_text",
-            text: "Space Slot Updated :twisted_rightwards_arrows:",
+            text: "Space Occupation Changed :twisted_rightwards_arrows:",
             emoji: true
           }
         },
@@ -123,7 +123,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
           type: "header",
           text: {
             type: "plain_text",
-            text: "Space Slot Unoccupied :no_entry:",
+            text: "Space Unoccupied :no_entry:",
             emoji: true
           }
         },
