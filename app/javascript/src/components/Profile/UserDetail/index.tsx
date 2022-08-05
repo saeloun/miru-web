@@ -73,7 +73,6 @@ const UserDetails = () => {
     setImageFile(imageFile);
     setIsDetailUpdated(true);
   };
-
   const handleUpdateProfile = async () => {
     userProfileSchema.validate({ firstName, lastName, changePassword, password, confirmPassword, currentPassword }, { abortEarly: false }).then(async () => {
       setisLoading(true);

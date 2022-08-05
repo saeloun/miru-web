@@ -1,9 +1,8 @@
 import React, { useState } from "react";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import payment from "apis/payments/payments";
-import Pagination from "common/Pagination";
 import Logger from "js-logger";
-
 import Header from "./Header";
 import AddManualEntry from "./Modals/AddManualEntry";
 import Table from "./Table/index";
@@ -11,8 +10,10 @@ import { unmapPayment } from "../../mapper/payment.mapper";
 
 const Payments = () => {
 
-  const [showManualEntryModal, setShowManualEntryModal] = React.useState<boolean>(false);
+  const [showManualEntryModal, setShowManualEntryModal] = useState<boolean>(false);
+  const [paymentList, setPaymentList] = useState<any>([]);
   const [invoiceList, setInvoiceList] = useState<any>([]);
+  const [baseCurrency, setBaseCurrency] = useState<any>("");
 
   const fetchInvoiceList = async () => {
     try {
@@ -24,117 +25,29 @@ const Payments = () => {
     }
   };
 
+  const fetchPaymentList = async () => {
+    try {
+      const res = await payment.get();
+      setPaymentList(res.data.payments);
+      setBaseCurrency(res.data.baseCurrency);
+    } catch (err) {
+      Logger.error(err);
+    }
+  };
+
   React.useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
     fetchInvoiceList();
+    fetchPaymentList();
   }, []);
-
-  const payments = [
-    {
-      invoice_number: "1",
-      client: "Facebook",
-      time: "1:20 PM",
-      transaction_date: "2022-04-12",
-      transaction_type: "Payment_Stripe_Auto_Succes",
-      amount: "300",
-      status: "paid"
-    },
-    {
-      invoice_number: "2",
-      client: "Slack",
-      time: "1:20 PM",
-      transaction_date: "2022-04-12",
-      transaction_type: "Payment_Stripe_Auto_Succes",
-      amount: "300",
-      status: "paid"
-    },
-    {
-      invoice_number: "3",
-      client: "Upwork",
-      time: "1:20 PM",
-      transaction_date: "2022-04-12",
-      transaction_type: "Payment_Stripe_Auto_Failed",
-      amount: "300",
-      status: "Failed"
-    },
-    {
-      invoice_number: "4",
-      client: "Youtube",
-      time: "1:20 PM",
-      transaction_date: "2022-04-12",
-      transaction_type: "Payment_Stripe_Auto_Succes",
-      amount: "300",
-      status: "paid"
-    },
-    {
-      invoice_number: "5",
-      client: "Reddit",
-      time: "1:20 PM",
-      transaction_date: "2022-04-12",
-      transaction_type: "Payment_Stripe_Auto_failure",
-      amount: "300",
-      status: "Failed"
-    },
-    {
-      invoice_number: "5",
-      client: "Reddit",
-      time: "1:20 PM",
-      transaction_date: "2022-04-12",
-      transaction_type: "Payment_Stripe_Auto_failure",
-      amount: "300",
-      status: "Failed"
-    },
-    {
-      invoice_number: "5",
-      client: "Reddit",
-      time: "1:20 PM",
-      transaction_date: "2022-04-12",
-      transaction_type: "Payment_Stripe_Auto_failure",
-      amount: "300",
-      status: "Failed"
-    },
-    {
-      invoice_number: "5",
-      client: "Reddit",
-      time: "1:20 PM",
-      transaction_date: "2022-04-12",
-      transaction_type: "Payment_Stripe_Auto_failure",
-      amount: "300",
-      status: "Failed"
-    },
-    {
-      invoice_number: "5",
-      client: "Reddit",
-      time: "1:20 PM",
-      transaction_date: "2022-04-12",
-      transaction_type: "Payment_Stripe_Auto_failure",
-      amount: "300",
-      status: "Failed"
-    }
-  ];
 
   return (
     <div className="flex-col">
       <Header setShowManualEntryModal={setShowManualEntryModal}/>
-      <Table payments={payments} />
-      <Pagination
-        pagy={{
-          count: 3,
-          in: 3,
-          items: 20,
-          last: 1,
-          next: null,
-          page: 1,
-          pages: 3,
-          prev: null,
-          scaffoldUrl: ""
-        }}
-        params=""
-        setParams=""
-      />
+      <Table payments={paymentList} baseCurrency={baseCurrency}/>
       {
-        showManualEntryModal && <AddManualEntry setShowManualEntryModal={setShowManualEntryModal} invoiceList={invoiceList} />
+        showManualEntryModal && <AddManualEntry setShowManualEntryModal={setShowManualEntryModal} invoiceList={invoiceList} fetchPaymentList={fetchPaymentList} fetchInvoiceList={fetchInvoiceList}/>
       }
     </div>
   );

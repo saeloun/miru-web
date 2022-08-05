@@ -3,7 +3,7 @@ import React from "react";
 import { minutesToHHMM } from "helpers/hhmm-parser";
 import { ITimeEntry } from "../interface";
 
-const TableRow = ({
+const ReportRow = ({
   id,
   project,
   client,
@@ -13,30 +13,30 @@ const TableRow = ({
   duration
 }: ITimeEntry) => (
 
-  <tr key={id} className="flex flex-row items-center">
-    <td className="w-2/5 pr-6 py-4 text-left whitespace-nowrap">
+  <div key={id} className="grid grid-cols-5 gap-2 border-b">
+    <div className="pr-6 py-4 text-left whitespace-nowrap">
       <p className="font-semibold whitespace-normal text-base text-miru-dark-purple-1000">
         {project}
       </p>
       <p className="font-normal text-sm text-miru-dark-purple-400">
         {client}
       </p>
-    </td>
-    <td className="w-2/5 max-w-xs px-6 py-4 text-xs font-normal text-miru-dark-purple-1000 whitespace-pre-wrap break-words text-justify">
+    </div>
+    <div className="col-span-2 px-6 py-4 text-xs font-normal text-miru-dark-purple-1000 whitespace-pre-wrap break-words text-justify">
       {note}
-    </td>
-    <td className="w-1/5 px-6 py-4 text-left whitespace-nowrap">
+    </div>
+    <div className="px-6 py-4 text-left break-normal">
       <p className="font-semibold text-base text-miru-dark-purple-1000">
         {teamMember}
       </p>
       <p className="font-normal text-sm text-miru-dark-purple-400">
         {workDate}
       </p>
-    </td>
-    <td className="w-1/5 pl-6 py-4 text-xl text-right whitespace-nowrap font-bold text-miru-dark-purple-1000">
+    </div>
+    <div className="pl-6 py-4 text-xl text-right whitespace-nowrap font-bold text-miru-dark-purple-1000">
       {minutesToHHMM(duration)}
-    </td>
-  </tr>
+    </div>
+  </div>
 );
 
-export default TableRow;
+export default ReportRow;

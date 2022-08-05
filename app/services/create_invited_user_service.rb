@@ -1,27 +1,38 @@
 # frozen_string_literal: true
 
 class CreateInvitedUserService
-  attr_reader :token
+  attr_reader :token, :current_user
   attr_accessor :success, :error, :error_message, :user, :reset_password_token, :new_user
 
-  def initialize(token)
+  class InvitationExpired < StandardError
+    def message
+      "Invitation expired"
+    end
+  end
+
+  class InvalidInvitaion < StandardError
+    def message
+      I18n.t("devise.failure.already_authenticated")
+    end
+  end
+
+  def initialize(token, current_user = nil)
     @token = token
     @success = true
     @error_message = nil
+    @current_user = current_user
     @user = nil
     @reset_password_token = nil
     @new_user = false
   end
 
   def process
-    if invitation_valid?
-      ActiveRecord::Base.transaction do
-        update_invitation!
-        find_or_create_user!
-        add_role_to_invited_user
-      end
-    else
-      service_failed("Invitation expired")
+    invitation_valid!
+    user_valid!
+    ActiveRecord::Base.transaction do
+      update_invitation!
+      find_or_create_user!
+      add_role_to_invited_user
     end
   rescue StandardError => e
     service_failed(e.message)
@@ -35,8 +46,14 @@ class CreateInvitedUserService
       @_invitation ||= Invitation.find_by!(token:)
     end
 
-    def invitation_valid?
-      invitation.is_valid?
+    def invitation_valid!
+      raise InvitationExpired unless invitation.is_valid?
+    end
+
+    def user_valid!
+      if !(current_user.nil? || current_user.email == invitation.recipient_email)
+        raise InvalidInvitaion
+      end
     end
 
     def update_invitation!
