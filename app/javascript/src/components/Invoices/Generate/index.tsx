@@ -135,6 +135,7 @@ const GenerateInvoices = () => {
           id: invoiceId,
           client: selectedClient,
           company: invoiceDetails?.companyDetails,
+          dueDate: dueDate,
           invoiceNumber,
           amount
         }}
