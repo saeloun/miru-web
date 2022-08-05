@@ -53,9 +53,9 @@ class Project < ApplicationRecord
         {
           id: member.user_id,
           name: member.full_name,
-          formatted_hourly_rate: format_amount(member.hourly_rate),
+          hourly_rate: member.hourly_rate,
           minutes_logged: 0,
-          formatted_cost: format_amount(0)
+          cost: 0
         }
       end
     else
@@ -65,9 +65,9 @@ class Project < ApplicationRecord
         {
           id: entry.user_id,
           name: entry.user.full_name,
-          formatted_hourly_rate: format_amount(hourly_rate),
+          hourly_rate: format_amount(hourly_rate),
           minutes_logged: entry.duration,
-          formatted_cost: format_amount(cost)
+          cost:
         }
       end
     end
