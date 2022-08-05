@@ -11,7 +11,7 @@ class InternalApi::V1::Users::DevicesController < InternalApi::V1::ApplicationCo
 
   def create
     authorize @user, policy_class: Users::DevicePolicy
-    device = @user.device.new(device_params.merge(user_id: current_user.id, company_id: current_company.id))
+    device = @user.devices.new(device_params.merge(user_id: current_user.id, company_id: current_company.id))
     device.save!
     render :create, locals: { device: }, status: :ok
  end
