@@ -41,6 +41,7 @@ const Container = ({
     />
     <div className="pl-10 py-5">
       <InvoiceTable
+        currency={invoiceDetails.companyDetails.currency}
         selectedClient={selectedClient}
         selectedOption={selectedOption}
         setSelectedOption={setSelectedOption}
