@@ -1,7 +1,6 @@
 
 const getMember = (input:any) => input.map((elem) => ({
   hourlyRate: elem.hourly_rate,
-  currencySymbol: elem.currency_symbol,
   id: elem.id,
   minutes: elem.minutes_logged,
   name: elem.name,
