@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
+
 import dayjs from "dayjs";
-import { minutesToHHMM } from "helpers/hhmm-parser";
 import Logger from "js-logger";
+
+import { minutesToHHMM } from "helpers/hhmm-parser";
 
 const { useState, useEffect } = React;
 // Day start from monday

@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 
+import * as Yup from "yup";
+
 import profileApi from "apis/profile";
 import { Divider } from "common/Divider";
 import Loader from "common/Loader/index";
 import { sendGAPageView } from "utils/googleAnalytics";
-import * as Yup from "yup";
 
 import { useProfile } from "../context/EntryContext";
 import Header from "../Header";

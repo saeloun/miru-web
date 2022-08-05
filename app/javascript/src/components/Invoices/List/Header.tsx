@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
-import invoicesApi from "apis/invoices";
-import useDebounce from "helpers/debounce";
+
+import { ApiStatus as InvoiceStatus } from "constants/index";
+
 import {
   Funnel,
   MagnifyingGlass,
@@ -10,7 +10,11 @@ import {
   PaperPlaneTilt,
   X
 } from "phosphor-react";
-import { ApiStatus as InvoiceStatus } from "constants/index";
+import { Link } from "react-router-dom";
+
+import invoicesApi from "apis/invoices";
+import useDebounce from "helpers/debounce";
+
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 
 const Header = ({

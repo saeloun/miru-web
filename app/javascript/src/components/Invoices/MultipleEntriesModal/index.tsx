@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
+
 import dayjs from "dayjs";
+
 import Footer from "./Footer";
 import Header from "./Header";
 import Table from "./Table";
+
 import fetchNewLineItems from "../api/generateInvoice";
 
 const MultipleEntriesModal = ({

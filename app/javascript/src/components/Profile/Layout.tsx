@@ -1,10 +1,11 @@
 import React from "react";
 import { useState } from "react";
-import { ToastContainer } from "react-toastify";
 
 import { TOASTER_DURATION } from "constants/index";
-import EntryContext from "./context/EntryContext";
 
+import { ToastContainer } from "react-toastify";
+
+import EntryContext from "./context/EntryContext";
 import RouteConfig from "./RouteConfig";
 import SideNav from "./SubNav";
 
