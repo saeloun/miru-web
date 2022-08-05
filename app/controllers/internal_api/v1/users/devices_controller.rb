@@ -5,13 +5,13 @@ class InternalApi::V1::Users::DevicesController < InternalApi::V1::ApplicationCo
 
   def index
     authorize @user, policy_class: Users::DevicePolicy
-    devices = current_user.devices
+    devices = @user.devices
     render :index, locals: { devices: }, status: :ok
   end
 
   def create
     authorize @user, policy_class: Users::DevicePolicy
-    device = @user.devices.new(device_params.merge(user_id: current_user.id, company_id: current_company.id))
+    device = @user.devices.new(device_params.merge(issued_to: @user, issued_by: @user.current_workspace))
     device.save!
     render :create, locals: { device: }, status: :ok
  end
