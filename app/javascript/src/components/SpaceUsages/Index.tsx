@@ -51,6 +51,7 @@ const TimeReserving: React.FC<Iprops> = ({
   });
   const [selectedSpaceId, setSelectedSpaceId] = useState<1 | 2 | 3 | undefined>();
   const [newEntryId, setNewEntryId] = useState<number | undefined>();
+  const [selectedTime, setSelectedTime] = useState<string | undefined>();
 
   const calendarTimes = () => {
     const product = (...a: any[][]) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
@@ -337,6 +338,7 @@ const TimeReserving: React.FC<Iprops> = ({
                     spaceCode={listIndex}
                     setNewEntryId={setNewEntryId}
                     newEntryId={newEntryId}
+                    setSelectedTime={setSelectedTime}
                   />))
                 }
               </div>
@@ -363,6 +365,8 @@ const TimeReserving: React.FC<Iprops> = ({
         setSelectedSpaceId={setSelectedSpaceId}
         selectedSpaceId={selectedSpaceId}
         setNewEntryId={setNewEntryId}
+        setSelectedTime={setSelectedTime}
+        selectedTime={selectedTime}
       /> : ""}
     </>
   );

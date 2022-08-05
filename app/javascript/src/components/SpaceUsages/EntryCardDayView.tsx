@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 
 const EntryCardDayView = ({
   spaceUsages,
@@ -9,7 +10,8 @@ const EntryCardDayView = ({
   setSelectedSpaceId,
   spaceCode,
   setNewEntryId,
-  newEntryId
+  newEntryId,
+  setSelectedTime
 }) => {
   const getRandomColor = (spaceID) => {
     const letters = 'BCDEF'.split('');
@@ -28,10 +30,14 @@ const EntryCardDayView = ({
   }, [newEntryId])
 
   return (
-    <div className="ac-clone-col" onClick={() => {
+    <div className="ac-clone-col" onClick={(event: React.MouseEvent<HTMLElement>): void => {
       if (!editEntryId) {
         setNewEntryView(true)
         setSelectedSpaceId(spaceCode + 1)
+        const minutes = event.clientY - event.currentTarget.getBoundingClientRect().top
+        const timeHHMM = (minutes / 60) + ":" + (minutes % 60)
+        const selectedTime = minutesToHHMM(minutesFromHHMM(timeHHMM) - (minutesFromHHMM(timeHHMM) % 15))
+        setSelectedTime(selectedTime)
       }
     }}>
       {spaceUsages && spaceUsages.map((space, _index) => {

@@ -24,7 +24,9 @@ const EditEntry: React.FC<Iprops> = ({
   editEntryColor,
   setSelectedSpaceId,
   selectedSpaceId,
-  setNewEntryId
+  setNewEntryId,
+  setSelectedTime,
+  selectedTime
 }) => {
   const PURPOSES = [
     { id: "1", name: "Client / Standup" },
@@ -43,7 +45,8 @@ const EditEntry: React.FC<Iprops> = ({
   ];
   const { useState, useEffect } = React;
   const [note, setNote] = useState("");
-  const [startDuration, setStartDuration] = useState(minutesToHHMM(minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) - (minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) % 15)));
+  const currentTime: string = minutesToHHMM(minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) - (minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) % 15));
+  const [startDuration, setStartDuration] = useState(selectedTime || currentTime);
   const [endDuration, setEndDuration] = useState("00:00");
   const [displayStartDuration, setDisplayStartDuration] = useState("");
   const [displayEndDuration, setDisplayEndDuration] = useState("");
@@ -98,6 +101,7 @@ const EditEntry: React.FC<Iprops> = ({
   useEffect(() => {
     if (startDuration){
       setDisplayStartDuration(calendarTimes(startDuration)[0].name)
+      setSelectedTime(undefined)
     }
     if (endDuration){
       setDisplayEndDuration(calendarTimes(endDuration)[0].name)
@@ -332,6 +336,8 @@ interface Iprops {
   setSelectedSpaceId: React.Dispatch<React.SetStateAction<number>>;
   selectedSpaceId?: 1 | 2 | 3;
   setNewEntryId: React.Dispatch<React.SetStateAction<number>>;
+  setSelectedTime: React.Dispatch<React.SetStateAction<string>>;
+  selectedTime?: string;
 }
 
 export default EditEntry;
