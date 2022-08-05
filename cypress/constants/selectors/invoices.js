@@ -11,5 +11,10 @@ export const invoicesSelector = {
   entriesList: dataCy('entries-list'),
   saveInvoice: dataCy('save-invoice'),
   sendInvoice: dataCy('send-invoice'),
-  sendEmail: dataCy('send-email')
+  sendEmail: dataCy('send-email'),
+  searchBar: dataCy('search-invoice'),
+  edit: dataCy('edit-invoice'),
+  editNewLineItem: dataCy('edit-new-line-item'),
+  saveInvoiceEdit: dataCy('save-invoice-edit'),
+  entriesListEdit: dataCy('entries-list-edit')
 }

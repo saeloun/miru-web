@@ -28,7 +28,7 @@ describe("invoices index page", () => {
     cy.get(invoicesSelector.invoicesList).first().contains(invoice_number);
   })
 
-  it.only("should throw error when generating an invoice without entering details", function(){
+  it("should throw error when generating an invoice without entering details", function(){
     cy.get(invoicesSelector.newInvoiceButton).click()
     cy.get(invoicesSelector.sendInvoice).click({force: true})
     cy.contains("Please select client and enter invoice number to proceed")
@@ -49,4 +49,15 @@ describe("invoices index page", () => {
     cy.get(invoicesSelector.sendInvoice).click({force: true})
     cy.get(invoicesSelector.sendEmail).click()
   })
+
+  it("should edit an invoice", function(){
+    const invoice_number = fake.invoiceNumber
+    cy.generateNewInvoice(invoice_number);
+    cy.get(invoicesSelector.searchBar).clear().type(invoice_number).type('{enter}')
+    cy.get(invoicesSelector.edit).click({force: true})
+    cy.get(invoicesSelector.editNewLineItem).click()
+    cy.get(invoicesSelector.entriesListEdit).first().click()
+    cy.get(invoicesSelector.saveInvoiceEdit).click()
+  })
+
 });

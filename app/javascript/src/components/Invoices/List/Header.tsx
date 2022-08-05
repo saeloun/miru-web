@@ -74,6 +74,7 @@ const Header = ({
                   type="text"
                   className="header__searchInput"
                   placeholder="Search"
+                  data-cy="search-invoice"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => onKeydownHandler(e)}
