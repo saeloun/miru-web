@@ -64,11 +64,14 @@ const RevenueByClientReport = () => {
       const label = key === "dateRange" ? "All" : "None";
       setSelectedFilter({ ...selectedFilter, [key]: { label, value: "" } });
     }
+    if (key === "clients") {
+      setSelectedFilter({ ...selectedFilter, [key]: [{ label: "All Clients", value: "" }] });
+    }
   };
 
   useEffect(() => {
     updateFilterCounter();
-    getReportData({ selectedFilter, setClientList, setNavFilters, setFilterVisibilty, setSummary, setCurrency });
+    getReportData({ selectedFilter, setClientList, setNavFilters, setFilterVisibilty, setSummary, setCurrency, customDate: dateRange });
   }, [selectedFilter]);
 
   const contextValues = {

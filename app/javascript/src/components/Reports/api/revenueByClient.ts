@@ -10,8 +10,9 @@ const getReportData = async ({
   setNavFilters,
   setFilterVisibilty,
   setSummary,
-  setCurrency
-}
+  setCurrency,
+  customDate
+},
 ) => {
   try {
     let fromDate, toDate;
@@ -44,6 +45,16 @@ const getReportData = async ({
         toDate = `31-12-${currentYear -1}`;
         break;
 
+      case "custom":
+        if (customDate.from && customDate.to) {
+          fromDate = dayjs(customDate.from).format("DD-MM-YYYY");
+          toDate = dayjs(customDate.to).format("DD-MM-YYYY");
+        } else {
+          fromDate = "01-01-2022";
+          toDate = dayjs().format("DD-MM-YYYY");
+        }
+        break;
+
       default:
         fromDate = "01-01-2022";
         toDate = dayjs().format("DD-MM-YYYY");
@@ -52,6 +63,7 @@ const getReportData = async ({
     if (! (selectedFilter.clients[0]["label"] === "All Clients")) {
       clientIds = selectedFilter.clients.map(client => client.value);
     }
+
     const res = await clientRevenueApi.get(fromDate, toDate, clientIds);
     setClientList(res.data.clients);
     setCurrency(res.data.currency);
