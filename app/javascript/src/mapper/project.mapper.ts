@@ -1,10 +1,10 @@
 
 const getMember = (input:any) => input.map((elem) => ({
-  formattedHourlyRate: elem.formatted_hourly_rate,
+  hourlyRate: elem.hourly_rate,
   id: elem.id,
   minutes: elem.minutes_logged,
   name: elem.name,
-  formattedCost: elem.formatted_cost
+  cost: elem.cost
 }));
 
 export const unmapper = (data:any = {}) => ({
@@ -14,5 +14,6 @@ export const unmapper = (data:any = {}) => ({
   is_billable: data.is_billable,
   members: getMember(data.members),
   name: data.name,
+  currency: data.overdue_and_outstanding_amounts?.currency,
   overdueOutstandingAmount: data.overdue_and_outstanding_amounts
 });
