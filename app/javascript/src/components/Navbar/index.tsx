@@ -23,21 +23,25 @@ const Navbar = ({ isAdminUser, user }) => {
     {
       logo: <Timer size={26} className="mr-4" />,
       label: "Time Tracking",
+      dataCy: "time-tracking-tab",
       path: Paths.TIME_TRACKING
     },
     {
       logo: <UsersThree size={26} className="mr-4" />,
       label: "Team",
+      dataCy: "team-tab",
       path: Paths.TEAM
     },
     {
       logo: <Buildings size={26} className="mr-4" />,
       label: "Clients",
+      dataCy: "clients-tab",
       path: Paths.CLIENTS
     },
     {
       logo: <Briefcase size={26} className="mr-4" />,
       label: "Projects",
+      dataCy: "projects-tab",
       path: Paths.PROJECTS
     }
   ];
@@ -46,36 +50,43 @@ const Navbar = ({ isAdminUser, user }) => {
     {
       logo: <Timer size={26} className="mr-4" />,
       label: "Time Tracking",
+      dataCy: "time-tracking-tab",
       path: Paths.TIME_TRACKING
     },
     {
       logo: <UsersThree size={26} className="mr-4" />,
       label: "Team",
+      dataCy: "team-tab",
       path: Paths.TEAM
     },
     {
       logo: <Buildings size={26} className="mr-4" />,
       label: "Clients",
+      dataCy: "clients-tab",
       path: Paths.CLIENTS
     },
     {
       logo: <Briefcase size={26} className="mr-4" />,
       label: "Projects",
+      dataCy: "projects-tab",
       path: Paths.PROJECTS
     },
     {
       logo: <Receipt size={26} className="mr-4" />,
       label: "Invoices",
+      dataCy: "invoices-tab",
       path: Paths.INVOICES
     },
     {
       logo: <ChartLine size={26} className="mr-4" />,
       label: "Reports",
+      dataCy: "reports-tab",
       path: Paths.REPORTS
     },
     {
       logo: <Wallet size={26} className="mr-4" />,
       label: "Payments",
+      dataCy: "payments-tab",
       path: Paths.PAYMENTS
     }
   ];
@@ -88,6 +99,7 @@ const Navbar = ({ isAdminUser, user }) => {
       <li key={index} className="items-center hover:bg-miru-gray-100">
         <NavLink
           to={option.path}
+          data-cy = {option.dataCy}
           className={({ isActive }) =>
             isActive
               ? activeClassName
@@ -104,6 +116,7 @@ const Navbar = ({ isAdminUser, user }) => {
       <li key={index} className="items-center hover:bg-miru-gray-100">
         <NavLink
           to={option.path}
+          data-cy = {option.dataCy}
           className={({ isActive }) =>
             isActive
               ? activeClassName
