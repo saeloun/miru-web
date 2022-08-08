@@ -27,13 +27,13 @@ RSpec.describe Project, type: :model do
     let(:client) { create(:client, company:) }
     let(:project) { create(:project, client:) }
     let!(:member) { create(:project_member, project:, user:, hourly_rate: 5000) }
-    let(:formatted_hourly_rate) { FormatAmountService.new(company.base_currency, member.hourly_rate).process }
+    let(:hourly_rate) { member.hourly_rate }
     let(:result) do
       [{
         id: user.id,
         name: user.full_name,
         minutes_logged: 480.0,
-        formatted_hourly_rate:
+        hourly_rate:
       }]
     end
 
@@ -45,9 +45,9 @@ RSpec.describe Project, type: :model do
           [{
             id: member.user_id,
             name: user.full_name,
-            formatted_hourly_rate:,
+            hourly_rate:,
             minutes_logged: 0,
-            formatted_cost: project.format_amount(0)
+            cost: 0
           }])
       end
     end
@@ -57,9 +57,9 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in the last week" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.last_week)
-        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
-        result.first[:formatted_cost] = project.format_amount(cost)
+        result.first[:cost] = cost
         expect(subject).to eq(result)
       end
     end
@@ -69,9 +69,9 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a week" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_week)
-        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
-        result.first[:formatted_cost] = project.format_amount(cost)
+        result.first[:cost] = cost
         expect(subject).to eq(result)
       end
     end
@@ -81,9 +81,9 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a month" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_month)
-        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
-        result.first[:formatted_cost] = project.format_amount(cost)
+        result.first[:cost] = cost
         expect(subject).to eq(result)
       end
     end
@@ -93,9 +93,9 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a year" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.beginning_of_year)
-        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
-        result.first[:formatted_cost] = project.format_amount(cost)
+        result.first[:cost] = cost
         expect(subject).to eq(result)
       end
     end
