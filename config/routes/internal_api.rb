@@ -41,8 +41,13 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :employments, only: [:index]
     resources :timezones, only: [:index]
 
+    concern :AddressableConcern do |options|
+      resources :addresses, options
+    end
+
     resources :companies, only: [:index, :create, :update] do
       resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
+      concerns :AddressableConcern, addressable_type: "Company"
     end
 
     namespace :profiles do
@@ -82,11 +87,12 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :users do
       resources :previous_employments, only: [:create, :index, :show, :update], controller: "users/previous_employments"
       resources :devices, only: [:create, :index, :show, :update], controller: "users/devices"
+      concerns :AddressableConcern, addressable_type: "User"
     end
 
     resources :previous_employments, only: [:index, :create]
 
-    resources :addresses, only: [:show, :update], controller: "addresses"
+    # resources :addresses, only: [:show, :update], controller: "addresses"
 
     resource :profile, only: [:update, :show], controller: "profile" do
       delete "/remove_avatar", to: "profile#remove_avatar"
