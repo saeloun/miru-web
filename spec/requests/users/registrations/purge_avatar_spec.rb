@@ -11,7 +11,7 @@ RSpec.describe "Users::RegistrationsController#purge_avatar", type: :request do
     end
 
     it "removes user's avatar and redirect to profile path" do
-      expect(response).to redirect_to(profile_path)
+      expect(response).to redirect_to("/profile")
       expect(user.reload.avatar.image).to be_nil
     end
   end

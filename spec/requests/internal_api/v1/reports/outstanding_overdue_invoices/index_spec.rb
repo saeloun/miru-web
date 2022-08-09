@@ -92,7 +92,8 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
       end
 
       it "returns the clients data in alaphabetical order with invoices details" do
-        expect(json_response["clients"]).to eq(JSON.parse(@expected_clients.to_json))
+        expect(JSON.parse(@expected_clients.to_json)).to include(json_response["clients"][0])
+        expect(JSON.parse(@expected_clients.to_json)).to include(json_response["clients"][1])
       end
 
       it "returns the base currency" do
