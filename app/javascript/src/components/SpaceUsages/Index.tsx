@@ -109,21 +109,21 @@ const TimeReserving: React.FC<Iprops> = ({
   }, [selectDate, weekDay]);
 
   useEffect(() => {
-    const spaces = { 0: [], 1: [], 2: [] };
-    if (selectedSpaceId && selectedStartTime) {
-      spaces[selectedSpaceId - 1] = [{
+    const spaces = { "1": [], "2": [], "3": [] };
+    if (selectedSpaceId && selectedStartTime && editEntryId === 0) {
+      spaces[selectedSpaceId.toString()] = [{
         id: 0,
         user_id: userId,
         start_duration: selectedStartTime,
         end_duration: selectedEndTime,
-        space_code: selectedSpaceId
+        space_code: selectedSpaceId.toString()
       }];
     }
     setNewEntry(spaces);
     return () => {
       setNewEntry({});
     }
-  }, [selectedSpaceId, selectedStartTime, selectedEndTime, userId])
+  }, [selectedSpaceId, selectedStartTime, selectedEndTime, userId, editEntryId])
 
   const handleWeekInfo = () => {
     const daysInWeek = Array.from(Array(7).keys()).map((weekCounter) => {
@@ -234,7 +234,7 @@ const TimeReserving: React.FC<Iprops> = ({
       SPACES.map((i) => spaces[i.id] = thisGroupEntries[i.id] || [])
       setGroupingEntryList(spaces)
     } else {
-      setGroupingEntryList({ 0: [], 1: [], 2: [] })
+      setGroupingEntryList({ "1": [], "2": [], "3": [] })
     }
   }, [entryList, selectedFullDate]);
 

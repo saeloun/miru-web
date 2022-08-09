@@ -25,7 +25,7 @@ const NewEntryCardDayView = ({
         const displayColor = getRandomColor(space.user_id)
         return (
           <div id={`newSpace${space.id}`}
-            className="relative z-50 cursor-pointer as-meeting-point w-7 opacity-90"
+            className="relative z-10 cursor-pointer as-meeting-point w-7 opacity-90"
             key={_index}
             title={displayTitle}
             style={ { height: `${space.end_duration - space.start_duration}px`, top: `${space.start_duration}px`, backgroundColor: displayColor, border: "1px solid red" } }
