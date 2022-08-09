@@ -26,7 +26,9 @@ const EditEntry: React.FC<Iprops> = ({
   selectedSpaceId,
   setNewEntryId,
   setSelectedTime,
-  selectedTime
+  selectedTime,
+  setSelectedStartTime,
+  setSelectedEndTime,
 }) => {
   const PURPOSES = [
     { id: "1", name: "Client / Standup" },
@@ -102,9 +104,11 @@ const EditEntry: React.FC<Iprops> = ({
     if (startDuration){
       setDisplayStartDuration(calendarTimes(startDuration)[0].name)
       setSelectedTime(undefined)
+      setSelectedStartTime(minutesFromHHMM(startDuration))
     }
     if (endDuration){
       setDisplayEndDuration(calendarTimes(endDuration)[0].name)
+      setSelectedEndTime(minutesFromHHMM(endDuration))
     }
   }, [startDuration, endDuration]);
 
@@ -134,6 +138,8 @@ const EditEntry: React.FC<Iprops> = ({
       if (fetchEntriesRes) {
         setNewEntryView(false);
         setSelectedSpaceId(undefined);
+        setSelectedStartTime(undefined);
+        setSelectedEndTime(undefined);
         setNewEntryId(res.data.entry.id)
       }
     }
@@ -156,6 +162,8 @@ const EditEntry: React.FC<Iprops> = ({
         setNewEntryView(false);
         setEditEntryId(0);
         setSelectedSpaceId(undefined);
+        setSelectedStartTime(undefined);
+        setSelectedEndTime(undefined);
       }
     }
   };
@@ -169,6 +177,8 @@ const EditEntry: React.FC<Iprops> = ({
               setNewEntryView(false);
               setEditEntryId(0);
               setSelectedSpaceId(undefined);
+              setSelectedStartTime(undefined);
+              setSelectedEndTime(undefined);
             }}>
             <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
             <span className="sr-only">Close modal</span>
@@ -197,6 +207,7 @@ const EditEntry: React.FC<Iprops> = ({
                 <select
                   onChange={e => {
                     setSpace(e.target.value);
+                    setSelectedSpaceId(parseInt(e.target.value));
                   }}
                   value={space || ""}
                   name="space"
@@ -286,6 +297,8 @@ const EditEntry: React.FC<Iprops> = ({
                           setNewEntryView(false);
                           setEditEntryId(0);
                           setSelectedSpaceId(undefined);
+                          setSelectedStartTime(undefined);
+                          setSelectedEndTime(undefined);
                         }}
                         className="text-sm text-blue-700 cursor-pointer hover:underline dark:text-blue-500">
                           Delete Event?
@@ -307,6 +320,8 @@ const EditEntry: React.FC<Iprops> = ({
                   setNewEntryView(false);
                   setEditEntryId(0);
                   setSelectedSpaceId(undefined);
+                  setSelectedStartTime(undefined);
+                  setSelectedEndTime(undefined);
                 }}
                 className="w-full h-8 px-6 py-1 mt-1 text-xs font-bold tracking-widest bg-transparent border rounded border-miru-han-purple-1000 hover:bg-miru-han-purple-1000 text-miru-han-purple-600 hover:text-white hover:border-transparent"
               >
@@ -338,6 +353,8 @@ interface Iprops {
   setNewEntryId: React.Dispatch<React.SetStateAction<number>>;
   setSelectedTime: React.Dispatch<React.SetStateAction<string>>;
   selectedTime?: string;
+  setSelectedStartTime: React.Dispatch<React.SetStateAction<number>>;
+  setSelectedEndTime: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default EditEntry;

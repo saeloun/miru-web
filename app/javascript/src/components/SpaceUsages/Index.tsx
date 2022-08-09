@@ -16,6 +16,7 @@ import DatesInWeek from "./DatesInWeek";
 import EditEntry from "./EditEntry";
 import EntryCardDayView from "./EntryCardDayView";
 import './style.scss';
+import NewEntryCardDayView from "./NewEntryCardDayView";
 
 const { useState, useEffect } = React;
 dayjs.extend(updateLocale);
@@ -52,6 +53,9 @@ const TimeReserving: React.FC<Iprops> = ({
   const [selectedSpaceId, setSelectedSpaceId] = useState<1 | 2 | 3 | undefined>();
   const [newEntryId, setNewEntryId] = useState<number | undefined>();
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
+  const [selectedStartTime, setSelectedStartTime] = useState<number | undefined>();
+  const [selectedEndTime, setSelectedEndTime] = useState<number | undefined>();
+  const [newEntry, setNewEntry] = useState<object>({});
 
   const calendarTimes = () => {
     const product = (...a: any[][]) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
@@ -103,6 +107,23 @@ const TimeReserving: React.FC<Iprops> = ({
         .format("YYYY-MM-DD")
     );
   }, [selectDate, weekDay]);
+
+  useEffect(() => {
+    const spaces = { 0: [], 1: [], 2: [] };
+    if (selectedSpaceId && selectedStartTime) {
+      spaces[selectedSpaceId - 1] = [{
+        id: 0,
+        user_id: userId,
+        start_duration: selectedStartTime,
+        end_duration: selectedEndTime,
+        space_code: selectedSpaceId
+      }];
+    }
+    setNewEntry(spaces);
+    return () => {
+      setNewEntry({});
+    }
+  }, [selectedSpaceId, selectedStartTime, selectedEndTime, userId])
 
   const handleWeekInfo = () => {
     const daysInWeek = Array.from(Array(7).keys()).map((weekCounter) => {
@@ -324,6 +345,16 @@ const TimeReserving: React.FC<Iprops> = ({
                 <div className="ac-cv-time-row" key={index}><div className="ac-cv-time"><span>{i.name}</span></div></div>
               ))}
             </div>
+            {Object.entries(newEntry).length > 0 ?
+              <div className="grid grid-cols-4 gap-0 ac-calendar-clone">
+                {
+                  Object.entries(newEntry).map(([_spaceCode, value], listIndex) => (<NewEntryCardDayView
+                    key={listIndex}
+                    spaceUsages={value}
+                  />))
+                }
+              </div>
+              : ""}
             {Object.entries(groupingEntryList).length > 0 ?
               <div className="grid grid-cols-4 gap-0 ac-calendar-clone">
                 {
@@ -367,6 +398,8 @@ const TimeReserving: React.FC<Iprops> = ({
         setNewEntryId={setNewEntryId}
         setSelectedTime={setSelectedTime}
         selectedTime={selectedTime}
+        setSelectedStartTime={setSelectedStartTime}
+        setSelectedEndTime={setSelectedEndTime}
       /> : ""}
     </>
   );
