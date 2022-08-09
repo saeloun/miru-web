@@ -14,8 +14,8 @@ RSpec.describe "Dashboard#index", type: :request do
       send_request :get, dashboard_index_path
     end
 
-    it "renders Dashboard#index page" do
-      expect(response).to have_http_status(:ok)
+    it "redirect to root path" do
+      expect(response).to have_http_status(:redirect)
     end
   end
 

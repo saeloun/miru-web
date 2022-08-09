@@ -34,6 +34,7 @@ export enum Paths {
   PAYMENTS = "/payments",
   TIME_TRACKING = "/time-tracking",
   TEAM = "/team/*",
+  PROFILE = "/profile/*"
 }
 
 export const TOASTER_DURATION = 3000;
