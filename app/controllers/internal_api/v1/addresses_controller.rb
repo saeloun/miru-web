@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::AddressesController < InternalApi::V1::ApplicationController
-  include AddressableConcern
-
   before_action :set_addressable
 
   def index
