@@ -11,11 +11,7 @@ class InternalApi::V1::AddressesController < InternalApi::V1::ApplicationControl
 
   def create
     authorize @addressable, policy_class: AddressPolicy
-    address = @addressable.addresses.new(
-      address_params.merge(
-        addressable_type: @addressable_type,
-        addressable_id: @addressable.id))
-    address.save!
+    address = @addressable.addresses.create!(address_params)
     render :create, locals: { address: }, status: :ok
  end
 
