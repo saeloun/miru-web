@@ -47,6 +47,7 @@ const EditEntry: React.FC<Iprops> = ({
   ];
   const { useState, useEffect } = React;
   const [note, setNote] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
   const currentTime: string = minutesToHHMM(minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) - (minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) % 15));
   const [startDuration, setStartDuration] = useState(selectedTime || currentTime);
   const [endDuration, setEndDuration] = useState("00:00");
@@ -123,6 +124,7 @@ const EditEntry: React.FC<Iprops> = ({
   });
 
   const handleSave = async () => {
+    setIsProcessing(true);
     const tse = getPayload();
     const message = validateTimesheetEntry(tse);
     if (message) {
@@ -140,12 +142,14 @@ const EditEntry: React.FC<Iprops> = ({
         setSelectedSpaceId(undefined);
         setSelectedStartTime(undefined);
         setSelectedEndTime(undefined);
-        setNewEntryId(res.data.entry.id)
+        setNewEntryId(res.data.entry.id);
+        setIsProcessing(false);
       }
     }
   };
 
   const handleEdit = async () => {
+    setIsProcessing(true);
     const tse = getPayload();
     const message = validateTimesheetEntry(tse);
     if (message) {
@@ -164,10 +168,28 @@ const EditEntry: React.FC<Iprops> = ({
         setSelectedSpaceId(undefined);
         setSelectedStartTime(undefined);
         setSelectedEndTime(undefined);
+        setIsProcessing(false);
       }
     }
   };
-
+  const loadingButton = <>
+    <svg
+      className="inline-block w-5 h-5 mr-3 animate-spin"
+      version="1.1"
+      id="Capa_1"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 583.162 583.162" xmlSpace="preserve">
+      <g>
+        <g>
+          <polygon points="279.958,255.742 279.958,116.211 163.722,116.211 0.993,255.742 0.993,278.965 256.711,278.965 		"/>
+          <polygon points="256.711,304.197 117.228,304.197 117.228,420.409 256.711,583.162 279.958,583.162 279.958,327.42 		"/>
+          <polygon points="326.936,278.989 466.418,278.989 466.418,162.754 326.936,0 303.689,0 303.689,255.742 		"/>
+          <polygon points="303.205,327.42 303.205,466.927 419.44,466.927 582.169,327.42 582.169,304.197 326.427,304.197 		"/>
+        </g>
+      </g>
+    </svg>
+    Processing...
+  </>
   return (
     <div aria-hidden="true" className="fixed top-0 left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
       <div className="relative float-right w-full h-full max-w-md md:h-auto">
@@ -280,12 +302,12 @@ const EditEntry: React.FC<Iprops> = ({
               {editEntryId === 0 ? (
                 <button
                   onClick={handleSave}
-                  disabled={!(space && purpose && note)}
+                  disabled={!(space && purpose && note) || isProcessing}
                   className={
-                    "mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest bg-miru-han-purple-1000 hover:border-transparent disabled:bg-miru-gray-1000"
+                    `mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest bg-miru-han-purple-1000 hover:border-transparent ${!isProcessing ? 'disabled:bg-miru-gray-1000' : 'disabled:bg-miru-han-purple-400'}`
                   }
                 >
-                  SAVE
+                  {isProcessing ? loadingButton : 'SAVE'}
                 </button>
               ) :
                 (
@@ -306,12 +328,12 @@ const EditEntry: React.FC<Iprops> = ({
                     </div>
                     <button
                       onClick={handleEdit}
-                      disabled={!(space && purpose && note)}
+                      disabled={!(space && purpose && note) || isProcessing}
                       className={
-                        "mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest bg-miru-han-purple-1000 hover:border-transparent disabled:bg-miru-gray-1000"
+                        `mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest bg-miru-han-purple-1000 hover:border-transparent ${!isProcessing ? 'disabled:bg-miru-gray-1000' : 'disabled:bg-miru-han-purple-400'}`
                       }
                     >
-                      UPDATE
+                      {isProcessing ? loadingButton : 'UPDATE'}
                     </button>
                   </>
                 )}

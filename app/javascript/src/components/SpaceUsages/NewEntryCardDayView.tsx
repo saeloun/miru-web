@@ -21,7 +21,7 @@ const NewEntryCardDayView = ({
   return (
     <div className="ac-clone-col">
       {spaceUsages && spaceUsages.map((space: any, _index: number) => {
-        const displayTitle = `New`;
+        const displayTitle = `Occuping new space for you`;
         const displayColor = getRandomColor(space.user_id)
         return (
           <div id={`newSpace${space.id}`}
