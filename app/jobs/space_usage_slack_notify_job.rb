@@ -62,7 +62,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
           type: "section",
           text: {
             type: "mrkdwn",
-            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}*\tFrom: *#{@space_usage.formatted_duration_12hr(:start)} - #{@space_usage.formatted_duration_12hr(:end)}*\nNote: #{entry[:note]}"
+            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}* from *#{@space_usage.formatted_duration_12hr(:start)}* to *#{@space_usage.formatted_duration_12hr(:end)}*\nNote: #{entry[:note]}"
           },
           accessory: {
             type: "image",
@@ -106,7 +106,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
           type: "section",
           text: {
             type: "mrkdwn",
-            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}*\tFrom: *#{@space_usage.formatted_duration_12hr(:start)} - #{@space_usage.formatted_duration_12hr(:end)}*\nNote: #{entry[:note]}"
+            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}* from *#{@space_usage.formatted_duration_12hr(:start)}* to *#{@space_usage.formatted_duration_12hr(:end)}*\nNote: #{entry[:note]}"
           },
           accessory: {
             type: "image",
@@ -150,7 +150,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
           type: "section",
           text: {
             type: "mrkdwn",
-            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}*\tFrom: *#{@space_usage.formatted_duration_12hr(:start)} - #{@space_usage.formatted_duration_12hr(:end)}*"
+            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}* from *#{@space_usage.formatted_duration_12hr(:start)}* to *#{@space_usage.formatted_duration_12hr(:end)}*"
           },
           accessory: {
             type: "image",
