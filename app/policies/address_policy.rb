@@ -2,7 +2,7 @@
 
 class AddressPolicy < ApplicationPolicy
   def index?
-    if record.class.name == "User"
+    if record.is_a?(User)
       (record.employed_at?(user.current_workspace_id) &&
       user_is_admin_or_owner_in_current_workspace?) || record == user
     else
