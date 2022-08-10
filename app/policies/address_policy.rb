@@ -5,7 +5,7 @@ class AddressPolicy < ApplicationPolicy
     if record.is_a?(User)
       (record.employed_at?(user.current_workspace_id) &&
       user_is_admin_or_owner_in_current_workspace?) || record == user
-    else
+    elsif record.is_a?(Company)
       user_is_admin_or_owner_in_current_workspace? && record.id == user.current_workspace_id
     end
   end
