@@ -90,10 +90,6 @@ namespace :internal_api, defaults: { format: "json" } do
       concerns :AddressableConcern, addressable_type: "User"
     end
 
-    resources :previous_employments, only: [:index, :create]
-
-    # resources :addresses, only: [:show, :update], controller: "addresses"
-
     resource :profile, only: [:update, :show], controller: "profile" do
       delete "/remove_avatar", to: "profile#remove_avatar"
     end
