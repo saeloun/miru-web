@@ -3,6 +3,7 @@ import React from "react";
 import spaceUsagesApi from "apis/space-usages";
 import autosize from "autosize";
 
+import ConfirmDialog from "common/Modal/ConfirmDialog";
 import Toastr from "common/Toastr";
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "helpers/ordinal";
@@ -58,6 +59,7 @@ const EditEntry: React.FC<Iprops> = ({
   const [purposeName, setPurposeName] = useState("");
   const [userName, setUserName] = useState("");
   // const [restricted, setRestricted] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
 
   const calendarTimes = (durationFrom) => {
     durationFrom = durationFrom || "00:00"
@@ -189,7 +191,17 @@ const EditEntry: React.FC<Iprops> = ({
       </g>
     </svg>
     Processing...
-  </>
+  </>;
+
+  const handleDelete = () => {
+    handleDeleteEntry(editEntryId);
+    setNewEntryView(false);
+    setEditEntryId(0);
+    setSelectedSpaceId(undefined);
+    setSelectedStartTime(undefined);
+    setSelectedEndTime(undefined);
+  };
+
   return (
     <div aria-hidden="true" className="fixed top-0 left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
       <div className="relative float-right w-full h-full max-w-md md:h-auto">
@@ -315,16 +327,19 @@ const EditEntry: React.FC<Iprops> = ({
                     <div className="flex justify-between">
                       <a
                         onClick={() => {
-                          handleDeleteEntry(editEntryId);
-                          setNewEntryView(false);
-                          setEditEntryId(0);
-                          setSelectedSpaceId(undefined);
-                          setSelectedStartTime(undefined);
-                          setSelectedEndTime(undefined);
+                          setConfirmOpen(true);
                         }}
                         className="text-sm text-blue-700 cursor-pointer hover:underline dark:text-blue-500">
                           Delete Event?
                       </a>
+                      <ConfirmDialog
+                        title="Delete Space Slot?"
+                        open={confirmOpen}
+                        onClose={() => setConfirmOpen(false)}
+                        onConfirm={handleDelete}
+                      >
+                        Are you sure you want to delete this Space Slot?
+                      </ConfirmDialog>
                     </div>
                     <button
                       onClick={handleEdit}
