@@ -129,3 +129,8 @@
 	background: rgba(0,0,0,0.5);
 	z-index: 2;
 }
+
+.required:after {
+	@apply text-red-600 ml-1;
+	content:"*";
+}

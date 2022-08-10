@@ -225,7 +225,7 @@ const EditEntry: React.FC<Iprops> = ({
           <div className="px-6 py-6 lg:px-8">
             <div className="space-y-6">
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Space</label>
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Space</label>
                 <select
                   onChange={e => {
                     setSpace(e.target.value);
@@ -247,7 +247,7 @@ const EditEntry: React.FC<Iprops> = ({
                 </select>
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Purpose</label>
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Purpose</label>
                 <select
                   onChange={e => {
                     setPurpose(e.target.value);
@@ -280,7 +280,7 @@ const EditEntry: React.FC<Iprops> = ({
                 ></textarea>
               </div>
               <div className="flex justify-between mb-2">
-                <div className="flex items-center justify-center h-8 p-1 text-sm">From</div>
+                <label className="flex items-center justify-center h-8 p-1 text-sm required">From</label>
                 <select
                   className="p-1 text-sm text-gray-600 placeholder-gray-500 bg-transparent border border-gray-300 rounded shadow-sm w-30 dark:border-gray-700 focus:outline-none focus:border-blue-700 dark:text-gray-400"
                   value={startDuration}
@@ -291,7 +291,7 @@ const EditEntry: React.FC<Iprops> = ({
                   }}>
                   {calendarTimes(null).map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
                 </select>
-                <div className="flex items-center justify-center h-8 p-1 text-sm">To</div>
+                <label className="flex items-center justify-center h-8 p-1 text-sm required">To</label>
                 <select
                   className="p-1 text-sm text-gray-600 placeholder-gray-500 bg-transparent border border-gray-300 rounded shadow-sm w-30 dark:border-gray-700 focus:outline-none focus:border-blue-700 dark:text-gray-400"
                   value={endDuration}
@@ -302,7 +302,7 @@ const EditEntry: React.FC<Iprops> = ({
               {editEntryId === 0 ? (
                 <button
                   onClick={handleSave}
-                  disabled={!(space && purpose && note) || isProcessing}
+                  disabled={!(space && purpose) || isProcessing}
                   className={
                     `mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest bg-miru-han-purple-1000 hover:border-transparent ${!isProcessing ? 'disabled:bg-miru-gray-1000' : 'disabled:bg-miru-han-purple-400'}`
                   }
@@ -328,7 +328,7 @@ const EditEntry: React.FC<Iprops> = ({
                     </div>
                     <button
                       onClick={handleEdit}
-                      disabled={!(space && purpose && note) || isProcessing}
+                      disabled={!(space && purpose) || isProcessing}
                       className={
                         `mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest bg-miru-han-purple-1000 hover:border-transparent ${!isProcessing ? 'disabled:bg-miru-gray-1000' : 'disabled:bg-miru-han-purple-400'}`
                       }
