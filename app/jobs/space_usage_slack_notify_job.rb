@@ -32,8 +32,10 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
 
   def create_space_payload_msg
     entry = @space_usage.formatted_entry
+    bookingDate = DateTime.parse("#{entry[:work_date]}").strftime("%d/%m/%Y")
 
     {
+      text: "Space Occupied :white_check_mark:",
       blocks: [
         {
           type: "header",
@@ -60,7 +62,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
           type: "section",
           text: {
             type: "mrkdwn",
-            text: "By: *#{entry[:user_name]}*\nFrom: *#{@space_usage.formatted_duration_12hr(:start)} - #{@space_usage.formatted_duration_12hr(:end)}*\nNote: #{entry[:note]}"
+            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}*\tFrom: *#{@space_usage.formatted_duration_12hr(:start)} - #{@space_usage.formatted_duration_12hr(:end)}*\nNote: #{entry[:note]}"
           },
           accessory: {
             type: "image",
@@ -74,8 +76,10 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
 
   def update_space_payload_msg
     entry = @space_usage.formatted_entry
+    bookingDate = DateTime.parse("#{entry[:work_date]}").strftime("%d/%m/%Y")
 
     {
+      text: "Space Occupation Changed :twisted_rightwards_arrows:",
       blocks: [
         {
           type: "header",
@@ -102,7 +106,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
           type: "section",
           text: {
             type: "mrkdwn",
-            text: "By: *#{entry[:user_name]}*\nFrom: *#{@space_usage.formatted_duration_12hr(:start)} - #{@space_usage.formatted_duration_12hr(:end)}*\nNote: #{entry[:note]}"
+            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}*\tFrom: *#{@space_usage.formatted_duration_12hr(:start)} - #{@space_usage.formatted_duration_12hr(:end)}*\nNote: #{entry[:note]}"
           },
           accessory: {
             type: "image",
@@ -116,8 +120,10 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
 
   def delete_space_payload_msg
     entry = @space_usage.formatted_entry
+    bookingDate = DateTime.parse("#{entry[:work_date]}").strftime("%d/%m/%Y")
 
     {
+      text: "Space Unoccupied :no_entry:",
       blocks: [
         {
           type: "header",
@@ -144,7 +150,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
           type: "section",
           text: {
             type: "mrkdwn",
-            text: "By: *#{entry[:user_name]}*\nFrom: *#{@space_usage.formatted_duration_12hr(:start)} - #{@space_usage.formatted_duration_12hr(:end)}*"
+            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}*\tFrom: *#{@space_usage.formatted_duration_12hr(:start)} - #{@space_usage.formatted_duration_12hr(:end)}*"
           },
           accessory: {
             type: "image",

@@ -280,7 +280,7 @@ const EditEntry: React.FC<Iprops> = ({
                 </select>
               </div>
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Notes</label>
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Notes</label>
                 <textarea
                   value={note}
                   onChange={e => setNote(e.target.value)}
@@ -314,7 +314,7 @@ const EditEntry: React.FC<Iprops> = ({
               {editEntryId === 0 ? (
                 <button
                   onClick={handleSave}
-                  disabled={!(space && purpose) || isProcessing}
+                  disabled={!(space && purpose && note) || isProcessing}
                   className={
                     `mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest bg-miru-han-purple-1000 hover:border-transparent ${!isProcessing ? 'disabled:bg-miru-gray-1000' : 'disabled:bg-miru-han-purple-400'}`
                   }
@@ -343,7 +343,7 @@ const EditEntry: React.FC<Iprops> = ({
                     </div>
                     <button
                       onClick={handleEdit}
-                      disabled={!(space && purpose) || isProcessing}
+                      disabled={!(space && purpose && note) || isProcessing}
                       className={
                         `mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest bg-miru-han-purple-1000 hover:border-transparent ${!isProcessing ? 'disabled:bg-miru-gray-1000' : 'disabled:bg-miru-han-purple-400'}`
                       }
