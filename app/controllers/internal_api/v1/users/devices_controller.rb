@@ -34,7 +34,7 @@ class InternalApi::V1::Users::DevicesController < InternalApi::V1::ApplicationCo
     end
 
     def device
-      @device ||= @user.devices.find(params[:id])
+      @device ||= Device.find(params[:id])
     end
 
     def device_params
