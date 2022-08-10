@@ -10,7 +10,7 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
   private
 
     def clients
-      current_company.clients.where(id: client_ids).order("name asc").includes(:invoices).map do |client|
+      current_clients.order("name asc").includes(:invoices).map do |client|
         client.payment_summary(duration_params)
       end
     end
@@ -25,8 +25,8 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
       }
     end
 
-    def client_ids
-      client_ids_params.blank? ? current_company.clients.pluck(:id) : client_ids_params
+    def current_clients
+      client_ids_params.blank? ? current_company.clients : current_company.clients.where(id: client_ids_params)
     end
 
     def client_ids_params
