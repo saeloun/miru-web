@@ -3,7 +3,7 @@
 class InternalApi::V1::AddressesController < InternalApi::V1::ApplicationController
   include AddressableConcern
 
-  before_action :set_addressable_type, :set_addressable
+  before_action :set_addressable
 
   def index
     authorize @addressable, policy_class: AddressPolicy
@@ -34,14 +34,10 @@ class InternalApi::V1::AddressesController < InternalApi::V1::ApplicationControl
 
   private
 
-    def set_addressable_type
-      @addressable_type ||= params[:addressable_type]
-    end
-
     def set_addressable
-      if @addressable_type == "User"
+      if params[:addressable_type] == "User"
         @addressable = User.find(params[:user_id])
-      else
+      elsif params[:addressable_type] == "Company"
         @addressable = Company.find(params[:company_id])
       end
     end
