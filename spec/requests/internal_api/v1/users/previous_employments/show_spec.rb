@@ -94,17 +94,35 @@ RSpec.describe "PreviousEmployments#show", type: :request do
     end
 
     context "when logged in user is employee" do
-      context "when employee wants to see record of other employee of his company" do
+      context "when employee wants to see his own record" do
         before do
-          employee.add_role :employee, company
-          create(:employment, company:, user: employee)
+          user.add_role :employee, company
+          create(:employment, company:, user:)
           user.add_role :employee, company
           sign_in user
-          send_request :get, internal_api_v1_user_previous_employment_path(employee, previous_employment_of_employee)
+          send_request :get, internal_api_v1_user_previous_employment_path(user, previous_employment_of_user)
         end
 
         it "is successful" do
-          expect(response).to have_http_status(:forbidden)
+          expect(response).to have_http_status(:ok)
+          expect(json_response["company_name"]).to eq(previous_employment_of_user["company_name"])
+          expect(json_response["role"]).to eq(previous_employment_of_user["role"])
+        end
+      end
+
+      context "when employee wants to see someone else's record" do
+        before do
+          user.add_role :employee, company
+          create(:employment, company:, user:)
+          create(:employment, company:, user: employee)
+          user.add_role :employee, company
+          employee.add_role :employee, company
+          sign_in user
+          send_request :get, internal_api_v1_user_previous_employment_path(user, previous_employment_of_employee)
+        end
+
+        it "is not found" do
+          expect(response).to have_http_status(:not_found)
         end
       end
     end
@@ -120,7 +138,7 @@ RSpec.describe "PreviousEmployments#show", type: :request do
       send_request :get, internal_api_v1_user_previous_employment_path(user, previous_employment_of_employee2)
     end
 
-    it "is successful" do
+    it "is not found" do
       expect(response).to have_http_status(:not_found)
     end
   end
