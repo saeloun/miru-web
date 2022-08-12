@@ -6,6 +6,7 @@ import spaceUsagesApi from "apis/space-usages";
 import * as dayjs from "dayjs";
 import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
+import { isInThePast } from "helpers/date-parser";
 import _ from "lodash";
 
 import { TOASTER_DURATION } from "constants/index";
@@ -56,6 +57,7 @@ const TimeReserving: React.FC<Iprops> = ({
   const [selectedStartTime, setSelectedStartTime] = useState<number | undefined>();
   const [selectedEndTime, setSelectedEndTime] = useState<number | undefined>();
   const [newEntry, setNewEntry] = useState<object>({});
+  const [isPastDate, setIsPastDate] = useState<boolean>(false);
 
   const calendarTimes = () => {
     const product = (...a: any[][]) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
@@ -107,6 +109,12 @@ const TimeReserving: React.FC<Iprops> = ({
         .format("YYYY-MM-DD")
     );
   }, [selectDate, weekDay]);
+
+  useEffect(() => {
+    setIsPastDate(
+      isInThePast(new Date(selectedFullDate))
+    );
+  }, [selectedFullDate]);
 
   useEffect(() => {
     const spaces = { "1": [], "2": [], "3": [] };
@@ -289,8 +297,14 @@ const TimeReserving: React.FC<Iprops> = ({
                 </button>*/}
               </div>
               <button
-                onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
-                className={`flex items-center justify-center w-20 h-6 mr-4 text-xs font-bold tracking-widest text-white border-2 rounded ${newEntryView && 'active-from'}`}
+                onClick={() => {
+                  if (!isPastDate) {
+                    setNewEntryView(true);
+                    setEditEntryId(0);
+                  }
+                }}
+                disabled={isPastDate}
+                className={`flex items-center justify-center w-20 h-6 mr-4 text-xs font-bold tracking-widest text-white border-2 rounded disabled:bg-miru-han-purple-200 ${newEntryView || editEntryId !== 0 ? 'active-from' : ''}`}
               >
                 NEW
               </button>
@@ -370,6 +384,7 @@ const TimeReserving: React.FC<Iprops> = ({
                     setNewEntryId={setNewEntryId}
                     newEntryId={newEntryId}
                     setSelectedTime={setSelectedTime}
+                    isPastDate={isPastDate}
                   />))
                 }
               </div>
@@ -400,6 +415,7 @@ const TimeReserving: React.FC<Iprops> = ({
         selectedTime={selectedTime}
         setSelectedStartTime={setSelectedStartTime}
         setSelectedEndTime={setSelectedEndTime}
+        isPastDate={isPastDate}
       /> : ""}
     </>
   );

@@ -11,7 +11,8 @@ const EntryCardDayView = ({
   spaceCode,
   setNewEntryId,
   newEntryId,
-  setSelectedTime
+  setSelectedTime,
+  isPastDate
 }) => {
   const getRandomColor = (spaceID) => {
     const letters = 'BCDEF'.split('');
@@ -31,7 +32,7 @@ const EntryCardDayView = ({
 
   return (
     <div className="ac-clone-col" onClick={(event: React.MouseEvent<HTMLElement>): void => {
-      if (!editEntryId) {
+      if (!isPastDate && !editEntryId) {
         setNewEntryView(true)
         setSelectedSpaceId(spaceCode + 1)
         const minutes = event.clientY - event.currentTarget.getBoundingClientRect().top

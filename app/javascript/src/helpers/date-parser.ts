@@ -5,3 +5,9 @@ export const getMonthFromString = (mon) => {
   }
   return -1;
 };
+
+export const isInThePast = (date: Date) => {
+  const today: Date = new Date();
+  today.setHours(0, 0, 0, 0);
+  return date < today;
+}

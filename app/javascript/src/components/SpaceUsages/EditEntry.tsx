@@ -30,6 +30,7 @@ const EditEntry: React.FC<Iprops> = ({
   selectedTime,
   setSelectedStartTime,
   setSelectedEndTime,
+  isPastDate,
 }) => {
   const PURPOSES = [
     { id: "1", name: "Client / Standup" },
@@ -239,6 +240,7 @@ const EditEntry: React.FC<Iprops> = ({
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Space</label>
                 <select
+                  disabled={isPastDate}
                   onChange={e => {
                     setSpace(e.target.value);
                     setSelectedSpaceId(parseInt(e.target.value));
@@ -261,6 +263,7 @@ const EditEntry: React.FC<Iprops> = ({
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Purpose</label>
                 <select
+                  disabled={isPastDate}
                   onChange={e => {
                     setPurpose(e.target.value);
                   }}
@@ -282,6 +285,7 @@ const EditEntry: React.FC<Iprops> = ({
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Notes</label>
                 <textarea
+                  disabled={isPastDate}
                   value={note}
                   onChange={e => setNote(e.target.value)}
                   rows={5}
@@ -294,6 +298,7 @@ const EditEntry: React.FC<Iprops> = ({
               <div className="flex justify-between mb-2">
                 <label className="flex items-center justify-center h-8 p-1 text-sm required">From</label>
                 <select
+                  disabled={isPastDate}
                   className="p-1 text-sm text-gray-600 placeholder-gray-500 bg-transparent border border-gray-300 rounded shadow-sm w-30 dark:border-gray-700 focus:outline-none focus:border-blue-700 dark:text-gray-400"
                   value={startDuration}
                   onChange={(e) => {
@@ -305,6 +310,7 @@ const EditEntry: React.FC<Iprops> = ({
                 </select>
                 <label className="flex items-center justify-center h-8 p-1 text-sm required">To</label>
                 <select
+                  disabled={isPastDate}
                   className="p-1 text-sm text-gray-600 placeholder-gray-500 bg-transparent border border-gray-300 rounded shadow-sm w-30 dark:border-gray-700 focus:outline-none focus:border-blue-700 dark:text-gray-400"
                   value={endDuration}
                   onChange={(e) => setEndDuration(e.target.value)}>
@@ -321,7 +327,7 @@ const EditEntry: React.FC<Iprops> = ({
                 >
                   {isProcessing ? loadingButton : 'SAVE'}
                 </button>
-              ) :
+              ) : !isPastDate &&
                 (
                   <>
                     <div className="flex justify-between">
@@ -392,6 +398,7 @@ interface Iprops {
   selectedTime?: string;
   setSelectedStartTime: React.Dispatch<React.SetStateAction<number>>;
   setSelectedEndTime: React.Dispatch<React.SetStateAction<number>>;
+  isPastDate: boolean;
 }
 
 export default EditEntry;
