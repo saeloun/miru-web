@@ -41,7 +41,7 @@ const Header = ({
             onClick={() => setnewClient(true)}
           >
             <Plus weight="fill" size={16} />
-            <span className="ml-2 inline-block">NEW CLIENT</span>
+            <span className="ml-2 inline-block" data-cy="new-client-button">NEW CLIENT</span>
           </button>
         </div>
       )}

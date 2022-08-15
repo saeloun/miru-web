@@ -102,19 +102,19 @@ const Table = ({
 
                 {hasRowIcons && <td className="table__cell">
                   <div className="iconWrapper invisible">
-                    <button onClick={(e) => {
+                    <button data-cy="edit-icon" onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       handleEditClick(row.original.rowId);
                     }}>
-                      <Pencil size={16} color="#5b34ea" weight="bold" />
+                      <Pencil size={16} color="#5b34ea" weight="bold"  />
                     </button>
-                    <button onClick={(e) => {
+                    <button data-cy="delete-icon" onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       handleDeleteClick(row.original.rowId);
                     }} className="ml-10">
-                      <Trash size={16} color="#5b34ea" weight="bold" />
+                      <Trash size={16} color="#5b34ea" weight="bold" data-cy="delete-icon"/>
                     </button>
                   </div>
                 </td>

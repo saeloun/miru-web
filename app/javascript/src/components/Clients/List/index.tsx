@@ -119,7 +119,7 @@ const Clients = ({ isAdminUser }) => {
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header isAdminUser={isAdminUser} setnewClient={setnewClient} />
       <div>
-        {isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
+        {isAdminUser && <div className="bg-miru-gray-100 py-10 px-10" data-cy="clients-admin-data">
           <div className="flex justify-end">
             <select onChange={handleSelectChange} className="px-3
                 py-1.5
@@ -147,7 +147,7 @@ const Clients = ({ isAdminUser }) => {
           <AmountBoxContainer amountBox={amountBox} />
         </div>
         }
-        <div className="flex flex-col">
+        <div className="flex flex-col" data-cy="clients-list-table">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
               <div className="overflow-hidden">
