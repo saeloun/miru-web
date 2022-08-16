@@ -131,6 +131,25 @@ RSpec.describe "PreviousEmployments#create", type: :request do
       end
 
       it "is successful" do
+        expect(response).to have_http_status(:ok)
+        expect(json_response["company_name"]).to eq(previous_employment_details[:company_name])
+        expect(json_response["role"]).to eq(previous_employment_details[:role])
+      end
+    end
+
+    context "when Employee wants to create someone else's record" do
+      before do
+        create(:employment, company:, user:)
+        create(:employment, company:, user: employee)
+        user.add_role :employee, company
+        sign_in user
+        send_request :post, internal_api_v1_user_previous_employments_path(
+          user_id: employee.id,
+          previous_employment: previous_employment_details
+        )
+      end
+
+      it "is forbidden" do
         expect(response).to have_http_status(:forbidden)
       end
     end

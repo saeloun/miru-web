@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# TODO - Update tests failing because of JSON Parsing error
-
 require "rails_helper"
 
 RSpec.describe "PreviousEmployments#update", type: :request do
