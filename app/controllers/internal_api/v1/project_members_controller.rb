@@ -19,9 +19,12 @@ class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationCo
 
       return if added_members.blank?
 
-      added_members = added_members.map do |m|
+      added_members = added_members.filter_map do |m|
+        next unless m.key?("hourlyRate")
+
         { user_id: m["id"], project_id: params[:id], hourly_rate: m["hourlyRate"] }
       end
+
       ProjectMember.create!(added_members)
     end
 
@@ -44,7 +47,7 @@ class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationCo
 
       member_ids.each do |member_id|
           ProjectMember.where(user_id: member_id, project_id: params[:id])
-            .delete_all
+            .delete_all # FIXME: Use Soft delete
         end
     end
 

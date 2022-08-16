@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module PunditHelper
+module PunditConcern
   extend ActiveSupport::Concern
   include Pundit::Authorization
 

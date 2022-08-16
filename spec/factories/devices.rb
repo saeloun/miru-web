@@ -5,6 +5,6 @@ FactoryBot.define do
     issued_to factory: :user
     issued_by factory: :company
     name { Faker::Alphanumeric.alphanumeric }
-    serial_number { Faker::Number.number(digits: 100) }
+    serial_number { Faker::Alphanumeric.alphanumeric }
   end
 end
