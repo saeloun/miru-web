@@ -18,7 +18,7 @@ class AddressPolicy < ApplicationPolicy
     if record.addressable_type == "User"
       (User.find_by(id: record.addressable_id).employed_at?(user.current_workspace_id) &&
       user_is_admin_or_owner_in_current_workspace?) || user.id == record.addressable_id
-    else
+    elsif record.addressable_type == "Company"
       user_is_admin_or_owner_in_current_workspace? && record.addressable_id == user.current_workspace_id
     end
   end

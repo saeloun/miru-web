@@ -29,9 +29,9 @@ class InternalApi::V1::AddressesController < InternalApi::V1::ApplicationControl
   private
 
     def set_addressable
-      if params[:addressable_type] == "User"
+      if params[:user_id]
         @addressable = User.find(params[:user_id])
-      elsif params[:addressable_type] == "Company"
+      elsif params[:company_id]
         @addressable = Company.find(params[:company_id])
       end
     end
