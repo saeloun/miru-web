@@ -47,7 +47,7 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
         <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
-              <h6 className="text-base font-extrabold">Add New Client</h6>
+              <h6 className="text-base font-extrabold" data-cy ="add-client-heading">Add New Client</h6>
               <button type="button" onClick={() => { setnewClient(false); }}>
                 <X size={16} color="#CDD6DF" weight="bold" />
               </button>
@@ -72,7 +72,7 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
                           </div>
                         </div>
                         <div className="mt-1">
-                          <Field className={`form__input ${errors.name && touched.name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="name" />
+                          <Field data-cy="name-input" className={`form__input ${errors.name && touched.name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="name" />
                         </div>
                       </div>
                     </div>
@@ -87,7 +87,7 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
                           </div>
                         </div>
                         <div className="mt-1">
-                          <Field className={`form__input ${errors.email && touched.email && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="email" />
+                          <Field data-cy="email-input" className={`form__input ${errors.email && touched.email && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="email" />
                         </div>
                       </div>
                     </div>
@@ -102,7 +102,7 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
                           </div>
                         </div>
                         <div className="mt-1">
-                          <Field className={`form__input ${errors.phoneNo && touched.phoneNo && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="phoneNo" />
+                          <Field data-cy="phone-number-input" className={`form__input ${errors.phoneNo && touched.phoneNo && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="phoneNo" />
                         </div>
                       </div>
                     </div>
@@ -117,7 +117,7 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
                           </div>
                         </div>
                         <div className="mt-1">
-                          <Field className={`form__input p-2 h-12 ${errors.address && touched.address && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="address" as='textarea' />
+                          <Field data-cy="address-input" className={`form__input p-2 h-12 ${errors.address && touched.address && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="address" as='textarea' />
                         </div>
                       </div>
                     </div>
@@ -126,6 +126,7 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
                         type="submit"
                         name="commit"
                         value="SAVE CHANGES"
+                        data-cy="submit-button"
                         className="form__input_submit"
                       />
                     </div>

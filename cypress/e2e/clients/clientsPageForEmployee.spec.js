@@ -17,7 +17,7 @@ describe("Clients page for employees", () => {
     cy.get(clientsSelectors.clientsListTable).contains("CLIENT");
   });
 
-  it("should be not be able to add new client", function () {
+  it("should not be able to add new client", function () {
     cy.get(clientsSelectors.newClientButton).should("not.exist");
   });
 
