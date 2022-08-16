@@ -7,6 +7,7 @@ import NewLineItemRow from "../common/NewLineItemRow";
 import ManualEntry from "../Generate/ManualEntry";
 
 const InvoiceTable = ({
+  currency,
   lineItems,
   selectedLineItems,
   setLineItems,
@@ -81,6 +82,7 @@ const InvoiceTable = ({
                 <></>
               ) : (
                 <NewLineItemRow
+                  currency={currency}
                   item={item}
                   selectedOption={selectedLineItems}
                   setSelectedOption={setSelectedLineItems}

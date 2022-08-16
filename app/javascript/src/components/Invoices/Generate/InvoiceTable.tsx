@@ -36,6 +36,7 @@ const fetchNewLineItems = async (
 };
 
 const InvoiceTable = ({
+  currency,
   selectedClient,
   setSelectedOption,
   selectedOption,
@@ -148,6 +149,7 @@ const InvoiceTable = ({
           {selectedOption.length > 0
             && selectedOption.map((item, index) => (
               <NewLineItemRows
+                currency={currency}
                 item={item}
                 key={index}
                 setSelectedOption={setSelectedOption}
