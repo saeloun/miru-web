@@ -13,9 +13,17 @@ export interface IEditMembersList {
   projectId: number;
   handleAddProjectDetails: any;
   closeAddRemoveMembers: any;
+  currencySymbol: string;
 }
 
-const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, handleAddProjectDetails, closeAddRemoveMembers }: IEditMembersList) => {
+const EditMembersList = ({
+  setShowAddMemberDialog,
+  addedMembers,
+  projectId,
+  handleAddProjectDetails,
+  closeAddRemoveMembers,
+  currencySymbol
+}: IEditMembersList) => {
   const [existingMembers, setExistingMembers] = React.useState(addedMembers);
   const [members, setMembers] = React.useState(addedMembers.map(v => ({ ...v, isExisting: true })));
   const [allMemberList, setAllMemberList] = React.useState([]);
@@ -88,7 +96,7 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, hand
       <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">
         <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
           <div className="flex justify-between items-center mt-6">
-            <h6 className="text-base font-extrabold">Add New Client</h6>
+            <h6 className="text-base font-extrabold">Add/Edit Team Members</h6>
             <button type="button" onClick={() => { setShowAddMemberDialog(false); }}>
               <X size={16} color="#CDD6DF" weight="bold" />
             </button>
@@ -98,7 +106,9 @@ const EditMembersList = ({ setShowAddMemberDialog, addedMembers, projectId, hand
             allMemberList={allMemberList}
             updateMemberState={updateMemberState}
             setMembers={setMembers}
-            handleSubmit={handleSubmit} />
+            handleSubmit={handleSubmit}
+            currencySymbol={currencySymbol}
+          />
         </div>
       </div>
     </div>
