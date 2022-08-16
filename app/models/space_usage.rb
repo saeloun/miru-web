@@ -47,6 +47,7 @@ class SpaceUsage < ApplicationRecord
     CodeOptionKlass.new("Interview", 8)
   ]
 
+  before_destroy :check_is_past_date
   belongs_to :user
   belongs_to :company
 
@@ -54,6 +55,7 @@ class SpaceUsage < ApplicationRecord
   validates :start_duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
   validates :end_duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
   validate :valid_end_duration
+  validate :is_past_date
 
   scope :in_workspace, -> (company) { where(company_id: company&.id) }
   scope :during, -> (from, to) { where(work_date: from..to).order(work_date: :desc) }
@@ -106,6 +108,19 @@ class SpaceUsage < ApplicationRecord
     return if self.start_duration.to_i < self.end_duration
 
     errors.add(:end_duration, "should be more then Start time")
+  end
+
+  def is_past_date
+    if Time.parse(self.work_date.to_s) < Time.parse(Time.now.strftime("%Y-%m-%d"))
+      errors.add(:base, "You Can't Travel Back in Time.")
+    end
+  end
+
+  def check_is_past_date
+    if Time.parse(self.work_date.to_s) < Time.parse(Time.now.strftime("%Y-%m-%d"))
+      errors.add(:base, "You Can't Travel Back in Time.")
+      throw :abort
+    end
   end
 
   # private

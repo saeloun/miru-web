@@ -40,7 +40,7 @@ class InternalApi::V1::SpaceUsagesController < InternalApi::V1::ApplicationContr
         entry: current_space_usage.formatted_entry
       }, status: :ok
     else
-      render json: { error: space_usage.errors.full_messages.to_sentence }, status: :unprocessable_entity
+      render json: { error: current_space_usage.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
   end
 
@@ -51,6 +51,7 @@ class InternalApi::V1::SpaceUsagesController < InternalApi::V1::ApplicationContr
       render json: { notice: I18n.t("space_usage.destroy.message") }
     else
       # TBD
+      render json: { error: current_space_usage.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
   end
 
