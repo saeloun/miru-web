@@ -19,7 +19,7 @@ describe("Clients page for admin", () => {
     cy.get(clientsSelectors.clientsListTable).contains("CLIENT");
   });
 
-  it("should be able to add new client", function () {
+  it.only("should be able to add new client", function () {
     const clientName = fake.clientName
     const email = fake.email
     const address = fake.address
@@ -36,6 +36,8 @@ describe("Clients page for admin", () => {
   });
 
   it("should  be able to delete a client", function () {
-    cy.get(clientsSelectors.deleteIcon).should("be.visible");
+    // thinking over it
+    // cy.contains(clientName).click({force: true});
+    // cy.get(clientsSelectors.deleteClientButton).click()
   });
 });

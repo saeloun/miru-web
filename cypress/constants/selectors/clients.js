@@ -13,4 +13,5 @@ export const clientsSelectors = {
   addressInput: dataCy("address-input"),
   nameInput: dataCy("name-input"),
   submitButton: dataCy("submit-button"),
+  deleteClientButton: dataCy("delete-client-button")
 };
