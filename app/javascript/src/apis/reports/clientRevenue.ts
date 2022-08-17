@@ -2,8 +2,8 @@ import axios from "axios";
 
 const path = "/reports/client_revenues/";
 
-const get = () => axios.get(`${path}`);
+const get = (from, to, clientIds) => axios.get(`${path}?duration_from=${from}&duration_to=${to}&client_ids=[${clientIds}]`);
 
-const reports = { get };
+const clientRevenueApi = { get };
 
-export default reports;
+export default clientRevenueApi;
