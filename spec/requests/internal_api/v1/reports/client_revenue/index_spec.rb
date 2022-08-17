@@ -39,17 +39,17 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
         expected_clients =
           [{
             name: client2.name,
-            paidAmount: @client2_paid_amount,
-            unpaidAmount: @client2_unpaid_amount,
-            totalAmount: @client2_paid_amount + @client2_unpaid_amount
+            paidAmount: 0,
+            unpaidAmount: 0,
+            totalAmount: 0
           },
            {
              name: client1.name,
-             paidAmount: @client1_paid_amount,
-             unpaidAmount: @client1_unpaid_amount,
-             totalAmount: @client1_paid_amount + @client1_unpaid_amount
-           }]
-
+             paidAmount: 0,
+             unpaidAmount: 0,
+             totalAmount: 0
+           }
+        ]
         expect(json_response["clients"]).to eq(JSON.parse(expected_clients.to_json))
       end
 
@@ -59,9 +59,9 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
 
       it "returns the summary of all clients" do
         expected_summary = {
-          totalPaidAmount: @client1_paid_amount + @client2_paid_amount,
-          totalUnpaidAmount: @client1_unpaid_amount + @client2_unpaid_amount,
-          totalRevenue: @client1_paid_amount + @client2_paid_amount + @client1_unpaid_amount + @client2_unpaid_amount
+          totalPaidAmount: 0,
+          totalUnpaidAmount: 0,
+          totalRevenue: 0
         }
         expect(json_response["summary"]).to eq(JSON.parse(expected_summary.to_json))
       end
