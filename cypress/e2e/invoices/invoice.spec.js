@@ -4,7 +4,7 @@ import { invoicesSelector } from "../../constants/selectors/invoices";
 import { fake } from "../../fixtures/fake";
 
 describe("invoices index page", () => {
-  before(function () {
+  beforeEach(function () {
     cy.visit(signInPath);
     cy.fixture("credentials").then(function (data) {
       this.data = data;
@@ -29,13 +29,9 @@ describe("invoices index page", () => {
   })
 
   it("should throw error when generating an invoice without entering details", function(){
-    cy.get(invoicesSelector.newInvoiceButton).click()
-    cy.get(invoicesSelector.sendInvoice).click({force: true})
-    cy.contains("Please select client and enter invoice number to proceed")
-    cy.get(invoicesSelector.addClientButton).click()
-    cy.contains("Flipkart").click()
-    cy.get(invoicesSelector.sendInvoice).click({force: true})
-    cy.contains("Please enter invoice number to proceed")
+    cy.get(invoicesSelector.newInvoiceButton).click();
+    cy.get(invoicesSelector.sendInvoice).click({force: true});
+    cy.contains("Please select client and enter invoice number to proceed");
   })
 
   it("should generate an invoice and send email", function (){
