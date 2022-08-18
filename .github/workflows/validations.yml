@@ -7,8 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     steps:
-      - name: run rake assets:precompile
-        run: RAILS_ENV=test bundle exec rake assets:precompile
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Setup PostgreSQL
@@ -74,6 +72,8 @@ jobs:
       - name: Run Rubocop
         run: |
           bundle exec rubocop
+      - name: run rake assets:precompile
+        run: RAILS_ENV=test bundle exec rake assets:precompile
       - name: Run tests
         env:
           RAILS_ENV: test
