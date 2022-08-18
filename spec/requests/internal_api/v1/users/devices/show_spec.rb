@@ -36,7 +36,7 @@ RSpec.describe "Devices#show", type: :request do
     context "when user wants to see record of an employee of his own workspace" do
       before do
         create(:employment, company:, user: employee)
-        send_request :get, internal_api_v1_user_device_path(user, device_of_employee)
+        send_request :get, internal_api_v1_user_device_path(employee, device_of_employee)
       end
 
       it "is successful" do
@@ -91,7 +91,7 @@ RSpec.describe "Devices#show", type: :request do
     context "when user wants to see record of an employee of his own workspace" do
       before do
         create(:employment, company:, user: employee)
-        send_request :get, internal_api_v1_user_device_path(user, device_of_employee)
+        send_request :get, internal_api_v1_user_device_path(employee, device_of_employee)
       end
 
       it "is successful" do
@@ -143,10 +143,10 @@ RSpec.describe "Devices#show", type: :request do
       end
     end
 
-    context "when owner wants to see record of an employee of his own workspace" do
+    context "when user wants to see record of an employee of his own workspace" do
       before do
         create(:employment, company:, user: employee)
-        send_request :get, internal_api_v1_user_device_path(user, device_of_employee)
+        send_request :get, internal_api_v1_user_device_path(employee, device_of_employee)
       end
 
       it "is forbidden" do
