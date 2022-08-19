@@ -13,7 +13,7 @@ const InvoiceDetails = ({ invoice, company, lineItems, client, logo }) => (
       <InvoiceInfo invoice={invoice} company={company}/>
     </div>
     <InvoiceLineItems
-      currency={company.currency}
+      currency={company.base_currency}
       items={lineItems}
       showHeader={lineItems.length > 0}/>
     <InvoiceTotalSummary invoice={invoice} company={company} lineItems={lineItems}/>
