@@ -12,7 +12,11 @@ const DeleteProject = ({ project, setShowDeleteDialog }: IProps) => {
       .then(() => {
         setTimeout(() => {
           setShowDeleteDialog(false);
-          window.location.assign(window.location.origin+"/clients");
+          if (window.location.pathname.includes("/clients")) {
+            window.location.href = window.location.pathname;
+          } else {
+            window.location.assign(window.location.origin+"/projects");
+          }
         }, 500);
       }).catch(() => {
         setShowDeleteDialog(true);
