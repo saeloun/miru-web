@@ -19,13 +19,13 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
 
     namespace :reports do
+      resources :client_revenues, only: [:index]
       resources :time_entries, only: [:index] do
         collection do
           get :download
         end
       end
 
-      resources :client_revenues, only: [:index]
       resources :outstanding_overdue_invoices, only: [:index]
     end
 
@@ -41,7 +41,11 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :employments, only: [:index]
     resources :timezones, only: [:index]
 
-    resources :companies, only: [:index, :create, :update] do
+    concern :addressable do
+      resources :addresses, only: %i[index create show update]
+    end
+
+    resources :companies, only: [:index, :create, :update], concerns: :addressable do
       resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
     end
 
@@ -78,8 +82,11 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :team, only: [:index, :destroy] do
       resource :details, only: [:show, :update], controller: "team_members/details"
     end
-    resources :previous_employments, only: [:create, :show, :update]
-    resources :addresses, only: [:show, :update], controller: "addresses"
+
+    resources :users, concerns: :addressable do
+      resources :previous_employments, only: [:create, :index, :show, :update], controller: "users/previous_employments"
+      resources :devices, only: [:create, :index, :show, :update], controller: "users/devices"
+    end
 
     resource :profile, only: [:update, :show], controller: "profile" do
       delete "/remove_avatar", to: "profile#remove_avatar"
