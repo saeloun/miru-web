@@ -5,7 +5,7 @@ import { X } from "phosphor-react";
 import Select from "react-select";
 import * as Yup from "yup";
 
-import clients from "apis/clients";
+import clientApi from "apis/clients";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 
 import {
@@ -44,7 +44,7 @@ const FilterSideBar = ({
 
   const fetchAndSetClients = async () => {
     try {
-      const { data } = await clients.get("");
+      const { data } = await clientApi.get("");
       setClientList(
         data.client_details.map(client => ({ value: client.id, label: client.name }))
       );
