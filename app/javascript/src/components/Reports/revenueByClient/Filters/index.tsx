@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
+import Logger from "js-logger";
 import { X } from "phosphor-react";
 import Select from "react-select";
 import * as Yup from "yup";
 
+import clients from "apis/clients";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 
 import {
@@ -19,7 +21,7 @@ const dateSchema = Yup.object().shape({
 });
 
 const FilterSideBar = ({
-  setFilterVisibilty,
+  setFilterVisibilty, // TODO: fix typo setFilterVisibility
   resetFilter,
   handleApplyFilter,
   handleSelectDate,
@@ -27,7 +29,6 @@ const FilterSideBar = ({
   selectedInput,
   dateRange
 }) => {
-
   const { revenueByClientReport } = useEntry();
   const [filters, setFilters] = useState(revenueByClientReport.selectedFilter);
   const [showCustomFilter, setShowCustomFilter] = useState(false);
@@ -35,9 +36,25 @@ const FilterSideBar = ({
     fromDateErr: "",
     toDateErr: ""
   });
+  const [clientList, setClientList] = useState([]);
+
+  useEffect(() => {
+    fetchAndSetClients();
+  }, []);
+
+  const fetchAndSetClients = async () => {
+    try {
+      const { data } = await clients.get("");
+      setClientList(
+        data.client_details.map(client => ({ value: client.id, label: client.name }))
+      );
+    } catch {
+      Logger.error("Error fetching clients");
+    }
+  };
 
   const handleSelectFilter = (selectedValue, field) => {
-    if (selectedValue.value === "custom"){
+    if (selectedValue.value === "custom") {
       setShowCustomFilter(true);
     }
     if (Array.isArray(selectedValue)) {
@@ -127,7 +144,7 @@ const FilterSideBar = ({
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Clients</h5>
-              <Select isMulti={true} value={filters.clients} classNamePrefix="react-select-filter" name="clients" onChange={handleSelectFilter} styles={customStyles} options={revenueByClientReport.filterOptions.clients} />
+              <Select isMulti={true} options={clientList} classNamePrefix="react-select-filter" name="clients" onChange={handleSelectFilter} styles={customStyles}/>
             </li>
           </ul>
         </div>

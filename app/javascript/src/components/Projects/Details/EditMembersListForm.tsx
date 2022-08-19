@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { Trash } from "phosphor-react";
 
-const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMembers, handleSubmit }) => {
+const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMembers, handleSubmit, currencySymbol }) => {
   const anyError = false; // this is dummy atm
 
   const removeMemberHandler = (idx) => {
@@ -23,7 +23,7 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
         name={member.id}
         id={member.id}
         disabled={member.isExisting}
-        className="w-full px-3 py-1 font-medium text-sm rounded bg-miru-gray-100 h-8 rounded-sm"
+        className="w-full px-3 py-1 font-medium text-sm rounded bg-miru-gray-100 h-8"
         onChange={e => { member.isExisting ? null : updateMemberState(idx, "id", parseInt(e.target.value)); }}>
         <option value="">Please select</option>
         {allMemberList.map((memberFromAllMemberList) => (
@@ -42,20 +42,23 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
     <form className="mt-7" onSubmit={handleSubmit}>
       <h5 className="text-xs mb-4 text-miru-dark-purple-1000">Team Members</h5>
       {members.map((member, idx) => (
-        <div className="flex items-center mb-2">
+        <div className="flex items-center mb-2" key={idx}>
           <div className="mr-2 w-56">
             {getMember(member, idx)}
           </div>
-          <div className="mr-2 w-24">
+          <div className="mr-2 w-24 relative rounded-md shadow-sm">
+            <div className="absolute inset-y-0 left-0 pl-1 flex items-center pointer-events-none">
+              <span className="text-gray-500 sm:text-sm"> {currencySymbol} </span>
+            </div>
             <input
               placeholder="Rate"
-              className={`form__input w-full ${anyError
+              className={`form__input ${anyError
                 ? "border-red-600 focus:ring-red-600 focus:border-red-600"
                 : "border-gray-100 focus:ring-miru-gray-1000 focus:border-miru-gray-1000"}`}
               type="number"
               name={member.hourlyRate}
               id={member.hourlyRate}
-              value={member.hourlyRate}
+              value={member.hourlyRate || "0.0"}
               onChange={e => (updateMemberState(idx, "hourlyRate", e.target.value))}
             />
           </div>

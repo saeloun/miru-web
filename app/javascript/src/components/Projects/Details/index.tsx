@@ -27,37 +27,6 @@ import { unmapper } from "../../../mapper/project.mapper";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
 
-const getTableData = (project) => {
-  if (project) {
-    return project.members.map((member) => {
-      const hours = member.minutes / 60;
-      const hour = hours.toFixed(2);
-      return {
-        col1: (
-          <div className="text-base text-miru-dark-purple-1000">
-            {member.name}
-          </div>
-        ),
-        col2: (
-          <div className="text-base text-miru-dark-purple-1000 text-right">
-            {member.formattedHourlyRate}
-          </div>
-        ),
-        col3: (
-          <div className="text-base text-miru-dark-purple-1000 text-right">
-            {hour}
-          </div>
-        ),
-        col4: (
-          <div className="text-lg font-bold text-miru-dark-purple-1000 text-right">
-            {member.formattedCost}
-          </div>
-        )
-      };
-    });
-  }
-};
-
 const ProjectDetails = () => {
   const [editProjectData, setEditProjectData] = React.useState<any>(null);
   const [isHeaderMenuVisible, setHeaderMenuVisibility] = React.useState<boolean>(false);
@@ -83,8 +52,41 @@ const ProjectDetails = () => {
     }
   };
 
+  const currencySymb = currencySymbol(project?.currency);
+
   const handleAddProjectDetails = () => {
     fetchProject();
+  };
+
+  const getTableData = (project) => {
+    if (project) {
+      return project.members.map((member) => {
+        const hours = member.minutes / 60;
+        const hour = hours.toFixed(2);
+        return {
+          col1: (
+            <div className="text-base text-miru-dark-purple-1000">
+              {member.name}
+            </div>
+          ),
+          col2: (
+            <div className="text-base text-miru-dark-purple-1000 text-right">
+              {currencySymb}{member.hourlyRate}
+            </div>
+          ),
+          col3: (
+            <div className="text-base text-miru-dark-purple-1000 text-right">
+              {hour}
+            </div>
+          ),
+          col4: (
+            <div className="text-lg font-bold text-miru-dark-purple-1000 text-right">
+              {currencySymb}{member.cost}
+            </div>
+          )
+        };
+      });
+    }
   };
 
   useEffect(() => {
@@ -119,8 +121,6 @@ const ProjectDetails = () => {
       cssClass: "text-right" // accessor is the "key" in the data
     }
   ];
-
-  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
 
   const amountBox = [{
     title: "OVERDUE",
@@ -287,15 +287,16 @@ const ProjectDetails = () => {
           </div>
         </div>
       </div>
-      {showAddMemberDialog ? (
+      {showAddMemberDialog && (
         <EditMembersList
           setShowAddMemberDialog={setShowAddMemberDialog}
           addedMembers={project?.members}
           handleAddProjectDetails={handleAddProjectDetails}
           closeAddRemoveMembers={closeAddRemoveMembers}
           projectId={projectId}
+          currencySymbol={currencySymb}
         />
-      ) : null}
+      )}
       {showProjectModal && (
         <AddEditProject
           editProjectData={editProjectData}
