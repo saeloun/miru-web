@@ -231,6 +231,7 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
                         status === InvoiceStatus.SUCCESS
                     }
                   )}
+                  data-cy ="send-email"
                   disabled={isDisabled(status)}
                 >
                   {buttonText(status)}
