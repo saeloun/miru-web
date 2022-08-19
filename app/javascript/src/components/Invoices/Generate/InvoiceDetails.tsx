@@ -78,7 +78,7 @@ const InvoiceDetails = ({
           <p className="font-normal text-xs text-miru-dark-purple-1000">
             Invoice Number
           </p>
-          <input type="text" value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} className="px-2 w-3/5"/>
+          <input type="text" value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} className="px-2 w-3/5" data-cy="invoice-number"/>
         </div>
         <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
           Reference
