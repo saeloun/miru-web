@@ -2,6 +2,7 @@
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import companyUsersApi from "apis/company-users";
 import spaceUsagesApi from "apis/space-usages";
 import * as dayjs from "dayjs";
 import * as updateLocale from "dayjs/plugin/updateLocale";
@@ -58,6 +59,18 @@ const TimeReserving: React.FC<Iprops> = ({
   const [selectedEndTime, setSelectedEndTime] = useState<number | undefined>();
   const [newEntry, setNewEntry] = useState<object>({});
   const [isPastDate, setIsPastDate] = useState<boolean>(false);
+  const [allMemberList, setAllMemberList] = useState([]);
+
+  const exludeCurrentUser = (allMembers: any) => allMembers.filter((memberFromAllMembers: any) => (userId !== memberFromAllMembers.id));
+
+  const fetchCurrentWorkspaceUsers = async () => {
+    try {
+      const resp = await companyUsersApi.get();
+      setAllMemberList(exludeCurrentUser(resp.data.users));
+    } catch (error) {
+      return error;
+    }
+  };
 
   const calendarTimes = () => {
     const product = (...a: any[][]) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
@@ -81,6 +94,7 @@ const TimeReserving: React.FC<Iprops> = ({
     const currentEmployeeEntries = {};
     currentEmployeeEntries[userId] = entries;
     setAllEmployeesEntries(currentEmployeeEntries);
+    fetchCurrentWorkspaceUsers();
     const timer = setInterval(() => {
       setCurrentTime({
         hour: dayjs().hour(),
@@ -157,9 +171,9 @@ const TimeReserving: React.FC<Iprops> = ({
     const res = await spaceUsagesApi.list(from, to, 1);
     if (res.status >= 200 && res.status < 300) {
       const ns = { ...allEmployeesEntries };
-      ns[1] = { ...ns[1], ...res.data.entries };
+      ns[userId] = { ...ns[userId], ...res.data.entries };
       setAllEmployeesEntries(ns);
-      setEntryList(ns[1]);
+      setEntryList(ns[userId]);
       return true;
     } else {
       return false;
@@ -171,7 +185,7 @@ const TimeReserving: React.FC<Iprops> = ({
     if (!(res.status === 200)) return;
     const newValue = { ...entryList };
     newValue[selectedFullDate] = newValue[selectedFullDate].filter(e => e.id !== id);
-    setAllEmployeesEntries({ ...allEmployeesEntries, [1]: newValue });
+    setAllEmployeesEntries({ ...allEmployeesEntries, [userId]: newValue });
     setEntryList(newValue);
   };
 
@@ -416,6 +430,7 @@ const TimeReserving: React.FC<Iprops> = ({
         setSelectedStartTime={setSelectedStartTime}
         setSelectedEndTime={setSelectedEndTime}
         isPastDate={isPastDate}
+        allMemberList={allMemberList}
       /> : ""}
     </>
   );

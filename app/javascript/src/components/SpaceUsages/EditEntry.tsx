@@ -8,6 +8,7 @@ import Toastr from "common/Toastr";
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "helpers/ordinal";
 import validateTimesheetEntry from "helpers/validateTimesheetEntry";
+import { Multiselect } from 'multiselect-react-dropdown';
 
 // const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 // const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
@@ -31,6 +32,7 @@ const EditEntry: React.FC<Iprops> = ({
   setSelectedStartTime,
   setSelectedEndTime,
   isPastDate,
+  allMemberList,
 }) => {
   const PURPOSES = [
     { id: "1", name: "Client / Standup" },
@@ -61,6 +63,13 @@ const EditEntry: React.FC<Iprops> = ({
   const [userName, setUserName] = useState("");
   // const [restricted, setRestricted] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
+  const [selectedTeamMembers, setSelectedTeamMembers] = useState<any>([]);
+  const [teamMembers, setTeamMembers] = useState<any>([]);
+
+  const addRemoveStack = (selectedList: any) => {
+    setSelectedTeamMembers(selectedList);
+    setTeamMembers(selectedList.map((i: any) => parseInt(i.id)));
+  };
 
   const calendarTimes = (durationFrom) => {
     durationFrom = durationFrom || "00:00"
@@ -92,6 +101,9 @@ const EditEntry: React.FC<Iprops> = ({
       setPurposeName(entry.purpose_name);
       setNote(entry.note);
       setUserName(entry.user_name);
+      setTeamMembers(entry.team_members);
+      const selectedMembers = allMemberList.filter((member: any) => entry.team_members.map(Number).includes(parseInt(member.id)));
+      setSelectedTeamMembers(selectedMembers);
       // setRestricted(entry.restricted);
     }
 
@@ -123,6 +135,7 @@ const EditEntry: React.FC<Iprops> = ({
     space_code: space,
     purpose_code: purpose,
     note: note,
+    team_members: teamMembers,
     // restricted: restricted
   });
 
@@ -283,6 +296,18 @@ const EditEntry: React.FC<Iprops> = ({
                 </select>
               </div>
               <div>
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Members Joining</label>
+                <Multiselect
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  selectedValues={selectedTeamMembers}
+                  options={allMemberList ? allMemberList : [{}]}
+                  name="team_member_ids"
+                  onSelect={((selectedList) => addRemoveStack(selectedList))}
+                  onRemove={((selectedList) => addRemoveStack(selectedList))}
+                  displayValue="name"
+                  disable={isPastDate} />
+              </div>
+              <div>
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Notes</label>
                 <textarea
                   disabled={isPastDate}
@@ -399,6 +424,7 @@ interface Iprops {
   setSelectedStartTime: React.Dispatch<React.SetStateAction<number>>;
   setSelectedEndTime: React.Dispatch<React.SetStateAction<number>>;
   isPastDate: boolean;
+  allMemberList: any;
 }
 
 export default EditEntry;

@@ -64,7 +64,7 @@ class InternalApi::V1::SpaceUsagesController < InternalApi::V1::ApplicationContr
     def space_usage_params
       params.require(:space_usage).permit(
         :space_code, :purpose_code,
-        :start_duration, :end_duration, :work_date, :note, :restricted
+        :start_duration, :end_duration, :work_date, :note, :restricted, team_members: []
       )
     end
 end
