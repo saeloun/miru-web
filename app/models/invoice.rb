@@ -97,6 +97,16 @@ class Invoice < ApplicationRecord
   def unit_amount(base_currency)
     (amount * Money::Currency.new(base_currency).subunit_to_unit).to_i
   end
+  
+  def pretty_due_date
+    return "" if due_date.nil?
+    due_date.strftime("%B #{due_date.day.ordinalize}, %Y")
+  end
+  
+  def pretty_issue_date
+    return "" if issue_date.nil?
+    issue_date.strftime("%B #{issue_date.day.ordinalize}, %Y")
+  end
 
   private
 
