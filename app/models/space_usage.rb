@@ -11,6 +11,7 @@
 #  restricted     :boolean
 #  space_code     :integer
 #  start_duration :float
+#  team_members   :text
 #  work_date      :date
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
