@@ -74,13 +74,14 @@ const GenerateInvoices = () => {
 
   const handleSendInvoice = async () => {
     if (selectedClient && invoiceNumber !== "") {
-      saveInvoice().then(resp => {
+      saveInvoice().then((resp) => {
         setShowSendInvoiceModal(true);
         setInvoiceId(resp.data.id);
       });
-    }
-    else {
-      Toastr.error("Please select client and enter invoice number to proceed.");
+    } else {
+      selectedClient
+        ? Toastr.error("Please enter invoice number to proceed")
+        : Toastr.error("Please select client and enter invoice number to proceed");
     }
   };
 
@@ -88,7 +89,9 @@ const GenerateInvoices = () => {
     if (selectedClient && invoiceNumber !== "") {
       saveInvoice().then(() => navigate("/invoices"));
     } else {
-      Toastr.error("Please select client and enter invoice number to proceed.");
+      selectedClient
+        ? Toastr.error("Please enter invoice number to proceed")
+        : Toastr.error("Please select client and enter invoice number to proceed");
     }
   };
 
@@ -132,6 +135,7 @@ const GenerateInvoices = () => {
           id: invoiceId,
           client: selectedClient,
           company: invoiceDetails?.companyDetails,
+          dueDate: dueDate,
           invoiceNumber,
           amount
         }}

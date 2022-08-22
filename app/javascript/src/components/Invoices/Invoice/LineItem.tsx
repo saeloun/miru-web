@@ -1,7 +1,8 @@
 import React from "react";
 import dayjs from "dayjs";
+import { currencyFormat } from "helpers/currency";
 
-const LineItem = ({ item }) => {
+const LineItem = ({ currency, item }) => {
   const date = dayjs(item.date).format("DD-MM-YYYY");
   return (
     <tr>
@@ -16,13 +17,13 @@ const LineItem = ({ item }) => {
         {item.description}
       </td>
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-        {item.rate}
+        {currencyFormat({ baseCurrency: currency, amount: item.rate })}
       </td>
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
         {(item.quantity / 60).toFixed(2)}
       </td>
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-        {((item.quantity / 60) * item.rate).toFixed(2)}
+        {currencyFormat({ baseCurrency: currency, amount: ((item.quantity / 60) * item.rate).toFixed(2) })}
       </td>
     </tr>
   );

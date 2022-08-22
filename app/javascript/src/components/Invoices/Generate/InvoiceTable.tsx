@@ -36,6 +36,7 @@ const fetchNewLineItems = async (
 };
 
 const InvoiceTable = ({
+  currency,
   selectedClient,
   setSelectedOption,
   selectedOption,
@@ -129,6 +130,7 @@ const InvoiceTable = ({
                 onClick={() => {
                   setAddNew(!addNew);
                 }}
+                data-cy='new-line-item'
               >
                 + NEW LINE ITEM
               </button>
@@ -147,6 +149,7 @@ const InvoiceTable = ({
           {selectedOption.length > 0
             && selectedOption.map((item, index) => (
               <NewLineItemRows
+                currency={currency}
                 item={item}
                 key={index}
                 setSelectedOption={setSelectedOption}

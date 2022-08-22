@@ -27,13 +27,13 @@ RSpec.describe Project, type: :model do
     let(:client) { create(:client, company:) }
     let(:project) { create(:project, client:) }
     let!(:member) { create(:project_member, project:, user:, hourly_rate: 5000) }
-    let(:formatted_hourly_rate) { FormatAmountService.new(company.base_currency, member.hourly_rate).process }
+    let(:hourly_rate) { member.hourly_rate }
     let(:result) do
       [{
         id: user.id,
         name: user.full_name,
         minutes_logged: 480.0,
-        formatted_hourly_rate:
+        hourly_rate:
       }]
     end
 
@@ -45,9 +45,9 @@ RSpec.describe Project, type: :model do
           [{
             id: member.user_id,
             name: user.full_name,
-            formatted_hourly_rate:,
+            hourly_rate:,
             minutes_logged: 0,
-            formatted_cost: project.format_amount(0)
+            cost: 0
           }])
       end
     end
@@ -57,9 +57,9 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in the last week" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.last_week)
-        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
-        result.first[:formatted_cost] = project.format_amount(cost)
+        result.first[:cost] = cost
         expect(subject).to eq(result)
       end
     end
@@ -69,9 +69,9 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a week" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_week)
-        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
-        result.first[:formatted_cost] = project.format_amount(cost)
+        result.first[:cost] = cost
         expect(subject).to eq(result)
       end
     end
@@ -81,9 +81,9 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a month" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_month)
-        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
-        result.first[:formatted_cost] = project.format_amount(cost)
+        result.first[:cost] = cost
         expect(subject).to eq(result)
       end
     end
@@ -93,9 +93,9 @@ RSpec.describe Project, type: :model do
 
       it "returns the project_team_member_details for a project in a year" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.beginning_of_year)
-        result.first[:formatted_hourly_rate] = formatted_hourly_rate
+        result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
-        result.first[:formatted_cost] = project.format_amount(cost)
+        result.first[:cost] = cost
         expect(subject).to eq(result)
       end
     end
@@ -225,6 +225,49 @@ RSpec.describe Project, type: :model do
         expect(overdue_and_outstanding_amounts[:overdue_amount]).to eq(overdue_amount)
         expect(overdue_and_outstanding_amounts[:outstanding_amount]).to eq(outstanding_amount)
       end
+    end
+  end
+
+  describe "#search_all_projects_by_name" do
+    let!(:company) { create(:company) }
+    let!(:user) { create(:user, current_workspace_id: company.id) }
+    let!(:client) { create(:client, company:) }
+    let!(:project) { create(:project, client:) }
+    let!(:project_member) { create(:project_member, project:, user:) }
+
+    it "created project member" do
+      expect(project_member.user).to eq(user)
+    end
+
+    it "returns projects with matching project name" do
+      expect(
+        Project.search_all_projects_by_name(
+          project.name,
+          company.id
+        ).as_json
+      ).to eq([{ id: project.id, name: project.name, client_name: client.name }].as_json)
+    end
+
+    it "returns projects with matching client name" do
+      expect(
+        Project.search_all_projects_by_name(
+          client.name,
+          company.id
+          ).as_json
+        ).to eq([{ id: project.id, name: project.name, client_name: client.name }].as_json)
+    end
+
+    it "returns projects with matching user name" do
+      expect(
+        Project.search_all_projects_by_name(
+          user.full_name,
+          company.id
+        ).as_json
+      ).to eq([{ id: project.id, name: project.name, client_name: client.name }].as_json)
+    end
+
+    it "returns empty array when no projects found" do
+      expect(Project.search_all_projects_by_name("no_project", company.id)).to eq([])
     end
   end
 end

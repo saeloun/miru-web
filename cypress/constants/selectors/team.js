@@ -10,7 +10,7 @@ export const teamTabSelector = {
   searchIcon: dataCy("search_icon"),
   //add new member form
   newMemberFirstName: dataCy("new-member-firstName"),
-  newMemberLastname: dataCy("new-member-lastname"),
+  newMemberLastname: dataCy("new-member-lastName"),
   newMemberEmail: dataCy("new-member-email"),
   adminRadioButton: dataCy("admin-radio-button"),
   employeeRadioButton: dataCy("employee-radio-button"),
