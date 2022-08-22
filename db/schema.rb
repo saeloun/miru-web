@@ -517,6 +517,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_18_130844) do
   add_foreign_key "device_usages", "users", column: "assignee_id"
   add_foreign_key "device_usages", "users", column: "created_by_id"
   add_foreign_key "devices", "companies"
+  add_foreign_key "devices", "users"
   add_foreign_key "devices", "users", column: "assignee_id"
   add_foreign_key "employments", "companies"
   add_foreign_key "employments", "users"
