@@ -10,7 +10,8 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
     timesheet_entries = policy_scope(TimesheetEntry)
     timesheet_entries = timesheet_entries.where(user_id: params[:user_id] || current_user.id).during(
       params[:from],
-      params[:to])
+      params[:to]
+    )
     entries = formatted_entries_by_date(timesheet_entries)
     render json: { entries: }, status: :ok
   end
@@ -22,7 +23,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
     render json: {
       notice: I18n.t("timesheet_entry.create.message"),
       entry: timesheet_entry.formatted_entry
-    } if timesheet_entry.save
+    } if timesheet_entry.save!
   end
 
   def update

@@ -39,7 +39,6 @@ module InvoicePayment
 
       def format_invoice(invoice_line_items)
         sub_total = 0
-        total = 0
 
         new_invoice_line_items = []
         invoice_line_items.each do |line_item|

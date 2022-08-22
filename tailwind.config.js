@@ -35,19 +35,31 @@ module.exports = {
     },
     extend: {
       boxShadow: {
-        c1: "0px 0px 40px rgba(0, 0, 0, 0.1);"
+        c1: "0px 0px 40px rgba(0, 0, 0, 0.1);",
       },
       margin: {
         86: "342px",
       },
       width: {
         fit: "fit-content",
-        120: "120px",
-        512: "512px",
+        30: "7.5rem", //120px
+        128: "32rem", // 512px
+        352: "22rem", //352px
+        228: "14.25rem", //228px
+        180: "11.25rem", //180px
+      },
+      minWidth: {
+        24: "24px",
+      },
+      maxWidth: {
+        400: "25rem", //400px
       },
       height: {
-        '128': '40rem',
         120: "120px",
+        160: "40rem",
+        512: "32rem",
+        304: "19rem",
+        87: "5.4rem",
       },
       minHeight: {
         "10v": "10vh",
@@ -85,7 +97,7 @@ module.exports = {
           100: "#F5F7F9",
         },
         "miru-red": {
-          400: "#E04646"
+          400: "#E04646",
         },
         "miru-white": {
           1000: "#FFFFFF",
@@ -170,7 +182,7 @@ module.exports = {
         "10/100": "10%",
       },
       zIndex: {
-        "15": "15",
+        15: "15",
       },
     },
   },
@@ -181,6 +193,7 @@ module.exports = {
     extend: {
       display: ["group-hover"],
     },
+    opacity: ({ after }) => after(['disabled'])
   },
   plugins: [],
 };

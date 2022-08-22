@@ -3,6 +3,6 @@
 class DashboardController < ApplicationController
   def index
     authorize :dashboard
-    render
+    redirect_to root_path
   end
 end

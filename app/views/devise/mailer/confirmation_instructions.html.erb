@@ -1,5 +1,18 @@
-<p>Welcome <%= @email %>!</p>
+<p>Hi <%= @resource.first_name.titleize %> <%= @resource.last_name.titleize %>,</p>
 
-<p>You can confirm your account email through the link below:</p>
+<p>We are so delighted to have you onboard. We want to let you know some of the best ways to get up and running on our portal -</p>
 
-<p><%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %></p>
+<ul>
+  <li>Send professional invoices Instantly</li>
+  <li>Send and accept payments from clients seamlessly</li>
+  <li>Manage your team and track their progress.</li>
+  <li>Track your time and overall expenses easily</li>
+</ul>
+
+<p>We’d like to make sure we got your email address right!</p>
+
+<p>Yes, it’s me. <%= link_to 'Confirm my email address', confirmation_url(@resource, confirmation_token: @token) %></p>
+
+<p>Cheers,</p>
+
+<p>Team Miru</p>

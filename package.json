@@ -1,6 +1,6 @@
 {
   "name": "@saeloun/miru-web",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "^7.16.5",
     "@babel/preset-react": "^7.16.5",
@@ -60,7 +60,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.16.3",
     "@webpack-cli/serve": "^1.6.0",
-    "cypress": "^9.5.1",
+    "cypress": "^10.3.0",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-cypress": "^2.12.1",
@@ -90,10 +90,10 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "cy:open:dev": "cypress open --env configFile=development",
-    "cy:run:dev": "cypress run --browser chrome --headless --env configFile=development --record --key 78e63e75-c093-4cfa-bc9b-d01afbb2aa49",
-    "cy:run:staging": "cypress run --browser chrome --headless --env configFile=staging --record --key 78e63e75-c093-4cfa-bc9b-d01afbb2aa49",
-    "cy:open:staging": "cypress open --env configFile=staging",
+    "cy:open:dev": "cypress open",
+    "cy:run:dev": "cypress run --browser chrome --headless --record --key 78e63e75-c093-4cfa-bc9b-d01afbb2aa49",
+    "cy:run:staging": "cypress run --browser chrome --headless --config baseUrl=https://miru-web-staging.herokuapp.com/  --record --key 78e63e75-c093-4cfa-bc9b-d01afbb2aa49",
+    "cy:open:staging": "cypress open --config baseUrl=https://miru-web-staging.herokuapp.com/",
     "lint": "eslint ./cypress",
     "lint:fix": "eslint --fix ./cypress",
     "lint:ui": "eslint ./app/javascript",

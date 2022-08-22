@@ -1,7 +1,7 @@
 import React from "react";
 
 import { toast, Slide } from "react-toastify";
-import { getToasterIcon, getToasterCloseButton } from "../constants/index";
+import { GetToasterIcon, getToasterCloseButton } from "../constants/index";
 
 const customId = "custom-toaster-id";
 
@@ -17,8 +17,8 @@ const showToastr = message => {
     position: toast.POSITION.BOTTOM_CENTER,
     transition: Slide,
     theme: "colored",
-    icon: () => getToasterIcon("success"),
-    closeButton: (closeToast) => getToasterCloseButton({ closeToast, type: "success" }),
+    icon: <GetToasterIcon type="success" />,
+    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "success" }),
     hideProgressBar: true
   });
 };
@@ -32,8 +32,8 @@ const showErrorToastr = error => {
     position: toast.POSITION.BOTTOM_CENTER,
     transition: Slide,
     theme: "colored",
-    icon: () => getToasterIcon("error"),
-    closeButton: (closeToast) => getToasterCloseButton({ closeToast, type: "error" }),
+    icon: <GetToasterIcon type="error" />,
+    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "error" }),
     hideProgressBar: true
   });
 };
@@ -44,8 +44,8 @@ const showWarningToastr = warning => {
     position: toast.POSITION.BOTTOM_CENTER,
     transition: Slide,
     theme: "colored",
-    icon: () => getToasterIcon("warning"),
-    closeButton: (closeToast) => getToasterCloseButton({ closeToast, type: "warning" }),
+    icon: <GetToasterIcon type="warning" />,
+    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "warning" }),
     hideProgressBar: true
   });
 };
@@ -56,8 +56,8 @@ const showInfoToastr = info => {
     position: toast.POSITION.BOTTOM_CENTER,
     transition: Slide,
     theme: "colored",
-    icon: () => getToasterIcon("info"),
-    closeButton: (closeToast) => getToasterCloseButton({ closeToast, type: "info" }),
+    icon: <GetToasterIcon type="info" />,
+    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "info" }),
     hideProgressBar: true
   });
 };
