@@ -17,9 +17,29 @@ export enum ApiStatus {
   ERROR = "error",
 }
 
+export enum Roles {
+  ADMIN = "admin",
+  OWNER = "owner",
+  BOOK_KEEPER = "book_keeper",
+  EMPLOYEE = "employee",
+}
+
+export enum Paths {
+  SIGN_IN = "/user/sign_in",
+  CLIENTS = "/clients",
+  INVOICES = "/invoices",
+  REPORTS = "/reports",
+  PROJECTS = "/projects",
+  SUBSCRIPTIONS = "/subscriptions",
+  PAYMENTS = "/payments",
+  TIME_TRACKING = "/time-tracking",
+  TEAM = "/team/*",
+  PROFILE = "/profile/*"
+}
+
 export const TOASTER_DURATION = 3000;
 
-export const getToasterIcon = (type) => {
+export const GetToasterIcon = ({ type }) => {
   switch (type) {
     case "success":
       return <img
@@ -92,3 +112,9 @@ export const getToasterCloseButton = ({ closeToast, type }) => {
 export const BASIC_PLAN_CHARGE = 10;
 
 export const TEAM_MEMBER_CHARGE = 5;
+
+export enum TeamModalType {
+  NONE = "",
+  ADD_EDIT = "addEdit",
+  DELETE = "delete",
+}

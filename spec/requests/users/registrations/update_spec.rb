@@ -31,7 +31,7 @@ RSpec.describe "Users::RegistrationsController#update", type: :request do
     end
 
     it "returns profile_path after resource is updated" do
-      expect(response).to redirect_to(profile_path)
+      expect(response).to redirect_to("/profile")
     end
   end
 end

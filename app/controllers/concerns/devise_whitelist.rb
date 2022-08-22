@@ -8,7 +8,6 @@ module DeviseWhitelist
   end
 
   def configured_permitted_parameters
-    devise_parameter_sanitizer.permit(:invite, keys: [:first_name, :last_name, :current_workspace_id])
     devise_parameter_sanitizer.permit(
       :sign_up,
       keys: [:first_name, :last_name, :email, :password, :password_confirmation, :avatar])

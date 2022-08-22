@@ -6,10 +6,11 @@ const getWeek = (isCurrentWeek) => {
 
   const first = currentDate.getDate() - currentDate.getDay();
   const weekFirstDay = isCurrentWeek ? first : first - 7;
-  const last = weekFirstDay + 6;
+  const last = weekFirstDay + 7;
 
   const firstday = dayjs(new Date(currentDate.setDate(weekFirstDay)));
-  const lastday = dayjs(new Date(currentDate.setDate(last)));
+  // currentDate wont have current date after the above step
+  const lastday = dayjs(new Date(new Date().setDate(last)));
   const completeCurrentDay = `${getDayWithSuffix(firstday.date())} ${month[firstday.month()]}`;
   const completeLastWeekDay = `${getDayWithSuffix(lastday.date())} ${month[lastday.month()]}`;
   return isCurrentWeek ? `This Week (${completeCurrentDay} - ${completeLastWeekDay})` :
@@ -38,7 +39,8 @@ const getDateRangeOptions = () => {
     { value: "this_month", label: thisMonth },
     { value: "last_month", label: previousMonth },
     { value: "this_week", label: thisWeek },
-    { value: "last_week", label: previousweek }
+    { value: "last_week", label: previousweek },
+    { value: "custom", label: "Custom" }
   ];
 };
 

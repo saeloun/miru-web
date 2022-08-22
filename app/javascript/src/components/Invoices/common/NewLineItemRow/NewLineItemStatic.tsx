@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
+import { currencyFormat } from "helpers/currency";
 import { DotsThreeVertical, PencilSimple, Trash } from "phosphor-react";
 
 const NewLineItemStatic = ({
+  currency,
   item,
   setEdit,
   handleDelete
@@ -33,13 +35,13 @@ const NewLineItemStatic = ({
         {item.description}
       </td>
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-        {item.rate}
+        {currencyFormat({ baseCurrency: currency, amount: item.rate })}
       </td>
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
         {hoursLogged}
       </td>
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-        {totalRate.toFixed(2)}
+        {currencyFormat({ baseCurrency: currency, amount: totalRate.toFixed(2) })}
       </td>
       <td className="w-10">
         {
