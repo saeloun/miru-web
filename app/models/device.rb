@@ -4,48 +4,47 @@
 #
 # Table name: devices
 #
-#  id             :bigint           not null, primary key
-#  device_type    :string           default("laptop")
-#  name           :string
-#  serial_number  :string
-#  specifications :jsonb
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  company_id     :bigint           not null
-#  user_id        :bigint           not null
+#  id                  :bigint           not null, primary key
+#  available           :boolean
+#  device_company_name :string
+#  kind                :string
+#  name                :string
+#  version             :string
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  assignee_id         :bigint
+#  company_id          :bigint
+#  version_id          :string
 #
 # Indexes
 #
-#  index_devices_on_company_id  (company_id)
-#  index_devices_on_user_id     (user_id)
+#  index_devices_on_assignee_id  (assignee_id)
+#  index_devices_on_company_id   (company_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...  (assignee_id => users.id)
 #  fk_rails_...  (company_id => companies.id)
-#  fk_rails_...  (user_id => users.id)
 #
 class Device < ApplicationRecord
-  # Associations
-  belongs_to :issued_by, class_name: "Company", foreign_key: "company_id"
-  belongs_to :issued_to, class_name: "User", foreign_key: "user_id"
+  belongs_to :assignee, class_name: :User, optional: true
+  belongs_to :company, optional: true
 
-  # Device type values
-  enum device_type: { laptop: "laptop", mobile: "mobile" }
+  has_many :device_timelines
+  has_many :device_usages
 
-  # Specifications values
-  store_accessor :specifications, :processor, :ram, :graphics
-
-  # Validations
-  after_initialize :set_default_specifications, if: :new_record?
-  validates :name, length: { maximum: 100 }
+  before_create :set_availabilty
+  after_update :add_device_timelines
 
   private
 
-    def set_default_specifications
-      self.specifications = {
-        "processor": "",
-        "ram": "",
-        "graphics": ""
-      }
+    def set_availabilty
+      self.available = true unless self.available.present?
+    end
+
+    def add_device_timelines
+      device = self
+      index_system_display_title = "Now #{device.device_company_name} #{device.name} #{device.version} #{device.available ? 'available' : 'not available'}"
+      device.device_timelines.create!(index_system_display_title:)
     end
 end

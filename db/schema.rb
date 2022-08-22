@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_18_130844) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -114,17 +114,53 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
     t.index ["discarded_at"], name: "index_consultancies_on_discarded_at"
   end
 
-  create_table "devices", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "company_id", null: false
-    t.string "device_type", default: "laptop"
-    t.string "name"
-    t.string "serial_number"
-    t.jsonb "specifications"
+  create_table "device_timelines", force: :cascade do |t|
+    t.text "index_system_display_message"
+    t.text "index_system_display_title"
+    t.bigint "device_id", null: false
+    t.string "action_subject"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["device_id"], name: "index_device_timelines_on_device_id"
+  end
+
+  create_table "device_usages", force: :cascade do |t|
+    t.boolean "approve"
+    t.bigint "created_by_id"
+    t.bigint "device_id", null: false
+    t.bigint "assignee_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignee_id"], name: "index_device_usages_on_assignee_id"
+    t.index ["created_by_id"], name: "index_device_usages_on_created_by_id"
+    t.index ["device_id"], name: "index_device_usages_on_device_id"
+  end
+
+  create_table "devices", force: :cascade do |t|
+    t.string "name"
+    t.string "version"
+    t.string "version_id"
+    t.string "kind"
+    t.string "device_company_name"
+    t.boolean "available"
+    t.bigint "assignee_id"
+    t.bigint "company_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignee_id"], name: "index_devices_on_assignee_id"
     t.index ["company_id"], name: "index_devices_on_company_id"
-    t.index ["user_id"], name: "index_devices_on_user_id"
+  end
+
+  create_table "employment_details", force: :cascade do |t|
+    t.string "employee_id"
+    t.string "designation"
+    t.string "employment_type"
+    t.date "joined_at"
+    t.date "resigned_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "company_user_id", null: false
+    t.index ["company_user_id"], name: "index_employment_details_on_company_user_id"
   end
 
   create_table "employments", force: :cascade do |t|
@@ -315,13 +351,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
     t.index ["name", "company_id"], name: "index_payments_providers_on_name_and_company_id", unique: true
   end
 
-  create_table "previous_employments", force: :cascade do |t|
+  create_table "previous_employment_details", force: :cascade do |t|
+    t.bigint "employment_detail_id", null: false
     t.string "company_name"
     t.string "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_previous_employments_on_user_id"
+    t.index ["employment_detail_id"], name: "index_previous_employment_details_on_employment_detail_id"
+    t.index ["user_id"], name: "index_previous_employment_details_on_user_id"
   end
 
   create_table "project_members", force: :cascade do |t|
@@ -410,7 +448,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
     t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
-    t.index ["work_date"], name: "index_timesheet_entries_on_work_date"
   end
 
   create_table "users", force: :cascade do |t|
@@ -442,10 +479,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
     t.datetime "discarded_at"
-    t.integer "department_id"
     t.string "personal_email_id"
     t.date "date_of_birth"
     t.jsonb "social_accounts"
+    t.integer "department_id"
     t.string "phone"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
@@ -481,8 +518,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "clients", "companies"
+  add_foreign_key "device_timelines", "devices"
+  add_foreign_key "device_usages", "devices"
+  add_foreign_key "device_usages", "users", column: "assignee_id"
+  add_foreign_key "device_usages", "users", column: "created_by_id"
   add_foreign_key "devices", "companies"
-  add_foreign_key "devices", "users"
+  add_foreign_key "devices", "users", column: "assignee_id"
+  add_foreign_key "employment_details", "employments", column: "company_user_id"
   add_foreign_key "employments", "companies"
   add_foreign_key "employments", "users"
   add_foreign_key "identities", "users"
@@ -502,7 +544,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
   add_foreign_key "leads", "users", column: "reporter_id"
   add_foreign_key "leads", "users", column: "updated_by_id"
   add_foreign_key "payments_providers", "companies"
-  add_foreign_key "previous_employments", "users"
+  add_foreign_key "previous_employment_details", "employment_details"
+  add_foreign_key "previous_employment_details", "users"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"

@@ -109,6 +109,26 @@ en:
       success:
         message: Client removed successfully
     add: ADD CLIENT
+  device:
+    create:
+      failure: "Device creation failed"
+      success: "Device added successfully"
+    update:
+      success:
+        message: Changes saved successfully
+      failure:
+        unauthorized: User is unauthorized to modify this device's details
+        message: Failed to saved changes
+  device_usage:
+    create:
+      failure: "Device Usage creation failed"
+      success: "Device Usage added successfully"
+    update:
+      success:
+        message: Changes saved successfully
+      failure:
+        unauthorized: User is unauthorized to modify this device usage's details
+        message: Failed to saved changes
   lead:
     name:
       label: Name

@@ -36,6 +36,7 @@ Rails.application.routes.draw do
 
   root to: "root#index"
   draw(:internal_api)
+  draw(:device_api)
   resources :dashboard, only: [:index]
 
   # get "*path", to: "home#index", via: :all

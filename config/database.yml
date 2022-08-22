@@ -7,11 +7,11 @@ default: &default
 
 development:
   <<: *default
-  database: miru_web_development
+  database: miruweb_new1_development
 
 test:
   <<: *default
-  database: miru_web_test
+  database: miruweb_new1_test
 
 production:
   <<: *default
