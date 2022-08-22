@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_18_130844) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,8 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness",
-      unique: true
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
@@ -57,8 +54,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "state", null: false
-    t.index ["addressable_type", "addressable_id", "address_type"],
-      name: "index_addresses_on_addressable_and_address_type", unique: true
+    t.index ["addressable_type", "addressable_id", "address_type"], name: "index_addresses_on_addressable_and_address_type", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
 
@@ -114,6 +110,28 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
     t.index ["discarded_at"], name: "index_consultancies_on_discarded_at"
   end
 
+  create_table "device_timelines", force: :cascade do |t|
+    t.text "index_system_display_message"
+    t.text "index_system_display_title"
+    t.bigint "device_id", null: false
+    t.string "action_subject"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["device_id"], name: "index_device_timelines_on_device_id"
+  end
+
+  create_table "device_usages", force: :cascade do |t|
+    t.boolean "approve"
+    t.bigint "created_by_id"
+    t.bigint "device_id", null: false
+    t.bigint "assignee_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignee_id"], name: "index_device_usages_on_assignee_id"
+    t.index ["created_by_id"], name: "index_device_usages_on_created_by_id"
+    t.index ["device_id"], name: "index_device_usages_on_device_id"
+  end
+
   create_table "devices", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "company_id", null: false
@@ -123,6 +141,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
     t.jsonb "specifications"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "assignee_id"
+    t.boolean "available"
+    t.string "version"
+    t.string "version_id"
+    t.string "brand"
+    t.string "manufacturer"
+    t.string "base_os"
+    t.text "meta_details"
+    t.index ["assignee_id"], name: "index_devices_on_assignee_id"
     t.index ["company_id"], name: "index_devices_on_company_id"
     t.index ["user_id"], name: "index_devices_on_user_id"
   end
@@ -442,10 +469,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
     t.datetime "discarded_at"
-    t.integer "department_id"
     t.string "personal_email_id"
     t.date "date_of_birth"
     t.jsonb "social_accounts"
+    t.integer "department_id"
     t.string "phone"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
@@ -481,8 +508,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_16_141312) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "clients", "companies"
+  add_foreign_key "device_timelines", "devices"
+  add_foreign_key "device_usages", "devices"
+  add_foreign_key "device_usages", "users", column: "assignee_id"
+  add_foreign_key "device_usages", "users", column: "created_by_id"
   add_foreign_key "devices", "companies"
   add_foreign_key "devices", "users"
+  add_foreign_key "devices", "users", column: "assignee_id"
   add_foreign_key "employments", "companies"
   add_foreign_key "employments", "users"
   add_foreign_key "identities", "users"

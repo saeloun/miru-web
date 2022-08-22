@@ -259,7 +259,8 @@ class Lead < ApplicationRecord
           user.id)
       end
 
-      allow_leads = allow_leads.where("name LIKE ?", "%#{params[:q]}%") if params[:q].present?
+      allow_leads = allow_leads.where("first_name LIKE ?", "%#{params[:q]}%") if params[:q].present?
+      allow_leads = allow_leads.where("last_name LIKE ?", "%#{params[:q]}%") if params[:q].present?
       allow_leads = allow_leads.where(assignee_id: assignees) if assignees.present?
       allow_leads = allow_leads.where(reporter_id: reporters) if reporters.present?
       allow_leads = allow_leads.where(quality_code: quality_codes) if quality_codes.present?

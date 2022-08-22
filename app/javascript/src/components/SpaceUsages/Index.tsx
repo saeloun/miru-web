@@ -273,7 +273,7 @@ const TimeReserving: React.FC<Iprops> = ({
         <div className="flex justify-center w-auto h-auto p-3 px-1 mt-3 mb-3 text-xs font-semibold tracking-widest rounded-lg bg-miru-alert-yellow-400 text-miru-alert-green-1000">
           <div className="marquee">
             <p>
-              Yes! We need your help. Be a part of the <i className="text-xl">A∝C</i> team. Special Thanks to Gyandip, Kishan.
+              Yes! We need your help. Be a part of the <i className="text-xl">A∝C</i> team. Special Thanks to Gyandip, Kishan, Deepak.
             </p>
           </div>
         </div>

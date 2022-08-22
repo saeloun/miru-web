@@ -6,7 +6,6 @@ class LeadsController < ApplicationController
 
   def index
     render :index, locals: {
-      leads:,
       new_lead: Lead.new,
       keep_new_lead_dialog_open: false
     }
@@ -17,9 +16,5 @@ class LeadsController < ApplicationController
     def can_access
       redirect_to dashboard_index_path,
         flash: { error: "You are not authorized for Lead." } unless current_user.can_access_lead?
-    end
-
-    def leads
-      @_leads ||= Lead.order(created_at: :desc)
     end
 end

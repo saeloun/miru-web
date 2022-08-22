@@ -129,6 +129,7 @@ module.exports = {
           1000: "#564210",
           800: "#10562C",
           400: "#A9EFC5",
+          200: "#C2EAD2",
         },
         "miru-alert-pink": {
           400: "#EFA9A9",
