@@ -45,7 +45,7 @@ const AutoComplete = ({
       items={dropdownItems}
       menuStyle={cssStyles.menuStyles}
       renderItem={(item, isHighlighted) =>
-        <div style={cssStyles.getDivStyles(isHighlighted)}>
+        <div key={`leads-${item.id}`} style={cssStyles.getDivStyles(isHighlighted)}>
           {item.label}
         </div>
       }

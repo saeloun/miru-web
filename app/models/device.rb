@@ -4,17 +4,22 @@
 #
 # Table name: devices
 #
-#  id                  :bigint           not null, primary key
-#  available           :boolean
-#  device_company_name :string
-#  kind                :string
-#  name                :string
-#  version             :string
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  assignee_id         :bigint
-#  company_id          :bigint
-#  version_id          :string
+#  id             :bigint           not null, primary key
+#  available      :boolean
+#  base_os        :string
+#  brand          :string
+#  device_type    :string           default("laptop")
+#  manufacturer   :string
+#  meta_details   :text
+#  name           :string
+#  serial_number  :string
+#  specifications :jsonb
+#  version        :string
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  assignee_id    :bigint
+#  company_id     :bigint
+#  version_id     :string
 #
 # Indexes
 #

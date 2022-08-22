@@ -150,7 +150,7 @@ const Leads = ({ isAdminUser }) => {
                   hasRowIcons={isAdminUser}
                   tableHeader={tableHeader}
                   tableRowArray={tableData}
-                  rowOnDoubleClick={isAdminUser ? handleRowClick : () => { }}// eslint-disable-line
+                  rowOnClick={isAdminUser ? handleRowClick : () => { }}// eslint-disable-line
                 />}
                 {leadData && leadData.length && (
                   <Pagination pagy={pagy} params={params} setParams={setParams} forPage="leads" />
