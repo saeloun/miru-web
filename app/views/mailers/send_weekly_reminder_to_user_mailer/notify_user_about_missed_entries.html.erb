@@ -6,13 +6,12 @@
   <body style="color:#1D1A31">
   <p>Hi <%= @name %>, </p>
 
-  <p>This is a reminder email to update your weekly timesheet for <%= @company %> in Miru. </p>
+  <p>This is a reminder to update your weekly timesheet for <%= @company %> on Miru. </p>
 
-  <p>Your logged hours for the week <%= @starting_date %> to <%= @ending_date %> is less than 40 hours.
-  Please click <%= link_to "here", root_url + "time-tracking" , target: "_blank" %> to update your timesheet. </p>
+  <p>Your logged hours for the week <%= @starting_date %> — <%= @ending_date %> are less than 40 hours.
+  Please <%= link_to "log on to update", root_url + "time-tracking" , target: "_blank" %> your timesheet. </p>
 
-  <p>Cheers </p>
-
-  <p>Miru Team</p>
+  <p>Cheers,</p>
+  <p>Team Miru</p>
   </body>
 </html>
