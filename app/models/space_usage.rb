@@ -11,6 +11,7 @@
 #  restricted     :boolean
 #  space_code     :integer
 #  start_duration :float
+#  team_members   :text             default([]), is an Array
 #  work_date      :date
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
@@ -90,7 +91,8 @@ class SpaceUsage < ApplicationRecord
       space_name: SPACE_CODE_OPTIONS.find { |i|i.id == space_code }&.name,
       purpose_name: PURPOSE_CODE_OPTIONS.find { |i|i.id == purpose_code }&.name,
       note:,
-      user_name: user.full_name
+      user_name: user.full_name,
+      team_members:
     }
   end
 
