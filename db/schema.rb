@@ -137,7 +137,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_18_130844) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.bigint "company_id"
+    t.bigint "user_id", null: false
+    t.bigint "company_id", null: false
     t.string "device_type", default: "laptop"
     t.string "name"
     t.string "serial_number"
@@ -154,6 +155,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_18_130844) do
     t.text "meta_details"
     t.index ["assignee_id"], name: "index_devices_on_assignee_id"
     t.index ["company_id"], name: "index_devices_on_company_id"
+    t.index ["user_id"], name: "index_devices_on_user_id"
   end
 
   create_table "employments", force: :cascade do |t|
