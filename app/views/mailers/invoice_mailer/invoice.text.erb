@@ -1,6 +1,6 @@
 Hi <%= @invoice.client_name %>,
 
-You have an invoice (<%= @invoice.invoice_number %>) amounting to <%= @amount %> waiting to be cleared by <%= @invoice.due_date %>.
+You have an invoice (<%= @invoice.invoice_number %>) amounting to <%= @amount %> waiting to be cleared by <%= @invoice.pretty_due_date %>.
 
 You can pay for the invoice here: <%= new_invoice_payment_url(@invoice) %>
 
