@@ -33,7 +33,7 @@ const Header = () => {
   return (
     <div className="sm:flex mt-6 mb-3 sm:items-center sm:justify-between">
       <h2 className="header__title">Team</h2>
-      <div className="header__searchWrap">
+      <div className="header__searchWrap mx-auto">
         <div className="header__searchInnerWrapper">
           <AutoComplete searchCallBack={searchCallBack} />
           <button className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
