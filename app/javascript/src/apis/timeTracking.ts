@@ -4,4 +4,6 @@ const path = "/time-tracking";
 
 const get = async () => axios.get(path);
 
-export default { get };
+const timeTrackingApi = { get };
+
+export default timeTrackingApi;

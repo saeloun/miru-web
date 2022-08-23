@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
 import { ArrowLeft, DotsThreeVertical, Receipt, Pencil, CaretDown, Trash } from "phosphor-react";
+import { useNavigate } from "react-router-dom";
 
 import AddProject from "../Modals/AddProject";
 import DeleteClient from "../Modals/DeleteClient";

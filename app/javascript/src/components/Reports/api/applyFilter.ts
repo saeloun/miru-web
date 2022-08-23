@@ -1,5 +1,7 @@
-import reports from "apis/reports";
 import dayjs from "dayjs";
+
+import reportsApi from "apis/reports";
+
 import { unmapper } from "../../../mapper/report.mapper";
 import { customDateFilter } from "../revenueByClient/Filters/filterOptions";
 
@@ -38,7 +40,7 @@ const applyFilter = async (selectedFilter, setTimeEntries, setNavFilters, setFil
   const queryParams = getQueryParams(selectedFilter);
   const sanitizedParam = queryParams.substring(1);
   const sanitizedQuery = `?${sanitizedParam}`;
-  const res = await reports.get(sanitizedQuery);
+  const res = await reportsApi.get(sanitizedQuery);
   const sanitizedData = unmapper(res.data);
   setTimeEntries(sanitizedData.reports);
   getFilterOptions(sanitizedData.filterOptions);
