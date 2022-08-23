@@ -1,5 +1,5 @@
 
-1. Add Devices API: {{base_url}}/device_api/devices
+1. Add Devices API: POST {{base_url}}/device_api/devices
 
 ```
 payload: {
@@ -66,7 +66,7 @@ response: {
 }
 ```
 
-2. Add Device Usages API: 
+2. Add Device Usages API: POST {{base_url}}/device_api/device_usages
 
 ```
 payload: {
@@ -120,7 +120,7 @@ response: {
 }
 ```
 
-3. update availability for device API: {{url}}/device_api/devices/3
+3. update availability for device API: PUT {{url}}/device_api/devices/3
 
 ```
 payload: {
