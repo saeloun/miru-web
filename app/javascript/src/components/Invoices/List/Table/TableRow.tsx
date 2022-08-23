@@ -95,6 +95,7 @@ const TableRow = ({
           <Link
             to={`/invoices/${invoice.id}/edit`}
             type="button"
+            data-cy="edit-invoice"
             className="hidden group-hover:block text-miru-han-purple-1000"
           >
             <Pen size={16} />
