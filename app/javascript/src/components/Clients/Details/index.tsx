@@ -20,7 +20,7 @@ import { unmapClientDetails } from "../../../mapper/client.mapper";
 const getTableData = (clients) => {
   if (clients) {
     return clients.map((client) => {
-      const hours = (client.minutes/60).toFixed(2);
+      const hours = (client.minutes / 60).toFixed(2);
       return {
         col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
         col2: <div className="text-base text-miru-dark-purple-1000">{client.team.map(member => <span>{member},&nbsp;</span>)}</div>,
@@ -40,9 +40,20 @@ const ClientList = ({ isAdminUser }) => {
   const [totalMinutes, setTotalMinutes] = useState(null);
   const [clientDetails, setClientDetails] = useState<any>({});
   const [editProjectData, setEditProjectData] = React.useState<any>(null);
-  const [overdueOutstandingAmount, setOverDueOutstandingAmt]= useState<any>(null);
+  const [overdueOutstandingAmount, setOverDueOutstandingAmt] = useState<any>(null);
 
   const params = useParams();
+
+  const getClientDetails = () => {
+    clientApi.show(params.clientId, "?time_frame=week")
+      .then((res) => {
+        const sanitized = unmapClientDetails(res);
+        setClientDetails(sanitized.clientDetails);
+        setProjectDetails(sanitized.projectDetails);
+        setTotalMinutes(sanitized.totalMinutes);
+        setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
+      });
+  };
 
   const handleEditClick = (id) => {
     setShowEditDialog(true);
@@ -57,7 +68,7 @@ const ClientList = ({ isAdminUser }) => {
   };
 
   const handleSelectChange = (event) => {
-    clientApi.show(params.clientId,`?time_frame=${event.target.value}`)
+    clientApi.show(params.clientId, `?time_frame=${event.target.value}`)
       .then((res) => {
         const sanitized = unmapClientDetails(res);
         setProjectDetails(sanitized.projectDetails);
@@ -71,14 +82,7 @@ const ClientList = ({ isAdminUser }) => {
     sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
-    clientApi.show(params.clientId, "?time_frame=week")
-      .then((res) => {
-        const sanitized = unmapClientDetails(res);
-        setClientDetails(sanitized.clientDetails);
-        setProjectDetails(sanitized.projectDetails);
-        setTotalMinutes(sanitized.totalMinutes);
-        setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
-      });
+    getClientDetails();
   }, []);
 
   const tableHeader = [
@@ -117,7 +121,7 @@ const ClientList = ({ isAdminUser }) => {
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header clientDetails={clientDetails} />
       <div>
-        { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
+        {isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
           <div className="flex justify-end">
             <select onChange={handleSelectChange} className="px-3
                 py-1.5
@@ -131,31 +135,31 @@ const ClientList = ({ isAdminUser }) => {
                 focus:outline-none
                 text-miru-han-purple-1000">
               <option className="text-miru-dark-purple-600" value="week">
-                    THIS WEEK
+                THIS WEEK
               </option>
               <option className="text-miru-dark-purple-600" value="month">
-                    This MONTH
+                This MONTH
               </option>
               <option className="text-miru-dark-purple-600" value="year">
-                    THIS YEAR
+                THIS YEAR
               </option>
             </select>
           </div>
           {projectDetails && <ChartBar data={projectDetails} totalMinutes={totalMinutes} />}
-          <AmountBoxContainer amountBox = {amountBox} />
+          <AmountBoxContainer amountBox={amountBox} />
         </div>
         }
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
               <div className="overflow-hidden">
-                { projectDetails && <Table
+                {projectDetails && <Table
                   handleEditClick={handleEditClick}
                   handleDeleteClick={handleDeleteClick}
                   hasRowIcons={true}
                   tableHeader={tableHeader}
                   tableRowArray={tableData}
-                /> }
+                />}
               </div>
             </div>
           </div>
@@ -173,6 +177,7 @@ const ClientList = ({ isAdminUser }) => {
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}
           project={selectedProject}
+          fetchProjects={getClientDetails}
         />
       )}
     </>
