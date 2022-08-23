@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import projectApi from "apis/projects";
+
 import Logger from "js-logger";
 import { X } from "phosphor-react";
+
+import projectApi from "apis/projects";
 
 const AddEditProject = ({
   setEditProjectData,

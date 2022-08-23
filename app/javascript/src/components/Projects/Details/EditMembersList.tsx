@@ -1,9 +1,10 @@
 import * as React from "react";
 
+import { X } from "phosphor-react";
+
 import companyUsersApi from "apis/company-users";
 import projectMembersApi from "apis/project-members";
 import Toastr from "common/Toastr";
-import { X } from "phosphor-react";
 
 import EditMembersListForm from "./EditMembersListForm";
 

@@ -1,9 +1,12 @@
 import React, { Fragment } from "react";
+
+import { TeamModalType } from "constants/index";
+
+import { PencilSimple, Trash } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
+
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
-import { PencilSimple, Trash } from "phosphor-react";
-import { TeamModalType } from "constants/index";
 
 const TableRow = ({ item }) => {
   const { isAdminUser } = useUserContext();
