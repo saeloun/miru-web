@@ -130,6 +130,7 @@ const InvoiceTable = ({
                 onClick={() => {
                   setAddNew(!addNew);
                 }}
+                data-cy='new-line-item'
               >
                 + NEW LINE ITEM
               </button>
