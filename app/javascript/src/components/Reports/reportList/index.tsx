@@ -2,6 +2,7 @@
 import React from "react";
 
 import ReportCard from "./reportCard";
+
 const calendar = require("../../../../images/Calendar.svg"); // eslint-disable-line
 const hours = require("../../../../images/Hours.svg");
 const overdueOutstandingIcon = require("../../../../images/OverdueOutstanding.svg");
