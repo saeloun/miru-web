@@ -21,7 +21,6 @@ class InternalApi::V1::SpaceUsagesController < InternalApi::V1::ApplicationContr
     space_usage = current_company.space_usages.new(space_usage_params)
     space_usage.user = current_company.users.find(params[:user_id])
     if space_usage.save
-      SpaceUsageSlackNotifyJob.perform_later("create", space_usage.attributes.as_json)
       render json: {
         notice: I18n.t("space_usage.create.message"),
         entry: space_usage.formatted_entry
@@ -34,7 +33,6 @@ class InternalApi::V1::SpaceUsagesController < InternalApi::V1::ApplicationContr
   def update
     authorize current_space_usage
     if current_space_usage.update(space_usage_params)
-      SpaceUsageSlackNotifyJob.perform_later("update", current_space_usage.attributes.as_json)
       render json: {
         notice: I18n.t("space_usage.update.message"),
         entry: current_space_usage.formatted_entry
