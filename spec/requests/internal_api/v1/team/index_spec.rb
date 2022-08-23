@@ -23,7 +23,7 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
     end
 
     it "checks if profile picture is there with each team member" do
-      expect(json_response["team"].first["profilePicture"]).to eq(JSON.parse(user.avatar.to_json))
+      expect("http://www.example.com#{json_response["team"].first["profilePicture"]}").to eq(url_for(user.avatar))
       expect(json_response["invitation"].last["profilePicture"]).to include("/assets/avatar")
     end
 
