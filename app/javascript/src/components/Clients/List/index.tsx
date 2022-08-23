@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+
+import { TOASTER_DURATION } from "constants/index";
+
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clientApi from "apis/clients";
-
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
@@ -11,8 +14,8 @@ import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import { TOASTER_DURATION } from "constants/index";
 import Header from "./Header";
+
 import { unmapClientList } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";

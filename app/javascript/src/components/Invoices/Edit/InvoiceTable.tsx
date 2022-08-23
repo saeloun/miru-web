@@ -1,7 +1,9 @@
 import React, { useState, useRef } from "react";
 
 import useOutsideClick from "helpers/outsideClick";
+
 import NewLineItemTable from "./NewLineItemTable";
+
 import TableHeader from "../common/LineItemTableHeader";
 import NewLineItemRow from "../common/NewLineItemRow";
 import ManualEntry from "../Generate/ManualEntry";
@@ -48,6 +50,7 @@ const InvoiceTable = ({
         onClick={() => {
           setAddNew(!addNew);
         }}
+        data-cy="edit-new-line-item"
       >
         + NEW LINE ITEM
       </button>;

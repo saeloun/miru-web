@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
+import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+
+import { X } from "phosphor-react";
+
 import paymentSettings from "apis/payment-settings";
 import PaymentsProviders from "apis/payments/providers";
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomToggle from "common/CustomToggle";
-import { X } from "phosphor-react";
-import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 
 const amex = require("../../../../../assets/images/amex.svg");
 const applePay = require("../../../../../assets/images/applePay.svg");

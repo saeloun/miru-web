@@ -1,4 +1,5 @@
 import React from "react";
+
 import { PaperPlaneTilt } from "phosphor-react";
 
 const SendButton = ({ onClick }) => (
