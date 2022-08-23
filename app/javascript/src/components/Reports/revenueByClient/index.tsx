@@ -2,12 +2,13 @@
 import React, { useState, useEffect } from "react";
 
 import { sendGAPageView } from "utils/googleAnalytics";
+
 import Container from "./Container";
 import Filters from "./Filters";
 import { RevenueByClients } from "./interface";
+
 import getReportData from "../api/revenueByClient";
 import EntryContext from "../context/EntryContext";
-
 import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
 import TimeEntryReportContext from "../context/TimeEntryReportContext";
 import Header from "../Header";

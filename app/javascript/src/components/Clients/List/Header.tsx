@@ -1,7 +1,10 @@
 import * as React from "react";
+
+import { MagnifyingGlass, Plus } from "phosphor-react";
+
 import clientApi from "apis/clients";
 import AutoComplete from "common/AutoComplete";
-import { MagnifyingGlass, Plus } from "phosphor-react";
+
 import { unmapClientListForDropdown } from "../../../mapper/client.mapper";
 
 const Header = ({
