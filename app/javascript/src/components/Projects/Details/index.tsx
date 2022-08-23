@@ -34,7 +34,7 @@ const ProjectDetails = () => {
   const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
   const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
   const [timeframe, setTimeframe] = React.useState<any>("week");
-  const [overdueOutstandingAmount, setOverDueOutstandingAmt]= React.useState<any>(null);
+  const [overdueOutstandingAmount, setOverDueOutstandingAmt] = React.useState<any>(null);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -254,7 +254,7 @@ const ProjectDetails = () => {
               m-0
               focus:outline-none
               text-miru-han-purple-1000"
-            onChange={ ({ target: { value } }) => setTimeframe(value) }
+            onChange={({ target: { value } }) => setTimeframe(value)}
           >
             <option className="text-miru-dark-purple-600" value="week">
               THIS WEEK
@@ -307,6 +307,7 @@ const ProjectDetails = () => {
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}
           project={project}
+          fetchProjects={fetchProject}
         />
       )}
     </>

@@ -4,16 +4,16 @@ import projectApi from "apis/projects";
 interface IProps {
   project: any;
   setShowDeleteDialog: any;
+  fetchProjects: any
 }
 
-const DeleteProject = ({ project, setShowDeleteDialog }: IProps) => {
+const DeleteProject = ({ project, setShowDeleteDialog, fetchProjects }: IProps) => {
   const deleteProject = async project => {
     projectApi.destroy(project.id)
       .then(() => {
-        setTimeout(() => {
-          setShowDeleteDialog(false);
-          window.location.assign(window.location.origin+"/projects");
-        }, 500);
+        setShowDeleteDialog(false);
+        // This Api request should not be called, need response from delete api call.
+        fetchProjects();
       }).catch(() => {
         setShowDeleteDialog(true);
       });
