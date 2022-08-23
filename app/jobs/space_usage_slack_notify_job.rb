@@ -33,6 +33,8 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
   def create_space_payload_msg
     entry = @space_usage.formatted_entry
     bookingDate = DateTime.parse("#{entry[:work_date]}").strftime("%d/%m/%Y")
+    member_names = @space_usage.company.users.where(id: @space_usage.team_members)
+      .map(&:full_name).map { |i| "*#{i}*" }.to_sentence
 
     {
       text: "Space Occupied :white_check_mark:",
@@ -62,7 +64,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
           type: "section",
           text: {
             type: "mrkdwn",
-            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}* from *#{@space_usage.formatted_duration_12hr(:start)}* to *#{@space_usage.formatted_duration_12hr(:end)}*\nNote: #{entry[:note]}"
+            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}* from *#{@space_usage.formatted_duration_12hr(:start)}* to *#{@space_usage.formatted_duration_12hr(:end)}*\n#{member_names.present? ? "Team Members: #{member_names}\n" : ""}Note: #{entry[:note]}"
           },
           accessory: {
             type: "image",
@@ -77,6 +79,8 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
   def update_space_payload_msg
     entry = @space_usage.formatted_entry
     bookingDate = DateTime.parse("#{entry[:work_date]}").strftime("%d/%m/%Y")
+    member_names = @space_usage.company.users.where(id: @space_usage.team_members)
+      .map(&:full_name).map { |i| "*#{i}*" }.to_sentence
 
     {
       text: "Space Occupation Changed :twisted_rightwards_arrows:",
@@ -106,7 +110,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
           type: "section",
           text: {
             type: "mrkdwn",
-            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}* from *#{@space_usage.formatted_duration_12hr(:start)}* to *#{@space_usage.formatted_duration_12hr(:end)}*\nNote: #{entry[:note]}"
+            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}* from *#{@space_usage.formatted_duration_12hr(:start)}* to *#{@space_usage.formatted_duration_12hr(:end)}*\n#{member_names.present? ? "Team Members: #{member_names}\n" : ""}Note: #{entry[:note]}"
           },
           accessory: {
             type: "image",
