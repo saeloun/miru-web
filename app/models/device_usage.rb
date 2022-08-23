@@ -40,7 +40,7 @@ class DeviceUsage < ApplicationRecord
 
     def add_device_timelines
       device = self.device
-      index_system_display_title = "<b>#{self.created_by&.full_name}</b> need to device #{device.device_company_name} #{device.name} #{device.version}"
+      index_system_display_title = "<b>#{self.created_by&.full_name}</b> need to #{device.device_type} device #{device.manufacturer} #{device.name} #{device.version}"
       device.device_timelines.create!(index_system_display_title:)
     end
 end

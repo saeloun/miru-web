@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-json.extract! device, :id, :name, :version, :version_id, :kind, :device_company_name, :available, :assignee, :company
+json.extract! device, :id, :available, :base_os, :brand, :device_type, :manufacturer, :meta_details, :name, :serial_number, :specifications, :version, :assignee, :company, :user, :version_id

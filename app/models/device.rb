@@ -37,6 +37,7 @@
 class Device < ApplicationRecord
   belongs_to :assignee, class_name: :User, optional: true
   belongs_to :company, optional: true
+  belongs_to :user, optional: true
 
   has_many :device_timelines
   has_many :device_usages
@@ -52,7 +53,7 @@ class Device < ApplicationRecord
 
     def add_device_timelines
       device = self
-      index_system_display_title = "Now #{device.device_company_name} #{device.name} #{device.version} #{device.available ? 'available' : 'not available'}"
+      index_system_display_title = "Now #{device.manufacturer} #{device.name} #{device.version} #{device.available ? 'available' : 'not available'}"
       device.device_timelines.create!(index_system_display_title:)
     end
 end

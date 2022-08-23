@@ -10,6 +10,7 @@ class DevicePolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:name, :version, :version_id, :kind, :device_company_name, :available, :assignee_id, :company_id]
+    [:available, :base_os, :brand, :device_type, :manufacturer, :meta_details, :name, :serial_number, :specifications,
+     :version, :assignee_id, :company_id, :user_id, :version_id]
   end
 end
