@@ -18,7 +18,7 @@ const inviteMember = payload => axios.post("/invitations",payload);
 const updateInvitedMember = (id,payload) => axios.put(`/invitations/${id}`,payload);
 const deleteInvitedMember = id => axios.delete(`/invitations/${id}`);
 
-export {
+const teamApi =  {
   get,
   search,
   destroyTeamMember,
@@ -27,3 +27,5 @@ export {
   deleteInvitedMember,
   inviteMember
 };
+
+export default teamApi;

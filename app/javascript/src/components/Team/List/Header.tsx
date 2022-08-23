@@ -1,12 +1,15 @@
 import React from "react";
-import { search } from "apis/team";
-import AutoComplete from "common/AutoComplete";
-import { useList } from "context/TeamContext";
-import { useUserContext } from "context/UserContext";
+
+import { TeamModalType } from "constants/index";
+
 import Logger from "js-logger";
 import { unmapList } from "mapper/team.mapper";
 import { MagnifyingGlass, Plus } from "phosphor-react";
-import { TeamModalType } from "constants/index";
+
+import teamApi from "apis/team";
+import AutoComplete from "common/AutoComplete";
+import { useList } from "context/TeamContext";
+import { useUserContext } from "context/UserContext";
 
 const Header = () => {
   const { isAdminUser } = useUserContext();
@@ -15,7 +18,7 @@ const Header = () => {
   const searchCallBack = async (searchString, setDropdownItems) => {
     try {
       if (!searchString) return;
-      const res = await search(searchString);
+      const res = await teamApi.search(searchString);
       const dropdownList = unmapList(res);
       const searchList = dropdownList.map(item => ({
         label: item.name,

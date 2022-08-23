@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
+import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+
 import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader/index";
 import { sendGAPageView } from "utils/googleAnalytics";
-import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 
 import Header from "../../Header";
 

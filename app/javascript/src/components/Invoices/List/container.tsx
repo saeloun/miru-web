@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import Table from "./Table";
+
 import InvoiceSummary from "../InvoiceSummary";
 
 const Container = ({

@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 
-import wiseApi from "apis/wise";
 import getSymbolFromCurrency from "currency-symbol-map";
+
+import wiseApi from "apis/wise";
 
 const CurrencyDropdown = ({
   currencies, setCurrencies,

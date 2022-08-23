@@ -1,6 +1,7 @@
 import React from "react";
 
 import { X, MagnifyingGlass } from "phosphor-react";
+
 import FilterSelect from "./FilterSelect";
 
 const Header = ({ setMultiLineItemModal }) => (

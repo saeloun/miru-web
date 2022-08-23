@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import { Trash } from "phosphor-react";
 
 const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMembers, handleSubmit, currencySymbol }) => {

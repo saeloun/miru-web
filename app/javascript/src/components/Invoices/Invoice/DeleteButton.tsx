@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Trash } from "phosphor-react";
 
 const DeleteButton = ({ onClick }) => (

@@ -1,7 +1,10 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
-import { minutesToHHMM } from "helpers/hhmm-parser";
+
 import { Pen, Trash } from "phosphor-react";
+import { useNavigate } from "react-router-dom";
+
+import { minutesToHHMM } from "helpers/hhmm-parser";
+
 import { IProject } from "../interface";
 
 export const Project = ({
