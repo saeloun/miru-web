@@ -1,5 +1,6 @@
 /* eslint-disable no-constant-condition */
 import React from "react";
+
 import ProgressBar from "common/ProgressBar";
 
 const ImportCard = ({ id, title, description, btnText, handleOnShowModalClick }) => (

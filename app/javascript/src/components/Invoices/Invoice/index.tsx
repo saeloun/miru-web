@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
+
+import { ApiStatus as InvoiceStatus } from "constants/index";
+
 import { useParams } from "react-router-dom";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import invoicesApi from "apis/invoices";
 import { sendGAPageView } from "utils/googleAnalytics";
-import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
+
 import DeleteInvoice from "../popups/DeleteInvoice";
 import SendInvoice from "../popups/SendInvoice";
 

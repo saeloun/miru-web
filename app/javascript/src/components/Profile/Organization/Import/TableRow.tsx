@@ -1,5 +1,7 @@
 import React, { Fragment } from "react";
+
 import Select from "react-select";
+
 import { reactSelectStyles } from "./Styles";
 
 const TableRow = ({
