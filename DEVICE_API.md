@@ -1,6 +1,12 @@
+# Device APIs
 
-1. Add Devices API: POST {{base_url}}/device_api/devices
+> TODO : Authentication related details will be shared soon.
 
+### 1. Register Device
+
+POST {{base_url}}/device_api/devices
+
+Request data :
 ```
 payload: {
     "device":{
@@ -19,7 +25,9 @@ payload: {
 
 ```
 
+Example Response :
 ```
+200 Ok
 response: {
     "id": 3,
     "available": true,
@@ -66,8 +74,52 @@ response: {
 }
 ```
 
-2. Add Device Usages API: POST {{base_url}}/device_api/device_usages
+### 2. Update availability for device : On/Off
 
+PUT {{url}}/device_api/devices/3
+
+Request data :
+```
+payload: {
+    "device":{
+        "available": false
+    }
+}
+```
+
+Example Response :
+```
+200 Ok
+response: {
+    "success": true,
+    "device": {
+        "available": false,
+        "id": 3,
+        "user_id": 1,
+        "company_id": 1,
+        "device_type": "mobile",
+        "name": "A50",
+        "serial_number": "334455123123",
+        "specifications": null,
+        "created_at": "2022-08-23T07:33:38.723Z",
+        "updated_at": "2022-08-23T07:34:54.476Z",
+        "assignee_id": 2,
+        "version": "Pro",
+        "version_id": "1213",
+        "brand": "Samsung",
+        "manufacturer": "Samsung",
+        "base_os": "android",
+        "meta_details": null
+    },
+    "notice": "Changes saved successfully"
+}
+```
+
+### 3. Add Device Usages
+
+POST {{base_url}}/device_api/device_usages
+
+Request data :
 ```
 payload: {
     "device_usage":{
@@ -78,7 +130,9 @@ payload: {
 }
 ```
 
+Example Response :
 ```
+200 Ok
 response: {
     "id": 4,
     "device": {
@@ -117,41 +171,5 @@ response: {
     },
     "created_by": null,
     "approve": true
-}
-```
-
-3. update availability for device API: PUT {{url}}/device_api/devices/3
-
-```
-payload: {
-    "device":{
-        "available": false
-    }
-}
-```
-
-```
-response: {
-    "success": true,
-    "device": {
-        "available": false,
-        "id": 3,
-        "user_id": 1,
-        "company_id": 1,
-        "device_type": "mobile",
-        "name": "A50",
-        "serial_number": "334455123123",
-        "specifications": null,
-        "created_at": "2022-08-23T07:33:38.723Z",
-        "updated_at": "2022-08-23T07:34:54.476Z",
-        "assignee_id": 2,
-        "version": "Pro",
-        "version_id": "1213",
-        "brand": "Samsung",
-        "manufacturer": "Samsung",
-        "base_os": "android",
-        "meta_details": null
-    },
-    "notice": "Changes saved successfully"
 }
 ```
