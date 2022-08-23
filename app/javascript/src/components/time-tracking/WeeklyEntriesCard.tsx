@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
+
+import Logger from "js-logger";
+
 import timesheetEntryApi from "apis/timesheet-entry";
 import Toastr from "common/Toastr";
-
 import { minutesToHHMM, minutesFromHHMM } from "helpers/hhmm-parser";
 import validateTimesheetEntry from "helpers/validateTimesheetEntry";
-import Logger from "js-logger";
 
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");

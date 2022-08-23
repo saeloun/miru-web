@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 
-import reports from "apis/reports";
+import reportsApi from "apis/reports";
 import { sendGAPageView } from "utils/googleAnalytics";
+
 import applyFilter, { getQueryParams } from "../api/applyFilter";
 import Container from "../Container";
 import EntryContext from "../context/EntryContext";
-
 import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
 import Filters from "../Filters";
 import { getMonth } from "../Filters/filterOptions";
 import Header from "../Header";
-
 import { ITimeEntry } from "../interface";
 
 const TimeEntryReports = () => {
@@ -92,7 +91,7 @@ const TimeEntryReports = () => {
 
   const handleDownload = async (type) => {
     const queryParams = getQueryParams(selectedFilter).substring(1);
-    const response = await reports.download(type, `?${queryParams}`);
+    const response = await reportsApi.download(type, `?${queryParams}`);
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     const date = new Date();

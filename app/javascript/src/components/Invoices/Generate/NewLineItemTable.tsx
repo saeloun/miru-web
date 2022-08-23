@@ -1,7 +1,10 @@
 import React from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
+
 import dayjs from "dayjs";
+import InfiniteScroll from "react-infinite-scroll-component";
+
 import { DropdownHeader } from "./CustomComponents";
+
 import { getMaxIdx } from "../common/utils";
 
 const NewLineItemTable = ({
@@ -60,7 +63,7 @@ const NewLineItemTable = ({
             const hoursLogged = (item.qty / 60).toFixed(2);
             const date = dayjs(item.date).format("DD.MM.YYYY");
             return (
-              <div key={index} onClick={() => { selectRowId(item); }} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100">
+              <div key={index} onClick={() => { selectRowId(item); }} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100" data-cy="entries-list">
                 <span className="font-medium w-1/4 text-base text-miru-dark-purple-1000 text-left">
                   {item.first_name} {item.last_name}
                 </span>

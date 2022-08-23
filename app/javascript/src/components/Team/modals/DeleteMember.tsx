@@ -1,19 +1,23 @@
 
 import React from "react";
-import { destroyTeamMember, deleteInvitedMember } from "apis/team";
+
+import { TeamModalType } from "constants/index";
+
+import { X } from "phosphor-react";
+
+import teamApi from "apis/team";
 import Toastr from "common/Toastr";
 import { useList } from "context/TeamContext";
-import { X } from "phosphor-react";
-import { TeamModalType } from "constants/index";
 
 const DeleteMember = ({ user }) => {
   const { setModalState } = useList();
+
   const deleteTeamMember = async () => {
     try {
       if (user.isTeamMember) {
-        await destroyTeamMember(user.id);
+        await teamApi.destroyTeamMember(user.id);
       } else {
-        await deleteInvitedMember(user.id);
+        await teamApi.deleteInvitedMember(user.id);
       }
       setModalState(TeamModalType.NONE);
     } catch (error) {

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import CustomCheckbox from "common/CustomCheckbox";
-import dayjs from "dayjs";
-import { currencyFormat } from "helpers/currency";
-import { PaperPlaneTilt, Pen, Trash } from "phosphor-react";
 
+import dayjs from "dayjs";
+import { PaperPlaneTilt, Pen, Trash } from "phosphor-react";
+import { Link } from "react-router-dom";
+
+import CustomCheckbox from "common/CustomCheckbox";
+import { currencyFormat } from "helpers/currency";
 import getStatusCssClass from "utils/getStatusTag";
 
 import SendInvoice from "../SendInvoice";
@@ -94,6 +95,7 @@ const TableRow = ({
           <Link
             to={`/invoices/${invoice.id}/edit`}
             type="button"
+            data-cy="edit-invoice"
             className="hidden group-hover:block text-miru-han-purple-1000"
           >
             <Pen size={16} />
