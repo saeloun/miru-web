@@ -39,8 +39,8 @@ class Device < ApplicationRecord
   belongs_to :company, optional: true
   belongs_to :user, optional: true
 
-  has_many :device_timelines
-  has_many :device_usages
+  has_many :device_timelines, dependent: :destroy
+  has_many :device_usages, dependent: :destroy
 
   before_create :set_availabilty
   after_update :add_device_timelines
@@ -48,12 +48,12 @@ class Device < ApplicationRecord
   private
 
     def set_availabilty
-      self.available = true unless self.available.present?
+      self.available = true unless self.assignee_id.present?
     end
 
     def add_device_timelines
       device = self
-      index_system_display_title = "Now #{device.manufacturer} #{device.name} #{device.version} #{device.available ? 'available' : 'not available'}"
+      index_system_display_title = "Now #{device.device_type} device #{device.manufacturer} #{device.name} #{device.version} is #{device.available ? 'available' : 'not available'}"
       device.device_timelines.create!(index_system_display_title:)
     end
 end
