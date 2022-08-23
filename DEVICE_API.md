@@ -6,9 +6,9 @@
 
 POST {{base_url}}/device_api/devices
 
-Request data :
+Request payload :
 ```
-payload: {
+{
     "device":{
         "name": "A50",
         "version": "Pro",
@@ -28,7 +28,7 @@ payload: {
 Example Response :
 ```
 200 Ok
-response: {
+{
     "id": 3,
     "available": true,
     "base_os": "android",
@@ -80,7 +80,7 @@ PUT {{url}}/device_api/devices/3
 
 Request data :
 ```
-payload: {
+{
     "device":{
         "available": false
     }
@@ -90,7 +90,7 @@ payload: {
 Example Response :
 ```
 200 Ok
-response: {
+{
     "success": true,
     "device": {
         "available": false,
@@ -115,25 +115,14 @@ response: {
 }
 ```
 
-### 3. Add Device Usages
+### 3. Approve Device Usages
 
-POST {{base_url}}/device_api/device_usages
-
-Request data :
-```
-payload: {
-    "device_usage":{
-        "device_id": 3,
-        "assignee_id": 2,
-        "created_by": 2
-    }
-}
-```
+POST {{base_url}}/device_api/devices/:id/approve_usages
 
 Example Response :
 ```
 200 Ok
-response: {
+{
     "id": 4,
     "device": {
         "id": 3,
