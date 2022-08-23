@@ -72,10 +72,6 @@ jobs:
       - name: Run Rubocop
         run: |
           bundle exec rubocop
-      - name: compile assets
-        run: |
-          name: run rake assets:precompile
-          command: RAILS_ENV=test bundle exec rake assets:precompile
       - name: Run tests
         env:
           RAILS_ENV: test
