@@ -12,6 +12,8 @@
 #  discarded_at           :datetime
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
+#  engage_code            :integer
+#  engage_updated_at      :datetime
 #  first_name             :string           not null
 #  invitation_accepted_at :datetime
 #  invitation_created_at  :datetime
@@ -34,6 +36,7 @@
 #  updated_at             :datetime         not null
 #  current_workspace_id   :bigint
 #  department_id          :integer
+#  engage_updated_by_id   :bigint
 #  invited_by_id          :bigint
 #  personal_email_id      :string
 #
@@ -42,6 +45,7 @@
 #  index_users_on_current_workspace_id  (current_workspace_id)
 #  index_users_on_discarded_at          (discarded_at)
 #  index_users_on_email                 (email) UNIQUE
+#  index_users_on_engage_updated_by_id  (engage_updated_by_id)
 #  index_users_on_invitation_token      (invitation_token) UNIQUE
 #  index_users_on_invited_by            (invited_by_type,invited_by_id)
 #  index_users_on_invited_by_id         (invited_by_id)
@@ -50,6 +54,7 @@
 # Foreign Keys
 #
 #  fk_rails_...  (current_workspace_id => companies.id)
+#  fk_rails_...  (engage_updated_by_id => users.id)
 #
 
 # frozen_string_literal: true
@@ -82,7 +87,15 @@ class User < ApplicationRecord
     DepartmentOptionKlass.new("Shopify", 18)
   ]
 
+  ENGAGEMENT_OPTIONS = [
+    DepartmentOptionKlass.new("Free", 1),
+    DepartmentOptionKlass.new("Partially", 2),
+    DepartmentOptionKlass.new("Fully", 3),
+    DepartmentOptionKlass.new("Over", 4),
+  ]
+
   # Associations
+  belongs_to :engage_updated_by, class_name: :User, optional: true
   has_many :employments, dependent: :destroy
   has_many :companies, through: :employments
   has_many :project_members, dependent: :destroy
@@ -154,8 +167,13 @@ class User < ApplicationRecord
   def department_name
     return "" if department_id.nil?
 
-    department_name_hash = User::DEPARTMENT_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }
-    department_name_hash[department_id]
+    User::DEPARTMENT_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }[department_id]
+  end
+
+  def engage_name
+    return "" if engage_code.nil?
+
+    User::ENGAGEMENT_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }[engage_code]
   end
 
   def active_for_authentication?

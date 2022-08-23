@@ -159,9 +159,9 @@ const EditEntry: React.FC<Iprops> = ({
         setSelectedStartTime(undefined);
         setSelectedEndTime(undefined);
         setNewEntryId(res.data.entry.id);
-        setIsProcessing(false);
       }
     }
+    setIsProcessing(false);
   };
 
   const handleEdit = async () => {
@@ -184,9 +184,9 @@ const EditEntry: React.FC<Iprops> = ({
         setSelectedSpaceId(undefined);
         setSelectedStartTime(undefined);
         setSelectedEndTime(undefined);
-        setIsProcessing(false);
       }
     }
+    setIsProcessing(false);
   };
   const loadingButton = <>
     <svg

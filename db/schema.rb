@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -21,7 +23,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_18_130844) do
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness",
+      unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
@@ -54,7 +57,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_18_130844) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "state", null: false
-    t.index ["addressable_type", "addressable_id", "address_type"], name: "index_addresses_on_addressable_and_address_type", unique: true
+    t.index ["addressable_type", "addressable_id", "address_type"],
+      name: "index_addresses_on_addressable_and_address_type", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
 
@@ -469,14 +473,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_18_130844) do
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
     t.datetime "discarded_at"
+    t.integer "department_id"
     t.string "personal_email_id"
     t.date "date_of_birth"
     t.jsonb "social_accounts"
-    t.integer "department_id"
     t.string "phone"
+    t.integer "engage_code"
+    t.bigint "engage_updated_by_id"
+    t.datetime "engage_updated_at"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["engage_updated_by_id"], name: "index_users_on_engage_updated_by_id"
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"
@@ -545,6 +553,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_18_130844) do
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies", column: "current_workspace_id"
+  add_foreign_key "users", "users", column: "engage_updated_by_id"
   add_foreign_key "wise_accounts", "companies"
   add_foreign_key "wise_accounts", "users"
 end

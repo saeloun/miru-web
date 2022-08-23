@@ -1,0 +1,7 @@
+<div class="md:px-20 mx-auto font-manrope">
+  <div>
+    <%= react_component("Engagements/RouteConfig", {
+      isAdminUser: current_user.can_access_lead?
+    }) %>
+  </div>
+</div>

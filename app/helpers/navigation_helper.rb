@@ -39,6 +39,12 @@ module NavigationHelper
     def nav_items
       [
         {
+          url: space_occupying_index_path,
+          title: I18n.t("navbar.spaces"),
+          permitted: Pundit.policy!(current_user, :space_usage).index?,
+          data: { cy: "spaces-tab" }
+        },
+        {
           url: time_tracking_index_path,
           title: I18n.t("navbar.time_tracking"),
           permitted: Pundit.policy!(current_user, :timesheet_entry).index?,
@@ -52,10 +58,10 @@ module NavigationHelper
           data: { cy: "leads-tab" }
         },
         {
-          url: space_occupying_index_path,
-          title: I18n.t("navbar.spaces"),
-          permitted: Pundit.policy!(current_user, :space_usage).index?,
-          data: { cy: "spaces-tab" }
+          url: engagements_path,
+          title: I18n.t("navbar.engagements"),
+          permitted: Pundit.policy!(current_user, :engagement).index?,
+          data: { cy: "engagements-tab" }
         },
         {
           url: team_index_path,

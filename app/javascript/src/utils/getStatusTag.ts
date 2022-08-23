@@ -20,6 +20,10 @@ const getStatusCssClass = (status) => {
     "cannot contact": "bg-miru-alert-pink-400 text-miru-alert-red-1000",
     "no longer interested": "bg-miru-alert-pink-400 text-miru-alert-red-1000",
     canceled: "bg-miru-alert-pink-400 text-miru-alert-red-1000",
+    free: "bg-miru-alert-pink-400 text-miru-alert-red-1000",
+    partially: "bg-miru-alert-yellow-400 text-miru-alert-green-1000",
+    fully: "bg-miru-alert-green-400 text-miru-alert-green-800",
+    over: "bg-miru-alert-green-800 text-miru-white-1000",
   };
   const lowerCaseStatus = status.toLowerCase();
   return `rounded-xl text-xs tracking-widest font-semibold px-1 ${STATUS_LIST[lowerCaseStatus]}`;
