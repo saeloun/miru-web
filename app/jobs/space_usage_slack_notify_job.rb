@@ -5,7 +5,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
 
   queue_as :default
 
-  def perform(action_name, space_usage_attributes, members_of_team = [])
+  def perform(action_name, space_usage_attributes)
     action_name = action_name.to_sym
     return unless SLACK_WEBHOOK_URL
 
@@ -14,8 +14,6 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
     else
       SpaceUsage.new(space_usage_attributes)
     end
-
-    @team_members_name = members_of_team.to_sentence || ""
 
     payload_msg = case action_name
                   when :create
@@ -35,7 +33,8 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
   def create_space_payload_msg
     entry = @space_usage.formatted_entry
     bookingDate = DateTime.parse("#{entry[:work_date]}").strftime("%d/%m/%Y")
-    members_name = @team_members_name
+    member_names = @space_usage.company.users.where(id: @space_usage.team_members)
+      .map(&:full_name).map { |i| "*#{i}*" }.to_sentence
 
     {
       text: "Space Occupied :white_check_mark:",
@@ -65,7 +64,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
           type: "section",
           text: {
             type: "mrkdwn",
-            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}* from *#{@space_usage.formatted_duration_12hr(:start)}* to *#{@space_usage.formatted_duration_12hr(:end)}*\n#{members_name.length > 0 ? "Team Members: #{members_name}\n" : ""}Note: #{entry[:note]}"
+            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}* from *#{@space_usage.formatted_duration_12hr(:start)}* to *#{@space_usage.formatted_duration_12hr(:end)}*\n#{member_names.present? ? "Team Members: #{member_names}\n" : ""}Note: #{entry[:note]}"
           },
           accessory: {
             type: "image",
@@ -80,7 +79,8 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
   def update_space_payload_msg
     entry = @space_usage.formatted_entry
     bookingDate = DateTime.parse("#{entry[:work_date]}").strftime("%d/%m/%Y")
-    members_name = @team_members_name
+    member_names = @space_usage.company.users.where(id: @space_usage.team_members)
+      .map(&:full_name).map { |i| "*#{i}*" }.to_sentence
 
     {
       text: "Space Occupation Changed :twisted_rightwards_arrows:",
@@ -110,7 +110,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
           type: "section",
           text: {
             type: "mrkdwn",
-            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}* from *#{@space_usage.formatted_duration_12hr(:start)}* to *#{@space_usage.formatted_duration_12hr(:end)}*\n#{members_name.length > 0 ? "Team Members: #{members_name}\n" : ""}Note: #{entry[:note]}"
+            text: "By: *#{entry[:user_name]}*\nOn: *#{bookingDate}* from *#{@space_usage.formatted_duration_12hr(:start)}* to *#{@space_usage.formatted_duration_12hr(:end)}*\n#{member_names.present? ? "Team Members: #{member_names}\n" : ""}Note: #{entry[:note]}"
           },
           accessory: {
             type: "image",
