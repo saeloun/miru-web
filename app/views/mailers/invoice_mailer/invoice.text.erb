@@ -1,10 +1,9 @@
 Hi <%= @invoice.client_name %>,
 
-You have an invoice (<%= @invoice.invoice_number %>) amounting to <%= @amount %> waiting to be cleared by <%= @invoice.pretty_due_date %>.
+You have an invoice (<%= @invoice.invoice_number %>) amounting to <%= @amount %> waiting to be cleared by <%= @invoice.due_date.ordinalize %>.
 
-You can pay for the invoice here: <%= new_invoice_payment_url(@invoice) %>
-
-Please <%= link_to "log on to pay", new_invoice_payment_url(@invoice), target: "_blank" %> it now.
+Please log on to pay it now.
+<%= new_invoice_payment_url(@invoice) %>
 
 Thanks,
 Team Miru
