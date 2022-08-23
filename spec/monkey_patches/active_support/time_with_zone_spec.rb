@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe TimeWithZone, type: :class do
+RSpec.describe ActiveSupport::TimeWithZone, type: :class do
   describe "#ordinalize" do
     let(:date) { Time.zone.now }
 
