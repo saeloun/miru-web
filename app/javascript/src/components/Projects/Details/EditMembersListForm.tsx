@@ -10,7 +10,7 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
   };
 
   const addNewMemberRowHandler = () => {
-    setMembers(oldMembers => [...oldMembers, {}]);
+    setMembers(oldMembers => [...oldMembers, { hourlyRate: 0, isExisting: false }]);
   };
 
   const getMember = (member, idx) => {
