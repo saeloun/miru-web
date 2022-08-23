@@ -48,7 +48,7 @@ const NewLineItemTable = ({
           Add Manual Entry
         </button>
       </div>
-      <div className="overflow-y-scroll h-80 mt-4 relative">
+      <div className="overflow-y-scroll h-80 mt-4 relative" data-cy ="entries-list-edit">
         { lineItems.map(item => renderLineItem(item)) }
       </div>
     </div>

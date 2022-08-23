@@ -70,6 +70,7 @@ const ClientSelection = ({ clientList, selectedClient, setSelectedClient, option
         <button
           className="py-5 mt-2 px-6 font-bold text-base text-miru-dark-purple-200 bg-white border-2 border-dashed border-miru-dark-purple-200 rounded-md tracking-widest"
           onClick={handleGetClientList}
+          data-cy= "add-client-button"
         >
           + ADD CLIENT
         </button>
