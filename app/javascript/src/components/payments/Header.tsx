@@ -1,4 +1,5 @@
 import React from "react";
+
 import { MagnifyingGlass, Plus } from "phosphor-react";
 
 const Header = ( { setShowManualEntryModal } ) => (

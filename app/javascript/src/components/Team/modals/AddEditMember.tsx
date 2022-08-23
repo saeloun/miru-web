@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { updateInvitedMember, inviteMember, updateTeamMember } from "apis/team";
-import { useList } from "context/TeamContext";
+
+import { TeamModalType } from "constants/index";
+
 import { Formik, Form, Field, FormikProps } from "formik";
 import { X } from "phosphor-react";
 import * as Yup from "yup";
-import { TeamModalType } from "constants/index";
+
+import teamApi from "apis/team";
+import { useList } from "context/TeamContext";
 
 const TeamMemberSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name cannot be blank"),
@@ -53,12 +56,12 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
     try {
       if (isEdit) {
         if (user.isTeamMember) {
-          await updateTeamMember(user.id, payload);
+          await teamApi.updateTeamMember(user.id, payload);
         } else {
-          await updateInvitedMember(user.id, payload);
+          await teamApi.updateInvitedMember(user.id, payload);
         }
       } else {
-        await inviteMember(payload);
+        await teamApi.inviteMember(payload);
       }
       setModalState("");
     } catch (err) {

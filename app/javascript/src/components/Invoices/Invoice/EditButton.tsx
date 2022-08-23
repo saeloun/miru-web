@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 import { Pencil } from "phosphor-react";
+import { Link } from "react-router-dom";
 
 const EditButton = ({ editInvoiceLink }) => (
   <div className="flex flex-col justify-items-center edit-button-container mx-1">

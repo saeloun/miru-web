@@ -1,5 +1,7 @@
 import React, { Fragment } from "react";
+
 import ReportRow from "./ReportRow";
+
 import { useEntry } from "../context/EntryContext";
 
 const ReportHeader = () => (
