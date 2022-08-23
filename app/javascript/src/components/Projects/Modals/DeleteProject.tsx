@@ -47,6 +47,7 @@ const DeleteProject = ({ project, setShowDeleteDialog }: IProps) => {
               </button>
               <button
                 className="button__bg_purple"
+                data-cy="delete-project-button"
                 onClick={() => {
                   deleteProject(project);
                 }}

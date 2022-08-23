@@ -139,7 +139,7 @@ const AddEditProject = ({
                   </label>
                 </div>
                 <div className="mt-1">
-                  <input type="text" placeholder=" Enter Project Name" className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base" value={projectName} onChange={(event) => setProjectName(event.target.value)} />
+                  <input type="text" placeholder=" Enter Project Name" data-cy="project-name" className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base" value={projectName} onChange={(event) => setProjectName(event.target.value)} />
                 </div>
               </div>
             </div>
@@ -172,6 +172,7 @@ const AddEditProject = ({
                 className={`tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 focus:outline-none rounded cursor-pointer ${isFormFilled ? "bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 " : " bg-miru-gray-1000"}`  }
                 onClick={handleSubmit}
                 disabled={!isFormFilled}
+                data-cy="add-project-button"
               >
                 {isEdit ? "SAVE CHANGES" : "ADD PROJECT"}
               </button>

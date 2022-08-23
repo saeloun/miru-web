@@ -24,7 +24,7 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
   return (
     <div
       className={`sm:flex mt-6 mb-3 sm:items-center ${isAdminUser ? "sm:justify-between" : ""}` }>
-      <h2 className="header__title">Projects</h2>
+      <h2 className="header__title" data-cy="projects-heading">Projects</h2>
       <React.Fragment>
         <div className="header__searchWrap">
           <div className="header__searchInnerWrapper">
@@ -43,6 +43,7 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
           <button
             className="flex header__button"
             onClick={() => setShowProjectModal(true)}
+            data-cy="new-project-button"
           >
             <Plus weight="fill" size={16} />
             <span className="ml-2 inline-block">NEW PROJECT</span>
