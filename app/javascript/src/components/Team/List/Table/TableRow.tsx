@@ -26,9 +26,6 @@ const TableRow = ({ item }) => {
       navigate("1");
     }}>
       <td className="table__data p-6">
-        <img src={item.profilePicture} className="table__avatar" />
-      </td>
-      <td className="table__data p-6">
         {item.name}
       </td>
       <td className="table__data table__text p-6">

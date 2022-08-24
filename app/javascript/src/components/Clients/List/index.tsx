@@ -104,6 +104,19 @@ const Clients = ({ isAdminUser }) => {
     }
   ];
 
+  const employeeTableHeader = [
+    {
+      Header: "CLIENT",
+      accessor: "col1", // accessor is the "key" in the data
+      cssClass: ""
+    },
+    {
+      Header: "HOURS LOGGED",
+      accessor: "col3",
+      cssClass: "text-right" // accessor is the "key" in the data
+    }
+  ];
+
   const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
 
   const amountBox = [{
@@ -158,7 +171,7 @@ const Clients = ({ isAdminUser }) => {
                   handleEditClick={handleEditClick}
                   handleDeleteClick={handleDeleteClick}
                   hasRowIcons={isAdminUser}
-                  tableHeader={tableHeader}
+                  tableHeader={isAdminUser? tableHeader : employeeTableHeader}
                   tableRowArray={tableData}
                   rowOnClick={isAdminUser ? handleRowClick : () => { }}// eslint-disable-line
                 />}
