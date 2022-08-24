@@ -41,7 +41,7 @@ export const Project = ({
       className={`last:border-b-0 ${grayColor}`}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-      onClick={() => projectClickHandler(id)}
+      onClick={() => isAdminUser ? projectClickHandler(id) : () => {}} // eslint-disable-line
     >
       <td className="table__cell text-base">
         <div className="flex items-center justify-between">
