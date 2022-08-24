@@ -32,7 +32,7 @@ const Header = () => {
 
   return (
     <div className="sm:flex mt-6 mb-3 sm:items-center sm:justify-between">
-      <h2 className="header__title">Team</h2>
+      <h2 className="header__title ml-4">Team</h2>
       <div className="header__searchWrap mx-auto">
         <div className="header__searchInnerWrapper">
           <AutoComplete searchCallBack={searchCallBack} />

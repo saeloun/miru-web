@@ -23,7 +23,7 @@ const Header = ({ setnewClient, isAdminUser }) => {
           : "sm:flex mt-6 mb-3 sm:items-center"
       }
     >
-      <h2 className="header__title">Clients</h2>
+      <h2 className="header__title ml-4">Clients</h2>
 
       {isAdminUser && (
         <React.Fragment>
