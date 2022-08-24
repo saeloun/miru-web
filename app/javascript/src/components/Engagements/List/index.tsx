@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import engagements from "apis/engagements";
 import Pagination from "common/Pagination";
 import Table from "common/Table";
+import FilterSideBar from "./FilterSideBar";
+import Header from "./Header";
 
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapEngagementList, unmapEngagementDetails } from "../../../mapper/engagement.mapper";
@@ -17,6 +20,8 @@ const ENGAGEMENT_OPTIONS = [
 ];
 
 const Engagements = ({ isAdminUser }) => {
+  const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
+  const [rememberFilter, setRememberFilter] = useCookies();
   const [engagementData, setEngagementData] = useState<any>([{}]);
   const [pagy, setPagy] = React.useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -89,7 +94,7 @@ const Engagements = ({ isAdminUser }) => {
     if (!users) return [{}];
     return users.map((user) =>
       ({
-        col1: user.discarded_at ? <div className="text-xs text-red-600 tracking-widest">{user.name}</div> : <div className="text-xs tracking-widest">{user.name}</div>,
+        col1: user.discarded_at ? <div className="text-xs tracking-widest text-red-600">{user.name}</div> : <div className="text-xs tracking-widest">{user.name}</div>,
         col2: <div className="text-xs tracking-widest text-center">
           {user.department_name}
         </div>,
@@ -134,11 +139,11 @@ const Engagements = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      {/* <Header isAdminUser={isAdminUser} /> */}
+      <Header isAdminUser={isAdminUser} setFilterVisibilty={setFilterVisibilty} />
       <div>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden">
                 {engagementData && <Table
                   hasRowIcons={isAdminUser}
@@ -155,6 +160,9 @@ const Engagements = ({ isAdminUser }) => {
           </div>
         </div>
       </div>
+      {isFilterVisible && (
+        <FilterSideBar setEngagementData={setEngagementData} setFilterVisibilty={setFilterVisibilty} rememberFilter={rememberFilter} setRememberFilter={setRememberFilter} />
+      )}
     </>
   );
 };
