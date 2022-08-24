@@ -15,7 +15,6 @@ describe("Team page for Employee", () => {
     cy.get(teamTabSelector.addNewUserButton).should("not.exist");
   });
   it("should display all column names", function () {
-    cy.get(teamTabSelector.teamTableHeader).contains("PHOTO");
     cy.get(teamTabSelector.teamTableHeader).contains("NAME");
     cy.get(teamTabSelector.teamTableHeader).contains("EMAIL ID");
     cy.get(teamTabSelector.teamTableHeader).contains("ROLE");
