@@ -27,6 +27,16 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
     end
   end
 
+  def items
+    authorize :items, policy_class: EngagementPolicy
+    department = User::DEPARTMENT_OPTIONS
+    engagement = User::ENGAGEMENT_OPTIONS
+    render json: {
+      department:,
+      engagement:
+    }, status: :ok
+  end
+
   private
 
     def serialize_user(user)
