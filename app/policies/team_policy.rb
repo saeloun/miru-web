@@ -18,6 +18,6 @@ class TeamPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:first_name, :last_name, :email, :department_id, :avatar]
+    [:first_name, :last_name, :email, :department_id, :avatar, :team_lead]
   end
 end

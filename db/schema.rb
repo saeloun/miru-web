@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_18_130844) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_24_110819) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -444,6 +444,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_18_130844) do
     t.index ["work_date"], name: "index_timesheet_entries_on_work_date"
   end
 
+  create_table "user_members", force: :cascade do |t|
+    t.bigint "member_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["member_id"], name: "index_user_members_on_member_id"
+    t.index ["user_id"], name: "index_user_members_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "first_name", null: false
     t.string "last_name", null: false
@@ -473,14 +482,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_18_130844) do
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
     t.datetime "discarded_at"
-    t.integer "department_id"
     t.string "personal_email_id"
     t.date "date_of_birth"
     t.jsonb "social_accounts"
+    t.integer "department_id"
     t.string "phone"
     t.integer "engage_code"
     t.bigint "engage_updated_by_id"
     t.datetime "engage_updated_at"
+    t.boolean "team_lead", default: false
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -552,6 +562,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_18_130844) do
   add_foreign_key "stripe_connected_accounts", "companies"
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
+  add_foreign_key "user_members", "users", column: "member_id"
   add_foreign_key "users", "companies", column: "current_workspace_id"
   add_foreign_key "users", "users", column: "engage_updated_by_id"
   add_foreign_key "wise_accounts", "companies"

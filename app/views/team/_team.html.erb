@@ -22,6 +22,11 @@
 <td id="department-<%= member.id %>" class="table__data table__text">
   <%= member.department_name %>
 </td>
+<td id="team_lead-<%= member.id %>" class="table__data table__text">
+  <% if member.team_lead %>
+    <span style="font-size:150%; font-weight:bold; color:green;">&#10004;</span>
+  <% end %>
+</td>
 <td id="pending-<%= member.id %>" class="table__data">
   <% if current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company) %>
     <% if member.unconfirmed_email?  %>

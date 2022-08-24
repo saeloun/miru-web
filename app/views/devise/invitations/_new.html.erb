@@ -79,6 +79,28 @@
   </div>
   <div class="mt-4">
     <div class="field">
+      <label class="tracking-wider block text-xs font-normal text-miru-dark-purple-1000"><%= t('team.form_team_lead') %></label>
+      <div class="mt-1">
+        <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+          <div class="flex items-center">
+            <%= f.radio_button :team_lead, true, :checked=>resource.team_lead, value: true, class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" %>
+            <label for="Owner" class="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
+              Yes
+            </label>
+          </div>
+
+          <div class="flex items-center">
+            <%= f.radio_button :team_lead, false, :checked=>!resource.team_lead, value: false, class: "focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" %>
+            <label for="admin" class="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
+              No
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4">
+    <div class="field">
       <label class="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
         <%= t('team.form_photo') %>
       </label>

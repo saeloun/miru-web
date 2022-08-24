@@ -220,6 +220,7 @@ en:
     email_id: EMAIL ID
     role: ROLE
     department: DEPARTMENT
+    team_lead: TEAM LEAD
     create_new_user: Create New User
     update_user: Update User
     current_email: Current Email
@@ -231,6 +232,7 @@ en:
     form_photo: Photo
     form_book_keeper: Book Keeper
     form_role: Role
+    form_team_lead: Team Lead
     form_department: Department
     form_admin: Admin
     form_employee: Employee
