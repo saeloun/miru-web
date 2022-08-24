@@ -1,59 +1,60 @@
 import React, { useEffect, useState } from "react";
+import engagements from "apis/engagements";
 import engagementsItemsApi from 'apis/engagements-items';
-import leads from "apis/leads";
 import { Multiselect } from 'multiselect-react-dropdown';
 import { X } from "phosphor-react";
-import { unmapLeadList } from "../../../../mapper/lead.mapper";
+import { unmapEngagementList } from "../../../../mapper/engagement.mapper";
 
 const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, setRememberFilter }) => {
-  const [sourceOptions, setSourceOptions] = useState<any>([{}]);
+  const [departmentOptions, setDepartmentOptions] = useState<any>([{}]);
   const [engagementOptions, setEngagementOptions] = useState<any>([{}]);
 
   const [queryParams, setQueryParams] = useState<any>({
-    engagement: [],
-    source_codes: []
+    engagements: [],
+    departments: []
   });
   const [stringQueryParams, setStringQueryParams] = useState<any>(null);
 
   const [selectEngagementRef, setSelectEngagementRef] = useState<any>(React.createRef());
-  const [selectSourceRef, setSelectSourceRef] = useState<any>(React.createRef());
+  const [selectDepartmentRef, setSelectDepartmentRef] = useState<any>(React.createRef());
 
   const [isApplyFilter, setIsApplyFilter] = useState<boolean>(false);
 
-  const [rememberSources, setRememberSources] = useState<any>(null);
+  const [rememberDepartments, setRememberDepartments] = useState<any>(null);
   const [rememberEngagements, setRememberEngagements] = useState<any>(null);
 
   useEffect(() => {
-    const getLeadItems = async () => {
+    const getItems = async () => {
       engagementsItemsApi.get()
         .then((data) => {
-          setEngagementOptions(data.data.engagement)
-          setSourceOptions(data.data.source_codes)
+          setEngagementOptions(data.data.engagements)
+          setDepartmentOptions(data.data.departments)
         }).catch(() => {
           setEngagementOptions({})
-          setSourceOptions({})
+          setDepartmentOptions({})
         });
     };
 
-    getLeadItems();
+    getItems();
   }, []);
 
   useEffect(() => {
-    if (rememberFilter.filterData){
-      if (engagementOptions){
-        const fengagementOptions = engagementOptions.filter(engagement =>
-          rememberFilter.filterData.engagement.map(Number).includes(parseInt(engagement.id))
+    if (rememberFilter.engagementsFilter){
+      const filtered = rememberFilter.engagementsFilter
+      if (engagementOptions && filtered.engagements){
+        const fengagementOptions = engagementOptions.filter(i =>
+          filtered.engagements.map(Number).includes(parseInt(i.id))
         );
         setRememberEngagements([...fengagementOptions])
       }
-      if (sourceOptions){
-        const fsourceOptions = sourceOptions.filter(source =>
-          rememberFilter.filterData.source_codes.map(Number).includes(parseInt(source.id))
+      if (departmentOptions && filtered.departments){
+        const fdepartmentOptions = departmentOptions.filter(i =>
+          filtered.departments.map(Number).includes(parseInt(i.id))
         );
-        setRememberSources([...fsourceOptions])
+        setRememberDepartments([...fdepartmentOptions])
       }
     }
-  }, [rememberFilter.filterData, engagementOptions, sourceOptions]);
+  }, [rememberFilter.engagementsFilter, engagementOptions, departmentOptions]);
 
   const customStyles = {
     control: (provided) => ({
@@ -73,12 +74,12 @@ const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, 
 
   useEffect(() => {
     if (isApplyFilter){
-      setRememberFilter('filterData', queryParams);
+      setRememberFilter('engagementsFilter', queryParams);
       const applyFilter = async () => {
-        leads.get(stringQueryParams)
+        engagements.get(stringQueryParams)
           .then((res) => {
-            const sanitized = unmapLeadList(res);
-            setEngagementData(sanitized.leadList);
+            const sanitized = unmapEngagementList(res);
+            setEngagementData(sanitized.list);
             setIsApplyFilter(false);
           });
       };
@@ -93,11 +94,11 @@ const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, 
 
   const resetFilter = async () => {
     setQueryParams({
-      source_codes: [],
-      engagement: [],
+      departments: [],
+      engagements: [],
     })
 
-    selectSourceRef.resetSelectedValues();
+    selectDepartmentRef.resetSelectedValues();
     selectEngagementRef.resetSelectedValues();
     setIsApplyFilter(true);
   };
@@ -116,42 +117,46 @@ const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, 
         <div className="sidebar__filters">
           <ul>
             <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">SOURCES</h5>
-              <Multiselect
-                ref={ref => setSelectSourceRef(ref)}
-                onSelect={(selectedOptions) =>
-                  setQueryParams(prevState => ({
-                    ...prevState,
-                    source_codes: selectedOptions.map((selectedOption) => selectedOption.id )
-                  }))}
-                onRemove={(selectedOptions) =>
-                  setQueryParams(prevState => ({
-                    ...prevState,
-                    source_codes: selectedOptions.map((selectedOption) => selectedOption.id )
-                  }))}
-                style={customStyles}
-                options={sourceOptions}
-                selectedValues={rememberSources}
-                displayValue="name"
-              />
-            </li>
-            <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Engagement</h5>
               <Multiselect
+                closeOnSelect={true}
+                avoidHighlightFirstOption={true}
                 ref={ref => setSelectEngagementRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
                     ...prevState,
-                    engagement: selectedOptions.map((selectedOption) => selectedOption.id )
+                    engagements: selectedOptions.map((selectedOption) => selectedOption.id )
                   }))}
                 onRemove={(selectedOptions) =>
                   setQueryParams(prevState => ({
                     ...prevState,
-                    engagement: selectedOptions.map((selectedOption) => selectedOption.id )
+                    engagements: selectedOptions.map((selectedOption) => selectedOption.id )
                   }))}
                 style={customStyles}
                 options={engagementOptions}
                 selectedValues={rememberEngagements}
+                displayValue="name"
+              />
+            </li>
+            <li className="px-5 pb-5">
+              <h5 className="text-xs font-normal">Department</h5>
+              <Multiselect
+                closeOnSelect={true}
+                avoidHighlightFirstOption={true}
+                ref={ref => setSelectDepartmentRef(ref)}
+                onSelect={(selectedOptions) =>
+                  setQueryParams(prevState => ({
+                    ...prevState,
+                    departments: selectedOptions.map((selectedOption) => selectedOption.id )
+                  }))}
+                onRemove={(selectedOptions) =>
+                  setQueryParams(prevState => ({
+                    ...prevState,
+                    departments: selectedOptions.map((selectedOption) => selectedOption.id )
+                  }))}
+                style={customStyles}
+                options={departmentOptions}
+                selectedValues={rememberDepartments}
                 displayValue="name"
               />
             </li>

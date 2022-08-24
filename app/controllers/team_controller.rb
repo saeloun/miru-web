@@ -17,7 +17,7 @@ class TeamController < ApplicationController
 
   def update
     authorize user, policy_class: TeamPolicy
-    user.skip_reconfirmation! unless user.invitation_accepted?
+    # user.skip_reconfirmation! unless user.invitation_accepted?
     user_email = user.email
     user.update(user_params)
     user.invite! if user_email != (user_params[:email]) && !user.invitation_accepted?

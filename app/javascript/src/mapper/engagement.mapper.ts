@@ -1,6 +1,7 @@
 const unmapEngagementDetails = (i) => ({
   id: i.id,
   name: i.name,
+  email: i.email,
   discarded_at: i.discarded_at,
   department_id: i.department_id,
   department_name: i.department_name,

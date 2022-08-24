@@ -6,6 +6,7 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import engagements from "apis/engagements";
 import Pagination from "common/Pagination";
 import Table from "common/Table";
+import { CircleWavyQuestion } from "phosphor-react";
 import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
 
@@ -26,7 +27,6 @@ const Engagements = ({ isAdminUser }) => {
   const [pagy, setPagy] = React.useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = React.useState<any>({
-    leads_per_page: searchParams.get("leads_per_page") || 10,
     page: searchParams.get("page") || 1
   });
   const queryParams = () => new URLSearchParams(params).toString();
@@ -43,7 +43,7 @@ const Engagements = ({ isAdminUser }) => {
   useEffect(() => {
     fetchEngagements();
     setSearchParams(params);
-  }, [params.leads_per_page, params.page]);
+  }, [params.page]);
 
   useEffect(() => {
     setAuthHeaders();
@@ -58,19 +58,19 @@ const Engagements = ({ isAdminUser }) => {
       cssClass: ""
     },
     {
-      Header: "Department",
-      accessor: "col2",
-      cssClass: "text-center"
+      Header: "Email",
+      accessor: "col2", // accessor is the "key" in the data
+      cssClass: ""
     },
     {
-      Header: "Engagement",
+      Header: "Department",
       accessor: "col3",
       cssClass: "text-center"
     },
     {
-      Header: "Engagement Updated By/At",
+      Header: "Engagement",
       accessor: "col4",
-      cssClass: "text-center"
+      cssClass: "text-left"
     },
   ];
 
@@ -95,10 +95,11 @@ const Engagements = ({ isAdminUser }) => {
     return users.map((user) =>
       ({
         col1: user.discarded_at ? <div className="text-xs tracking-widest text-red-600">{user.name}</div> : <div className="text-xs tracking-widest">{user.name}</div>,
-        col2: <div className="text-xs tracking-widest text-center">
+        col2: user.discarded_at ? <div className="text-xs tracking-widest text-red-600">{user.email}</div> : <div className="text-xs tracking-widest">{user.email}</div>,
+        col3: <div className="text-xs tracking-widest text-center">
           {user.department_name}
         </div>,
-        col3: <div className="text-xs tracking-widest text-center">
+        col4: <div className="text-xs tracking-widest text-left">
           <div className="inline-flex rounded-md shadow-sm" role="group">
             {ENGAGEMENT_OPTIONS.map((option, index) => {
               let borderClass = {}
@@ -126,10 +127,10 @@ const Engagements = ({ isAdminUser }) => {
                 {option.name}
               </button>)
             })}
+            {user.engage_updated_by_name && <span className="py-1 px-2 text-sm font-medium" title={`Updated by ${user.engage_updated_by_name} at ${user.engage_updated_at}`}>
+              <CircleWavyQuestion size={20}/>
+            </span> }
           </div>
-        </div>,
-        col4: <div className="text-xs tracking-widest text-center">
-          {user.engage_updated_by_name ? `${user.engage_updated_by_name} at ${user.engage_updated_at}` : ""}
         </div>,
         rowId: user.id
       })

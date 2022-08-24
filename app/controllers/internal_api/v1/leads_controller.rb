@@ -5,7 +5,7 @@ class InternalApi::V1::LeadsController < InternalApi::V1::ApplicationController
     authorize Lead
     pagy, leads = pagy(
       Lead.filter(params:, user: current_user, ids: false).order(created_at: :desc),
-      items_param: :leads_per_page)
+      items: 30)
     lead_details = leads.map(&:lead_detail)
 
     render json: { lead_details:, pagy: pagy_metadata(pagy) }, status: :ok
