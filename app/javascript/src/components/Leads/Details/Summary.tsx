@@ -418,6 +418,8 @@ const Summary = ({
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Tech Stacks</label>
                         <Multiselect
+                          closeOnSelect={true}
+                          avoidHighlightFirstOption={true}
                           selectedValues={selectedTechStacks}
                           options={techStackList ? techStackList : [{}]}
                           name="tech_stack_ids"

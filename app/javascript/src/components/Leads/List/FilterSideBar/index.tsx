@@ -70,50 +70,51 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
   }, []);
 
   useEffect(() => {
-    if (rememberFilter.filterData){
+    if (rememberFilter.leadsFilter){
+      const filtered = rememberFilter.leadsFilter
       if (allowUserList){
         const fallowAssigneeList = allowUserList.filter(assignee =>
-          rememberFilter.filterData.assignees.map(Number).includes(parseInt(assignee.id))
+          (filtered.assignees || []).map(Number).includes(parseInt(assignee.id))
         );
         setRememberAssignees([...fallowAssigneeList])
 
         const fallowReporterList = allowUserList.filter(reporter =>
-          rememberFilter.filterData.reporters.map(Number).includes(parseInt(reporter.id))
+          (filtered.reporters || []).map(Number).includes(parseInt(reporter.id))
         );
         setRememberReporters([...fallowReporterList])
       }
-      if (qualityOptions){
+      if (qualityOptions && filtered.quality_codes){
         const fqualityOptions = qualityOptions.filter(quality =>
-          rememberFilter.filterData.quality_codes.map(Number).includes(parseInt(quality.id))
+          filtered.quality_codes.map(Number).includes(parseInt(quality.id))
         );
         setRememberQualities([...fqualityOptions])
       }
-      if (countryOptions){
+      if (countryOptions && filtered.country_alphas){
         const fcountryOptions = countryOptions.filter(country =>
-          rememberFilter.filterData.country_alphas.map(Number).includes(parseInt(country[0]))
+          filtered.country_alphas.map(Number).includes(parseInt(country[0]))
         );
         setRememberCountries([...fcountryOptions])
       }
-      if (industryOptions){
+      if (industryOptions && filtered.industry_codes){
         const findustryOptions = industryOptions.filter(industry =>
-          rememberFilter.filterData.industry_codes.map(Number).includes(parseInt(industry.id))
+          filtered.industry_codes.map(Number).includes(parseInt(industry.id))
         );
         setRememberIndustries([...findustryOptions])
       }
-      if (sourceOptions){
+      if (sourceOptions && filtered.source_codes){
         const fsourceOptions = sourceOptions.filter(source =>
-          rememberFilter.filterData.source_codes.map(Number).includes(parseInt(source.id))
+          filtered.source_codes.map(Number).includes(parseInt(source.id))
         );
         setRememberSources([...fsourceOptions])
       }
-      if (statusOptions){
+      if (statusOptions && filtered.status_codes){
         const fstatusOptions = statusOptions.filter(status =>
-          rememberFilter.filterData.status_codes.map(Number).includes(parseInt(status.id))
+          filtered.status_codes.map(Number).includes(parseInt(status.id))
         );
         setRememberStatus([...fstatusOptions])
       }
     }
-  }, [rememberFilter.filterData, allowUserList, qualityOptions, countryOptions,
+  }, [rememberFilter.leadsFilter, allowUserList, qualityOptions, countryOptions,
     industryOptions, sourceOptions, statusOptions]);
 
   const customStyles = {
@@ -134,7 +135,7 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
 
   useEffect(() => {
     if (isApplyFilter){
-      setRememberFilter('filterData', queryParams);
+      setRememberFilter('leadsFilter', queryParams);
       const applyFilter = async () => {
         leads.get(stringQueryParams)
           .then((res) => {
@@ -189,6 +190,8 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">ASSIGNEES</h5>
               <Multiselect
+                closeOnSelect={true}
+                avoidHighlightFirstOption={true}
                 ref={ref => setSelectAssigneeRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -209,6 +212,8 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">REPORTERS</h5>
               <Multiselect
+                closeOnSelect={true}
+                avoidHighlightFirstOption={true}
                 ref={ref => setSelectReporterRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -229,6 +234,8 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">QUALITIES</h5>
               <Multiselect
+                closeOnSelect={true}
+                avoidHighlightFirstOption={true}
                 ref={ref => setSelectQualityRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -249,6 +256,8 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">STATUS</h5>
               <Multiselect
+                closeOnSelect={true}
+                avoidHighlightFirstOption={true}
                 ref={ref => setSelectStatusRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -269,6 +278,8 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">SOURCES</h5>
               <Multiselect
+                closeOnSelect={true}
+                avoidHighlightFirstOption={true}
                 ref={ref => setSelectSourceRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -289,6 +300,8 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">COUNTRIES</h5>
               <Multiselect
+                closeOnSelect={true}
+                avoidHighlightFirstOption={true}
                 ref={ref => setSelectCountryRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -309,6 +322,8 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">INDUSTRIES</h5>
               <Multiselect
+                closeOnSelect={true}
+                avoidHighlightFirstOption={true}
                 ref={ref => setSelectIndustryRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({

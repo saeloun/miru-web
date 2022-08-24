@@ -50,7 +50,6 @@ const Leads = ({ isAdminUser }) => {
   const [pagy, setPagy] = React.useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = React.useState<any>({
-    leads_per_page: searchParams.get("leads_per_page") || 10,
     page: searchParams.get("page") || 1
   });
   const queryParams = () => new URLSearchParams(params).toString();
@@ -70,8 +69,8 @@ const Leads = ({ isAdminUser }) => {
   };
 
   const fetchLeads = () => {
-    if (rememberFilter.filterData && Object.values(rememberFilter.filterData).flat().length > 0){
-      leads.get(new URLSearchParams(rememberFilter.filterData).toString())
+    if (rememberFilter.leadsFilter && Object.values(rememberFilter.leadsFilter).flat().length > 0){
+      leads.get(new URLSearchParams(rememberFilter.leadsFilter).toString())
         .then((res) => {
           const sanitized = unmapLeadList(res);
           setLeadData(sanitized.leadList);
@@ -97,7 +96,7 @@ const Leads = ({ isAdminUser }) => {
   useEffect(() => {
     fetchLeads();
     setSearchParams(params);
-  }, [params.leads_per_page, params.page]);
+  }, [params.page]);
 
   useEffect(() => {
     setAuthHeaders();

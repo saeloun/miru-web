@@ -3,11 +3,16 @@
 class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationController
   def index
     authorize :index, policy_class: EngagementPolicy
+
+    department_ids = params[:departments].to_s.split(",")
+    engagement_ids = params[:engagements].to_s.split(",")
     pagy, users = pagy(
-      current_company.users.includes(
-        [:avatar_attachment,
-         :roles]).order(created_at: :desc).ransack(params[:q]).result(distinct: true),
-      items_param: :leads_per_page)
+      current_company.users
+        .where(department_ids.present? ? { department_id: department_ids } : [])
+        .where(engagement_ids.present? ? { engage_code: engagement_ids } : [])
+        .includes([:avatar_attachment, :roles]).order(discarded_at: :desc, first_name: :asc)
+        .ransack(params[:q]).result(distinct: true),
+      items: 30)
     users = users.map { |user| serialize_user(user) }
     render json: { users:, pagy: pagy_metadata(pagy) }, status: :ok
   end
@@ -27,19 +32,29 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
     end
   end
 
+  def items
+    authorize :items, policy_class: EngagementPolicy
+
+    render json: {
+      departments: User::DEPARTMENT_OPTIONS,
+      engagements: User::ENGAGEMENT_OPTIONS
+    }, status: :ok
+  end
+
   private
 
     def serialize_user(user)
       {
         id: user.id,
         name: user.full_name,
+        email: user.email,
         discarded_at: user.discarded_at,
         department_id: user.department_id,
         department_name: user.department_name,
         engage_code: user.engage_code,
         engage_name: user.engage_name,
         engage_updated_by_name: user.engage_updated_by&.full_name,
-        engage_updated_at: user.engage_updated_at
+        engage_updated_at: user.engage_updated_at.to_s
       }
     end
 

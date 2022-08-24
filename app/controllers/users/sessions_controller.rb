@@ -2,7 +2,8 @@
 
 class Users::SessionsController < Devise::SessionsController
   def after_sign_in_path_for(user)
-    cookies[:filterData] = {}
+    cookies[:leadsFilter] = {}
+    cookies[:engagementsFilter] = {}
     if user.can_access_lead?
       leads_path
     elsif user.can_access_space_usage?

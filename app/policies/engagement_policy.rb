@@ -13,6 +13,10 @@ class EngagementPolicy < ApplicationPolicy
     can_access?
   end
 
+  def items?
+    can_access?
+  end
+
   def destroy?
     can_access?
   end
