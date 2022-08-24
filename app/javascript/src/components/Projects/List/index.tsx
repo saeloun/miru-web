@@ -106,6 +106,7 @@ export const ProjectList = ({ isAdminUser }) => {
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}
           project={deleteProjectData}
+          fetchProjectList={fetchProjects}
         />
       )}
     </React.Fragment>
