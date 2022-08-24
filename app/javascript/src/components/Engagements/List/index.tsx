@@ -70,7 +70,8 @@ const Engagements = ({ isAdminUser }) => {
   ];
 
   const updateEngagement = (userId, e: React.MouseEvent<HTMLElement>) => {
-    if ( (e.target as any).value === engagementData.find((i) => i.id === userId).engage_code.toString() ) return
+    const userCurrentEngageCode = engagementData.find((i) => i.id === userId).engage_code
+    if ( userCurrentEngageCode && (e.target as any).value === userCurrentEngageCode.toString() ) return
 
     engagements.update(userId, {
       engagement: {
