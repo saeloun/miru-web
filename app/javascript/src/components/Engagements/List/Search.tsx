@@ -11,7 +11,7 @@ const Search = ({
   };
 
   const handleSearchSubmit = async () => {
-    searchCallBack(`?q[first_name_or_last_name_or_email_cont]=${searchValue}`);
+    searchCallBack(searchValue);
   };
 
   return (

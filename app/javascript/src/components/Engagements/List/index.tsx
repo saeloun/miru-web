@@ -27,7 +27,10 @@ const Engagements = ({ isAdminUser }) => {
   const [pagy, setPagy] = React.useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = React.useState<any>({
-    page: searchParams.get("page") || 1
+    page: searchParams.get("page") || 1,
+    ...(searchParams.get("q[first_name_or_last_name_or_email_cont]") && { ["q[first_name_or_last_name_or_email_cont]"]: searchParams.get("q[first_name_or_last_name_or_email_cont]") }),
+    ...(searchParams.get("engagements") && { engagements: searchParams.get("engagements") }),
+    ...(searchParams.get("departments") && { departments: searchParams.get("departments") })
   });
   const queryParams = () => new URLSearchParams(params).toString();
 
@@ -44,6 +47,10 @@ const Engagements = ({ isAdminUser }) => {
     fetchEngagements();
     setSearchParams(params);
   }, [params.page]);
+
+  useEffect(() => {
+    setSearchParams(params);
+  }, [params])
 
   useEffect(() => {
     setAuthHeaders();
@@ -140,7 +147,14 @@ const Engagements = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header isAdminUser={isAdminUser} setFilterVisibilty={setFilterVisibilty} setEngagementData={setEngagementData} setPagy={setPagy} />
+      <Header
+        isAdminUser={isAdminUser}
+        setFilterVisibilty={setFilterVisibilty}
+        setEngagementData={setEngagementData}
+        setPagy={setPagy}
+        params={params}
+        setParams={setParams}
+      />
       <div>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -162,7 +176,7 @@ const Engagements = ({ isAdminUser }) => {
         </div>
       </div>
       {isFilterVisible && (
-        <FilterSideBar setEngagementData={setEngagementData} setFilterVisibilty={setFilterVisibilty} rememberFilter={rememberFilter} setRememberFilter={setRememberFilter} />
+        <FilterSideBar setEngagementData={setEngagementData} setFilterVisibilty={setFilterVisibilty} rememberFilter={rememberFilter} setRememberFilter={setRememberFilter} setPagy={setPagy} params={params} setParams={setParams} />
       )}
     </>
   );

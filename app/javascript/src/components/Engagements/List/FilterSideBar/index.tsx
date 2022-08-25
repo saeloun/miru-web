@@ -5,7 +5,7 @@ import { Multiselect } from 'multiselect-react-dropdown';
 import { X } from "phosphor-react";
 import { unmapEngagementList } from "../../../../mapper/engagement.mapper";
 
-const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, setRememberFilter }) => {
+const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, setRememberFilter, setPagy, params, setParams }) => {
   const [departmentOptions, setDepartmentOptions] = useState<any>([{}]);
   const [engagementOptions, setEngagementOptions] = useState<any>([{}]);
 
@@ -75,11 +75,22 @@ const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, 
   useEffect(() => {
     if (isApplyFilter){
       setRememberFilter('engagementsFilter', queryParams);
+      const updatedParams = { ...params };
+      delete updatedParams.engagements;
+      delete updatedParams.departments;
+      const queryString = {
+        page: 1,
+        ...(queryParams.engagements && { engagements: queryParams.engagements }),
+        ...(queryParams.departments && { departments: queryParams.departments })
+      };
+      const filterQueryParams = { ...updatedParams, ...queryString };
+      setParams(filterQueryParams);
       const applyFilter = async () => {
-        engagements.get(stringQueryParams)
+        engagements.get(new URLSearchParams(filterQueryParams).toString())
           .then((res) => {
             const sanitized = unmapEngagementList(res);
             setEngagementData(sanitized.list);
+            setPagy(res.data.pagy);
             setIsApplyFilter(false);
           });
       };
