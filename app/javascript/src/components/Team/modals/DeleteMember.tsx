@@ -42,7 +42,7 @@ const DeleteMember = ({ user }) => {
               </button>
             </div>
             <p className="my-8">
-              Are you sure you want to delete user {user?.name}? This action cannot be reversed.
+              Are you sure you want to delete user <b> {user?.name}</b>? This action cannot be reversed.
             </p>
             <div className="flex justify-between">
               <button
