@@ -20,6 +20,11 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
           PROFILE SETTINGS
         </NavLink>
       </li>
+      <li className='border-b-2 border-miru-gray-400 mt-4'>
+        <NavLink end to="/profile/edit/team_members" className={({ isActive }) => getActiveClassName(isActive)}>
+          TEAM MEMBERS
+        </NavLink>
+      </li>
       <li className='border-b-2 border-miru-gray-400'>
         {/* <NavLink
           to="/profile/edit/bank_account_details"
