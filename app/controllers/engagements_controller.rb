@@ -14,7 +14,7 @@ class EngagementsController < ApplicationController
 
     def can_access
       redirect_to dashboard_index_path,
-        flash: { error: "You are not authorized for Lead." } unless current_user.can_access_lead?
+        flash: { error: "You are not authorized for Lead." } unless current_user.can_access_engagement?
     end
 
     def leads

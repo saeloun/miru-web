@@ -105,7 +105,6 @@ Rails.application.routes.draw do
   devise_scope :user do
     get "profile", to: "users/registrations#edit"
     get "profile/edit", to: "users/registrations#edit"
-    get "profile/edit/:id/team_members", to: "users/registrations#team_members"
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
     get "profile/edit/*path", to: "users/registrations#edit"
   end

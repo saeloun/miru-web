@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_24_110819) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_25_123629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -491,6 +491,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_24_110819) do
     t.bigint "engage_updated_by_id"
     t.datetime "engage_updated_at"
     t.boolean "team_lead", default: false
+    t.text "team_member_ids", default: [], array: true
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true

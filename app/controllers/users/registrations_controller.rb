@@ -7,10 +7,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
     redirect_to profile_path
   end
 
-  def team_members
-    user = User.find(params[:id])
-  end
-
   protected
 
     def update_resource(resource, params)

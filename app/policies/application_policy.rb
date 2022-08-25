@@ -18,4 +18,8 @@ class ApplicationPolicy
   def user_under_sales_department?
     user.under_sales_department?
   end
+
+  def user_team_lead?
+    user.team_lead?
+  end
 end

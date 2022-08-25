@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 
 const profile = require("../../../../assets/images/avatar_payments.svg");
 
-const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
+const SideNav = ({ isAdmin, isTeamLead, firstName, company, lastName, email }) => {
   const getActiveClassName = (isActive) => {
     if (isActive) {
       return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block";
@@ -20,8 +20,8 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
           PROFILE SETTINGS
         </NavLink>
       </li>
-      <li className='border-b-2 border-miru-gray-400 mt-4'>
-        <NavLink end to="/profile/edit/team_members" className={({ isActive }) => getActiveClassName(isActive)}>
+      <li className='border-b-2 border-miru-gray-400'>
+        <NavLink end to="/profile/edit/team-members" className={({ isActive }) => getActiveClassName(isActive)}>
           TEAM MEMBERS
         </NavLink>
       </li>
@@ -60,6 +60,13 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
           PROFILE SETTINGS
         </NavLink>
       </li>
+      { isTeamLead && (
+        <li className='border-b-2 border-miru-gray-400'>
+          <NavLink end to="/profile/edit/team-members" className={({ isActive }) => getActiveClassName(isActive)}>
+            TEAM MEMBERS
+          </NavLink>
+        </li>
+      )}
       <li className='border-b-2 border-miru-gray-400'>
         <NavLink
           to="/profile/edit/bank_account_details"

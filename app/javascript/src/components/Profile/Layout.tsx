@@ -8,7 +8,7 @@ import { TOASTER_DURATION } from "constants/index";
 import RouteConfig from "./RouteConfig";
 import SideNav from "./SubNav";
 
-const Layout = ({ isAdmin, company, userDetails }) => {
+const Layout = ({ isAdmin, isTeamLead, company, userDetails }) => {
 
   useEffect(() => {
     setAuthHeaders();
@@ -24,12 +24,13 @@ const Layout = ({ isAdmin, company, userDetails }) => {
         <div className="flex mt-5 mb-10">
           <SideNav
             isAdmin={isAdmin}
+            isTeamLead={isTeamLead}
             company={company}
             firstName={userDetails.firstName}
             lastName={userDetails.lastName}
             email={userDetails.email}
           />
-          <RouteConfig />
+          <RouteConfig isAdmin={isAdmin} isTeamLead={isTeamLead} userDetails={userDetails} />
         </div>
         <ToastContainer autoClose={TOASTER_DURATION} />
       </BrowserRouter>
