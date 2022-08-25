@@ -81,7 +81,11 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
           <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
             <div className="flex justify-between items-center mt-6">
               <h6 className="text-base font-extrabold">
-                {isEdit ? user.isTeamMember ? "Edit Member" : "Edit Invitation" : "Add Member"}
+                {isEdit
+                  ? user.isTeamMember
+                    ? "Edit User Details"
+                    : "Edit Invitation"
+                  : "Create New User"}
               </h6>
               <button
                 type="button"
@@ -98,21 +102,14 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
               onSubmit={handleSubmit}
             >
               {(props: FormikProps<FormValues>) => {
-                const { touched, errors } = props;
+                const { touched, errors, isValid, dirty } = props;
                 return (
                   <Form>
                     <div className="mt-4">
                       <div className="field">
                         <div className="field_with_errors">
                           <label className="form__label">Name</label>
-                          <div className="tracking-wider block text-xs text-red-600 flex">
-                            {errors.firstName && touched.firstName && (
-                              <div>{errors.firstName}</div>
-                            )}
-                            {errors.lastName && touched.lastName && (
-                              <div className="ml-2">{errors.lastName}</div>
-                            )}
-                          </div>
+
                         </div>
                         <div className="flex">
                           <div className="mt-1">
@@ -124,7 +121,13 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                               } `}
                               data-cy="new-member-firstName"
                               name="firstName"
+                              placeholder="First Name"
                             />
+                            <div className="tracking-wider block text-xs text-red-600 flex">
+                              {errors.firstName && touched.firstName && (
+                                <div>{errors.firstName}</div>
+                              )}
+                            </div>
                           </div>
                           <div className="mt-1 ml-8">
                             <Field
@@ -135,7 +138,14 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                               } `}
                               data-cy="new-member-lastName"
                               name="lastName"
+                              placeholder="Last Name"
+
                             />
+                            <div className="tracking-wider block text-xs text-red-600 flex">
+                              {errors.lastName && touched.lastName && (
+                                <div className="ml-2">{errors.lastName}</div>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -144,11 +154,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       <div className="field">
                         <div className="field_with_errors">
                           <label className="form__label">Email</label>
-                          <div className="tracking-wider block text-xs text-red-600">
-                            {errors.email && touched.email && (
-                              <div>{errors.email}</div>
-                            )}
-                          </div>
                         </div>
                         <div className="mt-1">
                           <Field
@@ -160,7 +165,13 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                             name="email"
                             disabled={isEdit}
                             data-cy="new-member-email"
+                            placeholder="Enter email ID"
                           />
+                          <div className="tracking-wider block text-xs text-red-600">
+                            {errors.email && touched.email && (
+                              <div>{errors.email}</div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -229,13 +240,19 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       {apiError}
                     </p>
                     <div className="actions mt-4">
-                      <input
+                      <button
                         type="submit"
                         name="commit"
-                        value={isEdit ? "SAVE CHANGES": "SEND INVITATION"}
-                        className="form__input_submit"
                         data-cy="send-invite-button"
-                      />
+                        disabled={!(dirty && isValid)}
+                        className={
+                          !isValid || !dirty
+                            ? "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-gray-1000 focus:outline-none rounded"
+                            : "form__input_submit"
+                        }
+                      >
+                        {isEdit ? "SAVE CHANGES" : "SEND INVITE"}
+                      </button>
                     </div>
                   </Form>
                 );
