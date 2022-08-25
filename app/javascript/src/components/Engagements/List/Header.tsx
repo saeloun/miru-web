@@ -10,10 +10,20 @@ const Header = ({
   setFilterVisibilty,
   setEngagementData,
   setPagy,
+  params,
+  setParams,
 }) => {
 
-  const searchCallBack = async (searchString: string) => {
-    await engagements.get(new URLSearchParams(searchString).toString())
+  const searchCallBack = (searchString: string) => {
+    const updatedParams = { ...params };
+    delete updatedParams["q[first_name_or_last_name_or_email_cont]"];
+    const queryString = {
+      page: 1,
+      ...(searchString && { ["q[first_name_or_last_name_or_email_cont]"]: searchString })
+    };
+    const searchParamWithOthers = { ...updatedParams, ...queryString };
+    setParams(searchParamWithOthers);
+    engagements.get(new URLSearchParams(searchParamWithOthers).toString())
       .then((res) => {
         const sanitized = unmapEngagementList(res);
         setEngagementData(sanitized.list);
