@@ -127,7 +127,7 @@ const Engagements = ({ isAdminUser }) => {
                 {option.name}
               </button>)
             })}
-            {user.engage_updated_by_name && <span className="py-1 px-2 text-sm font-medium" title={`Updated by ${user.engage_updated_by_name} at ${user.engage_updated_at}`}>
+            {user.engage_updated_by_name && <span className="px-2 py-1 text-sm font-medium" title={`Updated by ${user.engage_updated_by_name} at ${user.engage_updated_at}`}>
               <CircleWavyQuestion size={20}/>
             </span> }
           </div>
@@ -140,7 +140,7 @@ const Engagements = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header isAdminUser={isAdminUser} setFilterVisibilty={setFilterVisibilty} />
+      <Header isAdminUser={isAdminUser} setFilterVisibilty={setFilterVisibilty} setEngagementData={setEngagementData} setPagy={setPagy} />
       <div>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

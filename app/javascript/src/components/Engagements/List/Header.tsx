@@ -1,20 +1,23 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
 import engagements from "apis/engagements";
-import { Funnel, MagnifyingGlass } from "phosphor-react";
-import AutoComplete from "./AutoComplete";
+import { Funnel } from "phosphor-react";
+import Search from "./Search";
 import { unmapEngagementList } from "../../../mapper/engagement.mapper";
 
 const Header = ({
   isAdminUser,
   setFilterVisibilty,
+  setEngagementData,
+  setPagy,
 }) => {
 
-  const searchCallBack = async (searchString, setDropdownItems) => {
+  const searchCallBack = async (searchString: string) => {
     await engagements.get(new URLSearchParams(searchString).toString())
       .then((res) => {
-        const dropdownList = unmapEngagementList(res);
-        setDropdownItems(dropdownList.list);
+        const sanitized = unmapEngagementList(res);
+        setEngagementData(sanitized.list);
+        setPagy(res.data.pagy);
       });
   };
 
@@ -30,10 +33,7 @@ const Header = ({
       </span>
       <div className="header__searchWrap">
         <div className="header__searchInnerWrapper">
-          <AutoComplete searchCallBack={searchCallBack} />
-          <button className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
-            <MagnifyingGlass size={12} />
-          </button>
+          <Search searchCallBack={searchCallBack} />
         </div>
         <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
           <Funnel size={16} />
