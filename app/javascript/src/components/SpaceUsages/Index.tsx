@@ -61,12 +61,12 @@ const TimeReserving: React.FC<Iprops> = ({
   const [isPastDate, setIsPastDate] = useState<boolean>(false);
   const [allMemberList, setAllMemberList] = useState([]);
 
-  const exludeCurrentUser = (allMembers: any) => allMembers.filter((memberFromAllMembers: any) => (userId !== memberFromAllMembers.id));
+  const excludeCurrentUser = (allMembers: any) => allMembers.filter((memberFromAllMembers: any) => (userId !== memberFromAllMembers.id));
 
   const fetchCurrentWorkspaceUsers = async () => {
     try {
       const resp = await companyUsersApi.get();
-      setAllMemberList(exludeCurrentUser(resp.data.users));
+      setAllMemberList(excludeCurrentUser(resp.data.users));
     } catch (error) {
       return error;
     }

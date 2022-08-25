@@ -61,7 +61,6 @@ const EditEntry: React.FC<Iprops> = ({
   const [purpose, setPurpose] = useState("");
   const [purposeName, setPurposeName] = useState("");
   const [userName, setUserName] = useState("");
-  // const [restricted, setRestricted] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
   const [selectedTeamMembers, setSelectedTeamMembers] = useState<any>([]);
   const [teamMembers, setTeamMembers] = useState<any>([]);
@@ -104,7 +103,6 @@ const EditEntry: React.FC<Iprops> = ({
       setTeamMembers(entry.team_members);
       const selectedMembers = allMemberList.filter((member: any) => entry.team_members.map(Number).includes(parseInt(member.id)));
       setSelectedTeamMembers(selectedMembers);
-      // setRestricted(entry.restricted);
     }
 
   };
@@ -261,7 +259,7 @@ const EditEntry: React.FC<Iprops> = ({
                   value={space || ""}
                   name="space"
                   id="space"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 >
                   {!space && (
                     <option disabled className="text-miru-gray-100" value="">
@@ -283,7 +281,7 @@ const EditEntry: React.FC<Iprops> = ({
                   value={purpose || ""}
                   name="purpose"
                   id="purpose"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 >
                   {!purpose && (
                     <option disabled className="text-miru-gray-100" value="">
@@ -300,7 +298,7 @@ const EditEntry: React.FC<Iprops> = ({
                 <Multiselect
                   closeOnSelect={true}
                   avoidHighlightFirstOption={true}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"
                   selectedValues={selectedTeamMembers}
                   options={allMemberList ? allMemberList : [{}]}
                   name="team_member_ids"
@@ -319,7 +317,7 @@ const EditEntry: React.FC<Iprops> = ({
                   cols={60}
                   name="notes"
                   placeholder=" Notes"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 ></textarea>
               </div>
               <div className="flex justify-between mb-2">

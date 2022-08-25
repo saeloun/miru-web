@@ -32,6 +32,7 @@
 #  sign_in_count          :integer          default(0), not null
 #  social_accounts        :jsonb
 #  team_lead              :boolean          default(FALSE)
+#  team_member_ids        :text             default([]), is an Array
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
@@ -139,12 +140,20 @@ class User < ApplicationRecord
     self.department_id == sales_department_id
   end
 
-  def can_access_lead?
+  def can_access_sales?
     self.has_role?(
       :owner,
       self.current_workspace) || self.has_role?(
         :admin,
         self.current_workspace) || (self.has_role?(:employee, self.current_workspace) && self.under_sales_department?)
+  end
+
+  def can_access_engagement?
+    can_access_sales? || team_lead?
+  end
+
+  def can_access_lead?
+    can_access_sales?
   end
 
   def can_access_space_usage?

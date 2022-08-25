@@ -6,7 +6,6 @@ import Search from "./Search";
 import { unmapEngagementList } from "../../../mapper/engagement.mapper";
 
 const Header = ({
-  isAdminUser,
   setFilterVisibilty,
   setEngagementData,
   setPagy,
@@ -34,9 +33,7 @@ const Header = ({
   return (
     <div
       className={
-        isAdminUser
-          ? "sm:flex mt-6 mb-3 sm:items-center sm:justify-between"
-          : "sm:flex mt-6 mb-3 sm:items-center"
+        "sm:flex mt-6 mb-3 sm:items-center sm:justify-between"
       }>
       <span className="inline-flex">
         <h2 className="header__title">Resource Engagement</h2>

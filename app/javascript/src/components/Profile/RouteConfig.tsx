@@ -9,13 +9,17 @@ import {
 import Billing from "./Organization/Billing";
 import OrgEdit from "./Organization/Edit";
 import PaymentSettings from "./Organization/Payment";
+import TeamMemberDetails from "./TeamMemberDetail";
 import UserDetails from "./UserDetail";
 
-const RouteConfig = () => (
+const RouteConfig = ({ isAdmin, isTeamLead, userDetails }) => (
   <Routes>
     <Route path="/profile/edit">
       {/* <Route path="bank_account_details" element={<BankAccountDetails />} /> TODO: Temporary disabling*/  }
       <Route path="" element={<UserDetails />} />
+      {
+        (isAdmin || isTeamLead) && <Route path="team-members" element={<TeamMemberDetails userId={userDetails.id} />} />
+      }
       <Route path="payment" element={<PaymentSettings />} />
       <Route path="billing" element={<Billing />} />
       <Route path="organization" element={<OrgEdit />} />

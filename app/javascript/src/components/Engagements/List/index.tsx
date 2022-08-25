@@ -148,7 +148,6 @@ const Engagements = ({ isAdminUser }) => {
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
-        isAdminUser={isAdminUser}
         setFilterVisibilty={setFilterVisibilty}
         setEngagementData={setEngagementData}
         setPagy={setPagy}

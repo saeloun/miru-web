@@ -22,7 +22,7 @@ class EngagementPolicy < ApplicationPolicy
   end
 
   def can_access?
-    user_owner_role? || user_admin_role? || (user_employee_role? && user_under_sales_department?)
+    user_owner_role? || user_admin_role? || (user_employee_role? && user_under_sales_department?) || user_team_lead?
   end
 
   def permitted_attributes

@@ -58,6 +58,9 @@ namespace :internal_api, defaults: { format: "json" } do
 
     namespace :profiles do
       resources :bank_account_details, only: [:index, :create, :update], param: :account_id
+      resources :team_members, only: [:index] do
+        patch :update, on: :collection
+      end
     end
 
     namespace :wise do
