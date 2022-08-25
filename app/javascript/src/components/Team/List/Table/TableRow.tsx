@@ -25,16 +25,13 @@ const TableRow = ({ item }) => {
     <tr data-cy="team-table-row" className="border-b last:border-0 border-miru-gray-200 hoverIcon" onClick={() => {
       navigate("1");
     }}>
-      <td className="table__data p-6">
-        <img src={item.profilePicture} className="table__avatar" />
-      </td>
-      <td className="table__data p-6">
+      <td className="table__data p-6 capitalize">
         {item.name}
       </td>
       <td className="table__data table__text p-6">
         {item.email}
       </td>
-      <td className="table__data table__text p-6">
+      <td className="table__data table__text p-6 capitalize">
         {item.role}
       </td>
       {isAdminUser &&

@@ -61,15 +61,6 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
           PROFILE SETTINGS
         </NavLink>
       </li>
-      <li className='border-b-2 border-miru-gray-400'>
-        <NavLink
-          to="/profile/edit/bank_account_details"
-          type="li"
-          className={({ isActive }) => getActiveClassName(isActive)}
-        >
-          BANK ACCOUNT DETAILS
-        </NavLink>
-      </li>
     </ul>
   );
 
