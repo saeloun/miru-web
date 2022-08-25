@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
 import { minutesToHHMM } from "helpers/hhmm-parser";
 
 import BillTag from "./BillTag";
+
+const deleteIcon = require("../../../../assets/images/delete.svg");
+const editIcon = require("../../../../assets/images/edit.svg");
 
 interface props {
   id: number;
@@ -47,14 +51,14 @@ const EntryCard: React.FC<props> = ({
       <p className="text-4xl">{minutesToHHMM(duration)}</p>
       <button onClick={() => setEditEntryId(id)} className="mx-10">
         <img
-          src="/edit.svg"
+          src={editIcon}
           alt="edit"
           className="icon-hover text-miru-han-purple-600 hover:text-miru-han-purple-1000"
         />
       </button>
       <button onClick={() => handleDeleteEntry(id)} className="mr-10">
         <img
-          src="/delete.svg"
+          src={deleteIcon}
           alt="delete"
           className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000"
         />

@@ -223,7 +223,7 @@ const UserDetails = () => {
                   </input>
                   <button className="" onClick={handleDeleteLogo}>
                     <img
-                      src="/delete.svg"
+                      src={dele}
                       alt="delete"
                       style={{ "minWidth": "20px" }}
                     />
