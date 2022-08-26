@@ -152,6 +152,10 @@ class User < ApplicationRecord
     can_access_sales? || team_lead?
   end
 
+  def can_access_devices?
+    can_access_sales? || team_lead?
+  end
+
   def can_access_lead?
     can_access_sales?
   end

@@ -64,6 +64,12 @@ module NavigationHelper
           data: { cy: "engagements-tab" }
         },
         {
+          url: devices_path,
+          title: I18n.t("navbar.devices"),
+          permitted: Pundit.policy!(current_user, :device).index?,
+          data: { cy: "devices-tab" }
+        },
+        {
           url: team_index_path,
           title: I18n.t("navbar.team"),
           permitted: Pundit.policy!(current_user, :team).index?,

@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   resources :time_tracking, only: [:index], path: "time-tracking"
   resources :space_occupying, only: [:index], path: "spaces"
   resources :engagements, only: [:index]
+  resources :devices, only: [:index]
 
   resources :team, only: [:index, :update, :destroy, :edit] do
     member do

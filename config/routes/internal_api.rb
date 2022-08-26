@@ -84,6 +84,8 @@ namespace :internal_api, defaults: { format: "json" } do
       get "items", to: "/engagements_items", on: :collection
     end
 
+    resources :devices, only: [:index]
+
     resource :profile, only: [:update, :show], controller: "profile" do
       delete "/remove_avatar", to: "profile#remove_avatar"
     end
