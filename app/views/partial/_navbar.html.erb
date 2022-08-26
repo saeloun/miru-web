@@ -6,7 +6,7 @@
     <!-- miru logo for smaller screen size Start -->
     <div class="flex justify-between" x-show="isOpen" @click.away="isOpen = false">
       <a href="<%= root_path %>">
-        <span class="text-col-red-400 font-bold text-2xl">A<span class="text-col-black-1000 font-bold text-2xl">∝C</span></span>
+        <%= image_tag("brand/ac-logo.svg", width: "60") %>
       </a>
       <button class="navbar__smaller-screen_close-button" @click="isOpen = false">
         <%= image_tag("cancel_button.svg", class:"block h-6 w-6") %>
@@ -76,7 +76,7 @@
           <div class="relative z-10 flex">
             <div class="flex-shrink-0 flex items-center">
               <a href="<%= root_path %>">
-                <span class="text-col-red-400 font-bold text-2xl">A<span class="text-col-black-1000 font-bold text-2xl">∝C</span></span>
+                <%= image_tag("brand/ac-logo.svg", width: "60") %>
               </a>
             </div>
           </div>

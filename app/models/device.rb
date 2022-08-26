@@ -45,6 +45,9 @@ class Device < ApplicationRecord
   before_create :set_availabilty
   after_update :add_device_timelines
 
+  # Device type values
+  enum device_type: { laptop: "laptop", mobile: "mobile", tablet: "tablet" }
+
   private
 
     def set_availabilty

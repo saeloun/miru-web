@@ -26,7 +26,7 @@ const InvoiceEmail = ({ url, invoice, logo, lineItems, company, client }) => (
     </div>
     <div className="font-manrope px-28 py-3 flex justify-between bg-miru-han-purple-1000 text-white">
       <span className="text-xs font-normal leading-4 text-center">
-        © A∝C 2022
+        © AC 2022
       </span>
       {/* <span className="flex justify-between w-1/4 text-xs font-normal leading-4 text-center">
         www.getmiru.com/
