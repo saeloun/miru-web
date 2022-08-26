@@ -253,6 +253,9 @@
     &__text {
       @apply text-xs font-normal text-miru-dark-purple-1000;
     }
+    &__text_discarded {
+      @apply text-xs font-normal text-red-600;
+    }
     &__name {
       @apply text-base font-normal text-miru-dark-purple-1000;
     }

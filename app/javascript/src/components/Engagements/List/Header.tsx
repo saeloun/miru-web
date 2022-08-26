@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import engagements from "apis/engagements";
-import { Funnel } from "phosphor-react";
+import { Funnel, ProjectorScreenChart } from "phosphor-react";
 import Search from "./Search";
 import { unmapEngagementList } from "../../../mapper/engagement.mapper";
 
@@ -11,8 +12,9 @@ const Header = ({
   setPagy,
   params,
   setParams,
+  isAdminUser,
 }) => {
-
+  const navigate = useNavigate();
   const searchCallBack = (searchString: string) => {
     const updatedParams = { ...params };
     delete updatedParams["q[first_name_or_last_name_or_email_cont]"];
@@ -37,6 +39,11 @@ const Header = ({
       }>
       <span className="inline-flex">
         <h2 className="header__title">Resource Engagement</h2>
+        {
+          isAdminUser && (<button className="ml-2" onClick={ () => navigate("/engagements/dashboard") }>
+            <ProjectorScreenChart size={20} />
+          </button>)
+        }
       </span>
       <div className="header__searchWrap">
         <div className="header__searchInnerWrapper">

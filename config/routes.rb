@@ -46,6 +46,8 @@ Rails.application.routes.draw do
 
   resources :time_tracking, only: [:index], path: "time-tracking"
   resources :space_occupying, only: [:index], path: "spaces"
+
+  get "engagements/*path", to: "engagements#index", via: :all
   resources :engagements, only: [:index]
 
   resources :team, only: [:index, :update, :destroy, :edit] do

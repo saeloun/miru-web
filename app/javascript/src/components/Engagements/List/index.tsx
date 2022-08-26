@@ -154,6 +154,7 @@ const Engagements = ({ isAdminUser }) => {
         setPagy={setPagy}
         params={params}
         setParams={setParams}
+        isAdminUser={isAdminUser}
       />
       <div>
         <div className="flex flex-col">

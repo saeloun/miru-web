@@ -68,7 +68,7 @@
                     </tr>
                   </thead>
                   <tbody id="teamstable" class="table__body">
-                    <% teams.kept.each do |member| %>
+                    <% teams.each do |member| %>
                         <tr id="member-<%= member.id %>" data-cy="team-table-row">
                           <%= render partial: "team", locals: { member: member } %>
                         </tr>

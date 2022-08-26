@@ -1,14 +1,10 @@
 <td id="profilepicture-<%= member.id %>" class="table__data">
   <%= image_tag user_avatar(member), class: "table__avatar" %>
 </td>
-<td id="full_name-<%= member.id %>" class="table__data">
-  <div class="flex items-center">
-    <div class="table__name">
-      <%= member.full_name.titleize %>
-    </div>
-  </div>
+<td id="full_name-<%= member.id %>" class="table__data <%= member.discarded_at ? 'table__text_discarded' : 'table__text'%>">
+  <%= member.full_name.titleize %>
 </td>
-<td id="email-<%= member.id %>" class="table__data table__text">
+<td id="email-<%= member.id %>" class="table__data <%= member.discarded_at ? 'table__text_discarded' : 'table__text'%>">
   <% if member.unconfirmed_email? %>
     <%= t('team.current_email') %> : <%= member.email %><br/>
     <%= t('team.changed_email') %>: <%= member.unconfirmed_email %>
@@ -16,13 +12,13 @@
     <%= member.email %>
   <% end %>
 </td>
-<td id="role-<%= member.id %>" class="table__data table__text">
+<td id="role-<%= member.id %>" class="table__data <%= member.discarded_at ? 'table__text_discarded' : 'table__text'%>">
   <%= member.primary_role.titlecase %>
 </td>
-<td id="department-<%= member.id %>" class="table__data table__text">
+<td id="department-<%= member.id %>" class="table__data <%= member.discarded_at ? 'table__text_discarded' : 'table__text'%>">
   <%= member.department_name %>
 </td>
-<td id="team_lead-<%= member.id %>" class="table__data table__text">
+<td id="team_lead-<%= member.id %>" class="table__data table__text text-center">
   <% if member.team_lead %>
     <span style="font-size:150%; font-weight:bold; color:green;">&#10004;</span>
   <% end %>

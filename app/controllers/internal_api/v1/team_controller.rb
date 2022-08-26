@@ -5,9 +5,8 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
 
   def index
     authorize :index, policy_class: TeamPolicy
-    query = current_company.users.includes([:avatar_attachment, :roles]).order(
-      discarded_at: :desc,
-      first_name: :asc).ransack(params[:q])
+    query = current_company.users.includes([:avatar_attachment, :roles])
+      .order(discarded_at: :desc, first_name: :asc).ransack(params[:q])
     team = query.result(distinct: true)
     render :index, locals: { team: }, status: :ok
   end
