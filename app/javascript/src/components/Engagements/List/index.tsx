@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import ReactTooltip from "react-tooltip";
@@ -24,15 +23,14 @@ const ENGAGEMENT_OPTIONS = [
 
 const Engagements = ({ isAdminUser }) => {
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
-  const [rememberFilter, setRememberFilter] = useCookies();
   const [engagementData, setEngagementData] = useState<any>([{}]);
   const [pagy, setPagy] = React.useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = React.useState<any>({
     page: searchParams.get("page") || 1,
-    ...(searchParams.get("q[first_name_or_last_name_or_email_cont]") && { ["q[first_name_or_last_name_or_email_cont]"]: searchParams.get("q[first_name_or_last_name_or_email_cont]") }),
-    ...(searchParams.get("engagements") && { engagements: searchParams.get("engagements") }),
-    ...(searchParams.get("departments") && { departments: searchParams.get("departments") })
+    ...(searchParams.has("q[first_name_or_last_name_or_email_cont]") && { ["q[first_name_or_last_name_or_email_cont]"]: searchParams.get("q[first_name_or_last_name_or_email_cont]") }),
+    ...(searchParams.has("engagements") && { engagements: searchParams.getAll("engagements") }),
+    ...(searchParams.has("departments") && { departments: searchParams.getAll("departments") })
   });
   const queryParams = () => new URLSearchParams(params).toString();
 
@@ -47,10 +45,6 @@ const Engagements = ({ isAdminUser }) => {
 
   useEffect(() => {
     fetchEngagements();
-    setSearchParams(params);
-  }, [params.page]);
-
-  useEffect(() => {
     setSearchParams(params);
   }, [params])
 
@@ -182,7 +176,7 @@ const Engagements = ({ isAdminUser }) => {
         </div>
       </div>
       {isFilterVisible && (
-        <FilterSideBar setEngagementData={setEngagementData} setFilterVisibilty={setFilterVisibilty} rememberFilter={rememberFilter} setRememberFilter={setRememberFilter} setPagy={setPagy} params={params} setParams={setParams} />
+        <FilterSideBar setEngagementData={setEngagementData} setFilterVisibilty={setFilterVisibilty} rememberFilter={params} setRememberFilter={setParams} setPagy={setPagy} />
       )}
     </>
   );

@@ -5,7 +5,7 @@ import { Multiselect } from 'multiselect-react-dropdown';
 import { X } from "phosphor-react";
 import { unmapEngagementList } from "../../../../mapper/engagement.mapper";
 
-const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, setRememberFilter, setPagy, params, setParams }) => {
+const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, setRememberFilter, setPagy }) => {
   const [departmentOptions, setDepartmentOptions] = useState<any>([{}]);
   const [engagementOptions, setEngagementOptions] = useState<any>([{}]);
 
@@ -13,7 +13,6 @@ const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, 
     engagements: [],
     departments: []
   });
-  const [stringQueryParams, setStringQueryParams] = useState<any>(null);
 
   const [selectEngagementRef, setSelectEngagementRef] = useState<any>(React.createRef());
   const [selectDepartmentRef, setSelectDepartmentRef] = useState<any>(React.createRef());
@@ -39,8 +38,8 @@ const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, 
   }, []);
 
   useEffect(() => {
-    if (rememberFilter.engagementsFilter){
-      const filtered = rememberFilter.engagementsFilter
+    if (rememberFilter){
+      const filtered = rememberFilter
       if (engagementOptions && filtered.engagements){
         const fengagementOptions = engagementOptions.filter(i =>
           filtered.engagements.map(Number).includes(parseInt(i.id))
@@ -54,7 +53,7 @@ const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, 
         setRememberDepartments([...fdepartmentOptions])
       }
     }
-  }, [rememberFilter.engagementsFilter, engagementOptions, departmentOptions]);
+  }, [rememberFilter, engagementOptions, departmentOptions]);
 
   const customStyles = {
     control: (provided) => ({
@@ -74,34 +73,25 @@ const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, 
 
   useEffect(() => {
     if (isApplyFilter){
-      setRememberFilter('engagementsFilter', queryParams);
-      const updatedParams = { ...params };
+      const updatedParams = { ...rememberFilter };
       delete updatedParams.engagements;
       delete updatedParams.departments;
       const queryString = {
         page: 1,
-        ...(queryParams.engagements && { engagements: queryParams.engagements }),
-        ...(queryParams.departments && { departments: queryParams.departments })
+        ...(queryParams.engagements.length > 0 && { engagements: queryParams.engagements }),
+        ...(queryParams.departments.length > 0 && { departments: queryParams.departments })
       };
       const filterQueryParams = { ...updatedParams, ...queryString };
-      setParams(filterQueryParams);
-      const applyFilter = async () => {
-        engagements.get(new URLSearchParams(filterQueryParams).toString())
-          .then((res) => {
-            const sanitized = unmapEngagementList(res);
-            setEngagementData(sanitized.list);
-            setPagy(res.data.pagy);
-            setIsApplyFilter(false);
-          });
-      };
-
-      applyFilter();
+      setRememberFilter(filterQueryParams);
+      engagements.get(new URLSearchParams(filterQueryParams).toString())
+        .then((res) => {
+          const sanitized = unmapEngagementList(res);
+          setEngagementData(sanitized.list);
+          setPagy(res.data.pagy);
+          setIsApplyFilter(false);
+        });
     }
-  }, [stringQueryParams, isApplyFilter]);
-
-  useEffect(() => {
-    setStringQueryParams(new URLSearchParams(queryParams).toString())
-  }, [queryParams, isApplyFilter]);
+  }, [isApplyFilter]);
 
   const resetFilter = async () => {
     setQueryParams({
