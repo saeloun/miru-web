@@ -127,7 +127,7 @@ const RevenueByClientReport = () => {
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
           handleDownload={handleDownload}
-          type={"Revenue By Client"}
+          type={"Revenue Report"}
         />
         <Container />
         {isFilterVisible && <Filters
