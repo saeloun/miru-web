@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { MagnifyingGlass } from "phosphor-react";
 
 const Search = ({
   searchCallBack
 }) => {
-  const [searchValue, setValue] = useState<string>("");
+  const [searchParams] = useSearchParams();
+  const [searchValue, setValue] = useState<string>(
+    searchParams.get("q[first_name_or_last_name_or_email_cont]") || ""
+  );
 
   const handleChange = async (e: any) => {
     setValue(e.target.value);
