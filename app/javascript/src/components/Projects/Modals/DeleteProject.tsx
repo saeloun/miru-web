@@ -5,18 +5,19 @@ import projectApi from "apis/projects";
 interface IProps {
   project: any;
   setShowDeleteDialog: any;
-  fetchProjectList: any;
 }
 
-const DeleteProject = ({ project, setShowDeleteDialog, fetchProjectList }: IProps) => {
+const DeleteProject = ({ project, setShowDeleteDialog }: IProps) => {
   const deleteProject = async project => {
-    const res = await projectApi.destroy(project.id);
-    await (async () => {
-      if (res.status === 200) {
-        setShowDeleteDialog(false);
-      }
-      fetchProjectList();
-    })();
+    projectApi.destroy(project.id)
+      .then(() => {
+        setTimeout(() => {
+          setShowDeleteDialog(false);
+          window.location.assign(window.location.origin+"/projects");
+        }, 500);
+      }).catch(() => {
+        setShowDeleteDialog(true);
+      });
   };
   return (
     <div className="px-4 flex items-center justify-center">

@@ -70,7 +70,10 @@ const ClientList = ({ isAdminUser }) => {
       });
   };
 
-  const fetchProjectList = () => {
+  useEffect(() => {
+    sendGAPageView();
+    setAuthHeaders();
+    registerIntercepts();
     clientApi.show(params.clientId, "?time_frame=week")
       .then((res) => {
         const sanitized = unmapClientDetails(res);
@@ -79,13 +82,6 @@ const ClientList = ({ isAdminUser }) => {
         setTotalMinutes(sanitized.totalMinutes);
         setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
       });
-  };
-
-  useEffect(() => {
-    sendGAPageView();
-    setAuthHeaders();
-    registerIntercepts();
-    fetchProjectList();
   }, []);
 
   const tableHeader = [
@@ -180,7 +176,6 @@ const ClientList = ({ isAdminUser }) => {
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}
           project={selectedProject}
-          fetchProjectList={fetchProjectList}
         />
       )}
     </>
