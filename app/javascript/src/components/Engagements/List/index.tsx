@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import ReactTooltip from "react-tooltip";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import engagements from "apis/engagements";
 import Pagination from "common/Pagination";
 import Table from "common/Table";
-import { CircleWavyQuestion } from "phosphor-react";
+import { CircleWavyWarning } from "phosphor-react";
 import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
 
@@ -134,9 +136,14 @@ const Engagements = ({ isAdminUser }) => {
                 {option.name}
               </button>)
             })}
-            {user.engage_updated_by_name && <span className="px-2 py-1 text-sm font-medium" title={`Updated by ${user.engage_updated_by_name} at ${user.engage_updated_at}`}>
-              <CircleWavyQuestion size={20}/>
-            </span> }
+            {user.engage_updated_by_name && <div className="px-2 py-1 text-sm font-medium">
+              <ReactTooltip id={`userTip-${user.id}`} effect="solid" backgroundColor="grey" textColor="white" place="top">
+                <p className="text-xs">
+                  Updated by <b>{user.engage_updated_by_name}</b> at <b>{user.engage_updated_at}</b>
+                </p>
+              </ReactTooltip>
+              <CircleWavyWarning size={20} data-tip data-for={`userTip-${user.id}`} />
+            </div> }
           </div>
         </div>,
         rowId: user.id
