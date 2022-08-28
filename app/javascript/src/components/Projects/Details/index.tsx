@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
+
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectAPI from "apis/projects";
-
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
-
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
 import {
@@ -20,7 +19,9 @@ import {
   Trash
 } from "phosphor-react";
 import { sendGAPageView } from "utils/googleAnalytics";
+
 import EditMembersList from "./EditMembersList";
+
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapper } from "../../../mapper/project.mapper";
 import AddEditProject from "../Modals/AddEditProject";
@@ -154,6 +155,10 @@ const ProjectDetails = () => {
   };
 
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
+
+  const backToProjects = () => {
+    navigate("/projects");
+  };
 
   return (
     <>
@@ -307,6 +312,7 @@ const ProjectDetails = () => {
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}
           project={project}
+          fetchProjectList={backToProjects}
         />
       )}
     </>

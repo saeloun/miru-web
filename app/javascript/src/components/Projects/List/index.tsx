@@ -1,4 +1,5 @@
 import React from "react";
+
 import { ToastContainer } from "react-toastify";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
@@ -9,6 +10,7 @@ import { TOASTER_DURATION } from "constants/index";
 
 import Header from "./Header";
 import { Project } from "./project";
+
 import { IProject } from "../interface";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
@@ -103,6 +105,7 @@ export const ProjectList = ({ isAdminUser }) => {
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}
           project={deleteProjectData}
+          fetchProjectList={fetchProjects}
         />
       )}
     </React.Fragment>

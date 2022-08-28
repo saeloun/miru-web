@@ -1,26 +1,22 @@
 import React from "react";
+
 import projectApi from "apis/projects";
 
 interface IProps {
   project: any;
   setShowDeleteDialog: any;
+  fetchProjectList: any;
 }
 
-const DeleteProject = ({ project, setShowDeleteDialog }: IProps) => {
+const DeleteProject = ({ project, setShowDeleteDialog, fetchProjectList }: IProps) => {
   const deleteProject = async project => {
-    projectApi.destroy(project.id)
-      .then(() => {
-        setTimeout(() => {
-          setShowDeleteDialog(false);
-          if (window.location.pathname.includes("/clients")) {
-            window.location.href = window.location.pathname;
-          } else {
-            window.location.assign(window.location.origin+"/projects");
-          }
-        }, 500);
-      }).catch(() => {
-        setShowDeleteDialog(true);
-      });
+    const res = await projectApi.destroy(project.id);
+    await (async () => {
+      if (res.status === 200) {
+        setShowDeleteDialog(false);
+      }
+      fetchProjectList();
+    })();
   };
   return (
     <div className="px-4 flex items-center justify-center">
