@@ -14,15 +14,6 @@ const EntryCardDayView = ({
   setSelectedTime,
   isPastDate
 }) => {
-  const getRandomColor = (spaceID) => {
-    const letters = 'BCDEF'.split('');
-    let color = '#';
-    for (let i = 0; i < 6; i++ ) {
-      color += letters[(spaceID * i) % letters.length];
-    }
-    return color;
-  }
-
   useEffect(() => {
     if (newEntryId) {
       document.getElementById(`${newEntryId.toString()}`).scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -43,7 +34,7 @@ const EntryCardDayView = ({
     }}>
       {spaceUsages && spaceUsages.map((space, _index) => {
         const displayTitle = `${space.user_name} • ${space.purpose_name}`;
-        const displayColor = getRandomColor(space.user_id)
+        const displayColor = space.user_color ? `#${space.user_color}` : "#1D1A31"
 
         return (<div id={space.id}
           className="relative cursor-pointer as-meeting-point w-7 opacity-90"
@@ -51,7 +42,7 @@ const EntryCardDayView = ({
           title={displayTitle}
           style={ { height: `${space.end_duration - space.start_duration}px`, top: `${space.start_duration}px`, backgroundColor: displayColor } }
           onClick={() => {setEditEntryColor(displayColor); setEditEntryId(space.id);}} >
-          <h6>{displayTitle}</h6>
+          <h6 className="text-white">{displayTitle}</h6>
         </div>)
       })
       }

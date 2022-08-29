@@ -3,6 +3,7 @@
 # Table name: users
 #
 #  id                     :bigint           not null, primary key
+#  color                  :string
 #  confirmation_sent_at   :datetime
 #  confirmation_token     :string
 #  confirmed_at           :datetime
@@ -32,8 +33,8 @@
 #  sign_in_count          :integer          default(0), not null
 #  social_accounts        :jsonb
 #  team_lead              :boolean          default(FALSE)
-#  team_member_ids        :text             default([]), is an Array
 #  unconfirmed_email      :string
+#  xteam_member_ids       :text             default([]), is an Array
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  current_workspace_id   :bigint
@@ -109,6 +110,8 @@ class User < ApplicationRecord
   has_one_attached :avatar
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
+  has_and_belongs_to_many :team_members, association_foreign_key: :member_user_id, class_name: User.name,
+    join_table: "team_members", dependent: :destroy
   rolify strict: true
 
   # Social account details

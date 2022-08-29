@@ -62,6 +62,7 @@ const EditEntry: React.FC<Iprops> = ({
   const [purposeName, setPurposeName] = useState("");
   const [userName, setUserName] = useState("");
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
+  const [reportConfirmOpen, setReportConfirmOpen] = useState<boolean>(false);
   const [selectedTeamMembers, setSelectedTeamMembers] = useState<any>([]);
   const [teamMembers, setTeamMembers] = useState<any>([]);
 
@@ -360,16 +361,33 @@ const EditEntry: React.FC<Iprops> = ({
                         onClick={() => {
                           setConfirmOpen(true);
                         }}
-                        className="text-sm text-blue-700 cursor-pointer hover:underline dark:text-blue-500">
-                          Delete Event?
+                        className="text-sm text-red-600 cursor-pointer hover:underline dark:text-blue-500">
+                          Remove the occupation?
                       </a>
                       <ConfirmDialog
-                        title="Delete Space Slot?"
+                        title="Remove the occupation?"
                         open={confirmOpen}
                         onClose={() => setConfirmOpen(false)}
                         onConfirm={handleDelete}
                       >
-                        Are you sure you want to delete this Space Slot?
+                        Are you sure you want to remove the space occupation?
+                      </ConfirmDialog>
+                    </div>
+                    <div className="flex justify-between">
+                      <a
+                        onClick={() => {
+                          // setReportConfirmOpen(true);
+                        }}
+                        className="text-sm text-col-yellow-600 cursor-pointer hover:underline dark:text-blue-500">
+                        Report the issue! <i>[COMING SOON]</i>
+                      </a>
+                      <ConfirmDialog
+                        title="Report the issue."
+                        open={reportConfirmOpen}
+                        onClose={() => setReportConfirmOpen(false)}
+                        onConfirm={() => setReportConfirmOpen(false)}
+                      >
+                        Coming Soon!
                       </ConfirmDialog>
                     </div>
                     <button

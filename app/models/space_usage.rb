@@ -99,6 +99,7 @@ class SpaceUsage < ApplicationRecord
       purpose_name: PURPOSE_CODE_OPTIONS.find { |i|i.id == purpose_code }&.name,
       note:,
       user_name: user.full_name,
+      user_color: user.color,
       team_members:
     }
   end

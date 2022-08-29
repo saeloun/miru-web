@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_25_123629) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_29_105324) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -430,6 +430,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_25_123629) do
     t.index ["company_id"], name: "index_stripe_connected_accounts_on_company_id", unique: true
   end
 
+  create_table "team_members", id: false, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "member_user_id", null: false
+    t.index ["member_user_id", "user_id"], name: "index_team_members_on_member_user_id_and_user_id"
+    t.index ["user_id", "member_user_id"], name: "index_team_members_on_user_id_and_member_user_id"
+  end
+
   create_table "timesheet_entries", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "project_id", null: false
@@ -491,7 +498,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_25_123629) do
     t.bigint "engage_updated_by_id"
     t.datetime "engage_updated_at"
     t.boolean "team_lead", default: false
-    t.text "team_member_ids", default: [], array: true
+    t.text "xteam_member_ids", default: [], array: true
+    t.string "color"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true

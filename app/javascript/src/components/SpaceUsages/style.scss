@@ -98,8 +98,8 @@
 .ac-calendar-container .ac-user-name span {
 	@apply font-semibold pr-3;
 }
-.ac-calendar-container .ac-clone-col .ac-user-name i {
-	@apply w-10 h-10 inline-flex items-center justify-center bg-col-han-app-600 text-white rounded-full;
+.ac-calendar-container .ac-clone-col .ac-user-name .alias {
+	@apply w-10 h-10 inline-flex items-center justify-center bg-col-han-app-600 text-white rounded-full p-3;
 }
 // .ac-calendar-container .ac-cv-time {
 // 	@apply border-r w-15;

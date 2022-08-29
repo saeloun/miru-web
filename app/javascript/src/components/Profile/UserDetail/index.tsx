@@ -53,6 +53,7 @@ const UserDetails = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [color, setColor] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -80,6 +81,9 @@ const UserDetails = () => {
       );
       formD.append(
         "user[last_name]", lastName
+      );
+      formD.append(
+        "user[color]", color
       );
       if (changePassword) {
         formD.append(
@@ -122,6 +126,11 @@ const UserDetails = () => {
     setErrDetails({ ...errDetails, lastNameErr: "" });
   };
 
+  const handleColorChange = (event) => {
+    setColor(event.target.value);
+    setIsDetailUpdated(true);
+  };
+
   const handleCurrentPasswordChange = (event) => {
     setCurrentPassword(event.target.value);
     setIsDetailUpdated(true);
@@ -146,6 +155,7 @@ const UserDetails = () => {
     setLastName(data.data.user.last_name);
     setProfileImage(data.data.user.avatar_url);
     setEmail(data.data.user.email);
+    setColor(data.data.user.color);
     setisLoading(false);
   };
 
@@ -243,6 +253,20 @@ const UserDetails = () => {
                     {errDetails.lastNameErr && getErr(errDetails.lastNameErr)}
                   </div>
                 </div>
+              </div>
+              <div className="mt-2">
+                <label>
+                  Color
+                  <span className="m-2 p-2" style={{ background: `#${color}` }}></span>
+                </label>
+                <input
+                  type="text"
+                  id="color"
+                  name="color"
+                  value={color}
+                  className="border py-1 px-1 w-full mt-2"
+                  onChange={handleColorChange}
+                />
               </div>
               <div className="mt-2">
                 <label>Email</label>

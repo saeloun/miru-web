@@ -355,7 +355,7 @@ const TimeReserving: React.FC<Iprops> = ({
               <div key={`ac-user-name-${_index}`} className="ac-clone-col">
                 <div className="ac-user-name">
                   <span>{i.name}</span>
-                  <i>{i.alias}</i>
+                  <span className="alias">{i.alias}</span>
                 </div>
               </div>
             ))}

@@ -12,6 +12,7 @@ interface props {
   space_name: string;
   purpose_name: string;
   user_name: string;
+  user_color: string;
   handleDeleteEntry: (id: number) => void;
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
 }
