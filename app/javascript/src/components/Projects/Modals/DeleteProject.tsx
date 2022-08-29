@@ -11,12 +11,10 @@ interface IProps {
 const DeleteProject = ({ project, setShowDeleteDialog, fetchProjectList }: IProps) => {
   const deleteProject = async project => {
     const res = await projectApi.destroy(project.id);
-    await (async () => {
-      if (res.status === 200) {
-        setShowDeleteDialog(false);
-      }
-      fetchProjectList();
-    })();
+    if (res.status === 200) {
+      setShowDeleteDialog(false);
+    }
+    fetchProjectList();
   };
   return (
     <div className="px-4 flex items-center justify-center">
