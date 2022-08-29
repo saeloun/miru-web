@@ -1,9 +1,0 @@
-Hi <%= @invoice.client_name %>,
-
-You have an invoice (<%= @invoice.invoice_number %>) amounting to <%= @amount %> waiting to be cleared by <%= @invoice.due_date.ordinalize %>.
-
-Please log on to pay it now.
-<%= new_invoice_payment_url(@invoice) %>
-
-Thanks,
-Team Miru
