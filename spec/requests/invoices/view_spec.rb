@@ -25,7 +25,7 @@ RSpec.describe "Invoices::View", type: :request do
       end
 
       context "if the invoice status is not 'sent'" do
-        it "not update the invoice status to viewed and it should remain the same status" do
+        it "does not update the invoice status to viewed and it should remain the same status" do
           invoice.update(status: "draft")
           send_request :get, view_invoice_path(invoice.external_view_key)
           expect(response).to be_successful
