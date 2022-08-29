@@ -7,7 +7,7 @@ import devices from "apis/devices";
 import Pagination from "common/Pagination";
 import Table from "common/Table";
 import FilterSideBar from "./FilterSideBar";
-import Header from "./Header";
+// import Header from "./Header";
 
 import { TOASTER_DURATION } from "../../../constants/index";
 
@@ -49,11 +49,11 @@ const Devices = ({ isAdminUser }) => {
   }, []);
 
   const tableHeader = [
-    {
-      Header: "Employee",
-      accessor: "col1", // accessor is the "key" in the data
-      cssClass: ""
-    },
+    // {
+    //   Header: "Employee",
+    //   accessor: "col1", // accessor is the "key" in the data
+    //   cssClass: ""
+    // },
     {
       Header: "Name",
       accessor: "col2", // accessor is the "key" in the data
@@ -64,16 +64,16 @@ const Devices = ({ isAdminUser }) => {
       accessor: "col3",
       cssClass: "text-center"
     },
-    {
-      Header: "Serial Number",
-      accessor: "col4",
-      cssClass: "text-left"
-    },
-    {
-      Header: "Specifications",
-      accessor: "col5",
-      cssClass: "text-left"
-    },
+    // {
+    //   Header: "Serial Number",
+    //   accessor: "col4",
+    //   cssClass: "text-left"
+    // },
+    // {
+    //   Header: "Specifications",
+    //   accessor: "col5",
+    //   cssClass: "text-left"
+    // },
     {
       Header: "Brand",
       accessor: "col6",
@@ -110,11 +110,11 @@ const Devices = ({ isAdminUser }) => {
     if (!devices) return [{}];
     return devices.map((device: any) =>
       ({
-        col1: <div className="text-xs tracking-widest">{device.userName}</div>,
+        // col1: <div className="text-xs tracking-widest">{device.userName}</div>,
         col2: <div className="text-xs tracking-widest">{device.name}</div>,
         col3: <div className="text-xs tracking-widest">{device.deviceType?.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())}</div>,
-        col4: <div className="text-xs tracking-widest">{device.serialNumber}</div>,
-        col5: <div className="text-xs tracking-widest">{device.specifications && Object.entries(device.specifications)?.map(([key, val]: any) => <div key={key + val}><span>{key.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())}:</span><span>{val}</span></div>)}</div>,
+        // col4: <div className="text-xs tracking-widest">{device.serialNumber}</div>,
+        // col5: <div className="text-xs tracking-widest">{device.specifications && Object.entries(device.specifications)?.map(([key, val]: any) => <div key={key + val}><span>{key.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())}:</span><span>{val}</span></div>)}</div>,
         col6: <div className="text-xs tracking-widest">{device.brand}</div>,
         col7: <div className="text-xs tracking-widest">{device.manufacturer}</div>,
         col8: <div className="text-xs tracking-widest">{device.baseOs}</div>,
@@ -129,13 +129,13 @@ const Devices = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header
+      {/* <Header
         setFilterVisibilty={setFilterVisibilty}
         setDeviceData={setDeviceData}
         setPagy={setPagy}
         params={params}
         setParams={setParams}
-      />
+      /> */}
       <div>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
