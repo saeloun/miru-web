@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { TOASTER_DURATION } from "constants/index";
+
 import { useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -13,8 +15,6 @@ import DeleteProject from "components/Projects/Modals/DeleteProject";
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
 import { sendGAPageView } from "utils/googleAnalytics";
-
-import { TOASTER_DURATION } from "constants/index";
 
 import Header from "./Header";
 
