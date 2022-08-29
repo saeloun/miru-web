@@ -67,7 +67,8 @@ module NavigationHelper
           url: devices_path,
           title: I18n.t("navbar.devices"),
           permitted: Pundit.policy!(current_user, :device).index?,
-          data: { cy: "devices-tab" }
+          data: { cy: "devices-tab" },
+          other: true
         },
         {
           url: team_index_path,
