@@ -13,6 +13,7 @@ import DeleteProject from "components/Projects/Modals/DeleteProject";
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
 import { sendGAPageView } from "utils/googleAnalytics";
+
 import { TOASTER_DURATION } from "constants/index";
 
 import Header from "./Header";

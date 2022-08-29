@@ -1,5 +1,7 @@
-import ErrorPage from "common/Error";
 import { Roles, Paths } from "constants/index";
+
+import ErrorPage from "common/Error";
+
 import ClientDetails from "../components/Clients/Details";
 import ClientList from "../components/Clients/List";
 import EditInvoice from "../components/Invoices/Edit";

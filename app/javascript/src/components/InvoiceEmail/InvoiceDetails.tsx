@@ -1,6 +1,8 @@
 import React from "react";
+
 import InvoiceInfo from "./InvoiceInfo";
 import InvoiceTotalSummary from "./InvoiceTotalSummary";
+
 import ClientInfo from "../Invoices/Invoice/ClientInfo";
 import CompanyInfo from "../Invoices/Invoice/CompanyInfo";
 import InvoiceLineItems from "../Invoices/Invoice/InvoiceLineItems";
@@ -13,7 +15,7 @@ const InvoiceDetails = ({ invoice, company, lineItems, client, logo }) => (
       <InvoiceInfo invoice={invoice} company={company}/>
     </div>
     <InvoiceLineItems
-      currency={company.currency}
+      currency={company.base_currency}
       items={lineItems}
       showHeader={lineItems.length > 0}/>
     <InvoiceTotalSummary invoice={invoice} company={company} lineItems={lineItems}/>

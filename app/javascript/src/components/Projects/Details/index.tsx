@@ -1,5 +1,14 @@
 import React, { useEffect } from "react";
 
+import {
+  ArrowLeft,
+  DotsThreeVertical,
+  Receipt,
+  Pencil,
+  UsersThree,
+  Trash
+} from "phosphor-react";
+
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -10,14 +19,6 @@ import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
-import {
-  ArrowLeft,
-  DotsThreeVertical,
-  Receipt,
-  Pencil,
-  UsersThree,
-  Trash
-} from "phosphor-react";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import EditMembersList from "./EditMembersList";
