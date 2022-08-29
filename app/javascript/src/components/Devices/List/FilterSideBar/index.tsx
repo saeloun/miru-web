@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import engagements from "apis/engagements";
+import devices from "apis/devices";
 import engagementsItemsApi from 'apis/engagements-items';
 import { Multiselect } from 'multiselect-react-dropdown';
 import { X } from "phosphor-react";
-import { unmapEngagementList } from "../../../../mapper/engagement.mapper";
 
-const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, setRememberFilter, setPagy, params, setParams }) => {
+const FilterSideBar = ({ setDeviceData, setFilterVisibilty, rememberFilter, setRememberFilter, setPagy, params, setParams }) => {
   const [departmentOptions, setDepartmentOptions] = useState<any>([{}]);
   const [engagementOptions, setEngagementOptions] = useState<any>([{}]);
 
@@ -86,10 +85,9 @@ const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, 
       const filterQueryParams = { ...updatedParams, ...queryString };
       setParams(filterQueryParams);
       const applyFilter = async () => {
-        engagements.get(new URLSearchParams(filterQueryParams).toString())
+        devices.get(new URLSearchParams(filterQueryParams).toString())
           .then((res) => {
-            const sanitized = unmapEngagementList(res);
-            setEngagementData(sanitized.list);
+            setDeviceData(res.data.devices);
             setPagy(res.data.pagy);
             setIsApplyFilter(false);
           });

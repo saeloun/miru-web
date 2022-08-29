@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
-import engagements from "apis/engagements";
+import devices from "apis/devices";
 import { Funnel } from "phosphor-react";
 import Search from "./Search";
-import { unmapEngagementList } from "../../../mapper/engagement.mapper";
 
 const Header = ({
   setFilterVisibilty,
-  setEngagementData,
+  setDeviceData,
   setPagy,
   params,
   setParams,
@@ -22,10 +21,9 @@ const Header = ({
     };
     const searchParamWithOthers = { ...updatedParams, ...queryString };
     setParams(searchParamWithOthers);
-    engagements.get(new URLSearchParams(searchParamWithOthers).toString())
+    devices.get(new URLSearchParams(searchParamWithOthers).toString())
       .then((res) => {
-        const sanitized = unmapEngagementList(res);
-        setEngagementData(sanitized.list);
+        setDeviceData(res.data.devices);
         setPagy(res.data.pagy);
       });
   };
