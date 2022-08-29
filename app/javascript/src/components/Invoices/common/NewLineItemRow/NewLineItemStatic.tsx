@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+
 import dayjs from "dayjs";
-import { currencyFormat } from "helpers/currency";
 import { DotsThreeVertical, PencilSimple, Trash } from "phosphor-react";
+
+import { currencyFormat } from "helpers/currency";
 
 const NewLineItemStatic = ({
   currency,

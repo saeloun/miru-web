@@ -1,7 +1,9 @@
 import React, { Fragment } from "react";
+
 import ReactTooltip from "react-tooltip";
 
 import { minutesToHHMM } from "helpers/hhmm-parser";
+
 import { IChartBarGraph, ISingleClient } from "./interface";
 
 const Client = ({ element, totalMinutes, index }:ISingleClient) => {
