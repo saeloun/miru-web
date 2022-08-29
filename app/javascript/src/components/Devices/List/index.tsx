@@ -52,75 +52,78 @@ const Devices = ({ isAdminUser }) => {
     // {
     //   Header: "Employee",
     //   accessor: "col1", // accessor is the "key" in the data
-    //   cssClass: ""
+    //   cssClass: "py-5 px-0 text-center"
     // },
     {
       Header: "Name",
       accessor: "col2", // accessor is the "key" in the data
-      cssClass: ""
+      cssClass: "py-5 px-0 text-center"
     },
     {
       Header: "Type",
       accessor: "col3",
-      cssClass: "text-center"
+      cssClass: "py-5 px-0 text-center"
     },
     // {
     //   Header: "Serial Number",
     //   accessor: "col4",
-    //   cssClass: "text-left"
+    //   cssClass: "py-5 px-0 text-center"
     // },
     // {
     //   Header: "Specifications",
     //   accessor: "col5",
-    //   cssClass: "text-left"
+    //   cssClass: "py-5 px-0 text-center"
     // },
     {
       Header: "Brand",
       accessor: "col6",
-      cssClass: ""
+      cssClass: "py-5 px-0 text-center"
     },
     {
       Header: "Manufacturer",
       accessor: "col7",
-      cssClass: ""
+      cssClass: "py-5 px-0 text-center"
     },
     {
       Header: "OS",
       accessor: "col8",
-      cssClass: ""
+      cssClass: "py-5 px-0 text-center"
     },
     {
       Header: "Version",
       accessor: "col9",
-      cssClass: ""
+      cssClass: "py-5 px-0 text-center"
     },
     {
       Header: "Available",
       accessor: "col10",
-      cssClass: ""
+      cssClass: "py-5 px-0 text-center"
     },
     {
       Header: "Assignee",
       accessor: "col11",
-      cssClass: ""
+      cssClass: "py-5 px-0 text-center"
     },
   ];
+
+  const isAvailable = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-green-400 text-miru-alert-green-800">Available</span></p>;
+  const isNotAvailable = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-pink-400 text-miru-alert-red-1000">Not Available</span></p>;
 
   const getTableData = (devices: any) => {
     if (!devices) return [{}];
     return devices.map((device: any) =>
       ({
-        // col1: <div className="text-xs tracking-widest">{device.userName}</div>,
-        col2: <div className="text-xs tracking-widest">{device.name}</div>,
-        col3: <div className="text-xs tracking-widest">{device.deviceType?.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())}</div>,
-        // col4: <div className="text-xs tracking-widest">{device.serialNumber}</div>,
-        // col5: <div className="text-xs tracking-widest">{device.specifications && Object.entries(device.specifications)?.map(([key, val]: any) => <div key={key + val}><span>{key.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())}:</span><span>{val}</span></div>)}</div>,
-        col6: <div className="text-xs tracking-widest">{device.brand}</div>,
-        col7: <div className="text-xs tracking-widest">{device.manufacturer}</div>,
-        col8: <div className="text-xs tracking-widest">{device.baseOs}</div>,
-        col9: <div className="text-xs tracking-widest">{device.version}</div>,
-        col10: <div className="text-xs tracking-widest">{device.available}</div>,
-        col11: <div className="text-xs tracking-widest">{device.assigneeName}</div>,
+        // col1: <div className="text-xs tracking-widest text-center">{device.userName}</div>,
+        col2: <div className="text-xs tracking-widest text-center">{device.name}</div>,
+        col3: <div className="text-xs tracking-widest text-center">{device.deviceType?.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())}</div>,
+        // col4: <div className="text-xs tracking-widest text-center">{device.serialNumber}</div>,
+        // col5: <div className="text-xs tracking-widest text-center">{device.specifications && Object.entries(device.specifications)?.map(([key, val]: any) => <div key={key + val}><span>{key.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())}:</span><span>{val}</span></div>)}</div>,
+        col6: <div className="text-xs tracking-widest text-center">{device.brand}</div>,
+        col7: <div className="text-xs tracking-widest text-center">{device.manufacturer}</div>,
+        col8: <div className="text-xs tracking-widest text-center">{device.baseOs}</div>,
+        col9: <div className="text-xs tracking-widest text-center">{device.version}</div>,
+        col10: <div className="text-xs tracking-widest text-center">{device.available ? isAvailable : isNotAvailable }</div>,
+        col11: <div className="text-xs tracking-widest text-center">{device.assigneeName}</div>,
         rowId: device.id
       })
     );
