@@ -49,6 +49,7 @@ Rails.application.routes.draw do
 
   get "engagements/*path", to: "engagements#index", via: :all
   resources :engagements, only: [:index]
+  resources :devices, only: [:index]
 
   resources :team, only: [:index, :update, :destroy, :edit] do
     member do
