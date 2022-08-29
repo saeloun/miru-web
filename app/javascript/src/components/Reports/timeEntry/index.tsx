@@ -131,7 +131,7 @@ const TimeEntryReports = () => {
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
           handleDownload={handleDownload}
-          type={"Time entry report"}
+          type={"Time Entry Report"}
         />
         <Container />
         {isFilterVisible && <Filters
