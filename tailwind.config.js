@@ -203,9 +203,10 @@ module.exports = {
     extend: {
       display: ["group-hover"],
       textColor: ["disabled"],
-      backgroundColor: ["disabled"],
-      borderColor: ["disabled"],
+      backgroundColor: ["disabled", "checked"],
+      borderColor: ["disabled", "checked"],
       boxShadow: ["disabled"],
+      inset: ["checked"],
     },
   },
   plugins: [],
