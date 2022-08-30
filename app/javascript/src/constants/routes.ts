@@ -20,10 +20,11 @@ import TotalHoursReport from "../components/Reports/totalHoursLogged";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
 import TeamRouteConfig from "../components/Team/RouteConfig";
 import TimeTracking from "../components/time-tracking/Index";
+const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
 
 const ClientsRoutes = [
   { path: "" ,Component: ClientList },
-  { path: ":clientId" ,Component: ClientDetails }
+  { path: ":clientId" ,Component: ClientDetails,authorisedRoles: [ADMIN, OWNER] }
 ];
 
 const ReportsRoutes = [
@@ -44,7 +45,7 @@ const InvoicesRoutes = [
 
 const ProjectsRoutes = [
   { path: "" ,Component: ProjectList },
-  { path: ":projectId" ,Component: ProjectDetails },
+  { path: ":projectId" ,Component: ProjectDetails, authorisedRoles: [ADMIN, OWNER] },
   { path: "*" ,Component: ErrorPage }
 ];
 
@@ -70,8 +71,6 @@ const TeamRoutes = [
 const ProfileRoutes = [
   { path: "*" ,Component: ProfileLayout }
 ];
-
-const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
 
 const ROUTES = [
   { path: Paths.CLIENTS ,subRoutes: ClientsRoutes, authorisedRoles: [ADMIN, OWNER, EMPLOYEE] },
