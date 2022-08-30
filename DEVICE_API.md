@@ -4,7 +4,7 @@
 
 ### 1. Register Device
 
-POST {{base_url}}/device_api/devices
+POST {{base_url}}/device_api/devices/find_or_create
 
 Request payload :
 ```
@@ -17,9 +17,7 @@ Request payload :
         "base_os": "android",
         "brand": "Samsung",
         "device_type": "mobile",
-        "serial_number": "334455123123",
-        "company_id": 1,
-        "user_id": 1
+        "serial_number": "334455123123"
     }
 }
 
@@ -55,28 +53,14 @@ Example Response :
         "created_at": "2022-05-26T07:21:17.559Z",
         "updated_at": "2022-05-26T07:23:48.907Z"
     },
-    "user": {
-        "id": 1,
-        "first_name": "Vipul",
-        "last_name": "A M",
-        "email": "vipul@example.com",
-        "created_at": "2022-05-26T07:23:49.224Z",
-        "updated_at": "2022-05-26T07:23:49.224Z",
-        "current_workspace_id": 1,
-        "discarded_at": null,
-        "personal_email_id": null,
-        "date_of_birth": null,
-        "social_accounts": null,
-        "department_id": null,
-        "phone": null
-    },
+    user: null,
     "version_id": "1213"
 }
 ```
 
 ### 2. Update availability for device : On/Off
 
-PUT {{url}}/device_api/devices/3
+PUT {{url}}/device_api/devices/3/update_availability
 
 Request data :
 ```
@@ -117,7 +101,7 @@ Example Response :
 
 ### 3. Approve Device Usages
 
-POST {{base_url}}/device_api/devices/:id/approve_usages
+PUT {{base_url}}/device_api/devices/:id/device_usages/approve
 
 Example Response :
 ```
@@ -160,5 +144,17 @@ Example Response :
     },
     "created_by": null,
     "approve": true
+}
+```
+
+### 5. Generate Device Usage Request [WEB]
+
+PUT {{base_url}}/device_api/devices/:id/device_usages
+
+Example Response :
+```
+200 Ok
+{
+  ...
 }
 ```
