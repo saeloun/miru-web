@@ -1,6 +1,18 @@
 # frozen_string_literal: true
 
 class DeviceApi::DevicesController < DeviceApi::ApplicationController
+  def find
+    authorize :create, policy_class: DevicePolicy
+
+    device = Device.find_by!(
+      brand: device_params[:brand], device_type: device_params[:device_type],
+      serial_number: device_params[:serial_number])
+
+    render :create, locals: {
+      device:
+    }
+  end
+
   def create
     authorize Device
     render :create, locals: {
@@ -8,15 +20,21 @@ class DeviceApi::DevicesController < DeviceApi::ApplicationController
     }
   end
 
-  def update
+  def update_availability
     authorize device
 
-    if device.update!(device_params)
+    if device.update(available: device_params[:available])
       render json: {
         success: true,
         device:,
         notice: I18n.t("device.update.success.message")
       }, status: :ok
+    else
+      render json: {
+        success: false,
+        approved_device_usage: last_usage_request,
+        notice: I18n.t("device_usage.update.failure.message")
+      }, status: :unprocessable_entity
     end
   end
 

@@ -379,10 +379,10 @@ const EditEntry: React.FC<Iprops> = ({
                           // setReportConfirmOpen(true);
                         }}
                         className="text-sm text-col-yellow-600 cursor-pointer hover:underline dark:text-blue-500">
-                        Report the issue! <i>[COMING SOON]</i>
+                        Report conflict! [COMING SOON]
                       </a>
                       <ConfirmDialog
-                        title="Report the issue."
+                        title="Report conflict."
                         open={reportConfirmOpen}
                         onClose={() => setReportConfirmOpen(false)}
                         onConfirm={() => setReportConfirmOpen(false)}

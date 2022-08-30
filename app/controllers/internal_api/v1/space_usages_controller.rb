@@ -13,7 +13,7 @@ class InternalApi::V1::SpaceUsagesController < InternalApi::V1::ApplicationContr
       params[:from],
       params[:to]).order(id: :desc)
     entries = formatted_entries_by_date(space_usages)
-    render json: { entries: }, status: :ok
+    render json: { entries:, departments: User::DEPARTMENT_OPTIONS }, status: :ok
   end
 
   def create

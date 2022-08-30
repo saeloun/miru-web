@@ -66,35 +66,36 @@ class User < ApplicationRecord
   include Discard::Model
   include Rails.application.routes.url_helpers
 
-  DepartmentOptionKlass = Struct.new(:name, :id)
+  DepartmentOptionKlass = Struct.new(:name, :id, :color)
+  SimpleKlass = Struct.new(:name, :id)
 
   DEPARTMENT_OPTIONS = [
-    DepartmentOptionKlass.new(".Net", 0),
-    DepartmentOptionKlass.new("Analytics", 1),
-    DepartmentOptionKlass.new("Design", 2),
-    DepartmentOptionKlass.new("Digital", 3),
-    DepartmentOptionKlass.new("HR", 4),
-    DepartmentOptionKlass.new("Information", 5),
-    DepartmentOptionKlass.new("Magento", 6),
-    DepartmentOptionKlass.new("Management", 7),
-    DepartmentOptionKlass.new("Meanstack", 8),
-    DepartmentOptionKlass.new("Mobile", 9),
-    DepartmentOptionKlass.new("Odoo", 10),
-    DepartmentOptionKlass.new("PHP", 11),
-    DepartmentOptionKlass.new("QA", 12),
-    DepartmentOptionKlass.new("ROR", 13),
-    DepartmentOptionKlass.new("React", 14),
-    DepartmentOptionKlass.new("SEO", 15),
-    DepartmentOptionKlass.new("SRE", 16),
-    DepartmentOptionKlass.new("Sales", 17),
-    DepartmentOptionKlass.new("Shopify", 18)
+    DepartmentOptionKlass.new(".Net", 0, "#3b4ece"),
+    DepartmentOptionKlass.new("Analytics", 1, "#b904a3"),
+    DepartmentOptionKlass.new("Design", 2, "#60bac2"),
+    DepartmentOptionKlass.new("Digital", 3, "#36efa7"),
+    DepartmentOptionKlass.new("HR", 4, "#a0262c"),
+    DepartmentOptionKlass.new("Information", 5, "#963f07"),
+    DepartmentOptionKlass.new("Magento", 6, "#b75aea"),
+    DepartmentOptionKlass.new("Management", 7, "#bd8548"),
+    DepartmentOptionKlass.new("Meanstack", 8, "#a9b784"),
+    DepartmentOptionKlass.new("Mobile", 9, "#a43aab"),
+    DepartmentOptionKlass.new("Odoo", 10, "#5fb222"),
+    DepartmentOptionKlass.new("PHP", 11, "#e17e51"),
+    DepartmentOptionKlass.new("QA", 12, "#660b1d"),
+    DepartmentOptionKlass.new("ROR", 13, "#73465c"),
+    DepartmentOptionKlass.new("React", 14, "f0ff6b"),
+    DepartmentOptionKlass.new("SEO", 15, "#e078b6"),
+    DepartmentOptionKlass.new("SRE", 16, "#4cc8fb"),
+    DepartmentOptionKlass.new("Sales", 17, "#784457"),
+    DepartmentOptionKlass.new("Shopify", 18, "#c63c9b")
   ]
 
   ENGAGEMENT_OPTIONS = [
-    DepartmentOptionKlass.new("Free", 1),
-    DepartmentOptionKlass.new("Partially", 2),
-    DepartmentOptionKlass.new("Fully", 3),
-    DepartmentOptionKlass.new("Over", 4),
+    SimpleKlass.new("Free", 1),
+    SimpleKlass.new("Partially", 2),
+    SimpleKlass.new("Fully", 3),
+    SimpleKlass.new("Over", 4),
   ]
 
   # Associations

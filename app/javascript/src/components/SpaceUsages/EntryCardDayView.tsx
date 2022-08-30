@@ -12,7 +12,8 @@ const EntryCardDayView = ({
   setNewEntryId,
   newEntryId,
   setSelectedTime,
-  isPastDate
+  isPastDate,
+  departments
 }) => {
   useEffect(() => {
     if (newEntryId) {
@@ -34,13 +35,20 @@ const EntryCardDayView = ({
     }}>
       {spaceUsages && spaceUsages.map((space, _index) => {
         const displayTitle = `${space.user_name} • ${space.purpose_name}`;
-        const displayColor = space.user_color ? `#${space.user_color}` : "#1D1A31"
+        const borderDisplayColor = space.user_color ? `#${space.user_color}` : "#1D1A31"
+        const department = departments.find((i) => i.id === space.department_id )
+        const displayColor = department ? department.color : "#1D1A31"
 
         return (<div id={space.id}
-          className="relative cursor-pointer as-meeting-point w-7 opacity-90"
+          className="relative cursor-pointer as-meeting-point opacity-90"
           key={_index}
           title={displayTitle}
-          style={ { height: `${space.end_duration - space.start_duration}px`, top: `${space.start_duration}px`, backgroundColor: displayColor } }
+          style={ {
+            height: `${space.end_duration - space.start_duration}px`,
+            top: `${space.start_duration}px`,
+            backgroundColor: displayColor,
+            borderLeft: `10px solid ${borderDisplayColor}`,
+          } }
           onClick={() => {setEditEntryColor(displayColor); setEditEntryId(space.id);}} >
           <h6 className="text-white">{displayTitle}</h6>
         </div>)

@@ -33,6 +33,7 @@ dayjs.Ls.en.weekStart = 1;
 const TimeReserving: React.FC<Iprops> = ({
   entries,
   userId,
+  departments,
 }) => {
   const [dayInfo, setDayInfo] = useState<any[]>([]);
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
@@ -392,6 +393,7 @@ const TimeReserving: React.FC<Iprops> = ({
                     newEntryId={newEntryId}
                     setSelectedTime={setSelectedTime}
                     isPastDate={isPastDate}
+                    departments={departments}
                   />))
                 }
               </div>
@@ -436,6 +438,7 @@ interface Iprops {
   isAdmin: boolean;
   userId: number;
   employees: [];
+  departments: [];
 }
 
 export default TimeReserving;

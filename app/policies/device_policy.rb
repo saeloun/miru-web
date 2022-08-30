@@ -13,12 +13,20 @@ class DevicePolicy < ApplicationPolicy
     true
   end
 
+  def find?
+    true
+  end
+
+  def update_availability?
+    true
+  end
+
   def can_access?
     user_owner_role? || user_admin_role? || (user_employee_role? && user_under_sales_department?) || user_team_lead?
   end
 
   def permitted_attributes
     [:available, :base_os, :brand, :device_type, :manufacturer, :meta_details, :name, :serial_number, :specifications,
-     :version, :assignee_id, :company_id, :user_id, :version_id]
+     :version, :assignee_id, :version_id]
   end
 end

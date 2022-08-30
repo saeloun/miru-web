@@ -19,7 +19,7 @@
 #  updated_at     :datetime         not null
 #  assignee_id    :bigint
 #  company_id     :bigint           not null
-#  user_id        :bigint           not null
+#  user_id        :bigint
 #  version_id     :string
 #
 # Indexes
@@ -52,6 +52,7 @@ class Device < ApplicationRecord
 
     def set_availabilty
       self.available = true unless self.assignee_id.present?
+      self.company_id = Company.first.id
     end
 
     def add_device_timelines

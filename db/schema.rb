@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_29_105324) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_30_063336) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -137,7 +137,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_29_105324) do
   end
 
   create_table "devices", force: :cascade do |t|
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.bigint "company_id", null: false
     t.string "device_type", default: "laptop"
     t.string "name"

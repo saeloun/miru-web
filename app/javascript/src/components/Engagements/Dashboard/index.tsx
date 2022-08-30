@@ -1,13 +1,14 @@
 import React from 'react';
 import { models } from 'powerbi-client';
 import { PowerBIEmbed } from 'powerbi-client-react';
-import * as config from "./Config";
 import 'powerbi-report-authoring';
+import Tab from "./../Tab";
+import * as config from "./Config";
 import './style.scss';
 
-const embedUrl = "https://app.powerbi.com/view?r=eyJrIjoiYzY2N2Q0OTMtNTY5Mi00NDliLTg5OGItOWU4NDg2NWRmZjZjIiwidCI6ImE5NDVmYWM4LTg3NTctNDdlYS05MmZhLWZmYjM5NzA2YmIxNCJ9";
+const embedUrl = "https://app.powerbi.com/view?r=eyJrIjoiZWYxNTNmOTItNmU3Mi00NTczLTk4ZWYtNzRhNTk5NmFkMzMyIiwidCI6ImE5NDVmYWM4LTg3NTctNDdlYS05MmZhLWZmYjM5NzA2YmIxNCJ9";
 
-const Dashboard = () => {
+const Dashboard = ({ isAdminUser }) => {
   const sampleReportConfig = {
     type: 'report',
     tokenType: models.TokenType.Aad,
@@ -18,16 +19,19 @@ const Dashboard = () => {
   };
 
   return (
-    <div className='engagement-dashboard'>
-      <div className="flex flex-col">
-        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <PowerBIEmbed
-            embedConfig = { sampleReportConfig }
-            cssClassName = { "report-style-class" }
-          />
+    <>
+      <Tab isAdminUser={isAdminUser} tabClassName={'dashboard'}/>
+      <div className='engagement-dashboard'>
+        <div className="flex flex-col">
+          <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <PowerBIEmbed
+              embedConfig = { sampleReportConfig }
+              cssClassName = { "report-style-class" }
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

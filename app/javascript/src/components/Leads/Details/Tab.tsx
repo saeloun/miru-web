@@ -43,7 +43,7 @@ const Tab = ({
           lineItems: `/leads/${leadId}/line-items`,
           quotes: `/leads/${leadId}/quotes`,
         };
-        const filterPath = Object.keys(path).filter((key, _index) => (location.pathname === path[key]));
+        const filterPath = ["summary", "timelines", "lineItems", "quotes"].filter((key, _index) => (location.pathname === path[key]));
         if (filterPath[0]) {
           setActiveTab(filterPath[0]);
           return null;

@@ -17,7 +17,7 @@ class SpaceOccupyingController < ApplicationController
         1.month.since.end_of_month
         ).order(id: :desc)
     entries = formatted_entries_by_date(space_usages)
-    render :index, locals: { is_admin:, entries:, employees:, user_id: }
+    render :index, locals: { is_admin:, entries:, employees:, user_id:, departments: User::DEPARTMENT_OPTIONS }
   end
 
   private

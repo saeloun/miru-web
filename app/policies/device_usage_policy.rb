@@ -9,6 +9,10 @@ class DeviceUsagePolicy < ApplicationPolicy
     true
   end
 
+  def approve?
+    true
+  end
+
   def permitted_attributes
     [:device_id, :assignee_id, :created_by_id, :approve]
   end

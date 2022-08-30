@@ -25,7 +25,7 @@ const Tab = ({ isAdminUser }) => {
       consultancies: `/recruitments/consultancies`,
       candidates: `/recruitments/candidates`
     };
-    const filterPath = Object.keys(path).filter((key, _index) => (location.pathname === path[key]));
+    const filterPath = ['consultancies', 'candidates'].filter((key, _index) => (location.pathname === path[key]));
     if (filterPath[0]) {
       setActiveTab(filterPath[0]);
       return null;

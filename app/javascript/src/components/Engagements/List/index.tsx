@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import ReactTooltip from "react-tooltip";
-
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import engagements from "apis/engagements";
 import Pagination from "common/Pagination";
 import Table from "common/Table";
 import { CircleWavyWarning } from "phosphor-react";
+import Tab from "./../Tab";
 import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
 
@@ -148,13 +148,13 @@ const Engagements = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
+      <Tab isAdminUser={isAdminUser} tabClassName={'list'}/>
       <Header
         setFilterVisibilty={setFilterVisibilty}
         setEngagementData={setEngagementData}
         setPagy={setPagy}
         params={params}
         setParams={setParams}
-        isAdminUser={isAdminUser}
       />
       <div>
         <div className="flex flex-col">

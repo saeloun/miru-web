@@ -100,6 +100,7 @@ class SpaceUsage < ApplicationRecord
       note:,
       user_name: user.full_name,
       user_color: user.color,
+      department_id: user.department_id,
       team_members:
     }
   end
