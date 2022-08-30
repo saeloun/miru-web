@@ -6,15 +6,27 @@ class DevicePolicy < ApplicationPolicy
   end
 
   def create?
-    true
+    owner_admin_access?
   end
 
   def update?
-    true
+    owner_admin_access?
+  end
+
+  def destroy?
+    owner_admin_access?
+  end
+
+  def items?
+    owner_admin_access?
   end
 
   def can_access?
-    user_owner_role? || user_admin_role? || (user_employee_role? && user_under_sales_department?) || user_team_lead?
+    owner_admin_access? || (user_employee_role? && user_under_sales_department?) || user_team_lead?
+  end
+
+  def owner_admin_access?
+    user_owner_role? || user_admin_role?
   end
 
   def permitted_attributes

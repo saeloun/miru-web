@@ -350,3 +350,10 @@ en:
       message: "Space usage updated"
     destroy:
       message: "Space usage deleted"
+  devices:
+    create:
+      message: "Device created"
+    update:
+      message: "Device updated"
+    destroy:
+      message: "Device deleted"
