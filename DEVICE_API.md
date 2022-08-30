@@ -4,7 +4,11 @@
 
 ### 1. Register Device
 
-POST {{base_url}}/device_api/devices/find_or_create
+POST {{base_url}}/device_api/devices
+
+OR To find an device 
+
+POST {{base_url}}/device_api/devices/find
 
 Request payload :
 ```
