@@ -23,6 +23,11 @@
 #  index_invitations_on_sender_id   (sender_id)
 #  index_invitations_on_token       (token) UNIQUE
 #
+# Foreign Keys
+#
+#  fk_rails_...  (company_id => companies.id)
+#  fk_rails_...  (sender_id => users.id)
+#
 class Invitation < ApplicationRecord
   enum role: [:owner, :admin, :employee, :book_keeper]
 
@@ -81,9 +86,13 @@ class Invitation < ApplicationRecord
     end
 
     def non_existing_company_user
-      if company && company.users.exists?(email: recipient_email)
+      if company && employment_in_company_present?
         self.errors.add(:base, "User is already a team member in workspace")
       end
+    end
+
+    def employment_in_company_present?
+      company.employments.kept.includes(:user).find_by(user: { email: recipient_email }).present?
     end
 
     def recipient_email_not_changed

@@ -23,7 +23,7 @@ const Table = ({
       />
     </thead>
 
-    <tbody className="min-w-full bg-white divide-y divide-gray-200">
+    <tbody className="min-w-full bg-white divide-y divide-gray-200" data-cy="invoices-list">
       {invoices.map((invoice) => (
         <TableRow
           key={invoice.id}

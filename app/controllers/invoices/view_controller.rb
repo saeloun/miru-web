@@ -5,6 +5,8 @@ class Invoices::ViewController < ApplicationController
   skip_after_action :verify_authorized
 
   def show
+    invoice.viewed! if invoice.sent?
+
     render :show, locals: { invoice: }, layout: false
   end
 

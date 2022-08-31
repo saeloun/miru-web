@@ -2,6 +2,7 @@
 import React from "react";
 
 import ReportCard from "./reportCard";
+
 const calendar = require("../../../../images/Calendar.svg"); // eslint-disable-line
 const hours = require("../../../../images/Hours.svg");
 const overdueOutstandingIcon = require("../../../../images/OverdueOutstanding.svg");
@@ -9,13 +10,13 @@ const revenue = require("../../../../images/Revenue.svg");
 
 const listDetails = [{
   icon: calendar,
-  title: "Time entry report",
+  title: "Time Entry Report",
   description: "A summary of the time entries added by your team.",
   url: "time-entry",
   show: true
 }, {
   icon: overdueOutstandingIcon,
-  title: "Outstanding & overdue invoices",
+  title: "Invoices Report",
   description: "A detailed summary of outstanding and overdue of all clients for a period of time.",
   url: "outstanding-overdue-invoice",
   show: true
@@ -27,7 +28,7 @@ const listDetails = [{
   show: false
 }, {
   icon: revenue,
-  title: "Revenue by client",
+  title: "Revenue Report",
   description: "A detailed report of revenue from each client.",
   url: "revenue-by-client",
   show: true
