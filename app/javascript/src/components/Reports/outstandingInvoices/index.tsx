@@ -125,7 +125,7 @@ const OutstandingInvoiceReport = () => {
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
           handleDownload={handleDownload}
-          type={"Outstanding and Overdue Invoices"}
+          type={"Invoices Report"}
         />
         <Container />
         {false && <Filters
