@@ -10,8 +10,6 @@ import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const deleteIcon = require("../../../../assets/images/delete.svg");
 const editIcon = require("../../../../assets/images/edit.svg");
 
 const { useState, useEffect } = React;
@@ -211,13 +209,13 @@ const WeeklyEntriesCard = ({
             onClick={() => {if (! isWeeklyEditing) setProjectSelected(false); setIsWeeklyEditing(true); }}
             src={editIcon}
             alt="edit"
-            className="icon-hover ml-8 cursor-pointer"
+            className="icon-hover ml-8 cursor-pointer w-4 h-4"
           />
           {/* <img
             onClick={handleDeleteEntries}
             src={deleteIcon}
             alt="delete"
-            className="icon-hover ml-8 cursor-pointer"
+            className="icon-hover ml-8 cursor-pointer w-4 h-4"
           /> */}
         </div>
       </div>

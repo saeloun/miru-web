@@ -12,11 +12,11 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import { useProfile } from "../context/EntryContext";
 import Header from "../Header";
 
+const deleteIcon = require("../../../../../assets/images/delete.svg");
 const editButton = require("../../../../../assets/images/edit_image_button.svg");
 const password_icon = require("../../../../../assets/images/password_icon.svg");
 const password_icon_text = require("../../../../../assets/images/password_icon_text.svg");
 const img = require("../../../../../assets/images/plus_icon.svg");
-const deleteIcon = require("../../../../assets/images/delete.svg");
 
 const userProfileSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name cannot be blank"),

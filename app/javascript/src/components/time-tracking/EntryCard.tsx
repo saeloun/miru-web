@@ -36,7 +36,7 @@ const EntryCard: React.FC<props> = ({
         <p className="text-lg mx-2">•</p>
         <p className="text-lg">{project}</p>
       </div>
-      <p className="max-h-32 overflow-auto text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
+      <p className="max-h-32 w-160 overflow-auto text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
         {note}
       </p>
     </div>
@@ -53,14 +53,14 @@ const EntryCard: React.FC<props> = ({
         <img
           src={editIcon}
           alt="edit"
-          className="icon-hover text-miru-han-purple-600 hover:text-miru-han-purple-1000"
+          className="icon-hover text-miru-han-purple-600 hover:text-miru-han-purple-1000 w-4 h-4"
         />
       </button>
       <button onClick={() => handleDeleteEntry(id)} className="mr-10">
         <img
           src={deleteIcon}
           alt="delete"
-          className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000"
+          className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000 w-4 h-4"
         />
       </button>
     </div>
