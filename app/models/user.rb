@@ -83,7 +83,7 @@ class User < ApplicationRecord
     DepartmentOptionKlass.new("Odoo", 10, "#5fb222"),
     DepartmentOptionKlass.new("PHP", 11, "#e17e51"),
     DepartmentOptionKlass.new("QA", 12, "#660b1d"),
-    DepartmentOptionKlass.new("ROR", 13, "#73465c"),
+    DepartmentOptionKlass.new("ROR", 13, "#5984bc"),
     DepartmentOptionKlass.new("React", 14, "f0ff6b"),
     DepartmentOptionKlass.new("SEO", 15, "#e078b6"),
     DepartmentOptionKlass.new("SRE", 16, "#4cc8fb"),
