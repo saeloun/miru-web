@@ -265,7 +265,7 @@ const ProjectDetails = () => {
               THIS WEEK
             </option>
             <option className="text-miru-dark-purple-600" value="month">
-              This MONTH
+              THIS MONTH
             </option>
             <option className="text-miru-dark-purple-600" value="year">
               THIS YEAR
