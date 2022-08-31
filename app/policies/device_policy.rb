@@ -29,6 +29,10 @@ class DevicePolicy < ApplicationPolicy
     user_owner_role? || user_admin_role?
   end
 
+  def admin_access?
+    owner_admin_access? || (user_employee_role? && user_under_sales_department?)
+  end
+
   def permitted_attributes
     [:available, :base_os, :brand, :device_type, :manufacturer, :meta_details, :name, :serial_number, :specifications,
      :version, :assignee_id, :company_id, :user_id, :version_id]
