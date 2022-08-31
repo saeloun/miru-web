@@ -89,7 +89,7 @@
 
 .ac-calendar-container .ac-calendar-users {
 	@apply sticky bg-white shadow pl-15;
-	z-index: 1;
+	z-index: 3;
 	top: 0px;
 }
 .ac-calendar-container .ac-user-name {
@@ -108,7 +108,7 @@
 .ac-calendar-view {
 	.current-hour-line {
 		@apply w-full absolute flex flex-row;
-		z-index: 0.5;
+		z-index: 0.9;
 		.circle, .line {
 			@apply bg-col-red-400;
 		}

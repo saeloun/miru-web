@@ -35,7 +35,7 @@ const Header = ({
         "sm:flex mt-6 mb-3 sm:items-center sm:justify-between"
       }>
       <span className="inline-flex">
-        <h2 className="header__title">Resource Engagement</h2>
+        <h2 className="header__title">Engagement</h2>
 
       </span>
       <div className="header__searchWrap">
