@@ -35,12 +35,12 @@ const EntryCardDayView = ({
     }}>
       {spaceUsages && spaceUsages.map((space, _index) => {
         const displayTitle = `${space.user_name} • ${space.purpose_name}`;
-        const borderDisplayColor = space.user_color ? `#${space.user_color}` : "#1D1A31"
+        const borderDisplayColor = space.user_color ? `${space.user_color}` : "#1D1A31"
         const department = departments.find((i) => i.id === space.department_id )
         const displayColor = department ? department.color : "#1D1A31"
 
         return (<div id={space.id}
-          className="relative z-1 cursor-pointer as-meeting-point w-7 opacity-80"
+          className="relative cursor-pointer z-1 as-meeting-point w-7 opacity-80"
           key={_index}
           title={displayTitle}
           style={ {

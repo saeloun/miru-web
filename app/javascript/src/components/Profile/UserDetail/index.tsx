@@ -181,7 +181,7 @@ const UserDetails = () => {
     }
   };
 
-  const getErr = (errMsg) => <p className="text-red-600 text-sm">{errMsg}</p>;
+  const getErr = (errMsg) => <p className="text-sm text-red-600">{errMsg}</p>;
 
   return (
     <div className="flex flex-col w-4/5">
@@ -194,13 +194,13 @@ const UserDetails = () => {
         isDisableUpdateBtn={isDetailUpdated}
       />
       {isLoading ? <Loader /> : (
-        <div className="pb-10 pt-10 pl-10 pr-10 mt-4 bg-miru-gray-100 min-h-80v">
+        <div className="pt-10 pb-10 pl-10 pr-10 mt-4 bg-miru-gray-100 min-h-80v">
           <div className="flex flex-row py-6">
-            <div className="w-4/12 font-bold p-2">Basic Details</div>
+            <div className="w-4/12 p-2 font-bold">Basic Details</div>
             <div className="w-full p-2">
               Profile Picture
               {profileImage ? (
-                <div className="mt-2 flex flex-row">
+                <div className="flex flex-row mt-2">
                   <div className="w-20 h-20">
                     <img src={profileImage} alt={"profile_pic"} className={"rounded-full min-w-full h-full"} />
                   </div>
@@ -219,15 +219,15 @@ const UserDetails = () => {
                 </div>
               ) : (
                 <>
-                  <div className="w-20 h-20 border rounded border-miru-han-purple-1000 mt-2 ">
-                    <label htmlFor="file-input" className="flex justify-center items-cente w-full h-full cursor-pointer">
+                  <div className="w-20 h-20 mt-2 border rounded border-miru-han-purple-1000 ">
+                    <label htmlFor="file-input" className="flex justify-center w-full h-full cursor-pointer items-cente">
                       <img alt="profile_box" src={img} className="object-none" />
                     </label>
                   </div>
                   <input id="file-input" type="file" name="myImage" className='hidden' onChange={handleProfileImageChange} />
                 </>
               )}
-              <div className="mt-2 flex flex-col">
+              <div className="flex flex-col mt-2">
                 <label className="mt-2">Name</label>
                 <div className="flex flex-row mt-2">
                   <div className="flex flex-col w-1/2">
@@ -236,7 +236,7 @@ const UserDetails = () => {
                       id="first_name"
                       name="first_name"
                       value={firstName}
-                      className="border py-1 px-1 w-full mr-2"
+                      className="w-full px-1 py-1 mr-2 border"
                       onChange={handleFirstNameChange}
                     />
                     {errDetails.firstNameErr && getErr(errDetails.firstNameErr)}
@@ -247,7 +247,7 @@ const UserDetails = () => {
                       id="last_name"
                       name="last_name"
                       value={lastName}
-                      className="border py-1 px-1 w-full ml-2"
+                      className="w-full px-1 py-1 ml-2 border"
                       onChange={handleLastNameChange}
                     />
                     {errDetails.lastNameErr && getErr(errDetails.lastNameErr)}
@@ -257,14 +257,13 @@ const UserDetails = () => {
               <div className="mt-2">
                 <label>
                   Color
-                  <span className="m-2 p-2" style={{ background: `#${color}` }}></span>
                 </label>
                 <input
-                  type="text"
+                  type="color"
                   id="color"
                   name="color"
                   value={color}
-                  className="border py-1 px-1 w-full mt-2"
+                  className="block w-40 h-10 p-0 my-2"
                   onChange={handleColorChange}
                 />
               </div>
@@ -275,7 +274,7 @@ const UserDetails = () => {
                   id="email"
                   name="email"
                   value={email}
-                  className="border py-1 px-1 w-full mt-2"
+                  className="w-full px-1 py-1 mt-2 border"
                   onChange={event => setEmail(event.target.value)}
                   disabled
                 />
@@ -284,13 +283,13 @@ const UserDetails = () => {
           </div>
           <Divider />
           <div className="flex flex-row py-6">
-            <div className="w-4/12 font-bold p-2">Password</div>
+            <div className="w-4/12 p-2 font-bold">Password</div>
             <div className="w-full p-2">
               <div>
                 {
                   !changePassword && (
                     <div>
-                      <p className=" text-miru-han-purple-1000 cursor-pointer" onClick={() => setChangePassword(true)}>CHANGE PASSWORD</p>
+                      <p className="cursor-pointer text-miru-han-purple-1000" onClick={() => setChangePassword(true)}>CHANGE PASSWORD</p>
                     </div>
                   )
                 }
@@ -300,16 +299,16 @@ const UserDetails = () => {
                       <div className="flex flex-col">
                         <div>
                           <label>Current Password</label>
-                          <div className="flex relative items-center">
+                          <div className="relative flex items-center">
                             <input
                               type={showCurrentPasword ? "text" : "password"}
                               id="current_password"
                               name="current_password"
                               value={currentPassword}
-                              className="border py-1 px-1 w-full mt-2"
+                              className="w-full px-1 py-1 mt-2 border"
                               onChange={handleCurrentPasswordChange}
                             />
-                            <button className="btn btn-outline-primary absolute mt-2 mr-3 right-0" onClick={() => setShowCurrentPassword(!showCurrentPasword)} >
+                            <button className="absolute right-0 mt-2 mr-3 btn btn-outline-primary" onClick={() => setShowCurrentPassword(!showCurrentPasword)} >
                               {!showCurrentPasword ? <img src={password_icon} alt="pass_icon" /> : <img src={password_icon_text} alt="pass_icon_text" />}
                             </button>
                           </div>
@@ -318,16 +317,16 @@ const UserDetails = () => {
                         <div className="flex flex-row mt-2">
                           <div className="flex flex-col w-1/2 pr-2 mt-2">
                             <label className="mb-2">Password</label>
-                            <div className="flex relative items-center">
+                            <div className="relative flex items-center">
                               <input
                                 type={showPasword ? "text" : "password"}
                                 id="password"
                                 name="password"
                                 value={password}
-                                className=" border py-1 px-1 w-full mt-2"
+                                className="w-full px-1 py-1 mt-2 border "
                                 onChange={handlePasswordChange}
                               />
-                              <button className="btn btn-outline-primary absolute mt-2 mr-3 right-0" onClick={() => setShowPassword(!showPasword)}>
+                              <button className="absolute right-0 mt-2 mr-3 btn btn-outline-primary" onClick={() => setShowPassword(!showPasword)}>
                                 {!showPasword ? <img src={password_icon} alt="pass_icon" /> : <img src={password_icon_text} alt="pass_icon_text" />}
                               </button>
                             </div>
@@ -336,23 +335,23 @@ const UserDetails = () => {
                           </div>
                           <div className="flex flex-col w-1/2 pl-2 mt-2">
                             <label className="mb-2">Confirm Password</label>
-                            <div className="flex relative items-center">
+                            <div className="relative flex items-center">
                               <input
                                 type={showConfirmPasword ? "text" : "password"}
                                 id="confirm_password"
                                 name="confirm_password"
                                 value={confirmPassword}
-                                className="border py-1 px-1 w-full mt-2"
+                                className="w-full px-1 py-1 mt-2 border"
                                 onChange={handleConfirmPasswordChange}
                               />
-                              <button className="btn btn-outline-primary absolute mt-2 mr-3 right-0" onClick={() => setShowConfirmPassword(!showConfirmPasword)}>
+                              <button className="absolute right-0 mt-2 mr-3 btn btn-outline-primary" onClick={() => setShowConfirmPassword(!showConfirmPasword)}>
                                 {!showConfirmPasword ? <img src={password_icon} alt="pass_icon" /> : <img src={password_icon_text} alt="pass_icon_text" />}
                               </button>
                             </div>
                             {errDetails.confirmPasswordErr && getErr(errDetails.confirmPasswordErr)}
                           </div>
                         </div>
-                        <p className="mt-5 text-miru-han-purple-1000 cursor-pointer" onClick={() => setChangePassword(false)}>CANCEL</p>
+                        <p className="mt-5 cursor-pointer text-miru-han-purple-1000" onClick={() => setChangePassword(false)}>CANCEL</p>
                       </div>
                     </div>
                   )
