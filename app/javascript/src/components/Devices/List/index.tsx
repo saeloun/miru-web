@@ -10,8 +10,8 @@ import Table from "common/Table";
 import EditEntry from "./EditEntry";
 import FilterSideBar from "./FilterSideBar";
 // import Header from "./Header";
-
 import { TOASTER_DURATION } from "../../../constants/index";
+import './style.scss';
 
 const Devices = ({ isAdminUser }) => {
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
@@ -211,6 +211,8 @@ const Devices = ({ isAdminUser }) => {
           setClose={setEditOpen}
           setSelectedDeviceId={setSelectedDeviceId}
           selectedDeviceId={selectedDeviceId}
+          fetchDevices={fetchDevices}
+          deviceData={{ ...deviceData.find((e: any) => e.id === selectedDeviceId) }}
         />
       }
     </>

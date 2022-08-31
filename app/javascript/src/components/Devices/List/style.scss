@@ -1,0 +1,4 @@
+.required:after {
+	@apply text-red-600 ml-1;
+	content:"*";
+}

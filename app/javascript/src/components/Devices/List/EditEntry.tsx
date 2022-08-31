@@ -1,26 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import devicesApi from "apis/devices";
+import devicesItemsApi from 'apis/devices-items';
+
+interface ISelectOptions {
+  id: string | number;
+  name: string;
+}
 
 interface IEditEntryProps {
   className?: string;
   setClose: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedDeviceId: React.Dispatch<React.SetStateAction<string|undefined>>;
   selectedDeviceId?: string;
+  fetchDevices: () => void;
+  deviceData: any;
 }
 
 const EditEntry: React.FC<IEditEntryProps> = ({
   className='',
   setClose,
   setSelectedDeviceId,
+  selectedDeviceId,
+  fetchDevices,
+  deviceData,
 }) => {
+  const [deviceTypeOptions, setDeviceTypeOptions] = useState<Array<ISelectOptions> | undefined>([]);
+  const [assigneeIdOptions, setAssigneeIdOptions] = useState<Array<ISelectOptions> | undefined>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [deviceType, setDeviceType] = useState<string | undefined>();
-  const [deviceName, setDeviceName] = useState<string | undefined>();
-  const [deviceBrand, setDeviceBrand] = useState<string | undefined>();
-  const [deviceManufacturer, setDeviceManufacturer] = useState<string | undefined>();
-  const [deviceOS, setDeviceOS] = useState<string | undefined>();
-  const [deviceVersion, setDeviceVersion] = useState<string | undefined>();
-  const [assigneeId, setAssigneeId] = useState<number | undefined>();
-  const [deviceIsAvailable, setDeviceIsAvailable] = useState<boolean>(false);
+  const [deviceType, setDeviceType] = useState<string | undefined>(deviceData.deviceType);
+  const [deviceName, setDeviceName] = useState<string | undefined>(deviceData.name);
+  const [deviceBrand, setDeviceBrand] = useState<string | undefined>(deviceData.brand);
+  const [deviceManufacturer, setDeviceManufacturer] = useState<string | undefined>(deviceData.manufacturer);
+  const [deviceOS, setDeviceOS] = useState<string | undefined>(deviceData.baseOs);
+  const [deviceVersion, setDeviceVersion] = useState<string | undefined>(deviceData.version);
+  const [assigneeId, setAssigneeId] = useState<number | undefined>(deviceData.assigneeId);
+  const [deviceIsAvailable, setDeviceIsAvailable] = useState<boolean>(deviceData.available);
   const isAvailable = <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-green-400 text-miru-alert-green-800">Available</span>;
   const isNotAvailable = <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-pink-400 text-miru-alert-red-1000">Not Available</span>;
   const loadingButton = <>
@@ -42,9 +56,51 @@ const EditEntry: React.FC<IEditEntryProps> = ({
     Processing...
   </>;
 
-  const handleEdit = () => {
+  useEffect(() => {
+    devicesItemsApi.get()
+      .then((response: any) => {
+        setDeviceTypeOptions(response.data.device_type);
+        setAssigneeIdOptions(response.data.users);
+      }).catch(() => {
+        setDeviceTypeOptions([]);
+        setAssigneeIdOptions([]);
+      });
+    return () => {
+      setDeviceTypeOptions([]);
+      setAssigneeIdOptions([]);
+    };
+  }, []);
+
+  const getPayload = () => ({
+    available: deviceIsAvailable,
+    base_os: deviceOS,
+    brand: deviceBrand,
+    device_type: deviceType,
+    manufacturer: "",
+    meta_details: "",
+    name: deviceName,
+    serial_number: "",
+    specifications: "",
+    version: deviceVersion,
+    assignee_id: assigneeId,
+    user_id: "",
+    version_id: "",
+
+  });
+
+  const handleEdit = async () => {
     setIsProcessing(true);
-    setIsProcessing(false);
+    const params = getPayload();
+    const res = await devicesApi.update(selectedDeviceId, {
+      device_params: params
+    });
+
+    if (res.status === 200) {
+      fetchDevices();
+      setIsProcessing(false);
+      setSelectedDeviceId(undefined);
+      setClose(false);
+    }
   }
 
   return (
@@ -52,11 +108,13 @@ const EditEntry: React.FC<IEditEntryProps> = ({
       <span className='fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50' />
       <div aria-hidden="true" className={`fixed top-0 left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full ${className}`}>
         <div className="relative float-right w-full h-full max-w-md md:h-auto">
-          <div className="relative bg-gray-200 rounded-lg shadow dark:bg-gray-700">
-            <button type="button" className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+          <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button
+              type="button"
+              className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
               onClick={() => {
-                setClose(false);
                 setSelectedDeviceId(undefined);
+                setClose(false);
               }}>
               <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
               <span className="sr-only">Close modal</span>
@@ -85,9 +143,9 @@ const EditEntry: React.FC<IEditEntryProps> = ({
                         Please select device type
                       </option>
                     )}
-                    {/* {SPACES.map((a) => (
-                      <option key={`space-${a.id}`} value={a.id}>{a["name"]}</option>
-                    ))} */}
+                    {deviceTypeOptions.map((a: ISelectOptions) => (
+                      <option key={`deviceType-${a.id}`} value={a.id}>{a.name}</option>
+                    ))}
                   </select>
                 </div>
                 <div>
@@ -104,7 +162,7 @@ const EditEntry: React.FC<IEditEntryProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Available</label>
+                  <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Available</label>
                   <div className="mb-3">
                     <span className="font-medium text-gray-400">{isNotAvailable}</span>
                     <div className="relative inline-block w-10 mx-2 align-middle select-none">
@@ -115,7 +173,7 @@ const EditEntry: React.FC<IEditEntryProps> = ({
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="brand" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Brand</label>
+                  <label htmlFor="brand" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Brand</label>
                   <input
                     disabled={isProcessing}
                     onChange={e => {
@@ -128,7 +186,7 @@ const EditEntry: React.FC<IEditEntryProps> = ({
                   />
                 </div>
                 <div>
-                  <label htmlFor="manufacturer" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Manufacturer</label>
+                  <label htmlFor="manufacturer" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Manufacturer</label>
                   <input
                     disabled={isProcessing}
                     onChange={e => {
@@ -141,7 +199,7 @@ const EditEntry: React.FC<IEditEntryProps> = ({
                   />
                 </div>
                 <div>
-                  <label htmlFor="os" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">OS</label>
+                  <label htmlFor="os" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">OS</label>
                   <input
                     disabled={isProcessing}
                     onChange={e => {
@@ -154,7 +212,7 @@ const EditEntry: React.FC<IEditEntryProps> = ({
                   />
                 </div>
                 <div>
-                  <label htmlFor="version" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Version</label>
+                  <label htmlFor="version" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Version</label>
                   <input
                     disabled={isProcessing}
                     onChange={e => {
@@ -167,7 +225,7 @@ const EditEntry: React.FC<IEditEntryProps> = ({
                   />
                 </div>
                 <div>
-                  <label htmlFor="assignee" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Assignee</label>
+                  <label htmlFor="assignee" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Assignee</label>
                   <select
                     disabled={isProcessing}
                     onChange={e => {
@@ -183,14 +241,14 @@ const EditEntry: React.FC<IEditEntryProps> = ({
                         Please select assignee
                       </option>
                     )}
-                    {/* {SPACES.map((a) => (
-                      <option key={`space-${a.id}`} value={a.id}>{a["name"]}</option>
-                    ))} */}
+                    {assigneeIdOptions.map((a: ISelectOptions) => (
+                      <option key={`assigneeId-${a.id}`} value={a.id}>{a.name}</option>
+                    ))}
                   </select>
                 </div>
                 <button
                   onClick={handleEdit}
-                  disabled={isProcessing}
+                  disabled={!(deviceType && deviceName) || isProcessing}
                   className={
                     `mb-1 h-8 w-full text-xs py-1 px-6 rounded border text-white font-bold tracking-widest bg-miru-han-purple-1000 hover:border-transparent ${!isProcessing ? 'disabled:bg-miru-gray-1000' : 'disabled:bg-miru-han-purple-400'}`
                   }
@@ -199,8 +257,8 @@ const EditEntry: React.FC<IEditEntryProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    setClose(false);
                     setSelectedDeviceId(undefined);
+                    setClose(false);
                   }}
                   className="w-full h-8 px-6 py-1 mt-1 text-xs font-bold tracking-widest bg-transparent border rounded border-miru-han-purple-1000 hover:bg-miru-han-purple-1000 text-miru-han-purple-600 hover:text-white hover:border-transparent"
                 >
