@@ -76,16 +76,15 @@ const EditEntry: React.FC<IEditEntryProps> = ({
     base_os: deviceOS,
     brand: deviceBrand,
     device_type: deviceType,
-    manufacturer: "",
-    meta_details: "",
+    manufacturer: deviceManufacturer,
+    meta_details: null,
     name: deviceName,
-    serial_number: "",
-    specifications: "",
+    serial_number: null,
+    specifications: null,
     version: deviceVersion,
     assignee_id: assigneeId,
-    user_id: "",
-    version_id: "",
-
+    user_id: null,
+    version_id: null,
   });
 
   const handleEdit = async () => {

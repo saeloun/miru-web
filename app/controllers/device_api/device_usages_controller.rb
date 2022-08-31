@@ -4,7 +4,7 @@ class DeviceApi::DeviceUsagesController < DeviceApi::ApplicationController
   # skip_after_action :verify_authorized
 
   def create
-    authorize DeviceUsage
+    authorize :create, policy_class: DeviceApi::DeviceUsageApiPolicy
 
     render :create, locals: {
       device_usage: DeviceUsage.create!(device_usage_params)
@@ -12,7 +12,7 @@ class DeviceApi::DeviceUsagesController < DeviceApi::ApplicationController
   end
 
   def approve
-    authorize DeviceUsage
+    authorize :approve, policy_class: DeviceApi::DeviceUsageApiPolicy
 
     last_usage_request = device.device_usages.last
     if last_usage_request.blank?

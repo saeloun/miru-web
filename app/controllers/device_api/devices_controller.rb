@@ -2,7 +2,7 @@
 
 class DeviceApi::DevicesController < DeviceApi::ApplicationController
   def find
-    authorize :create, policy_class: DevicePolicy
+    authorize :find, policy_class: DeviceApi::DeviceApiPolicy
 
     device = Device.find_by!(
       brand: device_params[:brand], device_type: device_params[:device_type],
@@ -14,14 +14,14 @@ class DeviceApi::DevicesController < DeviceApi::ApplicationController
   end
 
   def create
-    authorize Device
+    authorize :create, policy_class: DeviceApi::DeviceApiPolicy
     render :create, locals: {
       device: Device.create!(device_params)
     }
   end
 
   def update_availability
-    authorize device
+    authorize :update_availability, policy_class: DeviceApi::DeviceApiPolicy
 
     if device.update(available: device_params[:available])
       render json: {
