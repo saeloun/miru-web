@@ -11,6 +11,7 @@ json.devices devices do |device|
   json.serial_number device[:serial_number]
   json.specifications device[:specifications]
   json.created_at device[:created_at]
+  json.assignee_id device[:assignee_id]
   json.assignee_name device.assignee.present? ? device.assignee.full_name : nil
   json.available device[:available]
   json.version device[:version]

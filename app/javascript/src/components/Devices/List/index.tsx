@@ -3,14 +3,20 @@ import { useCookies } from "react-cookie";
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import devices from "apis/devices";
+import devicesApi from "apis/devices";
+import ConfirmDialog from "common/Modal/ConfirmDialog";
 import Pagination from "common/Pagination";
 import Table from "common/Table";
+import EditEntry from "./EditEntry";
 import FilterSideBar from "./FilterSideBar";
-
+// import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
+import './style.scss';
 
-const Devices = () => {
+const Devices = ({ isAdminUser }) => {
+  const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
+  const [selectedDeviceId, setSelectedDeviceId] = useState<string | undefined>();
+  const [editOpen, setEditOpen] = useState<boolean>(false);
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
   const [rememberFilter, setRememberFilter] = useCookies();
   const [deviceData, setDeviceData] = useState<any>([{}]);
@@ -25,7 +31,7 @@ const Devices = () => {
   const queryParams = () => new URLSearchParams(params).toString();
 
   const fetchDevices = () => {
-    devices.get(queryParams())
+    devicesApi.get(queryParams())
       .then((res) => {
         setDeviceData(res.data.devices);
         setPagy(res.data.pagy);
@@ -105,6 +111,27 @@ const Devices = () => {
     },
   ];
 
+  const handleDeleteIconClick = (id: any) => {
+    if (!id) return;
+    setConfirmOpen(true);
+    setSelectedDeviceId(id);
+  }
+
+  const handleDelete = async () => {
+    const res = await devicesApi.destroy(selectedDeviceId);
+    if (!(res.status === 200)) return;
+    const newValue = [...deviceData].filter((e: any) => e.id !== selectedDeviceId);
+    setDeviceData(newValue);
+    setConfirmOpen(false);
+    setSelectedDeviceId(undefined);
+  }
+
+  const handleEditIconClick = (id: any) => {
+    if (!id) return;
+    setEditOpen(true);
+    setSelectedDeviceId(id);
+  }
+
   const isAvailable = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-green-400 text-miru-alert-green-800">Available</span></p>;
   const isNotAvailable = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-pink-400 text-miru-alert-red-1000">Not Available</span></p>;
 
@@ -152,10 +179,13 @@ const Devices = () => {
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden">
                 {deviceData && <Table
+                  hasRowIcons={isAdminUser}
                   tableHeader={tableHeader}
                   tableRowArray={getTableData(deviceData)}
-                  hasDeleteAction={false}
-                  hasEditAction={false}
+                  hasDeleteAction={true}
+                  hasEditAction={true}
+                  handleDeleteClick={(id: any) => handleDeleteIconClick(id)}
+                  handleEditClick={(id: any) => handleEditIconClick(id)}
                 />}
                 {deviceData && deviceData.length && (
                   <Pagination pagy={pagy} params={params} setParams={setParams} forPage="devices" />
@@ -168,6 +198,23 @@ const Devices = () => {
       {isFilterVisible && (
         <FilterSideBar setDeviceData={setDeviceData} setFilterVisibilty={setFilterVisibilty} rememberFilter={rememberFilter} setRememberFilter={setRememberFilter} setPagy={setPagy} params={params} setParams={setParams} />
       )}
+      <ConfirmDialog
+        title="Remove the device?"
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={handleDelete}
+      >
+        Are you sure you want to remove the device?
+      </ConfirmDialog>
+      {editOpen &&
+        <EditEntry
+          setClose={setEditOpen}
+          setSelectedDeviceId={setSelectedDeviceId}
+          selectedDeviceId={selectedDeviceId}
+          fetchDevices={fetchDevices}
+          deviceData={{ ...deviceData.find((e: any) => e.id === selectedDeviceId) }}
+        />
+      }
     </>
   );
 };

@@ -48,6 +48,37 @@ class Device < ApplicationRecord
   # Device type values
   enum device_type: { laptop: "laptop", mobile: "mobile", tablet: "tablet" }
 
+  DeviceOptionKlass = Struct.new(:name, :id)
+
+  DEVICE_TYPE_OPTIONS = [
+    DeviceOptionKlass.new("Laptop", "laptop"),
+    DeviceOptionKlass.new("Mobile", "mobile"),
+    DeviceOptionKlass.new("Tablet", "tablet"),
+  ]
+
+  USERS_OPTIONS = User.all.map do |user|
+    DeviceOptionKlass.new(user.full_name, user.id)
+  end
+
+  def formatted_entry
+    {
+      id: id.to_i,
+      available:,
+      base_os:,
+      brand:,
+      device_type:,
+      manufacturer:,
+      meta_details:,
+      name:,
+      serial_number:,
+      specifications:,
+      version:,
+      assignee_id:,
+      user_id:,
+      version_id:
+    }
+  end
+
   private
 
     def set_availabilty
