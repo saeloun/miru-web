@@ -6,7 +6,7 @@ class SpaceUsagePolicy < ApplicationPolicy
   end
 
   def index?
-    show?
+    user_owner_role? || user_admin_role? || user_employee_role?
   end
 
   def create?

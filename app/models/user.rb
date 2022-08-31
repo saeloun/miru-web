@@ -144,34 +144,6 @@ class User < ApplicationRecord
     self.department_id == sales_department_id
   end
 
-  def can_access_sales?
-    self.has_role?(
-      :owner,
-      self.current_workspace) || self.has_role?(
-        :admin,
-        self.current_workspace) || (self.has_role?(:employee, self.current_workspace) && self.under_sales_department?)
-  end
-
-  def can_access_engagement?
-    can_access_sales? || team_lead?
-  end
-
-  def can_access_devices?
-    can_access_sales? || team_lead?
-  end
-
-  def can_access_lead?
-    can_access_sales?
-  end
-
-  def can_access_space_usage?
-    self.has_role?(
-      :owner,
-      self.current_workspace) || self.has_role?(
-        :admin,
-        self.current_workspace) || self.has_role?(:employee, self.current_workspace)
-  end
-
   def primary_role
     return "employee" if roles.empty?
 

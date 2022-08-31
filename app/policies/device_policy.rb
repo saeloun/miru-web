@@ -5,24 +5,24 @@ class DevicePolicy < ApplicationPolicy
     can_access?
   end
 
-  def create?
+  def create? # API
     true
   end
 
-  def update?
+  def update? # API
     true
   end
 
-  def find?
+  def find? # API
     true
   end
 
-  def update_availability?
+  def update_availability? # API
     true
   end
 
   def can_access?
-    user_owner_role? || user_admin_role? || (user_employee_role? && user_under_sales_department?) || user_team_lead?
+    user_owner_role? || user_admin_role? || user_employee_role?
   end
 
   def permitted_attributes

@@ -6,9 +6,7 @@ import Tab from "./../Tab";
 import * as config from "./Config";
 import './style.scss';
 
-const embedUrl = "https://app.powerbi.com/view?r=eyJrIjoiZWYxNTNmOTItNmU3Mi00NTczLTk4ZWYtNzRhNTk5NmFkMzMyIiwidCI6ImE5NDVmYWM4LTg3NTctNDdlYS05MmZhLWZmYjM5NzA2YmIxNCJ9";
-
-const Dashboard = ({ isAdminUser }) => {
+const Dashboard = ({ embedUrl, isAdminUser }) => {
   const sampleReportConfig = {
     type: 'report',
     tokenType: models.TokenType.Aad,

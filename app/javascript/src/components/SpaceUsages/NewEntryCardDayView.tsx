@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 
 const NewEntryCardDayView = ({
   spaceUsages,
+  departments,
+  userDepartmentId
 }) => {
   useEffect(() => {
     if (spaceUsages.length) {
@@ -13,7 +15,8 @@ const NewEntryCardDayView = ({
     <div className="ac-clone-col">
       {spaceUsages && spaceUsages.map((space: any, _index: number) => {
         const displayTitle = `Occupying new space for you`;
-        const displayColor = space.user_color ? `#${space.user_color}` : "#1D1A31"
+        const department = departments.find((i) => i.id === userDepartmentId )
+        const displayColor = department ? department.color : "#1D1A31"
 
         return (
           <div id={`newSpace${space.id}`}

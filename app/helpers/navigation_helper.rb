@@ -58,7 +58,9 @@ module NavigationHelper
           data: { cy: "leads-tab" }
         },
         {
-          url: engagements_path(_h: 1),
+          url: Pundit.policy!(
+            current_user,
+            :engagement).admin_access? ? "#{engagements_path}/dashboard" : engagements_path,
           title: I18n.t("navbar.engagements"),
           permitted: Pundit.policy!(current_user, :engagement).index?,
           data: { cy: "engagements-tab" }

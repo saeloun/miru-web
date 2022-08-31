@@ -20,6 +20,12 @@ import EntryCardDayView from "./EntryCardDayView";
 import './style.scss';
 import NewEntryCardDayView from "./NewEntryCardDayView";
 
+const SPACES = [
+  { id: "1", name: "Conference Room", alias: "CR" },
+  { id: "2", name: "HR Cabin", alias: "HRC" },
+  { id: "3", name: "Sales Cabin", alias: "SC" }
+];
+
 const { useState, useEffect } = React;
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
@@ -33,6 +39,7 @@ dayjs.Ls.en.weekStart = 1;
 const TimeReserving: React.FC<Iprops> = ({
   entries,
   userId,
+  userDepartmentId,
   departments,
 }) => {
   const [dayInfo, setDayInfo] = useState<any[]>([]);
@@ -132,9 +139,11 @@ const TimeReserving: React.FC<Iprops> = ({
   }, [selectedFullDate]);
 
   useEffect(() => {
-    const spaces = { "1": [], "2": [], "3": [] };
+    const spaces = SPACES.reduce((out, i) => {
+      out[i.id] = []; return out
+    }, {});
     if (selectedSpaceId && selectedStartTime && editEntryId === 0) {
-      spaces[selectedSpaceId.toString()] = [{
+      spaces[selectedSpaceId] = [{
         id: 0,
         user_id: userId,
         start_duration: selectedStartTime,
@@ -251,21 +260,17 @@ const TimeReserving: React.FC<Iprops> = ({
   };
 
   useEffect(() => {
+    let spaces = {}
     if (entryList && entryList[selectedFullDate]){
-      const spaces = {}
       const thisGroupEntries = _.groupBy(entryList[selectedFullDate], "space_code")
       SPACES.map((i) => spaces[i.id] = thisGroupEntries[i.id] || [])
-      setGroupingEntryList(spaces)
     } else {
-      setGroupingEntryList({ "1": [], "2": [], "3": [] })
+      spaces = SPACES.reduce((out, i) => {
+        out[i.id] = []; return out
+      }, {});
     }
+    setGroupingEntryList(spaces)
   }, [entryList, selectedFullDate]);
-
-  const SPACES = [
-    { id: "1", name: "Conference Room", alias: "CR" },
-    { id: "2", name: "HR Cabin", alias: "HRC" },
-    { id: "3", name: "Sales Cabin", alias: "SC" }
-  ];
 
   return (
     <>
@@ -373,6 +378,8 @@ const TimeReserving: React.FC<Iprops> = ({
                   Object.entries(newEntry).map(([_spaceCode, value], listIndex) => (<NewEntryCardDayView
                     key={listIndex}
                     spaceUsages={value}
+                    departments={departments}
+                    userDepartmentId={userDepartmentId}
                   />))
                 }
               </div>
@@ -437,6 +444,7 @@ interface Iprops {
   entries: object;
   isAdmin: boolean;
   userId: number;
+  userDepartmentId: number;
   employees: [];
   departments: [];
 }

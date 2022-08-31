@@ -10,7 +10,7 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
       current_company.users
         .where(department_ids.present? ? { department_id: department_ids } : [])
         .where(engagement_ids.present? ? { engage_code: engagement_ids } : [])
-        .where(current_user.can_access_sales? ? [] : (
+        .where(Pundit.policy!(current_user, :engagement).admin_access? ? [] : (
           current_user.team_lead? ? { id: current_user.team_member_ids } : []
         ))
         .includes([:avatar_attachment, :roles]).order(discarded_at: :desc, first_name: :asc)

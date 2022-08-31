@@ -40,7 +40,7 @@ const EntryCardDayView = ({
         const displayColor = department ? department.color : "#1D1A31"
 
         return (<div id={space.id}
-          className="relative cursor-pointer as-meeting-point opacity-90"
+          className="relative z-10 cursor-pointer as-meeting-point w-7 opacity-80"
           key={_index}
           title={displayTitle}
           style={ {

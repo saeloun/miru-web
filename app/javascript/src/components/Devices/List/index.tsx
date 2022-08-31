@@ -7,11 +7,10 @@ import devices from "apis/devices";
 import Pagination from "common/Pagination";
 import Table from "common/Table";
 import FilterSideBar from "./FilterSideBar";
-// import Header from "./Header";
 
 import { TOASTER_DURATION } from "../../../constants/index";
 
-const Devices = ({ isAdminUser }) => {
+const Devices = () => {
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
   const [rememberFilter, setRememberFilter] = useCookies();
   const [deviceData, setDeviceData] = useState<any>([{}]);
@@ -153,7 +152,6 @@ const Devices = ({ isAdminUser }) => {
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden">
                 {deviceData && <Table
-                  hasRowIcons={isAdminUser}
                   tableHeader={tableHeader}
                   tableRowArray={getTableData(deviceData)}
                   hasDeleteAction={false}

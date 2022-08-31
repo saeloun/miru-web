@@ -3,24 +3,17 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Navigate,
 } from "react-router-dom";
 
 import DashboardList from "./Dashboard";
 import EngagementList from "./List";
 
-const RouteConfig = ({ isAdminUser }) => (<BrowserRouter>
+const RouteConfig = ({ isAdminUser, embedUrl }) => (<BrowserRouter>
   <Routes>
     <Route path="engagements">
-      <Route index element={
-        isAdminUser && location.search.includes("?_h=1") ? (
-          <Navigate to={{ pathname: "/engagements/dashboard" }} />
-        ) : (
-          <EngagementList isAdminUser={isAdminUser} />
-        )
-      } />
+      <Route index element={<EngagementList isAdminUser={isAdminUser} />} />
       {
-        isAdminUser && <Route path="dashboard" element={<DashboardList isAdminUser={isAdminUser} />} />
+        isAdminUser && <Route path="dashboard" element={<DashboardList isAdminUser={isAdminUser} embedUrl={embedUrl} />} />
       }
     </Route>
   </Routes>

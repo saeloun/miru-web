@@ -51,7 +51,6 @@ const Engagements = ({ isAdminUser }) => {
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
-    fetchEngagements();
   }, []);
 
   const tableHeader = [

@@ -2,10 +2,10 @@
 
 class SpaceOccupyingController < ApplicationController
   include Timesheet
-  skip_after_action :verify_authorized
-  before_action :can_access
 
   def index
+    authorize SpaceUsage
+
     is_admin = current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
     user_id = current_user.id
     employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
@@ -17,13 +17,10 @@ class SpaceOccupyingController < ApplicationController
         1.month.since.end_of_month
         ).order(id: :desc)
     entries = formatted_entries_by_date(space_usages)
-    render :index, locals: { is_admin:, entries:, employees:, user_id:, departments: User::DEPARTMENT_OPTIONS }
+    render :index, locals: {
+      is_admin:, entries:, employees:, user_id:,
+      user_department_id: current_user.department_id,
+      departments: User::DEPARTMENT_OPTIONS
+    }
   end
-
-  private
-
-    def can_access
-      redirect_to dashboard_index_path,
-        flash: { error: "You are not authorized for Space." } unless current_user.can_access_space_usage?
-    end
 end

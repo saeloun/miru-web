@@ -1,7 +1,7 @@
 <div class="md:px-20 mx-auto font-manrope" x-data="{ 'isDialogOpen': <%= keep_new_lead_dialog_open %> }" @keydown.escape="isDialogOpen = false">
   <div>
   <%= react_component("Leads/RouteConfig", {
-    isAdminUser: current_user.can_access_lead?
+    isAdminUser: Pundit.policy!(current_user, :lead).index?
   }) %>
   </div>
 </div>

@@ -8,11 +8,11 @@ import {
 
 import DevicesList from "./List";
 
-const RouteConfig = ({ isAdminUser }) => (
+const RouteConfig = () => (
   <BrowserRouter>
     <Routes>
       <Route path="devices">
-        <Route index element={<DevicesList isAdminUser={isAdminUser} />} />
+        <Route index element={<DevicesList />} />
       </Route>
     </Routes>
   </BrowserRouter>
