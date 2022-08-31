@@ -156,6 +156,10 @@ const ProjectDetails = () => {
 
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
 
+  const backToProjects = () => {
+    navigate("/projects");
+  };
+
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
@@ -308,6 +312,7 @@ const ProjectDetails = () => {
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}
           project={project}
+          fetchProjectList={backToProjects}
         />
       )}
     </>
