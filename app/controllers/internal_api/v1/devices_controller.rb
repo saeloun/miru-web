@@ -4,7 +4,7 @@ class InternalApi::V1::DevicesController < InternalApi::V1::ApplicationControlle
   def index
     authorize :index, policy_class: DevicePolicy
     pagy, devices = pagy(
-      current_company.devices.order(assignee_id: :asc, created_at: :asc)
+      current_company.devices.order(available: :desc, created_at: :asc)
       .ransack(params[:q]).result(distinct: true),
       items: 30
     )
@@ -13,11 +13,7 @@ class InternalApi::V1::DevicesController < InternalApi::V1::ApplicationControlle
 
   def update
     authorize current_device
-    actual_device_params = device_params
-    actual_device_params[:user_id] = current_user.id
-    actual_device_params[:company_id] = current_company.id
-
-    if current_device.update(actual_device_params)
+    if current_device.update(device_params)
       render json: {
         notice: I18n.t("devices.update.message"),
         entry: current_device.formatted_entry
