@@ -132,8 +132,8 @@ const Devices = ({ isAdminUser }) => {
     setSelectedDeviceId(id);
   }
 
-  const isAvailable = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-green-400 text-miru-alert-green-800">Available</span></p>;
-  const isNotAvailable = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-pink-400 text-miru-alert-red-1000">Not Available</span></p>;
+  const isAvailable = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-green-400 text-miru-alert-green-800">Free</span></p>;
+  const isNotAvailable = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-pink-400 text-miru-alert-red-1000">In Use</span></p>;
 
   const getTableData = (devices: any) => {
     if (!devices) return [{}];
