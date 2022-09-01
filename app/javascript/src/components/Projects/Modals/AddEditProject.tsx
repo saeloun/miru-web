@@ -41,11 +41,6 @@ const AddEditProject = ({
     }
   };
 
-  useEffect(() => {
-    getClientList();
-    if (isEdit) getProject();
-  }, []);
-
   const handleProjectData = () => {
     if (!editProjectData?.name || !clientList.length) return;
     const clientName = editProjectData?.client?.name || editProjectData?.clientName;
@@ -54,10 +49,6 @@ const AddEditProject = ({
     setProjectName(isEdit ? editProjectData.name : "");
     setProjectType(editProjectData.is_billable || editProjectData.isBillable ? "Billable" : "Non-Billable");
   };
-
-  useEffect(() => {
-    handleProjectData();
-  }, [editProjectData, clientList]);
 
   const editProject = () => {
     projectApi.update(editProjectData.id, {
@@ -94,6 +85,15 @@ const AddEditProject = ({
       createProject();
     }
   };
+
+  useEffect(() => {
+    getClientList();
+    if (isEdit) getProject();
+  }, []);
+
+  useEffect(() => {
+    handleProjectData();
+  }, [editProjectData, clientList]);
 
   return (
     <div className="modal__modal main-modal" style={{ background: "rgba(29, 26, 49,0.6)" }}>
@@ -151,14 +151,14 @@ const AddEditProject = ({
                 <div className="mt-1">
                   <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
                     <div className="flex items-center">
-                      <input type="radio" id='billable' name='project_type' defaultChecked={isEdit ? editProjectData.isBillable : true} className="focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Billable")} />
+                      <input type="radio" id='billable' name='project_type' defaultChecked={isEdit && editProjectData ? (editProjectData.isBillable || editProjectData.billable) : true} className="focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Billable")} />
                       <label htmlFor="billable" className="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
                         Billable
                       </label>
                     </div>
 
                     <div className="flex items-center">
-                      <input type="radio" id='non-billable' name='project_type' defaultChecked={isEdit ? !editProjectData.isBillable : false} className="focus:ring-miru-han-purple-1000 h-4 w-4 bg--miru-han-purple-1000 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Non-Billable")} />
+                      <input type="radio" id='non-billable' name='project_type' defaultChecked={isEdit && editProjectData ? (!editProjectData.isBillable || !editProjectData.billable) : false} className="focus:ring-miru-han-purple-1000 h-4 w-4 bg--miru-han-purple-1000 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Non-Billable")} />
                       <label htmlFor="non-billable" className="ml-3 block text-sm font-medium text-miru-dark-purple-1000 ">
                         Non-billable
                       </label>
