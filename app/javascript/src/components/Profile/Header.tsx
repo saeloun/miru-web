@@ -18,15 +18,15 @@ const Header = ({
         <div className={`mt-1 text-center ${showButtons ? "visible" : "invisible"}`}>
           <div>
             <button
-              className="border rounded-md px-3 mx-1 "
+              className="border rounded-md px-3 mx-1"
               onClick={cancelAction}
               disabled={!isDisableUpdateBtn}
             >
-              CANCEL
+              RESET
             </button>
             <button
               className={
-                `border rounded-md px-3 mx-1 ${!isDisableUpdateBtn ? "bg-miru-gray-1000 cursor-auto" : "bg-white"} text-miru-han-purple-1000`
+                `border rounded-md px-3 mx-1 ${isDisableUpdateBtn ? "text-col-han-app-1000 bg-col-yellow-600 cursor-auto" : "text-white"}`
               }
               onClick={saveAction}
               disabled={!isDisableUpdateBtn}
