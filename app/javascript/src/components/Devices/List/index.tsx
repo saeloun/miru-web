@@ -109,6 +109,11 @@ const Devices = ({ isAdminUser }) => {
       accessor: "col11",
       cssClass: "py-5 px-0 text-center"
     },
+    {
+      Header: "Device Request",
+      accessor: "col12",
+      cssClass: "py-5 px-0 text-center"
+    },
   ];
 
   const handleDeleteIconClick = (id: any) => {
@@ -132,8 +137,16 @@ const Devices = ({ isAdminUser }) => {
     setSelectedDeviceId(id);
   }
 
+  const handleDeviceRequest = async (deviceId: number) => {
+    if (!deviceId) return;
+    const res = await devicesApi.demand(deviceId);
+    if (!(res.status === 200)) return;
+    fetchDevices();
+  }
+
   const isAvailable = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-green-400 text-miru-alert-green-800">Free</span></p>;
   const isNotAvailable = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-pink-400 text-miru-alert-red-1000">In Use</span></p>;
+  const approvalPending = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-han-purple-100 text-miru-han-purple-1000">Pending</span></p>;
 
   const getTableData = (devices: any) => {
     if (!devices) return [{}];
@@ -150,6 +163,7 @@ const Devices = ({ isAdminUser }) => {
         col9: <div className="text-xs tracking-widest text-center">{device.version}</div>,
         col10: <div className="text-xs tracking-widest text-center">{device.available ? isAvailable : isNotAvailable }</div>,
         col11: <div className="text-xs tracking-widest text-center">{device.assigneeName}</div>,
+        col12: <div className="text-xs tracking-widest text-center">{device.hideDemand ? approvalPending : <button title="Request Device" onClick={() => handleDeviceRequest(device.id)}>📥</button>}</div>,
         rowId: device.id
       })
     );
