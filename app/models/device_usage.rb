@@ -29,19 +29,10 @@ class DeviceUsage < ApplicationRecord
   belongs_to :device
   belongs_to :assignee, class_name: :User, optional: true
 
-  before_save :set_approve
   after_create :set_device_assignee
   after_update :update_device_assignee
 
   private
-
-    def set_approve
-      if self.device.available
-        self.approve = true
-      elsif !self.approve.present?
-        self.approve = false
-      end
-    end
 
     def set_device_assignee
       device = self.device

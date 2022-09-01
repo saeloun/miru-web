@@ -86,6 +86,11 @@ namespace :internal_api, defaults: { format: "json" } do
 
     resources :devices, only: [:index, :update, :destroy] do
       get "items", to: "/devices_items", on: :collection
+
+      resources :device_usages, module: :devices do
+        get :demand, on: :collection
+        put :approve, on: :collection
+      end
     end
 
     resource :profile, only: [:update, :show], controller: "profile" do

@@ -357,3 +357,17 @@ en:
       message: "Device updated"
     destroy:
       message: "Device deleted"
+    device_usage:
+      demand:
+        failure:
+          message: "Device Usage request failed"
+          already_there: "Device Usage request already there."
+        success:
+          message: "Device Usage requested"
+      approve:
+        success:
+          message: "Device Usage approved"
+        failure:
+          unauthorized: "User is unauthorized to approve this device usage"
+          message: "Device Usage approval failed"
+          not_found: "Device Usage request not found"

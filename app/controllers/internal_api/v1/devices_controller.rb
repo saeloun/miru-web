@@ -8,7 +8,12 @@ class InternalApi::V1::DevicesController < InternalApi::V1::ApplicationControlle
       .ransack(params[:q]).result(distinct: true),
       items: 30
     )
-    render :index, locals: { devices:, pagy: }, status: :ok
+    devices_demands = DeviceUsage.where(
+      approve: nil,
+      device_id: devices.to_a.map(&:id),
+      created_by: current_user
+    ).group(:device_id).count
+    render :index, locals: { devices:, pagy:, devices_demands: }, status: :ok
   end
 
   def update

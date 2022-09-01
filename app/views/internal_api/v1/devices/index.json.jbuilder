@@ -19,6 +19,7 @@ json.devices devices do |device|
   json.brand device[:brand]
   json.manufacturer device[:manufacturer]
   json.base_os device[:base_os]
+  json.hide_demand devices_demands[device.id]
 end
 
 json.pagy pagy

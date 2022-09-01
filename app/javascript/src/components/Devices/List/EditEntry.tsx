@@ -35,8 +35,8 @@ const EditEntry: React.FC<IEditEntryProps> = ({
   const [deviceVersion, setDeviceVersion] = useState<string | undefined>(deviceData.version);
   const [assigneeId, setAssigneeId] = useState<number | undefined>(deviceData.assigneeId);
   const [deviceIsAvailable, setDeviceIsAvailable] = useState<boolean>(deviceData.available);
-  const isAvailable = <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-green-400 text-miru-alert-green-800">Available</span>;
-  const isNotAvailable = <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-pink-400 text-miru-alert-red-1000">Not Available</span>;
+  const isAvailable = <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-green-400 text-miru-alert-green-800">Free</span>;
+  const isNotAvailable = <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-pink-400 text-miru-alert-red-1000">In Use</span>;
   const loadingButton = <>
     <svg
       className="inline-block w-5 h-5 mr-3 animate-spin"

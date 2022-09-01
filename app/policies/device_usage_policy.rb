@@ -1,16 +1,24 @@
 # frozen_string_literal: true
 
 class DeviceUsagePolicy < ApplicationPolicy
-  def create?
-    true
-  end
-
-  def update?
-    true
+  def demand?
+    can_access?
   end
 
   def approve?
-    true
+    owner_admin_access?
+  end
+
+  def can_access?
+    owner_admin_access? || (user_employee_role? && user_under_sales_department?) || user_team_lead?
+  end
+
+  def owner_admin_access?
+    user_owner_role? || user_admin_role?
+  end
+
+  def admin_access?
+    owner_admin_access? || (user_employee_role? && user_under_sales_department?)
   end
 
   def permitted_attributes
