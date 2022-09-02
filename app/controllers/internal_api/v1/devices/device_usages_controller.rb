@@ -27,6 +27,25 @@ class InternalApi::V1::Devices::DeviceUsagesController < InternalApi::V1::Device
     end
   end
 
+  def demand_cancel
+    authorize :demand_cancel, policy_class: DeviceUsagePolicy
+    device_usage = DeviceUsage.where(approve: nil, created_by_id: current_user.id, device_id: device.id)
+
+    if device_usage.length <= 0
+      render json: {
+        success: false,
+        notice: I18n.t("devices.device_usage.demand_cancel.failure.not_found")
+      }, status: :not_found
+      return
+    end
+    device_usages = DeviceUsage.destroy(device_usage.to_a.map(&:id))
+    if device_usages
+      render json: { notice: I18n.t("devices.device_usage.demand_cancel.success.message") }, status: :ok
+    else
+      render json: { error: device_usages.errors.full_messages.to_sentence }, status: :unprocessable_entity
+    end
+  end
+
   def approve
     authorize :approve, policy_class: DeviceUsagePolicy
 

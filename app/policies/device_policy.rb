@@ -2,7 +2,7 @@
 
 class DevicePolicy < ApplicationPolicy
   def index?
-    can_access?
+    can_access_all_users?
   end
 
   def create?
@@ -19,6 +19,10 @@ class DevicePolicy < ApplicationPolicy
 
   def items?
     owner_admin_access?
+  end
+
+  def can_access_all_users?
+    owner_admin_access? || user_employee_role?
   end
 
   def can_access?

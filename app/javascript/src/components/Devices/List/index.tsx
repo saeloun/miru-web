@@ -15,6 +15,7 @@ import './style.scss';
 
 const Devices = ({ isAdminUser }) => {
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
+  const [cancelConfirmOpen, setCancelConfirmOpen] = useState<boolean>(false);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | undefined>();
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
@@ -144,9 +145,22 @@ const Devices = ({ isAdminUser }) => {
     fetchDevices();
   }
 
+  const handleCancelRequestIconClick = (id: any) => {
+    if (!id) return;
+    setCancelConfirmOpen(true);
+    setSelectedDeviceId(id);
+  }
+
+  const handleCancelRequest = async () => {
+    const res = await devicesApi.demandCancel(parseInt(selectedDeviceId));
+    if (!(res.status === 200)) return;
+    fetchDevices();
+    setCancelConfirmOpen(false);
+    setSelectedDeviceId(undefined);
+  }
+
   const isAvailable = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-green-400 text-miru-alert-green-800">Free</span></p>;
   const isNotAvailable = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-pink-400 text-miru-alert-red-1000">In Use</span></p>;
-  const approvalPending = <p><span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-han-purple-100 text-miru-han-purple-1000">Pending</span></p>;
 
   const getTableData = (devices: any) => {
     if (!devices) return [{}];
@@ -163,7 +177,13 @@ const Devices = ({ isAdminUser }) => {
         col9: <div className="text-xs tracking-widest text-center">{device.version}</div>,
         col10: <div className="text-xs tracking-widest text-center">{device.available ? isAvailable : isNotAvailable }</div>,
         col11: <div className="text-xs tracking-widest text-center">{device.assigneeName}</div>,
-        col12: <div className="text-xs tracking-widest text-center">{device.hideDemand ? approvalPending : <button title="Request Device" onClick={() => handleDeviceRequest(device.id)}>📥</button>}</div>,
+        col12: <div className="text-xs tracking-widest text-center">{
+          device.hideDemand ?
+            <p>
+              <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-han-purple-100 text-miru-han-purple-1000">Pending</span>
+              <button title="Request Cancel" className="ml-2" onClick={() => handleCancelRequestIconClick(device.id)}>❌</button>
+            </p>
+            : <button title="Request Device" onClick={() => handleDeviceRequest(device.id)}>📥</button>}</div>,
         rowId: device.id
       })
     );
@@ -229,6 +249,17 @@ const Devices = ({ isAdminUser }) => {
           deviceData={{ ...deviceData.find((e: any) => e.id === selectedDeviceId) }}
         />
       }
+      <ConfirmDialog
+        title="Remove the device deman request?"
+        open={cancelConfirmOpen}
+        onClose={() => {
+          setCancelConfirmOpen(false);
+          setSelectedDeviceId(undefined);
+        }}
+        onConfirm={handleCancelRequest}
+      >
+        Are you sure you want to remove the demand request?
+      </ConfirmDialog>
     </>
   );
 };

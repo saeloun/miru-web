@@ -89,6 +89,7 @@ namespace :internal_api, defaults: { format: "json" } do
 
       resources :device_usages, module: :devices do
         get :demand, on: :collection
+        get :demand_cancel, on: :collection
         put :approve, on: :collection
       end
     end
