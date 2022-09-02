@@ -2,15 +2,19 @@
 
 class DeviceUsagePolicy < ApplicationPolicy
   def demand?
-    can_access?
+    can_access_all_users?
   end
 
   def demand_cancel?
-    can_access?
+    can_access_all_users?
   end
 
   def approve?
     owner_admin_access?
+  end
+
+  def can_access_all_users?
+    owner_admin_access? || user_employee_role?
   end
 
   def can_access?
