@@ -6,4 +6,5 @@ class DeviceApi::ApplicationController < ActionController::API
   include ErrorHandler
   include CurrentCompanyConcern
   include Pagy::Backend
+  include DeviceApiTokenAuthenticator
 end
