@@ -364,6 +364,12 @@ en:
           already_there: "Device Usage request already there."
         success:
           message: "Device Usage requested"
+      demand_cancel:
+        failure:
+          message: "Device Usage request cancelation failed."
+          not_found: "Device Usage request not found."
+        success:
+          message: "Device Usage request cancelled."
       approve:
         success:
           message: "Device Usage approved"

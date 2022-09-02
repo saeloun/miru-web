@@ -5,6 +5,10 @@ class DeviceUsagePolicy < ApplicationPolicy
     can_access?
   end
 
+  def demand_cancel?
+    can_access?
+  end
+
   def approve?
     owner_admin_access?
   end
