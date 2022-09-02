@@ -4,9 +4,17 @@ class DeviceApi::DevicesController < DeviceApi::ApplicationController
   def find
     authorize :find, policy_class: DeviceApi::DeviceApiPolicy
 
-    device = Device.find_by!(
+    device = Device.find_by(
       brand: device_params[:brand], device_type: device_params[:device_type],
-      serial_number: device_params[:serial_number])
+      serial_number: device_params[:serial_number]
+    )
+    unless device
+      render json: {
+        success: false,
+        notice: I18n.t("device.find.not_there")
+      }, status: :not_found
+      return
+    end
 
     render :create, locals: {
       device:
@@ -15,6 +23,19 @@ class DeviceApi::DevicesController < DeviceApi::ApplicationController
 
   def create
     authorize :create, policy_class: DeviceApi::DeviceApiPolicy
+
+    device = Device.find_by(
+      brand: device_params[:brand], device_type: device_params[:device_type],
+      serial_number: device_params[:serial_number]
+    )
+    if device
+      render json: {
+        success: false,
+        notice: I18n.t("device.create.already_there")
+      }, status: :not_found
+      return
+    end
+
     render :create, locals: {
       device: Device.create!(device_params)
     }
@@ -32,8 +53,8 @@ class DeviceApi::DevicesController < DeviceApi::ApplicationController
     else
       render json: {
         success: false,
-        approved_device_usage: last_usage_request,
-        notice: I18n.t("device_usage.update.failure.message")
+        device:,
+        notice: I18n.t("device.update.failure.message")
       }, status: :unprocessable_entity
     end
   end

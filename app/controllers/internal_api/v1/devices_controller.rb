@@ -4,7 +4,7 @@ class InternalApi::V1::DevicesController < InternalApi::V1::ApplicationControlle
   def index
     authorize :index, policy_class: DevicePolicy
     pagy, devices = pagy(
-      current_company.devices.order(available: :desc, created_at: :asc)
+      current_company.devices.order(available: :desc, created_at: :desc)
       .ransack(params[:q]).result(distinct: true),
       items: 30
     )
@@ -20,7 +20,7 @@ class InternalApi::V1::DevicesController < InternalApi::V1::ApplicationControlle
     authorize current_device
     if current_device.update(device_params)
       render json: {
-        notice: I18n.t("devices.update.message"),
+        notice: I18n.t("device.update.success.message"),
         entry: current_device.formatted_entry
       }, status: :ok
     else
@@ -31,9 +31,8 @@ class InternalApi::V1::DevicesController < InternalApi::V1::ApplicationControlle
   def destroy
     authorize current_device
     if current_device.destroy
-      render json: { notice: I18n.t("devices.destroy.message") }
+      render json: { notice: I18n.t("device.delete.success.message") }
     else
-      # TBD
       render json: { error: current_device.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
   end

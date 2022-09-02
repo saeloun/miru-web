@@ -112,25 +112,54 @@ en:
         message: Client removed successfully
     add: ADD CLIENT
   device:
+    find:
+      not_there: Device not found.
     create:
-      failure: "Device creation failed"
-      success: "Device added successfully"
+      failure:
+        message: Device creation failed
+      success:
+        message: Device added successfully
+      already_there: Device already there.
     update:
       success:
         message: Changes saved successfully
       failure:
         unauthorized: User is unauthorized to modify this device's details
         message: Failed to saved changes
+    delete:
+      success:
+        message: Device removed successfully
   device_usage:
     create:
-      failure: "Device Usage creation failed"
-      success: "Device Usage added successfully"
+      failure:
+        message: Device usage creation failed
+      success:
+        message: Device usage added successfully
     update:
       success:
         message: Changes saved successfully
       failure:
         unauthorized: User is unauthorized to modify this device usage's details
         message: Failed to saved changes
+    demand:
+      failure:
+        message: Device usage request failed
+        already_there: Device usage request already there.
+      success:
+        message: "Device requested"
+    demand_cancel:
+      failure:
+        message: Device request cancellation failed.
+        not_found: Device Usage request not found.
+      success:
+        message: Device request cancelled.
+    approve:
+      success:
+        message: Device Usage approved
+      failure:
+        unauthorized: User is unauthorized to approve this device usage
+        message: Device request approval failed
+        not_found: Device request not found
   lead:
     name:
       label: Name
@@ -350,30 +379,3 @@ en:
       message: "Space usage updated"
     destroy:
       message: "Space usage deleted"
-  devices:
-    create:
-      message: "Device created"
-    update:
-      message: "Device updated"
-    destroy:
-      message: "Device deleted"
-    device_usage:
-      demand:
-        failure:
-          message: "Device Usage request failed"
-          already_there: "Device Usage request already there."
-        success:
-          message: "Device Usage requested"
-      demand_cancel:
-        failure:
-          message: "Device Usage request cancelation failed."
-          not_found: "Device Usage request not found."
-        success:
-          message: "Device Usage request cancelled."
-      approve:
-        success:
-          message: "Device Usage approved"
-        failure:
-          unauthorized: "User is unauthorized to approve this device usage"
-          message: "Device Usage approval failed"
-          not_found: "Device Usage request not found"

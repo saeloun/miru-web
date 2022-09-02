@@ -8,21 +8,21 @@ class InternalApi::V1::Devices::DeviceUsagesController < InternalApi::V1::Device
 
     if device_usage_exists.length > 0
       render json: {
-        error: I18n.t("devices.device_usage.demand.failure.already_there")
+        error: I18n.t("device_usage.demand.failure.already_there")
       }, status: :unprocessable_entity
       return
     end
 
     device_usage = device.device_usages.new(created_by: current_user)
 
-    if device_usage.save!
+    if device_usage.save
       render json: {
-        notice: I18n.t("devices.device_usage.demand.success.message")
+        notice: I18n.t("device_usage.demand.success.message")
       }, status: :ok
     else
       render json: {
         error: device_usage.errors.full_messages.to_sentence,
-        message: I18n.t("devices.device_usage.demand.failure.message")
+        message: I18n.t("device_usage.demand.failure.message")
       }, status: :unprocessable_entity
     end
   end
@@ -34,13 +34,13 @@ class InternalApi::V1::Devices::DeviceUsagesController < InternalApi::V1::Device
     if device_usage.length <= 0
       render json: {
         success: false,
-        notice: I18n.t("devices.device_usage.demand_cancel.failure.not_found")
+        notice: I18n.t("device_usage.demand_cancel.failure.not_found")
       }, status: :not_found
       return
     end
     device_usages = DeviceUsage.destroy(device_usage.to_a.map(&:id))
     if device_usages
-      render json: { notice: I18n.t("devices.device_usage.demand_cancel.success.message") }, status: :ok
+      render json: { notice: I18n.t("device_usage.demand_cancel.success.message") }, status: :ok
     else
       render json: { error: device_usages.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -53,7 +53,7 @@ class InternalApi::V1::Devices::DeviceUsagesController < InternalApi::V1::Device
     if last_usage_request.blank?
       render json: {
         success: false,
-        notice: I18n.t("devices.device_usage.approve.failure.not_found")
+        notice: I18n.t("device_usage.approve.failure.not_found")
       }, status: :not_found
       return
     end
@@ -64,13 +64,13 @@ class InternalApi::V1::Devices::DeviceUsagesController < InternalApi::V1::Device
         success: true,
         approved_device_usage: last_usage_request,
         device:,
-        notice: I18n.t("devices.device_usage.update.success.message")
+        notice: I18n.t("device_usage.update.success.message")
       }, status: :ok
     else
       render json: {
         success: false,
         approved_device_usage: last_usage_request,
-        notice: I18n.t("devices.device_usage.update.failure.message")
+        notice: I18n.t("device_usage.update.failure.message")
       }, status: :unprocessable_entity
     end
   end

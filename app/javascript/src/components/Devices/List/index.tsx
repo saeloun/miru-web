@@ -204,7 +204,7 @@ const Devices = ({ isAdminUser }) => {
           "sm:flex mt-6 mb-3 sm:items-center sm:justify-between"
         }>
         <span className="inline-flex">
-          <h2 className="header__title">Resource Devices</h2>
+          <h2 className="header__title">Devices</h2>
         </span>
       </div>
       <div>
@@ -250,7 +250,7 @@ const Devices = ({ isAdminUser }) => {
         />
       }
       <ConfirmDialog
-        title="Remove the device deman request?"
+        title="Remove the device request?"
         open={cancelConfirmOpen}
         onClose={() => {
           setCancelConfirmOpen(false);
@@ -258,7 +258,7 @@ const Devices = ({ isAdminUser }) => {
         }}
         onConfirm={handleCancelRequest}
       >
-        Are you sure you want to remove the demand request?
+        Are you sure you want to remove the device request?
       </ConfirmDialog>
     </>
   );
