@@ -4,19 +4,46 @@
 #
 # Table name: candidates
 #
-#  id             :bigint           not null, primary key
-#  discarded_at   :datetime
-#  email          :string
-#  first_name     :string
-#  last_name      :string
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  consultancy_id :bigint
+#  id                            :bigint           not null, primary key
+#  address                       :text
+#  country                       :string
+#  description                   :string
+#  discarded_at                  :datetime
+#  donotbulkemail                :boolean          default(FALSE)
+#  donotemail                    :boolean          default(FALSE)
+#  donotphone                    :boolean          default(FALSE)
+#  email                         :string
+#  emails                        :text             default([]), is an Array
+#  first_name                    :string
+#  initial_communication         :integer
+#  last_name                     :string
+#  linkedinid                    :string
+#  mobilephone                   :string
+#  preferred_contact_method_code :integer
+#  skypeid                       :string
+#  source_code                   :integer
+#  state_code                    :integer
+#  status_code                   :integer
+#  tech_stack_ids                :text             default([]), is an Array
+#  telephone                     :string
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
+#  assignee_id                   :bigint
+#  company_id                    :bigint
+#  consultancy_id                :bigint
+#  created_by_id                 :bigint
+#  reporter_id                   :bigint
+#  updated_by_id                 :bigint
 #
 # Indexes
 #
+#  index_candidates_on_assignee_id     (assignee_id)
+#  index_candidates_on_company_id      (company_id)
 #  index_candidates_on_consultancy_id  (consultancy_id)
+#  index_candidates_on_created_by_id   (created_by_id)
 #  index_candidates_on_discarded_at    (discarded_at)
+#  index_candidates_on_reporter_id     (reporter_id)
+#  index_candidates_on_updated_by_id   (updated_by_id)
 #
 class Candidate < ApplicationRecord
   include Discard::Model
