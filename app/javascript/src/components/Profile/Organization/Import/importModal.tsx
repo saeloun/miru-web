@@ -1,8 +1,11 @@
 /* eslint-disable no-constant-condition */
 import React, { Fragment } from "react";
+
+import { X } from "phosphor-react";
+
 import ProgressBar from "common/ProgressBar";
 import { bytesToSize } from "helpers/byteToSizeConverter";
-import { X } from "phosphor-react";
+
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 

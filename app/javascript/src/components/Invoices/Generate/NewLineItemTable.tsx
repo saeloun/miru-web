@@ -1,7 +1,10 @@
 import React from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
+
 import dayjs from "dayjs";
+import InfiniteScroll from "react-infinite-scroll-component";
+
 import { DropdownHeader } from "./CustomComponents";
+
 import { getMaxIdx } from "../common/utils";
 
 const NewLineItemTable = ({

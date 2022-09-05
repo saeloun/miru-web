@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
+
 import { NavLink } from "react-router-dom";
 
 const profile = require("../../../../assets/images/avatar_payments.svg");
@@ -58,15 +59,6 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
       <li className='border-b-2 border-miru-gray-400'>
         <NavLink end to="/profile/edit" className={({ isActive }) => getActiveClassName(isActive)}>
           PROFILE SETTINGS
-        </NavLink>
-      </li>
-      <li className='border-b-2 border-miru-gray-400'>
-        <NavLink
-          to="/profile/edit/bank_account_details"
-          type="li"
-          className={({ isActive }) => getActiveClassName(isActive)}
-        >
-          BANK ACCOUNT DETAILS
         </NavLink>
       </li>
     </ul>

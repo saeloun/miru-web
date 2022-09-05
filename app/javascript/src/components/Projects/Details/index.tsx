@@ -1,16 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import projectAPI from "apis/projects";
-
-import AmountBoxContainer from "common/AmountBox";
-import ChartBar from "common/ChartBar";
-import Table from "common/Table";
-
-import { cashFormatter } from "helpers/cashFormater";
-import { currencySymbol } from "helpers/currencySymbol";
 import {
   ArrowLeft,
   DotsThreeVertical,
@@ -19,8 +8,20 @@ import {
   UsersThree,
   Trash
 } from "phosphor-react";
+import { useParams, useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+
+import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import projectAPI from "apis/projects";
+import AmountBoxContainer from "common/AmountBox";
+import ChartBar from "common/ChartBar";
+import Table from "common/Table";
+import { cashFormatter } from "helpers/cashFormater";
+import { currencySymbol } from "helpers/currencySymbol";
 import { sendGAPageView } from "utils/googleAnalytics";
+
 import EditMembersList from "./EditMembersList";
+
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapper } from "../../../mapper/project.mapper";
 import AddEditProject from "../Modals/AddEditProject";
@@ -155,6 +156,10 @@ const ProjectDetails = () => {
 
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
 
+  const backToProjects = () => {
+    navigate("/projects");
+  };
+
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
@@ -260,7 +265,7 @@ const ProjectDetails = () => {
               THIS WEEK
             </option>
             <option className="text-miru-dark-purple-600" value="month">
-              This MONTH
+              THIS MONTH
             </option>
             <option className="text-miru-dark-purple-600" value="year">
               THIS YEAR
@@ -307,6 +312,7 @@ const ProjectDetails = () => {
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}
           project={project}
+          fetchProjectList={backToProjects}
         />
       )}
     </>

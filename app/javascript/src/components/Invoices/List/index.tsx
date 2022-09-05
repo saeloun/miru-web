@@ -1,17 +1,19 @@
 import * as React from "react";
+
+import { ApiStatus as InvoicesStatus } from "constants/index";
+
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import invoicesApi from "apis/invoices";
 import Pagination from "common/Pagination";
 import { sendGAPageView } from "utils/googleAnalytics";
-import { ApiStatus as InvoicesStatus } from "constants/index";
 
 import Container from "./container";
 import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
-import { TOASTER_DURATION } from "../../../constants/index";
 
+import { TOASTER_DURATION } from "../../../constants/index";
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
 

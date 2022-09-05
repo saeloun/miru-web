@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 
+import Logger from "js-logger";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import payment from "apis/payments/payments";
-import Logger from "js-logger";
+
 import Header from "./Header";
 import AddManualEntry from "./Modals/AddManualEntry";
 import Table from "./Table/index";
+
 import { unmapPayment } from "../../mapper/payment.mapper";
 
 const Payments = () => {

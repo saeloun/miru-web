@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useCallback, useEffect, useState } from "react";
+
+import { CountryList } from "constants/countryList";
+import { currencyList } from "constants/currencyList";
+
 import Select from "react-select";
+import * as Yup from "yup";
 
 import companiesApi from "apis/companies";
 import companyProfileApi from "apis/companyProfile";
@@ -8,9 +13,6 @@ import { Divider } from "common/Divider";
 import Loader from "common/Loader/index";
 import Toastr from "common/Toastr";
 import { sendGAPageView } from "utils/googleAnalytics";
-import * as Yup from "yup";
-import { CountryList } from "constants/countryList";
-import { currencyList } from "constants/currencyList";
 
 import Header from "../../Header";
 

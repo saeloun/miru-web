@@ -1,6 +1,7 @@
 import React from "react";
-import { components, DropdownIndicatorProps } from "react-select";
+
 import { MagnifyingGlass } from "phosphor-react";
+import { components, DropdownIndicatorProps } from "react-select";
 
 export const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
   <components.DropdownIndicator {...props}>

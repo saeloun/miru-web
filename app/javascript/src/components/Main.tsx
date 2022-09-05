@@ -1,4 +1,8 @@
 import React from "react";
+
+import { Roles, Paths } from "constants/index";
+import ROUTES from "constants/routes";
+
 import {
   Routes,
   Route,
@@ -7,8 +11,6 @@ import {
 } from "react-router-dom";
 
 import ErrorPage from "common/Error";
-import { Roles, Paths } from "constants/index";
-import ROUTES from "constants/routes";
 
 const RestrictedRoute = ({ user, role, authorisedRoles }) => {
   if (!user) {

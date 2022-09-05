@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+
 import StaticPage from "./StaticPage";
 
 const DeviceDetails = () => (
