@@ -12,6 +12,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import { useProfile } from "../context/EntryContext";
 import Header from "../Header";
 
+const deleteIcon = require("../../../../../assets/images/delete.svg");
 const editButton = require("../../../../../assets/images/edit_image_button.svg");
 const password_icon = require("../../../../../assets/images/password_icon.svg");
 const password_icon_text = require("../../../../../assets/images/password_icon_text.svg");
@@ -223,7 +224,7 @@ const UserDetails = () => {
                   </input>
                   <button className="" onClick={handleDeleteLogo}>
                     <img
-                      src="/delete.svg"
+                      src={deleteIcon}
                       alt="delete"
                       style={{ "minWidth": "20px" }}
                     />
