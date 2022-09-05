@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import DatePicker from "react-datepicker";
 import { Trash } from "phosphor-react";
+import DatePicker from "react-datepicker";
 
 const EditLineItems = ({
   item,

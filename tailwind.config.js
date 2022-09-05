@@ -172,6 +172,7 @@ module.exports = {
         112: "28rem",
         129: "33rem",
         138: "34.5rem",
+        160: "40rem"
       },
       padding: {
         "36/100": "36.66666%",
@@ -193,7 +194,7 @@ module.exports = {
     extend: {
       display: ["group-hover"],
     },
-    opacity: ({ after }) => after(['disabled'])
+    opacity: ({ after }) => after(["disabled"]),
   },
   plugins: [],
 };
