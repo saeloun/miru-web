@@ -3,7 +3,7 @@
 module ApplicationHelper
   def user_avatar(user)
     if user.avatar.attached?
-      user.avatar
+      url_for(user.avatar)
     else
       image_url "avatar.svg"
     end

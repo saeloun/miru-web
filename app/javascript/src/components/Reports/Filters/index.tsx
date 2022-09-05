@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
-import Select from "react-select";
-import CustomDateRangePicker from "common/CustomDateRangePicker";
+
 import { X } from "phosphor-react";
+import Select from "react-select";
 import * as Yup from "yup";
+
+import CustomDateRangePicker from "common/CustomDateRangePicker";
+
 import {
   dateRangeOptions,
   statusOption,
   groupBy
 } from "./filterOptions";
 import { customStyles } from "./style";
+
 import getStatusCssClass from "../../../utils/getStatusTag";
 import { useEntry } from "../context/EntryContext";
 

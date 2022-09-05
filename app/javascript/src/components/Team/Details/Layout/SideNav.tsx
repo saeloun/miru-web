@@ -1,5 +1,7 @@
 import React from "react";
+
 import { NavLink, useParams } from "react-router-dom";
+
 const userAvatar = require("../../../../../../assets/images/user_avatar.svg"); //eslint-disable-line
 
 const getActiveClassName = (isActive) => {

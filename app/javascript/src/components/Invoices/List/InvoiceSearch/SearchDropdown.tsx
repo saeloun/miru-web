@@ -1,5 +1,7 @@
 import * as React from "react";
+
 import { ApiStatus } from "constants/index";
+
 import SearchedDataRow from "./SearchedDataRow";
 
 const SearchDropdown = ({ list=[], status, display }) => {

@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Pen, Trash } from "phosphor-react";
 
 const StaticPage = () => (

@@ -1,5 +1,7 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+
+import { Paths } from "constants/index";
+
 import {
   Timer,
   UsersThree,
@@ -13,8 +15,8 @@ import {
   Question,
   SignOut
 } from "phosphor-react";
+import { NavLink } from "react-router-dom";
 
-import { Paths } from "constants/index";
 const miruLogo = require("../../../../assets/images/PurpleMiruLogoWithText.svg"); //eslint-disable-line
 const avatar = require("../../../../assets/images/NavAvatar.svg"); //eslint-disable-line
 

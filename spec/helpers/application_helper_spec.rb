@@ -8,7 +8,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       let(:user) { create(:user, :with_avatar) }
 
       it "returns user's avatar" do
-        expect(helper.user_avatar(user)).to eq(user.avatar)
+        expect(helper.user_avatar(user)).to eq(url_for(user.avatar))
       end
     end
 

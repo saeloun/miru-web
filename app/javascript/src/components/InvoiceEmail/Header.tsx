@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Wallet } from "phosphor-react";
 
 const Header = ({ invoice, stripeUrl }) => (

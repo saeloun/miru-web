@@ -24,7 +24,7 @@
         >
           Invoice Summary
         </div>
-        <table style="width: 100%; border-collapse: separate;border-spacing: 0 15px; ">
+        <table style="width: 100%; margin: 40px ; border-collapse: separate;border-spacing: 0 15px; ">
           <colgroup>
             <col width="40%">
             <col width="40%">
@@ -41,7 +41,7 @@
               <div style=' font-weight:normal; font-size:12px;'>Invoice Number</div>
               <div style="font-weight:normal; font-size:16px;"><%= @invoice.invoice_number %></div>
             </td>
-            <td align="right">
+            <td align="left">
               <div style=' font-weight:normal; font-size:12px;'>Total</div>
               <div style="font-weight:normal; font-size:12px;">Amount</div>
             </td>
@@ -59,8 +59,7 @@
               <div style="font-weight:normal; font-size:16px;">-</div>
             </td>
             <td align="right">
-              <div style="font-weight:normal; font-size:40px"><%= @amount %></div>
-
+              <div style="font-weight:normal; font-size:24px; margin-right: 40px;"><%= @amount %></div>
             </td>
           </tr>
 

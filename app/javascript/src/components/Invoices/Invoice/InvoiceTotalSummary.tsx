@@ -1,4 +1,5 @@
 import React from "react";
+
 import { currencyFormat } from "helpers/currency";
 
 const InvoiceTotalSummary = ({ invoice }) => {

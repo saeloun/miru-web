@@ -1,6 +1,6 @@
 {
   "name": "@saeloun/miru-web",
-  "version": "0.2.1",
+  "version": "0.3.1",
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "^7.16.5",
     "@babel/preset-react": "^7.16.5",

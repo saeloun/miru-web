@@ -1,6 +1,7 @@
 import React from "react";
 
 import { minutesToHHMM } from "helpers/hhmm-parser";
+
 import { ITimeEntry } from "../interface";
 
 const ReportRow = ({

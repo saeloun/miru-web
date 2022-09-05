@@ -100,8 +100,8 @@ en:
         user:
           attributes:
             password:
-              too_short: "Password must be at least %{count} characters long"
-              blank: "Password can't be blank"
+              too_short: "must be at least %{count} characters long"
+              blank: "can't be blank"
             password_confirmation:
               confirmation: "Passwords dont' match"
             first_name:
