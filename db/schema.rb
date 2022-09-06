@@ -501,6 +501,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_06_103718) do
     t.text "xteam_member_ids", default: [], array: true
     t.string "color"
     t.string "slack_member_id"
+    t.text "slack_member_info"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
