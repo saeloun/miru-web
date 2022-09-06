@@ -151,14 +151,14 @@ const AddEditProject = ({
                 <div className="mt-1">
                   <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
                     <div className="flex items-center">
-                      <input type="radio" id='billable' name='project_type' defaultChecked={isEdit && editProjectData ? (editProjectData.isBillable || editProjectData.billable) : true} className="focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Billable")} />
+                      {editProjectData && <input type="radio" id='billable' name='project_type' defaultChecked={isEdit ? (editProjectData.isBillable || editProjectData.billable) : true} className="focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Billable")} /> }
                       <label htmlFor="billable" className="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
                         Billable
                       </label>
                     </div>
 
                     <div className="flex items-center">
-                      <input type="radio" id='non-billable' name='project_type' defaultChecked={isEdit && editProjectData ? (!editProjectData.isBillable || !editProjectData.billable) : false} className="focus:ring-miru-han-purple-1000 h-4 w-4 bg--miru-han-purple-1000 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Non-Billable")} />
+                      { editProjectData && <input type="radio" id='non-billable' name='project_type' defaultChecked={isEdit && editProjectData ? (!editProjectData.isBillable || !editProjectData.billable) : false} className="focus:ring-miru-han-purple-1000 h-4 w-4 bg--miru-han-purple-1000 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Non-Billable")} /> }
                       <label htmlFor="non-billable" className="ml-3 block text-sm font-medium text-miru-dark-purple-1000 ">
                         Non-billable
                       </label>
