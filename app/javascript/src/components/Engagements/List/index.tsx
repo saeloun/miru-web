@@ -6,7 +6,7 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import engagements from "apis/engagements";
 import Pagination from "common/Pagination";
 import Table from "common/Table";
-import { CircleWavyWarning } from "phosphor-react";
+import { CircleWavyWarning, Eraser } from "phosphor-react";
 import Tab from "./../Tab";
 import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
@@ -76,13 +76,13 @@ const Engagements = ({ isAdminUser }) => {
     },
   ];
 
-  const updateEngagement = (userId, e: React.MouseEvent<HTMLElement>) => {
+  const updateEngagement = (userId, e: React.MouseEvent) => {
     const userCurrentEngageCode = engagementData.find((i) => i.id === userId).engage_code
     if ( userCurrentEngageCode && (e.target as any).value === userCurrentEngageCode.toString() ) return
 
     engagements.update(userId, {
       engagement: {
-        engage_code: (e.target as any).value,
+        engage_code: (e.target as any).value || null,
       }
     }).then((res) => {
       setEngagementData(engagementData.map((element, _index) => {
@@ -129,7 +129,16 @@ const Engagements = ({ isAdminUser }) => {
                 {option.name}
               </button>)
             })}
-            {user.engage_updated_by_name && <div className="px-2 py-1 text-sm font-medium">
+
+            { user.engage_updated_by_name && <div className="px-1 py-1 text-sm font-medium">
+              <ReactTooltip id={`userClearTip-${user.id}`} effect="solid" backgroundColor="grey" textColor="white" place="top">
+                <p className="text-xs">
+                  Clear the engagement!
+                </p>
+              </ReactTooltip>
+              <Eraser size={20} className="text-red-600" onClick={(e) => updateEngagement(user.id, e)} data-tip data-for={`userClearTip-${user.id}`} />
+            </div> }
+            { user.engage_updated_by_name && <div className="px-1 py-1 text-sm font-medium">
               <ReactTooltip id={`userTip-${user.id}`} effect="solid" backgroundColor="grey" textColor="white" place="top">
                 <p className="text-xs">
                   Updated by <b>{user.engage_updated_by_name}</b> at <b>{user.engage_updated_at}</b>
