@@ -42,6 +42,7 @@
 #  engage_updated_by_id   :bigint
 #  invited_by_id          :bigint
 #  personal_email_id      :string
+#  slack_member_id        :string
 #
 # Indexes
 #
@@ -53,6 +54,7 @@
 #  index_users_on_invited_by            (invited_by_type,invited_by_id)
 #  index_users_on_invited_by_id         (invited_by_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_slack_member_id       (slack_member_id) UNIQUE
 #
 # Foreign Keys
 #

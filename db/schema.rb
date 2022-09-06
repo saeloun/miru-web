@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_30_063336) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_06_103718) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -500,6 +500,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_30_063336) do
     t.boolean "team_lead", default: false
     t.text "xteam_member_ids", default: [], array: true
     t.string "color"
+    t.string "slack_member_id"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -508,6 +509,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_30_063336) do
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["slack_member_id"], name: "index_users_on_slack_member_id", unique: true
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|

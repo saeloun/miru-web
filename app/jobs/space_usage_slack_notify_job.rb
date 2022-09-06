@@ -34,7 +34,9 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
     entry = @space_usage.formatted_entry
     bookingDate = DateTime.parse("#{entry[:work_date]}").strftime("%d/%m/%Y")
     member_names = @space_usage.company.users.where(id: @space_usage.team_members)
-      .map(&:full_name).map { |i| "*#{i}*" }.to_sentence
+      .map { |i| ii = i.slack_member_id.present? ? "<@#{i.slack_member_id}>" : i.full_name
+                 "*#{ii}*"
+} .to_sentence
 
     {
       text: "Space occupied :white_check_mark:",
@@ -68,7 +70,9 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
     entry = @space_usage.formatted_entry
     bookingDate = DateTime.parse("#{entry[:work_date]}").strftime("%d/%m/%Y")
     member_names = @space_usage.company.users.where(id: @space_usage.team_members)
-      .map(&:full_name).map { |i| "*#{i}*" }.to_sentence
+      .map { |i| ii = i.slack_member_id.present? ? "<@#{i.slack_member_id}>" : i.full_name
+                 "*#{ii}*"
+} .to_sentence
 
     {
       text: "Space occupation changed :twisted_rightwards_arrows:",
