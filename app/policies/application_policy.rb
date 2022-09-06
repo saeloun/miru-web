@@ -16,7 +16,11 @@ class ApplicationPolicy
   end
 
   def user_under_sales_department?
-    user.under_sales_department?
+    user.having_department?(17)
+  end
+
+  def user_under_hr_department?
+    user.having_department?(4)
   end
 
   def user_team_lead?

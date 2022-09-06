@@ -254,7 +254,7 @@ class Lead < ApplicationRecord
 
     allow_leads = Lead.includes(:assignee, :reporter, :created_by, :updated_by).where(discarded_at: nil)
 
-    if user.under_sales_department?
+    if user.having_department?(17)
       allow_leads = allow_leads.where(
         "assignee_id = ? OR reporter_id = ? OR created_by_id = ?", user.id, user.id,
         user.id)

@@ -20,7 +20,7 @@
               </div>
             <% end %>
           </div>
-          <% if current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)  %>
+          <% if Pundit.policy!(current_user, :team).edit? %>
             <div class="page-content__new-user-width">
               <div class="page-content__new-user-position">
                 <button data-team-element="new-user-btn" type="button" class="page-content__new-user-button">
