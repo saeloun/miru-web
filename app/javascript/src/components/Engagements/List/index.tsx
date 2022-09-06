@@ -105,7 +105,7 @@ const Engagements = ({ isAdminUser }) => {
           <div className="inline-flex rounded-md shadow-sm" role="group">
             {ENGAGEMENT_OPTIONS.map((option, index) => {
               let borderClass = {}
-              borderClass[0] = "rounded-l-lg border",
+              borderClass[0] = "rounded-l-lg border-t border-b border-l",
               borderClass[(ENGAGEMENT_OPTIONS.length - 1)] = "rounded-r-md border"
               borderClass = borderClass[index] || "border-t border-b border-l"
               const hoverClass = {
