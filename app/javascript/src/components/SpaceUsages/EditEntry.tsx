@@ -43,6 +43,8 @@ const EditEntry: React.FC<Iprops> = ({
     { id: "6", name: "Internal / Project Discussion" },
     { id: "7", name: "Internal / Other" },
     { id: "8", name: "Interview" },
+    { id: "9", name: "Training" },
+    { id: "10", name: "KS/KT Knowledge Sharing" },
   ];
   const SPACES = [
     { id: "1", name: "Conference Room", alias: "CR" },
