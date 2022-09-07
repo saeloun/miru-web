@@ -1,16 +1,6 @@
 # frozen_string_literal: true
 
 class DeviceApi::DeviceUsagesController < DeviceApi::ApplicationController
-  # skip_after_action :verify_authorized
-
-  def create
-    authorize :create, policy_class: DeviceApi::DeviceUsageApiPolicy
-
-    render :create, locals: {
-      device_usage: DeviceUsage.create!(device_usage_params)
-    }
-  end
-
   def approve
     authorize :approve, policy_class: DeviceApi::DeviceUsageApiPolicy
 
@@ -25,12 +15,10 @@ class DeviceApi::DeviceUsagesController < DeviceApi::ApplicationController
 
     if last_usage_request.update(device_usage_params)
       last_usage_request.device.update!(assignee_id: last_usage_request.created_by_id, available: true)
-      render json: {
-        success: true,
-        approved_device_usage: last_usage_request,
+      render :approve, locals: {
         device:,
-        notice: I18n.t("device_usage.update.success.message")
-      }, status: :ok
+        last_usage_request:
+      }
     else
       render json: {
         success: false,

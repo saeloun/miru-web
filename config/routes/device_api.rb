@@ -5,7 +5,7 @@ namespace :device_api, defaults: { format: "json" } do
     post :find, on: :collection
     put :update_availability, on: :member
 
-    resources :device_usages, only: [:create] do
+    resources :device_usages, only: [] do
       put :approve, on: :collection
     end
   end
