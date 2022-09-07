@@ -66,22 +66,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_06_103718) do
     t.string "first_name"
     t.string "last_name"
     t.string "email"
-    t.bigint "consultancy_id"
     t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "state_code"
+    t.string "title"
     t.text "emails", default: [], array: true
     t.text "address"
-    t.integer "state_code"
     t.string "country"
     t.string "mobilephone"
     t.string "telephone"
     t.string "skypeid"
     t.string "linkedinid"
     t.string "description"
-    t.boolean "donotbulkemail", default: false
-    t.boolean "donotemail", default: false
-    t.boolean "donotphone", default: false
+    t.text "cover_letter"
     t.integer "status_code"
     t.integer "preferred_contact_method_code"
     t.integer "initial_communication"
@@ -92,6 +90,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_06_103718) do
     t.bigint "created_by_id"
     t.bigint "updated_by_id"
     t.bigint "company_id"
+    t.bigint "consultancy_id"
     t.index ["assignee_id"], name: "index_candidates_on_assignee_id"
     t.index ["company_id"], name: "index_candidates_on_company_id"
     t.index ["consultancy_id"], name: "index_candidates_on_consultancy_id"

@@ -7,11 +7,9 @@
 #  id                            :bigint           not null, primary key
 #  address                       :text
 #  country                       :string
+#  cover_letter                  :text
 #  description                   :string
 #  discarded_at                  :datetime
-#  donotbulkemail                :boolean          default(FALSE)
-#  donotemail                    :boolean          default(FALSE)
-#  donotphone                    :boolean          default(FALSE)
 #  email                         :string
 #  emails                        :text             default([]), is an Array
 #  first_name                    :string
@@ -26,6 +24,7 @@
 #  status_code                   :integer
 #  tech_stack_ids                :text             default([]), is an Array
 #  telephone                     :string
+#  title                         :string
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
 #  assignee_id                   :bigint
