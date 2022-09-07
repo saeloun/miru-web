@@ -21,14 +21,14 @@ const unmapCandidateListForDropdown = (input) => {
   }));
 };
 
-const unmapConsulantancyDetails = (input) => {
+const unmapCandidateDetails = (input) => {
   const { data } = input;
   return {
-    leadDetails: {
+    candidateDetails: {
       id: data.candidate_details.id,
       first_name: data.candidate_details.first_name,
-      email: data.candidate_details.email,
       last_name: data.candidate_details.last_name,
+      email: data.candidate_details.email,
       consultancy_id: data.candidate_details.consultancy_id
     }
   };
@@ -36,6 +36,6 @@ const unmapConsulantancyDetails = (input) => {
 
 export {
   unmapCandidateList,
-  unmapConsulantancyDetails,
+  unmapCandidateDetails,
   unmapCandidateListForDropdown
 };
