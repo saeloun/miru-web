@@ -122,6 +122,7 @@ const CandidateList = ({ isAdminUser, basePath="" }) => {
         <DeleteCandidate
           setShowDeleteDialog={setShowDeleteDialog}
           candidate={candidateToDelete}
+          basePath={basePath}
         />
       )}
       {newCandidate && (

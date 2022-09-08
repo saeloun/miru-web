@@ -29,14 +29,6 @@ const Details: React.FC<IDetailsProps> = ({ id, basePath="" }) => {
       });
   }, [location.pathname]);
 
-  // useEffect(() => {
-  //   candidate.show(id)
-  //     .then((res) => {
-  //       const sanitized = unmapCandidateDetails(res);
-  //       setCandidateDetails(sanitized.candidateDetails);
-  //     });
-  // }, [id]);
-
   const submitCandidateForm = () => {
     formRef.dispatchEvent(
       new Event("submit", { bubbles: true, cancelable: true })

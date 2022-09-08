@@ -16,7 +16,10 @@ namespace :internal_api, defaults: { format: "json" } do
     end
     namespace :recruitments do
       resources :consultancies, only: [:index, :update, :destroy, :show, :create]
-      resources :candidates, only: [:index, :update, :destroy, :show, :create, :edit]
+      resources :candidates, only: [:index, :update, :destroy, :show, :create, :edit] do
+        get "items", to: "/candidate_items", on: :collection
+        get "allowed_users", to: "/candidate_allowed_users", on: :collection
+      end
     end
     resources :space_usages, only: [:index, :create, :update, :destroy]
 

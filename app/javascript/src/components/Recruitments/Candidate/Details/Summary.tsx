@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import leadItemsApi from "apis/lead-items";
-import leads from "apis/leads";
+import candidateItemsApi from "apis/candidate-items";
+import candidates from "apis/candidates";
 import { Formik, Form, Field, FieldArray } from "formik";
 import { Multiselect } from 'multiselect-react-dropdown';
 import * as Yup from "yup";
-import { unmapLeadDetails } from "../../../../mapper/lead.mapper";
+import { unmapCandidateDetails } from "../../../../mapper/candidate.mapper";
 
-const newLeadSchema = Yup.object().shape({
+const newCandidateSchema = Yup.object().shape({
   first_name: Yup.string().required("First Name cannot be blank"),
   last_name: Yup.string().required("Last Name cannot be blank"),
   budget_amount: Yup.number().nullable().typeError("Invalid budget amount"),
@@ -19,6 +19,7 @@ const newLeadSchema = Yup.object().shape({
 const getInitialvalues = (candidate: any) => ({
   name: candidate.name,
   description: candidate.description,
+  cover_letter: candidate.cover_letter,
   preferred_contact_method_code: candidate.preferred_contact_method_code,
   initial_communication: candidate.initial_communication,
   priority_code: candidate.priority_code,
@@ -81,8 +82,8 @@ const Summary = ({
   };
 
   useEffect(() => {
-    const getLeadItems = async () => {
-      leadItemsApi.get()
+    const getCandidateItems = async () => {
+      candidateItemsApi.get()
         .then((data) => {
           setPreferredContactMethodCodeList(data.data.preferred_contact_method_code_names);
           setInitialCommunicationList(data.data.initial_communications);
@@ -98,18 +99,18 @@ const Summary = ({
         });
     };
 
-    getLeadItems();
+    getCandidateItems();
   }, [candidateDetails]);
 
   useEffect(() => {
     if (techStackList && candidateDetails && candidateDetails.tech_stack_ids && candidateDetails.tech_stack_ids.length > 0){
-      const sanitizedSelectedStackList = techStackList.filter(option =>
+      const sanitizedSelectedStackList = techStackList.filter((option: any) =>
         candidateDetails.tech_stack_ids.map(Number).includes(parseInt(option.id))
       );
       setSelectedTechStacks([...sanitizedSelectedStackList]);
 
       const stackArray = []
-      sanitizedSelectedStackList.filter(option =>
+      sanitizedSelectedStackList.filter((option: any) =>
         stackArray.push(parseInt(option.id))
       );
       setTechStacks(stackArray);
@@ -124,18 +125,19 @@ const Summary = ({
     setTechStacks(newStackArray);
   };
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: any) => {
 
-    await leads.update(candidateDetails.id, {
-      lead: {
+    await candidates.update(candidateDetails.id, {
+      candidate: {
         "title": values.title,
         "first_name": values.first_name,
         "last_name": values.last_name,
         "email": values.email,
         "description": values.description,
-        "preferred_contact_method_code": preferredContactMethodCode || values.preferred_contact_method_code,
-        "initial_communication": initialCommunication || values.initial_communication,
-        "source_code": sourceCode || values.source_code,
+        "cover_letter": values.cover_letter,
+        "preferred_contact_method_code": Number(preferredContactMethodCode || values.preferred_contact_method_code),
+        "initial_communication": Number(initialCommunication || values.initial_communication),
+        "source_code": Number(sourceCode || values.source_code),
         "address": values.address,
         "country": country || values.country,
         "skypeid": values.skypeid,
@@ -146,7 +148,7 @@ const Summary = ({
         "tech_stack_ids": techStacks ? techStacks.map(Number) : []
       }
     }).then((res) => {
-      setCandidateDetails(unmapLeadDetails(res).leadDetails);
+      setCandidateDetails(unmapCandidateDetails(res).candidateDetails);
     }).catch((e) => {
       setApiError(e.message);
     });
@@ -156,7 +158,7 @@ const Summary = ({
     <React.Fragment>
       <Formik
         initialValues={getInitialvalues(candidateDetails)}
-        validationSchema={newLeadSchema}
+        validationSchema={newCandidateSchema}
         enableReinitialize={true}
         onSubmit={handleSubmit}
       >
@@ -270,7 +272,7 @@ const Summary = ({
                           name="preferred_contact_method_code" onChange={(e) => setPreferredContactMethodCode(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Contact Method</option>
                           {preferredContactMethodCodeList &&
-                            preferredContactMethodCodeList.map(e => <option value={e.id} key={e.id}>{e.name}</option>)}
+                            preferredContactMethodCodeList.map(e => <option value={e.id} selected={e.id === candidateDetails.preferred_contact_method_code} key={e.id}>{e.name}</option>)}
                         </select>
                         <div className="flex items-center justify-between pt-1 text-red-700">
                           {errors.preferred_contact_method_code && touched.preferred_contact_method_code &&
@@ -287,7 +289,7 @@ const Summary = ({
                           name="source_code" onChange={(e) => setSourceCode(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Source</option>
                           {sourceCodeList &&
-                            sourceCodeList.map(e => <option value={e.id} key={e.id}>{e.name}</option>)}
+                            sourceCodeList.map(e => <option value={e.id} selected={e.id === candidateDetails.source_code} key={e.id}>{e.name}</option>)}
                         </select>
                         <div className="flex items-center justify-between pt-1 text-red-700">
                           {errors.source_code && touched.source_code &&
@@ -304,7 +306,7 @@ const Summary = ({
                           name="initial_communication" onChange={(e) => setInitialCommunication(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Initial Communication</option>
                           {initialCommunicationList &&
-                            initialCommunicationList.map(e => <option value={e.id} key={e.id}>{e.name}</option>)}
+                            initialCommunicationList.map(e => <option value={e.id} selected={e.id === candidateDetails.initial_communication} key={e.id}>{e.name}</option>)}
                         </select>
                         <div className="flex items-center justify-between pt-1 text-red-700">
                           {errors.initial_communication && touched.initial_communication &&
@@ -337,6 +339,17 @@ const Summary = ({
                           displayValue="name"
                           disable={!isEdit} />
                       </div>
+
+                      <div className="flex flex-col w-full mt-4 lg:w-9/12 md:w-1/2">
+                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Cover Letter</label>
+                        <Field className="w-full p-1 text-sm text-gray-600 placeholder-gray-500 bg-transparent border border-gray-400 rounded shadow-sm focus:outline-none focus:border-blue-700 disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none"
+                          name="cover_letter" as="textarea" rows={8} placeholder="Cover Letter" disabled={!isEdit} />
+                        <div className="flex items-center justify-between pt-1 text-red-700">
+                          {errors.cover_letter && touched.cover_letter &&
+                            <p className="text-xs">{`${errors.cover_letter}`}</p>
+                          }
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -357,11 +370,11 @@ const Summary = ({
                           className="w-full p-1 text-sm text-gray-600 placeholder-gray-500 bg-transparent border border-gray-400 rounded shadow-sm focus:outline-none focus:border-blue-700 disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none"
                           name="industry_code" onChange={(e) => setCountry(e.target.value)} disabled={!isEdit} >
                           <option value=''>Select Country</option>
-                          <option value="IN" key="IN">India</option>
-                          <option value="US" key="US">United States of America</option>
-                          <option value="CA" key="CA">Canada</option>
+                          <option value="IN" selected={"IN" === candidateDetails.country} key="IN">India</option>
+                          <option value="US" selected={"US" === candidateDetails.country} key="US">United States of America</option>
+                          <option value="CA" selected={"CA" === candidateDetails.country} key="CA">Canada</option>
                           {countryList &&
-                            countryList.filter((e: any) => ['IN', 'US', 'CA'].indexOf(e[0]) === -1).map((e: any) => <option value={e[0]} key={e[0]}>{e[1]}</option>)}
+                            countryList.filter((e: any) => ['IN', 'US', 'CA'].indexOf(e[0]) === -1).map((e: any) => <option value={e[0]} selected={e[0] === candidateDetails.country} key={e[0]}>{e[1]}</option>)}
                         </select>
                         <div className="flex items-center justify-between pt-1 text-red-700">
                           {errors.country && touched.country &&

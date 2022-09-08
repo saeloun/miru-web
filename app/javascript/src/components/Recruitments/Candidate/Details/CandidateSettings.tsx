@@ -1,35 +1,30 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
-import leadAllowedUsersApi from "apis/lead-allowed-users";
-import leadItemsApi from "apis/lead-items";
-import leads from "apis/leads";
+import candidateAllowedUsersApi from "apis/candidate-allowed-users";
+import candidateItemsApi from "apis/candidate-items";
+import candidates from "apis/candidates";
 import { Formik, Form } from "formik";
-import { unmapLeadDetails } from "../../../../mapper/lead.mapper";
+import { unmapCandidateList } from "../../../../mapper/candidate.mapper";
 
-const getInitialvalues = (lead) => ({
-  assignee_id: lead.assignee_id,
-  reporter_id: lead.reporter_id,
-  quality_code: lead.quality_code,
-  state_code: lead.state_code,
-  status_code: lead.status_code,
-  priority_code: lead.priority_code
+const getInitialvalues = (candidateI) => ({
+  assignee_id: candidateI.assignee_id,
+  reporter_id: candidateI.reporter_id,
+  status_code: candidateI.status_code,
 });
 
 const CandidateSettings = ({ candidateDetails, setCandidateDetails, setShowCandidateSetting }) => {
   const [statusCodeList, setStatusCodeList] = useState<any>(null);
   const [allowUserList, setAllowUserLIst] = useState<any>(null);
-  // const navigate = useNavigate();
 
   useEffect(() => {
     const getAllowedUsers = async () => {
-      leadAllowedUsersApi.get()
+      candidateAllowedUsersApi.get()
         .then((data) => {
           setAllowUserLIst(data.data.allowed_user_list);
         }).catch(() => {
           setAllowUserLIst({});
         });
-      leadItemsApi.get()
+      candidateItemsApi.get()
         .then((data) => {
           setStatusCodeList(data.data.status_codes);
         }).catch(() => {
@@ -41,52 +36,49 @@ const CandidateSettings = ({ candidateDetails, setCandidateDetails, setShowCandi
     setCandidateDetails(candidateDetails);
   }, []);
 
-  const handleSubmit = async values => {
-    await leads.update(candidateDetails.id, {
-      lead: {
-        "assignee_id": values.assignee_id,
-        "reporter_id": values.reporter_id,
-        "quality_code": values.quality_code,
-        "state_code": values.state_code,
-        "status_code": values.status_code,
-        "priority_code": values.priority_code
+  const handleSubmit = async (values: any) => {
+    await candidates.update(candidateDetails.id, {
+      candidate: {
+        "assignee_id": parseInt(values.assignee_id),
+        "reporter_id": parseInt(values.reporter_id),
+        "status_code": parseInt(values.status_code)
       }
     }).then((res) => {
       setShowCandidateSetting(false);
-      setCandidateDetails(unmapLeadDetails(res).leadDetails);
+      setCandidateDetails(unmapCandidateList(res).recruitmentCandidate);
     })
   };
 
-  const changeAssignee = async (val) => {
-    await leads.update(candidateDetails.id, {
-      lead: {
-        "assignee_id": val
+  const changeAssignee = async (val: any) => {
+    await candidates.update(candidateDetails.id, {
+      candidate: {
+        "assignee_id": parseInt(val)
       }
     }).then((res) => {
       setShowCandidateSetting(false);
-      setCandidateDetails(unmapLeadDetails(res).leadDetails);
+      setCandidateDetails(unmapCandidateList(res).recruitmentCandidate);
     })
   };
 
-  const changeReporter = async (val) => {
-    await leads.update(candidateDetails.id, {
-      lead: {
-        "reporter_id": val
+  const changeReporter = async (val: any) => {
+    await candidates.update(candidateDetails.id, {
+      candidate: {
+        "reporter_id": parseInt(val)
       }
     }).then((res) => {
       setShowCandidateSetting(false);
-      setCandidateDetails(unmapLeadDetails(res).leadDetails);
+      setCandidateDetails(unmapCandidateList(res).recruitmentCandidate);
     })
   };
 
-  const changeStatusCode = async (val) => {
-    await leads.update(candidateDetails.id, {
-      lead: {
-        "status_code": val
+  const changeStatusCode = async (val: any) => {
+    await candidates.update(candidateDetails.id, {
+      candidate: {
+        "status_code": parseInt(val)
       }
     }).then((res) => {
       setShowCandidateSetting(false);
-      setCandidateDetails(unmapLeadDetails(res).leadDetails);
+      setCandidateDetails(unmapCandidateList(res).recruitmentCandidate);
     })
   };
 
@@ -122,7 +114,7 @@ const CandidateSettings = ({ candidateDetails, setCandidateDetails, setShowCandi
                           name="assignee_id" onChange={(e) => changeAssignee(e.target.value)}>
                           <option value=''>Select Assignee</option>
                           {allowUserList &&
-                            allowUserList.map((e: any) => <option value={e.id} key={e.id} selected={e.id === candidateDetails.assignee_id}>{e.first_name}{' '}{e.last_name}</option>)}
+                            allowUserList.map((e: any) => <option value={e.id} selected={e.id === candidateDetails.assignee_id} key={e.id}>{e.full_name}</option>)}
                         </select>
                         <div className="block text-xs tracking-wider text-red-600">
                           {errors.assignee_id && touched.assignee_id &&
@@ -139,7 +131,7 @@ const CandidateSettings = ({ candidateDetails, setCandidateDetails, setShowCandi
                           name="reporter_id" onChange={(e) => changeReporter(e.target.value)}>
                           <option value=''>Select Reporter</option>
                           {allowUserList &&
-                            allowUserList.map((e: any) => <option value={e.id} key={e.id} selected={e.id === candidateDetails.reporter_id}>{e.first_name}{' '}{e.last_name}</option>)}
+                            allowUserList.map((e: any) => <option value={e.id} selected={e.id === candidateDetails.reporter_id} key={e.id}>{e.full_name}</option>)}
                         </select>
                         <div className="block text-xs tracking-wider text-red-600">
                           {errors.reporter_id && touched.reporter_id &&
@@ -156,7 +148,7 @@ const CandidateSettings = ({ candidateDetails, setCandidateDetails, setShowCandi
                           name="status_code" onChange={(e) => changeStatusCode(e.target.value)}>
                           <option value=''>Select Status</option>
                           {statusCodeList &&
-                            statusCodeList.map((e: any) => <option value={e.id} key={e.id} selected={e.id === candidateDetails.status_code}>{e.name}</option>)}
+                            statusCodeList.map((e: any) => <option value={e.id} selected={e.id === candidateDetails.status_code} key={e.id}>{e.name}</option>)}
                         </select>
                         <div className="flex items-center justify-between pt-1 text-red-700">
                           {errors.status_code && touched.status_code &&

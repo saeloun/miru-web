@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import leads from "apis/leads";
+import candidates from "apis/candidates";
 import { X, Pencil, FloppyDisk, ArrowLeft, CaretDown, Trash, Gear } from "phosphor-react";
-import { unmapLeadList } from "../../../../mapper/lead.mapper";
+import { unmapCandidateList } from "../../../../mapper/candidate.mapper";
 import getStatusCssClass from "../../../../utils/getStatusTag";
 import DeleteCandidate from "../../Modals/DeleteCandidate";
 
@@ -23,7 +23,7 @@ const Header = ({
   const [candidateData, setCandidateData] = useState<any>();
 
   const [isHeaderMenuVisible, setHeaderMenuVisibility] = useState<boolean>(false);
-  const [isLeadOpen, toggleLeadDetails] = useState<boolean>(false);
+  const [isCandidateOpen, toggleCandidateDetails] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -39,12 +39,12 @@ const Header = ({
 
   const handleDeleteClick = (id: number) => {
     setShowDeleteDialog(true);
-    const editSelection = candidateData.find(lead => lead.id === id);
+    const editSelection = candidateData.find((candidate: any) => candidate.id === id);
     setDelete(editSelection);
   };
 
-  const handleLeadDetails = () => {
-    toggleLeadDetails(!isLeadOpen);
+  const handleCandidateDetails = () => {
+    toggleCandidateDetails(!isCandidateOpen);
   };
 
   const handleBackButtonClick = () => {
@@ -52,13 +52,13 @@ const Header = ({
   };
 
   useEffect(() => {
-    toggleLeadDetails(!isLeadOpen);
+    toggleCandidateDetails(!isCandidateOpen);
     setAuthHeaders();
     registerIntercepts();
-    leads.get("")
+    candidates.get("")
       .then((res) => {
-        const sanitized = unmapLeadList(res);
-        setCandidateData(sanitized.leadList);
+        const sanitized = unmapCandidateList(res);
+        setCandidateData(sanitized.recruitmentCandidate);
       });
   }, []);
 
@@ -71,11 +71,11 @@ const Header = ({
               <ArrowLeft size={20} color="#0033CC" weight="bold" />
             </button>
             {(candidateDetails.discarded_at) ? (<h2 className="py-1 mr-6 text-3xl font-extrabold text-red-600 sm:text-4xl sm:truncate">
-              {`${candidateDetails.first_name} ${candidateDetails.last_name}`}
+              {candidateDetails.name}
             </h2>) : (<h2 className="py-1 mr-6 text-3xl font-extrabold text-gray-900 sm:text-4xl sm:truncate">
-              {`${candidateDetails.first_name} ${candidateDetails.last_name}`}
+              {candidateDetails.name}
             </h2>)}
-            <button onClick={handleLeadDetails}>
+            <button onClick={handleCandidateDetails}>
               <CaretDown size={20} weight="bold" />
             </button>
             {forItem === "summary" &&
@@ -147,10 +147,10 @@ const Header = ({
         </div>
         {candidateDetails.discarded_at &&
           <p className="items-center p-1 m-5 text-xs font-bold leading-4 tracking-widest text-center rounded-xs bg-col-yellow-600 text-miru-alert-green-1000">
-            The Lead is deleted, Kept for future use!!!
+            The Candidate is deleted, Kept for future use!!!
           </p>
         }
-        {isLeadOpen && <div className="flex mt-4 ml-12">
+        {isCandidateOpen && <div className="flex mt-4 ml-12">
           <div className="text-xs text-col-dark-app-400">
             <h6 className="font-semibold">Assignee</h6>
             <p>{candidateDetails.assignee_name ? candidateDetails.assignee_name : "UNASSIGNED"}</p>
@@ -174,6 +174,7 @@ const Header = ({
         <DeleteCandidate
           setShowDeleteDialog={setShowDeleteDialog}
           candidate={candidateToDelete}
+          basePath={basePath}
         />
       )}
     </>
