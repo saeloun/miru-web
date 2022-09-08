@@ -43,6 +43,7 @@ yarn-debug.log*
 
 # Rails specific ignores
 /vendor/*
+!/vendor/javascript/.keep
 !/vendor/.keep
 
 .env
