@@ -126,6 +126,40 @@ const EditEntry: React.FC<IEditEntryProps> = ({
             <div className="px-6 py-6 lg:px-8">
               <div className="space-y-6">
                 <div>
+                  <label htmlFor="assignee" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Assignee</label>
+                  <select
+                    disabled={isProcessing}
+                    onChange={e => {
+                      setAssigneeId(parseInt(e.target.value));
+                    }}
+                    value={assigneeId || ""}
+                    name="assignee_id"
+                    id="assignee"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  >
+                    {!assigneeId && (
+                      <option disabled className="text-miru-gray-100" value="">
+                        Please select assignee
+                      </option>
+                    )}
+                    {assigneeIdOptions.map((a: ISelectOptions) => (
+                      <option key={`assigneeId-${a.id}`} value={a.id}>{a.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Available</label>
+                  <div className="mb-3">
+                    <span className="font-medium text-gray-400">{isNotAvailable}</span>
+                    <div className="relative inline-block w-10 mx-2 align-middle select-none">
+                      <input disabled={isProcessing} onChange={() => setDeviceIsAvailable(!deviceIsAvailable)} checked={deviceIsAvailable} type="checkbox" name="available" id="available" className="absolute block w-6 h-6 duration-200 ease-in border-4 rounded-full outline-none appearance-none cursor-pointer bg-miru-alert-red-1000 checked:bg-miru-alert-green-800 focus:outline-none right-4 checked:right-0"/>
+                      <label htmlFor="available" className={`block h-6 overflow-hidden rounded-full cursor-pointer ${deviceIsAvailable ? 'bg-miru-alert-green-400' : 'bg-miru-alert-pink-400'}`} />
+                    </div>
+                    <span className="font-medium text-gray-400">{isAvailable}</span>
+                  </div>
+                </div>
+                <hr></hr>
+                <div>
                   <label htmlFor="deviceType" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Device Type</label>
                   <select
                     disabled={isProcessing}
@@ -159,17 +193,6 @@ const EditEntry: React.FC<IEditEntryProps> = ({
                     id="name"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   />
-                </div>
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Available</label>
-                  <div className="mb-3">
-                    <span className="font-medium text-gray-400">{isNotAvailable}</span>
-                    <div className="relative inline-block w-10 mx-2 align-middle select-none">
-                      <input disabled={isProcessing} onChange={() => setDeviceIsAvailable(!deviceIsAvailable)} checked={deviceIsAvailable} type="checkbox" name="available" id="available" className="absolute block w-6 h-6 duration-200 ease-in border-4 rounded-full outline-none appearance-none cursor-pointer bg-miru-alert-red-1000 checked:bg-miru-alert-green-800 focus:outline-none right-4 checked:right-0"/>
-                      <label htmlFor="available" className={`block h-6 overflow-hidden rounded-full cursor-pointer ${deviceIsAvailable ? 'bg-miru-alert-green-400' : 'bg-miru-alert-pink-400'}`} />
-                    </div>
-                    <span className="font-medium text-gray-400">{isAvailable}</span>
-                  </div>
                 </div>
                 <div>
                   <label htmlFor="brand" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Brand</label>
@@ -222,28 +245,6 @@ const EditEntry: React.FC<IEditEntryProps> = ({
                     id="version"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   />
-                </div>
-                <div>
-                  <label htmlFor="assignee" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Assignee</label>
-                  <select
-                    disabled={isProcessing}
-                    onChange={e => {
-                      setAssigneeId(parseInt(e.target.value));
-                    }}
-                    value={assigneeId || ""}
-                    name="assignee_id"
-                    id="assignee"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  >
-                    {!assigneeId && (
-                      <option disabled className="text-miru-gray-100" value="">
-                        Please select assignee
-                      </option>
-                    )}
-                    {assigneeIdOptions.map((a: ISelectOptions) => (
-                      <option key={`assigneeId-${a.id}`} value={a.id}>{a.name}</option>
-                    ))}
-                  </select>
                 </div>
                 <button
                   onClick={handleEdit}

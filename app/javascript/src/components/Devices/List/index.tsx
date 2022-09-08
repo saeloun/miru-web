@@ -101,7 +101,7 @@ const Devices = ({ isAdminUser }) => {
       cssClass: "py-5 px-0 text-center"
     },
     {
-      Header: "Available",
+      Header: "Availability",
       accessor: "col10",
       cssClass: "py-5 px-0 text-center"
     },
@@ -199,14 +199,14 @@ const Devices = ({ isAdminUser }) => {
         params={params}
         setParams={setParams}
       /> */}
-      <div
+      {/* <div
         className={
           "sm:flex mt-6 mb-3 sm:items-center sm:justify-between"
         }>
         <span className="inline-flex">
           <h2 className="header__title">Devices</h2>
         </span>
-      </div>
+      </div> */}
       <div>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
