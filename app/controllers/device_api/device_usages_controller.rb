@@ -4,7 +4,7 @@ class DeviceApi::DeviceUsagesController < DeviceApi::ApplicationController
   def approve
     authorize :approve, policy_class: DeviceApi::DeviceUsageApiPolicy
 
-    last_usage_request = device.device_usages.last
+    last_usage_request = device.device_usages.where(approve: nil).last
     if last_usage_request.blank?
       render json: {
         success: false,
@@ -14,7 +14,9 @@ class DeviceApi::DeviceUsagesController < DeviceApi::ApplicationController
     end
 
     if last_usage_request.update(device_usage_params)
-      last_usage_request.device.update!(assignee_id: last_usage_request.created_by_id, available: true)
+      last_usage_request.device.update!(assignee_id: last_usage_request.created_by_id, available: false)
+      device.device_usages.where(approve: nil).update_all(approve: false)
+
       render :approve, locals: {
         device:,
         last_usage_request:
