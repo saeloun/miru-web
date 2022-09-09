@@ -42,9 +42,7 @@ yarn-debug.log*
 .yarn-integrity
 
 # Rails specific ignores
-/vendor/*
-!/vendor/javascript/.keep
-!/vendor/.keep
+/vendor/bundle
 
 .env
 
