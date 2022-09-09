@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import Logger from "js-logger";
-import { Funnel, MagnifyingGlass, Plus } from "phosphor-react";
+import { MagnifyingGlass, Plus } from "phosphor-react";
 
 import projectApi from "apis/projects";
 import AutoComplete from "common/AutoComplete";
@@ -35,11 +35,11 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
               <MagnifyingGlass size={12} />
             </button>
           </div>
-          {isAdminUser && (
+          {/* {isAdminUser && (
             <button className="ml-7">
               <Funnel size={16} />
             </button>
-          )}
+          )} */}
         </div>
         {isAdminUser && (
           <button
