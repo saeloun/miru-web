@@ -58,10 +58,6 @@ const Summary = ({
   const [techStackList, setTechStackList] = useState<any>(null);
   const [selectedTechStacks, setSelectedTechStacks] = useState<any>(null);
 
-  const [preferredContactMethodCode, setPreferredContactMethodCode] = useState<any>(null);
-  const [initialCommunication, setInitialCommunication] = useState<any>(null);
-  const [sourceCode, setSourceCode] = useState<any>(null);
-  const [country, setCountry] = useState<any>(null);
   const [techStacks, setTechStacks] = useState<any>([]);
 
   useEffect(() => {
@@ -135,11 +131,11 @@ const Summary = ({
         "email": values.email,
         "description": values.description,
         "cover_letter": values.cover_letter,
-        "preferred_contact_method_code": Number(preferredContactMethodCode || values.preferred_contact_method_code),
-        "initial_communication": Number(initialCommunication || values.initial_communication),
-        "source_code": Number(sourceCode || values.source_code),
+        "preferred_contact_method_code": Number(values.preferred_contact_method_code) || null,
+        "initial_communication": Number(values.initial_communication) || null,
+        "source_code": Number(values.source_code) || null,
         "address": values.address,
-        "country": country || values.country,
+        "country": values.country,
         "skypeid": values.skypeid,
         "linkedinid": values.linkedinid,
         "emails": values.emails || [],
@@ -266,14 +262,15 @@ const Summary = ({
 
                       <div className="flex flex-col w-full mt-4 lg:w-9/12 md:w-1/2">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Contact Method</label>
-                        <select
-                          defaultValue={candidateDetails.preferred_contact_method_code}
+                        <Field
+                          as="select"
+                          name="preferred_contact_method_code"
                           className="w-full p-1 text-sm text-gray-600 placeholder-gray-500 bg-transparent border border-gray-400 rounded shadow-sm focus:outline-none focus:border-blue-700 disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none"
-                          name="preferred_contact_method_code" onChange={(e) => setPreferredContactMethodCode(e.target.value)} disabled={!isEdit} >
+                          disabled={!isEdit}
+                        >
                           <option value=''>Select Contact Method</option>
-                          {preferredContactMethodCodeList &&
-                            preferredContactMethodCodeList.map(e => <option value={e.id} selected={e.id === candidateDetails.preferred_contact_method_code} key={e.id}>{e.name}</option>)}
-                        </select>
+                          {preferredContactMethodCodeList && preferredContactMethodCodeList.map((e: any) => <option value={e.id} key={e.id}>{e.name}</option>)}
+                        </Field>
                         <div className="flex items-center justify-between pt-1 text-red-700">
                           {errors.preferred_contact_method_code && touched.preferred_contact_method_code &&
                             <p className="text-xs">{`${errors.preferred_contact_method_code}`}</p>
@@ -283,14 +280,15 @@ const Summary = ({
 
                       <div className="flex flex-col w-full mt-4 lg:w-9/12 md:w-1/2">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Source</label>
-                        <select
-                          defaultValue={candidateDetails.source_code}
+                        <Field
+                          as="select"
+                          name="source_code"
                           className="w-full p-1 text-sm text-gray-600 placeholder-gray-500 bg-transparent border border-gray-400 rounded shadow-sm focus:outline-none focus:border-blue-700 disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none"
-                          name="source_code" onChange={(e) => setSourceCode(e.target.value)} disabled={!isEdit} >
+                          disabled={!isEdit}
+                        >
                           <option value=''>Select Source</option>
-                          {sourceCodeList &&
-                            sourceCodeList.map(e => <option value={e.id} selected={e.id === candidateDetails.source_code} key={e.id}>{e.name}</option>)}
-                        </select>
+                          {sourceCodeList && sourceCodeList.map((e: any) => <option value={e.id} key={e.id}>{e.name}</option>)}
+                        </Field>
                         <div className="flex items-center justify-between pt-1 text-red-700">
                           {errors.source_code && touched.source_code &&
                             <p className="text-xs">{`${errors.source_code}`}</p>
@@ -300,14 +298,15 @@ const Summary = ({
 
                       <div className="flex flex-col w-full mt-4 lg:w-9/12 md:w-1/2">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Initial Communication</label>
-                        <select
-                          defaultValue={candidateDetails.initial_communication}
+                        <Field
+                          as="select"
+                          name="initial_communication"
                           className="w-full p-1 text-sm text-gray-600 placeholder-gray-500 bg-transparent border border-gray-400 rounded shadow-sm focus:outline-none focus:border-blue-700 disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none"
-                          name="initial_communication" onChange={(e) => setInitialCommunication(e.target.value)} disabled={!isEdit} >
+                          disabled={!isEdit}
+                        >
                           <option value=''>Select Initial Communication</option>
-                          {initialCommunicationList &&
-                            initialCommunicationList.map(e => <option value={e.id} selected={e.id === candidateDetails.initial_communication} key={e.id}>{e.name}</option>)}
-                        </select>
+                          {initialCommunicationList && initialCommunicationList.map((e: any) => <option value={e.id} key={e.id}>{e.name}</option>)}
+                        </Field>
                         <div className="flex items-center justify-between pt-1 text-red-700">
                           {errors.initial_communication && touched.initial_communication &&
                             <p className="text-xs">{`${errors.initial_communication}`}</p>
@@ -365,17 +364,18 @@ const Summary = ({
                     <div className="mx-auto xl:mx-0">
                       <div className="flex flex-col w-full mt-4 lg:w-9/12 md:w-1/2">
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Country</label>
-                        <select
-                          defaultValue={candidateDetails.country}
+                        <Field
+                          as="select"
+                          name="country"
                           className="w-full p-1 text-sm text-gray-600 placeholder-gray-500 bg-transparent border border-gray-400 rounded shadow-sm focus:outline-none focus:border-blue-700 disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none"
-                          name="industry_code" onChange={(e) => setCountry(e.target.value)} disabled={!isEdit} >
+                          disabled={!isEdit}
+                        >
                           <option value=''>Select Country</option>
-                          <option value="IN" selected={"IN" === candidateDetails.country} key="IN">India</option>
-                          <option value="US" selected={"US" === candidateDetails.country} key="US">United States of America</option>
-                          <option value="CA" selected={"CA" === candidateDetails.country} key="CA">Canada</option>
-                          {countryList &&
-                            countryList.filter((e: any) => ['IN', 'US', 'CA'].indexOf(e[0]) === -1).map((e: any) => <option value={e[0]} selected={e[0] === candidateDetails.country} key={e[0]}>{e[1]}</option>)}
-                        </select>
+                          <option value="IN" key="IN">India</option>
+                          <option value="US" key="US">United States of America</option>
+                          <option value="CA" key="CA">Canada</option>
+                          {countryList && countryList.filter((e: any) => ['IN', 'US', 'CA'].indexOf(e[0]) === -1).map((e: any) => <option value={e[0]} key={e[0]}>{e[1]}</option>)}
+                        </Field>
                         <div className="flex items-center justify-between pt-1 text-red-700">
                           {errors.country && touched.country &&
                             <p className="text-xs">{`${errors.country}`}</p>
