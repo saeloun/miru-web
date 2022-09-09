@@ -20,7 +20,6 @@
 #  preferred_contact_method_code :integer
 #  skypeid                       :string
 #  source_code                   :integer
-#  state_code                    :integer
 #  status_code                   :integer
 #  tech_stack_ids                :text             default([]), is an Array
 #  telephone                     :string

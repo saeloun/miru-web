@@ -27,7 +27,5 @@ class AddColumnsToCandidates < ActiveRecord::Migration[7.0]
     add_index :candidates, :updated_by_id
     add_column :candidates, :company_id, :bigint
     add_index :candidates, :company_id
-    add_column :candidates, :consultancy_id, :bigint
-    add_index :candidates, :consultancy_id
   end
 end
