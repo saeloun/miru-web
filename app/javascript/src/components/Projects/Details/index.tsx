@@ -50,6 +50,7 @@ const ProjectDetails = () => {
       setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
     } catch (e) {
       console.log(e); // eslint-disable-line
+      navigate("/projects");
     }
   };
 
