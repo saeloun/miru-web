@@ -9,7 +9,7 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
   def show
     authorize :show, policy_class: GenerateInvoicePolicy
     pagy, new_line_item_entries = pagy(client.new_line_item_entries(params[:selected_entries]), items: 10)
-    render json: { new_line_item_entries:, pagy: pagy_metadata(pagy) }, status: :ok
+    render json: { new_line_item_entries:, filter_options:, pagy: pagy_metadata(pagy) }, status: :ok
   end
 
   def fetch_new_line_item_entries
@@ -24,10 +24,16 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
         id: { not: params[:selected_entries] }
       },
       page: params[:page], per_page: 10)
-    render json: { new_line_item_entries: }, status: :ok
+    render json: { new_line_item_entries:, filter_options: }, status: :ok
   end
 
   private
+
+    def filter_options
+      @_filter_options ||= {
+        team_members: User.find(Project.find_by(client_id: 3).timesheet_entries.pluck(:user_id).uniq())
+      }
+    end
 
     def client
       @_client ||= Client.find(params[:id])
