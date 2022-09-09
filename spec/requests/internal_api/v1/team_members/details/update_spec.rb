@@ -36,7 +36,6 @@ RSpec.describe "Details#update", type: :request do
     end
 
     it "is successful" do
-      user.reload
       expect(response).to have_http_status(:ok)
       expect(json_response["first_name"]).to eq(JSON.parse(@user_details["first_name"].to_json))
       expect(json_response["last_name"]).to eq(JSON.parse(@user_details["last_name"].to_json))
@@ -59,7 +58,6 @@ RSpec.describe "Details#update", type: :request do
     end
 
     it "is successful" do
-      user.reload
       expect(response).to have_http_status(:ok)
       expect(json_response["first_name"]).to eq(JSON.parse(@user_details["first_name"].to_json))
       expect(json_response["last_name"]).to eq(JSON.parse(@user_details["last_name"].to_json))
@@ -82,7 +80,6 @@ RSpec.describe "Details#update", type: :request do
     end
 
     it "is successful" do
-      user.reload
       expect(response).to have_http_status(:ok)
       expect(json_response["first_name"]).to eq(JSON.parse(@user_details["first_name"].to_json))
       expect(json_response["last_name"]).to eq(JSON.parse(@user_details["last_name"].to_json))
