@@ -29,12 +29,12 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class SpaceUsage < ApplicationRecord
-  CodeOptionKlass = Struct.new(:name, :id)
+  CodeOptionKlass = Struct.new(:name, :id, :alias)
 
   SPACE_CODE_OPTIONS = [
-    CodeOptionKlass.new("Conference Room", 1),
-    CodeOptionKlass.new("HR Cabin", 2),
-    CodeOptionKlass.new("Sales Cabin", 3),
+    CodeOptionKlass.new("Conference Room", 1, "CR"),
+    CodeOptionKlass.new("HR Cabin", 2, "HCR"),
+    CodeOptionKlass.new("Sales Cabin", 3, "SC"),
   ]
 
   PURPOSE_CODE_OPTIONS = [

@@ -20,7 +20,9 @@ class SpaceOccupyingController < ApplicationController
     render :index, locals: {
       is_admin:, entries:, employees:, user_id:,
       user_department_id: current_user.department_id,
-      departments: User::DEPARTMENT_OPTIONS
+      departments: User::DEPARTMENT_OPTIONS,
+      space_codes: SpaceUsage::SPACE_CODE_OPTIONS,
+      purpose_codes: SpaceUsage::PURPOSE_CODE_OPTIONS
     }
   end
 end

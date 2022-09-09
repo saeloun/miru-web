@@ -14,6 +14,8 @@ import { Multiselect } from 'multiselect-react-dropdown';
 // const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 
 const EditEntry: React.FC<Iprops> = ({
+  spaceCodes,
+  purposeCodes,
   selectedEmployeeId,
   fetchEntries,
   setNewEntryView,
@@ -34,23 +36,6 @@ const EditEntry: React.FC<Iprops> = ({
   isPastDate,
   allMemberList,
 }) => {
-  const PURPOSES = [
-    { id: "1", name: "Client / Standup" },
-    { id: "2", name: "Client / All Hands" },
-    { id: "3", name: "Client / Other" },
-    { id: "4", name: "Internal / Standup" },
-    { id: "5", name: "Internal / All Hands" },
-    { id: "6", name: "Internal / Project Discussion" },
-    { id: "7", name: "Internal / Other" },
-    { id: "8", name: "Interview" },
-    { id: "9", name: "Training" },
-    { id: "10", name: "KS/KT Knowledge Sharing" },
-  ];
-  const SPACES = [
-    { id: "1", name: "Conference Room", alias: "CR" },
-    { id: "2", name: "HR Cabin", alias: "HRC" },
-    { id: "3", name: "Sales Cabin", alias: "SC" }
-  ];
   const { useState, useEffect } = React;
   const [note, setNote] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -104,8 +89,7 @@ const EditEntry: React.FC<Iprops> = ({
       setNote(entry.note);
       setUserName(entry.user_name);
       setTeamMembers(entry.team_members);
-      const selectedMembers = allMemberList.filter((member: any) => entry.team_members.map(Number).includes(parseInt(member.id)));
-      setSelectedTeamMembers(selectedMembers);
+      setSelectedTeamMembers(allMemberList);
     }
 
   };
@@ -137,7 +121,6 @@ const EditEntry: React.FC<Iprops> = ({
     purpose_code: purpose,
     note: note,
     team_members: teamMembers,
-    // restricted: restricted
   });
 
   const handleSave = async () => {
@@ -269,7 +252,7 @@ const EditEntry: React.FC<Iprops> = ({
                               Please select space
                     </option>
                   )}
-                  {SPACES.map((a) => (
+                  {spaceCodes.map((a) => (
                     <option key={`space-${a.id}`} value={a.id}>{a["name"]}</option>
                   ))}
                 </select>
@@ -291,7 +274,7 @@ const EditEntry: React.FC<Iprops> = ({
                       Please select purpose
                     </option>
                   )}
-                  {PURPOSES.map((a, _i) => (
+                  {purposeCodes.map((a, _i) => (
                     <option key={`purpose-${a.id}`} value={a.id}>{a["name"]}</option>
                   ))}
                 </select>
@@ -424,6 +407,8 @@ const EditEntry: React.FC<Iprops> = ({
 };
 
 interface Iprops {
+  spaceCodes: any[];
+  purposeCodes: any[];
   selectedEmployeeId: number;
   fetchEntries: (from: string, to: string) => Promise<any>
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;

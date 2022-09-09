@@ -12,19 +12,12 @@ import _ from "lodash";
 
 import { TOASTER_DURATION } from "constants/index";
 
-// import AddEntry from "./AddEntry";
 import CurrentHourLine from "./CurrentHourLine";
 import DatesInWeek from "./DatesInWeek";
 import EditEntry from "./EditEntry";
 import EntryCardDayView from "./EntryCardDayView";
 import './style.scss';
 import NewEntryCardDayView from "./NewEntryCardDayView";
-
-const SPACES = [
-  { id: "1", name: "Conference Room", alias: "CR" },
-  { id: "2", name: "HR Cabin", alias: "HRC" },
-  { id: "3", name: "Sales Cabin", alias: "SC" }
-];
 
 const { useState, useEffect } = React;
 dayjs.extend(updateLocale);
@@ -41,6 +34,8 @@ const TimeReserving: React.FC<Iprops> = ({
   userId,
   userDepartmentId,
   departments,
+  spaceCodes,
+  purposeCodes,
 }) => {
   const [dayInfo, setDayInfo] = useState<any[]>([]);
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
@@ -69,12 +64,10 @@ const TimeReserving: React.FC<Iprops> = ({
   const [isPastDate, setIsPastDate] = useState<boolean>(false);
   const [allMemberList, setAllMemberList] = useState([]);
 
-  const excludeCurrentUser = (allMembers: any) => allMembers.filter((memberFromAllMembers: any) => (userId !== memberFromAllMembers.id));
-
   const fetchCurrentWorkspaceUsers = async () => {
     try {
       const resp = await companyUsersApi.get();
-      setAllMemberList(excludeCurrentUser(resp.data.users));
+      setAllMemberList(resp.data.users);
     } catch (error) {
       return error;
     }
@@ -139,7 +132,7 @@ const TimeReserving: React.FC<Iprops> = ({
   }, [selectedFullDate]);
 
   useEffect(() => {
-    const spaces = SPACES.reduce((out, i) => {
+    const spaces = spaceCodes.reduce((out, i) => {
       out[i.id] = []; return out
     }, {});
     if (selectedSpaceId && selectedStartTime && editEntryId === 0) {
@@ -263,9 +256,9 @@ const TimeReserving: React.FC<Iprops> = ({
     let spaces = {}
     if (entryList && entryList[selectedFullDate]){
       const thisGroupEntries = _.groupBy(entryList[selectedFullDate], "space_code")
-      SPACES.map((i) => spaces[i.id] = thisGroupEntries[i.id] || [])
+      spaceCodes.map((i) => spaces[i.id] = thisGroupEntries[i.id] || [])
     } else {
-      spaces = SPACES.reduce((out, i) => {
+      spaces = spaceCodes.reduce((out, i) => {
         out[i.id] = []; return out
       }, {});
     }
@@ -331,33 +324,11 @@ const TimeReserving: React.FC<Iprops> = ({
               setSelectDate={setSelectDate}
             />
           </div>
-          {/* {!editEntryId && newEntryView && (
-            <AddEntry
-              selectedEmployeeId={userId}
-              fetchEntries={fetchEntries}
-              setNewEntryView={setNewEntryView}
-              selectedDateInfo={dayInfo[selectDate]}
-              selectedFullDate={selectedFullDate}
-              setEntryList={setEntryList}
-              entryList={entryList}
-              setEditEntryId={setEditEntryId}
-              editEntryId={editEntryId}
-              dayInfo={dayInfo}
-            />
-          )} */}
-          {/* {!newEntryView && (
-            <button
-              onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
-              className="w-full p-4 text-lg font-bold tracking-widest border-2 h-14 border-miru-han-purple-600 text-miru-han-purple-600"
-            >
-                + NEW
-            </button>
-          )} */}
         </div>
 
         <div className="ac-calendar-container">
           <div className="grid grid-cols-4 gap-0 ac-calendar-users">
-            {SPACES.map((i, _index) => (
+            {spaceCodes.map((i, _index) => (
               <div key={`ac-user-name-${_index}`} className="ac-clone-col">
                 <div className="ac-user-name">
                   <span>{i.name}</span>
@@ -412,6 +383,8 @@ const TimeReserving: React.FC<Iprops> = ({
         </div>
       </div>
       {editEntryId || newEntryView ? <EditEntry
+        spaceCodes={spaceCodes}
+        purposeCodes={purposeCodes}
         selectedEmployeeId={userId}
         fetchEntries={fetchEntries}
         setNewEntryView={setNewEntryView}
@@ -438,6 +411,18 @@ const TimeReserving: React.FC<Iprops> = ({
   );
 };
 
+interface SpaceCodeProps {
+  id: number
+  name: string
+  alias: string
+}
+
+interface PurposeCodeProps {
+  id: number
+  name: string
+  alias: string
+}
+
 interface Iprops {
   clients: [];
   projects: object;
@@ -447,6 +432,8 @@ interface Iprops {
   userDepartmentId: number;
   employees: [];
   departments: [];
+  spaceCodes: SpaceCodeProps[];
+  purposeCodes: PurposeCodeProps[];
 }
 
 export default TimeReserving;
