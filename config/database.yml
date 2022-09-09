@@ -1,11 +1,10 @@
-<% branch_name = `git symbolic-ref HEAD 2>/dev/null`.chomp.sub('refs/heads/', '') %>
-<% repository_name = `git rev-parse --show-toplevel`.split('/').last.strip %>
+<% repository_name = Rails.application.class.module_parent_name.underscore %>
 
 default: &default
   adapter: postgresql
   encoding: unicode
   host: localhost
-  pool: 5
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   password:
 
 development:
@@ -15,3 +14,7 @@ development:
 test:
   <<: *default
   database: <%= "#{repository_name}_test" %>
+
+production:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
