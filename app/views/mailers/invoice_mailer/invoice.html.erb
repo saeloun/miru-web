@@ -33,7 +33,7 @@
           <tr style="width: 100%" valign="top">
             <td>
               <div style=' font-weight:normal; font-size:12px;'>Date of Issue</div>
-              <div style="font-weight:normal; font-size:16px;"><%= @invoice.issue_date.ordinalize %>
+              <div style="font-weight:normal; font-size:16px;"><%= @invoice.issue_date.strftime('%m.%d.%Y') %>
               </div>
             </td>
 
@@ -51,7 +51,7 @@
             <td style="">
 
               <div style=' font-weight:normal; font-size:12px;'>Due Date</div>
-              <div style="font-weight:normal; font-size:16px;"><%= @invoice.due_date.ordinalize %></div>
+              <div style="font-weight:normal; font-size:16px;"><%= @invoice.due_date.strftime('%m.%d.%Y') %></div>
             </td>
 
             <td>

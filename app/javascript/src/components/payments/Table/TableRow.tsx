@@ -1,6 +1,7 @@
 import React from "react";
 
 import { currencyFormat } from "helpers/currency";
+import { formattedDate } from "helpers/formattedDate";
 
 const TableRow = ({ payment, baseCurrency }) => {
   const getStatusCss = (status) => {
@@ -30,7 +31,7 @@ const TableRow = ({ payment, baseCurrency }) => {
       </td>
 
       <td className="px-6 py-2.5 text-sm font-normal leading-4 text-miru-dark-purple-1000 text-left">
-        {payment.transactionDate}
+        {formattedDate(payment.transactionDate)}
       </td>
 
       <td className="px-6 py-2.5 text-left">

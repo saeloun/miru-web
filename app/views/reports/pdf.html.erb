@@ -45,7 +45,7 @@
               </td>
               <td class="text-xs w-1/5 p-2 border border-b-1">
                 <p class="text-miru-dark-purple-1000"><%= entry.user_full_name %></p>
-                <p class="text-miru-dark-purple-400"><%= entry.work_date.strftime("%Y-%m-%d") %></p>
+                <p class="text-miru-dark-purple-400"><%= entry.work_date.strftime('%m.%d.%Y') %></p>
               </td>
               <td class="text-right w-1/5 p-2 pl-3 border border-b-1">
                 <%= entry.formatted_duration %>

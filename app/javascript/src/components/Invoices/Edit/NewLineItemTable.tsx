@@ -1,7 +1,8 @@
 import React from "react";
 
-import { getMaxIdx } from "../common/utils";
+import { formattedDate } from "helpers/formattedDate";
 
+import { getMaxIdx } from "../common/utils";
 const NewLineItemTable = ({
   lineItems, setLineItems,
   selectedLineItems, setSelectedLineItems,
@@ -27,7 +28,7 @@ const NewLineItemTable = ({
         {item.description}
       </span>
       <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
-        {item.date}
+        {formattedDate(item.date)}
       </span>
       <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
           ${item.rate}

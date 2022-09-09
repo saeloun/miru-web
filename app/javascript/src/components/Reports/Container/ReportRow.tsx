@@ -1,5 +1,6 @@
 import React from "react";
 
+import { formattedDate } from "helpers/formattedDate";
 import { minutesToHHMM } from "helpers/hhmm-parser";
 
 import { ITimeEntry } from "../interface";
@@ -31,7 +32,7 @@ const ReportRow = ({
         {teamMember}
       </p>
       <p className="font-normal text-sm text-miru-dark-purple-400">
-        {workDate}
+        {formattedDate(workDate)}
       </p>
     </div>
     <div className="pl-6 py-4 text-xl text-right whitespace-nowrap font-bold text-miru-dark-purple-1000">
