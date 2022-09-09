@@ -70,8 +70,33 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_06_103718) do
     t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "title"
+    t.text "emails", default: [], array: true
+    t.text "address"
+    t.string "country"
+    t.string "mobilephone"
+    t.string "telephone"
+    t.string "skypeid"
+    t.string "linkedinid"
+    t.string "description"
+    t.text "cover_letter"
+    t.integer "status_code"
+    t.integer "preferred_contact_method_code"
+    t.integer "initial_communication"
+    t.text "tech_stack_ids", default: [], array: true
+    t.integer "source_code"
+    t.bigint "assignee_id"
+    t.bigint "reporter_id"
+    t.bigint "created_by_id"
+    t.bigint "updated_by_id"
+    t.bigint "company_id"
+    t.index ["assignee_id"], name: "index_candidates_on_assignee_id"
+    t.index ["company_id"], name: "index_candidates_on_company_id"
     t.index ["consultancy_id"], name: "index_candidates_on_consultancy_id"
+    t.index ["created_by_id"], name: "index_candidates_on_created_by_id"
     t.index ["discarded_at"], name: "index_candidates_on_discarded_at"
+    t.index ["reporter_id"], name: "index_candidates_on_reporter_id"
+    t.index ["updated_by_id"], name: "index_candidates_on_updated_by_id"
   end
 
   create_table "clients", force: :cascade do |t|
@@ -489,10 +514,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_06_103718) do
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
     t.datetime "discarded_at"
+    t.integer "department_id"
     t.string "personal_email_id"
     t.date "date_of_birth"
     t.jsonb "social_accounts"
-    t.integer "department_id"
     t.string "phone"
     t.integer "engage_code"
     t.bigint "engage_updated_by_id"

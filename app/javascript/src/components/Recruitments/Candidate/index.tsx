@@ -18,9 +18,9 @@ const getTableData = (candidates) => {
     return candidates.map((candidate) =>
       ({
         col1: <div className="text-base text-miru-dark-purple-1000">{candidate.first_name}</div>,
-        col2: <div className="text-base text-miru-dark-purple-1000 text-center">{candidate.last_name}</div>,
-        col3: <div className="text-base text-miru-dark-purple-1000 text-center">{candidate.email}</div>,
-        col4: <div className="text-base text-miru-dark-purple-1000 text-center">{candidate.consultancy_id}</div>,
+        col2: <div className="text-base text-center text-miru-dark-purple-1000">{candidate.last_name}</div>,
+        col3: <div className="text-base text-center text-miru-dark-purple-1000">{candidate.email}</div>,
+        col4: <div className="text-base text-center text-miru-dark-purple-1000">{candidate.consultancy_id}</div>,
         rowId: candidate.id
       })
     );
@@ -28,7 +28,7 @@ const getTableData = (candidates) => {
   return [{}];
 };
 
-const CandidateList = ({ isAdminUser }) => {
+const CandidateList = ({ isAdminUser, basePath="" }) => {
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [newCandidate, setnewCandidate] = useState<boolean>(false);
@@ -50,7 +50,7 @@ const CandidateList = ({ isAdminUser }) => {
   };
 
   const handleRowClick = (id) => {
-    navigate(`${id}`);
+    navigate(`${basePath}/${id}`);
   };
 
   useEffect(() => {
@@ -97,7 +97,7 @@ const CandidateList = ({ isAdminUser }) => {
       <div>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden">
                 {candidateData && <Table
                   handleEditClick={handleEditClick}
@@ -122,6 +122,7 @@ const CandidateList = ({ isAdminUser }) => {
         <DeleteCandidate
           setShowDeleteDialog={setShowDeleteDialog}
           candidate={candidateToDelete}
+          basePath={basePath}
         />
       )}
       {newCandidate && (

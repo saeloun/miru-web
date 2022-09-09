@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CandidateList from "./Candidate";
+import CandidateDetails from "./Candidate/Details";
 import ConsultancyList from "./Consultancy";
 
 const Tab = ({ isAdminUser }) => {
@@ -15,17 +16,19 @@ const Tab = ({ isAdminUser }) => {
   const [tabClassName, setTabClassName] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<any>(null);
   const navigate = useNavigate();
+  const { consultancyId, candidateId } = useParams();
+
+  const PATHS = {
+    consultancies: `/recruitments/consultancies`,
+    candidates: `/recruitments/candidates`
+  };
 
   useEffect(() => {
     setActiveTabKey();
   }, [location.pathname]);
 
   const setActiveTabKey = useCallback(async () => {
-    const path = {
-      consultancies: `/recruitments/consultancies`,
-      candidates: `/recruitments/candidates`
-    };
-    const filterPath = ['consultancies', 'candidates'].filter((key, _index) => (location.pathname === path[key]));
+    const filterPath = ['consultancies', 'candidates'].filter((key, _index) => (location.pathname.replace(/\/+$/, "") === PATHS[key]));
     if (filterPath[0]) {
       setActiveTab(filterPath[0]);
       return null;
@@ -38,23 +41,20 @@ const Tab = ({ isAdminUser }) => {
         consultanciesTab: activeClassName,
         candidatesTab: defaultClassName
       });
-      setRenderTabData(<ConsultancyList isAdminUser={isAdminUser} />);
+      setRenderTabData(<ConsultancyList isAdminUser={isAdminUser} basePath={PATHS.consultancies} />);
     } else if (activeTab === "candidates"){
       setTabClassName({
         consultanciesTab: defaultClassName,
         candidatesTab: activeClassName
       });
-      setRenderTabData(<CandidateList isAdminUser={isAdminUser} />);
+      setRenderTabData(<CandidateList isAdminUser={isAdminUser} basePath={PATHS.candidates} />);
     }
   }, [activeTab]);
 
   const handleTabChange = (key) => {
-    const path = {
-      consultancies: `/recruitments/consultancies`,
-      candidates: `/recruitments/candidates`
-    }[key];
+    const path = PATHS[key];
 
-    if (location.pathname !== path) {
+    if (location.pathname.replace(/\/+$/, "") !== path) {
       navigate(path);
     }
   };
@@ -62,21 +62,30 @@ const Tab = ({ isAdminUser }) => {
   return (
     <>
       <div className="flex flex-col mt-6">
-        <div className="border-b border-gray-200 dark:border-gray-700">
-          <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            <li className="mr-3">
-              <button className={tabClassName ? tabClassName.consultanciesTab : activeClassName} onClick={() => handleTabChange('consultancies')} >
-                CONSULTANCIES
-              </button>
-            </li>
-            <li className="mr-3">
-              <button className={tabClassName ? tabClassName.candidatesTab : defaultClassName} onClick={() => handleTabChange('candidates')} >
-                CANDIDATES
-              </button>
-            </li>
-          </ul>
-        </div>
-        {renderTabData ? renderTabData : <ConsultancyList isAdminUser={isAdminUser} />}
+        { !consultancyId && !candidateId &&
+          (
+            <>
+              <div className="border-b border-gray-200 dark:border-gray-700">
+                <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
+                  <li className="mr-3">
+                    <button className={tabClassName ? tabClassName.consultanciesTab : activeClassName} onClick={() => handleTabChange('consultancies')} >
+                      CONSULTANCIES {consultancyId}
+                    </button>
+                  </li>
+                  <li className="mr-3">
+                    <button className={tabClassName ? tabClassName.candidatesTab : defaultClassName} onClick={() => handleTabChange('candidates')} >
+                      CANDIDATES {candidateId}
+                    </button>
+                  </li>
+                </ul>
+              </div>
+              {renderTabData ? renderTabData : <ConsultancyList isAdminUser={isAdminUser} basePath={PATHS.consultancies} />}
+            </>
+          )
+        }
+        {
+          candidateId && <CandidateDetails id={candidateId} basePath={PATHS.candidates} />
+        }
       </div>
     </>
   );
