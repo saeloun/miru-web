@@ -8,8 +8,4 @@ class GenerateInvoicePolicy < ApplicationPolicy
   def show?
     user_owner_role? || user_admin_role?
   end
-
-  def fetch_new_line_item_entries?
-    user_owner_role? || user_admin_role?
-  end
 end
