@@ -35,9 +35,7 @@ const ClientSelection = ({ clientList, selectedClient, setSelectedClient, option
 
     if (prePopulatedClient) {
       const selection = clientList.filter(
-        (client) =>
-          client.label.split(" ").join("").split(",").join("") ==
-          prePopulatedClient
+        (client) => client.label.replace(/\s|,/g, "") == prePopulatedClient
       );
       selection[0] && handleClientChange(selection[0]);
     }
