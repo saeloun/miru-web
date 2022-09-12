@@ -9,7 +9,7 @@ import clientApi from "apis/clients";
 const newClientSchema = Yup.object().shape({
   name: Yup.string().required("Name cannot be blank"),
   email: Yup.string().email("Invalid email ID").required("Email ID cannot be blank"),
-  phoneNo: Yup.number().typeError("Invalid phone number"),
+  phone: Yup.number().typeError("Invalid phone number"),
   address: Yup.string().required("Address cannot be blank")
 });
 
@@ -29,7 +29,7 @@ export interface IEditClient {
 interface FormValues {
   name: string;
   email: string;
-  phoneNo: string;
+  phone: string;
   address: string;
 }
 
@@ -110,13 +110,13 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                         <div className="field_with_errors">
                           <label className="form__label">Phone number</label>
                           <div className="tracking-wider block text-xs text-red-600">
-                            {errors.phoneNo && touched.phoneNo &&
-                              <div>{errors.phoneNo}</div>
+                            {errors.phone && touched.phone &&
+                              <div>{errors.phone}</div>
                             }
                           </div>
                         </div>
                         <div className="mt-1">
-                          <Field className={`form__input ${errors.phoneNo && touched.phoneNo && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="phoneNo" />
+                          <Field className={`form__input ${errors.phone && touched.phone && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="phone" />
                         </div>
                       </div>
                     </div>
