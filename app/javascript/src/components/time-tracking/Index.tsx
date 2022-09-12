@@ -153,13 +153,17 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     }
   };
 
+  const handleFilterEntry = (date: string, entryId: string) => {
+    const newValue = { ...entryList };
+    newValue[selectedFullDate] = newValue[selectedFullDate].filter(e => e.id !== entryId);
+    setAllEmployeesEntries({ ...allEmployeesEntries, [selectedEmployeeId]: newValue });
+    setEntryList(newValue);
+  };
+
   const handleDeleteEntry = async id => {
     const res = await timesheetEntryApi.destroy(id);
     if (!(res.status === 200)) return;
-    const newValue = { ...entryList };
-    newValue[selectedFullDate] = newValue[selectedFullDate].filter(e => e.id !== id);
-    setAllEmployeesEntries({ ...allEmployeesEntries, [selectedEmployeeId]: newValue });
-    setEntryList(newValue);
+    handleFilterEntry(selectedFullDate, id);
   };
 
   const calculateTotalHours = () => {
@@ -353,6 +357,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               setEditEntryId={setEditEntryId}
               editEntryId={editEntryId}
               dayInfo={dayInfo}
+              handleFilterEntry={handleFilterEntry}
             />
           )}
           {view !== "week" && !newEntryView && (

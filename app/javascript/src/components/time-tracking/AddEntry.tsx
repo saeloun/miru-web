@@ -2,8 +2,10 @@
 import React from "react";
 
 import autosize from "autosize";
+import dayjs from "dayjs";
 
 import timesheetEntryApi from "apis/timesheet-entry";
+import CustomDatePicker from "common/CustomDatePicker";
 import Toastr from "common/Toastr";
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "helpers/ordinal";
@@ -18,11 +20,11 @@ const AddEntry: React.FC<Iprops> = ({
   setNewEntryView,
   clients,
   projects,
-  selectedDateInfo,
   entryList,
   selectedFullDate,
   setEditEntryId,
-  editEntryId
+  editEntryId,
+  handleFilterEntry
 }) => {
   const { useState, useEffect } = React;
   const [note, setNote] = useState("");
@@ -32,6 +34,8 @@ const AddEntry: React.FC<Iprops> = ({
   const [projectId, setProjectId] = useState(0);
   const [billable, setBillable] = useState(false);
   const [projectBillable, setProjectBillable] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(selectedFullDate);
+  const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
 
   const handleFillData = () => {
     if (! editEntryId) return;
@@ -46,34 +50,14 @@ const AddEntry: React.FC<Iprops> = ({
       setNote(entry.note);
       if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
     }
-
   };
-
-  useEffect(() => {
-    const textArea = document.querySelector("textarea");
-    autosize(textArea);
-    handleFillData();
-    textArea.click();
-  }, []);
-
-  useEffect(() => {
-    if (!project) return;
-    const selectedProject = projects[client].find(
-      currentProject => currentProject.name === project
-    );
-    if (selectedProject) {
-      setProjectId(Number(selectedProject.id));
-      setProjectBillable(selectedProject.billable);
-      setBillable(selectedProject.billable);
-    }
-  }, [project]);
 
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDuration(e.target.value);
   };
 
   const getPayload = () => ({
-    work_date: selectedFullDate,
+    work_date: selectedDate,
     duration: minutesFromHHMM(duration),
     note: note,
     bill_status: billable ? "unbilled" : "non_billable"
@@ -112,13 +96,46 @@ const AddEntry: React.FC<Iprops> = ({
     });
 
     if (res.status === 200) {
-      const fetchEntriesRes = await fetchEntries(selectedFullDate, selectedFullDate);
-      if (fetchEntriesRes) {
+      const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
+      if (fetchEntriesRes.status === 200) {
+        handleFilterEntry(selectedFullDate, String(editEntryId));
         setNewEntryView(false);
         setEditEntryId(0);
       }
     }
   };
+
+  const handleDateChangeFromDatePicker = (date: Date) => {
+    setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
+    setDisplayDatePicker(false);
+  };
+
+  const getFormattedDate = () => {
+    const date = dayjs(selectedDate);
+    const day = date.format("DD");
+    const month = date.format("MMM");
+    const year = date.format("YYYY");
+    return `${getNumberWithOrdinal(Number(day))} ${month}, ${year}`;
+  };
+
+  useEffect(() => {
+    const textArea = document.querySelector("textarea");
+    autosize(textArea);
+    handleFillData();
+    textArea.click();
+  }, []);
+
+  useEffect(() => {
+    if (!project) return;
+    const selectedProject = projects[client].find(
+      currentProject => currentProject.name === project
+    );
+    if (selectedProject) {
+      setProjectId(Number(selectedProject.id));
+      setProjectBillable(selectedProject.billable);
+      setBillable(selectedProject.billable);
+    }
+  }, [project]);
 
   return (
     <div
@@ -183,11 +200,13 @@ const AddEntry: React.FC<Iprops> = ({
       </div>
       <div className="w-60">
         <div className="mb-2 flex justify-between">
-          <div className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center">
-            {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${
-              selectedDateInfo["month"]
-            }, ${selectedDateInfo["year"]}`}
-          </div>
+          { editEntryId && displayDatePicker ?
+            <CustomDatePicker handleChange={handleDateChangeFromDatePicker} selectedDate={selectedDate} />
+            :
+            <div className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center" onClick={() => setDisplayDatePicker(true)}>
+              {getFormattedDate()}
+            </div>
+          }
           <input
             value={duration}
             onChange={handleDurationChange}
@@ -266,11 +285,12 @@ interface Iprops {
   projects: object;
   selectedDateInfo: object;
   setEntryList: React.Dispatch<React.SetStateAction<object[]>>;
-  entryList: object;
   selectedFullDate: string;
   editEntryId: number;
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   dayInfo: object;
+  entryList: object;
+  handleFilterEntry: (date: string, entryId: string) => void;
 }
 
 export default AddEntry;
