@@ -10,9 +10,7 @@ import {
   Receipt,
   ChartLine,
   Wallet,
-  Bell,
   Gear,
-  Question,
   SignOut
 } from "phosphor-react";
 import { NavLink } from "react-router-dom";
@@ -142,21 +140,21 @@ const Navbar = ({ isAdminUser, user }) => {
       </div>
       <div>
         <ul className="mt-32">
-          <a>
+          {/* <a>
             <li className="flex py-3 px-6 items-center hover:bg-miru-gray-100">
               <Bell size={26} className="mr-4" /> Notification
             </li>
-          </a>
+          </a> */}
           <a href="/profile/edit">
             <li className="flex py-3 px-6 items-center hover:bg-miru-gray-100">
               <Gear size={26} className="mr-4" /> Settings
             </li>
           </a>
-          <a>
+          {/* <a>
             <li className="flex py-3 px-6 items-center hover:bg-miru-gray-100">
               <Question size={26} className="mr-4" /> Help
             </li>
-          </a>
+          </a> */}
           <a data-method="delete" href="/users/sign_out" rel="nofollow">
             <li className="flex py-3 px-6 items-center hover:bg-miru-gray-100">
               <SignOut size={26} className="mr-4" /> Logout
