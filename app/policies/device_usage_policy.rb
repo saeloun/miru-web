@@ -10,15 +10,11 @@ class DeviceUsagePolicy < ApplicationPolicy
   end
 
   def approve?
-    owner_admin_access?
+    admin_access?
   end
 
   def can_access_all_users?
     owner_admin_access? || user_employee_role?
-  end
-
-  def can_access?
-    owner_admin_access? || (user_employee_role? && user_under_sales_department?) || user_team_lead?
   end
 
   def owner_admin_access?
@@ -26,7 +22,7 @@ class DeviceUsagePolicy < ApplicationPolicy
   end
 
   def admin_access?
-    owner_admin_access? || (user_employee_role? && user_under_sales_department?)
+    owner_admin_access? || (user_employee_role? && user_under_information_department?)
   end
 
   def permitted_attributes

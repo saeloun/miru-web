@@ -23,6 +23,10 @@ class ApplicationPolicy
     user.having_department?(4)
   end
 
+  def user_under_information_department?
+    user.having_department?(5)
+  end
+
   def user_team_lead?
     user.team_lead?
   end

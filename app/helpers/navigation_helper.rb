@@ -52,10 +52,10 @@ module NavigationHelper
           other: true
         },
         {
-          url: leads_path,
-          title: I18n.t("navbar.leads"),
-          permitted: Pundit.policy!(current_user, :lead).index?,
-          data: { cy: "leads-tab" }
+          url: devices_path,
+          title: I18n.t("navbar.devices"),
+          permitted: Pundit.policy!(current_user, :device).index?,
+          data: { cy: "devices-tab" }
         },
         {
           url: Pundit.policy!(
@@ -66,11 +66,10 @@ module NavigationHelper
           data: { cy: "engagements-tab" }
         },
         {
-          url: devices_path,
-          title: I18n.t("navbar.devices"),
-          permitted: Pundit.policy!(current_user, :device).index?,
-          data: { cy: "devices-tab" },
-          other: true
+          url: leads_path,
+          title: I18n.t("navbar.leads"),
+          permitted: Pundit.policy!(current_user, :lead).index?,
+          data: { cy: "leads-tab" }
         },
         {
           url: team_index_path,

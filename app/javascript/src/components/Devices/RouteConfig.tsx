@@ -11,7 +11,7 @@ import DevicesList from "./List";
 const RouteConfig = ({ isAdminUser }) => (
   <BrowserRouter>
     <Routes>
-      <Route path="devices">
+      <Route path="tackle">
         <Route index element={<DevicesList isAdminUser={isAdminUser} />} />
       </Route>
     </Routes>
