@@ -88,8 +88,8 @@ const EditEntry: React.FC<Iprops> = ({
       setPurposeName(entry.purpose_name);
       setNote(entry.note);
       setUserName(entry.user_name);
-      setTeamMembers(entry.team_members);
-      setSelectedTeamMembers(allMemberList);
+      setSelectedTeamMembers(allMemberList.filter((member: any) => entry.team_members.map(Number).includes(parseInt(member.id))));
+      setTeamMembers(entry.team_members.map((i: any) => parseInt(i.id)));
     }
 
   };
@@ -216,18 +216,18 @@ const EditEntry: React.FC<Iprops> = ({
             <span className="sr-only">Close modal</span>
           </button>
           {editEntryId === 0 ? (<div className="w-full p-6" style={{ backgroundColor: "#335CD6" }}>
-            <p className="px-6 text-xl font-medium text-white dark:text-white">
+            <p className="px-6 text-xl font-medium text-white">
               {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${selectedDateInfo["month"]}, ${selectedDateInfo["year"]}`}
             </p>
-            <p className="px-6 text-sm font-medium text-white dark:text-white">
+            <p className="px-6 text-sm font-medium text-white">
               Occupy new space for you
             </p>
           </div>) : (
             <div className="w-full p-6" style={{ backgroundColor: editEntryColor }}>
-              <p className="px-6 text-xl font-medium text-gray-900 dark:text-white">
+              <p className="px-6 text-xl font-medium text-white">
                 {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${selectedDateInfo["month"]}, ${selectedDateInfo["year"]}`}
               </p>
-              <p className="px-6 text-sm font-medium text-gray-900 dark:text-white">
+              <p className="px-6 text-sm font-medium text-white">
                 {displayStartDuration} ~ {displayEndDuration} • {purposeName}, By <b>{userName}</b>
               </p>
             </div>
