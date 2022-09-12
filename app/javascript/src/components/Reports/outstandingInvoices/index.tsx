@@ -122,6 +122,7 @@ const OutstandingInvoiceReport = () => {
         <Header
           showNavFilters={showNavFilters}
           setFilterVisibilty={setFilterVisibilty}
+          showExportButon={false}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
           handleDownload={handleDownload}
