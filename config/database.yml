@@ -1,5 +1,3 @@
-<% repository_name = Rails.application.class.module_parent_name.underscore %>
-
 default: &default
   adapter: postgresql
   encoding: unicode
@@ -9,11 +7,11 @@ default: &default
 
 development:
   <<: *default
-  database: <%= "#{repository_name}_development" %>
+  database: "miru_web_development"
 
 test:
   <<: *default
-  database: <%= "#{repository_name}_test" %>
+  database: "miru_web_test"
 
 production:
   <<: *default
