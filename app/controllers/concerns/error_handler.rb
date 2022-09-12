@@ -23,7 +23,7 @@ module ErrorHandler
     end
 
     def user_not_authorized(exception)
-      redirect_path = root_path
+      redirect_path = @home_index ? "/403" : root_path
       policy = exception.policy
       policy_name = policy.class.to_s.underscore
       error_key = policy.try(:error_message_key) || exception.query
