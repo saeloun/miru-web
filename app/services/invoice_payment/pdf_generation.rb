@@ -47,8 +47,8 @@ module InvoicePayment
           new_line_item[:date] = line_item.date
           new_line_item[:description] = line_item.description
           new_line_item[:rate] = line_item.rate
-          new_line_item[:quantity] = line_item.quantity / 60
-          new_line_item[:line_total] = new_line_item[:quantity] * line_item.rate.to_i
+          new_line_item[:quantity] = (line_item.quantity.to_f / 60).round(2)
+          new_line_item[:line_total] = (line_item.quantity.to_f / 60 * line_item.rate).round(2)
           new_invoice_line_items << new_line_item
 
           sub_total += new_line_item[:line_total]
