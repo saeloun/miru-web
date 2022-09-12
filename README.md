@@ -65,7 +65,7 @@ brew services start elasticsearch-full
 brew install redis
 ```
 
-8. Install gem
+8. Install gems
 
 ```
 bundle install

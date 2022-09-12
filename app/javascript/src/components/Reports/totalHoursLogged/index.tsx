@@ -6,6 +6,7 @@ const TotalHoursReport = () => (
   <div>
     <Header
       showNavFilters={true}
+      showExportButon={true}
       setFilterVisibilty={true}
       isFilterVisible={() => { }} // eslint-disable-line  @typescript-eslint/no-empty-function
       resetFilter={() => { }} // eslint-disable-line  @typescript-eslint/no-empty-function
