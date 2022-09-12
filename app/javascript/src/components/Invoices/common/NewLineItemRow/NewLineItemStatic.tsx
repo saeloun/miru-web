@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { DotsThreeVertical, PencilSimple, Trash } from "phosphor-react";
 
 import { currencyFormat } from "helpers/currency";
+import { minutesToHHMM } from "helpers/hhmm-parser";
 
 const NewLineItemStatic = ({
   currency,
@@ -14,7 +15,7 @@ const NewLineItemStatic = ({
   const [isSideMenuVisible, setSideMenuVisible] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
   const quantity = item.qty || item.quantity;
-  const hoursLogged = (quantity / 60).toFixed(2);
+  const hoursLogged = minutesToHHMM(quantity).split(":").join(".");
   const date = dayjs(item.date).format("DD.MM.YYYY");
   const totalRate = (quantity / 60) * item.rate;
   const name = item.name || `${item.first_name} ${item.last_name}`;
