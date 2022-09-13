@@ -421,6 +421,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 setEditEntryId={setEditEntryId}
                 editEntryId={editEntryId}
                 dayInfo={dayInfo}
+                handleFilterEntry={handleFilterEntry}
               />
             ) : (
               <EntryCard
