@@ -2,8 +2,8 @@
   <div>
     <%= react_component("Devices/RouteConfig", {
       isAdminUser: Pundit.policy!(current_user, :device).admin_access?,
-      androidAppUrl: asset_url("Tackle.apk"),
-      iosAppUrl: nil,
+      androidAppUrl: Sidekiq.redis { |c| c.get("androidAppUrl") },
+      iosAppUrl: Sidekiq.redis { |c| c.get("iosAppUrl") },
     }) %>
   </div>
 </div>
