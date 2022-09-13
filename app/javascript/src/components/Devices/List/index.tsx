@@ -7,13 +7,14 @@ import devicesApi from "apis/devices";
 import ConfirmDialog from "common/Modal/ConfirmDialog";
 import Pagination from "common/Pagination";
 import Table from "common/Table";
+import { GooglePlayLogo, AppStoreLogo, PaperPlaneTilt, XCircle } from "phosphor-react";
 import EditEntry from "./EditEntry";
 import FilterSideBar from "./FilterSideBar";
 // import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
 import './style.scss';
 
-const Devices = ({ isAdminUser }) => {
+const Devices = ({ isAdminUser, androidAppUrl, iosAppUrl }) => {
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState<boolean>(false);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | undefined>();
@@ -55,31 +56,16 @@ const Devices = ({ isAdminUser }) => {
   }, []);
 
   const tableHeader = [
-    // {
-    //   Header: "Employee",
-    //   accessor: "col1", // accessor is the "key" in the data
-    //   cssClass: "py-5 px-0 text-center"
-    // },
     {
       Header: "Name",
       accessor: "col2", // accessor is the "key" in the data
-      cssClass: "py-5 px-0 text-center"
+      cssClass: "py-5 px-0"
     },
     {
       Header: "Type",
       accessor: "col3",
       cssClass: "py-5 px-0 text-center"
     },
-    // {
-    //   Header: "Serial Number",
-    //   accessor: "col4",
-    //   cssClass: "py-5 px-0 text-center"
-    // },
-    // {
-    //   Header: "Specifications",
-    //   accessor: "col5",
-    //   cssClass: "py-5 px-0 text-center"
-    // },
     {
       Header: "Brand",
       accessor: "col6",
@@ -167,7 +153,7 @@ const Devices = ({ isAdminUser }) => {
     return devices.map((device: any) =>
       ({
         // col1: <div className="text-xs tracking-widest text-center">{device.userName}</div>,
-        col2: <div className="text-xs tracking-widest text-center">{device.name}</div>,
+        col2: <div className="text-xs tracking-widest">{device.name}</div>,
         col3: <div className="text-xs tracking-widest text-center">{device.deviceType?.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())}</div>,
         // col4: <div className="text-xs tracking-widest text-center">{device.serialNumber}</div>,
         // col5: <div className="text-xs tracking-widest text-center">{device.specifications && Object.entries(device.specifications)?.map(([key, val]: any) => <div key={key + val}><span>{key.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())}:</span><span>{val}</span></div>)}</div>,
@@ -180,10 +166,10 @@ const Devices = ({ isAdminUser }) => {
         col12: <div className="text-xs tracking-widest text-center">{
           device.hideDemand ?
             <p>
-              <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-han-purple-100 text-miru-han-purple-1000">Pending</span>
-              <button title="Request Cancel" className="ml-2" onClick={() => handleCancelRequestIconClick(device.id)}>❌</button>
+              <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-han-purple-100 text-miru-han-purple-1000 inline-block align-middle">Pending</span>
+              <button title="Request Cancel" className="ml-2 inline-block align-middle text-miru-alert-pink-400" onClick={() => handleCancelRequestIconClick(device.id)}><XCircle size={25} /></button>
             </p>
-            : <button title="Request Device" onClick={() => handleDeviceRequest(device.id)}>📥</button>}</div>,
+            : <button title="Request Device" onClick={() => handleDeviceRequest(device.id)}><PaperPlaneTilt size={25} /></button>}</div>,
         rowId: device.id
       })
     );
@@ -199,14 +185,21 @@ const Devices = ({ isAdminUser }) => {
         params={params}
         setParams={setParams}
       /> */}
-      {/* <div
+      <div
         className={
           "sm:flex mt-6 mb-3 sm:items-center sm:justify-between"
         }>
-        <span className="inline-flex">
-          <h2 className="header__title">Devices</h2>
+        <span className="inline-block">
+          {/* <h2 className="header__title">Devices</h2> */}
+          <span className="inline-block align-middle">Download Apps :</span>
+          { androidAppUrl && <a href={ androidAppUrl } target="_blank" className="inline-block align-middle text-col-han-app-1000" rel="noreferrer">
+            <GooglePlayLogo className="m-2" size={30} />
+          </a>}
+          { iosAppUrl && <a href={ iosAppUrl } target="_blank" className="inline-block align-middle text-col-han-app-1000" rel="noreferrer">
+            <AppStoreLogo className="m-2" size={30} />
+          </a>}
         </span>
-      </div> */}
+      </div>
       <div>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

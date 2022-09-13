@@ -8,11 +8,11 @@ import {
 
 import DevicesList from "./List";
 
-const RouteConfig = ({ isAdminUser }) => (
+const RouteConfig = ({ isAdminUser, androidAppUrl, iosAppUrl }) => (
   <BrowserRouter>
     <Routes>
       <Route path="tackle">
-        <Route index element={<DevicesList isAdminUser={isAdminUser} />} />
+        <Route index element={<DevicesList isAdminUser={isAdminUser} androidAppUrl={androidAppUrl} iosAppUrl={iosAppUrl} />} />
       </Route>
     </Routes>
   </BrowserRouter>

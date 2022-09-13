@@ -1,7 +1,9 @@
 <div class="mx-auto md:px-20 font-manrope">
   <div>
     <%= react_component("Devices/RouteConfig", {
-      isAdminUser: Pundit.policy!(current_user, :device).admin_access?
+      isAdminUser: Pundit.policy!(current_user, :device).admin_access?,
+      androidAppUrl: Sidekiq.redis { |c| c.get("androidAppUrl") },
+      iosAppUrl: Sidekiq.redis { |c| c.get("iosAppUrl") },
     }) %>
   </div>
 </div>
