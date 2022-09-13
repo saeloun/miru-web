@@ -137,6 +137,7 @@ en:
         message: Changes saved successfully
       error:
         role: There was an error while updating role
+    unauthorized_access: Your access has been disabled
   invitation:
     create:
       success:

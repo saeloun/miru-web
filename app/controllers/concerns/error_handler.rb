@@ -23,7 +23,8 @@ module ErrorHandler
     end
 
     def user_not_authorized(exception)
-      redirect_path = @home_index ? "/403" : root_path
+      sign_out if @home_index
+      redirect_path = @home_index ? "/users/sign_in" : root_path
       policy = exception.policy
       policy_name = policy.class.to_s.underscore
       error_key = policy.try(:error_message_key) || exception.query
@@ -34,11 +35,14 @@ module ErrorHandler
         redirect_path = new_company_path
       when :different_workspace
         message = I18n.t("client.update.failure.unauthorized")
+      when :unauthorized_access
+        message = I18n.t("team.unauthorized_access")
       end
 
       respond_to do |format|
         format.html do
           flash.now[:alert] = message
+          flash.keep
           redirect_to redirect_path
         end
         format.json { render json: { errors: message }, status: :forbidden }
