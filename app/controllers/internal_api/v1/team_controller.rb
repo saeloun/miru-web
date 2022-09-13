@@ -18,7 +18,7 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
   def destroy
     authorize :team
 
-    employment.user.roles.where(resource_id: current_company.id).delete_all
+    employment&.user.roles.where(resource_id: current_company.id).delete_all
     employment.discard!
 
     render json: {

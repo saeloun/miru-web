@@ -15,6 +15,8 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
         @team_company_user = create(:employment, company:, user: team_user)
         create(:employment, company:, user: admin_user)
         admin_user.add_role :admin, company
+        @team_company_user.user.add_role :employee, company
+        @team_company_user.user.add_role :book_keeper, create(:company)
         sign_in admin_user
       end
 
@@ -27,11 +29,14 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
         expect(json_response["user"]["id"]).to eq(team_user.id)
       end
 
-      it "Discards the employments" do
+      it "Discards the employments and role for employee" do
+        expect(@team_company_user.user.roles.present?).to be true
         send_request :delete, internal_api_v1_team_path(@team_company_user.user)
 
         expect(@team_company_user.reload.discarded?).to be_truthy
         expect(team_user.reload.employments.discarded.count).to eq(1)
+        expect(@team_company_user.user.roles.present?).to be true
+        expect(@team_company_user.user.roles.where(resource_id: company.id).present?).to be false
       end
     end
 
