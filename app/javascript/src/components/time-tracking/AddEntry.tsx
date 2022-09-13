@@ -2,13 +2,13 @@
 import React from "react";
 
 import autosize from "autosize";
+import { format } from "date-fns";
 import dayjs from "dayjs";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
 import Toastr from "common/Toastr";
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
-import { getNumberWithOrdinal } from "helpers/ordinal";
 import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
@@ -110,14 +110,6 @@ const AddEntry: React.FC<Iprops> = ({
     setDisplayDatePicker(false);
   };
 
-  const getFormattedDate = () => {
-    const date = dayjs(selectedDate);
-    const day = date.format("DD");
-    const month = date.format("MMM");
-    const year = date.format("YYYY");
-    return `${getNumberWithOrdinal(Number(day))} ${month}, ${year}`;
-  };
-
   useEffect(() => {
     const textArea = document.querySelector("textarea");
     autosize(textArea);
@@ -204,7 +196,7 @@ const AddEntry: React.FC<Iprops> = ({
             <CustomDatePicker handleChange={handleDateChangeFromDatePicker} selectedDate={selectedDate} />
             :
             <div className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center" onClick={() => setDisplayDatePicker(true)}>
-              {getFormattedDate()}
+              {format(new Date, "do MMM, yyyy")}
             </div>
           }
           <input
