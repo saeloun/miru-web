@@ -67,10 +67,6 @@ Rails.application.routes.draw do
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"
 
-  match "/404", to: "errors#not_found", via: :all
-  match "/500", to: "errors#internal_server_error", via: :all
-  match "/403", to: "errors#unauthorized", via: :all
-
   resource :email_confirmation, only: :show do
     get :resend
   end
