@@ -5,27 +5,27 @@ module InvoicePayment
     def initialize(invoice, company_logo)
       @invoice = invoice
       @company_logo = company_logo
+      @base_currency = invoice.company.base_currency
     end
 
     def process
       formatted_invoice = format_invoice(@invoice.invoice_line_items)
-      base_currency = @invoice.company.base_currency
       controller = ActionController::Base.new
       html = controller.render_to_string(
         template: "invoices/pdf",
         layout: "layouts/pdf",
         locals: {
           invoice: @invoice,
-          invoice_amount: format_currency(base_currency, @invoice.amount),
-          invoice_tax: format_currency(base_currency, @invoice.tax),
-          invoice_amount_due: format_currency(base_currency, @invoice.amount_due),
-          invoice_amount_paid: format_currency(base_currency, @invoice.amount_paid),
-          invoice_discount: format_currency(base_currency, @invoice.discount),
+          invoice_amount: format_currency(@base_currency, @invoice.amount),
+          invoice_tax: format_currency(@base_currency, @invoice.tax),
+          invoice_amount_due: format_currency(@base_currency, @invoice.amount_due),
+          invoice_amount_paid: format_currency(@base_currency, @invoice.amount_paid),
+          invoice_discount: format_currency(@base_currency, @invoice.discount),
           company_logo: @company_logo,
           client: @invoice.client,
           invoice_line_items: formatted_invoice[:invoice_line_items],
-          sub_total: format_currency(base_currency, formatted_invoice[:sub_total]),
-          total: format_currency(base_currency, formatted_invoice[:total])
+          sub_total: format_currency(@base_currency, formatted_invoice[:sub_total]),
+          total: format_currency(@base_currency, formatted_invoice[:total])
         }
       )
 
@@ -41,6 +41,7 @@ module InvoicePayment
         sub_total = 0
 
         new_invoice_line_items = []
+
         invoice_line_items.each do |line_item|
           if line_item.quantity <= 0
             quantity = "00:00"
@@ -59,9 +60,9 @@ module InvoicePayment
           new_line_item[:name] = line_item.name
           new_line_item[:date] = line_item.date
           new_line_item[:description] = line_item.description
-          new_line_item[:rate] = line_item.rate
+          new_line_item[:rate] = format_currency(@base_currency, line_item.rate)
           new_line_item[:quantity] = quantity
-          new_line_item[:line_total] = line_total_val
+          new_line_item[:line_total] = format_currency(@base_currency, total_rate)
           new_invoice_line_items << new_line_item
 
           sub_total += total_rate
