@@ -123,7 +123,6 @@ class Project < ApplicationRecord
     end
 
     def calculate_cost(duration, hourly_rate)
-      time = (duration.to_f / 60).round(2)
-      ((duration.to_f / 60) * hourly_rate).round(2)
+      "%.2f" % ((duration.to_f / 60) * hourly_rate)
     end
 end

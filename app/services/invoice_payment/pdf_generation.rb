@@ -42,16 +42,29 @@ module InvoicePayment
 
         new_invoice_line_items = []
         invoice_line_items.each do |line_item|
+          if line_item.quantity <= 0
+            quantity = "00:00"
+          else
+            hours = line_item.quantity / 60
+            minutes = line_item.quantity % 60
+            hours = "0#{hours}" if hours.digits.count == 1
+            minutes = "0#{minutes}" if minutes.digits.count == 1
+            quantity = "#{hours}:#{minutes}"
+          end
+
+          total_rate = ((line_item.quantity.to_f / 60) * line_item.rate)
+          line_total_val = "%.2f" % total_rate
+
           new_line_item = {}
           new_line_item[:name] = line_item.name
           new_line_item[:date] = line_item.date
           new_line_item[:description] = line_item.description
           new_line_item[:rate] = line_item.rate
-          new_line_item[:quantity] = (line_item.quantity.to_f / 60).round(2)
-          new_line_item[:line_total] = (line_item.quantity.to_f / 60 * line_item.rate).round(2)
+          new_line_item[:quantity] = quantity
+          new_line_item[:line_total] = line_total_val
           new_invoice_line_items << new_line_item
 
-          sub_total += new_line_item[:line_total]
+          sub_total += total_rate
         end
 
         {
