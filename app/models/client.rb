@@ -70,6 +70,7 @@ class Client < ApplicationRecord
       {
         id: project.id,
         name: project.name,
+        billable: project.billable,
         team: project.project_member_full_names,
         minutes_spent: project.timesheet_entries.where(work_date: range_from_timeframe(time_frame)).sum(:duration)
       }
