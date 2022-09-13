@@ -34,10 +34,16 @@
     }
   },
   "image": "heroku/ruby",
-  "addons": [ "heroku-redis", "heroku-postgresql"],
+  "addons": [ "heroku-redis", "heroku-postgresql", "bonsai:sandbox-6"],
   "buildpacks": [
     {
+      "url": "https://github.com/heroku/heroku-buildpack-google-chrome.git"
+    },
+    {
       "url": "heroku/nodejs"
+    },
+    {
+      "url": "https://github.com/jontewks/puppeteer-heroku-buildpack#22.0.0-no-xdg-utils"
     },
     {
       "url": "heroku/ruby"
@@ -46,7 +52,7 @@
   "environments": {
     "test": {
       "scripts": {
-        "postdeploy": "bundle exec rails db:migrate && bundle exec rails db:seed"
+        "postdeploy": "bundle exec rails db:migrate && bundle exec rails db:seed && bundle exec rails data:migrate"
       }
     }
   }
