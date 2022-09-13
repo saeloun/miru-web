@@ -31,11 +31,11 @@ const ClientSelection = ({ clientList, selectedClient, setSelectedClient, option
   };
 
   React.useEffect(() => {
-    const prePopulatedClient = window.location.search.replace(/[^A-Za-z]+/g, "");
+    const prePopulatedClient = window.location.search.split("?").join("").replace(/%20/g, " ");
 
     if (prePopulatedClient) {
       const selection = clientList.filter(
-        (client) => client.label.replace(/\s|,/g, "") == prePopulatedClient
+        (client) => client.label == prePopulatedClient
       );
       selection[0] && handleClientChange(selection[0]);
     }
