@@ -36,9 +36,7 @@ namespace :internal_api, defaults: { format: "json" } do
     namespace :invoices do
       resources :bulk_deletion, only: [:create]
     end
-    resources :generate_invoice, only: [:index, :show] do
-      get :fetch_new_line_item_entries, on: :member
-    end
+    resources :generate_invoice, only: [:index, :show]
     resources :project_members, only: [:update]
     resources :employments, only: [:index]
     resources :timezones, only: [:index]

@@ -18,17 +18,15 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
     end
 
     def filter_options
+      project = Project.find_by(client_id: params[:id])
+      user_ids = project.timesheet_entries.pluck(:user_id).uniq
       @_filter_options ||= {
-        team_members: User.find(Project.find_by(client_id: params[:id]).timesheet_entries.pluck(:user_id).uniq())
+        team_members: User.find(user_ids)
       }
     end
 
     def search_term
-      if params[:search_term].present?
-        @search_term ||= params[:search_term]
-      else
-        @search_term ||= "*"
-      end
+      @search_term ||= (params[:search_term].present?) ? params[:search_term] : "*"
     end
 
     def unselected_time_entries_filter
@@ -41,11 +39,13 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
 
     def new_line_item_entries
       default_filter = project_filter.merge(unselected_time_entries_filter)
-      where_clause = default_filter.merge(Reports::TimeEntries::Filters.process(params))
+      where_clause = default_filter.merge(TimeEntries::Filters.process(params))
       search_result = TimesheetEntry.search(
         search_term,
         fields: [:note, :user_name],
         match: :text_middle,
-        where: where_clause)
+        where: where_clause,
+        page: params[:page],
+        per_page: 10)
     end
 end

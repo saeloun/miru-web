@@ -22,7 +22,7 @@ module UtilityFunctions
     when "custom"
       convert_to_date(from)..convert_to_date(to)
     else
-      "*"
+      0.year.ago.beginning_of_year..0.year.ago.end_of_year
     end
   end
 
