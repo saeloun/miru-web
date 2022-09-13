@@ -79,7 +79,7 @@ const ProjectDetails = () => {
         ),
         col4: (
           <div className="text-lg font-bold text-miru-dark-purple-1000 text-right">
-            {currencySymb}{member.cost}
+            {currencySymb}{(Number(member.cost)).toFixed(2)}
           </div>
         )
       }));
