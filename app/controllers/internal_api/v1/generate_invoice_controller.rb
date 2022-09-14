@@ -1,24 +1,30 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationController
+  # Use company index instead
+  # def index
+  #   authorize :index, policy_class: GenerateInvoicePolicy
+  #   render :index, locals: { current_company: }, status: :ok
+  # end
+
   def index
     authorize :index, policy_class: GenerateInvoicePolicy
-    render :index, locals: { current_company: }, status: :ok
-  end
-
-  def show
-    authorize :show, policy_class: GenerateInvoicePolicy
-    render :show, locals: { new_line_item_entries:, filter_options: }, status: :ok
+    render :index, locals: { new_line_item_entries:, current_company:, filter_options: }, status: :ok
+    # pagy, new_line_item_entries_pagy = pagy(new_line_item_entries), items: 10
+    # render json: { new_line_item_entries_pagy:, pagy: pagy_metadata(pagy) }, status: :ok
   end
 
   private
 
     def client
-      @_client ||= Client.find(params[:id])
+      @_client ||= Client.find(params[:client_id])
+    end
+
+    def project
+      @_project ||= Project.includes(:timesheet_entries).find_by(client_id: params[:client_id])
     end
 
     def filter_options
-      project = Project.find_by(client_id: params[:id])
       user_ids = project.timesheet_entries.pluck(:user_id).uniq
       @_filter_options ||= {
         team_members: User.find(user_ids)
@@ -34,7 +40,7 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
     end
 
     def project_filter
-      { project_id: Project.find_by(client_id: params[:id]).id }
+      { project_id: project.id }
     end
 
     def new_line_item_entries
