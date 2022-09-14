@@ -12,8 +12,8 @@ const Table = () => {
       <TableHead />
       <tbody>
         {
-          teamList.map((item, index) => (
-            <TableRow key={index} item={item} />
+          teamList.map((user, index) => (
+            <TableRow key={index} user={user} />
           ))
         }
       </tbody>

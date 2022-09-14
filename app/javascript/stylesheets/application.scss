@@ -395,6 +395,9 @@ body {
   .iconWrapper {
     @apply visible;
   }
+  .hoverName {
+    @apply text-miru-han-purple-1000;
+  }
 }
 
 .userAvatarWrapper {
