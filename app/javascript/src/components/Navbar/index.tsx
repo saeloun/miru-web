@@ -129,7 +129,7 @@ const Navbar = ({ isAdminUser, user }) => {
     ));
 
   return (
-    <div className=" fixed top-0 bottom-0 left-0 shadow-2xl w-1/6 h-full flex flex-col justify-between ">
+    <div className=" fixed top-0 bottom-0 left-0 shadow-2xl w-60 h-full flex flex-col justify-between ">
       <div>
         <div className=" h-20 bg-miru-gray-100 flex items-center justify-center">
           <img src={miruLogo} alt="miru-logo" />
