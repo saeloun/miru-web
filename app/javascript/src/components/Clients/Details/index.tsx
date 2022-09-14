@@ -14,6 +14,7 @@ import AddEditProject from "components/Projects/Modals/AddEditProject";
 import DeleteProject from "components/Projects/Modals/DeleteProject";
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
+import { minutesToHHMM } from "helpers/hhmm-parser";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
@@ -22,15 +23,12 @@ import { unmapClientDetails } from "../../../mapper/client.mapper";
 
 const getTableData = (clients) => {
   if (clients) {
-    return clients.map((client) => {
-      const hours = (client.minutes/60).toFixed(2);
-      return {
-        col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
-        col2: <div className="text-base text-miru-dark-purple-1000">{client.team.map(member => <span>{member},&nbsp;</span>)}</div>,
-        col3: <div className="text-base text-miru-dark-purple-1000 text-right">{hours}</div>,
-        rowId: client.id
-      };
-    });
+    return clients.map((client) => ({
+      col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
+      col2: <div className="text-base text-miru-dark-purple-1000">{client.team.map(member => <span>{member},&nbsp;</span>)}</div>,
+      col3: <div className="text-base text-miru-dark-purple-1000 text-right">{minutesToHHMM(client.minutes)}</div>,
+      rowId: client.id
+    }));
   }
   return [{}];
 };
