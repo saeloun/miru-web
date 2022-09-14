@@ -49,18 +49,18 @@ const EntryCard: React.FC<props> = ({
         <BillTag color="miru-alert-green-400" text="billed" />
       )}
       <p className="text-4xl">{minutesToHHMM(duration)}</p>
-      <button onClick={() => setEditEntryId(id)} className="mx-10">
+      <button onClick={() => setEditEntryId(id)} className="mx-10 w-4 h-4">
         <img
           src={editIcon}
           alt="edit"
-          className="icon-hover text-miru-han-purple-600 hover:text-miru-han-purple-1000 w-4 h-4"
+          className="icon-hover text-miru-han-purple-600 hover:text-miru-han-purple-1000"
         />
       </button>
-      <button onClick={() => handleDeleteEntry(id)} className="mr-10">
+      <button onClick={() => handleDeleteEntry(id)} className="mr-10 w-4 h-4">
         <img
           src={deleteIcon}
           alt="delete"
-          className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000 w-4 h-4"
+          className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000"
         />
       </button>
     </div>
