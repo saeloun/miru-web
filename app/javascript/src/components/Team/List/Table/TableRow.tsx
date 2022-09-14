@@ -3,7 +3,6 @@ import React, { Fragment } from "react";
 import { TeamModalType } from "constants/index";
 
 import { PencilSimple, Trash } from "phosphor-react";
-import { useNavigate } from "react-router-dom";
 
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
@@ -14,7 +13,6 @@ const pendingInvitation = require("../../../../../../assets/images/Invitation_Pe
 const TableRow = ({ user }) => {
   const { isAdminUser } = useUserContext();
   const { setModalState } = useList();
-  const navigate = useNavigate();
 
   const actionIconVisible = isAdminUser && user.role !== "owner";
 
@@ -25,9 +23,7 @@ const TableRow = ({ user }) => {
   };
 
   return (
-    <tr data-cy="team-table-row" className="border-b last:border-0 border-miru-gray-200 hoverIcon" onClick={() => {
-      navigate("1");
-    }}>
+    <tr data-cy="team-table-row" className="border-b last:border-0 border-miru-gray-200 hoverIcon">
       <td className="table__data p-6 w-3/12 font-normal text-miru-dark-purple-1000 capitalize hoverName">
         {user.name}
       </td>
