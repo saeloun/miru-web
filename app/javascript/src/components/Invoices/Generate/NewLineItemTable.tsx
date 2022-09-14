@@ -26,7 +26,7 @@ const NewLineItemTable = ({
 
   const hasMoreItems = lineItems.length === totalLineItems;
   const selectRowId = (items) => {
-    const option = { ...items, lineTotal: (Number(items.qty) / 60 * Number(items.rate)) };
+    const option = { ...items, lineTotal: (Number(items.quantity) / 60 * Number(items.rate)).toFixed(2) };
     setAddNew(false);
     setSelectedOption([...selectedOption, option]);
     setLineItems([]);
@@ -62,7 +62,7 @@ const NewLineItemTable = ({
           }
         >
           {lineItems.map((item, index) => {
-            const hoursLogged = minutesToHHMM(item.qty);
+            const hoursLogged = minutesToHHMM(item.quantity);
             const date = dayjs(item.date).format("DD.MM.YYYY");
             return (
               <div key={index} onClick={() => { selectRowId(item); }} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100" data-cy="entries-list">
