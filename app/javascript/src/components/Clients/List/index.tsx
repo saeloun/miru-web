@@ -12,6 +12,7 @@ import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
+import { minutesToHHMM } from "helpers/hhmm-parser";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
@@ -23,15 +24,12 @@ import NewClient from "../Modals/NewClient";
 
 const getTableData = (clients) => {
   if (clients) {
-    return clients.map((client) => {
-      const hours = (client.minutes / 60).toFixed(2);
-      return {
-        col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
-        col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
-        col3: <div className="text-base text-miru-dark-purple-1000 text-right">{hours}</div>,
-        rowId: client.id
-      };
-    });
+    return clients.map((client) => ({
+      col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
+      col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
+      col3: <div className="text-base text-miru-dark-purple-1000 text-right">{minutesToHHMM(client.minutes)}</div>,
+      rowId: client.id
+    }));
   }
   return [{}];
 };
@@ -152,7 +150,7 @@ const Clients = ({ isAdminUser }) => {
                 THIS WEEK
               </option>
               <option className="text-miru-dark-purple-600" value="month">
-                This MONTH
+                THIS MONTH
               </option>
               <option className="text-miru-dark-purple-600" value="year">
                 THIS YEAR

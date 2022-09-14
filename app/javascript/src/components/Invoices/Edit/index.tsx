@@ -37,7 +37,7 @@ const EditInvoice = () => {
   const [dueDate, setDueDate] = useState();
 
   const addKeyToLineItems = items => (
-    items.map((item, index) => {
+    items?.map((item, index) => {
       item["key"] = index;
       return item;
     })
@@ -50,6 +50,7 @@ const EditInvoice = () => {
       setSelectedLineItems(unmapLineItems(res.data.invoiceLineItems));
       setLineItems(addKeyToLineItems(res.data.lineItems));
       setAmount(res.data.amount);
+      setInvoiceNumber(res.data.invoiceNumber);
       setDiscount(res.data.discount);
       setSelectedClient(res.data.client);
       setAmountDue(res.data.amountDue);
@@ -125,7 +126,7 @@ const EditInvoice = () => {
             setDueDate={setDueDate}
             issueDate={issueDate || invoiceDetails.issueDate}
             setIssueDate={setIssueDate}
-            invoiceNumber={invoiceNumber || invoiceDetails.invoiceNumber}
+            invoiceNumber={invoiceNumber}
             setInvoiceNumber={setInvoiceNumber}
             reference={reference}
             optionSelected={true}
