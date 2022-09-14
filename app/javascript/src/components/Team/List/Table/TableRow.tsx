@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
 
+const acceptedInvitation = require("../../../../../../assets/images/Invitation_Accepted") //eslint-disable-line
+const pendingInvitation = require("../../../../../../assets/images/Invitation_Pending.svg"); //eslint-disable-line
+
 const TableRow = ({ item }) => {
   const { isAdminUser } = useUserContext();
   const { setModalState } = useList();
@@ -25,10 +28,10 @@ const TableRow = ({ item }) => {
     <tr data-cy="team-table-row" className="border-b last:border-0 border-miru-gray-200 hoverIcon" onClick={() => {
       navigate("1");
     }}>
-      <td className="table__data p-6 capitalize">
+      <td className="table__data p-6 w-3/12 capitalize">
         {item.name}
       </td>
-      <td className="table__data table__text p-6">
+      <td className="table__data w-2/6 table__text p-6">
         {item.email}
       </td>
       <td className="table__data table__text p-6 capitalize">
@@ -36,16 +39,16 @@ const TableRow = ({ item }) => {
       </td>
       {isAdminUser &&
         <Fragment>
-          <td className="pr-6 py-6 text-right w-48">
-            {
-              item.status && <span className="table__pending">
-                Pending Invitation
-              </span>
-            }
+          <td className="pr-6 py-6 text-right w-2/12">
+            {item.status ? (
+              <img src={pendingInvitation} className="ml-auto"/>
+            ) : (
+              <img src={acceptedInvitation} className="ml-auto"/>
+            )}
           </td>
-          <td className="pr-6 py-6 text-right w-44">
+          <td className="pr-6 py-6 text-right w-2/12 ">
             {actionIconVisible && (
-              <div className="invisible iconWrapper">
+              <div className="invisible iconWrapper flex justify-around">
                 <button data-cy="edit-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.ADD_EDIT)}>
                   <PencilSimple size={16} color="#5b34ea" weight="bold" />
                 </button>
