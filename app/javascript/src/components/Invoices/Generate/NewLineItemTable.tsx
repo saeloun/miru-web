@@ -25,6 +25,7 @@ const NewLineItemTable = ({
 }) => {
 
   const hasMoreItems = lineItems.length === totalLineItems;
+
   const selectRowId = (items) => {
     const option = { ...items, lineTotal: (Number(items.quantity) / 60 * Number(items.rate)).toFixed(2) };
     setAddNew(false);
@@ -33,17 +34,16 @@ const NewLineItemTable = ({
     setPageNumber(1);
   };
 
+  const addManualEntryItem = async () => {
+    await setShowItemInputs(true);
+    setAddNew(!addNew);
+    setAddManualLineItem(true);
+    setManualEntryArr([...manualEntryArr, { idx: getMaxIdx(manualEntryArr) + 1 }]);
+  };
+
   return (
     <div>
-      <DropdownHeader setShowMultilineModal={setMultiLineItemModal} />
-      <div>
-        <button onClick={async () => {
-          await setShowItemInputs(true);
-          setAddNew(!addNew);
-          setAddManualLineItem(true);
-          setManualEntryArr([...manualEntryArr, { idx: getMaxIdx(manualEntryArr) + 1 }]);
-        }} className="mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000">Add Manual Entry</button>
-      </div>
+      <DropdownHeader setShowMultilineModal={setMultiLineItemModal} addManualEntryItem={addManualEntryItem} />
       <div className="overflow-scroll mt-4 relative">
         <InfiniteScroll
           dataLength={pageNumber * 10}
