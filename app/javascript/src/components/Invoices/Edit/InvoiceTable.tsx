@@ -7,9 +7,11 @@ import NewLineItemTable from "./NewLineItemTable";
 import TableHeader from "../common/LineItemTableHeader";
 import NewLineItemRow from "../common/NewLineItemRow";
 import ManualEntry from "../Generate/ManualEntry";
+import MultipleEntriesModal from "../MultipleEntriesModal";
 
 const InvoiceTable = ({
   currency,
+  selectedClient,
   lineItems,
   selectedLineItems,
   setLineItems,
@@ -96,6 +98,14 @@ const InvoiceTable = ({
             ))}
         </tbody>
       </table>
+      <div>
+        {showMultiLineItemModal && <MultipleEntriesModal
+          selectedClient={selectedClient}
+          selectedOption={selectedLineItems}
+          setSelectedOption={selectedLineItems}
+          setMultiLineItemModal={setMultiLineItemModal}
+        />}
+      </div>
     </React.Fragment>
   );
 };
