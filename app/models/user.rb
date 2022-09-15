@@ -131,7 +131,7 @@ class User < ApplicationRecord
  end
 
   def employed_at?(company_id)
-    employments.exists?(company_id:)
+    employments.kept.exists?(company_id:)
   end
 
   private

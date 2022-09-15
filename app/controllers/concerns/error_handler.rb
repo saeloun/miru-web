@@ -23,11 +23,13 @@ module ErrorHandler
     end
 
     def user_not_authorized(exception)
-      sign_out if @home_index
-      redirect_path = @home_index ? "/users/sign_in" : root_path
       policy = exception.policy
       policy_name = policy.class.to_s.underscore
       error_key = policy.try(:error_message_key) || exception.query
+
+      is_unauthorized = error_key == :unauthorized_access
+      sign_out if is_unauthorized
+      redirect_path = is_unauthorized ? "/users/sign_in" : root_path
 
       message = I18n.t("#{policy_name}.#{error_key}", scope: "pundit", default: :default)
       case policy.try(:error_message_key)
