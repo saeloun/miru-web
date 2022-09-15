@@ -37,7 +37,7 @@ const EditInvoice = () => {
   const [dueDate, setDueDate] = useState();
 
   const addKeyToLineItems = items => (
-    items.map((item, index) => {
+    items?.map((item, index) => {
       item["key"] = index;
       return item;
     })

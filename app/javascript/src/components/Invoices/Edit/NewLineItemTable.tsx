@@ -9,7 +9,7 @@ const NewLineItemTable = ({
 }) => {
 
   const selectRowId = (item) => {
-    const option = { ...item, lineTotal: (Number(item.qty)/60 * Number(item.rate)) };
+    const option = { ...item, lineTotal: (Number(item.quantity)/60 * Number(item.rate)).toFixed(2) };
     const newLineItems = [...lineItems];
     newLineItems.splice(item.key, 1);
 

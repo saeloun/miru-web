@@ -59,7 +59,7 @@ const MultipleEntriesModal = ({
       setPageNumber(pageNumber + 1);
       const items = res.data.new_line_item_entries.map(item => ({
         ...item, checked: allCheckboxSelected,
-        lineTotal: (Number(item.qty) / 60 * Number(item.rate))
+        lineTotal: ((Number(item.quantity) / 60 * Number(item.rate)).toFixed(2))
       }));
       const mergedItems = [...items, ...lineItems];
       const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
@@ -74,7 +74,7 @@ const MultipleEntriesModal = ({
       const items = res.data.new_line_item_entries.map(item => ({
         ...item,
         checked: allCheckboxSelected,
-        lineTotal: (Number(item.qty) / 60 * Number(item.rate))
+        lineTotal: ((Number(item.quantity) / 60 * Number(item.rate)).toFixed(2))
       }));
       const mergedItems = [...items, ...lineItems];
       const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
