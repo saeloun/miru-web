@@ -49,7 +49,7 @@ class Project < ApplicationRecord
 
     project_members.map do |member|
       entry = entries.find { |entry| entry.user_id == member.user_id }
-      cost = ((entry&.duration.presence || 0) / 60) * member.hourly_rate
+      cost = calculate_cost(entry&.duration.presence || 0, member.hourly_rate)
       {
         id: member.user_id,
         name: member.full_name,
@@ -120,5 +120,9 @@ class Project < ApplicationRecord
 
     def discard_project_members
       project_members.discard_all
+    end
+
+    def calculate_cost(duration, hourly_rate)
+      (duration.to_f / 60) * hourly_rate
     end
 end
