@@ -58,7 +58,7 @@ class Client < ApplicationRecord
          timesheet_entries.work_date as date,
          timesheet_entries.note as description,
          project_members.hourly_rate as rate,
-         timesheet_entries.duration as qty"
+         timesheet_entries.duration as quantity"
       ).where.not(id: selected_entries).order("timesheet_entries.work_date").distinct
   end
 
@@ -71,6 +71,7 @@ class Client < ApplicationRecord
       {
         id: project.id,
         name: project.name,
+        billable: project.billable,
         team: project.project_member_full_names,
         minutes_spent: project.timesheet_entries.where(work_date: range_from_timeframe(time_frame)).sum(:duration)
       }

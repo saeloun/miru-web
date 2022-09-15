@@ -10,9 +10,7 @@ import {
   Receipt,
   ChartLine,
   Wallet,
-  Bell,
   Gear,
-  Question,
   SignOut
 } from "phosphor-react";
 import { NavLink } from "react-router-dom";
@@ -131,10 +129,10 @@ const Navbar = ({ isAdminUser, user }) => {
     ));
 
   return (
-    <div className="shadow-2xl w-1/6 h-full flex flex-col justify-between ">
+    <div className=" fixed top-0 bottom-0 left-0 shadow-2xl w-1/6 h-full flex flex-col justify-between ">
       <div>
-        <div className="h-20 bg-miru-gray-100 flex items-center justify-center">
-          <img src={miruLogo} alt="miru-logo"/>
+        <div className=" h-20 bg-miru-gray-100 flex items-center justify-center">
+          <img src={miruLogo} alt="miru-logo" />
         </div>
         <ul className="mt-8">
           {isAdminUser ? getAdminOption() : getEmployeeOptions()}
@@ -142,21 +140,21 @@ const Navbar = ({ isAdminUser, user }) => {
       </div>
       <div>
         <ul className="mt-32">
-          <a>
+          {/* <a>
             <li className="flex py-3 px-6 items-center hover:bg-miru-gray-100">
               <Bell size={26} className="mr-4" /> Notification
             </li>
-          </a>
+          </a> */}
           <a href="/profile/edit">
             <li className="flex py-3 px-6 items-center hover:bg-miru-gray-100">
               <Gear size={26} className="mr-4" /> Settings
             </li>
           </a>
-          <a>
+          {/* <a>
             <li className="flex py-3 px-6 items-center hover:bg-miru-gray-100">
               <Question size={26} className="mr-4" /> Help
             </li>
-          </a>
+          </a> */}
           <a data-method="delete" href="/users/sign_out" rel="nofollow">
             <li className="flex py-3 px-6 items-center hover:bg-miru-gray-100">
               <SignOut size={26} className="mr-4" /> Logout
