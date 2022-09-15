@@ -43,7 +43,7 @@ class Device < ApplicationRecord
   has_many :device_usages, dependent: :destroy
 
   before_create :set_availabilty
-  after_update :add_device_timelines
+  # after_update :add_device_timelines
 
   # Device type values
   enum device_type: { laptop: "laptop", mobile: "mobile", tablet: "tablet" }

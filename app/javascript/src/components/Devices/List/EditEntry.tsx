@@ -35,8 +35,10 @@ const EditEntry: React.FC<IEditEntryProps> = ({
   const [deviceVersion, setDeviceVersion] = useState<string | undefined>(deviceData.version);
   const [assigneeId, setAssigneeId] = useState<number | undefined>(deviceData.assigneeId);
   const [deviceIsAvailable, setDeviceIsAvailable] = useState<boolean>(deviceData.available);
-  const isAvailable = <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-green-400 text-miru-alert-green-800">Free</span>;
-  const isNotAvailable = <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-pink-400 text-miru-alert-red-1000">In Use</span>;
+  const [serialNumber, setSerialNumber] = useState<string | undefined>(deviceData.serialNumber);
+  const [deviceVersionId, setDeviceVersionId] = useState<string | undefined>(deviceData.versionId);
+  const isAvailable = <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-pink-400 text-miru-alert-red-1000">Free</span>;
+  const isNotAvailable = <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-alert-green-400 text-miru-alert-green-800">In Use</span>;
   const loadingButton = <>
     <svg
       className="inline-block w-5 h-5 mr-3 animate-spin"
@@ -77,14 +79,11 @@ const EditEntry: React.FC<IEditEntryProps> = ({
     brand: deviceBrand,
     device_type: deviceType,
     manufacturer: deviceManufacturer,
-    meta_details: null,
     name: deviceName,
-    serial_number: null,
-    specifications: null,
     version: deviceVersion,
     assignee_id: assigneeId,
-    user_id: null,
-    version_id: null,
+    serial_number: serialNumber,
+    version_id: deviceVersionId,
   });
 
   const handleEdit = async () => {
@@ -221,6 +220,20 @@ const EditEntry: React.FC<IEditEntryProps> = ({
                   />
                 </div>
                 <div>
+                  <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Serial Number</label>
+                  <input
+                    disabled={isProcessing}
+                    onChange={e => {
+                      setSerialNumber(e.target.value);
+                    }}
+                    value={serialNumber || ""}
+                    name="serialNumber"
+                    id="serialNumber"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  />
+                </div>
+                <hr></hr>
+                <div>
                   <label htmlFor="os" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">OS</label>
                   <input
                     disabled={isProcessing}
@@ -243,6 +256,20 @@ const EditEntry: React.FC<IEditEntryProps> = ({
                     value={deviceVersion || ""}
                     name="version"
                     id="version"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="version" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Version ID</label>
+                  <input
+                    disabled={isProcessing}
+                    onChange={e => {
+                      setDeviceVersionId(e.target.value);
+                    }}
+                    value={deviceVersionId || ""}
+                    name="versionId"
+                    id="versionId"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   />
                 </div>

@@ -29,8 +29,8 @@ class DeviceUsage < ApplicationRecord
   belongs_to :device
   belongs_to :assignee, class_name: :User, optional: true
 
-  after_create :set_device_assignee
-  after_update :update_device_assignee
+  # after_create :set_device_assignee
+  # after_update :update_device_assignee
 
   private
 
