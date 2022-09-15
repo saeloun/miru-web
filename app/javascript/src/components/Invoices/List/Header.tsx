@@ -3,7 +3,6 @@ import * as React from "react";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import {
-  Funnel,
   MagnifyingGlass,
   Plus,
   Trash,
@@ -18,7 +17,6 @@ import useDebounce from "helpers/debounce";
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 
 const Header = ({
-  setFilterVisibilty,
   isInvoiceSelected,
   selectedInvoiceCount,
   clearCheckboxes,
@@ -95,9 +93,9 @@ const Header = ({
               </div>
             </div>
 
-            <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
+            {/* <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
               <Funnel size={16} />
-            </button>
+            </button> */}
           </div>
 
           <div className="flex">

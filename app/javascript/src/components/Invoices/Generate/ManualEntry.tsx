@@ -12,7 +12,7 @@ const ManualEntry = ({
   const [date, setDate] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [rate, setRate] = useState<any>("");
-  const [qty, setQty] = useState<any>("");
+  const [quantity, setQuantity] = useState<any>("");
   const [lineTotal, setLineTotal] = useState<any>(entry.lineTotal ? entry.lineTotal : 0);
   const [lineItem, setLineItem] = useState<any>({});
   const ref = useRef();
@@ -25,11 +25,11 @@ const ManualEntry = ({
         date,
         description,
         rate,
-        qty: qty,
-        lineTotal: (Number(qty) * Number(rate)).toFixed(2)
+        quantity,
+        lineTotal: (Number(quantity) * Number(rate)).toFixed(2)
       });
     }
-  }, [name, date, description, rate, qty, lineTotal]);
+  }, [name, date, description, rate, quantity, lineTotal]);
 
   useEffect(() => {
     const newManualEntryArr = manualEntryArr.map((option) => {
@@ -95,19 +95,19 @@ const ManualEntry = ({
           value={entry.rate}
           onChange={e => {
             setRate(e.target.value);
-            setLineTotal(Number(e.target.value) * Number(qty));
+            setLineTotal(Number(e.target.value) * Number(quantity));
           }}
         />
       </td>
       <td className="p-1 w-full">
         <input
           type="text"
-          placeholder="Qty"
+          placeholder="quantity"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          defaultValue={entry.qty}
-          value={entry.qty}
+          defaultValue={entry.quantity}
+          value={entry.quantity}
           onChange={e => {
-            setQty(e.target.value);
+            setQuantity(e.target.value);
             setLineTotal(Number(rate) * Number(e.target.value));
           }}
         />

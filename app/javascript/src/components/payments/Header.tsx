@@ -1,12 +1,12 @@
 import React from "react";
 
-import { MagnifyingGlass, Plus } from "phosphor-react";
+import { Plus } from "phosphor-react";
 
 const Header = ( { setShowManualEntryModal } ) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center justify-between">
     <div className="flex">
       <h2 className="header__title">Payments</h2>
-      <div className="header__searchWrap ml-12">
+      {/* <div className="header__searchWrap ml-12">
         <div className="header__searchInnerWrapper">
           <input
             type="search"
@@ -18,7 +18,7 @@ const Header = ( { setShowManualEntryModal } ) => (
             <MagnifyingGlass size={12} />
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
     <div className="flex">
       <button
