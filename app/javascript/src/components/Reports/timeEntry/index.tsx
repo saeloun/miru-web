@@ -129,6 +129,7 @@ const TimeEntryReports = () => {
           showNavFilters={showNavFilters}
           setFilterVisibilty={setFilterVisibilty}
           isFilterVisible={isFilterVisible}
+          showExportButon={true}
           resetFilter={resetFilter}
           handleDownload={handleDownload}
           type={"Time Entry Report"}

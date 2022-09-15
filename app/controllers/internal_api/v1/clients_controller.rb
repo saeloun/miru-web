@@ -21,7 +21,10 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
   def show
     authorize client
     project_details = client.project_details(params[:time_frame])
-    client_details = { id: client.id, name: client.name, email: client.email, address: client.address }
+    client_details = {
+      id: client.id, name: client.name, email: client.email, address: client.address,
+      phone: client.phone
+    }
     total_minutes = (project_details.map { |project| project[:minutes_spent] }).sum
     overdue_outstanding_amount = client.client_overdue_and_outstanding_calculation
     render json: { client_details:, project_details:, total_minutes:, overdue_outstanding_amount: }, status: :ok
