@@ -18,6 +18,7 @@ const InvoiceTable = ({
   setManualEntryArr
 }) => {
   const [addNew, setAddNew] = useState<boolean>(false);
+  const [showMultiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
 
   const wrapperRef = useRef(null);
 
@@ -32,6 +33,7 @@ const InvoiceTable = ({
         setAddNew={setAddNew}
         manualEntryArr={manualEntryArr}
         setManualEntryArr={setManualEntryArr}
+        setMultiLineItemModal={setMultiLineItemModal}
       />;
     }
     return (

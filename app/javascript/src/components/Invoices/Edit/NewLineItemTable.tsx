@@ -1,11 +1,13 @@
 import React from "react";
+import NewLineItemTableHeader from "../common/NewLineItemTable/Header";
 
 import { getMaxIdx } from "../common/utils";
 
 const NewLineItemTable = ({
   lineItems, setLineItems,
   selectedLineItems, setSelectedLineItems,
-  addNew, setAddNew, manualEntryArr, setManualEntryArr
+  addNew, setAddNew, manualEntryArr, setManualEntryArr,
+  setMultiLineItemModal
 }) => {
 
   const selectRowId = (item) => {
@@ -16,6 +18,11 @@ const NewLineItemTable = ({
     setAddNew(false);
     setSelectedLineItems([...selectedLineItems, option]);
     setLineItems(newLineItems);
+  };
+
+  const addManualEntryItem = async () => {
+    setAddNew(!addNew);
+    setManualEntryArr([...manualEntryArr, { idx: getMaxIdx(manualEntryArr) + 1 }]);
   };
 
   const renderLineItem = (item) => (
@@ -37,17 +44,7 @@ const NewLineItemTable = ({
 
   return (
     <div>
-      <div>
-        <button
-          onClick={() => {
-            setAddNew(!addNew);
-            setManualEntryArr([...manualEntryArr, { idx: getMaxIdx(manualEntryArr) + 1 }]);
-          }}
-          className="mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000"
-        >
-          Add Manual Entry
-        </button>
-      </div>
+      <NewLineItemTableHeader setShowMultilineModal={setMultiLineItemModal} addManualEntryItem={addManualEntryItem}/>
       <div className="overflow-y-scroll h-80 mt-4 relative" data-cy ="entries-list-edit">
         { lineItems.map(item => renderLineItem(item)) }
       </div>
