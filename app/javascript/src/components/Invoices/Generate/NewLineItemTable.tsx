@@ -5,8 +5,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 import { minutesToHHMM } from "helpers/hhmm-parser";
 
-import { DropdownHeader } from "./CustomComponents";
-
+import NewLineItemTableHeader from "../common/NewLineItemTable/Header";
 import { getMaxIdx } from "../common/utils";
 
 const NewLineItemTable = ({
@@ -43,7 +42,7 @@ const NewLineItemTable = ({
 
   return (
     <div>
-      <DropdownHeader setShowMultilineModal={setMultiLineItemModal} addManualEntryItem={addManualEntryItem} />
+      <NewLineItemTableHeader setShowMultilineModal={setMultiLineItemModal} addManualEntryItem={addManualEntryItem} />
       <div className="overflow-scroll mt-4 relative">
         <InfiniteScroll
           dataLength={pageNumber * 10}
