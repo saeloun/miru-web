@@ -65,12 +65,12 @@ const Engagements = ({ isAdminUser, engagementOptions, currentWeekCode, currentW
     {
       Header: "Previous Engagement",
       accessor: "col4",
-      cssClass: "text-center"
+      cssClass: ""
     },
     {
       Header: "Engagement",
       accessor: "col5",
-      cssClass: "text-center"
+      cssClass: ""
     },
   ];
 
@@ -113,7 +113,7 @@ const Engagements = ({ isAdminUser, engagementOptions, currentWeekCode, currentW
         col3: <div className="text-xs tracking-widest text-center">
           {user.department_name}
         </div>,
-        col4: <div className="text-xs tracking-widest text-center">
+        col4: <div className="text-xs tracking-widest">
           <div className="inline-flex rounded-md shadow-sm" role="group">
             { previousEngagementOption && <button type="button"
               key={`previous-engagement-option`}
@@ -133,7 +133,7 @@ const Engagements = ({ isAdminUser, engagementOptions, currentWeekCode, currentW
             </div> }
           </div>
         </div>,
-        col5: <div className="text-xs tracking-widest text-center">
+        col5: <div className="text-xs tracking-widest">
           <div className="inline-flex rounded-md shadow-sm" role="group">
             {engagementOptions.map((option, index) => {
               let borderClass = {}
@@ -164,6 +164,9 @@ const Engagements = ({ isAdminUser, engagementOptions, currentWeekCode, currentW
               <ReactTooltip id={`userTip-${user.id}`} effect="solid" backgroundColor="grey" textColor="white" place="top">
                 <p className="text-xs">
                   Updated by <b>{user.engagement?.updated_by_name}</b> at <b>{user.engagement?.updated_at}</b>
+                </p>
+                <p className="text-xs text-red-600">
+                  Engagement expires at <b>{user.engagement?.expires_at}</b>
                 </p>
               </ReactTooltip>
               <CircleWavyWarning size={20} data-tip data-for={`userTip-${user.id}`} />

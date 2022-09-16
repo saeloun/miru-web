@@ -8,12 +8,12 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
     engagement_ids = params[:engagements].to_s.split(",")
     pagy, users = pagy(
       current_company.users
-        .left_joins(:engagement_timestamps)
-        .where("(engagement_timestamps.week_code = ? OR engagement_timestamps.id IS NULL)",
+        .where("(users.engage_week_code = ? OR users.engage_week_code IS NULL)",
           EngagementTimestamp.current_week_code
         )
+        .where("(users.engage_expires_at >= ? OR users.engage_expires_at IS NULL)", Time.current)
         .where(department_ids.present? ? { department_id: department_ids } : [])
-        .where(engagement_ids.present? ? { engagement_timestamps: { engage_code: engagement_ids } } : nil)
+        .where(engagement_ids.present? ? { engage_code: engagement_ids } : nil)
         .where(Pundit.policy!(current_user, :engagement).admin_access? ? [] : (
           current_user.team_lead? ? { id: [current_user.id, *current_user.team_member_ids] } : []
         ))
@@ -38,7 +38,7 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
       .find_by(week_code: EngagementTimestamp.current_week_code) || engagement_user.engagement_timestamps.new
     engagement_timeline.attributes = engage_params
     if engagement_timeline.save!
-      current_user.update!(
+      engagement_user.update!(
         engage_code: engagement_timeline.engage_code,
         engage_updated_by_id: engagement_timeline.engage_updated_by_id,
         engage_updated_at: engagement_timeline.engage_updated_at,
@@ -77,7 +77,8 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
           code: timestamp.engage_code,
           name: timestamp.engage_name,
           updated_by_name: timestamp.engage_updated_by&.full_name,
-          updated_at: timestamp.engage_updated_at.to_s
+          updated_at: timestamp.engage_updated_at.to_s,
+          expires_at: user.engage_expires_at.to_s
         } : nil,
         previous_engagement: previous_timestamp ? {
           code: previous_timestamp.engage_code,

@@ -10,6 +10,7 @@ const unmapEngagementDetails = (i) => ({
     name: i.engagement.name,
     updated_by_name: i.engagement.updated_by_name,
     updated_at: i.engagement.updated_at,
+    expires_at: i.engagement.expires_at,
   } : null
 });
 
