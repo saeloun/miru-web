@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { TOASTER_DURATION } from "constants/index";
 
+import Logger from "js-logger";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -79,7 +80,7 @@ const ClientList = ({ isAdminUser }) => {
         setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
       })
       .catch((e) => {
-        console.log(e); // eslint-disable-line
+        Logger.error(e);
         navigate("/clients");
       });
   };
