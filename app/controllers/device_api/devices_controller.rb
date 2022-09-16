@@ -24,6 +24,14 @@ class DeviceApi::DevicesController < DeviceApi::ApplicationController
   def create
     authorize :create, policy_class: DeviceApi::DeviceApiPolicy
 
+    unless Device::DEVICE_TYPE_OPTIONS.find { |i| i.id == device_params[:device_type].to_s.downcase }
+      render json: {
+        success: false,
+        notice: "This device type \"#{device_params[:device_type]}\" is not supported."
+      }, status: :not_found
+      return
+    end
+
     device = Device.find_by(
       brand: device_params[:brand], device_type: device_params[:device_type],
       serial_number: device_params[:serial_number]
@@ -66,7 +74,13 @@ class DeviceApi::DevicesController < DeviceApi::ApplicationController
     end
 
     def device_params
-      params.require(:device).permit(
+      required_device_params = params.require(:device)
+
+      required_device_params[:device_type] = {
+        ipad: "tablet"
+      }[required_device_params[:device_type].to_s.to_sym] || required_device_params[:device_type].to_s
+
+      required_device_params.permit(
         policy(Device).permitted_attributes
       )
     end

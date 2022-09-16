@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_06_103718) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_16_105656) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -197,6 +197,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_06_103718) do
     t.index ["company_id"], name: "index_employments_on_company_id"
     t.index ["discarded_at"], name: "index_employments_on_discarded_at"
     t.index ["user_id"], name: "index_employments_on_user_id"
+  end
+
+  create_table "engagement_timestamps", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "engage_code"
+    t.bigint "engage_updated_by_id"
+    t.datetime "engage_updated_at"
+    t.integer "week_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["engage_updated_by_id"], name: "index_engagement_timestamps_on_engage_updated_by_id"
+    t.index ["user_id"], name: "index_engagement_timestamps_on_user_id"
   end
 
   create_table "identities", force: :cascade do |t|
@@ -527,6 +539,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_06_103718) do
     t.string "color"
     t.string "slack_member_id"
     t.text "slack_member_info"
+    t.integer "engage_week_code"
+    t.datetime "engage_expires_at"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -572,6 +586,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_06_103718) do
   add_foreign_key "devices", "users", column: "assignee_id"
   add_foreign_key "employments", "companies"
   add_foreign_key "employments", "users"
+  add_foreign_key "engagement_timestamps", "users"
+  add_foreign_key "engagement_timestamps", "users", column: "engage_updated_by_id"
   add_foreign_key "identities", "users"
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"

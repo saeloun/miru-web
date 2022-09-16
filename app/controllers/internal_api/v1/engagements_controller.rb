@@ -8,8 +8,12 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
     engagement_ids = params[:engagements].to_s.split(",")
     pagy, users = pagy(
       current_company.users
+        .left_joins(:engagement_timestamps)
+        .where("(engagement_timestamps.week_code = ? OR engagement_timestamps.id IS NULL)",
+          EngagementTimestamp.current_week_code
+        )
         .where(department_ids.present? ? { department_id: department_ids } : [])
-        .where(engagement_ids.present? ? { engage_code: engagement_ids } : [])
+        .where(engagement_ids.present? ? { engagement_timestamps: { engage_code: engagement_ids } } : nil)
         .where(Pundit.policy!(current_user, :engagement).admin_access? ? [] : (
           current_user.team_lead? ? { id: [current_user.id, *current_user.team_member_ids] } : []
         ))
@@ -24,11 +28,23 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
 
   def update
     authorize :update, policy_class: EngagementPolicy
+
     engage_params.merge!(
       engage_updated_by_id: current_user.id,
-      engage_updated_at: Time.current
+      engage_updated_at: Time.current,
+      week_code: EngagementTimestamp.current_week_code
     )
-    if engagement_user.update!(engage_params)
+    engagement_timeline = engagement_user.engagement_timestamps
+      .find_by(week_code: EngagementTimestamp.current_week_code) || engagement_user.engagement_timestamps.new
+    engagement_timeline.attributes = engage_params
+    if engagement_timeline.save!
+      current_user.update!(
+        engage_code: engagement_timeline.engage_code,
+        engage_updated_by_id: engagement_timeline.engage_updated_by_id,
+        engage_updated_at: engagement_timeline.engage_updated_at,
+        engage_week_code: engagement_timeline.week_code,
+        engage_expires_at: EngagementTimestamp.current_engage_expires_at,
+      )
       render json: {
         success: true,
         user: serialize_user(engagement_user)
@@ -41,13 +57,15 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
 
     render json: {
       departments: User::DEPARTMENT_OPTIONS,
-      engagements: User::ENGAGEMENT_OPTIONS
+      engagements: EngagementTimestamp::ENGAGEMENT_OPTIONS
     }, status: :ok
   end
 
   private
 
     def serialize_user(user)
+      timestamp = user.engagement_timestamps.find_by(week_code: EngagementTimestamp.current_week_code)
+      previous_timestamp = user.engagement_timestamps.find_by(week_code: EngagementTimestamp.previous_week_code)
       {
         id: user.id,
         name: user.full_name,
@@ -55,10 +73,18 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
         discarded_at: user.discarded_at,
         department_id: user.department_id,
         department_name: user.department_name,
-        engage_code: user.engage_code,
-        engage_name: user.engage_name,
-        engage_updated_by_name: user.engage_updated_by&.full_name,
-        engage_updated_at: user.engage_updated_at.to_s
+        engagement: timestamp ? {
+          code: timestamp.engage_code,
+          name: timestamp.engage_name,
+          updated_by_name: timestamp.engage_updated_by&.full_name,
+          updated_at: timestamp.engage_updated_at.to_s
+        } : nil,
+        previous_engagement: previous_timestamp ? {
+          code: previous_timestamp.engage_code,
+          name: previous_timestamp.engage_name,
+          updated_by_name: previous_timestamp.engage_updated_by&.full_name,
+          updated_at: previous_timestamp.engage_updated_at.to_s
+        } : nil
       }
     end
 

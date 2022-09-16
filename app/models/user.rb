@@ -14,7 +14,9 @@
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  engage_code            :integer
+#  engage_expires_at      :datetime
 #  engage_updated_at      :datetime
+#  engage_week_code       :integer
 #  first_name             :string           not null
 #  invitation_accepted_at :datetime
 #  invitation_created_at  :datetime
@@ -94,15 +96,7 @@ class User < ApplicationRecord
     DepartmentOptionKlass.new("Shopify", 18, "#c63c9b")
   ]
 
-  ENGAGEMENT_OPTIONS = [
-    SimpleKlass.new("Free", 1),
-    SimpleKlass.new("Partially", 2),
-    SimpleKlass.new("Fully", 3),
-    SimpleKlass.new("Over", 4),
-  ]
-
   # Associations
-  belongs_to :engage_updated_by, class_name: :User, optional: true
   has_many :employments, dependent: :destroy
   has_many :companies, through: :employments
   has_many :project_members, dependent: :destroy
@@ -114,6 +108,7 @@ class User < ApplicationRecord
   has_one_attached :avatar
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
+  has_many :engagement_timestamps, dependent: :destroy
   has_and_belongs_to_many :team_members, association_foreign_key: :member_user_id, class_name: User.name,
     join_table: "team_members", dependent: :destroy
   rolify strict: true
@@ -161,12 +156,6 @@ class User < ApplicationRecord
     return "" if department_id.nil?
 
     User::DEPARTMENT_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }[department_id]
-  end
-
-  def engage_name
-    return "" if engage_code.nil?
-
-    User::ENGAGEMENT_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }[engage_code]
   end
 
   def active_for_authentication?

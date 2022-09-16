@@ -35,6 +35,14 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Device < ApplicationRecord
+  DeviceOptionKlass = Struct.new(:name, :id)
+
+  DEVICE_TYPE_OPTIONS = [
+    DeviceOptionKlass.new("Laptop", "laptop"),
+    DeviceOptionKlass.new("Mobile", "mobile"),
+    DeviceOptionKlass.new("Tablet", "tablet"),
+  ]
+
   belongs_to :assignee, class_name: :User, optional: true
   belongs_to :company, optional: true
   belongs_to :user, optional: true
@@ -46,15 +54,7 @@ class Device < ApplicationRecord
   # after_update :add_device_timelines
 
   # Device type values
-  enum device_type: { laptop: "laptop", mobile: "mobile", tablet: "tablet" }
-
-  DeviceOptionKlass = Struct.new(:name, :id)
-
-  DEVICE_TYPE_OPTIONS = [
-    DeviceOptionKlass.new("Laptop", "laptop"),
-    DeviceOptionKlass.new("Mobile", "mobile"),
-    DeviceOptionKlass.new("Tablet", "tablet"),
-  ]
+  enum device_type: DEVICE_TYPE_OPTIONS.to_h { |i| [i.id.to_sym, i.id] }
 
   USERS_OPTIONS = User.all.map do |user|
     DeviceOptionKlass.new(user.full_name, user.id)

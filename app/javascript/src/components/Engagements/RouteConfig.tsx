@@ -8,10 +8,10 @@ import {
 import DashboardList from "./Dashboard";
 import EngagementList from "./List";
 
-const RouteConfig = ({ isAdminUser, embedUrl }) => (<BrowserRouter>
+const RouteConfig = ({ isAdminUser, embedUrl, engagementOptions, currentWeekCode, currentWeekDueAt }) => (<BrowserRouter>
   <Routes>
     <Route path="engagements">
-      <Route index element={<EngagementList isAdminUser={isAdminUser} />} />
+      <Route index element={<EngagementList isAdminUser={isAdminUser} engagementOptions={engagementOptions} currentWeekCode={currentWeekCode} currentWeekDueAt={currentWeekDueAt} />} />
       {
         isAdminUser && <Route path="dashboard" element={<DashboardList isAdminUser={isAdminUser} embedUrl={embedUrl} />} />
       }

@@ -5,10 +5,12 @@ const unmapEngagementDetails = (i) => ({
   discarded_at: i.discarded_at,
   department_id: i.department_id,
   department_name: i.department_name,
-  engage_code: i.engage_code,
-  engage_name: i.engage_name,
-  engage_updated_by_name: i.engage_updated_by_name,
-  engage_updated_at: i.engage_updated_at,
+  engagement: i.engagement ? {
+    code: i.engagement.code,
+    name: i.engagement.name,
+    updated_by_name: i.engagement.updated_by_name,
+    updated_at: i.engagement.updated_at,
+  } : null
 });
 
 const getList = (input) => input.users.map((i) => unmapEngagementDetails(i));

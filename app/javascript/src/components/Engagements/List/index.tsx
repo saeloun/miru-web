@@ -14,14 +14,7 @@ import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapEngagementList, unmapEngagementDetails } from "../../../mapper/engagement.mapper";
 
-const ENGAGEMENT_OPTIONS = [
-  { id: "1", name: "Free" },
-  { id: "2", name: "Partially" },
-  { id: "3", name: "Fully" },
-  { id: "4", name: "Over" }
-];
-
-const Engagements = ({ isAdminUser }) => {
+const Engagements = ({ isAdminUser, engagementOptions, currentWeekCode, currentWeekDueAt }) => {
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
   const [engagementData, setEngagementData] = useState<any>([{}]);
   const [pagy, setPagy] = React.useState<any>(null);
@@ -70,9 +63,14 @@ const Engagements = ({ isAdminUser }) => {
       cssClass: "text-center"
     },
     {
-      Header: "Engagement",
+      Header: "Previous Engagement",
       accessor: "col4",
-      cssClass: "text-left"
+      cssClass: "text-center"
+    },
+    {
+      Header: "Engagement",
+      accessor: "col5",
+      cssClass: "text-center"
     },
   ];
 
@@ -94,43 +92,67 @@ const Engagements = ({ isAdminUser }) => {
 
   const getTableData = (users) => {
     if (!users) return [{}];
-    return users.map((user) =>
-      ({
+    return users.map((user) => {
+      const previousEngagementOption = engagementOptions.find((option, _index) => option.id === user.previous_engagement?.code)
+      const hoverClass = {
+        free: "hover:bg-miru-alert-pink-400 hover:text-miru-alert-red-1000",
+        partially: "hover:bg-miru-alert-yellow-400",
+        fully: "hover:bg-miru-alert-green-200 hover:text-miru-alert-green-800",
+        over: "hover:bg-miru-alert-green-800 hover:text-miru-alert-green-400",
+      }
+      const activeClass = {
+        free: "bg-miru-alert-pink-400 text-miru-alert-red-1000",
+        partially: "bg-miru-alert-yellow-400",
+        fully: "bg-miru-alert-green-200 text-miru-alert-green-800",
+        over: "bg-miru-alert-green-800 text-miru-alert-green-400",
+      }
+
+      return {
         col1: user.discarded_at ? <div className="text-xs tracking-widest text-red-600">{user.name}</div> : <div className="text-xs tracking-widest">{user.name}</div>,
         col2: user.discarded_at ? <div className="text-xs tracking-widest text-red-600">{user.email}</div> : <div className="text-xs tracking-widest">{user.email}</div>,
         col3: <div className="text-xs tracking-widest text-center">
           {user.department_name}
         </div>,
-        col4: <div className="text-xs tracking-widest text-left">
+        col4: <div className="text-xs tracking-widest text-center">
           <div className="inline-flex rounded-md shadow-sm" role="group">
-            {ENGAGEMENT_OPTIONS.map((option, index) => {
+            { previousEngagementOption && <button type="button"
+              key={`previous-engagement-option`}
+              disabled={true}
+              className={`py-1 px-2 text-sm font-medium text-gray-900 bg-white border-gray-200 ${activeClass[previousEngagementOption.name.toLowerCase()]} focus:z-10 focus:ring-2`}
+            >
+              {previousEngagementOption.name}
+            </button> }
+
+            { user.previous_engagement?.updated_by_name && <div className="px-1 py-1 text-sm font-medium">
+              <ReactTooltip id={`userTip-${user.id}`} effect="solid" backgroundColor="grey" textColor="white" place="top">
+                <p className="text-xs">
+                  Updated by <b>{user.previous_engagement?.updated_by_name}</b> at <b>{user.previous_engagement?.updated_at}</b>
+                </p>
+              </ReactTooltip>
+              <CircleWavyWarning size={20} data-tip data-for={`userTip-${user.id}`} />
+            </div> }
+          </div>
+        </div>,
+        col5: <div className="text-xs tracking-widest text-center">
+          <div className="inline-flex rounded-md shadow-sm" role="group">
+            {engagementOptions.map((option, index) => {
               let borderClass = {}
               borderClass[0] = "rounded-l-lg border-t border-b border-l",
-              borderClass[(ENGAGEMENT_OPTIONS.length - 1)] = "rounded-r-md border"
+              borderClass[(engagementOptions.length - 1)] = "rounded-r-md border"
               borderClass = borderClass[index] || "border-t border-b border-l"
-              const hoverClass = {
-                free: "hover:bg-miru-alert-pink-400 hover:text-miru-alert-red-1000",
-                partially: "hover:bg-miru-alert-yellow-400",
-                fully: "hover:bg-miru-alert-green-200 hover:text-miru-alert-green-800",
-                over: "hover:bg-miru-alert-green-800 hover:text-miru-alert-green-400",
-              }[option.name.toLowerCase()]
-              let activeClass = {
-                free: "bg-miru-alert-pink-400 text-miru-alert-red-1000",
-                partially: "bg-miru-alert-yellow-400",
-                fully: "bg-miru-alert-green-200 text-miru-alert-green-800",
-                over: "bg-miru-alert-green-800 text-miru-alert-green-400",
-              }[option.name.toLowerCase()]
-              activeClass = option.name.toLowerCase() === (user.engage_name || "").toLowerCase() ? activeClass : ""
+              let thisActiveClass = activeClass[user.engagement?.name.toLowerCase()]
+              thisActiveClass = option.id === user.engagement?.code ? thisActiveClass : ""
+
               return (<button type="button"
                 key={`engagement-option-${index}`}
                 value={option.id}
-                className={`py-1 px-2 text-sm font-medium text-gray-900 bg-white ${borderClass} border-gray-200 ${activeClass} ${hoverClass} focus:z-10 focus:ring-2`}
+                className={`py-1 px-2 text-sm font-medium text-gray-900 bg-white ${borderClass} border-gray-200 ${thisActiveClass} ${hoverClass[option.name.toLowerCase()]} focus:z-10 focus:ring-2`}
                 onClick={(e) => updateEngagement(user.id, e)}>
                 {option.name}
               </button>)
             })}
 
-            { user.engage_updated_by_name && <div className="px-1 py-1 text-sm font-medium">
+            { user.engagement?.updated_by_name && <div className="px-1 py-1 text-sm font-medium">
               <ReactTooltip id={`userClearTip-${user.id}`} effect="solid" backgroundColor="grey" textColor="white" place="top">
                 <p className="text-xs">
                   Clear the engagement!
@@ -138,10 +160,10 @@ const Engagements = ({ isAdminUser }) => {
               </ReactTooltip>
               <Eraser size={20} className="text-red-600" onClick={(e) => updateEngagement(user.id, e)} data-tip data-for={`userClearTip-${user.id}`} />
             </div> }
-            { user.engage_updated_by_name && <div className="px-1 py-1 text-sm font-medium">
+            { user.engagement?.updated_by_name && <div className="px-1 py-1 text-sm font-medium">
               <ReactTooltip id={`userTip-${user.id}`} effect="solid" backgroundColor="grey" textColor="white" place="top">
                 <p className="text-xs">
-                  Updated by <b>{user.engage_updated_by_name}</b> at <b>{user.engage_updated_at}</b>
+                  Updated by <b>{user.engagement?.updated_by_name}</b> at <b>{user.engagement?.updated_at}</b>
                 </p>
               </ReactTooltip>
               <CircleWavyWarning size={20} data-tip data-for={`userTip-${user.id}`} />
@@ -149,8 +171,8 @@ const Engagements = ({ isAdminUser }) => {
           </div>
         </div>,
         rowId: user.id
-      })
-    );
+      }
+    });
   };
 
   return (
@@ -165,6 +187,17 @@ const Engagements = ({ isAdminUser }) => {
         setParams={setParams}
       />
       <div>
+        <div
+          className={
+            "sm:flex mt-6 mb-3 sm:items-center sm:justify-between"
+          }>
+          <span className="">
+            <h3 className="text-xs">
+              Please update the engagement for your team before the due date for week <b>#{currentWeekCode.slice(0, -4)}</b>.
+            </h3>
+            <h3 className="text-xs font-normal tracking-widest text-red-600"> Due date is {currentWeekDueAt}</h3>
+          </span>
+        </div>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
