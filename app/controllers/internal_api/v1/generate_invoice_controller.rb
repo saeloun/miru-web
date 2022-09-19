@@ -9,9 +9,7 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
 
   def index
     authorize :index, policy_class: GenerateInvoicePolicy
-    render :index, locals: { new_line_item_entries:, current_company:, filter_options: }, status: :ok
-    # pagy, new_line_item_entries_pagy = pagy(new_line_item_entries), items: 10
-    # render json: { new_line_item_entries_pagy:, pagy: pagy_metadata(pagy) }, status: :ok
+    render :index, locals: { new_line_item_entries:, filter_options: }, status: :ok
   end
 
   private

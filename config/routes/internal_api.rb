@@ -45,7 +45,7 @@ namespace :internal_api, defaults: { format: "json" } do
       resources :addresses, only: %i[index create show update]
     end
 
-    resources :companies, only: [:index, :create, :update], concerns: :addressable do
+    resources :companies, only: [:show, :create, :update], concerns: :addressable do
       resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
     end
 
