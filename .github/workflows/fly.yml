@@ -2,7 +2,7 @@ name: Fly Deployment
 on:
   push:
     branches:
-      - develop
+      - fly-integrate
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 jobs:
@@ -12,4 +12,4 @@ jobs:
       steps:
         - uses: actions/checkout@v2
         - uses: superfly/flyctl-actions/setup-flyctl@master
-        - run: flyctl deploy --remote-only
+        - run: flyctl deploy --remote-only --dockerfile Dockerfile.staging --config ./fly.staging.yml
