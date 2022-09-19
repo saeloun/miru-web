@@ -34,7 +34,7 @@ const CustomDatePicker = ({ handleChange, dueDate }) => {
       wrapperClassName="datePicker absolute"
       inline
       calendarClassName="miru-calendar"
-      selected={Date.parse(dueDate)}
+      selected={dueDate}
       renderCustomHeader={({
         date,
         changeYear,
