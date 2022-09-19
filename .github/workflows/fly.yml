@@ -12,4 +12,4 @@ jobs:
       steps:
         - uses: actions/checkout@v2
         - uses: superfly/flyctl-actions/setup-flyctl@master
-        - run: flyctl deploy --config fly.staging.yml --dockerfile Dockerfile.staging --remote-only
+        - run: flyctl deploy --config fly.staging.toml --dockerfile Dockerfile.staging --remote-only
