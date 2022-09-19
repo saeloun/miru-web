@@ -8,10 +8,6 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
     engagement_ids = params[:engagements].to_s.split(",")
     pagy, users = pagy(
       current_company.users
-        .where("(users.engage_week_code = ? OR users.engage_week_code IS NULL)",
-          EngagementTimestamp.current_week_code
-        )
-        .where("(users.engage_expires_at >= ? OR users.engage_expires_at IS NULL)", Time.current)
         .where(department_ids.present? ? { department_id: department_ids } : [])
         .where(engagement_ids.present? ? { engage_code: engagement_ids } : nil)
         .where(Pundit.policy!(current_user, :engagement).admin_access? ? [] : (
