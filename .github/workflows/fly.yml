@@ -1,4 +1,4 @@
-name: Fly Deployment
+name: Fly Staging Deployment
 on:
   push:
     branches:
