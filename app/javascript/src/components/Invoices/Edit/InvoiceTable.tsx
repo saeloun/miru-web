@@ -42,7 +42,8 @@ const InvoiceTable = ({
     if (selectedClient) {
       let selectedEntriesString = "";
       selectedEntries.forEach((entries) => {
-        selectedEntriesString += `&selected_entries[]=${entries.timesheet_entry_id}`;
+        if (!entries._destroy)
+          selectedEntriesString += `&selected_entries[]=${entries.timesheet_entry_id}`;
       });
 
       await generateInvoice.getLineItems(selectedClient.value, pageNumber, selectedEntriesString).then(async res => {
@@ -157,6 +158,7 @@ const InvoiceTable = ({
           {
             selectedLineItems.length > 0
             && selectedLineItems.map((item, index) => (
+              !item._destroy &&
               <NewLineItemRow
                 currency={currency}
                 item={item}
@@ -171,7 +173,7 @@ const InvoiceTable = ({
       <div>
         {showMultiLineItemModal && <MultipleEntriesModal
           selectedClient={selectedClient}
-          selectedOption={selectedLineItems}
+          selectedOption={selectedLineItems.filter(item => !item._destroy)}
           setSelectedOption={setSelectedLineItems}
           setMultiLineItemModal={setMultiLineItemModal}
         />}

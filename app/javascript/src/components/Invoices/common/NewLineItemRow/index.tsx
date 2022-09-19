@@ -7,19 +7,27 @@ const NewLineItemRow = ({
   currency,
   item,
   setSelectedOption,
-  selectedOption
+  selectedOption,
+  removeElement = false
 }) => {
   const [isEdit, setEdit] = useState<boolean>(false);
 
   const handleDelete = (item) => {
-    const selectedOptionArr = selectedOption.filter((option) => {
-      if ((item.id && option.id != item.id) ||
-        (option.timesheet_entry_id && option.timesheet_entry_id != item.timesheet_entry_id)) {
-        return option;
+    const deleteItem = {
+      ...item,
+      _destroy: true
+    };
+
+    const selectedOptionArr = selectedOption.map((option) => {
+      if ((item.id && option.id === item.id) ||
+        (option.timesheet_entry_id && option.timesheet_entry_id === item.timesheet_entry_id)) {
+        return removeElement ? null : deleteItem;
       }
+      return option;
     });
+
     setEdit(false);
-    setSelectedOption(selectedOptionArr);
+    setSelectedOption(selectedOptionArr.filter(n => n));
   };
 
   return isEdit ? (

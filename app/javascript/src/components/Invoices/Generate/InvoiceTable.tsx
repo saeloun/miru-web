@@ -156,6 +156,7 @@ const InvoiceTable = ({
                 key={index}
                 setSelectedOption={setSelectedOption}
                 selectedOption={selectedOption}
+                removeElement
               />
             ))}
         </tbody>
@@ -163,8 +164,8 @@ const InvoiceTable = ({
       <div>
         {showMultiLineItemModal && <MultipleEntriesModal
           selectedClient={selectedClient}
-          setSelectedOption={setSelectedOption}
           selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
           setMultiLineItemModal={setMultiLineItemModal}
         />}
       </div>
