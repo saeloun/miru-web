@@ -18,7 +18,6 @@ processes = []
   PORT = "8080"
   SERVER_COMMAND = "bin/rails fly:server"
   APP_BASE_URL = "https://miru-staging.fly.dev"
-  HEROKU_APP_NAME = "https://miru-web-staging"
 
 [experimental]
   allowed_public_ports = []
