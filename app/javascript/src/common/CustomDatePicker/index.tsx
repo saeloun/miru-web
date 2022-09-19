@@ -31,58 +31,60 @@ const CustomDatePicker = ({ handleChange, dueDate }) => {
     "Dec"
   ];
   return (
-    <DatePicker
-      wrapperClassName="datePicker absolute"
-      inline
-      calendarClassName="miru-calendar"
-      selected={formattedSelectedDate}
-      renderCustomHeader={({
-        date,
-        changeYear,
-        changeMonth,
-        decreaseMonth,
-        increaseMonth,
-        prevMonthButtonDisabled,
-        nextMonthButtonDisabled
-      }) => (
-        <div
-          className="headerWrapper"
-        >
-          <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
-            <CaretCircleLeft color="#5b34ea" size={16} />
-          </button>
-          <div>
-            <select
-              value={months[getMonth(date)]}
-              onChange={({ target: { value } }) =>
-                changeMonth(months.indexOf(value))
-              }
-            >
-              {months.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+    <div className="absolute h-100 w-100 z-10" style={{ bottom: "334px" }}>
+      <DatePicker
+        wrapperClassName="datePicker"
+        inline
+        calendarClassName="miru-calendar"
+        selected={formattedSelectedDate}
+        renderCustomHeader={({
+          date,
+          changeYear,
+          changeMonth,
+          decreaseMonth,
+          increaseMonth,
+          prevMonthButtonDisabled,
+          nextMonthButtonDisabled
+        }) => (
+          <div
+            className="headerWrapper"
+          >
+            <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
+              <CaretCircleLeft color="#5b34ea" size={16} />
+            </button>
+            <div>
+              <select
+                value={months[getMonth(date)]}
+                onChange={({ target: { value } }) =>
+                  changeMonth(months.indexOf(value))
+                }
+              >
+                {months.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
 
-            <select
-              value={getYear(date)}
-              onChange={({ target: { value } }) => changeYear(value)}
-            >
-              {years.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+              <select
+                value={getYear(date)}
+                onChange={({ target: { value } }) => changeYear(value)}
+              >
+                {years.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
+              <CaretCircleRight color="#5b34ea" size={16} />
+            </button>
           </div>
-          <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
-            <CaretCircleRight color="#5b34ea" size={16} />
-          </button>
-        </div>
-      )}
-      onChange={handleChange}
-    />
+        )}
+        onChange={handleChange}
+      />
+    </div>
   );
 };
 

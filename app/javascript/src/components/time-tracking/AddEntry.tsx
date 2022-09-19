@@ -192,11 +192,9 @@ const AddEntry: React.FC<Iprops> = ({
       </div>
       <div className="w-60">
         <div className="mb-2 flex justify-between">
-          {/* display CustomDatePicker on top */}
           <div>
             { editEntryId && displayDatePicker &&
-            // display CustomDatePicker is 10px above the top of the div
-            <div className="">
+            <div className="relative">
               <CustomDatePicker
                 handleChange={handleDateChangeFromDatePicker}
                 dueDate={selectedDate}
