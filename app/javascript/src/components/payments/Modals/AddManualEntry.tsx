@@ -207,7 +207,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
                   {showDatePicker && (
                     <CustomDatePicker
                       handleChange={handleDatePicker}
-                      dueDate={transactionDate}
+                      date={transactionDate}
                     />
                   )}
                 </div>
