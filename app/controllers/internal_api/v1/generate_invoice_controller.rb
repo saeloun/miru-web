@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationController
-  # Use company index instead
-  # def index
-  #   authorize :index, policy_class: GenerateInvoicePolicy
-  #   render :index, locals: { current_company: }, status: :ok
-  # end
-
   def index
     authorize :index, policy_class: GenerateInvoicePolicy
     render :index, locals: { new_line_item_entries:, filter_options: }, status: :ok
@@ -22,6 +16,7 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
       @_project ||= Project.includes(:timesheet_entries).find_by(client_id: params[:client_id])
     end
 
+    # Sending team members list for filter dropdown options
     def filter_options
       user_ids = project.timesheet_entries.pluck(:user_id).uniq
       @_filter_options ||= {
