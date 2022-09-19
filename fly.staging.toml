@@ -17,6 +17,7 @@ processes = []
 [env]
   PORT = "8080"
   SERVER_COMMAND = "bin/rails fly:server"
+  APP_BASE_URL = "https://miru-staging.fly.dev"
 
 [experimental]
   allowed_public_ports = []
