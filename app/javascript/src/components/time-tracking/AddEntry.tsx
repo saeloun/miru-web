@@ -192,11 +192,16 @@ const AddEntry: React.FC<Iprops> = ({
       </div>
       <div className="w-60">
         <div className="mb-2 flex justify-between">
+          {/* display CustomDatePicker on top */}
           <div>
             { editEntryId && displayDatePicker &&
-              <div className="absolute z-10 top-92">
-                <CustomDatePicker handleChange={handleDateChangeFromDatePicker} selectedDate={selectedDate} />
-              </div>
+            // display CustomDatePicker is 10px above the top of the div
+            <div className="">
+              <CustomDatePicker
+                handleChange={handleDateChangeFromDatePicker}
+                dueDate={selectedDate}
+              />
+            </div>
             }
             <div className="formatted-date p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center" onClick={() => setDisplayDatePicker(true)}>
               {format(new Date, "do MMM, yyyy")}
