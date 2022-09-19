@@ -55,13 +55,7 @@ FROM build_deps as node_modules
 COPY package*json ./
 COPY yarn.* ./
 
-RUN if [ -f "yarn.lock" ]; then \
-    yarn install; \
-    elif [ -f "package-lock.json" ]; then \
-    npm install; \
-    else \
-    mkdir node_modules; \
-    fi
+RUN yarn install
 
 FROM base
 
