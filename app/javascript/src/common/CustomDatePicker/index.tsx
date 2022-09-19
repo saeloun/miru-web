@@ -5,8 +5,8 @@ import { CaretCircleLeft, CaretCircleRight } from "phosphor-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const CustomDatePicker = ({ handleChange, selectedDate }) => {
-  const formattedSelectedDate = new Date(selectedDate);
+const CustomDatePicker = ({ handleChange, dueDate }) => {
+  const formattedSelectedDate = new Date(dueDate);
   const range = (start, end) => {
     const ans = [];
     for (let i = start; i <= end; i++) {
