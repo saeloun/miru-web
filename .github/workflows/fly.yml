@@ -2,7 +2,7 @@ name: Fly Staging Deployment
 on:
   push:
     branches:
-      - develop
+      - feature/fly-deployment
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 jobs:
