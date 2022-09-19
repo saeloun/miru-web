@@ -1,52 +1,85 @@
 import React from "react";
-import NewLineItemTableHeader from "../common/NewLineItemTable/Header";
 
+import dayjs from "dayjs";
+import InfiniteScroll from "react-infinite-scroll-component";
+
+import { minutesToHHMM } from "helpers/hhmm-parser";
+
+import NewLineItemTableHeader from "../common/NewLineItemTable/Header";
 import { getMaxIdx } from "../common/utils";
 
 const NewLineItemTable = ({
+  setShowItemInputs,
+  addNew, setAddNew,
   lineItems, setLineItems,
+  loadMoreItems,
+  totalLineItems,
+  pageNumber, setPageNumber,
   selectedLineItems, setSelectedLineItems,
-  addNew, setAddNew, manualEntryArr, setManualEntryArr,
-  setMultiLineItemModal
+  manualEntryArr, setManualEntryArr,
+  setMultiLineItemModal,
+  setAddManualLineItem
 }) => {
 
-  const selectRowId = (item) => {
-    const option = { ...item, lineTotal: (Number(item.quantity)/60 * Number(item.rate)).toFixed(2) };
-    const newLineItems = [...lineItems];
-    newLineItems.splice(item.key, 1);
+  const hasMoreItems = lineItems.length === totalLineItems;
 
+  const selectRowId = (items) => {
+    const option = { ...items, lineTotal: (Number(items.quantity) / 60 * Number(items.rate)).toFixed(2) };
     setAddNew(false);
     setSelectedLineItems([...selectedLineItems, option]);
-    setLineItems(newLineItems);
+    setLineItems([]);
+    setPageNumber(1);
   };
 
   const addManualEntryItem = async () => {
+    await setShowItemInputs(true);
     setAddNew(!addNew);
+    setAddManualLineItem(true);
     setManualEntryArr([...manualEntryArr, { idx: getMaxIdx(manualEntryArr) + 1 }]);
   };
 
-  const renderLineItem = (item) => (
-    <div onClick = {() => {selectRowId(item);}} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100">
-      <span className="font-medium text-base text-miru-dark-purple-1000 text-left">
-        {item.first_name} {item.last_name}
-      </span>
-      <span className="font-medium text-xs text-miru-dark-purple-600 text-left w-1/2">
-        {item.description}
-      </span>
-      <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
-        {item.date}
-      </span>
-      <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
-          ${item.rate}
-      </span>
-    </div>
-  );
-
   return (
     <div>
-      <NewLineItemTableHeader setShowMultilineModal={setMultiLineItemModal} addManualEntryItem={addManualEntryItem}/>
-      <div className="overflow-y-scroll h-80 mt-4 relative" data-cy ="entries-list-edit">
-        { lineItems.map(item => renderLineItem(item)) }
+      <NewLineItemTableHeader setShowMultilineModal={setMultiLineItemModal} addManualEntryItem={addManualEntryItem} />
+      <div className="overflow-scroll mt-4 relative">
+        <InfiniteScroll
+          dataLength={pageNumber * 10}
+          next={loadMoreItems}
+          hasMore={!hasMoreItems}
+          loader={
+            <div className="text-center py-2">
+              <h4>Loading...</h4>
+            </div>
+          }
+          height={250}
+          endMessage={
+            <p className="text-center py-2">
+              <b>End of the list</b>
+            </p>
+          }
+        >
+          {lineItems.map((item, index) => {
+            const hoursLogged = minutesToHHMM(item.quantity);
+            const date = dayjs(item.date).format("DD.MM.YYYY");
+            return (
+              <div key={index} onClick={() => selectRowId(item)} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100" data-cy="entries-list">
+                <span className="font-medium w-1/4 text-base text-miru-dark-purple-1000 text-left">
+                  {item.first_name} {item.last_name}
+                </span>
+                <span className="font-medium text-xs text-miru-dark-purple-600 text-left w-1/2">
+                  {item.description}
+                </span>
+                <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
+                  {date}
+                </span>
+                <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
+                  {hoursLogged}
+                </span>
+              </div>
+            );
+          })
+          }
+        </InfiniteScroll>
       </div>
     </div>
   );

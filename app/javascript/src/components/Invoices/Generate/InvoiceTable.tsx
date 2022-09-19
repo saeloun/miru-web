@@ -9,7 +9,7 @@ import ManualEntry from "./ManualEntry";
 import NewLineItemTable from "./NewLineItemTable";
 
 import TableHeader from "../common/LineItemTableHeader";
-import NewLineItemRows from "../common/NewLineItemRow";
+import NewLineItemRow from "../common/NewLineItemRow";
 import MultipleEntriesModal from "../MultipleEntriesModal";
 
 const fetchNewLineItems = async (
@@ -150,13 +150,12 @@ const InvoiceTable = ({
           }
           {selectedOption.length > 0
             && selectedOption.map((item, index) => (
-              <NewLineItemRows
+              <NewLineItemRow
                 currency={currency}
                 item={item}
                 key={index}
                 setSelectedOption={setSelectedOption}
                 selectedOption={selectedOption}
-                removeElement
               />
             ))}
         </tbody>
