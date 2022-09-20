@@ -33,8 +33,9 @@ const EditInvoice = () => {
   const [amountPaid, setAmountPaid] = useState<any>(0);
   const [discount, setDiscount] = useState<any>(0);
   const [tax, setTax] = useState<any>(0);
-  const [issueDate, setIssueDate] = useState();
-  const [dueDate, setDueDate] = useState();
+  const [issueDate, setIssueDate] = useState(new Date());
+  const today = new Date();
+  const [dueDate, setDueDate] = useState(today.setMonth(issueDate.getMonth() + 1));
 
   const fetchInvoice = async (navigate, getInvoiceDetails) => {
     try {
