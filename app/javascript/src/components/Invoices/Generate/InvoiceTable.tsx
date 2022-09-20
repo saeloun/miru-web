@@ -102,11 +102,11 @@ const InvoiceTable = ({
         totalLineItems={totalLineItems}
         pageNumber={pageNumber}
         setPageNumber={setPageNumber}
-        setSelectedOption={setSelectedOption}
         selectedOption={selectedOption}
-        setMultiLineItemModal={setMultiLineItemModal}
+        setSelectedOption={setSelectedOption}
         manualEntryArr={manualEntryArr}
         setManualEntryArr={setManualEntryArr}
+        setMultiLineItemModal={setMultiLineItemModal}
         setAddManualLineItem={setAddManualLineItem}
       />;
     }
@@ -151,9 +151,9 @@ const InvoiceTable = ({
           {selectedOption.length > 0
             && selectedOption.map((item, index) => (
               <NewLineItemRow
+                key={index}
                 currency={currency}
                 item={item}
-                key={index}
                 setSelectedOption={setSelectedOption}
                 selectedOption={selectedOption}
                 removeElement

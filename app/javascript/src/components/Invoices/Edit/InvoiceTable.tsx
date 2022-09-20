@@ -160,11 +160,11 @@ const InvoiceTable = ({
             && selectedLineItems.map((item, index) => (
               !item._destroy &&
               <NewLineItemRow
+                key={index}
                 currency={currency}
                 item={item}
                 selectedOption={selectedLineItems}
                 setSelectedOption={setSelectedLineItems}
-                key={index}
               />
             ))
           }

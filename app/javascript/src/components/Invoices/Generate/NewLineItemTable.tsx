@@ -17,9 +17,9 @@ const NewLineItemTable = ({
   pageNumber, setPageNumber,
   selectedOption,
   setSelectedOption,
-  setMultiLineItemModal,
   manualEntryArr,
   setManualEntryArr,
+  setMultiLineItemModal,
   setAddManualLineItem
 }) => {
 
