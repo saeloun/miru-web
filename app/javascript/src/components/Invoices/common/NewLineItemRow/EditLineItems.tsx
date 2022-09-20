@@ -12,14 +12,13 @@ const EditLineItems = ({
   handleDelete,
   setEdit
 }) => {
-
   const strName = item.name || `${item.first_name} ${item.last_name}`;
   const [name, setName] = useState<string>(strName);
   const formatedDate = new Date(item.date);
   const [lineItemDate, setLineItemDate] = useState(formatedDate);
   const [description, setDescription] = useState<string>(item.description);
   const [rate, setRate] = useState<number>(item.rate);
-  const [quantity, setQuantity] = useState<string>(minutesToHHMM(item.quantity));
+  const [quantity, setQuantity] = useState<any>(minutesToHHMM(item.quantity));
   const [lineTotal, setLineTotal] = useState<string>(item.lineTotal);
 
   useEffect(() => {
@@ -52,10 +51,16 @@ const EditLineItems = ({
     if (event.key === "Enter") setEdit(false);
   };
 
+  const handleSetRate = (e) => {
+    const qtyInMin = Number(minutesFromHHMM(quantity));
+    setRate(e.target.value);
+    setLineTotal((Number(qtyInMin / 60) * Number(e.target.value)).toFixed(2));
+  };
+
   const handleSetQuantity = (e) => {
-    const quantityInMin = Number(minutesFromHHMM(e.target.value));
+    const qtyInMin = Number(minutesFromHHMM(e.target.value));
     setQuantity(e.target.value);
-    setLineTotal((Number(quantityInMin / 60) * Number(rate)).toFixed(2));
+    setLineTotal((Number(qtyInMin / 60) * Number(rate)).toFixed(2));
   };
 
   return (
@@ -96,7 +101,7 @@ const EditLineItems = ({
           placeholder="Rate"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={rate}
-          onChange={e => setRate(Number(e.target.value))}
+          onChange={handleSetRate}
         />
       </td>
       <td className="p-1 w-full">
