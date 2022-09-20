@@ -44,7 +44,7 @@ const EntryCard: React.FC<props> = ({
       {bill_status === "unbilled" ? (
         <BillTag color="yellow" text="unbilled" />
       ) : bill_status === "non_billable" ? (
-        <BillTag color="purple" text="unbilled" />
+        <BillTag color="purple" text="non_billable" />
       ) : (
         <BillTag color="green" text="billed" />
       )}
