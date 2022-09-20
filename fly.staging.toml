@@ -44,10 +44,10 @@ processes = []
     port = 443
 
   [[services.tcp_checks]]
-    grace_period = "1s"
+    grace_period = "30s"
     interval = "15s"
     restart_limit = 0
-    timeout = "2s"
+    timeout = "4s"
 
 [[statics]]
   guest_path = "/app/public"
@@ -55,4 +55,4 @@ processes = []
 
 [processes]
   web = "bundle exec puma -C config/puma.rb"
-  worker = "bundle exec sidekiq"
+  worker = "bundle exec sidekiq -e production -C config/sidekiq.yml"
