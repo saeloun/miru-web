@@ -33,14 +33,15 @@ const EditInvoice = () => {
   const [amountPaid, setAmountPaid] = useState<any>(0);
   const [discount, setDiscount] = useState<any>(0);
   const [tax, setTax] = useState<any>(0);
-  const [issueDate, setIssueDate] = useState(new Date());
-  const today = new Date();
-  const [dueDate, setDueDate] = useState(today.setMonth(issueDate.getMonth() + 1));
+  const [issueDate, setIssueDate] = useState<any>();
+  const [dueDate, setDueDate] = useState<any>();
 
   const fetchInvoice = async (navigate, getInvoiceDetails) => {
     try {
       const res = await invoicesApi.editInvoice(params.id);
       getInvoiceDetails(res.data);
+      setIssueDate(Date.parse(res.data.issueDate));
+      setDueDate(Date.parse(res.data.dueDate));
       setSelectedLineItems(unmapLineItems(res.data.invoiceLineItems));
       setAmount(res.data.amount);
       setInvoiceNumber(res.data.invoiceNumber);
