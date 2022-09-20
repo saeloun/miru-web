@@ -64,16 +64,16 @@ const Table = ({
                             <CheckboxIcon />
                           </div>
                         </td>
-                        <td className="table__data w-1/5 font medium text-sm text-miru-dark-purple-1000 text-left">
+                        <td className="table__data font-medium w-1/5 text-sm text-miru-dark-purple-1000 text-left text-left">
                           {item.first_name} {item.last_name}
                         </td>
-                        <td className="whitespace-normal table__data w-3/5 font medium text-xs text-miru-dark-purple-600 text-left">
+                        <td className="table__data font-medium w-3/5 text-xs text-miru-dark-purple-600 text-left whitespace-normal">
                           {item.description}
                         </td>
-                        <td className="table__data font medium text-xs text-miru-dark-purple-1000 text-right">
+                        <td className="table__data font-medium text-xs text-miru-dark-purple-1000 text-right">
                           {date}
                         </td>
-                        <td className="table__data  w-1/12 font medium text-xs text-miru-dark-purple-1000 text-right">
+                        <td className="table__data font-medium w-1/12 text-xs text-miru-dark-purple-1000 text-right">
                           {hoursLogged}
                         </td>
                       </tr>
