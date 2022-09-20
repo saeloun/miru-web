@@ -111,7 +111,7 @@ RSpec.describe Client, type: :model do
         range = date_range_class.range_from_timeframe(time_frame)
         [project_1, project_2].map do | project |
           {
-            id: project.id, name: project.name, team: project.project_member_full_names,
+            id: project.id, name: project.name, billable: project.billable, team: project.project_member_full_names,
             minutes_spent: project.timesheet_entries.where(work_date: range).sum(:duration)
           }
         end
@@ -182,7 +182,7 @@ RSpec.describe Client, type: :model do
                  timesheet_entries.work_date as date,
                  timesheet_entries.note as description,
                  project_members.hourly_rate as rate,
-                 timesheet_entries.duration as qty"
+                 timesheet_entries.duration as quantity"
               ).where.not(id: selected_entries).order("timesheet_entries.work_date").distinct
           expect(client.new_line_item_entries(selected_entries)).to eq(result)
         end
@@ -204,7 +204,7 @@ RSpec.describe Client, type: :model do
                  timesheet_entries.work_date as date,
                  timesheet_entries.note as description,
                  project_members.hourly_rate as rate,
-                 timesheet_entries.duration as qty"
+                 timesheet_entries.duration as quantity"
               ).where.not(id: selected_entries).order("timesheet_entries.work_date").distinct
           expect(client.new_line_item_entries(selected_entries)).to eq(result)
         end

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+
 import EditLineItems from "./EditLineItems";
 import NewLineItemStatic from "./NewLineItemStatic";
 
 const NewLineItemRow = ({
+  currency,
   item,
   setSelectedOption,
   selectedOption,
@@ -39,6 +41,7 @@ const NewLineItemRow = ({
     />
   ) : (
     <NewLineItemStatic
+      currency={currency}
       handleDelete={handleDelete}
       item={item}
       setEdit={setEdit}

@@ -1,6 +1,9 @@
 import React from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
+
 import dayjs from "dayjs";
+import InfiniteScroll from "react-infinite-scroll-component";
+
+import { minutesToHHMM } from "helpers/hhmm-parser";
 
 const CheckboxIcon = () => <div className="bg-white border-2 border-miru-han-purple-1000 w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
   <svg className="custom__checkbox-tick fill-current hidden w-2 h-2 text-miru-han-purple-1000 pointer-events-none" version="1.1" viewBox="0 0 17 12" xmlns="http://www.w3.org/2000/svg">
@@ -51,7 +54,7 @@ const Table = ({
               <table className="w-full">
                 <tbody>
                   {lineItems.map((item, index) => {
-                    const hoursLogged = (item.qty / 60).toFixed(2);
+                    const hoursLogged = minutesToHHMM(item.quantity);
                     const date = dayjs(item.date).format("DD.MM.YYYY");
                     return (
                       <tr key={index}>

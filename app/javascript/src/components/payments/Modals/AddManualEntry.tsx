@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
+
+import dayjs from "dayjs";
+import { X, Calendar } from "phosphor-react";
+import { MagnifyingGlass } from "phosphor-react";
 import Select, { DropdownIndicatorProps, components } from "react-select";
+
 import payment from "apis/payments/payments";
 import CustomDatePicker from "common/CustomDatePicker";
 import Toastr from "common/Toastr";
-import dayjs from "dayjs";
 
-import { X, Calendar } from "phosphor-react";
-import { MagnifyingGlass } from "phosphor-react";
 import { mapPayment } from "../../../mapper/payment.mapper";
 
-const AddManualEntry = ({ setShowManualEntryModal, invoiceList }) => {
+const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList, fetchInvoiceList }) => {
   const [invoice, setInvoice] = useState<any>(null);
   const [transactionDate, setTransactionDate] = useState<any>(null);
   const [transactionType, setTransactionType] = useState<any>(null);
@@ -44,6 +46,8 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList }) => {
       });
       await payment.create(sanitized);
       Toastr.success("Manual entry added successfully.");
+      fetchPaymentList();
+      fetchInvoiceList();
       setInvoice("");
       setTransactionDate("");
       setTransactionType("");
@@ -57,13 +61,13 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList }) => {
   };
 
   const handleDatePicker = (date) => {
-    const formattedDate = dayjs(date).format("DD.MM.YYYY");
-    setTransactionDate(formattedDate);
+    setTransactionDate(date);
     setShowDatePicker(false);
   };
 
   const handleInvoiceSelect = (val) => {
     setInvoice(val);
+    setAmount(val.amount);
   };
 
   const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
@@ -193,7 +197,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList }) => {
                     disabled
                     placeholder="DD.MM.YYYY"
                     className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                    value={transactionDate}
+                    value={transactionDate && dayjs(transactionDate).format("DD.MM.YYYY") }
                   />
                   <Calendar
                     size={20}
@@ -203,7 +207,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList }) => {
                   {showDatePicker && (
                     <CustomDatePicker
                       handleChange={handleDatePicker}
-                      dueDate={transactionDate}
+                      date={transactionDate}
                     />
                   )}
                 </div>
@@ -248,9 +252,10 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList }) => {
                 </div>
                 <div className="mt-1">
                   <input
+                    disabled
                     type="text"
+                    value={amount}
                     placeholder="Payment Amount"
-                    onChange={(e) => setAmount(e.target.value)}
                     className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
                   />
                 </div>

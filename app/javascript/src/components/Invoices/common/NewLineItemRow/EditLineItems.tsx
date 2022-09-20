@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-import DatePicker from "react-datepicker";
 import { Trash } from "phosphor-react";
+import DatePicker from "react-datepicker";
+
+import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 
 const EditLineItems = ({
   item,
@@ -12,13 +14,13 @@ const EditLineItems = ({
 }) => {
 
   const strName = item.name || `${item.first_name} ${item.last_name}`;
-  const quantity = (item.qty / 60) || (item.quantity / 60);
   const [name, setName] = useState<string>(strName);
   const formatedDate = new Date(item.date);
   const [lineItemDate, setLineItemDate] = useState(formatedDate);
   const [description, setDescription] = useState<string>(item.description);
-  const rate = item.rate;
-  const lineTotal = quantity * item.rate;
+  const [rate, setRate] = useState<number>(item.rate);
+  const [quantity, setQuantity] = useState<string>(minutesToHHMM(item.quantity));
+  const [lineTotal, setLineTotal] = useState<string>(item.lineTotal);
 
   useEffect(() => {
     const names = name.split(" ");
@@ -30,8 +32,8 @@ const EditLineItems = ({
       date: lineItemDate,
       description,
       rate,
-      qty: Number(quantity) * 60,
-      lineTotal: Number(quantity) * Number(rate)
+      quantity: minutesFromHHMM(quantity),
+      lineTotal
     };
 
     const selectedOptionArr = selectedOption.map((option) => {
@@ -44,10 +46,16 @@ const EditLineItems = ({
     });
 
     setSelectedOption(selectedOptionArr);
-  }, [name, lineItemDate, description]);
+  }, [name, lineItemDate, description, quantity, rate, lineTotal]);
 
   const closeEditField = (event) => {
     if (event.key === "Enter") setEdit(false);
+  };
+
+  const handleSetQuantity = (e) => {
+    const quantityInMin = Number(minutesFromHHMM(e.target.value));
+    setQuantity(e.target.value);
+    setLineTotal((Number(quantityInMin / 60) * Number(rate)).toFixed(2));
   };
 
   return (
@@ -86,22 +94,22 @@ const EditLineItems = ({
         <input
           type="text"
           placeholder="Rate"
-          className=" p-1 px-2 bg-miru-gray-600 rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          value={item.rate}
-          disabled={true}
+          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          value={rate}
+          onChange={e => setRate(Number(e.target.value))}
         />
       </td>
       <td className="p-1 w-full">
         <input
           type="text"
-          placeholder="Qty"
-          className=" p-1 px-2 bg-miru-gray-600 rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          placeholder="Quantity"
+          className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={quantity}
-          disabled={true}
+          onChange={handleSetQuantity}
         />
       </td>
       <td className="text-right font-normal text-base text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000">
-        {lineTotal.toFixed(2)}
+        {lineTotal}
       </td>
       <td>
         <button onClick={() => handleDelete(item)} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">

@@ -2,9 +2,11 @@
 import React, { useState, useEffect } from "react";
 
 import { sendGAPageView } from "utils/googleAnalytics";
+
 import Container from "./Container";
 import Filters from "./Filters";
 import { OutstandingOverdueInvoice } from "./interface";
+
 import getReportData from "../api/outstandingOverdueInvoice";
 import EntryContext from "../context/EntryContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
@@ -120,10 +122,11 @@ const OutstandingInvoiceReport = () => {
         <Header
           showNavFilters={showNavFilters}
           setFilterVisibilty={setFilterVisibilty}
+          showExportButon={false}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
           handleDownload={handleDownload}
-          type={"Outstanding and Overdue Invoices"}
+          type={"Invoices Report"}
         />
         <Container />
         {false && <Filters

@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
+
+import Logger from "js-logger";
+
 import timesheetEntryApi from "apis/timesheet-entry";
 import Toastr from "common/Toastr";
-
 import { minutesToHHMM, minutesFromHHMM } from "helpers/hhmm-parser";
 import validateTimesheetEntry from "helpers/validateTimesheetEntry";
-import Logger from "js-logger";
 
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
+const editIcon = require("../../../../assets/images/edit.svg");
 
 const { useState, useEffect } = React;
 
@@ -205,15 +207,15 @@ const WeeklyEntriesCard = ({
         <div className="flex justify-around">
           <img
             onClick={() => {if (! isWeeklyEditing) setProjectSelected(false); setIsWeeklyEditing(true); }}
-            src="/edit.svg"
+            src={editIcon}
             alt="edit"
-            className="icon-hover ml-8 cursor-pointer"
+            className="icon-hover ml-8 cursor-pointer w-4 h-4"
           />
           {/* <img
             onClick={handleDeleteEntries}
-            src="/delete.svg"
+            src={deleteIcon}
             alt="delete"
-            className="icon-hover ml-8 cursor-pointer"
+            className="icon-hover ml-8 cursor-pointer w-4 h-4"
           /> */}
         </div>
       </div>

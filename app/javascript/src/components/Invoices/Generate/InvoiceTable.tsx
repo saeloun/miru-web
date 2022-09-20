@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
-import generateInvoice from "apis/generateInvoice";
+
 import dayjs from "dayjs";
 
+import generateInvoice from "apis/generateInvoice";
 import useOutsideClick from "helpers/outsideClick";
 
 import ManualEntry from "./ManualEntry";
 import NewLineItemTable from "./NewLineItemTable";
+
 import TableHeader from "../common/LineItemTableHeader";
 import NewLineItemRows from "../common/NewLineItemRow";
 import MultipleEntriesModal from "../MultipleEntriesModal";
@@ -36,6 +38,7 @@ const fetchNewLineItems = async (
 };
 
 const InvoiceTable = ({
+  currency,
   selectedClient,
   setSelectedOption,
   selectedOption,
@@ -129,6 +132,7 @@ const InvoiceTable = ({
                 onClick={() => {
                   setAddNew(!addNew);
                 }}
+                data-cy='new-line-item'
               >
                 + NEW LINE ITEM
               </button>
@@ -147,6 +151,7 @@ const InvoiceTable = ({
           {selectedOption.length > 0
             && selectedOption.map((item, index) => (
               <NewLineItemRows
+                currency={currency}
                 item={item}
                 key={index}
                 setSelectedOption={setSelectedOption}

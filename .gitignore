@@ -41,6 +41,9 @@
 yarn-debug.log*
 .yarn-integrity
 
+# Rails specific ignores
+/vendor/bundle
+
 .env
 
 # Ignore the test folder since the app is using RSpec
@@ -54,6 +57,8 @@ yarn-debug.log*
 # Ignore cypress screenshots and videos
 cypress/artifacts/screenshots
 cypress/artifacts/videos
+cypress/screenshots
+cypress/videos
 
 .DS_Store
 

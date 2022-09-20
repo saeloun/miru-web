@@ -1,4 +1,5 @@
 import React from "react";
+
 import { PencilSimple, Trash } from "phosphor-react";
 
 const Discountmenu = ({ setShowDiscount, setShowDiscountMenu, setAddDiscount, setDiscount }) => (
