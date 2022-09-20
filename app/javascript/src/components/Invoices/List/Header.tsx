@@ -68,7 +68,7 @@ const Header = ({
     <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
       <h2 className="header__title" data-cy ="header__invoices">Invoices</h2>
       {!isInvoiceSelected && (
-        <React.Fragment>
+        <div className="justify-between ml-11 flex w-full">
           <div className="header__searchWrap">
             <div className="header__searchInnerWrapper relative">
               <div>
@@ -108,7 +108,7 @@ const Header = ({
               <span className="inline-block ml-2" data-cy="new-invoice-button">NEW INVOICE</span>
             </Link>
           </div>
-        </React.Fragment>
+        </div>
       )}
       {isInvoiceSelected && (
         <div className="flex items-center justify-center">

@@ -7,9 +7,9 @@ const InvoiceSummary = ({ summary, baseCurrency }) => {
     currencyFormat({ baseCurrency: baseCurrency, amount });
 
   return (
-    <div className="px-10 py-10 mt-6 bg-miru-gray-100">
-      <ul className="mt-0 border-t-0 page-display__wrap">
-        <li className="page-display__box">
+    <div className="px-10 py-10 mt-6 bg-miru-gray-100 w-full">
+      <ul className="mt-0 border-t-0 page-display__wrap w-full">
+        <li className="page-display__box w-1/3">
           <p className="text-sm font-normal tracking-widest uppercase">
             Overdue
           </p>
@@ -18,7 +18,7 @@ const InvoiceSummary = ({ summary, baseCurrency }) => {
           </p>
         </li>
 
-        <li className="page-display__box">
+        <li className="page-display__box w-1/3">
           <p className="text-sm font-normal tracking-widest uppercase">
             Outstanding
           </p>
@@ -27,7 +27,7 @@ const InvoiceSummary = ({ summary, baseCurrency }) => {
           </p>
         </li>
 
-        <li className="page-display__box">
+        <li className="page-display__box w-1/3">
           <p className="text-sm font-normal tracking-widest uppercase">
             Amount in draft
           </p>
