@@ -49,7 +49,7 @@ const InvoiceTable = ({
       await generateInvoice.getLineItems(selectedClient.value, pageNumber, selectedEntriesString).then(async res => {
         await setTotalLineItems(res.data.pagy.count);
         await setPageNumber(pageNumber + 1);
-        const mergedItems = [...res.data.new_line_item_entries];
+        const mergedItems = [...res.data.new_line_item_entries, ...lineItems];
         const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
         setLineItems(sortedData);
       });
