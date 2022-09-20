@@ -42,11 +42,11 @@ const EntryCard: React.FC<props> = ({
     </div>
     <div className="flex items-center">
       {bill_status === "unbilled" ? (
-        <BillTag color="yellow" text="unbilled" />
+        <BillTag color="yellow" text="UNBILLED" />
       ) : bill_status === "non_billable" ? (
-        <BillTag color="purple" text="non_billable" />
+        <BillTag color="purple" text="NON BILLABLE" />
       ) : (
-        <BillTag color="green" text="billed" />
+        <BillTag color="green" text="BILLED" />
       )}
       <p className="text-4xl">{minutesToHHMM(duration)}</p>
       <button onClick={() => setEditEntryId(id)} className="mx-10">
