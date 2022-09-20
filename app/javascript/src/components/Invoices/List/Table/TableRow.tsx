@@ -38,7 +38,7 @@ const TableRow = ({
 
   return (
     <tr className="last:border-b-0 hover:bg-miru-gray-100 group">
-      <td className="px-6 py-5">
+      <td className="pl-6 py-5">
         <CustomCheckbox
           text=""
           handleCheck={handleCheckboxChange}
@@ -48,7 +48,7 @@ const TableRow = ({
         />
       </td>
 
-      <td className="w-2/4 px-6 py-5 font-medium ftracking-wider">
+      <td className="w-1/4 pr-6 py-5 font-medium tracking-wider">
         <Link
           className="font-semibold capitalize text-miru-dark-purple-1000"
           to={`/invoices/${invoice.id}`}
@@ -60,7 +60,7 @@ const TableRow = ({
         </h3>
       </td>
 
-      <td className="w-1/4 px-6 py-5 font-medium tracking-wider">
+      <td className="w-1/6 pr-6 py-5 font-medium tracking-wider">
         <h1 className="font-semibold text-miru-dark-purple-1000">
           {formattedDate(invoice.issueDate)}
         </h1>
@@ -69,11 +69,11 @@ const TableRow = ({
         </h3>
       </td>
 
-      <td className="px-6 py-5 text-xl font-bold tracking-wider text-miru-dark-purple-1000">
+      <td className="pr-10 pl-6 py-5 text-xl text-right font-bold tracking-wider text-miru-dark-purple-1000">
         {formattedAmount}
       </td>
 
-      <td className="px-6 py-5 font-medium">
+      <td className="px-6 py-5 w-1/5 font-medium text-right">
         <span className={getStatusCssClass(invoice.status) + " uppercase"}>
           {invoice.status}
         </span>
