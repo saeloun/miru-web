@@ -10,8 +10,8 @@ import fetchNewLineItems from "../api/generateInvoice";
 
 const MultipleEntriesModal = ({
   selectedClient,
-  setSelectedOption,
   selectedOption,
+  setSelectedOption,
   setMultiLineItemModal
 }) => {
 

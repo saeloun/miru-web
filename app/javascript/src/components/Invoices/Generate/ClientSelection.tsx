@@ -31,7 +31,8 @@ const ClientSelection = ({ clientList, selectedClient, setSelectedClient, option
   };
 
   React.useEffect(() => {
-    const prePopulatedClient = window.location.search.split("?")[1];
+    const prePopulatedClient = window.location.search.split("?").join("").replace(/%20/g, " ");
+
     if (prePopulatedClient) {
       const selection = clientList.filter(
         (client) => client.label == prePopulatedClient
