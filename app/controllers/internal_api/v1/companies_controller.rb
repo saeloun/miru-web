@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationController
-  def show
+  def index
     authorize current_company
-    render :show, locals: { current_company: }, status: :ok
+    render :index, locals: { current_company: }, status: :ok
   end
 
   def create
