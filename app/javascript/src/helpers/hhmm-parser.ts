@@ -2,9 +2,6 @@ export const minutesFromHHMM = (duration: string) => {
   const numberDuration = Number(duration);
   if (duration.includes(":")) {
     let [h, m] = duration.split(":");
-    if (h.length > 2) {
-      h = h.slice(0, 2);
-    }
     if (m.length > 2) {
       m = m.slice(0, 2);
     }

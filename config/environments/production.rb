@@ -122,7 +122,7 @@ Rails.application.configure do
   # config.active_record.shard_resolver = ->(request) { Tenant.find_by!(host: request.host).shard }
 
   # Action Mailer Configuration
-  host = ENV.fetch("APP_BASE_URL", "#{ENV["HEROKU_APP_NAME"] + ".herokuapp.com"}")
+  host = ENV.fetch("APP_BASE_URL")
   config.action_mailer.default_url_options = { host: }
   config.action_mailer.asset_host = host
   config.active_job.queue_adapter = :sidekiq

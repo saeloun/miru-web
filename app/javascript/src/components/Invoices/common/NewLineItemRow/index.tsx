@@ -23,7 +23,6 @@ const NewLineItemRow = ({
         (option.timesheet_entry_id && option.timesheet_entry_id === item.timesheet_entry_id)) {
         return removeElement ? null : deleteItem;
       }
-
       return option;
     });
 
