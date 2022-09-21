@@ -1,5 +1,9 @@
-import reports from "apis/reports";
+import dayjs from "dayjs";
+
+import reportsApi from "apis/reports";
+
 import { unmapper } from "../../../mapper/report.mapper";
+import { customDateFilter } from "../revenueByClient/Filters/filterOptions";
 
 const isValuePresent = (filterValue) => filterValue.value && filterValue.value !== "";
 const isNotEmptyArray = (value) => value && value.length > 0;
@@ -16,6 +20,10 @@ export const getQueryParams = (selectedFilter) => {
   let params = "";
   for (const filterKey in selectedFilter) {
     const filterValue = selectedFilter[filterKey];
+
+    if (filterKey === customDateFilter && filterValue.from !== "" && filterValue.to !== "") {
+      params += `&from=${dayjs(filterValue.from).format("DD/MM/YYYY")}&to=${dayjs(filterValue.to).format("DD/MM/YYYY")}`;
+    }
     if (Array.isArray(filterValue) && isNotEmptyArray(filterValue)) {
       filterValue.forEach(item => {
         params += `&${apiKeys[filterKey]}[]=${item.value}`;
@@ -32,7 +40,7 @@ const applyFilter = async (selectedFilter, setTimeEntries, setNavFilters, setFil
   const queryParams = getQueryParams(selectedFilter);
   const sanitizedParam = queryParams.substring(1);
   const sanitizedQuery = `?${sanitizedParam}`;
-  const res = await reports.get(sanitizedQuery);
+  const res = await reportsApi.get(sanitizedQuery);
   const sanitizedData = unmapper(res.data);
   setTimeEntries(sanitizedData.reports);
   getFilterOptions(sanitizedData.filterOptions);

@@ -1,20 +1,22 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
-import invoicesApi from "apis/invoices";
-import useDebounce from "helpers/debounce";
+
+import { ApiStatus as InvoiceStatus } from "constants/index";
+
 import {
-  Funnel,
   MagnifyingGlass,
   Plus,
   Trash,
   PaperPlaneTilt,
   X
 } from "phosphor-react";
-import { ApiStatus as InvoiceStatus } from "constants/index";
+import { Link } from "react-router-dom";
+
+import invoicesApi from "apis/invoices";
+import useDebounce from "helpers/debounce";
+
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 
 const Header = ({
-  setFilterVisibilty,
   isInvoiceSelected,
   selectedInvoiceCount,
   clearCheckboxes,
@@ -64,7 +66,7 @@ const Header = ({
 
   return (
     <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
-      <h2 className="header__title">Invoices</h2>
+      <h2 className="header__title" data-cy ="header__invoices">Invoices</h2>
       {!isInvoiceSelected && (
         <React.Fragment>
           <div className="header__searchWrap">
@@ -74,6 +76,7 @@ const Header = ({
                   type="text"
                   className="header__searchInput"
                   placeholder="Search"
+                  data-cy="search-invoice"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => onKeydownHandler(e)}
@@ -90,9 +93,9 @@ const Header = ({
               </div>
             </div>
 
-            <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
+            {/* <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
               <Funnel size={16} />
-            </button>
+            </button> */}
           </div>
 
           <div className="flex">
@@ -102,7 +105,7 @@ const Header = ({
               className="header__button"
             >
               <Plus weight="fill" size={16} />
-              <span className="inline-block ml-2">NEW INVOICE</span>
+              <span className="inline-block ml-2" data-cy="new-invoice-button">NEW INVOICE</span>
             </Link>
           </div>
         </React.Fragment>

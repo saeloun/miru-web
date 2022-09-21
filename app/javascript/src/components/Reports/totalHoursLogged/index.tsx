@@ -1,10 +1,12 @@
 import React from "react";
+
 import Header from "../Header";
 
 const TotalHoursReport = () => (
   <div>
     <Header
       showNavFilters={true}
+      showExportButon={true}
       setFilterVisibilty={true}
       isFilterVisible={() => { }} // eslint-disable-line  @typescript-eslint/no-empty-function
       resetFilter={() => { }} // eslint-disable-line  @typescript-eslint/no-empty-function

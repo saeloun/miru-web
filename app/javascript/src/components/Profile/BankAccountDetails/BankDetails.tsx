@@ -1,10 +1,13 @@
 import React, { useEffect } from "react";
 
-import wiseApi from "apis/wise";
 import { X } from "phosphor-react";
 import { isEmpty } from "ramda";
+
+import wiseApi from "apis/wise";
+
 import AddressDetails from "./AddressDetails";
 import BankDetailInput from "./BillingDetailInput";
+
 /* eslint-disable @typescript-eslint/no-var-requires */
 const Shield = require("../../../../../assets/images/shield.svg");
 

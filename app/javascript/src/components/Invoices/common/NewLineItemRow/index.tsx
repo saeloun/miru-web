@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+
 import EditLineItems from "./EditLineItems";
 import NewLineItemStatic from "./NewLineItemStatic";
 
 const NewLineItemRow = ({
+  currency,
   item,
   setSelectedOption,
   selectedOption,
@@ -21,7 +23,6 @@ const NewLineItemRow = ({
         (option.timesheet_entry_id && option.timesheet_entry_id === item.timesheet_entry_id)) {
         return removeElement ? null : deleteItem;
       }
-
       return option;
     });
 
@@ -39,6 +40,7 @@ const NewLineItemRow = ({
     />
   ) : (
     <NewLineItemStatic
+      currency={currency}
       handleDelete={handleDelete}
       item={item}
       setEdit={setEdit}

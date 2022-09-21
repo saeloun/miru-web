@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
+
+import { TOASTER_DURATION } from "constants/index";
+
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clientApi from "apis/clients";
-
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
+import { minutesToHHMM } from "helpers/hhmm-parser";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import { TOASTER_DURATION } from "constants/index";
 import Header from "./Header";
+
 import { unmapClientList } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
@@ -20,15 +24,12 @@ import NewClient from "../Modals/NewClient";
 
 const getTableData = (clients) => {
   if (clients) {
-    return clients.map((client) => {
-      const hours = (client.minutes / 60).toFixed(2);
-      return {
-        col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
-        col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
-        col3: <div className="text-base text-miru-dark-purple-1000 text-right">{hours}</div>,
-        rowId: client.id
-      };
-    });
+    return clients.map((client) => ({
+      col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
+      col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
+      col3: <div className="text-base text-miru-dark-purple-1000 text-right">{minutesToHHMM(client.minutes)}</div>,
+      rowId: client.id
+    }));
   }
   return [{}];
 };
@@ -101,6 +102,19 @@ const Clients = ({ isAdminUser }) => {
     }
   ];
 
+  const employeeTableHeader = [
+    {
+      Header: "CLIENT",
+      accessor: "col1", // accessor is the "key" in the data
+      cssClass: ""
+    },
+    {
+      Header: "HOURS LOGGED",
+      accessor: "col3",
+      cssClass: "text-right" // accessor is the "key" in the data
+    }
+  ];
+
   const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
 
   const amountBox = [{
@@ -136,7 +150,7 @@ const Clients = ({ isAdminUser }) => {
                 THIS WEEK
               </option>
               <option className="text-miru-dark-purple-600" value="month">
-                This MONTH
+                THIS MONTH
               </option>
               <option className="text-miru-dark-purple-600" value="year">
                 THIS YEAR
@@ -155,7 +169,7 @@ const Clients = ({ isAdminUser }) => {
                   handleEditClick={handleEditClick}
                   handleDeleteClick={handleDeleteClick}
                   hasRowIcons={isAdminUser}
-                  tableHeader={tableHeader}
+                  tableHeader={isAdminUser? tableHeader : employeeTableHeader}
                   tableRowArray={tableData}
                   rowOnClick={isAdminUser ? handleRowClick : () => { }}// eslint-disable-line
                 />}

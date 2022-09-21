@@ -6,7 +6,7 @@ class Invitations::AcceptController < ApplicationController
   skip_after_action :verify_authorized
 
   def index
-    service = CreateInvitedUserService.new(params[:token] || params[:invitation_token])
+    service = CreateInvitedUserService.new(params[:token] || params[:invitation_token], current_user)
     service.process
 
     if service.success

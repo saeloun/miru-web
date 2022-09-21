@@ -1,7 +1,9 @@
 import React, { useState, useRef } from "react";
-import Select from "react-select";
-import useOutsideClick from "helpers/outsideClick";
+
 import { PencilSimple } from "phosphor-react";
+import Select from "react-select";
+
+import useOutsideClick from "helpers/outsideClick";
 
 import { DropdownIndicator } from "./CustomComponents";
 import { reactSelectStyles } from "./Styles";
@@ -29,7 +31,8 @@ const ClientSelection = ({ clientList, selectedClient, setSelectedClient, option
   };
 
   React.useEffect(() => {
-    const prePopulatedClient = window.location.search.split("?")[1];
+    const prePopulatedClient = window.location.search.split("?").join("").replace(/%20/g, " ");
+
     if (prePopulatedClient) {
       const selection = clientList.filter(
         (client) => client.label == prePopulatedClient
@@ -70,6 +73,7 @@ const ClientSelection = ({ clientList, selectedClient, setSelectedClient, option
         <button
           className="py-5 mt-2 px-6 font-bold text-base text-miru-dark-purple-200 bg-white border-2 border-dashed border-miru-dark-purple-200 rounded-md tracking-widest"
           onClick={handleGetClientList}
+          data-cy= "add-client-button"
         >
           + ADD CLIENT
         </button>

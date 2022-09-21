@@ -1,4 +1,8 @@
 import React from "react";
+
+import { Roles, Paths } from "constants/index";
+import ROUTES from "constants/routes";
+
 import {
   Routes,
   Route,
@@ -7,8 +11,6 @@ import {
 } from "react-router-dom";
 
 import ErrorPage from "common/Error";
-import { Roles, Paths } from "constants/index";
-import ROUTES from "constants/routes";
 
 const RestrictedRoute = ({ user, role, authorisedRoles }) => {
   if (!user) {
@@ -23,15 +25,20 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
 };
 
 const Main: React.FC<Iprops> = (props) => (
-  <div className="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
+  <div className="w-5/6 md:px-20 md:py-3 font-manrope absolute top-0 bottom-0 right-0 overflow-y-0">
     <Routes>
-      {ROUTES.map(parentRoute => (
+      {ROUTES.map((parentRoute) => (
         <Route
           key={parentRoute.path}
           path={parentRoute.path}
           element={
-            <RestrictedRoute authorisedRoles={parentRoute.authorisedRoles} role={props.companyRole} user={props.user} />
-          } >
+            <RestrictedRoute
+              authorisedRoles={parentRoute.authorisedRoles}
+              role={props.companyRole}
+              user={props.user}
+            />
+          }
+        >
           {parentRoute.subRoutes.map(({ path, Component }) => (
             <Route key={path} path={path} element={<Component {...props} />} /> //TODO: Move user data to context
           ))}
