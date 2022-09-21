@@ -1,16 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import projectAPI from "apis/projects";
-
-import AmountBoxContainer from "common/AmountBox";
-import ChartBar from "common/ChartBar";
-import Table from "common/Table";
-
-import { cashFormatter } from "helpers/cashFormater";
-import { currencySymbol } from "helpers/currencySymbol";
 import {
   ArrowLeft,
   DotsThreeVertical,
@@ -19,43 +8,25 @@ import {
   UsersThree,
   Trash
 } from "phosphor-react";
+import { useParams, useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+
+import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import projectAPI from "apis/projects";
+import AmountBoxContainer from "common/AmountBox";
+import ChartBar from "common/ChartBar";
+import Table from "common/Table";
+import { cashFormatter } from "helpers/cashFormater";
+import { currencySymbol } from "helpers/currencySymbol";
+import { minutesToHHMM } from "helpers/hhmm-parser";
 import { sendGAPageView } from "utils/googleAnalytics";
+
 import EditMembersList from "./EditMembersList";
+
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapper } from "../../../mapper/project.mapper";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
-
-const getTableData = (project) => {
-  if (project) {
-    return project.members.map((member) => {
-      const hours = member.minutes / 60;
-      const hour = hours.toFixed(2);
-      return {
-        col1: (
-          <div className="text-base text-miru-dark-purple-1000">
-            {member.name}
-          </div>
-        ),
-        col2: (
-          <div className="text-base text-miru-dark-purple-1000 text-right">
-            {member.formattedHourlyRate}
-          </div>
-        ),
-        col3: (
-          <div className="text-base text-miru-dark-purple-1000 text-right">
-            {hour}
-          </div>
-        ),
-        col4: (
-          <div className="text-lg font-bold text-miru-dark-purple-1000 text-right">
-            {member.formattedCost}
-          </div>
-        )
-      };
-    });
-  }
-};
 
 const ProjectDetails = () => {
   const [editProjectData, setEditProjectData] = React.useState<any>(null);
@@ -82,8 +53,37 @@ const ProjectDetails = () => {
     }
   };
 
+  const currencySymb = currencySymbol(project?.currency);
+
   const handleAddProjectDetails = () => {
     fetchProject();
+  };
+
+  const getTableData = (project) => {
+    if (project) {
+      return project.members.map((member) => ({
+        col1: (
+          <div className="text-base text-miru-dark-purple-1000">
+            {member.name}
+          </div>
+        ),
+        col2: (
+          <div className="text-base text-miru-dark-purple-1000 text-right">
+            {currencySymb}{member.hourlyRate}
+          </div>
+        ),
+        col3: (
+          <div className="text-base text-miru-dark-purple-1000 text-right">
+            {minutesToHHMM(member.minutes)}
+          </div>
+        ),
+        col4: (
+          <div className="text-lg font-bold text-miru-dark-purple-1000 text-right">
+            {currencySymb}{(Number(member.cost)).toFixed(2)}
+          </div>
+        )
+      }));
+    }
   };
 
   useEffect(() => {
@@ -119,8 +119,6 @@ const ProjectDetails = () => {
     }
   ];
 
-  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
-
   const amountBox = [{
     title: "OVERDUE",
     amount: currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount)
@@ -154,6 +152,10 @@ const ProjectDetails = () => {
   };
 
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
+
+  const backToProjects = () => {
+    navigate("/projects");
+  };
 
   return (
     <>
@@ -260,7 +262,7 @@ const ProjectDetails = () => {
               THIS WEEK
             </option>
             <option className="text-miru-dark-purple-600" value="month">
-              This MONTH
+              THIS MONTH
             </option>
             <option className="text-miru-dark-purple-600" value="year">
               THIS YEAR
@@ -286,15 +288,16 @@ const ProjectDetails = () => {
           </div>
         </div>
       </div>
-      {showAddMemberDialog ? (
+      {showAddMemberDialog && (
         <EditMembersList
           setShowAddMemberDialog={setShowAddMemberDialog}
           addedMembers={project?.members}
           handleAddProjectDetails={handleAddProjectDetails}
           closeAddRemoveMembers={closeAddRemoveMembers}
           projectId={projectId}
+          currencySymbol={currencySymb}
         />
-      ) : null}
+      )}
       {showProjectModal && (
         <AddEditProject
           editProjectData={editProjectData}
@@ -306,6 +309,7 @@ const ProjectDetails = () => {
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}
           project={project}
+          fetchProjectList={backToProjects}
         />
       )}
     </>

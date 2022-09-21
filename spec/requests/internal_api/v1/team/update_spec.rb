@@ -26,7 +26,7 @@ RSpec.describe "InternalApi::V1::Team#update", type: :request do
 
     it "updates the company user" do
       expect { send_request :put, internal_api_v1_team_path(employee_company_user.user), params: { role: "admin" } }
-        .to change(employee_company_user, :user_role).from("employee").to("admin")
+        .to change { employee_user.primary_role(company) }.from("employee").to("admin")
     end
 
     context "when team member is present in multiple company" do
@@ -42,9 +42,9 @@ RSpec.describe "InternalApi::V1::Team#update", type: :request do
 
       it "update team member from only current company" do
         expect { send_request :put, internal_api_v1_team_path(@team_company_user.user), params: { role: "admin" } }
-          .to change(@team_company_user, :user_role).from("employee").to("admin")
+          .to change { team_user.primary_role(company) }.from("employee").to("admin")
 
-        expect(@other_team_company_user.user_role).to eq("employee")
+        expect(team_user.primary_role(other_company_1)).to eq("employee")
       end
     end
   end
@@ -64,7 +64,7 @@ RSpec.describe "InternalApi::V1::Team#update", type: :request do
 
     it "does not update the company user" do
       expect { send_request :put, internal_api_v1_team_path(employee_company_user.user), params: { role: "admin" } }
-        .not_to change(employee_company_user, :user_role).from("employee")
+        .not_to change { employee_user.primary_role(company) }.from("employee")
     end
   end
 end

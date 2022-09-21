@@ -22,7 +22,6 @@ class CompaniesController < ApplicationController
     else
       flash.now[:error] = t(".failure")
       render :new, status: :unprocessable_entity
-      Rails.logger.error "DEBUG::COMPANY_CONTROLLER::CREATE"
     end
   end
 

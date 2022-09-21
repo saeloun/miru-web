@@ -44,10 +44,22 @@ module.exports = {
         fit: "fit-content",
         30: "7.5rem", //120px
         128: "32rem", // 512px
+        352: "22rem", //352px
+        228: "14.25rem", //228px
+        180: "11.25rem", //180px
+      },
+      minWidth: {
+        24: "24px",
+      },
+      maxWidth: {
+        400: "25rem", //400px
       },
       height: {
         120: "120px",
         160: "40rem",
+        512: "32rem",
+        304: "19rem",
+        87: "5.4rem",
       },
       minHeight: {
         "10v": "10vh",
@@ -160,6 +172,7 @@ module.exports = {
         112: "28rem",
         129: "33rem",
         138: "34.5rem",
+        160: "40rem"
       },
       padding: {
         "36/100": "36.66666%",
@@ -181,7 +194,7 @@ module.exports = {
     extend: {
       display: ["group-hover"],
     },
-    opacity: ({ after }) => after(['disabled'])
+    opacity: ({ after }) => after(["disabled"]),
   },
   plugins: [],
 };

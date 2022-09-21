@@ -23,6 +23,11 @@
 #  index_invitations_on_sender_id   (sender_id)
 #  index_invitations_on_token       (token) UNIQUE
 #
+# Foreign Keys
+#
+#  fk_rails_...  (company_id => companies.id)
+#  fk_rails_...  (sender_id => users.id)
+#
 class Invitation < ApplicationRecord
   enum role: [:owner, :admin, :employee, :book_keeper]
 

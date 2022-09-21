@@ -1,7 +1,8 @@
 import React from "react";
+
 import LineItem from "./LineItem";
 
-const InvoiceLineItems = ({ items, showHeader }) => {
+const InvoiceLineItems = ({ currency, items, showHeader }) => {
   const getHeader = () => (
     <thead className="my-2">
       <tr>
@@ -37,6 +38,7 @@ const InvoiceLineItems = ({ items, showHeader }) => {
                 <></>
               ) : (
                 <LineItem
+                  currency={currency}
                   key={item.id}
                   item={item}
                 />

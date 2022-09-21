@@ -1,13 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
-import generateInvoice from "apis/generateInvoice";
+
 import dayjs from "dayjs";
 
+import generateInvoice from "apis/generateInvoice";
 import useOutsideClick from "helpers/outsideClick";
 
 import ManualEntry from "./ManualEntry";
 import NewLineItemTable from "./NewLineItemTable";
+
 import TableHeader from "../common/LineItemTableHeader";
-import NewLineItemRows from "../common/NewLineItemRow";
+import NewLineItemRow from "../common/NewLineItemRow";
 import MultipleEntriesModal from "../MultipleEntriesModal";
 
 const fetchNewLineItems = async (
@@ -36,6 +38,7 @@ const fetchNewLineItems = async (
 };
 
 const InvoiceTable = ({
+  currency,
   selectedClient,
   setSelectedOption,
   selectedOption,
@@ -99,11 +102,11 @@ const InvoiceTable = ({
         totalLineItems={totalLineItems}
         pageNumber={pageNumber}
         setPageNumber={setPageNumber}
-        setSelectedOption={setSelectedOption}
         selectedOption={selectedOption}
-        setMultiLineItemModal={setMultiLineItemModal}
+        setSelectedOption={setSelectedOption}
         manualEntryArr={manualEntryArr}
         setManualEntryArr={setManualEntryArr}
+        setMultiLineItemModal={setMultiLineItemModal}
         setAddManualLineItem={setAddManualLineItem}
       />;
     }
@@ -129,6 +132,7 @@ const InvoiceTable = ({
                 onClick={() => {
                   setAddNew(!addNew);
                 }}
+                data-cy='new-line-item'
               >
                 + NEW LINE ITEM
               </button>
@@ -146,9 +150,10 @@ const InvoiceTable = ({
           }
           {selectedOption.length > 0
             && selectedOption.map((item, index) => (
-              <NewLineItemRows
-                item={item}
+              <NewLineItemRow
                 key={index}
+                currency={currency}
+                item={item}
                 setSelectedOption={setSelectedOption}
                 selectedOption={selectedOption}
                 removeElement
@@ -159,8 +164,8 @@ const InvoiceTable = ({
       <div>
         {showMultiLineItemModal && <MultipleEntriesModal
           selectedClient={selectedClient}
-          setSelectedOption={setSelectedOption}
           selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
           setMultiLineItemModal={setMultiLineItemModal}
         />}
       </div>

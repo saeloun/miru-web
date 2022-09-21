@@ -1,7 +1,8 @@
 import React from "react";
+
+import { X, FloppyDisk, PaperPlaneTilt } from "phosphor-react";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { X, FloppyDisk, PaperPlaneTilt } from "phosphor-react";
 
 const Header = ({ invoiceNumber, id, updateInvoice }) => (
   <React.Fragment>
@@ -20,7 +21,8 @@ const Header = ({ invoiceNumber, id, updateInvoice }) => (
         <button
           type="button"
           className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
-          onClick={() => { updateInvoice();}}
+          onClick={updateInvoice}
+          data-cy='save-invoice-edit'
         >
           <FloppyDisk size={18} color="white" />
           <span className="ml-2 inline-block">SAVE</span>
