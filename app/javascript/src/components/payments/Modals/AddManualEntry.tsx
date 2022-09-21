@@ -204,13 +204,14 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
                     className="absolute top-0 right-0 m-2"
                     color="#5B34EA"
                   />
-                  {showDatePicker && (
-                    <CustomDatePicker
-                      handleChange={handleDatePicker}
-                      dueDate={transactionDate}
-                    />
-                  )}
                 </div>
+                {showDatePicker && (
+                  <CustomDatePicker
+                    handleChange={handleDatePicker}
+                    date={transactionDate}
+                  />
+                )}
+
               </div>
             </div>
 

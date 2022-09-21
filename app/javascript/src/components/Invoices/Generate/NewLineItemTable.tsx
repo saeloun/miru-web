@@ -5,8 +5,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 import { minutesToHHMM } from "helpers/hhmm-parser";
 
-import { DropdownHeader } from "./CustomComponents";
-
+import NewLineItemTableHeader from "../common/NewLineItemTable/Header";
 import { getMaxIdx } from "../common/utils";
 
 const NewLineItemTable = ({
@@ -18,13 +17,14 @@ const NewLineItemTable = ({
   pageNumber, setPageNumber,
   selectedOption,
   setSelectedOption,
-  setMultiLineItemModal,
   manualEntryArr,
   setManualEntryArr,
+  setMultiLineItemModal,
   setAddManualLineItem
 }) => {
 
   const hasMoreItems = lineItems.length === totalLineItems;
+
   const selectRowId = (items) => {
     const option = { ...items, lineTotal: (Number(items.quantity) / 60 * Number(items.rate)).toFixed(2) };
     setAddNew(false);
@@ -33,17 +33,16 @@ const NewLineItemTable = ({
     setPageNumber(1);
   };
 
+  const addManualEntryItem = async () => {
+    await setShowItemInputs(true);
+    setAddNew(!addNew);
+    setAddManualLineItem(true);
+    setManualEntryArr([...manualEntryArr, { idx: getMaxIdx(manualEntryArr) + 1 }]);
+  };
+
   return (
     <div>
-      <DropdownHeader setShowMultilineModal={setMultiLineItemModal} />
-      <div>
-        <button onClick={async () => {
-          await setShowItemInputs(true);
-          setAddNew(!addNew);
-          setAddManualLineItem(true);
-          setManualEntryArr([...manualEntryArr, { idx: getMaxIdx(manualEntryArr) + 1 }]);
-        }} className="mx-3 font-bold text-xs tracking-widest text-miru-han-purple-1000">Add Manual Entry</button>
-      </div>
+      <NewLineItemTableHeader setShowMultilineModal={setMultiLineItemModal} addManualEntryItem={addManualEntryItem} />
       <div className="overflow-scroll mt-4 relative">
         <InfiniteScroll
           dataLength={pageNumber * 10}
@@ -66,16 +65,16 @@ const NewLineItemTable = ({
             const date = dayjs(item.date).format("DD.MM.YYYY");
             return (
               <div key={index} onClick={() => { selectRowId(item); }} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100" data-cy="entries-list">
-                <span className="font-medium w-1/4 text-base text-miru-dark-purple-1000 text-left">
+                <span className="font-medium w-1/5 text-sm text-miru-dark-purple-1000 text-left">
                   {item.first_name} {item.last_name}
                 </span>
-                <span className="font-medium text-xs text-miru-dark-purple-600 text-left w-1/2">
+                <span className="font-medium w-3/5 text-xs text-miru-dark-purple-600 text-left whitespace-normal">
                   {item.description}
                 </span>
-                <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
+                <span className="font-medium text-xs text-miru-dark-purple-1000 text-right">
                   {date}
                 </span>
-                <span className="font-medium text-xs text-miru-dark-purple-1000 text-center">
+                <span className="font-medium w-1/12 text-xs text-miru-dark-purple-1000 text-right">
                   {hoursLogged}
                 </span>
               </div>

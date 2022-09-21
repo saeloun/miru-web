@@ -9,7 +9,7 @@ import ManualEntry from "./ManualEntry";
 import NewLineItemTable from "./NewLineItemTable";
 
 import TableHeader from "../common/LineItemTableHeader";
-import NewLineItemRows from "../common/NewLineItemRow";
+import NewLineItemRow from "../common/NewLineItemRow";
 import MultipleEntriesModal from "../MultipleEntriesModal";
 
 const fetchNewLineItems = async (
@@ -102,11 +102,11 @@ const InvoiceTable = ({
         totalLineItems={totalLineItems}
         pageNumber={pageNumber}
         setPageNumber={setPageNumber}
-        setSelectedOption={setSelectedOption}
         selectedOption={selectedOption}
-        setMultiLineItemModal={setMultiLineItemModal}
+        setSelectedOption={setSelectedOption}
         manualEntryArr={manualEntryArr}
         setManualEntryArr={setManualEntryArr}
+        setMultiLineItemModal={setMultiLineItemModal}
         setAddManualLineItem={setAddManualLineItem}
       />;
     }
@@ -150,10 +150,10 @@ const InvoiceTable = ({
           }
           {selectedOption.length > 0
             && selectedOption.map((item, index) => (
-              <NewLineItemRows
+              <NewLineItemRow
+                key={index}
                 currency={currency}
                 item={item}
-                key={index}
                 setSelectedOption={setSelectedOption}
                 selectedOption={selectedOption}
                 removeElement
@@ -164,8 +164,8 @@ const InvoiceTable = ({
       <div>
         {showMultiLineItemModal && <MultipleEntriesModal
           selectedClient={selectedClient}
-          setSelectedOption={setSelectedOption}
           selectedOption={selectedOption}
+          setSelectedOption={setSelectedOption}
           setMultiLineItemModal={setMultiLineItemModal}
         />}
       </div>
