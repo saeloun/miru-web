@@ -15,11 +15,9 @@ RSpec.describe "InternalApi::V1::Invoices#download", type: :request do
       sign_in user
     end
 
-    context "when request is made to download the Invoice" do
-      it "downloads the invoice in PDF format" do
-        send_request :get, download_internal_api_v1_invoice_path(id: invoice.id)
-        expect(response).to have_http_status(:ok)
-      end
+    it "downloads the invoice in PDF format" do
+      send_request :get, download_internal_api_v1_invoice_path(id: invoice.id)
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -30,11 +28,9 @@ RSpec.describe "InternalApi::V1::Invoices#download", type: :request do
       sign_in user
     end
 
-    context "when request is made to download the Invoice" do
-      it "returns 403 status" do
-        send_request :get, download_internal_api_v1_invoice_path(id: invoice.id)
-        expect(json_response["errors"]).to eq "You are not authorized to perform this action."
-      end
+    it "returns 403 status" do
+      send_request :get, download_internal_api_v1_invoice_path(id: invoice.id)
+      expect(json_response["errors"]).to eq "You are not authorized to perform this action."
     end
   end
 
@@ -45,11 +41,9 @@ RSpec.describe "InternalApi::V1::Invoices#download", type: :request do
       sign_in user
     end
 
-    context "when request is made to download the Invoice" do
-      it "returns 403 status" do
-        send_request :get, download_internal_api_v1_invoice_path(id: invoice.id)
-        expect(json_response["errors"]).to eq "You are not authorized to perform this action."
-      end
+    it "returns 403 status" do
+      send_request :get, download_internal_api_v1_invoice_path(id: invoice.id)
+      expect(json_response["errors"]).to eq "You are not authorized to perform this action."
     end
   end
 
