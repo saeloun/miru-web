@@ -65,32 +65,13 @@ brew services start elasticsearch-full
 brew install redis
 ```
 
-8. Install gems
+8. Setup the app
 
 ```
-bundle install
+# Go to the miru-web app directory
+
+bin/setup
 ```
-
-9. Install node packages
-
-```
-yarn install
-```
-
-10. Setup ENV's
-
-```
-cp .env.example .env
-```
-
-11. Update `DATABASE_URL` in `.env` as per local `psql` creds. For example, if
-    the user is `root` and password is `password`, change the variable as
-    `DATABASE_URL="postgres://root:password@localhost/miru_web?encoding=utf8&pool=5&timeout=5000"`
-
-12. Update `APP_BASE_URL` in `.env` to `localhost:3000`
-13. Run `bin/rails db:create RAILS_ENV=development` to create the database
-14. Run `bin/rails db:migrate RAILS_ENV=development` for migrations
-15. Run `bin/rails db:seed` for populating the database with initial data
 
 16. Run app in local env
 
