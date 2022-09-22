@@ -38,6 +38,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
       to: 1.weeks.ago.end_of_week,
       team_member: [user.id]
     }
+    TimesheetEntry.reindex
   end
 
   context "when user is an admin" do

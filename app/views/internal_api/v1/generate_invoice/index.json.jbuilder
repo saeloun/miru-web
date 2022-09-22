@@ -18,5 +18,5 @@ json.new_invoice_line_items new_line_item_entries do |line_item|
   json.description line_item.note
   json.date line_item.work_date
   json.quantity line_item.duration
-  json.rate ProjectMember.find(line_item.user_id).hourly_rate
+  json.rate ProjectMember.find_by(user_id: line_item.user_id).hourly_rate
 end
