@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
 
+import generateInvoice from "apis/generateInvoice";
+
 export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
   let invoiceLineItems = [];
   invoiceLineItems = invoiceLineItems.concat(
@@ -41,4 +43,30 @@ export const getMaxIdx = (arr) => {
   }
 
   return 0;
+};
+
+export const fetchNewLineItems = async (
+  selectedClient,
+  lineItems,
+  setLineItems,
+  setTotalLineItems,
+  pageNumber,
+  setPageNumber,
+  selectedEntries = [],
+) => {
+  if (selectedClient) {
+    let selectedEntriesString = "";
+    selectedEntries.forEach((entries) => {
+      selectedEntriesString += `&selected_entries[]=${entries.id}`;
+    });
+
+    const queryParams = `client_id=${selectedClient.value}&page=${pageNumber}${selectedEntriesString}`;
+
+    const res = await generateInvoice.getLineItems(queryParams);
+    setPageNumber(pageNumber + 1);
+    const mergedItems = [...res.data.new_line_item_entries, ...lineItems];
+    const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
+    setLineItems(sortedData);
+    setTotalLineItems(sortedData.length);
+  }
 };
