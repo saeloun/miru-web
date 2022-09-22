@@ -28,8 +28,12 @@ class WebhooksController < ApplicationController
     # Handle the event
     case event.type
     when "checkout.session.completed"
-      data_object = event.data.object
-      puts "Payment succeeded!"
+      if InvoicePayment::StripeCheckoutFulfillment.process(event)
+        puts "Payment succeeded!"
+      else
+        puts "Invalid payload!"
+        render json: { message: "Invalid payload!" }, status: 400 and return
+      end
     else
       puts "Unhandled event type: #{event.type}"
     end
