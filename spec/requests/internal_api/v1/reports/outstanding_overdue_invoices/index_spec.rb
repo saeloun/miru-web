@@ -83,7 +83,6 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
                         }
                       ]
            }]
-        @expected_clients = @expected_clients.sort_by { |client| client[:name] }
         get internal_api_v1_reports_outstanding_overdue_invoices_path
       end
 
@@ -92,8 +91,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
       end
 
       it "returns the clients data in alaphabetical order with invoices details" do
-        expect(JSON.parse(@expected_clients.to_json)).to include(json_response["clients"][0])
-        expect(JSON.parse(@expected_clients.to_json)).to include(json_response["clients"][1])
+        expect(json_response["clients"]).to eq(JSON.parse(@expected_clients.to_json))
       end
 
       it "returns the base currency" do
