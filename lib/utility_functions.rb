@@ -11,7 +11,7 @@ module UtilityFunctions
     case timeframe
     when "last_week"
       1.weeks.ago.beginning_of_week..1.weeks.ago.end_of_week
-    when "this_week"
+    when "week", "this_week"
       0.weeks.ago.beginning_of_week..0.weeks.ago.end_of_week
     when "month", "this_month"
       0.month.ago.beginning_of_month..0.month.ago.end_of_month
