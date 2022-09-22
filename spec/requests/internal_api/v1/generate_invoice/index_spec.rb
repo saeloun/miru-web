@@ -54,7 +54,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
         send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id)
         expect(response).to have_http_status(:ok)
         expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
-        expect(json_response["new_invoice_line_items"]).to eq(JSON.parse(expected_invoice_line_items.to_json))
+        expect(json_response["new_line_item_entries"]).to eq(JSON.parse(expected_invoice_line_items.to_json))
       end
     end
 
@@ -65,7 +65,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
         }
         expect(response).to have_http_status(:ok)
         expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
-        expect(json_response["new_invoice_line_items"]).to eq([])
+        expect(json_response["new_line_item_entries"]).to eq([])
       end
     end
 
@@ -76,7 +76,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
         }
         expect(response).to have_http_status(:ok)
         expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
-        expect(json_response["new_invoice_line_items"].first["first_name"]).to eq(user.first_name)
+        expect(json_response["new_line_item_entries"].first["first_name"]).to eq(user.first_name)
       end
     end
 
@@ -87,7 +87,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
         }
         expect(response).to have_http_status(:ok)
         expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
-        expect(json_response["new_invoice_line_items"].first["first_name"]).to eq(user.first_name)
+        expect(json_response["new_line_item_entries"].first["first_name"]).to eq(user.first_name)
       end
     end
 
@@ -98,7 +98,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
         }
         expect(response).to have_http_status(:ok)
         expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
-        expect(json_response["new_invoice_line_items"].first["first_name"]).to eq(user.first_name)
+        expect(json_response["new_line_item_entries"].first["first_name"]).to eq(user.first_name)
       end
     end
 
@@ -109,7 +109,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
         }
         expect(response).to have_http_status(:ok)
         expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
-        expect(json_response["new_invoice_line_items"]).to eq(JSON.parse(expected_invoice_line_items.to_json))
+        expect(json_response["new_line_item_entries"]).to eq(JSON.parse(expected_invoice_line_items.to_json))
       end
     end
 
@@ -120,7 +120,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
        }
        expect(response).to have_http_status(:ok)
        expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
-       expect(json_response["new_invoice_line_items"]).to eq(JSON.parse(expected_invoice_line_items.to_json))
+       expect(json_response["new_line_item_entries"]).to eq(JSON.parse(expected_invoice_line_items.to_json))
      end
    end
   end

@@ -9,7 +9,7 @@ json.filter_options do
 end
 
 # new line items data according to filters and search term
-json.new_invoice_line_items new_line_item_entries do |line_item|
+json.new_line_item_entries new_line_item_entries do |line_item|
   json.id line_item.id
   json.user_id line_item.user_id
   json.project_id line_item.project_id
