@@ -195,14 +195,16 @@ const AddEntry: React.FC<Iprops> = ({
           <div>
             { editEntryId && displayDatePicker &&
             <div className="relative">
-              <CustomDatePicker
-                handleChange={handleDateChangeFromDatePicker}
-                dueDate={selectedDate}
-              />
+              <div className="absolute h-100 w-100 z-10" style={{ top: "2rem" }}>
+                <CustomDatePicker
+                  handleChange={handleDateChangeFromDatePicker}
+                  dueDate={selectedDate}
+                />
+              </div>
             </div>
             }
             <div className="formatted-date p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center" onClick={() => setDisplayDatePicker(true)}>
-              {format(new Date, "do MMM, yyyy")}
+              {format(new Date(selectedDate), "do MMM, yyyy")}
             </div>
           </div>
           <input
