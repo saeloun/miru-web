@@ -144,7 +144,7 @@ const InvoiceTable = ({
       <div>
         {showMultiLineItemModal && <MultipleEntriesModal
           selectedClient={selectedClient}
-          selectedOption={selectedLineItems.filter(item => !item._destroy)}
+          selectedOption={selectedLineItems}
           setSelectedOption={setSelectedLineItems}
           setMultiLineItemModal={setMultiLineItemModal}
         />}
