@@ -89,7 +89,7 @@ const EditEntry: React.FC<Iprops> = ({
       setNote(entry.note);
       setUserName(entry.user_name);
       setSelectedTeamMembers(allMemberList.filter((member: any) => entry.team_members.map(Number).includes(parseInt(member.id))));
-      setTeamMembers(entry.team_members.map((i: any) => parseInt(i.id)));
+      setTeamMembers(entry.team_members.map(Number));
     }
 
   };
