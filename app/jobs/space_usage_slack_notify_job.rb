@@ -34,9 +34,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
     entry = @space_usage.formatted_entry
     bookingDate = DateTime.parse("#{entry[:work_date]}").strftime("%d/%m/%Y")
     member_names = @space_usage.company.users.where(id: @space_usage.team_members)
-      .map { |i| ii = i.slack_member_id.present? ? "<@#{i.slack_member_id}>" : i.full_name
-                 "*#{ii}*"
-} .to_sentence
+      .map { |i| "*#{i.slack_member_id.present? ? "<@#{i.slack_member_id}>" : i.full_name}*" } .to_sentence
 
     {
       text: "Space occupied :white_check_mark:",
@@ -70,9 +68,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
     entry = @space_usage.formatted_entry
     bookingDate = DateTime.parse("#{entry[:work_date]}").strftime("%d/%m/%Y")
     member_names = @space_usage.company.users.where(id: @space_usage.team_members)
-      .map { |i| ii = i.slack_member_id.present? ? "<@#{i.slack_member_id}>" : i.full_name
-                 "*#{ii}*"
-} .to_sentence
+      .map { |i| "*#{i.slack_member_id.present? ? "<@#{i.slack_member_id}>" : i.full_name}*" } .to_sentence
 
     {
       text: "Space occupation changed :twisted_rightwards_arrows:",
@@ -105,6 +101,8 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
   def delete_space_payload_msg
     entry = @space_usage.formatted_entry
     bookingDate = DateTime.parse("#{entry[:work_date]}").strftime("%d/%m/%Y")
+    member_names = @space_usage.company.users.where(id: @space_usage.team_members)
+      .map { |i| "*#{i.slack_member_id.present? ? "<@#{i.slack_member_id}>" : i.full_name}*" } .to_sentence
 
     {
       text: "Space unoccupied :no_entry:",
@@ -122,7 +120,11 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
           "elements": [
             {
               "type": "mrkdwn",
-              "text": "*#{entry[:space_name]}* is unoccupied for *#{entry[:purpose_name]}* meeting on *#{bookingDate}* from *#{@space_usage.formatted_duration_12hr(:start)}* to *#{@space_usage.formatted_duration_12hr(:end)}*."
+              "text": [
+                "*#{entry[:space_name]}* is unoccupied for *#{entry[:purpose_name]}* meeting on *#{bookingDate}* from *#{@space_usage.formatted_duration_12hr(:start)}* to *#{@space_usage.formatted_duration_12hr(:end)}*.",
+                member_names.present? ? "Team Members: #{member_names}" : nil,
+                entry[:note].present? ? "Note: #{entry[:note]}" : nil,
+              ].compact.join(" \n")
             }
           ]
         }
