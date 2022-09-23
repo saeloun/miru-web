@@ -124,7 +124,7 @@ const Engagements = ({ isAdminUser, engagementOptions, currentWeekCode, currentW
             </button> }
 
             { user.previous_engagement?.updated_by_name && <div className="px-1 py-1 text-sm font-medium">
-              <ReactTooltip id={`userTip-${user.id}`} effect="solid" backgroundColor="grey" textColor="white" place="top">
+              <ReactTooltip id={`previousUserTip-${user.id}`} effect="solid" backgroundColor="grey" textColor="white" place="top">
                 <p className="text-xs">
                   Updated by <b>{user.previous_engagement?.updated_by_name}</b> at <b>{user.previous_engagement?.updated_at}</b>
                 </p>
