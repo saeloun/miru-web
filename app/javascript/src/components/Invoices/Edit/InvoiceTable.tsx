@@ -31,21 +31,13 @@ const InvoiceTable = ({
     if (addManualLineItem) return setAddManualLineItem(false);
 
     if (addNew) {
-      fetchNewLineItems(
-        selectedClient,
-        lineItems,
-        setLineItems,
-        setTotalLineItems,
-        pageNumber,
-        setPageNumber,
-        selectedLineItems
-      );
+      loadNewLineItems();
     }
   }, [addNew]);
 
   const wrapperRef = useRef(null);
 
-  const loadMoreItems = () => {
+  const loadNewLineItems = () => {
     fetchNewLineItems(
       selectedClient,
       lineItems,
@@ -71,7 +63,7 @@ const InvoiceTable = ({
         setAddNew={setAddNew}
         lineItems={lineItems}
         setLineItems={setLineItems}
-        loadMoreItems={loadMoreItems}
+        loadMoreItems={loadNewLineItems}
         totalLineItems={totalLineItems}
         pageNumber={pageNumber}
         setPageNumber={setPageNumber}
