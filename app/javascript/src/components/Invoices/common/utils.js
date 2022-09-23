@@ -56,12 +56,13 @@ export const fetchNewLineItems = async (
 ) => {
   if (selectedClient) {
     let selectedEntriesString = "";
-    selectedEntries.forEach((entries) => {
-      selectedEntriesString += `&selected_entries[]=${entries.id}`;
+    selectedEntries.forEach((entry) => {
+      if (!entry._destroy){
+        selectedEntriesString += `&selected_entries[]=${entry.timesheet_entry_id}`;
+      }
     });
 
     const queryParams = `client_id=${selectedClient.value}&page=${pageNumber}${selectedEntriesString}`;
-
     const res = await generateInvoice.getLineItems(queryParams);
     setPageNumber(pageNumber + 1);
     const mergedItems = [...res.data.new_line_item_entries, ...lineItems];
