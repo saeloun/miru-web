@@ -162,3 +162,16 @@ yarn run cy:open:staging
 You can deploy Miru on Heroku using the one-click-deployment button:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/saeloun/miru-web/tree/main)
+
+
+## Contributors ✨
+
+Thanks goes to all our contributors
+
+<a href="https://github.com/saeloun/miru-web/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=saeloun/miru-web" />
+</a>
+
+## License
+
+*Miru* &copy; 2022, Saeloun - Released under the MIT License.
