@@ -6,10 +6,10 @@ import generateInvoice from "apis/generateInvoice";
 import useOutsideClick from "helpers/outsideClick";
 
 import TableHeader from "./LineItemTableHeader";
+import ManualEntry from "./ManualEntry";
 import NewLineItemRow from "./NewLineItemRow";
 import NewLineItemTable from "./NewLineItemTable";
 
-import ManualEntry from "../Generate/ManualEntry";
 import MultipleEntriesModal from "../MultipleEntriesModal";
 
 const InvoiceTable = ({
