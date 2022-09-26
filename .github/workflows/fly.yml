@@ -1,0 +1,15 @@
+name: Fly Staging Deployment
+on:
+  push:
+    branches:
+      - develop
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+jobs:
+  deploy:
+      name: Deploy app
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - uses: superfly/flyctl-actions/setup-flyctl@master
+        - run: flyctl deploy --config fly.staging.toml --dockerfile Dockerfile.staging --remote-only

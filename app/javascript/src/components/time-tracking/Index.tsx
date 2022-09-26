@@ -148,10 +148,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         ns[selectedEmployeeId] = { ...ns[selectedEmployeeId], ...res.data.entries };
         setAllEmployeesEntries(() => ns);
         setEntryList(() => ns[selectedEmployeeId]);
-        return res;
-      } else {
-        return false;
       }
+      return res;
     } catch (error) {
       Logger.error(error);
     }
