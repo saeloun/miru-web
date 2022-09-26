@@ -68,7 +68,7 @@ export const fetchNewLineItems = async (
     const mergedItems = [...res.data.new_line_item_entries, ...lineItems];
     const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
     setLineItems(sortedData);
-    setTotalLineItems(sortedData.length);
+    setTotalLineItems(res.data.total_new_line_items);
   }
 };
 
@@ -102,7 +102,7 @@ export const fetchMultipleNewLineItems = async (
     const mergedItems = [...items, ...lineItems];
     const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
     setLineItems(sortedData);
-    setTotalLineItems(sortedData.length);
+    setTotalLineItems(res.data.total_new_line_items);
     if (allCheckboxSelected) {
       setSelectedLineItem(sortedData);
     }
