@@ -18,8 +18,8 @@ json.new_line_item_entries new_line_item_entries do |line_item|
   json.description line_item.note
   json.date line_item.work_date
   json.quantity line_item.duration
-  json.rate ProjectMember.find_by(user_id: line_item.user_id).hourly_rate
+  json.rate ProjectMember.find_by(user_id: line_item.user_id, project_id: line_item.project_id).hourly_rate
 end
 
 # sends total number of new line item entry count
-json.new_line_item_entry_total_count new_line_item_entry_total_count
+json.total_new_line_items total_new_line_items

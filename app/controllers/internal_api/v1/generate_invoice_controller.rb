@@ -6,7 +6,7 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
     render :index, locals: {
       filter_options:,
       new_line_item_entries:,
-      new_line_item_entry_total_count: new_line_item_entries.size()
+      total_new_line_items: new_line_item_entries.total_count
     }, status: :ok
   end
 
