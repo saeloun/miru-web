@@ -141,29 +141,34 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   };
 
   const fetchEntries = async (from: string, to: string) => {
-    const res = await timesheetEntryApi.list(from, to, selectedEmployeeId);
-    if (res.status >= 200 && res.status < 300) {
-      const ns = { ...allEmployeesEntries };
-      ns[selectedEmployeeId] = { ...ns[selectedEmployeeId], ...res.data.entries };
-      setAllEmployeesEntries(ns);
-      setEntryList(ns[selectedEmployeeId]);
-      return true;
-    } else {
-      return false;
+    try {
+      const res = await timesheetEntryApi.list(from, to, selectedEmployeeId);
+      if (res.status >= 200 && res.status < 300) {
+        const ns = { ...allEmployeesEntries };
+        ns[selectedEmployeeId] = { ...ns[selectedEmployeeId], ...res.data.entries };
+        setAllEmployeesEntries(() => ns);
+        setEntryList(() => ns[selectedEmployeeId]);
+        return res;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      Logger.error(error);
     }
   };
 
-  const handleFilterEntry = (date: string, entryId: string) => {
+  const handleFilterEntry = async (date: string, entryId: string) => {
+    const filteredDate = dayjs(date).format("YYYY-MM-DD");
     const newValue = { ...entryList };
-    newValue[selectedFullDate] = newValue[selectedFullDate].filter(e => e.id !== entryId);
-    setAllEmployeesEntries({ ...allEmployeesEntries, [selectedEmployeeId]: newValue });
-    setEntryList(newValue);
+    newValue[filteredDate] = newValue[filteredDate].filter(e => e.id !== entryId);
+    setAllEmployeesEntries(pv => ({ ...pv, [selectedEmployeeId]: newValue }));
+    setEntryList(() => newValue);
   };
 
   const handleDeleteEntry = async id => {
     const res = await timesheetEntryApi.destroy(id);
     if (!(res.status === 200)) return;
-    handleFilterEntry(selectedFullDate, id);
+    await handleFilterEntry(selectedFullDate, id);
   };
 
   const calculateTotalHours = () => {
