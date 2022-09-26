@@ -69,8 +69,8 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
       end
     end
 
-    context "when user search with 'this week' date filter" do
-      it "returns new line with 'this week' filter" do
+    context "when user search with date filter" do
+      it "returns new line with filter" do
         send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id), params: {
           date_range: "custom",
           from: 1.weeks.ago.beginning_of_week,

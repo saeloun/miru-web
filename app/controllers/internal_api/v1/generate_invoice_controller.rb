@@ -47,6 +47,8 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
         search_term,
         fields: [:note, :user_name],
         match: :text_middle,
-        where: where_clause)
+        where: where_clause,
+        page: params[:page],
+        per_page: 10)
     end
 end
