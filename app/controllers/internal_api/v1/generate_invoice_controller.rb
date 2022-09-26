@@ -3,7 +3,11 @@
 class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationController
   def index
     authorize :index, policy_class: GenerateInvoicePolicy
-    render :index, locals: { new_line_item_entries:, filter_options: }, status: :ok
+    render :index, locals: {
+      filter_options:,
+      new_line_item_entries:,
+      new_line_item_entry_total_count: new_line_item_entries.size()
+    }, status: :ok
   end
 
   private
@@ -43,8 +47,6 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
         search_term,
         fields: [:note, :user_name],
         match: :text_middle,
-        where: where_clause,
-        page: params[:page],
-        per_page: 10)
+        where: where_clause)
     end
 end

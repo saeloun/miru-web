@@ -11,7 +11,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
   let!(:timesheet_entry) { create(:timesheet_entry, user:, project:) }
 
   let(:expected_invoice_line_items) do [{
-    "id": timesheet_entry.id,
+    "timesheet_entry_id": timesheet_entry.id,
     "user_id": user.id,
     "project_id": project.id,
     "first_name": user.first_name,
@@ -72,7 +72,9 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
     context "when user search with 'this week' date filter" do
       it "returns new line with 'this week' filter" do
         send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id), params: {
-          date_range: "this_week"
+          date_range: "custom",
+          from: 1.weeks.ago.beginning_of_week,
+          to: 1.weeks.ago.end_of_week
         }
         expect(response).to have_http_status(:ok)
         expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))

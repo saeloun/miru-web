@@ -10,6 +10,7 @@ end
 
 # new line items data according to filters and search term
 json.new_line_item_entries new_line_item_entries do |line_item|
+  json.timesheet_entry_id line_item.id
   json.user_id line_item.user_id
   json.project_id line_item.project_id
   json.first_name line_item.user.first_name
@@ -18,5 +19,7 @@ json.new_line_item_entries new_line_item_entries do |line_item|
   json.date line_item.work_date
   json.quantity line_item.duration
   json.rate ProjectMember.find_by(user_id: line_item.user_id).hourly_rate
-  json.timesheet_entry_id line_item.id
 end
+
+# sends total number of new line item entry count
+json.new_line_item_entry_total_count new_line_item_entry_total_count
