@@ -5,8 +5,7 @@ import { CaretCircleLeft, CaretCircleRight } from "phosphor-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const CustomDatePicker = ({ handleChange, dueDate }) => {
-  const formattedSelectedDate = new Date(dueDate);
+const CustomDatePicker = ({ handleChange, date }) => {
   const range = (start, end) => {
     const ans = [];
     for (let i = start; i <= end; i++) {
@@ -35,7 +34,7 @@ const CustomDatePicker = ({ handleChange, dueDate }) => {
       wrapperClassName="datePicker"
       inline
       calendarClassName="miru-calendar"
-      selected={formattedSelectedDate}
+      selected={date}
       renderCustomHeader={({
         date,
         changeYear,

@@ -201,7 +201,7 @@ const AddEntry: React.FC<Iprops> = ({
               <div className="absolute h-100 w-100 z-10 top-8">
                 <CustomDatePicker
                   handleChange={handleDateChangeFromDatePicker}
-                  dueDate={selectedDate}
+                  date={dayjs(selectedDate).toDate()}
                 />
               </div>
             </div>
