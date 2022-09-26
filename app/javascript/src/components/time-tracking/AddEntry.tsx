@@ -84,24 +84,27 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   const handleEdit = async () => {
-    const tse = getPayload();
-    const message = validateTimesheetEntry(tse);
-    if (message) {
-      Toastr.error(message);
-      return;
-    }
-    const res = await timesheetEntryApi.update(editEntryId, {
-      project_id: projectId,
-      timesheet_entry: tse
-    });
-
-    if (res.status === 200) {
-      const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
-      if (fetchEntriesRes.status === 200) {
-        handleFilterEntry(selectedFullDate, String(editEntryId));
-        setNewEntryView(false);
-        setEditEntryId(0);
+    try {
+      const tse = getPayload();
+      const message = validateTimesheetEntry(tse);
+      if (message) {
+        Toastr.error(message);
+        return;
       }
+      const res = await timesheetEntryApi.update(editEntryId, {
+        project_id: projectId,
+        timesheet_entry: tse
+      });
+      if (res.status >= 200 && res.status < 300) {
+        handleFilterEntry(selectedFullDate, String(editEntryId));
+        const entries = await fetchEntries(selectedFullDate, selectedDate);
+        if (entries) {
+          setEditEntryId(0);
+          setNewEntryView(false);
+        }
+      }
+    } catch (error) {
+      Toastr.error(error);
     }
   };
 
@@ -193,9 +196,9 @@ const AddEntry: React.FC<Iprops> = ({
       <div className="w-60">
         <div className="mb-2 flex justify-between">
           <div>
-            { editEntryId && displayDatePicker &&
+            { displayDatePicker &&
             <div className="relative">
-              <div className="absolute h-100 w-100 z-10" style={{ top: "2rem" }}>
+              <div className="absolute h-100 w-100 z-10 top-8">
                 <CustomDatePicker
                   handleChange={handleDateChangeFromDatePicker}
                   dueDate={selectedDate}
@@ -203,7 +206,7 @@ const AddEntry: React.FC<Iprops> = ({
               </div>
             </div>
             }
-            <div className="formatted-date p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center" onClick={() => setDisplayDatePicker(true)}>
+            <div className="formatted-date p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center" onClick={() => { if (editEntryId) setDisplayDatePicker(true);} }>
               {format(new Date(selectedDate), "do MMM, yyyy")}
             </div>
           </div>
