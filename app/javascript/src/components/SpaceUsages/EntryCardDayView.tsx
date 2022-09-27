@@ -50,7 +50,7 @@ const EntryCardDayView = ({
             borderLeft: `10px solid ${borderDisplayColor}`,
           } }
           onClick={() => {setEditEntryColor(displayColor); setEditEntryId(space.id);}} >
-          <h6 className="text-white">{displayTitle}</h6>
+          <h6 className="text-white text-xxs">{displayTitle}</h6>
         </div>)
       })
       }

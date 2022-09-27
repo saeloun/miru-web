@@ -20,12 +20,12 @@ const NewEntryCardDayView = ({
 
         return (
           <div id={`newSpace${space.id}`}
-            className="relative z-10 cursor-pointer as-meeting-point w-7 opacity-90"
+            className="relative z-2 cursor-pointer as-meeting-point w-7 opacity-90"
             key={_index}
             title={displayTitle}
             style={ { height: `${space.end_duration - space.start_duration}px`, top: `${space.start_duration}px`, backgroundColor: displayColor, border: "1px solid red" } }
           >
-            <h6 className="text-white">{displayTitle}</h6>
+            <h6 className="text-white text-xxs">{displayTitle}</h6>
           </div>
         )
       })}

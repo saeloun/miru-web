@@ -40,13 +40,15 @@
 .ac-calendar-container {
 	max-height: calc(100vh - 250px);
 	overflow-y: auto;
+  max-width: 100%;
+  overflow-x: auto;
 }
 .ac-calendar-view {
 	@apply relative;
 }
 .ac-calendar {
-	@apply flex flex-col pl-12 mt-1 mb-2;
-	height: 1440px;
+	@apply flex flex-col pl-14 mt-1 mb-2;
+	// height: 1440px;
 }
 .ac-calendar .ac-cv-time-row {
 	@apply border-t relative flex;
@@ -60,14 +62,31 @@
 }
 .ac-calendar .ac-cv-time {
 	@apply border-r w-15 h-15;
-	margin-left: -45px;
+	margin-left: -3.5rem;
+	position: -webkit-sticky;
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  background: #fff;
+  margin-top: -2px;
 }
 .ac-calendar .ac-cv-time span {
-	@apply text-xs relative;
-	top: -10px;
+	@apply relative;
+	font-size: 0.65rem;
+	top: -12px;
+	left: 12px;
+}
+.ac-calendar .ac-cv-time span:after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  width: 12px;
+  height: 1px;
+  background: #eee;
+  right: -24px;
 }
 .ac-calendar-clone {
-	@apply absolute top-0 bottom-0 left-15 right-0;
+	@apply absolute flex top-0 bottom-0 left-15 right-0;
 }
 
 .ac-calendar-clone.current-line {
@@ -75,7 +94,8 @@
 }
 
 .ac-calendar-clone .ac-clone-col {
-	@apply border-r relative;
+	@apply border-r relative text-xs;
+	flex: 0 0 200px;
 }
 
 .ac-calendar-clone .as-meeting-point {
@@ -88,9 +108,13 @@
 }
 
 .ac-calendar-container .ac-calendar-users {
-	@apply sticky bg-white shadow pl-15;
-	z-index: 3;
+	@apply sticky flex bg-white shadow pl-15;
+	z-index: 5;
 	top: 0px;
+}
+.ac-calendar-container .ac-calendar-users .ac-clone-col {
+	@apply border-r relative;
+	flex: 0 0 200px;
 }
 .ac-calendar-container .ac-user-name {
 	@apply border-r flex items-center justify-end relative py-2 pr-2;
@@ -108,13 +132,14 @@
 .ac-calendar-view {
 	.current-hour-line {
 		@apply w-full absolute flex flex-row;
+		margin-left: -3.8rem;
 		z-index: 0.9;
 		.circle, .line {
 			@apply bg-col-red-400;
 		}
 		.circle {
 			@apply h-3 w-3 rounded-3xl absolute top-2/4;
-			left: -3.3px;
+			left: 3.8rem;
 			transform: translateY(-50%);
 		}
 		.line {
@@ -127,7 +152,7 @@
 	@apply fixed top-0 left-0 bottom-0 right-0;
 	content: "";
 	background: rgba(0,0,0,0.5);
-	z-index: 4;
+	z-index: 10;
 }
 
 .required:after {

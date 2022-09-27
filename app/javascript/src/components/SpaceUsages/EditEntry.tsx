@@ -249,11 +249,11 @@ const EditEntry: React.FC<Iprops> = ({
                 >
                   {!space && (
                     <option disabled className="text-miru-gray-100" value="">
-                              Please select space
+                      Please select space
                     </option>
                   )}
                   {spaceCodes.map((a) => (
-                    <option key={`space-${a.id}`} value={a.id}>{a["name"]}</option>
+                    <option key={`space-${a.id}`} value={a.id}>{`${a.name} (${a.alias})`}</option>
                   ))}
                 </select>
               </div>

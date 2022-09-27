@@ -35,6 +35,12 @@ class SpaceUsage < ApplicationRecord
     CodeOptionKlass.new("Conference Room", 1, "CR"),
     CodeOptionKlass.new("HR Cabin", 2, "HCR"),
     CodeOptionKlass.new("Sales Cabin", 3, "SC"),
+    CodeOptionKlass.new("Sales Cabin", 4, "SC1"),
+    CodeOptionKlass.new("Sales Cabin", 5, "SC2"),
+    CodeOptionKlass.new("Sales Cabin", 6, "SC3"),
+    CodeOptionKlass.new("Sales Cabin", 7, "SC4"),
+    CodeOptionKlass.new("Sales Cabin", 8, "SC5"),
+    CodeOptionKlass.new("Sales Cabin", 9, "SC6"),
   ]
 
   PURPOSE_CODE_OPTIONS = [

@@ -84,7 +84,8 @@ const TimeReserving: React.FC<Iprops> = ({
       ii = (i === 0 || ii === 0) ? 12 : (ii < 0) ? i : ii
       return ({
         id: `${i<10 ? 0 : '' }${i}:${m<10 ? 0 : ''}${m}`,
-        name: `${ii < 10 ? 0 : '' }${ii}:${m<10 ? 0 : ''}${m} ${i < 12 || i == 24 ? 'AM' : 'PM'}`
+        name: `${ii < 10 ? 0 : '' }${ii}:${m<10 ? 0 : ''}${m} ${i < 12 || i == 24 ? 'AM' : 'PM'}`,
+        shortName: `${ii}${m == 0 ? '' : (':'+m)} ${i < 12 || i == 24 ? 'AM' : 'PM'}`
       })
     }).filter((el) => el != null)
   }
@@ -268,7 +269,7 @@ const TimeReserving: React.FC<Iprops> = ({
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <div className="mt-1 mx-50">
+      <div className="mx-auto md:px-20 font-manrope">
         <div>
           <div className="mb-1">
             <div className="flex items-center justify-between w-full h-10 bg-miru-han-purple-1000">
@@ -327,24 +328,24 @@ const TimeReserving: React.FC<Iprops> = ({
         </div>
 
         <div className="ac-calendar-container">
-          <div className="grid grid-cols-4 gap-0 ac-calendar-users">
+          <div className="ac-calendar-users" style={{ minWidth: `${(spaceCodes.length * 200) + 60}px` }}>
             {spaceCodes.map((i, _index) => (
               <div key={`ac-user-name-${_index}`} className="ac-clone-col">
                 <div className="ac-user-name">
-                  <span>{i.name}</span>
-                  <span className="alias">{i.alias}</span>
+                  <span className="text-xs">{i.name}</span>
+                  <span className="alias text-xs">{i.alias}</span>
                 </div>
               </div>
             ))}
           </div>
-          <div className="ac-calendar-view">
+          <div className="ac-calendar-view" style={{ minWidth: `${(spaceCodes.length * 200) + 60}px` }}>
             <div className="ac-calendar">
               {calendarTimes().map((i, index) => (
-                <div className="ac-cv-time-row" key={index}><div className="ac-cv-time"><span>{i.name}</span></div></div>
+                <div className="ac-cv-time-row" key={index}><div className="ac-cv-time"><span>{i.shortName}</span></div></div>
               ))}
             </div>
             {Object.entries(newEntry).length > 0 ?
-              <div className="grid grid-cols-4 gap-0 ac-calendar-clone">
+              <div className="ac-calendar-clone">
                 {
                   Object.entries(newEntry).map(([_spaceCode, value], listIndex) => (<NewEntryCardDayView
                     key={listIndex}
@@ -356,7 +357,7 @@ const TimeReserving: React.FC<Iprops> = ({
               </div>
               : ""}
             {Object.entries(groupingEntryList).length > 0 ?
-              <div className="grid grid-cols-4 gap-0 ac-calendar-clone">
+              <div className="ac-calendar-clone">
                 {
                   Object.entries(groupingEntryList).map(([_spaceCode, value], listIndex) => (<EntryCardDayView
                     key={listIndex}
@@ -376,7 +377,7 @@ const TimeReserving: React.FC<Iprops> = ({
                 }
               </div>
               : ""}
-            <div className="grid grid-cols-4 gap-0 ac-calendar-clone current-line">
+            <div className="ac-calendar-clone current-line">
               <CurrentHourLine currentTime={currentTime} />
             </div>
           </div>
