@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import autosize from "autosize";
 
@@ -24,7 +24,6 @@ const AddEntry: React.FC<Iprops> = ({
   setEditEntryId,
   editEntryId
 }) => {
-  const { useState, useEffect } = React;
   const [note, setNote] = useState("");
   const [duration, setDuration] = useState("00:00");
   const [client, setClient] = useState("");
@@ -46,7 +45,6 @@ const AddEntry: React.FC<Iprops> = ({
       setNote(entry.note);
       if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
     }
-
   };
 
   useEffect(() => {
@@ -64,7 +62,7 @@ const AddEntry: React.FC<Iprops> = ({
     if (selectedProject) {
       setProjectId(Number(selectedProject.id));
       setProjectBillable(selectedProject.billable);
-      setBillable(selectedProject.billable);
+      (projectId != selectedProject.id) && setBillable(selectedProject.billable);
     }
   }, [project]);
 
