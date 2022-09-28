@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 import { minutesToHHMM } from "helpers/hhmm-parser";
+import { lineTotalCalc } from "helpers/lineTotalCalc";
 
 import NewLineItemTableHeader from "../common/NewLineItemTable/Header";
 import { getMaxIdx } from "../common/utils";
@@ -26,7 +27,7 @@ const NewLineItemTable = ({
   const hasMoreItems = lineItems.length === totalLineItems;
 
   const selectRowId = (items) => {
-    const option = { ...items, lineTotal: (Number(items.quantity) / 60 * Number(items.rate)).toFixed(2) };
+    const option = { ...items, lineTotal: lineTotalCalc(items.quantity, items.rate) };
     setAddNew(false);
     setSelectedOption([...selectedOption, option]);
     setLineItems([]);

@@ -5,6 +5,7 @@ import { DotsThreeVertical, PencilSimple, Trash } from "phosphor-react";
 
 import { currencyFormat } from "helpers/currency";
 import { minutesToHHMM } from "helpers/hhmm-parser";
+import { lineTotalCalc } from "helpers/lineTotalCalc";
 
 const NewLineItemStatic = ({
   currency,
@@ -16,7 +17,7 @@ const NewLineItemStatic = ({
   const [showEditMenu, setShowEditMenu] = useState(false);
   const hoursLogged = minutesToHHMM(item.quantity);
   const date = dayjs(item.date).format("DD.MM.YYYY");
-  const totalRate = Number(Number(item.quantity / 60) * Number(item.rate)).toFixed(2);
+  const totalRate = lineTotalCalc(item.quantity, item.rate);
   const name = item.name || `${item.first_name} ${item.last_name}`;
   return (
     <tr className="invoice-items-row"

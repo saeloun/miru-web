@@ -4,6 +4,7 @@ import { Trash } from "phosphor-react";
 import DatePicker from "react-datepicker";
 
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
+import { lineTotalCalc } from "helpers/lineTotalCalc";
 
 const EditLineItems = ({
   item,
@@ -54,13 +55,13 @@ const EditLineItems = ({
   const handleSetRate = (e) => {
     const qtyInMin = Number(minutesFromHHMM(quantity));
     setRate(e.target.value);
-    setLineTotal((Number(qtyInMin / 60) * Number(e.target.value)).toFixed(2));
+    setLineTotal(lineTotalCalc(qtyInMin, e.target.value));
   };
 
   const handleSetQuantity = (e) => {
     const qtyInMin = Number(minutesFromHHMM(e.target.value));
     setQuantity(e.target.value);
-    setLineTotal((Number(qtyInMin / 60) * Number(rate)).toFixed(2));
+    setLineTotal(lineTotalCalc(qtyInMin, rate));
   };
 
   return (

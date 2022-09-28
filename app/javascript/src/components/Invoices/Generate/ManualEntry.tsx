@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Trash } from "phosphor-react";
 
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
+import { lineTotalCalc } from "helpers/lineTotalCalc";
 
 const ManualEntry = ({
   entry,
@@ -56,14 +57,14 @@ const ManualEntry = ({
 
   const handleSetRate = (e) => {
     setRate(e.target.value);
-    setLineTotal((Number(quantity / 60) * Number(e.target.value)).toFixed(2));
+    setLineTotal(lineTotalCalc(quantity, e.target.value));
   };
 
   const handleSetQuantity = (e) => {
     const quantityInMin = Number(minutesFromHHMM(e.target.value));
     setQtyInHHrMin(e.target.value);
     setQuantity(quantityInMin);
-    setLineTotal((Number(quantityInMin / 60) * Number(rate)).toFixed(2));
+    setLineTotal(lineTotalCalc(quantityInMin, rate));
   };
 
   return (
