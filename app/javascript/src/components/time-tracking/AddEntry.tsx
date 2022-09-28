@@ -96,8 +96,8 @@ const AddEntry: React.FC<Iprops> = ({
         timesheet_entry: tse
       });
       if (res.status >= 200 && res.status < 300) {
-        handleFilterEntry(selectedFullDate, String(editEntryId));
-        const entries = await fetchEntries(selectedFullDate, selectedDate);
+        const entries = await fetchEntries(selectedDate, selectedDate);
+        await handleFilterEntry(selectedFullDate, String(editEntryId));
         if (entries) {
           setEditEntryId(0);
           setNewEntryView(false);
