@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import autosize from "autosize";
 import { format } from "date-fns";
@@ -26,7 +26,6 @@ const AddEntry: React.FC<Iprops> = ({
   editEntryId,
   handleFilterEntry
 }) => {
-  const { useState, useEffect } = React;
   const [note, setNote] = useState("");
   const [duration, setDuration] = useState("00:00");
   const [client, setClient] = useState("");
@@ -51,6 +50,18 @@ const AddEntry: React.FC<Iprops> = ({
       if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
     }
   };
+
+  useEffect(() => {
+    if (!project) return;
+    const selectedProject = projects[client].find(
+      currentProject => currentProject.name === project
+    );
+    if (selectedProject) {
+      setProjectId(Number(selectedProject.id));
+      setProjectBillable(selectedProject.billable);
+      (projectId != selectedProject.id) && setBillable(selectedProject.billable);
+    }
+  }, [project]);
 
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDuration(e.target.value);
