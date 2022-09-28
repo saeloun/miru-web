@@ -163,6 +163,9 @@ You can deploy Miru on Heroku using the one-click-deployment button:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/saeloun/miru-web/tree/main)
 
+## Community Support
+
+Feel free to join our [Slack](https://join.slack.com/t/miruweb/shared_invite/zt-1gquq0zs5-XdbfbgiG56xzsbDjKnsB1A) workspace for support and questions.
 
 ## Contributors ✨
 
