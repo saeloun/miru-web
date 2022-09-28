@@ -3,7 +3,7 @@ import React from "react";
 
 import { minutesToHHMM } from "helpers/hhmm-parser";
 
-import BillTag from "./BillTag";
+import { Badge } from "../../styledComponents";
 
 const deleteIcon = require("../../../../assets/images/delete.svg");
 const editIcon = require("../../../../assets/images/edit.svg");
@@ -42,13 +42,28 @@ const EntryCard: React.FC<props> = ({
     </div>
     <div className="flex items-center">
       {bill_status === "unbilled" ? (
-        <BillTag color="miru-alert-yellow-400" text="unbilled" />
+        <Badge
+          text="unbilled"
+          color="text-miru-alert-green-1000"
+          bgColor="bg-miru-alert-yellow-400"
+          className="uppercase"
+        />
       ) : bill_status === "non_billable" ? (
-        <BillTag color="miru-dark-purple-100" text="non billable" />
+        <Badge
+          text="non billable"
+          color="text-miru-dark-purple-600"
+          bgColor="bg-miru-dark-purple-100"
+          className="uppercase"
+        />
       ) : (
-        <BillTag color="miru-alert-green-400" text="billed" />
+        <Badge
+          text="billed"
+          color="text-miru-alert-green-800"
+          bgColor="bg-miru-alert-green-400"
+          className="uppercase"
+        />
       )}
-      <p className="text-4xl">{minutesToHHMM(duration)}</p>
+      <p className="text-4xl ml-6">{minutesToHHMM(duration)}</p>
       <button onClick={() => setEditEntryId(id)} className="mx-10">
         <img
           src={editIcon}
