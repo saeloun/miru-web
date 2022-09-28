@@ -65,10 +65,12 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const fetchTimeTrackingData = async () => {
     try {
       const { data } = await timeTrackingApi.get();
-      const { clients,
+      const {
+        clients,
         projects,
         entries,
-        employees } = data;
+        employees
+      } = data;
 
       setClients(clients);
       setProjects(projects);
@@ -80,6 +82,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     } catch (error) {
       Logger.error(error);
     }
+  };
+
+  const fetchEntriesOfThreeMonths = () => {
+    fetchEntries(
+      dayjs(dayInfo[0]["fullDate"]).startOf("month").subtract(1, "month").format("DD-MM-YYYY"),
+      dayjs(dayInfo[0]["fullDate"]).endOf("month").add(1, "month").format("DD-MM-YYYY"),
+    );
   };
 
   useEffect(() => {
@@ -106,12 +115,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   useEffect(() => {
     if (dayInfo.length <= 0) return;
-
-    fetchEntries(
-      dayjs(dayInfo[0]["fullDate"]).startOf("month").subtract(1, "month").format("DD-MM-YYYY"),
-      dayjs(dayInfo[0]["fullDate"]).endOf("month").add(1, "month").format("DD-MM-YYYY"),
-    );
-
+    fetchEntriesOfThreeMonths();
     if (allEmployeesEntries[selectedEmployeeId]) setEntryList(allEmployeesEntries[selectedEmployeeId]);
   }, [selectedEmployeeId]);
 
@@ -144,10 +148,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     try {
       const res = await timesheetEntryApi.list(from, to, selectedEmployeeId);
       if (res.status >= 200 && res.status < 300) {
-        const ns = { ...allEmployeesEntries };
-        ns[selectedEmployeeId] = { ...ns[selectedEmployeeId], ...res.data.entries };
+        const ns = { ...allEmployeesEntries, [selectedEmployeeId]: res.data.entries };
         setAllEmployeesEntries(() => ns);
-        setEntryList(() => ns[selectedEmployeeId]);
+        setEntryList((pv) => ({ ...pv, ...res.data.entries }));
       }
       return res;
     } catch (error) {
@@ -158,9 +161,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const handleFilterEntry = async (date: string, entryId: string) => {
     const filteredDate = dayjs(date).format("YYYY-MM-DD");
     const newValue = { ...entryList };
-    newValue[filteredDate] = newValue[filteredDate].filter(e => e.id !== entryId);
+    newValue[filteredDate] = newValue[filteredDate].filter(e => e.id != entryId);
     setAllEmployeesEntries(pv => ({ ...pv, [selectedEmployeeId]: newValue }));
-    setEntryList(() => newValue);
+    setEntryList((pv) => ({ ...pv, ...newValue }));
   };
 
   const handleDeleteEntry = async id => {
