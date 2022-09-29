@@ -167,6 +167,9 @@ You can deploy Miru on Heroku using the one-click-deployment button:
 
 Feel free to join our [Discord](https://discord.gg/UABXyQQ82c) channel for support and questions.
 
+## Contributing
+We encourage everyone to contribute to Miru Web! Check out [Contributing Guide](CONTRIBUTING.md) for guidelines about how to proceed.. <br>
+
 ## Contributors ✨
 
 Thanks goes to all our contributors
