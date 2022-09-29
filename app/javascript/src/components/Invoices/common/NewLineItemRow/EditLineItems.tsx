@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 
+import { minFromHHMM, minToHHMM, lineTotalCalc } from "helpers";
 import { Trash } from "phosphor-react";
 import DatePicker from "react-datepicker";
-
-import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
-import { lineTotalCalc } from "helpers/lineTotalCalc";
 
 const EditLineItems = ({
   item,
@@ -19,7 +17,7 @@ const EditLineItems = ({
   const [lineItemDate, setLineItemDate] = useState(formatedDate);
   const [description, setDescription] = useState<string>(item.description);
   const [rate, setRate] = useState<number>(item.rate);
-  const [quantity, setQuantity] = useState<any>(minutesToHHMM(item.quantity));
+  const [quantity, setQuantity] = useState<any>(minToHHMM(item.quantity));
   const [lineTotal, setLineTotal] = useState<string>(item.lineTotal);
 
   useEffect(() => {
@@ -32,7 +30,7 @@ const EditLineItems = ({
       date: lineItemDate,
       description,
       rate,
-      quantity: minutesFromHHMM(quantity),
+      quantity: minFromHHMM(quantity),
       lineTotal
     };
 
@@ -53,13 +51,13 @@ const EditLineItems = ({
   };
 
   const handleSetRate = (e) => {
-    const qtyInMin = Number(minutesFromHHMM(quantity));
+    const qtyInMin = Number(minFromHHMM(quantity));
     setRate(e.target.value);
     setLineTotal(lineTotalCalc(qtyInMin, e.target.value));
   };
 
   const handleSetQuantity = (e) => {
-    const qtyInMin = Number(minutesFromHHMM(e.target.value));
+    const qtyInMin = Number(minFromHHMM(e.target.value));
     setQuantity(e.target.value);
     setLineTotal(lineTotalCalc(qtyInMin, rate));
   };

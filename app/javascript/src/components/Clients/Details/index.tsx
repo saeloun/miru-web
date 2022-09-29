@@ -4,6 +4,7 @@ import { TOASTER_DURATION } from "constants/index";
 
 import Logger from "js-logger";
 import { useParams, useNavigate } from "react-router-dom";
+import { cashFormatter, currencySymbol, minToHHMM  } from "helpers";
 import { ToastContainer } from "react-toastify";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
@@ -13,9 +14,6 @@ import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 import AddEditProject from "components/Projects/Modals/AddEditProject";
 import DeleteProject from "components/Projects/Modals/DeleteProject";
-import { cashFormatter } from "helpers/cashFormater";
-import { currencySymbol } from "helpers/currencySymbol";
-import { minutesToHHMM } from "helpers/hhmm-parser";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
@@ -27,7 +25,7 @@ const getTableData = (clients) => {
     return clients.map((client) => ({
       col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
       col2: <div className="text-base text-miru-dark-purple-1000">{client.team.map(member => <span>{member},&nbsp;</span>)}</div>,
-      col3: <div className="text-base text-miru-dark-purple-1000 text-right">{minutesToHHMM(client.minutes)}</div>,
+      col3: <div className="text-base text-miru-dark-purple-1000 text-right">{minToHHMM(client.minutes)}</div>,
       rowId: client.id
     }));
   }

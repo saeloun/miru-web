@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
-import { minutesToHHMM } from "helpers/hhmm-parser";
+import { minToHHMM } from "helpers";
 
 import { Badge } from "../../styledComponents";
 
@@ -63,7 +63,7 @@ const EntryCard: React.FC<props> = ({
           className="uppercase"
         />
       )}
-      <p className="text-4xl ml-6">{minutesToHHMM(duration)}</p>
+      <p className="text-4xl">{minToHHMM(duration)}</p>
       <button onClick={() => setEditEntryId(id)} className="mx-10">
         <img
           src={editIcon}

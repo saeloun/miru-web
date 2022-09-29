@@ -1,4 +1,4 @@
-import { lineTotalCalc } from "helpers/lineTotalCalc";
+import { lineTotalCalc } from "helpers";
 
 export const unmapLineItems = (input) => input.map(item => ({
   ...item,

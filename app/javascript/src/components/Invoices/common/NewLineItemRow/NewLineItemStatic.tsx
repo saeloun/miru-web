@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 
 import dayjs from "dayjs";
+import { currencyFormat, minToHHMM, lineTotalCalc } from "helpers";
 import { DotsThreeVertical, PencilSimple, Trash } from "phosphor-react";
-
-import { currencyFormat } from "helpers/currency";
-import { minutesToHHMM } from "helpers/hhmm-parser";
-import { lineTotalCalc } from "helpers/lineTotalCalc";
 
 const NewLineItemStatic = ({
   currency,
@@ -15,7 +12,7 @@ const NewLineItemStatic = ({
 }) => {
   const [isSideMenuVisible, setSideMenuVisible] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
-  const hoursLogged = minutesToHHMM(item.quantity);
+  const hoursLogged = minToHHMM(item.quantity);
   const date = dayjs(item.date).format("DD.MM.YYYY");
   const totalRate = lineTotalCalc(item.quantity, item.rate);
   const name = item.name || `${item.first_name} ${item.last_name}`;

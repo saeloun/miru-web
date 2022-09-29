@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import useOutsideClick from "helpers/outsideClick";
+import { useOutsideClick } from "helpers";
 
 import NewLineItemTable from "./NewLineItemTable";
 
