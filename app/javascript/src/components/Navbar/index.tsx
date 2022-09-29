@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Paths } from "constants/index";
 
@@ -19,6 +19,14 @@ const miruLogo = require("../../../../assets/images/PurpleMiruLogoWithText.svg")
 const avatar = require("../../../../assets/images/NavAvatar.svg"); //eslint-disable-line
 
 const Navbar = ({ isAdminUser, user }) => {
+
+  const [isDesktop,setIsDesktop] = useState(innerWidth > 650);
+
+  useEffect(()=>{
+    window.addEventListener("resize", () => setIsDesktop(innerWidth > 650));
+    window.removeEventListener("resize",() => setIsDesktop(innerWidth > 650));
+  },[innerWidth]);
+
   const navEmployeeOptions = [
     {
       logo: <Timer size={26} className="mr-4" />,
@@ -92,7 +100,7 @@ const Navbar = ({ isAdminUser, user }) => {
   ];
 
   const activeClassName =
-    "flex py-3 px-4 items-center text-miru-han-purple-1000 bg-miru-gray-100 border-l-8 border-miru-han-purple-1000 font-extrabold";
+    "flex py-3 md:px-4 px-2 items-center text-miru-han-purple-1000 bg-miru-gray-100  border-l-0 md:border-l-8 border-miru-han-purple-1000 font-extrabold";
 
   const getEmployeeOptions = () =>
     navEmployeeOptions.map((option, index) => (
@@ -103,10 +111,10 @@ const Navbar = ({ isAdminUser, user }) => {
           className={({ isActive }) =>
             isActive
               ? activeClassName
-              : "flex py-3 px-6 items-center hover:bg-miru-gray-100"
+              : "flex py-3 md:px-6 px-2 items-center hover:bg-miru-gray-100"
           }
         >
-          {option.logo} {option.label}
+          {option.logo} {isDesktop && option.label}
         </NavLink>
       </li>
     ));
@@ -120,10 +128,10 @@ const Navbar = ({ isAdminUser, user }) => {
           className={({ isActive }) =>
             isActive
               ? activeClassName
-              : "flex py-3 px-6 items-center hover:bg-miru-gray-100"
+              : "flex py-3 md:px-6 px-2 items-center hover:bg-miru-gray-100"
           }
         >
-          {option.logo} {option.label}
+          {option.logo} {isDesktop && option.label}
         </NavLink>
       </li>
     ));
@@ -147,7 +155,7 @@ const Navbar = ({ isAdminUser, user }) => {
           </a> */}
           <a href="/profile/edit">
             <li className="flex py-3 px-6 items-center hover:bg-miru-gray-100">
-              <Gear size={26} className="mr-4" /> Settings
+              <Gear size={26} className="mr-4" /> {isDesktop && "Settings"}
             </li>
           </a>
           {/* <a>
@@ -157,7 +165,7 @@ const Navbar = ({ isAdminUser, user }) => {
           </a> */}
           <a data-method="delete" href="/users/sign_out" rel="nofollow">
             <li className="flex py-3 px-6 items-center hover:bg-miru-gray-100">
-              <SignOut size={26} className="mr-4" /> Logout
+              <SignOut size={26} className="mr-4" /> {isDesktop && "Logout"}
             </li>
           </a>
         </ul>
