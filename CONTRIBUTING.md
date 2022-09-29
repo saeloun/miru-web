@@ -11,7 +11,7 @@ Miru, though managed by the awesome folks at [Saeloun](https://saeloun.com/), is
 - Suggest improvements to existing workflows
 - Propose an entirely new feature
 
-You can also join our Discord channel to chat with the team and other contributors.
+You can also join our [Discord](https://discord.gg/UABXyQQ82c) channel to chat with the team and other contributors.
 
 ## Setup
 
