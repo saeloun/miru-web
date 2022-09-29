@@ -1,6 +1,6 @@
 <p align="center">
-  <img alt="Miru logo" src="https://getmiru.com/assets/images/image01.svg?v=097ef681" width="100px" />
-  <h1 align="center">Miru Documentation</h1>
+  <img alt="Miru logo" src="https://getmiru.com/assets/images/image01.svg?v=097ef681" width="200px" />
+  <h1 align="center"> Miru Documentation</h1>
 </p>
 
 This repository contains the Miru documentation website code and Markdown source files for [docs.getmiru.com](docs.getmiru.com)
