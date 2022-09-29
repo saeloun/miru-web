@@ -148,8 +148,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     try {
       const res = await timesheetEntryApi.list(from, to, selectedEmployeeId);
       if (res.status >= 200 && res.status < 300) {
-        const ns = { ...allEmployeesEntries, [selectedEmployeeId]: res.data.entries };
-        setAllEmployeesEntries(() => ns);
+        const newState = { ...allEmployeesEntries, [selectedEmployeeId]: res.data.entries };
+        setAllEmployeesEntries(() => newState);
         setEntryList((pv) => ({ ...pv, ...res.data.entries }));
       }
       return res;

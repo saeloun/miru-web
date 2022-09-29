@@ -26,14 +26,14 @@ const AddEntry: React.FC<Iprops> = ({
   editEntryId,
   handleFilterEntry
 }) => {
-  const [note, setNote] = useState("");
-  const [duration, setDuration] = useState("00:00");
-  const [client, setClient] = useState("");
-  const [project, setProject] = useState("");
-  const [projectId, setProjectId] = useState(0);
-  const [billable, setBillable] = useState(false);
-  const [projectBillable, setProjectBillable] = useState(true);
-  const [selectedDate, setSelectedDate] = useState(selectedFullDate);
+  const [note, setNote] = useState<string>("");
+  const [duration, setDuration] = useState<string>("00:00");
+  const [client, setClient] = useState<string>("");
+  const [project, setProject] = useState<string>("");
+  const [projectId, setProjectId] = useState<number>(0);
+  const [billable, setBillable] = useState<boolean>(false);
+  const [projectBillable, setProjectBillable] = useState<boolean>(true);
+  const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
 
   const handleFillData = () => {
