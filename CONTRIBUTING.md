@@ -11,6 +11,8 @@ Miru, though managed by the awesome folks at [Saeloun](https://saeloun.com/), is
 - Suggest improvements to existing workflows
 - Propose an entirely new feature
 
+You can also join our Discord channel to chat with the team and other contributors.
+
 ## Setup
 
 The Readme contains all the setup information you'd require. Please follow the instructions there to get started.
@@ -41,7 +43,7 @@ If the issue you're working on requires a design or architecture change, please 
 
 Once you've decided the issue you'll be working on, please follow the instructions below:
 
-1. Create your branch from the `develop` branch using the format issue/<issue-id>-<issue-name> (eg: issue/154-time-tracking-page)
+1. We use [git-flow](https://nvie.com/posts/a-successful-git-branching-model/) branching model. The base branch is develop. Please create a new branch from develop and name it appropriately.
 2. Make your changes
 3. Add or update tests as required. Ensure that your tests cover all the cases you've added or updated.
 4. Ensure the test suite passes.
