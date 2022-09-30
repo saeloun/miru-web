@@ -33,7 +33,6 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          routeBasePath: "/docs",
           sidebarCollapsible: true,
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl: "https://github.com/saeloun/miru-docs/edit/main/",
@@ -93,7 +92,7 @@ const config = {
             items: [
               {
                 label: 'Docs',
-                to: '/docs/intro',
+                to: '/docs/',
               },
             ],
           },
