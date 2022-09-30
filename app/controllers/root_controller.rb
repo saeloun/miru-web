@@ -5,14 +5,12 @@ class RootController < ApplicationController
 
   def index
     if Pundit.policy!(current_user, :space_usage).index?
-      path = space_occupying_index_path
-    elsif current_user.has_role?(:owner) && current_user.companies.empty?
-      path = new_company_path
+      path = "spaces"
+    # elsif current_user.has_role?(:owner) && current_user.companies.empty?
+    #  path = new_company_path
     elsif current_user.has_role?(:book_keeper, current_company)
-      path = payments_path
-    else
-      path = dashboard_index_path
+      path = "payments"
     end
-    redirect_to path
+    redirect_to root_path + path # TODO: redirect to root and handle conditional redirection in react router
   end
 end

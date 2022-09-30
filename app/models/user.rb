@@ -18,13 +18,6 @@
 #  engage_updated_at      :datetime
 #  engage_week_code       :integer
 #  first_name             :string           not null
-#  invitation_accepted_at :datetime
-#  invitation_created_at  :datetime
-#  invitation_limit       :integer
-#  invitation_sent_at     :datetime
-#  invitation_token       :string
-#  invitations_count      :integer          default(0)
-#  invited_by_type        :string
 #  last_name              :string           not null
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string
@@ -43,7 +36,6 @@
 #  current_workspace_id   :bigint
 #  department_id          :integer
 #  engage_updated_by_id   :bigint
-#  invited_by_id          :bigint
 #  personal_email_id      :string
 #  slack_member_id        :string
 #
@@ -53,9 +45,6 @@
 #  index_users_on_discarded_at          (discarded_at)
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_engage_updated_by_id  (engage_updated_by_id)
-#  index_users_on_invitation_token      (invitation_token) UNIQUE
-#  index_users_on_invited_by            (invited_by_type,invited_by_id)
-#  index_users_on_invited_by_id         (invited_by_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #  index_users_on_slack_member_id       (slack_member_id) UNIQUE
 #
@@ -111,13 +100,15 @@ class User < ApplicationRecord
   has_many :engagement_timestamps, dependent: :destroy
   has_and_belongs_to_many :team_members, association_foreign_key: :member_user_id, class_name: User.name,
     join_table: "team_members", dependent: :destroy
+  has_many :invitations, foreign_key: "sender_id", dependent: :destroy
+
   rolify strict: true
 
   # Social account details
   store_accessor :social_accounts, :github_url, :linkedin_url
 
   # Attribute accessor
-  attr_accessor :current_company, :role
+  attr_accessor :current_company, :role, :skip_password_validation
 
   # Validations
   after_initialize :set_default_social_accounts, if: :new_record?
@@ -128,7 +119,7 @@ class User < ApplicationRecord
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :invitable, :database_authenticatable, :registerable,
+  devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :validatable,
     :trackable,
     :omniauthable, omniauth_providers: [:google_oauth2]
@@ -142,7 +133,11 @@ class User < ApplicationRecord
     self.department_id == sales_department_id
   end
 
-  def primary_role
+  # scopes
+  scope :valid_invitations, -> { invitations.where(sender: self).valid_invitations }
+
+  def primary_role(company)
+    roles = self.roles.where(resource: company)
     return "employee" if roles.empty?
 
     roles.first.name
@@ -170,11 +165,6 @@ class User < ApplicationRecord
     write_attribute(:current_workspace_id, workspace&.id)
   end
 
-  # https://github.com/scambra/devise_invitable/blob/7c4b1f6d19135b2cfed4685735a646a28bbc5191/test/rails_app/app/models/user.rb#L59
-  def send_devise_notification(notification, *args)
-    super
-  end
-
   def assign_company_and_role
     return self.errors.add(:base, I18n.t("errors.internal_server_error")) if current_company.nil? || role.nil?
 
@@ -186,6 +176,18 @@ class User < ApplicationRecord
 
   def avatar_url
     self.avatar.attached? ? rails_blob_path(self.avatar, disposition: "attachment", only_path: true) : ""
+  end
+
+  def create_reset_password_token
+    raw, hashed = Devise.token_generator.generate(User, :reset_password_token)
+    self.reset_password_token = hashed
+    self.reset_password_sent_at = Time.now.utc
+    self.save
+    raw # This value will be used to redirect users to the reset password page
+ end
+
+  def employed_at?(company_id)
+    employments.exists?(company_id:)
   end
 
   private
@@ -214,15 +216,9 @@ class User < ApplicationRecord
       end
     end
 
-    def set_employee_role_and_workspace # TODO : Please fix
-      company = Company.first
+    def password_required?
+      return false if skip_password_validation
 
-      ActiveRecord::Base.transaction do
-        self.current_workspace_id = company.id
-        self.companies << company
-        self.add_role(:employee, company)
-
-        self.save!
-      end
+      super
     end
 end

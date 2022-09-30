@@ -4,27 +4,27 @@
 users = [
   {
     first_name: "Dharmdip", last_name: "Owner", email: "owner1@example.com", password: "password",
-    password_confirmation: "password", confirmed_at: Time.current, invitation_accepted_at: Time.current,
+    password_confirmation: "password", confirmed_at: Time.current,
     current_workspace_id: @c1.id
   },
   {
     first_name: "Natvar", last_name: "Owner", email: "owner2@example.com", password: "password",
-    password_confirmation: "password", confirmed_at: Time.current, invitation_accepted_at: Time.current,
+    password_confirmation: "password", confirmed_at: Time.current,
     current_workspace_id: @c1.id
   },
   {
     first_name: "Dharmdip", last_name: "Admin", email: "admin1@example.com", password: "password",
-    password_confirmation: "password", confirmed_at: Time.current, invitation_accepted_at: Time.current,
+    password_confirmation: "password", confirmed_at: Time.current,
     current_workspace_id: @c1.id
   },
   {
     first_name: "Natvar", last_name: "Admin", email: "admin2@example.com", password: "password",
-    password_confirmation: "password", confirmed_at: Time.current, invitation_accepted_at: Time.current,
+    password_confirmation: "password", confirmed_at: Time.current,
     current_workspace_id: @c1.id
   },
   {
     first_name: "Parth", last_name: "Employee", email: "employee1@example.com", password: "password",
-    password_confirmation: "password", confirmed_at: Time.current, invitation_accepted_at: Time.current,
+    password_confirmation: "password", confirmed_at: Time.current,
     current_workspace_id: @c1.id
   },
 ]

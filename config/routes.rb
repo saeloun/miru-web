@@ -13,7 +13,6 @@ Rails.application.routes.draw do
     registrations: "users/registrations",
     sessions: "users/sessions",
     passwords: "users/passwords",
-    invitations: "users/invitations",
     omniauth_callbacks: "users/omniauth_callbacks"
   }
 
@@ -44,20 +43,6 @@ Rails.application.routes.draw do
     resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
   end
 
-  resources :time_tracking, only: [:index], path: "time-tracking"
-  resources :space_occupying, only: [:index], path: "spaces"
-
-  get "engagements/*path", to: "engagements#index", via: :all
-  resources :engagements, only: [:index]
-  get "tackle", to: "devices#index", as: :devices
-
-  resources :team, only: [:index, :update, :destroy, :edit] do
-    member do
-      delete "delete_avatar/:avatar_id", action: :delete_avatar
-    end
-  end
-
-  resources :reports, only: [:index]
   resources :workspaces, only: [:update]
 
   resources :invoices, only: [], module: :invoices do
@@ -73,42 +58,26 @@ Rails.application.routes.draw do
     end
   end
 
-  get "clients/*path", to: "clients#index", via: :all
-  get "clients", to: "clients#index"
+  namespace :invitations do
+    resources :accepts, only: [:index], controller: "accept"
+  end
 
-  get "leads/*path", to: "leads#index", via: :all
-  get "leads", to: "leads#index"
-
-  get "recruitments/*path", to: "recruitments#index", via: :all
-  get "recruitments", to: "recruitments#index"
-
-  get "invoices/*path", to: "invoices#index", via: :all
-  get "invoices", to: "invoices#index"
-
-  get "projects/*path", to: "projects#index", via: :all
-  get "projects", to: "projects#index"
+  get "users/invitation/accept", to: "invitations/accept#show"
 
   get "payments/settings/stripe/connect/refresh", to: "payment_settings#refresh_stripe_connect"
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"
-
-  get "payments/*path", to: "payments#index", via: :all
-  get "payments", to: "payments#index"
-
-  get "reports/*path", to: "reports#index", via: :all
-  get "reports", to: "reports#index"
-
-  get "subscriptions/*path", to: "subscriptions#index", via: :all
-  resources :subscriptions, only: [:index]
 
   resource :email_confirmation, only: :show do
     get :resend
   end
 
   devise_scope :user do
-    get "profile", to: "users/registrations#edit"
-    get "profile/edit", to: "users/registrations#edit"
+    # TODO: verify if this is path is in use otherwise remove it.
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
-    get "profile/edit/*path", to: "users/registrations#edit"
   end
+
+  match "*path", via: :all, to: "home#index", constraints: lambda { |req|
+    req.path.exclude? "rails/active_storage"
+  }
 end

@@ -3,7 +3,7 @@
 module ApplicationHelper
   def user_avatar(user)
     if user.avatar.attached?
-      user.avatar
+      url_for(user.avatar)
     else
       image_url "avatar.svg"
     end
@@ -35,6 +35,19 @@ module ApplicationHelper
     content_tag(:div, class: "mx-auto h-8 w-auto text-center") do
       image_tag("brand/ac-logo.svg", width: "20%")
     end
+  end
+
+  def get_initial_props
+    {
+      user: current_user,
+      company_role: current_user.roles.find_by(resource: current_company)&.name,
+      company: current_company,
+      permissions: {
+        "leads" => Pundit.policy!(current_user, :lead).index?,
+        "engagements" => Pundit.policy!(current_user, :engagement).index?,
+        'engagementsDashboard': Pundit.policy!(current_user, :engagement).admin_access?
+      }
+    }
   end
 
   private

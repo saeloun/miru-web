@@ -22,4 +22,7 @@ json.devices devices do |device|
   json.hide_demand devices_demands[device.id]
 end
 
+json.androidAppUrl Sidekiq.redis { |c| c.get("androidAppUrl") }
+json.iosAppUrl Sidekiq.redis { |c| c.get("iosAppUrl") }
+
 json.pagy pagy

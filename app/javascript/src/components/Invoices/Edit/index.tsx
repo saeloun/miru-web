@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
+
+import dayjs from "dayjs";
 import { useParams, useNavigate } from "react-router-dom";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clientsApi from "apis/clients";
 import invoicesApi from "apis/invoices";
-import dayjs from "dayjs";
+// import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
 import InvoiceTable from "./InvoiceTable";
 import InvoiceTotal from "./InvoiceTotal";
+
 import { unmapLineItems } from "../../../mapper/editInvoice.mapper";
 import { generateInvoiceLineItems } from "../common/utils";
 import CompanyInfo from "../CompanyInfo";
@@ -30,23 +33,17 @@ const EditInvoice = () => {
   const [amountPaid, setAmountPaid] = useState<any>(0);
   const [discount, setDiscount] = useState<any>(0);
   const [tax, setTax] = useState<any>(0);
-  const [issueDate, setIssueDate] = useState();
-  const [dueDate, setDueDate] = useState();
-
-  const addKeyToLineItems = items => (
-    items.map((item, index) => {
-      item["key"] = index;
-      return item;
-    })
-  );
+  const [issueDate, setIssueDate] = useState(new Date());
+  const today = new Date();
+  const [dueDate, setDueDate] = useState(today.setMonth(issueDate.getMonth() + 1));
 
   const fetchInvoice = async (navigate, getInvoiceDetails) => {
     try {
       const res = await invoicesApi.editInvoice(params.id);
       getInvoiceDetails(res.data);
       setSelectedLineItems(unmapLineItems(res.data.invoiceLineItems));
-      setLineItems(addKeyToLineItems(res.data.lineItems));
       setAmount(res.data.amount);
+      setInvoiceNumber(res.data.invoiceNumber);
       setDiscount(res.data.discount);
       setSelectedClient(res.data.client);
       setAmountDue(res.data.amountDue);
@@ -63,7 +60,7 @@ const EditInvoice = () => {
       const { address, phone, email, id: value, name: label } = res.data.client;
 
       setSelectedClient({ address, email, label, phone, value });
-      setLineItems(addKeyToLineItems(res.data.lineItems));
+      setLineItems([]);
     } catch (e) {
       navigate("/invoices/error");
       return {};
@@ -71,6 +68,7 @@ const EditInvoice = () => {
   };
 
   useEffect(() => {
+    // sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     fetchInvoice(navigate, getInvoiceDetails);
@@ -121,7 +119,7 @@ const EditInvoice = () => {
             setDueDate={setDueDate}
             issueDate={issueDate || invoiceDetails.issueDate}
             setIssueDate={setIssueDate}
-            invoiceNumber={invoiceNumber || invoiceDetails.invoiceNumber}
+            invoiceNumber={invoiceNumber}
             setInvoiceNumber={setInvoiceNumber}
             reference={reference}
             optionSelected={true}
@@ -129,6 +127,8 @@ const EditInvoice = () => {
           />
           <div className="pl-10 py-5">
             <InvoiceTable
+              currency={invoiceDetails.company.currency}
+              selectedClient={selectedClient || invoiceDetails.client}
               lineItems={lineItems}
               setLineItems={setLineItems}
               selectedLineItems={selectedLineItems}

@@ -1,4 +1,5 @@
 import React from "react";
+
 import { currencyFormat } from "helpers/currency";
 
 const InvoiceTotalSummary = ({ invoice, company, lineItems }) => {
@@ -15,7 +16,7 @@ const InvoiceTotalSummary = ({ invoice, company, lineItems }) => {
               Sub total
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
-              {subTotal}
+              {currencyFormat({ baseCurrency: company.base_currency, amount: parseFloat(subTotal).toFixed(2) })}
             </td>
           </tr>
           <tr
@@ -23,7 +24,9 @@ const InvoiceTotalSummary = ({ invoice, company, lineItems }) => {
             <td className="py-2 pr-10 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
               Discount
             </td>
-            <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">{discount}</td>
+            <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
+              {currencyFormat({ baseCurrency: company.base_currency, amount: parseFloat(discount).toFixed(2) })}
+            </td>
           </tr>
           <tr>
             <td className="pt-4 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">

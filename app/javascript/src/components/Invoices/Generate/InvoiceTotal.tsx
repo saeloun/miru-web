@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { currencyFormat } from "helpers/currency";
+
 import { PencilSimple, DotsThreeVertical } from "phosphor-react";
+
+import { currencyFormat } from "helpers/currency";
 
 import DiscountMenu from "./DiscountMenu";
 
@@ -41,7 +43,9 @@ const InvoiceTotal = ({
   const getDiscount = () => {
     if (showDiscount && discount) {
       return (
-        <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">{discount}</td>
+        <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
+          {currencyFormat({ baseCurrency: currency, amount: parseFloat(discount).toFixed(2) })}
+        </td>
       );
     }
     else if (addDiscount) {
@@ -103,7 +107,7 @@ const InvoiceTotal = ({
               Sub total
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
-              {subTotal}
+              {currencyFormat({ baseCurrency: currency, amount: subTotal.toFixed(2) })}
             </td>
           </tr>
           <tr

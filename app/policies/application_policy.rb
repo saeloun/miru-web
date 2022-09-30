@@ -15,6 +15,10 @@ class ApplicationPolicy
     end
   end
 
+  def record_belongs_to_user?
+    user.id == record.user_id
+  end
+
   def user_under_sales_department?
     user.having_department?(17)
   end

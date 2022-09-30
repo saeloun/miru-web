@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
+
 import dayjs from "dayjs";
+
 import Footer from "./Footer";
 import Header from "./Header";
 import Table from "./Table";
+
 import fetchNewLineItems from "../api/generateInvoice";
 
 const MultipleEntriesModal = ({
   selectedClient,
-  setSelectedOption,
   selectedOption,
+  setSelectedOption,
   setMultiLineItemModal
 }) => {
 
@@ -56,7 +59,7 @@ const MultipleEntriesModal = ({
       setPageNumber(pageNumber + 1);
       const items = res.data.new_line_item_entries.map(item => ({
         ...item, checked: allCheckboxSelected,
-        lineTotal: (Number(item.qty) / 60 * Number(item.rate))
+        lineTotal: ((Number(item.quantity) / 60 * Number(item.rate)).toFixed(2))
       }));
       const mergedItems = [...items, ...lineItems];
       const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
@@ -71,7 +74,7 @@ const MultipleEntriesModal = ({
       const items = res.data.new_line_item_entries.map(item => ({
         ...item,
         checked: allCheckboxSelected,
-        lineTotal: (Number(item.qty) / 60 * Number(item.rate))
+        lineTotal: ((Number(item.quantity) / 60 * Number(item.rate)).toFixed(2))
       }));
       const mergedItems = [...items, ...lineItems];
       const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
@@ -91,7 +94,7 @@ const MultipleEntriesModal = ({
 
   return (
     <div style={{ background: "rgba(29, 26, 49,0.6)" }} className="px-52 py-20 w-full h-full fixed inset-0 flex justify-center z-50">
-      <div className="bg-white rounded-lg w-full h-128 flex flex-col justify-between">
+      <div className="bg-white rounded-lg w-full h-160 flex flex-col justify-between">
         <Header
           setMultiLineItemModal={setMultiLineItemModal}
         />

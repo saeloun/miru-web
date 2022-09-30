@@ -9,11 +9,22 @@ class InternalApi::V1::SpaceUsagesController < InternalApi::V1::ApplicationContr
   # after_action :verify_policy_scoped, only: [:index]
 
   def index
+    authorize SpaceUsage
+
+    is_admin = current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
+    employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
+
     space_usages = SpaceUsage.during(
       params[:from],
       params[:to]).order(id: :desc)
     entries = formatted_entries_by_date(space_usages)
-    render json: { entries:, departments: User::DEPARTMENT_OPTIONS }, status: :ok
+    render json: {
+      entries:,
+      employees:,
+      departments: User::DEPARTMENT_OPTIONS,
+      space_codes: SpaceUsage::SPACE_CODE_OPTIONS,
+      purpose_codes: SpaceUsage::PURPOSE_CODE_OPTIONS
+    }, status: :ok
   end
 
   def create

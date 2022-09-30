@@ -1,8 +1,0 @@
-
-<div class="max-w-6xl mx-auto px-2 md:px-11 font-manrope" x-data="{ 'isDialogOpen': <%= keep_new_consultancy_dialog_open %> }" @keydown.escape="isDialogOpen = false">
-  <div>
-    <%= react_component("Recruitments/RouteConfig", {
-        isAdminUser: current_user.has_role?(:owner, current_user.current_workspace) || current_user.has_role?(:admin, current_user.current_workspace)
-    }) %>
-  </div>
-</div>

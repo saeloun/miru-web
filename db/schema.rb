@@ -220,6 +220,23 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_16_105656) do
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
+  create_table "invitations", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "sender_id", null: false
+    t.string "recipient_email", null: false
+    t.string "token", null: false
+    t.datetime "accepted_at"
+    t.datetime "expired_at"
+    t.string "first_name"
+    t.string "last_name"
+    t.integer "role", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_invitations_on_company_id"
+    t.index ["sender_id"], name: "index_invitations_on_sender_id"
+    t.index ["token"], name: "index_invitations_on_token", unique: true
+  end
+
   create_table "invoice_line_items", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -250,6 +267,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_16_105656) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "external_view_key"
+    t.jsonb "payment_infos", default: {}
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
@@ -369,6 +387,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_16_105656) do
     t.index ["discarded_at"], name: "index_leads_on_discarded_at"
     t.index ["reporter_id"], name: "index_leads_on_reporter_id"
     t.index ["updated_by_id"], name: "index_leads_on_updated_by_id"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.date "transaction_date", null: false
+    t.text "note"
+    t.decimal "amount", precision: 20, scale: 2, default: "0.0"
+    t.integer "status", null: false
+    t.integer "transaction_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_payments_on_invoice_id"
   end
 
   create_table "payments_providers", force: :cascade do |t|
@@ -517,14 +547,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_16_105656) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "current_workspace_id"
-    t.string "invitation_token"
-    t.datetime "invitation_created_at"
-    t.datetime "invitation_sent_at"
-    t.datetime "invitation_accepted_at"
-    t.integer "invitation_limit"
-    t.string "invited_by_type"
-    t.bigint "invited_by_id"
-    t.integer "invitations_count", default: 0
     t.datetime "discarded_at"
     t.integer "department_id"
     t.string "personal_email_id"
@@ -545,9 +567,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_16_105656) do
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["engage_updated_by_id"], name: "index_users_on_engage_updated_by_id"
-    t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
-    t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
-    t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["slack_member_id"], name: "index_users_on_slack_member_id", unique: true
   end
@@ -589,6 +608,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_16_105656) do
   add_foreign_key "engagement_timestamps", "users"
   add_foreign_key "engagement_timestamps", "users", column: "engage_updated_by_id"
   add_foreign_key "identities", "users"
+  add_foreign_key "invitations", "companies"
+  add_foreign_key "invitations", "users", column: "sender_id"
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"
@@ -604,6 +625,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_16_105656) do
   add_foreign_key "leads", "users", column: "created_by_id"
   add_foreign_key "leads", "users", column: "reporter_id"
   add_foreign_key "leads", "users", column: "updated_by_id"
+  add_foreign_key "payments", "invoices"
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "previous_employments", "users"
   add_foreign_key "project_members", "projects"

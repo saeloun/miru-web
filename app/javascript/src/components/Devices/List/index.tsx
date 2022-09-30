@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from "react";
+
+import { GooglePlayLogo, AppStoreLogo, PaperPlaneTilt, XCircle } from "phosphor-react";
 import { useCookies } from "react-cookie";
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import devicesApi from "apis/devices";
 import ConfirmDialog from "common/Modal/ConfirmDialog";
 import Pagination from "common/Pagination";
 import Table from "common/Table";
-import { GooglePlayLogo, AppStoreLogo, PaperPlaneTilt, XCircle } from "phosphor-react";
+
 import EditEntry from "./EditEntry";
 import FilterSideBar from "./FilterSideBar";
 // import Header from "./Header";
-import { TOASTER_DURATION } from "../../../constants/index";
 import './style.scss';
 
-const Devices = ({ isAdminUser, androidAppUrl, iosAppUrl }) => {
+import { TOASTER_DURATION } from "../../../constants/index";
+
+const Devices = ( { isAdminUser, _companyRole, _user, _company } ) => {
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState<boolean>(false);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | undefined>();
@@ -23,6 +27,7 @@ const Devices = ({ isAdminUser, androidAppUrl, iosAppUrl }) => {
   const [rememberFilter, setRememberFilter] = useCookies();
   const [deviceData, setDeviceData] = useState<any>([{}]);
   const [pagy, setPagy] = React.useState<any>(null);
+  const [appUrl, setAppUrl] = React.useState<any>({ androidAppUrl: null, iosAppUrl: null });
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = React.useState<any>({
     page: searchParams.get("page") || 1,
@@ -37,23 +42,22 @@ const Devices = ({ isAdminUser, androidAppUrl, iosAppUrl }) => {
       .then((res) => {
         setDeviceData(res.data.devices);
         setPagy(res.data.pagy);
+        setAppUrl({
+          androidAppUrl: res.data.androidAppUrl,
+          iosAppUrl: res.data.iosAppUrl,
+        });
       });
   };
+
+  useEffect(() => {
+    setAuthHeaders();
+    registerIntercepts();
+  }, []);
 
   useEffect(() => {
     fetchDevices();
     setSearchParams(params);
   }, [params.page]);
-
-  useEffect(() => {
-    setSearchParams(params);
-  }, [params])
-
-  useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
-    fetchDevices();
-  }, []);
 
   const tableHeader = [
     {
@@ -192,10 +196,10 @@ const Devices = ({ isAdminUser, androidAppUrl, iosAppUrl }) => {
         <span className="inline-block">
           {/* <h2 className="header__title">Devices</h2> */}
           <span className="inline-block align-middle">Download Apps :</span>
-          { androidAppUrl && <a href={ androidAppUrl } target="_blank" className="inline-block align-middle text-col-han-app-1000" rel="noreferrer">
+          { appUrl.androidAppUrl && <a href={ appUrl.androidAppUrl } target="_blank" className="inline-block align-middle text-col-han-app-1000" rel="noreferrer">
             <GooglePlayLogo className="m-2" size={30} />
           </a>}
-          { iosAppUrl && <a href={ iosAppUrl } target="_blank" className="inline-block align-middle text-col-han-app-1000" rel="noreferrer">
+          { appUrl.iosAppUrl && <a href={ appUrl.iosAppUrl } target="_blank" className="inline-block align-middle text-col-han-app-1000" rel="noreferrer">
             <AppStoreLogo className="m-2" size={30} />
           </a>}
         </span>

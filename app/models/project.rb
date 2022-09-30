@@ -42,34 +42,21 @@ class Project < ApplicationRecord
   after_discard :discard_project_members
 
   def project_team_member_details(time_frame)
-    members = project_members.pluck(:user_id, :hourly_rate).to_h
     entries = timesheet_entries.includes(:user)
-      .where(user_id: members.keys, work_date: range_from_timeframe(time_frame))
+      .where(user_id: project_members.pluck(:user_id), work_date: range_from_timeframe(time_frame))
       .select(:user_id, "SUM(duration) as duration")
       .group(:user_id)
 
-    if entries.empty?
-      project_members.map do |member|
-        {
-          id: member.user_id,
-          name: member.full_name,
-          formatted_hourly_rate: format_amount(member.hourly_rate),
-          minutes_logged: 0,
-          formatted_cost: format_amount(0)
-        }
-      end
-    else
-      entries.map do |entry|
-        hourly_rate = members[entry.user_id]
-        cost = (entry.duration / 60) * hourly_rate
-        {
-          id: entry.user_id,
-          name: entry.user.full_name,
-          formatted_hourly_rate: format_amount(hourly_rate),
-          minutes_logged: entry.duration,
-          formatted_cost: format_amount(cost)
-        }
-      end
+    project_members.map do |member|
+      entry = entries.find { |entry| entry.user_id == member.user_id }
+      cost = calculate_cost(entry&.duration.presence || 0, member.hourly_rate)
+      {
+        id: member.user_id,
+        name: member.full_name,
+        hourly_rate: member.hourly_rate,
+        minutes_logged: entry&.duration.presence || 0,
+        cost:
+      }
     end
   end
 
@@ -111,9 +98,31 @@ class Project < ApplicationRecord
     FormatAmountService.new(client.company.base_currency, amount).process
   end
 
+  def self.search_all_projects_by_name(search_term, company_id)
+    search_term = search_term.downcase.strip
+    search_term = search_term.gsub(/\s+/, "%")
+    search_term = "#{search_term}%"
+    projects = User.joins(
+      "JOIN project_members ON users.id = project_members.user_id
+      JOIN projects ON projects.id = project_members.project_id
+      JOIN clients ON projects.client_id = clients.id"
+    ).where(
+      "clients.company_id = ?
+      AND (
+      lower(projects.name) LIKE ?
+      OR lower(clients.name) LIKE ?
+      OR lower(concat(users.first_name, ' ', users.last_name)) LIKE ?
+      )", company_id, search_term, search_term, search_term
+    ).select("DISTINCT projects.id, projects.name, clients.name AS client_name")
+  end
+
   private
 
     def discard_project_members
       project_members.discard_all
+    end
+
+    def calculate_cost(duration, hourly_rate)
+      (duration.to_f / 60) * hourly_rate
     end
 end

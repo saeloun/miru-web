@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
+import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+
 import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader/index";
-import { ApiStatus as PaymentSettingsStatus } from "constants/index";
+// import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "../../Header";
 
 const Connect = require("../../../../../../assets/images/Connect.svg");
 const connectedCheck = require("../../../../../../assets/images/connected_check.svg");
-const Connect_Paypal = require("../../../../../../assets/images/ConnectPaypal.svg");
-const Paypal_Logo = require("../../../../../../assets/images/PaypalLogo.svg");
+// const Connect_Paypal = require("../../../../../../assets/images/ConnectPaypal.svg");
+// const Paypal_Logo = require("../../../../../../assets/images/PaypalLogo.svg");
 const Stripe_Logo = require("../../../../../../assets/images/stripe_logo.svg");
 
 const PaymentSettings = () => {
@@ -78,7 +80,7 @@ const PaymentSettings = () => {
                       </button>
                   }
                 </div>
-                <div className="h-36 p-5 mt-6 bg-white flex justify-between items-center">
+                {/* <div className="h-36 p-5 mt-6 bg-white flex justify-between items-center">
                   <div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
                     <img src={Paypal_Logo} />
                   </div>
@@ -88,7 +90,7 @@ const PaymentSettings = () => {
                   <button>
                     <img src={Connect_Paypal} className="pr-5" />
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

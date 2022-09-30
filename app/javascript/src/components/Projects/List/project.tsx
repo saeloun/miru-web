@@ -1,7 +1,10 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
-import { minutesToHHMM } from "helpers/hhmm-parser";
+
 import { Pen, Trash } from "phosphor-react";
+import { useNavigate } from "react-router-dom";
+
+import { minutesToHHMM } from "helpers/hhmm-parser";
+
 import { IProject } from "../interface";
 
 export const Project = ({
@@ -38,13 +41,13 @@ export const Project = ({
       className={`last:border-b-0 ${grayColor}`}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-      onClick={() => projectClickHandler(id)}
+      onClick={() => isAdminUser ? projectClickHandler(id) : () => {}} // eslint-disable-line
     >
       <td className="table__cell text-base">
         <div className="flex items-center justify-between">
           {name}
         </div>
-        <p className="max-h-32 overflow-scroll text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
+        <p className="max-h-32 overflow-auto text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
           {clientName}
         </p>
       </td>

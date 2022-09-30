@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
+
+import { CircleWavyWarning, Eraser } from "phosphor-react";
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import ReactTooltip from "react-tooltip";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import engagements from "apis/engagements";
 import Pagination from "common/Pagination";
 import Table from "common/Table";
-import { CircleWavyWarning, Eraser } from "phosphor-react";
+
 import Tab from "./../Tab";
 import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
@@ -14,9 +17,12 @@ import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapEngagementList, unmapEngagementDetails } from "../../../mapper/engagement.mapper";
 
-const Engagements = ({ isAdminUser, engagementOptions, currentWeekCode, currentWeekDueAt }) => {
+const Engagements = ( { isAdminUser, _companyRole, _user, _company } ) => {
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
   const [engagementData, setEngagementData] = useState<any>([{}]);
+  const [engagementOptions, setEngagementOptions] = useState<any>([]);
+  const [currentWeekCode, setCurrentWeekCode] = useState<string>(null);
+  const [currentWeekDueAt, setCurrentWeekDueAt] = useState<string>(null);
   const [pagy, setPagy] = React.useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = React.useState<any>({
@@ -31,20 +37,23 @@ const Engagements = ({ isAdminUser, engagementOptions, currentWeekCode, currentW
     engagements.get(queryParams())
       .then((res) => {
         const sanitized = unmapEngagementList(res);
+        setEngagementOptions(sanitized.engagementOptions);
+        setCurrentWeekCode(sanitized.currentWeekCode);
+        setCurrentWeekDueAt(sanitized.currentWeekDueAt);
         setEngagementData(sanitized.list);
         setPagy(res.data.pagy);
       });
   };
 
   useEffect(() => {
-    fetchEngagements();
-    setSearchParams(params);
-  }, [params])
-
-  useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
   }, []);
+
+  useEffect(() => {
+    fetchEngagements();
+    setSearchParams(params);
+  }, [params])
 
   const tableHeader = [
     {
@@ -194,12 +203,12 @@ const Engagements = ({ isAdminUser, engagementOptions, currentWeekCode, currentW
           className={
             "sm:flex mt-6 mb-3 sm:items-center sm:justify-between"
           }>
-          <span className="">
+          { currentWeekCode && <span className="">
             <h3 className="text-xs">
               Please update the engagement for your team before the due date for week <b>#{currentWeekCode.slice(0, -4)}</b>.
             </h3>
             <h3 className="text-xs font-normal tracking-widest text-red-600"> Due date is {currentWeekDueAt}</h3>
-          </span>
+          </span> }
         </div>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

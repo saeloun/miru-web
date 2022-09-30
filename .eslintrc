@@ -84,16 +84,22 @@
       "react/prop-types": 0,
       "react/jsx-key": 0,
       "import/order": ["error", {
-        "groups": ["external", "builtin", "internal", "sibling", "parent", "index"],
+        "newlines-between": "always",
+        "alphabetize": { "order": "asc", "caseInsensitive": true },
+        "warnOnUnassignedImports": true,
+        "groups": ["builtin", "external", "internal", "sibling", "parent", "index", "object", "type"],
         "pathGroups": [
-          { "pattern": "prop-types", "group": "external", "position": "before"},
-          { "pattern": "react-*", "group": "external", "position": "before"},
-          { "pattern": "react", "group": "external", "position": "before"},
-          { "pattern": "components", "group": "internal" },
-          { "pattern": "assets/**", "group": "internal", "position": "after" }
+          { "pattern": "react", "group": "builtin", "position": "before" },
+          { "pattern": "common/**", "group": "internal" },
+          { "pattern": "context/**", "group": "internal" },
+          { "pattern": "components/**", "group": "internal" },
+          { "pattern": "assets/**", "group": "internal" },
+          { "pattern": "apis/**", "group": "internal" },
+          { "pattern": "constants/**", "group": "internal", "position": "after" },
+          { "pattern": "utils/**", "group": "internal" },
+          { "pattern": "helpers/**", "group": "internal" }
         ],
-        "pathGroupsExcludedImportTypes": ["builtin"],
-        "alphabetize": { "order": "asc", "caseInsensitive": true }
+        "pathGroupsExcludedImportTypes": ["builtin"]
       }]
     }
   }

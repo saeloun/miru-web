@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationController
+  def dashboard
+    authorize :index, policy_class: EngagementPolicy
+
+    render json: {
+      embed_url: ENV.fetch("POWERBI_EMBED_URL", nil)
+    }, status: :ok
+  end
+
   def index
     authorize :index, policy_class: EngagementPolicy
 
@@ -19,7 +27,12 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
         .ransack(params[:q]).result(distinct: true),
       items: 30)
     users = users.map { |user| serialize_user(user) }
-    render json: { users:, pagy: pagy_metadata(pagy) }, status: :ok
+    render json: {
+      users:, pagy: pagy_metadata(pagy),
+      engagement_options: EngagementTimestamp::ENGAGEMENT_OPTIONS,
+      current_week_code: EngagementTimestamp.current_week_code,
+      current_week_due_at: EngagementTimestamp.current_week_due_at.to_s
+    }, status: :ok
   end
 
   def update

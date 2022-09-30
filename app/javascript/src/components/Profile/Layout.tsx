@@ -1,39 +1,49 @@
 import React from "react";
-import { useEffect } from "react";
-import { BrowserRouter } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import { useState } from "react";
 
 import { TOASTER_DURATION } from "constants/index";
+
+import { ToastContainer } from "react-toastify";
+
+import EntryContext from "./context/EntryContext";
 import RouteConfig from "./RouteConfig";
 import SideNav from "./SubNav";
 
-const Layout = ({ isAdmin, isTeamLead, company, userDetails }) => {
+const Layout = ( { isAdminUser, isTeamLead, user, company } ) => {
+  const [settingsStates, setSettingsStates] = useState({
+    profileSettings: { firstName: user.first_name, lastName: user.last_name, email: user.email },
+    organizationSettings: {},
+    bankAccDetails: {},
+    paymentSettings: {},
+    billing: {}
+  });
 
-  useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
-  }, []);
+  const setUserState = (key, value) => {
+    setSettingsStates({ ...settingsStates, ...{ [key]: { ...settingsStates[key], ...value } } });
+  };
 
   return (
     <React.Fragment>
-      <BrowserRouter>
+      <EntryContext.Provider value={{
+        ...settingsStates,
+        setUserState
+      }}>
         <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
           <h2 className="header__title">Settings</h2>
         </div>
         <div className="flex mt-5 mb-10">
           <SideNav
-            isAdmin={isAdmin}
+            isAdmin={isAdminUser}
             isTeamLead={isTeamLead}
             company={company}
-            firstName={userDetails.firstName}
-            lastName={userDetails.lastName}
-            email={userDetails.email}
+            firstName={settingsStates.profileSettings?.firstName}
+            lastName={settingsStates.profileSettings?.lastName}
+            email={settingsStates.profileSettings?.email}
           />
-          <RouteConfig isAdmin={isAdmin} isTeamLead={isTeamLead} userDetails={userDetails} />
+          <RouteConfig isAdmin={isAdminUser} isTeamLead={isTeamLead} userDetails={company} />
         </div>
         <ToastContainer autoClose={TOASTER_DURATION} />
-      </BrowserRouter>
+      </EntryContext.Provider>
     </React.Fragment>
   );
 };

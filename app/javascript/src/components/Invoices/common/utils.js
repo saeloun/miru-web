@@ -9,8 +9,10 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
       description: item.description,
       date: dayjs(item.date).format("DD/MM/YYYY"),
       rate: item.rate,
-      quantity: item.qty,
-      timesheet_entry_id: item.time_sheet_entry ? item.time_sheet_entry : item.timesheet_entry_id,
+      quantity: Number(item.quantity),
+      timesheet_entry_id: item.time_sheet_entry
+        ? item.time_sheet_entry
+        : item.timesheet_entry_id,
       _destroy: !!item._destroy
     }))
   );
@@ -22,7 +24,7 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
       description: item.description,
       date: dayjs(item.date).format("DD/MM/YYYY"),
       rate: item.rate,
-      quantity: Number(item.qty) * 60,
+      quantity: Number(item.quantity),
       timesheet_entry_id: item.time_sheet_entry,
       _destroy: !!item._destroy
     }))
@@ -32,7 +34,7 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
 };
 
 export const getMaxIdx = (arr) => {
-  const ids = arr.map(object => object.idx);
+  const ids = arr.map((object) => object.idx);
 
   if (ids.length > 0) {
     return Math.max(...ids);

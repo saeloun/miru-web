@@ -10,6 +10,6 @@ const download = (type, queryParams) => axios({
   responseType: "blob"
 });
 
-const reports = { get, download };
+const reportsApi = { get, download };
 
-export default reports;
+export default reportsApi;

@@ -5,15 +5,17 @@ import React, {
   useRef,
   useState
 } from "react";
+
+import { ApiStatus as InvoiceStatus } from "constants/index";
+
+import cn from "classnames";
+import { X } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
-import cn from "classnames";
 import Toastr from "common/Toastr";
 import useOutsideClick from "helpers/outsideClick";
-import { X } from "phosphor-react";
 
-import { ApiStatus as InvoiceStatus } from "constants/index";
 import {
   isEmailValid,
   emailSubject,
@@ -231,6 +233,7 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
                         status === InvoiceStatus.SUCCESS
                     }
                   )}
+                  data-cy ="send-email"
                   disabled={isDisabled(status)}
                 >
                   {buttonText(status)}

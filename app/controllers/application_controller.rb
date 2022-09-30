@@ -2,7 +2,7 @@
 
 class ApplicationController < ActionController::Base
   include DeviseWhitelist
-  include PunditHelper
+  include PunditConcern
   include ErrorHandler
   include CurrentCompanyConcern
   include Pagy::Backend

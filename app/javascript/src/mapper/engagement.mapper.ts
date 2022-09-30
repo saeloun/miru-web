@@ -26,7 +26,10 @@ const getList = (input) => input.users.map((i) => unmapEngagementDetails(i));
 const unmapEngagementList = (input) => {
   const { data } = input;
   return {
-    list: getList(data)
+    list: getList(data),
+    engagementOptions: data.engagement_options,
+    currentWeekCode: data.current_week_code,
+    currentWeekDueAt: data.current_week_due_at,
   };
 };
 

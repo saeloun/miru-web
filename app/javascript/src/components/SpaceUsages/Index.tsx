@@ -1,23 +1,25 @@
 /* eslint-disable no-unexpected-multiline */
 import React from "react";
-import { ToastContainer } from "react-toastify";
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import companyUsersApi from "apis/company-users";
-import spaceUsagesApi from "apis/space-usages";
+
+import { TOASTER_DURATION } from "constants/index";
+
 import * as dayjs from "dayjs";
 import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
-import { isInThePast } from "helpers/date-parser";
 import _ from "lodash";
+import { ToastContainer } from "react-toastify";
 
-import { TOASTER_DURATION } from "constants/index";
+import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import companyUsersApi from "apis/company-users";
+import spaceUsagesApi from "apis/space-usages";
+import { isInThePast } from "helpers/date-parser";
 
 import CurrentHourLine from "./CurrentHourLine";
 import DatesInWeek from "./DatesInWeek";
 import EditEntry from "./EditEntry";
 import EntryCardDayView from "./EntryCardDayView";
-import './style.scss';
 import NewEntryCardDayView from "./NewEntryCardDayView";
+import './style.scss';
 
 const { useState, useEffect } = React;
 dayjs.extend(updateLocale);
@@ -29,19 +31,15 @@ dayjs.updateLocale("en", { monthShort: monthsAbbr });
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
 
-const TimeReserving: React.FC<Iprops> = ({
-  entries,
-  userId,
-  userDepartmentId,
-  departments,
-  spaceCodes,
-  purposeCodes,
-}) => {
+const SpaceUsages = ( { _isAdminUser, _companyRole, user, _company } ) => {
   const [dayInfo, setDayInfo] = useState<any[]>([]);
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
   const [weekDay, setWeekDay] = useState<number>(0);
-  const [entryList, setEntryList] = useState<object>(entries);
+  const [spaceCodes, setSpaceCodes] = useState<any[]>([]);
+  const [purposeCodes, setPurposeCodes] = useState<any[]>([]);
+  const [departments, setDepartments] = useState<any[]>([]);
+  const [entryList, setEntryList] = useState<any[]>([]);
   const [selectedFullDate, setSelectedFullDate] = useState<string>(
     dayjs().format("YYYY-MM-DD")
   );
@@ -94,7 +92,16 @@ const TimeReserving: React.FC<Iprops> = ({
     setAuthHeaders();
     registerIntercepts();
     const currentEmployeeEntries = {};
-    currentEmployeeEntries[userId] = entries;
+    currentEmployeeEntries[user.id] = entryList;
+
+    const from = dayjs()
+      .weekday(weekDay)
+      .format("YYYY-MM-DD");
+    const to = dayjs()
+      .weekday(weekDay + 7)
+      .format("YYYY-MM-DD");
+    fetchEntries(from, to);
+
     setAllEmployeesEntries(currentEmployeeEntries);
     fetchCurrentWorkspaceUsers();
     const timer = setInterval(() => {
@@ -139,7 +146,7 @@ const TimeReserving: React.FC<Iprops> = ({
     if (selectedSpaceId && selectedStartTime && editEntryId === 0) {
       spaces[selectedSpaceId] = [{
         id: 0,
-        user_id: userId,
+        user_id: user.id,
         start_duration: selectedStartTime,
         end_duration: selectedEndTime,
         space_code: selectedSpaceId.toString()
@@ -149,7 +156,7 @@ const TimeReserving: React.FC<Iprops> = ({
     return () => {
       setNewEntry({});
     }
-  }, [selectedSpaceId, selectedStartTime, selectedEndTime, userId, editEntryId])
+  }, [spaceCodes, selectedSpaceId, selectedStartTime, selectedEndTime, editEntryId])
 
   const handleWeekInfo = () => {
     const daysInWeek = Array.from(Array(7).keys()).map((weekCounter) => {
@@ -174,10 +181,14 @@ const TimeReserving: React.FC<Iprops> = ({
   const fetchEntries = async (from: string, to: string) => {
     const res = await spaceUsagesApi.list(from, to, 1);
     if (res.status >= 200 && res.status < 300) {
+      if (spaceCodes.length == 0) setSpaceCodes(res.data.space_codes)
+      if (purposeCodes.length == 0) setPurposeCodes(res.data.purpose_codes)
+      if (departments.length == 0) setDepartments(res.data.departments)
+
       const ns = { ...allEmployeesEntries };
-      ns[userId] = { ...ns[userId], ...res.data.entries };
+      ns[user.id] = { ...ns[user.id], ...res.data.entries };
       setAllEmployeesEntries(ns);
-      setEntryList(ns[userId]);
+      setEntryList(ns[user.id]);
       return true;
     } else {
       return false;
@@ -189,7 +200,7 @@ const TimeReserving: React.FC<Iprops> = ({
     if (!(res.status === 200)) return;
     const newValue = { ...entryList };
     newValue[selectedFullDate] = newValue[selectedFullDate].filter(e => e.id !== id);
-    setAllEmployeesEntries({ ...allEmployeesEntries, [userId]: newValue });
+    setAllEmployeesEntries({ ...allEmployeesEntries, [user.id]: newValue });
     setEntryList(newValue);
   };
 
@@ -264,12 +275,12 @@ const TimeReserving: React.FC<Iprops> = ({
       }, {});
     }
     setGroupingEntryList(spaces)
-  }, [entryList, selectedFullDate]);
+  }, [spaceCodes, entryList, selectedFullDate]);
 
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <div className="mx-auto md:px-20 font-manrope">
+      <div className="mx-auto font-manrope">
         <div>
           <div className="mb-1">
             <div className="flex items-center justify-between w-full h-10 bg-miru-han-purple-1000">
@@ -351,7 +362,7 @@ const TimeReserving: React.FC<Iprops> = ({
                     key={listIndex}
                     spaceUsages={value}
                     departments={departments}
-                    userDepartmentId={userDepartmentId}
+                    userDepartmentId={user.department_id}
                   />))
                 }
               </div>
@@ -386,7 +397,7 @@ const TimeReserving: React.FC<Iprops> = ({
       {editEntryId || newEntryView ? <EditEntry
         spaceCodes={spaceCodes}
         purposeCodes={purposeCodes}
-        selectedEmployeeId={userId}
+        selectedEmployeeId={user.id}
         fetchEntries={fetchEntries}
         setNewEntryView={setNewEntryView}
         selectedDateInfo={dayInfo[selectDate]}
@@ -412,29 +423,4 @@ const TimeReserving: React.FC<Iprops> = ({
   );
 };
 
-interface SpaceCodeProps {
-  id: number
-  name: string
-  alias: string
-}
-
-interface PurposeCodeProps {
-  id: number
-  name: string
-  alias: string
-}
-
-interface Iprops {
-  clients: [];
-  projects: object;
-  entries: object;
-  isAdmin: boolean;
-  userId: number;
-  userDepartmentId: number;
-  employees: [];
-  departments: [];
-  spaceCodes: SpaceCodeProps[];
-  purposeCodes: PurposeCodeProps[];
-}
-
-export default TimeReserving;
+export default SpaceUsages;

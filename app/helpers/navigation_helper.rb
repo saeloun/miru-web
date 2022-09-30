@@ -39,20 +39,20 @@ module NavigationHelper
     def nav_items
       [
         {
-          url: space_occupying_index_path,
+          url: "spaces",
           title: I18n.t("navbar.spaces"),
           permitted: Pundit.policy!(current_user, :space_usage).index?,
           data: { cy: "spaces-tab" }
         },
         {
-          url: time_tracking_index_path,
+          url: "/time-tracking",
           title: I18n.t("navbar.time_tracking"),
           permitted: Pundit.policy!(current_user, :timesheet_entry).index?,
           data: { cy: "time-tracking-tab" },
           other: true
         },
         {
-          url: devices_path,
+          url: "devices",
           title: I18n.t("navbar.devices"),
           permitted: Pundit.policy!(current_user, :device).index?,
           data: { cy: "devices-tab" }
@@ -66,40 +66,40 @@ module NavigationHelper
           data: { cy: "engagements-tab" }
         },
         {
-          url: leads_path,
+          url: "/leads",
           title: I18n.t("navbar.leads"),
           permitted: Pundit.policy!(current_user, :lead).index?,
           data: { cy: "leads-tab" }
         },
         {
-          url: team_index_path,
+          url: "/team",
           title: I18n.t("navbar.team"),
           permitted: Pundit.policy!(current_user, :team).index?,
           data: { cy: "team-tab" }
         },
         {
-          url: clients_path,
+          url: "/clients",
           title: I18n.t("navbar.clients"),
           permitted: Pundit.policy!(current_user, :client).index?,
           data: { cy: "clients-tab" },
           other: true
         },
         {
-          url: projects_path,
+          url: "/projects",
           title: I18n.t("navbar.projects"),
           permitted: Pundit.policy!(current_user, :project).index?,
           data: { cy: "projects-tab" },
           other: true
         },
         {
-          url: reports_path,
+          url: "/reports",
           title: I18n.t("navbar.reports"),
           permitted: Pundit.policy!(current_user, :report).index?,
           data: { cy: "reports-tab" },
           other: true
         },
         {
-          url: invoices_path,
+          url: "/invoices",
           title: I18n.t("navbar.invoices"),
           permitted: Pundit.policy!(current_user, :invoice).index?,
           data: { cy: "invoices-tab" },
@@ -112,13 +112,12 @@ module NavigationHelper
           data: { cy: "recruitment-tab" },
           other: true
         },
-        # TODO:- Temprary disabling this feature (navbar payment links)
-        # {
-        #   url: payments_path,
-        #   title: I18n.t("navbar.payments"),
-        #   permitted: Pundit.policy!(current_user, :payment).index?,
-        #   data: { cy: "payments-tab" }
-        # }
+        {
+          url: "/payments",
+          title: I18n.t("navbar.payments"),
+          permitted: Pundit.policy!(current_user, :payment).index?,
+          data: { cy: "payments-tab" }
+        }
       ]
     end
 

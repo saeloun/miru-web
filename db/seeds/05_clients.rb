@@ -2,12 +2,12 @@
 
 # Client Create Start
 microsoft = {
-  name: "Microsoft", email: "support@microsoft.com", phone: "+1 9999999991",
+  name: "Microsoft", email: "support@test-microsoft123.com", phone: "+1 9999999991",
   address: "California, USA"
 }
 
 flipkart = {
-  name: "Flipkart", email: "support@flipkart.com", phone: "+91 9999999992",
+  name: "Flipkart", email: "support@test-flipkart123.com", phone: "+91 9999999992",
   address: "Singapore"
 }
 wow = {

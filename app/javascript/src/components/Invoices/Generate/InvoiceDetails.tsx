@@ -1,8 +1,11 @@
 import React, { useState, useRef } from "react";
-import CustomDatePicker from "common/CustomDatePicker";
+
 import dayjs from "dayjs";
-import { currencyFormat } from "helpers/currency";
 import { PencilSimple } from "phosphor-react";
+
+import CustomDatePicker from "common/CustomDatePicker";
+import { currencyFormat } from "helpers/currency";
+
 import ClientSelection from "./ClientSelection";
 
 const InvoiceDetails = ({
@@ -54,7 +57,7 @@ const InvoiceDetails = ({
               <PencilSimple size={13} color="#1D1A31" />
             </button>
           </p>
-          {showDateOfIssuePicker && <CustomDatePicker handleChange={handleDatePickerChange} dueDate={dueDate} />}
+          {showDateOfIssuePicker && <CustomDatePicker handleChange={handleDatePickerChange} date={issueDate} />}
           <p className="font-normal text-base text-miru-dark-purple-1000">
             {getIssuedDate}
           </p>
@@ -66,7 +69,7 @@ const InvoiceDetails = ({
               <PencilSimple size={13} color="#1D1A31" />
             </button>
           </p>
-          {showDueDatePicker && <CustomDatePicker handleChange={handleDueDatePicker} dueDate={dueDate} />}
+          {showDueDatePicker && <CustomDatePicker handleChange={handleDueDatePicker} date={dueDate} />}
           <p className="font-normal text-base text-miru-dark-purple-1000">
             {getDueDate}
           </p>
@@ -78,7 +81,7 @@ const InvoiceDetails = ({
           <p className="font-normal text-xs text-miru-dark-purple-1000">
             Invoice Number
           </p>
-          <input type="text" value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} className="px-2 w-3/5"/>
+          <input type="text" value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} className="px-2 w-3/5" data-cy="invoice-number"/>
         </div>
         <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
           Reference

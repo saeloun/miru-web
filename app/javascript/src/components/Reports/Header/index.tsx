@@ -1,18 +1,20 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+
 import {
   CaretDown,
   FileCsv,
   FilePdf,
   Funnel,
-  PaperPlaneTilt,
   Printer,
   Share,
   X
 } from "phosphor-react";
+import { Link } from "react-router-dom";
+
 import { getReports } from "./fetchReport";
 import NavigationFilter from "./NavigationFilter";
+
 import { useEntry } from "../context/EntryContext";
 
 const leftArrow = require("../../../../images/back-arrow.svg");
@@ -23,11 +25,12 @@ const Header = ({
   showNavFilters,
   resetFilter,
   handleDownload,
-  type
+  type,
+  showExportButon
 }) => {
-  const { timeEntryReport, revenueByClientReport, currentReport } = useEntry();
+  const { timeEntryReport, revenueByClientReport, currentReport, outstandingOverdueInvoice } = useEntry();
 
-  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport });
+  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport, outstandingOverdueInvoice });
 
   const [showExportOptions, setShowExportOptions] = useState<boolean>(false);
 
@@ -49,60 +52,62 @@ const Header = ({
             {selectedReport.filterCounter > 0 && <sup className="filter__counter">{selectedReport.filterCounter}</sup>}
           </button>
         </div>
-        <div className="inline-flex">
-          <div className="px-3 relative">
-            <button
-              className={"border inline-flex justify-center rounded-md border-miru-han-purple-1000 p-2 bg-white text-miru-han-purple-1000 hover:bg-gray-50 menuButton__button"}
-              onClick={ () => setShowExportOptions(!showExportOptions) }
-            >
-              <Share className="" weight="bold" size={20} />
-              <p className="mx-2 uppercase text-base font-medium tracking-wider">Export</p>
-              <CaretDown size={20} weight={"bold"} />
-            </button>
-            {showExportOptions && (
-              <ul className="menuButton__wrapper">
-                <li>
-                  <button
-                    className="menuButton__list-item"
-                    onClick={() => {
-                      setShowExportOptions(false);
-                      handleDownload("csv");
-                    }}
-                  >
-                    <FileCsv size={16} color="#5B34EA" weight="bold" />
-                    <span className="ml-3">Export as CSV</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="menuButton__list-item"
-                    onClick={() => {
-                      setShowExportOptions(false);
-                      handleDownload("pdf");
-                    }}
-                  >
-                    <FilePdf size={16} color="#5B34EA" weight="bold" />
-                    <span className="ml-3">Export as PDF</span>
-                  </button>
-                </li>
-                <li>
-                  <button className="menuButton__list-item" onClick={ () => window.print() }>
-                    <Printer size={16} color="#5B34EA" weight="bold" />
-                    <span className="ml-3">Print</span>
-                  </button>
-                </li>
-              </ul>
-            )}
-          </div>
-          <div>
-            <button
+        {showExportButon && (
+          <div className="inline-flex">
+            <div className="px-3 relative">
+              <button
+                className={"border inline-flex justify-center rounded-md border-miru-han-purple-1000 p-2 bg-white text-miru-han-purple-1000 hover:bg-gray-50 menuButton__button"}
+                onClick={ () => setShowExportOptions(!showExportOptions) }
+              >
+                <Share className="" weight="bold" size={20} />
+                <p className="mx-2 uppercase text-base font-medium tracking-wider">Export</p>
+                <CaretDown size={20} weight={"bold"} />
+              </button>
+              {showExportOptions && (
+                <ul className="menuButton__wrapper">
+                  <li>
+                    <button
+                      className="menuButton__list-item"
+                      onClick={() => {
+                        setShowExportOptions(false);
+                        handleDownload("csv");
+                      }}
+                    >
+                      <FileCsv size={16} color="#5B34EA" weight="bold" />
+                      <span className="ml-3">Export as CSV</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="menuButton__list-item"
+                      onClick={() => {
+                        setShowExportOptions(false);
+                        handleDownload("pdf");
+                      }}
+                    >
+                      <FilePdf size={16} color="#5B34EA" weight="bold" />
+                      <span className="ml-3">Export as PDF</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button className="menuButton__list-item" onClick={ () => window.print() }>
+                      <Printer size={16} color="#5B34EA" weight="bold" />
+                      <span className="ml-3">Print</span>
+                    </button>
+                  </li>
+                </ul>
+              )}
+            </div>
+            <div>
+              {/* <button
               className="border inline-flex justify-center rounded-md border-miru-han-purple-1000 p-2 bg-white text-miru-han-purple-1000 hover:bg-gray-50"
             >
               <PaperPlaneTilt size={20} weight={"bold"} />
               <p className="mx-2 uppercase text-base font-medium tracking-wider">Share</p>
-            </button>
+            </button> */}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div>
         {

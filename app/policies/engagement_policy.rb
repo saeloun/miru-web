@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class EngagementPolicy < ApplicationPolicy
+  def dashboard?
+    can_access?
+  end
+
   def index?
     can_access?
   end

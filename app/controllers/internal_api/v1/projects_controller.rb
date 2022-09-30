@@ -28,7 +28,7 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
 
   def destroy
     authorize project
-    project.discard!
+    render json: { notice: I18n.t("projects.delete.success.message") }, status: :ok if project.discard!
   end
 
   private

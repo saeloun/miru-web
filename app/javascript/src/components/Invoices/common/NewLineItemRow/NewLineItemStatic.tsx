@@ -1,18 +1,22 @@
 import React, { useState } from "react";
+
 import dayjs from "dayjs";
 import { DotsThreeVertical, PencilSimple, Trash } from "phosphor-react";
 
+import { currencyFormat } from "helpers/currency";
+import { minutesToHHMM } from "helpers/hhmm-parser";
+
 const NewLineItemStatic = ({
+  currency,
   item,
   setEdit,
   handleDelete
 }) => {
   const [isSideMenuVisible, setSideMenuVisible] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
-  const quantity = item.qty || item.quantity;
-  const hoursLogged = (quantity / 60).toFixed(2);
+  const hoursLogged = minutesToHHMM(item.quantity);
   const date = dayjs(item.date).format("DD.MM.YYYY");
-  const totalRate = (quantity / 60) * item.rate;
+  const totalRate = Number(Number(item.quantity / 60) * Number(item.rate)).toFixed(2);
   const name = item.name || `${item.first_name} ${item.last_name}`;
   return (
     <tr className="invoice-items-row"
@@ -33,13 +37,13 @@ const NewLineItemStatic = ({
         {item.description}
       </td>
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-        {item.rate}
+        {currencyFormat({ baseCurrency: currency, amount: item.rate })}
       </td>
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
         {hoursLogged}
       </td>
       <td className="border-b-2 border-miru-gray-200 px-1 py-3 font-normal text-base text-miru-dark-purple-1000 text-right ">
-        {totalRate.toFixed(2)}
+        {currencyFormat({ baseCurrency: currency, amount: totalRate })}
       </td>
       <td className="w-10">
         {

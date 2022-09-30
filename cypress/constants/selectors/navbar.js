@@ -7,5 +7,6 @@ export const navbarSelectors = {
   clientsTab: dataCy("clients-tab"),
   projectsTab: dataCy("projects-tab"),
   invoiceTab: dataCy("invoices-tab"),
-  reportsTab: dataCy("reports-tab")
+  reportsTab: dataCy("reports-tab"),
+  spacesTab: dataCy("spaces-tab"),
 };

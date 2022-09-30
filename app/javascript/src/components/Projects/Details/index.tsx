@@ -1,15 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import projectAPI from "apis/projects";
-
-import AmountBoxContainer from "common/AmountBox";
-import ChartBar from "common/ChartBar";
-import Table from "common/Table";
-import { cashFormatter } from "helpers/cashFormater";
-import { currencySymbol } from "helpers/currencySymbol";
 import {
   ArrowLeft,
   DotsThreeVertical,
@@ -18,41 +8,25 @@ import {
   UsersThree,
   Trash
 } from "phosphor-react";
+import { useParams, useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+
+import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import projectAPI from "apis/projects";
+import AmountBoxContainer from "common/AmountBox";
+import ChartBar from "common/ChartBar";
+import Table from "common/Table";
+import { cashFormatter } from "helpers/cashFormater";
+import { currencySymbol } from "helpers/currencySymbol";
+import { minutesToHHMM } from "helpers/hhmm-parser";
+// import { sendGAPageView } from "utils/googleAnalytics";
+
 import EditMembersList from "./EditMembersList";
+
+import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapper } from "../../../mapper/project.mapper";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
-
-const getTableData = (project) => {
-  if (project) {
-    return project.members.map((member) => {
-      const hours = member.minutes / 60;
-      const hour = hours.toFixed(2);
-      return {
-        col1: (
-          <div className="text-base text-miru-dark-purple-1000">
-            {member.name}
-          </div>
-        ),
-        col2: (
-          <div className="text-base text-miru-dark-purple-1000 text-right">
-            {member.formattedHourlyRate}
-          </div>
-        ),
-        col3: (
-          <div className="text-base text-miru-dark-purple-1000 text-right">
-            {hour}
-          </div>
-        ),
-        col4: (
-          <div className="text-lg font-bold text-miru-dark-purple-1000 text-right">
-            {member.formattedCost}
-          </div>
-        )
-      };
-    });
-  }
-};
 
 const ProjectDetails = () => {
   const [editProjectData, setEditProjectData] = React.useState<any>(null);
@@ -79,11 +53,41 @@ const ProjectDetails = () => {
     }
   };
 
+  const currencySymb = currencySymbol(project?.currency);
+
   const handleAddProjectDetails = () => {
     fetchProject();
   };
 
+  const getTableData = (project) => {
+    if (project) {
+      return project.members.map((member) => ({
+        col1: (
+          <div className="text-base text-miru-dark-purple-1000">
+            {member.name}
+          </div>
+        ),
+        col2: (
+          <div className="text-base text-miru-dark-purple-1000 text-right">
+            {currencySymb}{member.hourlyRate}
+          </div>
+        ),
+        col3: (
+          <div className="text-base text-miru-dark-purple-1000 text-right">
+            {minutesToHHMM(member.minutes)}
+          </div>
+        ),
+        col4: (
+          <div className="text-lg font-bold text-miru-dark-purple-1000 text-right">
+            {currencySymb}{(Number(member.cost)).toFixed(2)}
+          </div>
+        )
+      }));
+    }
+  };
+
   useEffect(() => {
+    // sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     fetchProject(timeframe);
@@ -114,8 +118,6 @@ const ProjectDetails = () => {
       cssClass: "text-right" // accessor is the "key" in the data
     }
   ];
-
-  const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
 
   const amountBox = [{
     title: "OVERDUE",
@@ -151,9 +153,13 @@ const ProjectDetails = () => {
 
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
 
+  const backToProjects = () => {
+    navigate("/projects");
+  };
+
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="my-6">
         <div className="flex min-w-0 items-center justify-between">
           <div className="flex items-center">
@@ -168,13 +174,9 @@ const ProjectDetails = () => {
             <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
               {project?.name}
             </h2>
-            {project?.is_billable ? (
+            {project?.is_billable && (
               <span className="rounded-xl text-xs self-center  tracking-widest font-semibold px-1 bg-miru-han-purple-100 text-miru-han-purple-1000">
                 BILLABLE
-              </span>
-            ) :  (
-              <span className="rounded-xl text-xs self-center  tracking-widest font-semibold px-1 bg-miru-gray-1000">
-                NON BILLABLE
               </span>
             )}
           </div>
@@ -198,7 +200,7 @@ const ProjectDetails = () => {
                     }
                     className="menuButton__list-item"
                   >
-                    <Receipt size={16} color="#0033CC" weight="bold" />
+                    <Receipt size={16} color="#5B34EA" weight="bold" />
                     <span className="ml-3">Generate Invoice</span>
                   </button>
                 </li>
@@ -226,7 +228,7 @@ const ProjectDetails = () => {
                 <li>
                   <button
                     onClick={() => setShowDeleteDialog(true)}
-                    className="menuButton__list-item text-col-red-400"
+                    className="menuButton__list-item text-miru-red-400"
                   >
                     <Trash size={16} color="#E04646" weight="bold" />
                     <span className="ml-3">Delete Project</span>
@@ -260,7 +262,7 @@ const ProjectDetails = () => {
               THIS WEEK
             </option>
             <option className="text-miru-dark-purple-600" value="month">
-              This MONTH
+              THIS MONTH
             </option>
             <option className="text-miru-dark-purple-600" value="year">
               THIS YEAR
@@ -286,15 +288,16 @@ const ProjectDetails = () => {
           </div>
         </div>
       </div>
-      {showAddMemberDialog ? (
+      {showAddMemberDialog && (
         <EditMembersList
           setShowAddMemberDialog={setShowAddMemberDialog}
           addedMembers={project?.members}
           handleAddProjectDetails={handleAddProjectDetails}
           closeAddRemoveMembers={closeAddRemoveMembers}
           projectId={projectId}
+          currencySymbol={currencySymb}
         />
-      ) : null}
+      )}
       {showProjectModal && (
         <AddEditProject
           editProjectData={editProjectData}
@@ -306,6 +309,7 @@ const ProjectDetails = () => {
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}
           project={project}
+          fetchProjectList={backToProjects}
         />
       )}
     </>

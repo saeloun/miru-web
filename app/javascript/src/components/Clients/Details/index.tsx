@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+
+import { TOASTER_DURATION } from "constants/index";
+
 import { useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import clients from "apis/clients";
 
+import { setAuthHeaders, registerIntercepts } from "apis/axios";
+import clientApi from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
@@ -11,22 +14,21 @@ import AddEditProject from "components/Projects/Modals/AddEditProject";
 import DeleteProject from "components/Projects/Modals/DeleteProject";
 import { cashFormatter } from "helpers/cashFormater";
 import { currencySymbol } from "helpers/currencySymbol";
+import { minutesToHHMM } from "helpers/hhmm-parser";
+// import { sendGAPageView } from "utils/googleAnalytics";
 
-import { TOASTER_DURATION } from "constants/index";
 import Header from "./Header";
+
 import { unmapClientDetails } from "../../../mapper/client.mapper";
 
 const getTableData = (clients) => {
   if (clients) {
-    return clients.map((client) => {
-      const hours = (client.minutes/60).toFixed(2);
-      return {
-        col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
-        col2: <div className="text-base text-miru-dark-purple-1000">{client.team.map(member => <span>{member},&nbsp;</span>)}</div>,
-        col3: <div className="text-base text-miru-dark-purple-1000 text-right">{hours}</div>,
-        rowId: client.id
-      };
-    });
+    return clients.map((client) => ({
+      col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
+      col2: <div className="text-base text-miru-dark-purple-1000">{client.team.map(member => <span>{member},&nbsp;</span>)}</div>,
+      col3: <div className="text-base text-miru-dark-purple-1000 text-right">{minutesToHHMM(client.minutes)}</div>,
+      rowId: client.id
+    }));
   }
   return [{}];
 };
@@ -56,7 +58,7 @@ const ClientList = ({ isAdminUser }) => {
   };
 
   const handleSelectChange = (event) => {
-    clients.show(params.clientId,`?time_frame=${event.target.value}`)
+    clientApi.show(params.clientId,`?time_frame=${event.target.value}`)
       .then((res) => {
         const sanitized = unmapClientDetails(res);
         setProjectDetails(sanitized.projectDetails);
@@ -66,10 +68,8 @@ const ClientList = ({ isAdminUser }) => {
       });
   };
 
-  useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
-    clients.show(params.clientId, "?time_frame=week")
+  const fetchProjectList = () => {
+    clientApi.show(params.clientId, "?time_frame=week")
       .then((res) => {
         const sanitized = unmapClientDetails(res);
         setClientDetails(sanitized.clientDetails);
@@ -77,6 +77,13 @@ const ClientList = ({ isAdminUser }) => {
         setTotalMinutes(sanitized.totalMinutes);
         setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
       });
+  };
+
+  useEffect(() => {
+    // sendGAPageView();
+    setAuthHeaders();
+    registerIntercepts();
+    fetchProjectList();
   }, []);
 
   const tableHeader = [
@@ -132,7 +139,7 @@ const ClientList = ({ isAdminUser }) => {
                     THIS WEEK
               </option>
               <option className="text-miru-dark-purple-600" value="month">
-                    This MONTH
+                    THIS MONTH
               </option>
               <option className="text-miru-dark-purple-600" value="year">
                     THIS YEAR
@@ -171,6 +178,7 @@ const ClientList = ({ isAdminUser }) => {
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}
           project={selectedProject}
+          fetchProjectList={fetchProjectList}
         />
       )}
     </>

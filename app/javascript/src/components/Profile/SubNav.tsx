@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
+
 import { NavLink } from "react-router-dom";
 
 const profile = require("../../../../assets/images/avatar_payments.svg");
@@ -50,6 +51,11 @@ const SideNav = ({ isAdmin, isTeamLead, firstName, company, lastName, email }) =
           BILLING
         </NavLink>
       </li>
+      <li className='border-b-2 border-miru-gray-400'>
+        {/* <NavLink end to="/profile/edit/import" className={({ isActive }) => getActiveClassName(isActive)}>
+          IMPORT
+        </NavLink> */}
+      </li>
     </ul>
   );
 
@@ -83,7 +89,7 @@ const SideNav = ({ isAdmin, isTeamLead, firstName, company, lastName, email }) =
     <div className='flex flex-col '>
       <div className='mr-2 w-60 h-16 p-4 bg-miru-han-purple-1000 flex text-white items-center'>
         <img src={profile} className='mr-2' />
-        <div className='flex flex-col'>
+        <div className='flex flex-col overflow-x-auto'>
           <span className='font-bold text-base leading-5 pt-1'>{`${firstName} ${lastName}`}</span>
           <span className='font-normal text-xs leading-4'>{email}</span>
         </div>

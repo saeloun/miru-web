@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import generateInvoice from "apis/generateInvoice";
-
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
+// import { sendGAPageView } from "utils/googleAnalytics";
+
 import Container from "./Container";
 import Header from "./Header";
-
 import InvoiceSettings from "./InvoiceSettings";
+
 import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
 import { generateInvoiceLineItems } from "../common/utils";
 import SendInvoice from "../popups/SendInvoice";
@@ -47,6 +49,7 @@ const GenerateInvoices = () => {
   };
 
   useEffect(() => {
+    // sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     fetchGenerateInvoice(navigate, getInvoiceDetails);
@@ -72,13 +75,14 @@ const GenerateInvoices = () => {
 
   const handleSendInvoice = async () => {
     if (selectedClient && invoiceNumber !== "") {
-      saveInvoice().then(resp => {
+      saveInvoice().then((resp) => {
         setShowSendInvoiceModal(true);
         setInvoiceId(resp.data.id);
       });
-    }
-    else {
-      Toastr.error("Please select client and enter invoice number to proceed.");
+    } else {
+      selectedClient
+        ? Toastr.error("Please enter invoice number to proceed")
+        : Toastr.error("Please select client and enter invoice number to proceed");
     }
   };
 
@@ -86,7 +90,9 @@ const GenerateInvoices = () => {
     if (selectedClient && invoiceNumber !== "") {
       saveInvoice().then(() => navigate("/invoices"));
     } else {
-      Toastr.error("Please select client and enter invoice number to proceed.");
+      selectedClient
+        ? Toastr.error("Please enter invoice number to proceed")
+        : Toastr.error("Please select client and enter invoice number to proceed");
     }
   };
 
@@ -130,6 +136,7 @@ const GenerateInvoices = () => {
           id: invoiceId,
           client: selectedClient,
           company: invoiceDetails?.companyDetails,
+          dueDate: dueDate,
           invoiceNumber,
           amount
         }}

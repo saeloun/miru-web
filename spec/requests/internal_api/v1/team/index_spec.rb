@@ -5,13 +5,11 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Team#index", type: :request do
   let!(:company) { create(:company) }
   let(:user) { create(:user, :with_avatar, current_workspace_id: company.id) }
-  let(:user2) { create(:user, :with_pending_invitation, current_workspace_id: company.id) }
+  let!(:invitation) { create(:invitation, company_id: company.id, sender_id: user.id) }
 
   before do
     create(:employment, company:, user:)
-    create(:employment, company:, user: user2)
     user.add_role :admin, company
-    user2.add_role :employee, company
   end
 
   context "when user is admin" do
@@ -25,22 +23,29 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
     end
 
     it "checks if profile picture is there with each team member" do
-      expect(json_response["team"].first["profilePicture"]).to eq(JSON.parse(user.avatar.to_json))
-      expect(json_response["team"].last["profilePicture"]).to include("/assets/avatar")
+      expect("http://www.example.com#{json_response["team"].first["profilePicture"]}").to eq(url_for(user.avatar))
+      expect(json_response["invitation"].last["profilePicture"]).to include("/assets/avatar")
     end
 
     it "checks if correct team members data is returned" do
-      actual_members_data = json_response["team"].map do |member|
-                              member.slice("name", "email", "role", "status")
+      actual_team_data = json_response["team"].map do |member|
+                              member.slice("id", "name", "email", "role", "status")
                             end
-      expected_members_data =
+      actual_invited_user_data = json_response["invitation"].map do |member|
+                            member.slice("id", "name", "email", "role", "status")
+                          end
+
+      expected_team_data =
         [{
-          "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
-        },
-         {
-           "name" => user2.full_name, "email" => user2.email, "role" => "employee", "status" => I18n.t("team.invitation")
-         }]
-      expect(actual_members_data).to eq(expected_members_data)
+          "id" => user.id, "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
+        }]
+      expected_invited_user_data =
+        [{
+          "id" => invitation.id, "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => I18n.t("team.invitation")
+        }]
+
+      expect(actual_team_data).to eq(expected_team_data)
+      expect(actual_invited_user_data).to eq(expected_invited_user_data)
     end
   end
 
@@ -62,18 +67,21 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
       actual_members_data = json_response["team"].map do |member|
                               member.slice("name", "email", "role", "status")
                             end
-      expected_members_data =
-        [{
-          "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
-        },
-         {
-           "name" => user2.full_name, "email" => user2.email, "role" => "employee", "status" => nil
-         },
-         {
-           "name" => user3.full_name, "email" => user3.email, "role" => "employee", "status" => nil
-         }
-        ]
+      actual_invited_user_data = json_response["invitation"].map do |member|
+                                      member.slice("name", "email", "role", "status")
+                                    end
+
+      expected_members_data = [{
+        "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
+      }, {
+        "name" => user3.full_name, "email" => user3.email, "role" => "employee", "status" => nil
+      }]
+
+      expected_invited_user_data = [{
+        "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => nil
+      }]
       expect(actual_members_data).to eq(expected_members_data)
+      expect(actual_invited_user_data).to eq(expected_invited_user_data)
     end
   end
 

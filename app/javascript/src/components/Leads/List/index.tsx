@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
+
 import { useCookies } from 'react-cookie';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leads from "apis/leads";
 import Pagination from "common/Pagination";
 import Table from "common/Table";
-import FilterSideBar from "./FilterSideBar";
 
+import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
+
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapLeadList } from "../../../mapper/lead.mapper";
 import DeleteLead from "../Modals/DeleteLead";
@@ -44,7 +47,7 @@ const Leads = ({ isAdminUser }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [newLead, setnewLead] = useState<boolean>(false);
   const [leadToDelete, setDelete] = useState({});
-  const [leadData, setLeadData] = useState<any>([{}]);
+  const [leadData, setLeadData] = useState<any>([]);
   const [displayActions, setDisplayActions] = useState<boolean>(false);
 
   const [pagy, setPagy] = React.useState<any>(null);

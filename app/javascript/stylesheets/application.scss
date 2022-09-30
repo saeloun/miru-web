@@ -262,6 +262,9 @@
     &__avatar {
       @apply h-6 w-6 rounded-full;
     }
+    &__import_header {
+      @apply px-2 py-1 w-1/2 text-xs font-normal tracking-widest text-left text-miru-dark-purple-600
+    }
   }
 
   .modal {
@@ -270,6 +273,9 @@
     }
     &__container {
       @apply shadow-lg bg-white w-full max-w-md mx-auto rounded-xl z-50 overflow-y-auto;
+    }
+    &__container__import__modal {
+      @apply shadow-lg bg-white w-full max-w-400 mx-auto rounded-xl z-50 overflow-y-auto;
     }
     &__content {
       @apply py-4 text-left px-3;
@@ -290,6 +296,8 @@
       @apply mb-3 mx-3 flex justify-center;
     }
   }
+
+
 }
 
 .custom {
@@ -355,6 +363,15 @@
   }
 }
 
+.reiTable {
+  &__th {
+    @apply text-left text-xs tracking-widest text-miru-dark-purple-600 font-normal py-5;
+  }
+  &__tr {
+    @apply text-xs text-miru-dark-purple-1000 py-6;
+  }
+}
+
 body {
   font-family: "Manrope", "sans-serif";
 }
@@ -382,6 +399,11 @@ body {
   .iconWrapper {
     @apply visible;
   }
+}
+
+.userAvatarWrapper {
+  @apply absolute top-0;
+  margin-top: -50px;
 }
 
 .box-shadow {
@@ -466,5 +488,47 @@ body {
   &:checked + div > div {
     -webkit-transform: translate3d(25px, 0, 0);
     transform: translate3d(25px, 0, 0);
+  }
+}
+
+.dashed-border {
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23A5A3ADFF' stroke-width='4' stroke-dasharray='6%2c 18' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+}
+
+.progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 1;
+  border-radius: 16px;
+  transition: opacity 0.3s ease;
+  background-size: 30px 30px;
+  background-image: linear-gradient(
+    135deg,
+    #5B34EA 25%,
+    #9D85F2 25%,
+    #9D85F2 50%,
+    #5B34EA 50%,
+    #5B34EA 75%,
+    #9D85F2 75%,
+    #9D85F2
+  );
+  animation: barberpole 1.5s linear infinite;
+}
+
+@keyframes barberpole {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 60px 30px;
+  }
+}
+
+.import-modal {
+  &__header-number{
+    @apply w-5 h-5 flex justify-center items-center text-xs font-semibold rounded-full bg-miru-han-purple-1000 text-white
   }
 }
