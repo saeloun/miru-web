@@ -1,0 +1,9 @@
+{
+  "label": "Setup",
+  "position": 1,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "description": "Guideline for setting up a Miru app project on your machine"
+  }
+}

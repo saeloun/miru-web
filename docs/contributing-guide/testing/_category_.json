@@ -1,0 +1,9 @@
+{
+  "label": "Testing",
+  "position": 2,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "description": "Testing guideline for the project"
+  }
+}
