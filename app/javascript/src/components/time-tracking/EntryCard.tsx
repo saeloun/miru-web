@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
-import { minutesToHHMM } from "helpers/hhmm-parser";
+import { Badge } from "StyledComponents";
 
-import { Badge } from "../../styledComponents";
+import { minutesToHHMM } from "helpers/hhmm-parser";
 
 const deleteIcon = require("../../../../assets/images/delete.svg");
 const editIcon = require("../../../../assets/images/edit.svg");
