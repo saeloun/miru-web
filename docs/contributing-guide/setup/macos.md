@@ -58,13 +58,13 @@ brew install redis
 bin/setup
 ```
 
-16. Run app in local env
+9. Run app in local env
 
 ```bash
 foreman start -f Procfile.dev
 ```
 
-17. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
+10. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000)
 
 ### To receive the emails in non-production apps.
 
