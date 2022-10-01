@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
-import autosize from "autosize";
-
 import timesheetEntryApi from "apis/timesheet-entry";
 import Toastr from "common/Toastr";
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
@@ -48,10 +46,7 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   useEffect(() => {
-    const textArea = document.querySelector("textarea");
-    autosize(textArea);
     handleFillData();
-    textArea.click();
   }, []);
 
   useEffect(() => {
@@ -176,7 +171,7 @@ const AddEntry: React.FC<Iprops> = ({
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
+          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 overflow-y-auto " + (editEntryId ? "h-32" : "h-8") )}
         ></textarea>
       </div>
       <div className="w-60">
