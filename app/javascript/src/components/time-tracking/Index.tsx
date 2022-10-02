@@ -314,8 +314,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                     </button>
                     {!!dayInfo.length && (
                       <p className="text-white mx-6 w-40">
-                        {dayInfo[0]["date"]} {dayInfo[0].month} -{" "}
-                        {dayInfo[6]["date"]} {dayInfo[6]["month"]}{" "}
+                        {parseInt(dayInfo[0]["date"],10)} {dayInfo[0].month} -{" "}
+                        {parseInt(dayInfo[6]["date"],10)} {dayInfo[6]["month"]}{" "}
                         {dayInfo[6]["year"]}
                       </p>
                     )}
