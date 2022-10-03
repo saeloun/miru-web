@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import generateInvoice from "apis/generateInvoice";
+import companiesApi from "apis/companies";
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -18,7 +18,7 @@ import SendInvoice from "../popups/SendInvoice";
 
 const GenerateInvoices = () => {
   const navigate = useNavigate();
-  const [invoiceDetails, getInvoiceDetails] = useState<any>();
+  const [invoiceDetails, setInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
   const [selectedClient, setSelectedClient] = useState<any>();
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
@@ -37,11 +37,12 @@ const GenerateInvoices = () => {
   const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(true);
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
 
-  const fetchGenerateInvoice = async (navigate, getInvoiceDetails) => {
+  const fetchCompanyDetails = async () => {
+    // here we are fetching the company and client list
     try {
-      const res = await generateInvoice.get();
+      const res = await companiesApi.index();
       const sanitzed = await unmapGenerateInvoice(res.data);
-      getInvoiceDetails(sanitzed);
+      setInvoiceDetails(sanitzed);
     } catch (e) {
       navigate("invoices/error");
       return {};
@@ -52,7 +53,7 @@ const GenerateInvoices = () => {
     sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
-    fetchGenerateInvoice(navigate, getInvoiceDetails);
+    fetchCompanyDetails();
   }, []);
 
   const saveInvoice = async () => {
