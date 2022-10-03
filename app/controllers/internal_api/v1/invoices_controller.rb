@@ -73,7 +73,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def download
     authorize invoice
 
-    send_data InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo || "")
+    send_data InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo)
   end
 
   private
