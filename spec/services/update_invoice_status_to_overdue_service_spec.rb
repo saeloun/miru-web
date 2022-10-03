@@ -22,6 +22,8 @@ RSpec.describe UpdateInvoiceStatusToOverdueService do
       client1_sent_invoice3.reload
       client1_paid_invoice2.reload
       client1_draft_invoice1.reload
+      client1_viewed_invoice1.reload
+      client1_viewed_invoice2.reload
     end
 
     it "updates status of only `sent` & 'viewed' invoices whose due date is passed" do
