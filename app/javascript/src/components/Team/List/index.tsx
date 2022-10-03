@@ -16,6 +16,7 @@ import Modals from "../modals/Modals";
 export const ProjectList = () => {
 
   const [teamList, setTeamList] = useState([]);
+  // const [departments, _setDepartments] = useState([]);
   const [modal, setModal] = useState("");
   const [modalUser, setModaluser] = useState({});
 
@@ -42,6 +43,7 @@ export const ProjectList = () => {
     <Fragment>
       <ListContext.Provider value={{
         teamList,
+        departments: [],
         setModalState,
         modal
       }}>

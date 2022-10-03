@@ -27,7 +27,7 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
   def update
     authorize :team
     User.transaction do
-      employment.user.skip_reconfirmation!
+      # employment.user.skip_reconfirmation!
       employment.user.update!(user_params)
       update_company_user_role
     end

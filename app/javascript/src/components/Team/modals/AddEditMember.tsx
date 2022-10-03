@@ -22,7 +22,9 @@ const getInitialvalues = (user) => ({
   firstName: user.firstName,
   lastName: user.lastName,
   email: user.email,
-  role: user.role ? user.role : "employee"
+  role: user.role ? user.role : "employee",
+  teamLead: user.teamLead ? 'true' : 'false',
+  departmentId: user.department?.id,
 });
 
 interface FormValues {
@@ -30,8 +32,9 @@ interface FormValues {
   firstName: string;
   lastName: string;
   email: string;
-  department: string;
+  departmentId: string;
   role: string;
+  teamLead: string;
 }
 interface Props {
   user: any;
@@ -43,12 +46,13 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
   const { setModalState } = useList();
 
   const handleSubmit = async (values) => {
-    const { id, firstName, lastName, email, role } = values;
+    const { id, firstName, lastName, email, role, teamLead } = values;
     const payload = {
       first_name: firstName,
       last_name: lastName,
       email,
-      role
+      role,
+      team_lead: teamLead === 'true'
     };
 
     if (isEdit) payload["id"] = id;
@@ -231,6 +235,49 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                               >
                                 <i className="custom__radio-text"></i>
                                 <span className="text-sm">Book Keeper</span>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <div className="field">
+                        <label className="form__label tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                          Team Lead
+                        </label>
+                        <div className="mt-1 flex">
+                          <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+                            <div className="flex items-center">
+                              <Field
+                                type="radio"
+                                id="team-lead-1"
+                                name="teamLead"
+                                className="hidden custom__radio"
+                                value='false'
+                              />
+                              <label
+                                htmlFor="team-lead-1"
+                                className="flex items-center cursor-pointer text-xl"
+                              >
+                                <i className="custom__radio-text"></i>
+                                <span className="text-sm">No</span>
+                              </label>
+                            </div>
+                            <div className="flex items-center ml-8">
+                              <Field
+                                type="radio"
+                                id="team-lead-2"
+                                name="teamLead"
+                                className="hidden custom__radio"
+                                value='true'
+                              />
+                              <label
+                                htmlFor="team-lead-2"
+                                className="flex items-center cursor-pointer text-xl"
+                              >
+                                <i className="custom__radio-text"></i>
+                                <span className="text-sm">Yes</span>
                               </label>
                             </div>
                           </div>
