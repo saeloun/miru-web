@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import dayjs from "dayjs";
-
-import generateInvoice from "apis/generateInvoice";
 import useOutsideClick from "helpers/outsideClick";
 
 import NewLineItemTable from "./NewLineItemTable";
 
 import TableHeader from "../common/LineItemTableHeader";
 import NewLineItemRow from "../common/NewLineItemRow";
+import { fetchNewLineItems } from "../common/utils";
 import ManualEntry from "../Generate/ManualEntry";
 import MultipleEntriesModal from "../MultipleEntriesModal";
 
@@ -29,56 +27,21 @@ const InvoiceTable = ({
   const [showMultiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
   const [addManualLineItem, setAddManualLineItem] = useState<boolean>(false);
 
-  const fetchNewLineItems = async (
-    selectedClient,
-    setLineItems,
-    lineItems,
-    setTotalLineItems,
-    pageNumber,
-    setPageNumber,
-    selectedEntries = [],
-  ) => {
-
-    if (selectedClient) {
-      let selectedEntriesString = "";
-      selectedEntries.forEach((entries) => {
-        if (!entries._destroy)
-          selectedEntriesString += `&selected_entries[]=${entries.timesheet_entry_id}`;
-      });
-
-      await generateInvoice.getLineItems(selectedClient.value, pageNumber, selectedEntriesString).then(async res => {
-        await setTotalLineItems(res.data.pagy.count);
-        await setPageNumber(pageNumber + 1);
-        const mergedItems = [...res.data.new_line_item_entries, ...lineItems];
-        const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
-        setLineItems(sortedData);
-      });
-    }
-  };
-
   useEffect(() => {
     if (addManualLineItem) return setAddManualLineItem(false);
 
     if (addNew) {
-      fetchNewLineItems(
-        selectedClient,
-        setLineItems,
-        lineItems,
-        setTotalLineItems,
-        pageNumber,
-        setPageNumber,
-        selectedLineItems
-      );
+      loadNewLineItems();
     }
   }, [addNew]);
 
   const wrapperRef = useRef(null);
 
-  const loadMoreItems = () => {
+  const loadNewLineItems = () => {
     fetchNewLineItems(
       selectedClient,
-      setLineItems,
       lineItems,
+      setLineItems,
       setTotalLineItems,
       pageNumber,
       setPageNumber,
@@ -100,7 +63,7 @@ const InvoiceTable = ({
         setAddNew={setAddNew}
         lineItems={lineItems}
         setLineItems={setLineItems}
-        loadMoreItems={loadMoreItems}
+        loadMoreItems={loadNewLineItems}
         totalLineItems={totalLineItems}
         pageNumber={pageNumber}
         setPageNumber={setPageNumber}
@@ -173,7 +136,7 @@ const InvoiceTable = ({
       <div>
         {showMultiLineItemModal && <MultipleEntriesModal
           selectedClient={selectedClient}
-          selectedOption={selectedLineItems.filter(item => !item._destroy)}
+          selectedOption={selectedLineItems}
           setSelectedOption={setSelectedLineItems}
           setMultiLineItemModal={setMultiLineItemModal}
         />}

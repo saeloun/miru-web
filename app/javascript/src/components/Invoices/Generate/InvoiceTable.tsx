@@ -1,8 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import dayjs from "dayjs";
-
-import generateInvoice from "apis/generateInvoice";
 import useOutsideClick from "helpers/outsideClick";
 
 import ManualEntry from "./ManualEntry";
@@ -10,32 +7,8 @@ import NewLineItemTable from "./NewLineItemTable";
 
 import TableHeader from "../common/LineItemTableHeader";
 import NewLineItemRow from "../common/NewLineItemRow";
+import { fetchNewLineItems } from "../common/utils";
 import MultipleEntriesModal from "../MultipleEntriesModal";
-
-const fetchNewLineItems = async (
-  selectedClient,
-  setLineItems,
-  lineItems,
-  setTotalLineItems,
-  pageNumber,
-  setPageNumber,
-  selectedEntries = [],
-) => {
-  if (selectedClient) {
-    let selectedEntriesString = "";
-    selectedEntries.forEach((entries) => {
-      selectedEntriesString += `&selected_entries[]=${entries.timesheet_entry_id}`;
-    });
-
-    await generateInvoice.getLineItems(selectedClient.value, pageNumber, selectedEntriesString).then(async res => {
-      await setTotalLineItems(res.data.pagy.count);
-      await setPageNumber(pageNumber + 1);
-      const mergedItems = [...res.data.new_line_item_entries, ...lineItems];
-      const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
-      await setLineItems(sortedData);
-    });
-  }
-};
 
 const InvoiceTable = ({
   currency,
@@ -60,23 +33,15 @@ const InvoiceTable = ({
     if (addManualLineItem) return setAddManualLineItem(false);
 
     if (addNew) {
-      fetchNewLineItems(
-        selectedClient,
-        setLineItems,
-        lineItems,
-        setTotalLineItems,
-        pageNumber,
-        setPageNumber,
-        selectedOption
-      );
+      loadNewLineItems();
     }
   }, [addNew]);
 
-  const loadMoreItems = () => {
+  const loadNewLineItems = () => {
     fetchNewLineItems(
       selectedClient,
-      setLineItems,
       lineItems,
+      setLineItems,
       setTotalLineItems,
       pageNumber,
       setPageNumber,
@@ -98,7 +63,7 @@ const InvoiceTable = ({
         setAddNew={setAddNew}
         lineItems={lineItems}
         setLineItems={setLineItems}
-        loadMoreItems={loadMoreItems}
+        loadMoreItems={loadNewLineItems}
         totalLineItems={totalLineItems}
         pageNumber={pageNumber}
         setPageNumber={setPageNumber}

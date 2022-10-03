@@ -3,11 +3,7 @@
 class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationController
   def index
     authorize current_company
-    if current_company.logo.attached?
-      render json: current_company.as_json.merge(logo_url: url_for(current_company.logo))
-    else
-      render json: current_company
-    end
+    render :index, locals: { current_company: }, status: :ok
   end
 
   def create
