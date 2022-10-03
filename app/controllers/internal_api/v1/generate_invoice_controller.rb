@@ -17,14 +17,16 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
     end
 
     def project
-      @_project ||= Project.includes(:timesheet_entries).find_by(client_id: params[:client_id])
+      # @_project ||= Project.includes(:timesheet_entries).find_by(client_id: params[:client_id])
+      @_project ||= client.projects.pluck(:id).uniq
     end
 
     # Sending team members list for filter dropdown options
     def filter_options
-      user_ids = project.timesheet_entries.pluck(:user_id).uniq
+      # user_ids = project.timesheet_entries.pluck(:user_id).uniq
+      user_ids = TimesheetEntry.where(project_id: project)
       @_filter_options ||= {
-        team_members: User.find(user_ids)
+        team_members: User.where(id: user_ids)
       }
     end
 
@@ -37,7 +39,7 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
     end
 
     def project_filter
-      { project_id: project.id }
+      { project_id: project }
     end
 
     def new_line_item_entries
@@ -49,6 +51,7 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
         match: :text_middle,
         where: where_clause,
         page: params[:page],
-        per_page: 10)
+        per_page: 10,
+        includes: [:user, { project: :client } ])
     end
 end
