@@ -17,13 +17,11 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
     end
 
     def project
-      # @_project ||= Project.includes(:timesheet_entries).find_by(client_id: params[:client_id])
       @_project ||= client.projects.pluck(:id).uniq
     end
 
     # Sending team members list for filter dropdown options
     def filter_options
-      # user_ids = project.timesheet_entries.pluck(:user_id).uniq
       user_ids = TimesheetEntry.where(project_id: project).pluck(:user_id).uniq
       @_filter_options ||= {
         team_members: User.where(id: user_ids)

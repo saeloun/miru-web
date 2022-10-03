@@ -79,7 +79,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
         expect(response).to have_http_status(:ok)
         expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
         # to be fixed
-        # expect(json_response["new_line_item_entries"].first["first_name"]).to eq(user.first_name)
+        expect(json_response["new_line_item_entries"].first["first_name"]).to eq(user.first_name)
       end
     end
 
