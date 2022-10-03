@@ -24,7 +24,7 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
     # Sending team members list for filter dropdown options
     def filter_options
       # user_ids = project.timesheet_entries.pluck(:user_id).uniq
-      user_ids = TimesheetEntry.where(project_id: project)
+      user_ids = TimesheetEntry.where(project_id: project).pluck(:user_id).uniq
       @_filter_options ||= {
         team_members: User.where(id: user_ids)
       }
