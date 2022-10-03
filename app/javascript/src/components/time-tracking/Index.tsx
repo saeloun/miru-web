@@ -268,7 +268,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               employeeList={employeeOptions}
             />
           }
-          <div className="w-50"></div>
         </div>
 
         <div>
