@@ -21,7 +21,7 @@ const EditInvoice = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const [invoiceDetails, getInvoiceDetails] = useState<any>();
+  const [invoiceDetails, setInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
   const [selectedLineItems, setSelectedLineItems] = useState<any>([]);
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
@@ -37,10 +37,10 @@ const EditInvoice = () => {
   const today = new Date();
   const [dueDate, setDueDate] = useState(today.setMonth(issueDate.getMonth() + 1));
 
-  const fetchInvoice = async (navigate, getInvoiceDetails) => {
+  const fetchInvoice = async () => {
     try {
       const res = await invoicesApi.editInvoice(params.id);
-      getInvoiceDetails(res.data);
+      setInvoiceDetails(res.data);
       setSelectedLineItems(unmapLineItems(res.data.invoiceLineItems));
       setAmount(res.data.amount);
       setInvoiceNumber(res.data.invoiceNumber);
@@ -71,7 +71,7 @@ const EditInvoice = () => {
     sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
-    fetchInvoice(navigate, getInvoiceDetails);
+    fetchInvoice();
   }, []);
 
   useEffect(() => {
