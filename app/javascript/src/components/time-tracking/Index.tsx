@@ -246,8 +246,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="mt-6">
-        <div className="flex justify-between">
-          <nav className="flex mb-6">
+        <div className="flex justify-between items-center mb-6">
+          <nav className="flex">
             {["day", "week", "month"].map(item => (
               <button
                 onClick={() => setView(item)}
@@ -261,15 +261,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               </button>
             ))}
           </nav>
-          <div>
-            {isAdminUser && selectedEmployeeId &&
-              <SearchTimeEntries
-                selectedEmployeeId={selectedEmployeeId}
-                setSelectedEmployeeId={setSelectedEmployeeId}
-                employeeList={employeeOptions}
-              />
-            }
-          </div>
+          {isAdminUser && selectedEmployeeId &&
+            <SearchTimeEntries
+              selectedEmployeeId={selectedEmployeeId}
+              setSelectedEmployeeId={setSelectedEmployeeId}
+              employeeList={employeeOptions}
+            />
+          }
           <div className="w-50"></div>
         </div>
 

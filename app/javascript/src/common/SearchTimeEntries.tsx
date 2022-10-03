@@ -28,10 +28,19 @@ const SearchTimeEntries = ({
     setEmployeeVisible(false);
   };
 
+  const customStyles = {
+    ...reactSelectStyles.InvoiceDetails,
+    container: base => ({
+      ...base,
+      position: "absolute"
+
+    })
+  };
+
   return (
-    <div className="flex justify-center items-center">
-      <p className="text-xs font-medium justify-center mr-2">Viewing time entries for</p>
-      <div className="group" ref={wrapperRef}>
+    <div className="flex justify-center items-center" ref={wrapperRef}>
+      <p className="text-xs font-medium mr-2">Viewing time entries for</p>
+      <div>
         <p className="font-medium text-base text-miru-han-purple-1000 flex">{currentUser?.label}
           <button
             className="mx-1 font-bold"
@@ -40,8 +49,7 @@ const SearchTimeEntries = ({
             <CaretDown size={16} color="#5B34EA" weight="bold" />
           </button>
         </p>
-
-        {employeeVisible && (
+        {employeeVisible &&
           <Select
             defaultValue={null}
             onChange={handleEmployeeChange}
@@ -51,10 +59,10 @@ const SearchTimeEntries = ({
             className="m-0 mt-2 w-52 text-white"
             classNamePrefix="m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white"
             defaultMenuIsOpen={true}
-            styles={reactSelectStyles.InvoiceDetails}
+            styles={customStyles}
             components={{ DropdownIndicator, IndicatorSeparator: () => null }}
           />
-        )}
+        }
       </div>
     </div>
   );
