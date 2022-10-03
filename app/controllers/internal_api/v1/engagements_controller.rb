@@ -14,6 +14,8 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
 
     department_ids = params[:departments].to_s.split(",")
     engagement_ids = params[:engagements].to_s.split(",")
+    engagement_ids.push(nil) if engagement_ids.include?("-1")
+
     pagy, users = pagy(
       current_company.users
         .where(department_ids.present? ? { department_id: department_ids } : [])

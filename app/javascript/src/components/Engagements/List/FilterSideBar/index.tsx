@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import engagements from "apis/engagements";
-import engagementsItemsApi from 'apis/engagements-items';
+
 import { Multiselect } from 'multiselect-react-dropdown';
 import { X } from "phosphor-react";
+
+import engagements from "apis/engagements";
+import engagementsItemsApi from 'apis/engagements-items';
+
 import { unmapEngagementList } from "../../../../mapper/engagement.mapper";
 
 const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, setRememberFilter, setPagy }) => {
@@ -26,7 +29,7 @@ const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, 
     const getItems = async () => {
       engagementsItemsApi.get()
         .then((data) => {
-          setEngagementOptions(data.data.engagements)
+          setEngagementOptions([{ name: 'Not Updated', id: -1 }, ...data.data.engagements])
           setDepartmentOptions(data.data.departments)
         }).catch(() => {
           setEngagementOptions({})

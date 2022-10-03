@@ -20,6 +20,8 @@ import {
 } from "phosphor-react";
 import { NavLink } from "react-router-dom";
 
+import "./style.scss";
+
 const brandLogo = require("../../../../assets/images/brand/ac-logo.svg"); //eslint-disable-line
 const avatar = require("../../../../assets/images/NavAvatar.svg"); //eslint-disable-line
 
@@ -192,11 +194,11 @@ const Navbar = ({ isAdminUser, user, permissions }) => {
     ));
 
   return (
-    <div className=" fixed top-0 bottom-0 left-0 shadow-2xl w-1/6 h-full flex flex-col justify-between ">
-      <div>
-        <div className=" h-20 bg-miru-gray-100 flex items-center justify-center">
-          <img className="h-6" src={brandLogo} alt="ac-logo" />
-        </div>
+    <div className=" fixed top-0 bottom-0 left-0 shadow-2xl w-1/6 h-full flex flex-col justify-between">
+      <div className=" h-20 bg-miru-gray-100 flex items-center justify-center">
+        <img className="h-6" src={brandLogo} alt="ac-logo" />
+      </div>
+      <div className="ac-calendar-container overflow-y-auto">
         <ul className="mt-8">
           {isAdminUser ? getAdminOption() : getEmployeeOptions()}
         </ul>
