@@ -12,7 +12,7 @@ import { ToastContainer } from "react-toastify";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
-import SyncAutoComplete from "common/SyncAutoComplete";
+import SearchTimeEntries from "common/SearchTimeEntries";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import AddEntry from "./AddEntry";
@@ -30,8 +30,6 @@ dayjs.updateLocale("en", { monthShort: monthsAbbr });
 
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
-
-const fullName = (user) => `${user.first_name} ${user.last_name}`;
 
 const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [dayInfo, setDayInfo] = useState<any[]>([]);
@@ -248,8 +246,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="mt-6">
-        <div className="flex justify-between">
-          <nav className="flex mb-6">
+        <div className="flex justify-between items-center mb-6">
+          <nav className="flex">
             {["day", "week", "month"].map(item => (
               <button
                 onClick={() => setView(item)}
@@ -263,18 +261,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               </button>
             ))}
           </nav>
-          <div>
-            {isAdminUser && selectedEmployeeId && <div className="flex justify-center items-center">
-              <p className="text-xs font-medium justify-center mr-2">Viewing time entries for</p>
-              <SyncAutoComplete
-                options={employeeOptions}
-                handleValue={value => setSelectedEmployeeId(+ value)}
-                defaultValue={{ value: selectedEmployeeId, label: fullName(user) }}
-                size="md"
-              />
-            </div>}
-          </div>
-          <div className="w-50"></div>
+          {isAdminUser && selectedEmployeeId &&
+            <SearchTimeEntries
+              selectedEmployeeId={selectedEmployeeId}
+              setSelectedEmployeeId={setSelectedEmployeeId}
+              employeeList={employeeOptions}
+            />
+          }
         </div>
 
         <div>
