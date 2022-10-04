@@ -33,7 +33,7 @@ const handleSuccessResponse = response => {
 
 const handleErrorResponse = error => {
   Toastr.error(
-    error.response?.data?.error ||
+    error.response?.data?.errors ||
     error.response?.data?.notice ||
     error.message ||
     error.notice ||
