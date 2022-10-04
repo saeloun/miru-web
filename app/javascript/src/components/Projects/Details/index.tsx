@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
-import Logger from "js-logger";
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
+import Logger from "js-logger";
 import {
   ArrowLeft,
   DotsThreeVertical,
