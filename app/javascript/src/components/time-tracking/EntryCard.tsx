@@ -2,7 +2,6 @@
 import React from "react";
 
 import { minToHHMM } from "helpers";
-
 import { Badge } from "StyledComponents";
 
 const deleteIcon = require("../../../../assets/images/delete.svg");
@@ -63,7 +62,7 @@ const EntryCard: React.FC<props> = ({
           className="uppercase"
         />
       )}
-      <p className="text-4xl">{minToHHMM(duration)}</p>
+      <p className="text-4xl ml-6">{minToHHMM(duration)}</p>
       <button onClick={() => setEditEntryId(id)} className="mx-10">
         <img
           src={editIcon}
