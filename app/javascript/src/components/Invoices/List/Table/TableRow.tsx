@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import dayjs from "dayjs";
-import { PaperPlaneTilt, Pen, Trash } from "phosphor-react";
+import { PaperPlaneTilt, Pen, Trash, DotsThreeVertical } from "phosphor-react";
 import { Link } from "react-router-dom";
 
 import CustomCheckbox from "common/CustomCheckbox";
@@ -73,50 +73,37 @@ const TableRow = ({
         {formattedAmount}
       </td>
 
-      <td className="px-6 py-5 font-medium">
-        <span className={getStatusCssClass(invoice.status) + " uppercase"}>
-          {invoice.status}
-        </span>
-      </td>
-
-      <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
-        <div className="flex items-center h-full">
+      <td className="font-medium flex justify-end py-3 relative">
+        <div className="hidden group-hover:flex p-3 w-40 bottom-6 absolute bg-white border-miru-gray-200 flex items-center justify-between rounded-xl border-2">
           <button
-            className="hidden group-hover:block text-miru-han-purple-1000"
+            className="text-miru-han-purple-1000"
             onClick={() => setIsSending(!isSending)}
           >
             <PaperPlaneTilt size={16} />
           </button>
-        </div>
-      </td>
-
-      <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
-        <div className="flex items-center h-full">
           <Link
             to={`/invoices/${invoice.id}/edit`}
             type="button"
             data-cy="edit-invoice"
-            className="hidden group-hover:block text-miru-han-purple-1000"
+            className="text-miru-han-purple-1000"
           >
             <Pen size={16} />
           </Link>
+          <button className="text-miru-han-purple-1000"
+            onClick={() => {
+              setShowDeleteDialog(true);
+              setInvoiceToDelete(invoice.id);
+            }}>
+            <Trash size={16} />
+          </button>
+          <button>
+            <DotsThreeVertical size={16} />
+          </button>
         </div>
+        <span className={getStatusCssClass(invoice.status) + " uppercase"}>
+          {invoice.status}
+        </span>
       </td>
-
-      <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
-        {(invoice.status == "draft" || invoice.status == "declined") && (
-          <div className="flex items-center h-full">
-            <button className="hidden group-hover:block text-miru-han-purple-1000"
-              onClick={() => {
-                setShowDeleteDialog(true);
-                setInvoiceToDelete(invoice.id);
-              }}>
-              <Trash size={16} />
-            </button>
-          </div>
-        )}
-      </td>
-
       {isSending && (
         <SendInvoice invoice={invoice} setIsSending={setIsSending} isSending />
       )}
