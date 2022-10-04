@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# config/database.ymo frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Project#create", type: :request do
@@ -31,7 +33,7 @@ RSpec.describe "InternalApi::V1::Project#create", type: :request do
             billable: false
           })
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(json_response["error"]).to eq("Client must exist")
+        expect(json_response["errors"]).to eq("Client must exist")
       end
     end
   end
