@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { PaperPlaneTilt, Pen, Trash, DotsThreeVertical } from "phosphor-react";
 import { Link } from "react-router-dom";
 
+import CustomAvatar from "common/CustomAvatar";
 import CustomCheckbox from "common/CustomCheckbox";
 import { currencyFormat } from "helpers/currency";
 import getStatusCssClass from "utils/getStatusTag";
@@ -48,16 +49,19 @@ const TableRow = ({
         />
       </td>
 
-      <td className="w-2/4 px-6 py-5 font-medium ftracking-wider">
-        <Link
-          className="font-semibold capitalize text-miru-dark-purple-1000"
-          to={`/invoices/${invoice.id}`}
-        >
-          {invoice.client.name}
-        </Link>
-        <h3 className="text-sm font-normal text-miru-dark-purple-400">
-          {invoice.invoiceNumber}
-        </h3>
+      <td className="w-2/4 px-6 py-5 font-medium ftracking-wider flex">
+        <CustomAvatar/>
+        <div className="ml-10">
+          <Link
+            className="font-semibold capitalize text-miru-dark-purple-1000"
+            to={`/invoices/${invoice.id}`}
+          >
+            {invoice.client.name}
+          </Link>
+          <h3 className="text-sm font-normal text-miru-dark-purple-400">
+            {invoice.invoiceNumber}
+          </h3>
+        </div>
       </td>
 
       <td className="w-1/4 px-6 py-5 font-medium tracking-wider">
