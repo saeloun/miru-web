@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 
+import { useOutsideClick } from "helpers";
 import { MagnifyingGlass, PencilSimple } from "phosphor-react";
 import Select, { components, DropdownIndicatorProps } from "react-select";
-
-import useOutsideClick from "helpers/outsideClick";
 
 import { reactSelectStyles } from "./Styles";
 
