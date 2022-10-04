@@ -15,7 +15,7 @@
     "paths": {
       "components/*": ["app/javascript/src/components/*"],
       "apis/*": ["./app/javascript/src/apis/*"],
-      "helpers/*": ["./app/javascript/src/helpers/*"],
+      "helpers": ["./app/javascript/src/helpers"],
       "common/*": ["./app/javascript/src/common/*"],
       "utils/*": ["./app/javascript/src/utils/*"],
       "context/*": ["./app/javascript/src/context/*"],

@@ -6,13 +6,13 @@ import { TOASTER_DURATION } from "constants/index";
 import * as dayjs from "dayjs";
 import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
+import { minToHHMM } from "helpers";
 import Logger from "js-logger";
 import { ToastContainer } from "react-toastify";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
 import SyncAutoComplete from "common/SyncAutoComplete";
-import { minutesToHHMM } from "helpers/hhmm-parser";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import AddEntry from "./AddEntry";
@@ -174,14 +174,14 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         entryList[day].forEach(e => {
           dayTotal += e.duration;
         });
-        dailyTotal.push(minutesToHHMM(dayTotal));
+        dailyTotal.push(minToHHMM(dayTotal));
         total += dayTotal;
       } else {
         dailyTotal.push("00:00");
       }
     }
     setDailyTotalHours(dailyTotal);
-    setWeeklyTotalHours(minutesToHHMM(total));
+    setWeeklyTotalHours(minToHHMM(total));
   };
 
   const handleNextWeek = () => {

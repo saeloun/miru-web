@@ -1,9 +1,8 @@
 import React from "react";
 
 import dayjs from "dayjs";
+import { minToHHMM, lineTotalCalc } from "helpers";
 import InfiniteScroll from "react-infinite-scroll-component";
-
-import { minutesToHHMM } from "helpers/hhmm-parser";
 
 import NewLineItemTableHeader from "../common/NewLineItemTable/Header";
 import { getMaxIdx } from "../common/utils";
@@ -24,7 +23,7 @@ const NewLineItemTable = ({
   const hasMoreItems = lineItems.length === totalLineItems;
 
   const selectRowId = (items) => {
-    const option = { ...items, lineTotal: (Number(items.quantity) / 60 * Number(items.rate)).toFixed(2) };
+    const option = { ...items, lineTotal: lineTotalCalc(items.quantity, items.rate) };
     setAddNew(false);
     setSelectedLineItems([...selectedLineItems, option]);
     setLineItems([]);
@@ -59,7 +58,7 @@ const NewLineItemTable = ({
           }
         >
           {lineItems.map((item, index) => {
-            const hoursLogged = minutesToHHMM(item.quantity);
+            const hoursLogged = minToHHMM(item.quantity);
             const date = dayjs(item.date).format("DD.MM.YYYY");
             return (
               <div key={index} onClick={() => selectRowId(item)} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100" data-cy="entries-list-edit">
