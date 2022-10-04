@@ -17,8 +17,8 @@ import { ToastContainer } from "react-toastify";
 
 const Header = ({
   formType = "generate",
-  handleSendInvoice,
   handleSaveInvoice,
+  handleSendInvoice,
   setShowInvoiceSetting,
   invoiceNumber = null,
   id = null,
