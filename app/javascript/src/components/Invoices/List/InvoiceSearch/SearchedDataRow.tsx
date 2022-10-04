@@ -1,9 +1,9 @@
 import * as React from "react";
 
 import dayjs from "dayjs";
+import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
 
-import { currencyFormat } from "helpers/currency";
 import getStatusCssClass from "utils/getStatusTag";
 
 const formattedDate = (date, format) => dayjs(date).format(format);
