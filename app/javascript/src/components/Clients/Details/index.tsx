@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import { TOASTER_DURATION } from "constants/index";
 
-import { useParams } from "react-router-dom";
+import Logger from "js-logger";
+import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
@@ -44,6 +45,7 @@ const ClientList = ({ isAdminUser }) => {
   const [overdueOutstandingAmount, setOverDueOutstandingAmt]= useState<any>(null);
 
   const params = useParams();
+  const navigate = useNavigate();
 
   const handleEditClick = (id) => {
     setShowEditDialog(true);
@@ -76,6 +78,10 @@ const ClientList = ({ isAdminUser }) => {
         setProjectDetails(sanitized.projectDetails);
         setTotalMinutes(sanitized.totalMinutes);
         setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
+      })
+      .catch((e) => {
+        Logger.error(e);
+        navigate("/clients");
       });
   };
 

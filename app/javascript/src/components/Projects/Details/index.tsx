@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 
+import Logger from "js-logger";
 import {
   ArrowLeft,
   DotsThreeVertical,
@@ -49,7 +50,8 @@ const ProjectDetails = () => {
       setProject(sanitized);
       setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
     } catch (e) {
-      console.log(e); // eslint-disable-line
+      Logger.error(e);
+      navigate("/projects");
     }
   };
 
