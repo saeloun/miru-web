@@ -51,7 +51,7 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
       end
 
       it "will fail" do
-        expect(json_response["error"]).to eq("Name can't be blank")
+        expect(json_response["errors"]).to eq("Name can't be blank")
       end
 
       it "will not be created" do
@@ -106,7 +106,7 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
         end
 
         it "will fail" do
-          expect(json_response["error"]).to eq("Name can't be blank")
+          expect(json_response["errors"]).to eq("Name can't be blank")
         end
 
         it "will not be created" do
