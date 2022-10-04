@@ -2,9 +2,8 @@
 import * as React from "react";
 
 import dayjs from "dayjs";
+import { minToHHMM } from "helpers";
 import Logger from "js-logger";
-
-import { minutesToHHMM } from "helpers/hhmm-parser";
 
 const { useState, useEffect } = React;
 // Day start from monday
@@ -153,7 +152,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, selectedEmployeeId, day
         }
         <div className="flex mr-12">
           <p className="text-white mr-2">Total</p>
-          <p className="text-white font-extrabold">{minutesToHHMM(totalMonthDuration)}</p>
+          <p className="text-white font-extrabold">{minToHHMM(totalMonthDuration)}</p>
         </div>
       </div>
       <div className='p-4 bg-miru-gray-100'>
@@ -185,7 +184,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, selectedEmployeeId, day
                     <div className="flex justify-end">
                       <p className={"text-xs font-medium " + (weekInfo[dayNum]["date"] === today ? "text-miru-white-1000 bg-miru-han-purple-1000 rounded-xl px-2" : "text-miru-dark-purple-200")}>{weekInfo[dayNum]["day"]}</p>
                     </div>
-                    <p className="text-2xl mx-3 text-miru-dark-purple-1000">{weekInfo[dayNum]["totalDuration"] > 0 ? minutesToHHMM(weekInfo[dayNum]["totalDuration"]) : ""}</p>
+                    <p className="text-2xl mx-3 text-miru-dark-purple-1000">{weekInfo[dayNum]["totalDuration"] > 0 ? minToHHMM(weekInfo[dayNum]["totalDuration"]) : ""}</p>
                   </div>
                 </div>
                   :
@@ -193,7 +192,7 @@ const MonthCalender: React.FC<Iprops> = ({ fetchEntries, selectedEmployeeId, day
               ))}
               <div className="h-14 w-24 bg-white rounded-md font-bold relative">
                 <div className="flex p-1 justify-end bottom-0 right-0 absolute">
-                  <p className="text-2xl mr-auto">{weekInfo[7] ? minutesToHHMM(weekInfo[7]) : ""}</p>
+                  <p className="text-2xl mr-auto">{weekInfo[7] ? minToHHMM(weekInfo[7]) : ""}</p>
                 </div>
               </div>
             </div>

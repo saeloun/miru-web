@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
+import { minToHHMM } from "helpers";
 import { Badge } from "StyledComponents";
-
-import { minutesToHHMM } from "helpers/hhmm-parser";
 
 const deleteIcon = require("../../../../assets/images/delete.svg");
 const editIcon = require("../../../../assets/images/edit.svg");
@@ -63,7 +62,7 @@ const EntryCard: React.FC<props> = ({
           className="uppercase"
         />
       )}
-      <p className="text-4xl ml-6">{minutesToHHMM(duration)}</p>
+      <p className="text-4xl ml-6">{minToHHMM(duration)}</p>
       <button onClick={() => setEditEntryId(id)} className="mx-10">
         <img
           src={editIcon}

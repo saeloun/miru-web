@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import { currencyFormat } from "helpers";
 import { PencilSimple, DotsThreeVertical } from "phosphor-react";
-
-import { currencyFormat } from "helpers/currency";
 
 import DiscountMenu from "./DiscountMenu";
 
