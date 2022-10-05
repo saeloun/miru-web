@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { minFromHHMM, minToHHMM } from "helpers";
+import { lineTotalCalc, minFromHHMM, minToHHMM } from "helpers";
 import { Trash } from "phosphor-react";
 
 const ManualEntry = ({
@@ -55,14 +55,14 @@ const ManualEntry = ({
 
   const handleSetRate = (e) => {
     setRate(e.target.value);
-    setLineTotal((Number(quantity / 60) * Number(e.target.value)).toFixed(2));
+    setLineTotal(lineTotalCalc(quantity, e.target.value));
   };
 
   const handleSetQuantity = (e) => {
     const quantityInMin = Number(minFromHHMM(e.target.value));
     setQtyInHHrMin(e.target.value);
     setQuantity(quantityInMin);
-    setLineTotal((Number(quantityInMin / 60) * Number(rate)).toFixed(2));
+    setLineTotal(lineTotalCalc(quantityInMin, rate));
   };
 
   return (
