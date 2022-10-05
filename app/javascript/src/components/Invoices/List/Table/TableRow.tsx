@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import dayjs from "dayjs";
-import { PaperPlaneTilt, Pen, Trash, DotsThreeVertical } from "phosphor-react";
+import { PaperPlaneTilt, Pen, Trash, DotsThreeVertical, Printer } from "phosphor-react";
 import { Link } from "react-router-dom";
 
 import CustomAvatar from "common/CustomAvatar";
@@ -20,6 +20,7 @@ const TableRow = ({
   setInvoiceToDelete
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const handleCheckboxChange = () => {
     if (isSelected) {
@@ -39,7 +40,7 @@ const TableRow = ({
 
   return (
     <tr className="last:border-b-0 hover:bg-miru-gray-100 group">
-      <td className="px-6 py-5">
+      <td className="pl-6 py-5">
         <CustomCheckbox
           text=""
           handleCheck={handleCheckboxChange}
@@ -49,7 +50,7 @@ const TableRow = ({
         />
       </td>
 
-      <td className="w-2/4 px-6 py-5 font-medium ftracking-wider flex">
+      <td className="w-1/5 pr-2 py-5 font-medium tracking-wider flex text-left">
         <CustomAvatar/>
         <div className="ml-10">
           <Link
@@ -64,7 +65,7 @@ const TableRow = ({
         </div>
       </td>
 
-      <td className="w-1/4 px-6 py-5 font-medium tracking-wider">
+      <td className="w-1/4 px-6 py-5 font-medium tracking-wider text-left">
         <h1 className="font-semibold text-miru-dark-purple-1000">
           {formattedDate(invoice.issueDate)}
         </h1>
@@ -73,12 +74,12 @@ const TableRow = ({
         </h3>
       </td>
 
-      <td className="px-6 py-5 text-xl font-bold tracking-wider text-miru-dark-purple-1000">
+      <td className="w-1/4 px-6 pt-2 pb-7 text-xl font-bold tracking-wider text-miru-dark-purple-1000 text-right ">
         {formattedAmount}
       </td>
 
-      <td className="font-medium flex justify-end py-3 relative">
-        <div className="hidden group-hover:flex p-3 w-40 bottom-6 absolute bg-white border-miru-gray-200 flex items-center justify-between rounded-xl border-2">
+      <td className="font-medium pb-10 px-6 relative text-right">
+        <div className="hidden group-hover:flex p-3 w-40 bottom-16 left-24 absolute bg-white border-miru-gray-200 flex items-center justify-between rounded-xl border-2">
           <button
             className="text-miru-han-purple-1000"
             onClick={() => setIsSending(!isSending)}
@@ -100,10 +101,32 @@ const TableRow = ({
             }}>
             <Trash size={16} />
           </button>
-          <button>
+          <button className="text-miru-han-purple-1000"
+            onClick={()=> setIsMenuOpen(true)}>
             <DotsThreeVertical size={16} />
           </button>
         </div>
+        {
+          isMenuOpen && <>
+            <div className="border-x-4 border-b-8 border-black"></div>
+            <ul onMouseLeave={()=> setIsMenuOpen(false)} className=" group-hover:flex flex-col z-10 p-4 absolute top-5 right-8 bg-white border-2 border-miru-gray-200">
+              <li className="flex items-center">
+                <Printer size={16} className="mr-4 text-miru-han-purple-1000"/>
+              Print
+              </li>
+              <li
+                onClick={() => {
+                  setShowDeleteDialog(true);
+                  setInvoiceToDelete(invoice.id);
+                }}
+                className="flex items-center">
+                <Trash size={16} className="mr-4 text-miru-han-purple-1000"/>
+              Delete
+              </li>
+              <li className="flex items-center"> <PaperPlaneTilt size={16} className="mr-4 text-miru-han-purple-1000"/> Send via link</li>
+            </ul>
+          </>
+        }
         <span className={getStatusCssClass(invoice.status) + " uppercase"}>
           {invoice.status}
         </span>
