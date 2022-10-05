@@ -3,28 +3,25 @@ import React, { useState, useEffect } from "react";
 import { currencyFormat } from "helpers";
 import { PencilSimple, DotsThreeVertical } from "phosphor-react";
 
-import DiscountMenu from "../Generate/DiscountMenu";
+import DiscountMenu from "./DiscountMenu";
 
-// TODO: Make invoice total as common component and move logic to main container
 const InvoiceTotal = ({
   currency,
   newLineItems,
-  manualEntryArr,
   amountPaid,
   amountDue, setAmountDue,
   setAmount,
   discount, setDiscount,
   tax, setTax,
-  showDiscountInput, showTax
+  showDiscountInput, showTax,
+  manualEntryArr
 }) => {
-
   const [addDiscount, setAddDiscount] = useState<boolean>(false);
   const [showDiscountMenu, setShowDiscountMenu] = useState<boolean>(false);
   const [showDiscountButton, setShowDiscountButton] = useState<boolean>(false);
   const [showDiscount, setShowDiscount] = useState<boolean>(showDiscountInput);
   const [showTaxInput, setShowTaxInput] = useState<boolean>(showTax);
   const [showEditTaxButton, setShowEditTaxButton] = useState<boolean>(false);
-
   const [subTotal, setSubTotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
 

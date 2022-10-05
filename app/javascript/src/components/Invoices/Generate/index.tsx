@@ -9,10 +9,10 @@ import Toastr from "common/Toastr";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
-import Header from "./Header";
 import InvoiceSettings from "./InvoiceSettings";
 
 import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
+import Header from "../common/InvoiceForm/Header";
 import { generateInvoiceLineItems } from "../common/utils";
 import SendInvoice from "../popups/SendInvoice";
 
@@ -101,8 +101,8 @@ const GenerateInvoices = () => {
     return (
       <React.Fragment>
         <Header
-          handleSendInvoice={handleSendInvoice}
           handleSaveInvoice={handleSaveInvoice}
+          handleSendInvoice={handleSendInvoice}
           setShowInvoiceSetting={setShowInvoiceSetting}
         />
         <Container
