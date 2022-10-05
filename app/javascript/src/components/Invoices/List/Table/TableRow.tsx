@@ -35,7 +35,6 @@ const TableRow = ({
 
   const formattedDate = (date) =>
     dayjs(date).format(invoice.company.dateFormat);
-
   return (
     <tr className="last:border-b-0 hover:bg-miru-gray-100 group">
       <td className="px-6 py-5">
@@ -48,9 +47,9 @@ const TableRow = ({
         />
       </td>
 
-      <td className="w-2/4 px-6 py-5 font-medium ftracking-wider">
+      <td className="w-2/4 md:px-6 px-2 py-5 font-medium tracking-wider">
         <Link
-          className="font-semibold capitalize text-miru-dark-purple-1000"
+          className="md:font-semibold font-normal capitalize text-miru-dark-purple-1000"
           to={`/invoices/${invoice.id}`}
         >
           {invoice.client.name}
@@ -60,16 +59,16 @@ const TableRow = ({
         </h3>
       </td>
 
-      <td className="w-1/4 px-6 py-5 font-medium tracking-wider">
-        <h1 className="font-semibold text-miru-dark-purple-1000">
+      <td className="md:w-1/4 md:px-6 px-2 py-5 font-medium tracking-wider">
+        <h1 className="md:font-semibold md:text-base text-xs font-normal text-miru-dark-purple-1000">
           {formattedDate(invoice.issueDate)}
         </h1>
-        <h3 className="text-sm font-normal text-miru-dark-purple-400">
+        <h3 className="md:text-sm text-xs font-normal text-miru-dark-purple-400">
           Due on {formattedDate(invoice.dueDate)}
         </h3>
       </td>
 
-      <td className="px-6 py-5 text-xl font-bold tracking-wider text-miru-dark-purple-1000">
+      <td className="px-6 py-5 md:text-xl text-sm font-bold tracking-wider text-miru-dark-purple-1000">
         {formattedAmount}
       </td>
 
