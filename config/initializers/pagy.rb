@@ -111,9 +111,9 @@ require "pagy/extras/array"
 # DEFAULT[:searchkick_pagy_search] = :pagy_search
 # Default original :search method called internally to do the actual search
 # Pagy::DEFAULT[:searchkick_search] = :search
-# require 'pagy/extras/searchkick'
+require "pagy/extras/searchkick"
 # uncomment if you are going to use Searchkick.pagy_search
-# Searchkick.extend Pagy::Searchkick
+Searchkick.extend Pagy::Searchkick
 
 # Frontend Extras
 

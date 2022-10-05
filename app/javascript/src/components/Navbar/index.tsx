@@ -13,7 +13,7 @@ import {
   Gear,
   SignOut
 } from "phosphor-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 
 const miruLogo = require("../../../../assets/images/PurpleMiruLogoWithText.svg"); //eslint-disable-line
 const avatar = require("../../../../assets/images/NavAvatar.svg"); //eslint-disable-line
@@ -140,7 +140,7 @@ const Navbar = ({ isAdminUser, user }) => {
     <div className=" fixed top-0 bottom-0 left-0 shadow-2xl w-1/6 h-full flex flex-col justify-between ">
       <div>
         <div className=" h-20 bg-miru-gray-100 flex items-center justify-center">
-          <img src={miruLogo} alt="miru-logo" />
+          <Link to={Paths.TIME_TRACKING}> <img src={miruLogo} alt="miru-logo" /> </Link>
         </div>
         <ul className="mt-8">
           {isAdminUser ? getAdminOption() : getEmployeeOptions()}

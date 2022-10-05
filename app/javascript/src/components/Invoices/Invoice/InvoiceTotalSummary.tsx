@@ -1,6 +1,6 @@
 import React from "react";
 
-import { currencyFormat } from "helpers/currency";
+import { currencyFormat } from "helpers";
 
 const InvoiceTotalSummary = ({ invoice }) => {
   const subTotal = invoice.invoiceLineItems
