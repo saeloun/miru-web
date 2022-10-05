@@ -96,7 +96,7 @@ const Invoices: React.FC = () => {
       <Header
         params={params}
         setParams={setParams}
-        // setFilterVisibilty={setFilterVisibilty}
+        setFilterVisibilty={setFilterVisibilty}
         clearCheckboxes={() =>
           deselectInvoices(invoices.map((invoice) => invoice.id))
         }
