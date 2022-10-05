@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { minFromHHMM, minToHHMM, lineTotalCalc } from "helpers";
+import { lineTotalCalc, minFromHHMM, minToHHMM } from "helpers";
 import { Trash } from "phosphor-react";
 
 const ManualEntry = ({

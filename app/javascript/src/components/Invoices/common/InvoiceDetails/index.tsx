@@ -11,16 +11,19 @@ import ClientSelection from "./ClientSelection";
 const InvoiceDetails = ({
   currency,
   clientList,
-  selectedClient, setSelectedClient,
   amount,
-  issueDate, setIssueDate,
-  dueDate, setDueDate,
+  selectedClient,
+  setSelectedClient,
+  issueDate,
+  setIssueDate,
+  dueDate,
+  setDueDate,
   invoiceNumber,
   setInvoiceNumber,
   reference,
-  optionSelected, clientVisible
+  optionSelected,
+  clientVisible
 }) => {
-
   const [showDateOfIssuePicker, setShowDateOfIssuePicker] = useState<boolean>(false);
   const [showDueDatePicker, setShowDueDatePicker] = useState<boolean>(false);
   const wrapperRef = useRef(null);
