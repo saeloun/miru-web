@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import autosize from "autosize";
 import { format } from "date-fns";
@@ -124,6 +124,8 @@ const AddEntry: React.FC<Iprops> = ({
     setDisplayDatePicker(false);
   };
 
+  const datePickerRef: React.MutableRefObject<any>  = useRef();
+
   useEffect(() => {
     const textArea = document.querySelector("textarea");
     autosize(textArea);
@@ -142,6 +144,17 @@ const AddEntry: React.FC<Iprops> = ({
       setBillable(selectedProject.billable);
     }
   }, [project]);
+
+  useEffect(() => {
+    const clickHandler = (e: MouseEvent) => {
+      if (! datePickerRef.current.contains(e.target)) {
+        setDisplayDatePicker(false);
+      }
+    };
+
+    document.addEventListener("mousedown", clickHandler);
+    return document.removeEventListener("click", clickHandler);
+  }, []);
 
   return (
     <div
@@ -208,7 +221,7 @@ const AddEntry: React.FC<Iprops> = ({
         <div className="mb-2 flex justify-between">
           <div>
             { displayDatePicker &&
-            <div className="relative">
+            <div className="relative" ref={datePickerRef}>
               <div className="absolute h-100 w-100 z-10 top-8">
                 <CustomDatePicker
                   handleChange={handleDateChangeFromDatePicker}
