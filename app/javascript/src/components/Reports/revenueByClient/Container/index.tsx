@@ -1,9 +1,9 @@
 import React, { Fragment } from "react";
 
+import { cashFormatter, currencySymbol } from "helpers"; // TODO: Formatter
+
 import TotalHeader from "common/TotalHeader";
 import { useEntry } from "components/Reports/context/EntryContext";
-import { cashFormatter } from "helpers/cashFormater"; // TODO: Formatter
-import { currencySymbol } from "helpers/currencySymbol";
 
 import TableRow from "./TableRow";
 

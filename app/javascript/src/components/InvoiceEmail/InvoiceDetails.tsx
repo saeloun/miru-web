@@ -3,8 +3,8 @@ import React from "react";
 import InvoiceInfo from "./InvoiceInfo";
 import InvoiceTotalSummary from "./InvoiceTotalSummary";
 
+import CompanyInfo from "../Invoices/common/CompanyInfo";
 import ClientInfo from "../Invoices/Invoice/ClientInfo";
-import CompanyInfo from "../Invoices/Invoice/CompanyInfo";
 import InvoiceLineItems from "../Invoices/Invoice/InvoiceLineItems";
 
 const InvoiceDetails = ({ invoice, company, lineItems, client, logo }) => (

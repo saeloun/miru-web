@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
+import { useDebounce } from "helpers";
 import {
   MagnifyingGlass,
   Plus,
@@ -12,7 +13,6 @@ import {
 import { Link } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
-import useDebounce from "helpers/debounce";
 
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 

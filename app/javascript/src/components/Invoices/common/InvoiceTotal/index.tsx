@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import { currencyFormat } from "helpers";
 import { PencilSimple, DotsThreeVertical } from "phosphor-react";
-
-import { currencyFormat } from "helpers/currency";
 
 import DiscountMenu from "./DiscountMenu";
 
@@ -17,14 +16,12 @@ const InvoiceTotal = ({
   showDiscountInput, showTax,
   manualEntryArr
 }) => {
-
   const [addDiscount, setAddDiscount] = useState<boolean>(false);
   const [showDiscountMenu, setShowDiscountMenu] = useState<boolean>(false);
   const [showDiscountButton, setShowDiscountButton] = useState<boolean>(false);
   const [showDiscount, setShowDiscount] = useState<boolean>(showDiscountInput);
   const [showTaxInput, setShowTaxInput] = useState<boolean>(showTax);
   const [showEditTaxButton, setShowEditTaxButton] = useState<boolean>(false);
-
   const [subTotal, setSubTotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
 
@@ -87,11 +84,13 @@ const InvoiceTotal = ({
   };
 
   useEffect(() => {
-    const newLineItemsSubTotal = newLineItems.reduce((sum, { lineTotal }) => (sum + Number(lineTotal)), 0);
-    const manualEntryTotal = manualEntryArr.reduce((sum, { lineTotal }) => (sum + Number(lineTotal)), 0);
+    const newLineItemsSubTotalArr = newLineItems
+      .filter((lineItem) => !lineItem._destroy );
 
-    const subTotal = Number((newLineItemsSubTotal + manualEntryTotal).toFixed(2));
-    const newTotal = Number((subTotal + Number(tax) - Number(discount)).toFixed(2));
+    const newLineItemsSubTotal = newLineItemsSubTotalArr.reduce((sum, { lineTotal }) => (sum + Number(lineTotal)), 0);
+    const manualEntryTotal = manualEntryArr.reduce((sum, { lineTotal }) => (sum + Number(lineTotal)), 0);
+    const subTotal = Number(newLineItemsSubTotal) + Number(manualEntryTotal);
+    const newTotal = subTotal + Number(tax) - Number(discount);
     setSubTotal(subTotal);
     setTotal(newTotal);
     setAmount(newTotal);

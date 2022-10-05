@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 
-import useOutsideClick from "helpers/outsideClick";
+import { useOutsideClick } from "helpers";
 
-import NewLineItemTable from "./NewLineItemTable";
-
-import TableHeader from "../common/LineItemTableHeader";
-import NewLineItemRow from "../common/NewLineItemRow";
-import { fetchNewLineItems } from "../common/utils";
-import ManualEntry from "../Generate/ManualEntry";
-import MultipleEntriesModal from "../MultipleEntriesModal";
+import MultipleEntriesModal from "../../MultipleEntriesModal";
+import LineItemTableHeader from "../LineItemTableHeader";
+import ManualEntry from "../ManualEntry";
+import NewLineItemRow from "../NewLineItemRow";
+import NewLineItemTable from "../NewLineItemTable";
+import { fetchNewLineItems } from "../utils";
 
 const InvoiceTable = ({
   currency,
@@ -26,6 +25,7 @@ const InvoiceTable = ({
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [showMultiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
   const [addManualLineItem, setAddManualLineItem] = useState<boolean>(false);
+  const wrapperRef = useRef(null);
 
   useEffect(() => {
     if (addManualLineItem) return setAddManualLineItem(false);
@@ -34,8 +34,6 @@ const InvoiceTable = ({
       loadNewLineItems();
     }
   }, [addNew]);
-
-  const wrapperRef = useRef(null);
 
   const loadNewLineItems = () => {
     fetchNewLineItems(
@@ -56,7 +54,7 @@ const InvoiceTable = ({
   }, addNew);
 
   const getNewLineItemDropdown = () => {
-    if (lineItems) {
+    if (selectedClient && lineItems) {
       return <NewLineItemTable
         setShowItemInputs={setShowItemInputs}
         addNew={addNew}
@@ -99,9 +97,9 @@ const InvoiceTable = ({
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <table className="w-full table-fixed">
-        <TableHeader />
+        <LineItemTableHeader />
         <tbody className="w-full">
           <tr className="w-full">
             <td colSpan={6} className="py-4 relative">
@@ -110,8 +108,9 @@ const InvoiceTable = ({
           </tr>
           {
             showItemInputs
-            && (manualEntryArr.map((entry) =>
+            && (manualEntryArr.map((entry, index) =>
               <ManualEntry
+                key={index}
                 entry={entry}
                 manualEntryArr={manualEntryArr}
                 setManualEntryArr={setManualEntryArr}
@@ -141,7 +140,7 @@ const InvoiceTable = ({
           setMultiLineItemModal={setMultiLineItemModal}
         />}
       </div>
-    </React.Fragment>
+    </Fragment>
   );
 };
 
