@@ -61,7 +61,7 @@ const NewLineItemTable = ({
             const hoursLogged = minToHHMM(item.quantity);
             const date = dayjs(item.date).format("DD.MM.YYYY");
             return (
-              <div key={index} onClick={() => selectRowId(item)} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100" data-cy="entries-list-edit">
+              <div key={index} onClick={() => selectRowId(item)} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100" data-cy="entries-list">
                 <span className="font-medium w-1/5 text-sm text-miru-dark-purple-1000 text-left">
                   {item.first_name} {item.last_name}
                 </span>
