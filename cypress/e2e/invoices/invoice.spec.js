@@ -51,8 +51,8 @@ describe("invoices index page", () => {
     cy.generateNewInvoice(invoice_number);
     cy.get(invoicesSelector.searchBar).clear().type(invoice_number).type('{enter}')
     cy.get(invoicesSelector.edit).click({force: true})
-    cy.get(invoicesSelector.editNewLineItem).click()
-    cy.get(invoicesSelector.entriesListEdit).first().click()
+    cy.get(invoicesSelector.newLineItemButton).click()
+    cy.get(invoicesSelector.entriesList).first().click()
     cy.get(invoicesSelector.saveInvoiceEdit).click()
   })
 
