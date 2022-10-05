@@ -1,6 +1,6 @@
 import React from "react";
 
-const TableHeader = () => (
+const LineItemTableHeader = () => (
   <thead className="my-2">
     <tr>
       <th className="text-miru-dark-purple-600 font-normal text-xs text-left tracking-widest">
@@ -26,4 +26,4 @@ const TableHeader = () => (
   </thead>
 );
 
-export default TableHeader;
+export default LineItemTableHeader;
