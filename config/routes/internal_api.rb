@@ -31,8 +31,10 @@ namespace :internal_api, defaults: { format: "json" } do
 
     resources :workspaces, only: [:update]
     resources :invoices, only: [:index, :create, :update, :show, :destroy, :edit] do
-      post :send_invoice, on: :member
-      get :download, on: :member
+      member do
+        post :send_invoice
+        get :download
+      end
     end
     namespace :invoices do
       resources :bulk_deletion, only: [:create]
