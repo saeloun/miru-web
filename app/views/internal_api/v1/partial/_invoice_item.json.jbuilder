@@ -3,7 +3,6 @@
 json.key_format! camelize: :lower
 json.deep_format_keys!
 
-
 json.array! invoices do |invoice|
     json.id invoice.id
     json.invoice_number invoice.invoice_number

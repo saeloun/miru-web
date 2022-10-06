@@ -6,7 +6,7 @@ json.invoices do
   json.partial! "internal_api/v1/partial/invoice_item", locals: { invoices: }
 end
 json.recently_updated_invoices do
-  json.partial! "internal_api/v1/partial/invoice_item", locals: { invoices: recently_updated_invoices}
+  json.partial! "internal_api/v1/partial/invoice_item", locals: { invoices: recently_updated_invoices }
 end
 json.summary summary
 json.pagy pagy
