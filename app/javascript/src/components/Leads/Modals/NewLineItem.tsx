@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
+
+import { Formik, Form, Field } from "formik";
+import { X } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+
 import leadItemsApi from "apis/lead-items";
 import leadLineItems from "apis/lead-line-items";
 import Toastr from "common/Toastr";
-import { Formik, Form, Field } from "formik";
-import { X } from "phosphor-react";
-import * as Yup from "yup";
 
 const newLeadSchema = Yup.object().shape({
   name: Yup.string().required("Name cannot be blank"),
@@ -101,13 +103,13 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                   <div className="mt-4">
                     <div className="field">
                       <div className="field_with_errors">
-                        <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                        <label className="form__label">
                           Kind
                         </label>
                       </div>
                       <div className="mt-1">
                         <select
-                          className="w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          className="form__input"
                           name="kind" onChange={(e) => setKindVal(e.target.value)}>
                           <option value=''>Select Kind</option>
                           {kindList &&
@@ -119,7 +121,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                   <div className="mt-4">
                     <div className="field">
                       <div className="field_with_errors">
-                        <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                        <label className="form__label">
                           Number of Resource
                         </label>
                         <div className="tracking-wider block text-xs text-red-600">
@@ -129,14 +131,14 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.number_of_resource && touched.number_of_resource && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="number_of_resource" type="number" min="0" />
+                        <Field className={`form__input ${errors.number_of_resource && touched.number_of_resource && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="number_of_resource" type="number" min="0" />
                       </div>
                     </div>
                   </div>
                   <div className="mt-4">
                     <div className="field">
                       <div className="field_with_errors">
-                        <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                        <label className="form__label">
                           Resource Expertise Level
                         </label>
                         <div className="tracking-wider block text-xs text-red-600">
@@ -146,7 +148,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.resource_expertise_level && touched.resource_expertise_level && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="resource_expertise_level" type="number" min="0" />
+                        <Field className={`form__input ${errors.resource_expertise_level && touched.resource_expertise_level && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="resource_expertise_level" type="number" min="0" />
                       </div>
                     </div>
                   </div>
@@ -161,14 +163,14 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`w-full border border-gray-300 dark:border-gray-700 p-2 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.description && touched.description && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="description" />
+                        <Field className={`form__input ${errors.description && touched.description && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="description" />
                       </div>
                     </div>
                   </div>
                   <div className="mt-4">
                     <div className="field">
                       <div className="field_with_errors">
-                        <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                        <label className="form__label">
                           Price
                         </label>
                         <div className="tracking-wider block text-xs text-red-600">
@@ -178,7 +180,7 @@ const NewLineItem = ({ leadDetails, setnewLead, leadData, setLeadData }) => {
                         </div>
                       </div>
                       <div className="mt-1">
-                        <Field className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.price && touched.price && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="price" type="number" min="0" />
+                        <Field className={`form__input ${errors.price && touched.price && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="price" type="number" min="0" />
                       </div>
                     </div>
                   </div>

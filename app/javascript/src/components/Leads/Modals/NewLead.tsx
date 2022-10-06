@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
+
+import { Formik, Form, Field } from "formik";
+import { X } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+
 import leadItemsApi from "apis/lead-items";
 import leads from "apis/leads";
 import Toastr from "common/Toastr";
-import { Formik, Form, Field } from "formik";
-import { X } from "phosphor-react";
-import * as Yup from "yup";
 
 const newLeadSchema = Yup.object().shape({
   first_name: Yup.string().required("Can't be blank"),
@@ -87,7 +89,7 @@ const NewLead = ({ setnewLead }) => {
                       </div>
                       <div className="mt-2 flex -space-x-px">
                         <div className="mr-4 w-1/2 flex-1 min-w-0">
-                          <Field className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.first_name && touched.first_name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="first_name" placeholder="First Name" />
+                          <Field className={`form__input ${errors.first_name && touched.first_name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="first_name" placeholder="First Name" />
                           <div className="tracking-wider block text-xs text-red-600">
                             {errors.first_name && touched.first_name &&
                             <div>{`${errors.first_name}`}</div>
@@ -95,7 +97,7 @@ const NewLead = ({ setnewLead }) => {
                           </div>
                         </div>
                         <div className="w-1/2 flex-1 min-w-0">
-                          <Field className={`w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400 ${errors.last_name && touched.last_name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="last_name" placeholder="Last Name" />
+                          <Field className={`form__input ${errors.last_name && touched.last_name && "border-red-600 focus:ring-red-600 focus:border-red-600"} `} name="last_name" placeholder="Last Name" />
                           <div className="tracking-wider block text-xs text-red-600">
                             {errors.last_name && touched.last_name &&
                               <div>{`${errors.last_name}`}</div>
@@ -108,13 +110,13 @@ const NewLead = ({ setnewLead }) => {
                   <div className="mt-4">
                     <div className="field">
                       <div className="field_with_errors">
-                        <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                        <label className="form__label">
                           Quality
                         </label>
                       </div>
                       <div className="mt-1">
                         <select
-                          className="w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          className="form__input"
                           name="quality_code" onChange={(e) => setQualityCode(e.target.value)}>
                           <option value=''>Select Quality</option>
                           {qualityCodeList &&
@@ -126,13 +128,13 @@ const NewLead = ({ setnewLead }) => {
                   <div className="mt-4">
                     <div className="field">
                       <div className="field_with_errors">
-                        <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                        <label className="form__label">
                           Status
                         </label>
                       </div>
                       <div className="mt-1">
                         <select
-                          className="w-full border border-gray-300 dark:border-gray-700 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 dark:text-gray-400"
+                          className="form__input"
                           name="status_code" onChange={(e) => setStatusCode(e.target.value)}>
                           <option value=''>Select Status</option>
                           {statusCodeList &&

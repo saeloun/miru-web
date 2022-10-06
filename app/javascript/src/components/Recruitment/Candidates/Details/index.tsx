@@ -16,7 +16,7 @@ interface IDetailsProps {
   id?: number|string
 }
 
-const Details: React.FC<IDetailsProps> = ({ id }) => {
+const Details: React.FC<IDetailsProps> = () => {
   const [candidateDetails, setCandidateDetails] = useState<any>({});
   const [showCandidateSetting, setShowCandidateSetting] = useState<boolean>(false);
   const [forItem, setForItem] = useState<string>("summary");
@@ -25,7 +25,7 @@ const Details: React.FC<IDetailsProps> = ({ id }) => {
   const { candidateId } = useParams();
 
   useEffect(() => {
-    (candidateId) && candidate.show(id)
+    (candidateId) && candidate.show(candidateId)
       .then((res) => {
         const sanitized = unmapCandidateDetails(res);
         setCandidateDetails(sanitized.candidateDetails);

@@ -16,4 +16,8 @@ class DeviceApi::DeviceApiPolicy < ApplicationPolicy
   def update_availability? # API
     true
   end
+
+  def certify? # API
+    true
+  end
 end

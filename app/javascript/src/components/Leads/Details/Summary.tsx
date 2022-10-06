@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
-import leadItemsApi from "apis/lead-items";
-import leads from "apis/leads";
+
 import { Formik, Form, Field, FieldArray } from "formik";
 import { Multiselect } from 'multiselect-react-dropdown';
 import * as Yup from "yup";
+
+import leadItemsApi from "apis/lead-items";
+import leads from "apis/leads";
+
 import { unmapLeadDetails } from "../../../mapper/lead.mapper";
 
 const newLeadSchema = Yup.object().shape({
@@ -473,9 +476,9 @@ const Summary = ({
                       </div>
 
                       <div className="mt-4 flex flex-col lg:w-9/12 md:w-1/2 w-full">
-                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Moobile Phone</label>
+                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Mobile Phone</label>
                         <Field className="w-full border border-gray-400 p-1 shadow-sm rounded text-sm focus:outline-none focus:border-blue-700 bg-transparent placeholder-gray-500 text-gray-600 disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none"
-                          name="mobilephone" placeholder="Moobile Phone" disabled={!isEdit} />
+                          name="mobilephone" placeholder="Mobile Phone" disabled={!isEdit} />
                         <div className="flex justify-between items-center pt-1 text-red-700">
                           {errors.mobilephone && touched.mobilephone &&
                             <p className="text-xs">{`${errors.mobilephone}`}</p>

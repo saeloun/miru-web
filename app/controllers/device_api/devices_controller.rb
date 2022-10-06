@@ -49,6 +49,29 @@ class DeviceApi::DevicesController < DeviceApi::ApplicationController
     }
   end
 
+  def certify # To replace #find and #create
+    authorize :certify, policy_class: DeviceApi::DeviceApiPolicy
+
+    unless Device::DEVICE_TYPE_OPTIONS.find { |i| i.id == device_params[:device_type].to_s.downcase }
+      render json: {
+        success: false,
+        notice: "This device type \"#{device_params[:device_type]}\" is not supported."
+      }, status: :not_found
+      return
+    end
+
+    device = Device.find_by(
+      brand: device_params[:brand], device_type: device_params[:device_type],
+      serial_number: device_params[:serial_number]
+    ) || Device.new(device_params)
+    device.attributes = device_params
+    device.save!
+
+    render :create, locals: {
+      device:
+    }
+  end
+
   def update_availability
     authorize :update_availability, policy_class: DeviceApi::DeviceApiPolicy
 

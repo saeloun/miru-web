@@ -182,7 +182,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                     </div>
                     <div className="mt-4">
                       <div className="field">
-                        <label className="form__label tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                        <label className="form__label">
                           Role
                         </label>
                         <div className="mt-1 flex">
@@ -243,7 +243,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                     </div>
                     <div className="mt-4">
                       <div className="field">
-                        <label className="form__label tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                        <label className="form__label">
                           Team Lead
                         </label>
                         <div className="mt-1 flex">
@@ -284,29 +284,24 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         </div>
                       </div>
                     </div>
-                    {/* <div className="mt-4">
+                    <div className="mt-4">
                       <div className="field">
                         <div className="field_with_errors">
                           <label className="form__label">Department</label>
                         </div>
                         <div className="mt-1">
                           <Field
-                            className={`form__input disabled:opacity-50 ${
-                              errors.department &&
-                              touched.department &&
-                              "border-red-600 focus:ring-red-600 focus:border-red-600"
-                            } `}
-                            name="department_id"
-                            disabled={isEdit}
+                            className="form__input"
+                            name="departmentId"
                             as="select"
                           >
-                            <option value="red">Red</option>
-                            <option value="green">Green</option>
-                            <option value="blue">Blue</option>
+                            {[{ id: 1, name: "Blue" }, { id: 2, name: "Green" }, { id: 2, name: "Green" }].map((option) => (
+                              <option value={option.id}>{option.name}</option>
+                            ))}
                           </Field>
                         </div>
                       </div>
-                    </div> */}
+                    </div>
                     <p className="tracking-wider mt-7 block text-xs text-red-600">
                       {apiError}
                     </p>

@@ -398,9 +398,9 @@ const Summary = ({
                       </div>
 
                       <div className="flex flex-col w-full mt-4 lg:w-9/12 md:w-1/2">
-                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Moobile Phone</label>
+                        <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Mobile Phone</label>
                         <Field className="w-full p-1 text-sm text-gray-600 placeholder-gray-500 bg-transparent border border-gray-400 rounded shadow-sm focus:outline-none focus:border-blue-700 disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none"
-                          name="mobilephone" placeholder="Moobile Phone" disabled={!isEdit} />
+                          name="mobilephone" placeholder="Mobile Phone" disabled={!isEdit} />
                         <div className="flex items-center justify-between pt-1 text-red-700">
                           {errors.mobilephone && touched.mobilephone &&
                             <p className="text-xs">{`${errors.mobilephone}`}</p>
