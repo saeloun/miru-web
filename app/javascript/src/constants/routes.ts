@@ -19,7 +19,7 @@ import TimeEntryReports from "../components/Reports/timeEntry";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
 import TeamRouteConfig from "../components/Team/RouteConfig";
-import TimeTracking from "../components/time-tracking/Index";
+import TimeTracking from "../components/TimeTracking/Index";
 
 const ClientsRoutes = [
   { path: "" ,Component: ClientList },
