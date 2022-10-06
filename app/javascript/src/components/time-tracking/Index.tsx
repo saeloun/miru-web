@@ -148,9 +148,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     try {
       const res = await timesheetEntryApi.list(from, to, selectedEmployeeId);
       if (res.status >= 200 && res.status < 300) {
-        const newState = { ...allEmployeesEntries, [selectedEmployeeId]: res.data.entries };
-        setAllEmployeesEntries(() => newState);
-        setEntryList((pv) => ({ ...pv, ...res.data.entries }));
+        setAllEmployeesEntries(
+          (prevState) => ( { ...prevState, [selectedEmployeeId]: res.data.entries } )
+        );
+        setEntryList((prevState) => ({ ...prevState, ...res.data.entries }));
       }
       return res;
     } catch (error) {
@@ -158,12 +159,30 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     }
   };
 
-  const handleFilterEntry = async (date: string, entryId: string) => {
+  const handleFilterEntry = async (date: string, entryId: (string | number)) => {
+    let filteredTimesheetEntry: object;
     const filteredDate = dayjs(date).format("YYYY-MM-DD");
     const newValue = { ...entryList };
-    newValue[filteredDate] = newValue[filteredDate].filter(e => e.id != entryId);
+    newValue[filteredDate] = newValue[filteredDate].filter(e => {
+      if (e["id"] == entryId) {
+        filteredTimesheetEntry = e;
+      } else {
+        return e;
+      }
+    });
     setAllEmployeesEntries(pv => ({ ...pv, [selectedEmployeeId]: newValue }));
     setEntryList((pv) => ({ ...pv, ...newValue }));
+    return filteredTimesheetEntry;
+  };
+
+  const handleRelocateEntry = async (date: string, entry: object) => {
+    const filteredDate = dayjs(date).format("YYYY-MM-DD");
+    setEntryList((prevState) => {
+      const newState = { ...prevState };
+      newState[filteredDate] = newState[filteredDate] ? [...newState[filteredDate], entry] : [entry];
+      return newState;
+    });
+    setAllEmployeesEntries(pv => ({ ...pv, [selectedEmployeeId]: entryList }));
   };
 
   const handleDeleteEntry = async id => {
@@ -364,6 +383,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               editEntryId={editEntryId}
               dayInfo={dayInfo}
               handleFilterEntry={handleFilterEntry}
+              handleRelocateEntry={handleRelocateEntry}
             />
           )}
           {view !== "week" && !newEntryView && (
@@ -428,6 +448,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 editEntryId={editEntryId}
                 dayInfo={dayInfo}
                 handleFilterEntry={handleFilterEntry}
+                handleRelocateEntry={handleRelocateEntry}
               />
             ) : (
               <EntryCard

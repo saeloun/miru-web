@@ -24,7 +24,8 @@ const AddEntry: React.FC<Iprops> = ({
   selectedFullDate,
   setEditEntryId,
   editEntryId,
-  handleFilterEntry
+  handleFilterEntry,
+  handleRelocateEntry
 }) => {
   const [note, setNote] = useState<string>("");
   const [duration, setDuration] = useState<string>("00:00");
@@ -102,17 +103,21 @@ const AddEntry: React.FC<Iprops> = ({
         Toastr.error(message);
         return;
       }
-      const res = await timesheetEntryApi.update(editEntryId, {
+
+      const updateRes = await timesheetEntryApi.update(editEntryId, {
         project_id: projectId,
         timesheet_entry: tse
       });
-      if (res.status >= 200 && res.status < 300) {
-        const entries = await fetchEntries(selectedDate, selectedDate);
-        await handleFilterEntry(selectedFullDate, String(editEntryId));
-        if (entries) {
-          setEditEntryId(0);
-          setNewEntryView(false);
+
+      if (updateRes.status >= 200 && updateRes.status < 300) {
+        if (selectedDate  !== selectedFullDate) {
+          await handleFilterEntry(selectedFullDate, editEntryId);
+          await handleRelocateEntry(selectedDate, updateRes.data.entry);
+        } else {
+          await fetchEntries(selectedFullDate, selectedFullDate);
         }
+        setEditEntryId(0);
+        setNewEntryView(false);
       }
     } catch (error) {
       Toastr.error(error);
@@ -317,7 +322,8 @@ interface Iprops {
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   dayInfo: object;
   entryList: object;
-  handleFilterEntry: (date: string, entryId: string) => void;
+  handleFilterEntry: (date: string, entryId: (string | number)) => object;
+  handleRelocateEntry: (date: string, entry: object) => void;
 }
 
 export default AddEntry;
