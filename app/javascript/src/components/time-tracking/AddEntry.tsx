@@ -5,6 +5,7 @@ import autosize from "autosize";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
+import { useOutsideClick } from "helpers";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -35,6 +36,10 @@ const AddEntry: React.FC<Iprops> = ({
   const [projectBillable, setProjectBillable] = useState<boolean>(true);
   const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
+
+  const datePickerRef: React.MutableRefObject<any>  = useRef();
+
+  useOutsideClick(datePickerRef, () => { setDisplayDatePicker(false); } );
 
   const handleFillData = () => {
     if (! editEntryId) return;
@@ -128,8 +133,6 @@ const AddEntry: React.FC<Iprops> = ({
     setDisplayDatePicker(false);
   };
 
-  const datePickerRef: React.MutableRefObject<any>  = useRef();
-
   useEffect(() => {
     const textArea = document.querySelector("textarea");
     autosize(textArea);
@@ -149,16 +152,16 @@ const AddEntry: React.FC<Iprops> = ({
     }
   }, [project]);
 
-  useEffect(() => {
-    const clickHandler = (e: MouseEvent) => {
-      if (! datePickerRef.current.contains(e.target)) {
-        setDisplayDatePicker(false);
-      }
-    };
+  // useEffect(() => {
+  //   const clickHandler = (e: MouseEvent) => {
+  //     if (! datePickerRef.current.contains(e.target)) {
+  //       setDisplayDatePicker(false);
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", clickHandler);
-    return document.removeEventListener("click", clickHandler);
-  }, []);
+  //   document.addEventListener("mousedown", clickHandler);
+  //   return document.removeEventListener("click", clickHandler);
+  // }, []);
 
   return (
     <div
