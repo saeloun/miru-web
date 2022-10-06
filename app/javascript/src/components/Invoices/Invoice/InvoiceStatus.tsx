@@ -8,7 +8,7 @@ const InvoiceStatus = ({ invoice }) => (
       <p className="text-4xl font-bold">Invoice #{invoice.invoiceNumber}</p>
     </div>
     <div className="flex self-center ml-2">
-      <span className={`${getStatusCssClass("draft")} uppercase`}>
+      <span className={`${getStatusCssClass(invoice.status)} uppercase`}>
         {invoice.status}
       </span>
     </div>
