@@ -8,42 +8,40 @@ RSpec.describe "InternalApi::V1::Invoices#download", type: :request do
   let!(:client) { create(:client, company:) }
   let!(:invoice) { create(:invoice, client:, status: "sent") }
 
-  context "when user is an admin" do
+  subject { send_request :get, download_internal_api_v1_invoice_path(id: invoice.id) }
+
+  context "when authenticated" do
     before do
       create(:employment, company:, user:)
-      user.add_role :admin, company
+      user.add_role role, company
       sign_in user
     end
 
-    it "downloads the invoice in PDF format" do
-      send_request :get, download_internal_api_v1_invoice_path(id: invoice.id)
-      expect(response).to have_http_status(:ok)
-    end
-  end
+    context "when user is admin" do
+      let(:role) { :admin }
 
-  context "when user is an employee" do
-    before do
-      create(:employment, company:, user:)
-      user.add_role :employee, company
-      sign_in user
+      it "downloads the invoice in PDF format" do
+        subject
+        expect(response).to have_http_status(:ok)
+      end
     end
 
-    it "returns 403 status" do
-      send_request :get, download_internal_api_v1_invoice_path(id: invoice.id)
-      expect(json_response["errors"]).to eq "You are not authorized to perform this action."
-    end
-  end
+    context "when user is employee" do
+      let(:role) { :employee }
 
-  context "when user is a book keeper" do
-    before do
-      create(:employment, company:, user:)
-      user.add_role :book_keeper, company
-      sign_in user
+      it "returns 403 status" do
+        subject
+        expect(json_response["errors"]).to eq "You are not authorized to perform this action."
+      end
     end
 
-    it "returns 403 status" do
-      send_request :get, download_internal_api_v1_invoice_path(id: invoice.id)
-      expect(json_response["errors"]).to eq "You are not authorized to perform this action."
+    context "when user is book_keeper" do
+      let(:role) { :book_keeper }
+
+      it "returns 403 status" do
+        subject
+        expect(json_response["errors"]).to eq "You are not authorized to perform this action."
+      end
     end
   end
 
