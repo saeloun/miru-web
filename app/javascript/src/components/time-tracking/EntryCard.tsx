@@ -2,7 +2,8 @@
 import React from "react";
 
 import { minToHHMM } from "helpers";
-import { Badge } from "StyledComponents";
+
+import { Badge } from "../../StyledComponents";
 
 const deleteIcon = require("../../../../assets/images/delete.svg");
 const editIcon = require("../../../../assets/images/edit.svg");
