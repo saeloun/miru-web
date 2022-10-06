@@ -56,7 +56,7 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
       end
 
       it "will fail" do
-        expect(json_response["error"]).to eq("Standard price can't be blank")
+        expect(json_response["errors"]).to eq("Standard price can't be blank")
       end
 
       it "will not be created" do

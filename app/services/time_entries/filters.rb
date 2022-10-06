@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Reports::TimeEntries
+module TimeEntries
   class Filters < ApplicationService
     include UtilityFunctions
 
