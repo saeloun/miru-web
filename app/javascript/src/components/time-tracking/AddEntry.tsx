@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
-import autosize from "autosize";
+import { getNumberWithOrdinal, minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import Toastr from "common/Toastr";
-import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
-import { getNumberWithOrdinal } from "helpers/ordinal";
-import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
@@ -38,7 +35,7 @@ const AddEntry: React.FC<Iprops> = ({
       entry => entry.id === editEntryId
     );
     if (entry) {
-      setDuration(minutesToHHMM(entry.duration));
+      setDuration(minToHHMM(entry.duration));
       setClient(entry.client);
       setProject(entry.project);
       setProjectId(entry.project_id);
@@ -48,10 +45,7 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   useEffect(() => {
-    const textArea = document.querySelector("textarea");
-    autosize(textArea);
     handleFillData();
-    textArea.click();
   }, []);
 
   useEffect(() => {
@@ -72,7 +66,7 @@ const AddEntry: React.FC<Iprops> = ({
 
   const getPayload = () => ({
     work_date: selectedFullDate,
-    duration: minutesFromHHMM(duration),
+    duration: minFromHHMM(duration),
     note: note,
     bill_status: billable ? "unbilled" : "non_billable"
   });
@@ -176,7 +170,7 @@ const AddEntry: React.FC<Iprops> = ({
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
+          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 overflow-y-auto " + (editEntryId ? "h-32" : "h-8") )}
         ></textarea>
       </div>
       <div className="w-60">

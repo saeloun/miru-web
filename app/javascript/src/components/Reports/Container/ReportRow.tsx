@@ -1,6 +1,6 @@
 import React from "react";
 
-import { minutesToHHMM } from "helpers/hhmm-parser";
+import { minToHHMM } from "helpers";
 
 import { ITimeEntry } from "../interface";
 
@@ -35,7 +35,7 @@ const ReportRow = ({
       </p>
     </div>
     <div className="pl-6 py-4 text-xl text-right whitespace-nowrap font-bold text-miru-dark-purple-1000">
-      {minutesToHHMM(duration)}
+      {minToHHMM(duration)}
     </div>
   </div>
 );

@@ -15,7 +15,7 @@ const Container = ({
   setInvoiceToDelete
 }) =>
   invoices.length > 0 ? (
-    <>
+    <div className="overflow-x-scroll flex flex-col items-stretch">
       <InvoiceSummary
         summary={summary}
         baseCurrency={invoices[0].company.baseCurrency}
@@ -42,7 +42,7 @@ const Container = ({
         setShowDeleteDialog= {setShowDeleteDialog}
         setInvoiceToDelete ={setInvoiceToDelete}
       />
-    </>
+    </div>
   ) : (
     <div>No invoices to show</div>
   );

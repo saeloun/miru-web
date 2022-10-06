@@ -1,14 +1,25 @@
 # frozen_string_literal: true
 
-json.company_details do
-  json.id current_company.id
-  json.logo current_company.logo.attached? ? polymorphic_url(current_company.logo) : ""
-  json.name current_company.name
-  json.phone_number current_company.business_phone
-  json.address current_company.address
-  json.country current_company.country
-  json.currency current_company.base_currency
+# sending team member list values according to client and project
+json.filter_options do
+  json.team_members filter_options[:team_members] do |team_member|
+    json.label team_member.full_name
+    json.value team_member.id
+  end
 end
-json.issue_date Date.current
-json.due_date Date.current + 30
-json.company_client_list current_company.client_list
+
+# new line items data according to filters and search term
+json.new_line_item_entries new_line_item_entries do |line_item|
+  json.timesheet_entry_id line_item.id
+  json.user_id line_item.user_id
+  json.project_id line_item.project_id
+  json.first_name line_item.user.first_name
+  json.last_name line_item.user.last_name
+  json.description line_item.note
+  json.date line_item.work_date
+  json.quantity line_item.duration
+  json.rate ProjectMember.find_by(user_id: line_item.user_id, project_id: line_item.project_id).hourly_rate
+end
+
+# sends total number of new line item entry count
+json.total_new_line_items total_new_line_items

@@ -1,8 +1,7 @@
 import React, { Fragment } from "react";
 
+import { minToHHMM } from "helpers";
 import ReactTooltip from "react-tooltip";
-
-import { minutesToHHMM } from "helpers/hhmm-parser";
 
 import { IChartBarGraph, ISingleClient } from "./interface";
 
@@ -20,7 +19,7 @@ const Client = ({ element, totalMinutes, index }:ISingleClient) => {
     <div style={divStyle}>
       <ReactTooltip id={`registerTip-${index}`} effect="solid" backgroundColor="white" textColor="#1D1A31" place="top">
         <p className="text-xs">{element.name}</p>
-        <p className="text-2xl text-center">{minutesToHHMM(element.minutes)}</p>
+        <p className="text-2xl text-center">{minToHHMM(element.minutes)}</p>
       </ReactTooltip>
       <button
         data-tip
@@ -35,7 +34,7 @@ const Client = ({ element, totalMinutes, index }:ISingleClient) => {
 const GetClientBar = ({ data, totalMinutes }:IChartBarGraph) => (
   <Fragment>
     <p className="mb-3 text-tiny text-miru-dark-purple-600 tracking-widest">
-      TOTAL HOURS: <span className="font-medium">{minutesToHHMM(totalMinutes)}</span>
+      TOTAL HOURS: <span className="font-medium">{minToHHMM(totalMinutes)}</span>
     </p>
     <div className="w-full bg-gray-200 flex h-1">
       {data.map((element, index) => <Client
@@ -51,7 +50,7 @@ const GetClientBar = ({ data, totalMinutes }:IChartBarGraph) => (
         0
       </span>
       <span>
-        {minutesToHHMM(totalMinutes)}
+        {minToHHMM(totalMinutes)}
       </span>
     </div>
   </Fragment>
