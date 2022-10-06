@@ -4,13 +4,14 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   before_action :load_client, only: [:create, :update]
   after_action :ensure_time_entries_billed, only: [:send_invoice]
 
+  include UtilityFunctions
+
   def index
     authorize Invoice
     pagy, invoices = pagy(
       current_company.invoices.includes(:client)
             .search(params[:query])
-            .from_date(params[:from])
-            .to_date(params[:to])
+            .from_to(issue_from_date(params[:from_to]))
             .for_clients(params[:client_ids])
             .with_statuses(params[:statuses])
             .order(created_at: :desc),
@@ -105,5 +106,11 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
     def ensure_time_entries_billed
       invoice.update_timesheet_entry_status!
+    end
+
+    def issue_from_date(from_to)
+      if from_to
+        range_from_timeframe(from_to[:date_range], from_to[:from], from_to[:to])
+      end
     end
 end
