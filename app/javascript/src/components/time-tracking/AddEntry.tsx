@@ -4,12 +4,11 @@ import React, { useState, useEffect, useRef } from "react";
 import autosize from "autosize";
 import { format } from "date-fns";
 import dayjs from "dayjs";
+import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
 import Toastr from "common/Toastr";
-import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
-import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
@@ -43,7 +42,7 @@ const AddEntry: React.FC<Iprops> = ({
       entry => entry.id === editEntryId
     );
     if (entry) {
-      setDuration(minutesToHHMM(entry.duration));
+      setDuration(minToHHMM(entry.duration));
       setClient(entry.client);
       setProject(entry.project);
       setProjectId(entry.project_id);
@@ -70,7 +69,7 @@ const AddEntry: React.FC<Iprops> = ({
 
   const getPayload = () => ({
     work_date: selectedDate,
-    duration: minutesFromHHMM(duration),
+    duration: minFromHHMM(duration),
     note: note,
     bill_status: billable ? "unbilled" : "non_billable"
   });

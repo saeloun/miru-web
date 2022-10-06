@@ -27,7 +27,7 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
 
     def reports
       default_filter = current_company_filter.merge(this_month_filter)
-      where_clause = default_filter.merge(Reports::TimeEntries::Filters.process(params))
+      where_clause = default_filter.merge(TimeEntries::Filters.process(params))
       group_by_clause = Reports::TimeEntries::GroupBy.process(params["group_by"])
 
       search_result = TimesheetEntry.search(

@@ -169,9 +169,12 @@ You can deploy Miru on Heroku using the one-click-deployment button:
 - Subscribe our latest [blog articles](https://blog.getmiru.com) and tutorials.
 - [Discussions](https://github.com/saeloun/miru-web/discussions): Post your questions regarding Miru Web
 - [**Twitter**](https://twitter.com/getmiru)
+- [Documentation](https://docs.getmiru.com/)
 
 ## Contributing
 We encourage everyone to contribute to Miru Web! Check out [Contributing Guide](CONTRIBUTING.md) for guidelines about how to proceed.. <br>
+
+Note: We are working on improving the documentation. So we had created a docusaurus app for documentation. Check out the [Miru Docs](https://github.com/saeloun/miru-docs/) Repo.
 
 ## Contributors ✨
 
