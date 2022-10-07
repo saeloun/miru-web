@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+import dayjs from "dayjs";
 import { X } from "phosphor-react";
 import Select from "react-select";
 
@@ -110,7 +111,10 @@ const FilterSideBar = ({
 
   const submitCustomDatePicker = () => {
     if (dateRange.from && dateRange.to) {
-      setFilters({ ...filters, ["dateRange"]: { value: "custom", label: "Custom", ...dateRange } });
+      const fromDate =  dayjs(dateRange.from).format("DD/MM/YY");
+      const toDate =  dayjs(dateRange.to).format("DD/MM/YY");
+
+      setFilters({ ...filters, ["dateRange"]: { value: "custom", label: `Custom ${fromDate} - ${toDate}`, ...dateRange } });
       setCustomDate(true);
     }
     hideCustomFilter();
