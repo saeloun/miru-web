@@ -19,9 +19,10 @@ RSpec.describe InvoicePayment::StripeCheckoutFulfillment do
         object: {
           metadata: { invoice_id: invoice.id },
           payment_intent: intent_id,
-          amount_total: invoice.amount,
+          amount_total: Money.from_amount(invoice.amount, "inr").cents,
           status: "complete",
-          payment_status: "paid"
+          payment_status: "paid",
+          currency: "inr"
         }
       },
       created: current_time.strftime("%s")
@@ -56,9 +57,10 @@ RSpec.describe InvoicePayment::StripeCheckoutFulfillment do
         object: {
           metadata: { invoice_id: invoice.id },
           payment_intent: "intent_id",
-          amount_total: invoice.amount,
+          amount_total: Money.from_amount(invoice.amount, "inr").cents,
           status: "complete",
-          payment_status: "paid"
+          payment_status: "paid",
+          currency: "inr"
         }
       },
       created: current_time.strftime("%s")
@@ -87,7 +89,8 @@ RSpec.describe InvoicePayment::StripeCheckoutFulfillment do
           payment_intent: intent_id,
           amount_total: invoice.amount,
           status: "expired",
-          payment_status: "paid"
+          payment_status: "paid",
+          currency: "inr"
         }
       },
       created: current_time.strftime("%s")
@@ -116,7 +119,8 @@ RSpec.describe InvoicePayment::StripeCheckoutFulfillment do
           payment_intent: intent_id,
           amount_total: invoice.amount,
           status: "complete",
-          payment_status: "unpaid"
+          payment_status: "unpaid",
+          currency: "inr"
         }
       },
       created: current_time.strftime("%s")
