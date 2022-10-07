@@ -12,16 +12,24 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
 
   def process
     @invoice = Invoice.find(event.data.object.metadata.invoice_id)
-    if is_valid_event
+    if is_valid_event?
       InvoicePayment::AddPayment.process(payment_params, invoice)
     end
   end
 
   private
 
-    def is_valid_event
+    def is_valid_event?
       invoice.stripe_payment_intent == data_object.payment_intent &&
-      data_object.status == "complete" &&
+      is_checkout_status_complete? &&
+      is_payment_status_paid?
+    end
+
+    def is_checkout_status_complete?
+      data_object.status == "complete"
+    end
+
+    def is_payment_status_paid?
       data_object.payment_status == "paid"
     end
 
@@ -31,7 +39,7 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
         transaction_date: DateTime.strptime(event.created.to_s, "%s").to_date,
         transaction_type: "stripe",
         amount: Money.from_cents(event.data.object.amount_total, event.data.object.currency).amount,
-        note: "Stripe_Payment_success"
+        note: "Stripe_Payment_Success"
       }
     end
 end

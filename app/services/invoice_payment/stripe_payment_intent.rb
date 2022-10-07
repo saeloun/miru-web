@@ -30,8 +30,8 @@ class InvoicePayment::StripePaymentIntent < ApplicationService
     retrieve_payment_intent
     @payment_intent
   rescue StandardError => error
-    Rails.logger.error error.message
-    Rails.logger.error error.backtrace.join("\n")
+    puts error.message
+    puts error.backtrace.join("\n")
     nil
   end
 
