@@ -3,8 +3,7 @@
 class UpdateInvoiceStatusToOverdueService
   def process
     Invoice
-      .where(status: ["viewed", "sent"])
-      .where("due_date < ?", Date.current)
+      .where(status: ["viewed", "sent"], due_date: ...Date.current)
       .update_all(status: "overdue")
   end
 end
