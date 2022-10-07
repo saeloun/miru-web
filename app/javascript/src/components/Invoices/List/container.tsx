@@ -23,12 +23,7 @@ const Container = ({
 
       <div className="my-20">
         <h1 className="mb-4 text-miru-dark-purple-1000 font-normal text-2xl">Recently updated</h1>
-        <div className="flex justify-around overflow-x-scroll">
-          <RecentlyUpdated/>
-          <RecentlyUpdated/>
-          <RecentlyUpdated/>
-          <RecentlyUpdated/>
-          <RecentlyUpdated/>
+        <div className="flex justify-between md:justify-start overflow-x-auto overflow-y-hidden">
           <RecentlyUpdated/>
           <RecentlyUpdated/>
         </div>

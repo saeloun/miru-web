@@ -534,3 +534,25 @@ body {
     @apply w-5 h-5 flex justify-center items-center text-xs font-semibold rounded-full bg-miru-han-purple-1000 text-white
   }
 }
+
+.Tooltip {
+  &__Wrapper {
+    @apply block relative
+  }
+
+  &__Tip {
+    @apply absolute left-1/2 z-50 rounded-md p-2 text-miru-dark-purple-1000 bg-miru-gray-1000 text-sm leading-none whitespace-nowrap
+  }
+
+  &__Tip::before {
+    @apply h-0 w-0 absolute pointer-events-none border-4 mr-4 content-none left-1/2
+  }
+
+  &__Tip.top {
+    @apply bottom-full mb-2
+  }
+
+  &__Tip.bottom {
+    @apply top-full mt-2
+  }
+}

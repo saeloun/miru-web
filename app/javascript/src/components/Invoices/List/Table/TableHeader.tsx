@@ -16,7 +16,7 @@ const TableHeader = ({ selectAllInvoices, deselectAllInvoices }) => {
 
   return (
     <tr>
-      <th className="pl-6 py-5" scope="col">
+      <th className="md:pl-6 md:pr-0 px-4 py-5" scope="col">
         <CustomCheckbox
           isChecked={isChecked}
           handleCheck={handleCheck}
@@ -27,14 +27,14 @@ const TableHeader = ({ selectAllInvoices, deselectAllInvoices }) => {
       </th>
       <th
         scope="col"
-        className="w-1/5 pr-2 py-5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
+        className="md:w-1/5 md:pr-2 pr-6 py-5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
       >
         CLIENT /
         INVOICE NO.
       </th>
       <th
         scope="col"
-        className="w-1/5 px-6 py-5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
+        className="w-1/4 md:px-6 px-4 py-5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
       >
         ISSUED DATE /
         DUE DATE

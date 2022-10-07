@@ -4,7 +4,7 @@ import cn from "classnames";
 import { CaretCircleLeft, CaretCircleRight } from "phosphor-react";
 
 const Pagination = ({ pagy, params, setParams }) => (
-  <div className="w-full py-2 mt-5">
+  <div className="w-full py-10">
     <div className="grid w-full grid-cols-6 gap-4 bg-grey-400">
       <div className="col-span-3 col-start-2">
         {pagy?.pages > 1 && (
