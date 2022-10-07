@@ -16,6 +16,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "../../Header";
 
+const deleteImage = require("../../../../../../assets/images/delete.svg");
 const editButton = require("../../../../../../assets/images/edit_image_button.svg");
 const img = require("../../../../../../assets/images/plus_icon.svg");
 
@@ -111,24 +112,24 @@ const OrgEdit = () => {
     setisLoading(true);
     const resp = await companiesApi.index();
     setOrgDetails({
-      logoUrl: resp.data.logo_url,
-      companyName: resp.data.name,
-      companyAddr: resp.data.address,
-      companyPhone: resp.data.business_phone,
-      countryName: resp.data.country,
-      companyCurrency: resp.data.base_currency,
-      companyRate: parseFloat(resp.data.standard_price),
-      companyFiscalYear: resp.data.fiscal_year_end,
-      companyDateFormat: resp.data.date_format,
-      companyTimezone: resp.data.timezone,
-      id: resp.data.id,
+      logoUrl: resp.data.company_details.logo,
+      companyName: resp.data.company_details.name,
+      companyAddr: resp.data.company_details.address,
+      companyPhone: resp.data.company_details.business_phone,
+      countryName: resp.data.company_details.country,
+      companyCurrency: resp.data.company_details.currency,
+      companyRate: parseFloat(resp.data.company_details.standard_price),
+      companyFiscalYear: resp.data.company_details.fiscal_year_end,
+      companyDateFormat: resp.data.company_details.date_format,
+      companyTimezone: resp.data.company_details.timezone,
+      id: resp.data.company_details.id,
       logo: null
     });
 
     const timezonesEntry = await companyProfileApi.get();
     setTimeZones(timezonesEntry.data.timezones);
 
-    const timeZonesForCountry = timezonesEntry.data.timezones[resp.data.country];
+    const timeZonesForCountry = timezonesEntry.data.timezones[resp.data.company_details.country];
     const timezoneOptionList = timeZonesForCountry.map((item) => ({
       value: item,
       label: item
@@ -308,7 +309,7 @@ const OrgEdit = () => {
                   </input>
                   <button onClick={handleDeleteLogo}>
                     <img
-                      src="/delete.svg"
+                      src={deleteImage}
                       alt="delete"
                       style={{ "minWidth": "20px" }}
                     />
