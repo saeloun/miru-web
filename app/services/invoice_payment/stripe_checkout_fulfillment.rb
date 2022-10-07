@@ -30,7 +30,7 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
         invoice_id: invoice.id,
         transaction_date: DateTime.strptime(event.created.to_s, "%s").to_date,
         transaction_type: "stripe",
-        amount: event.data.object.amount_total,
+        amount: Money.from_cents(event.data.object.amount_total, event.data.object.currency).amount,
         note: "Stripe_Payment_success"
       }
     end
