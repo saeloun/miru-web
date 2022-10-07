@@ -1,11 +1,12 @@
 import React from "react";
 
 import dayjs from "dayjs";
-import { minToHHMM, lineTotalCalc } from "helpers";
+import { lineTotalCalc, minToHHMM } from "helpers";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import NewLineItemTableHeader from "../common/NewLineItemTable/Header";
-import { getMaxIdx } from "../common/utils";
+import NewLineItemTableHeader from "./Header";
+
+import { getMaxIdx } from "../utils";
 
 const NewLineItemTable = ({
   setShowItemInputs,
@@ -19,8 +20,7 @@ const NewLineItemTable = ({
   setMultiLineItemModal,
   setAddManualLineItem
 }) => {
-
-  const hasMoreItems = lineItems.length === totalLineItems;
+  const hasMoreItems = lineItems.length != totalLineItems;
 
   const selectRowId = (items) => {
     const option = { ...items, lineTotal: lineTotalCalc(items.quantity, items.rate) };
@@ -30,8 +30,8 @@ const NewLineItemTable = ({
     setPageNumber(1);
   };
 
-  const addManualEntryItem = async () => {
-    await setShowItemInputs(true);
+  const addManualEntryItem = () => {
+    setShowItemInputs(true);
     setAddNew(!addNew);
     setAddManualLineItem(true);
     setManualEntryArr([...manualEntryArr, { idx: getMaxIdx(manualEntryArr) + 1 }]);
@@ -44,7 +44,7 @@ const NewLineItemTable = ({
         <InfiniteScroll
           dataLength={pageNumber * 10}
           next={loadMoreItems}
-          hasMore={!hasMoreItems}
+          hasMore={hasMoreItems}
           loader={
             <div className="text-center py-2">
               <h4>Loading...</h4>
@@ -61,7 +61,7 @@ const NewLineItemTable = ({
             const hoursLogged = minToHHMM(item.quantity);
             const date = dayjs(item.date).format("DD.MM.YYYY");
             return (
-              <div key={index} onClick={() => selectRowId(item)} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100" data-cy="entries-list-edit">
+              <div key={index} onClick={() => selectRowId(item)} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100" data-cy="entries-list">
                 <span className="font-medium w-1/5 text-sm text-miru-dark-purple-1000 text-left">
                   {item.first_name} {item.last_name}
                 </span>

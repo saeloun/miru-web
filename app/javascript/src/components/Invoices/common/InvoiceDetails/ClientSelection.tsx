@@ -1,18 +1,34 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
-import  { useOutsideClick } from "helpers";
-import { PencilSimple } from "phosphor-react";
-import Select from "react-select";
+import { useOutsideClick } from "helpers";
+import { MagnifyingGlass, PencilSimple } from "phosphor-react";
+import Select, { components, DropdownIndicatorProps } from "react-select";
 
-import { DropdownIndicator } from "./CustomComponents";
 import { reactSelectStyles } from "./Styles";
 
-const ClientSelection = ({ clientList, selectedClient, setSelectedClient, optionSelected, clientVisible }) => {
+const ClientSelection = ({
+  clientList,
+  selectedClient,
+  setSelectedClient,
+  optionSelected,
+  clientVisible
+}) => {
   const [isOptionSelected, setOptionSelection] = useState<boolean>(optionSelected);
   const [isClientVisible, setClientVisible] = useState<boolean>(clientVisible);
   const wrapperRef = useRef(null);
 
   useOutsideClick(wrapperRef, () => setClientVisible(false), isClientVisible);
+
+  useEffect(() => {
+    const prePopulatedClient = window.location.search.split("?").join("").replace(/%20/g, " ");
+
+    if (prePopulatedClient) {
+      const selection = clientList.filter(
+        (client) => client.label == prePopulatedClient
+      );
+      selection[0] && handleClientChange(selection[0]);
+    }
+  }, []);
 
   const handleSelectClientClick = async () => {
     setClientVisible(true);
@@ -29,16 +45,11 @@ const ClientSelection = ({ clientList, selectedClient, setSelectedClient, option
     setOptionSelection(true);
   };
 
-  React.useEffect(() => {
-    const prePopulatedClient = window.location.search.split("?").join("").replace(/%20/g, " ");
-
-    if (prePopulatedClient) {
-      const selection = clientList.filter(
-        (client) => client.label == prePopulatedClient
-      );
-      selection[0] && handleClientChange(selection[0]);
-    }
-  }, []);
+  const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
+    <components.DropdownIndicator {...props}>
+      <MagnifyingGlass size={20} color="#1D1A31" />
+    </components.DropdownIndicator>
+  );
 
   return (
     <div className="group" ref={wrapperRef}>

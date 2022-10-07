@@ -1,26 +1,24 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 
 import { useOutsideClick } from "helpers";
 
-import ManualEntry from "./ManualEntry";
-import NewLineItemTable from "./NewLineItemTable";
-
-import TableHeader from "../common/LineItemTableHeader";
-import NewLineItemRow from "../common/NewLineItemRow";
-import { fetchNewLineItems } from "../common/utils";
-import MultipleEntriesModal from "../MultipleEntriesModal";
+import MultipleEntriesModal from "../../MultipleEntriesModal";
+import LineItemTableHeader from "../LineItemTableHeader";
+import ManualEntry from "../ManualEntry";
+import NewLineItemRow from "../NewLineItemRow";
+import NewLineItemTable from "../NewLineItemTable";
+import { fetchNewLineItems } from "../utils";
 
 const InvoiceTable = ({
   currency,
   selectedClient,
-  setSelectedOption,
-  selectedOption,
   lineItems,
   setLineItems,
+  selectedLineItems,
+  setSelectedLineItems,
   manualEntryArr,
   setManualEntryArr
 }) => {
-
   const [addNew, setAddNew] = useState<boolean>(false);
   const [showItemInputs, setShowItemInputs] = useState<boolean>(false);
   const [totalLineItems, setTotalLineItems] = useState<number>(null);
@@ -45,7 +43,7 @@ const InvoiceTable = ({
       setTotalLineItems,
       pageNumber,
       setPageNumber,
-      selectedOption
+      selectedLineItems
     );
   };
 
@@ -67,8 +65,8 @@ const InvoiceTable = ({
         totalLineItems={totalLineItems}
         pageNumber={pageNumber}
         setPageNumber={setPageNumber}
-        selectedOption={selectedOption}
-        setSelectedOption={setSelectedOption}
+        selectedLineItems={selectedLineItems}
+        setSelectedLineItems={setSelectedLineItems}
         manualEntryArr={manualEntryArr}
         setManualEntryArr={setManualEntryArr}
         setMultiLineItemModal={setMultiLineItemModal}
@@ -80,61 +78,69 @@ const InvoiceTable = ({
     );
   };
 
+  const getAddNewButton = () => {
+    if (addNew) {
+      return <div ref={wrapperRef} className="box-shadow rounded absolute m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white top-0 w-full">
+        {getNewLineItemDropdown()}
+      </div>;
+    } else {
+      return <button
+        className=" py-1 tracking-widest w-full bg-white font-bold text-base text-center text-miru-dark-purple-200 rounded-md border-2 border-miru-dark-purple-200 border-dashed"
+        onClick={() => {
+          setAddNew(!addNew);
+        }}
+        data-cy="new-line-item"
+      >
+        + NEW LINE ITEM
+      </button>;
+    }
+  };
+
   return (
-    <React.Fragment>
+    <Fragment>
       <table className="w-full table-fixed">
-        <TableHeader />
+        <LineItemTableHeader />
         <tbody className="w-full">
-          <tr className="w-full ">
+          <tr className="w-full">
             <td colSpan={6} className="py-4 relative">
-              {
-                addNew && <div ref={wrapperRef} className="box-shadow z-10 rounded absolute m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white top-0 w-full">
-                  {getNewLineItemDropdown()}
-                </div>
-              }
-              <button
-                className=" py-1 tracking-widest w-full bg-white font-bold text-base text-center text-miru-dark-purple-200 rounded-md border-2 border-miru-dark-purple-200 border-dashed"
-                onClick={() => {
-                  setAddNew(!addNew);
-                }}
-                data-cy='new-line-item'
-              >
-                + NEW LINE ITEM
-              </button>
+              {getAddNewButton()}
             </td>
           </tr>
           {
             showItemInputs
-            && (manualEntryArr.map((entry) =>
+            && (manualEntryArr.map((entry, index) =>
               <ManualEntry
+                key={index}
                 entry={entry}
                 manualEntryArr={manualEntryArr}
                 setManualEntryArr={setManualEntryArr}
               />
             ))
           }
-          {selectedOption.length > 0
-            && selectedOption.map((item, index) => (
+          {
+            selectedLineItems.length > 0
+            && selectedLineItems.map((item, index) => (
+              !item._destroy &&
               <NewLineItemRow
                 key={index}
                 currency={currency}
                 item={item}
-                setSelectedOption={setSelectedOption}
-                selectedOption={selectedOption}
-                removeElement
+                selectedOption={selectedLineItems}
+                setSelectedOption={setSelectedLineItems}
               />
-            ))}
+            ))
+          }
         </tbody>
       </table>
       <div>
         {showMultiLineItemModal && <MultipleEntriesModal
           selectedClient={selectedClient}
-          selectedOption={selectedOption}
-          setSelectedOption={setSelectedOption}
+          selectedOption={selectedLineItems}
+          setSelectedOption={setSelectedLineItems}
           setMultiLineItemModal={setMultiLineItemModal}
         />}
       </div>
-    </React.Fragment>
+    </Fragment>
   );
 };
 
