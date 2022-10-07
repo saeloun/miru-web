@@ -84,11 +84,16 @@ const FilterSideBar = ({
   };
 
   const submitCustomDatePicker = () => {
-    setFilters({ ...filters, ["dateRange"]: { value: "custom", label: "Custom", ...dateRange } });
+    if (dateRange.from && dateRange.to) {
+      setFilters({ ...filters, ["dateRange"]: { value: "custom", label: "Custom", ...dateRange } });
+    }
     hideCustomFilter();
   };
 
+  const setDefaultDateRange = () => ({ ...filters, ["dateRange"]: { value: "all", label: "All", from: "all", to: "all" } });
+
   const resetCustomDatePicker = () => {
+    setFilters(setDefaultDateRange());
     hideCustomFilter();
   };
 
@@ -98,7 +103,12 @@ const FilterSideBar = ({
   };
 
   const handleApply = () => {
-    setFilterParams(filters);
+    const { value, from, to } = filters.dateRange;
+    if (value == "custom" && !(from && to)){
+      setFilterParams(setDefaultDateRange());
+    } else {
+      setFilterParams(filters);
+    }
     setFilterVisibilty(false);
   };
 
