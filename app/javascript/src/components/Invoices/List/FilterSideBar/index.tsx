@@ -168,7 +168,13 @@ const FilterSideBar = ({
                   />
                   <div className="p-6 flex h-full items-end justify-center bg-miru-white-1000 ">
                     <button onClick={resetCustomDatePicker} className="sidebar__reset">Cancel</button>
-                    <button onClick={submitCustomDatePicker} className="sidebar__apply">Done</button>
+                    <button
+                      disabled={!(dateRange.from && dateRange)}
+                      className={`sidebar__apply ${dateRange.from && dateRange.to ? "cursor-pointer" : "cursor-not-allowed"}`}
+                      onClick={submitCustomDatePicker}
+                    >
+                      Done
+                    </button>
                   </div>
                 </div>
               }

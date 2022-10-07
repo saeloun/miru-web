@@ -97,10 +97,16 @@ const Invoices: React.FC = () => {
       filterQueryParams += `&statuses[]=${status.value}`;
     });
 
-    if (filterParams?.dateRange?.value != "all"){
-      filterQueryParams += `&from_to[date_range]=${filterParams.dateRange.value}`;
-      filterQueryParams += `&from_to[from]=${filterParams.dateRange.from}`;
-      filterQueryParams += `&from_to[to]=${filterParams.dateRange.to}`;
+    const { value, from, to } = filterParams.dateRange;
+
+    if (value != "all" && value != "custom"){
+      filterQueryParams += `&from_to[date_range]=${value}`;
+    }
+
+    if (value === "custom" && from && to) {
+      filterQueryParams += `&from_to[date_range]=${value}`;
+      filterQueryParams += `&from_to[from]=${from}`;
+      filterQueryParams += `&from_to[to]=${to}`;
     }
 
     return `${filterQueryParams}`;
