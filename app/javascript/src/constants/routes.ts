@@ -118,7 +118,7 @@ const RecruitmentRoutes = [
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
 
 const ROUTES = [
-  { path: Paths.CLIENTS ,subRoutes: ClientsRoutes, authorisedRoles: [ADMIN, OWNER, EMPLOYEE] },
+  { path: Paths.CLIENTS ,subRoutes: ClientsRoutes, authorisedRoles: [ADMIN, OWNER] },
   { path: Paths.INVOICES ,subRoutes: InvoicesRoutes, authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER] },
   { path: Paths.REPORTS ,subRoutes: ReportsRoutes, authorisedRoles: [ADMIN, OWNER] },
   { path: Paths.PROJECTS ,subRoutes: ProjectsRoutes, authorisedRoles: [ADMIN, OWNER, EMPLOYEE] },

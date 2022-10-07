@@ -43,16 +43,17 @@ interface Props {
 
 const EditClient = ({ user = {}, isEdit = false }: Props) => {
   const [apiError, setApiError] = useState<string>(""); // eslint-disable-line
-  const { setModalState } = useList();
+  const { setModalState, departments } = useList();
 
   const handleSubmit = async (values) => {
-    const { id, firstName, lastName, email, role, teamLead } = values;
+    const { id, firstName, lastName, email, role, teamLead, departmentId } = values;
     const payload = {
       first_name: firstName,
       last_name: lastName,
       email,
       role,
-      team_lead: teamLead === 'true'
+      team_lead: teamLead === 'true',
+      department_id: departmentId,
     };
 
     if (isEdit) payload["id"] = id;
@@ -295,8 +296,9 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                             name="departmentId"
                             as="select"
                           >
-                            {[{ id: 1, name: "Blue" }, { id: 2, name: "Green" }, { id: 2, name: "Green" }].map((option) => (
-                              <option value={option.id}>{option.name}</option>
+                            <option key={null} value={""}>Please select</option>
+                            {departments.map((option) => (
+                              <option key={option.id} value={option.id}>{option.name}</option>
                             ))}
                           </Field>
                         </div>

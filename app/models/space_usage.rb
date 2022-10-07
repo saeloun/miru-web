@@ -33,7 +33,7 @@ class SpaceUsage < ApplicationRecord
 
   SPACE_CODE_OPTIONS = [
     CodeOptionKlass.new("Conference Room", 1, "CR"),
-    CodeOptionKlass.new("HR Cabin", 2, "HCR"),
+    CodeOptionKlass.new("HR Cabin", 2, "HRC"),
     CodeOptionKlass.new("Sales Cabin", 3, "SC"),
     # CodeOptionKlass.new("Coming Soon", -1, "SC1"),
     # CodeOptionKlass.new("Coming Soon", -1, "SC2"),

@@ -23,6 +23,10 @@ class ProjectPolicy < ApplicationPolicy
     user_owner_role? || user_admin_role?
   end
 
+  def index_all?
+    user_owner_role? || user_admin_role?
+  end
+
   def permitted_attributes
     [
       :name, :description, :billable, :client_id

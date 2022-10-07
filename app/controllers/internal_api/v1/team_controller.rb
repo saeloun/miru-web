@@ -12,7 +12,7 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
     teams = query.result(distinct: true)
     invitations = invitations_query.result(distinct: true)
 
-    render :index, locals: { teams:, invitations: }, status: :ok
+    render :index, locals: { teams:, invitations:, departments: User::DEPARTMENT_OPTIONS }, status: :ok
   end
 
   def destroy

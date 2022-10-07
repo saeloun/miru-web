@@ -66,12 +66,6 @@ const Navbar = ({ isAdminUser, user, permissions }) => {
       path: Paths.TEAM
     },
     {
-      logo: <Buildings size={26} className="mr-4" />,
-      label: "Clients",
-      dataCy: "clients-tab",
-      path: Paths.CLIENTS
-    },
-    {
       logo: <Briefcase size={26} className="mr-4" />,
       label: "Projects",
       dataCy: "projects-tab",

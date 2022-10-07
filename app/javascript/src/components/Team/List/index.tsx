@@ -16,7 +16,7 @@ import Modals from "../modals/Modals";
 export const ProjectList = () => {
 
   const [teamList, setTeamList] = useState([]);
-  // const [departments, _setDepartments] = useState([]);
+  const [departments, setDepartments] = useState([]);
   const [modal, setModal] = useState("");
   const [modalUser, setModaluser] = useState({});
 
@@ -30,6 +30,7 @@ export const ProjectList = () => {
     if (response.status === 200) {
       const sanitized = unmapList(response);
       setTeamList(sanitized);
+      setDepartments(response.data.departments);
     }
   };
 
@@ -43,7 +44,7 @@ export const ProjectList = () => {
     <Fragment>
       <ListContext.Provider value={{
         teamList,
-        departments: [],
+        departments,
         setModalState,
         modal
       }}>

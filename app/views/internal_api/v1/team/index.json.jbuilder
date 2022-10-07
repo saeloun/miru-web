@@ -48,3 +48,5 @@ json.invitation invitations do |member|
   json.status invited_user_status
   json.team_lead false
 end
+
+json.departments departments
