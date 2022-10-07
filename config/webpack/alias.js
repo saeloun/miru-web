@@ -9,6 +9,7 @@ module.exports = {
       mapper: "src/mapper",
       constants: "src/constants",
       utils: "src/utils",
+      StyledComponents: "src/StyledComponents",
     }
   }
 };

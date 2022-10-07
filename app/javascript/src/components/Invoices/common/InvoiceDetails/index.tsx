@@ -1,26 +1,29 @@
 import React, { useState, useRef } from "react";
 
 import dayjs from "dayjs";
+import { currencyFormat } from "helpers";
 import { PencilSimple } from "phosphor-react";
 
 import CustomDatePicker from "common/CustomDatePicker";
-import { currencyFormat } from "helpers/currency";
 
 import ClientSelection from "./ClientSelection";
 
 const InvoiceDetails = ({
   currency,
   clientList,
-  selectedClient, setSelectedClient,
   amount,
-  issueDate, setIssueDate,
-  dueDate, setDueDate,
+  selectedClient,
+  setSelectedClient,
+  issueDate,
+  setIssueDate,
+  dueDate,
+  setDueDate,
   invoiceNumber,
   setInvoiceNumber,
   reference,
-  optionSelected, clientVisible
+  optionSelected,
+  clientVisible
 }) => {
-
   const [showDateOfIssuePicker, setShowDateOfIssuePicker] = useState<boolean>(false);
   const [showDueDatePicker, setShowDueDatePicker] = useState<boolean>(false);
   const wrapperRef = useRef(null);
