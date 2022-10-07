@@ -19,7 +19,7 @@ import DeleteInvoice from "../popups/DeleteInvoice";
 
 const Invoices: React.FC = () => {
   const filterIntialValues = {
-    dateRange: { label: "All", value: "all", from: "all", to: "all" },
+    dateRange: { label: "All", value: "all", from: "", to: "" },
     clients: [],
     status: []
   };

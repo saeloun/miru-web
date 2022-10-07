@@ -21,11 +21,33 @@ const FilterSideBar = ({
   const [clientList, setClientList] = useState<null | any[]>([]);
   const [showCustomFilter, setShowCustomFilter] = useState<boolean>(false);
   const [dateRange, setDateRange] = useState<any>({ from: "", to: "" });
+  const [customDate, setCustomDate] = useState<boolean>(false);
   const [filters, setFilters] = useState<any>(filterParams);
+  const [diableDateBtn, setdisableDateBtn] = useState<boolean>(true);
 
   useEffect(() => {
+    const { value, from, to } = filterParams.dateRange;
+    if (value == "custom" && from && to) {
+      setDateRange({ ...dateRange, from: from, to: to });
+      setCustomDate(true);
+      setdisableDateBtn(false);
+    }
     fetchCompanyDetails();
   }, []);
+
+  useEffect(() => {
+    const { value, from, to } = filters.dateRange;
+    if (value == "custom" && from && to){
+      setCustomDate(true);
+    }
+    if (value == "all"){
+      setDateRange({ ...dateRange, from: "", to: "" });
+      setCustomDate(false);
+    }
+    if (dateRange.from && dateRange.to){
+      setdisableDateBtn(false);
+    }
+  }, [filters.dateRange.value, dateRange.from, dateRange.to]);
 
   const sortClients = ( a, b ) => {
     if ( a.label < b.label ){
@@ -38,7 +60,6 @@ const FilterSideBar = ({
   };
 
   const fetchCompanyDetails = async () => {
-    // here we are fetching the company and client list
     try {
       const res = await companiesApi.index();
       const clientArr = res.data.company_client_list.map((item) => ({ label: item.name, value: item.id }));
@@ -52,6 +73,10 @@ const FilterSideBar = ({
   const handleSelectFilter = (selectedValue, field) => {
     if (selectedValue.value === "custom"){
       setShowCustomFilter(true);
+      setFilters({
+        ...filters,
+        [field.name]: { ...selectedValue, ...dateRange }
+      });
     }
     if (Array.isArray(selectedValue)) {
       setFilters({
@@ -60,7 +85,7 @@ const FilterSideBar = ({
       });
     }
     else {
-      setFilters({
+      selectedValue.value != "custom" && setFilters({
         ...filters,
         [field.name]: selectedValue
       });
@@ -86,14 +111,26 @@ const FilterSideBar = ({
   const submitCustomDatePicker = () => {
     if (dateRange.from && dateRange.to) {
       setFilters({ ...filters, ["dateRange"]: { value: "custom", label: "Custom", ...dateRange } });
+      setCustomDate(true);
     }
     hideCustomFilter();
   };
 
-  const setDefaultDateRange = () => ({ ...filters, ["dateRange"]: { value: "all", label: "All", from: "all", to: "all" } });
+  const defaultDateRange = () => {
+    const { value } = filters.dateRange;
+    if (value == "all"){
+      return true;
+    } else if (value == "custom" && !customDate){
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const setDefaultDateRange = () => ({ ...filters, ["dateRange"]: { value: "all", label: "All", from: "", to: "" } });
 
   const resetCustomDatePicker = () => {
-    setFilters(setDefaultDateRange());
+    defaultDateRange() && setFilters(setDefaultDateRange());
     hideCustomFilter();
   };
 
@@ -103,12 +140,7 @@ const FilterSideBar = ({
   };
 
   const handleApply = () => {
-    const { value, from, to } = filters.dateRange;
-    if (value == "custom" && !(from && to)){
-      setFilterParams(setDefaultDateRange());
-    } else {
-      setFilterParams(filters);
-    }
+    defaultDateRange() ? setFilterParams(setDefaultDateRange()) : setFilterParams(filters);
     setFilterVisibilty(false);
   };
 
@@ -179,8 +211,8 @@ const FilterSideBar = ({
                   <div className="p-6 flex h-full items-end justify-center bg-miru-white-1000 ">
                     <button onClick={resetCustomDatePicker} className="sidebar__reset">Cancel</button>
                     <button
-                      disabled={!(dateRange.from && dateRange)}
-                      className={`sidebar__apply ${dateRange.from && dateRange.to ? "cursor-pointer" : "cursor-not-allowed"}`}
+                      disabled={diableDateBtn}
+                      className={`sidebar__apply ${(diableDateBtn) ? "cursor-not-allowed" : "cursor-pointer"}`}
                       onClick={submitCustomDatePicker}
                     >
                       Done
