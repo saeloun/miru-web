@@ -9,19 +9,19 @@ import invoicesApi from "apis/invoices";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
-import InvoiceTable from "./InvoiceTable";
-import InvoiceTotal from "./InvoiceTotal";
 
 import { unmapLineItems } from "../../../mapper/editInvoice.mapper";
+import CompanyInfo from "../common/CompanyInfo";
+import InvoiceDetails from "../common/InvoiceDetails";
+import InvoiceTable from "../common/InvoiceTable";
+import InvoiceTotal from "../common/InvoiceTotal";
 import { generateInvoiceLineItems } from "../common/utils";
-import CompanyInfo from "../CompanyInfo";
-import InvoiceDetails from "../Generate/InvoiceDetails";
 
 const EditInvoice = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const [invoiceDetails, getInvoiceDetails] = useState<any>();
+  const [invoiceDetails, setInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
   const [selectedLineItems, setSelectedLineItems] = useState<any>([]);
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
@@ -37,19 +37,11 @@ const EditInvoice = () => {
   const today = new Date();
   const [dueDate, setDueDate] = useState(today.setMonth(issueDate.getMonth() + 1));
 
-  const addKeyToLineItems = items => (
-    items?.map((item, index) => {
-      item["key"] = index;
-      return item;
-    })
-  );
-
-  const fetchInvoice = async (navigate, getInvoiceDetails) => {
+  const fetchInvoice = async () => {
     try {
       const res = await invoicesApi.editInvoice(params.id);
-      getInvoiceDetails(res.data);
+      setInvoiceDetails(res.data);
       setSelectedLineItems(unmapLineItems(res.data.invoiceLineItems));
-      setLineItems(addKeyToLineItems(res.data.lineItems));
       setAmount(res.data.amount);
       setInvoiceNumber(res.data.invoiceNumber);
       setDiscount(res.data.discount);
@@ -68,7 +60,7 @@ const EditInvoice = () => {
       const { address, phone, email, id: value, name: label } = res.data.client;
 
       setSelectedClient({ address, email, label, phone, value });
-      setLineItems(addKeyToLineItems(res.data.lineItems));
+      setLineItems([]);
     } catch (e) {
       navigate("/invoices/error");
       return {};
@@ -79,7 +71,7 @@ const EditInvoice = () => {
     sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
-    fetchInvoice(navigate, getInvoiceDetails);
+    fetchInvoice();
   }, []);
 
   useEffect(() => {
@@ -120,13 +112,13 @@ const EditInvoice = () => {
           <InvoiceDetails
             currency={invoiceDetails.company.currency}
             clientList={invoiceDetails.companyClientList}
+            amount={amount}
             selectedClient={selectedClient || invoiceDetails.client}
             setSelectedClient={setSelectedClient}
-            amount={amount}
-            dueDate={dueDate || invoiceDetails.dueDate}
-            setDueDate={setDueDate}
             issueDate={issueDate || invoiceDetails.issueDate}
             setIssueDate={setIssueDate}
+            dueDate={dueDate || invoiceDetails.dueDate}
+            setDueDate={setDueDate}
             invoiceNumber={invoiceNumber}
             setInvoiceNumber={setInvoiceNumber}
             reference={reference}
@@ -136,6 +128,7 @@ const EditInvoice = () => {
           <div className="pl-10 py-5">
             <InvoiceTable
               currency={invoiceDetails.company.currency}
+              selectedClient={selectedClient || invoiceDetails.client}
               lineItems={lineItems}
               setLineItems={setLineItems}
               selectedLineItems={selectedLineItems}
@@ -147,17 +140,17 @@ const EditInvoice = () => {
           <InvoiceTotal
             currency={invoiceDetails.company.currency}
             newLineItems={selectedLineItems}
-            manualEntryArr={manualEntryArr}
-            setAmount={setAmount}
             amountPaid={amountPaid}
             amountDue={amountDue}
             setAmountDue={setAmountDue}
+            setAmount={setAmount}
             discount={discount}
             setDiscount={setDiscount}
             tax={tax || invoiceDetails.tax}
             setTax={setTax}
             showDiscountInput={!!invoiceDetails.discount}
             showTax={!!invoiceDetails.tax}
+            manualEntryArr={manualEntryArr}
           />
         </div>
       </React.Fragment>

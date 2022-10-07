@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 
-import dayjs from "dayjs";
-
 import Footer from "./Footer";
 import Header from "./Header";
 import Table from "./Table";
 
-import fetchNewLineItems from "../api/generateInvoice";
+import { fetchMultipleNewLineItems } from "../common/utils";
 
 const MultipleEntriesModal = ({
   selectedClient,
-  setSelectedOption,
   selectedOption,
+  setSelectedOption,
   setMultiLineItemModal
 }) => {
 
@@ -54,35 +52,21 @@ const MultipleEntriesModal = ({
   };
 
   useEffect(() => {
-    fetchNewLineItems(selectedClient, pageNumber, selectedOption).then(async res => {
-      setTotalLineItems(res.data.pagy.count);
-      setPageNumber(pageNumber + 1);
-      const items = res.data.new_line_item_entries.map(item => ({
-        ...item, checked: allCheckboxSelected,
-        lineTotal: ((Number(item.quantity) / 60 * Number(item.rate)).toFixed(2))
-      }));
-      const mergedItems = [...items, ...lineItems];
-      const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
-      setLineItems(sortedData);
-    });
+    loadMore();
   }, []);
 
   const loadMore = () => {
-    fetchNewLineItems(selectedClient, pageNumber, selectedOption).then(async res => {
-      setTotalLineItems(res.data.pagy.count);
-      setPageNumber(pageNumber + 1);
-      const items = res.data.new_line_item_entries.map(item => ({
-        ...item,
-        checked: allCheckboxSelected,
-        lineTotal: ((Number(item.quantity) / 60 * Number(item.rate)).toFixed(2))
-      }));
-      const mergedItems = [...items, ...lineItems];
-      const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
-      setLineItems(sortedData);
-      if (allCheckboxSelected) {
-        setSelectedLineItem(lineItems);
-      }
-    });
+    fetchMultipleNewLineItems(
+      selectedClient,
+      lineItems,
+      setLineItems,
+      setTotalLineItems,
+      pageNumber,
+      setPageNumber,
+      selectedOption,
+      allCheckboxSelected,
+      setSelectedLineItem
+    );
   };
 
   const handleSubmitModal = () => {

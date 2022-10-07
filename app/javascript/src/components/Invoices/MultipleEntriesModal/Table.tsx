@@ -1,9 +1,8 @@
 import React from "react";
 
 import dayjs from "dayjs";
+import { minToHHMM } from "helpers";
 import InfiniteScroll from "react-infinite-scroll-component";
-
-import { minutesToHHMM } from "helpers/hhmm-parser";
 
 const CheckboxIcon = () => <div className="bg-white border-2 border-miru-han-purple-1000 w-5 h-5 flex flex-shrink-0 justify-center items-center mr-2 focus-within:border-blue-500">
   <svg className="custom__checkbox-tick fill-current hidden w-2 h-2 text-miru-han-purple-1000 pointer-events-none" version="1.1" viewBox="0 0 17 12" xmlns="http://www.w3.org/2000/svg">
@@ -54,7 +53,7 @@ const Table = ({
               <table className="w-full">
                 <tbody>
                   {lineItems.map((item, index) => {
-                    const hoursLogged = minutesToHHMM(item.quantity);
+                    const hoursLogged = minToHHMM(item.quantity);
                     const date = dayjs(item.date).format("DD.MM.YYYY");
                     return (
                       <tr key={index}>
@@ -64,16 +63,16 @@ const Table = ({
                             <CheckboxIcon />
                           </div>
                         </td>
-                        <td className="table__data w-1/5 font medium text-sm text-miru-dark-purple-1000 text-left">
+                        <td className="table__data font-medium w-1/5 text-sm text-miru-dark-purple-1000 text-left text-left">
                           {item.first_name} {item.last_name}
                         </td>
-                        <td className="whitespace-normal table__data w-3/5 font medium text-xs text-miru-dark-purple-600 text-left">
+                        <td className="table__data font-medium w-3/5 text-xs text-miru-dark-purple-600 text-left whitespace-normal">
                           {item.description}
                         </td>
-                        <td className="table__data font medium text-xs text-miru-dark-purple-1000 text-right">
+                        <td className="table__data font-medium text-xs text-miru-dark-purple-1000 text-right">
                           {date}
                         </td>
-                        <td className="table__data  w-1/12 font medium text-xs text-miru-dark-purple-1000 text-right">
+                        <td className="table__data font-medium w-1/12 text-xs text-miru-dark-purple-1000 text-right">
                           {hoursLogged}
                         </td>
                       </tr>

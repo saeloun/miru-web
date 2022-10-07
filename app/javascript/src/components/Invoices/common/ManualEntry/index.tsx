@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import { lineTotalCalc, minFromHHMM, minToHHMM } from "helpers";
 import { Trash } from "phosphor-react";
 
 const ManualEntry = ({
@@ -7,14 +8,14 @@ const ManualEntry = ({
   manualEntryArr,
   setManualEntryArr
 }) => {
-
-  const [name, setName] = useState<string>("");
-  const [date, setDate] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [rate, setRate] = useState<any>("");
-  const [quantity, setQuantity] = useState<any>("");
-  const [lineTotal, setLineTotal] = useState<any>(entry.lineTotal ? entry.lineTotal : 0);
+  const [name, setName] = useState<string>(entry.name || "");
+  const [date, setDate] = useState<string>(entry.date || "");
+  const [description, setDescription] = useState<string>(entry.description || "");
+  const [rate, setRate] = useState<number>(entry.rate || 0);
+  const [quantity, setQuantity] = useState<any>(entry.quantity || 0);
+  const [lineTotal, setLineTotal] = useState<string>(entry.lineTotal || 0);
   const [lineItem, setLineItem] = useState<any>({});
+  const [qtyInHHrMin, setQtyInHHrMin] = useState<any>(minToHHMM(quantity));
   const ref = useRef();
 
   useEffect(() => {
@@ -26,7 +27,7 @@ const ManualEntry = ({
         description,
         rate,
         quantity,
-        lineTotal: (Number(quantity) * Number(rate)).toFixed(2)
+        lineTotal
       });
     }
   }, [name, date, description, rate, quantity, lineTotal]);
@@ -52,6 +53,18 @@ const ManualEntry = ({
     await setManualEntryArr(tempManualEntryArr);
   };
 
+  const handleSetRate = (e) => {
+    setRate(e.target.value);
+    setLineTotal(lineTotalCalc(quantity, e.target.value));
+  };
+
+  const handleSetQuantity = (e) => {
+    const quantityInMin = Number(minFromHHMM(e.target.value));
+    setQtyInHHrMin(e.target.value);
+    setQuantity(quantityInMin);
+    setLineTotal(lineTotalCalc(quantityInMin, rate));
+  };
+
   return (
     <tr className="w-full my-1">
       <td className="p-1 w-full">
@@ -59,8 +72,7 @@ const ManualEntry = ({
           type="text"
           placeholder="Name"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          defaultValue={entry.name}
-          value={entry.name}
+          value={name}
           onChange={e => setName(e.target.value)}
         />
       </td>
@@ -71,8 +83,7 @@ const ManualEntry = ({
           ref={ref}
           onFocus={(e) => (e.target.type = "date")}
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          defaultValue={entry.date}
-          value={entry.date}
+          value={date}
           onChange={e => setDate(e.target.value)}
         />
       </td>
@@ -81,8 +92,7 @@ const ManualEntry = ({
           type="text"
           placeholder="Description"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          defaultValue={entry.description}
-          value={entry.description}
+          value={description}
           onChange={e => setDescription(e.target.value)}
         />
       </td>
@@ -91,12 +101,8 @@ const ManualEntry = ({
           type="text"
           placeholder="Rate"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          defaultValue={entry.rate}
-          value={entry.rate}
-          onChange={e => {
-            setRate(e.target.value);
-            setLineTotal(Number(e.target.value) * Number(quantity));
-          }}
+          value={rate}
+          onChange={handleSetRate}
         />
       </td>
       <td className="p-1 w-full">
@@ -104,12 +110,8 @@ const ManualEntry = ({
           type="text"
           placeholder="quantity"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          defaultValue={entry.quantity}
-          value={entry.quantity}
-          onChange={e => {
-            setQuantity(e.target.value);
-            setLineTotal(Number(rate) * Number(e.target.value));
-          }}
+          value={qtyInHHrMin}
+          onChange={handleSetQuantity}
         />
       </td>
       <td className="text-right font-normal text-base text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000">

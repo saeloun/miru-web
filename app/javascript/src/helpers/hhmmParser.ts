@@ -1,10 +1,7 @@
-export const minutesFromHHMM = (duration: string) => {
+export const minFromHHMM = (duration: string) => {
   const numberDuration = Number(duration);
   if (duration.includes(":")) {
     let [h, m] = duration.split(":");
-    if (h.length > 2) {
-      h = h.slice(0, 2);
-    }
     if (m.length > 2) {
       m = m.slice(0, 2);
     }
@@ -16,7 +13,7 @@ export const minutesFromHHMM = (duration: string) => {
   }
 };
 
-export const minutesToHHMM = (duration: number) => {
+export const minToHHMM = (duration: number) => {
   if (Number.isNaN(duration) || duration <= 0) {
     return "00:00";
   } else {

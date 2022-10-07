@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 
+import { minFromHHMM, minToHHMM, lineTotalCalc } from "helpers";
 import { Trash } from "phosphor-react";
 import DatePicker from "react-datepicker";
-
-import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 
 const EditLineItems = ({
   item,
@@ -12,14 +11,13 @@ const EditLineItems = ({
   handleDelete,
   setEdit
 }) => {
-
   const strName = item.name || `${item.first_name} ${item.last_name}`;
   const [name, setName] = useState<string>(strName);
   const formatedDate = new Date(item.date);
   const [lineItemDate, setLineItemDate] = useState(formatedDate);
   const [description, setDescription] = useState<string>(item.description);
   const [rate, setRate] = useState<number>(item.rate);
-  const [quantity, setQuantity] = useState<string>(minutesToHHMM(item.quantity));
+  const [quantity, setQuantity] = useState<any>(minToHHMM(item.quantity));
   const [lineTotal, setLineTotal] = useState<string>(item.lineTotal);
 
   useEffect(() => {
@@ -32,7 +30,7 @@ const EditLineItems = ({
       date: lineItemDate,
       description,
       rate,
-      quantity: minutesFromHHMM(quantity),
+      quantity: minFromHHMM(quantity),
       lineTotal
     };
 
@@ -52,10 +50,16 @@ const EditLineItems = ({
     if (event.key === "Enter") setEdit(false);
   };
 
+  const handleSetRate = (e) => {
+    const qtyInMin = Number(minFromHHMM(quantity));
+    setRate(e.target.value);
+    setLineTotal(lineTotalCalc(qtyInMin, e.target.value));
+  };
+
   const handleSetQuantity = (e) => {
-    const quantityInMin = Number(minutesFromHHMM(e.target.value));
+    const qtyInMin = Number(minFromHHMM(e.target.value));
     setQuantity(e.target.value);
-    setLineTotal((Number(quantityInMin / 60) * Number(rate)).toFixed(2));
+    setLineTotal(lineTotalCalc(qtyInMin, rate));
   };
 
   return (
@@ -96,7 +100,7 @@ const EditLineItems = ({
           placeholder="Rate"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 text-right focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={rate}
-          onChange={e => setRate(Number(e.target.value))}
+          onChange={handleSetRate}
         />
       </td>
       <td className="p-1 w-full">
