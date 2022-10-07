@@ -24,7 +24,8 @@ const Header = ({
   clearCheckboxes,
   setShowBulkDeleteDialog,
   params,
-  setParams
+  setParams,
+  filterParamsStr
 }) => {
   const [searchQuery, setSearchQuery] = React.useState<string>("");
   const [searchResult, setSearchResult] = React.useState<any[]>([]);
@@ -96,7 +97,7 @@ const Header = ({
             </div>
 
             <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
-              <Funnel size={16} />
+              <Funnel size={16} color={filterParamsStr ? "#5B34EA" : "#303A4B"} weight={filterParamsStr ? "fill" : "bold"}/>
             </button>
           </div>
 

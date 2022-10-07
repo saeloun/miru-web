@@ -37,6 +37,7 @@ const Invoices: React.FC = () => {
     query: searchParams.get("query") || ""
   });
   const [filterParams, setFilterParams] = React.useState(filterIntialValues);
+  const [filterParamsStr, setFilterParamsStr] = React.useState("");
   const [selectedInput, setSelectedInput] = React.useState("from-input");
 
   const queryParams = () => new URLSearchParams(params).toString();
@@ -109,6 +110,7 @@ const Invoices: React.FC = () => {
       filterQueryParams += `&from_to[to]=${to}`;
     }
 
+    setFilterParamsStr(filterQueryParams);
     return `${filterQueryParams}`;
   };
 
@@ -136,6 +138,7 @@ const Invoices: React.FC = () => {
         selectedInvoiceCount={selectedInvoiceCount}
         isInvoiceSelected={isInvoiceSelected}
         setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+        filterParamsStr={filterParamsStr}
       />
 
       {status === InvoicesStatus.SUCCESS && (
