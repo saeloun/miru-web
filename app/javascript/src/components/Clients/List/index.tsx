@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { TOASTER_DURATION } from "constants/index";
 
+import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -10,9 +11,6 @@ import clientApi from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
-import { cashFormatter } from "helpers/cashFormater";
-import { currencySymbol } from "helpers/currencySymbol";
-import { minutesToHHMM } from "helpers/hhmm-parser";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
@@ -27,7 +25,7 @@ const getTableData = (clients) => {
     return clients.map((client) => ({
       col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
       col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
-      col3: <div className="text-base text-miru-dark-purple-1000 text-right">{minutesToHHMM(client.minutes)}</div>,
+      col3: <div className="text-base text-miru-dark-purple-1000 text-right">{minToHHMM(client.minutes)}</div>,
       rowId: client.id
     }));
   }

@@ -1,10 +1,11 @@
 import React from "react";
 
 import ClientInfo from "./ClientInfo";
-import CompanyInfo from "./CompanyInfo";
 import InvoiceInfo from "./InvoiceInfo";
 import InvoiceLineItems from "./InvoiceLineItems";
 import InvoiceTotalSummary from "./InvoiceTotalSummary";
+
+import CompanyInfo from "../common/CompanyInfo";
 
 const InvoiceDetails = ({ invoice }) => (
   <>
