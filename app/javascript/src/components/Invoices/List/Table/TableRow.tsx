@@ -9,12 +9,11 @@ import {
   DownloadSimple
 } from "phosphor-react";
 import { Link } from "react-router-dom";
+import { CustomAvatar, Tooltip } from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
 import getStatusCssClass from "utils/getStatusTag";
 
-import CustomAvatar from "../../../../styledComponents/CustomAvatar";
-import Tooltip from "../../../../styledComponents/Tooltip";
 import MoreOptions from "../MoreOptions";
 import SendInvoice from "../SendInvoice";
 

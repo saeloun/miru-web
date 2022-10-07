@@ -1,8 +1,8 @@
 import React from "react";
 
-import getStatusCssClass from "utils/getStatusTag";
+import { CustomAvatar } from "StyledComponents";
 
-import CustomAvatar from "../../../../styledComponents/CustomAvatar";
+import getStatusCssClass from "utils/getStatusTag";
 
 const RecentlyUpdated = () => (
   <div className="p-4 mx-2 w-40 h-52 border-miru-gray-200 border-2 rounded-xl text-center">
