@@ -51,7 +51,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(user?.id);
   const [allEmployeesEntries, setAllEmployeesEntries] = useState<object>({});
-  const [clients, setClients] = useState<any>({});
   const [projects, setProjects] = useState<any>({});
   const [employees, setEmployees] = useState<any>([]);
 
@@ -65,12 +64,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const fetchTimeTrackingData = async () => {
     try {
       const { data } = await timeTrackingApi.get();
-      const { clients,
-        projects,
-        entries,
-        employees } = data;
+      const { projects, entries, employees } = data;
 
-      setClients(clients);
       setProjects(projects);
       setEmployees(employees);
       setEntryList(entries);
@@ -344,7 +339,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               selectedEmployeeId={selectedEmployeeId}
               fetchEntries={fetchEntries}
               setNewEntryView={setNewEntryView}
-              clients={clients}
               projects={projects}
               selectedDateInfo={dayInfo[selectDate]}
               selectedFullDate={selectedFullDate}
@@ -378,7 +372,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             <WeeklyEntries
               key={0}
               entries={[]}
-              clients={clients}
+              clients={[]}
               projects={projects}
               newRowView={newRowView}
               entryList={entryList}
@@ -407,7 +401,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 selectedEmployeeId={selectedEmployeeId}
                 fetchEntries={fetchEntries}
                 setNewEntryView={setNewEntryView}
-                clients={clients}
                 projects={projects}
                 selectedDateInfo={dayInfo[selectDate]}
                 selectedFullDate={selectedFullDate}
@@ -435,7 +428,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 key={weekCounter + 1}
                 {...entry}
                 setEntryList={setEntryList}
-                clients={clients}
+                clients={[]}
                 projects={projects}
                 newRowView={newRowView}
                 entryList={entryList}

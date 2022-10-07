@@ -16,7 +16,6 @@ const AddEntry: React.FC<Iprops> = ({
   selectedEmployeeId,
   fetchEntries,
   setNewEntryView,
-  clients,
   projects,
   selectedDateInfo,
   entryList,
@@ -27,9 +26,7 @@ const AddEntry: React.FC<Iprops> = ({
   const { useState, useEffect } = React;
   const [note, setNote] = useState("");
   const [duration, setDuration] = useState("00:00");
-  const [client, setClient] = useState("");
-  const [project, setProject] = useState("");
-  const [projectId, setProjectId] = useState(0);
+  const [projectId, setProjectId] = useState(null);
   const [billable, setBillable] = useState(false);
   const [projectBillable, setProjectBillable] = useState(true);
 
@@ -40,8 +37,6 @@ const AddEntry: React.FC<Iprops> = ({
     );
     if (entry) {
       setDuration(minutesToHHMM(entry.duration));
-      setClient(entry.client);
-      setProject(entry.project);
       setProjectId(entry.project_id);
       setNote(entry.note);
       if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
@@ -57,16 +52,15 @@ const AddEntry: React.FC<Iprops> = ({
   }, []);
 
   useEffect(() => {
-    if (!project) return;
-    const selectedProject = projects[client].find(
-      currentProject => currentProject.name === project
-    );
-    if (selectedProject) {
-      setProjectId(Number(selectedProject.id));
-      setProjectBillable(selectedProject.billable);
-      setBillable(selectedProject.billable);
+    const project = projects.find(currentProject => currentProject.id === projectId);
+    if (project) {
+      setProjectBillable(project.isBillable);
+      setBillable(project.isBillable);
+    } else {
+      setBillable(false);
+      setProjectBillable(true);
     }
-  }, [project]);
+  }, [projectId]);
 
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDuration(e.target.value);
@@ -127,46 +121,50 @@ const AddEntry: React.FC<Iprops> = ({
         (editEntryId ? "mt-10" : "")
       }
     >
+      {/* <div className="mt-4">
+        <div className="field">
+          <div className="field_with_errors">
+            <label className="form__label">Name</label>
+          </div>
+          <div className="flex">
+            <div className="mt-1">
+              <input
+                type="text"
+                className={`form__input`}
+                data-cy="new-member-firstName"
+                name="firstName"
+                placeholder="First Name"
+              />
+            </div>
+            <div className="mt-1 ml-8">
+              <input
+                type="text"
+                className={`form__input`}
+                data-cy="new-member-lastName"
+                name="lastName"
+                placeholder="Last Name"
+              />
+            </div>
+          </div>
+        </div>
+      </div> */}
       <div className="w-1/2">
         <div className="w-129 mb-2 flex justify-between">
           <select
             onChange={e => {
-              setClient(e.target.value);
-              setProject(projects[e.target.value][0].name);
+              setProjectId(Number(e.target.value));
             }}
-            value={client || "Client"}
-            name="client"
-            id="client"
-            className="w-64 bg-miru-gray-100 rounded-sm h-8"
-          >
-            {!client && (
-              <option disabled selected className="text-miru-gray-100">
-              Client
-              </option>
-            )}
-            {clients.map((client, i) => (
-              <option key={i.toString()}>{client["name"]}</option>
-            ))}
-          </select>
-
-          <select
-            onChange={e => {
-              setProject(e.target.value);
-            }}
-            value={project}
+            value={`${projectId}`}
             name="project"
             id="project"
-            className="w-64 bg-miru-gray-100 rounded-sm h-8"
+            className="w-129 bg-miru-gray-100 rounded-sm h-8"
           >
-            {!project && (
-              <option disabled selected className="text-miru-gray-100">
-              Project
-              </option>
-            )}
-            {client &&
-            projects[client].map((project, i) => (
-              <option data-project-id={project.id} key={i.toString()}>
-                {project.name}
+            <option value={null} key={"none"} className="text-miru-gray-100">
+              Select Project
+            </option>
+            {projects.map((project) => (
+              <option value={project.id} key={project.id}>
+                {project.name} ({project.clientName})
               </option>
             ))}
           </select>
@@ -224,7 +222,7 @@ const AddEntry: React.FC<Iprops> = ({
             onClick={handleSave}
             className={
               "mb-1 h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-              (note && client && project
+              (note && projectId
                 ? "bg-miru-han-purple-1000 hover:border-transparent"
                 : "bg-miru-gray-1000")
             }
@@ -236,7 +234,7 @@ const AddEntry: React.FC<Iprops> = ({
             onClick={() => handleEdit()}
             className={
               "mb-1 h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-              (note && client && project
+              (note && projectId
                 ? "bg-miru-han-purple-1000 hover:border-transparent"
                 : "bg-miru-gray-1000")
             }
@@ -262,8 +260,7 @@ interface Iprops {
   selectedEmployeeId: number;
   fetchEntries: (from: string, to: string) => Promise<any>
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
-  clients: any[];
-  projects: object;
+  projects: any[];
   selectedDateInfo: object;
   setEntryList: React.Dispatch<React.SetStateAction<object[]>>;
   entryList: object;

@@ -10,9 +10,7 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
     user_id = current_user.id
     employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
 
-    clients = current_company.clients.order(name: :asc).includes(:projects)
-    projects = {}
-    clients.map { |client| projects[client.name] = client.projects }
+    projects = current_company.project_list(nil, policy(Project).index_all? ? nil : current_user.id, nil, nil)
 
     timesheet_entries = current_user
       .timesheet_entries
@@ -23,6 +21,6 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
         1.month.since.end_of_month
         )
     entries = formatted_entries_by_date(timesheet_entries)
-    render json: { clients:, projects:, entries:, employees: }, status: :ok
+    render json: { projects:, entries:, employees: }, status: :ok
   end
 end
