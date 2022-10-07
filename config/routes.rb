@@ -76,7 +76,9 @@ Rails.application.routes.draw do
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
   end
 
-  post "webhooks/stripe/checkout/fulfillment", to: "webhooks#fulfill_stripe_checkout"
+  namespace :webhooks do
+    post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
+  end
 
   match "*path", via: :all, to: "home#index", constraints: lambda { |req|
     req.path.exclude? "rails/active_storage"
