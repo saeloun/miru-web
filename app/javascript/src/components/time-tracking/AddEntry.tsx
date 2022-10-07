@@ -52,7 +52,9 @@ const AddEntry: React.FC<Iprops> = ({
       setProject(entry.project);
       setProjectId(entry.project_id);
       setNote(entry.note);
-      if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
+      if (["unbilled", "billed"].includes(entry.bill_status)) {
+        setBillable(true);
+      }
     }
   };
 
@@ -64,7 +66,9 @@ const AddEntry: React.FC<Iprops> = ({
     if (selectedProject) {
       setProjectId(Number(selectedProject.id));
       setProjectBillable(selectedProject.billable);
-      (projectId != selectedProject.id) && setBillable(selectedProject.billable);
+      if (projectId != selectedProject.id) {
+        setBillable(selectedProject.billable);
+      }
     }
   }, [project]);
 
@@ -139,29 +143,6 @@ const AddEntry: React.FC<Iprops> = ({
     handleFillData();
     textArea.click();
   }, []);
-
-  useEffect(() => {
-    if (!project) return;
-    const selectedProject = projects[client].find(
-      currentProject => currentProject.name === project
-    );
-    if (selectedProject) {
-      setProjectId(Number(selectedProject.id));
-      setProjectBillable(selectedProject.billable);
-      setBillable(selectedProject.billable);
-    }
-  }, [project]);
-
-  // useEffect(() => {
-  //   const clickHandler = (e: MouseEvent) => {
-  //     if (! datePickerRef.current.contains(e.target)) {
-  //       setDisplayDatePicker(false);
-  //     }
-  //   };
-
-  //   document.addEventListener("mousedown", clickHandler);
-  //   return document.removeEventListener("click", clickHandler);
-  // }, []);
 
   return (
     <div
