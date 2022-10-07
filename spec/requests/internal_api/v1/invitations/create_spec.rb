@@ -56,7 +56,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
 
       it "return error message" do
         expect(json_response["notice"]).to eq("Failed to saved changes")
-        expect(json_response["error"]).to eq("First name is invalid")
+        expect(json_response["errors"]).to eq("First name is invalid")
       end
 
       it "doesn't create invitation record" do
@@ -85,7 +85,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
 
       it "return error message" do
         expect(json_response["notice"]).to eq("Failed to saved changes")
-        expect(json_response["error"]).to eq("Recipient email is invalid")
+        expect(json_response["errors"]).to eq("Recipient email is invalid")
       end
 
       it "doesn't create invitation record" do
@@ -146,7 +146,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
 
       it "return error message" do
         expect(json_response["notice"]).to eq("Failed to saved changes")
-        expect(json_response["error"]).to eq("First name is invalid")
+        expect(json_response["errors"]).to eq("First name is invalid")
       end
 
       it "doesn't create invitation record" do
@@ -176,7 +176,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
 
       it "return error message" do
         expect(json_response["notice"]).to eq("Failed to saved changes")
-        expect(json_response["error"]).to eq("Recipient email is invalid")
+        expect(json_response["errors"]).to eq("Recipient email is invalid")
       end
 
       it "doesn't create invitation record" do
@@ -206,7 +206,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
 
       it "return error message" do
         expect(json_response["notice"]).to eq("Failed to saved changes")
-        expect(json_response["error"]).to eq("Role can't be blank")
+        expect(json_response["errors"]).to eq("Role can't be blank")
       end
 
       it "doesn't create invitation record" do

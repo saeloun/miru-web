@@ -31,7 +31,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
             address: "Somewhere on Earth"
           })
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(json_response["error"]).to eq("Name can't be blank")
+        expect(json_response["errors"]).to eq("Name can't be blank")
       end
     end
   end

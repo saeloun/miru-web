@@ -223,6 +223,7 @@ en:
     client_policy:
       create?: You are not authorized to create client.
       update?: You are not authorized to update client.
+      show?: You are not authorized to access the page. Please reach out to your administrator for help.
     company_policy:
       new?: You are not authorized to create new company.
       create?: You are not authorized to create company.
@@ -234,6 +235,7 @@ en:
       index?: You are not authorized to view dashboard.
     project_policy:
       create?: You are not authorized to create project.
+      show?: You are not authorized to access the page. Please reach out to your administrator for help.
     team_policy:
       edit?: You are not authorized to edit team.
       update?: You are not authorized to update team.

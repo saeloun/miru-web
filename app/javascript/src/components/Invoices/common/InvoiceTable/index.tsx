@@ -1,16 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 
-import dayjs from "dayjs";
+import { useOutsideClick } from "helpers";
 
-import generateInvoice from "apis/generateInvoice";
-import useOutsideClick from "helpers/outsideClick";
-
-import NewLineItemTable from "./NewLineItemTable";
-
-import TableHeader from "../common/LineItemTableHeader";
-import NewLineItemRow from "../common/NewLineItemRow";
-import ManualEntry from "../Generate/ManualEntry";
-import MultipleEntriesModal from "../MultipleEntriesModal";
+import MultipleEntriesModal from "../../MultipleEntriesModal";
+import LineItemTableHeader from "../LineItemTableHeader";
+import ManualEntry from "../ManualEntry";
+import NewLineItemRow from "../NewLineItemRow";
+import NewLineItemTable from "../NewLineItemTable";
+import { fetchNewLineItems } from "../utils";
 
 const InvoiceTable = ({
   currency,
@@ -28,57 +25,21 @@ const InvoiceTable = ({
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [showMultiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
   const [addManualLineItem, setAddManualLineItem] = useState<boolean>(false);
-
-  const fetchNewLineItems = async (
-    selectedClient,
-    setLineItems,
-    lineItems,
-    setTotalLineItems,
-    pageNumber,
-    setPageNumber,
-    selectedEntries = [],
-  ) => {
-
-    if (selectedClient) {
-      let selectedEntriesString = "";
-      selectedEntries.forEach((entries) => {
-        if (!entries._destroy)
-          selectedEntriesString += `&selected_entries[]=${entries.timesheet_entry_id}`;
-      });
-
-      await generateInvoice.getLineItems(selectedClient.value, pageNumber, selectedEntriesString).then(async res => {
-        await setTotalLineItems(res.data.pagy.count);
-        await setPageNumber(pageNumber + 1);
-        const mergedItems = [...res.data.new_line_item_entries, ...lineItems];
-        const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
-        setLineItems(sortedData);
-      });
-    }
-  };
+  const wrapperRef = useRef(null);
 
   useEffect(() => {
     if (addManualLineItem) return setAddManualLineItem(false);
 
     if (addNew) {
-      fetchNewLineItems(
-        selectedClient,
-        setLineItems,
-        lineItems,
-        setTotalLineItems,
-        pageNumber,
-        setPageNumber,
-        selectedLineItems
-      );
+      loadNewLineItems();
     }
   }, [addNew]);
 
-  const wrapperRef = useRef(null);
-
-  const loadMoreItems = () => {
+  const loadNewLineItems = () => {
     fetchNewLineItems(
       selectedClient,
-      setLineItems,
       lineItems,
+      setLineItems,
       setTotalLineItems,
       pageNumber,
       setPageNumber,
@@ -93,14 +54,14 @@ const InvoiceTable = ({
   }, addNew);
 
   const getNewLineItemDropdown = () => {
-    if (lineItems) {
+    if (selectedClient && lineItems) {
       return <NewLineItemTable
         setShowItemInputs={setShowItemInputs}
         addNew={addNew}
         setAddNew={setAddNew}
         lineItems={lineItems}
         setLineItems={setLineItems}
-        loadMoreItems={loadMoreItems}
+        loadMoreItems={loadNewLineItems}
         totalLineItems={totalLineItems}
         pageNumber={pageNumber}
         setPageNumber={setPageNumber}
@@ -128,7 +89,7 @@ const InvoiceTable = ({
         onClick={() => {
           setAddNew(!addNew);
         }}
-        data-cy="edit-new-line-item"
+        data-cy="new-line-item"
       >
         + NEW LINE ITEM
       </button>;
@@ -136,9 +97,9 @@ const InvoiceTable = ({
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <table className="w-full table-fixed">
-        <TableHeader />
+        <LineItemTableHeader />
         <tbody className="w-full">
           <tr className="w-full">
             <td colSpan={6} className="py-4 relative">
@@ -147,8 +108,9 @@ const InvoiceTable = ({
           </tr>
           {
             showItemInputs
-            && (manualEntryArr.map((entry) =>
+            && (manualEntryArr.map((entry, index) =>
               <ManualEntry
+                key={index}
                 entry={entry}
                 manualEntryArr={manualEntryArr}
                 setManualEntryArr={setManualEntryArr}
@@ -173,12 +135,12 @@ const InvoiceTable = ({
       <div>
         {showMultiLineItemModal && <MultipleEntriesModal
           selectedClient={selectedClient}
-          selectedOption={selectedLineItems.filter(item => !item._destroy)}
+          selectedOption={selectedLineItems}
           setSelectedOption={setSelectedLineItems}
           setMultiLineItemModal={setMultiLineItemModal}
         />}
       </div>
-    </React.Fragment>
+    </Fragment>
   );
 };
 

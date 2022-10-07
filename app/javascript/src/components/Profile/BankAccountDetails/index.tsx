@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 
+import { bankFieldValidationRequirements, separateAddressFields } from "helpers";
 import { isEmpty } from "ramda";
 
 import profilesApi from "apis/profiles";
 import wiseApi from "apis/wise";
 import Loader from "common/Loader";
-import { separateAddressFields, bankFieldValidationRequirements } from "helpers/wiseUtilityFunctions";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import BankDetails from "./BankDetails";
