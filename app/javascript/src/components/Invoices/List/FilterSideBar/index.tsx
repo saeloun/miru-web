@@ -212,7 +212,7 @@ const FilterSideBar = ({
                     <button onClick={resetCustomDatePicker} className="sidebar__reset">Cancel</button>
                     <button
                       disabled={diableDateBtn}
-                      className={`sidebar__apply ${(diableDateBtn) ? "cursor-not-allowed" : "cursor-pointer"}`}
+                      className={`sidebar__apply ${(diableDateBtn) ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent" : "cursor-pointer"}`}
                       onClick={submitCustomDatePicker}
                     >
                       Done
