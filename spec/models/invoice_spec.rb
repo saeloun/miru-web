@@ -82,7 +82,7 @@ RSpec.describe Invoice, type: :model do
 
     describe "issue_date_range" do
       it "returns all invoices if date range is not specified" do
-        expect(company.invoices.from_to(nil).size).to eq(25)
+        expect(company.invoices.issue_date_range(nil).size).to eq(25)
       end
     end
 
