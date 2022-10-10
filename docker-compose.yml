@@ -59,7 +59,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: bundle exec sidekiq -e development
+    command: bundle exec sidekiq -C config/sidekiq.yml
     volumes:
       - .:/app
       - gem_cache:/usr/local/bundle/gems
