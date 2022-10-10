@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationController
-  before_action :load_client, only: [:create, :update]
+  before_action :load_client, only: [:create, :update, :send_invoice]
   after_action :ensure_time_entries_billed, only: [:send_invoice]
 
   def index
@@ -59,9 +59,10 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   end
 
   def send_invoice
-    authorize invoice
+    authorize Invoice
 
-    invoice.send_to_email(
+    @sent_invoice = @client.invoices.create!(invoice_params)
+    @sent_invoice.send_to_email(
       subject: invoice_email_params[:subject],
       message: invoice_email_params[:message],
       recipients: invoice_email_params[:recipients]
@@ -92,6 +93,6 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     end
 
     def ensure_time_entries_billed
-      invoice.update_timesheet_entry_status!
+      @sent_invoice.update_timesheet_entry_status!
     end
 end
