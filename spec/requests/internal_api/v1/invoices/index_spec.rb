@@ -98,6 +98,14 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
               invoice["id"]
             })
       end
+
+      describe "recently_updated_invoices return value" do
+        it "returns top 10 recently updated invoices" do
+          send_request :get, internal_api_v1_invoices_path()
+          expected_ids = Invoice.order("updated_at desc").limit(10).pluck(:id)
+          expect(json_response["recentlyUpdatedInvoices"].pluck("id")).to eq(expected_ids)
+        end
+      end
     end
 
     describe "statuses[] param" do
@@ -248,6 +256,14 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         statuses = [:draft, :overdue, :paid]
         send_request :get, internal_api_v1_invoices_path(statuses:)
         expect(response).to have_http_status(:ok)
+      end
+    end
+
+    describe "recently_updated_invoices return value" do
+      it "returns top 10 recently updated invoices" do
+        send_request :get, internal_api_v1_invoices_path()
+        expected_ids = Invoice.order("updated_at desc").limit(10).pluck(:id)
+        expect(json_response["recentlyUpdatedInvoices"].pluck("id")).to eq(expected_ids)
       end
     end
   end
