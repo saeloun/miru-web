@@ -1,8 +1,8 @@
 import React from "react";
 
 import dayjs from "dayjs";
+import { currencyFormat } from "helpers";
 
-import { currencyFormat } from "helpers/currency";
 import getStatusCssClass from "utils/getStatusTag";
 
 import { OutstandingOverdueInvoice } from "../interface";

@@ -18,5 +18,9 @@ end
       note: "Worked on #{@project_azure_com.name}", bill_status: :unbilled, work_date: date)
   end
 end
+
+# Reindex Searchkick indexes
+TimesheetEntry.reindex
+
 # Timesheet Entry End
 puts "TimeSheet entries created"

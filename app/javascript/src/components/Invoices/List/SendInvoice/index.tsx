@@ -9,11 +9,11 @@ import React, {
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import cn from "classnames";
+import { useOutsideClick } from "helpers";
 import { X } from "phosphor-react";
 
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
-import useOutsideClick from "helpers/outsideClick";
 
 import {
   isEmailValid,

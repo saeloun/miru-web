@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 
+import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
+import Logger from "js-logger";
 import {
   ArrowLeft,
   DotsThreeVertical,
@@ -16,9 +18,6 @@ import projectAPI from "apis/projects";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
-import { cashFormatter } from "helpers/cashFormater";
-import { currencySymbol } from "helpers/currencySymbol";
-import { minutesToHHMM } from "helpers/hhmm-parser";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import EditMembersList from "./EditMembersList";
@@ -49,7 +48,8 @@ const ProjectDetails = () => {
       setProject(sanitized);
       setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
     } catch (e) {
-      console.log(e); // eslint-disable-line
+      Logger.error(e);
+      navigate("/projects");
     }
   };
 
@@ -74,7 +74,7 @@ const ProjectDetails = () => {
         ),
         col3: (
           <div className="text-base text-miru-dark-purple-1000 text-right">
-            {minutesToHHMM(member.minutes)}
+            {minToHHMM(member.minutes)}
           </div>
         ),
         col4: (

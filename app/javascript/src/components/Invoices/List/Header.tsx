@@ -2,7 +2,9 @@ import * as React from "react";
 
 import { ApiStatus as InvoiceStatus } from "constants/index";
 
+import { useDebounce } from "helpers";
 import {
+  Funnel,
   MagnifyingGlass,
   Plus,
   Trash,
@@ -12,17 +14,18 @@ import {
 import { Link } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
-import useDebounce from "helpers/debounce";
 
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 
 const Header = ({
+  setFilterVisibilty,
   isInvoiceSelected,
   selectedInvoiceCount,
   clearCheckboxes,
   setShowBulkDeleteDialog,
   params,
-  setParams
+  setParams,
+  filterParamsStr
 }) => {
   const [searchQuery, setSearchQuery] = React.useState<string>("");
   const [searchResult, setSearchResult] = React.useState<any[]>([]);
@@ -65,11 +68,11 @@ const Header = ({
   };
 
   return (
-    <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
+    <div className="mt-6 mb-3 flex flex-col md:flex-row items-center justify-between h-40 md:h-auto">
       <h2 className="header__title" data-cy ="header__invoices">Invoices</h2>
       {!isInvoiceSelected && (
         <React.Fragment>
-          <div className="header__searchWrap">
+          <div className="header__searchWrap ml-auto md:ml-0">
             <div className="header__searchInnerWrapper relative">
               <div>
                 <input
@@ -93,9 +96,9 @@ const Header = ({
               </div>
             </div>
 
-            {/* <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
-              <Funnel size={16} />
-            </button> */}
+            <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
+              <Funnel size={16} color={filterParamsStr ? "#5B34EA" : "#303A4B"} weight={filterParamsStr ? "fill" : "bold"}/>
+            </button>
           </div>
 
           <div className="flex">

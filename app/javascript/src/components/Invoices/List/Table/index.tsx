@@ -11,7 +11,7 @@ const Table = ({
   setShowDeleteDialog,
   setInvoiceToDelete
 }) => (
-  <table className="min-w-full mt-4 divide-y divide-gray-200">
+  <table className="min-w-full mt-4 divide-y divide-gray-200 overflow-x-scroll">
     <thead>
       <TableHeader
         selectAllInvoices={() =>
