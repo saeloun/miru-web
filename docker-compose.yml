@@ -21,7 +21,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: bundle exec rails s -b 0.0.0.0
+    command: bundle exec rails s -p 3000 -b 0.0.0.0
     ports:
       - "3000:3000"
     volumes:
@@ -32,10 +32,13 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@database:5432/
       - REDIS_URL=redis://redis:6379/1
       - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - PIDFILE=/tmp/pids/server.pid
     depends_on:
       - database
       - redis
       - elasticsearch
+    tmpfs:
+      - /tmp/pids/
 
   webpack:
     build:
