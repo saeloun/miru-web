@@ -2,10 +2,11 @@ version: "3.9"
 services:
   database:
     image: postgres:13.8
+    restart: always
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
 
@@ -75,5 +76,5 @@ services:
 
 volumes:
   gem_cache:
-  db_data:
+  postgres:
   node_modules:
