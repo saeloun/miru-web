@@ -31,7 +31,7 @@ class Project < ApplicationRecord
 
   # Associations
   belongs_to :client
-  has_many :timesheet_entries
+  has_many :timesheet_entries, inverse_of: :project
   has_many :project_members, dependent: :destroy
 
   # Validations

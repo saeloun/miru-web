@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import autosize from "autosize";
+import { getNumberWithOrdinal, minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import Toastr from "common/Toastr";
-import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
-import { getNumberWithOrdinal } from "helpers/ordinal";
-import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
@@ -24,7 +22,6 @@ const AddEntry: React.FC<Iprops> = ({
   setEditEntryId,
   editEntryId
 }) => {
-  const { useState, useEffect } = React;
   const [note, setNote] = useState("");
   const [duration, setDuration] = useState("00:00");
   const [client, setClient] = useState("");
@@ -39,14 +36,13 @@ const AddEntry: React.FC<Iprops> = ({
       entry => entry.id === editEntryId
     );
     if (entry) {
-      setDuration(minutesToHHMM(entry.duration));
+      setDuration(minToHHMM(entry.duration));
       setClient(entry.client);
       setProject(entry.project);
       setProjectId(entry.project_id);
       setNote(entry.note);
       if (["unbilled", "billed"].includes(entry.bill_status)) setBillable(true);
     }
-
   };
 
   useEffect(() => {
@@ -64,7 +60,7 @@ const AddEntry: React.FC<Iprops> = ({
     if (selectedProject) {
       setProjectId(Number(selectedProject.id));
       setProjectBillable(selectedProject.billable);
-      setBillable(selectedProject.billable);
+      (projectId != selectedProject.id) && setBillable(selectedProject.billable);
     }
   }, [project]);
 
@@ -74,7 +70,7 @@ const AddEntry: React.FC<Iprops> = ({
 
   const getPayload = () => ({
     work_date: selectedFullDate,
-    duration: minutesFromHHMM(duration),
+    duration: minFromHHMM(duration),
     note: note,
     bill_status: billable ? "unbilled" : "non_billable"
   });

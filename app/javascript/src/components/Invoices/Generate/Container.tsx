@@ -1,9 +1,9 @@
 import React from "react";
 
-import CompanyInfo from "./CompanyInfo";
-import InvoiceDetails from "./InvoiceDetails";
-import InvoiceTable from "./InvoiceTable";
-import InvoiceTotal from "./InvoiceTotal";
+import CompanyInfo from "../common/CompanyInfo";
+import InvoiceDetails from "../common/InvoiceDetails";
+import InvoiceTable from "../common/InvoiceTable";
+import InvoiceTotal from "../common/InvoiceTotal";
 
 const Container = ({
   invoiceDetails,
@@ -22,17 +22,17 @@ const Container = ({
   manualEntryArr, setManualEntryArr
 }) => (
   <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
-    <CompanyInfo companyDetails={invoiceDetails.companyDetails} />
+    <CompanyInfo company={invoiceDetails.companyDetails} />
     <InvoiceDetails
       currency={invoiceDetails.companyDetails.currency}
       clientList={invoiceDetails.clientList}
+      amount={amount}
       selectedClient={selectedClient}
       setSelectedClient={setSelectedClient}
-      amount={amount}
-      setDueDate={setDueDate}
       issueDate={issueDate}
       setIssueDate={setIssueDate}
       dueDate={dueDate}
+      setDueDate={setDueDate}
       invoiceNumber={invoiceNumber}
       setInvoiceNumber={setInvoiceNumber}
       reference={reference}
@@ -43,17 +43,16 @@ const Container = ({
       <InvoiceTable
         currency={invoiceDetails.companyDetails.currency}
         selectedClient={selectedClient}
-        selectedOption={selectedOption}
-        setSelectedOption={setSelectedOption}
-        setLineItems={setLineItems}
         lineItems={lineItems}
+        setLineItems={setLineItems}
+        selectedLineItems={selectedOption}
+        setSelectedLineItems={setSelectedOption}
         manualEntryArr={manualEntryArr}
         setManualEntryArr={setManualEntryArr}
       />
     </div>
     <InvoiceTotal
       currency={invoiceDetails.companyDetails.currency}
-      manualEntryArr={manualEntryArr}
       newLineItems={selectedOption}
       amountPaid={amountPaid}
       amountDue={amountDue}
@@ -65,6 +64,7 @@ const Container = ({
       setTax={setTax}
       showDiscountInput={false}
       showTax={false}
+      manualEntryArr={manualEntryArr}
     />
   </div>
 );

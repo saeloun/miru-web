@@ -1,6 +1,6 @@
 import React from "react";
 
-import { currencyFormat } from "helpers/currency";
+import { currencyFormat } from "helpers";
 
 const InvoiceTotalSummary = ({ invoice, company, lineItems }) => {
   const subTotal = lineItems.reduce((prev, curr) => prev + curr.rate * curr.quantity/60, 0).toFixed(2);

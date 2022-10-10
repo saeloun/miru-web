@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
 
+import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import Logger from "js-logger";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import Toastr from "common/Toastr";
-import { minutesToHHMM, minutesFromHHMM } from "helpers/hhmm-parser";
-import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
@@ -41,7 +40,7 @@ const WeeklyEntriesCard = ({
 
   const getPayload = () => ({
     project_id: currentProjectId,
-    duration: minutesFromHHMM(duration),
+    duration: minFromHHMM(duration),
     bill_status: billable ? "unbilled" : "non_billable",
     note: note
   });
@@ -63,7 +62,7 @@ const WeeklyEntriesCard = ({
       currentEntries[num] ? currentEntries[num]["note"] : ""
     );
     setDuration(
-      minutesToHHMM(
+      minToHHMM(
         currentEntries[num] ? currentEntries[num]["duration"] : 0
       )
     );
@@ -195,14 +194,14 @@ const WeeklyEntriesCard = ({
                 className={`bold text-xl content-center px-1 py-4 w-18 h-15 border-2 border-transparent rounded bg-miru-gray-100 ${currentEntries[num] ? "text-miru-gray-500" : "text-miru-dark-purple-200"}`}
               >
                 {currentEntries[num]
-                  ? minutesToHHMM(currentEntries[num]["duration"])
+                  ? minToHHMM(currentEntries[num]["duration"])
                   : "00:00"}
               </div>
             )
           )}
         </div>
         <div className="text-xl font-bold">
-          {minutesToHHMM(weeklyTotalHours)}
+          {minToHHMM(weeklyTotalHours)}
         </div>
         <div className="flex justify-around">
           <img

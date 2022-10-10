@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { getNumberWithOrdinal } from "helpers/ordinal";
+import { getNumberWithOrdinal } from "helpers";
 
 const WeeklyEntries: React.FC<Iprops> = ({
   view,
@@ -26,7 +26,7 @@ const WeeklyEntries: React.FC<Iprops> = ({
             {d.day}
           </p>
           <p className="text-xs">
-            {getNumberWithOrdinal(d.date)} {d.month}{" "}
+            {getNumberWithOrdinal(parseInt(d.date,10))} {d.month}{" "}
           </p>
         </button>
       ))}
@@ -43,7 +43,7 @@ const WeeklyEntries: React.FC<Iprops> = ({
             {d.day}
           </p>
           <p className="text-xs">
-            {getNumberWithOrdinal(d.date)} {d.month}{" "}
+            {getNumberWithOrdinal(parseInt(d.date,10))} {d.month}{" "}
           </p>
         </div>
       ))}
