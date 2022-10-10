@@ -18,6 +18,12 @@ import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
 
 const Invoices: React.FC = () => {
+  const filterIntialValues = {
+    dateRange: { label: "All", value: "all", from: "", to: "" },
+    clients: [],
+    status: []
+  };
+
   const [status, setStatus] = React.useState<InvoicesStatus>(
     InvoicesStatus.IDLE
   );
@@ -30,11 +36,13 @@ const Invoices: React.FC = () => {
     page: searchParams.get("page") || 1,
     query: searchParams.get("query") || ""
   });
+  const [filterParams, setFilterParams] = React.useState(filterIntialValues);
+  const [filterParamsStr, setFilterParamsStr] = React.useState("");
+  const [selectedInput, setSelectedInput] = React.useState("from-input");
 
   const queryParams = () => new URLSearchParams(params).toString();
 
   const [selectedInvoices, setSelectedInvoices] = React.useState<number[]>([]);
-
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
@@ -50,7 +58,7 @@ const Invoices: React.FC = () => {
   React.useEffect(() => {
     fetchInvoices();
     setSearchParams(cleanParams(params));
-  }, [params.invoices_per_page, params.page, params.query]);
+  }, [params.invoices_per_page, params.page, params.query, filterParams]);
 
   const cleanParams = (params: any) => {
     const newParams = { ...params };
@@ -67,7 +75,7 @@ const Invoices: React.FC = () => {
       setStatus(InvoicesStatus.LOADING);
       const {
         data: { invoices, pagy, summary }
-      } = await invoicesApi.get(queryParams());
+      } = await invoicesApi.get(queryParams().concat(handleFilterParams()));
 
       setInvoices(invoices);
       setSummary(summary);
@@ -77,6 +85,33 @@ const Invoices: React.FC = () => {
     } catch (error) {
       setStatus(InvoicesStatus.ERROR);
     }
+  };
+
+  const handleFilterParams = () => {
+    let filterQueryParams = "";
+
+    filterParams.clients.forEach((client) => {
+      filterQueryParams+= `&client_ids[]=${client.value}`;
+    });
+
+    filterParams.status.forEach((status) => {
+      filterQueryParams += `&statuses[]=${status.value}`;
+    });
+
+    const { value, from, to } = filterParams.dateRange;
+
+    if (value != "all" && value != "custom"){
+      filterQueryParams += `&from_to[date_range]=${value}`;
+    }
+
+    if (value === "custom" && from && to) {
+      filterQueryParams += `&from_to[date_range]=${value}`;
+      filterQueryParams += `&from_to[from]=${from}`;
+      filterQueryParams += `&from_to[to]=${to}`;
+    }
+
+    setFilterParamsStr(filterQueryParams);
+    return `${filterQueryParams}`;
   };
 
   const selectInvoices = (invoiceIds: number[]) => {
@@ -96,13 +131,14 @@ const Invoices: React.FC = () => {
       <Header
         params={params}
         setParams={setParams}
-        // setFilterVisibilty={setFilterVisibilty}
+        setFilterVisibilty={setFilterVisibilty}
         clearCheckboxes={() =>
           deselectInvoices(invoices.map((invoice) => invoice.id))
         }
         selectedInvoiceCount={selectedInvoiceCount}
         isInvoiceSelected={isInvoiceSelected}
         setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+        filterParamsStr={filterParamsStr}
       />
 
       {status === InvoicesStatus.SUCCESS && (
@@ -119,7 +155,14 @@ const Invoices: React.FC = () => {
           />
 
           {isFilterVisible && (
-            <FilterSideBar setFilterVisibilty={setFilterVisibilty} />
+            <FilterSideBar
+              filterIntialValues={filterIntialValues}
+              setFilterVisibilty={setFilterVisibilty}
+              filterParams={filterParams}
+              setFilterParams={setFilterParams}
+              selectedInput={selectedInput}
+              setSelectedInput={setSelectedInput}
+            />
           )}
 
           {invoices.length && (
