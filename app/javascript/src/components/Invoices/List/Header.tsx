@@ -4,6 +4,7 @@ import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import { useDebounce } from "helpers";
 import {
+  Funnel,
   MagnifyingGlass,
   Plus,
   Trash,
@@ -17,12 +18,14 @@ import invoicesApi from "apis/invoices";
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 
 const Header = ({
+  setFilterVisibilty,
   isInvoiceSelected,
   selectedInvoiceCount,
   clearCheckboxes,
   setShowBulkDeleteDialog,
   params,
-  setParams
+  setParams,
+  filterParamsStr
 }) => {
   const [searchQuery, setSearchQuery] = React.useState<string>("");
   const [searchResult, setSearchResult] = React.useState<any[]>([]);
@@ -93,9 +96,9 @@ const Header = ({
               </div>
             </div>
 
-            {/* <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
-              <Funnel size={16} />
-            </button> */}
+            <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
+              <Funnel size={16} color={filterParamsStr ? "#5B34EA" : "#303A4B"} weight={filterParamsStr ? "fill" : "bold"}/>
+            </button>
           </div>
 
           <div className="flex">
