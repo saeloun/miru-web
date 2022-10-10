@@ -110,26 +110,27 @@ const OrgEdit = () => {
 
   const getData = async () => {
     setisLoading(true);
-    const resp = await companiesApi.index();
+    const res = await companiesApi.index();
+    const companyDetails = { ... res.data.company_details };
     setOrgDetails({
-      logoUrl: resp.data.company_details.logo,
-      companyName: resp.data.company_details.name,
-      companyAddr: resp.data.company_details.address,
-      companyPhone: resp.data.company_details.business_phone,
-      countryName: resp.data.company_details.country,
-      companyCurrency: resp.data.company_details.currency,
-      companyRate: parseFloat(resp.data.company_details.standard_price),
-      companyFiscalYear: resp.data.company_details.fiscal_year_end,
-      companyDateFormat: resp.data.company_details.date_format,
-      companyTimezone: resp.data.company_details.timezone,
-      id: resp.data.company_details.id,
+      logoUrl: companyDetails.logo,
+      companyName: companyDetails.name,
+      companyAddr: companyDetails.address,
+      companyPhone: companyDetails.business_phone,
+      countryName: companyDetails.country,
+      companyCurrency: companyDetails.currency,
+      companyRate: parseFloat(companyDetails.standard_price),
+      companyFiscalYear: companyDetails.fiscal_year_end,
+      companyDateFormat: companyDetails.date_format,
+      companyTimezone: companyDetails.timezone,
+      id: companyDetails.id,
       logo: null
     });
 
     const timezonesEntry = await companyProfileApi.get();
     setTimeZones(timezonesEntry.data.timezones);
 
-    const timeZonesForCountry = timezonesEntry.data.timezones[resp.data.company_details.country];
+    const timeZonesForCountry = timezonesEntry.data.timezones[companyDetails.country];
     const timezoneOptionList = timeZonesForCountry.map((item) => ({
       value: item,
       label: item
