@@ -80,23 +80,9 @@ RSpec.describe Invoice, type: :model do
       end
     end
 
-    describe ".from_date" do
-      it "returns all invoices if from date is not specified" do
-        expect(company.invoices.from_date(nil).size).to eq(25)
-      end
-
-      it "returns invoices issued on or after a given date" do
-        expect(company.invoices.from_date("2019-04-01").size).to eq(25)
-      end
-    end
-
-    describe ".to_date" do
-      it "returns all invoices if to date is not specified" do
-        expect(company.invoices.to_date(nil).size).to eq(25)
-      end
-
-      it "returns invoices issued on or before a given date" do
-        expect(company.invoices.to_date(Date.today.to_s).size).to eq(25)
+    describe "issue_date_range" do
+      it "returns all invoices if date range is not specified" do
+        expect(company.invoices.issue_date_range(nil).size).to eq(25)
       end
     end
 
