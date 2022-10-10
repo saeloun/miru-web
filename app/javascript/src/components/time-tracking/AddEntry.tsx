@@ -9,9 +9,6 @@ import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "helpers/ordinal";
 import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 
-const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
-const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
-
 const AddEntry: React.FC<Iprops> = ({
   selectedEmployeeId,
   fetchEntries,
@@ -45,9 +42,11 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   useEffect(() => {
-    const textArea = document.querySelector("textarea");
-    autosize(textArea);
     handleFillData();
+
+    const textArea = document.querySelector("textarea");
+    if (!textArea) return;
+    autosize(textArea);
     textArea.click();
   }, []);
 
@@ -121,99 +120,89 @@ const AddEntry: React.FC<Iprops> = ({
         (editEntryId ? "mt-10" : "")
       }
     >
-      {/* <div className="mt-4">
-        <div className="field">
-          <div className="field_with_errors">
-            <label className="form__label">Name</label>
-          </div>
-          <div className="flex">
-            <div className="mt-1">
-              <input
-                type="text"
-                className={`form__input`}
-                data-cy="new-member-firstName"
-                name="firstName"
-                placeholder="First Name"
-              />
-            </div>
-            <div className="mt-1 ml-8">
-              <input
-                type="text"
-                className={`form__input`}
-                data-cy="new-member-lastName"
-                name="lastName"
-                placeholder="Last Name"
-              />
-            </div>
-          </div>
-        </div>
-      </div> */}
       <div className="w-1/2">
-        <div className="w-129 mb-2 flex justify-between">
-          <select
-            onChange={e => {
-              setProjectId(Number(e.target.value));
-            }}
-            value={`${projectId}`}
-            name="project"
-            id="project"
-            className="w-129 bg-miru-gray-100 rounded-sm h-8"
-          >
-            <option value={null} key={"none"} className="text-miru-gray-100">
-              Select Project
-            </option>
-            {projects.map((project) => (
-              <option value={project.id} key={project.id}>
-                {project.name} ({project.clientName})
-              </option>
-            ))}
-          </select>
-        </div>
-        <textarea
-          value={note}
-          onChange={e => setNote(e.target.value)}
-          rows={5}
-          cols={60}
-          name="notes"
-          placeholder=" Notes"
-          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
-        ></textarea>
-      </div>
-      <div className="w-60">
-        <div className="mb-2 flex justify-between">
-          <div className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center">
-            {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${
-              selectedDateInfo["month"]
-            }, ${selectedDateInfo["year"]}`}
+        <div className="mt-0">
+          <div className="field">
+            <div className="mt-1">
+              <select
+                onChange={e => {
+                  setProjectId(Number(e.target.value));
+                }}
+                value={`${projectId}`}
+                name="project"
+                id="project"
+                className="form__input"
+              >
+                <option value={null} key={"none"} className="text-miru-gray-100">
+                  Select Project
+                </option>
+                {projects.map((project) => (
+                  <option value={project.id} key={project.id}>
+                    {project.name} ({project.clientName})
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <input
-            value={duration}
-            onChange={handleDurationChange}
-            type="text"
-            className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm"
-          />
         </div>
-        <div className="flex items-center mt-2">
-          {billable ? (
-            <img
-              onClick={() => {
-                setBillable(false);
-              }}
-              className="inline"
-              src={checkedIcon}
-              alt="checkbox"
-            />
-          ) : (
-            <img
-              onClick={() => {
-                if (projectBillable) setBillable(true);
-              }}
-              className="inline"
-              src={uncheckedIcon}
-              alt="checkbox"
-            />
-          )}
-          <h4>Billable</h4>
+        <div className="mt-4">
+          <div className="field">
+            <div className="mt-1">
+              <textarea
+                value={note}
+                onChange={e => setNote(e.target.value)}
+                rows={5}
+                cols={60}
+                name="notes"
+                placeholder="Notes"
+                className="form__input"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-1/4">
+        <div className="mt-0">
+          <div className="field">
+            <div className="mt-1 flex">
+              <div className="form__input bg-miru-gray-100 justify-center items-center">
+                {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${
+                  selectedDateInfo["month"]
+                }, ${selectedDateInfo["year"]}`}
+              </div>
+              <input
+                value={duration}
+                onChange={handleDurationChange}
+                type="text"
+                className="form__input ml-2"
+              />
+            </div>
+          </div>
+          <div className="field">
+            <div className="mt-1 flex">
+              <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+                <div className="items-center mt-2">
+                  <label
+                    htmlFor="billable-input"
+                    className="flex items-center cursor-pointer text-xl"
+                  >
+                    <input
+                      id="billable-input"
+                      type="checkbox"
+                      name="billable"
+                      className="form__input"
+                      checked={billable}
+                      disabled={!projectBillable}
+                      onChange={() => {
+                        if (projectBillable) setBillable(!billable)
+                      }}
+                    />
+                    <span className="text-sm ml-1">Billable</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div className="max-w-min">

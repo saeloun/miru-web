@@ -248,6 +248,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             {["day", "week", "month"].map(item => (
               <button
                 onClick={() => setView(item)}
+                key={item}
                 className={
                   item === view
                     ? "mr-10 tracking-widest font-bold text-miru-han-purple-1000 border-b-2 border-miru-han-purple-1000"
