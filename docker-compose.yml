@@ -12,6 +12,10 @@ services:
 
   redis:
     image: redis:6.2.7
+    command: redis-server
+    restart: always
+    ports:
+      - '6379:6379'
 
   app:
     build:
