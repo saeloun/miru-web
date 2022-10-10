@@ -15,6 +15,10 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
     if is_valid_event?
       InvoicePayment::AddPayment.process(payment_params, invoice)
     end
+    rescue StandardError => error
+      Rails.logger.error error.message
+      Rails.logger.error error.backtrace.join("\n")
+      nil
   end
 
   private
