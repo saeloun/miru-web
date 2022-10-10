@@ -16,8 +16,14 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
             .order(created_at: :desc),
       items_param: :invoices_per_page)
 
+    recently_updated_invoices = current_company.invoices
+      .includes(:client)
+      .order("updated_at desc")
+      .limit(10)
+
     render :index, locals: {
       invoices:,
+      recently_updated_invoices:,
       pagy: pagy_metadata(pagy),
       summary: current_company.overdue_and_outstanding_and_draft_amount
     }
@@ -68,6 +74,12 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     )
 
     render json: { message: "Invoice will be sent!" }, status: :accepted
+  end
+
+  def download
+    authorize invoice
+
+    send_data InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo)
   end
 
   private
