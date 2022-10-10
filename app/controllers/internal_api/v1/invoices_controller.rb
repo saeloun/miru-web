@@ -117,6 +117,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     end
 
     def calc_overdue_and_outstanding_and_draft_amount(invoices)
+      # TODO: Need to write similar method to current_company.overdue_and_outstanding_and_draft_amount
       currency = current_company.base_currency
       sent_amount = 0
       viewed_amount = 0
