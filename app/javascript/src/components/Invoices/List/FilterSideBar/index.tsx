@@ -51,10 +51,10 @@ const FilterSideBar = ({
   }, [filters.dateRange.value, dateRange.from, dateRange.to]);
 
   const sortClients = ( a, b ) => {
-    if ( a.label < b.label ){
+    if ( a.label.toLowerCase() < b.label.toLowerCase() ){
       return -1;
     }
-    if ( a.label > b.label ){
+    if ( a.label.toLowerCase() > b.label.toLowerCase() ){
       return 1;
     }
     return 0;
