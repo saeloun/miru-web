@@ -20,7 +20,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.local
     command: bundle exec rails s -p 3000 -b 0.0.0.0
     ports:
       - "3000:3000"
@@ -43,7 +43,7 @@ services:
   webpack:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.local
     command: bin/webpack-dev-server
     ports:
       - "3035:3035"
@@ -58,7 +58,7 @@ services:
   sidekiq:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.local
     command: bundle exec sidekiq -C config/sidekiq.yml
     volumes:
       - .:/app
