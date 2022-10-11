@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 
-const Tooltip = (props) => {
+import classnames from "classnames";
+
+const Tooltip = ({
+  content,
+  placeBottom = false,
+  delay = 400,
+  ...restprops
+}) => {
   let timeout;
   const [active, setActive] = useState<boolean>(false);
 
   const showTip = () => {
     timeout = setTimeout(() => {
       setActive(true);
-    }, props.delay || 400);
+    }, delay );
   };
 
   const hideTip = () => {
@@ -17,14 +24,14 @@ const Tooltip = (props) => {
 
   return (
     <div
-      className="Tooltip__Wrapper"
+      className={classnames("block relative")}
       onMouseEnter={showTip}
       onMouseLeave={hideTip}
     >
-      {props.children}
+      {restprops.children}
       {active && (
-        <div className={`Tooltip__Tip ${props.placeBottom ? "bottom" : "top"}`}>
-          {props.content}
+        <div className={classnames(`before:h-0 before:w-0 before:absolute before:pointer-events-none before:border-4 before:mr-4 before:content-none before:left-1/2 absolute left-1/2 z-10 rounded-md p-2 text-miru-dark-purple-1000 bg-miru-gray-1000 text-sm leading-none whitespace-nowrap ${placeBottom ? "top-full mt-2" : "bottom-full mb-2"}`)}>
+          {content}
         </div>
       )}
     </div>

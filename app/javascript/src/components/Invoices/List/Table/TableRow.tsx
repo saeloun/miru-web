@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import dayjs from "dayjs";
-import { currencyFormat } from "helpers";
+import { currencyFormat, useDebounce } from "helpers";
 import {
   PaperPlaneTilt,
   Pen,
@@ -9,7 +9,7 @@ import {
   DownloadSimple
 } from "phosphor-react";
 import { Link } from "react-router-dom";
-import { CustomAvatar, Tooltip } from "StyledComponents";
+import { Avatar, Tooltip, Badge } from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
 import getStatusCssClass from "utils/getStatusTag";
@@ -27,6 +27,7 @@ const TableRow = ({
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  useDebounce(isMenuOpen,500);
 
   const handleCheckboxChange = () => {
     if (isSelected) {
@@ -56,7 +57,7 @@ const TableRow = ({
       </td>
 
       <td className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap">
-        <CustomAvatar />
+        <Avatar />
         <div className="md:ml-10 ml-2">
           <Link
             className="md:font-semibold font-normal md:text-base text-xs capitalize text-miru-dark-purple-1000"
@@ -122,15 +123,17 @@ const TableRow = ({
         </div>
         {isMenuOpen && (
           <MoreOptions
+            isMenuOpen={isMenuOpen}
             setIsMenuOpen={setIsMenuOpen}
             setShowDeleteDialog={setShowDeleteDialog}
             setInvoiceToDelete={setInvoiceToDelete}
             invoice={invoice}
           />
         )}
-        <span className={getStatusCssClass(invoice.status) + " uppercase"}>
-          {invoice.status}
-        </span>
+        <Badge
+          text={invoice.status}
+          className={getStatusCssClass(invoice.status) + " uppercase"}
+        />
       </td>
       {isSending && (
         <SendInvoice invoice={invoice} setIsSending={setIsSending} isSending />

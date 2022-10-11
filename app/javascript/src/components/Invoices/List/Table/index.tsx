@@ -32,7 +32,10 @@ const Table = ({
             isSelected={selectedInvoices.includes(invoice.id)}
             invoice={invoice}
             selectInvoices={selectInvoices}
-            deselectInvoices={deselectInvoices} setShowDeleteDialog={setShowDeleteDialog} setInvoiceToDelete={setInvoiceToDelete} />
+            deselectInvoices={deselectInvoices}
+            setShowDeleteDialog={setShowDeleteDialog}
+            setInvoiceToDelete={setInvoiceToDelete}
+          />
         ))}
       </tbody>
     </table>

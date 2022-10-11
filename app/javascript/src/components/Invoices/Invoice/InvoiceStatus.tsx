@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Badge } from "StyledComponents";
+
 import getStatusCssClass from "utils/getStatusTag";
 
 const InvoiceStatus = ({ invoice }) => (
@@ -8,9 +10,10 @@ const InvoiceStatus = ({ invoice }) => (
       <p className="text-4xl font-bold">Invoice #{invoice.invoiceNumber}</p>
     </div>
     <div className="flex self-center ml-2">
-      <span className={`${getStatusCssClass(invoice.status)} uppercase`}>
-        {invoice.status}
-      </span>
+      <Badge
+        text={invoice.status}
+        className={getStatusCssClass(invoice.status) + " uppercase"}
+      />
     </div>
   </div>
 );

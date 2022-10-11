@@ -9,7 +9,7 @@ const CustomCheckbox = ({
   id,
   handleCheck
 }) => (
-  <div className="">
+  <div className="flex items-center">
     <input
       type="checkbox"
       id={id}
