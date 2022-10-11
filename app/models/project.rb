@@ -40,7 +40,7 @@ class Project < ApplicationRecord
 
   # Callbacks
   after_discard :discard_project_members
-  delegate :name, to: :client, prefix: :client, allow_nil: true
+  delegate :name, to: :client, prefix: true, allow_nil: true
 
   searchkick text_middle: [:name, :client_name]
 
