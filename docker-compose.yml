@@ -16,6 +16,8 @@ services:
     restart: always
     ports:
       - '6379:6379'
+    volumes:
+      - redis:/data
 
   app:
     build:
@@ -85,3 +87,4 @@ volumes:
   gem_cache:
   postgres:
   node_modules:
+  redis:
