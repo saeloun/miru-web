@@ -373,7 +373,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             <WeeklyEntries
               key={0}
               entries={[]}
-              clients={[]}
               projects={projects}
               newRowView={newRowView}
               entryList={entryList}
@@ -429,7 +428,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 key={weekCounter + 1}
                 {...entry}
                 setEntryList={setEntryList}
-                clients={[]}
                 projects={projects}
                 newRowView={newRowView}
                 entryList={entryList}

@@ -9,7 +9,6 @@ import WeeklyEntriesCard from "./WeeklyEntriesCard";
 const { useState, useEffect } = React;
 
 const WeeklyEntries: React.FC<Props> = ({
-  clients,
   projects,
   newRowView,
   setNewRowView,
@@ -34,7 +33,7 @@ const WeeklyEntries: React.FC<Props> = ({
   const [currentProjectId, setCurrentProjectId] = useState(-1);
 
   const setProjectId = () => {
-    const pid = projects[client].find(p => p.name === project).id;
+    const pid = projects.find(p => p.name === project).id;
     setCurrentProjectId(pid);
     return pid;
   };
@@ -119,8 +118,6 @@ const WeeklyEntries: React.FC<Props> = ({
 
     />
     : <SelectProject
-      clients={clients}
-      client={client}
       setClient={setClient}
       clientName={clientName}
       projects={projects}
@@ -141,9 +138,8 @@ const WeeklyEntries: React.FC<Props> = ({
 
 interface Props {
   key: number;
-  clients: [];
   selectedEmployeeId: number;
-  projects: object;
+  projects: any[];
   newRowView: boolean;
   setNewRowView: React.Dispatch<React.SetStateAction<boolean>>;
   projectId: number;

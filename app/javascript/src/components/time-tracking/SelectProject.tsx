@@ -1,14 +1,13 @@
 import * as React from "react";
 
 const SelectProject: React.FC<Iprops> = ({
-  clients,
-  client,
   setClient,
   clientName,
   projects,
   project,
   setProject,
   projectName,
+  projectId,
   setProjectId,
   setProjectSelected,
   newRowView,
@@ -29,22 +28,17 @@ const SelectProject: React.FC<Iprops> = ({
   };
 
   const handleSaveButton = () => {
-    if (client && project) {
+    if (project) {
       setProjectSelected(true);
       setProjectId();
       if (!newRowView) handleEditEntries();
     }
   };
 
-  const handleClientChange = (e) => {
-    setClient(e.target.value);
-    setProject(projects[e.target.value][0]["name"]);
-  };
-
   return (
     <div className="flex justify-between p-4 rounded-md shadow-2xl content-center">
       {/* Clients */}
-      <select
+      {/* <select
         onChange={handleClientChange}
         value={client || "Client"}
         name="client"
@@ -59,29 +53,26 @@ const SelectProject: React.FC<Iprops> = ({
         {clients.map((c, i) => (
           <option key={i.toString()}>{c["name"]}</option>
         ))}
-      </select>
+      </select> */}
       {/* Projects */}
       <select
         onChange={e => {
-          setProject(e.target.value);
+          setProject(projects.find((i) => parseInt(e.target.value) === i.id).name);
           setProjectId();
         }}
-        value={project}
+        value={projectId}
         name="project"
         id="project"
         className="w-80 bg-miru-gray-100 rounded-sm h-8"
       >
-        {!project && (
-          <option disabled selected className="text-miru-gray-100">
-            Project
+        <option value={null} key={"none"} className="text-miru-gray-100">
+          Select Project
+        </option>
+        {projects.map((project) => (
+          <option value={project.id} key={project.id}>
+            {project.name} ({project.clientName})
           </option>
-        )}
-        {client && projects[client] &&
-          projects[client].map((p, i) => (
-            <option data-project-id={p.id} key={i.toString()}>
-              {p.name}
-            </option>
-          ))}
+        ))}
       </select>
       <button
         onClick={handleCancelButton}
@@ -93,7 +84,7 @@ const SelectProject: React.FC<Iprops> = ({
         onClick={handleSaveButton}
         className={
           "h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-          (client && project
+          (project
             ? "bg-miru-han-purple-1000 hover:border-transparent"
             : "bg-miru-gray-1000")
         }
@@ -105,11 +96,9 @@ const SelectProject: React.FC<Iprops> = ({
 };
 
 interface Iprops {
-  clients: [];
-  client: string;
   setClient: (client: string) => void;
   clientName: string;
-  projects: object;
+  projects: any[];
   project: string;
   setProject: (project: string) => void;
   projectName: string;
