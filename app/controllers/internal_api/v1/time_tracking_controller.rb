@@ -10,9 +10,8 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
     user_id = current_user.id
     employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
 
-    clients = current_company.clients.order(name: :asc).includes(:projects)
-    projects = {}
-    clients.map { |client| projects[client.name] = client.projects }
+    clients = get_clients(is_admin)
+    projects = get_projects(is_admin, clients)
 
     timesheet_entries = current_user
       .timesheet_entries
@@ -25,4 +24,28 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
     entries = formatted_entries_by_date(timesheet_entries)
     render json: { clients:, projects:, entries:, employees: }, status: :ok
   end
+
+  private
+
+    def get_clients(is_admin)
+      if is_admin
+        current_company.clients.order(name: :asc).includes(:projects)
+      else
+        current_user.clients
+          .where(company_id: current_company.id)
+          .order(name: :asc)
+          .includes(:projects).distinct
+      end
+    end
+
+    def get_projects(is_admin, clients)
+      projects = {}
+      if is_admin
+        clients.map { |client| projects[client.name] = client.projects }
+      else
+        employee_projects = current_user.projects
+        clients.map { |client| projects[client.name] = client.projects & employee_projects }
+      end
+      projects
+    end
 end
