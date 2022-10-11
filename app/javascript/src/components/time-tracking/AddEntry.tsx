@@ -22,8 +22,8 @@ const AddEntry: React.FC<Iprops> = ({
   projects,
   entryList,
   selectedFullDate,
-  setEditEntryId,
   editEntryId,
+  setEditEntryId,
   handleFilterEntry,
   handleRelocateEntry
 }) => {
