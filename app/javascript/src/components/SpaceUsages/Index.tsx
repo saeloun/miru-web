@@ -141,10 +141,10 @@ const SpaceUsages = ( { _isAdminUser, _companyRole, user, _company } ) => {
 
   useEffect(() => {
     const spaces = spaceCodes.reduce((out, i) => {
-      out[i.id] = []; return out
+      out[i.id + '/' + i.name] = []; return out
     }, {});
     if (selectedSpaceId && selectedStartTime && editEntryId === 0) {
-      spaces[selectedSpaceId] = [{
+      spaces[selectedSpaceId + '/' + spaceCodes.find((i) => i.id == selectedSpaceId).name] = [{
         id: 0,
         user_id: user.id,
         start_duration: selectedStartTime,
@@ -268,10 +268,10 @@ const SpaceUsages = ( { _isAdminUser, _companyRole, user, _company } ) => {
     let spaces = {}
     if (entryList && entryList[selectedFullDate]){
       const thisGroupEntries = _.groupBy(entryList[selectedFullDate], "space_code")
-      spaceCodes.map((i) => spaces[i.id] = thisGroupEntries[i.id] || [])
+      spaceCodes.map((i) => spaces[i.id + '/' + i.name] = thisGroupEntries[i.id] || [])
     } else {
       spaces = spaceCodes.reduce((out, i) => {
-        out[i.id] = []; return out
+        out[i.id + '/' + i.name] = []; return out
       }, {});
     }
     setGroupingEntryList(spaces)
@@ -370,7 +370,7 @@ const SpaceUsages = ( { _isAdminUser, _companyRole, user, _company } ) => {
             {Object.entries(groupingEntryList).length > 0 ?
               <div className="ac-calendar-clone">
                 {
-                  Object.entries(groupingEntryList).map(([_spaceCode, value], listIndex) => (<EntryCardDayView
+                  Object.entries(groupingEntryList).map(([spaceCode, value], listIndex) => (<EntryCardDayView
                     key={listIndex}
                     spaceUsages={value}
                     setEditEntryId={setEditEntryId}
@@ -378,7 +378,7 @@ const SpaceUsages = ( { _isAdminUser, _companyRole, user, _company } ) => {
                     editEntryId={editEntryId}
                     setNewEntryView={setNewEntryView}
                     setSelectedSpaceId={setSelectedSpaceId}
-                    spaceCode={listIndex}
+                    spaceCode={spaceCode}
                     setNewEntryId={setNewEntryId}
                     newEntryId={newEntryId}
                     setSelectedTime={setSelectedTime}

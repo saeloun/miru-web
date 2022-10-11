@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 
 const EntryCardDayView = ({
@@ -26,7 +27,7 @@ const EntryCardDayView = ({
     <div className="ac-clone-col" onClick={(event: React.MouseEvent<HTMLElement>): void => {
       if (!isPastDate && !editEntryId) {
         setNewEntryView(true)
-        setSelectedSpaceId(spaceCode + 1)
+        setSelectedSpaceId(spaceCode.split('/')[0])
         const minutes = event.clientY - event.currentTarget.getBoundingClientRect().top
         const timeHHMM = (minutes / 60) + ":" + (minutes % 60)
         const selectedTime = minutesToHHMM(minutesFromHHMM(timeHHMM) - (minutesFromHHMM(timeHHMM) % 15))

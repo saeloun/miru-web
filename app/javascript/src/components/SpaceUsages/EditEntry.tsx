@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
-import spaceUsagesApi from "apis/space-usages";
-import autosize from "autosize";
 
+import autosize from "autosize";
+import { Multiselect } from 'multiselect-react-dropdown';
+
+import spaceUsagesApi from "apis/space-usages";
 import ConfirmDialog from "common/Modal/ConfirmDialog";
 import Toastr from "common/Toastr";
 import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 import { getNumberWithOrdinal } from "helpers/ordinal";
 import validateTimesheetEntry from "helpers/validateTimesheetEntry";
-import { Multiselect } from 'multiselect-react-dropdown';
 
 // const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 // const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
@@ -422,7 +423,7 @@ interface Iprops {
   handleDeleteEntry: (id: number) => void;
   editEntryColor: string;
   setSelectedSpaceId: React.Dispatch<React.SetStateAction<number>>;
-  selectedSpaceId?: 1 | 2 | 3;
+  selectedSpaceId?: number;
   setNewEntryId: React.Dispatch<React.SetStateAction<number>>;
   setSelectedTime: React.Dispatch<React.SetStateAction<string>>;
   selectedTime?: string;
