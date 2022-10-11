@@ -34,7 +34,7 @@ const GenerateInvoices = () => {
   const [selectedOption, setSelectedOption] = useState<any>([]);
   const [showSendInvoiceModal, setShowSendInvoiceModal] = useState<boolean>(false);
   const [invoiceId, setInvoiceId] = useState<number>(null);
-  const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(true);
+  const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(false);
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
 
   const fetchCompanyDetails = async () => {
