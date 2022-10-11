@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 
 import autosize from "autosize";
 import { format } from "date-fns";
@@ -37,7 +37,7 @@ const AddEntry: React.FC<Iprops> = ({
   const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
 
-  const datePickerRef: React.MutableRefObject<any>  = useRef();
+  const datePickerRef: MutableRefObject<any>  = useRef();
 
   useOutsideClick(datePickerRef, () => { setDisplayDatePicker(false); } );
 
