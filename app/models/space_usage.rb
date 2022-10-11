@@ -32,15 +32,13 @@ class SpaceUsage < ApplicationRecord
   CodeOptionKlass = Struct.new(:name, :id, :alias)
 
   SPACE_CODE_OPTIONS = [
+    CodeOptionKlass.new("Trinity/Left", 5, "TL"),
+    CodeOptionKlass.new("Trinity/Middle", 6, "TM"),
+    CodeOptionKlass.new("Trinity/Right", 7, "TR"),
+    # CodeOptionKlass.new("HR Cabin", 2, "HRC"),
+    # CodeOptionKlass.new("Sales Cabin", 3, "SC"),
     CodeOptionKlass.new("Conference Room", 1, "CR"),
-    CodeOptionKlass.new("HR Cabin", 2, "HRC"),
-    CodeOptionKlass.new("Sales Cabin", 3, "SC"),
-    # CodeOptionKlass.new("Coming Soon", -1, "SC1"),
-    # CodeOptionKlass.new("Coming Soon", -1, "SC2"),
-    # CodeOptionKlass.new("Coming Soon", -1, "SC3"),
-    # CodeOptionKlass.new("Coming Soon", -1, "SC4"),
-    # CodeOptionKlass.new("Coming Soon", -1, "SC5"),
-    # CodeOptionKlass.new("Coming Soon", -1, "SC6"),
+    CodeOptionKlass.new("Conference Room/Pro", 4, "CRP"),
   ]
 
   PURPOSE_CODE_OPTIONS = [
