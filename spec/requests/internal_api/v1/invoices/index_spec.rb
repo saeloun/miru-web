@@ -52,35 +52,12 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
       end
     end
 
-    describe "from param" do
-      it "returns invoices issued on or after from" do
-        from = Date.parse("2021-01-01")
-        send_request :get, internal_api_v1_invoices_path(from:)
-        expected_invoices = company.invoices.select { |inv| !inv.issue_date.before?(from) }
+    describe "from_to" do
+      invoices_per_page = 10
+      it "returns all invoices issued if nothing is provided" do
+        send_request :get, internal_api_v1_invoices_path(from_to: nil, invoices_per_page:)
         expect(response).to have_http_status(:ok)
-        expect(
-          json_response["invoices"].map { |invoice|
-            invoice["id"]
-          }).to match_array(
-            expected_invoices.map { |invoice|
-              invoice["id"]
-            })
-      end
-    end
-
-    describe "to param" do
-      it "returns invoices issued on or before to" do
-        to = Date.parse("2021-01-01")
-        send_request :get, internal_api_v1_invoices_path(to:)
-        expected_invoices = company.invoices.select { |inv| !inv.issue_date.after?(to) }
-        expect(response).to have_http_status(:ok)
-        expect(
-          json_response["invoices"].map { |invoice|
-            invoice["id"]
-          }).to match_array(
-            expected_invoices.map { |invoice|
-              invoice["id"]
-            })
+        expect(json_response["invoices"].size).to eq(10)
       end
     end
 
@@ -203,27 +180,14 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
       end
     end
 
-    describe "from param" do
-      it "returns invoices issued on or after from" do
+    describe "from_to with date_range" do
+      it "returns invoices with in the custom date range" do
         from = Date.parse("2021-01-01")
-        send_request :get, internal_api_v1_invoices_path(from:)
-        expected_invoices = company.invoices.select { |inv| !inv.issue_date.before?(from) }
-        expect(response).to have_http_status(:ok)
-        expect(
-          json_response["invoices"].map { |invoice|
-            invoice["id"]
-          }).to match_array(
-            expected_invoices.map { |invoice|
-              invoice["id"]
-            })
-      end
-    end
+        to = Time.now
+        from_to = { date_range: "custom", from:, to: }
+        send_request :get, internal_api_v1_invoices_path(from_to:)
+        expected_invoices = company.invoices.select { |inv| inv.issue_date.after?(from) && inv.issue_date.before?(to) }
 
-    describe "to param" do
-      it "returns invoices issued on or before to" do
-        to = Date.parse("2021-01-01")
-        send_request :get, internal_api_v1_invoices_path(to:)
-        expected_invoices = company.invoices.select { |inv| !inv.issue_date.after?(to) }
         expect(response).to have_http_status(:ok)
         expect(
           json_response["invoices"].map { |invoice|
