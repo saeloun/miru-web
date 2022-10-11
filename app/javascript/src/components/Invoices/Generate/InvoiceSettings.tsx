@@ -14,7 +14,7 @@ const amex = require("../../../../../assets/images/amex.svg");
 const applePay = require("../../../../../assets/images/applePay.svg");
 const masterCard = require("../../../../../assets/images/masterCard.svg");
 const paypal = require("../../../../../assets/images/PaypalLogo.svg");
-const paypalConnect = require("../../../../../assets/images/pConnectInvoice.svg");
+const paypalConnect = require("../../../../../assets/images/pConnectInvoice.svg"); //eslint-disable-line
 const stripeConnect = require("../../../../../assets/images/sConnectInvoice.svg");
 const stripeLogo = require("../../../../../assets/images/stripe_logo.svg");
 const visa = require("../../../../../assets/images/visa.svg");
@@ -34,7 +34,7 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
   const [isChecked, setIsChecked] = useState<boolean>(true);
   const [isStripeConnected, setStripeConnected] = useState<boolean>(null);
   const [isStripeEnabled, setStripeEnabled] = useState<boolean>(null);
-  const [isPaypalConnected, setPaypalConnected] = useState<boolean>(false);
+  const [isPaypalConnected, setPaypalConnected] = useState<boolean>(false); //eslint-disable-line
   const [accountLink, setAccountLink] = useState<string>(null);
   const [stripeAcceptedPaymentMethods, setStripeAcceptedPaymentMethods] = useState<Array<string>>(null);
   const [stripe, setStripeSettings] = useState<IProvider>(null);
@@ -180,7 +180,7 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
           </div>
         )}
 
-        {!isPaypalConnected && (
+        {/* {!isPaypalConnected && (
           <div className="p-4 mt-2  bg-miru-gray-100">
             <img src={paypal} width="64px" height="32px" className="mb-4" />
             <span className="font-normal text-sm text-miru-dark-purple-1000 leading-5">
@@ -192,7 +192,7 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
               onClick={() => setPaypalConnected(true)}
             />
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
