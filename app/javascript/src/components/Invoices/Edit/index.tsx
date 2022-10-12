@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import { useParams, useNavigate } from "react-router-dom";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import clientsApi from "apis/clients";
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -60,33 +59,12 @@ const EditInvoice = () => {
     }
   };
 
-  const fetchNewLineItems = async (navigate, id, setSelectedClient, setLineItems) => {
-    try {
-      const res = await clientsApi.newInvoiceLineItems(id);
-      const { address, phone, email, id: value, name: label } = res.data.client;
-
-      setSelectedClient({ address, email, label, phone, value });
-      setLineItems([]);
-    } catch (e) {
-      navigate("/invoices/error");
-      return {};
-    }
-  };
-
   useEffect(() => {
     sendGAPageView();
     setAuthHeaders();
     registerIntercepts();
     fetchInvoice();
   }, []);
-
-  useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
-    if (selectedClient.value != 0) {
-      fetchNewLineItems(navigate, selectedClient.value, setSelectedClient, setLineItems);
-    }
-  }, [selectedClient.value]);
 
   const updateInvoice = async () => {
     try {
