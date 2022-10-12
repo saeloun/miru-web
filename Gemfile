@@ -196,4 +196,5 @@ group :test do
 
   # Strategies for cleaning databases in Ruby.
   gem "database_cleaner", "~> 2.0"
+  gem "hash_dot"
 end
