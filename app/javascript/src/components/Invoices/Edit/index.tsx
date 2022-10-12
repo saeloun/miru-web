@@ -6,13 +6,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clientsApi from "apis/clients";
 import invoicesApi from "apis/invoices";
+import Toastr from "common/Toastr";
 import { sendGAPageView } from "utils/googleAnalytics";
-
-import Header from "./Header";
 
 import { unmapLineItems } from "../../../mapper/editInvoice.mapper";
 import CompanyInfo from "../common/CompanyInfo";
 import InvoiceDetails from "../common/InvoiceDetails";
+import Header from "../common/InvoiceForm/Header";
+import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import InvoiceTable from "../common/InvoiceTable";
 import InvoiceTotal from "../common/InvoiceTotal";
 import { generateInvoiceLineItems } from "../common/utils";
@@ -35,6 +36,7 @@ const EditInvoice = () => {
   const [tax, setTax] = useState<any>(0);
   const [issueDate, setIssueDate] = useState<any>();
   const [dueDate, setDueDate] = useState<any>();
+  const [showSendInvoiceModal, setShowSendInvoiceModal] = useState<boolean>(false);
 
   const fetchInvoice = async () => {
     try {
@@ -83,30 +85,60 @@ const EditInvoice = () => {
     }
   }, [selectedClient.value]);
 
-  const updateInvoice = () => {
-    invoicesApi.updateInvoice(invoiceDetails.id, {
-      invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
-      issue_date: dayjs(issueDate || invoiceDetails.issueDate).format("DD.MM.YYYY"),
-      due_date: dayjs(dueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
-      amount_due: amountDue,
-      amount_paid: amountPaid,
-      amount: amount,
-      discount: Number(discount),
-      tax: tax || invoiceDetails.tax,
-      client_id: selectedClient.value,
-      invoice_line_items_attributes: generateInvoiceLineItems(selectedLineItems, manualEntryArr)
-    })
-      .then(() => navigate(`/invoices/${invoiceDetails.id}`))
-      .catch();
+  const updateInvoice = async () => await invoicesApi.updateInvoice(invoiceDetails.id, {
+    invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
+    issue_date: dayjs(issueDate || invoiceDetails.issueDate).format("DD.MM.YYYY"),
+    due_date: dayjs(dueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
+    amount_due: amountDue,
+    amount_paid: amountPaid,
+    amount: amount,
+    discount: Number(discount),
+    tax: tax || invoiceDetails.tax,
+    client_id: selectedClient.value,
+    invoice_line_items_attributes: generateInvoiceLineItems(selectedLineItems, manualEntryArr)
+  });
+
+  const handleSaveInvoice = async () => {
+    if (selectedClient && invoiceNumber !== "") {
+      updateInvoice().then(() => navigate(`/invoices/${invoiceDetails.id}`));
+    } else {
+      selectedClient
+        ? Toastr.error("Please enter invoice number to proceed")
+        : Toastr.error("Please select client and enter invoice number to proceed");
+    }
+  };
+
+  const handleSendInvoice = () => {
+    if (selectedClient && invoiceNumber !== "") {
+      setShowSendInvoiceModal(true);
+    } else {
+      selectedClient
+        ? Toastr.error("Please enter invoice number to proceed")
+        : Toastr.error("Please select client and enter invoice number to proceed");
+    }
+  };
+
+  const handleSaveSendInvoice = async () => {
+    if (selectedClient && invoiceNumber !== "") {
+      const res = await updateInvoice();
+      return res;
+    } else {
+      selectedClient
+        ? Toastr.error("Please enter invoice number to proceed")
+        : Toastr.error("Please select client and enter invoice number to proceed");
+    }
   };
 
   if (invoiceDetails) {
     return (
       <React.Fragment>
         <Header
+          formType = "edit"
+          handleSaveInvoice={handleSaveInvoice}
+          handleSendInvoice={handleSendInvoice}
+          setShowInvoiceSetting={false}
           invoiceNumber={invoiceDetails.invoiceNumber}
           id={invoiceDetails.id}
-          updateInvoice={updateInvoice}
         />
         <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
           <CompanyInfo company={invoiceDetails.company} />
@@ -154,6 +186,19 @@ const EditInvoice = () => {
             manualEntryArr={manualEntryArr}
           />
         </div>
+        {showSendInvoiceModal &&
+          <SendInvoice  invoice={{
+            id: invoiceDetails.id,
+            client: selectedClient,
+            company: invoiceDetails?.company,
+            dueDate: dueDate,
+            invoiceNumber,
+            amount
+          }}
+          isSending={showSendInvoiceModal}
+          setIsSending={setShowSendInvoiceModal}
+          handleSaveSendInvoice={handleSaveSendInvoice}
+          />}
       </React.Fragment>
     );
   }
