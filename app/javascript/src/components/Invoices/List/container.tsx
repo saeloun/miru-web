@@ -24,7 +24,7 @@ const Container = ({
 
       <div className="my-20">
         <h1 className="mb-4 text-miru-dark-purple-1000 font-normal text-2xl">Recently updated</h1>
-        <div className="flex flex-row justify-between md:justify-start overflow-x-auto overflow-y-hidden">
+        <div className="grid grid-cols-10 gap-44 overflow-x-auto overflow-y-hidden">
           {
             recentlyUpdatedInvoices.length > 0 ?
               recentlyUpdatedInvoices.map((invoice, index) => <RecentlyUpdated invoice={invoice} index={index}/>)
