@@ -4,12 +4,13 @@ module InvoicePayment
   class AddPayment < ApplicationService
     attr_reader :payment_params
 
-    def initialize(payment_params)
+    def initialize(payment_params, invoice = nil)
       @payment_params = payment_params
+      @invoice = invoice
     end
 
     def process
-      invoice = Invoice.find(payment_params[:invoice_id])
+      invoice = @invoice || Invoice.find(payment_params[:invoice_id])
       payment = Payment.create!(payment_params.merge(status: payment_status(invoice)))
       update_invoice(invoice, payment)
       payment
