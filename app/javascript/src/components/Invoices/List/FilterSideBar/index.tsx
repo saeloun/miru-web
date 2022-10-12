@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 
 import dayjs from "dayjs";
-import { X } from "phosphor-react";
-import Select from "react-select";
+import { X, Funnel, Plus, Minus } from "phosphor-react";
+import Select from "react-select"; //eslint-disable-line
 
 import companiesApi from "apis/companies";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import getStatusCssClass from "utils/getStatusTag";
 
-import { dateRangeOptions, statusOptions } from "./filterOptions";
+import { dateRangeOptions, statusOptions } from "./filterOptions"; //eslint-disable-line
 
 const FilterSideBar = ({
   filterIntialValues,
@@ -19,12 +19,15 @@ const FilterSideBar = ({
   setSelectedInput
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [clientList, setClientList] = useState<null | any[]>([]);
+  const [clientList, setClientList] = useState<null | any[]>([]); //eslint-disable-line
   const [showCustomFilter, setShowCustomFilter] = useState<boolean>(false);
   const [dateRange, setDateRange] = useState<any>({ from: "", to: "" });
   const [customDate, setCustomDate] = useState<boolean>(false);
   const [filters, setFilters] = useState<any>(filterParams);
   const [diableDateBtn, setdisableDateBtn] = useState<boolean>(true);
+  const [isDateRangeOpen, setIsDateRangeOpen] = useState<boolean>(false);
+  const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
+  const [isStatusOpen, setIsStatusOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const { value, from, to } = filterParams.dateRange;
@@ -71,7 +74,7 @@ const FilterSideBar = ({
     }
   };
 
-  const handleSelectFilter = (selectedValue, field) => {
+  const handleSelectFilter = (selectedValue, field) => { //eslint-disable-line
     if (selectedValue.value === "custom"){
       setShowCustomFilter(true);
       setFilters({
@@ -148,7 +151,7 @@ const FilterSideBar = ({
     setFilterVisibilty(false);
   };
 
-  const customStyles = {
+  const customStyles = { //eslint-disable-line
     control: (provided) => ({
       ...provided,
       marginTop: "8px",
@@ -164,7 +167,7 @@ const FilterSideBar = ({
     })
   };
 
-  const CustomOption = (props) => {
+  const CustomOption = (props) => { //eslint-disable-line
     const { innerProps, innerRef } = props;
 
     return (
@@ -184,25 +187,28 @@ const FilterSideBar = ({
     <div className="sidebar__container flex flex-col">
       <div>
         <div className="flex px-5 pt-5 mb-7 justify-between items-center">
-          <h4 className="text-base font-bold">
-            Filter
+          <h4 className="text-base text-miru-dark-purple-1000 font-bold flex items-center">
+            <Funnel size={16} className="mr-2.5"/>Filters
           </h4>
-          <button onClick = {() => setFilterVisibilty(false)}>
-            <X size={12} />
+          <button className="text-miru-dark-purple-1000 font-bold" onClick = {() => setFilterVisibilty(false)}>
+            <X size={16} />
           </button>
         </div>
         <div className="sidebar__filters">
           <ul>
-            <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">DATE RANGE</h5>
-              <Select
+            <li className="px-5 pb-5 pt-6 border-b border-miru-gray-200 cursor-pointer">
+              <div className="flex justify-between items-center" onClick={()=>setIsDateRangeOpen(!isDateRangeOpen)}>
+                <h5 className="text-xs text-miru-darkpurple-1000 font-bold leading-4 tracking-wider">DATE RANGE</h5>
+                {isDateRangeOpen ? <Minus size={16}/> : <Plus size={16}/>}
+              </div>
+              {/* <Select
                 classNamePrefix="react-select-filter"
                 name="dateRange"
                 value={filters.dateRange}
                 options={dateRangeOptions}
                 onChange={handleSelectFilter}
                 styles={customStyles}
-              />
+              /> */}
               {showCustomFilter &&
                 <div className="mt-1 absolute flex flex-col bg-miru-white-1000 z-20 shadow-c1 rounded-lg">
                   <CustomDateRangePicker
@@ -225,9 +231,12 @@ const FilterSideBar = ({
                 </div>
               }
             </li>
-            <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">CLIENTS</h5>
-              <Select
+            <li className="px-5 pb-5 pt-6 border-b border-miru-gray-200 cursor-pointer">
+              <div className="flex justify-between items-center" onClick={()=>setIsClientOpen(!isClientOpen)}>
+                <h5 className="text-xs text-miru-dark-purple-1000 font-bold leading-4 tracking-wider">CLIENTS</h5>
+                {isClientOpen ? <Minus size={16}/> : <Plus size={16}/>}
+              </div>
+              {/* <Select
                 isMulti={true}
                 placeholder="All"
                 classNamePrefix="react-select-filter"
@@ -236,11 +245,14 @@ const FilterSideBar = ({
                 options={clientList}
                 onChange={handleSelectFilter}
                 styles={customStyles}
-              />
+              /> */}
             </li>
-            <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">STATUS</h5>
-              <Select
+            <li className="px-5 pb-5 pt-6 border-b border-miru-gray-200 cursor-pointer">
+              <div className="flex justify-between items-center" onClick={()=>setIsStatusOpen(!isStatusOpen)}>
+                <h5 className="text-xs text-miru-dark-purple-1000 font-bold leading-4 tracking-wider">STATUS</h5>
+                {isStatusOpen ? <Minus size={16}/> : <Plus size={16}/>}
+              </div>
+              {/* <Select
                 isMulti={true}
                 placeholder="All"
                 classNamePrefix="react-select-filter"
@@ -251,7 +263,7 @@ const FilterSideBar = ({
                 styles={customStyles}
                 components={{ Option: CustomOption }}
 
-              />
+              /> */}
             </li>
           </ul>
         </div>
