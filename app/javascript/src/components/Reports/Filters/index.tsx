@@ -13,7 +13,7 @@ import {
 } from "./filterOptions";
 import { customStyles } from "./style";
 
-import getStatusCssClass from "../../../utils/getStatusTag";
+import getStatusCssClass from "../../../utils/getBadgeStatus";
 import { useEntry } from "../context/EntryContext";
 
 const dateSchema = Yup.object().shape({

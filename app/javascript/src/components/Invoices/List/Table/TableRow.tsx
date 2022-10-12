@@ -9,10 +9,10 @@ import {
   DownloadSimple
 } from "phosphor-react";
 import { Link } from "react-router-dom";
-import { Avatar, Tooltip, Badge } from "StyledComponents";
+import { Avatar, Badge, Tooltip } from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
-import getStatusCssClass from "utils/getStatusTag";
+import getStatusCssClass from "utils/getBadgeStatus";
 
 import MoreOptions from "../MoreOptions";
 import SendInvoice from "../SendInvoice";

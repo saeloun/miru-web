@@ -4,56 +4,68 @@ import classnames from "classnames";
 
 const avatar = require("../../../assets/images/NavAvatar.svg"); //eslint-disable-line
 
-const Avatar = ({ url = "", name = "" }) => {
+type AvatarProps = {
+  url?: string;
+  name?: string;
+  classNameImg?: string;
+  classNameInitials?: string;
+  classNameInitialsWrapper?: string;
+};
+
+const Avatar = ({
+  url = "",
+  name = "",
+  classNameImg = "",
+  classNameInitials = "",
+  classNameInitialsWrapper = ""
+}: AvatarProps) => {
   const [initials, setInitials] = useState<string>(null);
+  const DEFAULT_STYLE_IMAGE = "inline-block md:h-10 md:w-10 h-5 w-5 rounded-full";
+  const DEFAULT_STYLE_INITIALS = "md:text-xl text-xs md:font-medium font-light leading-none text-white";
+  const DEFAULT_STYLE_INITIALS_WRAPPER = "inline-flex md:h-10 md:w-10 h-6 w-6 rounded-full items-center justify-center bg-gray-500";
 
   const getInitials = () => {
     if (name) {
-      const parts = name.split(" ");
-      let initials = "";
-      for (let i = 0; i < parts.length; i++) {
-        if (parts[i].length > 0 && parts[i] !== "") {
-          initials += parts[i][0];
-        }
-      }
-      const finalInitials =
-        initials.charAt(0) + initials.charAt(initials.length - 1);
-      setInitials(finalInitials);
+      const parts = name.match(/\b(\w)/g);
+      const initials = parts.join("").slice(0,2);
+      setInitials(initials.toUpperCase());
     }
   };
 
-  useEffect(() => getInitials(), [initials]);
+  useEffect(() => getInitials(), []);
 
-  return url ? (
-    <img
-      className={classnames(
-        "inline-block md:h-10 md:w-10 h-5 w-5 rounded-full"
-      )}
-      src={url}
-      alt="profile_pic"
-    />
-  ) : initials ? (
-    <div className="inline-block">
-      <span
-        className={classnames(
-          "inline-flex md:h-10 md:w-10 h-6 w-6 rounded-full items-center justify-center bg-gray-500"
-        )}
-      >
+  if (url) {
+    return (
+      <img
+        className={classnames(DEFAULT_STYLE_IMAGE, classNameImg)}
+        src={url}
+        alt="profile_pic"
+      />
+    );
+  }
+  if (initials) {
+    return (
+      <div className={classnames("inline-block")}>
         <span
           className={classnames(
-            "md:text-xl text-xs md:font-medium font-light leading-none text-white"
+            DEFAULT_STYLE_INITIALS_WRAPPER,
+            classNameInitialsWrapper
           )}
         >
-          {initials}
+          <span
+            className={classnames(DEFAULT_STYLE_INITIALS, classNameInitials)}
+          >
+            {initials}
+          </span>
         </span>
-      </span>
-    </div>
-  ) : (
+      </div>
+    );
+  }
+
+  return (
     <img
       src={avatar}
-      className={classnames(
-        "inline-block md:h-10 md:w-10 h-5 w-5 rounded-full"
-      )}
+      className={classnames(DEFAULT_STYLE_IMAGE, classNameImg)}
       alt="avatar"
     />
   );
