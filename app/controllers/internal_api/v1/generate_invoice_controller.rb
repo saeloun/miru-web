@@ -40,9 +40,14 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
       { project_id: project }
     end
 
+    def unbilled_status_filter
+      { bill_status: "unbilled" }
+    end
+
     def new_line_item_entries
       default_filter = project_filter.merge(unselected_time_entries_filter)
-      where_clause = default_filter.merge(TimeEntries::Filters.process(params))
+      bill_status_filter = default_filter.merge(unbilled_status_filter)
+      where_clause = bill_status_filter.merge(TimeEntries::Filters.process(params))
       search_result = TimesheetEntry.search(
         search_term,
         fields: [:note, :user_name],
