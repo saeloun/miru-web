@@ -5,6 +5,7 @@ import Select from "react-select";
 import * as Yup from "yup";
 
 import CustomDateRangePicker from "common/CustomDateRangePicker";
+import getStatusCssClass from "utils/getBadgeStatus";
 
 import {
   dateRangeOptions,
@@ -13,7 +14,6 @@ import {
 } from "./filterOptions";
 import { customStyles } from "./style";
 
-import getStatusCssClass from "../../../utils/getBadgeStatus";
 import { useEntry } from "../context/EntryContext";
 
 const dateSchema = Yup.object().shape({
