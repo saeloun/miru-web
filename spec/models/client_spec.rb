@@ -155,17 +155,6 @@ RSpec.describe Client, type: :model do
       end
     end
 
-    describe "#new_line_item_entries" do
-      let(:company) { create(:company) }
-      let(:user) { create(:user) }
-      let(:client) { create(:client, company:) }
-      let(:project) { create(:project, client:) }
-      let(:project_member) { create(:project_member, project:, user:, hourly_rate: 5000) }
-
-      before do
-        create_list(:timesheet_entry, 5, user:, project:)
-      end
-
     describe "#client_overdue_and_outstanding_calculation" do
       let(:company) { create(:company) }
       let(:user) { create(:user) }
