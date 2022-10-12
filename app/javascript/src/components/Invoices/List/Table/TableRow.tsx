@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 
 import dayjs from "dayjs";
-import { currencyFormat } from "helpers";
-import { PaperPlaneTilt, Pen, Trash } from "phosphor-react";
+import { currencyFormat, useDebounce } from "helpers";
+import {
+  PaperPlaneTilt,
+  Pen,
+  DotsThreeVertical,
+  DownloadSimple
+} from "phosphor-react";
 import { Link } from "react-router-dom";
+import { Avatar, Badge, Tooltip } from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
-import getStatusCssClass from "utils/getStatusTag";
+import getStatusCssClass from "utils/getBadgeStatus";
 
+import MoreOptions from "../MoreOptions";
 import SendInvoice from "../SendInvoice";
 
 const TableRow = ({
@@ -19,6 +26,8 @@ const TableRow = ({
   setInvoiceToDelete
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  useDebounce(isMenuOpen,500);
 
   const handleCheckboxChange = () => {
     if (isSelected) {
@@ -37,7 +46,7 @@ const TableRow = ({
     dayjs(date).format(invoice.company.dateFormat);
   return (
     <tr className="last:border-b-0 hover:bg-miru-gray-100 group">
-      <td className="px-6 py-5">
+      <td className="md:pl-6 md:pr-0 px-4 py-5">
         <CustomCheckbox
           text=""
           handleCheck={handleCheckboxChange}
@@ -47,19 +56,22 @@ const TableRow = ({
         />
       </td>
 
-      <td className="w-2/4 md:px-6 px-2 py-5 font-medium tracking-wider">
-        <Link
-          className="md:font-semibold font-normal capitalize text-miru-dark-purple-1000"
-          to={`/invoices/${invoice.id}`}
-        >
-          {invoice.client.name}
-        </Link>
-        <h3 className="text-sm font-normal text-miru-dark-purple-400">
-          {invoice.invoiceNumber}
-        </h3>
+      <td className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap">
+        <Avatar />
+        <div className="md:ml-10 ml-2">
+          <Link
+            className="md:font-semibold font-normal md:text-base text-xs capitalize text-miru-dark-purple-1000"
+            to={`/invoices/${invoice.id}`}
+          >
+            {invoice.client.name}
+          </Link>
+          <h3 className="md:text-sm text-xs font-normal text-miru-dark-purple-400">
+            {invoice.invoiceNumber}
+          </h3>
+        </div>
       </td>
 
-      <td className="md:w-1/4 md:px-6 px-2 py-5 font-medium tracking-wider">
+      <td className="w-1/4 md:px-6 px-4 py-5 font-medium tracking-wider whitespace-nowrap">
         <h1 className="md:font-semibold md:text-base text-xs font-normal text-miru-dark-purple-1000">
           {formattedDate(invoice.issueDate)}
         </h1>
@@ -68,54 +80,61 @@ const TableRow = ({
         </h3>
       </td>
 
-      <td className="px-6 py-5 md:text-xl text-sm font-bold tracking-wider text-miru-dark-purple-1000">
+      <td className="md:w-1/4 px-6 pt-2 pb-7 md:text-xl text-sm font-bold tracking-wider text-miru-dark-purple-1000 text-right">
         {formattedAmount}
       </td>
 
-      <td className="px-6 py-5 font-medium">
-        <span className={getStatusCssClass(invoice.status) + " uppercase"}>
-          {invoice.status}
-        </span>
-      </td>
-
-      <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
-        <div className="flex items-center h-full">
-          <button
-            className="hidden group-hover:block text-miru-han-purple-1000"
-            onClick={() => setIsSending(!isSending)}
-          >
-            <PaperPlaneTilt size={16} />
-          </button>
-        </div>
-      </td>
-
-      <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
-        <div className="flex items-center h-full">
-          <Link
-            to={`/invoices/${invoice.id}/edit`}
-            type="button"
-            data-cy="edit-invoice"
-            className="hidden group-hover:block text-miru-han-purple-1000"
-          >
-            <Pen size={16} />
-          </Link>
-        </div>
-      </td>
-
-      <td className="px-2 py-4 text-sm font-medium text-right whitespace-nowrap">
-        {(invoice.status == "draft" || invoice.status == "declined") && (
-          <div className="flex items-center h-full">
-            <button className="hidden group-hover:block text-miru-han-purple-1000"
-              onClick={() => {
-                setShowDeleteDialog(true);
-                setInvoiceToDelete(invoice.id);
-              }}>
-              <Trash size={16} />
+      <td
+        onMouseLeave={() => setIsMenuOpen(false)}
+        className="font-medium pb-10 px-6 relative text-right"
+      >
+        <div className="hidden group-hover:flex p-3 w-40 bottom-16 left-24 absolute bg-white border-miru-gray-200 flex items-center justify-between rounded-xl border-2">
+          <Tooltip content="Send To">
+            <button
+              className="text-miru-han-purple-1000"
+              onClick={() => setIsSending(!isSending)}
+            >
+              <PaperPlaneTilt size={16} />
             </button>
-          </div>
+          </Tooltip>
+          <Tooltip content="Download">
+            <button className="text-miru-han-purple-1000">
+              <DownloadSimple size={16} />
+            </button>
+          </Tooltip>
+          <Tooltip content="Edit">
+            <Link
+              to={`/invoices/${invoice.id}/edit`}
+              type="button"
+              data-cy="edit-invoice"
+              className="text-miru-han-purple-1000"
+            >
+              <Pen size={16} />
+            </Link>
+          </Tooltip>
+          <Tooltip content="More">
+            <button
+              className="text-miru-han-purple-1000"
+              onClick={() => setIsMenuOpen(true)}
+            >
+              <DotsThreeVertical size={16} />
+            </button>
+          </Tooltip>
+        </div>
+        {isMenuOpen && (
+          <MoreOptions
+            isMenuOpen={isMenuOpen}
+            setIsMenuOpen={setIsMenuOpen}
+            setShowDeleteDialog={setShowDeleteDialog}
+            setInvoiceToDelete={setInvoiceToDelete}
+            invoice={invoice}
+          />
         )}
+        <Badge
+          text={invoice.status}
+          className={getStatusCssClass(invoice.status) + " uppercase"}
+        />
       </td>
-
       {isSending && (
         <SendInvoice invoice={invoice} setIsSending={setIsSending} isSending />
       )}
