@@ -2,7 +2,7 @@ import React from "react";
 
 import { Badge } from "StyledComponents";
 
-import getStatusCssClass from "utils/getStatusTag";
+import getStatusCssClass from "utils/getBadgeStatus";
 
 const InvoiceStatus = ({ invoice }) => (
   <div className="flex flex-row">
@@ -12,7 +12,7 @@ const InvoiceStatus = ({ invoice }) => (
     <div className="flex self-center ml-2">
       <Badge
         text={invoice.status}
-        className={getStatusCssClass(invoice.status) + " uppercase"}
+        className={`${getStatusCssClass(invoice.status)} uppercase`}
       />
     </div>
   </div>

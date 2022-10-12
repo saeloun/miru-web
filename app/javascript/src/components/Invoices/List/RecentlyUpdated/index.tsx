@@ -2,7 +2,7 @@ import React from "react";
 
 import { Avatar, Badge } from "StyledComponents";
 
-import getStatusCssClass from "utils/getStatusTag";
+import getStatusCssClass from "utils/getBadgeStatus";
 
 const RecentlyUpdated = ({ invoice, index }) => (
   <div key={index} className="p-4 mx-2 w-40 h-52 border-miru-gray-200 border-2 rounded-xl text-center">
@@ -17,7 +17,7 @@ const RecentlyUpdated = ({ invoice, index }) => (
     <h1 className="mt-2.5 mb-1 md:text-xl text-base font-bold tracking-wider text-miru-dark-purple-1000"> {invoice.amount} </h1>
     <Badge
       text={invoice.status}
-      className={getStatusCssClass(invoice.status) + " uppercase mt-2"}
+      className={`${getStatusCssClass(invoice.status)} uppercase mt-2`}
     />
   </div>
 );
