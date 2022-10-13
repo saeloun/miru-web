@@ -68,8 +68,7 @@ class Invoice < ApplicationRecord
   validates :invoice_number, uniqueness: true
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
-  scope :from_date, -> (from) { where("issue_date >= ?", from) if from.present? }
-  scope :to_date, -> (to) { where("issue_date <= ?", to) if to.present? }
+  scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
   scope :for_clients, -> (client_ids) { where(client_id: client_ids) if client_ids.present? }
   scope :search, -> (query) {
     where("invoice_number ILIKE :query OR clients.name ILIKE :query", query: "%#{query}%") if query.present?
@@ -91,7 +90,7 @@ class Invoice < ApplicationRecord
   end
 
   def create_checkout_session!(success_url:, cancel_url:)
-    InvoicePayment::Checkout.process(invoice: self, success_url:, cancel_url:)
+    InvoicePayment::Checkout.process(invoice: self, success_url:, cancel_url:, metadata: { invoice_id: self.id })
   end
 
   def unit_amount(base_currency)

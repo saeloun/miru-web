@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
 
-import getStatusCssClass from "utils/getStatusTag";
+import getStatusCssClass from "utils/getBadgeStatus";
 
 const formattedDate = (date, format) => dayjs(date).format(format);
 
