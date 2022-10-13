@@ -60,7 +60,8 @@ const FilterSideBar = ({
     if (selectedValue.value === "custom") {
       setShowCustomFilter(true);
     }
-    if (Array.isArray(selectedValue)) {
+
+    if (Array.isArray(selectedValue) && selectedValue.length > 0) {
       setFilters({
         ...filters,
         [field.name]: selectedValue
@@ -69,7 +70,7 @@ const FilterSideBar = ({
     else {
       setFilters({
         ...filters,
-        [field.name]: selectedValue
+        [field.name]: [{ label: (field.name === "clients" ? "All Clients" : "All"), value: "" }]
       });
     }
   };
