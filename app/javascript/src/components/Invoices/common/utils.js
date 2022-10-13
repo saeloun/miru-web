@@ -74,25 +74,27 @@ export const fetchNewLineItems = async (
 };
 
 export const fetchMultipleNewLineItems = async (
+  queryParams,
   selectedClient,
   lineItems,
   setLineItems,
   setTotalLineItems,
   pageNumber,
   setPageNumber,
-  selectedEntries = [],
+  // selectedEntries = [],
   allCheckboxSelected,
-  setSelectedLineItem
+  setSelectedLineItem,
+  setTeamMembers
 ) => {
   if (selectedClient) {
-    let selectedEntriesString = "";
-    selectedEntries.forEach((entry) => {
-      if (!entry._destroy){
-        selectedEntriesString += `&selected_entries[]=${entry.timesheet_entry_id}`;
-      }
-    });
+    // let selectedEntriesString = "";
+    // selectedEntries.forEach((entry) => {
+    //   if (!entry._destroy){
+    //     selectedEntriesString += `&selected_entries[]=${entry.timesheet_entry_id}`;
+    //   }
+    // });
 
-    const queryParams = `client_id=${selectedClient.value}&page=${pageNumber}${selectedEntriesString}`;
+    // const queryParams = `client_id=${selectedClient.value}&page=${pageNumber}${selectedEntriesString}`;
     const res = await generateInvoice.getLineItems(queryParams);
     setPageNumber(pageNumber + 1);
     const items = res.data.new_line_item_entries.map(item => ({
@@ -107,5 +109,6 @@ export const fetchMultipleNewLineItems = async (
     if (allCheckboxSelected) {
       setSelectedLineItem(sortedData);
     }
+    setTeamMembers(res.data.filter_options.team_members);
   }
 };
