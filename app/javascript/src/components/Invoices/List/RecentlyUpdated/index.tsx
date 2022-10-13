@@ -4,8 +4,8 @@ import { Avatar, Badge } from "StyledComponents";
 
 import getStatusCssClass from "utils/getBadgeStatus";
 
-const RecentlyUpdated = ({ invoice, index }) => (
-  <div key={index} className="p-4 mx-2 w-40 h-52 border-miru-gray-200 border-2 rounded-xl text-center">
+const RecentlyUpdated = ({ invoice }) => (
+  <div key={invoice.id} className="p-4 mx-2 w-40 h-52 border-miru-gray-200 border-2 rounded-xl text-center">
     <div className="flex justify-center whitespace-nowrap">
       <h3 className="text-xs font-normal text-miru-dark-purple-400 mr-0.5">{invoice.invoiceNumber}</h3>
       <h3 className="text-xs font-semibold text-miru-dark-purple-400">{invoice.dueDate}</h3>
