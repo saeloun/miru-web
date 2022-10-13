@@ -2,21 +2,28 @@ version: "3.9"
 services:
   database:
     image: postgres:13.8
+    restart: always
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
 
   redis:
     image: redis:6.2.7
+    command: redis-server
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis:/data
 
   app:
     build:
       context: .
-      dockerfile: Dockerfile
-    command: bundle exec rails s -b 0.0.0.0
+      dockerfile: Dockerfile.local
+    command: bundle exec rails s -p 3000 -b 0.0.0.0
     ports:
       - "3000:3000"
     volumes:
@@ -27,15 +34,18 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@database:5432/
       - REDIS_URL=redis://redis:6379/1
       - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - PIDFILE=/tmp/pids/server.pid
     depends_on:
       - database
       - redis
       - elasticsearch
+    tmpfs:
+      - /tmp/pids/
 
   webpack:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.local
     command: bin/webpack-dev-server
     ports:
       - "3035:3035"
@@ -50,8 +60,8 @@ services:
   sidekiq:
     build:
       context: .
-      dockerfile: Dockerfile
-    command: bundle exec sidekiq -e development
+      dockerfile: Dockerfile.local
+    command: bundle exec sidekiq -C config/sidekiq.yml
     volumes:
       - .:/app
       - gem_cache:/usr/local/bundle/gems
@@ -75,5 +85,6 @@ services:
 
 volumes:
   gem_cache:
-  db_data:
+  postgres:
   node_modules:
+  redis:
