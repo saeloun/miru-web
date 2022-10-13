@@ -6,7 +6,7 @@ import Select from "react-select";
 
 import companiesApi from "apis/companies";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
-import getStatusCssClass from "utils/getStatusTag";
+import getStatusCssClass from "utils/getBadgeStatus";
 
 import { dateRangeOptions, statusOptions } from "./filterOptions";
 
