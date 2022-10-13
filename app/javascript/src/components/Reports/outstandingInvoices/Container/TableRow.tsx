@@ -3,7 +3,7 @@ import React from "react";
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 
-import getStatusCssClass from "utils/getStatusTag";
+import getStatusCssClass from "utils/getBadgeStatus";
 
 import { OutstandingOverdueInvoice } from "../interface";
 

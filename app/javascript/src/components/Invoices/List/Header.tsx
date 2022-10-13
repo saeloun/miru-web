@@ -68,7 +68,7 @@ const Header = ({
   };
 
   return (
-    <div className="mt-6 mb-3 flex flex-col md:flex-row items-center justify-between h-40 md:h-auto">
+    <div className="mt-6 mb-3 flex flex-wrap flex-col md:flex-row items-center justify-between h-40 md:h-auto">
       <h2 className="header__title" data-cy ="header__invoices">Invoices</h2>
       {!isInvoiceSelected && (
         <React.Fragment>
