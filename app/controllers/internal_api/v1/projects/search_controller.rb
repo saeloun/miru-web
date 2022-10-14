@@ -18,7 +18,7 @@ class InternalApi::V1::Projects::SearchController < InternalApi::V1::Application
     end
 
     def client_list
-      @_client_list ||= Company.find(current_company.id).clients.pluck(:id).uniq
+      @_client_list ||= current_company.clients.pluck(:id).uniq
     end
 
     def searched_projects
