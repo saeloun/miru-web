@@ -41,8 +41,13 @@ class Client < ApplicationRecord
   validates :name, :email, presence: true
   validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
   after_discard :discard_projects
+  after_commit :reindex_projects
 
   default_scope { where(discarded_at: nil) }
+
+  def reindex_projects
+    Project.reindex
+  end
 
   def total_hours_logged(time_frame = "week")
     timesheet_entries.where(work_date: range_from_timeframe(time_frame)).sum(:duration)
