@@ -86,6 +86,41 @@ foreman start -f Procfile.dev
 Go to `/sent_emails` for accessing the emails(for `/sent_emails` route to work,
 add `EMAIL_DELIVERY_METHOD='letter_opener_web'` to `.env`)
 
+### To setup stripe payment app and webhooks locally
+Goto https://dashboard.stripe.com/apikeys and copy publishable key & secret key.
+<br/>
+Add them to .env file
+```
+STRIPE_PUBLISHABLE_KEY="<publishable key>"
+STRIPE_SECRET_KEY="<secret key>"
+```
+
+Goto https://dashboard.stripe.com/webhooks/create
+<br/>
+Copy `endpoint_secret` from right side, which is written under: "This is your Stripe CLI webhook secret for testing your endpoint locally" and add it to .env file
+```
+STRIPE_WEBHOOK_ENDPOINT_SECRET="<webhook secret>"
+```
+
+Need to setup stripe-cli in order to receive webhook events and forward them to miru server
+<br/>
+Follow [stripe documentation](https://stripe.com/docs/payments/checkout/fulfill-orders) or run following commands for stripe-cli setup:
+```
+brew install stripe/stripe-cli/stripe
+stripe login
+
+stripe status
+=> All services are online.
+```
+
+Start local stripe listener as follow:
+```
+ stripe listen --forward-to localhost:3000/webhooks/stripe/checkout/fulfillment
+```
+
+Goto http://localhost:3000/profile/edit/payment and connect the same stripe account(whose keys are used above in .env file)
+
+
 ### Tests & Coverage
 
 #### Tests
