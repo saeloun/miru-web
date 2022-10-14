@@ -9,6 +9,7 @@ const Container = ({
   summary,
   invoices,
   selectedInvoices,
+  recentlyUpdatedInvoices,
   selectInvoices,
   deselectInvoices,
   setShowDeleteDialog,
@@ -23,9 +24,12 @@ const Container = ({
 
       <div className="my-20">
         <h1 className="mb-4 text-miru-dark-purple-1000 font-normal text-2xl">Recently updated</h1>
-        <div className="flex justify-between md:justify-start overflow-x-auto overflow-y-hidden">
-          <RecentlyUpdated/>
-          <RecentlyUpdated/>
+        <div className="grid grid-cols-10 gap-44 overflow-x-auto overflow-y-hidden">
+          {
+            recentlyUpdatedInvoices.length > 0 ?
+              recentlyUpdatedInvoices.map(( invoice ) => <RecentlyUpdated invoice={invoice} />)
+              : <span className="text-xl font-medium text-miru-dark-purple-200 grid col-span-5">No Recently Updated invoices available.</span>
+          }
         </div>
       </div>
 
