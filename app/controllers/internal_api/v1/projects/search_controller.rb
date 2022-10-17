@@ -4,10 +4,9 @@ class InternalApi::V1::Projects::SearchController < InternalApi::V1::Application
   skip_after_action :verify_authorized, only: [:index]
 
   def index
-    projects = searched_projects
     render :index, locals: {
-      projects:,
-      total_projects: projects.total_count
+      searched_projects:,
+      total_searched_projects: searched_projects.total_count
     }, status: :ok
   end
 
@@ -22,7 +21,7 @@ class InternalApi::V1::Projects::SearchController < InternalApi::V1::Application
     end
 
     def searched_projects
-      search_result = Project.search(
+      @_searched_projects ||= Project.search(
         search_term,
         fields: [:client_name, :name],
         match: :text_middle,
