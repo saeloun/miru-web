@@ -2,8 +2,8 @@ import React, { useState } from "react";
 
 import { X, MagnifyingGlass } from "phosphor-react";
 
+import SearchTeamMembers from "./Filters/SearchTeamMembers";
 import FilterSelect from "./FilterSelect";
-import SearchTeamMembers from "./SearchTeamMembers";
 
 const Header = ({ setMultiLineItemModal, teamMembers, filterParams, setFilterParams }) => {
   const [filters, setFilters] = useState<any>(filterParams);
