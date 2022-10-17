@@ -38,6 +38,9 @@ const EditInvoice = () => {
   const [dueDate, setDueDate] = useState<any>();
   const [showSendInvoiceModal, setShowSendInvoiceModal] = useState<boolean>(false);
 
+  const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
+  const SELECT_CLIENT_ERROR = "Please select client and enter invoice number to proceed";
+
   const fetchInvoice = async () => {
     try {
       const res = await invoicesApi.editInvoice(params.id);
@@ -85,26 +88,34 @@ const EditInvoice = () => {
     }
   }, [selectedClient.value]);
 
-  const updateInvoice = async () => await invoicesApi.updateInvoice(invoiceDetails.id, {
-    invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
-    issue_date: dayjs(issueDate || invoiceDetails.issueDate).format("DD.MM.YYYY"),
-    due_date: dayjs(dueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
-    amount_due: amountDue,
-    amount_paid: amountPaid,
-    amount: amount,
-    discount: Number(discount),
-    tax: tax || invoiceDetails.tax,
-    client_id: selectedClient.value,
-    invoice_line_items_attributes: generateInvoiceLineItems(selectedLineItems, manualEntryArr)
-  });
+  const updateInvoice = async () => {
+    try {
+      const res = await invoicesApi.updateInvoice(invoiceDetails.id, {
+        invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
+        issue_date: dayjs(issueDate || invoiceDetails.issueDate).format("DD.MM.YYYY"),
+        due_date: dayjs(dueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
+        amount_due: amountDue,
+        amount_paid: amountPaid,
+        amount: amount,
+        discount: Number(discount),
+        tax: tax || invoiceDetails.tax,
+        client_id: selectedClient.value,
+        invoice_line_items_attributes: generateInvoiceLineItems(selectedLineItems, manualEntryArr)
+      });
+      return res;
+    } catch (e) {
+      navigate(`/invoices/${invoiceDetails.id}`);
+      return {};
+    }
+  };
 
-  const handleSaveInvoice = async () => {
+  const handleSaveInvoice = () => {
     if (selectedClient && invoiceNumber !== "") {
       updateInvoice().then(() => navigate(`/invoices/${invoiceDetails.id}`));
     } else {
       selectedClient
-        ? Toastr.error("Please enter invoice number to proceed")
-        : Toastr.error("Please select client and enter invoice number to proceed");
+        ? Toastr.error(INVOICE_NUMBER_ERROR)
+        : Toastr.error(SELECT_CLIENT_ERROR);
     }
   };
 
@@ -113,8 +124,8 @@ const EditInvoice = () => {
       setShowSendInvoiceModal(true);
     } else {
       selectedClient
-        ? Toastr.error("Please enter invoice number to proceed")
-        : Toastr.error("Please select client and enter invoice number to proceed");
+        ? Toastr.error(INVOICE_NUMBER_ERROR)
+        : Toastr.error(SELECT_CLIENT_ERROR);
     }
   };
 
@@ -124,8 +135,8 @@ const EditInvoice = () => {
       return res;
     } else {
       selectedClient
-        ? Toastr.error("Please enter invoice number to proceed")
-        : Toastr.error("Please select client and enter invoice number to proceed");
+        ? Toastr.error(INVOICE_NUMBER_ERROR)
+        : Toastr.error(SELECT_CLIENT_ERROR);
     }
   };
 
