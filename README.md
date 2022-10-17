@@ -3,7 +3,7 @@
   <h1 align="center"> Miru Documentation</h1>
 </p>
 
-This repository contains the Miru documentation website code and Markdown source files for [docs.getmiru.com](https://docs.getmiru.com)
+This repository contains the Miru documentation website code and Markdown source files for [docs.miru.so](https://docs.miru.so)
 
 ### Installation
 
