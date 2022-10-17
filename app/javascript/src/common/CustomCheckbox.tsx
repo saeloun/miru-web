@@ -3,17 +3,18 @@ import * as React from "react";
 import cn from "classnames";
 
 const CustomCheckbox = ({
-  text = "",
+  text = {},
   isChecked = false,
   checkboxValue,
   id,
-  handleCheck
+  handleCheck,
+  name
 }) => (
   <div className="flex items-center">
     <input
       type="checkbox"
       id={id}
-      name="A3-confirmation"
+      name={name}
       checked={isChecked}
       onChange={handleCheck}
       value={checkboxValue}

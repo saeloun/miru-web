@@ -151,6 +151,7 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
                         addPaymentMethod("card");
                       }
                     }}
+                    name="stripePaymentMethods"
                     isChecked={stripeAcceptedPaymentMethods.includes("card")}
                     checkboxValue={stripeAcceptedPaymentMethods.find(m => m === "card")}
                   />

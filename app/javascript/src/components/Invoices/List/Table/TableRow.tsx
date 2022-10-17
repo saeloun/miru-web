@@ -44,6 +44,7 @@ const TableRow = ({
           isChecked={isSelected}
           checkboxValue={isSelected}
           id={invoice.id}
+          name=""
         />
       </td>
 
