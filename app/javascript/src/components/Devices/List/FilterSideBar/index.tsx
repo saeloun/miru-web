@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import devices from "apis/devices";
-import engagementsItemsApi from 'apis/engagements-items';
+
 import { Multiselect } from 'multiselect-react-dropdown';
 import { X } from "phosphor-react";
+
+import devices from "apis/devices";
+import engagementsItemsApi from 'apis/engagements-items';
 
 const FilterSideBar = ({ setDeviceData, setFilterVisibilty, rememberFilter, setRememberFilter, setPagy, params, setParams }) => {
   const [departmentOptions, setDepartmentOptions] = useState<any>([{}]);
@@ -129,7 +131,6 @@ const FilterSideBar = ({ setDeviceData, setFilterVisibilty, rememberFilter, setR
               <h5 className="text-xs font-normal">Engagement</h5>
               <Multiselect
                 closeOnSelect={true}
-                avoidHighlightFirstOption={true}
                 ref={ref => setSelectEngagementRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -151,7 +152,6 @@ const FilterSideBar = ({ setDeviceData, setFilterVisibilty, rememberFilter, setR
               <h5 className="text-xs font-normal">Department</h5>
               <Multiselect
                 closeOnSelect={true}
-                avoidHighlightFirstOption={true}
                 ref={ref => setSelectDepartmentRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({

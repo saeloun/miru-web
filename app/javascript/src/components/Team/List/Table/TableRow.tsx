@@ -9,11 +9,12 @@ import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
 
 const TableRow = ({ item }) => {
-  const { isAdminUser } = useUserContext();
+  const { isAdminUser, user } = useUserContext();
   const { setModalState } = useList();
   const navigate = useNavigate();
 
-  const actionIconVisible = isAdminUser && item.role !== "owner";
+  const isAllowUser = isAdminUser || (item.status && !!user['team_lead'])
+  const actionIconVisible = isAllowUser && item.role !== "owner";
 
   const handleAction = (e,action) => {
     e.preventDefault();
@@ -40,7 +41,7 @@ const TableRow = ({ item }) => {
       <td className="table__data table__text text-center">
         { item.teamLead && <span style={{ fontSize: "150%", fontWeight: "bold", color: "green" }}>&#10004;</span>}
       </td>
-      {isAdminUser &&
+      {isAllowUser &&
         <Fragment>
           <td className="pr-6 py-6 text-right w-48">
             {

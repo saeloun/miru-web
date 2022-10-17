@@ -9,7 +9,7 @@ import EntryContext from "./context/EntryContext";
 import RouteConfig from "./RouteConfig";
 import SideNav from "./SubNav";
 
-const Layout = ( { isAdminUser, isTeamLead, user, company } ) => {
+const Layout = ( { isAdminUser, user, company } ) => {
   const [settingsStates, setSettingsStates] = useState({
     profileSettings: { firstName: user.first_name, lastName: user.last_name, email: user.email },
     organizationSettings: {},
@@ -34,13 +34,13 @@ const Layout = ( { isAdminUser, isTeamLead, user, company } ) => {
         <div className="flex mt-5 mb-10">
           <SideNav
             isAdmin={isAdminUser}
-            isTeamLead={isTeamLead}
+            isTeamLead={!!user.team_lead}
             company={company}
             firstName={settingsStates.profileSettings?.firstName}
             lastName={settingsStates.profileSettings?.lastName}
             email={settingsStates.profileSettings?.email}
           />
-          <RouteConfig isAdmin={isAdminUser} isTeamLead={isTeamLead} userDetails={company} />
+          <RouteConfig isAdmin={isAdminUser} isTeamLead={!!user.team_lead} userDetails={user} />
         </div>
         <ToastContainer autoClose={TOASTER_DURATION} />
       </EntryContext.Provider>

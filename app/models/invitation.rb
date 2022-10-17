@@ -11,10 +11,12 @@
 #  last_name       :string
 #  recipient_email :string           not null
 #  role            :integer          default("owner"), not null
+#  team_lead       :boolean
 #  token           :string           not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  company_id      :bigint           not null
+#  department_id   :integer
 #  sender_id       :bigint           not null
 #
 # Indexes
@@ -77,6 +79,12 @@ class Invitation < ApplicationRecord
       self.token = Devise.friendly_token
       break unless Invitation.exists?(token: self.token)
     end
+  end
+
+  def department_name
+    return "" if department_id.nil?
+
+    User::DEPARTMENT_OPTIONS.group_by(&:id).transform_values { |val| val.first.name }[department_id]
   end
 
   private

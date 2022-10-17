@@ -422,7 +422,6 @@ const Summary = ({
                         <label className="pb-2 text-sm font-bold text-gray-800 dark:text-gray-100">Tech Stacks</label>
                         <Multiselect
                           closeOnSelect={true}
-                          avoidHighlightFirstOption={true}
                           selectedValues={selectedTechStacks}
                           options={techStackList ? techStackList : [{}]}
                           name="tech_stack_ids"

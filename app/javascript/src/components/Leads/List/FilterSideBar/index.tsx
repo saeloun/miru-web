@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+
+import { Multiselect } from 'multiselect-react-dropdown';
+import { X } from "phosphor-react";
+
 import leadAllowedUsersApi from "apis/lead-allowed-users";
 import leadItemsApi from "apis/lead-items";
 import leads from "apis/leads";
-import { Multiselect } from 'multiselect-react-dropdown';
-import { X } from "phosphor-react";
+
 import { unmapLeadList } from "../../../../mapper/lead.mapper";
 
 const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRememberFilter }) => {
@@ -191,7 +194,6 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
               <h5 className="text-xs font-normal">ASSIGNEES</h5>
               <Multiselect
                 closeOnSelect={true}
-                avoidHighlightFirstOption={true}
                 ref={ref => setSelectAssigneeRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -213,7 +215,6 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
               <h5 className="text-xs font-normal">REPORTERS</h5>
               <Multiselect
                 closeOnSelect={true}
-                avoidHighlightFirstOption={true}
                 ref={ref => setSelectReporterRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -235,7 +236,6 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
               <h5 className="text-xs font-normal">QUALITIES</h5>
               <Multiselect
                 closeOnSelect={true}
-                avoidHighlightFirstOption={true}
                 ref={ref => setSelectQualityRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -257,7 +257,6 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
               <h5 className="text-xs font-normal">STATUS</h5>
               <Multiselect
                 closeOnSelect={true}
-                avoidHighlightFirstOption={true}
                 ref={ref => setSelectStatusRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -279,7 +278,6 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
               <h5 className="text-xs font-normal">SOURCES</h5>
               <Multiselect
                 closeOnSelect={true}
-                avoidHighlightFirstOption={true}
                 ref={ref => setSelectSourceRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -301,7 +299,6 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
               <h5 className="text-xs font-normal">COUNTRIES</h5>
               <Multiselect
                 closeOnSelect={true}
-                avoidHighlightFirstOption={true}
                 ref={ref => setSelectCountryRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -323,7 +320,6 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
               <h5 className="text-xs font-normal">INDUSTRIES</h5>
               <Multiselect
                 closeOnSelect={true}
-                avoidHighlightFirstOption={true}
                 ref={ref => setSelectIndustryRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({

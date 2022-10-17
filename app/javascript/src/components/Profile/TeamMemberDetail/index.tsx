@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 
+import { Multiselect } from 'multiselect-react-dropdown';
+
 import companyUsersApi from "apis/company-users";
 import teamMemberApi from "apis/profiles/team-members";
 import Loader from "common/Loader/index";
-import { Multiselect } from 'multiselect-react-dropdown';
 
 import Header from "../Header";
 
@@ -79,7 +80,6 @@ const TeamMemberDetails = ({ userId }) => {
           </div>
           <Multiselect
             closeOnSelect={true}
-            avoidHighlightFirstOption={true}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"
             selectedValues={selectedTeamMembers}
             options={allMemberList ? allMemberList : [{}]}

@@ -91,7 +91,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                   ? user.isTeamMember
                     ? "Edit User Details"
                     : "Edit Invitation"
-                  : "Create New User"}
+                  : "Create Invitation"}
               </h6>
               <button
                 type="button"

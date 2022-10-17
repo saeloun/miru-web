@@ -124,7 +124,6 @@ const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, 
               <h5 className="text-xs font-normal">Engagement</h5>
               <Multiselect
                 closeOnSelect={true}
-                avoidHighlightFirstOption={true}
                 ref={ref => setSelectEngagementRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({
@@ -146,7 +145,6 @@ const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, 
               <h5 className="text-xs font-normal">Department</h5>
               <Multiselect
                 closeOnSelect={true}
-                avoidHighlightFirstOption={true}
                 ref={ref => setSelectDepartmentRef(ref)}
                 onSelect={(selectedOptions) =>
                   setQueryParams(prevState => ({

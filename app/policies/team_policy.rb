@@ -2,7 +2,7 @@
 
 class TeamPolicy < ApplicationPolicy
   def index?
-    can_access?
+    can_access? || user_employee_role? # user_team_lead?
   end
 
   def edit?
@@ -18,7 +18,7 @@ class TeamPolicy < ApplicationPolicy
   end
 
   def can_access?
-    user_owner_role? || user_admin_role? || (user_employee_role? && user_under_hr_department?)
+    user_owner_role? || user_admin_role?
   end
 
   def permitted_attributes

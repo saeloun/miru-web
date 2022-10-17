@@ -4,16 +4,14 @@ json.key_format! camelize: :lower
 json.deep_format_keys!
 
 def team_member_status(member)
-  return unless current_user
-    .has_any_role?({ name: :owner, resource: current_company }, { name: :admin, resource: current_company }) &&
+  return unless Pundit.policy!(current_user, :team).edit? &&
     member.unconfirmed_email?
 
   I18n.t("team.reconfirmation")
 end
 
 def invited_user_status
-  return unless current_user
-    .has_any_role?({ name: :owner, resource: current_company }, { name: :admin, resource: current_company })
+  return unless Pundit.policy!(current_user, :invitation).edit?
 
   I18n.t("team.invitation")
 end
@@ -37,16 +35,22 @@ json.team teams do |company_user|
   end
 end
 
-json.invitation invitations do |member|
+json.invitation invitations do |invitation|
   json.profile_picture image_url "avatar.svg"
-  json.id member.id
-  json.name member.full_name
-  json.first_name member.first_name
-  json.last_name member.last_name
-  json.email member.recipient_email
-  json.role member.role
+  json.id invitation.id
+  json.name invitation.full_name
+  json.first_name invitation.first_name
+  json.last_name invitation.last_name
+  json.email invitation.recipient_email
+  json.role invitation.role
   json.status invited_user_status
-  json.team_lead false
+  json.team_lead invitation.team_lead?
+  if  invitation.department_id
+    json.department do |department|
+      json.id invitation.department_id
+      json.name invitation.department_name
+    end
+  end
 end
 
 json.departments departments

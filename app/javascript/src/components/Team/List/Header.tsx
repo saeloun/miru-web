@@ -11,8 +11,9 @@ import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
 
 const Header = () => {
-  const { isAdminUser } = useUserContext();
+  const { isAdminUser, user } = useUserContext();
   const { setModalState } = useList();
+  const isAllowUser = (isAdminUser || !!user['team_lead'])
 
   // const searchCallBack = async (searchString, setDropdownItems) => {
   //   try {
@@ -40,7 +41,7 @@ const Header = () => {
           </button>
         </div>
       </div> */}
-      {isAdminUser && (
+      {isAllowUser && (
         <div className="flex">
           <button
             type="button"
@@ -49,7 +50,7 @@ const Header = () => {
             onClick={() => setModalState(TeamModalType.ADD_EDIT)}
           >
             <Plus weight="fill" size={16} />
-            <span className="ml-2 inline-block">NEW USER</span>
+            <span className="ml-2 inline-block">NEW INVITATION</span>
           </button>
         </div>
       )}

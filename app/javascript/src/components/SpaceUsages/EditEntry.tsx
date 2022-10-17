@@ -284,7 +284,6 @@ const EditEntry: React.FC<Iprops> = ({
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Members Joining</label>
                 <Multiselect
                   closeOnSelect={true}
-                  avoidHighlightFirstOption={true}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"
                   selectedValues={selectedTeamMembers}
                   options={allMemberList ? allMemberList : [{}]}
