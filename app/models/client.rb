@@ -31,8 +31,6 @@ class Client < ApplicationRecord
   include Discard::Model
   include UtilityFunctions
 
-  default_scope -> { kept }
-
   has_many :projects
   has_many :timesheet_entries, through: :projects
   has_many :invoices, dependent: :destroy
