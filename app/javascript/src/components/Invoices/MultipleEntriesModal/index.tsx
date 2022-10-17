@@ -29,6 +29,7 @@ const MultipleEntriesModal = ({
   const [allCheckboxSelected, setAllCheckboxSelected] = useState<boolean>(false);
   const [teamMembers, setTeamMembers] = useState<any>([]);
   const [filterParams, setFilterParams] = useState(filterIntialValues);
+  const [selectedInput, setSelectedInput] = React.useState("from-input");
 
   const handleItemSelection = (id) => {
     const checkboxes = lineItems.map(item => {
@@ -129,6 +130,17 @@ const MultipleEntriesModal = ({
       filterQueryParams+= `&team_member[]=${member.value}`;
     });
 
+    const { value, from, to } = filterParams.dateRange;
+
+    if (value != "all" && value != "custom"){
+      filterQueryParams += `&date_range=${value}`;
+    }
+
+    if (value === "custom" && from && to) {
+      filterQueryParams += `&date_range=${value}`;
+      filterQueryParams += `&from=${from}`;
+      filterQueryParams += `&to=${to}`;
+    }
     return `${filterQueryParams}`;
   };
 
@@ -140,6 +152,8 @@ const MultipleEntriesModal = ({
           teamMembers={teamMembers}
           filterParams={filterParams}
           setFilterParams={setFilterParams}
+          selectedInput={selectedInput}
+          setSelectedInput={setSelectedInput}
         />
         <div className='mx-6'>
           {lineItems.length > 0 &&
