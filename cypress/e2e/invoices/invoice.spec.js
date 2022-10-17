@@ -41,7 +41,7 @@ describe("invoices index page", () => {
     cy.contains("Flipkart").click()
     cy.get(invoicesSelector.invoiceNumberField).click().type(invoice_number)
     cy.get(invoicesSelector.newLineItemButton).click()
-    cy.get(invoicesSelector.entriesList).first().click()
+    cy.get(invoicesSelector.entriesList).first().click({force: true})
     cy.get(invoicesSelector.sendInvoice).click({force: true})
     cy.get(invoicesSelector.sendEmail).click()
   })
@@ -52,7 +52,7 @@ describe("invoices index page", () => {
     cy.get(invoicesSelector.searchBar).clear().type(invoice_number).type('{enter}')
     cy.get(invoicesSelector.edit).click({force: true})
     cy.get(invoicesSelector.newLineItemButton).click()
-    cy.get(invoicesSelector.entriesList).first().click()
+    cy.get(invoicesSelector.entriesList).first().click({force: true})
     cy.get(invoicesSelector.saveInvoiceEdit).click()
   })
 
