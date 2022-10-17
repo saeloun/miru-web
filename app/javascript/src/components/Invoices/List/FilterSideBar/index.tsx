@@ -8,7 +8,7 @@ import companiesApi from "apis/companies";
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";
-import getStatusCssClass from "utils/getStatusTag";
+import getStatusCssClass from "utils/getBadgeStatus";
 
 import { dateRangeOptions, statusOptions } from "./filterOptions";
 
