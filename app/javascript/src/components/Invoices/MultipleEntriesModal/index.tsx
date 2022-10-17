@@ -18,8 +18,9 @@ const MultipleEntriesModal = ({
   setMultiLineItemModal
 }) => {
   const filterIntialValues = {
+    teamMembers: [],
     dateRange: { label: "All", value: "all", from: "", to: "" },
-    teamMembers: []
+    searchTerm: ""
   };
 
   const [lineItems, setLineItems] = useState<any>([]);
@@ -125,6 +126,8 @@ const MultipleEntriesModal = ({
         filterQueryParams += `&selected_entries[]=${entry.timesheet_entry_id}`;
       }
     });
+
+    filterQueryParams += `&search_term=${filterParams.searchTerm}`;
 
     filterParams.teamMembers.forEach((member) => {
       filterQueryParams+= `&team_member[]=${member.value}`;

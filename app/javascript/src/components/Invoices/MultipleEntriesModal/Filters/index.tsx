@@ -1,6 +1,7 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import dayjs from "dayjs";
+import { X, MagnifyingGlass } from "phosphor-react";
 import Select from "react-select";
 
 import CustomDateRangePicker from "common/CustomDateRangePicker";
@@ -136,7 +137,24 @@ const Filters = ({
   };
 
   return (
-    <Fragment>
+    <div className='flex justify-between items-center px-6 py-2'>
+      <div className="w-4/12 relative flex items-center">
+        <input
+          type="text"
+          value={filters.searchTerm}
+          placeholder="Search"
+          className="p-2 w-full bg-miru-gray-100 text-sm font-medium
+            rounded focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })}
+        />
+        {filters.searchTerm ?
+          <X size={16} color="#1D1A31" className="absolute right-3"
+            onClick={() => setFilters({ ...filters, searchTerm: "" })}
+          />
+          :
+          <MagnifyingGlass size={16} color="#CDD6DF" className="absolute right-3" />
+        }
+      </div>
       <SearchTeamMembers
         teamMembers={teamMembers}
         filters={filters}
@@ -174,7 +192,7 @@ const Filters = ({
         }
       </div>
       <button onClick={handleApply}>Apply</button>
-    </Fragment>
+    </div>
   );
 };
 
