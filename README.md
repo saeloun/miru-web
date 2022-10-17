@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Miru logo" src="https://getmiru.com/assets/images/image01.svg?v=097ef681" width="200px" />
+  <img alt="Miru logo" src="https://miru.so/static/media/miru-blue-logo-with-text.5ba2b3fe09b9f038473f0a131f8a8bec.svg" width="200px" />
   <h1 align="center"> Miru Documentation</h1>
 </p>
 
