@@ -31,7 +31,7 @@ const Header = ({ invoice, stripeUrl }) => (
               <Wallet size={16} color="white" weight="bold" />
             </div>
             <p className="font-bold tracking-widest text-base text-miru-white-1000 ml-1">
-                  PAY
+              PAY
             </p>
           </div>
         </button>
