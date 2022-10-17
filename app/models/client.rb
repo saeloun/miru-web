@@ -46,7 +46,7 @@ class Client < ApplicationRecord
   default_scope { where(discarded_at: nil) }
 
   def reindex_projects
-    Project.reindex
+    projects.reindex
   end
 
   def total_hours_logged(time_frame = "week")
