@@ -33,7 +33,7 @@ RSpec.describe ClientPolicy, type: :policy do
     end
   end
 
-  permissions :show?, :create? do
+  permissions :create?, :new_invoice_line_items? do
     it "grants permission to an admin and an owner" do
       expect(described_class).to permit(admin)
       expect(described_class).to permit(owner)
@@ -45,7 +45,7 @@ RSpec.describe ClientPolicy, type: :policy do
     end
   end
 
-  permissions :update?, :destroy? do
+  permissions :show?, :update?, :destroy? do
     context "when user is an admin or owner" do
       it "grants permission" do
         expect(described_class).to permit(admin, client)
