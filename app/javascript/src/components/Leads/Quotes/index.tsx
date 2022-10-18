@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+
 import { setAuthHeaders } from "apis/axios";
 import leadQuotes from "apis/lead-quotes";
-
 import Table from "common/Table";
 
 import DeleteQuote from "./../Modals/DeleteQuote";
 import EditQuote from "./../Modals/EditQuote";
 import NewQuote from "./../Modals/NewQuote";
 import Header from "./Header";
+
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapLeadQuoteList } from "../../../mapper/lead.quote.mapper";
 import getStatusCssClass from "../../../utils/getStatusTag";
@@ -85,7 +87,7 @@ const Quotes = ({ leadDetails }) => {
   const tableData = getTableData(leadData);
 
   const handleRowClick = (id) => {
-    navigate(`${id}`);
+    navigate(`/leads/${leadDetails.id}/quotes/${id}`);
   };
 
   return (

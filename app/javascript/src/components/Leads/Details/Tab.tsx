@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useCallback } from "react";
+
 import { useNavigate, useParams } from "react-router-dom";
+
 import LineItems from "./../LineItems";
 import Quotes from "./../Quotes";
 import Timelines from "./../Timelines";
 import Summary from "./Summary";
+
 import LineItemTable from "../../../components/Leads/QuoteDetails/LineItemTable";
 
 const Tab = ({
   leadDetails,
   setLeadDetails,
   forItem,
-  quoteId,
   setForItem,
   isEdit,
   setIsEdit,
@@ -25,7 +27,7 @@ const Tab = ({
   const [tabClassName, setTabClassName] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<any>(null);
   const navigate = useNavigate();
-  const { leadId } = useParams();
+  const { leadId, quoteId } = useParams();
 
   useEffect(() => {
     if (leadId) setActiveTabKey();

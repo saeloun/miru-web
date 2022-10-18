@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
+
 import { useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leads from "apis/leads";
+
 import Header from "./Header";
 import LeadSettings from "./LeadSettings";
 import Tab from "./Tab";
+
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapLeadDetails } from "../../../mapper/lead.mapper";
 
@@ -48,7 +52,6 @@ const LeadList = () => {
         leadDetails={leadDetails}
         setLeadDetails={setLeadDetails}
         forItem="leads"
-        quoteId={null}
         setForItem={setForItem}
         isEdit={isEdit}
         setIsEdit={setIsEdit}
