@@ -47,7 +47,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   end
 
   def show
-    authorize Invoice
+    authorize invoice
     render :show, locals: {
       invoice:
     }
