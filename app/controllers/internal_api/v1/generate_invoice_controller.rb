@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationController
+  before_action :set_client, only: [:index]
+
   def index
-    authorize :index, policy_class: GenerateInvoicePolicy
+    authorize @client, policy_class: GenerateInvoicePolicy
     render :index, locals: {
       filter_options:,
       new_line_item_entries:,
@@ -12,12 +14,12 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
 
   private
 
-    def client
-      @_client ||= Client.find(params[:client_id])
+    def set_client
+      @client = Client.find(params[:client_id])
     end
 
     def project
-      @_project ||= client.projects.pluck(:id).uniq
+      @_project ||= @client.projects.pluck(:id).uniq
     end
 
     # Sending team members list for filter dropdown options
