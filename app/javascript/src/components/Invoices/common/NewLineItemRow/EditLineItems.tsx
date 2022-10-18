@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-import { minFromHHMM, minToHHMM, lineTotalCalc } from "helpers";
+import { minFromHHMM, minToHHMM, lineTotalCalc, useOutsideClick } from "helpers";
 import { Trash } from "phosphor-react";
 import DatePicker from "react-datepicker";
 
@@ -19,6 +19,7 @@ const EditLineItems = ({
   const [rate, setRate] = useState<number>(item.rate);
   const [quantity, setQuantity] = useState<any>(minToHHMM(item.quantity));
   const [lineTotal, setLineTotal] = useState<string>(item.lineTotal);
+  const wrapperRef = useRef(null);
 
   useEffect(() => {
     const names = name.split(" ");
@@ -46,6 +47,10 @@ const EditLineItems = ({
     setSelectedOption(selectedOptionArr);
   }, [name, lineItemDate, description, quantity, rate, lineTotal]);
 
+  useOutsideClick(wrapperRef, () => {
+    setEdit(false);
+  });
+
   const closeEditField = (event) => {
     if (event.key === "Enter") setEdit(false);
   };
@@ -63,7 +68,7 @@ const EditLineItems = ({
   };
 
   return (
-    <tr className="w-full my-1">
+    <tr className="w-full my-1" ref={wrapperRef}>
       <td className="p-1 w-full">
         <input
           type="text"
