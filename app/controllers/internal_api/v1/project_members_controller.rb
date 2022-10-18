@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationController
+  before_action :set_project
+
   def update
-    authorize ProjectMember
+    authorize @project, policy_class: ProjectMemberPolicy
 
     ActiveRecord::Base.transaction do
       add_new_members
@@ -61,5 +63,9 @@ class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationCo
 
     def removed_members_params
       params.require(:members).permit(removed_member_ids: [])["removed_member_ids"]
+    end
+
+    def set_project
+      @project = Project.find_by(id: params[:id])
     end
 end
