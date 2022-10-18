@@ -49,7 +49,7 @@ class TimesheetEntry < ApplicationRecord
   delegate :name, to: :client, prefix: true, allow_nil: true
   delegate :full_name, to: :user, prefix: true, allow_nil: true
 
-  searchkick
+  # searchkick
 
   def search_data
     {
