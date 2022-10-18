@@ -16,6 +16,7 @@ import Toastr from "common/Toastr";
 
 import Header from "../../Header";
 
+const deleteImage = require("../../../../../../assets/images/delete.svg");
 const editButton = require("../../../../../../assets/images/edit_image_button.svg");
 const img = require("../../../../../../assets/images/plus_icon.svg");
 
@@ -109,26 +110,27 @@ const OrgEdit = () => {
 
   const getData = async () => {
     setisLoading(true);
-    const resp = await companiesApi.index();
+    const res = await companiesApi.index();
+    const companyDetails = { ... res.data.company_details };
     setOrgDetails({
-      logoUrl: resp.data.logo_url,
-      companyName: resp.data.name,
-      companyAddr: resp.data.address,
-      companyPhone: resp.data.business_phone,
-      countryName: resp.data.country,
-      companyCurrency: resp.data.base_currency,
-      companyRate: parseFloat(resp.data.standard_price),
-      companyFiscalYear: resp.data.fiscal_year_end,
-      companyDateFormat: resp.data.date_format,
-      companyTimezone: resp.data.timezone,
-      id: resp.data.id,
+      logoUrl: companyDetails.logo,
+      companyName: companyDetails.name,
+      companyAddr: companyDetails.address,
+      companyPhone: companyDetails.business_phone,
+      countryName: companyDetails.country,
+      companyCurrency: companyDetails.currency,
+      companyRate: parseFloat(companyDetails.standard_price),
+      companyFiscalYear: companyDetails.fiscal_year_end,
+      companyDateFormat: companyDetails.date_format,
+      companyTimezone: companyDetails.timezone,
+      id: companyDetails.id,
       logo: null
     });
 
     const timezonesEntry = await companyProfileApi.get();
     setTimeZones(timezonesEntry.data.timezones);
 
-    const timeZonesForCountry = timezonesEntry.data.timezones[resp.data.country];
+    const timeZonesForCountry = timezonesEntry.data.timezones[companyDetails.country];
     const timezoneOptionList = timeZonesForCountry.map((item) => ({
       value: item,
       label: item
@@ -306,7 +308,7 @@ const OrgEdit = () => {
                   </input>
                   <button onClick={handleDeleteLogo}>
                     <img
-                      src="/delete.svg"
+                      src={deleteImage}
                       alt="delete"
                       style={{ "minWidth": "20px" }}
                     />

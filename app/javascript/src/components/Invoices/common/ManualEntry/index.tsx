@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import { lineTotalCalc, minFromHHMM, minToHHMM } from "helpers";
 import { Trash } from "phosphor-react";
-
-import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
 
 const ManualEntry = ({
   entry,
@@ -16,7 +15,7 @@ const ManualEntry = ({
   const [quantity, setQuantity] = useState<any>(entry.quantity || 0);
   const [lineTotal, setLineTotal] = useState<string>(entry.lineTotal || 0);
   const [lineItem, setLineItem] = useState<any>({});
-  const [qtyInHHrMin, setQtyInHHrMin] = useState<any>(minutesToHHMM(quantity));
+  const [qtyInHHrMin, setQtyInHHrMin] = useState<any>(minToHHMM(quantity));
   const ref = useRef();
 
   useEffect(() => {
@@ -56,14 +55,14 @@ const ManualEntry = ({
 
   const handleSetRate = (e) => {
     setRate(e.target.value);
-    setLineTotal((Number(quantity / 60) * Number(e.target.value)).toFixed(2));
+    setLineTotal(lineTotalCalc(quantity, e.target.value));
   };
 
   const handleSetQuantity = (e) => {
-    const quantityInMin = Number(minutesFromHHMM(e.target.value));
+    const quantityInMin = Number(minFromHHMM(e.target.value));
     setQtyInHHrMin(e.target.value);
     setQuantity(quantityInMin);
-    setLineTotal((Number(quantityInMin / 60) * Number(rate)).toFixed(2));
+    setLineTotal(lineTotalCalc(quantityInMin, rate));
   };
 
   return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import { TOASTER_DURATION } from "constants/index";
 
@@ -6,27 +6,40 @@ import { X, FloppyDisk, PaperPlaneTilt, Gear } from "phosphor-react";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
+// type Props = {
+//   formType: string,
+//   handleSendInvoice: Function,
+//   handleSaveInvoice: Function,
+//   setShowInvoiceSetting: Function,
+//   invoiceDetails?: object,
+//   updateInvoice?: Function
+// }
+
 const Header = ({
-  handleSendInvoice,
+  formType = "generate",
   handleSaveInvoice,
-  setShowInvoiceSetting
+  handleSendInvoice,
+  setShowInvoiceSetting,
+  invoiceNumber = null,
+  id = null,
+  updateInvoice = {}
 }) => (
-  <React.Fragment>
+  <Fragment>
     <ToastContainer autoClose={TOASTER_DURATION} />
     <div className="sm:flex mt-6 mb-3 sm:items-center sm:justify-between">
       <div className="flex">
-        <h2 className="header__title font-bold">Generate Invoice</h2>
+        <h2 className="header__title font-bold">{formType == "edit" ?  `Edit Invoice #${invoiceNumber}`: "Generate Invoice"}</h2>
         <button
           onClick={() => setShowInvoiceSetting(true)}
           className="font-bold text-xs text-miru-han-purple-1000 tracking-widest leading-4 flex items-center ml-5"
         >
           <Gear size={15} color="#0033CC" className="mr-2.5" />
-          SETTINGS
+            SETTINGS
         </button>
       </div>
       <div className="flex w-2/5">
         <Link
-          to="/invoices"
+          to={formType == "edit" ? `/invoices/${id}`: "/invoices"}
           type="button"
           className="header__button w-1/3 p-0"
         >
@@ -36,7 +49,7 @@ const Header = ({
         <button
           type="button"
           className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
-          onClick={handleSaveInvoice}
+          onClick={formType == "edit" ? updateInvoice : handleSaveInvoice}
           data-cy='save-invoice'
         >
           <FloppyDisk size={18} color="white" />
@@ -52,7 +65,7 @@ const Header = ({
         </button>
       </div>
     </div>
-  </React.Fragment>
+  </Fragment>
 );
 
 export default Header;

@@ -2,7 +2,7 @@ import React from "react";
 
 import { PencilSimple, Trash } from "phosphor-react";
 
-const Discountmenu = ({ setShowDiscount, setShowDiscountMenu, setAddDiscount, setDiscount }) => (
+const DiscountMenu = ({ setShowDiscount, setShowDiscountMenu, setAddDiscount, setDiscount }) => (
   <div className="bg-white rounded-lg w-28 mt-16 py-2 absolute">
     <ul className="list-none">
       <li
@@ -32,4 +32,4 @@ const Discountmenu = ({ setShowDiscount, setShowDiscountMenu, setAddDiscount, se
   </div>
 );
 
-export default Discountmenu;
+export default DiscountMenu;

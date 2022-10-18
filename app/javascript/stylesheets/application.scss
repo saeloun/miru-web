@@ -83,8 +83,14 @@
       @apply mt-1 relative rounded-md shadow-sm md:ml-5;
       input {
         @apply bg-miru-gray-100 text-tiny font-medium;
+        width: 224px;
+        padding: 7px 6px;
+      }
+      @media screen and (min-width: 480px) {
+        input{
         width: 424px;
         padding: 7px 6px;
+        }
       }
     }
     &__searchInput {

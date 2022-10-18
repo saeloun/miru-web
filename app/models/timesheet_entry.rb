@@ -49,16 +49,18 @@ class TimesheetEntry < ApplicationRecord
   delegate :name, to: :client, prefix: true, allow_nil: true
   delegate :full_name, to: :user, prefix: true, allow_nil: true
 
-  # searchkick
+  # searchkick text_middle: [:user_name, :note]
 
   def search_data
     {
       id: id.to_i,
       bill_status:,
       project_id:,
-      client_id: self.project.client_id,
+      client_id: self.project&.client_id,
       user_id:,
-      work_date:
+      work_date: work_date.to_time,
+      note:,
+      user_name: user.full_name
     }
   end
 

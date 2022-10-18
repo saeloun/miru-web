@@ -4,7 +4,7 @@ module InvoicePayment
   class PdfGeneration < ApplicationService
     def initialize(invoice, company_logo)
       @invoice = invoice
-      @company_logo = company_logo
+      @company_logo = company_logo || ""
       @base_currency = invoice.company.base_currency
     end
 
