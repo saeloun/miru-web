@@ -13,8 +13,8 @@ import InvoiceSettings from "./InvoiceSettings";
 
 import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
 import Header from "../common/InvoiceForm/Header";
+import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import { generateInvoiceLineItems } from "../common/utils";
-import SendInvoice from "../popups/SendInvoice";
 
 const GenerateInvoices = () => {
   const navigate = useNavigate();
@@ -36,6 +36,9 @@ const GenerateInvoices = () => {
   const [invoiceId, setInvoiceId] = useState<number>(null);
   const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(false);
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
+
+  const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
+  const SELECT_CLIENT_ERROR = "Please select client and enter invoice number to proceed";
 
   const fetchCompanyDetails = async () => {
     // here we are fetching the company and client list
@@ -74,16 +77,25 @@ const GenerateInvoices = () => {
     return await invoicesApi.post(sanitized);
   };
 
-  const handleSendInvoice = async () => {
+  const handleSendInvoice = () => {
     if (selectedClient && invoiceNumber !== "") {
-      saveInvoice().then((resp) => {
-        setShowSendInvoiceModal(true);
-        setInvoiceId(resp.data.id);
-      });
+      setShowSendInvoiceModal(true);
     } else {
       selectedClient
-        ? Toastr.error("Please enter invoice number to proceed")
-        : Toastr.error("Please select client and enter invoice number to proceed");
+        ? Toastr.error(INVOICE_NUMBER_ERROR)
+        : Toastr.error(SELECT_CLIENT_ERROR);
+    }
+  };
+
+  const handleSaveSendInvoice = async () => {
+    if (selectedClient && invoiceNumber !== "") {
+      const res = await saveInvoice();
+      setInvoiceId(res?.data.id);
+      return res;
+    } else {
+      selectedClient
+        ? Toastr.error(INVOICE_NUMBER_ERROR)
+        : Toastr.error(SELECT_CLIENT_ERROR);
     }
   };
 
@@ -92,8 +104,8 @@ const GenerateInvoices = () => {
       saveInvoice().then(() => navigate("/invoices"));
     } else {
       selectedClient
-        ? Toastr.error("Please enter invoice number to proceed")
-        : Toastr.error("Please select client and enter invoice number to proceed");
+        ? Toastr.error(INVOICE_NUMBER_ERROR)
+        : Toastr.error(SELECT_CLIENT_ERROR);
     }
   };
 
@@ -133,17 +145,19 @@ const GenerateInvoices = () => {
           setManualEntryArr={setManualEntryArr}
         />
 
-        {showSendInvoiceModal && <SendInvoice invoice={{
-          id: invoiceId,
-          client: selectedClient,
-          company: invoiceDetails?.companyDetails,
-          dueDate: dueDate,
-          invoiceNumber,
-          amount
-        }}
-        isSending={showSendInvoiceModal}
-        setIsSending={setShowSendInvoiceModal}
-        />}
+        {showSendInvoiceModal &&
+          <SendInvoice  invoice={{
+            id: invoiceId,
+            client: selectedClient,
+            company: invoiceDetails?.companyDetails,
+            dueDate: dueDate,
+            invoiceNumber,
+            amount
+          }}
+          isSending={showSendInvoiceModal}
+          setIsSending={setShowSendInvoiceModal}
+          handleSaveSendInvoice={handleSaveSendInvoice}
+          />}
 
         {showInvoiceSetting && (
           <InvoiceSettings
