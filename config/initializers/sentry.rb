@@ -15,6 +15,6 @@ Sentry.init do |config|
   # Excluding Exceptions
   config.excluded_exceptions += ["ActionController::RoutingError"]
 
-  config.enabled_environments = %w[development production]
+  config.enabled_environments = %w[production]
   config.debug = true
 end
