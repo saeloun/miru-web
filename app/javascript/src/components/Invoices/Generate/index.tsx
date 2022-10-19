@@ -22,7 +22,7 @@ const GenerateInvoices = () => {
   const [lineItems, setLineItems] = useState<any>([]);
   const [selectedClient, setSelectedClient] = useState<any>();
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
-  const [reference] = useState<any>("");
+  const [reference, setReference] = useState<any>("");
   const [amount, setAmount] = useState<any>(0);
   const [amountDue, setAmountDue] = useState<any>(0);
   const [amountPaid] = useState<any>(0);
@@ -126,6 +126,7 @@ const GenerateInvoices = () => {
           invoiceNumber={invoiceNumber}
           setInvoiceNumber={setInvoiceNumber}
           reference={reference}
+          setReference={setReference}
           issueDate={issueDate}
           setIssueDate={setIssueDate}
           dueDate={dueDate}
