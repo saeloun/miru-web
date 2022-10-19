@@ -8,7 +8,7 @@ import {
   DotsThreeVertical,
   DownloadSimple
 } from "phosphor-react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Avatar, Badge, Tooltip } from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
@@ -28,6 +28,7 @@ const TableRow = ({
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   useDebounce(isMenuOpen,500);
+  const navigate = useNavigate();
 
   const handleCheckboxChange = () => {
     if (isSelected) {
@@ -45,7 +46,7 @@ const TableRow = ({
   const formattedDate = (date) =>
     dayjs(date).format(invoice.company.dateFormat);
   return (
-    <tr className="last:border-b-0 hover:bg-miru-gray-100 group">
+    <tr onClick={()=>navigate(`/invoices/${invoice.id}`)} className="last:border-b-0 hover:bg-miru-gray-100 group cursor-pointer">
       <td className="md:pl-6 md:pr-0 px-4 py-5">
         <CustomCheckbox
           text=""
@@ -60,12 +61,11 @@ const TableRow = ({
       <td className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap">
         <Avatar />
         <div className="md:ml-10 ml-2">
-          <Link
+          <span
             className="md:font-semibold font-normal md:text-base text-xs capitalize text-miru-dark-purple-1000"
-            to={`/invoices/${invoice.id}`}
           >
             {invoice.client.name}
-          </Link>
+          </span>
           <h3 className="md:text-sm text-xs font-normal text-miru-dark-purple-400">
             {invoice.invoiceNumber}
           </h3>

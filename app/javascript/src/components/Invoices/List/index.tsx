@@ -19,7 +19,7 @@ import DeleteInvoice from "../popups/DeleteInvoice";
 
 const Invoices: React.FC = () => {
   const filterIntialValues = {
-    dateRange: { label: "All", value: "all", from: "", to: "" },
+    dateRange: [{ label: "All", value: "all", from: "", to: "" }],
     clients: [],
     status: []
   };
@@ -100,7 +100,7 @@ const Invoices: React.FC = () => {
       filterQueryParams += `&statuses[]=${status.value}`;
     });
 
-    const { value, from, to } = filterParams.dateRange;
+    const { value, from, to } = filterParams.dateRange[0];
 
     if (value != "all" && value != "custom"){
       filterQueryParams += `&from_to[date_range]=${value}`;
@@ -155,6 +155,10 @@ const Invoices: React.FC = () => {
             deselectInvoices={deselectInvoices}
             setShowDeleteDialog={setShowDeleteDialog}
             setInvoiceToDelete={setInvoiceToDelete}
+            filterParams={filterParams}
+            setFilterParams={setFilterParams}
+            filterIntialValues={filterIntialValues}
+            filterParamsStr={filterParamsStr}
           />
 
           {isFilterVisible && (

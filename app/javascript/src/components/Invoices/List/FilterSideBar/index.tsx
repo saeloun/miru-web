@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import dayjs from "dayjs";
-import { X, Funnel, Plus, Minus } from "phosphor-react";
-import { Badge } from "StyledComponents";
+import { Funnel, Plus, Minus } from "phosphor-react";
+import { Badge, SidePanel } from "StyledComponents";
 
 import companiesApi from "apis/companies";
 import CustomCheckbox from "common/CustomCheckbox";
@@ -81,18 +81,16 @@ const FilterSideBar = ({
 
   const handleSelectFilter = (event) => {
     const selectedValue = dateRangeOptions.filter(
-      (option) => option.label === event.target.value
+      (option) => option.value === event.target.value
     );
-
-    if (selectedValue[0].value === "custom") {
+    if (selectedValue[0].label === "custom") {
       setShowCustomFilter(true);
       setFilters({
         ...filters,
         [event.target.name]: { ...selectedValue, ...dateRange }
       });
-    }
-    else {
-      selectedValue[0].value != "custom" &&
+    } else {
+      selectedValue[0].label != "custom" &&
         setFilters({
           ...filters,
           [event.target.name]: selectedValue
@@ -133,7 +131,6 @@ const FilterSideBar = ({
 
         if (event.target.checked) {
           if (!filters.status.includes(selectedValue2)) {
-
             setFilters({
               ...filters,
               [event.target.name]: filters.status.concat(selectedValue2)
@@ -151,7 +148,6 @@ const FilterSideBar = ({
         break;
       }
     }
-
   };
 
   const handleSelectDate = (date) => {
@@ -201,7 +197,7 @@ const FilterSideBar = ({
 
   const setDefaultDateRange = () => ({
     ...filters,
-    ["dateRange"]: { value: "all", label: "All", from: "", to: "" }
+    ["dateRange"]: [{ value: "all", label: "All", from: "", to: "" }]
   });
 
   const resetCustomDatePicker = () => {
@@ -226,146 +222,160 @@ const FilterSideBar = ({
   }
 
   return (
-    <div className="sidebar__container flex flex-col">
-      <div>
-        <div className="flex px-5 pt-5 mb-7 justify-between items-center">
-          <h4 className="text-base text-miru-dark-purple-1000 font-bold flex items-center">
-            <Funnel size={16} className="mr-2.5" />
-            Filters
-          </h4>
-          <button
-            className="text-miru-dark-purple-1000 font-bold"
-            onClick={() => setFilterVisibilty(false)}
-          >
-            <X size={16} />
-          </button>
-        </div>
-        <div className="sidebar__filters">
-          <ul>
-            <li className="px-5 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 border-b border-miru-gray-200 cursor-pointer">
-              <div
-                className="flex justify-between items-center"
-                onClick={() => setIsDateRangeOpen(!isDateRangeOpen)}
-              >
-                <h5 className="text-xs font-bold leading-4 tracking-wider">
-                  DATE RANGE
-                </h5>
+    <SidePanel
+      handleCancel={handleReset}
+      handleProcced={handleApply}
+      setFilterVisibilty={setFilterVisibilty}
+      HeaderTitle="Filters"
+      HeaderLogo={<Funnel size={16} className="mr-2.5" />}
+      hasFooter={true}
+      proceedButtonText="APPLY"
+      cancelButtonText="RESET"
+    >
+      <div className="sidebar__filters">
+        <ul>
+          <li className="pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 border-b border-miru-gray-200 cursor-pointer">
+            <div
+              className="px-5 flex justify-between items-center"
+              onClick={() => setIsDateRangeOpen(!isDateRangeOpen)}
+            >
+              <h5 className="text-xs font-bold leading-4 tracking-wider">
+                DATE RANGE
+              </h5>
+              <div className="flex items-center">
+                {filters.dateRange.length > 0 &&
+                  filters.dateRange[0].value != "all" && (
+                  <span className="flex items-center justify-center rounded-full h-5 w-5 bg-miru-han-purple-1000 text-white text-xs font-semibold mr-7">
+                    {filters.dateRange.length}
+                  </span>
+                )}
                 {isDateRangeOpen ? <Minus size={16} /> : <Plus size={16} />}
               </div>
-              {isDateRangeOpen && (
-                <div className="mt-7">
-                  {dateRangeOptions.map((dateRange) => (
-                    <CustomRadioButton
-                      id={dateRange.value}
-                      label={dateRange.label}
-                      groupName="dateRange"
-                      defaultCheck={dateRange.value === "all"}
-                      handleOnChange={handleSelectFilter}
-                    />
-                  ))}
-                </div>
-              )}
-              {showCustomFilter && (
-                <div className="mt-1 absolute flex flex-col bg-miru-white-1000 z-20 shadow-c1 rounded-lg">
-                  <CustomDateRangePicker
-                    hideCustomFilter={hideCustomFilter}
-                    handleSelectDate={handleSelectDate}
-                    onClickInput={onClickInput}
-                    selectedInput={selectedInput}
-                    dateRange={dateRange}
+            </div>
+            {isDateRangeOpen && (
+              <div className="md:mt-7 md:max-h-50 overflow-y-auto">
+                {dateRangeOptions.map((dateRange) => (
+                  <CustomRadioButton
+                    id={dateRange.value}
+                    label={dateRange.label}
+                    groupName="dateRange"
+                    defaultCheck={dateRange.value == filters.dateRange[0].value}
+                    handleOnChange={handleSelectFilter}
+                    value={dateRange.value}
+                    classNameWrapper="px-5 py-2.5"
                   />
-                  <div className="p-6 flex h-full items-end justify-center bg-miru-white-1000 ">
-                    <button
-                      onClick={resetCustomDatePicker}
-                      className="sidebar__reset"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      disabled={diableDateBtn}
-                      className={`sidebar__apply ${
-                        diableDateBtn
-                          ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
-                          : "cursor-pointer"
-                      }`}
-                      onClick={submitCustomDatePicker}
-                    >
-                      Done
-                    </button>
-                  </div>
+                ))}
+              </div>
+            )}
+            {showCustomFilter && (
+              <div className="mt-1 absolute flex flex-col bg-miru-white-1000 z-20 shadow-c1 rounded-lg">
+                <CustomDateRangePicker
+                  hideCustomFilter={hideCustomFilter}
+                  handleSelectDate={handleSelectDate}
+                  onClickInput={onClickInput}
+                  selectedInput={selectedInput}
+                  dateRange={dateRange}
+                />
+                <div className="p-6 flex h-full items-end justify-center bg-miru-white-1000 ">
+                  <button
+                    onClick={resetCustomDatePicker}
+                    className="sidebar__reset"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    disabled={diableDateBtn}
+                    className={`sidebar__apply ${
+                      diableDateBtn
+                        ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                        : "cursor-pointer"
+                    }`}
+                    onClick={submitCustomDatePicker}
+                  >
+                    Done
+                  </button>
                 </div>
-              )}
-            </li>
-            <li className="px-5 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 border-b border-miru-gray-200 cursor-pointer">
-              <div
-                className="flex justify-between items-center"
-                onClick={() => setIsClientOpen(!isClientOpen)}
-              >
-                <h5 className="text-xs font-bold leading-4 tracking-wider">
-                  CLIENTS
-                </h5>
+              </div>
+            )}
+          </li>
+          <li className="pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 border-b border-miru-gray-200 cursor-pointer">
+            <div
+              className="px-5 flex justify-between items-center"
+              onClick={() => setIsClientOpen(!isClientOpen)}
+            >
+              <h5 className="text-xs font-bold leading-4 tracking-wider">
+                CLIENTS
+              </h5>
+              <div className="flex items-center">
+                {filters.clients.length > 0 && (
+                  <span className="flex items-center justify-center rounded-full h-5 w-5 bg-miru-han-purple-1000 text-white text-xs font-semibold mr-7">
+                    {filters.clients.length}
+                  </span>
+                )}
                 {isClientOpen ? <Minus size={16} /> : <Plus size={16} />}
               </div>
-              {isClientOpen && (
-                <div className="mt-7">
-                  {clientList.length &&
-                    clientList.map((client) => (
-                      <CustomCheckbox
-                        id={client.value}
-                        text={client.label}
-                        name="clients"
-                        checkboxValue={client.value}
-                        isChecked={filters.clients.includes(client)}
-                        handleCheck={handleCheck}
-                      />
-                    ))}
-                </div>
-              )}
-
-            </li>
-            <li className="px-5 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 border-b border-miru-gray-200 cursor-pointer">
-              <div
-                className="flex justify-between items-center"
-                onClick={() => setIsStatusOpen(!isStatusOpen)}
-              >
-                <h5 className="text-xs font-bold leading-4 tracking-wider">
-                  STATUS
-                </h5>
+            </div>
+            {isClientOpen && (
+              <div className="md:mt-7 md:max-h-50 overflow-y-auto">
+                {clientList.length &&
+                  clientList.map((client) => (
+                    <CustomCheckbox
+                      id={client.value}
+                      text={client.label}
+                      name="clients"
+                      checkboxValue={client.value}
+                      isChecked={filters.clients.includes(client)}
+                      handleCheck={handleCheck}
+                      wrapperClassName="py-3 px-5 cursor-pointer hover:bg-miru-gray-100 text-miru-dark-purple-1000"
+                      labelClassName="ml-4"
+                    />
+                  ))}
+              </div>
+            )}
+          </li>
+          <li className="pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 border-b border-miru-gray-200 cursor-pointer">
+            <div
+              className="px-5 flex justify-between items-center"
+              onClick={() => setIsStatusOpen(!isStatusOpen)}
+            >
+              <h5 className="text-xs font-bold leading-4 tracking-wider">
+                STATUS
+              </h5>
+              <div className="flex items-center">
+                {filters.status.length > 0 && (
+                  <span className="flex items-center justify-center rounded-full h-5 w-5 bg-miru-han-purple-1000 text-white text-xs font-semibold mr-7">
+                    {filters.status.length}
+                  </span>
+                )}
                 {isStatusOpen ? <Minus size={16} /> : <Plus size={16} />}
               </div>
-              {isStatusOpen && (
-                <div className="mt-7">
-                  {statusOptions.length &&
-                    statusOptions.map((status) => (
-                      <CustomCheckbox
-                        id={status.value}
-                        text={
-                          <Badge
-                            text={status.label}
-                            className={getStatusCssClass(status.label)}
-                          />
-                        }
-                        name="status"
-                        checkboxValue={status.value}
-                        isChecked={filters.status.includes(status)}
-                        handleCheck={handleCheck}
-                      />
-                    ))}
-                </div>
-              )}
-            </li>
-          </ul>
-        </div>
+            </div>
+            {isStatusOpen && (
+              <div className="md:mt-7 md:max-h-50 overflow-y-auto">
+                {statusOptions.length &&
+                  statusOptions.map((status) => (
+                    <CustomCheckbox
+                      id={status.value}
+                      text={
+                        <Badge
+                          text={status.label}
+                          className={getStatusCssClass(status.label)}
+                        />
+                      }
+                      name="status"
+                      checkboxValue={status.value}
+                      isChecked={filters.status.includes(status)}
+                      handleCheck={handleCheck}
+                      wrapperClassName="py-3 px-5 cursor-pointer hover:bg-miru-gray-100"
+                      labelClassName="ml-4"
+                    />
+                  ))}
+              </div>
+            )}
+          </li>
+        </ul>
       </div>
-      <div className="sidebar__footer">
-        <button className="sidebar__reset" onClick={handleReset}>
-          RESET
-        </button>
-        <button className="sidebar__apply" onClick={handleApply}>
-          APPLY
-        </button>
-      </div>
-    </div>
+    </SidePanel>
   );
 };
 

@@ -10,6 +10,7 @@ const DEFAULT_STYLE_RADIO_ICON = "w-3 h-3 inline-block mr-2 rounded-full border 
 type RadioProps = {
   id?: string;
   label?: string | number;
+  value: string,
   groupName?: string;
   defaultCheck?: boolean;
   classNameLabel?: string;
@@ -22,6 +23,7 @@ type RadioProps = {
 const CustomRadioButton = ({
   id,
   label,
+  value,
   groupName,
   defaultCheck,
   classNameLabel = "",
@@ -34,7 +36,7 @@ const CustomRadioButton = ({
     <input
       id={id}
       type="radio"
-      value={label}
+      value={value}
       name={groupName}
       defaultChecked={defaultCheck}
       className={classnames(DEFAULT_STYLE_INPUT, classNameInput)}
@@ -42,7 +44,7 @@ const CustomRadioButton = ({
     />
     <label
       htmlFor={id}
-      className={classnames("flex items-center cursor-pointer p-2.5")}
+      className={classnames("flex items-center cursor-pointer")}
     >
       <i
         className={classnames(DEFAULT_STYLE_RADIO_ICON, classNameRadioIcon)}
