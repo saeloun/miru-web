@@ -10,6 +10,6 @@ module.exports = {
       constants: "src/constants",
       utils: "src/utils",
       StyledComponents: "src/StyledComponents",
-    }
-  }
+    },
+  },
 };
