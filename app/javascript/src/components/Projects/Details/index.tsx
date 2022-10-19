@@ -169,7 +169,7 @@ const ProjectDetails = () => {
                 navigate("/projects");
               }}
             >
-              <ArrowLeft size={20} color="#0033CC" weight="bold" />
+              <ArrowLeft size={20} className="text-col-han-app-1000" weight="bold" />
             </button>
             <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
               {project?.name}
@@ -212,7 +212,7 @@ const ProjectDetails = () => {
                     }}
                     className="menuButton__list-item"
                   >
-                    <Pencil size={16} color="#0033CC" weight="bold" />
+                    <Pencil size={16} className="text-col-han-app-1000" weight="bold" />
                     <span className="ml-3">Edit Project Details</span>
                   </button>
                 </li>
@@ -221,7 +221,7 @@ const ProjectDetails = () => {
                     className="menuButton__list-item"
                     onClick={handleAddRemoveMembers}
                   >
-                    <UsersThree size={16} color="#0033CC" weight="bold" />
+                    <UsersThree size={16} className="text-col-han-app-1000" weight="bold" />
                     <span className="ml-3">Add/Remove Team Members</span>
                   </button>
                 </li>
@@ -230,7 +230,7 @@ const ProjectDetails = () => {
                     onClick={() => setShowDeleteDialog(true)}
                     className="menuButton__list-item text-miru-red-400"
                   >
-                    <Trash size={16} color="#E04646" weight="bold" />
+                    <Trash size={16} className="text-col-red-400" weight="bold" />
                     <span className="ml-3">Delete Project</span>
                   </button>
                 </li>

@@ -48,7 +48,7 @@ const CustomDatePicker = ({ handleChange, date }) => {
           className="headerWrapper"
         >
           <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
-            <CaretCircleLeft color="#0033CC" size={16} />
+            <CaretCircleLeft className="text-col-han-app-1000" size={16} />
           </button>
           <div>
             <select
@@ -76,7 +76,7 @@ const CustomDatePicker = ({ handleChange, date }) => {
             </select>
           </div>
           <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
-            <CaretCircleRight color="#0033CC" size={16} />
+            <CaretCircleRight className="text-col-han-app-1000" size={16} />
           </button>
         </div>
       )}

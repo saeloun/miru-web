@@ -122,7 +122,7 @@ const Header = ({
           </span>
 
           <button className="ml-2" onClick={clearCheckboxes}>
-            <X size={16} color="#0033CC" weight="bold" />
+            <X size={16} className="text-col-han-app-1000" weight="bold" />
           </button>
 
           <div className="flex">

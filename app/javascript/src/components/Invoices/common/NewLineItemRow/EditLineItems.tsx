@@ -117,7 +117,7 @@ const EditLineItems = ({
       </td>
       <td>
         <button onClick={() => handleDelete(item)} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
-          <Trash size={16} color="#E04646" weight="bold" />
+          <Trash size={16} className="text-col-red-400" weight="bold" />
         </button>
       </td>
     </tr>

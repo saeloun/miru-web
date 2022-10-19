@@ -111,14 +111,14 @@ const Table = ({
                       e.stopPropagation();
                       handleEditClick(row.original.rowId);
                     }}>
-                      <Pencil size={16} color="#0033CC" weight="bold" />
+                      <Pencil size={16} className="text-col-han-app-1000" weight="bold" />
                     </button>}
                     {hasDeleteAction && <button onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       handleDeleteClick(row.original.rowId);
                     }} className="ml-10">
-                      <Trash size={16} color="#0033CC" weight="bold" />
+                      <Trash size={16} className="text-col-han-app-1000" weight="bold" />
                     </button>}
                   </div>
                 </td>

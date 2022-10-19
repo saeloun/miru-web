@@ -58,7 +58,7 @@ const CustomDateRangePicker = ({
         <div className="bg-miru-white-1000 ">
           <div className="flex justify-start mt-2">
             <button onClick={hideCustomFilter}>
-              <CaretLeft color="#0033CC" size={10} />
+              <CaretLeft className="text-col-han-app-1000" size={10} />
             </button>
             <p className="text-sm	font-medium ml-2"> Custom Date Range </p>
           </div>
@@ -87,7 +87,7 @@ const CustomDateRangePicker = ({
             className="headerWrapper mt-4"
           >
             <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
-              <CaretCircleLeft color="#0033CC" size={16} />
+              <CaretCircleLeft className="text-col-han-app-1000" size={16} />
             </button>
             <div>
               <select
@@ -114,7 +114,7 @@ const CustomDateRangePicker = ({
               </select>
             </div>
             <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
-              <CaretCircleRight color="#0033CC" size={16} />
+              <CaretCircleRight className="text-col-han-app-1000" size={16} />
             </button>
           </div>
         </div>

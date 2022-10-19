@@ -10,7 +10,7 @@ const DeleteButton = ({ onClick }) => (
     >
       <div className="flex flex-row justify-between items-center">
         <div className="mr-1">
-          <Trash size={16} color="#E04646" weight="bold"/>
+          <Trash size={16} className="text-col-red-400" weight="bold"/>
         </div>
         <p className="font-bold tracking-widest text-base text-col-red-400 ml-1">DELETE</p>
       </div>

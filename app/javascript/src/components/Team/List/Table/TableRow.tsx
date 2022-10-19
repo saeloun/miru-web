@@ -54,10 +54,10 @@ const TableRow = ({ item }) => {
             {actionIconVisible && (
               <div className="invisible iconWrapper">
                 <button data-cy="edit-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.ADD_EDIT)}>
-                  <Pencil size={16} color="#0033CC" weight="bold" />
+                  <Pencil size={16} className="text-col-han-app-1000" weight="bold" />
                 </button>
                 <button data-cy="delete-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.DELETE)}>
-                  <Trash size={16} color="#0033CC" weight="bold" />
+                  <Trash size={16} className="text-col-han-app-1000" weight="bold" />
                 </button>
               </div>)}
           </td>

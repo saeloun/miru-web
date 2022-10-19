@@ -70,7 +70,7 @@ const Header = ({
         <div className="flex items-center justify-between min-w-0">
           <div className="flex items-center">
             <button className="button-icon__back" onClick={handleBackButtonClick}>
-              <ArrowLeft size={20} color="#0033CC" weight="bold" />
+              <ArrowLeft size={20} className="text-col-han-app-1000" weight="bold" />
             </button>
             {(candidateDetails.discarded_at) ? (<h2 className="py-1 mr-6 text-3xl font-extrabold text-red-600 sm:text-4xl sm:truncate">
               {candidateDetails.name}
@@ -139,7 +139,7 @@ const Header = ({
                   candidateDetails.discarded_at ? null :
                     <button
                       className="w-1/3 p-0 header__button text-col-red-400 hover:text-col-red-400" onClick={() => handleDeleteClick(candidateDetails.id)}>
-                      <Trash size={16} color="#E04646" weight="bold" />
+                      <Trash size={16} className="text-col-red-400" weight="bold" />
                       <span className="ml-3">Delete</span>
                     </button>
                 }

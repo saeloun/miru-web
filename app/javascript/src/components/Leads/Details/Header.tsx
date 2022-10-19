@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
+
+import { X, Pencil, FloppyDisk, ArrowLeft, DotsThreeVertical, Receipt, CaretDown, Trash, Gear } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leads from "apis/leads";
-import { X, Pencil, FloppyDisk, ArrowLeft, DotsThreeVertical, Receipt, CaretDown, Trash, Gear } from "phosphor-react";
+
 import { unmapLeadList } from "../../../mapper/lead.mapper";
 import getStatusCssClass from "../../../utils/getStatusTag";
 import DeleteLead from "../Modals/DeleteLead";
@@ -73,7 +76,7 @@ const Header = ({
         <div className="flex min-w-0 items-center justify-between">
           <div className="flex items-center">
             <button className="button-icon__back" onClick={handleBackButtonClick}>
-              <ArrowLeft size={20} color="#0033CC" weight="bold" />
+              <ArrowLeft size={20} className="text-col-han-app-1000" weight="bold" />
             </button>
             {(leadDetails.discarded_at) ? (<h2 className="text-3xl mr-6 font-extrabold text-red-600 sm:text-4xl sm:truncate py-1">
               {leadDetails.name}
@@ -152,7 +155,7 @@ const Header = ({
                     { leadDetails.discarded_at ? null :
                       <li>
                         <button className="menuButton__list-item text-col-red-400" onClick={() => handleDeleteClick(leadDetails.id)}>
-                          <Trash size={16} color="#E04646" weight="bold" />
+                          <Trash size={16} className="text-col-red-400" weight="bold" />
                           <span className="ml-3">Delete</span>
                         </button>
                       </li>

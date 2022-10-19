@@ -68,7 +68,7 @@ export const Project = ({
             setEditProjectData({ id, name, clientName, isBillable });
           }}
         >
-          <Pen size={16} color="#0033CC" />
+          <Pen size={16} className="text-col-han-app-1000" />
         </button>
         }
       </td>
@@ -81,7 +81,7 @@ export const Project = ({
             setDeleteProjectData({ id, name });
           }}
         >
-          <Trash size={16} color="#0033CC" />
+          <Trash size={16} className="text-col-han-app-1000" />
         </button>
         }
       </td>
