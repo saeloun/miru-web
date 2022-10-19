@@ -4,13 +4,16 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
   </head>
   <body style="color:#1D1A31">
-  <p>Hi <%= @name %>, </p>
+    <p>Hi <%= @name %>, </p>
 
-  <p>This is a reminder to update your weekly timesheet for <%= @company %> on Miru.</p>
+    <p>This is a reminder to update your weekly timesheet for <%= @company %> on AC.</p>
 
-  <p>Your logged hours from <%= @starting_date %> to <%= @ending_date %> are less than 40 hours.
-  Please <%= link_to "log on to update", root_url + "time-tracking" , target: "_blank" %> your timesheet. </p>
+    <p>Your logged hours from <%= @starting_date %> to <%= @ending_date %> are less than 40 hours.
+    Please <%= link_to "log on to update", root_url + "time-tracking" , target: "_blank" %> your timesheet. </p>
 
-  <p>Cheers,<br/>Team AC</p>
+    <p>
+      Cheers,<br>
+      AC Team
+    </p>
   </body>
 </html>

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SendWeeklyReminderToUserMailer < ApplicationMailer
+  default reply_to: ENV["MAILER_REPLY_TO"] if ENV.fetch("MAILER_REPLY_TO", nil)
+
   def notify_user_about_missed_entries
     recipients = params[:recipients]
     @company = params[:company_name]
@@ -14,6 +16,6 @@ class SendWeeklyReminderToUserMailer < ApplicationMailer
 
     subject = "Reminder to Update your Timesheet on Miru"
 
-    mail(to: recipients, subject:, reply_to: "no-reply@getmiru.com")
+    mail(to: recipients, subject:)
   end
 end

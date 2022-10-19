@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class InvoiceMailer < ApplicationMailer
+  default reply_to: ENV["MAILER_REPLY_TO"] if ENV.fetch("MAILER_REPLY_TO", nil)
   after_action -> { @invoice.sent! }
 
   def invoice
@@ -19,7 +20,7 @@ class InvoiceMailer < ApplicationMailer
     attachments.inline["Instagram.png"] = File.read("public/Instagram.png")
     attachments.inline["Twitter.png"] = File.read("public/Twitter.png")
 
-    mail(to: recipients, subject:, reply_to: "no-reply@getmiru.com")
+    mail(to: recipients, subject:)
   end
 
   private

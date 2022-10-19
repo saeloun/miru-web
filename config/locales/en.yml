@@ -307,7 +307,7 @@ en:
   shared_links:
     already_have_an_account: already have an account?
     dont_have_an_account: don't have an account?
-    forgot_password: forgot password ?
+    forgot_password: forgot your password?
     back_to_login: back to login
     confirmation_instruction: didn't receive confirmation instructions?
     unlock_instruction: didn't receive unlock instructions?
