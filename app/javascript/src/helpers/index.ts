@@ -2,7 +2,7 @@ import { bytesToSize } from "./byteToSizeConverter";
 import { cashFormatter } from "./cashFormater";
 import { currencyFormat } from "./currency";
 import { currencySymbol } from "./currencySymbol";
-import { getMonthFromString } from "./dateParser";
+import { getMonthFromString, isInThePast } from "./dateParser";
 import { useDebounce } from "./debounce";
 import { minFromHHMM, minToHHMM } from "./hhmmParser";
 import { lineTotalCalc } from "./lineTotalCalc";
@@ -18,6 +18,7 @@ export {
   currencyFormat,
   currencySymbol,
   getMonthFromString,
+  isInThePast,
   getNumberWithOrdinal,
   minFromHHMM,
   minToHHMM,

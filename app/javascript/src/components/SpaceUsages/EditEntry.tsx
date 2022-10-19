@@ -2,14 +2,12 @@
 import React from "react";
 
 import autosize from "autosize";
+import { minFromHHMM, minToHHMM, validateTimesheetEntry, getNumberWithOrdinal } from "helpers";
 import { Multiselect } from 'multiselect-react-dropdown';
 
 import spaceUsagesApi from "apis/space-usages";
 import ConfirmDialog from "common/Modal/ConfirmDialog";
 import Toastr from "common/Toastr";
-import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
-import { getNumberWithOrdinal } from "helpers/ordinal";
-import validateTimesheetEntry from "helpers/validateTimesheetEntry";
 
 // const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 // const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
@@ -40,7 +38,7 @@ const EditEntry: React.FC<Iprops> = ({
   const { useState, useEffect } = React;
   const [note, setNote] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const currentTime: string = minutesToHHMM(minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) - (minutesFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) % 15));
+  const currentTime: string = minToHHMM(minFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) - (minFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) % 15));
   const [startDuration, setStartDuration] = useState(selectedTime || currentTime);
   const [endDuration, setEndDuration] = useState("00:00");
   const [displayStartDuration, setDisplayStartDuration] = useState("");
@@ -73,7 +71,7 @@ const EditEntry: React.FC<Iprops> = ({
         id: `${i<10 ? 0 : '' }${i}:${m<10 ? 0 : ''}${m}`,
         name: `${ii < 10 ? 0 : '' }${ii}:${m<10 ? 0 : ''}${m} ${i < 12 || i == 24 ? 'AM' : 'PM'}`
       })
-    }).filter((el) => (el != null && minutesFromHHMM(el.id) >= minutesFromHHMM(durationFrom)) )
+    }).filter((el) => (el != null && minFromHHMM(el.id) >= minFromHHMM(durationFrom)) )
   }
 
   const handleFillData = () => {
@@ -82,8 +80,8 @@ const EditEntry: React.FC<Iprops> = ({
       entry => entry.id === editEntryId
     );
     if (entry) {
-      setStartDuration(minutesToHHMM(entry.start_duration));
-      setEndDuration(minutesToHHMM(entry.end_duration));
+      setStartDuration(minToHHMM(entry.start_duration));
+      setEndDuration(minToHHMM(entry.end_duration));
       setSpace(entry.space_code);
       setPurpose(entry.purpose_code);
       setPurposeName(entry.purpose_name);
@@ -106,18 +104,18 @@ const EditEntry: React.FC<Iprops> = ({
     if (startDuration){
       setDisplayStartDuration(calendarTimes(startDuration)[0].name)
       setSelectedTime(undefined)
-      setSelectedStartTime(minutesFromHHMM(startDuration))
+      setSelectedStartTime(minFromHHMM(startDuration))
     }
     if (endDuration){
       setDisplayEndDuration(calendarTimes(endDuration)[0].name)
-      setSelectedEndTime(minutesFromHHMM(endDuration))
+      setSelectedEndTime(minFromHHMM(endDuration))
     }
   }, [startDuration, endDuration]);
 
   const getPayload = () => ({
     work_date: selectedFullDate,
-    start_duration: minutesFromHHMM(startDuration),
-    end_duration: minutesFromHHMM(endDuration),
+    start_duration: minFromHHMM(startDuration),
+    end_duration: minFromHHMM(endDuration),
     space_code: space,
     purpose_code: purpose,
     note: note,
@@ -314,8 +312,8 @@ const EditEntry: React.FC<Iprops> = ({
                   value={startDuration}
                   onChange={(e) => {
                     setStartDuration(e.target.value)
-                    const addNextMinutes = minutesFromHHMM(e.target.value) >= 1440 ? 0 : 15
-                    setEndDuration((minutesToHHMM(minutesFromHHMM(e.target.value) + addNextMinutes)))
+                    const addNextMinutes = minFromHHMM(e.target.value) >= 1440 ? 0 : 15
+                    setEndDuration((minToHHMM(minFromHHMM(e.target.value) + addNextMinutes)))
                   }}>
                   {calendarTimes(null).map(e => <option value={e.id} key={e.id} >{e.name}</option>)}
                 </select>

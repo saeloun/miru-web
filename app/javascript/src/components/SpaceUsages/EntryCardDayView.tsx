@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { minutesFromHHMM, minutesToHHMM } from "helpers/hhmm-parser";
+import { minFromHHMM, minToHHMM } from "helpers";
 
 const EntryCardDayView = ({
   spaceUsages,
@@ -30,7 +30,7 @@ const EntryCardDayView = ({
         setSelectedSpaceId(spaceCode.split('/')[0])
         const minutes = event.clientY - event.currentTarget.getBoundingClientRect().top
         const timeHHMM = (minutes / 60) + ":" + (minutes % 60)
-        const selectedTime = minutesToHHMM(minutesFromHHMM(timeHHMM) - (minutesFromHHMM(timeHHMM) % 15))
+        const selectedTime = minToHHMM(minFromHHMM(timeHHMM) - (minFromHHMM(timeHHMM) % 15))
         setSelectedTime(selectedTime)
       }
     }}>

@@ -20,3 +20,36 @@
 	background-color: #fff;
 	border-radius: 8px;
 }
+
+.toggle-menu {
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #03c;
+  position: absolute;
+  top: 0;
+  right: -15px;
+  color: #fff;
+  border-radius: 50%;
+  bottom: 0;
+  margin: auto;
+}
+
+.sidebar {
+  z-index: 1;
+	width: 300px;
+	transition: ease width 0.35s;
+}
+.sidebar.collapse-sidebar {
+	width: 80px;
+}
+.content-wrapper {
+	width: calc(100% - 300px);
+	transition: ease width 0.35s;
+}
+.sidebar.collapse-sidebar ~ .content-wrapper {
+	width: calc(100% - 80px);
+}

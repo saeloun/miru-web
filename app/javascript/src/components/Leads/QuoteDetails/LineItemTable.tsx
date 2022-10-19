@@ -1,17 +1,19 @@
 import React, { useEffect, useState, useRef } from "react";
+
+import { useOutsideClick } from "helpers";
+import { X, FloppyDisk, ArrowLineUpRight, PaperPlaneTilt, ThumbsUp, ThumbsDown } from "phosphor-react";
 import { useNavigate, useParams } from "react-router-dom";
+
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leadLineItems from "apis/lead-line-items";
 import leadQuotes from "apis/lead-quotes";
 
-import { X, FloppyDisk, ArrowLineUpRight, PaperPlaneTilt, ThumbsUp, ThumbsDown } from "phosphor-react";
 import HoursTotal from "./HoursTotal";
 import LineItemTableHeader from "./LineItemTableHeader";
 import ManualEntry from "./ManualEntry";
 import NewLineItemRow from "./NewLineItemRow";
 import NewLineItemTable from "./NewLineItemTable";
 
-import useOutsideClick from "../../../helpers/outsideClick";
 import { unmapLeadLineItemList } from "../../../mapper/lead.lineItem.mapper";
 import { unmapLeadQuoteDetails } from "../../../mapper/lead.quote.mapper";
 import { unmapQuoteLineItemList } from "../../../mapper/quote.lineItem.mapper";

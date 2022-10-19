@@ -6,13 +6,13 @@ import { TOASTER_DURATION } from "constants/index";
 import * as dayjs from "dayjs";
 import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
+import { isInThePast } from "helpers";
 import _ from "lodash";
 import { ToastContainer } from "react-toastify";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import companyUsersApi from "apis/company-users";
 import spaceUsagesApi from "apis/space-usages";
-import { isInThePast } from "helpers/date-parser";
 
 import CurrentHourLine from "./CurrentHourLine";
 import DatesInWeek from "./DatesInWeek";
