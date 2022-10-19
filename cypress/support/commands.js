@@ -36,7 +36,6 @@ Cypress.Commands.add("generateNewInvoice", function(invoice_number){
   cy.contains("Flipkart").click()
   cy.get(invoicesSelector.invoiceNumberField).click().type(invoice_number)
   cy.get(invoicesSelector.newLineItemButton).click()
-  cy.get(invoicesSelector.entriesList).first().click()
+  cy.get(invoicesSelector.entriesList).first().click({force: true})
   cy.get(invoicesSelector.saveInvoice).click()
 })
-
