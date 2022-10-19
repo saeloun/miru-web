@@ -58,20 +58,20 @@ RSpec.describe ClientPolicy, type: :policy do
         expect(described_class).to permit(admin, client)
         expect(described_class).to permit(owner, client)
       end
-
-      context "when from another company" do
-        it "does not grants permission" do
-          expect(described_class).not_to permit(another_admin, client)
-          expect(described_class).not_to permit(another_owner, client)
-        end
-      end
     end
 
     context "when user is an employee, book_keeper" do
       it "does not grant permission" do
         expect(described_class).not_to permit(employee, client)
-        expect(described_class).not_to permit(another_employee, client)
         expect(described_class).not_to permit(book_keeper, client)
+      end
+    end
+
+    context "when user is from another company" do
+      it "does not grants permission" do
+        expect(described_class).not_to permit(another_admin, client)
+        expect(described_class).not_to permit(another_owner, client)
+        expect(described_class).not_to permit(another_employee, client)
         expect(described_class).not_to permit(another_book_keeper, client)
       end
     end
