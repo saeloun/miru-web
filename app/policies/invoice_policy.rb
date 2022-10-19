@@ -22,7 +22,7 @@ class InvoicePolicy < ApplicationPolicy
   end
 
   def edit?
-    user_owner_role? || user_admin_role?
+    authorize_current_user
   end
 
   def send_invoice?
