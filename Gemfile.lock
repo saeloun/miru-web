@@ -217,7 +217,6 @@ GEM
     hash_dot (2.5.0)
     hashdiff (1.0.1)
     hashie (5.0.0)
-    honeybadger (4.12.1)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
     i18n_data (0.16.0)
@@ -275,13 +274,13 @@ GEM
       timeout
     newrelic_rpm (8.7.0)
     nio4r (2.5.8)
-    nokogiri (1.13.7-aarch64-linux)
+    nokogiri (1.13.9-aarch64-linux)
       racc (~> 1.4)
-    nokogiri (1.13.7-arm64-darwin)
+    nokogiri (1.13.9-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.13.7-x86_64-darwin)
+    nokogiri (1.13.9-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.13.7-x86_64-linux)
+    nokogiri (1.13.9-x86_64-linux)
       racc (~> 1.4)
     oauth2 (1.4.9)
       faraday (>= 0.17.3, < 3.0)
@@ -446,6 +445,14 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     semantic_range (3.0.0)
+    sentry-rails (5.5.0)
+      railties (>= 5.0)
+      sentry-ruby (~> 5.5.0)
+    sentry-ruby (5.5.0)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+    sentry-sidekiq (5.5.0)
+      sentry-ruby (~> 5.5.0)
+      sidekiq (>= 3.0)
     shoulda-callback-matchers (1.1.4)
       activesupport (>= 3)
     shoulda-matchers (5.1.0)
@@ -542,7 +549,6 @@ DEPENDENCIES
   foreman
   grover
   hash_dot
-  honeybadger
   image_processing (>= 1.2)
   jbuilder (~> 2.11)
   letter_opener
@@ -572,6 +578,9 @@ DEPENDENCIES
   sass-rails
   searchkick
   selenium-webdriver (>= 4.0.0)
+  sentry-rails
+  sentry-ruby
+  sentry-sidekiq
   shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers (~> 5.1)
   sidekiq
