@@ -62,13 +62,15 @@ module ErrorHandler
       message = exception.message
 
       respond_to do |format|
-        format.json {
-          render json: {
-            errors: exception.record.errors.full_messages.first,
-            notice: I18n.t("client.update.failure.message")
-          },
+        format.json({
+          render(
+            json: {
+                    errors: exception.record.errors.full_messages.first,
+                    notice: I18n.t("client.update.failure.message")
+                  },
             status: :unprocessable_entity
-        }
+          )
+        })
         format.html { render file: "public/422.html", status: :unprocessable_entity, layout: false, alert: message }
       end
     end
