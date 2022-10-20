@@ -126,7 +126,6 @@ class User < ApplicationRecord
 
   # Callbacks
   after_discard :discard_project_members
-  after_commit :set_employee_role_and_workspace, on: [:create]
 
   def having_department?(department_id)
     sales_department_id = User::DEPARTMENT_OPTIONS.detect { |department| department.id == department_id.to_i }&.id

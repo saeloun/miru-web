@@ -8,6 +8,7 @@ import * as Yup from "yup";
 
 import teamApi from "apis/team";
 import { useList } from "context/TeamContext";
+import { useUserContext } from "context/UserContext";
 
 const TeamMemberSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name cannot be blank"),
@@ -42,6 +43,7 @@ interface Props {
 }
 
 const EditClient = ({ user = {}, isEdit = false }: Props) => {
+  const { isAdminUser, user: currentUser } = useUserContext();
   const [apiError, setApiError] = useState<string>(""); // eslint-disable-line
   const { setModalState, departments } = useList();
 
@@ -53,7 +55,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
       email,
       role,
       team_lead: teamLead === 'true',
-      department_id: departmentId,
+      department_id: departmentId || currentUser['department_id'],
     };
 
     if (isEdit) payload["id"] = id;
@@ -181,10 +183,10 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-4">
+                    { isAdminUser && <div className="mt-4">
                       <div className="field">
                         <label className="form__label">
-                          Role
+                            Role
                         </label>
                         <div className="mt-1 flex">
                           <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
@@ -242,10 +244,11 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-4">
+                    }
+                    { isAdminUser && <div className="mt-4">
                       <div className="field">
                         <label className="form__label">
-                          Team Lead
+                            Team Lead
                         </label>
                         <div className="mt-1 flex">
                           <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
@@ -285,7 +288,8 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-4">
+                    }
+                    { isAdminUser && <div className="mt-4">
                       <div className="field">
                         <div className="field_with_errors">
                           <label className="form__label">Department</label>
@@ -304,6 +308,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         </div>
                       </div>
                     </div>
+                    }
                     <p className="tracking-wider mt-7 block text-xs text-red-600">
                       {apiError}
                     </p>
