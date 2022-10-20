@@ -21,7 +21,7 @@ const Filters = ({
   const [customDate, setCustomDate] = useState<boolean>(false);
   const [filters, setFilters] = useState<any>(filterParams);
   const [diableDateBtn, setdisableDateBtn] = useState<boolean>(true);
-  const [dateRangeList, setDateRangeList] = useState(handleDateRangeOptions());
+  const [dateRangeOptions, setDateRangeOptions] = useState(handleDateRangeOptions());
 
   useEffect(() => {
     const { value, from, to } = filterParams.dateRange;
@@ -87,7 +87,7 @@ const Filters = ({
   const handleCustomDate = (from, to) => {
     const fromDate =  dayjs(from).format("DD/MM/YY");
     const toDate =  dayjs(to).format("DD/MM/YY");
-    setDateRangeList(handleDateRangeOptions({ value: "custom", label: `Custom ${fromDate} - ${toDate}` }));
+    setDateRangeOptions(handleDateRangeOptions({ value: "custom", label: `Custom ${fromDate} - ${toDate}` }));
     setCustomDate(true);
     return { fromDate: fromDate, toDate: toDate };
   };
@@ -171,7 +171,7 @@ const Filters = ({
           classNamePrefix="react-select-filter"
           name="dateRange"
           value={filters.dateRange}
-          options={dateRangeList}
+          options={dateRangeOptions}
           onChange={handleSelectFilter}
           styles={customStyles}
         />
