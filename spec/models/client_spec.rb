@@ -155,62 +155,6 @@ RSpec.describe Client, type: :model do
       end
     end
 
-    describe "#new_line_item_entries" do
-      let(:company) { create(:company) }
-      let(:user) { create(:user) }
-      let(:client) { create(:client, company:) }
-      let(:project) { create(:project, client:) }
-      let(:project_member) { create(:project_member, project:, user:, hourly_rate: 5000) }
-
-      before do
-        create_list(:timesheet_entry, 5, user:, project:)
-      end
-
-      context "when no entries are selected" do
-        let(:selected_entries) { [] }
-
-        it "returns all the line item entries" do
-          result =
-            client.timesheet_entries.where(bill_status: :unbilled)
-              .joins("INNER JOIN project_members ON timesheet_entries.project_id = project_members.project_id
-                  AND timesheet_entries.user_id = project_members.user_id")
-              .joins("INNER JOIN users ON project_members.user_id = users.id")
-              .select(
-                "timesheet_entries.id as id,
-                 users.first_name as first_name,
-                 users.last_name as last_name,
-                 timesheet_entries.work_date as date,
-                 timesheet_entries.note as description,
-                 project_members.hourly_rate as rate,
-                 timesheet_entries.duration as quantity"
-              ).where.not(id: selected_entries).order("timesheet_entries.work_date").distinct
-          expect(client.new_line_item_entries(selected_entries)).to eq(result)
-        end
-      end
-
-      context "when some entries are selected" do
-        let(:selected_entries) { [ 1, 2 ] }
-
-        it "returns all the line item entries except the entries which are selected" do
-          result =
-            client.timesheet_entries.where(bill_status: :unbilled)
-              .joins("INNER JOIN project_members ON timesheet_entries.project_id = project_members.project_id
-                  AND timesheet_entries.user_id = project_members.user_id")
-              .joins("INNER JOIN users ON project_members.user_id = users.id")
-              .select(
-                "timesheet_entries.id as id,
-                 users.first_name as first_name,
-                 users.last_name as last_name,
-                 timesheet_entries.work_date as date,
-                 timesheet_entries.note as description,
-                 project_members.hourly_rate as rate,
-                 timesheet_entries.duration as quantity"
-              ).where.not(id: selected_entries).order("timesheet_entries.work_date").distinct
-          expect(client.new_line_item_entries(selected_entries)).to eq(result)
-        end
-      end
-    end
-
     describe "#client_overdue_and_outstanding_calculation" do
       let(:company) { create(:company) }
       let(:user) { create(:user) }
