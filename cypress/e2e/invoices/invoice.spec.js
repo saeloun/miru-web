@@ -53,7 +53,7 @@ describe("invoices index page", () => {
     cy.get(invoicesSelector.edit).click({force: true})
     cy.get(invoicesSelector.newLineItemButton).click()
     cy.get(invoicesSelector.entriesList).first().click({force: true})
-    cy.get(invoicesSelector.saveInvoiceEdit).click()
+    cy.get(invoicesSelector.saveInvoice).click()
   })
 
 });
