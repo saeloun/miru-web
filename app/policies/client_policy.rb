@@ -15,10 +15,6 @@ class ClientPolicy < ApplicationPolicy
     user_owner_role? || user_admin_role?
   end
 
-  def new_invoice_line_items?
-    user_owner_role? || user_admin_role?
-  end
-
   def update?
     unless user.current_workspace_id == record.company_id
       @error_message_key = :different_workspace
