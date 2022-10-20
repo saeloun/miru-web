@@ -33,7 +33,7 @@ RSpec.describe ClientPolicy, type: :policy do
     end
   end
 
-  permissions :show?, :create?, :new_invoice_line_items? do
+  permissions :show?, :create? do
     it "grants permission to an admin and an owner" do
       expect(described_class).to permit(admin)
       expect(described_class).to permit(owner)
