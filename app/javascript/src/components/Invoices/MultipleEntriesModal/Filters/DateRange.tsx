@@ -60,10 +60,14 @@ const getDateRangeOptions = () => {
   ];
 };
 
-const dateRangeOptions = [
-  ...getDateRangeOptions()
-];
+const handleDateRangeOptions = (option?:any) => {
+  if (option?.value == "custom") {
+    return getDateRangeOptions().filter(item => item.value == option.value ? item.label = option.label : item);
+  } else {
+    return [...getDateRangeOptions()];
+  }
+};
 
 export {
-  dateRangeOptions
+  handleDateRangeOptions
 };

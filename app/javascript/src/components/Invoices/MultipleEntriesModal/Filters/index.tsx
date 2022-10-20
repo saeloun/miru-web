@@ -6,7 +6,7 @@ import Select from "react-select";
 
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 
-import { dateRangeOptions } from "./DateRange";
+import { handleDateRangeOptions } from "./DateRange";
 import SearchTeamMembers from "./SearchTeamMembers";
 
 const Filters = ({
@@ -21,12 +21,13 @@ const Filters = ({
   const [customDate, setCustomDate] = useState<boolean>(false);
   const [filters, setFilters] = useState<any>(filterParams);
   const [diableDateBtn, setdisableDateBtn] = useState<boolean>(true);
+  const [dateRangeList, setDateRangeList] = useState(handleDateRangeOptions());
 
   useEffect(() => {
     const { value, from, to } = filterParams.dateRange;
     if (value == "custom" && from && to) {
       setDateRange({ ...dateRange, from: from, to: to });
-      setCustomDate(true);
+      handleCustomDate(from, to);
       setdisableDateBtn(false);
     }
   }, []);
@@ -83,13 +84,18 @@ const Filters = ({
     setSelectedInput(e.target.name);
   };
 
+  const handleCustomDate = (from, to) => {
+    const fromDate =  dayjs(from).format("DD/MM/YY");
+    const toDate =  dayjs(to).format("DD/MM/YY");
+    setDateRangeList(handleDateRangeOptions({ value: "custom", label: `Custom ${fromDate} - ${toDate}` }));
+    setCustomDate(true);
+    return { fromDate: fromDate, toDate: toDate };
+  };
+
   const submitCustomDatePicker = () => {
     if (dateRange.from && dateRange.to) {
-      const fromDate =  dayjs(dateRange.from).format("DD/MM/YY");
-      const toDate =  dayjs(dateRange.to).format("DD/MM/YY");
-
+      const { fromDate, toDate } = handleCustomDate(dateRange.from, dateRange.to);
       setFilters({ ...filters, ["dateRange"]: { value: "custom", label: `Custom ${fromDate} - ${toDate}`, ...dateRange } });
-      setCustomDate(true);
     }
     hideCustomFilter();
   };
@@ -158,14 +164,14 @@ const Filters = ({
       <SearchTeamMembers
         teamMembers={teamMembers}
         filters={filters}
-        handleSelectFilter={handleSelectFilter}
+        setFilters={setFilters}
       />
       <div>
         <Select
           classNamePrefix="react-select-filter"
           name="dateRange"
           value={filters.dateRange}
-          options={dateRangeOptions}
+          options={dateRangeList}
           onChange={handleSelectFilter}
           styles={customStyles}
         />
