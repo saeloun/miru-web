@@ -3,6 +3,7 @@ import * as React from "react";
 import { minToHHMM } from "helpers";
 import { Pen, Trash } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
+import { Badge } from "StyledComponents";
 
 import { IProject } from "../interface";
 
@@ -51,7 +52,12 @@ export const Project = ({
         </p>
       </td>
       <td className="table__cell text-right">
-        {isBillable && <span className="px-1 tracking-widest rounded-lg text-xs font-semibold leading-4 bg-miru-han-purple-100 text-miru-han-purple-1000">Billable</span>}
+        {isBillable &&(
+          <Badge text="Billable"
+            bgColor="bg-miru-han-purple-100"
+            color="text-miru-han-purple-1000"
+            className="px-1 tracking-widest rounded-lg" />
+        )}
       </td>
       <td className="table__cell text-xl text-right font-bold">
         {minToHHMM(minutesSpent)}
