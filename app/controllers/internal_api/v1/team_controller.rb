@@ -2,7 +2,6 @@
 
 class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
   helper ApplicationHelper
-  # before_action :set_employment, only: [:update, :destroy]
 
   def index
     authorize :index, policy_class: TeamPolicy
