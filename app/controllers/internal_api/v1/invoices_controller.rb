@@ -33,7 +33,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def edit
     authorize Invoice
-    render :edit, locals: { invoice: }
+    render :edit, locals: { invoice: }, status: :ok
   end
 
   def update

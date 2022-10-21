@@ -21,7 +21,8 @@ const dateSchema = Yup.object().shape({
 });
 
 const FilterSideBar = ({
-  setFilterVisibilty, // TODO: fix typo setFilterVisibility
+  selectedFilter,
+  setFilterVisibilty: setFilterVisibility, // TODO: fix typo setFilterVisibility
   resetFilter,
   handleApplyFilter,
   handleSelectDate,
@@ -37,6 +38,8 @@ const FilterSideBar = ({
     toDateErr: ""
   });
   const [clientList, setClientList] = useState([]);
+
+  const selectedClients = selectedFilter["clients"][0]["value"] === "" ? selectedFilter["clients"].slice(1) : selectedFilter["clients"];
 
   useEffect(() => {
     fetchAndSetClients();
@@ -106,7 +109,7 @@ const FilterSideBar = ({
           <h4 className="text-base font-bold">
             Filters
           </h4>
-          <button onClick={() => setFilterVisibilty(false)}>
+          <button onClick={() => setFilterVisibility(false)}>
             <X size={12} />
           </button>
         </div>
@@ -144,7 +147,7 @@ const FilterSideBar = ({
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Clients</h5>
-              <Select isMulti={true} options={clientList} classNamePrefix="react-select-filter" name="clients" onChange={handleSelectFilter} styles={customStyles}/>
+              <Select isMulti={true} defaultValue={selectedClients} options={clientList} classNamePrefix="react-select-filter" name="clients" onChange={handleSelectFilter} styles={customStyles}/>
             </li>
           </ul>
         </div>

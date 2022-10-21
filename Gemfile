@@ -127,12 +127,14 @@ gem "grover"
 
 gem "activerecord-import"
 
-# Honeybadger for error reporting
-gem "honeybadger"
-
 # For finding the vulnerabilities in the gems
 gem "bundler-audit", require: false
 gem "ruby_audit", require: false
+
+# For reporting messages, exceptions, and tracing events.
+gem "sentry-rails"
+gem "sentry-ruby"
+gem "sentry-sidekiq"
 
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -196,4 +198,5 @@ group :test do
 
   # Strategies for cleaning databases in Ruby.
   gem "database_cleaner", "~> 2.0"
+  gem "hash_dot"
 end
