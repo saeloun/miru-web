@@ -9,6 +9,10 @@ RSpec.describe "InternalApi::V1::Projects::Search#index", type: :request do
   let(:project) { create(:project, client:) }
   let(:project_member) { create(:project_member, user:, project:, hourly_rate: 5000) }
 
+  before do
+    Project.reindex
+  end
+
   context "when user search with a valid search term" do
     before do
       create(:employment, company:, user:)
