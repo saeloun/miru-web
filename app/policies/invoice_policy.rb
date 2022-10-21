@@ -9,28 +9,28 @@ class InvoicePolicy < ApplicationPolicy
     user_owner_role? || user_admin_role?
   end
 
-  def update?
-    user_owner_role? || user_admin_role?
+  def show?
+    authorize_current_user
   end
 
-  def show?
-    user_owner_role? || user_admin_role?
+  def update?
+    authorize_current_user
   end
 
   def destroy?
-    user_owner_role? || user_admin_role?
+    authorize_current_user
   end
 
   def edit?
-    user_owner_role? || user_admin_role?
+    authorize_current_user
   end
 
   def send_invoice?
-    user_owner_role? || user_admin_role?
+    authorize_current_user
   end
 
   def download?
-    user_owner_role? || user_admin_role?
+    authorize_current_user
   end
 
   def permitted_attributes
@@ -45,5 +45,14 @@ class InvoicePolicy < ApplicationPolicy
         :rate, :quantity, :_destroy
       ]
     ]
+  end
+
+  def authorize_current_user
+    unless user.current_workspace_id == record.company.id
+      @error_message_key = :different_workspace
+      return false
+    end
+
+    user_owner_role? || user_admin_role?
   end
 end
