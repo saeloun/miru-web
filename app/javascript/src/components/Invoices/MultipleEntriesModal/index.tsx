@@ -24,6 +24,7 @@ const MultipleEntriesModal = ({
   const [teamMembers, setTeamMembers] = useState<any>([]);
   const [filterParams, setFilterParams] = useState(filterIntialValues);
   const [selectedInput, setSelectedInput] = React.useState("from-input");
+  const [loading, setLoading] = useState(true);
 
   const handleItemSelection = (id) => {
     const checkboxes = lineItems.map(item => {
@@ -60,11 +61,13 @@ const MultipleEntriesModal = ({
   };
 
   useEffect(() => {
+    setLoading(true);
     loadMore();
   }, [filterParams]);
 
   const loadMore = () => {
     fetchMultipleNewLineItems(
+      setLoading,
       handleFilterParams,
       selectedLineItems,
       setSelectedLineItems,
@@ -124,18 +127,24 @@ const MultipleEntriesModal = ({
           setSelectedInput={setSelectedInput}
           filterIntialValues={filterIntialValues}
         />
-        <div className='mx-6 overflow-y-scroll'>
-          {lineItems.length > 0 ?
-            <Table
-              lineItems={lineItems}
-              handleItemSelection={handleItemSelection}
-              handleSelectAll={handleSelectAll}
-              allCheckboxSelected={allCheckboxSelected}
-            />
-            :
-            <p className="flex items-center justify-center text-miru-han-purple-1000 tracking-wide text-base font-medium">No Data Found</p>
-          }
-        </div>
+        {loading ?
+          <p className="flex items-center justify-center text-miru-han-purple-1000 tracking-wide text-base font-medium">
+            Loading...
+          </p>
+          :
+          <div className='mx-6 overflow-y-scroll'>
+            {lineItems.length > 0 ?
+              <Table
+                lineItems={lineItems}
+                handleItemSelection={handleItemSelection}
+                handleSelectAll={handleSelectAll}
+                allCheckboxSelected={allCheckboxSelected}
+              />
+              :
+              <p className="flex items-center justify-center text-miru-han-purple-1000 tracking-wide text-base font-medium">No Data Found</p>
+            }
+          </div>
+        }
         <Footer
           selectedRowCount={selectedLineItems.length}
           handleSubmitModal={handleSubmitModal}

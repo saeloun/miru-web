@@ -74,6 +74,7 @@ export const fetchNewLineItems = async (
 };
 
 export const fetchMultipleNewLineItems = async (
+  setLoading,
   handleFilterParams,
   selectedLineItems,
   setSelectedLineItems,
@@ -96,4 +97,5 @@ export const fetchMultipleNewLineItems = async (
     setSelectedLineItems(sortedData);
   }
   setTeamMembers(res.data.filter_options.team_members);
+  setLoading(false);
 };
