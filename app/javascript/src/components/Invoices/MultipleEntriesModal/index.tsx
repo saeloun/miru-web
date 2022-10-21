@@ -174,6 +174,7 @@ const MultipleEntriesModal = ({
         <Footer
           selectedRowCount={selectedLineItems.length}
           handleSubmitModal={handleSubmitModal}
+          handleSelectAll={handleSelectAll}
         />
       </div>
     </div>
