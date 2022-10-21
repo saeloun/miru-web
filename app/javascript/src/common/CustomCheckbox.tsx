@@ -12,7 +12,7 @@ const CustomCheckbox = ({
   wrapperClassName="",
   labelClassName=""
 }) => (
-  <div className={classnames("flex items-center",wrapperClassName)}>
+  <div className={classnames("flex items-center", wrapperClassName)}>
     <input
       type="checkbox"
       id={id}
@@ -21,7 +21,7 @@ const CustomCheckbox = ({
       onChange={handleCheck}
       value={checkboxValue}
       data-cy= 'select-all-checkbox'
-      className="absolute w-8 h-8 opacity-0 custom__checkbox"
+      className="absolute w-8 h-8 opacity-0 cursor-pointer custom__checkbox"
     />
     <div className="flex items-center justify-center flex-shrink-0 w-5 h-5 mr-2 bg-white border-2 border-miru-han-purple-1000 focus-within:border-blue-500">
       <svg

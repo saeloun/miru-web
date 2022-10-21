@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import dayjs from "dayjs";
-import { Funnel, Plus, Minus } from "phosphor-react";
-import { Badge, SidePanel } from "StyledComponents";
+import { X, Funnel, Plus, Minus } from "phosphor-react";
+import { Badge, Button, SidePanel } from "StyledComponents";
 
 import companiesApi from "apis/companies";
 import CustomCheckbox from "common/CustomCheckbox";
@@ -80,41 +80,41 @@ const FilterSideBar = ({
   };
 
   const handleSelectFilter = (event) => {
-    const selectedValue = dateRangeOptions.filter(
-      (option) => option.value === event.target.value
-    );
-    if (selectedValue[0].label === "custom") {
-      setShowCustomFilter(true);
-      setFilters({
-        ...filters,
-        [event.target.name]: { ...selectedValue, ...dateRange }
-      });
-    } else {
-      selectedValue[0].label != "custom" &&
-        setFilters({
-          ...filters,
-          [event.target.name]: selectedValue
-        });
-    }
-  };
-
-  const handleCheck = (event) => {
     switch (event.target.name) {
+      case "dateRange": {
+        const selectedValue = dateRangeOptions.filter(
+          (option) => option.value === event.target.value
+        );
+        if (selectedValue[0].value === "custom") {
+          setShowCustomFilter(true);
+          setFilters({
+            ...filters,
+            [event.target.name]: { ...selectedValue, ...dateRange }
+          });
+        } else {
+          selectedValue[0].value != "custom" &&
+            setFilters({
+              ...filters,
+              [event.target.name]: selectedValue
+            });
+        }
+        break;
+      }
       case "clients": {
-        const selectedValue = clientList.filter(
+        const selectedValue2 = clientList.filter(
           (option) => option.value == event.target.value
         );
 
         if (event.target.checked) {
-          if (!filters.clients.includes(selectedValue)) {
+          if (!filters.clients.includes(selectedValue2)) {
             setFilters({
               ...filters,
-              [event.target.name]: filters.clients.concat(selectedValue)
+              [event.target.name]: filters.clients.concat(selectedValue2)
             });
           }
         } else {
           const newarr = filters.clients.filter(
-            (client) => client != selectedValue[0]
+            (client) => client != selectedValue2[0]
           );
           setFilters({
             ...filters,
@@ -125,20 +125,20 @@ const FilterSideBar = ({
       }
 
       case "status": {
-        const selectedValue2 = statusOptions.filter(
+        const selectedValue3 = statusOptions.filter(
           (option) => option.value == event.target.value
         );
 
         if (event.target.checked) {
-          if (!filters.status.includes(selectedValue2)) {
+          if (!filters.status.includes(selectedValue3)) {
             setFilters({
               ...filters,
-              [event.target.name]: filters.status.concat(selectedValue2)
+              [event.target.name]: filters.status.concat(selectedValue3)
             });
           }
         } else {
           const newarr = filters.status.filter(
-            (status) => status != selectedValue2[0]
+            (status) => status != selectedValue3[0]
           );
           setFilters({
             ...filters,
@@ -223,16 +223,20 @@ const FilterSideBar = ({
 
   return (
     <SidePanel
-      handleCancel={handleReset}
-      handleProcced={handleApply}
       setFilterVisibilty={setFilterVisibilty}
-      HeaderTitle="Filters"
-      HeaderLogo={<Funnel size={16} className="mr-2.5" />}
-      hasFooter={true}
-      proceedButtonText="APPLY"
-      cancelButtonText="RESET"
+      WrapperClassname = "overflow-y-auto"
     >
-      <div className="sidebar__filters">
+
+      <SidePanel.Header className="flex px-5 pt-5 mb-7 justify-between items-center text-miru-dark-purple-1000 font-bold">
+        <h4 className="text-base flex items-center">
+          <Funnel size={16} className="mr-2.5"/> Filters
+        </h4>
+        <button onClick={() => setFilterVisibilty(false)}>
+          <X size={16} />
+        </button>
+      </SidePanel.Header>
+
+      <SidePanel.Body className="sidebar__filters" hasFooter>
         <ul>
           <li className="pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 border-b border-miru-gray-200 cursor-pointer">
             <div
@@ -253,7 +257,7 @@ const FilterSideBar = ({
               </div>
             </div>
             {isDateRangeOpen && (
-              <div className="md:mt-7 md:max-h-50 overflow-y-auto">
+              <div className="md:mt-7">
                 {dateRangeOptions.map((dateRange) => (
                   <CustomRadioButton
                     id={dateRange.value}
@@ -316,7 +320,7 @@ const FilterSideBar = ({
               </div>
             </div>
             {isClientOpen && (
-              <div className="md:mt-7 md:max-h-50 overflow-y-auto">
+              <div className="md:mt-7">
                 {clientList.length &&
                   clientList.map((client) => (
                     <CustomCheckbox
@@ -325,8 +329,8 @@ const FilterSideBar = ({
                       name="clients"
                       checkboxValue={client.value}
                       isChecked={filters.clients.includes(client)}
-                      handleCheck={handleCheck}
-                      wrapperClassName="py-3 px-5 cursor-pointer hover:bg-miru-gray-100 text-miru-dark-purple-1000"
+                      handleCheck={handleSelectFilter}
+                      wrapperClassName="py-3 px-5 hover:bg-miru-gray-100 text-miru-dark-purple-1000"
                       labelClassName="ml-4"
                     />
                   ))}
@@ -351,7 +355,7 @@ const FilterSideBar = ({
               </div>
             </div>
             {isStatusOpen && (
-              <div className="md:mt-7 md:max-h-50 overflow-y-auto">
+              <div className="md:mt-7">
                 {statusOptions.length &&
                   statusOptions.map((status) => (
                     <CustomCheckbox
@@ -365,8 +369,8 @@ const FilterSideBar = ({
                       name="status"
                       checkboxValue={status.value}
                       isChecked={filters.status.includes(status)}
-                      handleCheck={handleCheck}
-                      wrapperClassName="py-3 px-5 cursor-pointer hover:bg-miru-gray-100"
+                      handleCheck={handleSelectFilter}
+                      wrapperClassName="py-3 px-5 hover:bg-miru-gray-100"
                       labelClassName="ml-4"
                     />
                   ))}
@@ -374,7 +378,13 @@ const FilterSideBar = ({
             )}
           </li>
         </ul>
-      </div>
+      </SidePanel.Body>
+      <SidePanel.Footer className="sidebar__footer">
+        <Button onClick={handleReset} style="secondary" size="medium" className="mr-4 flex justify-between items-center">
+            RESET
+        </Button>
+        <Button onClick={handleApply} style="primary" size="medium">APPLY</Button>
+      </SidePanel.Footer>
     </SidePanel>
   );
 };
