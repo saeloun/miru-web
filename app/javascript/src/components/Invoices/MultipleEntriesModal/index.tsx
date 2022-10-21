@@ -157,6 +157,7 @@ const MultipleEntriesModal = ({
           setFilterParams={setFilterParams}
           selectedInput={selectedInput}
           setSelectedInput={setSelectedInput}
+          filterIntialValues={filterIntialValues}
         />
         <div className='mx-6'>
           {lineItems.length > 0 &&

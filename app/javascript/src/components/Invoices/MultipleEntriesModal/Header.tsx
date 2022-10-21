@@ -10,7 +10,8 @@ const Header = ({
   filterParams,
   setFilterParams,
   selectedInput,
-  setSelectedInput
+  setSelectedInput,
+  filterIntialValues
 }) => (
   <div>
     <div className='flex justify-between px-6 pb-2 pt-6'>
@@ -27,6 +28,7 @@ const Header = ({
       setFilterParams={setFilterParams}
       selectedInput={selectedInput}
       setSelectedInput={setSelectedInput}
+      filterIntialValues={filterIntialValues}
     />
   </div>
 );

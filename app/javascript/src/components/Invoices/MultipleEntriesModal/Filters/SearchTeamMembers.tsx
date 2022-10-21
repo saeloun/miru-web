@@ -10,8 +10,10 @@ const SearchTeamMembers = ({
   const [selected, setSelected] = useState([]);
 
   useEffect(() => {
-    setSelected(teamMembers);
-  }, [teamMembers.length]);
+    if (filters.teamMembers.length == 0){
+      setSelected(teamMembers);
+    }
+  }, [filters.teamMembers.length]);
 
   const handleChange = (selectedOptions) => {
     setSelected(selectedOptions);

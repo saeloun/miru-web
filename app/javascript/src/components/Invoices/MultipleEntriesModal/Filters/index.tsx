@@ -14,7 +14,8 @@ const Filters = ({
   filterParams,
   setFilterParams,
   selectedInput,
-  setSelectedInput
+  setSelectedInput,
+  filterIntialValues
 }) => {
   const [showCustomFilter, setShowCustomFilter] = useState<boolean>(false);
   const [dateRange, setDateRange] = useState<any>({ from: "", to: "" });
@@ -122,6 +123,11 @@ const Filters = ({
     defaultDateRange() ? setFilterParams(setDefaultDateRange()) : setFilterParams(filters);
   };
 
+  const handleReset = () => {
+    setFilters(filterIntialValues);
+    setFilterParams(filterIntialValues);
+  };
+
   const customStyles = {
     container: base => ({
       ...base,
@@ -197,7 +203,8 @@ const Filters = ({
           </div>
         }
       </div>
-      <button onClick={handleApply}>Apply</button>
+      <button className="text-miru-han-purple-1000" onClick={handleReset}>reset</button>
+      <button className="text-miru-han-purple-1000 font-semibold" onClick={handleApply}>Apply</button>
     </div>
   );
 };
