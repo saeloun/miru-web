@@ -21,7 +21,7 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => (
           ${(selectedRowCount) ? "cursor-pointer bg-miru-han-purple-1000" : "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"}`
       }
     >
-        ADD ENTRIES
+      ADD ENTRIES
     </button>
   </div>
 );
