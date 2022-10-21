@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import dayjs from "dayjs";
-import { lineTotalCalc } from "helpers";
-
-import generateInvoice from "apis/generateInvoice";
-
 import Footer from "./Footer";
 import Header from "./Header";
 import Table from "./Table";
 
-// import { fetchMultipleNewLineItems } from "../common/utils";
+import { fetchMultipleNewLineItems } from "../common/utils";
 
 const MultipleEntriesModal = ({
   selectedClient,
@@ -24,8 +19,6 @@ const MultipleEntriesModal = ({
   };
 
   const [lineItems, setLineItems] = useState<any>([]);
-  const [totalLineItems, setTotalLineItems] = useState<number>(null);
-  const [pageNumber, setPageNumber] = useState<number>(1);
   const [selectedLineItems, setSelectedLineItems] = useState<any>([]);
   const [allCheckboxSelected, setAllCheckboxSelected] = useState<boolean>(false);
   const [teamMembers, setTeamMembers] = useState<any>([]);
@@ -67,46 +60,18 @@ const MultipleEntriesModal = ({
   };
 
   useEffect(() => {
-    fetchMultipleNewLineItems();
+    loadMore();
   }, [filterParams]);
 
-  // const loadMore = () => {
-  //   console.log("more")
-  //   fetchMultipleNewLineItems(
-  //     handleFilterParams(),
-  //     selectedClient,
-  //     lineItems,
-  //     setLineItems,
-  //     setTotalLineItems,
-  //     pageNumber,
-  //     setPageNumber,
-  //     // selectedOption,
-  //     allCheckboxSelected,
-  //     setSelectedLineItems,
-  //     setTeamMembers
-  //   );
-  // };
-
-  const fetchMultipleNewLineItems = async () => {
-    const res = await generateInvoice.getLineItems(handleFilterParams());
-    setPageNumber(pageNumber + 1);
-
-    const itemSelected = (id) => selectedLineItems.filter((selectedItem) => id == selectedItem.timesheet_entry_id).length;
-
-    const items = res.data.new_line_item_entries.map(item => ({
-      ...item,
-      checked: itemSelected(item.timesheet_entry_id),
-      lineTotal: lineTotalCalc(item.quantity, item.rate)
-    }));
-
-    const mergedItems = [...items];
-    const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
-    setLineItems(sortedData);
-    setTotalLineItems(res.data.total_new_line_items);
-    if (allCheckboxSelected) {
-      setSelectedLineItems(sortedData);
-    }
-    setTeamMembers(res.data.filter_options.team_members);
+  const loadMore = () => {
+    fetchMultipleNewLineItems(
+      handleFilterParams,
+      selectedLineItems,
+      setSelectedLineItems,
+      setLineItems,
+      allCheckboxSelected,
+      setTeamMembers
+    );
   };
 
   const handleSubmitModal = () => {
@@ -159,17 +124,16 @@ const MultipleEntriesModal = ({
           setSelectedInput={setSelectedInput}
           filterIntialValues={filterIntialValues}
         />
-        <div className='mx-6'>
-          {lineItems.length > 0 &&
+        <div className='mx-6 overflow-y-scroll'>
+          {lineItems.length > 0 ?
             <Table
               lineItems={lineItems}
-              loadMore={fetchMultipleNewLineItems}
-              totalLineItems={totalLineItems}
-              pageNumber={pageNumber}
               handleItemSelection={handleItemSelection}
               handleSelectAll={handleSelectAll}
               allCheckboxSelected={allCheckboxSelected}
             />
+            :
+            <p className="flex items-center justify-center text-miru-han-purple-1000 tracking-wide text-base font-medium">No Data Found</p>
           }
         </div>
         <Footer
