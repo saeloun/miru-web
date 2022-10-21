@@ -19,7 +19,8 @@ json.devices devices do |device|
   json.brand device[:brand]
   json.manufacturer device[:manufacturer]
   json.base_os device[:base_os]
-  json.hide_demand devices_demands[device.id]
+  json.hide_demand (devices_demands[device.id] || []).find { |i| i[:created_by_id] == current_user.id }.present?
+  json.devices_demands devices_demands[device.id]
 end
 
 json.androidAppUrl Sidekiq.redis { |c| c.get("androidAppUrl") }

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import { GooglePlayLogo, AppStoreLogo, PaperPlaneTilt, XCircle } from "phosphor-react";
+import { CircleWavyWarning } from "phosphor-react";
 import { useCookies } from "react-cookie";
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import ReactTooltip from "react-tooltip";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import devicesApi from "apis/devices";
@@ -25,7 +27,7 @@ const Devices = ( { isAdminUser, _companyRole, _user, _company } ) => {
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
   const [rememberFilter, setRememberFilter] = useCookies();
-  const [deviceData, setDeviceData] = useState<any>([{}]);
+  const [deviceData, setDeviceData] = useState<any>([]);
   const [pagy, setPagy] = React.useState<any>(null);
   const [appUrl, setAppUrl] = React.useState<any>({ androidAppUrl: null, iosAppUrl: null });
   const [searchParams, setSearchParams] = useSearchParams();
@@ -167,13 +169,29 @@ const Devices = ( { isAdminUser, _companyRole, _user, _company } ) => {
         col9: <div className="text-xs tracking-widest text-center">{device.version}</div>,
         col10: <div className="text-xs tracking-widest text-center">{device.available ? isAvailable : isNotAvailable }</div>,
         col11: <div className="text-xs tracking-widest text-center">{device.assigneeName}</div>,
-        col12: <div className="text-xs tracking-widest text-center">{
-          device.hideDemand ?
-            <p>
-              <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-han-purple-100 text-miru-han-purple-1000 inline-block align-middle">Pending</span>
-              <button title="Request Cancel" className="ml-2 inline-block align-middle text-miru-alert-pink-400" onClick={() => handleCancelRequestIconClick(device.id)}><XCircle size={25} /></button>
-            </p>
-            : <button title="Request Device" onClick={() => handleDeviceRequest(device.id)}><PaperPlaneTilt size={25} /></button>}</div>,
+        col12: <div className="text-xs tracking-widest text-center">
+          <div className="inline-flex rounded-md shadow-sm">{
+            device.hideDemand ?
+              <p>
+                <span className="px-1 text-xs font-semibold tracking-widest uppercase rounded-xl bg-miru-han-purple-100 text-miru-han-purple-1000 inline-block align-middle">Pending</span>
+                <button title="Request Cancel" className="ml-2 inline-block align-middle text-miru-alert-pink-400" onClick={() => handleCancelRequestIconClick(device.id)}><XCircle size={25} /></button>
+              </p>
+              : <button title="Request Device" onClick={() => handleDeviceRequest(device.id)}><PaperPlaneTilt size={25} /></button>}
+          {device.devicesDemands && <div className="px-1 py-1 text-sm font-medium">
+            <ReactTooltip id={`deviceRequestTip-${device.id}`} effect="solid" backgroundColor="grey" textColor="white" place="top">
+              <p className="text-xs">Requested by,</p>
+              <ul>
+                {
+                  device.devicesDemands.map((demand) => <li key={demand.createdAt}>
+                    <b>{demand.userName}</b> at <b>{demand.createdAt}</b>
+                  </li>)
+                }
+              </ul>
+            </ReactTooltip>
+            <CircleWavyWarning size={20} data-tip data-for={`deviceRequestTip-${device.id}`} />
+          </div>}
+          </div>
+        </div>,
         rowId: device.id
       })
     );

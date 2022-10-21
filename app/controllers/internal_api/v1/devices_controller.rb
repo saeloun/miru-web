@@ -8,11 +8,18 @@ class InternalApi::V1::DevicesController < InternalApi::V1::ApplicationControlle
       .ransack(params[:q]).result(distinct: true),
       items: 30
     )
-    devices_demands = DeviceUsage.where(
+    devices_demands = {}
+    DeviceUsage.includes(:created_by).where(
       approve: nil,
-      device_id: devices.to_a.map(&:id),
-      created_by: current_user
-    ).group(:device_id).count
+      device_id: devices.to_a.map(&:id)
+    ).each do |i|
+      devices_demands[i.device_id] ||= []
+      devices_demands[i.device_id].push(
+        {
+          created_by_id: i.created_by_id, user_name: i.created_by.full_name,
+          created_at: i.created_at.to_s
+        })
+    end
     render :index, locals: { devices:, pagy:, devices_demands: }, status: :ok
   end
 
