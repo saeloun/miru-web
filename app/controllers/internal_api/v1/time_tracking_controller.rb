@@ -6,11 +6,10 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
   skip_after_action :verify_authorized
 
   def index
-    is_admin = current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
     user_id = current_user.id
     employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
 
-    clients = get_clients(is_admin)
+    clients = get_clients
     projects = get_projects(is_admin, clients)
 
     timesheet_entries = current_user
@@ -27,7 +26,11 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
 
   private
 
-    def get_clients(is_admin)
+    def is_admin
+      @_is_admin = current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
+    end
+
+    def get_clients
       if is_admin
         current_company.clients.order(name: :asc).includes(:projects)
       else
