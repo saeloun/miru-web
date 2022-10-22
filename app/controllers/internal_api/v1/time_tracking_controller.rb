@@ -6,6 +6,7 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
   skip_after_action :verify_authorized
 
   def index
+    authorize :index, policy_class: TimeTrackingPolicy
     user_id = current_user.id
     employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
 
