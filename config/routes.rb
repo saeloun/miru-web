@@ -63,6 +63,8 @@ Rails.application.routes.draw do
 
   get "users/invitation/accept", to: "invitations/accept#show"
 
+  post "api/v1/timesheet_entry", to: "api/v1/timesheet_entry#create"
+
   get "payments/settings/stripe/connect/refresh", to: "payment_settings#refresh_stripe_connect"
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"

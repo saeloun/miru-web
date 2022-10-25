@@ -22,6 +22,7 @@
 #  reset_password_token   :string
 #  sign_in_count          :integer          default(0), not null
 #  social_accounts        :jsonb
+#  token                  :string(50)
 #  unconfirmed_email      :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
@@ -57,6 +58,7 @@ class User < ApplicationRecord
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_many :invitations, foreign_key: "sender_id", dependent: :destroy
+  has_secure_token :token, length: 50
 
   rolify strict: true
 
