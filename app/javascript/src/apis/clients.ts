@@ -12,8 +12,6 @@ const update = async (id, payload) => axios.patch(`${path}/${id}`, payload);
 
 const destroy = async id => axios.delete(`${path}/${id}`);
 
-const newInvoiceLineItems = async id => axios.get(`${path}/${id}/new_invoice_line_items`);
-
-const clientApi = { update, destroy, get, show, create, newInvoiceLineItems };
+const clientApi = { update, destroy, get, show, create };
 
 export default clientApi;

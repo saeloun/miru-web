@@ -32,7 +32,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   end
 
   def edit
-    authorize Invoice
+    authorize invoice
     render :edit, locals: { invoice: }
   end
 
@@ -47,7 +47,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   end
 
   def show
-    authorize Invoice
+    authorize invoice
     render :show, locals: {
       invoice:
     }
@@ -73,7 +73,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def download
     authorize invoice
 
-    send_data InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo)
+    send_data InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo, root_url)
   end
 
   private

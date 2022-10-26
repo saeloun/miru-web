@@ -28,5 +28,8 @@ project_delta = { name: "Delta", description: "Delta description", billable: fal
 @client_two_us_project_charle = @client_two_us.projects.create(project_charle)
 @client_two_us_project_delta = @client_two_us.projects.create(project_delta)
 
+# Reindex Searchkick indexes
+Project.reindex
+
 puts "Projects Created"
 # Projects End
