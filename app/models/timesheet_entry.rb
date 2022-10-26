@@ -96,8 +96,7 @@ class TimesheetEntry < ApplicationRecord
     end
 
     def ensure_bill_status_is_not_billed
-      errors.add(:timesheet_entry, I18n.t(:errors)[:create_billed_entry]) if
-      self.bill_status == "billed"
+      errors.add(:timesheet_entry, I18n.t(:errors)[:create_billed_entry]) if billed?
     end
 
     def ensure_billed_status_should_not_be_changed

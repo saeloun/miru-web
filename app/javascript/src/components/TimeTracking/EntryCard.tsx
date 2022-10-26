@@ -18,6 +18,42 @@ interface props {
   bill_status: string;
 }
 
+const showUpdateAction = (billStatus, id, setEditEntryId) => {
+  if (billStatus != "billed") {
+    return (
+      <button onClick={() => setEditEntryId(id)} className="mx-10">
+        <img
+          src={editIcon}
+          alt="edit"
+          className="icon-hover text-miru-han-purple-600 hover:text-miru-han-purple-1000 w-4 h-4"
+        />
+      </button>
+    );
+  } else {
+    return (
+      <div className="mx-10 w-4 h-4"></div>
+    );
+  }
+};
+
+const showDeleteAction = (billStatus, id, handleDeleteEntry) => {
+  if (billStatus != "billed") {
+    return (
+      <button onClick={() => handleDeleteEntry(id)} className="mr-10">
+        <img
+          src={deleteIcon}
+          alt="delete"
+          className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000 w-4 h-4"
+        />
+      </button>
+    );
+  } else {
+    return (
+      <div className="mr-10 w-4 h-4"></div>
+    );
+  }
+};
+
 const EntryCard: React.FC<props> = ({
   id,
   client,
@@ -63,20 +99,8 @@ const EntryCard: React.FC<props> = ({
         />
       )}
       <p className="text-4xl ml-6">{minToHHMM(duration)}</p>
-      <button onClick={() => setEditEntryId(id)} className="mx-10">
-        <img
-          src={editIcon}
-          alt="edit"
-          className="icon-hover text-miru-han-purple-600 hover:text-miru-han-purple-1000 w-4 h-4"
-        />
-      </button>
-      <button onClick={() => handleDeleteEntry(id)} className="mr-10">
-        <img
-          src={deleteIcon}
-          alt="delete"
-          className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000 w-4 h-4"
-        />
-      </button>
+      { showUpdateAction(bill_status, id, setEditEntryId) }
+      { showDeleteAction(bill_status, id, handleDeleteEntry) }
     </div>
   </div>
 );
