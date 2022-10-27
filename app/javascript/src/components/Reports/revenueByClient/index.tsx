@@ -132,6 +132,7 @@ const RevenueByClientReport = () => {
         />
         <Container />
         {isFilterVisible && <Filters
+          selectedFilter={selectedFilter}
           handleApplyFilter={handleApplyFilter}
           resetFilter={resetFilter}
           setFilterVisibilty={setFilterVisibilty}
