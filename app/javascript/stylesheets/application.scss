@@ -29,9 +29,8 @@
   @import "navbar";
   .sidebar {
     &__container {
-      top: 67px;
       box-shadow: -2px 6px 11px grey;
-      @apply fixed right-0 bottom-0 w-80 bg-white;
+      @apply fixed right-0 bottom-0 top-0 w-80 bg-white;
     }
     &__footer {
       @apply p-6 flex h-full items-end justify-center;

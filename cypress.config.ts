@@ -9,6 +9,7 @@ export default defineConfig({
     requestTimeout:30000,
     pageLoadTimeout:60000,
     responseTimeout:10000,
+    supportFile:"cypress/support/e2e.ts",
     viewportWidth: 1536,
     viewportHeight: 960,
     retries: {

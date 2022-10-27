@@ -2,7 +2,7 @@
 
 class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationController
   def update
-    authorize ProjectMember
+    authorize project, policy_class: ProjectMemberPolicy
 
     ActiveRecord::Base.transaction do
       add_new_members
@@ -61,5 +61,9 @@ class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationCo
 
     def removed_members_params
       params.require(:members).permit(removed_member_ids: [])["removed_member_ids"]
+    end
+
+    def project
+      @_project ||= Project.find_by(id: params[:id])
     end
 end

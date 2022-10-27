@@ -40,6 +40,20 @@ class Project < ApplicationRecord
 
   # Callbacks
   after_discard :discard_project_members
+  delegate :name, to: :client, prefix: true, allow_nil: true
+
+  searchkick text_middle: [:name, :client_name]
+
+  def search_data
+    {
+      id: id.to_i,
+      name:,
+      description:,
+      billable:,
+      client_id:,
+      client_name:
+    }
+  end
 
   def project_team_member_details(time_frame)
     entries = timesheet_entries.includes(:user)
@@ -96,24 +110,6 @@ class Project < ApplicationRecord
 
   def format_amount(amount)
     FormatAmountService.new(client.company.base_currency, amount).process
-  end
-
-  def self.search_all_projects_by_name(search_term, company_id)
-    search_term = search_term.downcase.strip
-    search_term = search_term.gsub(/\s+/, "%")
-    search_term = "#{search_term}%"
-    projects = User.joins(
-      "JOIN project_members ON users.id = project_members.user_id
-      JOIN projects ON projects.id = project_members.project_id
-      JOIN clients ON projects.client_id = clients.id"
-    ).where(
-      "clients.company_id = ?
-      AND (
-      lower(projects.name) LIKE ?
-      OR lower(clients.name) LIKE ?
-      OR lower(concat(users.first_name, ' ', users.last_name)) LIKE ?
-      )", company_id, search_term, search_term, search_term
-    ).select("DISTINCT projects.id, projects.name, clients.name AS client_name")
   end
 
   private
