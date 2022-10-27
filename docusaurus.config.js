@@ -67,9 +67,9 @@ const config = {
       },
       navbar: {
         logo: {
-          href: "https://www.getmiru.com",
+          href: "https://miru.so",
           alt: 'Miru Logo',
-          src: 'https://getmiru.com/assets/images/image01.svg?v=e3b47bc2',
+          src: 'https://miru.so/static/media/miru-blue-logo-with-text.5ba2b3fe09b9f038473f0a131f8a8bec.svg',
         },
         items: [
           {
