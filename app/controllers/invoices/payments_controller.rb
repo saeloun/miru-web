@@ -16,7 +16,7 @@ class Invoices::PaymentsController < ApplicationController
   end
 
   def success
-    if InvoicePayment::StripePaymentIntent.new(@invoice).process
+    if InvoicePayment::Success.new(@invoice).process
       flash[:notice] = t(".success")
     else
       flash[:error] = t(".failure")
