@@ -31,8 +31,6 @@ class Client < ApplicationRecord
   include Discard::Model
   include UtilityFunctions
 
-  default_scope -> { kept }
-
   has_many :projects
   has_many :timesheet_entries, through: :projects
   has_many :invoices, dependent: :destroy
@@ -43,7 +41,7 @@ class Client < ApplicationRecord
   after_discard :discard_projects
   after_commit :reindex_projects
 
-  default_scope { where(discarded_at: nil) }
+  default_scope -> { kept }
 
   def reindex_projects
     projects.reindex
