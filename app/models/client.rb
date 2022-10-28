@@ -41,7 +41,7 @@ class Client < ApplicationRecord
   after_discard :discard_projects
   after_commit :reindex_projects
 
-  default_scope { where(discarded_at: nil) }
+  default_scope -> { kept }
 
   def reindex_projects
     projects.reindex
