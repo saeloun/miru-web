@@ -547,7 +547,6 @@ DEPENDENCIES
   faker
   foreman
   grover
-  honeybadger
   image_processing (>= 1.2)
   jbuilder (~> 2.11)
   letter_opener
