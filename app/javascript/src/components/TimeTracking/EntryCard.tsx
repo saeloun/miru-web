@@ -4,6 +4,8 @@ import React from "react";
 import { minToHHMM } from "helpers";
 import { Badge } from "StyledComponents";
 
+import { Roles } from "../../constants";
+
 const deleteIcon = require("../../../../assets/images/delete.svg");
 const editIcon = require("../../../../assets/images/edit.svg");
 
@@ -16,10 +18,13 @@ interface props {
   handleDeleteEntry: (id: number) => void;
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   bill_status: string;
+  current_user_role: string;
 }
 
-const showUpdateAction = (billStatus, id, setEditEntryId) => {
-  if (billStatus != "billed") {
+const canEditTimeEntry = (billStatus, role) => (billStatus != "billed" || role == Roles["OWNER"] || role == Roles["ADMIN"]);
+
+const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
+  if (canEditTimeEntry(billStatus, role)) {
     return (
       <button onClick={() => setEditEntryId(id)} className="mx-10">
         <img
@@ -36,8 +41,8 @@ const showUpdateAction = (billStatus, id, setEditEntryId) => {
   }
 };
 
-const showDeleteAction = (billStatus, id, handleDeleteEntry) => {
-  if (billStatus != "billed") {
+const showDeleteAction = (billStatus, role, id, handleDeleteEntry) => {
+  if (canEditTimeEntry(billStatus, role)) {
     return (
       <button onClick={() => handleDeleteEntry(id)} className="mr-10">
         <img
@@ -62,7 +67,8 @@ const EntryCard: React.FC<props> = ({
   duration,
   handleDeleteEntry,
   setEditEntryId,
-  bill_status
+  bill_status,
+  current_user_role
 }) => (
   <div className="week-card flex justify-between items-center shadow-2xl w-full p-4 mt-10 rounded-lg">
     <div className="flex-auto">
@@ -99,8 +105,8 @@ const EntryCard: React.FC<props> = ({
         />
       )}
       <p className="text-4xl ml-6">{minToHHMM(duration)}</p>
-      { showUpdateAction(bill_status, id, setEditEntryId) }
-      { showDeleteAction(bill_status, id, handleDeleteEntry) }
+      { showUpdateAction(bill_status, current_user_role, id, setEditEntryId) }
+      { showDeleteAction(bill_status, current_user_role, id, handleDeleteEntry) }
     </div>
   </div>
 );
