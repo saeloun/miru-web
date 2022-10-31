@@ -8,12 +8,27 @@ RSpec.describe InvoicePolicy, type: :policy do
   let(:owner) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
+  let(:client) { create(:client, company:) }
+  let(:invoice) { create(:invoice, client:) }
+
+  let(:another_company) { create(:company) }
+  let(:another_admin) { create(:user, current_workspace_id: another_company.id) }
+  let(:another_employee) { create(:user, current_workspace_id: another_company.id) }
+  let(:another_owner) { create(:user, current_workspace_id: another_company.id) }
+  let(:another_book_keeper) { create(:user, current_workspace_id: another_company.id) }
+
+  subject { described_class }
 
   before do
     admin.add_role :admin, company
     owner.add_role :owner, company
     employee.add_role :employee, company
     book_keeper.add_role :book_keeper, company
+
+    another_owner.add_role :owner, another_company
+    another_admin.add_role :admin, another_company
+    another_employee.add_role :employee, another_company
+    another_book_keeper.add_role :book_keeper, another_company
   end
 
   permissions :index? do
@@ -28,7 +43,7 @@ RSpec.describe InvoicePolicy, type: :policy do
     end
   end
 
-  permissions :create?, :update?, :show?, :destroy?, :edit?, :send_invoice?, :download? do
+  permissions :create? do
     it "grants permission to an admin and owner" do
       expect(described_class).to permit(admin)
       expect(described_class).to permit(owner)
@@ -37,6 +52,31 @@ RSpec.describe InvoicePolicy, type: :policy do
     it "does not grants permission to an employee and a book keeper" do
       expect(described_class).not_to permit(employee)
       expect(described_class).not_to permit(book_keeper)
+    end
+  end
+
+  permissions :edit?, :update?, :show?, :destroy?, :send_invoice?, :download? do
+    context "when user is an admin or owner" do
+      it "grants permission" do
+        expect(described_class).to permit(admin, invoice)
+        expect(described_class).to permit(owner, invoice)
+      end
+    end
+
+    context "when user is an employee or book_keeper" do
+      it "does not grants permission" do
+        expect(described_class).not_to permit(employee, invoice)
+        expect(described_class).not_to permit(book_keeper, invoice)
+      end
+    end
+
+    context "when user is from another company" do
+      it "does not grants permission" do
+        expect(described_class).not_to permit(another_admin, invoice)
+        expect(described_class).not_to permit(another_owner, invoice)
+        expect(described_class).not_to permit(another_employee, invoice)
+        expect(described_class).not_to permit(another_book_keeper, invoice)
+      end
     end
   end
 
