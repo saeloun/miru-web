@@ -8,6 +8,6 @@ class UserInvitationMailer < ApplicationMailer
     @user_already_exists = params[:user_already_exists]
     subject = "Welcome to Miru!"
 
-    mail(to: recipient, subject:, reply_to: "no-reply@getmiru.com")
+    mail(to: recipient, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
   end
 end
