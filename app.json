@@ -2,8 +2,8 @@
   "name": "Miru",
   "repository": "https://github.com/saeloun/miru-web",
   "description": "Miru is an open-source to for time tracking, invoice management, and accounting easy for small businesses worldwide.",
-  "website": "https://getmiru.com/",
-  "logo": "https://getmiru.com/assets/images/image01.svg",
+  "website": "https://miru.so/",
+  "logo": "https://miru.so/static/media/miru-blue-logo-with-text.5ba2b3fe09b9f038473f0a131f8a8bec.svg",
   "success_url": "/",
   "env": {
     "SECRET_TOKEN": {

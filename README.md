@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://getmiru.com/assets/images/image01.svg?v=097ef681" width="200" />
+  <img src="https://miru.so/static/media/miru-blue-logo-with-text.5ba2b3fe09b9f038473f0a131f8a8bec.svg" width="200" />
   <br/>
 </p>
 
@@ -166,10 +166,10 @@ You can deploy Miru on Heroku using the one-click-deployment button:
 ## Community Support
 
 - Feel free to join our [Discord](https://discord.gg/UABXyQQ82c) channel for support and questions.
-- Subscribe our latest [blog articles](https://blog.getmiru.com) and tutorials.
+- Subscribe our latest [blog articles](https://blog.miru.so) and tutorials.
 - [Discussions](https://github.com/saeloun/miru-web/discussions): Post your questions regarding Miru Web
 - [**Twitter**](https://twitter.com/getmiru)
-- [Documentation](https://docs.getmiru.com/)
+- [Documentation](https://docs.miru.so)
 
 ## Contributing
 We encourage everyone to contribute to Miru Web! Check out [Contributing Guide](CONTRIBUTING.md) for guidelines about how to proceed.. <br>
