@@ -212,7 +212,6 @@ GEM
     grover (1.1.2)
       combine_pdf (~> 1.0)
       nokogiri (~> 1.0)
-    hash_dot (2.5.0)
     hashdiff (1.0.1)
     hashie (5.0.0)
     i18n (1.12.0)
@@ -543,7 +542,7 @@ DEPENDENCIES
   faker
   foreman
   grover
-  hash_dot
+  honeybadger
   image_processing (>= 1.2)
   jbuilder (~> 2.11)
   letter_opener
