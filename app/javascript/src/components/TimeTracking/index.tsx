@@ -114,7 +114,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   useEffect(() => {
     if (dayInfo.length <= 0) return;
     fetchEntriesOfThreeMonths();
-    if (allEmployeesEntries[selectedEmployeeId]) setEntryList(allEmployeesEntries[selectedEmployeeId]);
   }, [selectedEmployeeId]);
 
   const handleWeekTodayButton = () => {
@@ -146,10 +145,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     try {
       const res = await timesheetEntryApi.list(from, to, selectedEmployeeId);
       if (res.status >= 200 && res.status < 300) {
-        setAllEmployeesEntries(
-          (prevState) => ( { ...prevState, [selectedEmployeeId]: res.data.entries } )
-        );
-        setEntryList((prevState) => ({ ...prevState, ...res.data.entries }));
+        const allEntries = { ...allEmployeesEntries };
+        allEntries[selectedEmployeeId] = { ...allEntries[selectedEmployeeId], ...res.data.entries };
+        setAllEmployeesEntries(allEntries);
+        setEntryList(allEntries[selectedEmployeeId]);
       }
       return res;
     } catch (error) {
@@ -277,8 +276,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       <div className="mt-6">
         <div className="flex justify-between items-center mb-6">
           <nav className="flex">
-            {["day", "week", "month"].map(item => (
+            {["day", "week", "month"].map((item,index) => (
               <button
+                key={index}
                 onClick={() => setView(item)}
                 className={
                   item === view
@@ -428,6 +428,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           entryList[selectedFullDate].map((entry, weekCounter) =>
             editEntryId === entry.id ? (
               <AddEntry
+                key={entry.id}
                 selectedEmployeeId={selectedEmployeeId}
                 fetchEntries={fetchEntries}
                 setNewEntryView={setNewEntryView}
