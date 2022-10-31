@@ -82,13 +82,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     }
   };
 
-  const fetchEntriesOfThreeMonths = () => {
-    fetchEntries(
-      dayjs(dayInfo[0]["fullDate"]).startOf("month").subtract(1, "month").format("DD-MM-YYYY"),
-      dayjs(dayInfo[0]["fullDate"]).endOf("month").add(1, "month").format("DD-MM-YYYY"),
-    );
-  };
-
   useEffect(() => {
     handleWeekInfo();
   }, [weekDay]);
@@ -110,11 +103,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         .format("YYYY-MM-DD")
     );
   }, [selectDate, weekDay]);
-
-  useEffect(() => {
-    if (dayInfo.length <= 0) return;
-    fetchEntriesOfThreeMonths();
-  }, [selectedEmployeeId]);
 
   const handleWeekTodayButton = () => {
     setSelectDate(0);
