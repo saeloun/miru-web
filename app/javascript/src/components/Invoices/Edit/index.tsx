@@ -27,7 +27,7 @@ const EditInvoice = () => {
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
   const [selectedClient, setSelectedClient] = useState<any>({ value: 0 });
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
-  const [reference, setReference] = useState<any>("");
+  const [reference, setReference] = useState<string>("");
   const [amount, setAmount] = useState<any>(0);
   const [amountDue, setAmountDue] = useState<any>(0);
   const [amountPaid, setAmountPaid] = useState<any>(0);
