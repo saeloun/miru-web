@@ -52,6 +52,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [clients, setClients] = useState<any>({});
   const [projects, setProjects] = useState<any>({});
   const [employees, setEmployees] = useState<any>([]);
+  const [currentMonthNumber, setCurrentMonthNumber] = useState<number>(dayjs().month());
+  const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
 
   const employeeOptions = employees.map(e => ({ value: `${e["id"]}`, label: e["first_name"] + " " + e["last_name"] }) );
 
@@ -82,6 +84,17 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     }
   };
 
+  const fetchEntriesOfMonths = () => {
+    const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber +1}-01`;
+    const startOfTheMonth = dayjs(firstDateOfTheMonth).format("YYYY-MM-DD");
+    const endOfTheMonth = dayjs(firstDateOfTheMonth).endOf("month").format("YYYY-MM-DD");
+
+    fetchEntries(
+      dayjs(startOfTheMonth).subtract(1, "month").format("DD-MM-YYYY"),
+      dayjs(endOfTheMonth).add(1, "month").format("DD-MM-YYYY")
+    );
+  };
+
   useEffect(() => {
     handleWeekInfo();
   }, [weekDay]);
@@ -103,6 +116,11 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         .format("YYYY-MM-DD")
     );
   }, [selectDate, weekDay]);
+
+  useEffect(() => {
+    if (dayInfo.length <= 0) return;
+    fetchEntriesOfMonths();
+  }, [selectedEmployeeId]);
 
   const handleWeekTodayButton = () => {
     setSelectDate(0);
@@ -302,6 +320,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 monthsAbbr={monthsAbbr}
                 setWeekDay={setWeekDay}
                 setSelectDate={setSelectDate}
+                currentMonthNumber={currentMonthNumber}
+                setCurrentMonthNumber={setCurrentMonthNumber}
+                currentYear={currentYear}
+                setCurrentYear={setCurrentYear}
               />
               :
               <div className="mb-6">

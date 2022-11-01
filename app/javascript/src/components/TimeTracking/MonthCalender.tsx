@@ -19,10 +19,12 @@ const MonthCalender: React.FC<Iprops> = ({
   handleWeekTodayButton,
   monthsAbbr,
   setWeekDay,
-  setSelectDate
+  setSelectDate,
+  currentMonthNumber,
+  setCurrentMonthNumber,
+  currentYear,
+  setCurrentYear
 }) => {
-  const [currentMonthNumber, setCurrentMonthNumber] = useState<number>(dayjs().month());
-  const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
   const [firstDay, setFirstDay] = useState<number>(dayjs().startOf("month").weekday());
   const [daysInMonth, setDaysInMonth] = useState<number>(dayjs().daysInMonth());
   const [totalMonthDuration, setTotalMonthDuration] = useState<number>(0);
@@ -126,13 +128,6 @@ const MonthCalender: React.FC<Iprops> = ({
     handleMonthChange();
   }, [entryList]);
 
-  useEffect(() => {
-    fetchEntries(
-      dayjs(startOfTheMonth).subtract(1, "month").format("DD-MM-YYYY"),
-      dayjs(endOfTheMonth).add(1, "month").format("DD-MM-YYYY")
-    );
-  }, [selectedEmployeeId]);
-
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
@@ -231,6 +226,11 @@ interface Iprops {
   monthsAbbr: string[];
   setWeekDay: React.Dispatch<React.SetStateAction<number>>;
   setSelectDate: React.Dispatch<React.SetStateAction<number>>;
+  currentMonthNumber: any;
+  setCurrentMonthNumber: any;
+  currentYear: any;
+  setCurrentYear: any
+
 }
 
 export default MonthCalender;
