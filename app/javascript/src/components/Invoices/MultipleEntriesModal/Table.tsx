@@ -35,41 +35,33 @@ const Table = ({
       </tr>
     </thead>
     <tbody className="overflow-y-scroll">
-      <tr>
-        <td colSpan={5}>
-          <table>
-            <tbody>
-              {lineItems.map((item, index) => {
-                const hoursLogged = minToHHMM(item.quantity);
-                const date = dayjs(item.date).format("DD.MM.YYYY");
-                return (
-                  <tr key={index}>
-                    <td className="w-2.5">
-                      <div className="flex items-center relative">
-                        <input type="checkbox" className="opacity-0 absolute h-8 w-8 custom__checkbox" onChange={() => handleItemSelection(item.timesheet_entry_id)} checked={item.checked} />
-                        <CheckboxIcon />
-                      </div>
-                    </td>
-                    <td className="table__data font-medium w-1/5 text-sm text-miru-dark-purple-1000 text-left text-left">
-                      {item.first_name} {item.last_name}
-                    </td>
-                    <td className="table__data font-medium w-3/5 text-xs text-miru-dark-purple-600 text-left whitespace-normal">
-                      {item.description}
-                    </td>
-                    <td className="table__data font-medium text-xs text-miru-dark-purple-1000 text-right">
-                      {date}
-                    </td>
-                    <td className="table__data font-medium w-1/12 text-xs text-miru-dark-purple-1000 text-right">
-                      {hoursLogged}
-                    </td>
-                  </tr>
-                );
-              }
-              )}
-            </tbody>
-          </table>
-        </td>
-      </tr>
+      {lineItems.map((item, index) => {
+        const hoursLogged = minToHHMM(item.quantity);
+        const date = dayjs(item.date).format("DD.MM.YYYY");
+        return (
+          <tr key={index}>
+            <td className="w-2.5">
+              <div className="flex items-center relative">
+                <input type="checkbox" className="opacity-0 absolute h-8 w-8 custom__checkbox" onChange={() => handleItemSelection(item.timesheet_entry_id)} checked={item.checked} />
+                <CheckboxIcon />
+              </div>
+            </td>
+            <td className="table__data font-medium w-1/5 text-sm text-miru-dark-purple-1000 text-left text-left">
+              {item.first_name} {item.last_name}
+            </td>
+            <td className="table__data font-medium w-3/5 text-xs text-miru-dark-purple-600 text-left whitespace-normal">
+              {item.description}
+            </td>
+            <td className="table__data font-medium text-xs text-miru-dark-purple-1000 text-right">
+              {date}
+            </td>
+            <td className="table__data font-medium w-1/12 text-xs text-miru-dark-purple-1000 text-right">
+              {hoursLogged}
+            </td>
+          </tr>
+        );
+      }
+      )}
     </tbody>
   </table>
 
