@@ -33,7 +33,6 @@ const SearchTeamMembers = ({
         value={selected}
         onChange={handleChange}
         labelledBy={"Select"}
-        isCreatable={true}
       />
     </div>
   );
