@@ -100,7 +100,9 @@ class TimesheetEntry < ApplicationRecord
     end
 
     def ensure_billed_status_should_not_be_changed
+      return if Current.user.nil?
+
       errors.add(:timesheet_entry, I18n.t(:errors)[:bill_status_billed]) if
-      self.bill_status_changed? && self.bill_status_was == "billed"
+      self.bill_status_changed? && self.bill_status_was == "billed" && Current.user.primary_role(Current.company) == "employee"
     end
 end
