@@ -1,6 +1,6 @@
 {
   "name": "@saeloun/miru-web",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "^7.16.5",
     "@babel/preset-react": "^7.16.5",
@@ -8,9 +8,9 @@
     "@fontsource/plus-jakarta-sans": "^4.5.0",
     "@headlessui/react": "^1.4.2",
     "@heroicons/react": "^1.0.5",
-    "@rails/actioncable": "^7.0.1",
-    "@rails/activestorage": "^7.0.1",
-    "@rails/ujs": "^7.0.1",
+    "@rails/actioncable": "^7.0.4",
+    "@rails/activestorage": "^7.0.4",
+    "@rails/ujs": "^7.0.4",
     "@rails/webpacker": "5.4.0",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
