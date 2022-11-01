@@ -18,7 +18,7 @@ interface props {
   handleDeleteEntry: (id: number) => void;
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   bill_status: string;
-  current_user_role: string;
+  currentUserRole: string;
 }
 
 const canEditTimeEntry = (billStatus, role) => (billStatus != "billed" || role == Roles["OWNER"] || role == Roles["ADMIN"]);
@@ -68,7 +68,7 @@ const EntryCard: React.FC<props> = ({
   handleDeleteEntry,
   setEditEntryId,
   bill_status,
-  current_user_role
+  currentUserRole
 }) => (
   <div className="week-card flex justify-between items-center shadow-2xl w-full p-4 mt-10 rounded-lg">
     <div className="flex-auto">
@@ -105,8 +105,8 @@ const EntryCard: React.FC<props> = ({
         />
       )}
       <p className="text-4xl ml-6">{minToHHMM(duration)}</p>
-      { showUpdateAction(bill_status, current_user_role, id, setEditEntryId) }
-      { showDeleteAction(bill_status, current_user_role, id, handleDeleteEntry) }
+      { showUpdateAction(bill_status, currentUserRole, id, setEditEntryId) }
+      { showDeleteAction(bill_status, currentUserRole, id, handleDeleteEntry) }
     </div>
   </div>
 );

@@ -74,8 +74,7 @@ class TimesheetEntry < ApplicationRecord
       note:,
       work_date:,
       bill_status:,
-      team_member: user.full_name,
-      current_user_role: user.primary_role(project.client.company)
+      team_member: user.full_name
     }
   end
 

@@ -13,6 +13,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
       params[:to]
     )
     entries = formatted_entries_by_date(timesheet_entries)
+    entries[:currentUserRole] = current_user.primary_role current_company
     render json: { entries: }, status: :ok
   end
 
