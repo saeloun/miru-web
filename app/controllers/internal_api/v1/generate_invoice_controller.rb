@@ -34,9 +34,11 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
 
     # merging selected_entries from params with ids already present in other invoice line items
     def filtered_ids
-      invoice_line_item_ts_ids = InvoiceLineItem.pluck(:timesheet_entry_id).uniq
+      invoice_line_item_timesheet_entry_ids = InvoiceLineItem.joins(:timesheet_entry)
+        .where(timesheet_entries: { bill_status: "unbilled" })
+        .pluck(:timesheet_entry_id).uniq
       selected_entries = (params[:selected_entries].present?) ? params[:selected_entries] : []
-      filtered_ids = (selected_entries + invoice_line_item_ts_ids).uniq
+      filtered_ids = (selected_entries + invoice_line_item_timesheet_entry_ids).uniq
     end
 
     def unselected_time_entries_filter
