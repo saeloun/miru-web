@@ -80,10 +80,18 @@ RSpec.describe Invoices::PaymentsController, type: :request do
 
     subject { send_request :get, success_invoice_payments_path(params) }
 
-    it "doesn't mark invoice status as paid" do
+    it "marks invoice status as paid" do
       expect(invoice.status).not_to eq "paid"
       subject
       expect(response.status).to eq 200
+      invoice.reload
+      expect(invoice.status).to eq "paid"
+    end
+
+    it "invoice status will remain as sent" do
+      expect(invoice.status).not_to eq "paid"
+      subject
+      expect(response.status).to eq 302
       invoice.reload
       expect(invoice.status).to eq "sent"
     end

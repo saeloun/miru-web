@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.1.2"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.0.3"
+gem "rails", "~> 7.0.4"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 # gem "sprockets-rails", ">= 3.4.1"
@@ -198,5 +198,4 @@ group :test do
 
   # Strategies for cleaning databases in Ruby.
   gem "database_cleaner", "~> 2.0"
-  gem "hash_dot"
 end
