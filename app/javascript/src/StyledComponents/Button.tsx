@@ -2,16 +2,16 @@ import React from "react";
 
 import classnames from "classnames";
 
-const DEFAULT_STYLE = "rounded text-center border";
+const DEFAULT_STYLE = "rounded text-center";
 
 const PRIMARY =
-  "bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 text-white border-miru-han-purple-1000 hover:border-miru-han-purple-600";
-const PRIMARY_DISABLED = "bg-miru-gray-1000 text-white ";
+  "bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 text-white  border border-miru-han-purple-1000 hover:border-miru-han-purple-600";
+const PRIMARY_DISABLED = "bg-miru-gray-1000 text-white border border-miru-gray-1000";
 
 const SECONDARY =
-  "bg-transparent hover:bg-miru-gray-1000 text-miru-han-purple-1000 border-miru-han-purple-1000";
+  "bg-transparent hover:bg-miru-gray-1000 text-miru-han-purple-1000 border border-miru-han-purple-1000";
 const SECONDARY_DISABLED =
-  "bg-transparent text-miru-dark-purple-200 border-miru-dark-purple-200";
+  "bg-transparent text-miru-dark-purple-200 border border-miru-dark-purple-200";
 
 const TERNARY =
   "bg-transparent text-miru-han-purple-1000 hover:text-miru-han-purple-600 border-0";
@@ -40,7 +40,7 @@ const SIZES = { small: "small", medium: "medium", large: "large" };
 
 const Button = ({
   style,
-  size = SIZES.large,
+  size,
   disabled = false,
   className = "",
   fullWidth = false,

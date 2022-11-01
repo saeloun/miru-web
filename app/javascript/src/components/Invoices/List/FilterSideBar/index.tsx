@@ -79,74 +79,26 @@ const FilterSideBar = ({
     }
   };
 
-  const handleSelectFilter = (event) => {
-    switch (event.target.name) {
-      case "dateRange": {
-        const selectedValue = dateRangeOptions.filter(
-          (option) => option.value === event.target.value
-        );
-        if (selectedValue[0].value === "custom") {
-          setShowCustomFilter(true);
-          setFilters({
-            ...filters,
-            [event.target.name]: { ...selectedValue, ...dateRange }
-          });
-        } else {
-          selectedValue[0].value != "custom" &&
-            setFilters({
-              ...filters,
-              [event.target.name]: selectedValue
-            });
-        }
-        break;
-      }
-      case "clients": {
-        const selectedValue2 = clientList.filter(
-          (option) => option.value == event.target.value
-        );
+  const handleSelectFilter = (selectedValue,field) => {
 
-        if (event.target.checked) {
-          if (!filters.clients.includes(selectedValue2)) {
-            setFilters({
-              ...filters,
-              [event.target.name]: filters.clients.concat(selectedValue2)
-            });
-          }
-        } else {
-          const newarr = filters.clients.filter(
-            (client) => client != selectedValue2[0]
-          );
-          setFilters({
-            ...filters,
-            [event.target.name]: newarr
-          });
-        }
-        break;
-      }
-
-      case "status": {
-        const selectedValue3 = statusOptions.filter(
-          (option) => option.value == event.target.value
-        );
-
-        if (event.target.checked) {
-          if (!filters.status.includes(selectedValue3)) {
-            setFilters({
-              ...filters,
-              [event.target.name]: filters.status.concat(selectedValue3)
-            });
-          }
-        } else {
-          const newarr = filters.status.filter(
-            (status) => status != selectedValue3[0]
-          );
-          setFilters({
-            ...filters,
-            [event.target.name]: newarr
-          });
-        }
-        break;
-      }
+    if (selectedValue.value === "custom"){
+      setShowCustomFilter(true);
+      setFilters({
+        ...filters,
+        [field]: { ...selectedValue, ...dateRange }
+      });
+    }
+    if (Array.isArray(selectedValue)) {
+      setFilters({
+        ...filters,
+        [field]: filters[field].concat(selectedValue)
+      });
+    }
+    else {
+      selectedValue.value != "custom" && setFilters({
+        ...filters,
+        [field]: selectedValue
+      });
     }
   };
 
@@ -231,9 +183,9 @@ const FilterSideBar = ({
         <h4 className="text-base flex items-center">
           <Funnel size={16} className="mr-2.5"/> Filters
         </h4>
-        <button onClick={() => setFilterVisibilty(false)}>
-          <X size={16} />
-        </button>
+        <Button style="ternary" onClick={() => setFilterVisibilty(false)}>
+          <X size={16} className="text-miru-dark-purple-1000"/>
+        </Button>
       </SidePanel.Header>
 
       <SidePanel.Body className="sidebar__filters" hasFooter>
@@ -247,12 +199,12 @@ const FilterSideBar = ({
                 DATE RANGE
               </h5>
               <div className="flex items-center">
-                {filters.dateRange.length > 0 &&
-                  filters.dateRange[0].value != "all" && (
-                  <span className="flex items-center justify-center rounded-full h-5 w-5 bg-miru-han-purple-1000 text-white text-xs font-semibold mr-7">
-                    {filters.dateRange.length}
-                  </span>
-                )}
+                {
+                  filters.dateRange.value != "all" && (
+                    <span className="flex items-center justify-center rounded-full h-5 w-5 bg-miru-han-purple-1000 text-white text-xs font-semibold mr-7">
+                      {1}
+                    </span>
+                  )}
                 {isDateRangeOpen ? <Minus size={16} /> : <Plus size={16} />}
               </div>
             </div>
@@ -263,8 +215,8 @@ const FilterSideBar = ({
                     id={dateRange.value}
                     label={dateRange.label}
                     groupName="dateRange"
-                    defaultCheck={dateRange.value == filters.dateRange[0].value}
-                    handleOnChange={handleSelectFilter}
+                    defaultCheck={dateRange.value == filters.dateRange.value}
+                    handleOnChange={(event)=>handleSelectFilter(dateRange, event.target.name)}
                     value={dateRange.value}
                     classNameWrapper="px-5 py-2.5"
                   />
@@ -329,7 +281,7 @@ const FilterSideBar = ({
                       name="clients"
                       checkboxValue={client.value}
                       isChecked={filters.clients.includes(client)}
-                      handleCheck={handleSelectFilter}
+                      handleCheck={(event)=>handleSelectFilter(client,event.target.name)}
                       wrapperClassName="py-3 px-5 hover:bg-miru-gray-100 text-miru-dark-purple-1000"
                       labelClassName="ml-4"
                     />
@@ -369,7 +321,7 @@ const FilterSideBar = ({
                       name="status"
                       checkboxValue={status.value}
                       isChecked={filters.status.includes(status)}
-                      handleCheck={handleSelectFilter}
+                      handleCheck={(event)=>handleSelectFilter(status,event.target.name)}
                       wrapperClassName="py-3 px-5 hover:bg-miru-gray-100"
                       labelClassName="ml-4"
                     />

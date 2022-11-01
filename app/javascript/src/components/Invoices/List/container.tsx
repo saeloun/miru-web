@@ -27,16 +27,16 @@ const Container = ({
   const handleRemoveFilter = (removeval) => {
     let name, newArr;
     for (const [key, value] of Object.entries(filterParams)) {
-      Array.isArray(value) &&
+      Array.isArray(value) ?
         value.map((v) => {
           if (v == removeval) {
             name = key;
             newArr = value.filter((v) => v != removeval);
           }
-        });
-    }
-    if (name == "dateRange") {
-      newArr = filterIntialValues.dateRange;
+        }) : {
+          name: key,
+          newArr: filterIntialValues
+        };
     }
     setFilterParams({
       ...filterParams,
@@ -85,9 +85,8 @@ const Container = ({
           <div className="ml-4 flex items-center justify-between">
             {Object.values(filterParams).map(
               (param) =>
-                Array.isArray(param) &&
-                param.map((val) => (
-                  val.label != "All" && (
+                Array.isArray(param) ?
+                  param.map((val) => (
                     <span className="mx-2 px-2 h-6 font-normal text-xs text-miru-dark-purple-1000 bg-miru-gray-400 rounded-xl flex items-center justify-between capitalize">
                       {val.label}
                       <X
@@ -97,8 +96,16 @@ const Container = ({
                       />
                     </span>
                   )
-                ))
-            )}
+                  ) : Object(param).value != "all" && (
+                    <span className="mx-2 px-2 h-6 font-normal text-xs text-miru-dark-purple-1000 bg-miru-gray-400 rounded-xl flex items-center justify-between capitalize">
+                      {Object(param).label}
+                      <X
+                        size={12}
+                        className="ml-2 cursor-pointer"
+                        onClick={() => handleRemoveFilter(Object(param).value)}
+                      />
+                    </span>
+                  ))}
             {appliedFilterCount > 1 && (
               <span
                 onClick={() => setFilterParams(filterIntialValues)}
