@@ -1,5 +1,5 @@
 /* eslint-disable no-unexpected-multiline */
-import React  from "react";
+import React, { useState, useEffect }  from "react";
 
 import { TOASTER_DURATION } from "constants/index";
 
@@ -21,7 +21,6 @@ import EntryCard from "./EntryCard";
 import MonthCalender from "./MonthCalender";
 import WeeklyEntries from "./WeeklyEntries";
 
-const { useState, useEffect } = React;
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
 
