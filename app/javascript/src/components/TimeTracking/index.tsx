@@ -1,5 +1,5 @@
 /* eslint-disable no-unexpected-multiline */
-import React, { useState, useEffect }  from "react";
+import React, { useEffect, useState }  from "react";
 
 import { TOASTER_DURATION } from "constants/index";
 
