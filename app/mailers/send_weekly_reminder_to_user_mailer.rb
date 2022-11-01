@@ -14,6 +14,6 @@ class SendWeeklyReminderToUserMailer < ApplicationMailer
 
     subject = "Reminder to Update your Timesheet on Miru"
 
-    mail(to: recipients, subject:, reply_to: "no-reply@getmiru.com")
+    mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
   end
 end
