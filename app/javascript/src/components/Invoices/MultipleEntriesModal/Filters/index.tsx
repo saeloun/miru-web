@@ -145,6 +145,15 @@ const Filters = ({
       ...provided,
       fontSize: "12px",
       letterSpacing: "2px"
+    }),
+    option: (
+      styles,{ isSelected }
+    ) => ({
+      ...styles,
+      backgroundColor: isSelected && "#5B34EA",
+      "&:hover": {
+        backgroundColor: isSelected ? "#5B34EA" : "#F5F7F9"
+      }
     })
   };
 
