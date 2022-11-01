@@ -212,7 +212,7 @@ const Filters = ({
           </div>
         }
       </div>
-      <button className="text-miru-han-purple-100 text-base" onClick={handleReset}>reset</button>
+      <button className="text-miru-han-purple-100 text-base" onClick={handleReset}>Reset</button>
       <button className="text-miru-han-purple-1000 text-base" onClick={handleApply}>Apply</button>
     </div>
   );
