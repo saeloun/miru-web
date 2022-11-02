@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby "3.1.2"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 7.0.3"
+gem "rails", "~> 7.0.4"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 # gem "sprockets-rails", ">= 3.4.1"
@@ -127,12 +127,14 @@ gem "grover"
 
 gem "activerecord-import"
 
-# Honeybadger for error reporting
-gem "honeybadger"
-
 # For finding the vulnerabilities in the gems
 gem "bundler-audit", require: false
 gem "ruby_audit", require: false
+
+# For reporting messages, exceptions, and tracing events.
+gem "sentry-rails"
+gem "sentry-ruby"
+gem "sentry-sidekiq"
 
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

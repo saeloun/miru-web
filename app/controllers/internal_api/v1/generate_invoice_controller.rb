@@ -2,7 +2,7 @@
 
 class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationController
   def index
-    authorize :index, policy_class: GenerateInvoicePolicy
+    authorize client, policy_class: GenerateInvoicePolicy
     render :index, locals: {
       filter_options:,
       new_line_item_entries:,
@@ -13,7 +13,7 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
   private
 
     def client
-      @_client ||= Client.find(params[:client_id])
+      @_client ||= Client.find_by(id: params[:client_id])
     end
 
     def project
@@ -40,10 +40,15 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
       { project_id: project }
     end
 
+    def unbilled_status_filter
+      { bill_status: "unbilled" }
+    end
+
     def new_line_item_entries
       default_filter = project_filter.merge(unselected_time_entries_filter)
-      where_clause = default_filter.merge(TimeEntries::Filters.process(params))
-      search_result = TimesheetEntry.search(
+      bill_status_filter = default_filter.merge(unbilled_status_filter)
+      where_clause = bill_status_filter.merge(TimeEntries::Filters.process(params))
+      @_new_line_item_entries ||= TimesheetEntry.search(
         search_term,
         fields: [:note, :user_name],
         match: :text_middle,

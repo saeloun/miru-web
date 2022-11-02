@@ -17,7 +17,7 @@ const CustomDatePicker = ({ handleChange, date }) => {
   const years = range(1990, getYear(new Date()) + 1);
   const months = [
     "Jan",
-    "Febr",
+    "Feb",
     "Mar",
     "Apr",
     "May",
@@ -31,7 +31,7 @@ const CustomDatePicker = ({ handleChange, date }) => {
   ];
   return (
     <DatePicker
-      wrapperClassName="datePicker absolute"
+      wrapperClassName="datePicker"
       inline
       calendarClassName="miru-calendar"
       selected={date}
@@ -80,7 +80,7 @@ const CustomDatePicker = ({ handleChange, date }) => {
           </button>
         </div>
       )}
-      onChange={(date) => handleChange(date)}
+      onChange={handleChange}
     />
   );
 };

@@ -4,15 +4,15 @@ import cn from "classnames";
 import { CaretCircleLeft, CaretCircleRight } from "phosphor-react";
 
 const Pagination = ({ pagy, params, setParams }) => (
-  <div className="w-full py-2 mt-5">
+  <div className="w-full py-10">
     <div className="grid w-full grid-cols-6 gap-4 bg-grey-400">
       <div className="col-span-3 col-start-2">
         {pagy?.pages > 1 && (
           <div className="flex items-center justify-center">
             <button
-              className={cn("m-1 text-xs font-bold", {
+              className={cn("m-1 mx-4 font-bold", {
                 "text-miru-gray-400": !pagy?.prev,
-                "text-miru-han-purple-400": pagy?.prev
+                "text-miru-han-purple-1000": pagy?.prev
               })}
               onClick={() => setParams({ ...params, page: pagy?.prev })}
               disabled={!pagy?.prev}
@@ -25,8 +25,8 @@ const Pagination = ({ pagy, params, setParams }) => (
                 <button
                   key={page}
                   onClick={() => setParams({ ...params, page })}
-                  className={cn("p-1 m-1 font-bold text-miru-han-purple-400", {
-                    "bg-miru-han-purple-100": pagy?.page === page
+                  className={cn("p-1 m-1 mx-4 font-bold text-base text-miru-dark-purple-400", {
+                    "text-miru-han-purple-1000": pagy?.page === page
                   })}
                   disabled={pagy?.page === page}
                 >
@@ -36,9 +36,9 @@ const Pagination = ({ pagy, params, setParams }) => (
             )}
 
             <button
-              className={cn("m-1 text-xs font-bold", {
+              className={cn("m-1 mx-4 font-bold", {
                 "text-miru-gray-400": !pagy?.next,
-                "text-miru-han-purple-400": pagy?.next
+                "text-miru-han-purple-1000": pagy?.next
               })}
               onClick={() => setParams({ ...params, page: pagy?.next })}
               disabled={!pagy?.next}

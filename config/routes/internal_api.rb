@@ -2,9 +2,7 @@
 
 namespace :internal_api, defaults: { format: "json" } do
   namespace :v1 do
-    resources :clients, only: [:index, :update, :destroy, :show, :create] do
-      get "new_invoice_line_items", to: "clients/new_invoice_line_items", on: :member
-    end
+    resources :clients, only: [:index, :update, :destroy, :show, :create]
     resources :project, only: [:index]
     resources :timesheet_entry do
       collection do
@@ -31,7 +29,10 @@ namespace :internal_api, defaults: { format: "json" } do
 
     resources :workspaces, only: [:update]
     resources :invoices, only: [:index, :create, :update, :show, :destroy, :edit] do
-      post :send_invoice, on: :member
+      member do
+        post :send_invoice
+        get :download
+      end
     end
     namespace :invoices do
       resources :bulk_deletion, only: [:create]
