@@ -53,8 +53,6 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
         fields: [:note, :user_name],
         match: :text_middle,
         where: where_clause,
-        page: params[:page],
-        per_page: 10,
         includes: [:user, { project: :client } ])
     end
 end
