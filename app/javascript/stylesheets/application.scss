@@ -530,3 +530,25 @@ body {
     @apply w-5 h-5 flex justify-center items-center text-xs font-semibold rounded-full bg-miru-han-purple-1000 text-white
   }
 }
+
+.rmsc {
+  --rmsc-main: #5B34EA !important;
+  --rmsc-hover: #F5F7F9;
+  --rmsc-selected: none;
+  --rmsc-border: #5B34EA !important;
+  --rmsc-gray: #aaa;
+  --rmsc-bg: #fff;
+  --rmsc-p: 10px; /* Spacing */
+  --rmsc-radius: 20px; /* Radius */
+  --rmsc-h: 38px; /* Height */
+}
+
+.rmsc .panel-content {
+  height: 200px;
+  overflow-y: scroll;
+}
+
+.rmsc .options {
+  height: 140px;
+  overflow-y: scroll;
+}

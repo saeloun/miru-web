@@ -2,15 +2,14 @@ import React, { useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 import { X, Funnel, Plus, Minus } from "phosphor-react";
-import { Badge, Button, SidePanel } from "StyledComponents";
+import { Button, SidePanel } from "StyledComponents";
 
 import companiesApi from "apis/companies";
-import CustomCheckbox from "common/CustomCheckbox";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";
-import getStatusCssClass from "utils/getBadgeStatus";
 
 import { dateRangeOptions, statusOptions } from "./filterOptions";
+import MultiSelectWithSearch from "./Multi";
 
 const FilterSideBar = ({
   filterIntialValues,
@@ -149,7 +148,7 @@ const FilterSideBar = ({
 
   const setDefaultDateRange = () => ({
     ...filters,
-    ["dateRange"]: [{ value: "all", label: "All", from: "", to: "" }]
+    ["dateRange"]: { value: "all", label: "All", from: "", to: "" }
   });
 
   const resetCustomDatePicker = () => {
@@ -176,7 +175,6 @@ const FilterSideBar = ({
   return (
     <SidePanel
       setFilterVisibilty={setFilterVisibilty}
-      WrapperClassname = "overflow-y-auto"
     >
 
       <SidePanel.Header className="flex px-5 pt-5 mb-7 justify-between items-center text-miru-dark-purple-1000 font-bold">
@@ -254,9 +252,9 @@ const FilterSideBar = ({
               </div>
             )}
           </li>
-          <li className="pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 border-b border-miru-gray-200 cursor-pointer">
+          <li className="pb-5 pt-6 text-miru-dark-purple-1000 border-b border-miru-gray-200 cursor-pointer">
             <div
-              className="px-5 flex justify-between items-center"
+              className="px-5 flex justify-between items-center hover:text-miru-han-purple-1000"
               onClick={() => setIsClientOpen(!isClientOpen)}
             >
               <h5 className="text-xs font-bold leading-4 tracking-wider">
@@ -272,6 +270,17 @@ const FilterSideBar = ({
               </div>
             </div>
             {isClientOpen && (
+              <div className="md:mt-7 flex justify-center h-72">
+                <MultiSelectWithSearch
+                  filters={filters}
+                  setFilters={setFilters}
+                  options={clientList}
+                  field="clients"
+                />
+              </div>
+            )}
+
+            {/* {isClientOpen && (
               <div className="md:mt-7">
                 {clientList.length &&
                   clientList.map((client) => (
@@ -281,17 +290,17 @@ const FilterSideBar = ({
                       name="clients"
                       checkboxValue={client.value}
                       isChecked={filters.clients.includes(client)}
-                      handleCheck={(event)=>handleSelectFilter(client,event.target.name)}
+                      handleCheck={(event)=>handleSelectFilter([client],event.target.name)}
                       wrapperClassName="py-3 px-5 hover:bg-miru-gray-100 text-miru-dark-purple-1000"
                       labelClassName="ml-4"
                     />
                   ))}
               </div>
-            )}
+            )} */}
           </li>
-          <li className="pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 border-b border-miru-gray-200 cursor-pointer">
+          <li className="pb-5 pt-6 text-miru-dark-purple-1000 border-b border-miru-gray-200 cursor-pointer">
             <div
-              className="px-5 flex justify-between items-center"
+              className="px-5 flex justify-between items-center hover:text-miru-han-purple-1000"
               onClick={() => setIsStatusOpen(!isStatusOpen)}
             >
               <h5 className="text-xs font-bold leading-4 tracking-wider">
@@ -306,6 +315,15 @@ const FilterSideBar = ({
                 {isStatusOpen ? <Minus size={16} /> : <Plus size={16} />}
               </div>
             </div>
+            {isStatusOpen &&  <div className="md:mt-7 flex justify-center h-72"> <MultiSelectWithSearch
+              filters={filters}
+              setFilters={setFilters}
+              options={statusOptions}
+              field="status"
+            />
+            </div>
+            }
+            {/* {console.log(filters.status,'status')}
             {isStatusOpen && (
               <div className="md:mt-7">
                 {statusOptions.length &&
@@ -321,13 +339,13 @@ const FilterSideBar = ({
                       name="status"
                       checkboxValue={status.value}
                       isChecked={filters.status.includes(status)}
-                      handleCheck={(event)=>handleSelectFilter(status,event.target.name)}
+                      handleCheck={(event)=>handleSelectFilter([status],event.target.name)}
                       wrapperClassName="py-3 px-5 hover:bg-miru-gray-100"
                       labelClassName="ml-4"
                     />
                   ))}
               </div>
-            )}
+            )} */}
           </li>
         </ul>
       </SidePanel.Body>
