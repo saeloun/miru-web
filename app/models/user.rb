@@ -57,6 +57,8 @@ class User < ApplicationRecord
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_many :invitations, foreign_key: "sender_id", dependent: :destroy
+  has_many :projects, through: :project_members
+  has_many :clients, through: :projects
 
   rolify strict: true
 
