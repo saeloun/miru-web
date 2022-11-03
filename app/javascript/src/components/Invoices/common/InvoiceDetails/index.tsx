@@ -91,7 +91,12 @@ const InvoiceDetails = ({
           <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
             Reference
           </p>
-          <input type="text" value={reference} onChange={(e) => setReference(e.target.value)} className="px-2 w-3/5"/>
+          <input
+            type="text"
+            value={reference}
+            onChange={(e) => setReference(e.target.value)}
+            className="px-2 w-3/5"
+          />
         </div>
       </div>
 
