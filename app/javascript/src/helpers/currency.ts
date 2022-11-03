@@ -22,7 +22,10 @@ const locale = (baseCurrency) => {
 export const currencyFormat = ({ baseCurrency, amount }) => {
   const formattedAmount = new Intl.NumberFormat(locale(baseCurrency), {
     style: "currency",
-    currency: baseCurrency
+    currency: baseCurrency,
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+    notation: amount > 99999 ? "compact" : "standard"
   }).format(amount);
 
   return formattedAmount;
