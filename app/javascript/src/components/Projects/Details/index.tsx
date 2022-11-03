@@ -176,10 +176,10 @@ const ProjectDetails = () => {
               {project?.name}
             </h2>
             {project?.is_billable && (
-              <Badge text="BILLABLE"
+              <Badge text="billable"
                 bgColor="bg-miru-han-purple-100"
                 color="text-miru-han-purple-1000"
-                className="rounded-xl tracking-wide" />
+                className="rounded-xl tracking-wide uppercase" />
             )}
           </div>
           <div className="relative h-8">

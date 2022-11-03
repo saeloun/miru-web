@@ -53,10 +53,10 @@ export const Project = ({
       </td>
       <td className="table__cell text-right">
         {isBillable &&(
-          <Badge text="Billable"
+          <Badge text="billable"
             bgColor="bg-miru-han-purple-100"
             color="text-miru-han-purple-1000"
-            className="px-1 tracking-widest rounded-lg" />
+            className="px-1 tracking-widest rounded-lg capitalize" />
         )}
       </td>
       <td className="table__cell text-xl text-right font-bold">
