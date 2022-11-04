@@ -1,6 +1,7 @@
 import React from "react";
 
 import { currencyFormat } from "helpers";
+import { Badge } from "StyledComponents";
 
 const TableRow = ({ payment, baseCurrency }) => {
   const getStatusCss = (status) => {
@@ -47,9 +48,7 @@ const TableRow = ({ payment, baseCurrency }) => {
       </td>
 
       <td className="pl-6 pr-0 py-2.5 text-sm font-semibold tracking-wider leading-4 text-right">
-        <span className={getStatusCss(payment.status) + " uppercase"}>
-          {payment.status}
-        </span>
+        <Badge text={payment.status} className={`${getStatusCss(payment.status)} uppercase`} />
       </td>
     </tr>
   );

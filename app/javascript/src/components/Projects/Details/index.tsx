@@ -12,6 +12,7 @@ import {
 } from "phosphor-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { Badge } from "StyledComponents";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectAPI from "apis/projects";
@@ -175,9 +176,10 @@ const ProjectDetails = () => {
               {project?.name}
             </h2>
             {project?.is_billable && (
-              <span className="rounded-xl text-xs self-center  tracking-widest font-semibold px-1 bg-miru-han-purple-100 text-miru-han-purple-1000">
-                BILLABLE
-              </span>
+              <Badge text="billable"
+                bgColor="bg-miru-han-purple-100"
+                color="text-miru-han-purple-1000"
+                className="rounded-xl tracking-wide uppercase" />
             )}
           </div>
           <div className="relative h-8">
