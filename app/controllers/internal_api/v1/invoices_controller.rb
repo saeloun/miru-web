@@ -76,6 +76,15 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     send_data InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo, root_url)
   end
 
+  def bulk_download
+    authorize Invoice
+    BulkInvoiceDownloadJob.perform_later(
+      bulk_download_params[:invoice_ids],
+      current_company.company_logo,
+      bulk_download_params[:download_id])
+    head :accepted
+  end
+
   private
 
     def load_client
@@ -95,6 +104,10 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
     def invoice_email_params
       params.require(:invoice_email).permit(:subject, :message, recipients: [])
+    end
+
+    def bulk_download_params
+      params.require(:bulk_invoices).permit(:download_id, invoice_ids: [])
     end
 
     def ensure_time_entries_billed
