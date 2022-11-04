@@ -136,6 +136,8 @@ gem "sentry-rails"
 gem "sentry-ruby"
 gem "sentry-sidekiq"
 
+gem "rubyzip"
+
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
@@ -198,4 +200,5 @@ group :test do
 
   # Strategies for cleaning databases in Ruby.
   gem "database_cleaner", "~> 2.0"
+  gem "rspec-sidekiq"
 end

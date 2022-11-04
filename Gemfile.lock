@@ -388,6 +388,9 @@ GEM
       rspec-expectations (~> 3.10)
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
+    rspec-sidekiq (3.1.0)
+      rspec-core (~> 3.0, >= 3.0.0)
+      sidekiq (>= 2.4.0)
     rspec-support (3.11.0)
     rubocop (1.30.0)
       parallel (~> 1.10)
@@ -563,12 +566,14 @@ DEPENDENCIES
   redis (~> 4.0)
   rolify (~> 6.0)
   rspec-rails (~> 5.0, >= 5.0.2)
+  rspec-sidekiq
   rubocop
   rubocop-packaging
   rubocop-performance
   rubocop-rails
   rubocop-rspec (~> 2.8)
   ruby_audit
+  rubyzip
   sass-rails
   searchkick
   selenium-webdriver (>= 4.0.0)
