@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
@@ -16,12 +16,10 @@ const Table = ({
     <table className="min-w-full mt-4 divide-y divide-gray-200 overflow-x-scroll">
       <thead>
         <TableHeader
-          selectAllInvoices={() =>
-            selectInvoices(invoices.map((invoice) => invoice.id))
-          }
-          deselectAllInvoices={() =>
-            deselectInvoices(invoices.map((invoice) => invoice.id))
-          }
+          invoices={invoices}
+          selectedInvoices={selectedInvoices}
+          selectInvoices={selectInvoices}
+          deselectInvoices={deselectInvoices}
         />
       </thead>
 
