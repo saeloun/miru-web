@@ -59,6 +59,9 @@ class User < ApplicationRecord
   has_many :devices, dependent: :destroy
   has_many :invitations, foreign_key: "sender_id", dependent: :destroy
   has_secure_token :token, length: 50
+  has_many :projects, through: :project_members
+  has_many :clients, through: :projects
+
 
   rolify strict: true
 
