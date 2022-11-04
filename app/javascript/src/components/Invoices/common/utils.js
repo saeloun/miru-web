@@ -74,38 +74,28 @@ export const fetchNewLineItems = async (
 };
 
 export const fetchMultipleNewLineItems = async (
-  selectedClient,
-  lineItems,
+  setLoading,
+  handleFilterParams,
+  selectedLineItems,
+  setSelectedLineItems,
   setLineItems,
-  setTotalLineItems,
-  pageNumber,
-  setPageNumber,
-  selectedEntries = [],
   allCheckboxSelected,
-  setSelectedLineItem
+  setTeamMembers
 ) => {
-  if (selectedClient) {
-    let selectedEntriesString = "";
-    selectedEntries.forEach((entry) => {
-      if (!entry._destroy){
-        selectedEntriesString += `&selected_entries[]=${entry.timesheet_entry_id}`;
-      }
-    });
+  const res = await generateInvoice.getLineItems(handleFilterParams());
+  const itemSelected = (id) => selectedLineItems.filter((selectedItem) => id == selectedItem.timesheet_entry_id).length;
 
-    const queryParams = `client_id=${selectedClient.value}&page=${pageNumber}${selectedEntriesString}`;
-    const res = await generateInvoice.getLineItems(queryParams);
-    setPageNumber(pageNumber + 1);
-    const items = res.data.new_line_item_entries.map(item => ({
-      ...item,
-      checked: allCheckboxSelected,
-      lineTotal: lineTotalCalc(item.quantity, item.rate)
-    }));
-    const mergedItems = [...items, ...lineItems];
-    const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
-    setLineItems(sortedData);
-    setTotalLineItems(res.data.total_new_line_items);
-    if (allCheckboxSelected) {
-      setSelectedLineItem(sortedData);
-    }
+  const items = res.data.new_line_item_entries.map(item => ({
+    ...item,
+    checked: itemSelected(item.timesheet_entry_id),
+    lineTotal: lineTotalCalc(item.quantity, item.rate)
+  }));
+
+  const sortedData = [...items].sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
+  setLineItems(sortedData);
+  if (allCheckboxSelected) {
+    setSelectedLineItems(sortedData);
   }
+  setTeamMembers(res.data.filter_options.team_members);
+  setLoading(false);
 };
