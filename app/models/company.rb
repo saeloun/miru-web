@@ -59,7 +59,7 @@ class Company < ApplicationRecord
       project_list.each do |project|
         if id == project.id
           billable_array.push(project.is_billable)
-          client_name_array.push(project.client_name)
+          client_name_array.push(project.project_client_name)
           project_name_array.push(project.project_name)
         end
       end
@@ -82,7 +82,7 @@ class Company < ApplicationRecord
       "projects.id as id,
        projects.name as project_name,
        projects.billable as is_billable,
-       clients.name as client_name")
+       clients.name as project_client_name")
   end
 
   def client_details(time_frame = "week")

@@ -14,7 +14,7 @@ import Header from "./Header";
 
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapLeadQuoteList } from "../../../mapper/lead.quote.mapper";
-import getStatusCssClass from "../../../utils/getStatusTag";
+import getStatusCssClass from "../../../utils/getBadgeStatus";
 
 const getTableData = (quotes) => {
   if (quotes) {

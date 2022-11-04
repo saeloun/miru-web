@@ -49,6 +49,7 @@ const Invoices: React.FC = () => {
   const [showBulkDeleteDialaog, setShowBulkDeleteDialog] =
     React.useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = React.useState(null);
+  const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] = React.useState(null);
 
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
@@ -74,12 +75,13 @@ const Invoices: React.FC = () => {
     try {
       setStatus(InvoicesStatus.LOADING);
       const {
-        data: { invoices, pagy, summary }
+        data: { invoices, pagy, summary, recentlyUpdatedInvoices }
       } = await invoicesApi.get(queryParams().concat(handleFilterParams()));
 
       setInvoices(invoices);
       setSummary(summary);
       setPagy(pagy);
+      setRecentlyUpdatedInvoices(recentlyUpdatedInvoices);
       setSelectedInvoices([]);
       setStatus(InvoicesStatus.SUCCESS);
     } catch (error) {
@@ -148,6 +150,7 @@ const Invoices: React.FC = () => {
             summary={summary}
             invoices={invoices}
             selectedInvoices={selectedInvoices}
+            recentlyUpdatedInvoices={recentlyUpdatedInvoices}
             selectInvoices={selectInvoices}
             deselectInvoices={deselectInvoices}
             setShowDeleteDialog={setShowDeleteDialog}

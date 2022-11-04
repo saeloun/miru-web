@@ -15,17 +15,8 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
     render :index, locals: { teams:, invitations:, departments: User::DEPARTMENT_OPTIONS }, status: :ok
   end
 
-  def destroy
-    authorize :team
-    employment.discard!
-    render json: {
-      user: employment.user,
-      notice: I18n.t("team.delete.success.message")
-    }, status: :ok
-  end
-
   def update
-    authorize :team
+    authorize employment, policy_class: TeamPolicy
     User.transaction do
       # employment.user.skip_reconfirmation!
       employment.user.update!(user_params)
@@ -37,10 +28,19 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
     }, status: :ok
   end
 
+  def destroy
+    authorize employment, policy_class: TeamPolicy
+    employment.discard!
+    render json: {
+      user: employment.user,
+      notice: I18n.t("team.delete.success.message")
+    }, status: :ok
+  end
+
   private
 
     def employment
-      @employment ||= current_company.employments.kept.find_by!(user_id: params[:id])
+      @_employment ||= current_company.employments.kept.find_by!(user_id: params[:id])
     end
 
     def user_params

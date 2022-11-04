@@ -31,7 +31,7 @@ import TotalHoursReport from "../components/Reports/totalHoursLogged";
 import SpaceUsages from "../components/SpaceUsages/Index";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
 import TeamRouteConfig from "../components/Team/RouteConfig";
-import TimeTracking from "../components/time-tracking/Index";
+import TimeTracking from "../components/TimeTracking";
 
 const ClientsRoutes = [
   { path: "" ,Component: ClientList },

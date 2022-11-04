@@ -452,6 +452,14 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     semantic_range (3.0.0)
+    sentry-rails (5.5.0)
+      railties (>= 5.0)
+      sentry-ruby (~> 5.5.0)
+    sentry-ruby (5.5.0)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+    sentry-sidekiq (5.5.0)
+      sentry-ruby (~> 5.5.0)
+      sidekiq (>= 3.0)
     shoulda-callback-matchers (1.1.4)
       activesupport (>= 3)
     shoulda-matchers (5.1.0)
@@ -576,6 +584,9 @@ DEPENDENCIES
   sass-rails
   searchkick
   selenium-webdriver (>= 4.0.0)
+  sentry-rails
+  sentry-ruby
+  sentry-sidekiq
   shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers (~> 5.1)
   sidekiq

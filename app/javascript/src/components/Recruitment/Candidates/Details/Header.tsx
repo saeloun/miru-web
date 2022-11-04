@@ -7,7 +7,7 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import candidates from "apis/candidates";
 
 import { unmapCandidateList } from "../../../../mapper/candidate.mapper";
-import getStatusCssClass from "../../../../utils/getStatusTag";
+import getStatusCssClass from "../../../../utils/getBadgeStatus";
 import DeleteCandidate from "../../Modals/DeleteCandidate";
 
 const Header = ({

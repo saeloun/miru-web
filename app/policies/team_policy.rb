@@ -2,26 +2,31 @@
 
 class TeamPolicy < ApplicationPolicy
   def index?
-    can_access? || user_employee_role? # user_team_lead?
+    user_owner_role? || user_admin_role? || user_employee_role? # user_team_lead?
   end
 
   def edit?
-    can_access?
+    authorize_current_user
   end
 
   def update?
-    can_access?
+    authorize_current_user
   end
 
   def destroy?
-    can_access?
-  end
-
-  def can_access?
-    user_owner_role? || user_admin_role?
+    authorize_current_user
   end
 
   def permitted_attributes
     [:first_name, :last_name, :email, :department_id, :avatar, :team_lead]
+  end
+
+  def authorize_current_user
+    unless user.current_workspace_id == record&.company_id
+      @error_message_key = :different_workspace
+      return false
+    end
+
+    user_owner_role? || user_admin_role?
   end
 end

@@ -7,7 +7,7 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import leads from "apis/leads";
 
 import { unmapLeadList } from "../../../mapper/lead.mapper";
-import getStatusCssClass from "../../../utils/getStatusTag";
+import getStatusCssClass from "../../../utils/getBadgeStatus";
 import DeleteLead from "../Modals/DeleteLead";
 import NewLead from "../Modals/NewLead";
 

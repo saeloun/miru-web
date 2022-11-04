@@ -4,14 +4,14 @@ json.key_format! camelize: :lower
 json.deep_format_keys!
 
 def team_member_status(member)
-  return unless Pundit.policy!(current_user, :team).edit? &&
+  return unless TeamPolicy.new(current_user, nil).edit? &&
     member.unconfirmed_email?
 
   I18n.t("team.reconfirmation")
 end
 
-def invited_user_status
-  return unless Pundit.policy!(current_user, :invitation).edit?
+def invited_user_status(invitation)
+  return unless InvitationPolicy.new(current_user, invitation).edit?
 
   I18n.t("team.invitation")
 end
@@ -43,7 +43,7 @@ json.invitation invitations do |invitation|
   json.last_name invitation.last_name
   json.email invitation.recipient_email
   json.role invitation.role
-  json.status invited_user_status
+  json.status invited_user_status(invitation)
   json.team_lead invitation.team_lead?
   if  invitation.department_id
     json.department do |department|

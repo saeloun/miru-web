@@ -299,7 +299,7 @@ const UserDetails = () => {
                   changePassword && (
                     <div>
                       <div className="flex flex-col">
-                        <div>
+                        <div className="flex flex-col w-1/2 pr-2">
                           <label>Current Password</label>
                           <div className="relative flex items-center">
                             <input

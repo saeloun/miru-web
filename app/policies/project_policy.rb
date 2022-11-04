@@ -8,7 +8,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def show?
-    user_owner_role? || user_admin_role?
+    authorize_current_user
   end
 
   def create?
@@ -16,11 +16,11 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def update?
-    user_owner_role? || user_admin_role?
+    authorize_current_user
   end
 
   def destroy?
-    user_owner_role? || user_admin_role?
+    authorize_current_user
   end
 
   def index_all?
@@ -31,5 +31,14 @@ class ProjectPolicy < ApplicationPolicy
     [
       :name, :description, :billable, :client_id
     ]
+  end
+
+  def authorize_current_user
+    unless user.current_workspace_id == record.client.company_id
+      @error_message_key = :different_workspace
+      return false
+    end
+
+    user_owner_role? || user_admin_role?
   end
 end
