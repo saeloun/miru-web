@@ -11,10 +11,14 @@ module Authenticable
 
     def authenticate_user_using_auth_token
       if bearer_token == user.token || params[:auth_token] == user.token
-        api_v1_timesheet_entry_path
+        api_v1_timesheet_entry_index_path
       else
-        render json: { notice: "Invalid Token" }
+        render json: { notice: "Invalid Token given UserID" }
       end
+    end
+
+    def user
+      @_user ||= User.find_by(id: params[:user_id])
     end
 
     def bearer_token
