@@ -64,7 +64,7 @@ const RevenueByClientReport = () => {
       setSelectedFilter({ ...selectedFilter, [key]: closedFilter });
     } else {
       const label = key === "dateRange" ? "All" : "All Clients";
-      setSelectedFilter((prevState) => ( { ...prevState, [key]: [{ label, value: "" }] } ));
+      setSelectedFilter((prevState) => ( { ...prevState, [key]: key === "dateRange" ? { label, value: "" } : [{ label, value: "" }] } ));
     }
   };
 
