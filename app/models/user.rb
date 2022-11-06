@@ -62,7 +62,6 @@ class User < ApplicationRecord
   has_many :projects, through: :project_members
   has_many :clients, through: :projects
 
-
   rolify strict: true
 
   # Social account details
