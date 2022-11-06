@@ -546,7 +546,6 @@ DEPENDENCIES
   grover
   image_processing (>= 1.2)
   jbuilder (~> 2.11)
-  jwt
   letter_opener
   letter_opener_web
   money

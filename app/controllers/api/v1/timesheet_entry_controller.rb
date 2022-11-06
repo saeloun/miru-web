@@ -6,6 +6,7 @@ class Api::V1::TimesheetEntryController < Api::V1::BaseController
   def create
     if project_member.present?
       timesheet_entry = project.timesheet_entries.new(timesheet_entry_params)
+      timesheet_entry.user = current_user
       timesheet_entry.save!
       render json: {
         notice: I18n.t("timesheet_entry.create.message"),
@@ -21,7 +22,7 @@ class Api::V1::TimesheetEntryController < Api::V1::BaseController
   private
 
     def project_member
-      ProjectMember.find_by(user_id: user.id, project_id: project.id)
+      ProjectMember.find_by(user_id: current_user.id, project_id: project.id)
     end
 
     def project
@@ -30,6 +31,6 @@ class Api::V1::TimesheetEntryController < Api::V1::BaseController
 
     def timesheet_entry_params
       params.require(:timesheet_entry).permit(
-        :user_id, :project_id, :duration, :work_date, :note, :bill_status, :auth_token)
+        :project_id, :duration, :work_date, :note, :bill_status, :auth_token)
     end
 end
