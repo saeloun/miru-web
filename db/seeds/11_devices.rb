@@ -6,7 +6,7 @@
 @users.each { | user | user.devices.create!(
   device_type: "laptop",
   name: "MacBook Pro",
-  serial_number: Faker::Number.number(digits: 20),
+  serial_number: "1111",
   company_id: 1
   )
 }
