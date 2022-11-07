@@ -458,6 +458,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 key={weekCounter}
                 handleDeleteEntry={handleDeleteEntry}
                 setEditEntryId={setEditEntryId}
+                currentUserRole={ entryList["currentUserRole"] }
                 {...entry}
               />
             )
