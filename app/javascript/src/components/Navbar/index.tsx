@@ -1,6 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 
 import { Paths } from "constants/index";
+
+// eslint-disable-next-line import/order
+import {
+  TimeTrackingIcon,
+  ClientsIcon,
+  ProjectsIcon,
+  InvoicesIcon,
+  ReportsIcon,
+  PaymentsIcon
+} from "miruIcons";
 
 import {
   Timer,
@@ -28,13 +39,13 @@ const Navbar = ({ isAdminUser, user }) => {
 
   const navEmployeeOptions = [
     {
-      logo: <Timer size={26} className="mr-0 md:mr-4" />,
+      logo: <TimeTrackingIcon size={26} className="mr-0 md:mr-4" />,
       label: "Time Tracking",
       dataCy: "time-tracking-tab",
       path: Paths.TIME_TRACKING
     },
     {
-      logo: <UsersThree size={26} className="mr-0 md:mr-4" />,
+      logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Team",
       dataCy: "team-tab",
       path: Paths.TEAM
@@ -55,31 +66,31 @@ const Navbar = ({ isAdminUser, user }) => {
 
   const navAdminOptions = [
     {
-      logo: <Timer size={26} className="mr-0 md:mr-4" />,
+      logo: <TimeTrackingIcon size={26} className="mr-0 md:mr-4" />,
       label: "Time Tracking",
       dataCy: "time-tracking-tab",
       path: Paths.TIME_TRACKING
     },
     {
-      logo: <UsersThree size={26} className="mr-0 md:mr-4" />,
+      logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Team",
       dataCy: "team-tab",
       path: Paths.TEAM
     },
     {
-      logo: <Buildings size={26} className="mr-0 md:mr-4" />,
+      logo: <ProjectsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Clients",
       dataCy: "clients-tab",
       path: Paths.CLIENTS
     },
     {
-      logo: <Briefcase size={26} className="mr-0 md:mr-4" />,
+      logo: <ProjectsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Projects",
       dataCy: "projects-tab",
       path: Paths.PROJECTS
     },
     {
-      logo: <Receipt size={26} className="mr-0 md:mr-4" />,
+      logo: <InvoicesIcon size={26} className="mr-0 md:mr-4" />,
       label: "Invoices",
       dataCy: "invoices-tab",
       path: Paths.INVOICES
@@ -91,7 +102,7 @@ const Navbar = ({ isAdminUser, user }) => {
       path: Paths.REPORTS
     },
     {
-      logo: <Wallet size={26} className="mr-0 md:mr-4" />,
+      logo: <PaymentsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Payments",
       dataCy: "payments-tab",
       path: Paths.PAYMENTS

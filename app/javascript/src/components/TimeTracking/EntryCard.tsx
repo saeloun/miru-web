@@ -2,9 +2,9 @@
 import React from "react";
 
 import { minToHHMM } from "helpers";
+import { DeleteIcon } from "miruIcons";
 import { Badge } from "StyledComponents";
 
-const deleteIcon = require("../../../../assets/images/delete.svg");
 const editIcon = require("../../../../assets/images/edit.svg");
 
 interface props {
@@ -71,11 +71,12 @@ const EntryCard: React.FC<props> = ({
         />
       </button>
       <button onClick={() => handleDeleteEntry(id)} className="mr-10">
-        <img
-          src={deleteIcon}
+        {/* <img
+          src={DeleteIcon}
           alt="delete"
           className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000 w-4 h-4"
-        />
+        /> */}
+        <DeleteIcon className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000 w-4 h-4" />
       </button>
     </div>
   </div>
