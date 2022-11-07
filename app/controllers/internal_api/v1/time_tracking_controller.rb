@@ -22,6 +22,7 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
         1.month.since.end_of_month
         )
     entries = formatted_entries_by_date(timesheet_entries)
+    entries[:currentUserRole] = current_user.primary_role current_company
     render json: { clients:, projects:, entries:, employees: }, status: :ok
   end
 
