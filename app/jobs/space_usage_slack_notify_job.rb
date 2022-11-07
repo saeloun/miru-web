@@ -37,13 +37,13 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
       .map { |i| "*#{i.slack_member_id.present? ? "<@#{i.slack_member_id}>" : i.full_name}*" } .to_sentence
 
     {
-      text: "Space occupied :white_check_mark:",
+      text: "#{entry[:space_name]} occupied by #{entry[:user_name]}",
       blocks: [
         {
           type: "header",
           text: {
             type: "plain_text",
-            text: "Space occupied :white_check_mark: by #{entry[:user_name]}",
+            text: "#{entry[:space_name]} occupied by #{entry[:user_name]}",
             emoji: true
           }
         },
@@ -71,13 +71,13 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
       .map { |i| "*#{i.slack_member_id.present? ? "<@#{i.slack_member_id}>" : i.full_name}*" } .to_sentence
 
     {
-      text: "Space occupation changed :twisted_rightwards_arrows:",
+      text: "#{entry[:space_name]} occupation changed by #{entry[:user_name]}",
       blocks: [
         {
           type: "header",
           text: {
             type: "plain_text",
-            text: "Space occupation changed :twisted_rightwards_arrows: by #{entry[:user_name]}",
+            text: "#{entry[:space_name]} occupation changed by #{entry[:user_name]}",
             emoji: true
           }
         },
@@ -105,13 +105,13 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
       .map { |i| "*#{i.slack_member_id.present? ? "<@#{i.slack_member_id}>" : i.full_name}*" } .to_sentence
 
     {
-      text: "Space unoccupied :no_entry:",
+      text: "#{entry[:space_name]} unoccupied by #{entry[:user_name]}",
       blocks: [
         {
           type: "header",
           text: {
             type: "plain_text",
-            text: "Space unoccupied :no_entry: by #{entry[:user_name]}",
+            text: "#{entry[:space_name]} unoccupied by #{entry[:user_name]}",
             emoji: true
           }
         },
