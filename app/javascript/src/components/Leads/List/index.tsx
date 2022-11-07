@@ -41,7 +41,7 @@ const getTableData = (leads) => {
   return [{}];
 };
 
-const Leads = ({ isAdminUser }) => {
+const Leads = ({ permissions }) => {
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
 
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
@@ -140,7 +140,7 @@ const Leads = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header isAdminUser={isAdminUser} setnewLead={setnewLead} setFilterVisibilty={setFilterVisibilty} setDisplayActions={setDisplayActions} />
+      <Header isAdminUser={permissions.leads} setnewLead={setnewLead} setFilterVisibilty={setFilterVisibilty} setDisplayActions={setDisplayActions} />
       <div>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -149,10 +149,10 @@ const Leads = ({ isAdminUser }) => {
                 {leadData && <Table
                   hasEditAction={false}
                   handleDeleteClick={handleDeleteClick}
-                  hasRowIcons={isAdminUser}
+                  hasRowIcons={permissions.leads}
                   tableHeader={tableHeader}
                   tableRowArray={tableData}
-                  rowOnClick={isAdminUser ? handleRowClick : () => { }}// eslint-disable-line
+                  rowOnClick={permissions.leads ? handleRowClick : () => { }}// eslint-disable-line
                 />}
                 {leadData && leadData.length && (
                   <Pagination pagy={pagy} params={params} setParams={setParams} forPage="leads" />

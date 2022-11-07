@@ -20,7 +20,7 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
       current_company.users.kept
         .where(department_ids.present? ? { department_id: department_ids } : [])
         .where(engagement_ids.present? ? { engage_code: engagement_ids } : nil)
-        .where(Pundit.policy!(current_user, :engagement).admin_access? ? [] : (
+        .where(EngagementPolicy.new(current_user, nil).admin_access? ? [] : (
           current_user.team_lead? ? { id: [current_user.id, *current_user.team_member_ids] } : []
         ))
         .select("(case when users.id = #{current_user.id} then 1 else 0 end) AS current_user_score, users.*")

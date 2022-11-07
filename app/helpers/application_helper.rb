@@ -43,9 +43,9 @@ module ApplicationHelper
       company_role: current_user.roles.find_by(resource: current_company)&.name,
       company: current_company,
       permissions: {
-        "leads" => Pundit.policy!(current_user, :lead).index?,
-        "engagements" => Pundit.policy!(current_user, :engagement).index?,
-        'engagementsDashboard': Pundit.policy!(current_user, :engagement).admin_access?
+        "leads" => LeadPolicy.new(current_user, nil).index?,
+        "engagements" => EngagementPolicy.new(current_user, nil).index?,
+        'engagementsDashboard': EngagementPolicy.new(current_user, nil).admin_access?
       }
     }
   end
