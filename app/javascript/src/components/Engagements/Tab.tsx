@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+
 import { useNavigate } from "react-router-dom";
 
 const defaultClassName = "mr-10 text-base tracking-widest font-medium text-miru-han-purple-600";
@@ -8,7 +9,7 @@ const TAB_PATH = {
   list: `/engagements`,
   dashboard: `/engagements/dashboard`
 }
-const Tab = ({ isAdminUser, tabClassName }) => {
+const Tab = ({ permissions, tabClassName }) => {
   const navigate = useNavigate();
 
   const handleTabChange = useCallback((key) => {
@@ -18,7 +19,7 @@ const Tab = ({ isAdminUser, tabClassName }) => {
     }
   }, [location.pathname]);
 
-  if (!isAdminUser) {
+  if (!permissions.engagementsDashboard) {
     return (<></>)
   } else {
     return (

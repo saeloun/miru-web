@@ -38,6 +38,7 @@ export enum Paths {
   SPACES = "/spaces",
   DEVICES = "/tackle",
   ENGAGEMENTS = "/engagements",
+  ENGAGEMENTS_DASHBOARD = "/engagements/dashboard",
   LEADS = "/leads",
   RECRUITMENT = "/recruitment",
 }

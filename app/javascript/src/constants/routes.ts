@@ -92,8 +92,8 @@ const DevicesRoutes = [
 ];
 
 const EngagementRoutes = [
-  { path: "" , Component: EngagementList },
-  { path: "dashboard" ,Component: EngagementDashboard },
+  { path: "" , Component: EngagementList, permissionId: 'engagements' },
+  { path: "dashboard" ,Component: EngagementDashboard, permissionId: 'engagementsDashboard' },
 ];
 
 const LeadsRoutes = [
@@ -129,7 +129,7 @@ const ROUTES = [
   { path: Paths.PROFILE, subRoutes: ProfileRoutes,  authorisedRoles: [ADMIN, OWNER, EMPLOYEE] },
   { path: Paths.SPACES, subRoutes: SpacesRoutes,  authorisedRoles: [ADMIN, OWNER, EMPLOYEE] },
   { path: Paths.DEVICES, subRoutes: DevicesRoutes,  authorisedRoles: [ADMIN, OWNER, EMPLOYEE] },
-  { path: Paths.ENGAGEMENTS, subRoutes: EngagementRoutes,  authorisedRoles: [ADMIN, OWNER, EMPLOYEE] },
+  { path: Paths.ENGAGEMENTS, subRoutes: EngagementRoutes,  authorisedRoles: [ADMIN, OWNER], permissionId: 'engagements' },
   { path: Paths.LEADS, subRoutes: LeadsRoutes,  authorisedRoles: [ADMIN, OWNER, EMPLOYEE] },
   { path: Paths.RECRUITMENT, subRoutes: RecruitmentRoutes, authorisedRoles: [ADMIN, OWNER] },
 ];

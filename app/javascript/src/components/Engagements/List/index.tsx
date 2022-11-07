@@ -17,7 +17,7 @@ import Header from "./Header";
 import { TOASTER_DURATION } from "../../../constants/index";
 import { unmapEngagementList, unmapEngagementDetails } from "../../../mapper/engagement.mapper";
 
-const Engagements = ( { isAdminUser, _companyRole, _user, _company } ) => {
+const Engagements = ( { isAdminUser, permissions } ) => {
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
   const [engagementData, setEngagementData] = useState<any>([{}]);
   const [engagementOptions, setEngagementOptions] = useState<any>([]);
@@ -190,7 +190,7 @@ const Engagements = ( { isAdminUser, _companyRole, _user, _company } ) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Tab isAdminUser={isAdminUser} tabClassName={'list'}/>
+      <Tab permissions={permissions} tabClassName={'list'}/>
       <Header
         setFilterVisibilty={setFilterVisibilty}
         setEngagementData={setEngagementData}

@@ -12,10 +12,13 @@ import {
 
 import ErrorPage from "common/Error";
 
-const RestrictedRoute = ({ user, role, authorisedRoles }) => {
+const RestrictedRoute = ({ user, role, authorisedRoles, permissions, permissionId }) => {
   if (!user) {
     window.location.href = Paths.SIGN_IN;
     return;
+  }
+  if (permissionId && permissions[permissionId] === true) {
+    return <Outlet />;
   }
   if (authorisedRoles.includes(role)){
     return <Outlet />;
@@ -36,12 +39,18 @@ const Main: React.FC<Iprops> = (props) => (
               authorisedRoles={parentRoute.authorisedRoles}
               role={props.companyRole}
               user={props.user}
+              permissionId={parentRoute.permissionId}
+              permissions={props.permissions}
             />
           }
         >
-          {parentRoute.subRoutes.map(({ path, Component }) => (
-            <Route key={path} path={path} element={<Component {...props} />} /> //TODO: Move user data to context
-          ))}
+          {parentRoute.subRoutes.map(({ path, Component, permissionId }) => {
+            if (permissionId && props.permissions[permissionId] === false) return
+
+            return (
+              <Route key={path} path={path} element={<Component {...props} />} /> //TODO: Move user data to context
+            )
+          })}
         </Route>
       ))}
       <Route path="*" element={<ErrorPage />} />
@@ -53,6 +62,7 @@ const Main: React.FC<Iprops> = (props) => (
     user: object;
     companyRole: Roles;
     company: object;
+    permissions: object;
   }
 
 export default Main;

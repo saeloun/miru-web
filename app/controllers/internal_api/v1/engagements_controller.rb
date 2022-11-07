@@ -17,7 +17,7 @@ class InternalApi::V1::EngagementsController < InternalApi::V1::ApplicationContr
     engagement_ids.push(nil) if engagement_ids.include?("-1")
 
     pagy, users = pagy(
-      current_company.users
+      current_company.users.kept
         .where(department_ids.present? ? { department_id: department_ids } : [])
         .where(engagement_ids.present? ? { engage_code: engagement_ids } : nil)
         .where(Pundit.policy!(current_user, :engagement).admin_access? ? [] : (

@@ -46,7 +46,13 @@ const Navbar = ({ isAdminUser, user, permissions }) => {
       dataCy: "devices-tab",
       path: Paths.DEVICES
     },
-    {
+    permissions.engagementsDashboard ? {
+      logo: <Equalizer size={26} className="mr-0 md:mr-4" />,
+      label: "Engagements",
+      dataCy: "engagements-tab",
+      path: Paths.ENGAGEMENTS_DASHBOARD,
+      permissionId: 'engagementsDashboard'
+    } : {
       logo: <Equalizer size={26} className="mr-0 md:mr-4" />,
       label: "Engagements",
       dataCy: "engagements-tab",
@@ -103,7 +109,7 @@ const Navbar = ({ isAdminUser, user, permissions }) => {
       logo: <Equalizer size={26} className="mr-0 md:mr-4" />,
       label: "Engagements",
       dataCy: "engagements-tab",
-      path: Paths.ENGAGEMENTS
+      path: Paths.ENGAGEMENTS_DASHBOARD
     },
     {
       logo: <Leaf size={26} className="mr-0 md:mr-4" />,
@@ -182,17 +188,15 @@ const Navbar = ({ isAdminUser, user, permissions }) => {
     });
 
   const getAdminOption = () =>
-    navAdminOptions.map((option, index) => (
-      <li key={index} className="items-center hover:bg-miru-gray-100">
-        <NavLink
-          to={option.path}
-          data-cy={option.dataCy}
-          className={({ isActive }) => isActive ? activeClassName : inActiveClassName }
-        >
-          {option.logo} {isDesktop && option.label}
-        </NavLink>
-      </li>
-    ));
+    navAdminOptions.map((option, index) => (<li key={index} className="items-center hover:bg-miru-gray-100">
+      <NavLink
+        to={option.path}
+        data-cy={option.dataCy}
+        className={({ isActive }) => isActive ? activeClassName : inActiveClassName }
+      >
+        {option.logo} {isDesktop && option.label}
+      </NavLink>
+    </li>));
 
   return (
     <div className={`sidebar fixed top-0 bottom-0 left-0 shadow-2xl h-full flex flex-col justify-between ${isDesktop ? '' : 'collapse-sidebar'}`}>

@@ -11,7 +11,7 @@ import Tab from "./../Tab";
 import * as config from "./Config";
 import './style.scss';
 
-const Dashboard = ({ isAdminUser }) => {
+const Dashboard = ({ permissions }) => {
   const [embedUrl, setEmbedUrl] = useState<string>(null);
   const sampleReportConfig = {
     type: 'report',
@@ -37,7 +37,7 @@ const Dashboard = ({ isAdminUser }) => {
 
   return (
     <>
-      <Tab isAdminUser={isAdminUser} tabClassName={'dashboard'}/>
+      <Tab permissions={permissions} tabClassName={'dashboard'}/>
       <div className='engagement-dashboard'>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
