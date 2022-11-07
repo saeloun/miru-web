@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 
 import { TeamModalType } from "constants/index";
 
-import { Pencil, Trash } from "phosphor-react";
+import { Pencil, Archive } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 
 import { useList } from "context/TeamContext";
@@ -53,11 +53,11 @@ const TableRow = ({ item }) => {
           <td className="pr-6 py-6 text-right w-44">
             {actionIconVisible && (
               <div className="invisible iconWrapper">
-                <button data-cy="edit-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.ADD_EDIT)}>
+                <button data-cy="edit-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.ADD_EDIT)} title='Edit'>
                   <Pencil size={16} className="text-col-han-app-1000" weight="bold" />
                 </button>
-                <button data-cy="delete-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.DELETE)}>
-                  <Trash size={16} className="text-col-han-app-1000" weight="bold" />
+                <button data-cy="delete-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.DELETE)} title='Archive'>
+                  <Archive size={16} className="text-col-han-app-1000" weight="bold" />
                 </button>
               </div>)}
           </td>
