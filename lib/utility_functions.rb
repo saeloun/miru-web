@@ -20,11 +20,9 @@ module UtilityFunctions
     when "year"
       0.year.ago.beginning_of_year..0.year.ago.end_of_year
     when "custom"
-      if from && to
-        convert_to_date(from)..convert_to_date(to)
-      else
-        0.year.ago.beginning_of_year..0.year.ago.end_of_year
-      end
+      return convert_to_date(from)..convert_to_date(to) if from && to
+
+      0.year.ago.beginning_of_year..0.year.ago.end_of_year
     else
       0.year.ago.beginning_of_year..0.year.ago.end_of_year
     end
