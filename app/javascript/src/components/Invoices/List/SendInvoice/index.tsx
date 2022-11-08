@@ -72,21 +72,23 @@ const SendInvoice: React.FC<any> = ({
   }, [newRecipient]);
 
   const handleSubmit = async (event: FormEvent) => {
-    try {
-      event.preventDefault();
-      setStatus(InvoiceStatus.LOADING);
+    if (invoiceEmail?.recipients.length > 0){
+      try {
+        event.preventDefault();
+        setStatus(InvoiceStatus.LOADING);
 
-      const payload = { invoice_email: invoiceEmail };
-      const {
-        data: { message }
-      } = await invoicesApi.sendInvoice(invoice.id, payload);
+        const payload = { invoice_email: invoiceEmail };
+        const {
+          data: { message }
+        } = await invoicesApi.sendInvoice(invoice.id, payload);
 
-      Toastr.success(message);
-      setStatus(InvoiceStatus.SUCCESS);
-      setIsSending(false);
-      setTimeout(fetchInvoices, 6000);
-    } catch (error) {
-      setStatus(InvoiceStatus.ERROR);
+        Toastr.success(message);
+        setStatus(InvoiceStatus.SUCCESS);
+        setIsSending(false);
+        setTimeout(fetchInvoices, 6000);
+      } catch (error) {
+        setStatus(InvoiceStatus.ERROR);
+      }
     }
   };
 
@@ -228,13 +230,21 @@ const SendInvoice: React.FC<any> = ({
                   type="button"
                   onClick={handleSubmit}
                   className={cn(
-                    "flex justify-center w-full p-3 mt-6 text-lg font-bold text-white uppercase border border-transparent rounded-md shadow-sm bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-miru-han-purple-600",
+                    `flex justify-center w-full p-3 mt-6 text-lg font-bold text-white uppercase border
+                    border-transparent rounded-md shadow-sm
+                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-miru-han-purple-600
+                    ${invoiceEmail?.recipients.length > 0 ?
+      "bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 cursor-pointer":
+      "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+    }
+                    `,
                     {
                       "hover:bg-miru-chart-green-400 bg-miru-chart-green-600":
                         status === InvoiceStatus.SUCCESS
                     }
+
                   )}
-                  disabled={isDisabled(status)}
+                  disabled={invoiceEmail?.recipients.length > 0 || isDisabled(status)}
                 >
                   {buttonText(status)}
                 </button>
