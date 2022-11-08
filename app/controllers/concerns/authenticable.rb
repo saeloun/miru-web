@@ -8,11 +8,7 @@ module Authenticable
   end
 
   def authenticate_token
-    if current_user.present?
-      api_v1_timesheet_entry_index_path
-    else
-      render json: { notice: "Invalid Token." }
-    end
+    return render json: { status: 403, notice: "Invalid Token." } if current_user.blank?
   end
 
   private
