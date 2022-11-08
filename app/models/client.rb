@@ -34,6 +34,7 @@ class Client < ApplicationRecord
   has_many :projects
   has_many :timesheet_entries, through: :projects
   has_many :invoices, dependent: :destroy
+  has_one_attached :client_logo
   belongs_to :company
 
   validates :name, :email, presence: true
