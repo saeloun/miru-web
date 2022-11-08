@@ -23,7 +23,6 @@ const TableHeader = ({ selectAllInvoices, deselectAllInvoices }) => {
           text=""
           checkboxValue={1}
           id={1}
-          name=""
         />
       </th>
       <th

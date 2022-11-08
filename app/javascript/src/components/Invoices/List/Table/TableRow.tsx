@@ -46,7 +46,7 @@ const TableRow = ({
   const formattedDate = (date) =>
     dayjs(date).format(invoice.company.dateFormat);
   return (
-    <tr onClick={()=>navigate(`/invoices/${invoice.id}`)} className="last:border-b-0 hover:bg-miru-gray-100 group cursor-pointer">
+    <tr className="last:border-b-0 hover:bg-miru-gray-100 group">
       <td className="md:pl-6 md:pr-0 px-4 py-5">
         <CustomCheckbox
           text=""
@@ -54,11 +54,10 @@ const TableRow = ({
           isChecked={isSelected}
           checkboxValue={isSelected}
           id={invoice.id}
-          name=""
         />
       </td>
 
-      <td className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap">
+      <td onClick={()=>navigate(`/invoices/${invoice.id}`)} className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap cursor-pointer">
         <Avatar />
         <div className="md:ml-10 ml-2">
           <span

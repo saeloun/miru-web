@@ -40,7 +40,8 @@ const CustomRadioButton = ({
       name={groupName}
       defaultChecked={defaultCheck}
       className={classnames(DEFAULT_STYLE_INPUT, classNameInput)}
-      onChange={handleOnChange}
+      onClick={handleOnChange}
+
     />
     <label
       htmlFor={id}
