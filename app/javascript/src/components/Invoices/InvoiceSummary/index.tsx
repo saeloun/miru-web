@@ -1,10 +1,10 @@
 import React from "react";
 
-import { currencyFormat } from "helpers";
+import { currencyNotationFormat } from "helpers";
 
 const InvoiceSummary = ({ summary, baseCurrency }) => {
   const formattedAmount = (amount) =>
-    currencyFormat({ baseCurrency: baseCurrency, amount });
+    currencyNotationFormat({ baseCurrency: baseCurrency, amount });
 
   return (
     <div className="px-10 py-10 mt-6 bg-miru-han-purple-1000 text-white rounded-2xl overflow-x-auto">
