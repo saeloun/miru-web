@@ -4,7 +4,7 @@
 
 # Create Previous Employment for Users
 @users.each { | user | user.previous_employments.create!(
-  company_name: Faker::Company.name,
+  company_name: "ABC India",
   role: "SDE"
   )
 }
