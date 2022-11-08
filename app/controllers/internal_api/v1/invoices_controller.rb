@@ -81,7 +81,8 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     BulkInvoiceDownloadJob.perform_later(
       bulk_download_params[:invoice_ids],
       current_company.company_logo,
-      bulk_download_params[:download_id])
+      bulk_download_params[:download_id],
+      root_url)
     head :accepted
   end
 
