@@ -2,6 +2,7 @@ import React from "react";
 
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
+import { Badge } from "StyledComponents";
 
 import getStatusCssClass from "utils/getBadgeStatus";
 
@@ -49,9 +50,7 @@ const TableRow = ({
         {formattedAmount}
       </td>
       <td className="col-span-3 py-2 font-medium text-right">
-        <span className={getStatusCssClass(status) + " uppercase"}>
-          {status}
-        </span>
+        <Badge text={status} className={`${getStatusCssClass(status)} uppercase`} />
       </td>
     </tr>
   );

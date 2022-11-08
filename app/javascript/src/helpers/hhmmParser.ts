@@ -17,8 +17,9 @@ export const minToHHMM = (duration: number) => {
   if (Number.isNaN(duration) || duration <= 0) {
     return "00:00";
   } else {
-    let hours = (duration / 60).toString().split(".")[0];
-    let minutes = (duration % 60).toString();
+    const roundDur = Number(duration.toFixed());
+    let hours = (roundDur / 60).toString().split(".")[0];
+    let minutes = (roundDur % 60).toString();
     if (hours.length === 1) hours = `0${hours}`;
     if (minutes.length === 1) minutes = `0${minutes}`;
     return `${hours}:${minutes}`;
