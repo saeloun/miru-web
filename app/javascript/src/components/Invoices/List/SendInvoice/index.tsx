@@ -46,7 +46,12 @@ const Recipient: React.FC<{ email: string; handleClick: any }> = ({
   </div>
 );
 
-const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
+const SendInvoice: React.FC<any> = ({
+  invoice,
+  setIsSending,
+  isSending,
+  fetchInvoices
+}) => {
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
     subject: emailSubject(invoice),
@@ -79,6 +84,7 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
       Toastr.success(message);
       setStatus(InvoiceStatus.SUCCESS);
       setIsSending(false);
+      setTimeout(fetchInvoices, 6000);
     } catch (error) {
       setStatus(InvoiceStatus.ERROR);
     }
