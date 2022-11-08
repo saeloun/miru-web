@@ -14,7 +14,6 @@ const RecentlyUpdated = ({ invoice }) => {
 
   return (
     <div
-      key={invoice.id}
       onClick={() => navigate(`/invoices/${invoice.id}`)}
       className="p-4 mx-2 w-40 h-auto flex flex-col justify-between border-miru-gray-200 border-2 rounded-xl text-center cursor-pointer"
     >
