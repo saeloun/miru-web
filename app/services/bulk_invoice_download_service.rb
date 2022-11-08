@@ -2,11 +2,12 @@
 
 class BulkInvoiceDownloadService
   require "zip"
-  attr_reader :invoice_ids, :company_logo
+  attr_reader :invoice_ids, :company_logo, :root_url
 
-  def initialize(invoice_ids, company_logo)
+  def initialize(invoice_ids, company_logo, root_url)
     @invoice_ids = invoice_ids
     @company_logo = company_logo
+    @root_url = root_url
   end
 
   def process
@@ -17,18 +18,20 @@ class BulkInvoiceDownloadService
 
     def get_zipped_invoices_data
       zip_file = Tempfile.new(Time.now.to_i.to_s + "_" + SecureRandom.alphanumeric(10) + ".zip")
-      # Zip::File::CREATE
       Zip::File.open(zip_file.path, create: true) do |zipfile|
         invoice_pdf_files.each do |invoice_no, invoice_pdf_file|
           zipfile.add(invoice_no + ".pdf", invoice_pdf_file.path)
-          # invoice_pdf_file.unlink
         end
       end
 
       zip_data = File.read(zip_file.path)
 
+      invoice_pdf_files.each do |invoice_no, invoice_pdf_file|
+        invoice_pdf_file.unlink
+      end
       zip_file.close
       zip_file.unlink
+
       zip_data
     end
 
@@ -41,7 +44,7 @@ class BulkInvoiceDownloadService
 
     def invoice_pdf_file(invoice)
       Tempfile.open do |file|
-        invoice_pdf_content = InvoicePayment::PdfGeneration.process(invoice, company_logo)
+        invoice_pdf_content = InvoicePayment::PdfGeneration.process(invoice, company_logo, root_url)
         utf_8_encoded_content = invoice_pdf_content.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?")
         file.write(utf_8_encoded_content)
         file.rewind
@@ -50,6 +53,6 @@ class BulkInvoiceDownloadService
     end
 
     def get_invoice(id)
-      @_invoice ||= Invoice.includes(:client, :invoice_line_items).find(id)
+      Invoice.includes(:client, :invoice_line_items).find(id)
     end
 end
