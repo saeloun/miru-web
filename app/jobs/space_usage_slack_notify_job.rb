@@ -37,13 +37,13 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
       .map { |i| "*#{i.slack_member_id.present? ? "<@#{i.slack_member_id}>" : i.full_name}*" } .to_sentence
 
     {
-      text: "#{entry[:space_name]} occupied by #{entry[:user_name]}",
+      text: ":large_green_circle: #{entry[:space_name]} occupied by #{entry[:user_name]}",
       blocks: [
         {
           type: "header",
           text: {
             type: "plain_text",
-            text: "#{entry[:space_name]} occupied by #{entry[:user_name]}",
+            text: ":large_green_circle: #{entry[:space_name]} occupied by #{entry[:user_name]}",
             emoji: true
           }
         },
@@ -71,13 +71,13 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
       .map { |i| "*#{i.slack_member_id.present? ? "<@#{i.slack_member_id}>" : i.full_name}*" } .to_sentence
 
     {
-      text: "#{entry[:space_name]} occupation changed by #{entry[:user_name]}",
+      text: ":large_orange_circle: #{entry[:space_name]} occupation changed by #{entry[:user_name]}",
       blocks: [
         {
           type: "header",
           text: {
             type: "plain_text",
-            text: "#{entry[:space_name]} occupation changed by #{entry[:user_name]}",
+            text: ":large_orange_circle: #{entry[:space_name]} occupation changed by #{entry[:user_name]}",
             emoji: true
           }
         },
@@ -105,13 +105,13 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
       .map { |i| "*#{i.slack_member_id.present? ? "<@#{i.slack_member_id}>" : i.full_name}*" } .to_sentence
 
     {
-      text: "#{entry[:space_name]} unoccupied by #{entry[:user_name]}",
+      text: ":red_circle: #{entry[:space_name]} unoccupied by #{entry[:user_name]}",
       blocks: [
         {
           type: "header",
           text: {
             type: "plain_text",
-            text: "#{entry[:space_name]} unoccupied by #{entry[:user_name]}",
+            text: ":red_circle: #{entry[:space_name]} unoccupied by #{entry[:user_name]}",
             emoji: true
           }
         },

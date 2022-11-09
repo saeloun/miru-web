@@ -35,6 +35,8 @@ class SpaceUsage < ApplicationRecord
     CodeOptionKlass.new("Uranus", 5, "UR"),
     CodeOptionKlass.new("Neptune", 6, "NA"),
     CodeOptionKlass.new("Pluto", 7, "PL"),
+    CodeOptionKlass.new("Jupiter", 8, "JU"),
+    CodeOptionKlass.new("Venus", 9, "VE"),
     # CodeOptionKlass.new("HR Cabin", 2, "HRC"),
     # CodeOptionKlass.new("Sales Cabin", 3, "SC"),
     CodeOptionKlass.new("Mars", 1, "MA"),
