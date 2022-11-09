@@ -243,7 +243,7 @@ const SendInvoice: React.FC<any> = ({
                         status === InvoiceStatus.SUCCESS
                     }
                   )}
-                  disabled={invoiceEmail?.recipients.length > 0 || isDisabled(status)}
+                  disabled={invoiceEmail?.recipients.length <= 0 || isDisabled(status)}
                 >
                   {buttonText(status)}
                 </button>

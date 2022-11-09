@@ -243,7 +243,7 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
                     }
                   )}
                   data-cy ="send-email"
-                  disabled={invoiceEmail?.recipients.length > 0 || isDisabled(status)}
+                  disabled={invoiceEmail?.recipients.length <= 0 || isDisabled(status)}
                 >
                   {buttonText(status)}
                 </button>
