@@ -1,25 +1,43 @@
 import React from "react";
 
+import { currencyFormat } from "helpers";
+import { useNavigate } from "react-router-dom";
 import { Avatar, Badge } from "StyledComponents";
 
 import getStatusCssClass from "utils/getBadgeStatus";
 
-const RecentlyUpdated = ({ invoice }) => (
-  <div key={invoice.id} className="p-4 mx-2 w-40 h-52 border-miru-gray-200 border-2 rounded-xl text-center">
-    <div className="flex justify-center whitespace-nowrap">
-      <h3 className="text-xs font-normal text-miru-dark-purple-400 mr-0.5">{invoice.invoiceNumber}</h3>
-      <h3 className="text-xs font-semibold text-miru-dark-purple-400">{invoice.dueDate}</h3>
+const RecentlyUpdated = ({ invoice }) => {
+  const navigate = useNavigate();
+
+  const formattedAmount = (amount, baseCurrency) =>
+    currencyFormat({ baseCurrency: baseCurrency, amount });
+
+  return (
+    <div
+      onClick={() => navigate(`/invoices/${invoice.id}`)}
+      className="p-4 mx-2 w-40 h-auto flex flex-col justify-between border-miru-gray-200 border-2 rounded-xl text-center cursor-pointer"
+    >
+      <h3 className="text-xs text-center font-normal text-miru-dark-purple-400 mr-0.5">
+        {invoice.invoiceNumber}
+      </h3>
+      <div className="flex justify-center md:my-3 my-1">
+        <Avatar />
+      </div>
+      <p className="mt-1 mb-2.5 font-semibold md:text-base text-sm text-center capitalize text-miru-dark-purple-1000 leading-5 h-11 flex justify-center items-center">
+        <p className="truncateOverflowText">{invoice.client.name}</p>
+      </p>
+      <h1 className="mt-2.5 mb-1 md:text-xl text-base font-bold text-miru-dark-purple-1000 truncate">
+        {" "}
+        {formattedAmount(invoice.amount, invoice.company.baseCurrency)}{" "}
+      </h1>
+      <div>
+        <Badge
+          text={invoice.status}
+          className={`${getStatusCssClass(invoice.status)} uppercase mt-2`}
+        />
+      </div>
     </div>
-    <div className="flex justify-center md:my-3 my-1">
-      <Avatar/>
-    </div>
-    <h1 className="mt-1 font-semibold md:text-base text-sm tracking-wider capitalize text-miru-dark-purple-1000">{invoice.client.name}</h1>
-    <h1 className="mt-2.5 mb-1 md:text-xl text-base font-bold tracking-wider text-miru-dark-purple-1000"> {invoice.amount} </h1>
-    <Badge
-      text={invoice.status}
-      className={`${getStatusCssClass(invoice.status)} uppercase mt-2`}
-    />
-  </div>
-);
+  );
+};
 
 export default RecentlyUpdated;
