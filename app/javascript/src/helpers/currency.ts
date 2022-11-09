@@ -19,13 +19,27 @@ const locale = (baseCurrency) => {
   }
 };
 
-export const currencyFormat = ({ baseCurrency, amount }) => {
+const currencyFormat = ({ baseCurrency, amount }) => {
   const formattedAmount = new Intl.NumberFormat(locale(baseCurrency), {
     style: "currency",
     currency: baseCurrency,
-    maximumFractionDigits: 0
-
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 0
   }).format(amount);
 
   return formattedAmount;
 };
+
+const currencyNotationFormat = ({ baseCurrency, amount }) => {
+  const formattedAmount = new Intl.NumberFormat(locale(baseCurrency), {
+    style: "currency",
+    currency: baseCurrency,
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+    notation: amount > 99999 ? "compact" : "standard"
+  }).format(amount);
+
+  return formattedAmount;
+};
+
+export { currencyFormat, currencyNotationFormat };

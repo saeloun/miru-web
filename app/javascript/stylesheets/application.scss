@@ -531,24 +531,10 @@ body {
   }
 }
 
-.rmsc {
-  --rmsc-main: #5B34EA !important;
-  --rmsc-hover: #F5F7F9;
-  --rmsc-selected: none;
-  --rmsc-border: #5B34EA !important;
-  --rmsc-gray: #aaa;
-  --rmsc-bg: #fff;
-  --rmsc-p: 10px; /* Spacing */
-  --rmsc-radius: 20px; /* Radius */
-  --rmsc-h: 38px; /* Height */
-}
-
-.rmsc .panel-content {
-  height: 200px;
-  overflow-y: scroll;
-}
-
-.rmsc .options {
-  height: 140px;
-  overflow-y: scroll;
+.truncateOverflowText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
