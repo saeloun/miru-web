@@ -48,6 +48,9 @@ const FilterSideBar = ({
       setDateRangeList(dateRangeOptions);
       setdisableDateBtn(false);
     }
+    else {
+      dateRangeOptions[5].label = "Custom";
+    }
     fetchCompanyDetails();
   }, []);
 
