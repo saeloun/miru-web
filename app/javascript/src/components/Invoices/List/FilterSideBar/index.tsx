@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useDebounce } from "helpers";
 import { X, Funnel, Plus, Minus, MagnifyingGlass } from "phosphor-react";
 import { Badge, Button, SidePanel } from "StyledComponents";
@@ -12,6 +13,8 @@ import CustomRadioButton from "common/CustomRadio";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import { dateRangeOptions, statusOptions } from "./filterOptions";
+
+dayjs.extend(advancedFormat);
 
 const FilterSideBar = ({
   filterIntialValues,
@@ -42,7 +45,6 @@ const FilterSideBar = ({
     if (value == "custom" && from && to) {
       setDateRange({ ...dateRange, from: from, to: to });
       setCustomDate(true);
-      dateRangeOptions[5] = filters.dateRange;
       setDateRangeList(dateRangeOptions);
       setdisableDateBtn(false);
     }
@@ -89,6 +91,12 @@ const FilterSideBar = ({
   };
 
   const handleSelectFilter = (selectedValue, field) => {
+
+    if (selectedValue.value !== "custom") {
+      dateRangeOptions[5].label = "Custom";
+      setDefaultDateRange();
+    }
+
     if (selectedValue.value === "custom") {
       setShowCustomFilter(true);
       setFilters({
@@ -140,14 +148,15 @@ const FilterSideBar = ({
 
   const submitCustomDatePicker = () => {
     if (dateRange.from && dateRange.to) {
-      const fromDate = dayjs(dateRange.from).format("DD/MM/YY");
-      const toDate = dayjs(dateRange.to).format("DD/MM/YY");
+      const fromDate = dayjs(dateRange.from).format("Do MMM");
+      const toDate = dayjs(dateRange.to).format("Do MMM");
+      dateRangeOptions[5].label = `Custom (${fromDate} - ${toDate})`;
 
       setFilters({
         ...filters,
         ["dateRange"]: {
           value: "custom",
-          label: `Custom ${fromDate} - ${toDate}`,
+          label: `Custom (${fromDate} - ${toDate})`,
           ...dateRange
         }
       });

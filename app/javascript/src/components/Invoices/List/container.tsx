@@ -22,7 +22,8 @@ const Container = ({
   filterParamsStr
 }) => {
   const [isDesktop, setIsDesktop] = useState(innerWidth > 650);
-  const appliedFilterCount = (filterParamsStr.match(/&/g) || []).length;
+  let appliedFilterCount = (filterParamsStr.match(/&/g) || []).length;
+  filterParamsStr.includes("custom") && (appliedFilterCount = appliedFilterCount - 2);
 
   const handleRemoveFilter = (removeval) => {
     let name, newArr;

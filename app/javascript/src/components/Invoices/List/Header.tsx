@@ -31,7 +31,8 @@ const Header = ({
   const [searchResult, setSearchResult] = React.useState<any[]>([]);
   const [status, setStatus] = React.useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
-  const appliedFilterCount = (filterParamsStr.match(/&/g) || [] ).length;
+  let appliedFilterCount = (filterParamsStr.match(/&/g) || [] ).length;
+  filterParamsStr.includes("custom") && (appliedFilterCount = appliedFilterCount - 2);
 
   React.useEffect(() => {
     if (searchQuery) {
