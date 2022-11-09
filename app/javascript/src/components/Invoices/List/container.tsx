@@ -33,10 +33,10 @@ const Container = ({
             name = key;
             newArr = value.filter((v) => v != removeval);
           }
-        }) : {
-          name: key,
-          newArr: filterIntialValues
-        };
+        }) : value == removeval && (
+          name = key,
+          newArr = filterIntialValues.dateRange
+        );
     }
     setFilterParams({
       ...filterParams,
@@ -102,7 +102,7 @@ const Container = ({
                       <X
                         size={12}
                         className="ml-2 cursor-pointer"
-                        onClick={() => handleRemoveFilter(Object(param).value)}
+                        onClick={() => handleRemoveFilter(Object(param))}
                       />
                     </span>
                   ))}
