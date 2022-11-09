@@ -144,7 +144,7 @@ en:
     demand:
       failure:
         message: Device usage request failed
-        already_there: Device usage request already there.
+        already_there: Device already assigned or usage request already there.
       success:
         message: "Device requested"
     demand_cancel:

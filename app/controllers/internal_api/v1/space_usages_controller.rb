@@ -56,7 +56,7 @@ class InternalApi::V1::SpaceUsagesController < InternalApi::V1::ApplicationContr
   def destroy
     authorize current_space_usage
     if current_space_usage.destroy
-      SpaceUsageSlackNotifyJob.perform_later("delete", current_space_usage.attributes.as_json)
+      Slack::SpaceUsageNotifyJob.perform_later("delete", current_space_usage.attributes.as_json)
       render json: { notice: I18n.t("space_usage.destroy.message") }
     else
       # TBD

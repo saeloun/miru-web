@@ -6,9 +6,10 @@ class InternalApi::V1::Devices::DeviceUsagesController < InternalApi::V1::Device
 
     device_usage_exists = device.device_usages.where(approve: nil, created_by_id: current_user.id)
 
-    if device_usage_exists.length > 0
+    if (device.assignee && device.assignee == current_user) || device_usage_exists.length.positive?
       render json: {
-        error: I18n.t("device_usage.demand.failure.already_there")
+        success: false,
+        notice: I18n.t("device_usage.demand.failure.already_there")
       }, status: :unprocessable_entity
       return
     end
@@ -16,6 +17,7 @@ class InternalApi::V1::Devices::DeviceUsagesController < InternalApi::V1::Device
     device_usage = device.device_usages.new(created_by: current_user)
 
     if device_usage.save
+      Slack::DeviceUsageNotifyJob.perform_later("demand", device.id, current_user.id)
       render json: {
         notice: I18n.t("device_usage.demand.success.message")
       }, status: :ok
@@ -38,8 +40,10 @@ class InternalApi::V1::Devices::DeviceUsagesController < InternalApi::V1::Device
       }, status: :not_found
       return
     end
-    device_usages = DeviceUsage.destroy(device_usage.to_a.map(&:id))
+    device_usage_ids = device_usage.to_a.map(&:id)
+    device_usages = DeviceUsage.destroy(device_usage_ids)
     if device_usages
+      Slack::DeviceUsageNotifyJob.perform_later("demand_canceled", device.id, current_user.id)
       render json: { notice: I18n.t("device_usage.demand_cancel.success.message") }, status: :ok
     else
       render json: { error: device_usages.errors.full_messages.to_sentence }, status: :unprocessable_entity

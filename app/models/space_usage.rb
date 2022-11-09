@@ -73,10 +73,10 @@ class SpaceUsage < ApplicationRecord
   delegate :full_name, to: :user, prefix: true, allow_nil: true
 
   after_commit on: [:create], if: proc { |record| record.previous_changes.present? } do
-    SpaceUsageSlackNotifyJob.perform_later("create", self.attributes.as_json)
+    Slack::SpaceUsageNotifyJob.perform_later("create", self.attributes.as_json)
   end
   after_commit on: [:update], if: proc { |record| record.previous_changes.present? } do
-    SpaceUsageSlackNotifyJob.perform_later("update", self.attributes.as_json)
+    Slack::SpaceUsageNotifyJob.perform_later("update", self.attributes.as_json)
   end
 
   # searchkick

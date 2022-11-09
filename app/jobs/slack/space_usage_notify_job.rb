@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-class SpaceUsageSlackNotifyJob < ApplicationJob
-  SLACK_WEBHOOK_URL = ENV.fetch("SLACK_WEBHOOK_URL", nil)
+class Slack::SpaceUsageNotifyJob < ApplicationJob
+  SLACK_SPACE_WEBHOOK_URL = ENV.fetch("SLACK_SPACE_WEBHOOK_URL", nil)
 
   queue_as :default
 
   def perform(action_name, space_usage_attributes)
     action_name = action_name.to_sym
-    return unless SLACK_WEBHOOK_URL
+    return unless SLACK_SPACE_WEBHOOK_URL
 
     @space_usage = if [:create, :update].include?(action_name)
       SpaceUsage.find(space_usage_attributes["id"])
@@ -26,7 +26,7 @@ class SpaceUsageSlackNotifyJob < ApplicationJob
                     nil
     end
     if payload_msg
-      RestClient.post SLACK_WEBHOOK_URL, payload_msg.to_json, { content_type: :json, accept: :json }
+      RestClient.post SLACK_SPACE_WEBHOOK_URL, payload_msg.to_json, { content_type: :json, accept: :json }
     end
   end
 
