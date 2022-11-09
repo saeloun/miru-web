@@ -232,9 +232,9 @@ const SendInvoice: React.FC<any> = ({
                   className={cn(
                     `flex justify-center w-full p-3 mt-6 text-lg font-bold text-white uppercase border
                     border-transparent rounded-md shadow-sm
-                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-miru-han-purple-600
                     ${invoiceEmail?.recipients.length > 0 ?
-      "bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 cursor-pointer":
+      `bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 cursor-pointer focus:outline-none focus:ring-2
+                        focus:ring-offset-2 focus:ring-miru-han-purple-600`:
       "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
     }
                     `,
@@ -242,7 +242,6 @@ const SendInvoice: React.FC<any> = ({
                       "hover:bg-miru-chart-green-400 bg-miru-chart-green-600":
                         status === InvoiceStatus.SUCCESS
                     }
-
                   )}
                   disabled={invoiceEmail?.recipients.length > 0 || isDisabled(status)}
                 >
