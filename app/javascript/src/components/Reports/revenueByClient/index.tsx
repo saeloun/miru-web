@@ -58,15 +58,13 @@ const RevenueByClientReport = () => {
 
   const handleRemoveSingleFilter = (key, value) => {
     const filterValue = selectedFilter[key];
-    if (Array.isArray(filterValue)) {
+
+    if (Array.isArray(filterValue) && filterValue.length > 1) {
       const closedFilter = filterValue.filter(item => item.label !== value);
       setSelectedFilter({ ...selectedFilter, [key]: closedFilter });
     } else {
-      const label = key === "dateRange" ? "All" : "None";
-      setSelectedFilter({ ...selectedFilter, [key]: { label, value: "" } });
-    }
-    if (key === "clients") {
-      setSelectedFilter({ ...selectedFilter, [key]: [{ label: "All Clients", value: "" }] });
+      const label = key === "dateRange" ? "All" : "All Clients";
+      setSelectedFilter((prevState) => ( { ...prevState, [key]: key === "dateRange" ? { label, value: "" } : [{ label, value: "" }] } ));
     }
   };
 
