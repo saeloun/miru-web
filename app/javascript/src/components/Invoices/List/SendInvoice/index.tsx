@@ -10,7 +10,7 @@ import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import cn from "classnames";
 import { useOutsideClick } from "helpers";
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
@@ -41,7 +41,7 @@ const Recipient: React.FC<{ email: string; handleClick: any }> = ({
       className="text-miru-black-1000 hover:text-miru-red-400"
       onClick={handleClick}
     >
-      <X size={14} weight="bold" />
+      <XIcon size={14} weight="bold" />
     </button>
   </div>
 );
@@ -139,7 +139,7 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
                 className="text-miru-gray-1000"
                 onClick={() => setIsSending(false)}
               >
-                <X size={16} weight="bold" />
+                <XIcon size={16} weight="bold" />
               </button>
             </div>
 

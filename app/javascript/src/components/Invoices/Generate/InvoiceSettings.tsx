@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 
 import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 
 import paymentSettings from "apis/payment-settings";
 import PaymentsProviders from "apis/payments/providers";
@@ -102,7 +102,7 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
         <span className="mb-3 flex justify-between font-extrabold text-base text-miru-dark-purple-1000 leading-5">
           Invoice Settings
           <button onClick={() => setShowInvoiceSetting(false)}>
-            <X size={15} color="#CDD6DF" />
+            <XIcon size={15} color="#CDD6DF" />
           </button>
         </span>
         <span className="my-3 font-normal text-sm leading-5 text-miru-dark-purple-1000">

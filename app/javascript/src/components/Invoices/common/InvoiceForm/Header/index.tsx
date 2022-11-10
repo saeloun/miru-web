@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 
 import { TOASTER_DURATION } from "constants/index";
 
-import { X, FloppyDisk, PaperPlaneTilt, Gear } from "phosphor-react";
+import { XIcon, FloppyDiskIcon, PaperPlaneTiltIcon, SettingIcon } from "miruIcons";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -25,7 +25,7 @@ const Header = ({
             onClick={() => setShowInvoiceSetting(true)}
             className="font-bold text-xs text-miru-han-purple-1000 tracking-widest leading-4 flex items-center ml-5"
           >
-            <Gear size={15} color="#5B34EA" className="mr-2.5" />
+            <SettingIcon size={15} color="#5B34EA" className="mr-2.5" />
               SETTINGS
           </button>
         }
@@ -36,7 +36,7 @@ const Header = ({
           type="button"
           className="header__button w-1/3 p-0"
         >
-          <X size={12} />
+          <XIcon size={12} />
           <span className="ml-2 inline-block">CANCEL</span>
         </Link>
         <button
@@ -45,7 +45,7 @@ const Header = ({
           onClick={handleSaveInvoice}
           data-cy='save-invoice'
         >
-          <FloppyDisk size={18} color="white" />
+          <FloppyDiskIcon size={18} color="white" />
           <span className="ml-2 inline-block">SAVE</span>
         </button>
         <button
@@ -53,7 +53,7 @@ const Header = ({
           onClick={handleSendInvoice}
           className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
         >
-          <PaperPlaneTilt size={18} color="White" />
+          <PaperPlaneTiltIcon size={18} color="White" />
           <span className="ml-2 inline-block" data-cy="send-invoice">SEND TO</span>
         </button>
       </div>

@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
-import { PencilSimple } from "phosphor-react";
+import { EditIcon } from "miruIcons";
 
 import CustomDatePicker from "common/CustomDatePicker";
 
@@ -57,7 +57,7 @@ const InvoiceDetails = ({
           <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
             <span>Date of Issue</span>
             <button className="ml-2 invisible" onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}>
-              <PencilSimple size={13} color="#1D1A31" />
+              <EditIcon size={13} color="#1D1A31" />
             </button>
           </p>
           {showDateOfIssuePicker && <CustomDatePicker handleChange={handleDatePickerChange} date={issueDate} />}
@@ -69,7 +69,7 @@ const InvoiceDetails = ({
           <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4 flex">
             <span>Due Date</span>
             <button className="ml-2 invisible" onClick={() => setShowDueDatePicker(!showDueDatePicker)}>
-              <PencilSimple size={13} color="#1D1A31" />
+              <EditIcon size={13} color="#1D1A31" />
             </button>
           </p>
           {showDueDatePicker && <CustomDatePicker handleChange={handleDueDatePicker} date={dueDate} />}

@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 
 import { TeamModalType } from "constants/index";
 
-import { PencilSimple, Trash } from "phosphor-react";
+import { EditIcon, DeleteIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
 import { useList } from "context/TeamContext";
@@ -47,10 +47,10 @@ const TableRow = ({ item }) => {
             {actionIconVisible && (
               <div className="invisible iconWrapper">
                 <button data-cy="edit-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.ADD_EDIT)}>
-                  <PencilSimple size={16} color="#5b34ea" weight="bold" />
+                  <EditIcon size={16} color="#5b34ea" weight="bold" />
                 </button>
                 <button data-cy="delete-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.DELETE)}>
-                  <Trash size={16} color="#5b34ea" weight="bold" />
+                  <DeleteIcon size={16} color="#5b34ea" weight="bold" />
                 </button>
               </div>)}
           </td>

@@ -6,24 +6,16 @@ import { Paths } from "constants/index";
 // eslint-disable-next-line import/order
 import {
   TimeTrackingIcon,
+  TeamsIcon,
   ClientsIcon,
   ProjectsIcon,
-  InvoicesIcon,
+  SettingIcon,
+  SignOutIcon,
   ReportsIcon,
+  InvoicesIcon,
   PaymentsIcon
-} from "miruIcons";
 
-import {
-  Timer,
-  UsersThree,
-  Buildings,
-  Briefcase,
-  Receipt,
-  ChartLine,
-  Wallet,
-  Gear,
-  SignOut
-} from "phosphor-react";
+} from "miruIcons";
 import { NavLink, Link } from "react-router-dom";
 
 const miruLogo = require("../../../../assets/images/PurpleMiruLogoWithText.svg"); //eslint-disable-line
@@ -51,13 +43,13 @@ const Navbar = ({ isAdminUser, user }) => {
       path: Paths.TEAM
     },
     {
-      logo: <Buildings size={26} className="mr-0 md:mr-4" />,
+      logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Clients",
       dataCy: "clients-tab",
       path: Paths.CLIENTS
     },
     {
-      logo: <Briefcase size={26} className="mr-0 md:mr-4" />,
+      logo: <ProjectsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Projects",
       dataCy: "projects-tab",
       path: Paths.PROJECTS
@@ -72,13 +64,13 @@ const Navbar = ({ isAdminUser, user }) => {
       path: Paths.TIME_TRACKING
     },
     {
-      logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
+      logo: <TeamsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Team",
       dataCy: "team-tab",
       path: Paths.TEAM
     },
     {
-      logo: <ProjectsIcon size={26} className="mr-0 md:mr-4" />,
+      logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Clients",
       dataCy: "clients-tab",
       path: Paths.CLIENTS
@@ -96,7 +88,7 @@ const Navbar = ({ isAdminUser, user }) => {
       path: Paths.INVOICES
     },
     {
-      logo: <ChartLine size={26} className="mr-0 md:mr-4" />,
+      logo: <ReportsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Reports",
       dataCy: "reports-tab",
       path: Paths.REPORTS
@@ -177,7 +169,7 @@ const Navbar = ({ isAdminUser, user }) => {
               }
               to="/profile/edit"
             >
-              <Gear size={26} className="mr-0 md:mr-4" />
+              <SettingIcon size={26} className="mr-0 md:mr-4" />
               {isDesktop && "Settings"}
             </NavLink>
           </li>
@@ -188,14 +180,14 @@ const Navbar = ({ isAdminUser, user }) => {
           </a> */}
           <a data-method="delete" href="/users/sign_out" rel="nofollow">
             <li className="flex py-3 md:px-6 px-2 items-center md:justify-start justify-center hover:bg-miru-gray-100">
-              <SignOut size={26} className="mr-0 md:mr-4" />
+              <SignOutIcon size={26} className="mr-0 md:mr-4" />
               {isDesktop && "Logout"}
             </li>
           </a>
         </ul>
-        <div className="md:mt-6 mt-auto w-full h-16 p-4 bg-miru-gray-100 flex items-center overflow-x-auto">
+        <div className="md:mt-6 mt-auto w-full h-16 p-4 bg-miru-gray-100 flex items-center overflow-XIcon-auto">
           <img src={avatar} className="mr-2" alt="avatar" />
-          <div className="flex flex-col overflow-x-auto">
+          <div className="flex flex-col overflow-XIcon-auto">
             <span className="font-bold text-base leading-5 pt-1">{`${user.first_name} ${user.last_name}`}</span>
             <span className="font-normal text-xs leading-4">{user.email}</span>
           </div>

@@ -16,7 +16,7 @@ const Container = ({
   setInvoiceToDelete
 }) =>
   invoices.length > 0 ? (
-    <div className="overflow-x-scroll flex flex-col items-stretch">
+    <div className="overflow-XIcon-scroll flex flex-col items-stretch">
       <InvoiceSummary
         summary={summary}
         baseCurrency={invoices[0].company.baseCurrency}
@@ -24,7 +24,7 @@ const Container = ({
 
       <div className="my-20">
         <h1 className="mb-4 text-miru-dark-purple-1000 font-normal text-2xl">Recently updated</h1>
-        <div className="grid grid-cols-10 gap-44 overflow-x-auto overflow-y-hidden">
+        <div className="grid grid-cols-10 gap-44 overflow-XIcon-auto overflow-y-hidden">
           {
             recentlyUpdatedInvoices.length > 0 ?
               recentlyUpdatedInvoices.map(( invoice ) => <RecentlyUpdated invoice={invoice} />)

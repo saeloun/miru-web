@@ -4,13 +4,13 @@ import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import { useDebounce } from "helpers";
 import {
-  Funnel,
-  MagnifyingGlass,
-  Plus,
-  Trash,
-  PaperPlaneTilt,
-  X
-} from "phosphor-react";
+  FilterIcon,
+  SearchIcon,
+  PlusIcon,
+  DeleteIcon,
+  PaperPlaneTiltIcon,
+  XIcon
+} from "miruIcons";
 import { Link } from "react-router-dom";
 
 import invoicesApi from "apis/invoices";
@@ -86,9 +86,9 @@ const Header = ({
                 />
                 <button className=" absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer ">
                   {searchQuery ? (
-                    <X size={12} onClick={onSearchClear} />
+                    <XIcon size={12} onClick={onSearchClear} />
                   ) : (
-                    <MagnifyingGlass size={12} />
+                    <SearchIcon size={12} />
                   )}
                 </button>
 
@@ -97,7 +97,7 @@ const Header = ({
             </div>
 
             <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
-              <Funnel size={16} color={filterParamsStr ? "#5B34EA" : "#303A4B"} weight={filterParamsStr ? "fill" : "bold"}/>
+              <FilterIcon size={16} color={filterParamsStr ? "#5B34EA" : "#303A4B"} weight={filterParamsStr ? "fill" : "bold"}/>
             </button>
           </div>
 
@@ -107,7 +107,7 @@ const Header = ({
               type="button"
               className="header__button"
             >
-              <Plus weight="fill" size={16} />
+              <PlusIcon weight="fill" size={16} />
               <span className="inline-block ml-2" data-cy="new-invoice-button">NEW INVOICE</span>
             </Link>
           </div>
@@ -122,7 +122,7 @@ const Header = ({
           </span>
 
           <button className="ml-2" onClick={clearCheckboxes}>
-            <X size={16} color="#5b34ea" weight="bold" />
+            <XIcon size={16} color="#5b34ea" weight="bold" />
           </button>
 
           <div className="flex">
@@ -133,12 +133,12 @@ const Header = ({
               }}
               className="header__button border-miru-red-400 text-miru-red-400"
             >
-              <Trash weight="fill" size={16} />
+              <DeleteIcon weight="fill" size={16} />
               <span className="inline-block ml-2">DELETE</span>
             </button>
 
             <button type="button" className="header__button">
-              <PaperPlaneTilt weight="fill" size={16} />
+              <PaperPlaneTiltIcon weight="fill" size={16} />
               <span className="inline-block ml-2">SEND TO</span>
             </button>
           </div>
