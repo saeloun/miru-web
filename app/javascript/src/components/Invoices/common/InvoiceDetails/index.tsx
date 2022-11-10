@@ -21,6 +21,7 @@ const InvoiceDetails = ({
   invoiceNumber,
   setInvoiceNumber,
   reference,
+  setReference,
   optionSelected,
   clientVisible
 }) => {
@@ -86,12 +87,17 @@ const InvoiceDetails = ({
           </p>
           <input type="text" value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} className="px-2 w-3/5" data-cy="invoice-number"/>
         </div>
-        <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
-          Reference
-        </p>
-        <p className="font-normal text-base text-miru-dark-purple-1000">
-          {reference}
-        </p>
+        <div className="flex flex-col">
+          <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
+            Reference
+          </p>
+          <input
+            type="text"
+            value={reference}
+            onChange={(e) => setReference(e.target.value)}
+            className="px-2 w-3/5"
+          />
+        </div>
       </div>
 
       <div>
