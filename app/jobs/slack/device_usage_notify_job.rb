@@ -34,7 +34,7 @@ class Slack::DeviceUsageNotifyJob < ApplicationJob
     def assignee_tag
       return unless @device.assignee
 
-      @device.assignee.slack_member_id.present? ? "<@#{@device.assignee.slack_member_id}>" : nil
+      @device.assignee.slack_member_id.present? ? "<@#{@device.assignee.slack_member_id}>" : @device.assignee.full_name
     end
 
     def free?
@@ -47,16 +47,28 @@ class Slack::DeviceUsageNotifyJob < ApplicationJob
       end
 
       {
-        text: [":large_green_circle:", "#{@device.name} requested", usage_creator_tag].compact.join(" "),
+        text: [":large_green_circle:", "#{@device.name} requested"].compact.join(" "),
         blocks: [
           {
             type: "header",
             text: {
               type: "plain_text",
-              text: [":large_green_circle:", assignee_tag, "#{@device.name} requested",
-                     usage_creator_tag].compact.join(" "),
+              text: [":large_green_circle:", "#{@device.name} requested"].compact.join(" "),
               emoji: true
             }
+          },
+          {
+            "type": "context",
+            "elements": [
+              {
+                "type": "mrkdwn",
+                "text": [
+                  "*#{@device.name}* requested *#{usage_creator_tag}*",
+                  assignee_tag ?
+                    "Please contact to *#{assignee_tag}* to get approve your request and receive the device." : nil,
+                ].compact.join(" \n")
+              }
+            ]
           }
         ].compact
       }
@@ -68,16 +80,27 @@ class Slack::DeviceUsageNotifyJob < ApplicationJob
       end
 
       {
-        text: [":red_circle:", "#{@device.name} request canceled", usage_creator_tag].compact.join(" "),
+        text: [":red_circle:", "#{@device.name} request canceled"].compact.join(" "),
         blocks: [
           {
             type: "header",
             text: {
               type: "plain_text",
-              text: [":red_circle:", assignee_tag, "#{@device.name} request canceled",
-                     usage_creator_tag].compact.join(" "),
+              text: [":red_circle:", "#{@device.name} request canceled"].compact.join(" "),
               emoji: true
             }
+          },
+          {
+            "type": "context",
+            "elements": [
+              {
+                "type": "mrkdwn",
+                "text": [
+                  "*#{@device.name}* request canceled *#{usage_creator_tag}*",
+                  assignee_tag ? "CC: *#{assignee_tag}*" : nil
+                ].compact.join(" \n")
+              }
+            ]
           }
         ].compact
       }
@@ -91,9 +114,20 @@ class Slack::DeviceUsageNotifyJob < ApplicationJob
             type: "header",
             text: {
               type: "plain_text",
-              text: [":large_green_circle:", "#{@device.name} assigned", assignee_tag].compact.join(" "),
+              text: [":large_green_circle:", "#{@device.name} assigned"].compact.join(" "),
               emoji: true
             }
+          },
+          {
+            "type": "context",
+            "elements": [
+              {
+                "type": "mrkdwn",
+                "text": [
+                  "*#{@device.name}* assigned to *#{assignee_tag}*"
+                ].compact.join(" \n")
+              }
+            ]
           }
         ].compact
       }
