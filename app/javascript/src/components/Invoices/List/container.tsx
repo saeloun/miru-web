@@ -27,7 +27,7 @@ const Container = ({
         <div className="grid grid-cols-10 gap-44 overflow-XIcon-auto overflow-y-hidden">
           {
             recentlyUpdatedInvoices.length > 0 ?
-              recentlyUpdatedInvoices.map(( invoice ) => <RecentlyUpdated invoice={invoice} />)
+              recentlyUpdatedInvoices.map(( invoice ) => <RecentlyUpdated invoice={invoice} key={invoice.id}/>)
               : <span className="text-xl font-medium text-miru-dark-purple-200 grid col-span-5">No Recently Updated invoices available.</span>
           }
         </div>

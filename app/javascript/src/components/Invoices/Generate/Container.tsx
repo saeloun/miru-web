@@ -12,6 +12,7 @@ const Container = ({
   invoiceNumber, setInvoiceNumber,
   amount, setAmount,
   reference,
+  setReference,
   issueDate, setIssueDate,
   dueDate, setDueDate,
   amountDue, setAmountDue,
@@ -36,6 +37,7 @@ const Container = ({
       invoiceNumber={invoiceNumber}
       setInvoiceNumber={setInvoiceNumber}
       reference={reference}
+      setReference={setReference}
       optionSelected={false}
       clientVisible={false}
     />

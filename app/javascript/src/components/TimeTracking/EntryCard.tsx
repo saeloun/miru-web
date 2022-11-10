@@ -2,9 +2,11 @@
 import React from "react";
 
 import { minToHHMM } from "helpers";
-import { DeleteIcon } from "miruIcons";
 import { Badge } from "StyledComponents";
 
+import { Roles } from "../../constants";
+
+const deleteIcon = require("../../../../assets/images/delete.svg");
 const editIcon = require("../../../../assets/images/edit.svg");
 
 interface props {
@@ -16,7 +18,46 @@ interface props {
   handleDeleteEntry: (id: number) => void;
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   bill_status: string;
+  currentUserRole: string;
 }
+
+const canEditTimeEntry = (billStatus, role) => (billStatus != "billed" || role == Roles["OWNER"] || role == Roles["ADMIN"]);
+
+const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
+  if (canEditTimeEntry(billStatus, role)) {
+    return (
+      <button onClick={() => setEditEntryId(id)} className="mx-10">
+        <img
+          src={editIcon}
+          alt="edit"
+          className="icon-hover text-miru-han-purple-600 hover:text-miru-han-purple-1000 w-4 h-4"
+        />
+      </button>
+    );
+  } else {
+    return (
+      <div className="mx-10 w-4 h-4"></div>
+    );
+  }
+};
+
+const showDeleteAction = (billStatus, role, id, handleDeleteEntry) => {
+  if (canEditTimeEntry(billStatus, role)) {
+    return (
+      <button onClick={() => handleDeleteEntry(id)} className="mr-10">
+        <img
+          src={deleteIcon}
+          alt="delete"
+          className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000 w-4 h-4"
+        />
+      </button>
+    );
+  } else {
+    return (
+      <div className="mr-10 w-4 h-4"></div>
+    );
+  }
+};
 
 const EntryCard: React.FC<props> = ({
   id,
@@ -26,7 +67,8 @@ const EntryCard: React.FC<props> = ({
   duration,
   handleDeleteEntry,
   setEditEntryId,
-  bill_status
+  bill_status,
+  currentUserRole
 }) => (
   <div className="week-card flex justify-between items-center shadow-2xl w-full p-4 mt-10 rounded-lg">
     <div className="flex-auto">
@@ -63,21 +105,8 @@ const EntryCard: React.FC<props> = ({
         />
       )}
       <p className="text-4xl ml-6">{minToHHMM(duration)}</p>
-      <button onClick={() => setEditEntryId(id)} className="mx-10">
-        <img
-          src={editIcon}
-          alt="edit"
-          className="icon-hover text-miru-han-purple-600 hover:text-miru-han-purple-1000 w-4 h-4"
-        />
-      </button>
-      <button onClick={() => handleDeleteEntry(id)} className="mr-10">
-        {/* <img
-          src={DeleteIcon}
-          alt="delete"
-          className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000 w-4 h-4"
-        /> */}
-        <DeleteIcon className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000 w-4 h-4" />
-      </button>
+      { showUpdateAction(bill_status, currentUserRole, id, setEditEntryId) }
+      { showDeleteAction(bill_status, currentUserRole, id, handleDeleteEntry) }
     </div>
   </div>
 );
