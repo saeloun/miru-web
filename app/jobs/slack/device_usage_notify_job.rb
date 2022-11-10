@@ -34,7 +34,7 @@ class Slack::DeviceUsageNotifyJob < ApplicationJob
     def assignee_tag
       return unless @device.assignee
 
-      @device.assignee.slack_member_id.present? ? "<@#{device.assignee.slack_member_id}>" : nil
+      @device.assignee.slack_member_id.present? ? "<@#{@device.assignee.slack_member_id}>" : nil
     end
 
     def free?

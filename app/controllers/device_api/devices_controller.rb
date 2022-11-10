@@ -76,7 +76,7 @@ class DeviceApi::DevicesController < DeviceApi::ApplicationController
     authorize :update_availability, policy_class: DeviceApi::DeviceApiPolicy
 
     if device.update(available: device_params[:available])
-      Slack::DeviceUsageNotifyJob.perform_later("availability_changed", device.id)
+      Slack::DeviceUsageNotifyJob.perform_later("availability_changed", device.id, nil)
       render json: {
         success: true,
         device:,

@@ -16,7 +16,7 @@ class DeviceApi::DeviceUsagesController < DeviceApi::ApplicationController
     if last_usage_request.update(device_usage_params)
       last_usage_request.device.update!(assignee_id: last_usage_request.created_by_id, available: false)
       device.device_usages.where(approve: nil).update_all(approve: false)
-      Slack::DeviceUsageNotifyJob.perform_later("demand_approved", device.id)
+      Slack::DeviceUsageNotifyJob.perform_later("demand_approved", device.id, nil)
 
       render :approve, locals: {
         device:,
