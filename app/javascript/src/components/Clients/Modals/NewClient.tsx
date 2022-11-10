@@ -52,10 +52,15 @@ const EditClient = ({ setnewClient, clientData, setClientData, clientLogoUrl, se
       });
   };
 
-  const onLogoChange = () => {
-    // console.log("triggered");
+  const onLogoChange = (event) => {
+    const file = event.target.files[0];
+    setClientLogoUrl(URL.createObjectURL(file));
+    setClientLogo(file);
+  };
+
+  const handleDeleteLogo = () => {
+    setClientLogo("");
     setClientLogoUrl("");
-    setClientData({ ...clientData, client_logo: null });
   };
 
   return (
@@ -97,11 +102,7 @@ const EditClient = ({ setnewClient, clientData, setClientData, clientLogoUrl, se
                                   type="file"
                                   name="client_logo"
                                   className='hidden'
-                                  onChange={event => {
-                                    const file = event.target.files[0];
-                                    setClientLogoUrl(URL.createObjectURL(file));
-                                    setClientLogo(file);
-                                  }} />
+                                  onChange={onLogoChange} />
                               </div>
                             ) : (
                               <div className="mt-2 flex flex-row">
@@ -112,18 +113,14 @@ const EditClient = ({ setnewClient, clientData, setClientData, clientLogoUrl, se
                                   id="file_input"
                                   type='file'
                                   className="hidden"
-                                  onChange={event => {
-                                    const file = event.target.files[0];
-                                    setClientLogoUrl(URL.createObjectURL(file));
-                                    setClientLogo(file);
-                                  }}
+                                  onChange={onLogoChange}
                                   name='client_logo'
                                 />
                                 <label htmlFor="file_input">
                                   <img src={editButton} className="rounded-full mt-5 cursor-pointer" style={{ "minWidth": "40px" }} alt="edit" />
                                 </label>
                                 <input id="file_input" type="file" name="myImage" className='hidden' onChange={onLogoChange}></input>
-                                <button type="button">
+                                <button onClick={handleDeleteLogo}>
                                   <img
                                     src={deleteImage}
                                     alt="delete"

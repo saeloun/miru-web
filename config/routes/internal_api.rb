@@ -2,7 +2,9 @@
 
 namespace :internal_api, defaults: { format: "json" } do
   namespace :v1 do
-    resources :clients, only: [:index, :update, :destroy, :show, :create]
+    resources :clients, only: [:index, :update, :destroy, :show, :create], controller: :clients do
+      resource :purge_logo, only: [:destroy], controller: "purge_client_logo"
+    end
     resources :project, only: [:index]
     resources :timesheet_entry do
       collection do

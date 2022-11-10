@@ -63,9 +63,23 @@ const EditClient = ({ setShowEditDialog, client, clientLogoUrl, setClientLogoUrl
     });
   };
 
-  const onLogoChange = () => {
-    setClientLogo("");
-    setClientLogoUrl("");
+  const onLogoChange = (e) => {
+    const file = e.target.files[0];
+    setClientLogoUrl(
+      URL.createObjectURL(file)
+    );
+    setClientLogo(file);
+  };
+
+  const handleDeleteLogo = (event) => {
+    event.preventDefault();
+
+    clientApi.removeLogo(client.id).then(res => {
+      if (res.status === 200 ) {
+        setClientLogo("");
+        setClientLogoUrl("");
+      }
+    });
   };
 
   return (
@@ -98,7 +112,7 @@ const EditClient = ({ setShowEditDialog, client, clientLogoUrl, setClientLogoUrl
                         <div className="field">
                           <div className="mt-1">
                             {
-                              client.client_logo === "" ? (
+                              clientLogoUrl === "" ? (
                                 <div className="flex flex-row">
                                   <div className="w-20 h-20">
                                     <label htmlFor="file-input" className="flex justify-center items-center w-full h-full cursor-pointer">
@@ -112,16 +126,16 @@ const EditClient = ({ setShowEditDialog, client, clientLogoUrl, setClientLogoUrl
                                     type="file"
                                     name="client_logo"
                                     className='hidden'
-                                    onChange={event => {
-                                      const file = event.target.files[0];
-                                      setClientLogoUrl(URL.createObjectURL(file));
-                                      setClientLogo(file);
-                                    }} />
+                                    onChange={onLogoChange} />
                                   <label htmlFor="file_input">
                                     <img src={editButton} className="rounded-full mt-5 cursor-pointer" style={{ "minWidth": "40px" }} alt="edit" />
                                   </label>
-                                  <input id="file_input" type="file" name="myImage" className='hidden' onChange={onLogoChange}></input>
-                                  <button type="button">
+                                  <input id="file_input"
+                                    type="file"
+                                    name="client_logo"
+                                    className='hidden'
+                                    onChange={onLogoChange} />
+                                  <button onClick={handleDeleteLogo}>
                                     <img
                                       src={deleteImage}
                                       alt="delete"
@@ -138,18 +152,14 @@ const EditClient = ({ setShowEditDialog, client, clientLogoUrl, setClientLogoUrl
                                     id="file_input"
                                     type='file'
                                     className="hidden"
-                                    onChange={event => {
-                                      const file = event.target.files[0];
-                                      setClientLogoUrl(URL.createObjectURL(file));
-                                      setClientLogo(file);
-                                    }}
+                                    onChange={onLogoChange}
                                     name='client_logo'
                                   />
                                   <label htmlFor="file_input">
                                     <img src={editButton} className="rounded-full mt-5 cursor-pointer" style={{ "minWidth": "40px" }} alt="edit" />
                                   </label>
-                                  <input id="file_input" type="file" name="myImage" className='hidden' onChange={onLogoChange}></input>
-                                  <button type="button">
+                                  <input id="file_input" type="file" name="client_logo" className='hidden' onClick={onLogoChange} />
+                                  <button type="button" onClick={handleDeleteLogo}>
                                     <img
                                       src={deleteImage}
                                       alt="delete"
