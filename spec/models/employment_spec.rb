@@ -23,6 +23,20 @@ RSpec.describe Employment, type: :model do
       employment.discard!
       expect { employment.discard! }.to raise_error(Discard::RecordNotDiscarded)
     end
+
+    context "when more than one employments are present for user" do
+      before do
+        create(:employment, user:, company: create(:company))
+      end
+
+      it "sets next employment as default employment" do
+        user.reload
+        expect(user.employments.kept.count).to eq 2
+        employment.discard!
+        expect(user.employments.kept.count).to eq 1
+        expect(user.current_workspace_id).not_to eq company.id
+      end
+    end
   end
 
   # TODO:- To be uncommented after UI integration is done
