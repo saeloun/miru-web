@@ -4,7 +4,8 @@ const getClientList = (input) => input.client_details.map((client) => ({
   address: client.address,
   phone: client.phone,
   minutes: client.minutes_spent,
-  name: client.name
+  name: client.name,
+  client_logo: client.client_logo
 }));
 
 const unmapClientList = (input) => {

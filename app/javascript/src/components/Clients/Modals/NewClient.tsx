@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
@@ -6,6 +7,10 @@ import * as Yup from "yup";
 
 import clientApi from "apis/clients";
 import Toastr from "common/Toastr";
+
+const deleteImage = require("../../../../../assets/images/delete.svg");
+const editButton = require("../../../../../assets/images/edit_image_button.svg");
+const img = require("../../../../../assets/images/plus_icon.svg");
 
 const newClientSchema = Yup.object().shape({
   name: Yup.string().required("Name cannot be blank"),
@@ -18,7 +23,8 @@ const initialValues = {
   name: "",
   email: "",
   phone: "",
-  address: ""
+  address: "",
+  client_logo: null
 };
 
 interface FormValues {
@@ -26,16 +32,30 @@ interface FormValues {
   email: string;
   phone: string;
   address: string;
+  client_logo: any;
 }
 
-const EditClient = ({ setnewClient, clientData, setClientData }) => {
+const EditClient = ({ setnewClient, clientData, setClientData, clientLogoUrl, setClientLogoUrl, clientLogo, setClientLogo }) => {
   const handleSubmit = (values) => {
-    clientApi.create(values)
+    const formData = new FormData();
+    formData.append("client[name]", values.name);
+    formData.append("client[email]", values.email);
+    formData.append("client[phone]", values.phone);
+    formData.append("client[address]", values.address);
+    if (clientLogoUrl) formData.append("client[client_logo]", clientLogo);
+
+    clientApi.create(formData)
       .then(res => {
         setClientData([...clientData, { ...res.data, minutes: 0 }]);
         setnewClient(false);
         Toastr.success("Client added successfully");
       });
+  };
+
+  const onLogoChange = () => {
+    // console.log("triggered");
+    setClientLogoUrl("");
+    setClientData({ ...clientData, client_logo: null });
   };
 
   return (
@@ -63,6 +83,59 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
                 const { touched, errors } = props;
                 return (
                   <Form>
+                    <div className="mt-4">
+                      <div className="field">
+                        <div className="mt-1">
+                          {
+                            clientLogoUrl === "" ? (
+                              <div className="w-20 h-20 border rounded border-miru-han-purple-1000 mt-2 ">
+                                <label htmlFor="file-input" className="flex justify-center items-cente w-full h-full cursor-pointer">
+                                  <img alt="profile_box" src={img} className="object-none"/>
+                                </label>
+                                <input
+                                  id="file-input"
+                                  type="file"
+                                  name="client_logo"
+                                  className='hidden'
+                                  onChange={event => {
+                                    const file = event.target.files[0];
+                                    setClientLogoUrl(URL.createObjectURL(file));
+                                    setClientLogo(file);
+                                  }} />
+                              </div>
+                            ) : (
+                              <div className="mt-2 flex flex-row">
+                                <div className="w-20 h-20">
+                                  <img src={clientLogoUrl} alt="client logo" className="rounded-full min-w-full h-full" />
+                                </div>
+                                <input
+                                  id="file_input"
+                                  type='file'
+                                  className="hidden"
+                                  onChange={event => {
+                                    const file = event.target.files[0];
+                                    setClientLogoUrl(URL.createObjectURL(file));
+                                    setClientLogo(file);
+                                  }}
+                                  name='client_logo'
+                                />
+                                <label htmlFor="file_input">
+                                  <img src={editButton} className="rounded-full mt-5 cursor-pointer" style={{ "minWidth": "40px" }} alt="edit" />
+                                </label>
+                                <input id="file_input" type="file" name="myImage" className='hidden' onChange={onLogoChange}></input>
+                                <button type="button">
+                                  <img
+                                    src={deleteImage}
+                                    alt="delete"
+                                    style={{ "minWidth": "20px" }}
+                                  />
+                                </button>
+                              </div>
+                            )
+                          }
+                        </div>
+                      </div>
+                    </div>
                     <div className="mt-4">
                       <div className="field">
                         <div className="field_with_errors">

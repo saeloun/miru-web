@@ -41,6 +41,8 @@ const Clients = ({ isAdminUser }) => {
   const [clientData, setClientData] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
   const [overdueOutstandingAmount, setOverDueOutstandingAmt] = useState<any>(null);
+  const [clientLogoUrl, setClientLogoUrl] = useState("");
+  const [clientLogo, setClientLogo] = useState("");
   const navigate = useNavigate();
 
   const handleEditClick = (id) => {
@@ -180,6 +182,10 @@ const Clients = ({ isAdminUser }) => {
         <EditClient
           setShowEditDialog={setShowEditDialog}
           client={clientToEdit}
+          clientLogoUrl={clientLogoUrl}
+          setClientLogoUrl={setClientLogoUrl}
+          clientLogo={clientLogo}
+          setClientLogo={setClientLogo}
         />
       }
       {showDeleteDialog && (
@@ -193,6 +199,10 @@ const Clients = ({ isAdminUser }) => {
           setnewClient={setnewClient}
           setClientData={setClientData}
           clientData={clientData}
+          clientLogoUrl={clientLogoUrl}
+          setClientLogoUrl={setClientLogoUrl}
+          clientLogo={clientLogo}
+          setClientLogo={setClientLogo}
         />
       )}
     </>

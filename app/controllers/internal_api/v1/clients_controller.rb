@@ -23,7 +23,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     project_details = client.project_details(params[:time_frame])
     client_details = {
       id: client.id, name: client.name, email: client.email, address: client.address,
-      phone: client.phone
+      phone: client.phone, client_logo: url_for(client.client_logo)
     }
     total_minutes = (project_details.map { |project| project[:minutes_spent] }).sum
     overdue_outstanding_amount = client.client_overdue_and_outstanding_calculation

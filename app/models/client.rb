@@ -71,6 +71,9 @@ class Client < ApplicationRecord
       email:,
       phone:,
       address:,
+      client_logo: client_logo.attached? ? Rails.application.routes.url_helpers.polymorphic_url(
+        client_logo,
+        only_path: true) : "",
       minutes_spent: total_hours_logged(time_frame)
     }
   end
