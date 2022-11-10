@@ -10,6 +10,7 @@ import { useOutsideClick } from "helpers";
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
 import Toastr from "common/Toastr";
+import { TimeInput } from "StyledComponents";
 
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
@@ -72,8 +73,8 @@ const AddEntry: React.FC<Iprops> = ({
     }
   }, [project]);
 
-  const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDuration(e.target.value);
+  const handleDurationChange = (val) => {
+    setDuration(val);
   };
 
   const getPayload = () => ({
@@ -222,11 +223,10 @@ const AddEntry: React.FC<Iprops> = ({
               {format(new Date(selectedDate), "do MMM, yyyy")}
             </div>
           </div>
-          <input
-            value={duration}
-            onChange={handleDurationChange}
-            type="text"
-            className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm"
+          <TimeInput
+            name="timeInput"
+            className='p-1 h-8 w-20 bg-miru-gray-100 rounded-sm text-sm'
+            onTimeChange={handleDurationChange}
           />
         </div>
         <div className="flex items-center mt-2">

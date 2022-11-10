@@ -34,7 +34,7 @@ const TimeInput = ({
 			return;
 		}
 		if (isValid(val)) {
-			if (val.length === 2 && lastVal.length !== 3 && val.indexOf(':') === -1) {
+			if (val.length === 8 && lastVal.length !== 3 && val.indexOf(':') === -1) {
 				val = val + ':';
 			}
 
@@ -42,7 +42,7 @@ const TimeInput = ({
 				val = val.slice(0, 1);
 			}
 
-			if (val.length > 5) {
+			if (val.length > 10) {
 				return false;
 			}
 
@@ -50,11 +50,9 @@ const TimeInput = ({
 
 			setTime(val);
 
-			if (val.length === 5) {
-				onTimeChange(val);
-			}
+			onTimeChange(val);
 		}
-    }
+  }
 
 	const getType = () => {
 		if (type) {
@@ -81,7 +79,7 @@ const TimeInput = ({
 }
 
 TimeInput.defaultProps = {
-    placeholder: ' '
+    placeholder: 'HH:MM'
 }
 
 interface Iprops {
