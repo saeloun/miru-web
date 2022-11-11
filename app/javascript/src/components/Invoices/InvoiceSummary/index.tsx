@@ -2,7 +2,12 @@ import React from "react";
 
 import { currencyNotationFormat } from "helpers";
 
-const InvoiceSummary = ({ summary, baseCurrency, filterParams, setFilterParams }) => {
+const InvoiceSummary = ({
+  summary,
+  baseCurrency,
+  filterParams,
+  setFilterParams
+}) => {
   const formattedAmount = (amount) =>
     currencyNotationFormat({ baseCurrency: baseCurrency, amount });
 
@@ -16,7 +21,8 @@ const InvoiceSummary = ({ summary, baseCurrency, filterParams, setFilterParams }
               ["status"]: [{ value: "overdue", label: "OVERDUE" }]
             })
           }
-          className="page-display__box flex items-center md:items-start">
+          className="page-display__box flex items-center md:items-start cursor-pointer"
+        >
           <p className="text-sm text-white font-normal tracking-widest uppercase">
             Overdue
           </p>
@@ -29,11 +35,14 @@ const InvoiceSummary = ({ summary, baseCurrency, filterParams, setFilterParams }
           onClick={() =>
             setFilterParams({
               ...filterParams,
-              ["status"]: [{ value: "sent", label: "SENT" },
-                { value: "viewed", label: "VIEWED" }]
+              ["status"]: [
+                { value: "sent", label: "SENT" },
+                { value: "viewed", label: "VIEWED" }
+              ]
             })
           }
-          className="page-display__box mt-8 md:mt-0 flex items-center md:items-start">
+          className="page-display__box mt-8 md:mt-0 flex items-center md:items-start cursor-pointer"
+        >
           <p className="text-sm text-white font-normal tracking-widest uppercase">
             Outstanding
           </p>
@@ -49,7 +58,8 @@ const InvoiceSummary = ({ summary, baseCurrency, filterParams, setFilterParams }
               ["status"]: [{ value: "draft", label: "DRAFT" }]
             })
           }
-          className="page-display__box mt-8 md:mt-0 flex items-center md:items-start">
+          className="page-display__box mt-8 md:mt-0 flex items-center md:items-start cursor-pointer"
+        >
           <p className="text-sm text-white font-normal tracking-widest uppercase">
             Amount in draft
           </p>
