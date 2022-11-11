@@ -159,6 +159,7 @@ const Invoices: React.FC = () => {
             setFilterParams={setFilterParams}
             filterIntialValues={filterIntialValues}
             filterParamsStr={filterParamsStr}
+            fetchInvoices={fetchInvoices}
           />
 
           {isFilterVisible && (
