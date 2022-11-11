@@ -29,8 +29,6 @@ const editButton = require("../../../../../assets/images/edit_image_button.svg")
 export interface IEditClient {
   setShowEditDialog: any;
   client: any;
-  clientLogo: any;
-  setClientLogo: any;
 }
 
 interface FormValues {
@@ -41,10 +39,11 @@ interface FormValues {
   client_logo: any;
 }
 
-const EditClient = ({ setShowEditDialog, client, clientLogo, setClientLogo }: IEditClient) => {
+const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
 
   const [apiError, setApiError] = useState<string>("");
   const [clientLogoUrl, setClientLogoUrl] = useState(client.client_logo);
+  const [clientLogo, setClientLogo] = useState("");
 
   const handleSubmit = async values => {
     const formData = new FormData();
@@ -52,7 +51,7 @@ const EditClient = ({ setShowEditDialog, client, clientLogo, setClientLogo }: IE
     formData.append("client[email]", values.email);
     formData.append("client[phone]", values.phone);
     formData.append("client[address]", values.address);
-    if (clientLogoUrl) formData.append("client[client_logo]", clientLogo);
+    if (clientLogo) formData.append("client[client_logo]", clientLogo);
 
     await clientApi.update(client.id, formData).then(() => {
       setShowEditDialog(false);
@@ -111,7 +110,7 @@ const EditClient = ({ setShowEditDialog, client, clientLogo, setClientLogo }: IE
                         <div className="field">
                           <div className="mt-1">
                             {
-                              clientLogoUrl ? (
+                              clientLogoUrl !== "" ? (
                                 <div className="mt-2 flex flex-row justify-center">
                                   <div className="w-20 h-20">
                                     <img src={clientLogoUrl} alt="client logo" className="rounded-full min-w-full h-full" />
