@@ -29,8 +29,6 @@ const editButton = require("../../../../../assets/images/edit_image_button.svg")
 export interface IEditClient {
   setShowEditDialog: any;
   client: any;
-  clientLogoUrl: any;
-  setClientLogoUrl: any;
   clientLogo: any;
   setClientLogo: any;
 }
@@ -43,9 +41,10 @@ interface FormValues {
   client_logo: any;
 }
 
-const EditClient = ({ setShowEditDialog, client, clientLogoUrl, setClientLogoUrl, clientLogo, setClientLogo }: IEditClient) => {
+const EditClient = ({ setShowEditDialog, client, clientLogo, setClientLogo }: IEditClient) => {
 
   const [apiError, setApiError] = useState<string>("");
+  const [clientLogoUrl, setClientLogoUrl] = useState(client.client_logo);
 
   const handleSubmit = async values => {
     const formData = new FormData();
@@ -112,41 +111,10 @@ const EditClient = ({ setShowEditDialog, client, clientLogoUrl, setClientLogoUrl
                         <div className="field">
                           <div className="mt-1">
                             {
-                              clientLogoUrl === "" ? (
-                                <div className="flex flex-row">
+                              clientLogoUrl ? (
+                                <div className="mt-2 flex flex-row justify-center">
                                   <div className="w-20 h-20">
-                                    <label htmlFor="file-input" className="flex justify-center items-center w-full h-full cursor-pointer">
-                                      <span className="rounded-full bg-miru-han-purple-1000 w-22 text-lg text-center leading-10 text-gray-50">
-                                        { client.name.split(" ").map(name => name[0]).join("").toUpperCase() }
-                                      </span>
-                                    </label>
-                                  </div>
-                                  <input
-                                    id="file-input"
-                                    type="file"
-                                    name="client_logo"
-                                    className='hidden'
-                                    onChange={onLogoChange} />
-                                  <label htmlFor="file_input">
-                                    <img src={editButton} className="rounded-full mt-5 cursor-pointer" style={{ "minWidth": "40px" }} alt="edit" />
-                                  </label>
-                                  <input id="file_input"
-                                    type="file"
-                                    name="client_logo"
-                                    className='hidden'
-                                    onChange={onLogoChange} />
-                                  <button onClick={handleDeleteLogo}>
-                                    <img
-                                      src={deleteImage}
-                                      alt="delete"
-                                      style={{ "minWidth": "20px" }}
-                                    />
-                                  </button>
-                                </div>
-                              ) : (
-                                <div className="mt-2 flex flex-row">
-                                  <div className="w-20 h-20">
-                                    <img src={clientLogoUrl || client.client_logo} alt="client logo" className="rounded-full min-w-full h-full" />
+                                    <img src={clientLogoUrl} alt="client logo" className="rounded-full min-w-full h-full" />
                                   </div>
                                   <input
                                     id="file_input"
@@ -160,6 +128,37 @@ const EditClient = ({ setShowEditDialog, client, clientLogoUrl, setClientLogoUrl
                                   </label>
                                   <input id="file_input" type="file" name="client_logo" className='hidden' onClick={onLogoChange} />
                                   <button type="button" onClick={handleDeleteLogo}>
+                                    <img
+                                      src={deleteImage}
+                                      alt="delete"
+                                      style={{ "minWidth": "20px" }}
+                                    />
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="flex flex-row items-center justify-center">
+                                  <div className="w-16 h-16">
+                                    <label htmlFor="file-input" className="flex justify-center w-full h-full cursor-pointer">
+                                      <span className="rounded-full bg-miru-han-purple-1000 w-22 text-2xl text-center leading-10 text-gray-50 pt-2">
+                                        { client.name.split(" ").map(name => name[0]).join("").toUpperCase() }
+                                      </span>
+                                    </label>
+                                  </div>
+                                  <input
+                                    id="file-input"
+                                    type="file"
+                                    name="client_logo"
+                                    className='hidden'
+                                    onChange={onLogoChange} />
+                                  <label htmlFor="file_input">
+                                    <img src={editButton} className="rounded-full cursor-pointer" style={{ "minWidth": "40px" }} alt="edit" />
+                                  </label>
+                                  <input id="file_input"
+                                    type="file"
+                                    name="client_logo"
+                                    className='hidden'
+                                    onChange={onLogoChange} />
+                                  <button onClick={handleDeleteLogo}>
                                     <img
                                       src={deleteImage}
                                       alt="delete"

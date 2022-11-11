@@ -14,7 +14,6 @@ const Header = ({ clientDetails }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
-  const [clientLogoUrl, setClientLogoUrl] = useState("");
   const [clientLogo, setClientLogo] = useState("");
 
   const navigate = useNavigate();
@@ -110,8 +109,6 @@ const Header = ({ clientDetails }) => {
           <EditClient
             client={clientDetails}
             setShowEditDialog={setShowEditDialog}
-            setClientLogoUrl={setClientLogoUrl}
-            clientLogoUrl={clientLogoUrl}
             clientLogo={clientLogo}
             setClientLogo={setClientLogo}
           />

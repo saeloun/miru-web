@@ -92,20 +92,22 @@ const EditClient = ({ setnewClient, clientData, setClientData, clientLogoUrl, se
                       <div className="field">
                         <div className="mt-1">
                           {
-                            clientLogoUrl === "" ? (
-                              <div className="w-20 h-20 border rounded border-miru-han-purple-1000 mt-2 ">
-                                <label htmlFor="file-input" className="flex justify-center items-cente w-full h-full cursor-pointer">
-                                  <img alt="profile_box" src={img} className="object-none"/>
-                                </label>
-                                <input
-                                  id="file-input"
-                                  type="file"
-                                  name="client_logo"
-                                  className='hidden'
-                                  onChange={onLogoChange} />
+                            !clientLogoUrl ? (
+                              <div className="mt-2 flex flex-row justify-center">
+                                <div className="w-20 h-20 border rounded-full border-miru-han-purple-1000 mt-2 ">
+                                  <label htmlFor="file-input" className="flex justify-center w-full h-full cursor-pointer">
+                                    <img alt="profile_box" src={img} className="object-none"/>
+                                  </label>
+                                  <input
+                                    id="file-input"
+                                    type="file"
+                                    name="client_logo"
+                                    className='hidden'
+                                    onChange={onLogoChange} />
+                                </div>
                               </div>
                             ) : (
-                              <div className="mt-2 flex flex-row">
+                              <div className="mt-2 flex flex-row justify-center">
                                 <div className="w-20 h-20">
                                   <img src={clientLogoUrl} alt="client logo" className="rounded-full min-w-full h-full" />
                                 </div>

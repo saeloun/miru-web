@@ -182,8 +182,6 @@ const Clients = ({ isAdminUser }) => {
         <EditClient
           setShowEditDialog={setShowEditDialog}
           client={clientToEdit}
-          clientLogoUrl={clientLogoUrl}
-          setClientLogoUrl={setClientLogoUrl}
           clientLogo={clientLogo}
           setClientLogo={setClientLogo}
         />
