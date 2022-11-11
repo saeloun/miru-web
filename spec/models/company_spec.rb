@@ -81,6 +81,7 @@ RSpec.describe Company, type: :model do
             email: client_1.email,
             phone: client_1.phone,
             address: client_1.address,
+            client_logo: "",
             minutes_spent: client_1.total_hours_logged(time_frame)
           },
           {
@@ -89,6 +90,7 @@ RSpec.describe Company, type: :model do
             email: client_2.email,
             phone: client_2.phone,
             address: client_2.address,
+            client_logo: "",
             minutes_spent: client_2.total_hours_logged(time_frame)
           }
         ]
