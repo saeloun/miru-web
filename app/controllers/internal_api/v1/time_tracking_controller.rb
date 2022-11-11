@@ -34,9 +34,9 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
 
     def get_clients
       if is_admin
-        current_company.clients.order(name: :asc).includes(:projects)
+        current_company.clients.kept.order(name: :asc).includes(:projects)
       else
-        current_user.clients
+        current_user.clients.kept
           .where(company_id: current_company.id)
           .order(name: :asc)
           .includes(:projects).distinct
@@ -46,10 +46,10 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
     def get_projects(is_admin, clients)
       projects = {}
       if is_admin
-        clients.map { |client| projects[client.name] = client.projects }
+        clients.map { |client| projects[client.name] = client.projects.kept }
       else
-        employee_projects = current_user.projects
-        clients.map { |client| projects[client.name] = client.projects & employee_projects }
+        employee_projects = current_user.projects.kept.joins(:client).where(clients: { company_id: current_company.id })
+        clients.map { |client| projects[client.name] = client.projects.kept & employee_projects }
       end
       projects
     end
