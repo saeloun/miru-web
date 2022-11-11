@@ -9,35 +9,35 @@ const Table = ({
   deselectInvoices,
   selectedInvoices,
   setShowDeleteDialog,
-  setInvoiceToDelete
+  setInvoiceToDelete,
+  fetchInvoices
 }) => (
-  <>
-    <h1 className="mb-4 text-miru-dark-purple-1000 font-normal text-2xl">All invoices</h1>
-    <table className="min-w-full mt-4 divide-y divide-gray-200 overflow-x-scroll">
-      <thead>
-        <TableHeader
-          invoices={invoices}
-          selectedInvoices={selectedInvoices}
+
+  <table className="min-w-full mt-4 divide-y divide-gray-200 overflow-x-scroll">
+    <thead>
+      <TableHeader
+        invoices={invoices}
+        selectedInvoices={selectedInvoices}
+        selectInvoices={selectInvoices}
+        deselectInvoices={deselectInvoices}
+      />
+    </thead>
+
+    <tbody className="min-w-full bg-white divide-y divide-gray-200" data-cy="invoices-list">
+      {invoices.map((invoice) => (
+        <TableRow
+          key={invoice.id}
+          isSelected={selectedInvoices.includes(invoice.id)}
+          invoice={invoice}
           selectInvoices={selectInvoices}
           deselectInvoices={deselectInvoices}
+          setShowDeleteDialog={setShowDeleteDialog}
+          setInvoiceToDelete={setInvoiceToDelete}
+          fetchInvoices={fetchInvoices}
         />
-      </thead>
-
-      <tbody className="min-w-full bg-white divide-y divide-gray-200" data-cy="invoices-list">
-        {invoices.map((invoice) => (
-          <TableRow
-            key={invoice.id}
-            isSelected={selectedInvoices.includes(invoice.id)}
-            invoice={invoice}
-            selectInvoices={selectInvoices}
-            deselectInvoices={deselectInvoices}
-            setShowDeleteDialog={setShowDeleteDialog}
-            setInvoiceToDelete={setInvoiceToDelete}
-          />
-        ))}
-      </tbody>
-    </table>
-  </>
+      ))}
+    </tbody>
+  </table>
 );
 
 export default Table;
