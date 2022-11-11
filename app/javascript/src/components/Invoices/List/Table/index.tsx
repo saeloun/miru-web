@@ -9,7 +9,8 @@ const Table = ({
   deselectInvoices,
   selectedInvoices,
   setShowDeleteDialog,
-  setInvoiceToDelete
+  setInvoiceToDelete,
+  fetchInvoices
 }) => (
 
   <table className="min-w-full mt-4 divide-y divide-gray-200 overflow-x-scroll">
@@ -32,6 +33,7 @@ const Table = ({
           deselectInvoices={deselectInvoices}
           setShowDeleteDialog={setShowDeleteDialog}
           setInvoiceToDelete={setInvoiceToDelete}
+          fetchInvoices={fetchInvoices}
         />
       ))}
     </tbody>
