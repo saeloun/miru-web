@@ -47,11 +47,11 @@ RSpec.describe Company, type: :model do
     let(:result) do
       [
         {
-          clientName: client_1.name, client_logo: "", id: project_1.id, isBillable: project_1.billable,
+          clientName: client_1.name, id: project_1.id, isBillable: project_1.billable,
           minutesSpent: project_1.timesheet_entries.sum(:duration), name: project_1.name
         },
         {
-          clientName: client_2.name, client_logo: "", id: project_2.id, isBillable: project_2.billable,
+          clientName: client_2.name, id: project_2.id, isBillable: project_2.billable,
           minutesSpent: project_2.timesheet_entries.sum(:duration), name: project_2.name
         }
       ]
