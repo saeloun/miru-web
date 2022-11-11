@@ -6,11 +6,11 @@ import { format } from "date-fns";
 import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import { useOutsideClick } from "helpers";
+import { TimeInput } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
 import Toastr from "common/Toastr";
-import { TimeInput } from "StyledComponents";
 
 const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
@@ -225,7 +225,7 @@ const AddEntry: React.FC<Iprops> = ({
           </div>
           <TimeInput
             name="timeInput"
-            className='p-1 h-8 w-20 bg-miru-gray-100 rounded-sm text-sm'
+            className='p-1 h-8 w-20 bg-miru-gray-100 rounded-sm text-sm placeholder:text-miru-gray-1000'
             onTimeChange={handleDurationChange}
           />
         </div>
