@@ -8,7 +8,9 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
   def index
     is_admin = current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
     user_id = current_user.id
-    employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
+    employees = is_admin ? current_company.users.kept.order(first_name: :asc).select(
+      :id, :first_name,
+      :last_name) : [current_user]
 
     projects = current_company.project_list(nil, policy(Project).index_all? ? nil : current_user.id, nil, nil)
 

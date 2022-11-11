@@ -12,7 +12,9 @@ class InternalApi::V1::SpaceUsagesController < InternalApi::V1::ApplicationContr
     authorize SpaceUsage
 
     is_admin = current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
-    employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
+    employees = is_admin ? current_company.users.kept.order(first_name: :asc).select(
+      :id, :first_name,
+      :last_name) : [current_user]
 
     space_usages = SpaceUsage.during(
       params[:from],
