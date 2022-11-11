@@ -58,11 +58,11 @@ class Slack::DeviceUsageNotifyJob < ApplicationJob
             }
           },
           {
-            "type": "context",
-            "elements": [
+            type: "context",
+            elements: [
               {
-                "type": "mrkdwn",
-                "text": [
+                type: "mrkdwn",
+                text: [
                   "*#{@device.name}* requested *#{usage_creator_tag}*",
                   assignee_tag ?
                     "Please contact to *#{assignee_tag}* to get approve your request and receive the device." : nil,
@@ -91,11 +91,11 @@ class Slack::DeviceUsageNotifyJob < ApplicationJob
             }
           },
           {
-            "type": "context",
-            "elements": [
+            type: "context",
+            elements: [
               {
-                "type": "mrkdwn",
-                "text": [
+                type: "mrkdwn",
+                text: [
                   "*#{@device.name}* request canceled *#{usage_creator_tag}*",
                   assignee_tag ? "CC: *#{assignee_tag}*" : nil
                 ].compact.join(" \n")
@@ -119,11 +119,11 @@ class Slack::DeviceUsageNotifyJob < ApplicationJob
             }
           },
           {
-            "type": "context",
-            "elements": [
+            type: "context",
+            elements: [
               {
-                "type": "mrkdwn",
-                "text": [
+                type: "mrkdwn",
+                text: [
                   "*#{@device.name}* assigned to *#{assignee_tag}*"
                 ].compact.join(" \n")
               }
@@ -135,15 +135,28 @@ class Slack::DeviceUsageNotifyJob < ApplicationJob
 
     def availability_changed_payload_msg
       {
-        text: [":large_green_circle:", "#{@device.name} #{free? ? 'is free now' : 'in use'}"].compact.join(" "),
+        text: ["#{@device.name} is", free? ? "free now :red_circle:" : "in use :large_green_circle:"].compact.join(" "),
         blocks: [
           {
             type: "header",
             text: {
               type: "plain_text",
-              text: [":large_green_circle:", "#{@device.name} #{free? ? 'is free now' : 'in use'}"].compact.join(" "),
+              text: ["#{@device.name} is",
+                     free? ? "free now :red_circle:" : "in use :large_green_circle:"].compact.join(" "),
               emoji: true
             }
+          },
+          {
+            type: "context",
+            elements: [
+              {
+                type: "mrkdwn",
+                text: [
+                  ["*#{@device.name}* is", free? ? "free" : "in use",
+                   assignee_tag ? "by *#{assignee_tag}*" : nil].compact.join(" "),
+                ].compact.join(" \n")
+              }
+            ]
           }
         ].compact
       }
