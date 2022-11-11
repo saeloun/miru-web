@@ -8,6 +8,16 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:, billable: true) }
 
+  before {
+    @timesheet_details = {
+      project_id: project.id,
+      duration: 20,
+      work_date: Time.now,
+      note: "Test Note",
+      bill_status: :unbilled
+    }
+  }
+
   context "when sucessful creation" do
     before do
       create(:employment, company:, user:)
@@ -20,13 +30,7 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
         send_request :post, api_v1_timesheet_entry_index_path,
           params:
           {
-            timesheet_entry: {
-              project_id: project.id,
-              duration: 20,
-              work_date: Time.now,
-              note: "Test Note",
-              bill_status: :unbilled
-            },
+            timesheet_entry: @timesheet_details,
             auth_token: user.token
           }
       end
@@ -46,13 +50,7 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
         send_request :post, api_v1_timesheet_entry_index_path,
           params:
           {
-            timesheet_entry: {
-              project_id: project.id,
-              duration: 20,
-              work_date: Time.now,
-              note: "Test Note",
-              bill_status: :unbilled
-            }
+            timesheet_entry: @timesheet_details
           },
           headers: { Authorization: "Bearer " + user.token }
       end
@@ -94,14 +92,7 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
       send_request :post, api_v1_timesheet_entry_index_path,
         params:
         {
-          timesheet_entry:
-          {
-            project_id: project.id,
-            duration: 20,
-            work_date: Time.now,
-            note: "Test Note",
-            bill_status: :unbilled
-          }
+          timesheet_entry: @timesheet_details
         },
         headers: { Authorization: "Bearer " + "123" }
       expect(response).to have_http_status(:unauthorized)
@@ -112,14 +103,7 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
       send_request :post, api_v1_timesheet_entry_index_path,
         params:
         {
-          timesheet_entry:
-          {
-            project_id: project.id,
-            duration: 20,
-            work_date: Time.now,
-            note: "Test Note",
-            bill_status: :unbilled
-          }
+          timesheet_entry: @timesheet_details
         },
         headers: { Authorization: "Bearer " + user.token }
       expect(response).to have_http_status(:forbidden)
