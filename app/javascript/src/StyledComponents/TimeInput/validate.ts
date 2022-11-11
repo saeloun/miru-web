@@ -1,10 +1,10 @@
 export const isValid = (val) => {
-  const regexp = /^\d{0,6}?\:?\d{0,2}$/;
+  const regexp = /^\d{0,6}?\:?\d{0,2}$/; // eslint-disable-line
 
-  const [hoursStr, minutesStr] = val.split(':');
+  const [hoursStr, minutesStr] = val.split(":");
 
   if (!regexp.test(val)) {
-      return false;
+    return false;
   }
 
   const hours = Number(hoursStr);
@@ -21,18 +21,18 @@ export const isValid = (val) => {
     return false;
   }
 
-  const valArr = val.indexOf(':') !== -1
-		? val.split(':')
-		: [val];
+  const valArr = val.indexOf(":") !== -1
+    ? val.split(":")
+    : [val];
 
   // check mm and HH
   if (valArr[0] && valArr[0].length && (parseInt(valArr[0], 10) < 0 || parseInt(valArr[0], 10) > 1000000)) {
-		return false;
+    return false;
   }
 
   if (valArr[1] && valArr[1].length && (parseInt(valArr[1], 10) < 0 || parseInt(valArr[1], 10) > 59)) {
-		return false;
+    return false;
   }
 
   return true;
-}
+};
