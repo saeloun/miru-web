@@ -18,7 +18,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
         client = attributes_for(:client)
         send_request :post, internal_api_v1_clients_path(client:)
         expect(response).to have_http_status(:ok)
-        expected_attrs = [ "address", "email", "id", "name", "phone" ]
+        expected_attrs = [ "address", "email", "id", "name", "phone", "client_logo" ]
         expect(json_response.keys.sort).to match(expected_attrs)
       end
 
