@@ -23,7 +23,8 @@ const TableRow = ({
   selectInvoices,
   deselectInvoices,
   setShowDeleteDialog,
-  setInvoiceToDelete
+  setInvoiceToDelete,
+  fetchInvoices
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -136,7 +137,12 @@ const TableRow = ({
         />
       </td>
       {isSending && (
-        <SendInvoice invoice={invoice} setIsSending={setIsSending} isSending />
+        <SendInvoice
+          invoice={invoice}
+          setIsSending={setIsSending}
+          fetchInvoices={fetchInvoices}
+          isSending
+        />
       )}
     </tr>
   );
