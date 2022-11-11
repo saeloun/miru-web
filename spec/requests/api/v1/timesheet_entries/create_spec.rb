@@ -66,24 +66,30 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
         expect(json_response["notice"]).to match("Timesheet created")
       end
     end
+
+    context "when user does not send all params(note & bill status) in the request" do
+      it "sets default values" do
+        create(:employment, company:, user:)
+        create(:project_member, project:, user:)
+        send_request :post, api_v1_timesheet_entry_index_path,
+          params:
+          {
+            timesheet_entry:
+            {
+              project_id: project.id,
+              duration: 20,
+              work_date: Time.now
+            }
+          },
+          headers: { Authorization: "Bearer " + user.token }
+        expect(response).to have_http_status(:ok)
+        expect(json_response["entry"]["note"]).to match("")
+        expect(json_response["entry"]["bill_status"]).to match("unbilled")
+      end
+    end
   end
 
   context "when unsuccessful" do
-    it "user does not send all required params in the request" do
-      send_request :post, api_v1_timesheet_entry_index_path,
-        params:
-        {
-          timesheet_entry:
-          {
-            project_id: project.id,
-            duration: 20,
-            work_date: Time.now
-          }
-        },
-        headers: { Authorization: "Bearer " + user.token }
-      expect(response).to have_http_status(:forbidden)
-    end
-
     it "user Token is invalid" do
       send_request :post, api_v1_timesheet_entry_index_path,
         params:

@@ -22,7 +22,7 @@ class Api::V1::TimesheetEntryController < Api::V1::BaseController
     end
 
     def project
-      @_project ||= current_company.projects.find(params[:timesheet_entry][:project_id])
+      @_project ||= current_company.projects.kept.find(params[:timesheet_entry][:project_id])
     end
 
     def timesheet_entry_params
