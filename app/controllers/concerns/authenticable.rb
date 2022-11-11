@@ -8,7 +8,7 @@ module Authenticable
   end
 
   def authenticate_token
-    return render json: { status: 403, notice: "Invalid Token." } if current_user.blank?
+    return render json: { status: 401, notice: "Invalid Token." }, status: 401 if current_user.blank?
   end
 
   private

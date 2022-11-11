@@ -4,7 +4,7 @@ class Api::V1::TimesheetEntryController < Api::V1::BaseController
   include Timesheet
 
   def create
-    return render json: { status: 403, notice: "User is not a project member." } if project_member.blank?
+    return render json: { status: 403, notice: "User is not a project member." }, status: 403 if project_member.blank?
 
     timesheet_entry = project.timesheet_entries.new(timesheet_entry_params)
     timesheet_entry.user = current_user
@@ -22,7 +22,7 @@ class Api::V1::TimesheetEntryController < Api::V1::BaseController
     end
 
     def project
-      @_project ||= current_company.projects.find(params[:project_id])
+      @_project ||= current_company.projects.find(params[:timesheet_entry][:project_id])
     end
 
     def timesheet_entry_params
