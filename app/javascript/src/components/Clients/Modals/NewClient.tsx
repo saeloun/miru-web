@@ -48,6 +48,7 @@ const EditClient = ({ setnewClient, clientData, setClientData, clientLogoUrl, se
       .then(res => {
         setClientData([...clientData, { ...res.data, minutes: 0 }]);
         setnewClient(false);
+        document.location.reload();
         Toastr.success("Client added successfully");
       });
   };
