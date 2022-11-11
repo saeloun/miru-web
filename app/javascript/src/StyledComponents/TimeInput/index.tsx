@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react'
-import {isValid } from "./validate"
+import React, { useState, useEffect, useRef } from "react";
+
+import { isValid } from "./validate";
 
 const TimeInput = ({
   autoFocus=false,
-	initTime,
+  initTime,
   disabled,
   mountFocus,
   onTimeChange,
@@ -15,72 +16,72 @@ const TimeInput = ({
   onBlurHandler
 }: Iprops) => {
 
-	const [time, setTime] = useState(initTime || '');
+  const [time, setTime] = useState(initTime || "");
 
-	const _input = useRef(null)
+  const _input = useRef(null);
 
-	useEffect(() => {
-		if (!disabled && mountFocus) {
-			setTimeout(() => {
-				autoFocus && _input.current.focus();
-			}, 0);
-		}
-	});
+  useEffect(() => {
+    if (!disabled && mountFocus) {
+      setTimeout(() => {
+        autoFocus && _input.current.focus();
+      }, 0);
+    }
+  });
 
-  let lastVal = '';
+  let lastVal = "";
 
-	const onChangeHandler = (val) => {
-		if (val == time) {
-			return;
-		}
-		if (isValid(val)) {
-			if (val.length === 8 && lastVal.length !== 3 && val.indexOf(':') === -1) {
-				val = val + ':';
-			}
+  const onChangeHandler = (val) => {
+    if (val == time) {
+      return;
+    }
+    if (isValid(val)) {
+      if (val.length === 8 && lastVal.length !== 3 && val.indexOf(":") === -1) {
+        val = val + ":";
+      }
 
-			if (val.length === 2 && lastVal.length === 3) {
-				val = val.slice(0, 1);
-			}
+      if (val.length === 2 && lastVal.length === 3) {
+        val = val.slice(0, 1);
+      }
 
-			if (val.length > 10) {
-				return false;
-			}
+      if (val.length > 10) {
+        return false;
+      }
 
-			lastVal = val;
+      lastVal = val;
 
-			setTime(val);
+      setTime(val);
 
-			onTimeChange(val);
-		}
-  }
+      onTimeChange(val);
+    }
+  };
 
-	const getType = () => {
-		if (type) {
-				return type;
-		}
-		return 'tel'
-	}
+  const getType = () => {
+    if (type) {
+      return type;
+    }
+    return "tel";
+  };
 
-	return (
-		<input
-			name={name ? name : undefined}
-			className={className}
-			type={getType()}
-			disabled={disabled}
-			placeholder={placeholder}
-			value={time}
-			onChange={(e) => onChangeHandler(e.target.value)}
-			onFocus={(onFocusHandler) ? (e) => onFocusHandler(e) : undefined}
-			onBlur={(onBlurHandler) ? (e) => onBlurHandler(e) : undefined}
-			ref={_input}
-		/>
-	);
+  return (
+    <input
+      name={name ? name : undefined}
+      className={className}
+      type={getType()}
+      disabled={disabled}
+      placeholder={placeholder}
+      value={time}
+      onChange={(e) => onChangeHandler(e.target.value)}
+      onFocus={(onFocusHandler) ? (e) => onFocusHandler(e) : undefined}
+      onBlur={(onBlurHandler) ? (e) => onBlurHandler(e) : undefined}
+      ref={_input}
+    />
+  );
 
-}
+};
 
 TimeInput.defaultProps = {
-    placeholder: 'HH:MM'
-}
+  placeholder: "HH:MM"
+};
 
 interface Iprops {
 	autoFocus?: boolean;
@@ -98,4 +99,4 @@ interface Iprops {
 	onBlurHandler?: (e) => any
   }
 
-export default TimeInput
+export default TimeInput;
