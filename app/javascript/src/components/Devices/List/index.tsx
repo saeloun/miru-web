@@ -253,7 +253,10 @@ const Devices = ( { isAdminUser, _companyRole, _user, _company } ) => {
         onClose={() => setConfirmOpen(false)}
         onConfirm={handleDelete}
       >
-        Are you sure you want to remove the device?
+        Are you sure you want to remove the device <b>
+          {{ ...deviceData.find((e: any) => e.id === selectedDeviceId) }['name']}
+        </b>?
+        This action cannot be reversed.
       </ConfirmDialog>
       {editOpen &&
         <EditEntry
@@ -273,7 +276,11 @@ const Devices = ( { isAdminUser, _companyRole, _user, _company } ) => {
         }}
         onConfirm={handleCancelRequest}
       >
-        Are you sure you want to remove the device request?
+        Are you sure you want to remove the device
+        Are you sure you want to remove the device <b>
+          {{ ...deviceData.find((e: any) => e.id === selectedDeviceId) }['name']}
+        </b> request?
+        This action cannot be reversed.
       </ConfirmDialog>
     </>
   );

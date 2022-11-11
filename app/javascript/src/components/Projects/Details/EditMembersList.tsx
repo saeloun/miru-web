@@ -1,9 +1,8 @@
 import * as React from "react";
 
-import { X } from "phosphor-react";
-
 import companyUsersApi from "apis/company-users";
 import projectMembersApi from "apis/project-members";
+import Dialog from "common/Modal/Dialog";
 import Toastr from "common/Toastr";
 
 import EditMembersListForm from "./EditMembersListForm";
@@ -88,31 +87,16 @@ const EditMembersList = ({
   };
 
   return (
-    <div
-      className="overflow-auto fixed top-0 left-0 right-0 bottom-0 inset-0 z-10 flex items-start justify-center"
-      style={{
-        backgroundColor: "rgba(29, 26, 49, 0.6)"
-      }}
-    >
-      <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">
-        <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
-          <div className="flex justify-between items-center mt-6">
-            <h6 className="text-base font-extrabold">Add/Edit Team Members</h6>
-            <button type="button" onClick={() => { setShowAddMemberDialog(false); }}>
-              <X size={16} color="#CDD6DF" weight="bold" />
-            </button>
-          </div>
-          <EditMembersListForm
-            members={members}
-            allMemberList={allMemberList}
-            updateMemberState={updateMemberState}
-            setMembers={setMembers}
-            handleSubmit={handleSubmit}
-            currencySymbol={currencySymbol}
-          />
-        </div>
-      </div>
-    </div>
+    <Dialog title="Add/Edit Team Members" open={true} onClose={() => { setShowAddMemberDialog(false); }}>
+      <EditMembersListForm
+        members={members}
+        allMemberList={allMemberList}
+        updateMemberState={updateMemberState}
+        setMembers={setMembers}
+        handleSubmit={handleSubmit}
+        currencySymbol={currencySymbol}
+      />
+    </Dialog>
   );
 };
 
