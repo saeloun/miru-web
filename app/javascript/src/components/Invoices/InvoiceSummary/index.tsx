@@ -37,7 +37,8 @@ const InvoiceSummary = ({
               ...filterParams,
               ["status"]: [
                 { value: "sent", label: "SENT" },
-                { value: "viewed", label: "VIEWED" }
+                { value: "viewed", label: "VIEWED" },
+                { value: "overdue", label: "OVERDUE" }
               ]
             })
           }
