@@ -3,9 +3,9 @@
 class Api::V1::TimesheetEntryController < Api::V1::BaseController
   include Timesheet
 
-  def create
-    return render json: { notice: "User is not a project member." }, status: :forbidden if project_member.blank?
+  before_action :ensure_project_member
 
+  def create
     timesheet_entry = project.timesheet_entries.new(timesheet_entry_params)
     timesheet_entry.user = current_user
     timesheet_entry.save!
@@ -28,5 +28,9 @@ class Api::V1::TimesheetEntryController < Api::V1::BaseController
     def timesheet_entry_params
       params.require(:timesheet_entry).permit(
         :project_id, :duration, :work_date, :note, :bill_status)
+    end
+
+    def ensure_project_member
+      return render json: { notice: "User is not a project member." }, status: :forbidden if project_member.blank?
     end
 end
