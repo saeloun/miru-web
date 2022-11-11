@@ -13,13 +13,17 @@ const Container = ({
   selectInvoices,
   deselectInvoices,
   setShowDeleteDialog,
-  setInvoiceToDelete
+  setInvoiceToDelete,
+  filterParams,
+  setFilterParams
 }) =>
   invoices.length > 0 ? (
     <div className="overflow-x-scroll flex flex-col items-stretch">
       <InvoiceSummary
         summary={summary}
         baseCurrency={invoices[0].company.baseCurrency}
+        filterParams={filterParams}
+        setFilterParams={setFilterParams}
       />
 
       <div className="my-20">
