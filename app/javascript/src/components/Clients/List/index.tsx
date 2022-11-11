@@ -23,9 +23,42 @@ import NewClient from "../Modals/NewClient";
 const getTableData = (clients) => {
   if (clients) {
     return clients.map((client) => ({
-      col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
-      col2: <div className="text-base text-miru-dark-purple-1000 text-right">{client.email}</div>,
-      col3: <div className="text-base text-miru-dark-purple-1000 text-right">{minToHHMM(client.minutes)}</div>,
+      col1: (
+        <div className='flex'>
+          <div className='mx-2'>
+            {client.client_logo === "" ? (
+              <div className='flex justify-center w-12 h-12'>
+                <span className='rounded-full bg-miru-han-purple-1000 w-22 text-lg text-center leading-10 text-gray-50 pt-1'>
+                  {client.name
+                    .split(" ")
+                    .map((name) => name[0])
+                    .join("")
+                    .toUpperCase()}
+                </span>
+              </div>
+            ) : (
+              <img
+                src={client.client_logo}
+                alt='alt text'
+                className='rounded-full w-12 h-12'
+              />
+            )}
+          </div>
+          <div className='text-base text-miru-dark-purple-1000 pt-2'>
+            {client.name}
+          </div>
+        </div>
+      ),
+      col2: (
+        <div className='text-base text-miru-dark-purple-1000 text-left'>
+          {client.email}
+        </div>
+      ),
+      col3: (
+        <div className='text-base text-miru-dark-purple-1000 text-left'>
+          {minToHHMM(client.minutes)}
+        </div>
+      ),
       rowId: client.id
     }));
   }
@@ -93,12 +126,12 @@ const Clients = ({ isAdminUser }) => {
     {
       Header: "EMAIL ID",
       accessor: "col2",
-      cssClass: "text-right"
+      cssClass: "text-left"
     },
     {
       Header: "HOURS LOGGED",
       accessor: "col3",
-      cssClass: "text-right" // accessor is the "key" in the data
+      cssClass: "text-left" // accessor is the "key" in the data
     }
   ];
 
@@ -111,7 +144,7 @@ const Clients = ({ isAdminUser }) => {
     {
       Header: "HOURS LOGGED",
       accessor: "col3",
-      cssClass: "text-right" // accessor is the "key" in the data
+      cssClass: "text-left" // accessor is the "key" in the data
     }
   ];
 
