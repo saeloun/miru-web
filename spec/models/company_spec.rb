@@ -47,14 +47,12 @@ RSpec.describe Company, type: :model do
     let(:result) do
       [
         {
-          clientName: client_1.name, id: project_1.id, isBillable: project_1.billable,
-          minutesSpent: project_1.timesheet_entries.sum(:duration), name: project_1.name,
-          client_logo: ""
+          clientName: client_1.name, client_logo: "", id: project_1.id, isBillable: project_1.billable,
+          minutesSpent: project_1.timesheet_entries.sum(:duration), name: project_1.name
         },
         {
-          clientName: client_2.name, id: project_2.id, isBillable: project_2.billable,
-          minutesSpent: project_2.timesheet_entries.sum(:duration), name: project_2.name,
-          client_logo: ""
+          clientName: client_2.name, client_logo: "", id: project_2.id, isBillable: project_2.billable,
+          minutesSpent: project_2.timesheet_entries.sum(:duration), name: project_2.name
         }
       ]
     end
@@ -83,7 +81,8 @@ RSpec.describe Company, type: :model do
             email: client_1.email,
             phone: client_1.phone,
             address: client_1.address,
-            minutes_spent: client_1.total_hours_logged(time_frame)
+            minutes_spent: client_1.total_hours_logged(time_frame),
+            client_logo: ""
           },
           {
             id: client_2.id,
@@ -91,7 +90,8 @@ RSpec.describe Company, type: :model do
             email: client_2.email,
             phone: client_2.phone,
             address: client_2.address,
-            minutes_spent: client_2.total_hours_logged(time_frame)
+            minutes_spent: client_2.total_hours_logged(time_frame),
+            client_logo: ""
           }
         ]
       end
@@ -191,7 +191,7 @@ RSpec.describe Company, type: :model do
 
         let(:result) do
           [{
-            clientName: client_1.name, id: project_1.id, isBillable: project_1.billable,
+            clientName: client_1.name, client_logo: "", id: project_1.id, isBillable: project_1.billable,
             minutesSpent: project_1.timesheet_entries.sum(:duration), name: project_1.name
           }]
         end
