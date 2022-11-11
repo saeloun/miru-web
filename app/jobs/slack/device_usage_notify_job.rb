@@ -19,7 +19,7 @@ class Slack::DeviceUsageNotifyJob < ApplicationJob
                     demand_canceled_payload_msg
                   when :demand_approved
                     demand_approved_payload_msg
-                  when :in_use
+                  when :availability_changed
                     availability_changed_payload_msg
                   else
                     nil
