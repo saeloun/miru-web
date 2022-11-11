@@ -137,11 +137,11 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                               ) : (
                                 <div className="flex flex-row items-center justify-center">
                                   <div className="w-16 h-16">
-                                    <label htmlFor="file-input" className="flex justify-center w-full h-full cursor-pointer">
+                                    <div className="flex justify-center w-full h-full">
                                       <span className="rounded-full bg-miru-han-purple-1000 w-22 text-2xl text-center leading-10 text-gray-50 pt-2">
                                         { client.name.split(" ").map(name => name[0]).join("").toUpperCase() }
                                       </span>
-                                    </label>
+                                    </div>
                                   </div>
                                   <input
                                     id="file-input"
@@ -150,7 +150,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                                     className='hidden'
                                     onChange={onLogoChange} />
                                   <label htmlFor="file_input">
-                                    <img src={editButton} className="rounded-full cursor-pointer" style={{ "minWidth": "40px" }} alt="edit" />
+                                    <img src={editButton} className="rounded-full cursor-pointer mx-1" style={{ "minWidth": "30px" }} alt="edit" />
                                   </label>
                                   <input id="file_input"
                                     type="file"
@@ -161,7 +161,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                                     <img
                                       src={deleteImage}
                                       alt="delete"
-                                      style={{ "minWidth": "20px" }}
+                                      style={{ "minWidth": "10px" }}
                                     />
                                   </button>
                                 </div>

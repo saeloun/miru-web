@@ -119,14 +119,14 @@ const EditClient = ({ setnewClient, clientData, setClientData, clientLogoUrl, se
                                   name='client_logo'
                                 />
                                 <label htmlFor="file_input">
-                                  <img src={editButton} className="rounded-full mt-5 cursor-pointer" style={{ "minWidth": "40px" }} alt="edit" />
+                                  <img src={editButton} className="rounded-full mt-6 mx-1 cursor-pointer" style={{ "minWidth": "30px" }} alt="edit" />
                                 </label>
                                 <input id="file_input" type="file" name="myImage" className='hidden' onChange={onLogoChange}></input>
                                 <button onClick={handleDeleteLogo}>
                                   <img
                                     src={deleteImage}
                                     alt="delete"
-                                    style={{ "minWidth": "20px" }}
+                                    style={{ "minWidth": "10px" }}
                                   />
                                 </button>
                               </div>
