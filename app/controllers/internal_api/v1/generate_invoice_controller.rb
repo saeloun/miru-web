@@ -17,7 +17,7 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
     end
 
     def project
-      @_project ||= client.projects.pluck(:id).uniq
+      @_project ||= client.projects.kept.pluck(:id).uniq
     end
 
     # Sending team members list for filter dropdown options
