@@ -238,14 +238,21 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending, handleSa
                   type="button"
                   onClick={handleSubmit}
                   className={cn(
-                    "flex justify-center w-full p-3 mt-6 text-lg font-bold text-white uppercase border border-transparent rounded-md shadow-sm bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-miru-han-purple-600",
+                    `flex justify-center w-full p-3 mt-6 text-lg font-bold text-white uppercase border
+                    border-transparent rounded-md shadow-sm
+                    ${invoiceEmail?.recipients.length > 0 ?
+      `bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 cursor-pointer focus:outline-none focus:ring-2
+                        focus:ring-offset-2 focus:ring-miru-han-purple-600`:
+      "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+    }
+                    `,
                     {
                       "hover:bg-miru-chart-green-400 bg-miru-chart-green-600":
                         status === InvoiceStatus.SUCCESS
                     }
                   )}
                   data-cy ="send-email"
-                  disabled={isDisabled(status)}
+                  disabled={invoiceEmail?.recipients.length <= 0 || isDisabled(status)}
                 >
                   {buttonText(status)}
                 </button>
