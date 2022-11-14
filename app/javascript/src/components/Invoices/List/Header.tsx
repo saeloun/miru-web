@@ -31,6 +31,8 @@ const Header = ({
   const [searchResult, setSearchResult] = React.useState<any[]>([]);
   const [status, setStatus] = React.useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  let appliedFilterCount = (filterParamsStr.match(/&/g) || [] ).length;
+  filterParamsStr.includes("custom") && (appliedFilterCount = appliedFilterCount - 2);
 
   React.useEffect(() => {
     if (searchQuery) {
@@ -96,8 +98,9 @@ const Header = ({
               </div>
             </div>
 
-            <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
-              <FilterIcon size={16} color={filterParamsStr ? "#5B34EA" : "#303A4B"} weight={filterParamsStr ? "fill" : "bold"}/>
+            <button className="ml-7 relative" onClick={() => setFilterVisibilty(true)}>
+              {appliedFilterCount > 0 && <span className="absolute bottom-2 left-2 flex items-center justify-center rounded-full h-4 w-4 bg-miru-han-purple-1000 text-white text-xs font-semibold mr-7">{appliedFilterCount}</span>}
+              <FilterIcon size={16} color={filterParamsStr ? "#5B34EA" : "#303A4B"} />
             </button>
           </div>
 

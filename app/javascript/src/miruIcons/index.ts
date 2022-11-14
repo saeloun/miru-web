@@ -32,7 +32,8 @@ import {
   DownloadSimple,
   Calendar,
   PaperPlaneTilt,
-  FloppyDisk
+  FloppyDisk,
+  Minus
 } from "phosphor-react";
 
 export const EditIcon = PencilSimple;
@@ -51,6 +52,7 @@ export const PaymentsIcon = Wallet;
 export const SettingIcon = Gear;
 export const SignOutIcon = SignOut;
 export const PlusIcon = Plus;
+export const MinusIcon = Minus;
 export const CaretCircleLeftIcon = CaretCircleLeft;
 export const CaretCircleRightIcon = CaretCircleRight;
 export const PencilIcon = Pencil;

@@ -32,7 +32,7 @@ dayjs.Ls.en.weekStart = 1;
 
 const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [dayInfo, setDayInfo] = useState<any[]>([]);
-  const [view, setView] = useState<string>("day");
+  const [view, setView] = useState<string>("month");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
@@ -281,7 +281,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       <div className="mt-6">
         <div className="flex justify-between items-center mb-6">
           <nav className="flex">
-            {["day", "week", "month"].map((item,index) => (
+            {["month", "week", "day"].map((item,index) => (
               <button
                 key={index}
                 onClick={() => setView(item)}

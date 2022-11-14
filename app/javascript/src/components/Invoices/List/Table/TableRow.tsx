@@ -8,7 +8,7 @@ import {
   DotsThreeVerticalIcon,
   DownloadSimpleIcon
 } from "miruIcons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Badge, Tooltip } from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
@@ -28,6 +28,7 @@ const TableRow = ({
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   useDebounce(isMenuOpen,500);
+  const navigate = useNavigate();
 
   const handleCheckboxChange = () => {
     if (isSelected) {
@@ -56,15 +57,14 @@ const TableRow = ({
         />
       </td>
 
-      <td className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap">
+      <td onClick={()=>navigate(`/invoices/${invoice.id}`)} className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap cursor-pointer">
         <Avatar />
         <div className="md:ml-10 ml-2">
-          <Link
+          <span
             className="md:font-semibold font-normal md:text-base text-xs capitalize text-miru-dark-purple-1000"
-            to={`/invoices/${invoice.id}`}
           >
             {invoice.client.name}
-          </Link>
+          </span>
           <h3 className="md:text-sm text-xs font-normal text-miru-dark-purple-400">
             {invoice.invoiceNumber}
           </h3>
