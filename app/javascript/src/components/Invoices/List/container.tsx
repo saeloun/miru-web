@@ -19,7 +19,8 @@ const Container = ({
   filterParams,
   setFilterParams,
   filterIntialValues,
-  filterParamsStr
+  filterParamsStr,
+  fetchInvoices
 }) => {
   const [isDesktop, setIsDesktop] = useState(innerWidth > 650);
   let appliedFilterCount = (filterParamsStr.match(/&/g) || []).length;
@@ -122,6 +123,7 @@ const Container = ({
           deselectInvoices={deselectInvoices}
           setShowDeleteDialog={setShowDeleteDialog}
           setInvoiceToDelete={setInvoiceToDelete}
+          fetchInvoices={fetchInvoices}
         />
       </>
     </div>
