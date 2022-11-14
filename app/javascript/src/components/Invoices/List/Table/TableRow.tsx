@@ -11,6 +11,7 @@ import {
 import { useNavigate, Link } from "react-router-dom";
 import { Avatar, Badge, Tooltip } from "StyledComponents";
 
+import invoicesApi from "apis/invoices";
 import CustomCheckbox from "common/CustomCheckbox";
 import getStatusCssClass from "utils/getBadgeStatus";
 
@@ -37,6 +38,16 @@ const TableRow = ({
     } else {
       selectInvoices([invoice.id]);
     }
+  };
+
+  const handleDownload = async (id) => {
+    const response = await invoicesApi.downloadInvoice(id);
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${invoice.invoiceNumber}.pdf`);
+    document.body.appendChild(link);
+    link.click();
   };
 
   const formattedAmount = currencyFormat({
@@ -99,7 +110,9 @@ const TableRow = ({
             </button>
           </Tooltip>
           <Tooltip content="Download">
-            <button className="text-miru-han-purple-1000">
+            <button
+              onClick={()=>handleDownload(invoice.id)}
+              className="text-miru-han-purple-1000">
               <DownloadSimple size={16} />
             </button>
           </Tooltip>
