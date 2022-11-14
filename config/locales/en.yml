@@ -270,9 +270,9 @@ en:
     first_name: First Name
     last_name: Last Name
     email: Email
-    delete:
+    archive:
       success:
-        message: Team Member removed successfully
+        message: Team Member archived successfully
     update:
       success:
         message: Changes saved successfully

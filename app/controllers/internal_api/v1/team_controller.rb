@@ -33,7 +33,7 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
     employment.discard!
     render json: {
       user: employment.user,
-      notice: I18n.t("team.delete.success.message")
+      notice: I18n.t("team.archive.success.message")
     }, status: :ok
   end
 

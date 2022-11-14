@@ -23,7 +23,7 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
           .to change(company.employments.kept, :count).by(-1)
 
         expect(response).to be_successful
-        expect(json_response["notice"]).to eq(I18n.t("team.delete.success.message"))
+        expect(json_response["notice"]).to eq(I18n.t("team.archive.success.message"))
         expect(json_response["user"]["id"]).to eq(team_user.id)
       end
 
