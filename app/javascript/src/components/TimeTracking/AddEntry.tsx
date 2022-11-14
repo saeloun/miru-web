@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 
-import autosize from "autosize";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import { useOutsideClick } from "helpers";
+import TextareaAutosize from "react-autosize-textarea";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -138,10 +138,7 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   useEffect(() => {
-    const textArea = document.querySelector("textarea");
-    autosize(textArea);
     handleFillData();
-    textArea.click();
   }, []);
 
   return (
@@ -195,15 +192,15 @@ const AddEntry: React.FC<Iprops> = ({
             ))}
           </select>
         </div>
-        <textarea
+        <TextareaAutosize
           value={note}
-          onChange={e => setNote(e.target.value)}
+          onChange={e => setNote(e.target["value"])}
           rows={5}
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
-        ></textarea>
+          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 overflow-y-auto " + (editEntryId ? "h-auto" : "h-8") )}
+        />
       </div>
       <div className="w-60">
         <div className="mb-2 flex justify-between">
