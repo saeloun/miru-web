@@ -42,7 +42,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
   private
 
     def current_project
-      @_current_project ||= current_company.projects.find(params[:project_id])
+      @_current_project ||= current_company.projects.kept.find(params[:project_id])
     end
 
     def current_timesheet_entry
