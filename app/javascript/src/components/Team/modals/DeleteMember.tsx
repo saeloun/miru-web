@@ -25,14 +25,14 @@ const DeleteMember = ({ user }) => {
 
   return (
     <ConfirmDialog
-      title={user.isTeamMember ? "Delete User" : "Delete Invite"}
+      title={user.isTeamMember ? "Archive User" : "Delete Invite"}
       open={true}
       onClose={() => { setModalState(TeamModalType.NONE); }}
       onConfirm={deleteTeamMember}
       yesButtonText="DELETE"
       noButtonText="CANCEL"
     >
-      Are you sure you want to delete user <b> {user?.name}</b>? This action cannot be reversed.
+      Are you sure you want to archive user <b> {user?.name}</b>? This action cannot be reversed.
     </ConfirmDialog>
   );
 };
