@@ -13,7 +13,7 @@ export interface IEditClient {
 
 const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
   const [apiError, setApiError] = useState<string>("");
-  const [clientLogoUrl, setClientLogoUrl] = useState(client.client_logo);
+  const [clientLogoUrl, setClientLogoUrl] = useState<string>(client.client_logo);
   const [clientLogo, setClientLogo] = useState("");
 
   const handleSubmit = async (values) => {
