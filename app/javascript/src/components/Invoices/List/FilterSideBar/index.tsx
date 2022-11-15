@@ -410,7 +410,9 @@ const FilterSideBar = ({
                       }
                       name="status"
                       checkboxValue={status.value}
-                      isChecked={filters.status.includes(status)}
+                      isChecked={filters.status.some(
+                        (e) => e.value === status.value
+                      )}
                       handleCheck={(event) =>
                         handleSelectFilter(status, event.target)
                       }
