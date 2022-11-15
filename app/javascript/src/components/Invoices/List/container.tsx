@@ -60,6 +60,8 @@ const Container = ({
       <InvoiceSummary
         summary={summary}
         baseCurrency={invoices[0].company.baseCurrency}
+        filterParams={filterParams}
+        setFilterParams={setFilterParams}
       />
 
       <div className="my-20">
@@ -85,7 +87,7 @@ const Container = ({
               (param) =>
                 Array.isArray(param) ?
                   param.map((val) => (
-                    <span className="mx-2 px-2 h-6 font-normal text-xs text-miru-dark-purple-1000 bg-miru-gray-400 rounded-xl flex items-center justify-between capitalize">
+                    <span key={val.value} className="mx-2 px-2 h-6 font-normal text-xs text-miru-dark-purple-1000 bg-miru-gray-400 rounded-xl flex items-center justify-between capitalize">
                       {val.label}
                       <XIcon
                         size={12}
