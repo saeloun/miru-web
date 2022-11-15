@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Trash } from "phosphor-react";
+import { DeleteIcon } from "miruIcons";
 
 const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMembers, handleSubmit, currencySymbol }) => {
   const anyError = false; // this is dummy atm
@@ -65,7 +65,7 @@ const EditMembersListForm = ({ members, allMemberList, updateMemberState, setMem
           <div className="w-6 text-right">
             <button type="button"
               onClick={() => removeMemberHandler(idx)}>
-              <Trash size={15} fill="#5B34EA" />
+              <DeleteIcon size={15} fill="#5B34EA" />
             </button>
           </div>
         </div>

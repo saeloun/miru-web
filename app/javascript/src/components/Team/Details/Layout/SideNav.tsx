@@ -33,7 +33,7 @@ const getTeamUrls = (memberId) => [
     text: "DOCUMENTS"
   },
   {
-    url: `/team/${memberId}/reimburstment`,
+    url: `/team/${memberId}/reimburstment`, // TODO: fix spelling reimbursement
     text: "REIMBURSEMENTS"
   }
 ];

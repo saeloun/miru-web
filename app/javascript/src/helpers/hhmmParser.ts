@@ -1,6 +1,7 @@
 export const minFromHHMM = (duration: string) => {
   const numberDuration = Number(duration);
   if (duration.includes(":")) {
+    // eslint-disable-next-line prefer-const
     let [h, m] = duration.split(":");
     if (m.length > 2) {
       m = m.slice(0, 2);
