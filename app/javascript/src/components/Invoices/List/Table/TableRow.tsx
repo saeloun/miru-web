@@ -118,7 +118,8 @@ const TableRow = ({
           <Tooltip content="Download">
             <button
               onClick={() => handleDownload(invoice.id)}
-              className="text-miru-han-purple-1000"
+              className={invoice.status == "draft" ? "text-miru-gray-1000" : "text-miru-han-purple-1000"}
+              disabled= {invoice.status == "draft"}
             >
               <DownloadSimple size={16} />
             </button>
