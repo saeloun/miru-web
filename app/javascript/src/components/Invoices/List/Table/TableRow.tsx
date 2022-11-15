@@ -13,6 +13,7 @@ import { Avatar, Badge, Tooltip } from "StyledComponents";
 
 import invoicesApi from "apis/invoices";
 import CustomCheckbox from "common/CustomCheckbox";
+import Toastr from "common/Toastr";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import MoreOptions from "../MoreOptions";
@@ -29,7 +30,7 @@ const TableRow = ({
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  useDebounce(isMenuOpen,500);
+  useDebounce(isMenuOpen, 500);
   const navigate = useNavigate();
 
   const handleCheckboxChange = () => {
@@ -41,13 +42,17 @@ const TableRow = ({
   };
 
   const handleDownload = async (id) => {
-    const response = await invoicesApi.downloadInvoice(id);
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `${invoice.invoiceNumber}.pdf`);
-    document.body.appendChild(link);
-    link.click();
+    try {
+      const response = await invoicesApi.downloadInvoice(id);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${invoice.invoiceNumber}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+    } catch {
+      Toastr.error("Something went wrong");
+    }
   };
 
   const formattedAmount = currencyFormat({
@@ -69,12 +74,13 @@ const TableRow = ({
         />
       </td>
 
-      <td onClick={()=>navigate(`/invoices/${invoice.id}`)} className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap cursor-pointer">
+      <td
+        onClick={() => navigate(`/invoices/${invoice.id}`)}
+        className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap cursor-pointer"
+      >
         <Avatar />
         <div className="md:ml-10 ml-2">
-          <span
-            className="md:font-semibold font-normal md:text-base text-xs capitalize text-miru-dark-purple-1000"
-          >
+          <span className="md:font-semibold font-normal md:text-base text-xs capitalize text-miru-dark-purple-1000">
             {invoice.client.name}
           </span>
           <h3 className="md:text-sm text-xs font-normal text-miru-dark-purple-400">
@@ -111,8 +117,9 @@ const TableRow = ({
           </Tooltip>
           <Tooltip content="Download">
             <button
-              onClick={()=>handleDownload(invoice.id)}
-              className="text-miru-han-purple-1000">
+              onClick={() => handleDownload(invoice.id)}
+              className="text-miru-han-purple-1000"
+            >
               <DownloadSimple size={16} />
             </button>
           </Tooltip>
