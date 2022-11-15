@@ -23,8 +23,8 @@ namespace :internal_api, defaults: { format: "json" } do
           get :download
         end
       end
-
       resources :outstanding_overdue_invoices, only: [:index]
+      resources :accounts_aging, only: [:index]
     end
 
     resources :workspaces, only: [:update]
