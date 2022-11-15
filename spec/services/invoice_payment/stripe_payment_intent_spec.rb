@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe InvoicePayment::Success do
+RSpec.describe InvoicePayment::StripePaymentIntent do
   include Rails.application.routes.url_helpers
   let(:company) { create(:company, base_currency: "inr") }
   let(:client) { create(:client_with_phone_number_without_country_code, company:) }
@@ -42,25 +42,12 @@ RSpec.describe InvoicePayment::Success do
 
     subject { described_class.new(invoice).process }
 
-    it "updates invoice as paid by confirming payment in stripe", checkout_session: true do
-      expect(subject).to eq(true)
-      expect(invoice.reload.status).to eq("paid")
+    it "returns the stripe intent object", checkout_session: true do
+      expect(subject.class).to eq(Stripe::PaymentIntent)
     end
 
-    it "updates invoice with payment intent to paid status by confirming payment in stripe", checkout_session: true do
-      invoice.update(stripe_payment_intent: "pi_3LIrtn2SBHFmsqvE1s6yyBrq")
-      expect(subject).to eq(true)
-      expect(invoice.reload.status).to eq("paid")
-    end
-
-    it "invoice will be in sent status until payment is complete through checkout page", checkout_session: true do
-      expect(subject).to eq(false)
-      expect(invoice.reload.status).to eq("sent")
-    end
-
-    it "invoice will be in sent status even when checkout session is not created" do
-      expect(subject).to eq(false)
-      expect(invoice.reload.status).to eq("sent")
+    it "won't return stripe intent object when there is no associated invoice" do
+      expect(subject).to eq(nil)
     end
   end
 end
