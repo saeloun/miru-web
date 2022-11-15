@@ -15,10 +15,13 @@ const TimeInput = ({
   name,
   onBlurHandler
 }: Iprops) => {
-
-  const [time, setTime] = useState(initTime || "");
+  const [time, setTime] = useState<string>("");
 
   const _input = useRef(null);
+
+  useEffect(() => {
+    setTime(initTime);
+  }, [initTime]);
 
   useEffect(() => {
     if (!disabled && mountFocus) {
@@ -26,7 +29,7 @@ const TimeInput = ({
         autoFocus && _input.current.focus();
       }, 0);
     }
-  });
+  }, [disabled, mountFocus]);
 
   let lastVal = "";
 

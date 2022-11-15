@@ -29,7 +29,7 @@ const AddEntry: React.FC<Iprops> = ({
   handleRelocateEntry
 }) => {
   const [note, setNote] = useState<string>("");
-  const [duration, setDuration] = useState<string>("00:00");
+  const [duration, setDuration] = useState<string>("");
   const [client, setClient] = useState<string>("");
   const [project, setProject] = useState<string>("");
   const [projectId, setProjectId] = useState<number>(0);
@@ -225,7 +225,8 @@ const AddEntry: React.FC<Iprops> = ({
           </div>
           <TimeInput
             name="timeInput"
-            className='p-1 h-8 w-20 bg-miru-gray-100 rounded-sm text-sm placeholder:text-miru-gray-1000'
+            className="p-1 h-8 w-20 bg-miru-gray-100 rounded-sm text-sm placeholder:text-miru-gray-1000"
+            initTime={duration}
             onTimeChange={handleDurationChange}
           />
         </div>
