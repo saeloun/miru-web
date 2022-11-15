@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { DownloadSimple } from "phosphor-react";
+import { DownloadSimpleIcon } from "miruIcons";
 
 const TableRow = ({
   data
@@ -36,7 +36,7 @@ const TableRow = ({
               className="hidden group-hover:block text-miru-han-purple-1000"
               onClick={() => setIsSending(!isSending)}
             >
-              <DownloadSimple size={16} />
+              <DownloadSimpleIcon size={16} />
             </button>
           </div>
         </td>

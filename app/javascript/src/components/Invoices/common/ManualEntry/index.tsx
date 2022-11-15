@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import { lineTotalCalc, minFromHHMM, minToHHMM } from "helpers";
-import { Trash } from "phosphor-react";
+import { DeleteIcon } from "miruIcons";
 
 const ManualEntry = ({
   entry,
@@ -119,7 +119,7 @@ const ManualEntry = ({
       </td>
       <td>
         <button onClick={handleDelete} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
-          <Trash size={16} color="#E04646" weight="bold" />
+          <DeleteIcon size={16} color="#E04646" weight="bold" />
         </button>
       </td>
     </tr>
