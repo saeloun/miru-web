@@ -3,13 +3,13 @@ import React, { useEffect } from "react";
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
 import Logger from "js-logger";
 import {
-  ArrowLeft,
-  DotsThreeVertical,
-  Receipt,
-  Pencil,
-  UsersThree,
-  Trash
-} from "phosphor-react";
+  ArrowLeftIcon,
+  DotsThreeVerticalIcon,
+  ReportsIcon,
+  PencilIcon,
+  TeamsIcon,
+  DeleteIcon
+} from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Badge } from "StyledComponents";
@@ -170,7 +170,7 @@ const ProjectDetails = () => {
                 navigate("/projects");
               }}
             >
-              <ArrowLeft size={20} color="#5b34ea" weight="bold" />
+              <ArrowLeftIcon size={20} color="#5b34ea" weight="bold" />
             </button>
             <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
               {project?.name}
@@ -187,7 +187,7 @@ const ProjectDetails = () => {
               onClick={handleMenuVisibility}
               className={`menuButton__button ${menuBackground}`}
             >
-              <DotsThreeVertical size={20} color="#000000" />
+              <DotsThreeVerticalIcon size={20} color="#000000" />
             </button>
             {isHeaderMenuVisible && (
               <ul className="menuButton__wrapper">
@@ -202,7 +202,7 @@ const ProjectDetails = () => {
                     }
                     className="menuButton__list-item"
                   >
-                    <Receipt size={16} color="#5B34EA" weight="bold" />
+                    <ReportsIcon size={16} color="#5B34EA" weight="bold" />
                     <span className="ml-3">Generate Invoice</span>
                   </button>
                 </li>
@@ -214,7 +214,7 @@ const ProjectDetails = () => {
                     }}
                     className="menuButton__list-item"
                   >
-                    <Pencil size={16} color="#5b34ea" weight="bold" />
+                    <PencilIcon size={16} color="#5b34ea" weight="bold" />
                     <span className="ml-3">Edit Project Details</span>
                   </button>
                 </li>
@@ -223,7 +223,7 @@ const ProjectDetails = () => {
                     className="menuButton__list-item"
                     onClick={handleAddRemoveMembers}
                   >
-                    <UsersThree size={16} color="#5b34ea" weight="bold" />
+                    <TeamsIcon size={16} color="#5b34ea" weight="bold" />
                     <span className="ml-3">Add/Remove Team Members</span>
                   </button>
                 </li>
@@ -232,7 +232,7 @@ const ProjectDetails = () => {
                     onClick={() => setShowDeleteDialog(true)}
                     className="menuButton__list-item text-miru-red-400"
                   >
-                    <Trash size={16} color="#E04646" weight="bold" />
+                    <DeleteIcon size={16} color="#E04646" weight="bold" />
                     <span className="ml-3">Delete Project</span>
                   </button>
                 </li>
@@ -280,7 +280,7 @@ const ProjectDetails = () => {
         <AmountBoxContainer amountBox={amountBox} />
       </div>
       <div className="flex flex-col">
-        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="-my-2 overflow-XIcon-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="overflow-hidden">
               {project && (

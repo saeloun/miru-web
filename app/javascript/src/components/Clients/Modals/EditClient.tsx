@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 import * as Yup from "yup";
 
 import clientApi from "apis/clients";
@@ -63,7 +63,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
             <div className="flex justify-between items-center mt-6">
               <h6 className="text-base font-extrabold">Edit Client</h6>
               <button type="button" onClick={() => { setShowEditDialog(false); }}>
-                <X size={16} color="#CDD6DF" weight="bold" />
+                <XIcon size={16} color="#CDD6DF" weight="bold" />
               </button>
             </div>
             <Formik

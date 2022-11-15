@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import Logger from "js-logger";
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 import Select from "react-select";
 import * as Yup from "yup";
 
@@ -118,7 +118,7 @@ const FilterSideBar = ({
             Filters
           </h4>
           <button onClick={() => setFilterVisibility(false)}>
-            <X size={12} />
+            <XIcon size={12} />
           </button>
         </div>
         <div className="sidebar__filters">

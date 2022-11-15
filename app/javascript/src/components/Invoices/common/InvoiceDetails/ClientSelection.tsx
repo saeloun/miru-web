@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import { useOutsideClick } from "helpers";
-import { MagnifyingGlass, PencilSimple } from "phosphor-react";
+import { SearchIcon, EditIcon } from "miruIcons";
 import Select, { components, DropdownIndicatorProps } from "react-select";
 
 import { reactSelectStyles } from "./Styles";
@@ -47,7 +47,7 @@ const ClientSelection = ({
 
   const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
     <components.DropdownIndicator {...props}>
-      <MagnifyingGlass size={20} color="#1D1A31" />
+      <SearchIcon size={20} color="#1D1A31" />
     </components.DropdownIndicator>
   );
 
@@ -60,7 +60,7 @@ const ClientSelection = ({
             onClick={handleSelectClientClick}
             className="bg-miru-gray-1000 rounded mx-1  p-1 hidden group-hover:block"
           >
-            <PencilSimple size={13} color="#1D1A31" />
+            <EditIcon size={13} color="#1D1A31" />
           </button>
         )}
       </p>

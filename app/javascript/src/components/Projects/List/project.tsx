@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { minToHHMM } from "helpers";
-import { Pen, Trash } from "phosphor-react";
+import { PenIcon, DeleteIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "StyledComponents";
 
@@ -71,7 +71,7 @@ export const Project = ({
             setEditProjectData({ id, name, clientName, isBillable });
           }}
         >
-          <Pen size={16} color="#5B34EA" />
+          <PenIcon size={16} color="#5B34EA" />
         </button>
         }
       </td>
@@ -84,7 +84,7 @@ export const Project = ({
             setDeleteProjectData({ id, name });
           }}
         >
-          <Trash size={16} color="#5B34EA" />
+          <DeleteIcon size={16} color="#5B34EA" />
         </button>
         }
       </td>

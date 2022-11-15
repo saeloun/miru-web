@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { TeamModalType } from "constants/index";
 
 import { Formik, Form, Field, FormikProps } from "formik";
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 import * as Yup from "yup";
 
 import teamApi from "apis/team";
@@ -93,7 +93,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                   setModalState(TeamModalType.NONE);
                 }}
               >
-                <X size={16} color="#CDD6DF" weight="bold" />
+                <XIcon size={16} color="#CDD6DF" weight="bold" />
               </button>
             </div>
             <Formik
@@ -181,7 +181,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                           Role
                         </label>
                         <div className="mt-1 flex">
-                          <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+                          <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-XIcon-10">
                             <div className="flex items-center">
                               <Field
                                 type="radio"

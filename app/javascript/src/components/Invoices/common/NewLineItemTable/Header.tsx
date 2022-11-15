@@ -1,5 +1,5 @@
 import React from "react";
-// import { MagnifyingGlass } from "phosphor-react";
+// import { SearchIcon } from "miruIcons";
 
 const NewLineItemTableHeader = ({ setShowMultilineModal, addManualEntryItem }) => (
   <div className="flex items-center justify-between pt-6 pb-2 px-3">
@@ -11,7 +11,7 @@ const NewLineItemTableHeader = ({ setShowMultilineModal, addManualEntryItem }) =
         placeholder="Search"
       />
       <button className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
-        <MagnifyingGlass size={20} color="#1D1A31"
+        <SearchIcon size={20} color="#1D1A31"
           className="h-3 w-3 text-miru-gray-400"
         />
       </button>
