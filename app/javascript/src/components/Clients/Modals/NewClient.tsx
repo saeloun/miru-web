@@ -1,6 +1,6 @@
 import React from "react";
 
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 
 import clientApi from "apis/clients";
 import Toastr from "common/Toastr";
@@ -55,7 +55,7 @@ const EditClient = ({
                   setnewClient(false);
                 }}
               >
-                <X size={16} color='#CDD6DF' weight='bold' />
+                <XIcon size={16} color='#CDD6DF' weight='bold' />
               </button>
             </div>
             <ClientForm

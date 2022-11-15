@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 
 import clientApi from "apis/clients";
 
@@ -13,7 +13,9 @@ export interface IEditClient {
 
 const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
   const [apiError, setApiError] = useState<string>("");
-  const [clientLogoUrl, setClientLogoUrl] = useState<string>(client.client_logo);
+  const [clientLogoUrl, setClientLogoUrl] = useState<string>(
+    client.client_logo
+  );
   const [clientLogo, setClientLogo] = useState("");
 
   const handleSubmit = async (values) => {
@@ -64,7 +66,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                   setShowEditDialog(false);
                 }}
               >
-                <X size={16} color='#CDD6DF' weight='bold' />
+                <XIcon size={16} color='#CDD6DF' weight='bold' />
               </button>
             </div>
             <ClientForm
