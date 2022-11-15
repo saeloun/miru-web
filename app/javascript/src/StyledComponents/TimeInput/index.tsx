@@ -38,10 +38,6 @@ const TimeInput = ({
       return;
     }
     if (isValid(val)) {
-      if (val.length === 8 && lastVal.length !== 3 && val.indexOf(":") === -1) {
-        val = val + ":";
-      }
-
       if (val.length === 2 && lastVal.length === 3) {
         val = val.slice(0, 1);
       }
