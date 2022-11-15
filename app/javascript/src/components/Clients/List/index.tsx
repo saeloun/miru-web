@@ -76,6 +76,8 @@ const Clients = ({ isAdminUser }) => {
   const [overdueOutstandingAmount, setOverDueOutstandingAmt] = useState<any>(null);
   const [clientLogoUrl, setClientLogoUrl] = useState("");
   const [clientLogo, setClientLogo] = useState("");
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
   const handleEditClick = (id) => {
@@ -97,6 +99,7 @@ const Clients = ({ isAdminUser }) => {
         setClientData(sanitized.clientList);
         setTotalMinutes(sanitized.totalMinutes);
         setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
+        setLoading(false);
       });
   };
 
@@ -114,6 +117,7 @@ const Clients = ({ isAdminUser }) => {
         setClientData(sanitized.clientList);
         setTotalMinutes(sanitized.totalMinutes);
         setOverDueOutstandingAmt(sanitized.overdueOutstandingAmount);
+        setLoading(false);
       });
   }, []);
 
@@ -160,6 +164,12 @@ const Clients = ({ isAdminUser }) => {
   }];
 
   const tableData = getTableData(clientData);
+
+  if (loading){
+    return <p className="flex items-center justify-center min-h-screen text-miru-han-purple-1000 tracking-wide text-base font-medium">
+      Loading...
+    </p>;
+  }
 
   return (
     <>
