@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Wallet } from "phosphor-react";
+import { ReportsIcon } from "miruIcons";
 import { Badge } from "StyledComponents";
 
 import getStatusCssClass from "utils/getBadgeStatus";
@@ -28,7 +28,7 @@ const Header = ({ invoice, stripeUrl }) => (
         >
           <div className="flex flex-row justify-between items-center">
             <div className="mr-1">
-              <Wallet size={16} color="white" weight="bold" />
+              <ReportsIcon size={16} color="white" weight="bold" />
             </div>
             <p className="font-bold tracking-widest text-base text-miru-white-1000 ml-1">
               PAY

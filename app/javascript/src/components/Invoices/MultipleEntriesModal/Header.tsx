@@ -1,6 +1,6 @@
 import React from "react";
 
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 
 import Filters from "./Filters";
 
@@ -19,7 +19,7 @@ const Header = ({
       <button
         onClick={() => setMultiLineItemModal(false)}
       >
-        <X size={16} color="#CDD6DF" />
+        <XIcon size={16} color="#CDD6DF" />
       </button>
     </div>
     <Filters
