@@ -4,7 +4,13 @@ import BackButton from "./BackButton";
 import InvoiceActions from "./InvoiceActions";
 import InvoiceStatus from "./InvoiceStatus";
 
-const Header = ({ invoice, handleSendInvoice, setShowDeleteDialog, setInvoiceToDelete }) => (
+const Header = ({
+  invoice,
+  handleSendInvoice,
+  setShowDeleteDialog,
+  setInvoiceToDelete,
+  handleDownloadInvoice
+}) => (
   <>
     <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
       <div className="flex flex-row">
@@ -18,7 +24,9 @@ const Header = ({ invoice, handleSendInvoice, setShowDeleteDialog, setInvoiceToD
         }}
         editInvoiceLink={`/invoices/${invoice.id}/edit`}
         sendInvoice={handleSendInvoice}
+        downloadInvoice={handleDownloadInvoice}
       />
+
     </div>
   </>
 );
