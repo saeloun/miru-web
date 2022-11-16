@@ -32,8 +32,9 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
   def update
     authorize client
+    client.client_logo.destroy if client_params.key?(:client_logo) && client_params[:client_logo].blank?
 
-    if client.update!(client_params)
+    if client.update!(update_client_params)
       render json: {
         success: true,
         client:,
@@ -64,6 +65,14 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
         policy(Client).permitted_attributes
       ).tap do |client_params|
         client_params[:company_id] = current_company.id
+      end
+    end
+
+    def update_client_params
+      if client_params.key?(:client_logo) && client_params[:client_logo].blank?
+        client_params.except(:client_logo)
+      else
+        client_params
       end
     end
 end

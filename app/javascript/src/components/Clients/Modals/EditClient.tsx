@@ -24,7 +24,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
     formData.append("client[email]", values.email);
     formData.append("client[phone]", values.phone);
     formData.append("client[address]", values.address);
-    if (clientLogo) formData.append("client[client_logo]", clientLogo);
+    formData.append("client[client_logo]", clientLogo);
 
     await clientApi
       .update(client.id, formData)
@@ -40,12 +40,8 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
   const handleDeleteLogo = (event) => {
     event.preventDefault();
 
-    clientApi.removeLogo(client.id).then((res) => {
-      if (res.status === 200) {
-        setClientLogo("");
-        setClientLogoUrl("");
-      }
-    });
+    setClientLogo("");
+    setClientLogoUrl("");
   };
 
   return (
