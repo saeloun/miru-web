@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Trash } from "phosphor-react";
+import { DeleteIcon } from "miruIcons";
 
 const DeleteButton = ({ onClick }) => (
   <div className="flex flex-row justify-items-center delete-button-container mr-1">
@@ -10,7 +10,7 @@ const DeleteButton = ({ onClick }) => (
     >
       <div className="flex flex-row justify-between items-center">
         <div className="mr-1">
-          <Trash size={16} color="#E04646" weight="bold"/>
+          <DeleteIcon size={16} color="#E04646" weight="bold"/>
         </div>
         <p className="font-bold tracking-widest text-base text-miru-red-400 ml-1">DELETE</p>
       </div>

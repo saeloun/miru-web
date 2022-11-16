@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useDebounce } from "helpers";
-import { X, Funnel, Plus, Minus, MagnifyingGlass } from "phosphor-react";
+import { XIcon, FilterIcon, PlusIcon, MinusIcon, SearchIcon } from "miruIcons";
 import { Badge, Button, SidePanel } from "StyledComponents";
 
 import companiesApi from "apis/companies";
@@ -220,10 +220,10 @@ const FilterSideBar = ({
     <SidePanel setFilterVisibilty={setFilterVisibilty}>
       <SidePanel.Header className="flex px-5 pt-5 mb-7 justify-between items-center text-miru-dark-purple-1000 font-bold">
         <h4 className="text-base flex items-center">
-          <Funnel size={16} className="mr-2.5" /> Filters
+          <FilterIcon size={16} className="mr-2.5" /> Filters
         </h4>
         <Button style="ternary" onClick={() => setFilterVisibilty(false)}>
-          <X size={16} className="text-miru-dark-purple-1000" />
+          <XIcon size={16} className="text-miru-dark-purple-1000" />
         </Button>
       </SidePanel.Header>
 
@@ -247,7 +247,7 @@ const FilterSideBar = ({
                     {1}
                   </span>
                 )}
-                {isDateRangeOpen ? <Minus size={16} /> : <Plus size={16} />}
+                {isDateRangeOpen ? <MinusIcon size={16} /> : <PlusIcon size={16} />}
               </div>
             </div>
             {isDateRangeOpen && (
@@ -316,7 +316,7 @@ const FilterSideBar = ({
                     {filters.clients.length}
                   </span>
                 )}
-                {isClientOpen ? <Minus size={16} /> : <Plus size={16} />}
+                {isClientOpen ? <MinusIcon size={16} /> : <PlusIcon size={16} />}
               </div>
             </div>
 
@@ -335,14 +335,14 @@ const FilterSideBar = ({
                     }}
                   />
                   {searchQuery ? (
-                    <X
+                    <XIcon
                       size={16}
                       color="#1D1A31"
                       className="absolute right-8"
                       onClick={() => setSearchQuery("")}
                     />
                   ) : (
-                    <MagnifyingGlass
+                    <SearchIcon
                       size={16}
                       color="#1D1A31"
                       className="absolute right-8"
@@ -392,7 +392,7 @@ const FilterSideBar = ({
                     {filters.status.length}
                   </span>
                 )}
-                {isStatusOpen ? <Minus size={16} /> : <Plus size={16} />}
+                {isStatusOpen ? <MinusIcon size={16} /> : <PlusIcon size={16} />}
               </div>
             </div>
 
@@ -410,7 +410,9 @@ const FilterSideBar = ({
                       }
                       name="status"
                       checkboxValue={status.value}
-                      isChecked={filters.status.includes(status)}
+                      isChecked={filters.status.some(
+                        (e) => e.value === status.value
+                      )}
                       handleCheck={(event) =>
                         handleSelectFilter(status, event.target)
                       }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InvoicePayment::Success < ApplicationService
+class InvoicePayment::StripePaymentIntent < ApplicationService
   attr_reader :invoice, :client, :account_id
   attr_accessor :checkout_session, :sessions, :payment_intent_id, :payment_intent
 
@@ -28,11 +28,11 @@ class InvoicePayment::Success < ApplicationService
 
   def process
     retrieve_payment_intent
-    update_invoice!
+    @payment_intent
   rescue StandardError => error
     Rails.logger.error error.message
     Rails.logger.error error.backtrace.join("\n")
-    false
+    nil
   end
 
   private
@@ -54,14 +54,6 @@ class InvoicePayment::Success < ApplicationService
         @payment_intent_id,
         { stripe_account: @account_id }
       )
-    end
-
-    def update_invoice!
-      if payment_intent.status == "succeeded"
-        invoice.paid!
-      else
-        raise PaymentIntentNotSucceededError
-      end
     end
 
     def get_checkout_sessions

@@ -2,7 +2,7 @@
 import React, { Fragment } from "react";
 
 import { bytesToSize } from "helpers";
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 
 import ProgressBar from "common/ProgressBar";
 
@@ -53,7 +53,7 @@ const ImportModal = ({
               <p className="text-xs	font-medium text-miru-dark-purple-200"> XLS • {bytesToSize(file.size)}</p>
             </div>
             <button onClick={handleRemoveFile}>
-              <X size={15} color="#5B34EA" className="mr-2" />
+              <XIcon size={15} color="#5B34EA" className="mr-2" />
             </button>
           </div>
         </div>
@@ -171,7 +171,7 @@ const ImportModal = ({
                 className="modal__button"
                 onClick={handleToggleModal}
               >
-                <X size={15} color="#CDD6DF" />
+                <XIcon size={15} color="#CDD6DF" />
               </button>
             </div>
           </div>
