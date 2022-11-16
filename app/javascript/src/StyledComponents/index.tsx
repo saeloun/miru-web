@@ -2,6 +2,7 @@ import Avatar from "./Avatar";
 import Badge from "./Badge";
 import Button from "./Button";
 import SidePanel from "./SidePanel/index";
+import TimeInput from "./TimeInput";
 import Tooltip from "./Tooltip";
 
 export {
@@ -9,5 +10,6 @@ export {
   Badge,
   Button,
   SidePanel,
+  TimeInput,
   Tooltip
 };
