@@ -32,7 +32,6 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
   def update
     authorize client
-    client.client_logo.destroy if client_params.key?(:client_logo) && client_params[:client_logo].blank?
 
     if client.update!(update_client_params)
       render json: {
@@ -70,6 +69,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
     def update_client_params
       if client_params.key?(:client_logo) && client_params[:client_logo].blank?
+        client.client_logo.destroy
         client_params.except(:client_logo)
       else
         client_params
