@@ -1,9 +1,26 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 
 import CustomCheckbox from "common/CustomCheckbox";
 
-const TableHeader = ({ selectAllInvoices, deselectAllInvoices }) => {
-  const [isChecked, setChecked] = React.useState<boolean>(false);
+const TableHeader = ({
+  invoices,
+  selectedInvoices,
+  selectInvoices,
+  deselectInvoices
+}) => {
+  const [isChecked, setChecked] = useState<boolean>(false);
+
+  useEffect(() => {
+    setChecked(selectedInvoices.length == invoices.length);
+  }, [selectedInvoices]);
+
+  const selectAllInvoices = () => {
+    selectInvoices(invoices.map((invoice) => invoice.id));
+  };
+
+  const deselectAllInvoices = () => {
+    deselectInvoices(invoices.map((invoice) => invoice.id));
+  };
 
   const handleCheck = (event) => {
     if (event.target.checked) {
@@ -11,7 +28,6 @@ const TableHeader = ({ selectAllInvoices, deselectAllInvoices }) => {
     } else {
       deselectAllInvoices();
     }
-    setChecked(!isChecked);
   };
 
   return (

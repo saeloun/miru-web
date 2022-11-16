@@ -143,5 +143,21 @@ RSpec.describe Invoice, type: :model do
 
       expect(invoice.unit_amount(zero_base_currency)).to eq(expected_amount)
     end
+
+    describe ".save_invoice_without_reference" do
+      let(:invoice) { create :invoice, reference: nil }
+
+      it "saves the invoice without reference" do
+        expect(invoice.valid?).to eq(true)
+      end
+    end
+
+    # max 6 characters allowed for invoice
+    describe "invoice max characters" do
+      it "reference length should not exceed more then 12 characters" do
+        invoice = build(:invoice, reference: "abcdef_123456")
+        expect(invoice.valid?).to eq(false)
+      end
+    end
   end
 end

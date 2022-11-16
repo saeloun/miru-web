@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import Logger from "js-logger";
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 
 import projectApi from "apis/projects";
 
@@ -109,7 +109,7 @@ const AddEditProject = ({
                   setShowProjectModal(false);
                 }}
               >
-                <X size={15} color="#CDD6DF" />
+                <XIcon size={15} color="#CDD6DF" />
               </button>
             </div>
           </div>
@@ -149,7 +149,7 @@ const AddEditProject = ({
               <div className="field">
                 <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">Project Type</label>
                 <div className="mt-1">
-                  <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+                  <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-XIcon-10">
                     <div className="flex items-center">
                       { (editProjectData || !isEdit) && <input type="radio" id='billable' name='project_type' defaultChecked={isEdit ? editProjectData.is_billable : true} className="focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Billable")} /> }
                       <label htmlFor="billable" className="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
