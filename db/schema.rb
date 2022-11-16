@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_12_065450) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_25_114927) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -299,6 +299,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_12_065450) do
     t.date "date_of_birth"
     t.jsonb "social_accounts"
     t.string "phone"
+    t.string "token", limit: 50
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 
 import RecentlyUpdated from "./RecentlyUpdated";
 import Table from "./Table";
@@ -60,6 +60,8 @@ const Container = ({
       <InvoiceSummary
         summary={summary}
         baseCurrency={invoices[0].company.baseCurrency}
+        filterParams={filterParams}
+        setFilterParams={setFilterParams}
       />
 
       <div className="my-20">
@@ -85,9 +87,9 @@ const Container = ({
               (param) =>
                 Array.isArray(param) ?
                   param.map((val) => (
-                    <span className="mx-2 px-2 h-6 font-normal text-xs text-miru-dark-purple-1000 bg-miru-gray-400 rounded-xl flex items-center justify-between capitalize">
+                    <span key={val.value} className="mx-2 px-2 h-6 font-normal text-xs text-miru-dark-purple-1000 bg-miru-gray-400 rounded-xl flex items-center justify-between capitalize">
                       {val.label}
-                      <X
+                      <XIcon
                         size={12}
                         className="ml-2 cursor-pointer"
                         onClick={() => handleRemoveFilter(val)}
@@ -97,7 +99,7 @@ const Container = ({
                   ) : Object(param).value != "all" && (
                     <span className="mx-2 px-2 h-6 font-normal text-xs text-miru-dark-purple-1000 bg-miru-gray-400 rounded-xl flex items-center justify-between capitalize">
                       {Object(param).label}
-                      <X
+                      <XIcon
                         size={12}
                         className="ml-2 cursor-pointer"
                         onClick={() => handleRemoveFilter(Object(param))}
@@ -109,7 +111,7 @@ const Container = ({
                 onClick={() => setFilterParams(filterIntialValues)}
                 className="ml-2 w-16 text-xs text-miru-han-purple-1000 font-normal flex items-center justify-between cursor-pointer"
               >
-                <X size={12} /> Clear all
+                <XIcon size={12} /> Clear all
               </span>
             )}
           </div>

@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 import { currencyFormat, useDebounce } from "helpers";
 import {
-  PaperPlaneTilt,
-  Pen,
-  DotsThreeVertical,
-  DownloadSimple
-} from "phosphor-react";
-import { useNavigate, Link } from "react-router-dom";
+  PaperPlaneTiltIcon,
+  PenIcon,
+  DotsThreeVerticalIcon,
+  DownloadSimpleIcon
+} from "miruIcons";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Badge, Tooltip } from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
@@ -95,12 +95,12 @@ const TableRow = ({
               className="text-miru-han-purple-1000"
               onClick={() => setIsSending(!isSending)}
             >
-              <PaperPlaneTilt size={16} />
+              <PaperPlaneTiltIcon size={16} />
             </button>
           </Tooltip>
           <Tooltip content="Download">
             <button className="text-miru-han-purple-1000">
-              <DownloadSimple size={16} />
+              <DownloadSimpleIcon size={16} />
             </button>
           </Tooltip>
           <Tooltip content="Edit">
@@ -110,7 +110,7 @@ const TableRow = ({
               data-cy="edit-invoice"
               className="text-miru-han-purple-1000"
             >
-              <Pen size={16} />
+              <PenIcon size={16} />
             </Link>
           </Tooltip>
           <Tooltip content="More">
@@ -118,7 +118,7 @@ const TableRow = ({
               className="text-miru-han-purple-1000"
               onClick={() => setIsMenuOpen(true)}
             >
-              <DotsThreeVertical size={16} />
+              <DotsThreeVerticalIcon size={16} />
             </button>
           </Tooltip>
         </div>
