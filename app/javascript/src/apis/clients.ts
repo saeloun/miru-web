@@ -12,8 +12,6 @@ const update = async (id, payload) => axios.patch(`${path}/${id}`, payload);
 
 const destroy = async id => axios.delete(`${path}/${id}`);
 
-const removeLogo = (id) => axios.delete(`${path}/${id}/purge_logo`);
-
-const clientApi = { update, destroy, get, show, create, removeLogo };
+const clientApi = { update, destroy, get, show, create };
 
 export default clientApi;
