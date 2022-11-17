@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { MagnifyingGlass, Plus } from "phosphor-react";
+import { SearchIcon, PlusIcon } from "miruIcons";
 
 import clientApi from "apis/clients";
 import AutoComplete from "common/AutoComplete";
@@ -31,7 +31,7 @@ const Header = ({ setnewClient, isAdminUser }) => {
             <div className="header__searchInnerWrapper">
               <AutoComplete searchCallBack={searchCallBack} />
               <button className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
-                <MagnifyingGlass size={12} />
+                <SearchIcon size={12} />
               </button>
             </div>
           </div>
@@ -41,7 +41,7 @@ const Header = ({ setnewClient, isAdminUser }) => {
               className="header__button"
               onClick={() => setnewClient(true)}
             >
-              <Plus weight="fill" size={16} />
+              <PlusIcon weight="fill" size={16} />
               <span className="ml-2 inline-block">NEW CLIENT</span>
             </button>
           </div>

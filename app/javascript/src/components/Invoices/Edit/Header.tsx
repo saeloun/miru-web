@@ -1,6 +1,6 @@
 import React from "react";
 
-import { X, FloppyDisk, PaperPlaneTilt } from "phosphor-react";
+import { XIcon, FloppyDiskIcon, PaperPlaneTiltIcon } from "miruIcons";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -15,7 +15,7 @@ const Header = ({ invoiceNumber, id, updateInvoice }) => (
           type="button"
           className="header__button w-1/3 p-0"
         >
-          <X size={12} />
+          <XIcon size={12} />
           <span className="ml-2 inline-block">CANCEL</span>
         </Link>
         <button
@@ -24,14 +24,14 @@ const Header = ({ invoiceNumber, id, updateInvoice }) => (
           onClick={updateInvoice}
           data-cy='save-invoice-edit'
         >
-          <FloppyDisk size={18} color="white" />
+          <FloppyDiskIcon size={18} color="white" />
           <span className="ml-2 inline-block">SAVE</span>
         </button>
         <button
           type="button"
           className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
         >
-          <PaperPlaneTilt size={18} color="White" />
+          <PaperPlaneTiltIcon size={18} color="White" />
           <span className="ml-2 inline-block">SEND TO</span>
         </button>
       </div>

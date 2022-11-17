@@ -66,6 +66,7 @@ class Invoice < ApplicationRecord
   validates :amount, :outstanding_amount, :tax,
     :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
   validates :invoice_number, uniqueness: true
+  validates :reference, length: { maximum: 12 }, allow_blank: true
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
@@ -90,7 +91,7 @@ class Invoice < ApplicationRecord
   end
 
   def create_checkout_session!(success_url:, cancel_url:)
-    InvoicePayment::Checkout.process(invoice: self, success_url:, cancel_url:)
+    InvoicePayment::Checkout.process(invoice: self, success_url:, cancel_url:, metadata: { invoice_id: self.id })
   end
 
   def unit_amount(base_currency)

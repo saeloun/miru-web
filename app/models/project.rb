@@ -27,8 +27,6 @@ class Project < ApplicationRecord
   include Discard::Model
   include UtilityFunctions
 
-  default_scope -> { kept }
-
   # Associations
   belongs_to :client
   has_many :timesheet_entries, inverse_of: :project

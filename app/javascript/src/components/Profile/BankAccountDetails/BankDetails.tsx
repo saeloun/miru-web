@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 import { isEmpty } from "ramda";
 
 import wiseApi from "apis/wise";
@@ -79,7 +79,7 @@ const BankDetails = ({
   return (
     <>
       <div
-        className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+        className="justify-center items-center flex overflow-XIcon-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
       >
         <div className="relative w-auto my-6 mx-auto max-w-sm">
           {/*content*/}
@@ -93,7 +93,7 @@ const BankDetails = ({
                 className="p-1 ml-auto bg-transparent border-0 text-black opacity-1 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                 onClick={() => setBankDetailsModal(false)}
               >
-                <X size={12} />
+                <XIcon size={12} />
               </button>
             </div>
             {/*Info*/}

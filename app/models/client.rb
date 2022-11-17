@@ -31,8 +31,6 @@ class Client < ApplicationRecord
   include Discard::Model
   include UtilityFunctions
 
-  default_scope -> { kept }
-
   has_many :projects
   has_many :timesheet_entries, through: :projects
   has_many :invoices, dependent: :destroy
@@ -42,8 +40,6 @@ class Client < ApplicationRecord
   validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
   after_discard :discard_projects
   after_commit :reindex_projects
-
-  default_scope { where(discarded_at: nil) }
 
   def reindex_projects
     projects.reindex

@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import { getMonth, getYear } from "date-fns";
 import dayjs from "dayjs";
 import "react-datepicker/dist/react-datepicker.css";
-import { CaretCircleLeft, CaretCircleRight, CaretLeft } from "phosphor-react"; //eslint-disable-line
+import { CaretCircleLeftIcon, CaretCircleRightIcon, LeftArrowIcon } from "miruIcons"; //eslint-disable-line
 
 const CustomDateRangePicker = ({
   hideCustomFilter,
@@ -58,7 +58,7 @@ const CustomDateRangePicker = ({
         <div className="bg-miru-white-1000 ">
           <div className="flex justify-start mt-2">
             <button onClick={hideCustomFilter}>
-              <CaretLeft color="#5b34ea" size={10} />
+              <LeftArrowIcon color="#5b34ea" size={10} />
             </button>
             <p className="text-sm	font-medium ml-2"> Custom Date Range </p>
           </div>
@@ -87,7 +87,7 @@ const CustomDateRangePicker = ({
             className="headerWrapper mt-4"
           >
             <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
-              <CaretCircleLeft color="#5b34ea" size={16} />
+              <CaretCircleLeftIcon color="#5b34ea" size={16} />
             </button>
             <div>
               <select
@@ -114,7 +114,7 @@ const CustomDateRangePicker = ({
               </select>
             </div>
             <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
-              <CaretCircleRight color="#5b34ea" size={16} />
+              <CaretCircleRightIcon color="#5b34ea" size={16} />
             </button>
           </div>
         </div>

@@ -14,7 +14,7 @@ class TimesheetEntryPolicy < ApplicationPolicy
   end
 
   def update?
-    record.user_id == user.id ||
+    (record.user_id == user.id && !record.billed?) ||
       user.has_role?(:owner, record.project.client.company) || user.has_role?(:admin, record.project.client.company)
   end
 

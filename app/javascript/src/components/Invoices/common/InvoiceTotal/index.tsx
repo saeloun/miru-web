@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { currencyFormat } from "helpers";
-import { PencilSimple, DotsThreeVertical } from "phosphor-react";
+import { EditIcon, DotsThreeVerticalIcon } from "miruIcons";
 
 import DiscountMenu from "./DiscountMenu";
 
@@ -185,7 +185,7 @@ const InvoiceTotal = ({
             className="bg-miru-gray-1000 rounded mt-8 mx-1 p-2"
             onClick={() => setShowDiscountMenu(!showDiscountMenu)}
           >
-            <DotsThreeVertical size={13} color="#1D1A31" />
+            <DotsThreeVerticalIcon size={13} color="#1D1A31" />
           </button>}
         </div>
         <div
@@ -198,7 +198,7 @@ const InvoiceTotal = ({
               setShowTaxInput(true);
             }}
           >
-            <PencilSimple size={13} color="#1D1A31" />
+            <EditIcon size={13} color="#1D1A31" />
           </button>}
         </div>
       </div>

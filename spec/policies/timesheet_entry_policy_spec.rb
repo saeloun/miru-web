@@ -73,6 +73,24 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
     end
 
     permissions :update? do
+      context "when entry belongs to same user" do
+        let(:timesheet_entry) { create(:timesheet_entry, user:, project:) }
+
+        context "when entry is not billed" do
+          it "is permitted to update the entry" do
+            expect(subject).to permit(user, timesheet_entry)
+          end
+        end
+
+        context "when entry is billed" do
+          before { timesheet_entry.update(bill_status: :billed) }
+
+          it "is not permitted to update the entry" do
+            expect(subject).not_to permit(user, timesheet_entry)
+          end
+        end
+      end
+
       it "is not permitted to update" do
         expect(subject).not_to permit(user, timesheet_entry)
       end

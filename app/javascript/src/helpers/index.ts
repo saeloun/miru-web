@@ -1,6 +1,6 @@
 import { bytesToSize } from "./byteToSizeConverter";
 import { cashFormatter } from "./cashFormater";
-import { currencyFormat } from "./currency";
+import { currencyFormat, currencyNotationFormat } from "./currency";
 import { currencySymbol } from "./currencySymbol";
 import { getMonthFromString } from "./dateParser";
 import { useDebounce } from "./debounce";
@@ -16,6 +16,7 @@ export {
   bytesToSize,
   cashFormatter,
   currencyFormat,
+  currencyNotationFormat,
   currencySymbol,
   getMonthFromString,
   getNumberWithOrdinal,
