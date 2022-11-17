@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { CountryList } from "constants/countryList";
 import { currencyList } from "constants/currencyList";
 
+import { DeleteIcon } from "miruIcons";
 import Select from "react-select";
 import * as Yup from "yup";
 
@@ -16,7 +17,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "../../Header";
 
-const deleteImage = require("../../../../../../assets/images/delete.svg");
+// const deleteImage = require("../../../../../../assets/images/delete.svg");
 const editButton = require("../../../../../../assets/images/edit_image_button.svg");
 const img = require("../../../../../../assets/images/plus_icon.svg");
 
@@ -309,11 +310,7 @@ const OrgEdit = () => {
                   <input id="file-input" type="file" name="myImage" className='hidden' onChange={onLogoChange}>
                   </input>
                   <button onClick={handleDeleteLogo}>
-                    <img
-                      src={deleteImage}
-                      alt="delete"
-                      style={{ "minWidth": "20px" }}
-                    />
+                    <DeleteIcon className={"rounded-full mt-5 ml-2 cursor-pointer"} style={{ "minWidth": "40px" }} />
                   </button>
                 </div>
               ) : (

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 
 import companyUsersApi from "apis/company-users";
 import projectMembersApi from "apis/project-members";
@@ -99,7 +99,7 @@ const EditMembersList = ({
           <div className="flex justify-between items-center mt-6">
             <h6 className="text-base font-extrabold">Add/Edit Team Members</h6>
             <button type="button" onClick={() => { setShowAddMemberDialog(false); }}>
-              <X size={16} color="#CDD6DF" weight="bold" />
+              <XIcon size={16} color="#CDD6DF" weight="bold" />
             </button>
           </div>
           <EditMembersListForm

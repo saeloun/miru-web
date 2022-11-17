@@ -126,5 +126,17 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
        expect(json_response["new_line_item_entries"]).to eq(JSON.parse(expected_invoice_line_items.to_json))
      end
    end
+
+    context "when the timesheet entry is already added to another draft invoice" do
+     it "returns empty new_line_item_entries result" do
+       create(:invoice_line_item, timesheet_entry_id: timesheet_entry.id)
+       send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id), params: {
+         params: @search_params
+       }
+       expect(response).to have_http_status(:ok)
+       expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
+       expect(json_response["new_line_item_entries"]).to be_empty
+     end
+   end
   end
 end

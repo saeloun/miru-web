@@ -155,6 +155,11 @@ const Invoices: React.FC = () => {
             deselectInvoices={deselectInvoices}
             setShowDeleteDialog={setShowDeleteDialog}
             setInvoiceToDelete={setInvoiceToDelete}
+            filterParams={filterParams}
+            setFilterParams={setFilterParams}
+            filterIntialValues={filterIntialValues}
+            filterParamsStr={filterParamsStr}
+            fetchInvoices={fetchInvoices}
           />
 
           {isFilterVisible && (

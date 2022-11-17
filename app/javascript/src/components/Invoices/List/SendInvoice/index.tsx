@@ -10,7 +10,7 @@ import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import cn from "classnames";
 import { useOutsideClick } from "helpers";
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
@@ -41,12 +41,17 @@ const Recipient: React.FC<{ email: string; handleClick: any }> = ({
       className="text-miru-black-1000 hover:text-miru-red-400"
       onClick={handleClick}
     >
-      <X size={14} weight="bold" />
+      <XIcon size={14} weight="bold" />
     </button>
   </div>
 );
 
-const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
+const SendInvoice: React.FC<any> = ({
+  invoice,
+  setIsSending,
+  isSending,
+  fetchInvoices
+}) => {
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
     subject: emailSubject(invoice),
@@ -67,20 +72,23 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
   }, [newRecipient]);
 
   const handleSubmit = async (event: FormEvent) => {
-    try {
-      event.preventDefault();
-      setStatus(InvoiceStatus.LOADING);
+    if (invoiceEmail?.recipients.length > 0){
+      try {
+        event.preventDefault();
+        setStatus(InvoiceStatus.LOADING);
 
-      const payload = { invoice_email: invoiceEmail };
-      const {
-        data: { message }
-      } = await invoicesApi.sendInvoice(invoice.id, payload);
+        const payload = { invoice_email: invoiceEmail };
+        const {
+          data: { message }
+        } = await invoicesApi.sendInvoice(invoice.id, payload);
 
-      Toastr.success(message);
-      setStatus(InvoiceStatus.SUCCESS);
-      setIsSending(false);
-    } catch (error) {
-      setStatus(InvoiceStatus.ERROR);
+        Toastr.success(message);
+        setStatus(InvoiceStatus.SUCCESS);
+        setIsSending(false);
+        setTimeout(fetchInvoices, 6000);
+      } catch (error) {
+        setStatus(InvoiceStatus.ERROR);
+      }
     }
   };
 
@@ -139,7 +147,7 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
                 className="text-miru-gray-1000"
                 onClick={() => setIsSending(false)}
               >
-                <X size={16} weight="bold" />
+                <XIcon size={16} weight="bold" />
               </button>
             </div>
 
@@ -222,13 +230,20 @@ const SendInvoice: React.FC<any> = ({ invoice, setIsSending, isSending }) => {
                   type="button"
                   onClick={handleSubmit}
                   className={cn(
-                    "flex justify-center w-full p-3 mt-6 text-lg font-bold text-white uppercase border border-transparent rounded-md shadow-sm bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-miru-han-purple-600",
+                    `flex justify-center w-full p-3 mt-6 text-lg font-bold text-white uppercase border
+                    border-transparent rounded-md shadow-sm
+                    ${invoiceEmail?.recipients.length > 0 ?
+      `bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 cursor-pointer focus:outline-none focus:ring-2
+                        focus:ring-offset-2 focus:ring-miru-han-purple-600`:
+      "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+    }
+                    `,
                     {
                       "hover:bg-miru-chart-green-400 bg-miru-chart-green-600":
                         status === InvoiceStatus.SUCCESS
                     }
                   )}
-                  disabled={isDisabled(status)}
+                  disabled={invoiceEmail?.recipients.length <= 0 || isDisabled(status)}
                 >
                   {buttonText(status)}
                 </button>

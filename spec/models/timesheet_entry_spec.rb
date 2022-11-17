@@ -24,7 +24,7 @@ RSpec.describe TimesheetEntry, type: :model do
 
     it do
       expect(subject).to validate_numericality_of(:duration)
-        .is_less_than_or_equal_to(Minutes.in_a_day)
+        .is_less_than_or_equal_to(6000000)
         .is_greater_than_or_equal_to(0.0)
     end
   end
@@ -101,14 +101,65 @@ RSpec.describe TimesheetEntry, type: :model do
   end
 
   describe "#ensure_billed_status_should_not_be_changed" do
-    let(:error_message) { "You can't bill an entry that has already been billed" }
+    context "when admin or owner is updating the time entry" do
+      before do
+        admin.add_role([:owner, :admin].sample, company)
+        Current.user = admin
+        Current.company = company
+      end
 
-    it "returns an error if status is changed for a billed entry" do
-      timesheet_entry.update!(bill_status: "billed")
-      timesheet_entry.update(bill_status: "unbilled")
+      let(:admin) { create(:user) }
+      let(:timesheet_entry) { create(:timesheet_entry, project:) }
 
-      expect(timesheet_entry.valid?).to be_falsey
-      expect(timesheet_entry.errors.messages[:timesheet_entry]).to eq([error_message])
+      context "when time entry is billed" do
+        it "allows owners and admins to edit the billed time entry" do
+          timesheet_entry.update!(bill_status: "billed")
+          timesheet_entry.update(bill_status: "unbilled")
+
+          expect(timesheet_entry.valid?).to be_truthy
+          expect(timesheet_entry.errors.blank?).to be true
+        end
+      end
+
+      context "when time entry is not billed" do
+        it "allows owners and admins to edit the billed time entry" do
+          timesheet_entry.update(bill_status: "unbilled")
+
+          expect(timesheet_entry.valid?).to be_truthy
+          expect(timesheet_entry.errors.blank?).to be true
+        end
+      end
+    end
+
+    context "when employee is editing time entry" do
+      before do
+        user.add_role(:employee, company)
+        Current.user = user
+        Current.company = company
+      end
+
+      let(:user) { create(:user) }
+      let(:timesheet_entry) { create(:timesheet_entry, project:) }
+      let(:error_message) { "You can't bill an entry that has already been billed" }
+
+      context "when time entry is billed" do
+        it "does not allow to update billed time entry to employee" do
+          timesheet_entry.update!(bill_status: "billed")
+          timesheet_entry.update(bill_status: "unbilled")
+
+          expect(timesheet_entry.valid?).to be_falsy
+          expect(timesheet_entry.errors.messages[:timesheet_entry]).to eq([error_message])
+        end
+      end
+
+      context "when time entry is not billed" do
+        it "allows employee to change non billed time entries" do
+          timesheet_entry.update(bill_status: "unbilled")
+
+          expect(timesheet_entry.valid?).to be_truthy
+          expect(timesheet_entry.errors.blank?).to be true
+        end
+      end
     end
   end
 end

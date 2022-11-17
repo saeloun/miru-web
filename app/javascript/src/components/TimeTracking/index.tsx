@@ -1,5 +1,5 @@
 /* eslint-disable no-unexpected-multiline */
-import React  from "react";
+import React, { useEffect, useState }  from "react";
 
 import { TOASTER_DURATION } from "constants/index";
 
@@ -21,7 +21,6 @@ import EntryCard from "./EntryCard";
 import MonthCalender from "./MonthCalender";
 import WeeklyEntries from "./WeeklyEntries";
 
-const { useState, useEffect } = React;
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
 
@@ -33,7 +32,7 @@ dayjs.Ls.en.weekStart = 1;
 
 const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [dayInfo, setDayInfo] = useState<any[]>([]);
-  const [view, setView] = useState<string>("day");
+  const [view, setView] = useState<string>("month");
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
@@ -52,6 +51,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [clients, setClients] = useState<any>({});
   const [projects, setProjects] = useState<any>({});
   const [employees, setEmployees] = useState<any>([]);
+  const [currentMonthNumber, setCurrentMonthNumber] = useState<number>(dayjs().month());
+  const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
 
   const employeeOptions = employees.map(e => ({ value: `${e["id"]}`, label: e["first_name"] + " " + e["last_name"] }) );
 
@@ -82,10 +83,14 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     }
   };
 
-  const fetchEntriesOfThreeMonths = () => {
+  const fetchEntriesOfMonths = () => {
+    const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber +1}-01`;
+    const startOfTheMonth = dayjs(firstDateOfTheMonth).format("YYYY-MM-DD");
+    const endOfTheMonth = dayjs(firstDateOfTheMonth).endOf("month").format("YYYY-MM-DD");
+
     fetchEntries(
-      dayjs(dayInfo[0]["fullDate"]).startOf("month").subtract(1, "month").format("DD-MM-YYYY"),
-      dayjs(dayInfo[0]["fullDate"]).endOf("month").add(1, "month").format("DD-MM-YYYY"),
+      dayjs(startOfTheMonth).subtract(1, "month").format("DD-MM-YYYY"),
+      dayjs(endOfTheMonth).add(1, "month").format("DD-MM-YYYY")
     );
   };
 
@@ -113,8 +118,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   useEffect(() => {
     if (dayInfo.length <= 0) return;
-    fetchEntriesOfThreeMonths();
-    if (allEmployeesEntries[selectedEmployeeId]) setEntryList(allEmployeesEntries[selectedEmployeeId]);
+    fetchEntriesOfMonths();
   }, [selectedEmployeeId]);
 
   const handleWeekTodayButton = () => {
@@ -146,10 +150,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     try {
       const res = await timesheetEntryApi.list(from, to, selectedEmployeeId);
       if (res.status >= 200 && res.status < 300) {
-        setAllEmployeesEntries(
-          (prevState) => ( { ...prevState, [selectedEmployeeId]: res.data.entries } )
-        );
-        setEntryList((prevState) => ({ ...prevState, ...res.data.entries }));
+        const allEntries = { ...allEmployeesEntries };
+        allEntries[selectedEmployeeId] = { ...allEntries[selectedEmployeeId], ...res.data.entries };
+        setAllEmployeesEntries(allEntries);
+        setEntryList(allEntries[selectedEmployeeId]);
       }
       return res;
     } catch (error) {
@@ -277,8 +281,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       <div className="mt-6">
         <div className="flex justify-between items-center mb-6">
           <nav className="flex">
-            {["day", "week", "month"].map(item => (
+            {["month", "week", "day"].map((item,index) => (
               <button
+                key={index}
                 onClick={() => setView(item)}
                 className={
                   item === view
@@ -314,6 +319,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 monthsAbbr={monthsAbbr}
                 setWeekDay={setWeekDay}
                 setSelectDate={setSelectDate}
+                currentMonthNumber={currentMonthNumber}
+                setCurrentMonthNumber={setCurrentMonthNumber}
+                currentYear={currentYear}
+                setCurrentYear={setCurrentYear}
               />
               :
               <div className="mb-6">
@@ -428,6 +437,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           entryList[selectedFullDate].map((entry, weekCounter) =>
             editEntryId === entry.id ? (
               <AddEntry
+                key={entry.id}
                 selectedEmployeeId={selectedEmployeeId}
                 fetchEntries={fetchEntries}
                 setNewEntryView={setNewEntryView}
@@ -448,6 +458,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 key={weekCounter}
                 handleDeleteEntry={handleDeleteEntry}
                 setEditEntryId={setEditEntryId}
+                currentUserRole={ entryList["currentUserRole"] }
                 {...entry}
               />
             )

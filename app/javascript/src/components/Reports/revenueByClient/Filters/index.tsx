@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import Logger from "js-logger";
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 import Select from "react-select";
 import * as Yup from "yup";
 
@@ -56,22 +56,30 @@ const FilterSideBar = ({
     }
   };
 
-  const handleSelectFilter = (selectedValue, field) => {
-    if (selectedValue.value === "custom") {
-      setShowCustomFilter(true);
-    }
-    if (Array.isArray(selectedValue)) {
+  const handleSelectClientFilter = (selectedValue) => {
+    if (Array.isArray(selectedValue) && selectedValue.length > 0) {
       setFilters({
         ...filters,
-        [field.name]: selectedValue
+        clients: selectedValue
       });
     }
     else {
       setFilters({
         ...filters,
-        [field.name]: selectedValue
+        clients: [{ label: "All Clients" , value: "" }]
       });
     }
+  };
+
+  const handleSelectDateFilter = (selectedValue) => {
+    if (selectedValue.value === "custom") {
+      setShowCustomFilter(true);
+    }
+
+    setFilters({
+      ...filters,
+      dateRange: selectedValue
+    });
   };
 
   const submitApplyFilter = () => {
@@ -110,7 +118,7 @@ const FilterSideBar = ({
             Filters
           </h4>
           <button onClick={() => setFilterVisibility(false)}>
-            <X size={12} />
+            <XIcon size={12} />
           </button>
         </div>
         <div className="sidebar__filters">
@@ -120,7 +128,7 @@ const FilterSideBar = ({
               <Select
                 classNamePrefix="react-select-filter"
                 value={filters.dateRange}
-                onChange={handleSelectFilter}
+                onChange={handleSelectDateFilter}
                 name="dateRange"
                 styles={customStyles}
                 options={dateRangeOptions}
@@ -147,7 +155,7 @@ const FilterSideBar = ({
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Clients</h5>
-              <Select isMulti={true} defaultValue={selectedClients} options={clientList} classNamePrefix="react-select-filter" name="clients" onChange={handleSelectFilter} styles={customStyles}/>
+              <Select isMulti={true} defaultValue={selectedClients} options={clientList} classNamePrefix="react-select-filter" name="clients" onChange={handleSelectClientFilter} styles={customStyles}/>
             </li>
           </ul>
         </div>
