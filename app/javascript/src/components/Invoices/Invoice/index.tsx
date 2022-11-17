@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import invoicesApi from "apis/invoices";
-import Toastr from "common/Toastr";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
@@ -36,20 +35,6 @@ const Invoice = () => {
     }
   };
 
-  const handleDownloadInvoice = async () => {
-    try {
-      const response = await invoicesApi.downloadInvoice(invoice.id);
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `${invoice.invoiceNumber}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-    } catch {
-      Toastr.error("Something went wrong");
-    }
-  };
-
   useEffect(() => {
     sendGAPageView();
     setAuthHeaders();
@@ -64,7 +49,7 @@ const Invoice = () => {
     status === InvoiceStatus.SUCCESS && (
       <>
         <Header invoice={invoice} handleSendInvoice={handleSendInvoice} setShowDeleteDialog={setShowDeleteDialog}
-          setInvoiceToDelete={setInvoiceToDelete} handleDownloadInvoice={handleDownloadInvoice}/>
+          setInvoiceToDelete={setInvoiceToDelete}/>
         <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
           <InvoiceDetails invoice={invoice} />
         </div>

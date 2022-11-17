@@ -4,12 +4,13 @@ import BackButton from "./BackButton";
 import InvoiceActions from "./InvoiceActions";
 import InvoiceStatus from "./InvoiceStatus";
 
+import { handleDownloadInvoice } from "../common/utils";
+
 const Header = ({
   invoice,
   handleSendInvoice,
   setShowDeleteDialog,
-  setInvoiceToDelete,
-  handleDownloadInvoice
+  setInvoiceToDelete
 }) => (
   <>
     <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
@@ -18,15 +19,14 @@ const Header = ({
         <InvoiceStatus invoice={invoice} />
       </div>
       <InvoiceActions
-        deleteInvoice= {()=> {
+        deleteInvoice={() => {
           setShowDeleteDialog(true);
           setInvoiceToDelete(invoice.id);
         }}
         editInvoiceLink={`/invoices/${invoice.id}/edit`}
         sendInvoice={handleSendInvoice}
-        downloadInvoice={handleDownloadInvoice}
+        downloadInvoice={() => handleDownloadInvoice(invoice)}
       />
-
     </div>
   </>
 );

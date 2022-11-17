@@ -11,11 +11,10 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Badge, Tooltip } from "StyledComponents";
 
-import invoicesApi from "apis/invoices";
 import CustomCheckbox from "common/CustomCheckbox";
-import Toastr from "common/Toastr";
 import getStatusCssClass from "utils/getBadgeStatus";
 
+import { handleDownloadInvoice } from "../../common/utils";
 import MoreOptions from "../MoreOptions";
 import SendInvoice from "../SendInvoice";
 
@@ -38,20 +37,6 @@ const TableRow = ({
       deselectInvoices([invoice.id]);
     } else {
       selectInvoices([invoice.id]);
-    }
-  };
-
-  const handleDownload = async (id) => {
-    try {
-      const response = await invoicesApi.downloadInvoice(id);
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `${invoice.invoiceNumber}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-    } catch {
-      Toastr.error("Something went wrong");
     }
   };
 
@@ -117,7 +102,7 @@ const TableRow = ({
           </Tooltip>
           <Tooltip content="Download">
             <button
-              onClick={() => handleDownload(invoice.id)}
+              onClick={() => handleDownloadInvoice(invoice)}
               className={invoice.status == "draft" ? "text-miru-gray-1000" : "text-miru-han-purple-1000"}
               disabled= {invoice.status == "draft"}
             >
