@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 import { currencyFormat, useDebounce } from "helpers";
 import {
-  PaperPlaneTilt,
-  Pen,
-  DotsThreeVertical,
-  DownloadSimple
-} from "phosphor-react";
-import { Link } from "react-router-dom";
+  PaperPlaneTiltIcon,
+  PenIcon,
+  DotsThreeVerticalIcon,
+  DownloadSimpleIcon
+} from "miruIcons";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Badge, Tooltip } from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
@@ -23,11 +23,13 @@ const TableRow = ({
   selectInvoices,
   deselectInvoices,
   setShowDeleteDialog,
-  setInvoiceToDelete
+  setInvoiceToDelete,
+  fetchInvoices
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   useDebounce(isMenuOpen,500);
+  const navigate = useNavigate();
 
   const handleCheckboxChange = () => {
     if (isSelected) {
@@ -56,15 +58,14 @@ const TableRow = ({
         />
       </td>
 
-      <td className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap">
+      <td onClick={()=>navigate(`/invoices/${invoice.id}`)} className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap cursor-pointer">
         <Avatar />
         <div className="md:ml-10 ml-2">
-          <Link
+          <span
             className="md:font-semibold font-normal md:text-base text-xs capitalize text-miru-dark-purple-1000"
-            to={`/invoices/${invoice.id}`}
           >
             {invoice.client.name}
-          </Link>
+          </span>
           <h3 className="md:text-sm text-xs font-normal text-miru-dark-purple-400">
             {invoice.invoiceNumber}
           </h3>
@@ -94,12 +95,12 @@ const TableRow = ({
               className="text-miru-han-purple-1000"
               onClick={() => setIsSending(!isSending)}
             >
-              <PaperPlaneTilt size={16} />
+              <PaperPlaneTiltIcon size={16} />
             </button>
           </Tooltip>
           <Tooltip content="Download">
             <button className="text-miru-han-purple-1000">
-              <DownloadSimple size={16} />
+              <DownloadSimpleIcon size={16} />
             </button>
           </Tooltip>
           <Tooltip content="Edit">
@@ -109,7 +110,7 @@ const TableRow = ({
               data-cy="edit-invoice"
               className="text-miru-han-purple-1000"
             >
-              <Pen size={16} />
+              <PenIcon size={16} />
             </Link>
           </Tooltip>
           <Tooltip content="More">
@@ -117,7 +118,7 @@ const TableRow = ({
               className="text-miru-han-purple-1000"
               onClick={() => setIsMenuOpen(true)}
             >
-              <DotsThreeVertical size={16} />
+              <DotsThreeVerticalIcon size={16} />
             </button>
           </Tooltip>
         </div>
@@ -136,7 +137,12 @@ const TableRow = ({
         />
       </td>
       {isSending && (
-        <SendInvoice invoice={invoice} setIsSending={setIsSending} isSending />
+        <SendInvoice
+          invoice={invoice}
+          setIsSending={setIsSending}
+          fetchInvoices={fetchInvoices}
+          isSending
+        />
       )}
     </tr>
   );

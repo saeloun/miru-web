@@ -17,7 +17,7 @@ const CompanyInfo = ({ company, logo="" }) => {
         </div>
       </div>
 
-      <div className="font-normal text-base text-right text-miru-dark-purple-1000 w-72">
+      <div className="font-normal text-base text-right text-miru-dark-purple-1000 w-72 overflow-y-auto">
         <p className="whitespace-pre"> {company.address.split(",").join(",\n")} </p>
         <p>{company.country}</p>
       </div>

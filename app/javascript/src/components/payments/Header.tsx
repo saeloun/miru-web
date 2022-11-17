@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Plus } from "phosphor-react";
+import { PlusIcon } from "miruIcons";
 
 const Header = ( { setShowManualEntryModal } ) => (
   <div className="mt-6 mb-3 sm:flex sm:items-center justify-between">
@@ -15,7 +15,7 @@ const Header = ( { setShowManualEntryModal } ) => (
           />
 
           <button className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
-            <MagnifyingGlass size={12} />
+            <SearchIcon size={12} />
           </button>
         </div>
       </div> */}
@@ -26,7 +26,7 @@ const Header = ( { setShowManualEntryModal } ) => (
         className="header__button"
         onClick={()=>setShowManualEntryModal(true)}
       >
-        <Plus weight="fill" size={16} />
+        <PlusIcon weight="fill" size={16} />
         <span className="ml-2 inline-block">ADD MANUAL ENTRY</span>
       </button>
     </div>
