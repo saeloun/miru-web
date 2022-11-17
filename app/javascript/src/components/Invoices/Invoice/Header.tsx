@@ -4,8 +4,6 @@ import BackButton from "./BackButton";
 import InvoiceActions from "./InvoiceActions";
 import InvoiceStatus from "./InvoiceStatus";
 
-import { handleDownloadInvoice } from "../common/utils";
-
 const Header = ({
   invoice,
   handleSendInvoice,
@@ -25,7 +23,7 @@ const Header = ({
         }}
         editInvoiceLink={`/invoices/${invoice.id}/edit`}
         sendInvoice={handleSendInvoice}
-        downloadInvoice={() => handleDownloadInvoice(invoice)}
+        invoice={invoice}
       />
     </div>
   </>

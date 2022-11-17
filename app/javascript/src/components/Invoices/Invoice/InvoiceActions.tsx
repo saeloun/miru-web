@@ -7,12 +7,13 @@ import SendButton from "./SendButton";
 
 import MoreButton from "../common/MoreButton";
 import MoreOptions from "../common/MoreOptions";
+import { handleDownloadInvoice } from "../common/utils";
 
 const InvoiceActions = ({
   editInvoiceLink,
   sendInvoice,
   deleteInvoice,
-  downloadInvoice
+  invoice
 }) => {
   const [isMoreOptionsVisible, setMoreOptionsVisibility] =
     useState<boolean>(false);
@@ -37,7 +38,8 @@ const InvoiceActions = ({
           {isMoreOptionsVisible && (
             <MoreOptions
               deleteInvoice={deleteInvoice}
-              downloadInvoice={downloadInvoice}
+              downloadInvoice={handleDownloadInvoice}
+              invoice={invoice}
             />
           )}
         </div>
