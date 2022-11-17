@@ -2,14 +2,14 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Invoices#bulk_download", type: :request do
+RSpec.describe "InternalApi::V1::Invoices::BulkDownbload#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client) { create(:client, company:) }
   let!(:invoice) { create(:invoice, client:, status: "sent") }
   let(:download_id) { Faker::Alphanumeric.unique.alpha(number: 10) }
 
-  subject { send_request :get, bulk_download_internal_api_v1_invoices_path(
+  subject { send_request :post, internal_api_v1_invoices_bulk_download_index_path(
     bulk_invoices: {
       invoice_ids: [invoice.id],
       download_id:
@@ -62,7 +62,7 @@ RSpec.describe "InternalApi::V1::Invoices#bulk_download", type: :request do
   context "when unauthenticated" do
     context "when request is made to download the Invoice" do
       it "returns 403 status" do
-        send_request :get, download_internal_api_v1_invoice_path(id: invoice.id)
+        subject
         expect(response).to have_http_status(:unauthorized)
         expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
       end

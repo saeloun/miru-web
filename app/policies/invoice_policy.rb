@@ -33,10 +33,6 @@ class InvoicePolicy < ApplicationPolicy
     authorize_current_user
   end
 
-  def bulk_download?
-    user_owner_role? || user_admin_role?
-  end
-
   def permitted_attributes
     [
       :issue_date, :due_date,
