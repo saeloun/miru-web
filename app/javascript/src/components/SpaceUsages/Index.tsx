@@ -397,6 +397,7 @@ const SpaceUsages = ( { _isAdminUser, _companyRole, user, _company } ) => {
       {editEntryId || newEntryView ? <EditEntry
         spaceCodes={spaceCodes}
         purposeCodes={purposeCodes}
+        departments={departments}
         selectedEmployeeId={user.id}
         fetchEntries={fetchEntries}
         setNewEntryView={setNewEntryView}

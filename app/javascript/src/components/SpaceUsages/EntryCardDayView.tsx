@@ -37,7 +37,7 @@ const EntryCardDayView = ({
       {spaceUsages && spaceUsages.map((space, _index) => {
         const displayTitle = `${space.user_name} • ${space.purpose_name}`;
         const borderDisplayColor = space.user_color ? `${space.user_color}` : "#1D1A31"
-        const department = departments.find((i) => i.id === space.department_id )
+        const department = departments.find((i) => i.id === space.user_department_id )
         const displayColor = department ? department.color : "#1D1A31"
 
         return (<div id={space.id}

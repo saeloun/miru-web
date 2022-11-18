@@ -16,6 +16,7 @@
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  company_id     :bigint           not null
+#  department_id  :integer
 #  user_id        :bigint           not null
 #
 # Indexes
@@ -108,9 +109,10 @@ class SpaceUsage < ApplicationRecord
       space_name: SPACE_CODE_OPTIONS.find { |i|i.id == space_code }&.name,
       purpose_name: PURPOSE_CODE_OPTIONS.find { |i|i.id == purpose_code }&.name,
       note:,
+      department_id:,
       user_name: user.full_name,
       user_color: user.color,
-      department_id: user.department_id,
+      user_department_id: user.department_id,
       team_members:
     }
   end

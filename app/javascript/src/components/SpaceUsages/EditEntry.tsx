@@ -15,6 +15,7 @@ import Toastr from "common/Toastr";
 const EditEntry: React.FC<Iprops> = ({
   spaceCodes,
   purposeCodes,
+  departments,
   selectedEmployeeId,
   fetchEntries,
   setNewEntryView,
@@ -36,17 +37,21 @@ const EditEntry: React.FC<Iprops> = ({
   allMemberList,
 }) => {
   const { useState, useEffect } = React;
-  const [note, setNote] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const currentTime: string = minToHHMM(minFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) - (minFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) % 15));
-  const [startDuration, setStartDuration] = useState(selectedTime || currentTime);
-  const [endDuration, setEndDuration] = useState("00:00");
-  const [displayStartDuration, setDisplayStartDuration] = useState("");
-  const [displayEndDuration, setDisplayEndDuration] = useState("");
+
   const [space, setSpace] = useState(selectedSpaceId ? selectedSpaceId.toString() : "");
   const [purpose, setPurpose] = useState("");
   const [purposeName, setPurposeName] = useState("");
+  const [department, setDepartment] = useState("");
   const [userName, setUserName] = useState("");
+  const [note, setNote] = useState("");
+
+  const currentTime: string = minToHHMM(minFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) - (minFromHHMM(`${new Date().getHours()}:${new Date().getMinutes()}`) % 15));
+  const [startDuration, setStartDuration] = useState(selectedTime || currentTime);
+  const [endDuration, setEndDuration] = useState(
+    minToHHMM(minFromHHMM(startDuration) + (minFromHHMM(startDuration) >= 1440 ? 0 : 15))
+  );
+
+  const [isProcessing, setIsProcessing] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
   const [reportConfirmOpen, setReportConfirmOpen] = useState<boolean>(false);
   const [selectedTeamMembers, setSelectedTeamMembers] = useState<any>([]);
@@ -80,15 +85,18 @@ const EditEntry: React.FC<Iprops> = ({
       entry => entry.id === editEntryId
     );
     if (entry) {
-      setStartDuration(minToHHMM(entry.start_duration));
-      setEndDuration(minToHHMM(entry.end_duration));
       setSpace(entry.space_code);
       setPurpose(entry.purpose_code);
       setPurposeName(entry.purpose_name);
+      setDepartment(entry.department_id);
       setNote(entry.note);
       setUserName(entry.user_name);
+
       setSelectedTeamMembers(allMemberList.filter((member: any) => entry.team_members.map(Number).includes(parseInt(member.id))));
       setTeamMembers(entry.team_members.map(Number));
+
+      setStartDuration(minToHHMM(entry.start_duration));
+      setEndDuration(minToHHMM(entry.end_duration));
     }
 
   };
@@ -102,12 +110,10 @@ const EditEntry: React.FC<Iprops> = ({
 
   useEffect(() => {
     if (startDuration){
-      setDisplayStartDuration(calendarTimes(startDuration)[0].name)
       setSelectedTime(undefined)
       setSelectedStartTime(minFromHHMM(startDuration))
     }
     if (endDuration){
-      setDisplayEndDuration(calendarTimes(endDuration)[0].name)
       setSelectedEndTime(minFromHHMM(endDuration))
     }
   }, [startDuration, endDuration]);
@@ -120,6 +126,7 @@ const EditEntry: React.FC<Iprops> = ({
     purpose_code: purpose,
     note: note,
     team_members: teamMembers,
+    department_id: department,
   });
 
   const handleSave = async () => {
@@ -227,7 +234,7 @@ const EditEntry: React.FC<Iprops> = ({
                 {`${getNumberWithOrdinal(selectedDateInfo["date"])} ${selectedDateInfo["month"]}, ${selectedDateInfo["year"]}`}
               </p>
               <p className="px-6 text-sm font-medium text-white">
-                {displayStartDuration} ~ {displayEndDuration} • {purposeName}, By <b>{userName}</b>
+                {calendarTimes(startDuration)[0].name} ~ {calendarTimes(endDuration)[0].name} • {purposeName}, By <b>{userName}</b>
               </p>
             </div>
           )}
@@ -278,13 +285,38 @@ const EditEntry: React.FC<Iprops> = ({
                   ))}
                 </select>
               </div>
+              { parseInt(purpose) === 12 && <div>
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300 required">Department</label>
+                <select
+                  disabled={isPastDate}
+                  onChange={e => {
+                    setDepartment(e.target.value);
+                    addRemoveStack(
+                      allMemberList.filter((d) => d.department_id === parseInt(e.target.value))
+                    )
+                  }}
+                  value={department || ""}
+                  name="department"
+                  id="department"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                >
+                  {!department && (
+                    <option disabled className="text-miru-gray-100" value="">
+                      Please select department
+                    </option>
+                  )}
+                  {departments.map((a) => (
+                    <option key={`space-${a.id}`} value={a.id}>{a.name}</option>
+                  ))}
+                </select>
+              </div> }
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Members Joining</label>
                 <Multiselect
                   closeOnSelect={true}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"
                   selectedValues={selectedTeamMembers}
-                  options={allMemberList ? allMemberList : [{}]}
+                  options={allMemberList ? allMemberList : []}
                   name="team_member_ids"
                   onSelect={((selectedList) => addRemoveStack(selectedList))}
                   onRemove={((selectedList) => addRemoveStack(selectedList))}
@@ -407,6 +439,7 @@ const EditEntry: React.FC<Iprops> = ({
 interface Iprops {
   spaceCodes: any[];
   purposeCodes: any[];
+  departments: any[];
   selectedEmployeeId: number;
   fetchEntries: (from: string, to: string) => Promise<any>
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
