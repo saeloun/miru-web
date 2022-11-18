@@ -199,3 +199,5 @@ group :test do
   # Strategies for cleaning databases in Ruby.
   gem "database_cleaner", "~> 2.0"
 end
+
+gem "ruby-lsp", "~> 0.3.6", group: :development
