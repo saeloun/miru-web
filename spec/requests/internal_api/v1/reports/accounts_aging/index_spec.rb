@@ -13,18 +13,23 @@ RSpec.describe "InternalApi::V1::Reports::AccountsAgingController::#index", type
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
+      # invoice for client 1 due between 0-30 days
       create(
         :invoice, client: client1, status: "overdue", issue_date: 2.month.ago, due_date: 1.month.ago,
         amount_due: 100)
+      # invoice for client 1 due between 31-60 days
       create(
         :invoice, client: client1, status: "overdue", issue_date: 3.month.ago, due_date: 2.month.ago,
         amount_due: 200)
+      # 2nd invoice for client 1 due between 31-60 days
       create(
         :invoice, client: client1, status: "overdue", issue_date: 3.month.ago, due_date: 2.month.ago + 1.day,
         amount_due: 500)
+      # invoice for client 2 due between 61-90 days
       create(
         :invoice, client: client2, status: "overdue", issue_date: 4.month.ago, due_date: 3.month.ago,
         amount_due: 300)
+      # invoice for client 2 due in 90+ days
       create(
         :invoice, client: client2, status: "overdue", issue_date: 5.month.ago, due_date: 4.month.ago,
         amount_due: 400)
