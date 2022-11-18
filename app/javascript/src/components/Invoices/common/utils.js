@@ -2,6 +2,8 @@ import dayjs from "dayjs";
 import { lineTotalCalc } from "helpers";
 
 import generateInvoice from "apis/generateInvoice";
+import invoicesApi from "apis/invoices";
+import Toastr from "common/Toastr";
 
 export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
   let invoiceLineItems = [];
@@ -98,4 +100,18 @@ export const fetchMultipleNewLineItems = async (
   }
   setTeamMembers(res.data.filter_options.team_members);
   setLoading(false);
+};
+
+export const handleDownloadInvoice = async (invoice) => {
+  try {
+    const res = await invoicesApi.downloadInvoice(invoice.id);
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${invoice.invoiceNumber}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+  } catch {
+    Toastr.error("Something went wrong");
+  }
 };
