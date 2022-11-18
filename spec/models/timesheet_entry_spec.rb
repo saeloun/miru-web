@@ -24,7 +24,7 @@ RSpec.describe TimesheetEntry, type: :model do
 
     it do
       expect(subject).to validate_numericality_of(:duration)
-        .is_less_than_or_equal_to(Minutes.in_a_day)
+        .is_less_than_or_equal_to(6000000)
         .is_greater_than_or_equal_to(0.0)
     end
   end
