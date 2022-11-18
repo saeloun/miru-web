@@ -204,27 +204,27 @@ const SpaceUsages = ( { _isAdminUser, _companyRole, user, _company } ) => {
     setEntryList(newValue);
   };
 
-  // const handleNextWeek = () => {
-  //   setWeekDay(p => p + 7);
-  //   const from = dayjs()
-  //     .weekday(weekDay + 7)
-  //     .format("YYYY-MM-DD");
-  //   const to = dayjs()
-  //     .weekday(weekDay + 13)
-  //     .format("YYYY-MM-DD");
-  //   fetchEntries(from, to);
-  // };
+  const handleNextWeek = () => {
+    setWeekDay(p => p + 7);
+    const from = dayjs()
+      .weekday(weekDay + 7)
+      .format("YYYY-MM-DD");
+    const to = dayjs()
+      .weekday(weekDay + 13)
+      .format("YYYY-MM-DD");
+    fetchEntries(from, to);
+  };
 
-  // const handlePrevWeek = () => {
-  //   setWeekDay(p => p - 7);
-  //   const from = dayjs()
-  //     .weekday(weekDay - 7)
-  //     .format("YYYY-MM-DD");
-  //   const to = dayjs()
-  //     .weekday(weekDay - 1)
-  //     .format("YYYY-MM-DD");
-  //   fetchEntries(from, to);
-  // };
+  const handlePrevWeek = () => {
+    setWeekDay(p => p - 7);
+    const from = dayjs()
+      .weekday(weekDay - 7)
+      .format("YYYY-MM-DD");
+    const to = dayjs()
+      .weekday(weekDay - 1)
+      .format("YYYY-MM-DD");
+    fetchEntries(from, to);
+  };
 
   const parseWeeklyViewData = () => {
     const weekArr = [];
@@ -294,12 +294,12 @@ const SpaceUsages = ( { _isAdminUser, _companyRole, user, _company } ) => {
               TODAY
               </button>
               <div className="flex">
-                {/*<button
+                <button
                   onClick={handlePrevWeek}
                   className="flex flex-col items-center justify-center w-6 h-6 text-white border-2 rounded-xl"
                 >
                   &lt;
-                </button>*/}
+                </button>
                 {!!dayInfo.length && (
                   <p className="w-40 mx-6 text-white">
                     {dayInfo[0]["date"]} {dayInfo[0].month} -{" "}
@@ -307,12 +307,12 @@ const SpaceUsages = ( { _isAdminUser, _companyRole, user, _company } ) => {
                     {dayInfo[6]["year"]}
                   </p>
                 )}
-                {/*<button
+                <button
                   onClick={handleNextWeek}
                   className="flex flex-col items-center justify-center w-6 h-6 text-white border-2 rounded-xl"
                 >
                   &gt;
-                </button>*/}
+                </button>
               </div>
               <button
                 onClick={() => {

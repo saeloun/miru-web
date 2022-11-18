@@ -55,6 +55,7 @@ class SpaceUsage < ApplicationRecord
     CodeOptionKlass.new("Training", 9),
     CodeOptionKlass.new("KS/KT Knowledge Sharing", 10),
     CodeOptionKlass.new("1:1 One on One", 11),
+    CodeOptionKlass.new("Department Meeting", 12),
   ]
 
   before_destroy :check_is_past_date
