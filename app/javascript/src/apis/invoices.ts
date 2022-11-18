@@ -17,11 +17,13 @@ const getInvoice = async (id) => axios.get(`${path}/${id}`);
 
 const editInvoice = async (id) => axios.get(`${path}/${id}/edit`);
 
+const downloadInvoice = async (id) => await axios.get(`${path}/${id}/download`, { responseType: "blob" });
+
 const updateInvoice = async (id, body) => axios.patch(`${path}/${id}/`, body);
 
 const sendInvoice = async (id, payload) =>
   axios.post(`${path}/${id}/send_invoice`, payload);
 
-const invoicesApi = { get, post, patch, destroy, sendInvoice, getInvoice, destroyBulk, editInvoice, updateInvoice };
+const invoicesApi = { get, post, patch, destroy, sendInvoice, getInvoice, destroyBulk, editInvoice, updateInvoice, downloadInvoice };
 
 export default invoicesApi;

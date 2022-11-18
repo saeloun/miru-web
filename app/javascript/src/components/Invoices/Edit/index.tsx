@@ -16,6 +16,7 @@ import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import InvoiceTable from "../common/InvoiceTable";
 import InvoiceTotal from "../common/InvoiceTotal";
 import { generateInvoiceLineItems } from "../common/utils";
+import DeleteInvoice from "../popups/DeleteInvoice";
 
 const EditInvoice = () => {
   const navigate = useNavigate();
@@ -36,6 +37,8 @@ const EditInvoice = () => {
   const [issueDate, setIssueDate] = useState<any>();
   const [dueDate, setDueDate] = useState<any>();
   const [showSendInvoiceModal, setShowSendInvoiceModal] = useState<boolean>(false);
+  const [invoiceToDelete, setInvoiceToDelete] = React.useState(null);
+  const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
 
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
   const SELECT_CLIENT_ERROR = "Please select client and enter invoice number to proceed";
@@ -127,9 +130,14 @@ const EditInvoice = () => {
           formType = "edit"
           handleSaveInvoice={handleSaveInvoice}
           handleSendInvoice={handleSendInvoice}
+          deleteInvoice={()=> {
+            setShowDeleteDialog(true);
+            setInvoiceToDelete(invoiceDetails.id);
+          }}
           setShowInvoiceSetting={false}
           invoiceNumber={invoiceDetails.invoiceNumber}
           id={invoiceDetails.id}
+
         />
         <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
           <CompanyInfo company={invoiceDetails.company} />
@@ -191,6 +199,12 @@ const EditInvoice = () => {
           setIsSending={setShowSendInvoiceModal}
           handleSaveSendInvoice={handleSaveSendInvoice}
           />}
+        {showDeleteDialog && (
+          <DeleteInvoice
+            invoice={invoiceToDelete}
+            setShowDeleteDialog={setShowDeleteDialog}
+          />
+        )}
       </React.Fragment>
     );
   }
