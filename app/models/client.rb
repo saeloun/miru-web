@@ -29,7 +29,6 @@
 
 class Client < ApplicationRecord
   include Discard::Model
-  include UtilityFunctions
 
   has_many :projects
   has_many :timesheet_entries, through: :projects
@@ -46,7 +45,7 @@ class Client < ApplicationRecord
   end
 
   def total_hours_logged(time_frame = "week")
-    timesheet_entries.where(work_date: range_from_timeframe(time_frame)).sum(:duration)
+    timesheet_entries.where(work_date: DateRangeService.new(timeframe: time_frame).process).sum(:duration)
   end
 
   def project_details(time_frame = "week")
@@ -56,7 +55,7 @@ class Client < ApplicationRecord
         name: project.name,
         billable: project.billable,
         team: project.project_member_full_names,
-        minutes_spent: project.timesheet_entries.where(work_date: range_from_timeframe(time_frame)).sum(:duration)
+        minutes_spent: project.timesheet_entries.where(work_date: DateRangeService.new(timeframe: time_frame).process).sum(:duration)
       }
     end
   end
