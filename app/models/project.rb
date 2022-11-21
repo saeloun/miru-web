@@ -25,7 +25,6 @@
 
 class Project < ApplicationRecord
   include Discard::Model
-  include UtilityFunctions
 
   # Associations
   belongs_to :client
@@ -55,7 +54,7 @@ class Project < ApplicationRecord
 
   def project_team_member_details(time_frame)
     entries = timesheet_entries.includes(:user)
-      .where(user_id: project_members.pluck(:user_id), work_date: range_from_timeframe(time_frame))
+      .where(user_id: project_members.pluck(:user_id), work_date: DateRangeService.new(timeframe: time_frame).process)
       .select(:user_id, "SUM(duration) as duration")
       .group(:user_id)
 
@@ -80,7 +79,7 @@ class Project < ApplicationRecord
   end
 
   def total_hours_logged(time_frame = "week")
-    timesheet_entries.where(work_date: range_from_timeframe(time_frame)).sum(:duration)
+    timesheet_entries.where(work_date: DateRangeService.new(timeframe: time_frame).process).sum(:duration)
   end
 
   def overdue_and_outstanding_amounts
