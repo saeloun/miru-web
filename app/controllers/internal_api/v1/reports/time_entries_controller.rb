@@ -5,7 +5,7 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
 
   def index
     authorize :report
-    render :index, locals: { reports:, filter_options: }, status: :ok
+    render :index, locals: { reports: clients_with_time_entries, filter_options: }, status: :ok
   end
 
   def download
@@ -28,15 +28,36 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
       }
     end
 
-    def reports
-      @start_date = params[:start_date].to_date || DateTime.current.beginning_of_month
-      @end_date = params[:end_date].to_date || DateTime.current.end_of_month
+    def report
+      default_filter = current_company_filter.merge(this_month_filter)
+      where_clause = default_filter.merge(TimeEntries::Filters.process(params))
+      group_by_clause = Reports::TimeEntries::GroupBy.process(params["group_by"])
+
+      search_result = TimesheetEntry.search(
+        where: where_clause,
+        order: { work_date: :desc },
+        body_options: group_by_clause,
+        includes: [:user, { project: :client } ])
+
+      Reports::TimeEntries::Result.process(search_result, params["group_by"])
+    end
+
+    def clients_with_time_entries
+      # if date range is not selected, then we need to show 1 month data
+      if params[:start_date].exists? && params[:end_date].exists?
+        @start_date = DateTime.current.beginning_of_month
+        @end_date = DateTime.current.end_of_month
+      else
+        @start_date = params[:start_date].to_date
+        @end_date = params[:end_date].to_date
+      end
       selected_clients = current_company.clients
-      selected_clients.filter_map do |client|
-        {
-          client_details: client,
-          entries: client.timesheet_entries.during(@start_date, @end_date).includes(:project, :user)
-        }
+      # if client ids are not provided, then we need to show all clients
+      if params[:client_ids].exists?
+        client_ids = JSON.parse(params[:client_ids])
+        selected_clients.select { |client| client_ids.include?(client.id) } if client_ids
+      else
+        selected_clients
       end
     end
 
