@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class BulkInvoiceDownloadService
-  include ZipUtilities
   require "zip"
   attr_reader :invoice_ids, :company_logo, :root_url
 
@@ -18,11 +17,11 @@ class BulkInvoiceDownloadService
   private
 
     def get_zipped_invoices_data
-      zip_file = Tempfile.new(uniq_zip_file_name)
+      zip_file = ZipFile.new()
       pdf_files = invoice_pdf_files
-      add_files_to_zip(zip_file, pdf_files)
-      zip_data = get_zip_file_data(zip_file)
-      cleanup_files(pdf_files.values.push(zip_file))
+      zip_file.add_files(pdf_files)
+      zip_data = zip_file.read
+      cleanup_files(pdf_files.values.push(zip_file.file))
       zip_data
     end
 
