@@ -30,7 +30,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
   def update
     authorize current_timesheet_entry
     current_timesheet_entry.project = current_project
-    current_timesheet_entry.update!(timesheet_entry_param)
+    current_timesheet_entry.update!(timesheet_entry_params)
     render json: { notice: I18n.t("timesheet_entry.update.message"), entry: current_timesheet_entry.formatted_entry },
       status: :ok
   end
