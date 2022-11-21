@@ -86,6 +86,7 @@ class User < ApplicationRecord
 
   # Callbacks
   after_discard :discard_project_members
+  before_create :set_token
 
   # scopes
   scope :valid_invitations, -> { invitations.where(sender: self).valid_invitations }
@@ -135,6 +136,10 @@ class User < ApplicationRecord
   end
 
   private
+
+    def set_token
+      self.token = SecureRandom.base58(50)
+    end
 
     def discard_project_members
       project_members.discard_all
