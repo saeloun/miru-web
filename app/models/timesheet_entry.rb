@@ -40,7 +40,7 @@ class TimesheetEntry < ApplicationRecord
   before_validation :ensure_billed_status_should_not_be_changed, on: :update
 
   validates :duration, :work_date, :bill_status, presence: true
-  validates :duration, numericality: { less_than_or_equal_to: Minutes.in_a_day, greater_than_or_equal_to: 0.0 }
+  validates :duration, numericality: { less_than_or_equal_to: 6000000, greater_than_or_equal_to: 0.0 }
 
   scope :in_workspace, -> (company) { where(project_id: company&.project_ids) }
   scope :during, -> (from, to) { where(work_date: from..to).order(work_date: :desc) }

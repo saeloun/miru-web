@@ -35,6 +35,7 @@ Rails.application.routes.draw do
 
   root to: "root#index"
   draw(:internal_api)
+  draw(:api)
   resources :dashboard, only: [:index]
 
   # get "*path", to: "home#index", via: :all
@@ -62,7 +63,6 @@ Rails.application.routes.draw do
   end
 
   get "users/invitation/accept", to: "invitations/accept#show"
-
   get "payments/settings/stripe/connect/refresh", to: "payment_settings#refresh_stripe_connect"
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"
@@ -74,6 +74,10 @@ Rails.application.routes.draw do
   devise_scope :user do
     # TODO: verify if this is path is in use otherwise remove it.
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
+  end
+
+  namespace :webhooks do
+    post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
   end
 
   match "*path", via: :all, to: "home#index", constraints: lambda { |req|

@@ -3,7 +3,7 @@ import React from "react";
 
 import { TeamModalType } from "constants/index";
 
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 
 import teamApi from "apis/team";
 import Toastr from "common/Toastr";
@@ -38,7 +38,7 @@ const DeleteMember = ({ user }) => {
             <div className="flex justify-between items-center mt-6">
               <h6 className="text-2xl font-bold">{user.isTeamMember ? "Delete User" : "Delete Invite"}</h6>
               <button type="button" onClick={() => { setModalState(TeamModalType.NONE); }}>
-                <X size={16} color="#CDD6DF" weight="bold" />
+                <XIcon size={16} color="#CDD6DF" weight="bold" />
               </button>
             </div>
             <p className="my-8">
