@@ -9,12 +9,16 @@ const InvoiceTotal = ({
   currency,
   newLineItems,
   amountPaid,
-  amountDue, setAmountDue,
+  amountDue,
+  setAmountDue,
   setAmount,
-  discount, setDiscount,
-  tax, setTax,
-  showDiscountInput, showTax,
-  manualEntryArr
+  discount,
+  setDiscount,
+  tax,
+  setTax,
+  showDiscountInput,
+  showTax,
+  manualEntryArr,
 }) => {
   const [addDiscount, setAddDiscount] = useState<boolean>(false);
   const [showDiscountMenu, setShowDiscountMenu] = useState<boolean>(false);
@@ -30,8 +34,7 @@ const InvoiceTotal = ({
       if (type === "Discount") {
         setAddDiscount(false);
         setShowDiscount(true);
-      }
-      else {
+      } else {
         setShowTaxInput(false);
       }
     }
@@ -41,11 +44,13 @@ const InvoiceTotal = ({
     if (showDiscount && discount) {
       return (
         <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
-          {currencyFormat({ baseCurrency: currency, amount: parseFloat(discount).toFixed(2) })}
+          {currencyFormat({
+            baseCurrency: currency,
+            amount: parseFloat(discount).toFixed(2),
+          })}
         </td>
       );
-    }
-    else if (addDiscount) {
+    } else if (addDiscount) {
       return (
         <td className="text-right pb-1">
           <input
@@ -53,12 +58,11 @@ const InvoiceTotal = ({
             value={discount}
             className="p-1 pr-2 font-medium text-sm text-miru-dark-purple-1000 text-right w-20 rounded focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
             onChange={(e) => setDiscount(e.target.value)}
-            onKeyDown={e => onEnter(e, "Discount")}
+            onKeyDown={(e) => onEnter(e, "Discount")}
           />
         </td>
       );
-    }
-    else return null;
+    } else return null;
   };
 
   const getTax = () => {
@@ -70,7 +74,7 @@ const InvoiceTotal = ({
             value={tax}
             className="p-1 pr-2 font-medium text-sm text-miru-dark-purple-1000 text-right w-20 rounded focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
             onChange={(e) => setTax(e.target.value)}
-            onKeyDown={e => onEnter(e, "Tax")}
+            onKeyDown={(e) => onEnter(e, "Tax")}
           />
         </td>
       );
@@ -84,11 +88,18 @@ const InvoiceTotal = ({
   };
 
   useEffect(() => {
-    const newLineItemsSubTotalArr = newLineItems
-      .filter((lineItem) => !lineItem._destroy );
+    const newLineItemsSubTotalArr = newLineItems.filter(
+      (lineItem) => !lineItem._destroy
+    );
 
-    const newLineItemsSubTotal = newLineItemsSubTotalArr.reduce((sum, { lineTotal }) => (sum + Number(lineTotal)), 0);
-    const manualEntryTotal = manualEntryArr.reduce((sum, { lineTotal }) => (sum + Number(lineTotal)), 0);
+    const newLineItemsSubTotal = newLineItemsSubTotalArr.reduce(
+      (sum, { lineTotal }) => sum + Number(lineTotal),
+      0
+    );
+    const manualEntryTotal = manualEntryArr.reduce(
+      (sum, { lineTotal }) => sum + Number(lineTotal),
+      0
+    );
     const subTotal = Number(newLineItemsSubTotal) + Number(manualEntryTotal);
     const newTotal = subTotal + Number(tax) - Number(discount);
     setSubTotal(subTotal);
@@ -106,24 +117,30 @@ const InvoiceTotal = ({
               Sub total
             </td>
             <td className="font-bold text-base text-miru-dark-purple-1000 text-right ">
-              {currencyFormat({ baseCurrency: currency, amount: subTotal.toFixed(2) })}
+              {currencyFormat({
+                baseCurrency: currency,
+                amount: subTotal.toFixed(2),
+              })}
             </td>
           </tr>
           <tr
             onMouseOver={() => setShowDiscountButton(true)}
             onMouseLeave={() => setShowDiscountButton(false)}
-            className="pb-5 border-b-2 miru-gray-400 ">
-            {showDiscount && discount
-              ? <td className="py-2 pr-10 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
+            className="pb-5 border-b-2 miru-gray-400 "
+          >
+            {showDiscount && discount ? (
+              <td className="py-2 pr-10 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
                 Discount
               </td>
-              : <td className="pt-2 pr-10 pb-3 font-bold text-xs text-miru-han-purple-1000 text-right tracking-widest cursor-pointer" onClick={() => setAddDiscount(true)}>
+            ) : (
+              <td
+                className="pt-2 pr-10 pb-3 font-bold text-xs text-miru-han-purple-1000 text-right tracking-widest cursor-pointer"
+                onClick={() => setAddDiscount(true)}
+              >
                 ADD DISCOUNT
               </td>
-            }
-            {
-              getDiscount()
-            }
+            )}
+            {getDiscount()}
           </tr>
           <tr
             onMouseOver={() => setShowEditTaxButton(true)}
@@ -132,9 +149,7 @@ const InvoiceTotal = ({
             <td className="pt-4 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
               Tax
             </td>
-            {
-              getTax()
-            }
+            {getTax()}
           </tr>
           <tr>
             <td className="pt-1 font-normal text-base text-miru-dark-purple-1000 text-right pr-10">
@@ -168,38 +183,44 @@ const InvoiceTotal = ({
           </tr>
         </tbody>
       </table>
-      {showDiscountMenu &&
+      {showDiscountMenu && (
         <DiscountMenu
           setShowDiscount={setShowDiscount}
           setShowDiscountMenu={setShowDiscountMenu}
           setAddDiscount={setAddDiscount}
           setDiscount={setDiscount}
         />
-      }
+      )}
       <div className="flex flex-col">
         <div
           onMouseOver={() => setShowDiscountButton(true)}
           onMouseLeave={() => setShowDiscountButton(false)}
-          className="w-10">
-          {showDiscountButton && <button
-            className="bg-miru-gray-1000 rounded mt-8 mx-1 p-2"
-            onClick={() => setShowDiscountMenu(!showDiscountMenu)}
-          >
-            <DotsThreeVerticalIcon size={13} color="#1D1A31" />
-          </button>}
+          className="w-10"
+        >
+          {showDiscountButton && (
+            <button
+              className="bg-miru-gray-1000 rounded mt-8 mx-1 p-2"
+              onClick={() => setShowDiscountMenu(!showDiscountMenu)}
+            >
+              <DotsThreeVerticalIcon size={13} color="#1D1A31" />
+            </button>
+          )}
         </div>
         <div
           onMouseOver={() => setShowEditTaxButton(true)}
           onMouseLeave={() => setShowEditTaxButton(false)}
-          className="w-10 mt-12">
-          {showEditTaxButton && <button
-            className="bg-miru-gray-1000 rounded mt-8 mx-1 p-2"
-            onClick={() => {
-              setShowTaxInput(true);
-            }}
-          >
-            <EditIcon size={13} color="#1D1A31" />
-          </button>}
+          className="w-10 mt-12"
+        >
+          {showEditTaxButton && (
+            <button
+              className="bg-miru-gray-1000 rounded mt-8 mx-1 p-2"
+              onClick={() => {
+                setShowTaxInput(true);
+              }}
+            >
+              <EditIcon size={13} color="#1D1A31" />
+            </button>
+          )}
         </div>
       </div>
     </div>

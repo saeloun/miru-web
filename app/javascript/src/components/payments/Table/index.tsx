@@ -10,7 +10,10 @@ const Table = ({ payments, baseCurrency }) => (
     </thead>
 
     <tbody className="min-w-full bg-white divide-y divide-gray-200">
-      {payments.map((payment) => payment && <TableRow payment={payment} baseCurrency={baseCurrency} />)}
+      {payments.map(
+        (payment) =>
+          payment && <TableRow payment={payment} baseCurrency={baseCurrency} />
+      )}
     </tbody>
   </table>
 );

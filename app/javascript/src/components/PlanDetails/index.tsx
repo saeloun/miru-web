@@ -15,7 +15,7 @@ const PlanDetails = () => {
     membersCount: Yup.number()
       .moreThan(0, "Team members can not be 0")
       .typeError("Enter valid data")
-      .required("Field can not be empty")
+      .required("Field can not be empty"),
   });
 
   const handleCountChange = (value) => {
@@ -41,7 +41,7 @@ const PlanDetails = () => {
               </div>
               <Formik
                 initialValues={{
-                  membersCount: 1
+                  membersCount: 1,
                 }}
                 validationSchema={membersCountSchema}
                 validateOnChange={true}
@@ -102,8 +102,8 @@ const PlanDetails = () => {
                       {teamMembersCount === 1 ? "member" : "members"}
                     </h1>
                     <h5 className="font-normal text-xs leading-4 text-miru-dark-purple-400">
-                      Basic plan comes with additional <br /> {TEAM_MEMBER_CHARGE}$ per user per
-                      month
+                      Basic plan comes with additional <br />{" "}
+                      {TEAM_MEMBER_CHARGE}$ per user per month
                     </h5>
                   </div>
                   <div className="text-right">

@@ -14,7 +14,7 @@ const TeamMemberSchema = Yup.object().shape({
   lastName: Yup.string().required("Last Name cannot be blank"),
   email: Yup.string()
     .email("Invalid email ID")
-    .required("Email ID cannot be blank")
+    .required("Email ID cannot be blank"),
 });
 
 const getInitialvalues = (user) => ({
@@ -22,7 +22,7 @@ const getInitialvalues = (user) => ({
   firstName: user.firstName,
   lastName: user.lastName,
   email: user.email,
-  role: user.role ? user.role : "employee"
+  role: user.role ? user.role : "employee",
 });
 
 interface FormValues {
@@ -47,7 +47,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
       first_name: firstName,
       last_name: lastName,
       email,
-      role
+      role,
     };
 
     if (isEdit) payload["id"] = id;
@@ -74,7 +74,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
       <div
         className="overflow-auto fixed top-0 left-0 right-0 bottom-0 inset-0 z-10 flex items-start justify-center"
         style={{
-          backgroundColor: "rgba(29, 26, 49, 0.6)"
+          backgroundColor: "rgba(29, 26, 49, 0.6)",
         }}
       >
         <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">
@@ -109,7 +109,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       <div className="field">
                         <div className="field_with_errors">
                           <label className="form__label">Name</label>
-
                         </div>
                         <div className="flex">
                           <div className="mt-1">
@@ -139,7 +138,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                               data-cy="new-member-lastName"
                               name="lastName"
                               placeholder="Last Name"
-
                             />
                             <div className="tracking-wider block text-xs text-red-600 flex">
                               {errors.lastName && touched.lastName && (

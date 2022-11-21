@@ -11,7 +11,7 @@ const removeAvatar = () => axios.delete(`${path}/remove_avatar`);
 const profileApi = {
   index,
   update,
-  removeAvatar
+  removeAvatar,
 };
 
 export default profileApi;

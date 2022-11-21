@@ -2,12 +2,7 @@ import React from "react";
 
 import { NavLink } from "react-router-dom";
 
-const ReportCard = ({
-  icon,
-  title,
-  description,
-  url
-}) => (
+const ReportCard = ({ icon, title, description, url }) => (
   <NavLink end to={`/reports/${url}`}>
     <div className="w-128 h-[148px] rounded-lg	border-2	border-miru-gray-100 box-border	p-5 mt-5 flex hover:shadow-c1  cursor-pointer">
       <div className="w-30 h-120 bg-miru-gray-100 flex justify-center items-center rounded	">

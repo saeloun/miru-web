@@ -15,47 +15,52 @@ const TableRow = ({ item }) => {
 
   const actionIconVisible = isAdminUser && item.role !== "owner";
 
-  const handleAction = (e,action) => {
+  const handleAction = (e, action) => {
     e.preventDefault();
     e.stopPropagation();
     setModalState(action, item);
   };
 
   return (
-    <tr data-cy="team-table-row" className="border-b last:border-0 border-miru-gray-200 hoverIcon" onClick={() => {
-      navigate("1");
-    }}>
-      <td className="table__data p-6 capitalize">
-        {item.name}
-      </td>
-      <td className="table__data table__text p-6">
-        {item.email}
-      </td>
-      <td className="table__data table__text p-6 capitalize">
-        {item.role}
-      </td>
-      {isAdminUser &&
+    <tr
+      data-cy="team-table-row"
+      className="border-b last:border-0 border-miru-gray-200 hoverIcon"
+      onClick={() => {
+        navigate("1");
+      }}
+    >
+      <td className="table__data p-6 capitalize">{item.name}</td>
+      <td className="table__data table__text p-6">{item.email}</td>
+      <td className="table__data table__text p-6 capitalize">{item.role}</td>
+      {isAdminUser && (
         <Fragment>
           <td className="pr-6 py-6 text-right w-48">
-            {
-              item.status && <span className="table__pending">
-                Pending Invitation
-              </span>
-            }
+            {item.status && (
+              <span className="table__pending">Pending Invitation</span>
+            )}
           </td>
           <td className="pr-6 py-6 text-right w-44">
             {actionIconVisible && (
               <div className="invisible iconWrapper">
-                <button data-cy="edit-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.ADD_EDIT)}>
+                <button
+                  data-cy="edit-team-member-button"
+                  className="ml-12"
+                  onClick={(e) => handleAction(e, TeamModalType.ADD_EDIT)}
+                >
                   <EditIcon size={16} color="#5b34ea" weight="bold" />
                 </button>
-                <button data-cy="delete-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.DELETE)}>
+                <button
+                  data-cy="delete-team-member-button"
+                  className="ml-12"
+                  onClick={(e) => handleAction(e, TeamModalType.DELETE)}
+                >
                   <DeleteIcon size={16} color="#5b34ea" weight="bold" />
                 </button>
-              </div>)}
+              </div>
+            )}
           </td>
         </Fragment>
-      }
+      )}
     </tr>
   );
 };

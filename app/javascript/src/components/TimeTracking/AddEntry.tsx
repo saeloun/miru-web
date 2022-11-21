@@ -26,7 +26,7 @@ const AddEntry: React.FC<Iprops> = ({
   editEntryId,
   setEditEntryId,
   handleFilterEntry,
-  handleRelocateEntry
+  handleRelocateEntry,
 }) => {
   const [note, setNote] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
@@ -38,14 +38,16 @@ const AddEntry: React.FC<Iprops> = ({
   const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
 
-  const datePickerRef: MutableRefObject<any>  = useRef();
+  const datePickerRef: MutableRefObject<any> = useRef();
 
-  useOutsideClick(datePickerRef, () => { setDisplayDatePicker(false); } );
+  useOutsideClick(datePickerRef, () => {
+    setDisplayDatePicker(false);
+  });
 
   const handleFillData = () => {
-    if (! editEntryId) return;
+    if (!editEntryId) return;
     const entry = entryList[selectedFullDate].find(
-      entry => entry.id === editEntryId
+      (entry) => entry.id === editEntryId
     );
     if (entry) {
       setDuration(minToHHMM(entry.duration));
@@ -62,7 +64,7 @@ const AddEntry: React.FC<Iprops> = ({
   useEffect(() => {
     if (!project) return;
     const selectedProject = projects[client].find(
-      currentProject => currentProject.name === project
+      (currentProject) => currentProject.name === project
     );
     if (selectedProject) {
       setProjectId(Number(selectedProject.id));
@@ -81,7 +83,7 @@ const AddEntry: React.FC<Iprops> = ({
     work_date: selectedDate,
     duration: minFromHHMM(duration),
     note: note,
-    bill_status: billable ? "unbilled" : "non_billable"
+    bill_status: billable ? "unbilled" : "non_billable",
   });
 
   const handleSave = async () => {
@@ -91,13 +93,19 @@ const AddEntry: React.FC<Iprops> = ({
       Toastr.error(message);
       return;
     }
-    const res = await timesheetEntryApi.create({
-      project_id: projectId,
-      timesheet_entry: tse
-    }, selectedEmployeeId);
+    const res = await timesheetEntryApi.create(
+      {
+        project_id: projectId,
+        timesheet_entry: tse,
+      },
+      selectedEmployeeId
+    );
 
     if (res.status === 200) {
-      const fetchEntriesRes = await fetchEntries(selectedFullDate, selectedFullDate);
+      const fetchEntriesRes = await fetchEntries(
+        selectedFullDate,
+        selectedFullDate
+      );
       if (fetchEntriesRes) {
         setNewEntryView(false);
       }
@@ -115,11 +123,11 @@ const AddEntry: React.FC<Iprops> = ({
 
       const updateRes = await timesheetEntryApi.update(editEntryId, {
         project_id: projectId,
-        timesheet_entry: tse
+        timesheet_entry: tse,
       });
 
       if (updateRes.status >= 200 && updateRes.status < 300) {
-        if (selectedDate  !== selectedFullDate) {
+        if (selectedDate !== selectedFullDate) {
           await handleFilterEntry(selectedFullDate, editEntryId);
           await handleRelocateEntry(selectedDate, updateRes.data.entry);
         } else {
@@ -155,7 +163,7 @@ const AddEntry: React.FC<Iprops> = ({
       <div className="w-1/2">
         <div className="w-129 mb-2 flex justify-between">
           <select
-            onChange={e => {
+            onChange={(e) => {
               setClient(e.target.value);
               setProject(projects[e.target.value][0].name);
             }}
@@ -166,7 +174,7 @@ const AddEntry: React.FC<Iprops> = ({
           >
             {!client && (
               <option disabled selected className="text-miru-gray-100">
-              Client
+                Client
               </option>
             )}
             {clients.map((client, i) => (
@@ -175,7 +183,7 @@ const AddEntry: React.FC<Iprops> = ({
           </select>
 
           <select
-            onChange={e => {
+            onChange={(e) => {
               setProject(e.target.value);
             }}
             value={project}
@@ -185,41 +193,49 @@ const AddEntry: React.FC<Iprops> = ({
           >
             {!project && (
               <option disabled selected className="text-miru-gray-100">
-              Project
+                Project
               </option>
             )}
             {client &&
-            projects[client].map((project, i) => (
-              <option data-project-id={project.id} key={i.toString()}>
-                {project.name}
-              </option>
-            ))}
+              projects[client].map((project, i) => (
+                <option data-project-id={project.id} key={i.toString()}>
+                  {project.name}
+                </option>
+              ))}
           </select>
         </div>
         <textarea
           value={note}
-          onChange={e => setNote(e.target.value)}
+          onChange={(e) => setNote(e.target.value)}
           rows={5}
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
+          className={
+            "w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " +
+            (editEntryId ? "h-32" : "h-8")
+          }
         ></textarea>
       </div>
       <div className="w-60">
         <div className="mb-2 flex justify-between">
           <div>
-            { displayDatePicker &&
-            <div className="relative" ref={datePickerRef}>
-              <div className="absolute h-100 w-100 z-10 top-8">
-                <CustomDatePicker
-                  handleChange={handleDateChangeFromDatePicker}
-                  date={dayjs(selectedDate).toDate()}
-                />
+            {displayDatePicker && (
+              <div className="relative" ref={datePickerRef}>
+                <div className="absolute h-100 w-100 z-10 top-8">
+                  <CustomDatePicker
+                    handleChange={handleDateChangeFromDatePicker}
+                    date={dayjs(selectedDate).toDate()}
+                  />
+                </div>
               </div>
-            </div>
-            }
-            <div className="formatted-date p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center" onClick={() => { if (editEntryId) setDisplayDatePicker(true);} }>
+            )}
+            <div
+              className="formatted-date p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center"
+              onClick={() => {
+                if (editEntryId) setDisplayDatePicker(true);
+              }}
+            >
               {format(new Date(selectedDate), "do MMM, yyyy")}
             </div>
           </div>
@@ -295,7 +311,7 @@ const AddEntry: React.FC<Iprops> = ({
 
 interface Iprops {
   selectedEmployeeId: number;
-  fetchEntries: (from: string, to: string) => Promise<any>
+  fetchEntries: (from: string, to: string) => Promise<any>;
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
   clients: any[];
   projects: object;
@@ -306,7 +322,7 @@ interface Iprops {
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   dayInfo: object;
   entryList: object;
-  handleFilterEntry: (date: string, entryId: (string | number)) => object;
+  handleFilterEntry: (date: string, entryId: string | number) => object;
   handleRelocateEntry: (date: string, entry: object) => void;
 }
 

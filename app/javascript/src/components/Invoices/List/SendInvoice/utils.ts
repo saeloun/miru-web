@@ -16,7 +16,7 @@ export const emailSubject = (invoice: any): string =>
 export const emailBody = (invoice: any): string => {
   const formattedAmount = currencyFormat({
     baseCurrency: invoice.company.baseCurrency,
-    amount: invoice.amount
+    amount: invoice.amount,
   });
   const dueDate = dayjs(invoice.dueDate).format(invoice.company.dateFormat);
 

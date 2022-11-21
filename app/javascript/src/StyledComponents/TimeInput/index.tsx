@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { isValid } from "./validate";
 
 const TimeInput = ({
-  autoFocus=false,
+  autoFocus = false,
   initTime,
   disabled,
   mountFocus,
@@ -13,7 +13,7 @@ const TimeInput = ({
   placeholder,
   className,
   name,
-  onBlurHandler
+  onBlurHandler,
 }: Iprops) => {
   const [time, setTime] = useState<string>("");
 
@@ -70,32 +70,31 @@ const TimeInput = ({
       placeholder={placeholder}
       value={time}
       onChange={(e) => onChangeHandler(e.target.value)}
-      onFocus={(onFocusHandler) ? (e) => onFocusHandler(e) : undefined}
-      onBlur={(onBlurHandler) ? (e) => onBlurHandler(e) : undefined}
+      onFocus={onFocusHandler ? (e) => onFocusHandler(e) : undefined}
+      onBlur={onBlurHandler ? (e) => onBlurHandler(e) : undefined}
       ref={_input}
     />
   );
-
 };
 
 TimeInput.defaultProps = {
-  placeholder: "HH:MM"
+  placeholder: "HH:MM",
 };
 
 interface Iprops {
-	autoFocus?: boolean;
-	initTime?: string;
-	disabled?: boolean;
-	mountFocus?: string;
-	classNameInitials?: string;
-	classNameInitialsWrapper?: string;
-	onTimeChange?: (val) => any,
-	type?: string,
-	onFocusHandler?: (e) => any,
-	placeholder?: string,
-	className?: string ,
-	name?: string,
-	onBlurHandler?: (e) => any
-  }
+  autoFocus?: boolean;
+  initTime?: string;
+  disabled?: boolean;
+  mountFocus?: string;
+  classNameInitials?: string;
+  classNameInitialsWrapper?: string;
+  onTimeChange?: (val) => any;
+  type?: string;
+  onFocusHandler?: (e) => any;
+  placeholder?: string;
+  className?: string;
+  name?: string;
+  onBlurHandler?: (e) => any;
+}
 
 export default TimeInput;

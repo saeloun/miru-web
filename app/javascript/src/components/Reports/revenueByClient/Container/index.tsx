@@ -47,24 +47,33 @@ const Container = () => {
     <Fragment>
       <TotalHeader
         firstTitle={"TOTAL UNPAID AMOUNT"}
-        firstAmount={`${currencySymb}${cashFormatter(revenueByClientReport.summary.totalUnpaidAmount)}`}
+        firstAmount={`${currencySymb}${cashFormatter(
+          revenueByClientReport.summary.totalUnpaidAmount
+        )}`}
         secondTitle={"TOTAL PAID AMOUNT"}
-        secondAmount={`${currencySymb}${cashFormatter(revenueByClientReport.summary.totalPaidAmount)}`}
+        secondAmount={`${currencySymb}${cashFormatter(
+          revenueByClientReport.summary.totalPaidAmount
+        )}`}
         thirdTitle={"TOTAL REVENUE"}
-        thirdAmount={`${currencySymb}${cashFormatter(revenueByClientReport.summary.totalRevenue)}`}
+        thirdAmount={`${currencySymb}${cashFormatter(
+          revenueByClientReport.summary.totalRevenue
+        )}`}
       />
-      <div>
-      </div>
+      <div></div>
       <table className="min-w-full divide-y divide-gray-200 mt-4">
         <TableHeader />
         <tbody className="bg-white divide-y divide-gray-200">
-          {
-            revenueByClientReport.clientList.length && revenueByClientReport.currency && revenueByClientReport.clientList.map((client, index) => (
+          {revenueByClientReport.clientList.length &&
+            revenueByClientReport.currency &&
+            revenueByClientReport.clientList.map((client, index) => (
               <Fragment key={index}>
-                <TableRow key={index} currency={revenueByClientReport.currency} report={client} />
+                <TableRow
+                  key={index}
+                  currency={revenueByClientReport.currency}
+                  report={client}
+                />
               </Fragment>
-            ))
-          }
+            ))}
         </tbody>
       </table>
     </Fragment>

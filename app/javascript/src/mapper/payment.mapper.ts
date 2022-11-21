@@ -7,13 +7,13 @@ const getInvoiceList = (invoiceList: Array<InvoiceList>) =>
     invoiceNumber: invoice.invoiceNumber,
     invoiceDate: invoice.invoiceDate,
     amount: invoice.amount,
-    status: invoice.status
+    status: invoice.status,
   }));
 
 const unmapPayment = (input) => {
   const invoiceList = getInvoiceList(input.invoices);
   return {
-    invoiceList
+    invoiceList,
   };
 };
 
@@ -22,7 +22,7 @@ const mapPayment = (input) => ({
   transaction_date: input.transactionDate,
   transaction_type: input.transactionType,
   amount: input.amount,
-  note: input.note
+  note: input.note,
 });
 
 export { unmapPayment, mapPayment };

@@ -23,14 +23,20 @@ const EditMembersList = ({
   projectId,
   handleAddProjectDetails,
   closeAddRemoveMembers,
-  currencySymbol
+  currencySymbol,
 }: IEditMembersList) => {
   const [existingMembers, setExistingMembers] = React.useState(addedMembers);
-  const [members, setMembers] = React.useState(addedMembers.map(v => ({ ...v, isExisting: true })));
+  const [members, setMembers] = React.useState(
+    addedMembers.map((v) => ({ ...v, isExisting: true }))
+  );
   const [allMemberList, setAllMemberList] = React.useState([]);
 
-  const markAddedMembers = allMembers => allMembers.map(
-    (memberFromAllMembers) => members.some((member) => member.id === memberFromAllMembers.id) ? { ...memberFromAllMembers, isAdded: true } : { ...memberFromAllMembers, isAdded: false });
+  const markAddedMembers = (allMembers) =>
+    allMembers.map((memberFromAllMembers) =>
+      members.some((member) => member.id === memberFromAllMembers.id)
+        ? { ...memberFromAllMembers, isAdded: true }
+        : { ...memberFromAllMembers, isAdded: false }
+    );
 
   const fetchCurrentWorkspaceUsers = async () => {
     try {
@@ -39,7 +45,6 @@ const EditMembersList = ({
     } catch (error) {
       // Add error handling
     }
-
   };
 
   React.useEffect(() => {
@@ -58,30 +63,41 @@ const EditMembersList = ({
     setMembers(modalMembers);
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const oldIds = existingMembers.map(member => member.id);
-    const currentIds = members.map(member => member.id);
-    const removedIds = oldIds.filter(id => !currentIds.includes(id));
+    const oldIds = existingMembers.map((member) => member.id);
+    const currentIds = members.map((member) => member.id);
+    const removedIds = oldIds.filter((id) => !currentIds.includes(id));
     const alreadyAddedMembersMap = {};
-    existingMembers.forEach((member) => { alreadyAddedMembersMap[member.id] = member.hourlyRate; });
-    const newlyAddedMembers = members.filter((member) => !alreadyAddedMembersMap[member.id]);
-    const updatedMembers = members.filter((member) => alreadyAddedMembersMap[member.id] && alreadyAddedMembersMap[member.id] != member.hourlyRate);
-    if (newlyAddedMembers.length > 0 || updatedMembers.length > 0 || removedIds.length > 0) {
+    existingMembers.forEach((member) => {
+      alreadyAddedMembersMap[member.id] = member.hourlyRate;
+    });
+    const newlyAddedMembers = members.filter(
+      (member) => !alreadyAddedMembersMap[member.id]
+    );
+    const updatedMembers = members.filter(
+      (member) =>
+        alreadyAddedMembersMap[member.id] &&
+        alreadyAddedMembersMap[member.id] != member.hourlyRate
+    );
+    if (
+      newlyAddedMembers.length > 0 ||
+      updatedMembers.length > 0 ||
+      removedIds.length > 0
+    ) {
       try {
         await projectMembersApi.update(projectId, {
           members: {
             added_members: newlyAddedMembers,
             removed_member_ids: removedIds,
-            updated_members: updatedMembers
-          }
+            updated_members: updatedMembers,
+          },
         });
         setExistingMembers(members);
         handleAddProjectDetails();
         closeAddRemoveMembers();
         Toastr.success("Changes saved successfully");
-      }
-      catch (err) {
+      } catch (err) {
         // add error handling
       }
     }
@@ -91,14 +107,19 @@ const EditMembersList = ({
     <div
       className="overflow-auto fixed top-0 left-0 right-0 bottom-0 inset-0 z-10 flex items-start justify-center"
       style={{
-        backgroundColor: "rgba(29, 26, 49, 0.6)"
+        backgroundColor: "rgba(29, 26, 49, 0.6)",
       }}
     >
       <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">
         <div className="rounded-lg px-6 pb-6 bg-white shadow-xl transform transition-all sm:align-middle sm:max-w-md modal-width">
           <div className="flex justify-between items-center mt-6">
             <h6 className="text-base font-extrabold">Add/Edit Team Members</h6>
-            <button type="button" onClick={() => { setShowAddMemberDialog(false); }}>
+            <button
+              type="button"
+              onClick={() => {
+                setShowAddMemberDialog(false);
+              }}
+            >
               <XIcon size={16} color="#CDD6DF" weight="bold" />
             </button>
           </div>

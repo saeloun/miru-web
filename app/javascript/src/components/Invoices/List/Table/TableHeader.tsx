@@ -6,7 +6,7 @@ const TableHeader = ({
   invoices,
   selectedInvoices,
   selectInvoices,
-  deselectInvoices
+  deselectInvoices,
 }) => {
   const [isChecked, setChecked] = useState<boolean>(false);
 
@@ -45,15 +45,13 @@ const TableHeader = ({
         scope="col"
         className="md:w-1/5 md:pr-2 pr-6 py-5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
       >
-        CLIENT /
-        INVOICE NO.
+        CLIENT / INVOICE NO.
       </th>
       <th
         scope="col"
         className="w-1/4 md:px-6 px-4 py-5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
       >
-        ISSUED DATE /
-        DUE DATE
+        ISSUED DATE / DUE DATE
       </th>
       <th
         scope="col"

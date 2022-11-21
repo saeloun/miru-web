@@ -1,5 +1,5 @@
 /* eslint-disable no-unexpected-multiline */
-import React, { useEffect, useState }  from "react";
+import React, { useEffect, useState } from "react";
 
 import { TOASTER_DURATION } from "constants/index";
 
@@ -46,15 +46,22 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [editEntryId, setEditEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
   const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(user?.id);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number>(
+    user?.id
+  );
   const [allEmployeesEntries, setAllEmployeesEntries] = useState<object>({});
   const [clients, setClients] = useState<any>({});
   const [projects, setProjects] = useState<any>({});
   const [employees, setEmployees] = useState<any>([]);
-  const [currentMonthNumber, setCurrentMonthNumber] = useState<number>(dayjs().month());
+  const [currentMonthNumber, setCurrentMonthNumber] = useState<number>(
+    dayjs().month()
+  );
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
 
-  const employeeOptions = employees.map(e => ({ value: `${e["id"]}`, label: e["first_name"] + " " + e["last_name"] }) );
+  const employeeOptions = employees.map((e) => ({
+    value: `${e["id"]}`,
+    label: e["first_name"] + " " + e["last_name"],
+  }));
 
   useEffect(() => {
     sendGAPageView();
@@ -64,12 +71,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const fetchTimeTrackingData = async () => {
     try {
       const { data } = await timeTrackingApi.get();
-      const {
-        clients,
-        projects,
-        entries,
-        employees
-      } = data;
+      const { clients, projects, entries, employees } = data;
 
       setClients(clients);
       setProjects(projects);
@@ -84,9 +86,11 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   };
 
   const fetchEntriesOfMonths = () => {
-    const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber +1}-01`;
+    const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber + 1}-01`;
     const startOfTheMonth = dayjs(firstDateOfTheMonth).format("YYYY-MM-DD");
-    const endOfTheMonth = dayjs(firstDateOfTheMonth).endOf("month").format("YYYY-MM-DD");
+    const endOfTheMonth = dayjs(firstDateOfTheMonth)
+      .endOf("month")
+      .format("YYYY-MM-DD");
 
     fetchEntries(
       dayjs(startOfTheMonth).subtract(1, "month").format("DD-MM-YYYY"),
@@ -140,7 +144,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         month: month,
         date: date,
         year: year,
-        fullDate: fullDate
+        fullDate: fullDate,
       };
     });
     setDayInfo(() => daysInWeek);
@@ -151,7 +155,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       const res = await timesheetEntryApi.list(from, to, selectedEmployeeId);
       if (res.status >= 200 && res.status < 300) {
         const allEntries = { ...allEmployeesEntries };
-        allEntries[selectedEmployeeId] = { ...allEntries[selectedEmployeeId], ...res.data.entries };
+        allEntries[selectedEmployeeId] = {
+          ...allEntries[selectedEmployeeId],
+          ...res.data.entries,
+        };
         setAllEmployeesEntries(allEntries);
         setEntryList(allEntries[selectedEmployeeId]);
       }
@@ -161,18 +168,18 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     }
   };
 
-  const handleFilterEntry = async (date: string, entryId: (string | number)) => {
+  const handleFilterEntry = async (date: string, entryId: string | number) => {
     let filteredTimesheetEntry: object;
     const filteredDate = dayjs(date).format("YYYY-MM-DD");
     const newValue = { ...entryList };
-    newValue[filteredDate] = newValue[filteredDate].filter(e => {
+    newValue[filteredDate] = newValue[filteredDate].filter((e) => {
       if (e["id"] == entryId) {
         filteredTimesheetEntry = e;
       } else {
         return e;
       }
     });
-    setAllEmployeesEntries(pv => ({ ...pv, [selectedEmployeeId]: newValue }));
+    setAllEmployeesEntries((pv) => ({ ...pv, [selectedEmployeeId]: newValue }));
     setEntryList((pv) => ({ ...pv, ...newValue }));
     return filteredTimesheetEntry;
   };
@@ -181,13 +188,18 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     const filteredDate = dayjs(date).format("YYYY-MM-DD");
     setEntryList((prevState) => {
       const newState = { ...prevState };
-      newState[filteredDate] = newState[filteredDate] ? [...newState[filteredDate], entry] : [entry];
+      newState[filteredDate] = newState[filteredDate]
+        ? [...newState[filteredDate], entry]
+        : [entry];
       return newState;
     });
-    setAllEmployeesEntries(pv => ({ ...pv, [selectedEmployeeId]: entryList }));
+    setAllEmployeesEntries((pv) => ({
+      ...pv,
+      [selectedEmployeeId]: entryList,
+    }));
   };
 
-  const handleDeleteEntry = async id => {
+  const handleDeleteEntry = async (id) => {
     const res = await timesheetEntryApi.destroy(id);
     if (!(res.status === 200)) return;
     await handleFilterEntry(selectedFullDate, id);
@@ -202,7 +214,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         .format("YYYY-MM-DD");
       if (entryList[day]) {
         let dayTotal = 0;
-        entryList[day].forEach(e => {
+        entryList[day].forEach((e) => {
           dayTotal += e.duration;
         });
         dailyTotal.push(minToHHMM(dayTotal));
@@ -216,7 +228,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   };
 
   const handleNextWeek = () => {
-    setWeekDay(p => p + 7);
+    setWeekDay((p) => p + 7);
     const from = dayjs()
       .weekday(weekDay + 7)
       .format("YYYY-MM-DD");
@@ -227,7 +239,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   };
 
   const handlePrevWeek = () => {
-    setWeekDay(p => p - 7);
+    setWeekDay((p) => p - 7);
     const from = dayjs()
       .weekday(weekDay - 7)
       .format("YYYY-MM-DD");
@@ -246,9 +258,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
       if (!entryList[date]) continue;
 
-      entryList[date].forEach(entry => {
+      entryList[date].forEach((entry) => {
         let entryAdded = false;
-        weekArr.forEach(rowInfo => {
+        weekArr.forEach((rowInfo) => {
           if (
             rowInfo["projectId"] === entry["project_id"] &&
             !rowInfo["entries"][weekCounter] &&
@@ -267,7 +279,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           projectId: entry["project_id"],
           clientName: entry.client,
           projectName: entry.project,
-          entries: newRow
+          entries: newRow,
         });
       });
     }
@@ -281,7 +293,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       <div className="mt-6">
         <div className="flex justify-between items-center mb-6">
           <nav className="flex">
-            {["month", "week", "day"].map((item,index) => (
+            {["month", "week", "day"].map((item, index) => (
               <button
                 key={index}
                 onClick={() => setView(item)}
@@ -295,81 +307,84 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               </button>
             ))}
           </nav>
-          {isAdminUser && selectedEmployeeId &&
+          {isAdminUser && selectedEmployeeId && (
             <SearchTimeEntries
               selectedEmployeeId={selectedEmployeeId}
               setSelectedEmployeeId={setSelectedEmployeeId}
               employeeList={employeeOptions}
             />
-          }
+          )}
         </div>
 
         <div>
-          {
-            view === "month" ?
-              <MonthCalender
-                fetchEntries={fetchEntries}
-                selectedEmployeeId={selectedEmployeeId}
-                dayInfo={dayInfo}
-                selectedFullDate={selectedFullDate}
-                setSelectedFullDate={setSelectedFullDate}
-                entryList={entryList}
-                setEntryList={setEntryList}
-                handleWeekTodayButton={handleWeekTodayButton}
-                monthsAbbr={monthsAbbr}
-                setWeekDay={setWeekDay}
-                setSelectDate={setSelectDate}
-                currentMonthNumber={currentMonthNumber}
-                setCurrentMonthNumber={setCurrentMonthNumber}
-                currentYear={currentYear}
-                setCurrentYear={setCurrentYear}
-              />
-              :
-              <div className="mb-6">
-                <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
-                  <button
-                    onClick={() => {
-                      setWeekDay(0);
-                      setSelectDate(dayjs().weekday());
-                    }}
-                    className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold ml-4"
-                  >
+          {view === "month" ? (
+            <MonthCalender
+              fetchEntries={fetchEntries}
+              selectedEmployeeId={selectedEmployeeId}
+              dayInfo={dayInfo}
+              selectedFullDate={selectedFullDate}
+              setSelectedFullDate={setSelectedFullDate}
+              entryList={entryList}
+              setEntryList={setEntryList}
+              handleWeekTodayButton={handleWeekTodayButton}
+              monthsAbbr={monthsAbbr}
+              setWeekDay={setWeekDay}
+              setSelectDate={setSelectDate}
+              currentMonthNumber={currentMonthNumber}
+              setCurrentMonthNumber={setCurrentMonthNumber}
+              currentYear={currentYear}
+              setCurrentYear={setCurrentYear}
+            />
+          ) : (
+            <div className="mb-6">
+              <div className="flex justify-between items-center bg-miru-han-purple-1000 h-10 w-full">
+                <button
+                  onClick={() => {
+                    setWeekDay(0);
+                    setSelectDate(dayjs().weekday());
+                  }}
+                  className="flex items-center justify-center text-white tracking-widest border-2 rounded h-6 w-20 text-xs font-bold ml-4"
+                >
                   TODAY
+                </button>
+                <div className="flex">
+                  <button
+                    onClick={handlePrevWeek}
+                    className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
+                  >
+                    &lt;
                   </button>
-                  <div className="flex">
-                    <button
-                      onClick={handlePrevWeek}
-                      className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
-                    >
-                      &lt;
-                    </button>
-                    {!!dayInfo.length && (
-                      <p className="text-white mx-6 w-40">
-                        {parseInt(dayInfo[0]["date"],10)} {dayInfo[0].month} -{" "}
-                        {parseInt(dayInfo[6]["date"],10)} {dayInfo[6]["month"]}{" "}
-                        {dayInfo[6]["year"]}
-                      </p>
-                    )}
-                    <button
-                      onClick={handleNextWeek}
-                      className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
-                    >
-                      &gt;
-                    </button>
-                  </div>
-                  <div className="flex mr-12">
-                    <p className="text-white mr-2">Total</p>
-                    <p className="text-white font-extrabold">{ view === "week" ? weeklyTotalHours : dailyTotalHours[selectDate] }</p>
-                  </div>
+                  {!!dayInfo.length && (
+                    <p className="text-white mx-6 w-40">
+                      {parseInt(dayInfo[0]["date"], 10)} {dayInfo[0].month} -{" "}
+                      {parseInt(dayInfo[6]["date"], 10)} {dayInfo[6]["month"]}{" "}
+                      {dayInfo[6]["year"]}
+                    </p>
+                  )}
+                  <button
+                    onClick={handleNextWeek}
+                    className="text-white border-2 h-6 w-6 rounded-xl flex flex-col items-center justify-center"
+                  >
+                    &gt;
+                  </button>
                 </div>
-                <DatesInWeek
-                  view={view}
-                  dayInfo={dayInfo}
-                  selectDate={selectDate}
-                  setSelectDate={setSelectDate}
-                />
+                <div className="flex mr-12">
+                  <p className="text-white mr-2">Total</p>
+                  <p className="text-white font-extrabold">
+                    {view === "week"
+                      ? weeklyTotalHours
+                      : dailyTotalHours[selectDate]}
+                  </p>
+                </div>
               </div>
-          }
+              <DatesInWeek
+                view={view}
+                dayInfo={dayInfo}
+                selectDate={selectDate}
+                setSelectDate={setSelectDate}
+              />
+            </div>
+          )}
           {!editEntryId && newEntryView && view !== "week" && (
             <AddEntry
               selectedEmployeeId={selectedEmployeeId}
@@ -390,10 +405,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           )}
           {view !== "week" && !newEntryView && (
             <button
-              onClick={() => {setNewEntryView(true); setEditEntryId(0); }}
+              onClick={() => {
+                setNewEntryView(true);
+                setEditEntryId(0);
+              }}
               className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
             >
-                + NEW ENTRY
+              + NEW ENTRY
             </button>
           )}
 
@@ -403,7 +421,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               onClick={() => setNewRowView(true)}
               className="h-14 w-full border-2 p-4 border-miru-han-purple-600 text-miru-han-purple-600 font-bold text-lg tracking-widest"
             >
-                + NEW ROW
+              + NEW ROW
             </button>
           )}
 
@@ -458,7 +476,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 key={weekCounter}
                 handleDeleteEntry={handleDeleteEntry}
                 setEditEntryId={setEditEntryId}
-                currentUserRole={ entryList["currentUserRole"] }
+                currentUserRole={entryList["currentUserRole"]}
                 {...entry}
               />
             )

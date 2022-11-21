@@ -21,7 +21,7 @@ const Invoices: React.FC = () => {
   const filterIntialValues = {
     dateRange: { label: "All", value: "all", from: "", to: "" },
     clients: [],
-    status: []
+    status: [],
   };
 
   const [status, setStatus] = React.useState<InvoicesStatus>(
@@ -34,7 +34,7 @@ const Invoices: React.FC = () => {
   const [params, setParams] = React.useState<any>({
     invoices_per_page: searchParams.get("invoices_per_page") || 20,
     page: searchParams.get("page") || 1,
-    query: searchParams.get("query") || ""
+    query: searchParams.get("query") || "",
   });
   const [filterParams, setFilterParams] = React.useState(filterIntialValues);
   const [filterParamsStr, setFilterParamsStr] = React.useState("");
@@ -49,7 +49,8 @@ const Invoices: React.FC = () => {
   const [showBulkDeleteDialaog, setShowBulkDeleteDialog] =
     React.useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = React.useState(null);
-  const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] = React.useState(null);
+  const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] =
+    React.useState(null);
 
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
@@ -75,7 +76,7 @@ const Invoices: React.FC = () => {
     try {
       setStatus(InvoicesStatus.LOADING);
       const {
-        data: { invoices, pagy, summary, recentlyUpdatedInvoices }
+        data: { invoices, pagy, summary, recentlyUpdatedInvoices },
       } = await invoicesApi.get(queryParams().concat(handleFilterParams()));
 
       setInvoices(invoices);
@@ -93,7 +94,7 @@ const Invoices: React.FC = () => {
     let filterQueryParams = "";
 
     filterParams.clients.forEach((client) => {
-      filterQueryParams+= `&client_ids[]=${client.value}`;
+      filterQueryParams += `&client_ids[]=${client.value}`;
     });
 
     filterParams.status.forEach((status) => {
@@ -102,7 +103,7 @@ const Invoices: React.FC = () => {
 
     const { value, from, to } = filterParams.dateRange;
 
-    if (value != "all" && value != "custom"){
+    if (value != "all" && value != "custom") {
       filterQueryParams += `&from_to[date_range]=${value}`;
     }
 
@@ -145,7 +146,6 @@ const Invoices: React.FC = () => {
 
       {status === InvoicesStatus.SUCCESS && (
         <React.Fragment>
-
           <Container
             summary={summary}
             invoices={invoices}

@@ -9,7 +9,7 @@ import {
   PlusIcon,
   DeleteIcon,
   PaperPlaneTiltIcon,
-  XIcon
+  XIcon,
 } from "miruIcons";
 import { Link } from "react-router-dom";
 
@@ -25,14 +25,15 @@ const Header = ({
   setShowBulkDeleteDialog,
   params,
   setParams,
-  filterParamsStr
+  filterParamsStr,
 }) => {
   const [searchQuery, setSearchQuery] = React.useState<string>("");
   const [searchResult, setSearchResult] = React.useState<any[]>([]);
   const [status, setStatus] = React.useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
-  let appliedFilterCount = (filterParamsStr.match(/&/g) || [] ).length;
-  filterParamsStr.includes("custom") && (appliedFilterCount = appliedFilterCount - 2);
+  let appliedFilterCount = (filterParamsStr.match(/&/g) || []).length;
+  filterParamsStr.includes("custom") &&
+    (appliedFilterCount = appliedFilterCount - 2);
 
   React.useEffect(() => {
     if (searchQuery) {
@@ -49,7 +50,7 @@ const Header = ({
     setStatus(InvoiceStatus.LOADING);
     try {
       const {
-        data: { invoices }
+        data: { invoices },
       } = await invoicesApi.get(searchParams);
       setSearchResult(invoices);
       setStatus(InvoiceStatus.SUCCESS);
@@ -71,7 +72,9 @@ const Header = ({
 
   return (
     <div className="mt-6 mb-3 flex flex-wrap flex-col md:flex-row items-center justify-between h-40 md:h-auto">
-      <h2 className="header__title" data-cy ="header__invoices">Invoices</h2>
+      <h2 className="header__title" data-cy="header__invoices">
+        Invoices
+      </h2>
       {!isInvoiceSelected && (
         <React.Fragment>
           <div className="header__searchWrap ml-auto md:ml-0">
@@ -94,13 +97,27 @@ const Header = ({
                   )}
                 </button>
 
-                <SearchDropdown display={(params.query !== searchQuery)} status={status} list={searchResult} />
+                <SearchDropdown
+                  display={params.query !== searchQuery}
+                  status={status}
+                  list={searchResult}
+                />
               </div>
             </div>
 
-            <button className="ml-7 relative" onClick={() => setFilterVisibilty(true)}>
-              {appliedFilterCount > 0 && <span className="absolute bottom-2 left-2 flex items-center justify-center rounded-full h-4 w-4 bg-miru-han-purple-1000 text-white text-xs font-semibold mr-7">{appliedFilterCount}</span>}
-              <FilterIcon size={16} color={filterParamsStr ? "#5B34EA" : "#303A4B"} />
+            <button
+              className="ml-7 relative"
+              onClick={() => setFilterVisibilty(true)}
+            >
+              {appliedFilterCount > 0 && (
+                <span className="absolute bottom-2 left-2 flex items-center justify-center rounded-full h-4 w-4 bg-miru-han-purple-1000 text-white text-xs font-semibold mr-7">
+                  {appliedFilterCount}
+                </span>
+              )}
+              <FilterIcon
+                size={16}
+                color={filterParamsStr ? "#5B34EA" : "#303A4B"}
+              />
             </button>
           </div>
 
@@ -111,7 +128,9 @@ const Header = ({
               className="header__button"
             >
               <PlusIcon weight="fill" size={16} />
-              <span className="inline-block ml-2" data-cy="new-invoice-button">NEW INVOICE</span>
+              <span className="inline-block ml-2" data-cy="new-invoice-button">
+                NEW INVOICE
+              </span>
             </Link>
           </div>
         </React.Fragment>

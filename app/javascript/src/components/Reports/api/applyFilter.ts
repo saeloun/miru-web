@@ -5,7 +5,8 @@ import reportsApi from "apis/reports";
 import { unmapper } from "../../../mapper/report.mapper";
 import { customDateFilter } from "../revenueByClient/Filters/filterOptions";
 
-const isValuePresent = (filterValue) => filterValue.value && filterValue.value !== "";
+const isValuePresent = (filterValue) =>
+  filterValue.value && filterValue.value !== "";
 const isNotEmptyArray = (value) => value && value.length > 0;
 
 const apiKeys = {
@@ -13,7 +14,7 @@ const apiKeys = {
   dateRange: "date_range",
   groupBy: "group_by",
   status: "status",
-  teamMember: "team_member"
+  teamMember: "team_member",
 };
 
 export const getQueryParams = (selectedFilter) => {
@@ -21,11 +22,17 @@ export const getQueryParams = (selectedFilter) => {
   for (const filterKey in selectedFilter) {
     const filterValue = selectedFilter[filterKey];
 
-    if (filterKey === customDateFilter && filterValue.from !== "" && filterValue.to !== "") {
-      params += `&from=${dayjs(filterValue.from).format("DD/MM/YYYY")}&to=${dayjs(filterValue.to).format("DD/MM/YYYY")}`;
+    if (
+      filterKey === customDateFilter &&
+      filterValue.from !== "" &&
+      filterValue.to !== ""
+    ) {
+      params += `&from=${dayjs(filterValue.from).format(
+        "DD/MM/YYYY"
+      )}&to=${dayjs(filterValue.to).format("DD/MM/YYYY")}`;
     }
     if (Array.isArray(filterValue) && isNotEmptyArray(filterValue)) {
-      filterValue.forEach(item => {
+      filterValue.forEach((item) => {
         params += `&${apiKeys[filterKey]}[]=${item.value}`;
       });
     }
@@ -36,7 +43,13 @@ export const getQueryParams = (selectedFilter) => {
   return params;
 };
 
-const applyFilter = async (selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty, getFilterOptions) => {
+const applyFilter = async (
+  selectedFilter,
+  setTimeEntries,
+  setNavFilters,
+  setFilterVisibilty,
+  getFilterOptions
+) => {
   const queryParams = getQueryParams(selectedFilter);
   const sanitizedParam = queryParams.substring(1);
   const sanitizedQuery = `?${sanitizedParam}`;

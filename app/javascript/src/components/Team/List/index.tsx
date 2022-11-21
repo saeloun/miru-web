@@ -14,7 +14,6 @@ import Table from "./Table";
 import Modals from "../modals/Modals";
 
 export const ProjectList = () => {
-
   const [teamList, setTeamList] = useState([]);
   const [modal, setModal] = useState("");
   const [modalUser, setModaluser] = useState({});
@@ -33,18 +32,20 @@ export const ProjectList = () => {
   };
 
   useEffect(() => {
-    if (modal == TeamModalType.NONE){
+    if (modal == TeamModalType.NONE) {
       getTeamList();
     }
   }, [modal]);
 
   return (
     <Fragment>
-      <ListContext.Provider value={{
-        teamList,
-        setModalState,
-        modal
-      }}>
+      <ListContext.Provider
+        value={{
+          teamList,
+          setModalState,
+          modal,
+        }}
+      >
         <ToastContainer autoClose={TOASTER_DURATION} />
         <Header />
         <div>

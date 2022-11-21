@@ -27,7 +27,7 @@ const CustomDatePicker = ({ handleChange, date }) => {
     "Sep",
     "Oct",
     "Nov",
-    "Dec"
+    "Dec",
   ];
   return (
     <DatePicker
@@ -42,11 +42,9 @@ const CustomDatePicker = ({ handleChange, date }) => {
         decreaseMonth,
         increaseMonth,
         prevMonthButtonDisabled,
-        nextMonthButtonDisabled
+        nextMonthButtonDisabled,
       }) => (
-        <div
-          className="headerWrapper"
-        >
+        <div className="headerWrapper">
           <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
             <CaretCircleLeftIcon color="#5b34ea" size={16} />
           </button>

@@ -37,15 +37,17 @@ const Container = () => {
 
   return (
     <Fragment>
-      {
-        timeEntryReport.reports.map((report, index) => (
-          <Fragment key={index}>
-            {report.label !== "" && <h1 className="text-miru-han-purple-1000 font-bold text-xl py-5 border-b border-miru-han-purple-1000">{report.label}</h1>}
-            <ReportHeader />
-            {report.entries.length > 0 && getEntryList(report.entries)}
-          </Fragment>
-        ))
-      }
+      {timeEntryReport.reports.map((report, index) => (
+        <Fragment key={index}>
+          {report.label !== "" && (
+            <h1 className="text-miru-han-purple-1000 font-bold text-xl py-5 border-b border-miru-han-purple-1000">
+              {report.label}
+            </h1>
+          )}
+          <ReportHeader />
+          {report.entries.length > 0 && getEntryList(report.entries)}
+        </Fragment>
+      ))}
     </Fragment>
   );
 };

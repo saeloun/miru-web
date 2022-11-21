@@ -2,22 +2,25 @@ import React from "react";
 
 import classnames from "classnames";
 
-const DEFAULT_STYLE_WRAPPER = "flex items-center cursor-pointer hover:bg-miru-gray-100";
-const DEFAULT_STYLE_LABEL = "text-sm text-miru-dark-purple-1000 font-normal leading-5 ml-4";
+const DEFAULT_STYLE_WRAPPER =
+  "flex items-center cursor-pointer hover:bg-miru-gray-100";
+const DEFAULT_STYLE_LABEL =
+  "text-sm text-miru-dark-purple-1000 font-normal leading-5 ml-4";
 const DEFAULT_STYLE_INPUT = "hidden w-3 h-3 custom__radio";
-const DEFAULT_STYLE_RADIO_ICON = "w-3 h-3 inline-block mr-2 rounded-full border border-miru-han-purple-1000";
+const DEFAULT_STYLE_RADIO_ICON =
+  "w-3 h-3 inline-block mr-2 rounded-full border border-miru-han-purple-1000";
 
 type RadioProps = {
   id?: string;
   label?: string | number;
-  value: string,
+  value: string;
   groupName?: string;
   defaultCheck?: boolean;
   classNameLabel?: string;
   classNameInput?: string;
   classNameWrapper?: string;
   classNameRadioIcon?: string;
-  handleOnChange?: any
+  handleOnChange?: any;
 };
 
 const CustomRadioButton = ({
@@ -30,7 +33,7 @@ const CustomRadioButton = ({
   classNameInput = "",
   classNameWrapper = "",
   classNameRadioIcon = "",
-  handleOnChange = ()=>{} //eslint-disable-line
+  handleOnChange = () => {}, //eslint-disable-line
 }: RadioProps) => (
   <div className={classnames(DEFAULT_STYLE_WRAPPER, classNameWrapper)}>
     <input
@@ -42,7 +45,6 @@ const CustomRadioButton = ({
       checked={defaultCheck}
       className={classnames(DEFAULT_STYLE_INPUT, classNameInput)}
       onClick={handleOnChange}
-
     />
     <label
       htmlFor={id}

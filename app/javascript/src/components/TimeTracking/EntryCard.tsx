@@ -21,7 +21,8 @@ interface props {
   currentUserRole: string;
 }
 
-const canEditTimeEntry = (billStatus, role) => (billStatus != "billed" || role == Roles["OWNER"] || role == Roles["ADMIN"]);
+const canEditTimeEntry = (billStatus, role) =>
+  billStatus != "billed" || role == Roles["OWNER"] || role == Roles["ADMIN"];
 
 const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
   if (canEditTimeEntry(billStatus, role)) {
@@ -35,9 +36,7 @@ const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
       </button>
     );
   } else {
-    return (
-      <div className="mx-10 w-4 h-4"></div>
-    );
+    return <div className="mx-10 w-4 h-4"></div>;
   }
 };
 
@@ -53,9 +52,7 @@ const showDeleteAction = (billStatus, role, id, handleDeleteEntry) => {
       </button>
     );
   } else {
-    return (
-      <div className="mr-10 w-4 h-4"></div>
-    );
+    return <div className="mr-10 w-4 h-4"></div>;
   }
 };
 
@@ -68,7 +65,7 @@ const EntryCard: React.FC<props> = ({
   handleDeleteEntry,
   setEditEntryId,
   bill_status,
-  currentUserRole
+  currentUserRole,
 }) => (
   <div className="week-card flex justify-between items-center shadow-2xl w-full p-4 mt-10 rounded-lg">
     <div className="flex-auto">
@@ -105,8 +102,8 @@ const EntryCard: React.FC<props> = ({
         />
       )}
       <p className="text-4xl ml-6">{minToHHMM(duration)}</p>
-      { showUpdateAction(bill_status, currentUserRole, id, setEditEntryId) }
-      { showDeleteAction(bill_status, currentUserRole, id, handleDeleteEntry) }
+      {showUpdateAction(bill_status, currentUserRole, id, setEditEntryId)}
+      {showDeleteAction(bill_status, currentUserRole, id, handleDeleteEntry)}
     </div>
   </div>
 );

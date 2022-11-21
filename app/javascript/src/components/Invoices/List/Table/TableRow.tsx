@@ -6,7 +6,7 @@ import {
   PaperPlaneTiltIcon,
   PenIcon,
   DotsThreeVerticalIcon,
-  DownloadSimpleIcon
+  DownloadSimpleIcon,
 } from "miruIcons";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Badge, Tooltip } from "StyledComponents";
@@ -24,11 +24,11 @@ const TableRow = ({
   deselectInvoices,
   setShowDeleteDialog,
   setInvoiceToDelete,
-  fetchInvoices
+  fetchInvoices,
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  useDebounce(isMenuOpen,500);
+  useDebounce(isMenuOpen, 500);
   const navigate = useNavigate();
 
   const handleCheckboxChange = () => {
@@ -41,7 +41,7 @@ const TableRow = ({
 
   const formattedAmount = currencyFormat({
     baseCurrency: invoice.company.baseCurrency,
-    amount: invoice.amount
+    amount: invoice.amount,
   });
 
   const formattedDate = (date) =>
@@ -58,12 +58,13 @@ const TableRow = ({
         />
       </td>
 
-      <td onClick={()=>navigate(`/invoices/${invoice.id}`)} className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap cursor-pointer">
+      <td
+        onClick={() => navigate(`/invoices/${invoice.id}`)}
+        className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap cursor-pointer"
+      >
         <Avatar />
         <div className="md:ml-10 ml-2">
-          <span
-            className="md:font-semibold font-normal md:text-base text-xs capitalize text-miru-dark-purple-1000"
-          >
+          <span className="md:font-semibold font-normal md:text-base text-xs capitalize text-miru-dark-purple-1000">
             {invoice.client.name}
           </span>
           <h3 className="md:text-sm text-xs font-normal text-miru-dark-purple-400">

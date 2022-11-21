@@ -6,7 +6,8 @@ const DEFAULT_STYLE = "rounded text-center";
 
 const PRIMARY =
   "bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 text-white  border border-miru-han-purple-1000 hover:border-miru-han-purple-600";
-const PRIMARY_DISABLED = "bg-miru-gray-1000 text-white border border-miru-gray-1000";
+const PRIMARY_DISABLED =
+  "bg-miru-gray-1000 text-white border border-miru-gray-1000";
 
 const SECONDARY =
   "bg-transparent hover:bg-miru-gray-1000 text-miru-han-purple-1000 border border-miru-han-purple-1000";
@@ -34,7 +35,7 @@ type ButtonProps = {
 const BUTTON_STYLES = {
   primary: "primary",
   secondary: "secondary",
-  ternary: "ternary"
+  ternary: "ternary",
 };
 const SIZES = { small: "small", medium: "medium", large: "large" };
 
@@ -45,7 +46,7 @@ const Button = ({
   className = "",
   fullWidth = false,
   onClick,
-  children
+  children,
 }: ButtonProps) => (
   <button
     className={classnames(

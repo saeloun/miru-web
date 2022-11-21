@@ -5,11 +5,4 @@ import SidePanel from "./SidePanel/index";
 import TimeInput from "./TimeInput";
 import Tooltip from "./Tooltip";
 
-export {
-  Avatar,
-  Badge,
-  Button,
-  SidePanel,
-  TimeInput,
-  Tooltip
-};
+export { Avatar, Badge, Button, SidePanel, TimeInput, Tooltip };

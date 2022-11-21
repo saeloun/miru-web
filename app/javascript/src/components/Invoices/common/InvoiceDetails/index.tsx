@@ -23,9 +23,10 @@ const InvoiceDetails = ({
   reference,
   setReference,
   optionSelected,
-  clientVisible
+  clientVisible,
 }) => {
-  const [showDateOfIssuePicker, setShowDateOfIssuePicker] = useState<boolean>(false);
+  const [showDateOfIssuePicker, setShowDateOfIssuePicker] =
+    useState<boolean>(false);
   const [showDueDatePicker, setShowDueDatePicker] = useState<boolean>(false);
   const wrapperRef = useRef(null);
 
@@ -57,11 +58,19 @@ const InvoiceDetails = ({
         <div className="hoverPencil">
           <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
             <span>Date of Issue</span>
-            <button className="ml-2 invisible" onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}>
+            <button
+              className="ml-2 invisible"
+              onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}
+            >
               <EditIcon size={13} color="#1D1A31" />
             </button>
           </p>
-          {showDateOfIssuePicker && <CustomDatePicker handleChange={handleDatePickerChange} date={issueDate} />}
+          {showDateOfIssuePicker && (
+            <CustomDatePicker
+              handleChange={handleDatePickerChange}
+              date={issueDate}
+            />
+          )}
           <p className="font-normal text-base text-miru-dark-purple-1000">
             {getIssuedDate}
           </p>
@@ -69,11 +78,19 @@ const InvoiceDetails = ({
         <div className="hoverPencil">
           <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4 flex">
             <span>Due Date</span>
-            <button className="ml-2 invisible" onClick={() => setShowDueDatePicker(!showDueDatePicker)}>
+            <button
+              className="ml-2 invisible"
+              onClick={() => setShowDueDatePicker(!showDueDatePicker)}
+            >
               <EditIcon size={13} color="#1D1A31" />
             </button>
           </p>
-          {showDueDatePicker && <CustomDatePicker handleChange={handleDueDatePicker} date={dueDate} />}
+          {showDueDatePicker && (
+            <CustomDatePicker
+              handleChange={handleDueDatePicker}
+              date={dueDate}
+            />
+          )}
           <p className="font-normal text-base text-miru-dark-purple-1000">
             {getDueDate}
           </p>
@@ -85,7 +102,13 @@ const InvoiceDetails = ({
           <p className="font-normal text-xs text-miru-dark-purple-1000">
             Invoice Number
           </p>
-          <input type="text" value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} className="px-2 w-3/5" data-cy="invoice-number"/>
+          <input
+            type="text"
+            value={invoiceNumber}
+            onChange={(e) => setInvoiceNumber(e.target.value)}
+            className="px-2 w-3/5"
+            data-cy="invoice-number"
+          />
         </div>
         <div className="flex flex-col">
           <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">

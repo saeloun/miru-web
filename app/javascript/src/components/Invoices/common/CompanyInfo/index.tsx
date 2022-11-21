@@ -1,6 +1,6 @@
 import React from "react";
 
-const CompanyInfo = ({ company, logo="" }) => {
+const CompanyInfo = ({ company, logo = "" }) => {
   const phoneNumber = company?.phoneNumber || company?.phone_number;
 
   return (
@@ -12,13 +12,16 @@ const CompanyInfo = ({ company, logo="" }) => {
             {company.name}
           </p>
           <p className="mt-1 font-normal text-base text-miru-dark-purple-1000">
-            {phoneNumber ? phoneNumber : company.business_phone }
+            {phoneNumber ? phoneNumber : company.business_phone}
           </p>
         </div>
       </div>
 
       <div className="font-normal text-base text-right text-miru-dark-purple-1000 w-72 overflow-y-auto">
-        <p className="whitespace-pre"> {company.address.split(",").join(",\n")} </p>
+        <p className="whitespace-pre">
+          {" "}
+          {company.address.split(",").join(",\n")}{" "}
+        </p>
         <p>{company.country}</p>
       </div>
     </div>

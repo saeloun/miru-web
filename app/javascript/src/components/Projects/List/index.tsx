@@ -17,9 +17,10 @@ import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
 
 export const ProjectList = ({ isAdminUser }) => {
-
-  const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
-  const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
+  const [showProjectModal, setShowProjectModal] =
+    React.useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] =
+    React.useState<boolean>(false);
   const [editProjectData, setEditProjectData] = React.useState<any>({});
   const [deleteProjectData, setDeleteProjectData] = React.useState({});
   const [projects, setProjects] = React.useState<IProject[]>([]);
@@ -54,22 +55,11 @@ export const ProjectList = ({ isAdminUser }) => {
               <table className="min-w-full divide-y divide-gray-200 mt-4">
                 <thead>
                   <tr>
-                    <th
-                      scope="col"
-                      className="table__header"
-                    >
+                    <th scope="col" className="table__header">
                       PROJECT/CLIENT
                     </th>
-                    <th
-                      scope="col"
-                      className="table__header"
-                    >
-
-                    </th>
-                    <th
-                      scope="col"
-                      className="table__header text-right"
-                    >
+                    <th scope="col" className="table__header"></th>
+                    <th scope="col" className="table__header text-right">
                       HOURS LOGGED
                     </th>
                     <th scope="col" className="table__header"></th>
@@ -95,13 +85,13 @@ export const ProjectList = ({ isAdminUser }) => {
         </div>
       </div>
 
-      {showProjectModal &&
+      {showProjectModal && (
         <AddEditProject
           setShowProjectModal={setShowProjectModal}
           setEditProjectData={setEditProjectData}
           editProjectData={editProjectData}
         />
-      }
+      )}
       {showDeleteDialog && (
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}

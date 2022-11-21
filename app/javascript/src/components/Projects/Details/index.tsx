@@ -8,7 +8,7 @@ import {
   ReportsIcon,
   PencilIcon,
   TeamsIcon,
-  DeleteIcon
+  DeleteIcon,
 } from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -30,13 +30,18 @@ import DeleteProject from "../Modals/DeleteProject";
 
 const ProjectDetails = () => {
   const [editProjectData, setEditProjectData] = React.useState<any>(null);
-  const [isHeaderMenuVisible, setHeaderMenuVisibility] = React.useState<boolean>(false);
+  const [isHeaderMenuVisible, setHeaderMenuVisibility] =
+    React.useState<boolean>(false);
   const [project, setProject] = React.useState<any>();
-  const [showAddMemberDialog, setShowAddMemberDialog] = React.useState<boolean>(false);
-  const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
-  const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
+  const [showAddMemberDialog, setShowAddMemberDialog] =
+    React.useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] =
+    React.useState<boolean>(false);
+  const [showProjectModal, setShowProjectModal] =
+    React.useState<boolean>(false);
   const [timeframe, setTimeframe] = React.useState<any>("week");
-  const [overdueOutstandingAmount, setOverDueOutstandingAmt]= React.useState<any>(null);
+  const [overdueOutstandingAmount, setOverDueOutstandingAmt] =
+    React.useState<any>(null);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -70,7 +75,8 @@ const ProjectDetails = () => {
         ),
         col2: (
           <div className="text-base text-miru-dark-purple-1000 text-right">
-            {currencySymb}{member.hourlyRate}
+            {currencySymb}
+            {member.hourlyRate}
           </div>
         ),
         col3: (
@@ -80,9 +86,10 @@ const ProjectDetails = () => {
         ),
         col4: (
           <div className="text-lg font-bold text-miru-dark-purple-1000 text-right">
-            {currencySymb}{(Number(member.cost)).toFixed(2)}
+            {currencySymb}
+            {Number(member.cost).toFixed(2)}
           </div>
-        )
+        ),
       }));
     }
   };
@@ -101,33 +108,38 @@ const ProjectDetails = () => {
     {
       Header: "TEAM MEMBER",
       accessor: "col1", // accessor is the "key" in the data
-      cssClass: ""
+      cssClass: "",
     },
     {
       Header: "HOURLY RATE",
       accessor: "col2",
-      cssClass: "text-right"
+      cssClass: "text-right",
     },
     {
       Header: "HOURS LOGGED",
       accessor: "col3",
-      cssClass: "text-right" // accessor is the "key" in the data
+      cssClass: "text-right", // accessor is the "key" in the data
     },
     {
       Header: "COST",
       accessor: "col4",
-      cssClass: "text-right" // accessor is the "key" in the data
-    }
+      cssClass: "text-right", // accessor is the "key" in the data
+    },
   ];
 
-  const amountBox = [{
-    title: "OVERDUE",
-    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount)
-  },
-  {
-    title: "OUTSTANDING",
-    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.outstanding_amount)
-  }];
+  const amountBox = [
+    {
+      title: "OVERDUE",
+      amount:
+        currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount),
+    },
+    {
+      title: "OUTSTANDING",
+      amount:
+        currencySymb +
+        cashFormatter(overdueOutstandingAmount?.outstanding_amount),
+    },
+  ];
 
   const handleMenuVisibility = () => {
     setHeaderMenuVisibility(!isHeaderMenuVisible);
@@ -148,7 +160,7 @@ const ProjectDetails = () => {
       id: project.id,
       isBillable: project.is_billable,
       name: project.name,
-      client: project.client
+      client: project.client,
     });
   };
 
@@ -176,10 +188,12 @@ const ProjectDetails = () => {
               {project?.name}
             </h2>
             {project?.is_billable && (
-              <Badge text="billable"
+              <Badge
+                text="billable"
                 bgColor="bg-miru-han-purple-100"
                 color="text-miru-han-purple-1000"
-                className="rounded-xl tracking-wide uppercase" />
+                className="rounded-xl tracking-wide uppercase"
+              />
             )}
           </div>
           <div className="relative h-8">
@@ -196,8 +210,8 @@ const ProjectDetails = () => {
                     onClick={() =>
                       document.location.assign(
                         window.location.origin +
-                        "/invoices/generate?" +
-                        project.client.name
+                          "/invoices/generate?" +
+                          project.client.name
                       )
                     }
                     className="menuButton__list-item"
@@ -258,7 +272,7 @@ const ProjectDetails = () => {
               m-0
               focus:outline-none
               text-miru-han-purple-1000"
-            onChange={ ({ target: { value } }) => setTimeframe(value) }
+            onChange={({ target: { value } }) => setTimeframe(value)}
           >
             <option className="text-miru-dark-purple-600" value="week">
               THIS WEEK

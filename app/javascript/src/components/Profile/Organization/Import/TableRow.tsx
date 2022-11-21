@@ -4,12 +4,7 @@ import Select from "react-select";
 
 import { reactSelectStyles } from "./Styles";
 
-const TableRow = ({
-  id,
-  field,
-  column,
-  handleColumnChange
-}) => (
+const TableRow = ({ id, field, column, handleColumnChange }) => (
   <Fragment>
     <tr className="last:border-b-0 group">
       <td className="text-xs font-normal text-miru-dark-purple-1000	">
@@ -26,7 +21,7 @@ const TableRow = ({
           bg-miru-gray-100
           styles={reactSelectStyles.columnOptions}
           components={{
-            IndicatorSeparator: () => null
+            IndicatorSeparator: () => null,
           }}
         />
       </td>

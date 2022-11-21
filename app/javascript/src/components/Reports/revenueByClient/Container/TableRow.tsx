@@ -4,11 +4,9 @@ import { currencyFormat } from "helpers";
 
 import { RevenueByClients } from "../interface";
 
-const TableRow = ({
-  currency,
-  report
-}) => {
-  const { id, name, unpaidAmount, paidAmount, totalAmount }: RevenueByClients = report;
+const TableRow = ({ currency, report }) => {
+  const { id, name, unpaidAmount, paidAmount, totalAmount }: RevenueByClients =
+    report;
   return (
     <tr key={id} className="flex flex-row items-center">
       <td className="w-3/5 pr-6 py-4 text-left whitespace-nowrap">

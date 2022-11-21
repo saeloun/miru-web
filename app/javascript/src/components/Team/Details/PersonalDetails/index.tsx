@@ -13,7 +13,7 @@ const PersonalDetails = () => {
       name: "Jane Cooper",
       dob: "04. 05. 1989",
       phone: "+123345234",
-      email: "jane.cooper@gmail.com"
+      email: "jane.cooper@gmail.com",
     });
   }, []);
 

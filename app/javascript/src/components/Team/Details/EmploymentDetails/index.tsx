@@ -15,12 +15,14 @@ const EmploymentDetails = () => {
         emailId: "jane@saeloun.com",
         employeeType: "Salaried Employee",
         doj: "01. 08. 2021",
-        dor: ""
+        dor: "",
       },
-      previousEmployment: [{
-        name: "Infosys",
-        role: "Software Developer"
-      }]
+      previousEmployment: [
+        {
+          name: "Infosys",
+          role: "Software Developer",
+        },
+      ],
     });
   }, []);
 

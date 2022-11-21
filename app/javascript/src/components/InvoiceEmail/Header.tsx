@@ -23,8 +23,14 @@ const Header = ({ invoice, stripeUrl }) => (
         <button
           disabled={invoice.status == "paid"}
           className={`flex flex-row justify-center items-center rounded h-10 w-44
-            ${invoice.status == "paid" ? "bg-indigo-100 cursor-not-allowed" : "bg-miru-han-purple-1000" }`}
-          onClick={() => {invoice.status != "paid" && (location.href = stripeUrl);}}
+            ${
+              invoice.status == "paid"
+                ? "bg-indigo-100 cursor-not-allowed"
+                : "bg-miru-han-purple-1000"
+            }`}
+          onClick={() => {
+            invoice.status != "paid" && (location.href = stripeUrl);
+          }}
         >
           <div className="flex flex-row justify-between items-center">
             <div className="mr-1">

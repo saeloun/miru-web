@@ -27,8 +27,7 @@ const WeeklyEntriesCard = ({
   dayInfo,
   isWeeklyEditing,
   setIsWeeklyEditing,
-  selectedEmployeeId
-
+  selectedEmployeeId,
 }: Iprops) => {
   const [selectedInputBox, setSelectedInputBox] = useState<number>(-1);
   const [note, setNote] = useState<string>("");
@@ -42,11 +41,11 @@ const WeeklyEntriesCard = ({
     project_id: currentProjectId,
     duration: minFromHHMM(duration),
     bill_status: billable ? "unbilled" : "non_billable",
-    note: note
+    note: note,
   });
 
   const handleUpdateRow = (entry) => {
-    setCurrentEntries(prevState => {
+    setCurrentEntries((prevState) => {
       const newState: any = [...prevState];
       newState[selectedInputBox] = entry;
       return newState;
@@ -58,18 +57,12 @@ const WeeklyEntriesCard = ({
     if (isWeeklyEditing) return;
     setSelectedInputBox(num);
     setShowNote(true);
-    setNote(
-      currentEntries[num] ? currentEntries[num]["note"] : ""
-    );
+    setNote(currentEntries[num] ? currentEntries[num]["note"] : "");
     setDuration(
-      minToHHMM(
-        currentEntries[num] ? currentEntries[num]["duration"] : 0
-      )
+      minToHHMM(currentEntries[num] ? currentEntries[num]["duration"] : 0)
     );
     currentEntries[num] &&
-      ["unbilled", "billed"].includes(
-        currentEntries[num]["bill_status"]
-      )
+    ["unbilled", "billed"].includes(currentEntries[num]["bill_status"])
       ? setBillable(true)
       : setBillable(false);
     setIsWeeklyEditing(true);
@@ -86,12 +79,12 @@ const WeeklyEntriesCard = ({
       payload["work_date"] = dayInfo[selectedInputBox]["fullDate"];
       const res = await timesheetEntryApi.create(payload, selectedEmployeeId);
       if (res.status === 200) {
-        setEntryList(prevState => {
+        setEntryList((prevState) => {
           const newState: any = { ...prevState };
           if (newState[res.data.entry.work_date]) {
             newState[res.data.entry.work_date] = [
               ...newState[res.data.entry.work_date],
-              res.data.entry
+              res.data.entry,
             ];
           } else {
             newState[res.data.entry.work_date] = [res.data.entry];
@@ -120,11 +113,11 @@ const WeeklyEntriesCard = ({
       }
       const res = await timesheetEntryApi.update(timesheetEntryId, payload);
       if (res.status === 200) {
-        setEntryList(prevState => {
+        setEntryList((prevState) => {
           const newState: any = { ...prevState };
           newState[res.data.entry.work_date] = newState[
             res.data.entry.work_date
-          ].map(entry =>
+          ].map((entry) =>
             entry.id === res.data.entry.id ? res.data.entry : entry
           );
           return newState;
@@ -181,7 +174,7 @@ const WeeklyEntriesCard = ({
                 key={num}
                 id="selectedInput"
                 value={duration}
-                onChange={e => {
+                onChange={(e) => {
                   setDataChanged(true);
                   setDuration(e.target.value);
                 }}
@@ -191,7 +184,11 @@ const WeeklyEntriesCard = ({
               <div
                 key={num}
                 onClick={() => handleDurationClick(num)}
-                className={`bold text-xl content-center px-1 py-4 w-18 h-15 border-2 border-transparent rounded bg-miru-gray-100 ${currentEntries[num] ? "text-miru-gray-500" : "text-miru-dark-purple-200"}`}
+                className={`bold text-xl content-center px-1 py-4 w-18 h-15 border-2 border-transparent rounded bg-miru-gray-100 ${
+                  currentEntries[num]
+                    ? "text-miru-gray-500"
+                    : "text-miru-dark-purple-200"
+                }`}
               >
                 {currentEntries[num]
                   ? minToHHMM(currentEntries[num]["duration"])
@@ -200,12 +197,13 @@ const WeeklyEntriesCard = ({
             )
           )}
         </div>
-        <div className="text-xl font-bold">
-          {minToHHMM(weeklyTotalHours)}
-        </div>
+        <div className="text-xl font-bold">{minToHHMM(weeklyTotalHours)}</div>
         <div className="flex justify-around">
           <img
-            onClick={() => {if (! isWeeklyEditing) setProjectSelected(false); setIsWeeklyEditing(true); }}
+            onClick={() => {
+              if (!isWeeklyEditing) setProjectSelected(false);
+              setIsWeeklyEditing(true);
+            }}
             src={editIcon}
             alt="edit"
             className="icon-hover ml-8 cursor-pointer w-4 h-4"
@@ -222,7 +220,7 @@ const WeeklyEntriesCard = ({
         <div className="mt-4 mx-54 justify-between bg-miru-gray-100 w-138 border border-miru-gray-1000 rounded">
           <textarea
             value={note}
-            onChange={e => {
+            onChange={(e) => {
               setNote(e.target.value);
               setDataChanged(true);
               setDataChanged(true);
@@ -269,30 +267,31 @@ const WeeklyEntriesCard = ({
               >
                 CANCEL
               </button>
-              {currentEntries[selectedInputBox] ?
+              {currentEntries[selectedInputBox] ? (
                 <button
                   className={
                     "m-2 mb-1 inline-block h-6 w-30 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-                  (dataChanged && duration
-                    ? "bg-miru-han-purple-1000 hover:border-transparent"
-                    : "bg-miru-gray-1000")
+                    (dataChanged && duration
+                      ? "bg-miru-han-purple-1000 hover:border-transparent"
+                      : "bg-miru-gray-1000")
                   }
                   onClick={handleUpdateEntry}
                 >
-                UPDATE
+                  UPDATE
                 </button>
-                :
+              ) : (
                 <button
                   className={
                     "m-2 mb-1 inline-block h-6 w-30 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-                  (dataChanged && duration
-                    ? "bg-miru-han-purple-1000 hover:border-transparent"
-                    : "bg-miru-gray-1000")
+                    (dataChanged && duration
+                      ? "bg-miru-han-purple-1000 hover:border-transparent"
+                      : "bg-miru-gray-1000")
                   }
                   onClick={handleSaveEntry}
                 >
-                SAVE
-                </button>}
+                  SAVE
+                </button>
+              )}
             </div>
           </div>
         </div>

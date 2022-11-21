@@ -2,9 +2,7 @@ import React, { useState } from "react";
 
 import { DownloadSimpleIcon } from "miruIcons";
 
-const TableRow = ({
-  data
-}) => {
+const TableRow = ({ data }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
 
   return (

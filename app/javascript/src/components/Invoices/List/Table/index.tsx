@@ -10,9 +10,8 @@ const Table = ({
   selectedInvoices,
   setShowDeleteDialog,
   setInvoiceToDelete,
-  fetchInvoices
+  fetchInvoices,
 }) => (
-
   <table className="min-w-full mt-4 divide-y divide-gray-200 overflow-x-scroll">
     <thead>
       <TableHeader
@@ -23,7 +22,10 @@ const Table = ({
       />
     </thead>
 
-    <tbody className="min-w-full bg-white divide-y divide-gray-200" data-cy="invoices-list">
+    <tbody
+      className="min-w-full bg-white divide-y divide-gray-200"
+      data-cy="invoices-list"
+    >
       {invoices.map((invoice) => (
         <TableRow
           key={invoice.id}

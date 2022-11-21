@@ -6,7 +6,7 @@ const InvoiceSummary = ({
   summary,
   baseCurrency,
   filterParams,
-  setFilterParams
+  setFilterParams,
 }) => {
   const formattedAmount = (amount) =>
     currencyNotationFormat({ baseCurrency: baseCurrency, amount });
@@ -14,7 +14,7 @@ const InvoiceSummary = ({
   const applyFilter = (status) => {
     setFilterParams({
       ...filterParams,
-      ["status"]: status
+      ["status"]: status,
     });
   };
 
@@ -38,7 +38,7 @@ const InvoiceSummary = ({
             applyFilter([
               { value: "sent", label: "SENT" },
               { value: "viewed", label: "VIEWED" },
-              { value: "overdue", label: "OVERDUE" }
+              { value: "overdue", label: "OVERDUE" },
             ])
           }
           className="page-display__box mt-8 md:mt-0 flex items-center md:items-start cursor-pointer"

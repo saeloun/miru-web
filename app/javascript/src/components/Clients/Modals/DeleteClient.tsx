@@ -10,10 +10,9 @@ interface IProps {
 }
 
 const DeleteClient = ({ client, setShowDeleteDialog }: IProps) => {
-
   const navigate = useNavigate();
 
-  const deleteClient = async client => {
+  const deleteClient = async (client) => {
     await clientApi.destroy(client.id);
     setShowDeleteDialog(false);
     window.location.pathname == "/clients" ? navigate(0) : navigate("/clients");
@@ -23,7 +22,7 @@ const DeleteClient = ({ client, setShowDeleteDialog }: IProps) => {
       <div
         className="overflow-auto fixed top-0 left-0 right-0 bottom-0 inset-0 z-10 flex items-start justify-center"
         style={{
-          backgroundColor: "rgba(29, 26, 49, 0.6)"
+          backgroundColor: "rgba(29, 26, 49, 0.6)",
         }}
       >
         <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">

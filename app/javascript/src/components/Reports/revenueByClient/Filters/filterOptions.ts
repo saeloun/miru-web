@@ -24,8 +24,9 @@ const getQuarter = (isCurrentQuarter) => {
     quarter -= 1;
   }
 
-  return isCurrentQuarter ? `This Quarter (${quarters[quarter].startDay} - ${quarters[quarter].endDay})`:
-    `Last Quarter (${quarters[quarter].startDay} - ${quarters[quarter].endDay})`;
+  return isCurrentQuarter
+    ? `This Quarter (${quarters[quarter].startDay} - ${quarters[quarter].endDay})`
+    : `Last Quarter (${quarters[quarter].startDay} - ${quarters[quarter].endDay})`;
 };
 
 const getDateRangeOptions = () => {
@@ -37,18 +38,12 @@ const getDateRangeOptions = () => {
     { value: "last_quarter", label: previousQuarter },
     { value: "this_year", label: "This Year" },
     { value: "last_year", label: "Last Year" },
-    { value: "custom", label: "Custom" }
+    { value: "custom", label: "Custom" },
   ];
 };
 
-const dateRangeOptions = [
-  ...getDateRangeOptions()
-];
+const dateRangeOptions = [...getDateRangeOptions()];
 
 const customDateFilter = "customDateFilter";
 
-export {
-  dateRangeOptions,
-  customDateFilter,
-  getQuarter
-};
+export { dateRangeOptions, customDateFilter, getQuarter };

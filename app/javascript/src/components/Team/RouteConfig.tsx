@@ -1,9 +1,6 @@
 import React from "react";
 
-import {
-  Route,
-  Routes
-} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 // import Details from "./Details";
 // import CompensationDetails from "./Details/CompensationDetails";
@@ -16,7 +13,8 @@ import List from "./List";
 
 const RouteConfig = () => (
   <Routes>
-    <Route path="*" element={<List />} /> {/* TODO: set to index and display personalDetails */}
+    <Route path="*" element={<List />} />{" "}
+    {/* TODO: set to index and display personalDetails */}
     {/* <Route path=":memberId" element={<Details />}>
         <Route index element={<PersonalDetails />} />
         <Route path="devices" element={<DeviceDetails />} />

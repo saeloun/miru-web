@@ -17,7 +17,7 @@ export const Project = ({
   setShowProjectModal,
   setEditProjectData,
   setShowDeleteDialog,
-  setDeleteProjectData
+  setDeleteProjectData,
 }: IProject) => {
   const [grayColor, setGrayColor] = React.useState<string>("");
   const [isHover, setHover] = React.useState<boolean>(false);
@@ -37,56 +37,59 @@ export const Project = ({
   };
 
   return (
-    <tr key={id}
+    <tr
+      key={id}
       className={`last:border-b-0 ${grayColor}`}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-      onClick={() => isAdminUser ? projectClickHandler(id) : () => {}} // eslint-disable-line
+      onClick={() => (isAdminUser ? projectClickHandler(id) : () => {})} // eslint-disable-line
     >
       <td className="table__cell text-base">
-        <div className="flex items-center justify-between">
-          {name}
-        </div>
+        <div className="flex items-center justify-between">{name}</div>
         <p className="max-h-32 overflow-auto text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
           {clientName}
         </p>
       </td>
       <td className="table__cell text-right">
-        {isBillable &&(
-          <Badge text="billable"
+        {isBillable && (
+          <Badge
+            text="billable"
             bgColor="bg-miru-han-purple-100"
             color="text-miru-han-purple-1000"
-            className="px-1 tracking-widest rounded-lg capitalize" />
+            className="px-1 tracking-widest rounded-lg capitalize"
+          />
         )}
       </td>
       <td className="table__cell text-xl text-right font-bold">
         {minToHHMM(minutesSpent)}
       </td>
       <td className="table__cell px-3 py-3">
-        {isAdminUser && isHover && <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setShowProjectModal(true);
-            setEditProjectData({ id, name, clientName, isBillable });
-          }}
-        >
-          <PenIcon size={16} color="#5B34EA" />
-        </button>
-        }
+        {isAdminUser && isHover && (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowProjectModal(true);
+              setEditProjectData({ id, name, clientName, isBillable });
+            }}
+          >
+            <PenIcon size={16} color="#5B34EA" />
+          </button>
+        )}
       </td>
       <td className="table__cell px-3 py-3">
-        {isAdminUser && isHover && <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setShowDeleteDialog(true);
-            setDeleteProjectData({ id, name });
-          }}
-        >
-          <DeleteIcon size={16} color="#5B34EA" />
-        </button>
-        }
+        {isAdminUser && isHover && (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowDeleteDialog(true);
+              setDeleteProjectData({ id, name });
+            }}
+          >
+            <DeleteIcon size={16} color="#5B34EA" />
+          </button>
+        )}
       </td>
     </tr>
   );

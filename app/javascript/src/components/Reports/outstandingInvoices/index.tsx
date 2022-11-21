@@ -16,7 +16,7 @@ import Header from "../Header";
 const OutstandingInvoiceReport = () => {
   const filterIntialValues = {
     dateRange: { label: "All", value: "" },
-    clients: []
+    clients: [],
   };
 
   const [filterOptions, getFilterOptions] = useState({ clients: [] }); //eslint-disable-line
@@ -26,12 +26,14 @@ const OutstandingInvoiceReport = () => {
   const [filterCounter, setFilterCounter] = useState(0);
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
   const [selectedInput, setSelectedInput] = useState("from-input");
-  const [clientList, setClientList] = useState<Array<OutstandingOverdueInvoice>>([]);
+  const [clientList, setClientList] = useState<
+    Array<OutstandingOverdueInvoice>
+  >([]);
   const [currency, setCurrency] = useState("");
   const [summary, setSummary] = useState({
     totalInvoiceAmount: 0,
     totalOutstandingAmount: 0,
-    totalOverdueAmount: 0
+    totalOverdueAmount: 0,
   });
 
   useEffect(() => {
@@ -60,7 +62,7 @@ const OutstandingInvoiceReport = () => {
   const handleRemoveSingleFilter = (key, value) => {
     const filterValue = selectedFilter[key];
     if (Array.isArray(filterValue)) {
-      const closedFilter = filterValue.filter(item => item.label !== value);
+      const closedFilter = filterValue.filter((item) => item.label !== value);
       setSelectedFilter({ ...selectedFilter, [key]: closedFilter });
     } else {
       const label = key === "dateRange" ? "All" : "None";
@@ -70,7 +72,14 @@ const OutstandingInvoiceReport = () => {
 
   useEffect(() => {
     // updateFilterCounter();
-    getReportData({ selectedFilter, setClientList, setNavFilters, setFilterVisibilty, setSummary, setCurrency });
+    getReportData({
+      selectedFilter,
+      setClientList,
+      setNavFilters,
+      setFilterVisibilty,
+      setSummary,
+      setCurrency,
+    });
   }, [selectedFilter]);
 
   const contextValues = {
@@ -78,20 +87,20 @@ const OutstandingInvoiceReport = () => {
     revenueByClientReport: RevenueByClientReportContext,
     outstandingOverdueInvoice: {
       filterOptions: {
-        clients: []
+        clients: [],
       },
       selectedFilter: selectedFilter,
       customDateFilter: {
         from: dateRange.from,
-        to: dateRange.to
+        to: dateRange.to,
       },
       filterCounter: filterCounter,
       clientList: clientList,
       handleRemoveSingleFilter: handleRemoveSingleFilter, //eslint-disable-line
       currency: currency,
-      summary: summary
+      summary: summary,
     },
-    currentReport: "outstandingOverdueInvoiceReport"
+    currentReport: "outstandingOverdueInvoiceReport",
   };
 
   const handleApplyFilter = (filters) => {
@@ -116,9 +125,11 @@ const OutstandingInvoiceReport = () => {
 
   return (
     <div>
-      <EntryContext.Provider value={{
-        ...contextValues
-      }}>
+      <EntryContext.Provider
+        value={{
+          ...contextValues,
+        }}
+      >
         <Header
           showNavFilters={showNavFilters}
           setFilterVisibilty={setFilterVisibilty}
@@ -129,15 +140,17 @@ const OutstandingInvoiceReport = () => {
           type={"Invoices Report"}
         />
         <Container />
-        {false && <Filters
-          handleApplyFilter={handleApplyFilter}
-          resetFilter={resetFilter}
-          setFilterVisibilty={setFilterVisibilty}
-          onClickInput={onClickInput}
-          handleSelectDate={handleSelectDate}
-          selectedInput={selectedInput}
-          dateRange={dateRange}
-        />}
+        {false && (
+          <Filters
+            handleApplyFilter={handleApplyFilter}
+            resetFilter={resetFilter}
+            setFilterVisibilty={setFilterVisibilty}
+            onClickInput={onClickInput}
+            handleSelectDate={handleSelectDate}
+            selectedInput={selectedInput}
+            dateRange={dateRange}
+          />
+        )}
       </EntryContext.Provider>
     </div>
   );

@@ -3,12 +3,11 @@ import React, { useState } from "react";
 import Select from "react-select";
 
 const FilterSelect = ({ option, placeholder }) => {
-
   const [selectedOption, setSelectedOption] = useState<any>();
   return (
     <Select
       defaultValue={selectedOption}
-      onChange={e => {
+      onChange={(e) => {
         setSelectedOption(e);
       }}
       options={option}
@@ -16,7 +15,7 @@ const FilterSelect = ({ option, placeholder }) => {
       isSearchable={true}
       className="w-40 bg-miru-gray-100 rounded text-sm font-medium"
       components={{
-        IndicatorSeparator: () => null
+        IndicatorSeparator: () => null,
       }}
     />
   );

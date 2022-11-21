@@ -9,25 +9,34 @@ import EntryContext from "./context/EntryContext";
 import RouteConfig from "./RouteConfig";
 import SideNav from "./SubNav";
 
-const Layout = ( { isAdminUser, user, company } ) => {
+const Layout = ({ isAdminUser, user, company }) => {
   const [settingsStates, setSettingsStates] = useState({
-    profileSettings: { firstName: user.first_name, lastName: user.last_name, email: user.email },
+    profileSettings: {
+      firstName: user.first_name,
+      lastName: user.last_name,
+      email: user.email,
+    },
     organizationSettings: {},
     bankAccDetails: {},
     paymentSettings: {},
-    billing: {}
+    billing: {},
   });
 
   const setUserState = (key, value) => {
-    setSettingsStates({ ...settingsStates, ...{ [key]: { ...settingsStates[key], ...value } } });
+    setSettingsStates({
+      ...settingsStates,
+      ...{ [key]: { ...settingsStates[key], ...value } },
+    });
   };
 
   return (
     <React.Fragment>
-      <EntryContext.Provider value={{
-        ...settingsStates,
-        setUserState
-      }}>
+      <EntryContext.Provider
+        value={{
+          ...settingsStates,
+          setUserState,
+        }}
+      >
         <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
           <h2 className="header__title">Settings</h2>
         </div>

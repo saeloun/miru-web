@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   const all_modals = ["main-modal", "another-modal"];
-  all_modals.forEach(modal => {
+  all_modals.forEach((modal) => {
     const modalSelected = document.querySelector("." + modal);
     if (modalSelected === undefined || modalSelected === null) return;
 
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     modalSelected.style.display = "none";
   });
 
-  const modalClose = modal => {
+  const modalClose = (modal) => {
     const modalToClose = document.querySelector("." + modal);
     modalToClose.classList.remove("fadeIn");
     modalToClose.classList.add("fadeOut");
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 500);
   };
 
-  const openModal = modal => {
+  const openModal = (modal) => {
     const modalToOpen = document.querySelector("." + modal);
     modalToOpen.classList.remove("fadeOut");
     modalToOpen.classList.add("fadeIn");
@@ -32,22 +32,22 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   const newUserBtn = document.querySelector(
-    "a[data-team-element=\"new-user-btn\"]"
+    'a[data-team-element="new-user-btn"]'
   );
   const inviteModalClose = document.querySelector(
-    "div[data-team-element=\"invite-modal-close\"]"
+    'div[data-team-element="invite-modal-close"]'
   );
   const inviteModalCloseBtn = document.querySelector(
-    "button[data-team-element=\"invite-modal-close-btn\"]"
+    'button[data-team-element="invite-modal-close-btn"]'
   );
   const teamModalClose = document.querySelector(
-    "div[data-team-element=\"modal-close\"]"
+    'div[data-team-element="modal-close"]'
   );
   const editMembers = document.querySelectorAll(
-    "img[data-team-element=\"edit-member\"]"
+    'img[data-team-element="edit-member"]'
   );
   const editInvitations = document.querySelectorAll(
-    "img[data-invitation-element=\"edit-invitation\"]"
+    'img[data-invitation-element="edit-invitation"]'
   );
 
   if (newUserBtn)
@@ -59,11 +59,11 @@ document.addEventListener("DOMContentLoaded", function () {
   if (teamModalClose)
     teamModalClose.addEventListener("click", () => modalClose("another-modal"));
 
-  editMembers.forEach(editMember => {
+  editMembers.forEach((editMember) => {
     editMember.addEventListener("click", () => openModal("another-modal"));
   });
 
-  editInvitations.forEach(editMember => {
+  editInvitations.forEach((editMember) => {
     editMember.addEventListener("click", () => openModal("main-modal"));
   });
 });

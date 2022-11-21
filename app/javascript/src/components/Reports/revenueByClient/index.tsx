@@ -14,9 +14,10 @@ import TimeEntryReportContext from "../context/TimeEntryReportContext";
 import Header from "../Header";
 
 const RevenueByClientReport = () => {
-  const filterIntialValues = { // TODO: fix typo filterInitialValues
+  const filterIntialValues = {
+    // TODO: fix typo filterInitialValues
     dateRange: { label: "All", value: "" },
-    clients: [{ label: "All Clients", value: "" }]
+    clients: [{ label: "All Clients", value: "" }],
   };
 
   const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
@@ -30,7 +31,7 @@ const RevenueByClientReport = () => {
   const [summary, setSummary] = useState({
     totalPaidAmount: 0,
     totalUnpaidAmount: 0,
-    totalRevenue: 0
+    totalRevenue: 0,
   });
 
   useEffect(() => {
@@ -60,17 +61,29 @@ const RevenueByClientReport = () => {
     const filterValue = selectedFilter[key];
 
     if (Array.isArray(filterValue) && filterValue.length > 1) {
-      const closedFilter = filterValue.filter(item => item.label !== value);
+      const closedFilter = filterValue.filter((item) => item.label !== value);
       setSelectedFilter({ ...selectedFilter, [key]: closedFilter });
     } else {
       const label = key === "dateRange" ? "All" : "All Clients";
-      setSelectedFilter((prevState) => ( { ...prevState, [key]: key === "dateRange" ? { label, value: "" } : [{ label, value: "" }] } ));
+      setSelectedFilter((prevState) => ({
+        ...prevState,
+        [key]:
+          key === "dateRange" ? { label, value: "" } : [{ label, value: "" }],
+      }));
     }
   };
 
   useEffect(() => {
     updateFilterCounter();
-    getReportData({ selectedFilter, setClientList, setNavFilters, setFilterVisibilty, setSummary, setCurrency, customDate: dateRange });
+    getReportData({
+      selectedFilter,
+      setClientList,
+      setNavFilters,
+      setFilterVisibilty,
+      setSummary,
+      setCurrency,
+      customDate: dateRange,
+    });
   }, [selectedFilter]);
 
   const contextValues = {
@@ -78,20 +91,20 @@ const RevenueByClientReport = () => {
     outstandingOverdueInvoice: OutstandingOverdueInvoiceContext,
     revenueByClientReport: {
       filterOptions: {
-        clients: [{ label: "All Clients", value: "" }]
+        clients: [{ label: "All Clients", value: "" }],
       },
       selectedFilter: selectedFilter,
       customDateFilter: {
         from: dateRange.from,
-        to: dateRange.to
+        to: dateRange.to,
       },
       filterCounter: filterCounter,
       clientList: clientList,
       handleRemoveSingleFilter: handleRemoveSingleFilter, //eslint-disable-line
       currency: currency,
-      summary: summary
+      summary: summary,
     },
-    currentReport: "RevenueByClientReport"
+    currentReport: "RevenueByClientReport",
   };
 
   const handleApplyFilter = (filters) => {
@@ -116,9 +129,11 @@ const RevenueByClientReport = () => {
 
   return (
     <div>
-      <EntryContext.Provider value={{
-        ...contextValues
-      }}>
+      <EntryContext.Provider
+        value={{
+          ...contextValues,
+        }}
+      >
         <Header
           showNavFilters={showNavFilters}
           setFilterVisibilty={setFilterVisibilty}
@@ -129,16 +144,18 @@ const RevenueByClientReport = () => {
           type={"Revenue Report"}
         />
         <Container />
-        {isFilterVisible && <Filters
-          selectedFilter={selectedFilter}
-          handleApplyFilter={handleApplyFilter}
-          resetFilter={resetFilter}
-          setFilterVisibilty={setFilterVisibilty}
-          onClickInput={onClickInput}
-          handleSelectDate={handleSelectDate}
-          selectedInput={selectedInput}
-          dateRange={dateRange}
-        />}
+        {isFilterVisible && (
+          <Filters
+            selectedFilter={selectedFilter}
+            handleApplyFilter={handleApplyFilter}
+            resetFilter={resetFilter}
+            setFilterVisibilty={setFilterVisibilty}
+            onClickInput={onClickInput}
+            handleSelectDate={handleSelectDate}
+            selectedInput={selectedInput}
+            dateRange={dateRange}
+          />
+        )}
       </EntryContext.Provider>
     </div>
   );

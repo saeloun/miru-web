@@ -32,18 +32,14 @@ const InvoiceLineItems = ({ currency, items, showHeader }) => {
       <table className="w-full table-fixed">
         {showHeader ? getHeader() : null}
         <tbody className="w-full">
-          {items.length > 0
-            && items.map(item => (
+          {items.length > 0 &&
+            items.map((item) =>
               item._destroy ? (
                 <></>
               ) : (
-                <LineItem
-                  currency={currency}
-                  key={item.id}
-                  item={item}
-                />
+                <LineItem currency={currency} key={item.id} item={item} />
               )
-            ))}
+            )}
         </tbody>
       </table>
     </div>

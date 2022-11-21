@@ -3,14 +3,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { lineTotalCalc, minFromHHMM, minToHHMM } from "helpers";
 import { DeleteIcon } from "miruIcons";
 
-const ManualEntry = ({
-  entry,
-  manualEntryArr,
-  setManualEntryArr
-}) => {
+const ManualEntry = ({ entry, manualEntryArr, setManualEntryArr }) => {
   const [name, setName] = useState<string>(entry.name || "");
   const [date, setDate] = useState<string>(entry.date || "");
-  const [description, setDescription] = useState<string>(entry.description || "");
+  const [description, setDescription] = useState<string>(
+    entry.description || ""
+  );
   const [rate, setRate] = useState<number>(entry.rate || 0);
   const [quantity, setQuantity] = useState<any>(entry.quantity || 0);
   const [lineTotal, setLineTotal] = useState<string>(entry.lineTotal || 0);
@@ -20,14 +18,15 @@ const ManualEntry = ({
 
   useEffect(() => {
     if (entry.idx) {
-      setLineItem({ ...lineItem,
+      setLineItem({
+        ...lineItem,
         idx: entry.idx,
         name,
         date,
         description,
         rate,
         quantity,
-        lineTotal
+        lineTotal,
       });
     }
   }, [name, date, description, rate, quantity, lineTotal]);
@@ -47,7 +46,9 @@ const ManualEntry = ({
   const handleDelete = async () => {
     const tempManualEntryArr = [...manualEntryArr];
 
-    const indexOfItem = tempManualEntryArr.findIndex(object => object.idx === entry.idx);
+    const indexOfItem = tempManualEntryArr.findIndex(
+      (object) => object.idx === entry.idx
+    );
     indexOfItem !== -1 && tempManualEntryArr.splice(indexOfItem, 1);
 
     await setManualEntryArr(tempManualEntryArr);
@@ -73,7 +74,7 @@ const ManualEntry = ({
           placeholder="Name"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
         />
       </td>
       <td className="w-full">
@@ -84,7 +85,7 @@ const ManualEntry = ({
           onFocus={(e) => (e.target.type = "date")}
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={date}
-          onChange={e => setDate(e.target.value)}
+          onChange={(e) => setDate(e.target.value)}
         />
       </td>
       <td className="p-1 w-full">
@@ -93,7 +94,7 @@ const ManualEntry = ({
           placeholder="Description"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={description}
-          onChange={e => setDescription(e.target.value)}
+          onChange={(e) => setDescription(e.target.value)}
         />
       </td>
       <td className=" w-full">
@@ -118,7 +119,10 @@ const ManualEntry = ({
         {entry.lineTotal}
       </td>
       <td>
-        <button onClick={handleDelete} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
+        <button
+          onClick={handleDelete}
+          className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100"
+        >
           <DeleteIcon size={16} color="#E04646" weight="bold" />
         </button>
       </td>

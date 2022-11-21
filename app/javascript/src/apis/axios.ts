@@ -16,12 +16,12 @@ export const setAuthHeaders = () => {
     Accept: "application/json",
     "Content-Type": "application/json",
     "X-CSRF-TOKEN": document
-      .querySelector("[name=\"csrf-token\"]")
-      .getAttribute("content")
+      .querySelector('[name="csrf-token"]')
+      .getAttribute("content"),
   } as CommonHeaderProperties;
 };
 
-const handleSuccessResponse = response => {
+const handleSuccessResponse = (response) => {
   if (response) {
     response.success = response.status === 200;
     if (response?.data?.notice) {
@@ -31,13 +31,13 @@ const handleSuccessResponse = response => {
   return response;
 };
 
-const handleErrorResponse = error => {
+const handleErrorResponse = (error) => {
   Toastr.error(
     error.response?.data?.errors ||
-    error.response?.data?.notice ||
-    error.message ||
-    error.notice ||
-    "Something went wrong!"
+      error.response?.data?.notice ||
+      error.message ||
+      error.notice ||
+      "Something went wrong!"
   );
   if (error.response?.status === 423) {
     window.location.href = "/";
@@ -46,7 +46,7 @@ const handleErrorResponse = error => {
 };
 
 export const registerIntercepts = () => {
-  axios.interceptors.response.use(handleSuccessResponse, error =>
+  axios.interceptors.response.use(handleSuccessResponse, (error) =>
     handleErrorResponse(error)
   );
 };

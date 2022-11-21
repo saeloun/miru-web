@@ -22,11 +22,13 @@ const FilterSideBar = ({
   filterParams,
   setFilterParams,
   selectedInput,
-  setSelectedInput
+  setSelectedInput,
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [clientList, setClientList] = useState<null | any[]>([]);
-  const [filteredClientList, setFilteredClientList] = useState<null | any[]>(clientList);
+  const [filteredClientList, setFilteredClientList] = useState<null | any[]>(
+    clientList
+  );
   const [showCustomFilter, setShowCustomFilter] = useState<boolean>(false);
   const [dateRange, setDateRange] = useState<any>({ from: "", to: "" });
   const [customDate, setCustomDate] = useState<boolean>(false);
@@ -47,8 +49,7 @@ const FilterSideBar = ({
       setCustomDate(true);
       setDateRangeList(dateRangeOptions);
       setdisableDateBtn(false);
-    }
-    else {
+    } else {
       dateRangeOptions[5].label = "Custom";
     }
     fetchCompanyDetails();
@@ -83,7 +84,7 @@ const FilterSideBar = ({
       const res = await companiesApi.index();
       const clientArr = res.data.company_client_list.map((item) => ({
         label: item.name,
-        value: item.id
+        value: item.id,
       }));
       setClientList(clientArr.sort(sortClients));
       setFilteredClientList(clientArr.sort(sortClients));
@@ -94,7 +95,6 @@ const FilterSideBar = ({
   };
 
   const handleSelectFilter = (selectedValue, field) => {
-
     if (selectedValue.value !== "custom") {
       dateRangeOptions[5].label = "Custom";
       setDefaultDateRange();
@@ -104,14 +104,14 @@ const FilterSideBar = ({
       setShowCustomFilter(true);
       setFilters({
         ...filters,
-        [field.name]: { ...selectedValue, ...dateRange }
+        [field.name]: { ...selectedValue, ...dateRange },
       });
     }
 
     if (field.name == "dateRange") {
       setFilters({
         ...filters,
-        [field.name]: selectedValue
+        [field.name]: selectedValue,
       });
     }
 
@@ -119,7 +119,7 @@ const FilterSideBar = ({
       if (field.checked) {
         setFilters({
           ...filters,
-          [field.name]: filters[field.name].concat(selectedValue)
+          [field.name]: filters[field.name].concat(selectedValue),
         });
       } else {
         const newarr = filters[field.name].filter(
@@ -127,7 +127,7 @@ const FilterSideBar = ({
         );
         setFilters({
           ...filters,
-          [field.name]: newarr
+          [field.name]: newarr,
         });
       }
     }
@@ -160,8 +160,8 @@ const FilterSideBar = ({
         ["dateRange"]: {
           value: "custom",
           label: `Custom (${fromDate} - ${toDate})`,
-          ...dateRange
-        }
+          ...dateRange,
+        },
       });
       setCustomDate(true);
     }
@@ -181,7 +181,7 @@ const FilterSideBar = ({
 
   const setDefaultDateRange = () => ({
     ...filters,
-    ["dateRange"]: { value: "all", label: "All", from: "", to: "" }
+    ["dateRange"]: { value: "all", label: "All", from: "", to: "" },
   });
 
   const resetCustomDatePicker = () => {
@@ -203,7 +203,9 @@ const FilterSideBar = ({
 
   useEffect(() => {
     if (debouncedSearchQuery && filteredClientList.length > 0) {
-      const newClientList = filteredClientList.filter((client) => client.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase()));
+      const newClientList = filteredClientList.filter((client) =>
+        client.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      );
       newClientList.length > 0
         ? setFilteredClientList(newClientList)
         : setFilteredClientList([]);
@@ -247,7 +249,11 @@ const FilterSideBar = ({
                     {1}
                   </span>
                 )}
-                {isDateRangeOpen ? <MinusIcon size={16} /> : <PlusIcon size={16} />}
+                {isDateRangeOpen ? (
+                  <MinusIcon size={16} />
+                ) : (
+                  <PlusIcon size={16} />
+                )}
               </div>
             </div>
             {isDateRangeOpen && (
@@ -316,7 +322,11 @@ const FilterSideBar = ({
                     {filters.clients.length}
                   </span>
                 )}
-                {isClientOpen ? <MinusIcon size={16} /> : <PlusIcon size={16} />}
+                {isClientOpen ? (
+                  <MinusIcon size={16} />
+                ) : (
+                  <PlusIcon size={16} />
+                )}
               </div>
             </div>
 
@@ -330,7 +340,6 @@ const FilterSideBar = ({
                     className="p-2 w-full bg-miru-gray-100 text-sm font-medium
             rounded focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
                     onChange={(e) => {
-
                       setSearchQuery(e.target.value);
                     }}
                   />
@@ -392,7 +401,11 @@ const FilterSideBar = ({
                     {filters.status.length}
                   </span>
                 )}
-                {isStatusOpen ? <MinusIcon size={16} /> : <PlusIcon size={16} />}
+                {isStatusOpen ? (
+                  <MinusIcon size={16} />
+                ) : (
+                  <PlusIcon size={16} />
+                )}
               </div>
             </div>
 

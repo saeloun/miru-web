@@ -12,22 +12,33 @@ const getWeek = (isCurrentWeek) => {
   const firstday = dayjs(new Date(currentDate.setDate(weekFirstDay)));
   // currentDate wont have current date after the above step
   const lastday = dayjs(new Date(new Date().setDate(last)));
-  const completeCurrentDay = `${getDayWithSuffix(firstday.date())} ${month[firstday.month()]}`;
-  const completeLastWeekDay = `${getDayWithSuffix(lastday.date())} ${month[lastday.month()]}`;
-  return isCurrentWeek ? `This Week (${completeCurrentDay} - ${completeLastWeekDay})` :
-    `Last Week (${completeCurrentDay} - ${completeLastWeekDay})`;
+  const completeCurrentDay = `${getDayWithSuffix(firstday.date())} ${
+    month[firstday.month()]
+  }`;
+  const completeLastWeekDay = `${getDayWithSuffix(lastday.date())} ${
+    month[lastday.month()]
+  }`;
+  return isCurrentWeek
+    ? `This Week (${completeCurrentDay} - ${completeLastWeekDay})`
+    : `Last Week (${completeCurrentDay} - ${completeLastWeekDay})`;
 };
 
 const getMonth = (isCurrentMonth) => {
   const currentDate = new Date();
 
-  const monthCount = isCurrentMonth ? dayjs(currentDate) : dayjs(currentDate).subtract(1, "month");
+  const monthCount = isCurrentMonth
+    ? dayjs(currentDate)
+    : dayjs(currentDate).subtract(1, "month");
   const monthStr = month[monthCount.month()];
   const totalDaysOfCurrentMonth = dayjs(monthCount).daysInMonth();
-  const lastdayOfMonth = totalDaysOfCurrentMonth === 30 ? `${totalDaysOfCurrentMonth}th` : `${totalDaysOfCurrentMonth}st`;
+  const lastdayOfMonth =
+    totalDaysOfCurrentMonth === 30
+      ? `${totalDaysOfCurrentMonth}th`
+      : `${totalDaysOfCurrentMonth}st`;
 
-  return isCurrentMonth ? `This Month (1st ${monthStr} - ${lastdayOfMonth} ${monthStr})` :
-    `Last Month (1st ${monthStr} - ${lastdayOfMonth} ${monthStr})`;
+  return isCurrentMonth
+    ? `This Month (1st ${monthStr} - ${lastdayOfMonth} ${monthStr})`
+    : `Last Month (1st ${monthStr} - ${lastdayOfMonth} ${monthStr})`;
 };
 
 const getDateRangeOptions = () => {
@@ -41,18 +52,16 @@ const getDateRangeOptions = () => {
     { value: "last_month", label: previousMonth },
     { value: "this_week", label: thisWeek },
     { value: "last_week", label: previousweek },
-    { value: "custom", label: "Custom" }
+    { value: "custom", label: "Custom" },
   ];
 };
 
-const dateRangeOptions = [
-  ...getDateRangeOptions()
-];
+const dateRangeOptions = [...getDateRangeOptions()];
 
 const statusOption = [
   { value: "billed", label: "BILLED" },
   { value: "unbilled", label: "UNBILLED" },
-  { value: "non_billable", label: "NON BILLABLE" }
+  { value: "non_billable", label: "NON BILLABLE" },
 ];
 
 const groupBy = [
@@ -60,12 +69,7 @@ const groupBy = [
   { value: "team_member", label: "Team member" },
   { value: "client", label: "Client" },
   { value: "project", label: "Project" },
-  { value: "week", label: "Week" }
+  { value: "week", label: "Week" },
 ];
 
-export {
-  dateRangeOptions,
-  statusOption,
-  groupBy,
-  getMonth
-};
+export { dateRangeOptions, statusOption, groupBy, getMonth };

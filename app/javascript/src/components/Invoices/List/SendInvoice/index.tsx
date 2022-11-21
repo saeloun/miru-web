@@ -3,7 +3,7 @@ import React, {
   KeyboardEvent,
   useEffect,
   useRef,
-  useState
+  useState,
 } from "react";
 
 import { ApiStatus as InvoiceStatus } from "constants/index";
@@ -20,7 +20,7 @@ import {
   emailSubject,
   emailBody,
   isDisabled,
-  buttonText
+  buttonText,
 } from "./utils";
 
 interface InvoiceEmail {
@@ -31,7 +31,7 @@ interface InvoiceEmail {
 
 const Recipient: React.FC<{ email: string; handleClick: any }> = ({
   email,
-  handleClick
+  handleClick,
 }) => (
   <div className="flex items-center px-2 py-1 m-0.5 space-x-2 border rounded-full bg-miru-gray-400 w-fit">
     <p>{email}</p>
@@ -50,13 +50,13 @@ const SendInvoice: React.FC<any> = ({
   invoice,
   setIsSending,
   isSending,
-  fetchInvoices
+  fetchInvoices,
 }) => {
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
     subject: emailSubject(invoice),
     message: emailBody(invoice),
-    recipients: [invoice.client.email]
+    recipients: [invoice.client.email],
   });
   const [newRecipient, setNewRecipient] = useState<string>("");
   const [width, setWidth] = useState<string>("10ch");
@@ -72,14 +72,14 @@ const SendInvoice: React.FC<any> = ({
   }, [newRecipient]);
 
   const handleSubmit = async (event: FormEvent) => {
-    if (invoiceEmail?.recipients.length > 0){
+    if (invoiceEmail?.recipients.length > 0) {
       try {
         event.preventDefault();
         setStatus(InvoiceStatus.LOADING);
 
         const payload = { invoice_email: invoiceEmail };
         const {
-          data: { message }
+          data: { message },
         } = await invoicesApi.sendInvoice(invoice.id, payload);
 
         Toastr.success(message);
@@ -97,7 +97,7 @@ const SendInvoice: React.FC<any> = ({
 
     setInvoiceEmail({
       ...invoiceEmail,
-      recipients
+      recipients,
     });
   };
 
@@ -107,7 +107,7 @@ const SendInvoice: React.FC<any> = ({
     if (isEmailValid(newRecipient) && event.key === "Enter") {
       setInvoiceEmail({
         ...invoiceEmail,
-        recipients: recipients.concat(newRecipient)
+        recipients: recipients.concat(newRecipient),
       });
       setNewRecipient("");
     }
@@ -178,7 +178,7 @@ const SendInvoice: React.FC<any> = ({
                     className={cn(
                       "py-2 mx-1.5 rounded bg-miru-gray-100 w-fit cursor-text focus:outline-none",
                       {
-                        "text-miru-red-400": !isEmailValid(newRecipient)
+                        "text-miru-red-400": !isEmailValid(newRecipient),
                       }
                     )}
                     type="email"
@@ -203,7 +203,7 @@ const SendInvoice: React.FC<any> = ({
                   onChange={(e) =>
                     setInvoiceEmail({
                       ...invoiceEmail,
-                      subject: e.target.value
+                      subject: e.target.value,
                     })
                   }
                 />
@@ -219,7 +219,10 @@ const SendInvoice: React.FC<any> = ({
                   className="p-1.5 rounded bg-miru-gray-100"
                   value={invoiceEmail.message}
                   onChange={(e) =>
-                    setInvoiceEmail({ ...invoiceEmail, message: e.target.value })
+                    setInvoiceEmail({
+                      ...invoiceEmail,
+                      message: e.target.value,
+                    })
                   }
                   rows={5}
                 />
@@ -232,18 +235,21 @@ const SendInvoice: React.FC<any> = ({
                   className={cn(
                     `flex justify-center w-full p-3 mt-6 text-lg font-bold text-white uppercase border
                     border-transparent rounded-md shadow-sm
-                    ${invoiceEmail?.recipients.length > 0 ?
-      `bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 cursor-pointer focus:outline-none focus:ring-2
-                        focus:ring-offset-2 focus:ring-miru-han-purple-600`:
-      "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
-    }
+                    ${
+                      invoiceEmail?.recipients.length > 0
+                        ? `bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 cursor-pointer focus:outline-none focus:ring-2
+                        focus:ring-offset-2 focus:ring-miru-han-purple-600`
+                        : "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                    }
                     `,
                     {
                       "hover:bg-miru-chart-green-400 bg-miru-chart-green-600":
-                        status === InvoiceStatus.SUCCESS
+                        status === InvoiceStatus.SUCCESS,
                     }
                   )}
-                  disabled={invoiceEmail?.recipients.length <= 0 || isDisabled(status)}
+                  disabled={
+                    invoiceEmail?.recipients.length <= 0 || isDisabled(status)
+                  }
                 >
                   {buttonText(status)}
                 </button>

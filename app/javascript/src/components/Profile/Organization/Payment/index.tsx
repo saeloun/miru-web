@@ -56,33 +56,38 @@ const PaymentSettings = () => {
           subTitle={"Connect payment gateways"}
           showButtons={false}
         />
-        {(status === PaymentSettingsStatus.LOADING) ? <Loader /> : (status === PaymentSettingsStatus.SUCCESS) && (
-          <div className="flex">
-            <div className="flex flex-col">
-              <div className="py-10 px-20 mt-4 bg-miru-gray-100 h-screen">
-                <div className="h-36 p-5 bg-white flex flex-row items-center">
-                  <div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
-                    <img src={Stripe_Logo} />
-                  </div>
-                  <span className="px-4 font-normal text-sm text-miru-dark-purple-1000 leading-5 w-2/5">
-                    {isStripeConnected ? "Your stripe account is now connected and ready to accept online payments" : "Connect with your existing stripe account or create a new account"}
-                  </span>
-                  {
-                    isStripeConnected ?
+        {status === PaymentSettingsStatus.LOADING ? (
+          <Loader />
+        ) : (
+          status === PaymentSettingsStatus.SUCCESS && (
+            <div className="flex">
+              <div className="flex flex-col">
+                <div className="py-10 px-20 mt-4 bg-miru-gray-100 h-screen">
+                  <div className="h-36 p-5 bg-white flex flex-row items-center">
+                    <div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
+                      <img src={Stripe_Logo} />
+                    </div>
+                    <span className="px-4 font-normal text-sm text-miru-dark-purple-1000 leading-5 w-2/5">
+                      {isStripeConnected
+                        ? "Your stripe account is now connected and ready to accept online payments"
+                        : "Connect with your existing stripe account or create a new account"}
+                    </span>
+                    {isStripeConnected ? (
                       <div className="flex flex-row">
                         <div className="logo-container mr-1">
                           <img src={connectedCheck} />
                         </div>
-                        <p className="ml-1 text-miru-alert-green-800 font-extrabold text-base">Connected</p>
-                      </div> :
-                      <button
-                        onClick={connectStripe}
-                      >
+                        <p className="ml-1 text-miru-alert-green-800 font-extrabold text-base">
+                          Connected
+                        </p>
+                      </div>
+                    ) : (
+                      <button onClick={connectStripe}>
                         <img src={Connect} className="pr-5" />
                       </button>
-                  }
-                </div>
-                {/* <div className="h-36 p-5 mt-6 bg-white flex justify-between items-center">
+                    )}
+                  </div>
+                  {/* <div className="h-36 p-5 mt-6 bg-white flex justify-between items-center">
                   <div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
                     <img src={Paypal_Logo} />
                   </div>
@@ -93,9 +98,10 @@ const PaymentSettings = () => {
                     <img src={Connect_Paypal} className="pr-5" />
                   </button>
                 </div> */}
+                </div>
               </div>
             </div>
-          </div>
+          )
         )}
       </div>
     </React.Fragment>

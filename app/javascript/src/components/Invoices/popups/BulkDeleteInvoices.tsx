@@ -4,12 +4,16 @@ import invoicesApi from "apis/invoices";
 
 interface IProps {
   invoices_ids: any;
-  setShowBulkDeleteDialog : any;
-  fetchInvoices: any
+  setShowBulkDeleteDialog: any;
+  fetchInvoices: any;
 }
 
-const BulkDeleteInvoices = ({ invoices_ids, setShowBulkDeleteDialog, fetchInvoices  }: IProps) => {
-  const destroyInvoices = async invoices_ids => {
+const BulkDeleteInvoices = ({
+  invoices_ids,
+  setShowBulkDeleteDialog,
+  fetchInvoices,
+}: IProps) => {
+  const destroyInvoices = async (invoices_ids) => {
     try {
       await invoicesApi.destroyBulk({ invoices_ids });
       setShowBulkDeleteDialog(false);
@@ -23,7 +27,7 @@ const BulkDeleteInvoices = ({ invoices_ids, setShowBulkDeleteDialog, fetchInvoic
       <div
         className="overflow-auto fixed top-0 left-0 right-0 bottom-0 inset-0 z-10 flex items-start justify-center"
         style={{
-          backgroundColor: "rgba(29, 26, 49, 0.6)"
+          backgroundColor: "rgba(29, 26, 49, 0.6)",
         }}
       >
         <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">
@@ -32,15 +36,14 @@ const BulkDeleteInvoices = ({ invoices_ids, setShowBulkDeleteDialog, fetchInvoic
               <h6 className="text-2xl font-bold mb-2">Delete Invoices</h6>
               <p className="font-normal mt-2">
                 Are you sure you want to delete these invoice?
-                <b className="font-bold"></b> This action cannot
-                be reversed.
+                <b className="font-bold"></b> This action cannot be reversed.
               </p>
             </div>
             <div className="flex justify-between">
               <button
                 className="button__bg_transparent"
                 onClick={() => {
-                  setShowBulkDeleteDialog (false);
+                  setShowBulkDeleteDialog(false);
                 }}
               >
                 CANCEL

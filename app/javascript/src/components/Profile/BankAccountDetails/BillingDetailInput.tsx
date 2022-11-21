@@ -1,10 +1,6 @@
 import React from "react";
 
-const BillingDetailInput = ({
-  field,
-  handleBankDetails,
-  recipientDetails
-}) => {
+const BillingDetailInput = ({ field, handleBankDetails, recipientDetails }) => {
   const group = field["group"][0];
 
   if (group.type == "text") {
@@ -18,7 +14,9 @@ const BillingDetailInput = ({
             type={group.type}
             defaultValue={recipientDetails["details"][group.key]}
             placeholder={group.name}
-            onBlur={ ({ target: { name, value } }) => handleBankDetails(name, value, group) }
+            onBlur={({ target: { name, value } }) =>
+              handleBankDetails(name, value, group)
+            }
           />
         </div>
       </div>
@@ -32,19 +30,16 @@ const BillingDetailInput = ({
             className="p-1 rounded-sm bg-gray-100 w-2/4"
             name={group.key}
             defaultValue={recipientDetails["details"][group.key]}
-            onChange={ ({ target: { name, value } }) => handleBankDetails(name, value, group) }
+            onChange={({ target: { name, value } }) =>
+              handleBankDetails(name, value, group)
+            }
           >
             <option value={null}>{`Select ${group.name}`}</option>
-            {
-              group.valuesAllowed.map(value => (
-                <option
-                  value={value.key}
-                  key={value.key}
-                >
-                  {value.name}
-                </option>
-              ))
-            }
+            {group.valuesAllowed.map((value) => (
+              <option value={value.key} key={value.key}>
+                {value.name}
+              </option>
+            ))}
           </select>
         </div>
       </div>

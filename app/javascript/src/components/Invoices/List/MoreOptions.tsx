@@ -8,7 +8,7 @@ const MoreOptions = ({
   setIsMenuOpen,
   setShowDeleteDialog,
   setInvoiceToDelete,
-  invoice
+  invoice,
 }) => {
   useDebounce(isMenuOpen, 500);
 

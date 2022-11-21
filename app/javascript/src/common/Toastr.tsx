@@ -7,26 +7,25 @@ import { GetToasterIcon, getToasterCloseButton } from "../constants/index";
 const customId = "custom-toaster-id";
 
 const ToastrComponent = ({ message }) => (
-  <div className="text-center">
-    {message}
-  </div>
+  <div className="text-center">{message}</div>
 );
 
-const showToastr = message => {
+const showToastr = (message) => {
   toast.success(<ToastrComponent message={message} />, {
     toastId: customId,
     position: toast.POSITION.BOTTOM_CENTER,
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="success" />,
-    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "success" }),
-    hideProgressBar: true
+    closeButton: ({ closeToast }) =>
+      getToasterCloseButton({ closeToast, type: "success" }),
+    hideProgressBar: true,
   });
 };
 
-const isError = e => e && e.stack && e.message;
+const isError = (e) => e && e.stack && e.message;
 
-const showErrorToastr = error => {
+const showErrorToastr = (error) => {
   const errorMessage = isError(error) ? error.message : error;
   toast.error(<ToastrComponent message={errorMessage} />, {
     toastId: customId,
@@ -34,32 +33,35 @@ const showErrorToastr = error => {
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="error" />,
-    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "error" }),
-    hideProgressBar: true
+    closeButton: ({ closeToast }) =>
+      getToasterCloseButton({ closeToast, type: "error" }),
+    hideProgressBar: true,
   });
 };
 
-const showWarningToastr = warning => {
+const showWarningToastr = (warning) => {
   toast.warn(<ToastrComponent message={warning} />, {
     toastId: customId,
     position: toast.POSITION.BOTTOM_CENTER,
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="warning" />,
-    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "warning" }),
-    hideProgressBar: true
+    closeButton: ({ closeToast }) =>
+      getToasterCloseButton({ closeToast, type: "warning" }),
+    hideProgressBar: true,
   });
 };
 
-const showInfoToastr = info => {
+const showInfoToastr = (info) => {
   toast.info(<ToastrComponent message={info} />, {
     toastId: customId,
     position: toast.POSITION.BOTTOM_CENTER,
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="info" />,
-    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "info" }),
-    hideProgressBar: true
+    closeButton: ({ closeToast }) =>
+      getToasterCloseButton({ closeToast, type: "info" }),
+    hideProgressBar: true,
   });
 };
 
@@ -67,7 +69,7 @@ export const Toastr = {
   success: showToastr,
   error: showErrorToastr,
   warning: showWarningToastr,
-  info: showInfoToastr
+  info: showInfoToastr,
 };
 
 export default Toastr;

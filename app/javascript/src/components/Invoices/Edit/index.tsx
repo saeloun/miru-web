@@ -35,10 +35,12 @@ const EditInvoice = () => {
   const [tax, setTax] = useState<any>(0);
   const [issueDate, setIssueDate] = useState<any>();
   const [dueDate, setDueDate] = useState<any>();
-  const [showSendInvoiceModal, setShowSendInvoiceModal] = useState<boolean>(false);
+  const [showSendInvoiceModal, setShowSendInvoiceModal] =
+    useState<boolean>(false);
 
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
-  const SELECT_CLIENT_ERROR = "Please select client and enter invoice number to proceed";
+  const SELECT_CLIENT_ERROR =
+    "Please select client and enter invoice number to proceed";
 
   const fetchInvoice = async () => {
     try {
@@ -72,7 +74,9 @@ const EditInvoice = () => {
       const res = await invoicesApi.updateInvoice(invoiceDetails.id, {
         invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
         reference: reference || invoiceDetails.reference,
-        issue_date: dayjs(issueDate || invoiceDetails.issueDate).format("DD.MM.YYYY"),
+        issue_date: dayjs(issueDate || invoiceDetails.issueDate).format(
+          "DD.MM.YYYY"
+        ),
         due_date: dayjs(dueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
         amount_due: amountDue,
         amount_paid: amountPaid,
@@ -80,7 +84,10 @@ const EditInvoice = () => {
         discount: Number(discount),
         tax: tax || invoiceDetails.tax,
         client_id: selectedClient.value,
-        invoice_line_items_attributes: generateInvoiceLineItems(selectedLineItems, manualEntryArr)
+        invoice_line_items_attributes: generateInvoiceLineItems(
+          selectedLineItems,
+          manualEntryArr
+        ),
       });
       return res;
     } catch (e) {
@@ -124,7 +131,7 @@ const EditInvoice = () => {
     return (
       <React.Fragment>
         <Header
-          formType = "edit"
+          formType="edit"
           handleSaveInvoice={handleSaveInvoice}
           handleSendInvoice={handleSendInvoice}
           setShowInvoiceSetting={false}
@@ -178,19 +185,21 @@ const EditInvoice = () => {
             manualEntryArr={manualEntryArr}
           />
         </div>
-        {showSendInvoiceModal &&
-          <SendInvoice  invoice={{
-            id: invoiceDetails.id,
-            client: selectedClient,
-            company: invoiceDetails?.company,
-            dueDate: dueDate,
-            invoiceNumber,
-            amount
-          }}
-          isSending={showSendInvoiceModal}
-          setIsSending={setShowSendInvoiceModal}
-          handleSaveSendInvoice={handleSaveSendInvoice}
-          />}
+        {showSendInvoiceModal && (
+          <SendInvoice
+            invoice={{
+              id: invoiceDetails.id,
+              client: selectedClient,
+              company: invoiceDetails?.company,
+              dueDate: dueDate,
+              invoiceNumber,
+              amount,
+            }}
+            isSending={showSendInvoiceModal}
+            setIsSending={setShowSendInvoiceModal}
+            handleSaveSendInvoice={handleSaveSendInvoice}
+          />
+        )}
       </React.Fragment>
     );
   }

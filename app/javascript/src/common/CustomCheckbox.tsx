@@ -8,12 +8,16 @@ const CustomCheckbox = ({
   checkboxValue,
   id,
   handleCheck,
-  name="",
-  wrapperClassName="",
-  labelClassName=""
+  name = "",
+  wrapperClassName = "",
+  labelClassName = "",
 }) => (
   <div className={classnames("flex items-center", wrapperClassName)}>
-    <div className={classnames("grid grid-cols-1 grid-rows-1 justify-items-center content-center")}>
+    <div
+      className={classnames(
+        "grid grid-cols-1 grid-rows-1 justify-items-center content-center"
+      )}
+    >
       <input
         type="checkbox"
         id={id}
@@ -21,7 +25,7 @@ const CustomCheckbox = ({
         checked={isChecked}
         onChange={handleCheck}
         value={checkboxValue}
-        data-cy= 'select-all-checkbox'
+        data-cy="select-all-checkbox"
         className="grid col-start-1 row-start-1 w-5 h-5 opacity-0 cursor-pointer custom__checkbox"
       />
       <div className="grid col-start-1 row-start-1 justify-items-center content-center flex-shrink-0 w-5 h-5 mr-2 bg-white border-2 border-miru-han-purple-1000 focus-within:border-blue-500">
@@ -44,7 +48,10 @@ const CustomCheckbox = ({
     </div>
 
     {text !== "" && (
-      <label htmlFor={name} className={classnames("select-none",labelClassName)}>
+      <label
+        htmlFor={name}
+        className={classnames("select-none", labelClassName)}
+      >
         {text}
       </label>
     )}

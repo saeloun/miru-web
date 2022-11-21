@@ -11,11 +11,9 @@ const Table = () => {
     <table className="table__width">
       <TableHead />
       <tbody>
-        {
-          teamList.map((item, index) => (
-            <TableRow key={index} item={item} />
-          ))
-        }
+        {teamList.map((item, index) => (
+          <TableRow key={index} item={item} />
+        ))}
       </tbody>
     </table>
   );

@@ -34,7 +34,7 @@ export enum Paths {
   PAYMENTS = "/payments",
   TIME_TRACKING = "/time-tracking",
   TEAM = "/team/*",
-  PROFILE = "/profile/*"
+  PROFILE = "/profile/*",
 }
 
 export const TOASTER_DURATION = 3000;
@@ -42,70 +42,36 @@ export const TOASTER_DURATION = 3000;
 export const GetToasterIcon = ({ type }) => {
   switch (type) {
     case "success":
-      return <img
-        src={successCheckCircle}
-        className="items-center"
-        alt="success"
-      />;
+      return (
+        <img src={successCheckCircle} className="items-center" alt="success" />
+      );
     case "error":
-      return <img
-        src={errorOctagon}
-        className="items-center"
-        alt="error"
-      />;
+      return <img src={errorOctagon} className="items-center" alt="error" />;
     case "warning":
-      return <img
-        src={warningTriangle}
-        className="items-center"
-        alt="warning"
-      />;
+      return (
+        <img src={warningTriangle} className="items-center" alt="warning" />
+      );
     case "info":
-      return <img
-        src={infoCircle}
-        className="items-center"
-        alt="info"
-      />;
+      return <img src={infoCircle} className="items-center" alt="info" />;
     default:
-      return <img
-        src={successCheckCircle}
-        className="items-center"
-        alt="success"
-      />;
+      return (
+        <img src={successCheckCircle} className="items-center" alt="success" />
+      );
   }
 };
 
 export const getToasterCloseButton = ({ closeToast, type }) => {
   switch (type) {
     case "success":
-      return <img
-        src={successCloseIcon}
-        alt="success"
-        onClick={closeToast}
-      />;
+      return <img src={successCloseIcon} alt="success" onClick={closeToast} />;
     case "error":
-      return <img
-        src={alertErrorClose}
-        alt="error"
-        onClick={closeToast}
-      />;
+      return <img src={alertErrorClose} alt="error" onClick={closeToast} />;
     case "warning":
-      return <img
-        src={warningCloseIcon}
-        alt="warning"
-        onClick={closeToast}
-      />;
+      return <img src={warningCloseIcon} alt="warning" onClick={closeToast} />;
     case "info":
-      return <img
-        src={infoCloseIcon}
-        alt="info"
-        onClick={closeToast}
-      />;
+      return <img src={infoCloseIcon} alt="info" onClick={closeToast} />;
     default:
-      return <img
-        src={successCloseIcon}
-        alt="success"
-        onClick={closeToast}
-      />;
+      return <img src={successCloseIcon} alt="success" onClick={closeToast} />;
   }
 };
 

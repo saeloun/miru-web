@@ -12,7 +12,7 @@ const Pagination = ({ pagy, params, setParams }) => (
             <button
               className={cn("m-1 mx-4 font-bold", {
                 "text-miru-gray-400": !pagy?.prev,
-                "text-miru-han-purple-1000": pagy?.prev
+                "text-miru-han-purple-1000": pagy?.prev,
               })}
               onClick={() => setParams({ ...params, page: pagy?.prev })}
               disabled={!pagy?.prev}
@@ -25,9 +25,12 @@ const Pagination = ({ pagy, params, setParams }) => (
                 <button
                   key={page}
                   onClick={() => setParams({ ...params, page })}
-                  className={cn("p-1 m-1 mx-4 font-bold text-base text-miru-dark-purple-400", {
-                    "text-miru-han-purple-1000": pagy?.page === page
-                  })}
+                  className={cn(
+                    "p-1 m-1 mx-4 font-bold text-base text-miru-dark-purple-400",
+                    {
+                      "text-miru-han-purple-1000": pagy?.page === page,
+                    }
+                  )}
                   disabled={pagy?.page === page}
                 >
                   {page}
@@ -38,7 +41,7 @@ const Pagination = ({ pagy, params, setParams }) => (
             <button
               className={cn("m-1 mx-4 font-bold", {
                 "text-miru-gray-400": !pagy?.next,
-                "text-miru-han-purple-1000": pagy?.next
+                "text-miru-han-purple-1000": pagy?.next,
               })}
               onClick={() => setParams({ ...params, page: pagy?.next })}
               disabled={!pagy?.next}

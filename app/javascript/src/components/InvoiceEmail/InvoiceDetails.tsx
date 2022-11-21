@@ -9,16 +9,21 @@ import InvoiceLineItems from "../Invoices/Invoice/InvoiceLineItems";
 
 const InvoiceDetails = ({ invoice, company, lineItems, client, logo }) => (
   <>
-    <CompanyInfo company={company} logo={logo}/>
+    <CompanyInfo company={company} logo={logo} />
     <div className="flex justify-between border-b-2 border-miru-gray-400 px-10 py-5 h-36">
-      <ClientInfo client={client}/>
-      <InvoiceInfo invoice={invoice} company={company}/>
+      <ClientInfo client={client} />
+      <InvoiceInfo invoice={invoice} company={company} />
     </div>
     <InvoiceLineItems
       currency={company.base_currency}
       items={lineItems}
-      showHeader={lineItems.length > 0}/>
-    <InvoiceTotalSummary invoice={invoice} company={company} lineItems={lineItems}/>
+      showHeader={lineItems.length > 0}
+    />
+    <InvoiceTotalSummary
+      invoice={invoice}
+      company={company}
+      lineItems={lineItems}
+    />
   </>
 );
 

@@ -8,28 +8,29 @@ import getStatusCssClass from "utils/getBadgeStatus";
 
 import { OutstandingOverdueInvoice } from "../interface";
 
-const TableRow = ({
-  currency,
-  reportData
-}) => {
-  const { id,
+const TableRow = ({ currency, reportData }) => {
+  const {
+    id,
     clientName,
     dueDate,
     amount,
     status,
     invoiceNo,
-    issueDate }: OutstandingOverdueInvoice = reportData;
+    issueDate,
+  }: OutstandingOverdueInvoice = reportData;
 
-  const formattedDate = (date) =>
-    dayjs(date).format("DD.MM.YYYY");
+  const formattedDate = (date) => dayjs(date).format("DD.MM.YYYY");
 
   const formattedAmount = currencyFormat({
     baseCurrency: currency,
-    amount: amount
+    amount: amount,
   });
 
   return (
-    <tr key={id} className="grid grid-cols-12 gap-4 items-center hover:bg-miru-gray-100">
+    <tr
+      key={id}
+      className="grid grid-cols-12 gap-4 items-center hover:bg-miru-gray-100"
+    >
       <td className="col-span-4 py-2 text-left whitespace-nowrap">
         <p className="font-semibold whitespace-normal text-base text-miru-dark-purple-1000">
           {clientName}
@@ -50,7 +51,10 @@ const TableRow = ({
         {formattedAmount}
       </td>
       <td className="col-span-3 py-2 font-medium text-right">
-        <Badge text={status} className={`${getStatusCssClass(status)} uppercase`} />
+        <Badge
+          text={status}
+          className={`${getStatusCssClass(status)} uppercase`}
+        />
       </td>
     </tr>
   );

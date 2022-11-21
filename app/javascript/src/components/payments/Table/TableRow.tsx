@@ -8,16 +8,18 @@ const TableRow = ({ payment, baseCurrency }) => {
     const STATUS_LIST = {
       paid: "bg-miru-han-purple-100 text-miru-han-purple-1000",
       partially_paid: "bg-miru-alert-yellow-400 text-miru-alert-green-1000",
-      failed: "bg-miru-alert-pink-400 text-miru-alert-red-1000"
+      failed: "bg-miru-alert-pink-400 text-miru-alert-red-1000",
     };
     const lowerCaseStatus = status.toLowerCase();
     return `rounded-lg px-1 ${STATUS_LIST[lowerCaseStatus]}`;
   };
 
-  const formattedAmount = baseCurrency && currencyFormat({
-    baseCurrency: baseCurrency,
-    amount: payment.amount
-  });
+  const formattedAmount =
+    baseCurrency &&
+    currencyFormat({
+      baseCurrency: baseCurrency,
+      amount: payment.amount,
+    });
 
   return (
     <tr className="last:border-b-0 hover:bg-miru-gray-100 group">
@@ -48,7 +50,10 @@ const TableRow = ({ payment, baseCurrency }) => {
       </td>
 
       <td className="pl-6 pr-0 py-2.5 text-sm font-semibold tracking-wider leading-4 text-right">
-        <Badge text={payment.status} className={`${getStatusCss(payment.status)} uppercase`} />
+        <Badge
+          text={payment.status}
+          className={`${getStatusCss(payment.status)} uppercase`}
+        />
       </td>
     </tr>
   );

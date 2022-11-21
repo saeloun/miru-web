@@ -24,8 +24,7 @@ const WeeklyEntries: React.FC<Props> = ({
   setIsWeeklyEditing,
   weeklyData,
   setWeeklyData,
-  selectedEmployeeId
-
+  selectedEmployeeId,
 }) => {
   const [client, setClient] = useState("");
   const [project, setProject] = useState("");
@@ -34,14 +33,14 @@ const WeeklyEntries: React.FC<Props> = ({
   const [currentProjectId, setCurrentProjectId] = useState(-1);
 
   const setProjectId = () => {
-    const pid = projects[client].find(p => p.name === project).id;
+    const pid = projects[client].find((p) => p.name === project).id;
     setCurrentProjectId(pid);
     return pid;
   };
 
   const getIds = () => {
     const ids = [];
-    currentEntries.forEach(entry => {
+    currentEntries.forEach((entry) => {
       if (entry) ids.push(entry["id"]);
     });
     return ids;
@@ -52,10 +51,10 @@ const WeeklyEntries: React.FC<Props> = ({
       const ids = getIds();
       const res = await timesheetEntryApi.updateBulk({
         project_id: setProjectId(),
-        ids: ids
+        ids: ids,
       });
       if (res.status === 200) {
-        setEntryList(prevState => {
+        setEntryList((prevState) => {
           const newState = { ...prevState, ...res.data.entries };
           return newState;
         });
@@ -96,7 +95,7 @@ const WeeklyEntries: React.FC<Props> = ({
     handleSetData();
   }, [entries]);
 
-  return projectSelected ?
+  return projectSelected ? (
     <WeeklyEntriesCard
       client={client}
       project={project}
@@ -116,9 +115,9 @@ const WeeklyEntries: React.FC<Props> = ({
       weeklyData={weeklyData}
       setWeeklyData={setWeeklyData}
       selectedEmployeeId={selectedEmployeeId}
-
     />
-    : <SelectProject
+  ) : (
+    <SelectProject
       clients={clients}
       client={client}
       setClient={setClient}
@@ -136,7 +135,8 @@ const WeeklyEntries: React.FC<Props> = ({
       handleEditEntries={handleEditEntries}
       isWeeklyEditing={isWeeklyEditing}
       setIsWeeklyEditing={setIsWeeklyEditing}
-    />;
+    />
+  );
 };
 
 interface Props {

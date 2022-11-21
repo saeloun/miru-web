@@ -8,8 +8,12 @@ interface IProps {
   fetchProjectList: any;
 }
 
-const DeleteProject = ({ project, setShowDeleteDialog, fetchProjectList }: IProps) => {
-  const deleteProject = async project => {
+const DeleteProject = ({
+  project,
+  setShowDeleteDialog,
+  fetchProjectList,
+}: IProps) => {
+  const deleteProject = async (project) => {
     const res = await projectApi.destroy(project.id);
     if (res.status === 200) {
       setShowDeleteDialog(false);
@@ -21,7 +25,7 @@ const DeleteProject = ({ project, setShowDeleteDialog, fetchProjectList }: IProp
       <div
         className="overflow-auto fixed top-0 left-0 right-0 bottom-0 inset-0 z-10 flex items-start justify-center"
         style={{
-          backgroundColor: "rgba(29, 26, 49, 0.6)"
+          backgroundColor: "rgba(29, 26, 49, 0.6)",
         }}
       >
         <div className="relative px-4 h-full w-full md:flex md:items-center md:justify-center">

@@ -10,7 +10,8 @@ const ClientInfo = ({ client }) => (
         {client.name}
       </p>
       <p className="font-normal text-xs text-miru-dark-purple-400 w-52">
-        {client.address}<br/>
+        {client.address}
+        <br />
         {client.phone}
       </p>
     </div>

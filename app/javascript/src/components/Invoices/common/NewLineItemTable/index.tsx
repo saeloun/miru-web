@@ -10,20 +10,28 @@ import { getMaxIdx } from "../utils";
 
 const NewLineItemTable = ({
   setShowItemInputs,
-  addNew, setAddNew,
-  lineItems, setLineItems,
+  addNew,
+  setAddNew,
+  lineItems,
+  setLineItems,
   loadMoreItems,
   totalLineItems,
-  pageNumber, setPageNumber,
-  selectedLineItems, setSelectedLineItems,
-  manualEntryArr, setManualEntryArr,
+  pageNumber,
+  setPageNumber,
+  selectedLineItems,
+  setSelectedLineItems,
+  manualEntryArr,
+  setManualEntryArr,
   setMultiLineItemModal,
-  setAddManualLineItem
+  setAddManualLineItem,
 }) => {
   const hasMoreItems = lineItems.length != totalLineItems;
 
   const selectRowId = (items) => {
-    const option = { ...items, lineTotal: lineTotalCalc(items.quantity, items.rate) };
+    const option = {
+      ...items,
+      lineTotal: lineTotalCalc(items.quantity, items.rate),
+    };
     setAddNew(false);
     setSelectedLineItems([...selectedLineItems, option]);
     setLineItems([]);
@@ -34,12 +42,18 @@ const NewLineItemTable = ({
     setShowItemInputs(true);
     setAddNew(!addNew);
     setAddManualLineItem(true);
-    setManualEntryArr([...manualEntryArr, { idx: getMaxIdx(manualEntryArr) + 1 }]);
+    setManualEntryArr([
+      ...manualEntryArr,
+      { idx: getMaxIdx(manualEntryArr) + 1 },
+    ]);
   };
 
   return (
     <div>
-      <NewLineItemTableHeader setShowMultilineModal={setMultiLineItemModal} addManualEntryItem={addManualEntryItem} />
+      <NewLineItemTableHeader
+        setShowMultilineModal={setMultiLineItemModal}
+        addManualEntryItem={addManualEntryItem}
+      />
       <div className="overflow-scroll mt-4 relative">
         <InfiniteScroll
           dataLength={pageNumber * 10}
@@ -61,7 +75,12 @@ const NewLineItemTable = ({
             const hoursLogged = minToHHMM(item.quantity);
             const date = dayjs(item.date).format("DD.MM.YYYY");
             return (
-              <div key={index} onClick={() => selectRowId(item)} className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100" data-cy="entries-list">
+              <div
+                key={index}
+                onClick={() => selectRowId(item)}
+                className="py-2 px-3 flex justify-between cursor-pointer hover:bg-miru-gray-100"
+                data-cy="entries-list"
+              >
                 <span className="font-medium w-1/5 text-sm text-miru-dark-purple-1000 text-left">
                   {item.first_name} {item.last_name}
                 </span>
@@ -76,8 +95,7 @@ const NewLineItemTable = ({
                 </span>
               </div>
             );
-          })
-          }
+          })}
         </InfiniteScroll>
       </div>
     </div>

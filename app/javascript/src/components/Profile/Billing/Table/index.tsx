@@ -13,9 +13,7 @@ const Table = () => (
 
     <tbody className="min-w-full bg-miru-gray-100  divide-y divide-gray-200">
       {data.map((data) => (
-        <TableRow
-          data={data}
-        />
+        <TableRow data={data} />
       ))}
     </tbody>
   </table>

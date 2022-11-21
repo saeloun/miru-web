@@ -15,7 +15,7 @@ const SelectProject: React.FC<Iprops> = ({
   setNewRowView,
   handleEditEntries,
   isWeeklyEditing, // eslint-disable-line
-  setIsWeeklyEditing
+  setIsWeeklyEditing,
 }) => {
   const handleCancelButton = () => {
     if (newRowView) {
@@ -62,7 +62,7 @@ const SelectProject: React.FC<Iprops> = ({
       </select>
       {/* Projects */}
       <select
-        onChange={e => {
+        onChange={(e) => {
           setProject(e.target.value);
           setProjectId();
         }}
@@ -76,7 +76,8 @@ const SelectProject: React.FC<Iprops> = ({
             Project
           </option>
         )}
-        {client && projects[client] &&
+        {client &&
+          projects[client] &&
           projects[client].map((p, i) => (
             <option data-project-id={p.id} key={i.toString()}>
               {p.name}

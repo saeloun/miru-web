@@ -19,13 +19,13 @@ const TimeEntryReports = () => {
     clients: [],
     teamMember: [],
     status: [],
-    groupBy: { label: "None", value: "" }
+    groupBy: { label: "None", value: "" },
   };
 
   const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
   const [filterOptions, getFilterOptions] = useState({
     clients: [],
-    teamMembers: []
+    teamMembers: [],
   });
   const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
   const [isFilterVisible, setFilterVisibilty] = useState<boolean>(false);
@@ -56,7 +56,13 @@ const TimeEntryReports = () => {
 
   useEffect(() => {
     updateFilterCounter();
-    applyFilter(selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty, getFilterOptions);
+    applyFilter(
+      selectedFilter,
+      setTimeEntries,
+      setNavFilters,
+      setFilterVisibilty,
+      getFilterOptions
+    );
   }, [selectedFilter]);
 
   const onClickInput = (e) => {
@@ -76,12 +82,14 @@ const TimeEntryReports = () => {
   const handleRemoveSingleFilter = (key, value) => {
     const filterValue = selectedFilter[key];
     if (Array.isArray(filterValue)) {
-      const closedFilter = filterValue.filter(item => item.label !== value);
+      const closedFilter = filterValue.filter((item) => item.label !== value);
       setSelectedFilter({ ...selectedFilter, [key]: closedFilter });
-    }
-    else {
+    } else {
       if (key === "dateRange") {
-        setSelectedFilter({ ...selectedFilter, [key]: filterIntialValues.dateRange });
+        setSelectedFilter({
+          ...selectedFilter,
+          [key]: filterIntialValues.dateRange,
+        });
       } else {
         const label = "None";
         setSelectedFilter({ ...selectedFilter, [key]: { label, value: "" } });
@@ -105,26 +113,29 @@ const TimeEntryReports = () => {
     timeEntryReport: {
       reports: timeEntries,
       filterOptions,
-      selectedFilter: { ...selectedFilter,
+      selectedFilter: {
+        ...selectedFilter,
         customDateFilter: {
           from: "",
-          to: ""
-        }
+          to: "",
+        },
       },
       filterCounter,
-      handleRemoveSingleFilter: handleRemoveSingleFilter
+      handleRemoveSingleFilter: handleRemoveSingleFilter,
     },
 
     currentReport: "TimeEntryReport",
     revenueByClientReport: RevenueByClientReportContext,
-    outstandingOverdueInvoice: OutstandingOverdueInvoiceContext
+    outstandingOverdueInvoice: OutstandingOverdueInvoiceContext,
   };
 
   return (
     <div>
-      <EntryContext.Provider value={{
-        ...contextValues
-      }}>
+      <EntryContext.Provider
+        value={{
+          ...contextValues,
+        }}
+      >
         <Header
           showNavFilters={showNavFilters}
           setFilterVisibilty={setFilterVisibilty}
@@ -135,13 +146,15 @@ const TimeEntryReports = () => {
           type={"Time Entry Report"}
         />
         <Container />
-        {isFilterVisible && <Filters
-          handleApplyFilter={handleApplyFilter}
-          resetFilter={resetFilter}
-          setFilterVisibilty={setFilterVisibilty}
-          onClickInput={onClickInput}
-          selectedInput={selectedInput}
-        />}
+        {isFilterVisible && (
+          <Filters
+            handleApplyFilter={handleApplyFilter}
+            resetFilter={resetFilter}
+            setFilterVisibilty={setFilterVisibilty}
+            onClickInput={onClickInput}
+            selectedInput={selectedInput}
+          />
+        )}
       </EntryContext.Provider>
     </div>
   );

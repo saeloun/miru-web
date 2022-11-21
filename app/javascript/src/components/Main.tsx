@@ -3,12 +3,7 @@ import React from "react";
 import { Roles, Paths } from "constants/index";
 import ROUTES from "constants/routes";
 
-import {
-  Routes,
-  Route,
-  Outlet,
-  Navigate
-} from "react-router-dom";
+import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 
 import ErrorPage from "common/Error";
 
@@ -17,7 +12,7 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
     window.location.href = Paths.SIGN_IN;
     return;
   }
-  if (authorisedRoles.includes(role)){
+  if (authorisedRoles.includes(role)) {
     return <Outlet />;
   }
   const url = role === Roles.BOOK_KEEPER ? Paths.PAYMENTS : Paths.TIME_TRACKING;
@@ -49,10 +44,10 @@ const Main: React.FC<Iprops> = (props) => (
   </div>
 );
 
-  interface Iprops {
-    user: object;
-    companyRole: Roles;
-    company: object;
-  }
+interface Iprops {
+  user: object;
+  companyRole: Roles;
+  company: object;
+}
 
 export default Main;

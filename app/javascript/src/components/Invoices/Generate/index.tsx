@@ -11,7 +11,10 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import Container from "./Container";
 import InvoiceSettings from "./InvoiceSettings";
 
-import { mapGenerateInvoice, unmapGenerateInvoice } from "../../../mapper/generateInvoice.mapper";
+import {
+  mapGenerateInvoice,
+  unmapGenerateInvoice,
+} from "../../../mapper/generateInvoice.mapper";
 import Header from "../common/InvoiceForm/Header";
 import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import { generateInvoiceLineItems } from "../common/utils";
@@ -30,15 +33,19 @@ const GenerateInvoices = () => {
   const [tax, setTax] = useState<any>(0);
   const [issueDate, setIssueDate] = useState(new Date());
   const today = new Date();
-  const [dueDate, setDueDate] = useState(today.setMonth(issueDate.getMonth() + 1));
+  const [dueDate, setDueDate] = useState(
+    today.setMonth(issueDate.getMonth() + 1)
+  );
   const [selectedOption, setSelectedOption] = useState<any>([]);
-  const [showSendInvoiceModal, setShowSendInvoiceModal] = useState<boolean>(false);
+  const [showSendInvoiceModal, setShowSendInvoiceModal] =
+    useState<boolean>(false);
   const [invoiceId, setInvoiceId] = useState<number>(null);
   const [showInvoiceSetting, setShowInvoiceSetting] = useState<boolean>(false);
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
 
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
-  const SELECT_CLIENT_ERROR = "Please select client and enter invoice number to proceed";
+  const SELECT_CLIENT_ERROR =
+    "Please select client and enter invoice number to proceed";
 
   const fetchCompanyDetails = async () => {
     // here we are fetching the company and client list
@@ -66,13 +73,16 @@ const GenerateInvoices = () => {
       reference,
       issueDate,
       dueDate,
-      invoiceLineItems: generateInvoiceLineItems(selectedOption, manualEntryArr),
+      invoiceLineItems: generateInvoiceLineItems(
+        selectedOption,
+        manualEntryArr
+      ),
       amount,
       amountDue,
       amountPaid,
       discount,
       tax,
-      setShowSendInvoiceModal
+      setShowSendInvoiceModal,
     });
     return await invoicesApi.post(sanitized);
   };
@@ -146,24 +156,24 @@ const GenerateInvoices = () => {
           setManualEntryArr={setManualEntryArr}
         />
 
-        {showSendInvoiceModal &&
-          <SendInvoice  invoice={{
-            id: invoiceId,
-            client: selectedClient,
-            company: invoiceDetails?.companyDetails,
-            dueDate: dueDate,
-            invoiceNumber,
-            amount
-          }}
-          isSending={showSendInvoiceModal}
-          setIsSending={setShowSendInvoiceModal}
-          handleSaveSendInvoice={handleSaveSendInvoice}
-          />}
+        {showSendInvoiceModal && (
+          <SendInvoice
+            invoice={{
+              id: invoiceId,
+              client: selectedClient,
+              company: invoiceDetails?.companyDetails,
+              dueDate: dueDate,
+              invoiceNumber,
+              amount,
+            }}
+            isSending={showSendInvoiceModal}
+            setIsSending={setShowSendInvoiceModal}
+            handleSaveSendInvoice={handleSaveSendInvoice}
+          />
+        )}
 
         {showInvoiceSetting && (
-          <InvoiceSettings
-            setShowInvoiceSetting={setShowInvoiceSetting}
-          />
+          <InvoiceSettings setShowInvoiceSetting={setShowInvoiceSetting} />
         )}
       </React.Fragment>
     );

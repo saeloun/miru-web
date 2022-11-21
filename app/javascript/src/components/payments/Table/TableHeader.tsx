@@ -6,34 +6,34 @@ const TableHeader = () => (
       scope="col"
       className="pr-6 pl-0 py-5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
     >
-        CLIENT / <br />
-        INVOICE NUMBER
+      CLIENT / <br />
+      INVOICE NUMBER
     </th>
     <th
       scope="col"
       className="px-6 py-5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
     >
-        TRANSACTION DATE
+      TRANSACTION DATE
     </th>
     <th
       scope="col"
       className="px-6 py-5 w-2/5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
     >
-        NOTES/
+      NOTES/
       <br />
-        TRANSACTION TYPE
+      TRANSACTION TYPE
     </th>
     <th
       scope="col"
       className="px-6 py-5 text-xs font-normal tracking-widest text-right text-miru-black-1000"
     >
-        AMOUNT
+      AMOUNT
     </th>
     <th
       scope="col"
       className="pl-6 pr-0 py-5 text-xs font-normal tracking-widest text-right text-miru-black-1000"
     >
-        STATUS
+      STATUS
     </th>
   </tr>
 );

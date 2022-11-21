@@ -6,8 +6,8 @@ const WeeklyEntries: React.FC<Iprops> = ({
   view,
   dayInfo,
   selectDate,
-  setSelectDate
-}) => (
+  setSelectDate,
+}) =>
   view === "day" ? (
     <div className="h-16 bg-miru-gray-100 flex justify-evenly">
       {dayInfo.map((d, index) => (
@@ -18,15 +18,14 @@ const WeeklyEntries: React.FC<Iprops> = ({
           key={index}
           className={
             "px-5 py-1 my-2 w-26 h-12 text-left items-center rounded-xl border-2 border-transparent " +
-            (index === selectDate &&
-              "bg-white border-miru-han-purple-1000")
+            (index === selectDate && "bg-white border-miru-han-purple-1000")
           }
         >
           <p className="text-xs text-miru-dark-purple-1000 font-medium">
             {d.day}
           </p>
           <p className="text-xs">
-            {getNumberWithOrdinal(parseInt(d.date,10))} {d.month}{" "}
+            {getNumberWithOrdinal(parseInt(d.date, 10))} {d.month}{" "}
           </p>
         </button>
       ))}
@@ -43,13 +42,12 @@ const WeeklyEntries: React.FC<Iprops> = ({
             {d.day}
           </p>
           <p className="text-xs">
-            {getNumberWithOrdinal(parseInt(d.date,10))} {d.month}{" "}
+            {getNumberWithOrdinal(parseInt(d.date, 10))} {d.month}{" "}
           </p>
         </div>
       ))}
     </div>
-  )
-);
+  );
 
 interface Iprops {
   view: string;

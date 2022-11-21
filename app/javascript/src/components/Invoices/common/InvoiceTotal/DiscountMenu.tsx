@@ -2,7 +2,12 @@ import React from "react";
 
 import { EditIcon, DeleteIcon } from "miruIcons";
 
-const DiscountMenu = ({ setShowDiscount, setShowDiscountMenu, setAddDiscount, setDiscount }) => (
+const DiscountMenu = ({
+  setShowDiscount,
+  setShowDiscountMenu,
+  setAddDiscount,
+  setDiscount,
+}) => (
   <div className="bg-white rounded-lg w-28 mt-16 py-2 absolute">
     <ul className="list-none">
       <li
@@ -14,7 +19,9 @@ const DiscountMenu = ({ setShowDiscount, setShowDiscountMenu, setAddDiscount, se
         }}
       >
         <EditIcon size={18} color="#5B34EA" />
-        <span className="pl-2 font-medium text-sm text-miru-han-purple-1000">Edit</span>
+        <span className="pl-2 font-medium text-sm text-miru-han-purple-1000">
+          Edit
+        </span>
       </li>
       <li
         className="flex py-2.5 px-4 cursor-pointer bg-white hover:bg-miru-gray-100 rounded"
@@ -26,7 +33,9 @@ const DiscountMenu = ({ setShowDiscount, setShowDiscountMenu, setAddDiscount, se
         }}
       >
         <DeleteIcon size={18} color="#E04646" />
-        <span className="pl-2 font-medium text-sm text-miru-red-400">Remove</span>
+        <span className="pl-2 font-medium text-sm text-miru-red-400">
+          Remove
+        </span>
       </li>
     </ul>
   </div>

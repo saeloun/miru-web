@@ -22,7 +22,7 @@ const ImportModal = ({
   data,
   columnNames,
   handleRemoveFile,
-  title
+  title,
 }) => {
   const firstStep = () => (
     <Fragment>
@@ -32,15 +32,23 @@ const ImportModal = ({
             <div className="min-w-full min-h-full dashed-border cursor-pointer rounded border-miru-dark-purple-200 flex flex-col justify-center items-center">
               <div className="flex flex-row ">
                 <img src={fileIcon} className="" />
-                <p className="text-miru-dark-purple-200 text-base	font-bold tracking-widest ml-4">UPLOAD FILE</p>
+                <p className="text-miru-dark-purple-200 text-base	font-bold tracking-widest ml-4">
+                  UPLOAD FILE
+                </p>
               </div>
               <p className="text-miru-dark-purple-200 text-xs font-medium">
                 Supported file formats: .xls, .xlsx, .csv
               </p>
             </div>
           </label>
-          <input id="file-input" type="file" name="file" className='hidden' onChange={handleSelectFile} accept=".csv, .xls, .xlsx">
-          </input>
+          <input
+            id="file-input"
+            type="file"
+            name="file"
+            className="hidden"
+            onChange={handleSelectFile}
+            accept=".csv, .xls, .xlsx"
+          ></input>
         </div>
       ) : (
         <div className=" w-352 h-512 mt-5">
@@ -50,7 +58,10 @@ const ImportModal = ({
             </div>
             <div className="w-228">
               <p className="text-sm	font-medium  truncate">{file.name}</p>
-              <p className="text-xs	font-medium text-miru-dark-purple-200"> XLS • {bytesToSize(file.size)}</p>
+              <p className="text-xs	font-medium text-miru-dark-purple-200">
+                {" "}
+                XLS • {bytesToSize(file.size)}
+              </p>
             </div>
             <button onClick={handleRemoveFile}>
               <XIcon size={15} color="#5B34EA" className="mr-2" />
@@ -70,7 +81,10 @@ const ImportModal = ({
   const secondStep = () => (
     <Fragment>
       <div className=" w-352 mt-5">
-        <p className="text-xs	font-medium	">We have identified following columns from the file and mapped with the required fields. Please review and confirm.</p>
+        <p className="text-xs	font-medium	">
+          We have identified following columns from the file and mapped with the
+          required fields. Please review and confirm.
+        </p>
         <table className="min-w-full mt-5 divide-y divide-gray-200">
           <thead>
             <TableHeader />
@@ -82,7 +96,7 @@ const ImportModal = ({
                   id={id}
                   field={data}
                   column={columnNames}
-                  handleColumnChange={() => { }} //eslint-disable-line
+                  handleColumnChange={() => {}} //eslint-disable-line
                 />
               </Fragment>
             ))}
@@ -101,30 +115,38 @@ const ImportModal = ({
   const thirdStep = () => (
     <Fragment>
       <div className=" w-352 mt-5 ">
-        {true ? <Fragment>
-          <div className=" w-full h-304 bg-miru-gray-100 rounded-lg flex justify-around items-center flex-col">
-            <p className="text-base	font-bold	tracking-wide	">Importing 172 time entries</p>
-            <div className="h-87 flex justify-center items-baseline text-miru-han-purple-1000">
-              <p className="text-6xl font-normal">37</p>
-              <p className="text-base font-normal">%</p>
+        {true ? (
+          <Fragment>
+            <div className=" w-full h-304 bg-miru-gray-100 rounded-lg flex justify-around items-center flex-col">
+              <p className="text-base	font-bold	tracking-wide	">
+                Importing 172 time entries
+              </p>
+              <div className="h-87 flex justify-center items-baseline text-miru-han-purple-1000">
+                <p className="text-6xl font-normal">37</p>
+                <p className="text-base font-normal">%</p>
+              </div>
+              <div className="w-72 h-4 relative bg-miru-gray-200 rounded-2xl">
+                <ProgressBar width="37%" />
+              </div>
             </div>
-            <div className="w-72 h-4 relative bg-miru-gray-200 rounded-2xl">
-              <ProgressBar width="37%" />
+            <div className="text-base font-normal text-justify	mt-11">
+              This might take some time to complete. We will continue importing
+              in the background even if you close this window and send an email
+              to you when it is completed.
             </div>
-          </div>
-          <div className="text-base font-normal text-justify	mt-11">
-            This might take some time to complete. We will continue importing in the background even if you close this window and send an email to you when it is completed.
-          </div>
-          <button
-            className="mt-22 w-352 bg-miru-han-purple-1000 text-white rounded py-2 text-base tracking-widest font-bold"
-            onClick={handleToggleModal}
-          >
-            CLOSE WINDOW
-          </button>
-        </Fragment> :
+            <button
+              className="mt-22 w-352 bg-miru-han-purple-1000 text-white rounded py-2 text-base tracking-widest font-bold"
+              onClick={handleToggleModal}
+            >
+              CLOSE WINDOW
+            </button>
+          </Fragment>
+        ) : (
           <Fragment>
             <div className="w-full h-512 bg-miru-gray-100 rounded-lg flex justify-around items-center flex-col p-4">
-              <p className="text-base	font-bold	tracking-wide	">Import complete!</p>
+              <p className="text-base	font-bold	tracking-wide	">
+                Import complete!
+              </p>
               <div className="h-87 flex justify-center items-baseline text-miru-han-purple-1000">
                 <p className="text-6xl font-normal">100</p>
                 <p className="text-base font-normal">%</p>
@@ -155,57 +177,70 @@ const ImportModal = ({
               IMPORT ANOTHER FILE
             </button>
           </Fragment>
-        }
+        )}
       </div>
     </Fragment>
   );
 
   return (
-    <div className="modal__modal main-modal" style={{ background: "rgba(29, 26, 49,0.6)" }}>
+    <div
+      className="modal__modal main-modal"
+      style={{ background: "rgba(29, 26, 49,0.6)" }}
+    >
       <div className="modal__container__import__modal modal-container">
         <div className="modal__content modal-content mt-2">
           <div className="modal__position w-352">
             <h6 className="modal__title"> Import {title} </h6>
             <div className="modal__close">
-              <button
-                className="modal__button"
-                onClick={handleToggleModal}
-              >
+              <button className="modal__button" onClick={handleToggleModal}>
                 <XIcon size={15} color="#CDD6DF" />
               </button>
             </div>
           </div>
           <div className="modal__form flex-col justify-center items-center mt-4">
             <div className="w-352 flex flex-row justify-between items-center">
-              {step === 1 ? (<div className="import-modal__header-number">
-                1
-              </div>) : (
+              {step === 1 ? (
+                <div className="import-modal__header-number">1</div>
+              ) : (
                 <img src={Step} alt={"step"} height="20px" width="20px"></img>
               )}
-              <div className={step === 1 ? "text-miru-han-purple-1000" : "text-miru-chart-green-400"}>
+              <div
+                className={
+                  step === 1
+                    ? "text-miru-han-purple-1000"
+                    : "text-miru-chart-green-400"
+                }
+              >
                 Upload File
               </div>
-              <div className="min-w-24 border border-miru-gray-200 bg-miru-gray-200 h-px">
-              </div>
-              {step <= 2 ? (<div className="mport-modal__header-number">
-                2
-              </div>) : (
+              <div className="min-w-24 border border-miru-gray-200 bg-miru-gray-200 h-px"></div>
+              {step <= 2 ? (
+                <div className="mport-modal__header-number">2</div>
+              ) : (
                 <img src={Step} alt={"step"} height="20px" width="20px"></img>
-              )
-              }
-              <div className={step <= 2 ? "text-miru-han-purple-1000 " : "text-miru-chart-green-400"}>
+              )}
+              <div
+                className={
+                  step <= 2
+                    ? "text-miru-han-purple-1000 "
+                    : "text-miru-chart-green-400"
+                }
+              >
                 Map fields
               </div>
-              <div className="min-w-24 border border-miru-gray-200 bg-miru-gray-200 h-px">
-
-              </div>
-              {step <= 3 ? (<div className="mport-modal__header-number">
-                3
-              </div>) : (
+              <div className="min-w-24 border border-miru-gray-200 bg-miru-gray-200 h-px"></div>
+              {step <= 3 ? (
+                <div className="mport-modal__header-number">3</div>
+              ) : (
                 <img src={Step} alt={"step"} height="20px" width="20px"></img>
-              )
-              }
-              <div className={step <= 3 ? "text-miru-han-purple-1000 " : "text-miru-chart-green-400"}>
+              )}
+              <div
+                className={
+                  step <= 3
+                    ? "text-miru-han-purple-1000 "
+                    : "text-miru-chart-green-400"
+                }
+              >
                 Import
               </div>
             </div>

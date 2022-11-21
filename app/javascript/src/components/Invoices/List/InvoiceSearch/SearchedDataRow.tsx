@@ -13,7 +13,7 @@ const SearchDataRow = ({ invoice }) => {
   const formattedAmount = (invoice) =>
     currencyFormat({
       baseCurrency: invoice.company.baseCurrency,
-      amount: invoice.amount
+      amount: invoice.amount,
     });
 
   const handleClick = (invoice) => {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { TOASTER_DURATION } from "constants/index";
 
-import { cashFormatter, currencySymbol, minToHHMM  } from "helpers";
+import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
 import Logger from "js-logger";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -23,10 +23,24 @@ import { unmapClientDetails } from "../../../mapper/client.mapper";
 const getTableData = (clients) => {
   if (clients) {
     return clients.map((client) => ({
-      col1: <div className="text-base text-miru-dark-purple-1000">{client.name}</div>,
-      col2: <div className="text-base text-miru-dark-purple-1000">{client.team.map(member => <span>{member},&nbsp;</span>)}</div>,
-      col3: <div className="text-base text-miru-dark-purple-1000 text-right">{minToHHMM(client.minutes)}</div>,
-      rowId: client.id
+      col1: (
+        <div className="text-base text-miru-dark-purple-1000">
+          {client.name}
+        </div>
+      ),
+      col2: (
+        <div className="text-base text-miru-dark-purple-1000">
+          {client.team.map((member) => (
+            <span>{member},&nbsp;</span>
+          ))}
+        </div>
+      ),
+      col3: (
+        <div className="text-base text-miru-dark-purple-1000 text-right">
+          {minToHHMM(client.minutes)}
+        </div>
+      ),
+      rowId: client.id,
     }));
   }
   return [{}];
@@ -40,25 +54,27 @@ const ClientList = ({ isAdminUser }) => {
   const [totalMinutes, setTotalMinutes] = useState(null);
   const [clientDetails, setClientDetails] = useState<any>({});
   const [editProjectData, setEditProjectData] = React.useState<any>(null);
-  const [overdueOutstandingAmount, setOverDueOutstandingAmt]= useState<any>(null);
+  const [overdueOutstandingAmount, setOverDueOutstandingAmt] =
+    useState<any>(null);
 
   const params = useParams();
   const navigate = useNavigate();
 
   const handleEditClick = (id) => {
     setShowEditDialog(true);
-    const editSelection = projectDetails.find(project => project.id === id);
+    const editSelection = projectDetails.find((project) => project.id === id);
     setSelectedProject(editSelection);
   };
 
   const handleDeleteClick = (id) => {
     setShowDeleteDialog(true);
-    const editSelection = projectDetails.find(project => project.id === id);
+    const editSelection = projectDetails.find((project) => project.id === id);
     setSelectedProject(editSelection);
   };
 
   const handleSelectChange = (event) => {
-    clientApi.show(params.clientId,`?time_frame=${event.target.value}`)
+    clientApi
+      .show(params.clientId, `?time_frame=${event.target.value}`)
       .then((res) => {
         const sanitized = unmapClientDetails(res);
         setProjectDetails(sanitized.projectDetails);
@@ -69,7 +85,8 @@ const ClientList = ({ isAdminUser }) => {
   };
 
   const fetchProjectList = () => {
-    clientApi.show(params.clientId, "?time_frame=week")
+    clientApi
+      .show(params.clientId, "?time_frame=week")
       .then((res) => {
         const sanitized = unmapClientDetails(res);
         setClientDetails(sanitized.clientDetails);
@@ -94,30 +111,35 @@ const ClientList = ({ isAdminUser }) => {
     {
       Header: "PROJECT",
       accessor: "col1", // accessor is the "key" in the data
-      cssClass: ""
+      cssClass: "",
     },
     {
       Header: "TEAM",
       accessor: "col2",
-      cssClass: ""
+      cssClass: "",
     },
     {
       Header: "HOURS LOGGED",
       accessor: "col3",
-      cssClass: "text-right" // accessor is the "key" in the data
-    }
+      cssClass: "text-right", // accessor is the "key" in the data
+    },
   ];
 
   const currencySymb = currencySymbol(overdueOutstandingAmount?.currency);
 
-  const amountBox = [{
-    title: "OVERDUE",
-    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount)
-  },
-  {
-    title: "OUTSTANDING",
-    amount: currencySymb + cashFormatter(overdueOutstandingAmount?.outstanding_amount)
-  }];
+  const amountBox = [
+    {
+      title: "OVERDUE",
+      amount:
+        currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount),
+    },
+    {
+      title: "OUTSTANDING",
+      amount:
+        currencySymb +
+        cashFormatter(overdueOutstandingAmount?.outstanding_amount),
+    },
+  ];
 
   const tableData = getTableData(projectDetails);
 
@@ -126,9 +148,12 @@ const ClientList = ({ isAdminUser }) => {
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header clientDetails={clientDetails} />
       <div>
-        { isAdminUser && <div className="bg-miru-gray-100 py-10 px-10">
-          <div className="flex justify-end">
-            <select onChange={handleSelectChange} className="px-3
+        {isAdminUser && (
+          <div className="bg-miru-gray-100 py-10 px-10">
+            <div className="flex justify-end">
+              <select
+                onChange={handleSelectChange}
+                className="px-3
                 py-1.5
                 text-base
                 font-normal
@@ -138,46 +163,51 @@ const ClientList = ({ isAdminUser }) => {
                 ease-in-out
                 m-0
                 focus:outline-none
-                text-miru-han-purple-1000">
-              <option className="text-miru-dark-purple-600" value="week">
-                    THIS WEEK
-              </option>
-              <option className="text-miru-dark-purple-600" value="month">
-                    THIS MONTH
-              </option>
-              <option className="text-miru-dark-purple-600" value="year">
-                    THIS YEAR
-              </option>
-            </select>
+                text-miru-han-purple-1000"
+              >
+                <option className="text-miru-dark-purple-600" value="week">
+                  THIS WEEK
+                </option>
+                <option className="text-miru-dark-purple-600" value="month">
+                  THIS MONTH
+                </option>
+                <option className="text-miru-dark-purple-600" value="year">
+                  THIS YEAR
+                </option>
+              </select>
+            </div>
+            {projectDetails && (
+              <ChartBar data={projectDetails} totalMinutes={totalMinutes} />
+            )}
+            <AmountBoxContainer amountBox={amountBox} />
           </div>
-          {projectDetails && <ChartBar data={projectDetails} totalMinutes={totalMinutes} />}
-          <AmountBoxContainer amountBox = {amountBox} />
-        </div>
-        }
+        )}
         <div className="flex flex-col">
           <div className="-my-2 overflow-XIcon-auto sm:-mx-6 lg:-mx-8">
             <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
               <div className="overflow-hidden">
-                { projectDetails && <Table
-                  handleEditClick={handleEditClick}
-                  handleDeleteClick={handleDeleteClick}
-                  hasRowIcons={true}
-                  tableHeader={tableHeader}
-                  tableRowArray={tableData}
-                /> }
+                {projectDetails && (
+                  <Table
+                    handleEditClick={handleEditClick}
+                    handleDeleteClick={handleDeleteClick}
+                    hasRowIcons={true}
+                    tableHeader={tableHeader}
+                    tableRowArray={tableData}
+                  />
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
-      {showEditDialog &&
+      {showEditDialog && (
         <AddEditProject
           setShowProjectModal={setShowEditDialog}
           setEditProjectData={setEditProjectData}
           editProjectData={editProjectData}
           projectData={selectedProject}
         />
-      }
+      )}
       {showDeleteDialog && (
         <DeleteProject
           setShowDeleteDialog={setShowDeleteDialog}

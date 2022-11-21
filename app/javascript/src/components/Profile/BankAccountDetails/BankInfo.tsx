@@ -4,13 +4,16 @@ import wiseApi from "apis/wise";
 
 const BankInfo = ({
   recipientId,
-  sourceCurrency, targetCurrency,
+  sourceCurrency,
+  targetCurrency,
   fetchAccountRequirements,
-  setBankDetailsModal, setIsLoading,
-  setFirstName, setLastName,
-  setRecipientDetails, setIsUpdate
+  setBankDetailsModal,
+  setIsLoading,
+  setFirstName,
+  setLastName,
+  setRecipientDetails,
+  setIsUpdate,
 }) => {
-
   useEffect(() => {
     fetchRecipientDetails(recipientId);
   }, []);
@@ -37,9 +40,7 @@ const BankInfo = ({
 
   return (
     <div className="mx-2 w-5/8 h-12 px-8 py-3.5 bg-gray-200 flex justify-center">
-      <p>
-        You have already submitted your bank details.
-      </p>
+      <p>You have already submitted your bank details.</p>
       <button
         className="bg-transparent text-miru-han-purple-1000 font-semibold underline mx-1"
         onClick={() => setBankDetailsModal(true)}

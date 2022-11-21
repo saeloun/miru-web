@@ -13,8 +13,7 @@ import {
   SignOutIcon,
   ReportsIcon,
   InvoicesIcon,
-  PaymentsIcon
-
+  PaymentsIcon,
 } from "miruIcons";
 import { NavLink, Link } from "react-router-dom";
 
@@ -34,26 +33,26 @@ const Navbar = ({ isAdminUser, user }) => {
       logo: <TimeTrackingIcon size={26} className="mr-0 md:mr-4" />,
       label: "Time Tracking",
       dataCy: "time-tracking-tab",
-      path: Paths.TIME_TRACKING
+      path: Paths.TIME_TRACKING,
     },
     {
       logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Team",
       dataCy: "team-tab",
-      path: Paths.TEAM
+      path: Paths.TEAM,
     },
     {
       logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Clients",
       dataCy: "clients-tab",
-      path: Paths.CLIENTS
+      path: Paths.CLIENTS,
     },
     {
       logo: <ProjectsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Projects",
       dataCy: "projects-tab",
-      path: Paths.PROJECTS
-    }
+      path: Paths.PROJECTS,
+    },
   ];
 
   const navAdminOptions = [
@@ -61,44 +60,44 @@ const Navbar = ({ isAdminUser, user }) => {
       logo: <TimeTrackingIcon size={26} className="mr-0 md:mr-4" />,
       label: "Time Tracking",
       dataCy: "time-tracking-tab",
-      path: Paths.TIME_TRACKING
+      path: Paths.TIME_TRACKING,
     },
     {
       logo: <TeamsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Team",
       dataCy: "team-tab",
-      path: Paths.TEAM
+      path: Paths.TEAM,
     },
     {
       logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Clients",
       dataCy: "clients-tab",
-      path: Paths.CLIENTS
+      path: Paths.CLIENTS,
     },
     {
       logo: <ProjectsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Projects",
       dataCy: "projects-tab",
-      path: Paths.PROJECTS
+      path: Paths.PROJECTS,
     },
     {
       logo: <InvoicesIcon size={26} className="mr-0 md:mr-4" />,
       label: "Invoices",
       dataCy: "invoices-tab",
-      path: Paths.INVOICES
+      path: Paths.INVOICES,
     },
     {
       logo: <ReportsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Reports",
       dataCy: "reports-tab",
-      path: Paths.REPORTS
+      path: Paths.REPORTS,
     },
     {
       logo: <PaymentsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Payments",
       dataCy: "payments-tab",
-      path: Paths.PAYMENTS
-    }
+      path: Paths.PAYMENTS,
+    },
   ];
 
   const activeClassName =

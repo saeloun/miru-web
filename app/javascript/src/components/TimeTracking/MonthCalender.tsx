@@ -23,14 +23,20 @@ const MonthCalender: React.FC<Iprops> = ({
   currentMonthNumber,
   setCurrentMonthNumber,
   currentYear,
-  setCurrentYear
+  setCurrentYear,
 }) => {
-  const [firstDay, setFirstDay] = useState<number>(dayjs().startOf("month").weekday());
+  const [firstDay, setFirstDay] = useState<number>(
+    dayjs().startOf("month").weekday()
+  );
   const [daysInMonth, setDaysInMonth] = useState<number>(dayjs().daysInMonth());
   const [totalMonthDuration, setTotalMonthDuration] = useState<number>(0);
   const [monthData, setMonthData] = useState<object[]>([]);
-  const [startOfTheMonth, setStartOfTheMonth] = useState<string>(dayjs().startOf("month").format("YYYY-MM-DD"));
-  const [endOfTheMonth, setEndOfTheMonth] = useState<string>(dayjs().endOf("month").format("YYYY-MM-DD"));
+  const [startOfTheMonth, setStartOfTheMonth] = useState<string>(
+    dayjs().startOf("month").format("YYYY-MM-DD")
+  );
+  const [endOfTheMonth, setEndOfTheMonth] = useState<string>(
+    dayjs().endOf("month").format("YYYY-MM-DD")
+  );
   const today = dayjs().format("YYYY-MM-DD");
 
   const handleMonthChange = () => {
@@ -40,10 +46,19 @@ const MonthCalender: React.FC<Iprops> = ({
     let dayInWeekCounter = firstDay;
     for (let i = 1; i <= daysInMonth; i++) {
       // Ex. date = "2020-01-01"
-      const date = dayjs(`${currentYear}-${currentMonthNumber + 1}-${i}`).format("YYYY-MM-DD");
-      const totalDuration = entryList[date]?.reduce((acc: number, cv: number) => cv["duration"] + acc, 0);
+      const date = dayjs(
+        `${currentYear}-${currentMonthNumber + 1}-${i}`
+      ).format("YYYY-MM-DD");
+      const totalDuration = entryList[date]?.reduce(
+        (acc: number, cv: number) => cv["duration"] + acc,
+        0
+      );
       if (totalDuration) currentWeekTotalHours += totalDuration;
-      weeksData[dayInWeekCounter] = { date: date, day: i, totalDuration: totalDuration };
+      weeksData[dayInWeekCounter] = {
+        date: date,
+        day: i,
+        totalDuration: totalDuration,
+      };
       // if the day is sunday, create a new week
       if (dayInWeekCounter === 6) {
         weeksData[7] = currentWeekTotalHours;
@@ -59,20 +74,26 @@ const MonthCalender: React.FC<Iprops> = ({
       weeksData[7] = currentWeekTotalHours;
       monthData.push(weeksData);
     }
-    setTotalMonthDuration(monthData.reduce((acc: number, cv: any[]) => cv[7] + acc, 0));
+    setTotalMonthDuration(
+      monthData.reduce((acc: number, cv: any[]) => cv[7] + acc, 0)
+    );
     setMonthData(monthData);
   };
 
   const handlePrevMonth = async () => {
     try {
-      const startOfTheMonth2MonthsAgo = dayjs(startOfTheMonth).subtract(2, "month").format("YYYY-MM-DD");
-      const endOfTheMonth2MonthsAgo = dayjs(endOfTheMonth).subtract(2, "month").format("YYYY-MM-DD");
+      const startOfTheMonth2MonthsAgo = dayjs(startOfTheMonth)
+        .subtract(2, "month")
+        .format("YYYY-MM-DD");
+      const endOfTheMonth2MonthsAgo = dayjs(endOfTheMonth)
+        .subtract(2, "month")
+        .format("YYYY-MM-DD");
       await fetchEntries(startOfTheMonth2MonthsAgo, endOfTheMonth2MonthsAgo);
       if (currentMonthNumber === 0) {
         setCurrentMonthNumber(11);
         setCurrentYear(currentYear - 1);
       } else {
-        setCurrentMonthNumber(cmn => cmn - 1);
+        setCurrentMonthNumber((cmn) => cmn - 1);
       }
     } catch (error) {
       Logger.error(error);
@@ -81,9 +102,16 @@ const MonthCalender: React.FC<Iprops> = ({
 
   const handleNextMonth = async () => {
     try {
-      const startOfTheMonth2MonthsLater = dayjs(startOfTheMonth).add(2, "month").format("YYYY-MM-DD");
-      const endOfTheMonth2MonthsLater = dayjs(endOfTheMonth).add(2, "month").format("YYYY-MM-DD");
-      await fetchEntries(startOfTheMonth2MonthsLater, endOfTheMonth2MonthsLater);
+      const startOfTheMonth2MonthsLater = dayjs(startOfTheMonth)
+        .add(2, "month")
+        .format("YYYY-MM-DD");
+      const endOfTheMonth2MonthsLater = dayjs(endOfTheMonth)
+        .add(2, "month")
+        .format("YYYY-MM-DD");
+      await fetchEntries(
+        startOfTheMonth2MonthsLater,
+        endOfTheMonth2MonthsLater
+      );
       if (currentMonthNumber === 11) {
         setCurrentMonthNumber(0);
         setCurrentYear(currentYear + 1);
@@ -103,17 +131,25 @@ const MonthCalender: React.FC<Iprops> = ({
   };
 
   const handleMonthNumberChange = () => {
-    const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber +1}-01`;
+    const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber + 1}-01`;
     setStartOfTheMonth(dayjs(firstDateOfTheMonth).format("YYYY-MM-DD"));
-    setEndOfTheMonth(dayjs(firstDateOfTheMonth).endOf("month").format("YYYY-MM-DD"));
+    setEndOfTheMonth(
+      dayjs(firstDateOfTheMonth).endOf("month").format("YYYY-MM-DD")
+    );
     setDaysInMonth(dayjs(firstDateOfTheMonth).daysInMonth());
     setFirstDay(() => dayjs(firstDateOfTheMonth).startOf("month").weekday());
   };
 
   const handleWeekday = (date: string) => {
-    const firstDateOfCurrentWeek = dayjs(today).startOf("week").format("YYYY-MM-DD");
-    const firstDateOfSelectedWeek = dayjs(date).startOf("week").format("YYYY-MM-DD");
-    setWeekDay(dayjs(firstDateOfCurrentWeek).diff(firstDateOfSelectedWeek, "week") * -7);
+    const firstDateOfCurrentWeek = dayjs(today)
+      .startOf("week")
+      .format("YYYY-MM-DD");
+    const firstDateOfSelectedWeek = dayjs(date)
+      .startOf("week")
+      .format("YYYY-MM-DD");
+    setWeekDay(
+      dayjs(firstDateOfCurrentWeek).diff(firstDateOfSelectedWeek, "week") * -7
+    );
   };
 
   useEffect(() => {
@@ -158,10 +194,12 @@ const MonthCalender: React.FC<Iprops> = ({
         }
         <div className="flex mr-12">
           <p className="text-white mr-2">Total</p>
-          <p className="text-white font-extrabold">{minToHHMM(totalMonthDuration)}</p>
+          <p className="text-white font-extrabold">
+            {minToHHMM(totalMonthDuration)}
+          </p>
         </div>
       </div>
-      <div className='p-4 bg-miru-gray-100'>
+      <div className="p-4 bg-miru-gray-100">
         <div className="bg-miru-gray-100 flex justify-between mb-4">
           {dayInfo.map((d, index) => (
             <div
@@ -171,44 +209,66 @@ const MonthCalender: React.FC<Iprops> = ({
               {d.day}
             </div>
           ))}
-          <div
-            className="text-center text-xs text-miru-dark-purple-1000 font-medium w-28 items-center rounded-xl"
-          >
-          Total
+          <div className="text-center text-xs text-miru-dark-purple-1000 font-medium w-28 items-center rounded-xl">
+            Total
           </div>
         </div>
-        {
-          monthData.map((weekInfo, index) => (
-            <div className="my-4 bg-miru-gray-100 flex justify-between" key={index}>
-              {Array.from(Array(7).keys()).map((dayNum) => (
-                weekInfo[dayNum] ?
-                  <div
-                    key={dayNum}
-                    onClick={() => {
-                      handleWeekday(weekInfo[dayNum].date);
-                      setSelectDate(dayNum);
-                    }}
-                    className={`border-2 cursor-pointer h-14 w-24 bg-white rounded-md flex justify-end p-1
-                    ${(weekInfo[dayNum]["date"] === selectedFullDate ? "border-miru-han-purple-1000" :
-                  "border-transparent")}`}
-                  >
-                    <div>
-                      <div className="flex justify-end">
-                        <p className={"text-xs font-medium " + (weekInfo[dayNum]["date"] === today ? "text-miru-white-1000 bg-miru-han-purple-1000 rounded-xl px-2" : "text-miru-dark-purple-200")}>{weekInfo[dayNum]["day"]}</p>
-                      </div>
-                      <p className="text-2xl mx-3 text-miru-dark-purple-1000">{weekInfo[dayNum]["totalDuration"] > 0 ? minToHHMM(weekInfo[dayNum]["totalDuration"]) : ""}</p>
+        {monthData.map((weekInfo, index) => (
+          <div
+            className="my-4 bg-miru-gray-100 flex justify-between"
+            key={index}
+          >
+            {Array.from(Array(7).keys()).map((dayNum) =>
+              weekInfo[dayNum] ? (
+                <div
+                  key={dayNum}
+                  onClick={() => {
+                    handleWeekday(weekInfo[dayNum].date);
+                    setSelectDate(dayNum);
+                  }}
+                  className={`border-2 cursor-pointer h-14 w-24 bg-white rounded-md flex justify-end p-1
+                    ${
+                      weekInfo[dayNum]["date"] === selectedFullDate
+                        ? "border-miru-han-purple-1000"
+                        : "border-transparent"
+                    }`}
+                >
+                  <div>
+                    <div className="flex justify-end">
+                      <p
+                        className={
+                          "text-xs font-medium " +
+                          (weekInfo[dayNum]["date"] === today
+                            ? "text-miru-white-1000 bg-miru-han-purple-1000 rounded-xl px-2"
+                            : "text-miru-dark-purple-200")
+                        }
+                      >
+                        {weekInfo[dayNum]["day"]}
+                      </p>
                     </div>
+                    <p className="text-2xl mx-3 text-miru-dark-purple-1000">
+                      {weekInfo[dayNum]["totalDuration"] > 0
+                        ? minToHHMM(weekInfo[dayNum]["totalDuration"])
+                        : ""}
+                    </p>
                   </div>
-                  : <div key={dayNum} className="h-14 w-24 text-miru-dark-purple-1000"></div>
-              ))}
-              <div className="h-14 w-24 bg-white rounded-md font-bold relative">
-                <div className="flex p-1 justify-end bottom-0 right-0 absolute">
-                  <p className="text-2xl mr-auto">{weekInfo[7] ? minToHHMM(weekInfo[7]) : ""}</p>
                 </div>
+              ) : (
+                <div
+                  key={dayNum}
+                  className="h-14 w-24 text-miru-dark-purple-1000"
+                ></div>
+              )
+            )}
+            <div className="h-14 w-24 bg-white rounded-md font-bold relative">
+              <div className="flex p-1 justify-end bottom-0 right-0 absolute">
+                <p className="text-2xl mr-auto">
+                  {weekInfo[7] ? minToHHMM(weekInfo[7]) : ""}
+                </p>
               </div>
             </div>
-          ))
-        }
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -221,7 +281,7 @@ interface Iprops {
   selectedFullDate: string;
   setSelectedFullDate: any;
   entryList: object;
-  setEntryList: object
+  setEntryList: object;
   handleWeekTodayButton: () => void;
   monthsAbbr: string[];
   setWeekDay: React.Dispatch<React.SetStateAction<number>>;
@@ -229,8 +289,7 @@ interface Iprops {
   currentMonthNumber: any;
   setCurrentMonthNumber: any;
   currentYear: any;
-  setCurrentYear: any
-
+  setCurrentYear: any;
 }
 
 export default MonthCalender;

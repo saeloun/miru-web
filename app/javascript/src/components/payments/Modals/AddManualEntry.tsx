@@ -12,7 +12,12 @@ import Toastr from "common/Toastr";
 
 import { mapPayment } from "../../../mapper/payment.mapper";
 
-const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList, fetchInvoiceList }) => {
+const AddManualEntry = ({
+  setShowManualEntryModal,
+  invoiceList,
+  fetchPaymentList,
+  fetchInvoiceList,
+}) => {
   const [invoice, setInvoice] = useState<any>(null);
   const [transactionDate, setTransactionDate] = useState<any>(null);
   const [transactionType, setTransactionType] = useState<any>(null);
@@ -32,7 +37,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
     { label: "Credit Card", value: "credit_card" },
     { label: "Debit Card", value: "debit_card" },
     { label: "Paypal", value: "paypal" },
-    { label: "Stripe", value: "stripe" }
+    { label: "Stripe", value: "stripe" },
   ];
 
   const handleAddPayment = async () => {
@@ -42,7 +47,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
         transactionDate,
         transactionType,
         amount,
-        note
+        note,
       });
       await payment.create(sanitized);
       Toastr.success("Manual entry added successfully.");
@@ -54,7 +59,6 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
       setAmount("");
       setNote("");
       setShowManualEntryModal(false);
-
     } catch (err) {
       Toastr.error("Failed to add manual entry");
     }
@@ -80,25 +84,25 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
     placeholder: (defaultStyles) => ({
       ...defaultStyles,
       background: "#F5F7F9",
-      color: "#A5A3AD"
+      color: "#A5A3AD",
     }),
     menu: (base) => ({
       ...base,
-      border: 0
+      border: 0,
     }),
     control: (provided) => ({
       ...provided,
       border: 0,
       background: "#F5F7F9",
-      boxShadow: "none"
+      boxShadow: "none",
     }),
     option: (styles, { isSelected }) => ({
       ...styles,
       backgroundColor: isSelected ? "#F5F7F9" : null,
       "&:hover": {
-        backgroundColor: "#F5F7F9"
-      }
-    })
+        backgroundColor: "#F5F7F9",
+      },
+    }),
   };
 
   const CustomOption = (props) => {
@@ -175,7 +179,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
                     components={{
                       Option: CustomOption,
                       DropdownIndicator,
-                      IndicatorSeparator: () => null
+                      IndicatorSeparator: () => null,
                     }}
                   />
                 </div>
@@ -197,7 +201,10 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
                     disabled
                     placeholder="DD.MM.YYYY"
                     className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                    value={transactionDate && dayjs(transactionDate).format("DD.MM.YYYY") }
+                    value={
+                      transactionDate &&
+                      dayjs(transactionDate).format("DD.MM.YYYY")
+                    }
                   />
                   <CalendarIcon
                     size={20}
@@ -211,7 +218,6 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
                     date={transactionDate}
                   />
                 )}
-
               </div>
             </div>
 

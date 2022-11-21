@@ -16,7 +16,7 @@ type SidePanelProps = {
 const SidePanel = ({
   WrapperClassname,
   setFilterVisibilty,
-  children
+  children,
 }: SidePanelProps) => {
   const wrapperRef = useRef(null);
 

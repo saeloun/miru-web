@@ -7,9 +7,9 @@ import SendButton from "./SendButton";
 const InvoiceActions = ({ deleteInvoice, editInvoiceLink, sendInvoice }) => (
   <>
     <div className="flex flex-row justify-items-right">
-      <DeleteButton onClick={deleteInvoice}/>
+      <DeleteButton onClick={deleteInvoice} />
       <EditButton editInvoiceLink={editInvoiceLink} />
-      <SendButton onClick={sendInvoice}/>
+      <SendButton onClick={sendInvoice} />
     </div>
   </>
 );

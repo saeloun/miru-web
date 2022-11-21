@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { minFromHHMM, minToHHMM, lineTotalCalc, useOutsideClick } from "helpers";
+import {
+  minFromHHMM,
+  minToHHMM,
+  lineTotalCalc,
+  useOutsideClick,
+} from "helpers";
 import { DeleteIcon } from "miruIcons";
 import DatePicker from "react-datepicker";
 
@@ -9,7 +14,7 @@ const EditLineItems = ({
   setSelectedOption,
   selectedOption,
   handleDelete,
-  setEdit
+  setEdit,
 }) => {
   const strName = item.name || `${item.first_name} ${item.last_name}`;
   const [name, setName] = useState<string>(strName);
@@ -32,12 +37,15 @@ const EditLineItems = ({
       description,
       rate,
       quantity: minFromHHMM(quantity),
-      lineTotal
+      lineTotal,
     };
 
     const selectedOptionArr = selectedOption.map((option) => {
-      if ((option.id && option.id === item.id) ||
-        (option.timesheet_entry_id && option.timesheet_entry_id === item.timesheet_entry_id)) {
+      if (
+        (option.id && option.id === item.id) ||
+        (option.timesheet_entry_id &&
+          option.timesheet_entry_id === item.timesheet_entry_id)
+      ) {
         return newItem;
       }
 
@@ -75,7 +83,7 @@ const EditLineItems = ({
           placeholder="Name"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           onKeyDown={closeEditField}
         />
       </td>
@@ -95,7 +103,7 @@ const EditLineItems = ({
           placeholder="Description"
           className=" p-1 px-2 bg-white rounded w-full font-medium text-sm text-miru-dark-purple-1000 focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
           value={description}
-          onChange={e => setDescription(e.target.value)}
+          onChange={(e) => setDescription(e.target.value)}
           onKeyDown={closeEditField}
         />
       </td>
@@ -121,7 +129,10 @@ const EditLineItems = ({
         {lineTotal}
       </td>
       <td>
-        <button onClick={() => handleDelete(item)} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
+        <button
+          onClick={() => handleDelete(item)}
+          className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100"
+        >
           <DeleteIcon size={16} color="#E04646" weight="bold" />
         </button>
       </td>

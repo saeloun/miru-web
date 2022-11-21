@@ -1,9 +1,6 @@
 import React from "react";
 
-import {
-  Routes,
-  Route
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 // import BankAccountDetails from "./BankAccountDetails";
 import Billing from "./Organization/Billing";
@@ -15,7 +12,7 @@ import UserDetails from "./UserDetail";
 const RouteConfig = () => (
   <Routes>
     <Route path="/edit">
-      {/* <Route path="bank_account_details" element={<BankAccountDetails />} /> TODO: Temporary disabling*/  }
+      {/* <Route path="bank_account_details" element={<BankAccountDetails />} /> TODO: Temporary disabling*/}
       <Route path="" element={<UserDetails />} />
       <Route path="payment" element={<PaymentSettings />} />
       <Route path="billing" element={<Billing />} />

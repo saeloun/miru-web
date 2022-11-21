@@ -2,7 +2,14 @@
 import reports from "apis/reports/outstandingOverdueInvoice";
 import { Toastr } from "common/Toastr";
 
-const getReportData = async ({ selectedFilter, setClientList, setNavFilters, setFilterVisibilty, setSummary, setCurrency }) => {
+const getReportData = async ({
+  selectedFilter,
+  setClientList,
+  setNavFilters,
+  setFilterVisibilty,
+  setSummary,
+  setCurrency,
+}) => {
   try {
     const res = await reports.get();
     setClientList(res.data.clients);

@@ -22,25 +22,22 @@ const userProfileSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name cannot be blank"),
   lastName: Yup.string().required("Last Name cannot be blank"),
   changePassword: Yup.boolean(),
-  password: Yup
-    .string()
-    .when("changePassword", {
-      is: true,
-      then: Yup.string().required("Please enter password")
-    }),
-  currentPassword: Yup
-    .string()
-    .when("changePassword", {
-      is: true,
-      then: Yup.string().required("Please enter current password")
-    }),
+  password: Yup.string().when("changePassword", {
+    is: true,
+    then: Yup.string().required("Please enter password"),
+  }),
+  currentPassword: Yup.string().when("changePassword", {
+    is: true,
+    then: Yup.string().required("Please enter current password"),
+  }),
 
-  confirmPassword: Yup
-    .string()
-    .when("changePassword", {
-      is: true,
-      then: Yup.string().oneOf([Yup.ref("password"), null], "Passwords don't match")
-    })
+  confirmPassword: Yup.string().when("changePassword", {
+    is: true,
+    then: Yup.string().oneOf(
+      [Yup.ref("password"), null],
+      "Passwords don't match"
+    ),
+  }),
 });
 
 const UserDetails = () => {
@@ -49,7 +46,7 @@ const UserDetails = () => {
     lastNameErr: "",
     passwordErr: "",
     currentPasswordErr: "",
-    confirmPasswordErr: ""
+    confirmPasswordErr: "",
   };
 
   const { setUserState } = useProfile();
@@ -76,47 +73,48 @@ const UserDetails = () => {
     setIsDetailUpdated(true);
   };
   const handleUpdateProfile = async () => {
-    userProfileSchema.validate({ firstName, lastName, changePassword, password, confirmPassword, currentPassword }, { abortEarly: false }).then(async () => {
-      setisLoading(true);
-      const formD = new FormData();
-      formD.append(
-        "user[first_name]", firstName
-      );
-      formD.append(
-        "user[last_name]", lastName
-      );
-      if (changePassword) {
-        formD.append(
-          "user[current_password]", currentPassword
-        );
-        formD.append(
-          "user[password]", password
-        );
-        formD.append(
-          "user[password_confirmation]", confirmPassword
-        );
-      }
-      if (imageFile) {
-        formD.append(
-          "user[avatar]", imageFile
-        );
-      }
-      await profileApi.update(formD);
-      setIsDetailUpdated(false);
-      setErrDetails(initialErrState);
-      setUserState("profileSettings", {
-        firstName: firstName,
-        lastName: lastName
+    userProfileSchema
+      .validate(
+        {
+          firstName,
+          lastName,
+          changePassword,
+          password,
+          confirmPassword,
+          currentPassword,
+        },
+        { abortEarly: false }
+      )
+      .then(async () => {
+        setisLoading(true);
+        const formD = new FormData();
+        formD.append("user[first_name]", firstName);
+        formD.append("user[last_name]", lastName);
+        if (changePassword) {
+          formD.append("user[current_password]", currentPassword);
+          formD.append("user[password]", password);
+          formD.append("user[password_confirmation]", confirmPassword);
+        }
+        if (imageFile) {
+          formD.append("user[avatar]", imageFile);
+        }
+        await profileApi.update(formD);
+        setIsDetailUpdated(false);
+        setErrDetails(initialErrState);
+        setUserState("profileSettings", {
+          firstName: firstName,
+          lastName: lastName,
+        });
+        setisLoading(false);
+      })
+      .catch(function (err) {
+        setisLoading(false);
+        const errObj = initialErrState;
+        err.inner.map((item) => {
+          errObj[item.path + "Err"] = item.message;
+        });
+        setErrDetails(errObj);
       });
-      setisLoading(false);
-    }).catch(function (err) {
-      setisLoading(false);
-      const errObj = initialErrState;
-      err.inner.map((item) => {
-        errObj[item.path + "Err"] = item.message;
-      });
-      setErrDetails(errObj);
-    });
   };
 
   const handleFirstNameChange = (event) => {
@@ -159,7 +157,7 @@ const UserDetails = () => {
       setUserState("profileSettings", {
         firstName: data.data.user.first_name,
         lastName: data.data.user.last_name,
-        email: data.data.user.email
+        email: data.data.user.email,
       });
       setisLoading(false);
     } else {
@@ -206,7 +204,9 @@ const UserDetails = () => {
         saveAction={handleUpdateProfile}
         isDisableUpdateBtn={isDetailUpdated}
       />
-      {isLoading ? <Loader /> : (
+      {isLoading ? (
+        <Loader />
+      ) : (
         <div className="pb-10 pt-10 pl-10 pr-10 mt-4 bg-miru-gray-100 min-h-80v">
           <div className="flex flex-row py-6">
             <div className="w-4/12 font-bold p-2">Basic Details</div>
@@ -215,29 +215,56 @@ const UserDetails = () => {
               {profileImage ? (
                 <div className="mt-2 flex flex-row">
                   <div className="w-20 h-20">
-                    <img src={profileImage} alt={"profile_pic"} className={"rounded-full min-w-full h-full"} />
+                    <img
+                      src={profileImage}
+                      alt={"profile_pic"}
+                      className={"rounded-full min-w-full h-full"}
+                    />
                   </div>
                   <label htmlFor="file-input" className="">
-                    <img src={editButton} alt={"edit_pencil"} className={"rounded-full mt-5 cursor-pointer"} style={{ "minWidth": "40px" }}></img>
+                    <img
+                      src={editButton}
+                      alt={"edit_pencil"}
+                      className={"rounded-full mt-5 cursor-pointer"}
+                      style={{ minWidth: "40px" }}
+                    ></img>
                   </label>
-                  <input id="file-input" type="file" name="myImage" className='hidden' onChange={handleProfileImageChange}>
-                  </input>
+                  <input
+                    id="file-input"
+                    type="file"
+                    name="myImage"
+                    className="hidden"
+                    onChange={handleProfileImageChange}
+                  ></input>
                   <button className="" onClick={handleDeleteLogo}>
                     <img
                       src={deleteIcon}
                       alt="delete"
-                      style={{ "minWidth": "20px" }}
+                      style={{ minWidth: "20px" }}
                     />
                   </button>
                 </div>
               ) : (
                 <>
                   <div className="w-20 h-20 border rounded border-miru-han-purple-1000 mt-2 ">
-                    <label htmlFor="file-input" className="flex justify-center items-cente w-full h-full cursor-pointer">
-                      <img alt="profile_box" src={img} className="object-none" />
+                    <label
+                      htmlFor="file-input"
+                      className="flex justify-center items-cente w-full h-full cursor-pointer"
+                    >
+                      <img
+                        alt="profile_box"
+                        src={img}
+                        className="object-none"
+                      />
                     </label>
                   </div>
-                  <input id="file-input" type="file" name="myImage" className='hidden' onChange={handleProfileImageChange} />
+                  <input
+                    id="file-input"
+                    type="file"
+                    name="myImage"
+                    className="hidden"
+                    onChange={handleProfileImageChange}
+                  />
                 </>
               )}
               <div className="mt-2 flex flex-col">
@@ -275,7 +302,7 @@ const UserDetails = () => {
                   name="email"
                   value={email}
                   className="border py-1 px-1 w-full mt-2"
-                  onChange={event => setEmail(event.target.value)}
+                  onChange={(event) => setEmail(event.target.value)}
                   disabled
                 />
               </div>
@@ -286,76 +313,118 @@ const UserDetails = () => {
             <div className="w-4/12 font-bold p-2">Password</div>
             <div className="w-full p-2">
               <div>
-                {
-                  !changePassword && (
-                    <div>
-                      <p className=" text-miru-han-purple-1000 cursor-pointer" onClick={() => setChangePassword(true)}>CHANGE PASSWORD</p>
-                    </div>
-                  )
-                }
-                {
-                  changePassword && (
-                    <div>
-                      <div className="flex flex-col">
-                        <div className="flex flex-col w-1/2 pr-2">
-                          <label>Current Password</label>
+                {!changePassword && (
+                  <div>
+                    <p
+                      className=" text-miru-han-purple-1000 cursor-pointer"
+                      onClick={() => setChangePassword(true)}
+                    >
+                      CHANGE PASSWORD
+                    </p>
+                  </div>
+                )}
+                {changePassword && (
+                  <div>
+                    <div className="flex flex-col">
+                      <div className="flex flex-col w-1/2 pr-2">
+                        <label>Current Password</label>
+                        <div className="flex relative items-center">
+                          <input
+                            type={showCurrentPasword ? "text" : "password"}
+                            id="current_password"
+                            name="current_password"
+                            value={currentPassword}
+                            className="border py-1 px-1 w-full mt-2"
+                            onChange={handleCurrentPasswordChange}
+                          />
+                          <button
+                            className="btn btn-outline-primary absolute mt-2 mr-3 right-0"
+                            onClick={() =>
+                              setShowCurrentPassword(!showCurrentPasword)
+                            }
+                          >
+                            {!showCurrentPasword ? (
+                              <img src={password_icon} alt="pass_icon" />
+                            ) : (
+                              <img
+                                src={password_icon_text}
+                                alt="pass_icon_text"
+                              />
+                            )}
+                          </button>
+                        </div>
+                        {errDetails.currentPasswordErr &&
+                          getErr(errDetails.currentPasswordErr)}
+                      </div>
+                      <div className="flex flex-row mt-2">
+                        <div className="flex flex-col w-1/2 pr-2 mt-2">
+                          <label className="mb-2">Password</label>
                           <div className="flex relative items-center">
                             <input
-                              type={showCurrentPasword ? "text" : "password"}
-                              id="current_password"
-                              name="current_password"
-                              value={currentPassword}
-                              className="border py-1 px-1 w-full mt-2"
-                              onChange={handleCurrentPasswordChange}
+                              type={showPasword ? "text" : "password"}
+                              id="password"
+                              name="password"
+                              value={password}
+                              className=" border py-1 px-1 w-full mt-2"
+                              onChange={handlePasswordChange}
                             />
-                            <button className="btn btn-outline-primary absolute mt-2 mr-3 right-0" onClick={() => setShowCurrentPassword(!showCurrentPasword)} >
-                              {!showCurrentPasword ? <img src={password_icon} alt="pass_icon" /> : <img src={password_icon_text} alt="pass_icon_text" />}
+                            <button
+                              className="btn btn-outline-primary absolute mt-2 mr-3 right-0"
+                              onClick={() => setShowPassword(!showPasword)}
+                            >
+                              {!showPasword ? (
+                                <img src={password_icon} alt="pass_icon" />
+                              ) : (
+                                <img
+                                  src={password_icon_text}
+                                  alt="pass_icon_text"
+                                />
+                              )}
                             </button>
                           </div>
-                          {errDetails.currentPasswordErr && getErr(errDetails.currentPasswordErr)}
+                          {errDetails.passwordErr &&
+                            getErr(errDetails.passwordErr)}
                         </div>
-                        <div className="flex flex-row mt-2">
-                          <div className="flex flex-col w-1/2 pr-2 mt-2">
-                            <label className="mb-2">Password</label>
-                            <div className="flex relative items-center">
-                              <input
-                                type={showPasword ? "text" : "password"}
-                                id="password"
-                                name="password"
-                                value={password}
-                                className=" border py-1 px-1 w-full mt-2"
-                                onChange={handlePasswordChange}
-                              />
-                              <button className="btn btn-outline-primary absolute mt-2 mr-3 right-0" onClick={() => setShowPassword(!showPasword)}>
-                                {!showPasword ? <img src={password_icon} alt="pass_icon" /> : <img src={password_icon_text} alt="pass_icon_text" />}
-                              </button>
-                            </div>
-                            {errDetails.passwordErr && getErr(errDetails.passwordErr)}
-
+                        <div className="flex flex-col w-1/2 pl-2 mt-2">
+                          <label className="mb-2">Confirm Password</label>
+                          <div className="flex relative items-center">
+                            <input
+                              type={showConfirmPasword ? "text" : "password"}
+                              id="confirm_password"
+                              name="confirm_password"
+                              value={confirmPassword}
+                              className="border py-1 px-1 w-full mt-2"
+                              onChange={handleConfirmPasswordChange}
+                            />
+                            <button
+                              className="btn btn-outline-primary absolute mt-2 mr-3 right-0"
+                              onClick={() =>
+                                setShowConfirmPassword(!showConfirmPasword)
+                              }
+                            >
+                              {!showConfirmPasword ? (
+                                <img src={password_icon} alt="pass_icon" />
+                              ) : (
+                                <img
+                                  src={password_icon_text}
+                                  alt="pass_icon_text"
+                                />
+                              )}
+                            </button>
                           </div>
-                          <div className="flex flex-col w-1/2 pl-2 mt-2">
-                            <label className="mb-2">Confirm Password</label>
-                            <div className="flex relative items-center">
-                              <input
-                                type={showConfirmPasword ? "text" : "password"}
-                                id="confirm_password"
-                                name="confirm_password"
-                                value={confirmPassword}
-                                className="border py-1 px-1 w-full mt-2"
-                                onChange={handleConfirmPasswordChange}
-                              />
-                              <button className="btn btn-outline-primary absolute mt-2 mr-3 right-0" onClick={() => setShowConfirmPassword(!showConfirmPasword)}>
-                                {!showConfirmPasword ? <img src={password_icon} alt="pass_icon" /> : <img src={password_icon_text} alt="pass_icon_text" />}
-                              </button>
-                            </div>
-                            {errDetails.confirmPasswordErr && getErr(errDetails.confirmPasswordErr)}
-                          </div>
+                          {errDetails.confirmPasswordErr &&
+                            getErr(errDetails.confirmPasswordErr)}
                         </div>
-                        <p className="mt-5 text-miru-han-purple-1000 cursor-pointer" onClick={() => setChangePassword(false)}>CANCEL</p>
                       </div>
+                      <p
+                        className="mt-5 text-miru-han-purple-1000 cursor-pointer"
+                        onClick={() => setChangePassword(false)}
+                      >
+                        CANCEL
+                      </p>
                     </div>
-                  )
-                }
+                  </div>
+                )}
               </div>
             </div>
           </div>

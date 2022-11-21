@@ -7,16 +7,17 @@ import projectApi from "apis/projects";
 import AutoComplete from "common/AutoComplete";
 
 const Header = ({ setShowProjectModal, isAdminUser }) => {
-
   const searchCallBack = async (searchString, setDropdownItems) => {
     try {
       if (!searchString) return;
       const res = await projectApi.search(searchString);
       const dropdownList = res.data.projects.map((project) => ({
         label: `${project.name} • ${project.client_name}`,
-        value: project.id
+        value: project.id,
       }));
-      const searchList = dropdownList.filter(item => item.label.toLowerCase().includes(searchString.toLowerCase()));
+      const searchList = dropdownList.filter((item) =>
+        item.label.toLowerCase().includes(searchString.toLowerCase())
+      );
       setDropdownItems(searchList);
     } catch (err) {
       Logger.error(err);
@@ -25,7 +26,10 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
 
   return (
     <div
-      className={`sm:flex mt-6 mb-3 sm:items-center ${isAdminUser ? "sm:justify-between" : ""}` }>
+      className={`sm:flex mt-6 mb-3 sm:items-center ${
+        isAdminUser ? "sm:justify-between" : ""
+      }`}
+    >
       <h2 className="header__title">Projects</h2>
       <React.Fragment>
         <div className="header__searchWrap">

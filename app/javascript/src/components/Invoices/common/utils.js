@@ -16,7 +16,7 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
       timesheet_entry_id: item.time_sheet_entry
         ? item.time_sheet_entry
         : item.timesheet_entry_id,
-      _destroy: !!item._destroy
+      _destroy: !!item._destroy,
     }))
   );
 
@@ -29,7 +29,7 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
       rate: item.rate,
       quantity: Number(item.quantity),
       timesheet_entry_id: item.time_sheet_entry,
-      _destroy: !!item._destroy
+      _destroy: !!item._destroy,
     }))
   );
 
@@ -53,12 +53,12 @@ export const fetchNewLineItems = async (
   setTotalLineItems,
   pageNumber,
   setPageNumber,
-  selectedEntries = [],
+  selectedEntries = []
 ) => {
   if (selectedClient) {
     let selectedEntriesString = "";
     selectedEntries.forEach((entry) => {
-      if (!entry._destroy){
+      if (!entry._destroy) {
         selectedEntriesString += `&selected_entries[]=${entry.timesheet_entry_id}`;
       }
     });
@@ -67,7 +67,9 @@ export const fetchNewLineItems = async (
     const res = await generateInvoice.getLineItems(queryParams);
     setPageNumber(pageNumber + 1);
     const mergedItems = [...res.data.new_line_item_entries, ...lineItems];
-    const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
+    const sortedData = mergedItems.sort((item1, item2) =>
+      dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1
+    );
     setLineItems(sortedData);
     setTotalLineItems(res.data.total_new_line_items);
   }
@@ -83,15 +85,20 @@ export const fetchMultipleNewLineItems = async (
   setTeamMembers
 ) => {
   const res = await generateInvoice.getLineItems(handleFilterParams());
-  const itemSelected = (id) => selectedLineItems.filter((selectedItem) => id == selectedItem.timesheet_entry_id).length;
+  const itemSelected = (id) =>
+    selectedLineItems.filter(
+      (selectedItem) => id == selectedItem.timesheet_entry_id
+    ).length;
 
-  const items = res.data.new_line_item_entries.map(item => ({
+  const items = res.data.new_line_item_entries.map((item) => ({
     ...item,
     checked: itemSelected(item.timesheet_entry_id),
-    lineTotal: lineTotalCalc(item.quantity, item.rate)
+    lineTotal: lineTotalCalc(item.quantity, item.rate),
   }));
 
-  const sortedData = [...items].sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
+  const sortedData = [...items].sort((item1, item2) =>
+    dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1
+  );
   setLineItems(sortedData);
   if (allCheckboxSelected) {
     setSelectedLineItems(sortedData);

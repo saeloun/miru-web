@@ -3,7 +3,6 @@ import React, { useEffect, useCallback } from "react";
 const miruLogo = require("../../../../assets/images/miru-logo.svg"); //eslint-disable-line
 
 const EmailVerification = ({ userEmail, resendUrl }) => {
-
   const handleKeyPress = useCallback((event) => {
     if (event.key === "Escape") {
       location.assign(window.location.origin + "/users/sign_in");
@@ -34,7 +33,10 @@ const EmailVerification = ({ userEmail, resendUrl }) => {
 
             <h3 className="font-xs font-normal text-center leading-4 text-miru-dark-purple-1000">
               Didn’t recieve verification link?{" "}
-              <a href={resendUrl} className="font-bold text-miru-han-purple-1000 underline cursor-pointer">
+              <a
+                href={resendUrl}
+                className="font-bold text-miru-han-purple-1000 underline cursor-pointer"
+              >
                 Resend
               </a>
             </h3>

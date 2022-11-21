@@ -5,12 +5,14 @@ import getSymbolFromCurrency from "currency-symbol-map";
 import wiseApi from "apis/wise";
 
 const CurrencyDropdown = ({
-  currencies, setCurrencies,
-  currency, setCurrency,
-  setIsLoading, setBankDetailsModal,
-  fetchAccountRequirements
+  currencies,
+  setCurrencies,
+  currency,
+  setCurrency,
+  setIsLoading,
+  setBankDetailsModal,
+  fetchAccountRequirements,
 }) => {
-
   useEffect(() => {
     fetchCurrencyList();
   }, []);
@@ -25,9 +27,10 @@ const CurrencyDropdown = ({
     try {
       setIsLoading(true);
       const response = await wiseApi.fetchCurrencies();
-      const list = response.data.map(currency => (
-        { label: `${currency} (${getSymbolFromCurrency(currency)})`, value: currency }
-      ));
+      const list = response.data.map((currency) => ({
+        label: `${currency} (${getSymbolFromCurrency(currency)})`,
+        value: currency,
+      }));
       setCurrencies(list);
     } catch (error) {
       console.error(error);
@@ -44,14 +47,20 @@ const CurrencyDropdown = ({
       <div className="inline-flex w-full">
         <select
           className="w-2/4 form-select appearance-none block bg-white rounded transition  ease-in-out focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-          onChange={ ({ target: { value } }) => setCurrency(value) }
+          onChange={({ target: { value } }) => setCurrency(value)}
         >
           <option value={null}>Select Currency</option>
-          { currencies.map(option => (<option value={option.value} key={option.value}>{option.label}</option>)) }
+          {currencies.map((option) => (
+            <option value={option.value} key={option.value}>
+              {option.label}
+            </option>
+          ))}
         </select>
         <button
-          className={`mx-3 py-1 w-2/4 border rounded-md text-white uppercase ${currency ? "bg-miru-han-purple-1000" : "bg-gray-200"} `}
-          onClick={ () => setBankDetailsModal(true) }
+          className={`mx-3 py-1 w-2/4 border rounded-md text-white uppercase ${
+            currency ? "bg-miru-han-purple-1000" : "bg-gray-200"
+          } `}
+          onClick={() => setBankDetailsModal(true)}
           disabled={!currency}
         >
           Enter Bank Details

@@ -26,7 +26,7 @@ global.toastr.options = {
   showEasing: "swing",
   hideEasing: "linear",
   showMethod: "fadeIn",
-  hideMethod: "fadeOut"
+  hideMethod: "fadeOut",
 };
 Rails.start();
 ActiveStorage.start();

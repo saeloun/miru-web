@@ -20,29 +20,29 @@ const Container = ({
   setFilterParams,
   filterIntialValues,
   filterParamsStr,
-  fetchInvoices
+  fetchInvoices,
 }) => {
   const [isDesktop, setIsDesktop] = useState(innerWidth > 650);
   let appliedFilterCount = (filterParamsStr.match(/&/g) || []).length;
-  filterParamsStr.includes("custom") && (appliedFilterCount = appliedFilterCount - 2);
+  filterParamsStr.includes("custom") &&
+    (appliedFilterCount = appliedFilterCount - 2);
 
   const handleRemoveFilter = (removeval) => {
     let name, newArr;
     for (const [key, value] of Object.entries(filterParams)) {
-      Array.isArray(value) ?
-        value.map((v) => {
-          if (v == removeval) {
-            name = key;
-            newArr = value.filter((v) => v != removeval);
-          }
-        }) : value == removeval && (
-          name = key,
-          newArr = filterIntialValues.dateRange
-        );
+      Array.isArray(value)
+        ? value.map((v) => {
+            if (v == removeval) {
+              name = key;
+              newArr = value.filter((v) => v != removeval);
+            }
+          })
+        : value == removeval &&
+          ((name = key), (newArr = filterIntialValues.dateRange));
     }
     setFilterParams({
       ...filterParams,
-      [name]: newArr
+      [name]: newArr,
     });
   };
 
@@ -69,11 +69,15 @@ const Container = ({
           Recently updated
         </h1>
         <div className="grid grid-cols-10 gap-44 overflow-x-auto overflow-y-hidden">
-          {
-            recentlyUpdatedInvoices.length > 0 ?
-              recentlyUpdatedInvoices.map(( invoice ) => <RecentlyUpdated invoice={invoice} key={invoice.id}/>)
-              : <span className="text-xl font-medium text-miru-dark-purple-200 grid col-span-5">No Recently Updated invoices available.</span>
-          }
+          {recentlyUpdatedInvoices.length > 0 ? (
+            recentlyUpdatedInvoices.map((invoice) => (
+              <RecentlyUpdated invoice={invoice} key={invoice.id} />
+            ))
+          ) : (
+            <span className="text-xl font-medium text-miru-dark-purple-200 grid col-span-5">
+              No Recently Updated invoices available.
+            </span>
+          )}
         </div>
       </div>
 
@@ -83,11 +87,13 @@ const Container = ({
             All invoices
           </h1>
           <div className="ml-4 flex items-center justify-between">
-            {Object.values(filterParams).map(
-              (param) =>
-                Array.isArray(param) ?
-                  param.map((val) => (
-                    <span key={val.value} className="mx-2 px-2 h-6 font-normal text-xs text-miru-dark-purple-1000 bg-miru-gray-400 rounded-xl flex items-center justify-between capitalize">
+            {Object.values(filterParams).map((param) =>
+              Array.isArray(param)
+                ? param.map((val) => (
+                    <span
+                      key={val.value}
+                      className="mx-2 px-2 h-6 font-normal text-xs text-miru-dark-purple-1000 bg-miru-gray-400 rounded-xl flex items-center justify-between capitalize"
+                    >
                       {val.label}
                       <XIcon
                         size={12}
@@ -95,8 +101,8 @@ const Container = ({
                         onClick={() => handleRemoveFilter(val)}
                       />
                     </span>
-                  )
-                  ) : Object(param).value != "all" && (
+                  ))
+                : Object(param).value != "all" && (
                     <span className="mx-2 px-2 h-6 font-normal text-xs text-miru-dark-purple-1000 bg-miru-gray-400 rounded-xl flex items-center justify-between capitalize">
                       {Object(param).label}
                       <XIcon
@@ -105,7 +111,8 @@ const Container = ({
                         onClick={() => handleRemoveFilter(Object(param))}
                       />
                     </span>
-                  ))}
+                  )
+            )}
             {appliedFilterCount > 1 && (
               <span
                 onClick={() => setFilterParams(filterIntialValues)}

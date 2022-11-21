@@ -26,7 +26,7 @@ const App = (props) => {
         <BrowserRouter>
           <ToastContainer autoClose={TOASTER_DURATION} />
           <div className="flex w-full h-full absolute inset-0">
-            <Navbar isAdminUser={isAdminUser} user={user}/>
+            <Navbar isAdminUser={isAdminUser} user={user} />
             <Main {...props} isAdminUser={isAdminUser} />
           </div>
         </BrowserRouter>

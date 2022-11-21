@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-import { bankFieldValidationRequirements, separateAddressFields } from "helpers";
+import {
+  bankFieldValidationRequirements,
+  separateAddressFields,
+} from "helpers";
 import { isEmpty } from "ramda";
 
 import profilesApi from "apis/profiles";
@@ -22,8 +25,12 @@ const BankAccountDetails = () => {
   const [currency, setCurrency] = useState<any>();
   const [showBankDetailsModal, setBankDetailsModal] = useState<boolean>(false);
   const [bankRequirements, setBankRequirements] = useState<any>();
-  const [recipientDetails, setRecipientDetails] = useState<any>({ details: { address: {} } });
-  const [validRecipientDetails, setValidRecipientDetails] = useState<any>({ details: { address: {} } });
+  const [recipientDetails, setRecipientDetails] = useState<any>({
+    details: { address: {} },
+  });
+  const [validRecipientDetails, setValidRecipientDetails] = useState<any>({
+    details: { address: {} },
+  });
 
   const [firstName, setFirstName] = useState<any>();
   const [lastName, setLastName] = useState<any>();
@@ -61,7 +68,10 @@ const BankAccountDetails = () => {
   const updateRecipient = async (payload) => {
     try {
       const response = await wiseApi.updateRecipient(payload);
-      const billingResponse = await profilesApi.put(billingDetails.id, response.data);
+      const billingResponse = await profilesApi.put(
+        billingDetails.id,
+        response.data
+      );
       setBillingDetails(billingResponse.data);
       setRecipientDetails(response.data);
     } catch (_error) {
@@ -73,17 +83,29 @@ const BankAccountDetails = () => {
   };
 
   // TODO: Try to remove duplicate code as much as possible and optimize
-  const fetchAccountRequirements = async (sourceCurrency, targetCurrency, isUpdate = false) => {
+  const fetchAccountRequirements = async (
+    sourceCurrency,
+    targetCurrency,
+    isUpdate = false
+  ) => {
     try {
       setIsLoading(true);
-      const response = await wiseApi.fetchAccountRequirements(sourceCurrency, targetCurrency);
+      const response = await wiseApi.fetchAccountRequirements(
+        sourceCurrency,
+        targetCurrency
+      );
       const data = response.data;
-      const validRecipientDetails = bankFieldValidationRequirements(data, isUpdate);
+      const validRecipientDetails = bankFieldValidationRequirements(
+        data,
+        isUpdate
+      );
       setValidRecipientDetails(validRecipientDetails);
       if (!isUpdate) {
         setRecipientDetails({ details: { address: {} } });
       }
-      const fields = data.map(requirement => separateAddressFields(requirement));
+      const fields = data.map((requirement) =>
+        separateAddressFields(requirement)
+      );
       setBankRequirements(fields);
     } catch (error) {
       console.error(error);
@@ -96,7 +118,7 @@ const BankAccountDetails = () => {
     const payload = {
       ...recipientDetails,
       accountHolderName: `${firstName} ${lastName}`,
-      currency: currency || billingDetails.targetCurrency
+      currency: currency || billingDetails.targetCurrency,
     };
     setIsLoading(true);
     setBankDetailsModal(false);
@@ -105,7 +127,7 @@ const BankAccountDetails = () => {
 
   const renderBankDetails = (billingDetails) => {
     if (isEmpty(billingDetails)) {
-      return (<></>);
+      return <></>;
     } else if (!billingDetails.recipientId) {
       return (
         <CurrencyDropdown
@@ -143,11 +165,10 @@ const BankAccountDetails = () => {
         subTitle={"Settings to receive payment from your employer"}
       />
       <div className="py-10 pl-10 mt-4 bg-miru-gray-100 h-screen inline-flex">
-        {isLoading && <Loader message={"Loading..."} /> }
+        {isLoading && <Loader message={"Loading..."} />}
         <div className="w-26 h-12 float-left my-2">Bank Account Details</div>
-        { renderBankDetails(billingDetails) }
-        {
-          showBankDetailsModal &&
+        {renderBankDetails(billingDetails)}
+        {showBankDetailsModal && (
           <BankDetails
             setBankDetailsModal={setBankDetailsModal}
             bankRequirements={bankRequirements}
@@ -161,7 +182,7 @@ const BankAccountDetails = () => {
             setValidRecipientDetails={setValidRecipientDetails}
             submitBankDetails={submitBankDetails}
           />
-        }
+        )}
       </div>
     </div>
   );
