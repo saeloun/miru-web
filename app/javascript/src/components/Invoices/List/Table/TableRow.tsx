@@ -14,6 +14,7 @@ import { Avatar, Badge, Tooltip } from "StyledComponents";
 import CustomCheckbox from "common/CustomCheckbox";
 import getStatusCssClass from "utils/getBadgeStatus";
 
+import { handleDownloadInvoice } from "../../common/utils";
 import MoreOptions from "../MoreOptions";
 import SendInvoice from "../SendInvoice";
 
@@ -28,7 +29,7 @@ const TableRow = ({
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  useDebounce(isMenuOpen,500);
+  useDebounce(isMenuOpen, 500);
   const navigate = useNavigate();
 
   const handleCheckboxChange = () => {
@@ -58,12 +59,13 @@ const TableRow = ({
         />
       </td>
 
-      <td onClick={()=>navigate(`/invoices/${invoice.id}`)} className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap cursor-pointer">
+      <td
+        onClick={() => navigate(`/invoices/${invoice.id}`)}
+        className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap cursor-pointer"
+      >
         <Avatar />
         <div className="md:ml-10 ml-2">
-          <span
-            className="md:font-semibold font-normal md:text-base text-xs capitalize text-miru-dark-purple-1000"
-          >
+          <span className="md:font-semibold font-normal md:text-base text-xs capitalize text-miru-dark-purple-1000">
             {invoice.client.name}
           </span>
           <h3 className="md:text-sm text-xs font-normal text-miru-dark-purple-400">
@@ -99,7 +101,11 @@ const TableRow = ({
             </button>
           </Tooltip>
           <Tooltip content="Download">
-            <button className="text-miru-han-purple-1000">
+            <button
+              onClick={() => handleDownloadInvoice(invoice)}
+              className={invoice.status == "draft" ? "text-miru-gray-1000" : "text-miru-han-purple-1000"}
+              disabled= {invoice.status == "draft"}
+            >
               <DownloadSimpleIcon size={16} />
             </button>
           </Tooltip>
