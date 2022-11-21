@@ -58,13 +58,13 @@ brew install postgresql
 brew install elastic/tap/elasticsearch-full
 brew services start elasticsearch-full
 ```
-To run elasticsearch on latest macos(ventura) please follow the below instructions
-   1. Install Docker Desktop ( M1 / Intel ) https://www.docker.com/products/docker-desktop/
-   2. Run below command in your terminal & you can check by opening `localhost:9200`
+   To run elasticsearch on latest macos(ventura) please follow the below instructions
+   - Install Docker Desktop ( M1 / Intel ) https://www.docker.com/products/docker-desktop/
+   - Run below command in your terminal & you can check by opening `localhost:9200`
    ```
    docker run -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.7
    ```
-   3. Install Chrome Extension to browse the Cluster ( Kind of like PGAdmin for Elastic Search ) https://chrome.google.com/webstore/search/multi%20elastic%20search%20head
+   - Install Chrome Extension to browse the Cluster ( Kind of like PGAdmin for Elastic Search ) https://chrome.google.com/webstore/search/multi%20elastic%20search%20head
    More information available at https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
 
 7. Install Redis
