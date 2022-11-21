@@ -84,8 +84,7 @@ class CreateInvitedUserService
         last_name: invitation.last_name,
         email: invitation.recipient_email,
         confirmed_at: Time.current,
-        current_workspace_id: invitation.company.id,
-        token: SecureRandom.base58(50)
+        current_workspace_id: invitation.company.id
       )
       @user.skip_password_validation = true
       @user.save!
