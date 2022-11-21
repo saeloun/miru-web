@@ -545,7 +545,6 @@ DEPENDENCIES
   foreman
   grover
   hash_dot
-  honeybadger
   image_processing (>= 1.2)
   jbuilder (~> 2.11)
   letter_opener

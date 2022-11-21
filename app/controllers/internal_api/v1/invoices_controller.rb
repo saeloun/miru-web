@@ -4,8 +4,6 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   before_action :load_client, only: [:create, :update]
   after_action :ensure_time_entries_billed, only: [:send_invoice]
 
-  include UtilityFunctions
-
   def index
     authorize Invoice
     pagy, invoices = pagy(invoices_query, items_param: :invoices_per_page)
@@ -112,7 +110,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
     def from_to_date(from_to)
       if from_to
-        range_from_timeframe(from_to[:date_range], from_to[:from], from_to[:to])
+        DateRangeService.new(timeframe: from_to[:date_range], from: from_to[:from], to: from_to[:to]).process
       end
     end
 
