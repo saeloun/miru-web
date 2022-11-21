@@ -21,7 +21,6 @@ class InternalApi::V1::TimesheetEntry::BulkActionController < InternalApi::V1::A
   end
 
   private
-
     def ids_params
       params.require(:source).require(:ids)
     end

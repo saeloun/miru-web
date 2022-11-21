@@ -27,9 +27,9 @@ RSpec.describe "PreviousEmployments#index", type: :request do
         it "is successful" do
           expect(response).to have_http_status(:ok)
           expect(json_response["previous_employments"][0]["company_name"]
-            ).to eq(previous_employment_of_user.company_name)
+                ).to eq(previous_employment_of_user.company_name)
           expect(json_response["previous_employments"][0]["role"]
-            ).to eq(previous_employment_of_user.role)
+                ).to eq(previous_employment_of_user.role)
         end
       end
 
@@ -45,9 +45,9 @@ RSpec.describe "PreviousEmployments#index", type: :request do
           it "is successful" do
             expect(response).to have_http_status(:ok)
             expect(json_response["previous_employments"][0]["company_name"]
-              ).to eq(previous_employment_of_employee.company_name)
+                  ).to eq(previous_employment_of_employee.company_name)
             expect(json_response["previous_employments"][0]["role"]
-              ).to eq(previous_employment_of_employee.role)
+                  ).to eq(previous_employment_of_employee.role)
           end
         end
 
@@ -89,9 +89,9 @@ RSpec.describe "PreviousEmployments#index", type: :request do
         it "is successful" do
           expect(response).to have_http_status(:ok)
           expect(json_response["previous_employments"][0]["company_name"]
-            ).to eq(previous_employment_of_user.company_name)
+                ).to eq(previous_employment_of_user.company_name)
           expect(json_response["previous_employments"][0]["role"]
-            ).to eq(previous_employment_of_user.role)
+                ).to eq(previous_employment_of_user.role)
         end
       end
 
@@ -108,9 +108,9 @@ RSpec.describe "PreviousEmployments#index", type: :request do
           it "is successful" do
             expect(response).to have_http_status(:ok)
             expect(json_response["previous_employments"][0]["company_name"]
-              ).to eq(previous_employment_of_employee.company_name)
+                  ).to eq(previous_employment_of_employee.company_name)
             expect(json_response["previous_employments"][0]["role"]
-              ).to eq(previous_employment_of_employee.role)
+                  ).to eq(previous_employment_of_employee.role)
           end
         end
 
@@ -141,9 +141,9 @@ RSpec.describe "PreviousEmployments#index", type: :request do
       it "is successful" do
         expect(response).to have_http_status(:ok)
         expect(json_response["previous_employments"][0]["company_name"]
-          ).to eq(previous_employment_of_user.company_name)
+              ).to eq(previous_employment_of_user.company_name)
         expect(json_response["previous_employments"][0]["role"]
-          ).to eq(previous_employment_of_user.role)
+              ).to eq(previous_employment_of_user.role)
       end
     end
 

@@ -40,7 +40,6 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
   end
 
   private
-
     def current_project
       @_current_project ||= current_company.projects.kept.find(params[:project_id])
     end

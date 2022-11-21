@@ -57,7 +57,6 @@ class Benchmarker
   end
 
   private
-
     def seed_users(n)
       if n > 0
         puts "Seeding #{n} users..."

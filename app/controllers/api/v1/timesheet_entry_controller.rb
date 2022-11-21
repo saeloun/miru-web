@@ -16,7 +16,6 @@ class Api::V1::TimesheetEntryController < Api::V1::BaseController
   end
 
   private
-
     def project_member
       ProjectMember.find_by(user_id: current_user.id, project_id: project.id)
     end

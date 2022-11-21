@@ -84,7 +84,6 @@ class TimesheetEntry < ApplicationRecord
   end
 
   private
-
     def ensure_bill_status_is_set
       return if bill_status.present? || project.nil?
 

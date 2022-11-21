@@ -22,7 +22,6 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
   end
 
   private
-
     def is_valid_event?
       invoice.stripe_payment_intent == data_object.payment_intent &&
       is_checkout_status_complete? &&

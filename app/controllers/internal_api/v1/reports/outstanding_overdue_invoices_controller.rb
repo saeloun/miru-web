@@ -8,7 +8,6 @@ class InternalApi::V1::Reports::OutstandingOverdueInvoicesController < InternalA
   end
 
   private
-
     def clients
       @_clients ||= current_company.clients.order("name asc").includes(:invoices).map do |client|
                       client.outstanding_and_overdue_invoices

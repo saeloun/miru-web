@@ -77,7 +77,6 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   end
 
   private
-
     def load_client
       client = invoice_params[:client_id] || invoice[:client_id]
       @client = Client.find(client)

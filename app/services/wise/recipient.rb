@@ -27,7 +27,6 @@ module Wise
     end
 
     private
-
       def deep_compact(hash)
         hash.compact.transform_values do |value|
           next value unless value.class == Hash

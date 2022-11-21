@@ -99,7 +99,6 @@ class Invoice < ApplicationRecord
   end
 
   private
-
     def set_external_view_key
       self.external_view_key = "#{SecureRandom.hex}"
     end

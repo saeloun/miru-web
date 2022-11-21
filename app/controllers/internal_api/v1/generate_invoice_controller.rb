@@ -11,7 +11,6 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
   end
 
   private
-
     def client
       @_client ||= Client.find_by(id: params[:client_id])
     end

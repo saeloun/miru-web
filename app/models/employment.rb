@@ -44,7 +44,6 @@ class Employment < ApplicationRecord
   before_destroy :remove_user_invitations
 
   private
-
     def remove_user_invitations
       company.invitations.where(recipient_email: user.email).destroy_all
     end

@@ -40,7 +40,6 @@ class Device < ApplicationRecord
   validates :name, length: { maximum: 100 }
 
   private
-
     def set_default_specifications
       self.specifications = {
         "processor": "",

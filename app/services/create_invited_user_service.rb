@@ -41,7 +41,6 @@ class CreateInvitedUserService
   end
 
   private
-
     def invitation
       @_invitation ||= Invitation.find_by!(token:)
     end

@@ -23,7 +23,6 @@ class InvoiceMailer < ApplicationMailer
   end
 
   private
-
     def company_logo
       @invoice.company.logo.attached? ?
         polymorphic_url(@invoice.company.logo) :

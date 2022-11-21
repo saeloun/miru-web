@@ -15,7 +15,6 @@ module NavigationHelper
   end
 
   private
-
     def nav_items
       [
         {

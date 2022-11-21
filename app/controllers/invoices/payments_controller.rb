@@ -29,7 +29,6 @@ class Invoices::PaymentsController < ApplicationController
   end
 
   private
-
     def load_invoice
       @invoice = Invoice.includes(client: :company).find(params[:invoice_id])
     end

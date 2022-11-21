@@ -13,7 +13,6 @@ class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationCo
   end
 
   private
-
     def add_new_members
       added_members = added_members_params
 

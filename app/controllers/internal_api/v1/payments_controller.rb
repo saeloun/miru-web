@@ -26,7 +26,6 @@ class InternalApi::V1::PaymentsController < ApplicationController
   end
 
   private
-
     def payment_params
       params.require(:payment).permit(
         :invoice_id, :transaction_date, :transaction_type, :amount, :note

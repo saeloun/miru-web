@@ -28,7 +28,6 @@ class InternalApi::V1::Users::DevicesController < InternalApi::V1::ApplicationCo
   end
 
   private
-
     def set_user
       @user ||= User.find(params[:user_id])
     end

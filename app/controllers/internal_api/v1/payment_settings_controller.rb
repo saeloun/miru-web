@@ -18,7 +18,6 @@ class InternalApi::V1::PaymentSettingsController < InternalApi::V1::ApplicationC
   end
 
   private
-
     def stripe_connected_account
       current_company.stripe_connected_account
     end

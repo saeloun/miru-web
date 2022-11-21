@@ -25,7 +25,6 @@ module InvoicePayment
     end
 
     private
-
       attr_reader :invoice, :company, :client, :success_url, :cancel_url, :metadata
 
       def ensure_client_registered!

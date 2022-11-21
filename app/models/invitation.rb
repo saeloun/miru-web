@@ -80,7 +80,6 @@ class Invitation < ApplicationRecord
   end
 
   private
-
     def set_expired_at
       self.expired_at = Time.current + MAX_EXPIRATION_DAY
     end

@@ -31,7 +31,6 @@ class InternalApi::V1::ProfileController < InternalApi::V1::ApplicationControlle
   end
 
   private
-
     def user_params
       params.require(:user).permit(
         :first_name, :last_name, :current_password, :password, :password_confirmation, :avatar

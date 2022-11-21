@@ -8,7 +8,7 @@
   name: "MacBook Pro",
   serial_number: "1111",
   company_id: 1
-  )
+)
 }
 
 puts "Device Created"

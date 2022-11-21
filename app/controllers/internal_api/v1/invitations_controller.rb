@@ -28,7 +28,6 @@ class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationContr
   end
 
   private
-
     def invitation_params
       params.permit(policy(:invitation).permitted_attributes)
     end

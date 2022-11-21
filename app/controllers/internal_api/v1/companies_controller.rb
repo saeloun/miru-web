@@ -26,7 +26,6 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
   end
 
   private
-
     def company_params
       params.require(:company).permit(
         :name, :address, :business_phone, :country, :timezone, :base_currency,

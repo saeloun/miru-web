@@ -54,7 +54,6 @@ class InternalApi::V1::Profiles::BankAccountDetailsController < InternalApi::V1:
   end
 
   private
-
     def load_wise_account
       @wise_account ||= current_user.wise_account
     end

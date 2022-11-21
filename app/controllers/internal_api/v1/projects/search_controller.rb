@@ -11,7 +11,6 @@ class InternalApi::V1::Projects::SearchController < InternalApi::V1::Application
   end
 
   private
-
     def search_term
       @search_term ||= (params[:search_term].present?) ? params[:search_term] : ""
     end

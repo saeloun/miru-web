@@ -38,7 +38,6 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
   end
 
   private
-
     def employment
       @_employment ||= current_company.employments.kept.find_by!(user_id: params[:id])
     end

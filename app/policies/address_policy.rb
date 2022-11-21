@@ -28,7 +28,6 @@ class AddressPolicy < ApplicationPolicy
   end
 
   private
-
     def user_is_admin_or_owner_in_current_workspace?
       user.has_any_role?(
         { name: :admin, resource: user.current_workspace },

@@ -11,7 +11,7 @@
   city: "Pune",
   country: "India",
   pin: "411014"
-  )
+)
 }
 
 # Create Address for Users
@@ -23,7 +23,7 @@
   city: "Pune",
   country: "India",
   pin: "123456"
-  )
+)
 }
 
 puts "Address Created"

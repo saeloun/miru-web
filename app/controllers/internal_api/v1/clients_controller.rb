@@ -54,7 +54,6 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
   end
 
   private
-
     def client
       @_client ||= Client.find(params[:id])
     end

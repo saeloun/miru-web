@@ -36,7 +36,6 @@ class InvoicePayment::StripePaymentIntent < ApplicationService
   end
 
   private
-
     def retrieve_payment_intent
       if @invoice.stripe_payment_intent.present?
         @payment_intent_id = @invoice.stripe_payment_intent

@@ -135,7 +135,6 @@ class User < ApplicationRecord
   end
 
   private
-
     def discard_project_members
       project_members.discard_all
     end

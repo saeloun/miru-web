@@ -19,7 +19,6 @@ class InternalApi::V1::Payments::ProvidersController < ApplicationController
   end
 
   private
-
     def payments_provider
       current_company.payments_providers.find(params[:id])
     end

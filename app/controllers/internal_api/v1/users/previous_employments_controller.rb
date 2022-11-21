@@ -30,7 +30,6 @@ class InternalApi::V1::Users::PreviousEmploymentsController < InternalApi::V1::A
  end
 
   private
-
     def set_user
       @user ||= User.find(params[:user_id])
     end

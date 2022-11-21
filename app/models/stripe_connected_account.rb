@@ -45,7 +45,6 @@ class StripeConnectedAccount < ApplicationRecord
   end
 
   private
-
     def retrieve
       Stripe::Account.retrieve(self.account_id)
     end

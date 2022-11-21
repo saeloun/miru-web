@@ -17,7 +17,6 @@ class InternalApi::V1::TeamMembers::DetailsController < InternalApi::V1::Applica
   end
 
   private
-
     def employment
       @employment ||= Employment.find(params[:team_id])
     end

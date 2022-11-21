@@ -32,7 +32,6 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
   end
 
   private
-
     def current_company_clients
       @_current_company_clients = current_company.clients.kept
     end

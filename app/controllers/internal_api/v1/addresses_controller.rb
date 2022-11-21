@@ -27,7 +27,6 @@ class InternalApi::V1::AddressesController < InternalApi::V1::ApplicationControl
   end
 
   private
-
     def set_addressable
       if params[:user_id]
         @addressable = User.find(params[:user_id])

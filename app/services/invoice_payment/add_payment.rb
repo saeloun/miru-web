@@ -17,7 +17,6 @@ module InvoicePayment
     end
 
     private
-
       def update_invoice(invoice, payment)
         invoice_updates = {
           amount_due: due_amount(invoice.amount_due, payment.amount),

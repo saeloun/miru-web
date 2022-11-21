@@ -18,7 +18,6 @@ module Reports::TimeEntries
     end
 
     private
-
       # When we query ES, we get all matching timesheet entries as response even when we pass aggregation query.
       # Those timesheet entries contains all required association but not the ones in aggregated data.
       # So, in order to avoid queries for associated records,

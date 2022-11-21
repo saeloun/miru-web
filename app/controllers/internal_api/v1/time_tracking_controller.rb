@@ -20,14 +20,13 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
       .during(
         1.month.ago.beginning_of_month,
         1.month.since.end_of_month
-        )
+      )
     entries = formatted_entries_by_date(timesheet_entries)
     entries[:currentUserRole] = current_user.primary_role current_company
     render json: { clients:, projects:, entries:, employees: }, status: :ok
   end
 
   private
-
     def is_admin
       @_is_admin = current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
     end

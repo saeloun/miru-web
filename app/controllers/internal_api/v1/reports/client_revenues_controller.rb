@@ -8,7 +8,6 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
   end
 
   private
-
     def clients
       current_clients.order("name asc").includes(:invoices).map do |client|
         client.payment_summary(duration_params)

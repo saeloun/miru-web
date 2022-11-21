@@ -10,7 +10,6 @@ class InternalApi::V1::Wise::CurrenciesController < InternalApi::V1::WiseControl
   end
 
   private
-
     def wise_currency
       @wise_currency ||= Wise::Currency.new
     end

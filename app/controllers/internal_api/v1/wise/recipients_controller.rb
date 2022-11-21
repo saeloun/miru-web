@@ -30,7 +30,6 @@ class InternalApi::V1::Wise::RecipientsController < InternalApi::V1::WiseControl
   end
 
   private
-
     def wise_recipient
       @wise_recipient ||= Wise::Recipient.new
     end

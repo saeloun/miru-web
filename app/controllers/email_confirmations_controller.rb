@@ -17,7 +17,6 @@ class EmailConfirmationsController < ApplicationController
   end
 
   private
-
     def verify_confirmed_user
       if user.confirmed?
         redirect_to root_path

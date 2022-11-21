@@ -41,7 +41,6 @@ module InvoicePayment
     end
 
     private
-
       def format_invoice(invoice_line_items)
         sub_total = 0
 

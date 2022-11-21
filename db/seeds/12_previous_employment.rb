@@ -6,7 +6,7 @@
 @users.each { | user | user.previous_employments.create!(
   company_name: "ABC India",
   role: "SDE"
-  )
+)
 }
 
 puts "Previous Employment Created"

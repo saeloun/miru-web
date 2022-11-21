@@ -18,7 +18,6 @@ class InternalApi::V1::WiseController < InternalApi::V1::ApplicationController
   end
 
   private
-
     def wise
       @wise ||= Wise::Api.new
     end

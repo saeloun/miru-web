@@ -20,7 +20,6 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
   end
 
   private
-
     def filter_options
       @_filter_options ||= { clients: current_company.clients, team_members: current_company.users }
     end

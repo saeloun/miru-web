@@ -127,7 +127,6 @@ class Client < ApplicationRecord
   end
 
   private
-
     def stripe_connected_account
       StripeConnectedAccount.find_by!(company:)
     end

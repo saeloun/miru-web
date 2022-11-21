@@ -12,7 +12,6 @@ module ErrorHandler
   end
 
   private
-
     def handle_not_found_error(exception)
       message = exception.message || I18n.t("errors.not_found")
 

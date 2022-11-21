@@ -12,7 +12,6 @@ class PaymentSettingsController < ApplicationController
   end
 
   private
-
     def stripe_connected_account
       StripeConnectedAccount.find_by!(company: current_company)
     end
