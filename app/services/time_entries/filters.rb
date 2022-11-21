@@ -2,8 +2,6 @@
 
 module TimeEntries
   class Filters < ApplicationService
-    include UtilityFunctions
-
     FILTER_PARAM_LIST = %i[date_range status team_member client]
 
     attr_reader :filter_params
@@ -23,7 +21,11 @@ module TimeEntries
     end
 
     def date_range_filter
-      { work_date: range_from_timeframe(filter_params[:date_range], filter_params[:from], filter_params[:to]) }
+      {
+        work_date: DateRangeService.new(
+          timeframe: filter_params[:date_range], from: filter_params[:from],
+          to: filter_params[:to]).process
+      }
     end
 
     def status_filter
