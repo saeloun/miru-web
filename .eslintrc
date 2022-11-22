@@ -13,10 +13,6 @@
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:cypress/recommended",
-    "plugin:json/recommended",
-    "eslint:recommended",
-    "plugin:react/recommended",
     "./.eslint-rules/globals",
     "./.eslint-rules/imports/order",
     "./.eslint-rules/overrides",
