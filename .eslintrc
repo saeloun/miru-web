@@ -13,6 +13,20 @@
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
+    "plugin:cypress/recommended",
+    "plugin:json/recommended",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "./.eslint-rules/globals",
+    "./.eslint-rules/imports/order",
+    "./.eslint-rules/overrides",
+    // ensure that you don't add custom rules
+    // without taking permission from team leads.
+    "./.eslint-rules/custom",
+    // custom rules cannot override the following rules.
+    "./.eslint-rules/imports/enforced",
+    "./.eslint-rules/react",
+    "./.eslint-rules/promise",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier"
