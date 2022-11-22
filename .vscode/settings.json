@@ -1,19 +1,16 @@
 {
-    "javascript.format.insertSpaceAfterCommaDelimiter": true,
-    "javascript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": true,
-    "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
-    "files.trimFinalNewlines": true,
-    "files.trimTrailingWhitespace": true,
-    "files.insertFinalNewline": true,
-    "editor.rulers": [
-        120
-    ],
-    "editor.tabSize": 2,
-    "javascript.updateImportsOnFileMove.enabled": "never",
-    "cSpell.words": [
-        "alpinejs",
-        "autosize",
-        "datepicker",
-        "formik"
-    ],
+  "javascript.format.insertSpaceAfterCommaDelimiter": true,
+  "javascript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": true,
+  "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "editor.rulers": [120],
+  "editor.tabSize": 2,
+  "javascript.updateImportsOnFileMove.enabled": "never",
+  "cSpell.words": ["alpinejs", "autosize", "datepicker", "formik"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true // ESLint auto format on save
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
