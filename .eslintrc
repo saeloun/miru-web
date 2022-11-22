@@ -67,6 +67,10 @@
     "@typescript-eslint/no-explicit-any": "off",
     // auto-fixable: Respect all Prettier rules and apply it.
     "prettier/prettier": "error",
+    "react/jsx-filename-extension": [
+      "error",
+      { "extensions": [".js",".jsx",".ts",".tsx"] }
+    ],
     // not-auto-fixable: No unused variables allowed.
     "no-unused-vars": [
       "error",
