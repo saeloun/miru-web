@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
 class DateRangeService
-  attr_reader :timeframe, :from, to
+  attr_reader :timeframe, :from, :to
+
+  class InvalidDatePassed < StandardError
+    def message
+      "Date value passed is invalid"
+    end
+  end
 
   def initialize(timeframe:, from: nil, to: nil)
     @timeframe = timeframe
@@ -29,4 +35,12 @@ class DateRangeService
       0.year.ago.beginning_of_year..0.year.ago.end_of_year
     end
   end
+
+  private
+
+    def convert_to_date(value)
+      raise InvalidDatePassed if value.nil?
+
+      Date.parse(value)
+    end
 end
