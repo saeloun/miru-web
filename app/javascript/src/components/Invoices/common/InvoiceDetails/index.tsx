@@ -96,6 +96,7 @@ const InvoiceDetails = ({
             value={reference}
             onChange={(e) => setReference(e.target.value)}
             className="px-2 w-3/5"
+            data-cy="invoice-reference"
           />
         </div>
       </div>
