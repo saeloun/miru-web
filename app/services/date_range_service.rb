@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class DateRangeService
-  attr_reader :timeframe, :from, to
+  attr_reader :timeframe, :from, :to
 
   def initialize(timeframe:, from: nil, to: nil)
     @timeframe = timeframe
