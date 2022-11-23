@@ -31,6 +31,7 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
   def destroy
     authorize employment, policy_class: TeamPolicy
     employment.discard!
+    employment.user.discard!
     render json: {
       user: employment.user,
       notice: I18n.t("team.archive.success.message")

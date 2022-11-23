@@ -29,7 +29,7 @@ const DeleteMember = ({ user }) => {
       open={true}
       onClose={() => { setModalState(TeamModalType.NONE); }}
       onConfirm={deleteTeamMember}
-      yesButtonText="DELETE"
+      yesButtonText="ARCHIVE"
       noButtonText="CANCEL"
     >
       Are you sure you want to archive user <b> {user?.name}</b>? This action cannot be reversed.
