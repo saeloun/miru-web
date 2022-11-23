@@ -566,6 +566,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_18_113059) do
     t.text "slack_member_info"
     t.integer "engage_week_code"
     t.datetime "engage_expires_at"
+    t.string "token", limit: 50
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true

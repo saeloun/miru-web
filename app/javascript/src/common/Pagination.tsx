@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import cn from "classnames";
-import { CaretCircleLeft, CaretCircleRight } from "phosphor-react";
+import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 
 const Pagination = ({ pagy, params, setParams, forPage }) => (
   <div className="w-full py-10 mt-5">
@@ -17,7 +17,7 @@ const Pagination = ({ pagy, params, setParams, forPage }) => (
               onClick={() => setParams({ ...params, page: pagy?.prev })}
               disabled={!pagy?.prev}
             >
-              <CaretCircleLeft size={16} weight="bold" />
+              <CaretCircleLeftIcon size={16} weight="bold" />
             </button>
 
             {Array.from({ length: pagy.pages }, (_, idx) => idx + 1).map(
@@ -43,7 +43,7 @@ const Pagination = ({ pagy, params, setParams, forPage }) => (
               onClick={() => setParams({ ...params, page: pagy?.next })}
               disabled={!pagy?.next}
             >
-              <CaretCircleRight size={16} weight="bold" />
+              <CaretCircleRightIcon size={16} weight="bold" />
             </button>
           </div>
         )}

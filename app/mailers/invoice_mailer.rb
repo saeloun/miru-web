@@ -2,7 +2,7 @@
 
 class InvoiceMailer < ApplicationMailer
   default reply_to: ENV["MAILER_REPLY_TO"] if ENV.fetch("MAILER_REPLY_TO", nil)
-  after_action -> { @invoice.sent! }
+  after_action -> { @invoice.sent! if @invoice.draft? || @invoice.viewed? || @invoice.declined? }
 
   def invoice
     @invoice = params[:invoice]

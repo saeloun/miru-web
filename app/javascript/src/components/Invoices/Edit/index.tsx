@@ -27,7 +27,7 @@ const EditInvoice = () => {
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
   const [selectedClient, setSelectedClient] = useState<any>({ value: 0 });
   const [invoiceNumber, setInvoiceNumber] = useState<any>("");
-  const [reference] = useState<any>("");
+  const [reference, setReference] = useState<string>("");
   const [amount, setAmount] = useState<any>(0);
   const [amountDue, setAmountDue] = useState<any>(0);
   const [amountPaid, setAmountPaid] = useState<any>(0);
@@ -44,6 +44,7 @@ const EditInvoice = () => {
     try {
       const res = await invoicesApi.editInvoice(params.id);
       setInvoiceDetails(res.data);
+      setReference(res.data.reference);
       setIssueDate(Date.parse(res.data.issueDate));
       setDueDate(Date.parse(res.data.dueDate));
       setSelectedLineItems(unmapLineItems(res.data.invoiceLineItems));
@@ -70,6 +71,7 @@ const EditInvoice = () => {
     try {
       const res = await invoicesApi.updateInvoice(invoiceDetails.id, {
         invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
+        reference: reference || invoiceDetails.reference,
         issue_date: dayjs(issueDate || invoiceDetails.issueDate).format("DD.MM.YYYY"),
         due_date: dayjs(dueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
         amount_due: amountDue,
@@ -144,6 +146,7 @@ const EditInvoice = () => {
             invoiceNumber={invoiceNumber}
             setInvoiceNumber={setInvoiceNumber}
             reference={reference}
+            setReference={setReference}
             optionSelected={true}
             clientVisible={false}
           />

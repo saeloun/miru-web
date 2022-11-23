@@ -5,7 +5,7 @@ import { TeamModalType } from "constants/index";
 // import Logger from "js-logger";
 // import { unmapList } from "mapper/team.mapper";
 // import teamApi from "apis/team";
-import { Plus } from "phosphor-react";
+import { PlusIcon } from "miruIcons";
 
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
@@ -37,7 +37,7 @@ const Header = () => {
         <div className="header__searchInnerWrapper">
           <AutoComplete searchCallBack={searchCallBack} />
           <button className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
-            <MagnifyingGlass size={12} />
+            <SearchIcon size={12} />
           </button>
         </div>
       </div> */}
@@ -49,7 +49,7 @@ const Header = () => {
             data-cy="add-new-user-button"
             onClick={() => setModalState(TeamModalType.ADD_EDIT)}
           >
-            <Plus weight="fill" size={16} />
+            <PlusIcon weight="fill" size={16} />
             <span className="ml-2 inline-block">NEW INVITATION</span>
           </button>
         </div>

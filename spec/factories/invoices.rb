@@ -5,7 +5,7 @@ FactoryBot.define do
     issue_date { Faker::Date.between(from: "2019-04-01", to: Date.today) }
     due_date { Faker::Date.between(from: self.issue_date, to: Date.today) }
     invoice_number { Faker::Alphanumeric.unique.alpha(number: 4) }
-    reference { Faker::Invoice.reference }
+    reference { Faker::Invoice.reference[1..12] }
     amount { Faker::Number.decimal(r_digits: 2) }
     outstanding_amount { Faker::Number.decimal(r_digits: 2) }
     tax { Faker::Number.decimal(r_digits: 2) }

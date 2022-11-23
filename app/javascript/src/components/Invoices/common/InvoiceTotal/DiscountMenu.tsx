@@ -1,6 +1,6 @@
 import React from "react";
 
-import { PencilSimple, Trash } from "phosphor-react";
+import { EditIcon, DeleteIcon } from "miruIcons";
 
 const DiscountMenu = ({ setShowDiscount, setShowDiscountMenu, setAddDiscount, setDiscount }) => (
   <div className="bg-white rounded-lg w-28 mt-16 py-2 absolute">
@@ -13,7 +13,7 @@ const DiscountMenu = ({ setShowDiscount, setShowDiscountMenu, setAddDiscount, se
           setAddDiscount(true);
         }}
       >
-        <PencilSimple size={18} className="text-col-han-app-1000" />
+        <EditIcon size={18} className="text-col-han-app-1000" />
         <span className="pl-2 font-medium text-sm text-miru-han-purple-1000">Edit</span>
       </li>
       <li
@@ -25,7 +25,7 @@ const DiscountMenu = ({ setShowDiscount, setShowDiscountMenu, setAddDiscount, se
           setAddDiscount(false);
         }}
       >
-        <Trash size={18} className="text-col-red-400" />
+        <DeleteIcon size={18} className="text-col-red-400" />
         <span className="pl-2 font-medium text-sm text-col-red-400">Remove</span>
       </li>
     </ul>

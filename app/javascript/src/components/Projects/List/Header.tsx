@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import Logger from "js-logger";
-import { MagnifyingGlass, Plus } from "phosphor-react";
+import { SearchIcon, PlusIcon } from "miruIcons";
 
 import projectApi from "apis/projects";
 import AutoComplete from "common/AutoComplete";
@@ -32,12 +32,12 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
           <div className="header__searchInnerWrapper">
             <AutoComplete searchCallBack={searchCallBack} />
             <button className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
-              <MagnifyingGlass size={12} />
+              <SearchIcon size={12} />
             </button>
           </div>
           {/* {isAdminUser && (
             <button className="ml-7">
-              <Funnel size={16} />
+              <FilterIcon size={16} />
             </button>
           )} */}
         </div>
@@ -46,7 +46,7 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
             className="flex header__button"
             onClick={() => setShowProjectModal(true)}
           >
-            <Plus weight="fill" size={16} />
+            <PlusIcon weight="fill" size={16} />
             <span className="ml-2 inline-block">NEW PROJECT</span>
           </button>
         )}
@@ -56,21 +56,21 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
           isInvoiceSelected && <div className="flex justify-center items-center">
             <span>{selectedInvoiceCount} invoices selected</span>
             <button className="ml-2" onClick={handleCloseButton}>
-              <X size={16} className="text-col-han-app-1000" weight="bold" />
+              <XIcon size={16} className="text-col-han-app-1000" weight="bold" />
             </button>
             <div className="flex">
               <button
                 type="button"
                 className="header__button border-miru-red-400 text-miru-red-400"
               >
-                <Trash weight="fill" size={16} />
+                <DeleteIcon weight="fill" size={16} />
                 <span className="ml-2 inline-block">DELETE</span>
               </button>
               <button
                 type="button"
                 className="header__button"
               >
-                <PaperPlaneTilt weight="fill" size={16} />
+                <PaperPlaneTiltIcon weight="fill" size={16} />
                 <span className="ml-2 inline-block">SEND TO</span>
               </button>
             </div>

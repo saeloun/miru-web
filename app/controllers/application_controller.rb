@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   include ErrorHandler
   include CurrentCompanyConcern
   include Pagy::Backend
+  include SetCurrentDetails
 
   before_action :authenticate_user!, :validate_company!
   before_action do

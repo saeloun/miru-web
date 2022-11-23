@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 
 import { TeamModalType } from "constants/index";
 
-import { Pencil, Archive } from "phosphor-react";
+import { EditIcon, ArchiveIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
 import { useList } from "context/TeamContext";
@@ -54,10 +54,10 @@ const TableRow = ({ item }) => {
             {actionIconVisible && (
               <div className="invisible iconWrapper">
                 <button data-cy="edit-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.ADD_EDIT)} title='Edit'>
-                  <Pencil size={16} className="text-col-han-app-1000" weight="bold" />
+                  <EditIcon size={16} className="text-col-han-app-1000" weight="bold" />
                 </button>
                 <button data-cy="delete-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.DELETE)} title='Archive'>
-                  <Archive size={16} className="text-col-han-app-1000" weight="bold" />
+                  <ArchiveIcon size={16} className="text-col-han-app-1000" weight="bold" />
                 </button>
               </div>)}
           </td>

@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import { useOutsideClick } from "helpers";
+import { TimeInput } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -61,8 +62,8 @@ const AddEntry: React.FC<Iprops> = ({
     }
   }, [projectId]);
 
-  const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDuration(e.target.value);
+  const handleDurationChange = (val) => {
+    setDuration(val);
   };
 
   const getPayload = () => ({
@@ -200,11 +201,11 @@ const AddEntry: React.FC<Iprops> = ({
                   {format(new Date(selectedDate), "do MMM, yyyy")}
                 </div>
               </div>
-              <input
-                value={duration}
-                onChange={handleDurationChange}
-                type="text"
-                className="form__input ml-2"
+              <TimeInput
+                name="timeInput"
+                className="p-1 h-8 w-20 bg-miru-gray-100 rounded-sm text-sm placeholder:text-miru-gray-1000"
+                initTime={duration}
+                onTimeChange={handleDurationChange}
               />
             </div>
           </div>

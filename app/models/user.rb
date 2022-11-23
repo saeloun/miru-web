@@ -29,6 +29,7 @@
 #  slack_member_info      :text
 #  social_accounts        :jsonb
 #  team_lead              :boolean          default(FALSE)
+#  token                  :string(50)
 #  unconfirmed_email      :string
 #  xteam_member_ids       :text             default([]), is an Array
 #  created_at             :datetime         not null
@@ -101,6 +102,9 @@ class User < ApplicationRecord
   has_and_belongs_to_many :team_members, association_foreign_key: :member_user_id, class_name: User.name,
     join_table: "team_members", dependent: :destroy
   has_many :invitations, foreign_key: "sender_id", dependent: :destroy
+  has_secure_token :token, length: 50
+  has_many :projects, through: :project_members
+  has_many :clients, through: :projects
 
   rolify strict: true
 
