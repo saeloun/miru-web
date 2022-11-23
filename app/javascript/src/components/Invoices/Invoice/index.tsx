@@ -49,7 +49,7 @@ const Invoice = () => {
     status === InvoiceStatus.SUCCESS && (
       <>
         <Header invoice={invoice} handleSendInvoice={handleSendInvoice} setShowDeleteDialog={setShowDeleteDialog}
-          setInvoiceToDelete={setInvoiceToDelete} />
+          setInvoiceToDelete={setInvoiceToDelete}/>
         <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
           <InvoiceDetails invoice={invoice} />
         </div>
