@@ -2,18 +2,19 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Invoices::BulkDownbload#create", type: :request do
+RSpec.describe "InternalApi::V1::Invoices::BulkDownbload#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client) { create(:client, company:) }
   let!(:invoice) { create(:invoice, client:, status: "sent") }
   let(:download_id) { Faker::Alphanumeric.unique.alpha(number: 10) }
 
-  subject { send_request :post, internal_api_v1_invoices_bulk_download_index_path(
+  subject { send_request :get, internal_api_v1_invoices_bulk_download_index_path, params: {
     bulk_invoices: {
       invoice_ids: [invoice.id],
       download_id:
-    })
+    }
+  }
 }
 
   context "when authenticated" do

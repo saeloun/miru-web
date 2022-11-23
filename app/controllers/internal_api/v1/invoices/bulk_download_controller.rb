@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::Invoices::BulkDownloadController < InternalApi::V1::ApplicationController
-  def create
-    authorize :create, policy_class: Invoices::BulkDownloadPolicy
+  def index
+    authorize :index, policy_class: Invoices::BulkDownloadPolicy
     BulkInvoiceDownloadJob.perform_later(
       bulk_download_params[:invoice_ids],
       current_company.company_logo,
