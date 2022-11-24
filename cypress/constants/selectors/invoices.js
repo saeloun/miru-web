@@ -17,5 +17,9 @@ export const invoicesSelector = {
   editNewLineItem: dataCy('edit-new-line-item'),
   saveInvoiceEdit: dataCy('save-invoice-edit'),
   entriesListEdit: dataCy('entries-list-edit'),
-  referenceInput:dataCy('invoice-reference')
+  referenceInput:dataCy('invoice-reference'),
+  invoiceDownload:dataCy('invoice-download'),
+  invoiceDownloadPage:dataCy('invoice-download-page'),
+  viewInvoice: dataCy('view-invoice'),
+  moreOptionsView:dataCy('more-options-view')
 }

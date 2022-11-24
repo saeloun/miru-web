@@ -6,6 +6,7 @@ const MoreOptions = ({ deleteInvoice, downloadInvoice, invoice=null }) => (
   <ul className="py-2 absolute right-20 bg-white border-2 rounded border-miru-gray-200 drop-shadow">
     {downloadInvoice != null && invoice.status != "draft" && <li
       onClick={downloadInvoice}
+      data-cy="invoice-download-page"
       className="flex items-center py-2.5 px-4 cursor-pointer text-miru-han-purple-1000 hover:bg-miru-gray-100"
     >
       <DownloadSimple size={16} className="mr-4" />

@@ -61,6 +61,7 @@ const TableRow = ({
 
       <td
         onClick={() => navigate(`/invoices/${invoice.id}`)}
+        data-cy="view-invoice"
         className="md:w-1/5 md:pr-2 pr-6 py-5 font-medium tracking-wider flex items-center text-left whitespace-nowrap cursor-pointer"
       >
         <Avatar />
@@ -103,6 +104,7 @@ const TableRow = ({
           <Tooltip content="Download">
             <button
               onClick={() => handleDownloadInvoice(invoice)}
+              data-cy="invoice-download"
               className={invoice.status == "draft" ? "text-miru-gray-1000" : "text-miru-han-purple-1000"}
               disabled= {invoice.status == "draft"}
             >
