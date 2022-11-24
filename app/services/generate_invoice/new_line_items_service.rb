@@ -2,11 +2,15 @@
 
 module GenerateInvoice
   class NewLineItemsService < ApplicationService
-    attr_reader :client, :params
+    attr_reader :client, :projects, :project_ids, :params
+    attr_accessor :total_count
 
     def initialize(client, params)
       @client = client
       @params = params
+      @projects = client.projects.includes(:project_members).kept
+      @project_ids = @projects.pluck(:id).uniq
+      @total_count = nil
     end
 
     def process
@@ -14,19 +18,15 @@ module GenerateInvoice
       {
         filter_options:,
         new_line_item_entries: line_item_entries,
-        total_new_line_items: line_item_entries.total_count
+        total_new_line_items: total_count
       }
     end
 
     private
 
-      def project
-        @_project ||= client.projects.kept.pluck(:id).uniq
-      end
-
       # Sending team members list for filter dropdown options
       def filter_options
-        user_ids = TimesheetEntry.where(project_id: project).pluck(:user_id).uniq
+        user_ids = TimesheetEntry.where(project_id: project_ids).pluck(:user_id).uniq
         @_filter_options ||= {
           team_members: User.where(id: user_ids)
         }
@@ -50,7 +50,7 @@ module GenerateInvoice
       end
 
       def project_filter
-        { project_id: project }
+        { project_id: project_ids }
       end
 
       def unbilled_status_filter
@@ -61,12 +61,60 @@ module GenerateInvoice
         default_filter = project_filter.merge(unselected_time_entries_filter)
         bill_status_filter = default_filter.merge(unbilled_status_filter)
         where_clause = bill_status_filter.merge(TimeEntries::Filters.process(params))
-        @_new_line_item_entries ||= TimesheetEntry.search(
+        timesheet_entries = fetch_timesheet_entries(search_term, where_clause)
+        total_count = timesheet_entries.total_count
+        format_timesheet_entries(timesheet_entries)
+      end
+
+      def fetch_timesheet_entries(search_term, where_clause)
+        TimesheetEntry.search(
           search_term,
           fields: [:note, :user_name],
           match: :text_middle,
           where: where_clause,
-          includes: [{ user: :project_members }, { project: :client } ])
+          includes: [:user, { project: :client } ])
+      end
+
+      def format_timesheet_entries(timesheet_entries)
+        user_project_rates = project_to_member_rates
+        timesheet_entries.map do |timesheet_entry|
+          {
+            timesheet_entry_id: timesheet_entry.id,
+            user_id: timesheet_entry.user_id,
+            project_id: timesheet_entry.project_id,
+            first_name: timesheet_entry.user.first_name,
+            last_name: timesheet_entry.user.last_name,
+            description: timesheet_entry.note,
+            date: timesheet_entry.work_date,
+            quantity: timesheet_entry.duration,
+            rate: user_project_rates[timesheet_entry.project_id][timesheet_entry.user_id]
+          }
+        end
+      end
+
+      def project_to_member_rates
+        projects_members_rates = {}
+        projects.each { |projectt| projects_members_rates[projectt.id] = project_members_rate(projectt) }
+        projects_members_rates
+      end
+
+      def project_members_rate(project)
+        member_rates = {}
+        project.project_members.each do | project_member |
+          member_rates[project_member.user_id] = project_member.hourly_rate
+        end
+        member_rates
+      end
+
+      def get_user_project_rate(project_members, project_id)
+        rate = nil
+        project_members.each do | project_member |
+          if project_member.project_id == project_id
+            rate = project_member.hourly_rate
+            break
+          end
+        end
+        rate
       end
   end
 end
