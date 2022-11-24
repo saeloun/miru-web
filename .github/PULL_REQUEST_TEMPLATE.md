@@ -30,7 +30,7 @@ test configuration -->
 - [ ] I have manually tested all workflows
 - [ ] I have performed a self-review of my own code
 - [ ] I have added automated tests for my code
-- [ ] I have added intigration tests for my code
+- [ ] I have added integration tests for my code
 
 ## QA Test Scenarios
 <!-- Please add the test scenarios you want to be tested by QA people. Either write the scenarios or you can add a short loom video previewing the changes made in the PR. This will help
