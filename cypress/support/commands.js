@@ -30,11 +30,12 @@ Cypress.Commands.add("loginAsEmployee", function () {
   cy.location("pathname").should("eq", "/time-tracking");
 });
 
-Cypress.Commands.add("generateNewInvoice", function(invoice_number){
+Cypress.Commands.add("generateNewInvoice", function(invoice_number, reference){
   cy.get(invoicesSelector.newInvoiceButton).click()
   cy.get(invoicesSelector.addClientButton).click()
   cy.contains("Flipkart").click()
   cy.get(invoicesSelector.invoiceNumberField).click().type(invoice_number)
+  cy.get(invoicesSelector.referenceInput).click().type(reference)
   cy.get(invoicesSelector.newLineItemButton).click()
   cy.get(invoicesSelector.entriesList).first().click({force: true})
   cy.get(invoicesSelector.saveInvoice).click()
