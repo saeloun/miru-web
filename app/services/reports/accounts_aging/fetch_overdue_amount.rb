@@ -1,0 +1,52 @@
+# frozen_string_literal: true
+
+module Reports::AccountsAging
+  class FetchOverdueAmount < ApplicationService
+    attr_reader :current_company
+
+    def initialize(current_company)
+      @current_company = current_company
+    end
+
+    def process
+      {
+        clients: process_clients,
+        total_amount_overdue_by_date_range: amount_overdue_by_date_range(invoice_overdue)
+      }
+    end
+
+    private
+
+      def clients
+        @_clients ||= current_company.clients.order(name: :asc).uniq
+      end
+
+      def process_clients
+        clients.map do |client|
+          {
+            id: client.id,
+            name: client.name,
+            amount_overdue: amount_overdue_by_date_range(client.invoices)
+          }
+        end
+      end
+
+      def invoice_overdue
+        Invoice.overdue.for_clients(clients)
+      end
+
+      def amount_overdue_by_date_range(invoices)
+        {
+          zero_to_thirty_days: total_amount_due_during(invoices, ((1.month.ago)...(Date.today + 1.day))),
+          thirty_one_to_sixty_days: total_amount_due_during(invoices, ((2.month.ago)...1.month.ago)),
+          sixty_one_to_ninety_days: total_amount_due_during(invoices, ((3.month.ago)...2.month.ago)),
+          ninety_plus_days: total_amount_due_during(invoices, (10.year.ago...3.month.ago)),
+          total: invoices.overdue.pluck(:amount_due).sum
+        }
+      end
+
+      def total_amount_due_during (invoices, duration)
+        invoices.during(duration).pluck(:amount_due).sum
+      end
+  end
+end

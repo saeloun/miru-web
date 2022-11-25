@@ -70,7 +70,7 @@ RSpec.describe "InternalApi::V1::Reports::AccountsAgingController::#index", type
         expect(json_response["report"]["total_amount_overdue"]["thirty_one_to_sixty_days"]).to eq("700.0")
         expect(json_response["report"]["total_amount_overdue"]["sixty_one_to_ninety_days"]).to eq("300.0")
         expect(json_response["report"]["total_amount_overdue"]["ninety_plus_days"]).to eq("400.0")
-        expect(json_response["report"]["total_amount_overdue"]["grand_total"]).to eq("1500.0")
+        expect(json_response["report"]["total_amount_overdue"]["total"]).to eq("1500.0")
       end
     end
   end
