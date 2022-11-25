@@ -3,14 +3,14 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, name: "company_one") }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:client) { create(:client, company:) }
-  let(:project) { create(:project, client:) }
-  let(:client2) { create(:client, company_id: company.id) }
-  let(:project2) { create(:project, client_id: client2.id) }
-  let(:client3) { create(:client, company_id: company.id) }
-  let(:project3) { create(:project, client_id: client3.id) }
+  let(:client) { create(:client, company:, name: "American_Client") }
+  let(:project) { create(:project, client:, name: "A class project") }
+  let(:client2) { create(:client, company_id: company.id, name: "European_Client") }
+  let(:project2) { create(:project, client_id: client2.id, name: "B class project") }
+  let(:client3) { create(:client, company_id: company.id, name: "Indian_Client") }
+  let(:project3) { create(:project, client_id: client3.id, name: "C class project") }
   let(:last_month_start_date) { 1.month.ago.beginning_of_month }
 
   def generate_label(date)
@@ -62,7 +62,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
         timesheet_ids_in_response = reports["entries"].pluck("id")
-        expect(reports["entries"].size).to eq(2)
+        expect(reports["entries"].size).to eq(1)
         expect(timesheet_ids_in_response).to eq([@timesheet_entry3.id])
         expect(timesheet_ids_in_response).not_to include(@timesheet_entry1.id)
       end
@@ -174,8 +174,8 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
 
     context "when reports page's request is made with combination of filters" do
       before do
-        @user1 = create(:user)
-        @user2 = create(:user)
+        @user1 = create(:user, first_name: "John", last_name: "Doe")
+        @user2 = create(:user, first_name: "Kelly", last_name: "Doe")
         @last_month_end_date = 1.month.ago.end_of_month
         @timesheet_entry1 = create(
           :timesheet_entry,
@@ -226,15 +226,15 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
         timesheet_ids_in_response = reports["entries"].pluck("id")
-        expect(reports["entries"].size).to eq(2)
+        expect(reports["entries"].size).to eq(1)
         expect(timesheet_ids_in_response).to include(@timesheet_entry2.id)
       end
     end
 
     context "when reports page request is made as group by with team members in desc order of work_date" do
       before do
-        @user1 = create(:user)
-        @user2 = create(:user)
+        @user1 = create(:user, first_name: "Adam", last_name: "Smith")
+        @user2 = create(:user, first_name: "Corner", last_name: "Stone")
         @timesheet_entry1 = create(
           :timesheet_entry, user: @user1, project:,
           work_date: Date.new(Time.now.year, Time.now.month, 1))
@@ -257,9 +257,9 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
         expect(reports.first["label"]).to eq(@user1.full_name)
-        expect(reports.first["entries"].pluck("id")).to eq([@timesheet_entry3.id, @timesheet_entry4.id])
+        expect(reports.first["entries"].pluck("id")).to eq([@timesheet_entry2.id])
         expect(reports.second["label"]).to eq(@user2.full_name)
-        expect(reports.second["entries"].pluck("id")).to eq([@timesheet_entry2.id])
+        expect(reports.second["entries"].pluck("id")).to eq([@timesheet_entry3.id, @timesheet_entry4.id])
       end
     end
 
@@ -326,16 +326,16 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         }
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
-        expect(reports.first["label"]).to eq(generate_label(@date1))
+        expect(reports.first["label"]).to eq(generate_label(@date2))
         expect(reports.first["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
       end
     end
 
     context "when reports page request is made as team_members filter & group by with team members" do
       before do
-        @user1 = create(:user)
-        @user2 = create(:user)
-        @user3 = create(:user)
+        @user1 = create(:user, first_name: "Abraham", last_name: "Lincoln")
+        @user2 = create(:user, first_name: "George", last_name: "Washington")
+        @user3 = create(:user, first_name: "John", last_name: "Adams")
         @timesheet_entry1 = create(:timesheet_entry, user: @user1, project:)
         @timesheet_entry2 = create(:timesheet_entry, user: @user1, project:)
         @timesheet_entry3 = create(:timesheet_entry, user: @user2, project:)
