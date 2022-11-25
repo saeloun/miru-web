@@ -256,7 +256,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         }
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
-        debugger
         expect(reports.first["label"]).to eq(@user1.full_name)
         expect(reports.first["entries"].pluck("id")).to eq([@timesheet_entry3.id, @timesheet_entry4.id])
         expect(reports.second["label"]).to eq(@user2.full_name)
