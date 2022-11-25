@@ -145,10 +145,9 @@ group :development, :test do
 
   # Add Rubocop to lint and format Ruby code
   gem "rubocop", require: false
-  gem "rubocop-packaging", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rails", require: false
-  gem "rubocop-rspec", "~> 2.8", require: false
+  gem "rubocop-rspec", require: false
 
   # Use RSpec as the testing framework
   gem "rspec-rails", "~> 5.0", ">= 5.0.2"
