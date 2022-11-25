@@ -1,4 +1,17 @@
 GIT
+  remote: https://github.com/Shopify/erb-lint.git
+  revision: 403c8a59f2998d361fbcde2350c06f01bea150d5
+  branch: main
+  specs:
+    erb_lint (0.3.1)
+      activesupport
+      better_html (>= 2.0.1)
+      parser (>= 2.7.1.4)
+      rainbow
+      rubocop
+      smart_properties
+
+GIT
   remote: https://github.com/heartcombo/devise
   revision: f8d1ea90bc328012f178b8a6616a89b73f2546a4
   branch: main
@@ -110,6 +123,13 @@ GEM
       babel-source (>= 4.0, < 6)
       execjs (~> 2.0)
     bcrypt (3.1.18)
+    better_html (2.0.1)
+      actionview (>= 6.0)
+      activesupport (>= 6.0)
+      ast (~> 2.0)
+      erubi (~> 1.4)
+      parser (>= 2.4)
+      smart_properties
     bindex (0.8.1)
     bootsnap (1.11.1)
       msgpack (~> 1.2)
@@ -468,6 +488,7 @@ GEM
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
     sixarm_ruby_unaccent (1.2.0)
+    smart_properties (1.17.0)
     spring (4.0.0)
     sprockets (4.0.3)
       concurrent-ruby (~> 1.0)
@@ -538,6 +559,7 @@ DEPENDENCIES
   discard (~> 1.2)
   dotenv-rails
   elasticsearch (< 7.14)
+  erb_lint!
   factory_bot_rails
   faker
   foreman

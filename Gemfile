@@ -152,6 +152,9 @@ group :development, :test do
   # Use RSpec as the testing framework
   gem "rspec-rails", "~> 5.0", ">= 5.0.2"
 
+  # For linting ERB files
+  gem "erb_lint", require: false, git: "https://github.com/Shopify/erb-lint.git", branch: "main"
+
   # Simple one-liner tests for common Rails functionality
   gem "shoulda-callback-matchers", "~> 1.1.1"
   gem "shoulda-matchers", "~> 5.1"
