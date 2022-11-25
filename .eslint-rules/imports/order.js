@@ -31,7 +31,7 @@ pathGroups.push(pathGroupForKeepingReactImportsAtTop);
 
 module.exports = {
   rules: {
-    // auto-fixable: Enforce a convention in module import order - we enforce https://www.bigbinary.com/react-best-practices/sort-import-statements
+    // auto-fixable: Enforce a convention in module import order
     "import/order": [
       "error",
       {
