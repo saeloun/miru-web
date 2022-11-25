@@ -94,7 +94,7 @@ class Invoice < ApplicationRecord
   end
 
   def create_checkout_session!(success_url:, cancel_url:)
-    InvoicePayment::Checkout.process(invoice: self, success_url:, cancel_url:)
+    InvoicePayment::Checkout.process(invoice: self, success_url:, cancel_url:, metadata: { invoice_id: self.id })
   end
 
   def unit_amount(base_currency)

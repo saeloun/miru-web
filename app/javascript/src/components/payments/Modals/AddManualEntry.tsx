@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 
 import dayjs from "dayjs";
-import { X, Calendar } from "phosphor-react";
-import { MagnifyingGlass } from "phosphor-react";
+import { XIcon, CalendarIcon } from "miruIcons";
+import { SearchIcon } from "miruIcons";
 import Select, { DropdownIndicatorProps, components } from "react-select";
 
 import payment from "apis/payments/payments";
@@ -72,7 +72,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
 
   const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
     <components.DropdownIndicator {...props}>
-      {isOpen && <MagnifyingGlass size={20} color="#1D1A31" />}
+      {isOpen && <SearchIcon size={20} color="#1D1A31" />}
     </components.DropdownIndicator>
   );
 
@@ -148,7 +148,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
                 className="modal__button"
                 onClick={() => setShowManualEntryModal(false)}
               >
-                <X size={15} color="#CDD6DF" />
+                <XIcon size={15} color="#CDD6DF" />
               </button>
             </div>
           </div>
@@ -199,7 +199,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
                     className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
                     value={transactionDate && dayjs(transactionDate).format("DD.MM.YYYY") }
                   />
-                  <Calendar
+                  <CalendarIcon
                     size={20}
                     className="absolute top-0 right-0 m-2"
                     color="#5B34EA"

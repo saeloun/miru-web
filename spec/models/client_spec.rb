@@ -89,9 +89,8 @@ RSpec.describe Client, type: :model do
       let(:client) { create(:client, company:) }
       let(:project_1) { create(:project, client:) }
       let(:project_2) { create(:project, client:) }
-      let(:date_range_class) { Class.new { extend UtilityFunctions } }
       let(:results) do
-        range = date_range_class.range_from_timeframe(time_frame)
+        range = DateRangeService.new(timeframe: time_frame).process
         [project_1, project_2].map do | project |
           {
             id: project.id, name: project.name, billable: project.billable, team: project.project_member_full_names,

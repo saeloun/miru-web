@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 
-import autosize from "autosize";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import { useOutsideClick } from "helpers";
+import TextareaAutosize from "react-autosize-textarea";
+import { TimeInput } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -28,7 +29,7 @@ const AddEntry: React.FC<Iprops> = ({
   handleRelocateEntry
 }) => {
   const [note, setNote] = useState<string>("");
-  const [duration, setDuration] = useState<string>("00:00");
+  const [duration, setDuration] = useState<string>("");
   const [client, setClient] = useState<string>("");
   const [project, setProject] = useState<string>("");
   const [projectId, setProjectId] = useState<number>(0);
@@ -72,8 +73,8 @@ const AddEntry: React.FC<Iprops> = ({
     }
   }, [project]);
 
-  const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDuration(e.target.value);
+  const handleDurationChange = (val) => {
+    setDuration(val);
   };
 
   const getPayload = () => ({
@@ -138,10 +139,7 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   useEffect(() => {
-    const textArea = document.querySelector("textarea");
-    autosize(textArea);
     handleFillData();
-    textArea.click();
   }, []);
 
   return (
@@ -195,15 +193,15 @@ const AddEntry: React.FC<Iprops> = ({
             ))}
           </select>
         </div>
-        <textarea
+        <TextareaAutosize
           value={note}
-          onChange={e => setNote(e.target.value)}
+          onChange={e => setNote(e.target["value"])}
           rows={5}
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 " + (editEntryId ? "h-32" : "h-8") )}
-        ></textarea>
+          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 overflow-y-auto " + (editEntryId ? "h-auto" : "h-8") )}
+        />
       </div>
       <div className="w-60">
         <div className="mb-2 flex justify-between">
@@ -222,11 +220,11 @@ const AddEntry: React.FC<Iprops> = ({
               {format(new Date(selectedDate), "do MMM, yyyy")}
             </div>
           </div>
-          <input
-            value={duration}
-            onChange={handleDurationChange}
-            type="text"
-            className="p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm"
+          <TimeInput
+            name="timeInput"
+            className="p-1 h-8 w-20 bg-miru-gray-100 rounded-sm text-sm placeholder:text-miru-gray-1000"
+            initTime={duration}
+            onTimeChange={handleDurationChange}
           />
         </div>
         <div className="flex items-center mt-2">

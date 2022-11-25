@@ -58,6 +58,7 @@ class User < ApplicationRecord
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_many :invitations, foreign_key: "sender_id", dependent: :destroy
+  has_secure_token :token, length: 50
   has_many :projects, through: :project_members
   has_many :clients, through: :projects
 
@@ -85,6 +86,7 @@ class User < ApplicationRecord
 
   # Callbacks
   after_discard :discard_project_members
+  before_create :set_token
 
   # scopes
   scope :valid_invitations, -> { invitations.where(sender: self).valid_invitations }
@@ -134,6 +136,10 @@ class User < ApplicationRecord
   end
 
   private
+
+    def set_token
+      self.token = SecureRandom.base58(50)
+    end
 
     def discard_project_members
       project_members.discard_all
