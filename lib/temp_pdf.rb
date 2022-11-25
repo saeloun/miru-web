@@ -3,10 +3,12 @@
 class TempPdf
   attr_accessor :pdf_content, :name
 
-  def initialize(pdf_content, name)
+  def initialize(name, pdf_content)
     @pdf_content = pdf_content
     @name = name
   end
+
+  attr_reader :name
 
   def tempfile
     Tempfile.open do |file|
