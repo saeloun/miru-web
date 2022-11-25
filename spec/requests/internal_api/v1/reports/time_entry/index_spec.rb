@@ -62,8 +62,8 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
         timesheet_ids_in_response = reports["entries"].pluck("id")
-        expect(reports["entries"].size).to eq(2)
-        expect(timesheet_ids_in_response).to eq([@timesheet_entry3.id, @timesheet_entry2.id])
+        expect(reports["entries"].size).to eq(1)
+        expect(timesheet_ids_in_response).to eq([@timesheet_entry3.id])
         expect(timesheet_ids_in_response).not_to include(@timesheet_entry1.id)
       end
     end
@@ -226,8 +226,8 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
         timesheet_ids_in_response = reports["entries"].pluck("id")
-        expect(reports["entries"].size).to eq(2)
-        expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id)
+        expect(reports["entries"].size).to eq(1)
+        expect(timesheet_ids_in_response).to include(@timesheet_entry2.id)
       end
     end
 
@@ -256,10 +256,10 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         }
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
-        expect(reports.first["label"]).to eq(@user1.full_name)
-        expect(reports.first["entries"].pluck("id")).to eq([@timesheet_entry2.id, @timesheet_entry1.id])
-        expect(reports.last["label"]).to eq(@user2.full_name)
-        expect(reports.last["entries"].pluck("id")).to eq([@timesheet_entry3.id, @timesheet_entry4.id])
+        expect(reports.second["label"]).to eq(@user1.full_name)
+        expect(reports.second["entries"].pluck("id")).to eq([@timesheet_entry2.id])
+        expect(reports.first["label"]).to eq(@user2.full_name)
+        expect(reports.first["entries"].pluck("id")).to eq([@timesheet_entry3.id, @timesheet_entry4.id])
       end
     end
 
@@ -280,8 +280,8 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         reports = json_response["reports"]
         expect(reports.first["label"]).to eq(client.name)
         expect(reports.first["entries"].pluck("id")).to include(@timesheet_entry1.id, @timesheet_entry2.id)
-        expect(reports.last["label"]).to eq(client2.name)
-        expect(reports.last["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
+        expect(reports.second["label"]).to eq(client2.name)
+        expect(reports.second["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
       end
     end
 
@@ -326,10 +326,8 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         }
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
-        expect(reports.first["label"]).to eq(generate_label(@date1))
-        expect(reports.first["entries"].pluck("id")).to include(@timesheet_entry1.id, @timesheet_entry2.id)
-        expect(reports.last["label"]).to eq(generate_label(@date2))
-        expect(reports.last["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
+        expect(reports.first["label"]).to eq(generate_label(@date2))
+        expect(reports.first["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
       end
     end
 
@@ -379,8 +377,6 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         reports = json_response["reports"]
         expect(reports.first["label"]).to eq(client.name)
         expect(reports.first["entries"].pluck("id")).to include(@timesheet_entry1.id, @timesheet_entry2.id)
-        expect(reports.last["label"]).to eq(client2.name)
-        expect(reports.last["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
       end
     end
 
@@ -429,10 +425,8 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         }
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
-        expect(reports.first["label"]).to eq(generate_label(@date1))
-        expect(reports.first["entries"].pluck("id")).to include(@timesheet_entry1.id, @timesheet_entry2.id)
-        expect(reports.last["label"]).to eq(generate_label(@date2))
-        expect(reports.last["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
+        expect(reports.first["label"]).to eq(generate_label(@date2))
+        expect(reports.first["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)
       end
     end
   end

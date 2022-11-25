@@ -27,7 +27,8 @@ module Reports::TimeEntries
       def process_aggregated_es_response
         id_to_timesheet_entry = timsheet_id_to_timesheet_entry
         buckets = es_response.aggs["grouped_reports"]["buckets"]
-        buckets.filter_map do |bucket|
+
+        report_result = buckets.filter_map do |bucket|
           timesheet_entry_ids = bucket["top_report_hits"]["hits"]["hits"].pluck("_id")
           timesheet_entries = id_to_timesheet_entry.slice(*timesheet_entry_ids).values
 
@@ -40,6 +41,9 @@ module Reports::TimeEntries
             }
           end
         end
+
+        report_result.sort_by { |report| report[:label] } unless group_by == "week" || group_by.blank?
+        report_result
       end
 
       def timsheet_id_to_timesheet_entry

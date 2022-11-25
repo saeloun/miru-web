@@ -22,6 +22,7 @@ module Reports::TimeEntries
       group_by_query(GROUP_BY_INPUT_TO_ES_FIELD[group_by_field])
     end
 
+    # elastic search query to order by name
     def group_by_query(field)
       {
         aggs: {

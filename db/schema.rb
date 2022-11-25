@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_12_065450) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_16_171456) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -177,10 +177,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_12_065450) do
     t.datetime "updated_at", null: false
     t.string "external_view_key"
     t.jsonb "payment_infos", default: {}
+    t.bigint "project_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
+    t.index ["project_id"], name: "index_invoices_on_project_id"
     t.index ["status"], name: "index_invoices_on_status"
   end
 
@@ -299,6 +301,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_12_065450) do
     t.date "date_of_birth"
     t.jsonb "social_accounts"
     t.string "phone"
+    t.string "token", limit: 50
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -340,6 +343,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_12_065450) do
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"
+  add_foreign_key "invoices", "projects"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "previous_employments", "users"

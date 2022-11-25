@@ -19,6 +19,7 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  client_id          :bigint           not null
+#  project_id         :bigint
 #
 # Indexes
 #
@@ -26,11 +27,13 @@
 #  index_invoices_on_external_view_key  (external_view_key) UNIQUE
 #  index_invoices_on_invoice_number     (invoice_number) UNIQUE
 #  index_invoices_on_issue_date         (issue_date)
+#  index_invoices_on_project_id         (project_id)
 #  index_invoices_on_status             (status)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (client_id => clients.id)
+#  fk_rails_...  (project_id => projects.id)
 #
 
 # frozen_string_literal: true
