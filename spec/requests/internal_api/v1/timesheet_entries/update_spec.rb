@@ -46,6 +46,26 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
       expect(json_response["entry"]["bill_status"]).to match("billed")
       expect(json_response["notice"]).to match("Timesheet updated")
     end
+
+    context "when time entry record is billed one" do
+      before do
+        timesheet_entry.update!(bill_status: "billed")
+      end
+
+      it "they should be able to update billed time entry record to unbiiled successfully" do
+        expect(timesheet_entry.bill_status).to eq("billed")
+
+        send_request :patch, internal_api_v1_timesheet_entry_path(timesheet_entry.id), params: {
+          project_id: project.id,
+          timesheet_entry: {
+            bill_status: :unbilled
+          }
+        }
+
+        expect(response).to be_successful
+        expect(json_response["entry"]["bill_status"]).to match("unbilled")
+      end
+    end
   end
 
   context "when user is an employee" do
@@ -73,6 +93,26 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
       expect(json_response["entry"]["note"]).to match("Updated Note")
       expect(json_response["entry"]["bill_status"]).to match("billed")
       expect(json_response["notice"]).to match("Timesheet updated")
+    end
+
+    context "when time entry record is billed one" do
+      before do
+        timesheet_entry.update!(bill_status: "billed")
+      end
+
+      it "they should not be able to update billed time entry record" do
+        expect(timesheet_entry.bill_status).to eq("billed")
+
+        send_request :patch, internal_api_v1_timesheet_entry_path(timesheet_entry.id), params: {
+          project_id: project.id,
+          timesheet_entry: {
+            bill_status: :unbilled
+          }
+        }
+
+        expect(response).to have_http_status(:forbidden)
+        expect(json_response["errors"]).to include("You are not authorized to perform this action.")
+      end
     end
   end
 
