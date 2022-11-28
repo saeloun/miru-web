@@ -1,4 +1,9 @@
-export const getReports = ({ currentReport, timeEntryReport, revenueByClientReport, outstandingOverdueInvoice }) => {
+export const getReports = ({
+  currentReport,
+  timeEntryReport,
+  revenueByClientReport,
+  outstandingOverdueInvoice,
+}) => {
   switch (currentReport) {
     case "RevenueByClientReport":
       return revenueByClientReport;

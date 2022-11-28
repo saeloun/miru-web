@@ -7,7 +7,7 @@ const update = (id, provider) => axios.patch(`${path}/${id}`, provider);
 
 const PaymentsProviders = {
   get,
-  update
+  update,
 };
 
 export default PaymentsProviders;

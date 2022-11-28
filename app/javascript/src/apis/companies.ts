@@ -17,7 +17,7 @@ const companiesApi = {
   create,
   update,
   destroy,
-  removeLogo
+  removeLogo,
 };
 
 export default companiesApi;

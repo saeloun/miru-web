@@ -6,50 +6,47 @@ const WeeklyEntries: React.FC<Iprops> = ({
   view,
   dayInfo,
   selectDate,
-  setSelectDate
-}) => (
+  setSelectDate,
+}) =>
   view === "day" ? (
-    <div className="h-16 bg-miru-gray-100 flex justify-evenly">
+    <div className="flex h-16 justify-evenly bg-miru-gray-100">
       {dayInfo.map((d, index) => (
         <button
+          key={index}
+          className={`my-2 h-12 w-26 items-center rounded-xl border-2 border-transparent px-5 py-1 text-left ${
+            index === selectDate && "border-miru-han-purple-1000 bg-white"
+          }`}
           onClick={() => {
             setSelectDate(index);
           }}
-          key={index}
-          className={
-            "px-5 py-1 my-2 w-26 h-12 text-left items-center rounded-xl border-2 border-transparent " +
-            (index === selectDate &&
-              "bg-white border-miru-han-purple-1000")
-          }
         >
-          <p className="text-xs text-miru-dark-purple-1000 font-medium">
+          <p className="text-xs font-medium text-miru-dark-purple-1000">
             {d.day}
           </p>
           <p className="text-xs">
-            {getNumberWithOrdinal(parseInt(d.date,10))} {d.month}{" "}
+            {getNumberWithOrdinal(parseInt(d.date, 10))} {d.month}{" "}
           </p>
         </button>
       ))}
     </div>
   ) : (
     // dates for week
-    <div className="h-16 px-60 bg-miru-gray-100 flex justify-items-stretch">
+    <div className="flex h-16 justify-items-stretch bg-miru-gray-100 px-60">
       {dayInfo.map((d, index) => (
         <div
+          className="my-2 h-12 w-24 items-center rounded-xl border-2 border-transparent py-2"
           key={index}
-          className="py-2 my-2 w-24 h-12 items-center rounded-xl border-2 border-transparent"
         >
-          <p className="text-xs text-miru-dark-purple-1000 font-medium">
+          <p className="text-xs font-medium text-miru-dark-purple-1000">
             {d.day}
           </p>
           <p className="text-xs">
-            {getNumberWithOrdinal(parseInt(d.date,10))} {d.month}{" "}
+            {getNumberWithOrdinal(parseInt(d.date, 10))} {d.month}{" "}
           </p>
         </div>
       ))}
     </div>
-  )
-);
+  );
 
 interface Iprops {
   view: string;

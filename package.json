@@ -101,9 +101,6 @@
     ],
     "{Gemfile,Rakefile,config.ru}": [
       "bundle exec rubocop -a --force-exclusion"
-    ],
-    "app/views/**/*.html.erb": [
-      "bundle exec erblint --lint-all --format compact -a"
     ]
   },
   "scripts": {

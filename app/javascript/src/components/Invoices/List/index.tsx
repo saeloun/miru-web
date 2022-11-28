@@ -1,19 +1,18 @@
 import * as React from "react";
 
-import { ApiStatus as InvoicesStatus } from "constants/index";
-
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import invoicesApi from "apis/invoices";
 import Pagination from "common/Pagination";
+import { ApiStatus as InvoicesStatus } from "constants/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./container";
 import FilterSideBar from "./FilterSideBar";
 import Header from "./Header";
 
-import { TOASTER_DURATION } from "../../../constants/index";
+import { TOASTER_DURATION } from "../../../constants";
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
 
@@ -21,7 +20,7 @@ const Invoices: React.FC = () => {
   const filterIntialValues = {
     dateRange: { label: "All", value: "all", from: "", to: "" },
     clients: [],
-    status: []
+    status: [],
   };
 
   const [status, setStatus] = React.useState<InvoicesStatus>(
@@ -34,7 +33,7 @@ const Invoices: React.FC = () => {
   const [params, setParams] = React.useState<any>({
     invoices_per_page: searchParams.get("invoices_per_page") || 20,
     page: searchParams.get("page") || 1,
-    query: searchParams.get("query") || ""
+    query: searchParams.get("query") || "",
   });
   const [filterParams, setFilterParams] = React.useState(filterIntialValues);
   const [filterParamsStr, setFilterParamsStr] = React.useState("");
@@ -46,10 +45,12 @@ const Invoices: React.FC = () => {
   const [isFilterVisible, setFilterVisibilty] = React.useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
+
   const [showBulkDeleteDialaog, setShowBulkDeleteDialog] =
     React.useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = React.useState(null);
-  const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] = React.useState(null);
+  const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] =
+    React.useState(null);
 
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
@@ -68,6 +69,7 @@ const Invoices: React.FC = () => {
         delete newParams[key];
       }
     }
+
     return newParams;
   };
 
@@ -75,7 +77,7 @@ const Invoices: React.FC = () => {
     try {
       setStatus(InvoicesStatus.LOADING);
       const {
-        data: { invoices, pagy, summary, recentlyUpdatedInvoices }
+        data: { invoices, pagy, summary, recentlyUpdatedInvoices },
       } = await invoicesApi.get(queryParams().concat(handleFilterParams()));
 
       setInvoices(invoices);
@@ -84,7 +86,7 @@ const Invoices: React.FC = () => {
       setRecentlyUpdatedInvoices(recentlyUpdatedInvoices);
       setSelectedInvoices([]);
       setStatus(InvoicesStatus.SUCCESS);
-    } catch (error) {
+    } catch {
       setStatus(InvoicesStatus.ERROR);
     }
   };
@@ -92,17 +94,17 @@ const Invoices: React.FC = () => {
   const handleFilterParams = () => {
     let filterQueryParams = "";
 
-    filterParams.clients.forEach((client) => {
-      filterQueryParams+= `&client_ids[]=${client.value}`;
+    filterParams.clients.forEach(client => {
+      filterQueryParams += `&client_ids[]=${client.value}`;
     });
 
-    filterParams.status.forEach((status) => {
+    filterParams.status.forEach(status => {
       filterQueryParams += `&statuses[]=${status.value}`;
     });
 
     const { value, from, to } = filterParams.dateRange;
 
-    if (value != "all" && value != "custom"){
+    if (value != "all" && value != "custom") {
       filterQueryParams += `&from_to[date_range]=${value}`;
     }
 
@@ -113,6 +115,7 @@ const Invoices: React.FC = () => {
     }
 
     setFilterParamsStr(filterQueryParams);
+
     return `${filterQueryParams}`;
   };
 
@@ -124,70 +127,66 @@ const Invoices: React.FC = () => {
 
   const deselectInvoices = (invoiceIds: number[]) =>
     setSelectedInvoices(
-      selectedInvoices.filter((id) => !invoiceIds.includes(id))
+      selectedInvoices.filter(id => !invoiceIds.includes(id))
     );
 
   return (
     <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
-        params={params}
-        setParams={setParams}
-        setFilterVisibilty={setFilterVisibilty}
-        clearCheckboxes={() =>
-          deselectInvoices(invoices.map((invoice) => invoice.id))
-        }
-        selectedInvoiceCount={selectedInvoiceCount}
-        isInvoiceSelected={isInvoiceSelected}
-        setShowBulkDeleteDialog={setShowBulkDeleteDialog}
         filterParamsStr={filterParamsStr}
+        isInvoiceSelected={isInvoiceSelected}
+        params={params}
+        selectedInvoiceCount={selectedInvoiceCount}
+        setFilterVisibilty={setFilterVisibilty}
+        setParams={setParams}
+        setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+        clearCheckboxes={() =>
+          deselectInvoices(invoices.map(invoice => invoice.id))
+        }
       />
-
       {status === InvoicesStatus.SUCCESS && (
         <React.Fragment>
-
           <Container
-            summary={summary}
+            deselectInvoices={deselectInvoices}
+            fetchInvoices={fetchInvoices}
+            filterIntialValues={filterIntialValues}
+            filterParams={filterParams}
+            filterParamsStr={filterParamsStr}
             invoices={invoices}
-            selectedInvoices={selectedInvoices}
             recentlyUpdatedInvoices={recentlyUpdatedInvoices}
             selectInvoices={selectInvoices}
-            deselectInvoices={deselectInvoices}
-            setShowDeleteDialog={setShowDeleteDialog}
-            setInvoiceToDelete={setInvoiceToDelete}
-            filterParams={filterParams}
+            selectedInvoices={selectedInvoices}
             setFilterParams={setFilterParams}
-            filterIntialValues={filterIntialValues}
-            filterParamsStr={filterParamsStr}
-            fetchInvoices={fetchInvoices}
+            setInvoiceToDelete={setInvoiceToDelete}
+            setShowDeleteDialog={setShowDeleteDialog}
+            summary={summary}
           />
-
           {isFilterVisible && (
             <FilterSideBar
               filterIntialValues={filterIntialValues}
-              setFilterVisibilty={setFilterVisibilty}
               filterParams={filterParams}
-              setFilterParams={setFilterParams}
               selectedInput={selectedInput}
+              setFilterParams={setFilterParams}
+              setFilterVisibilty={setFilterVisibilty}
               setSelectedInput={setSelectedInput}
             />
           )}
-
           {invoices.length && (
             <Pagination pagy={pagy} params={params} setParams={setParams} />
           )}
           {showDeleteDialog && (
             <DeleteInvoice
+              fetchInvoices={fetchInvoices}
               invoice={invoiceToDelete}
               setShowDeleteDialog={setShowDeleteDialog}
-              fetchInvoices={fetchInvoices}
             />
           )}
           {showBulkDeleteDialaog && (
             <BulkDeleteInvoices
+              fetchInvoices={fetchInvoices}
               invoices_ids={selectedInvoices}
               setShowBulkDeleteDialog={setShowBulkDeleteDialog}
-              fetchInvoices={fetchInvoices}
             />
           )}
         </React.Fragment>

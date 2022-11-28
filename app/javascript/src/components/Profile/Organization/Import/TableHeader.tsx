@@ -5,10 +5,7 @@ const TableHeader = () => (
     <th className="table__import_header" scope="col">
       FIELD
     </th>
-    <th
-      scope="col"
-      className="table__import_header"
-    >
+    <th className="table__import_header" scope="col">
       COLUMN NAME
     </th>
   </tr>
