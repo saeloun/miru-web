@@ -1,14 +1,14 @@
-const OutstandingOverdueInvoiceContext =  {
+const OutstandingOverdueInvoiceContext = {
   filterOptions: {
-    clients: []
+    clients: [],
   },
   selectedFilter: {
     dateRange: { label: "All", value: "" },
-    clients: []
+    clients: [],
   },
   customDateFilter: {
     from: "",
-    to: ""
+    to: "",
   },
   filterCounter: 0,
   clientList: [],
@@ -16,9 +16,9 @@ const OutstandingOverdueInvoiceContext =  {
   summary: {
     totalInvoiceAmount: 0,
     totalOutstandingAmount: 0,
-    totalOverdueAmount: 0
+    totalOverdueAmount: 0,
   },
-  handleRemoveSingleFilter: (key, value) => { }, //eslint-disable-line
+  handleRemoveSingleFilter: (key, value) => {}, //eslint-disable-line
 };
 
 export default OutstandingOverdueInvoiceContext;

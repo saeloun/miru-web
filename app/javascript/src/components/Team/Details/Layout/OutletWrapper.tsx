@@ -3,7 +3,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 
 const OutletWrapper = () => (
-  <div className="flex flex-col w-full">
+  <div className="flex w-full flex-col">
     <Outlet />
   </div>
 );

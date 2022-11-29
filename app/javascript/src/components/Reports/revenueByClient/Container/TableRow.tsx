@@ -4,27 +4,26 @@ import { currencyFormat } from "helpers";
 
 import { RevenueByClients } from "../interface";
 
-const TableRow = ({
-  currency,
-  report
-}) => {
-  const { id, name, unpaidAmount, paidAmount, totalAmount }: RevenueByClients = report;
+const TableRow = ({ currency, report }) => {
+  const { id, name, unpaidAmount, paidAmount, totalAmount }: RevenueByClients =
+    report;
+
   return (
-    <tr key={id} className="flex flex-row items-center">
-      <td className="w-3/5 pr-6 py-4 text-left whitespace-nowrap">
-        <p className="font-normal whitespace-normal text-base text-miru-dark-purple-1000">
+    <tr className="flex flex-row items-center" key={id}>
+      <td className="w-3/5 whitespace-nowrap py-4 pr-6 text-left">
+        <p className="whitespace-normal text-base font-normal text-miru-dark-purple-1000">
           {name}
         </p>
       </td>
-      <td className="w-2/5 px-6 py-4 text-left text-base font-normal text-miru-dark-purple-1000 whitespace-pre-wrap">
+      <td className="w-2/5 whitespace-pre-wrap px-6 py-4 text-left text-base font-normal text-miru-dark-purple-1000">
         {currencyFormat({ baseCurrency: currency, amount: unpaidAmount })}
       </td>
-      <td className="w-1/5 px-6 py-4 text-left whitespace-nowrap">
-        <p className="font-normal	 text-base text-miru-dark-purple-1000">
+      <td className="w-1/5 whitespace-nowrap px-6 py-4 text-left">
+        <p className="text-base	 font-normal text-miru-dark-purple-1000">
           {currencyFormat({ baseCurrency: currency, amount: paidAmount })}
         </p>
       </td>
-      <td className="w-1/5 pl-6 py-4 text-xl text-right whitespace-nowrap font-bold text-miru-dark-purple-1000">
+      <td className="w-1/5 whitespace-nowrap py-4 pl-6 text-right text-xl font-bold text-miru-dark-purple-1000">
         {currencyFormat({ baseCurrency: currency, amount: totalAmount })}
       </td>
     </tr>

@@ -13,38 +13,36 @@ const InvoiceActions = ({
   editInvoiceLink,
   sendInvoice,
   deleteInvoice,
-  invoice
+  invoice,
 }) => {
-  const [isMoreOptionsVisible, setMoreOptionsVisibility] =
+  const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
     useState<boolean>(false);
 
   const wrapperRef = useRef(null);
 
   useOutsideClick(
     wrapperRef,
-    () => setMoreOptionsVisibility(false),
+    () => setIsMoreOptionsVisible(false),
     isMoreOptionsVisible
   );
 
   return (
-    <>
-      <div className="flex flex-row justify-items-right">
-        <EditButton editInvoiceLink={editInvoiceLink} />
-        <SendButton onClick={sendInvoice} />
-        <div ref={wrapperRef}>
-          <MoreButton
-            onClick={() => setMoreOptionsVisibility(!isMoreOptionsVisible)}
+    <div className="justify-items-right flex flex-row">
+      <EditButton editInvoiceLink={editInvoiceLink} />
+      <SendButton onClick={sendInvoice} />
+      <div ref={wrapperRef}>
+        <MoreButton
+          onClick={() => setIsMoreOptionsVisible(!isMoreOptionsVisible)}
+        />
+        {isMoreOptionsVisible && (
+          <MoreOptions
+            deleteInvoice={deleteInvoice}
+            downloadInvoice={handleDownloadInvoice}
+            invoice={invoice}
           />
-          {isMoreOptionsVisible && (
-            <MoreOptions
-              deleteInvoice={deleteInvoice}
-              downloadInvoice={handleDownloadInvoice}
-              invoice={invoice}
-            />
-          )}
-        </div>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -33,7 +33,7 @@ import {
   Calendar,
   PaperPlaneTilt,
   FloppyDisk,
-  Minus
+  Minus,
 } from "phosphor-react";
 
 export const EditIcon = PencilSimple;

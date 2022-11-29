@@ -9,7 +9,10 @@ import { lineTotalCalc } from "./lineTotalCalc";
 import { getNumberWithOrdinal } from "./ordinal";
 import { useOutsideClick } from "./outsideClick";
 import { validateTimesheetEntry } from "./validateTimesheetEntry";
-import { separateAddressFields, bankFieldValidationRequirements } from "./wiseUtilityFunctions";
+import {
+  separateAddressFields,
+  bankFieldValidationRequirements,
+} from "./wiseUtilityFunctions";
 
 export {
   bankFieldValidationRequirements,
@@ -26,5 +29,5 @@ export {
   separateAddressFields,
   useDebounce,
   useOutsideClick,
-  validateTimesheetEntry
+  validateTimesheetEntry,
 };
