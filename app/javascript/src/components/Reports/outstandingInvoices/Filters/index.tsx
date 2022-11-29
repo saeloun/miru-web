@@ -59,27 +59,25 @@ const FilterSideBar = ({
     setShowCustomFilter(false);
   };
 
-  const submitCustomDatePicker = () => {
-    dateSchema
-      .validate(
+  const submitCustomDatePicker = async () => {
+    try {
+      await dateSchema.validate(
         { fromDate: dateRange.from, toDate: dateRange.to },
         { abortEarly: false }
-      )
-      .then(async () => {
-        hideCustomFilter();
-      })
-      .catch(err => {
-        const errObj = {
-          fromDateErr: "",
-          toDateErr: "",
-        };
+      );
+      await hideCustomFilter();
+    } catch (err) {
+      const errObj = {
+        fromDateErr: "",
+        toDateErr: "",
+      };
 
-        err.inner.map(item => {
-          errObj[`${item.path}Err`] = item.message;
-        });
-        setErrorMessage(errObj);
-        hideCustomFilter();
+      err.inner.map(item => {
+        errObj[`${item.path}Err`] = item.message;
       });
+      setErrorMessage(errObj);
+      hideCustomFilter();
+    }
   };
 
   const resetCustomDatePicker = () => {

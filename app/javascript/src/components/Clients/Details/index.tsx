@@ -53,7 +53,7 @@ const ClientList = ({ isAdminUser }) => {
   const [projectDetails, setProjectDetails] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
   const [clientDetails, setClientDetails] = useState<any>({});
-  const [editProjectData, setEditProjectData] = React.useState<any>(null);
+  const [editProjectData, setEditProjectData] = useState<any>(null);
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
 

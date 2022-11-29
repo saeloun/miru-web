@@ -12,6 +12,6 @@ export const getReports = ({
     case "outstandingOverdueInvoiceReport":
       return outstandingOverdueInvoice;
     default:
-      break;
+      return;
   }
 };

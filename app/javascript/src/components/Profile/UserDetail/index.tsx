@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import profileApi from "apis/profile";
 import { Divider } from "common/Divider";
 import Loader from "common/Loader/index";
+import Toastr from "common/Toastr";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import { useProfile } from "../context/EntryContext";
@@ -77,8 +78,8 @@ const UserDetails = () => {
   };
 
   const handleUpdateProfile = async () => {
-    userProfileSchema
-      .validate(
+    try {
+      await userProfileSchema.validate(
         {
           firstName,
           lastName,
@@ -88,38 +89,45 @@ const UserDetails = () => {
           currentPassword,
         },
         { abortEarly: false }
-      )
-      .then(async () => {
-        setIsLoading(true);
-        const formD = new FormData();
-        formD.append("user[first_name]", firstName);
-        formD.append("user[last_name]", lastName);
-        if (changePassword) {
-          formD.append("user[current_password]", currentPassword);
-          formD.append("user[password]", password);
-          formD.append("user[password_confirmation]", confirmPassword);
-        }
-
-        if (imageFile) {
-          formD.append("user[avatar]", imageFile);
-        }
-        await profileApi.update(formD);
-        setIsDetailUpdated(false);
-        setErrDetails(initialErrState);
-        setUserState("profileSettings", {
-          firstName,
-          lastName,
-        });
-        setIsLoading(false);
-      })
-      .catch(err => {
-        setIsLoading(false);
-        const errObj = initialErrState;
-        err.inner.map(item => {
-          errObj[`${item.path}Err`] = item.message;
-        });
-        setErrDetails(errObj);
+      );
+      await updateProfile();
+    } catch (err) {
+      setIsLoading(false);
+      const errObj = initialErrState;
+      err.inner.map(item => {
+        errObj[`${item.path}Err`] = item.message;
       });
+      setErrDetails(errObj);
+    }
+  };
+
+  const updateProfile = async () => {
+    try {
+      setIsLoading(true);
+      const formD = new FormData();
+      formD.append("user[first_name]", firstName);
+      formD.append("user[last_name]", lastName);
+      if (changePassword) {
+        formD.append("user[current_password]", currentPassword);
+        formD.append("user[password]", password);
+        formD.append("user[password_confirmation]", confirmPassword);
+      }
+
+      if (imageFile) {
+        formD.append("user[avatar]", imageFile);
+      }
+      await profileApi.update(formD);
+      setIsDetailUpdated(false);
+      setErrDetails(initialErrState);
+      setUserState("profileSettings", {
+        firstName,
+        lastName,
+      });
+      setIsLoading(false);
+    } catch {
+      setIsLoading(false);
+      Toastr.error("Error in Updating user Details");
+    }
   };
 
   const handleFirstNameChange = event => {

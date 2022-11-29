@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Divider } from "common/Divider";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -8,7 +8,7 @@ import Table from "./Table";
 import Header from "../../Header";
 
 const Billing = () => {
-  React.useEffect(() => sendGAPageView(), []);
+  useEffect(() => sendGAPageView(), []);
 
   return (
     <div className="flex w-4/5 flex-col">

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";

@@ -21,6 +21,7 @@ const miruLogo = require("../../../../assets/images/PurpleMiruLogoWithText.svg")
 const avatar = require("../../../../assets/images/NavAvatar.svg"); //eslint-disable-line
 
 const Navbar = ({ isAdminUser, user }) => {
+  const innerWidth = window.innerWidth;
   const [isDesktop, setIsDesktop] = useState(innerWidth > 650);
 
   useEffect(() => {

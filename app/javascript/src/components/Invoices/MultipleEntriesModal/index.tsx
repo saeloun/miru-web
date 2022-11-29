@@ -24,7 +24,7 @@ const MultipleEntriesModal = ({
     useState<boolean>(false);
   const [teamMembers, setTeamMembers] = useState<any>([]);
   const [filterParams, setFilterParams] = useState(filterIntialValues);
-  const [selectedInput, setSelectedInput] = React.useState("from-input");
+  const [selectedInput, setSelectedInput] = useState("from-input");
   const [loading, setLoading] = useState(true);
 
   const handleItemSelection = id => {

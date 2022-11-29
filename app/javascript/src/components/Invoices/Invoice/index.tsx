@@ -16,13 +16,12 @@ import SendInvoice from "../popups/SendInvoice";
 const Invoice = () => {
   const params = useParams();
 
-  const [status, setStatus] = React.useState<InvoiceStatus>(InvoiceStatus.IDLE);
+  const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const [invoice, setInvoice] = useState<any>(null);
   const [showSendInvoiceModal, setShowSendInvoiceModal] =
     useState<boolean>(false);
-  const [invoiceToDelete, setInvoiceToDelete] = React.useState(null);
-  const [showDeleteDialog, setShowDeleteDialog] =
-    React.useState<boolean>(false);
+  const [invoiceToDelete, setInvoiceToDelete] = useState(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
 
   const fetchInvoice = async () => {
     try {

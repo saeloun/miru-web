@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import { minToHHMM } from "helpers";
 import { PenIcon, DeleteIcon } from "miruIcons";
@@ -20,17 +20,17 @@ export const Project = ({
   setDeleteProjectData,
 }: IProject) => {
   const [grayColor, setGrayColor] = React.useState<string>("");
-  const [isHover, setHover] = React.useState<boolean>(false);
+  const [isHover, setIsHover] = React.useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleMouseEnter = () => {
     setGrayColor("bg-miru-gray-100");
-    setHover(true);
+    setIsHover(true);
   };
 
   const handleMouseLeave = () => {
     setGrayColor("");
-    setHover(false);
+    setIsHover(false);
   };
 
   const projectClickHandler = id => {

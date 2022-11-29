@@ -1,11 +1,11 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import { XIcon, FloppyDiskIcon, PaperPlaneTiltIcon } from "miruIcons";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 const Header = ({ invoiceNumber, id, updateInvoice }) => (
-  <React.Fragment>
+  <Fragment>
     <ToastContainer />
     <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
       <h2 className="header__title font-bold">Edit Invoice #{invoiceNumber}</h2>
@@ -36,7 +36,7 @@ const Header = ({ invoiceNumber, id, updateInvoice }) => (
         </button>
       </div>
     </div>
-  </React.Fragment>
+  </Fragment>
 );
 
 export default Header;

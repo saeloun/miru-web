@@ -22,8 +22,11 @@ const Container = ({
   filterParamsStr,
   fetchInvoices,
 }) => {
+  const innerWidth = window.innerWidth;
   const [isDesktop, setIsDesktop] = useState(innerWidth > 650);
+
   let appliedFilterCount = (filterParamsStr.match(/&/g) || []).length;
+
   filterParamsStr.includes("custom") &&
     (appliedFilterCount = appliedFilterCount - 2);
 

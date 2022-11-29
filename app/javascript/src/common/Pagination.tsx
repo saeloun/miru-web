@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import cn from "classnames";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";

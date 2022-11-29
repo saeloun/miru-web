@@ -27,7 +27,7 @@ interface IProvider {
 }
 
 const InvoiceSettings = ({ setShowInvoiceSetting }) => {
-  const [status, setStatus] = React.useState<PaymentSettingsStatus>(
+  const [status, setStatus] = useState<PaymentSettingsStatus>(
     PaymentSettingsStatus.IDLE
   );
   const [isChecked, setIsChecked] = useState<boolean>(true);

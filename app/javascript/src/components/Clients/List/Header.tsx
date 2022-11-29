@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Fragment } from "react";
 
 import { SearchIcon, PlusIcon } from "miruIcons";
 
@@ -25,7 +25,7 @@ const Header = ({ setnewClient, isAdminUser }) => {
     >
       <h2 className="header__title ml-4">Clients</h2>
       {isAdminUser && (
-        <React.Fragment>
+        <Fragment>
           <div className="header__searchWrap">
             <div className="header__searchInnerWrapper">
               <AutoComplete searchCallBack={searchCallBack} />
@@ -44,7 +44,7 @@ const Header = ({ setnewClient, isAdminUser }) => {
               <span className="ml-2 inline-block">NEW CLIENT</span>
             </button>
           </div>
-        </React.Fragment>
+        </Fragment>
       )}
     </div>
   );

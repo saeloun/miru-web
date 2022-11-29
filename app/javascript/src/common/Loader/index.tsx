@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 const Loader = () => (
   <div className="flex min-h-full w-full flex-col items-center justify-center">

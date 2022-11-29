@@ -128,9 +128,11 @@ const EditInvoice = () => {
       return res;
     }
 
-    selectedClient
-      ? Toastr.error(INVOICE_NUMBER_ERROR)
-      : Toastr.error(SELECT_CLIENT_ERROR);
+    if (selectedClient) {
+      return Toastr.error(INVOICE_NUMBER_ERROR);
+    }
+
+    return Toastr.error(SELECT_CLIENT_ERROR);
   };
 
   if (invoiceDetails) {

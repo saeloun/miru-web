@@ -1,12 +1,11 @@
 import React from "react";
 
 import { PlusIcon } from "miruIcons";
-import { TeamModalType } from "constants/index";
 
+import { TeamModalType } from "constants/index";
 // import Logger from "js-logger";
 // import { unmapList } from "mapper/team.mapper";
 // import teamApi from "apis/team";
-
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
 

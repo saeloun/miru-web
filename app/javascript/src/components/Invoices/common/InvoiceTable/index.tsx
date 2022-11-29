@@ -28,7 +28,9 @@ const InvoiceTable = ({
   const wrapperRef = useRef(null);
 
   useEffect(() => {
-    if (addManualLineItem) return setAddManualLineItem(false);
+    if (addManualLineItem) {
+      setAddManualLineItem(false);
+    }
 
     if (addNew) {
       loadNewLineItems();

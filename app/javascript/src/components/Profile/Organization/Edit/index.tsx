@@ -253,52 +253,51 @@ const OrgEdit = () => {
     [orgDetails]
   );
 
-  const updateOrgDetails = async () => {
-    orgSchema
-      .validate(orgDetails, { abortEarly: false })
-      .then(async () => {
-        try {
-          setIsLoading(true);
-          const formD = new FormData();
-          formD.append("company[name]", orgDetails.companyName);
-          formD.append("company[address]", orgDetails.companyAddr);
-          formD.append("company[business_phone]", orgDetails.companyPhone);
-          formD.append("company[country]", orgDetails.countryName);
-          formD.append("company[base_currency]", orgDetails.companyCurrency);
-          formD.append(
-            "company[standard_price]",
-            orgDetails.companyRate.toString()
-          );
+  const handleUpdateOrgDetails = async () => {
+    try {
+      await orgSchema.validate(orgDetails, { abortEarly: false });
+      await updateOrgDetails();
+    } catch (err) {
+      const errObj = {
+        companyNameErr: "",
+        companyPhoneErr: "",
+        companyRateErr: "",
+      };
 
-          formD.append(
-            "company[fiscal_year_end]",
-            orgDetails.companyFiscalYear
-          );
-          formD.append("company[date_format]", orgDetails.companyDateFormat);
-          formD.append("company[timezone]", orgDetails.companyTimezone);
-          if (orgDetails.logo) {
-            formD.append("company[logo]", orgDetails.logo);
-          }
-          await companiesApi.update(orgDetails.id, formD);
-          setIsDetailUpdated(false);
-          setIsLoading(false);
-        } catch {
-          setIsLoading(false);
-          Toastr.error("Error in Updating Org. Details");
-        }
-      })
-      .catch(err => {
-        const errObj = {
-          companyNameErr: "",
-          companyPhoneErr: "",
-          companyRateErr: "",
-        };
-
-        err.inner.map(item => {
-          errObj[`${item.path}Err`] = item.message;
-        });
-        setErrDetails(errObj);
+      err.inner.map(item => {
+        errObj[`${item.path}Err`] = item.message;
       });
+      setErrDetails(errObj);
+    }
+  };
+
+  const updateOrgDetails = async () => {
+    try {
+      setIsLoading(true);
+      const formD = new FormData();
+      formD.append("company[name]", orgDetails.companyName);
+      formD.append("company[address]", orgDetails.companyAddr);
+      formD.append("company[business_phone]", orgDetails.companyPhone);
+      formD.append("company[country]", orgDetails.countryName);
+      formD.append("company[base_currency]", orgDetails.companyCurrency);
+      formD.append(
+        "company[standard_price]",
+        orgDetails.companyRate.toString()
+      );
+
+      formD.append("company[fiscal_year_end]", orgDetails.companyFiscalYear);
+      formD.append("company[date_format]", orgDetails.companyDateFormat);
+      formD.append("company[timezone]", orgDetails.companyTimezone);
+      if (orgDetails.logo) {
+        formD.append("company[logo]", orgDetails.logo);
+      }
+      await companiesApi.update(orgDetails.id, formD);
+      setIsDetailUpdated(false);
+      setIsLoading(false);
+    } catch {
+      setIsLoading(false);
+      Toastr.error("Error in Updating Org. Details");
+    }
   };
 
   const handleCancelAction = () => {
@@ -321,7 +320,7 @@ const OrgEdit = () => {
         showButtons
         cancelAction={handleCancelAction}
         isDisableUpdateBtn={isDetailUpdated}
-        saveAction={updateOrgDetails}
+        saveAction={handleUpdateOrgDetails}
         subTitle="View and manage org settings"
         title="Organization Settings"
       />

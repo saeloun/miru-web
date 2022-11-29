@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Logger from "js-logger";
 
@@ -38,7 +38,7 @@ const Payments = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
     fetchInvoiceList();

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import Logger from "js-logger";
 import { XIcon } from "miruIcons";

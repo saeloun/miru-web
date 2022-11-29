@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
 import { useDebounce } from "helpers";
 import {
@@ -17,7 +17,7 @@ import { ApiStatus as InvoiceStatus } from "constants/index";
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 
 const Header = ({
-  setFilterVisibilty,
+  setIsFilterVisible,
   isInvoiceSelected,
   selectedInvoiceCount,
   clearCheckboxes,
@@ -26,15 +26,15 @@ const Header = ({
   setParams,
   filterParamsStr,
 }) => {
-  const [searchQuery, setSearchQuery] = React.useState<string>("");
-  const [searchResult, setSearchResult] = React.useState<any[]>([]);
-  const [status, setStatus] = React.useState<InvoiceStatus>(InvoiceStatus.IDLE);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchResult, setSearchResult] = useState<any[]>([]);
+  const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   let appliedFilterCount = (filterParamsStr.match(/&/g) || []).length;
   filterParamsStr.includes("custom") &&
     (appliedFilterCount = appliedFilterCount - 2);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (searchQuery) {
       fetchSearchinvoices(debouncedSearchQuery);
     } else {
@@ -75,7 +75,7 @@ const Header = ({
         Invoices
       </h2>
       {!isInvoiceSelected && (
-        <React.Fragment>
+        <Fragment>
           <div className="header__searchWrap ml-auto md:ml-0">
             <div className="header__searchInnerWrapper relative">
               <div>
@@ -104,7 +104,7 @@ const Header = ({
             </div>
             <button
               className="relative ml-7"
-              onClick={() => setFilterVisibilty(true)}
+              onClick={() => setIsFilterVisible(true)}
             >
               {appliedFilterCount > 0 && (
                 <span className="absolute bottom-2 left-2 mr-7 flex h-4 w-4 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
@@ -129,7 +129,7 @@ const Header = ({
               </span>
             </Link>
           </div>
-        </React.Fragment>
+        </Fragment>
       )}
       {isInvoiceSelected && (
         <div className="flex items-center justify-center">

@@ -18,7 +18,7 @@ dayjs.extend(advancedFormat);
 
 const FilterSideBar = ({
   filterIntialValues,
-  setFilterVisibilty,
+  setIsFilterVisible,
   filterParams,
   setFilterParams,
   selectedInput,
@@ -196,14 +196,14 @@ const FilterSideBar = ({
 
   const handleReset = () => {
     setFilterParams(filterIntialValues);
-    setFilterVisibilty(false);
+    setIsFilterVisible(false);
   };
 
   const handleApply = () => {
     defaultDateRange()
       ? setFilterParams(setDefaultDateRange())
       : setFilterParams(filters);
-    setFilterVisibilty(false);
+    setIsFilterVisible(false);
   };
 
   useEffect(() => {
@@ -225,12 +225,12 @@ const FilterSideBar = ({
   }
 
   return (
-    <SidePanel setFilterVisibilty={setFilterVisibilty}>
+    <SidePanel setFilterVisibilty={setIsFilterVisible}>
       <SidePanel.Header className="mb-7 flex items-center justify-between px-5 pt-5 font-bold text-miru-dark-purple-1000">
         <h4 className="flex items-center text-base">
           <FilterIcon className="mr-2.5" size={16} /> Filters
         </h4>
-        <Button style="ternary" onClick={() => setFilterVisibilty(false)}>
+        <Button style="ternary" onClick={() => setIsFilterVisible(false)}>
           <XIcon className="text-miru-dark-purple-1000" size={16} />
         </Button>
       </SidePanel.Header>

@@ -22,7 +22,7 @@ const OutstandingInvoiceReport = () => {
   const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
-  const [filterCounter, setFilterCounter] = useState(0);
+  const [filterCounter, setFilterCounter] = useState(0); // eslint-disable-line
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
   const [selectedInput, setSelectedInput] = useState("from-input");
   const [clientList, setClientList] = useState<
