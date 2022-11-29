@@ -1,50 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import dayjs from "dayjs";
 import { lineTotalCalc, minToHHMM } from "helpers";
-import InfiniteScroll from "react-infinite-scroll-component";
 
 import NewLineItemTableHeader from "./Header";
 
 const NewLineItemTable = ({
   setAddNew,
-  lineItems, setLineItems,
+  filteredLineItems, setFilteredLineItems,
   loadMoreItems,
-  totalLineItems,
-  pageNumber, setPageNumber,
   selectedLineItems, setSelectedLineItems,
   setMultiLineItemModal
 }) => {
-  const hasMoreItems = lineItems.length != totalLineItems;
 
   const selectRowId = (items) => {
     const option = { ...items, lineTotal: lineTotalCalc(items.quantity, items.rate) };
     setAddNew(false);
     setSelectedLineItems([...selectedLineItems, option]);
-    setLineItems([]);
-    setPageNumber(1);
+    setFilteredLineItems([]);
   };
+
+  useEffect(()=>loadMoreItems(),[]);
+
   return (
     <div>
       <NewLineItemTableHeader setShowMultilineModal={setMultiLineItemModal}/>
-      <div className="overflow-scroll mt-4 relative">
-        <InfiniteScroll
-          dataLength={pageNumber * 10}
-          next={loadMoreItems}
-          hasMore={hasMoreItems}
-          loader={
-            <div className="text-center py-2">
-              <h4>Loading...</h4>
-            </div>
-          }
-          height={250}
-          endMessage={
-            <p className="text-center py-2">
-              <b>End of the list</b>
-            </p>
-          }
-        >
-          {lineItems.map((item, index) => {
+      { filteredLineItems.length > 0 ?
+        <div className="overflow-scroll mt-4 h-20 md:h-50 relative">
+          {filteredLineItems.map((item, index) => {
             const hoursLogged = minToHHMM(item.quantity);
             const date = dayjs(item.date).format("DD.MM.YYYY");
             return (
@@ -65,8 +48,8 @@ const NewLineItemTable = ({
             );
           })
           }
-        </InfiniteScroll>
-      </div>
+        </div> : <p className="flex items-center justify-center text-miru-han-purple-1000 tracking-wide text-base font-medium md:h-50">No Data Found</p>
+      }
     </div>
   );
 };

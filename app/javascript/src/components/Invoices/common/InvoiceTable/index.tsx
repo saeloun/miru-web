@@ -21,20 +21,16 @@ const InvoiceTable = ({
 }) => {
   const [addNew, setAddNew] = useState<boolean>(false);
   const [showNewLineItemTable, setNewLineItemTable] = useState<boolean>(false);
-  const [totalLineItems, setTotalLineItems] = useState<number>(null);
+  const [totalLineItems, setTotalLineItems] = useState<number>(null); //eslint-disable-line
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [showMultiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
-  const [addManualLineItem, setAddManualLineItem] = useState<boolean>(false);
   const [isEdit, setEdit] = useState<boolean>(false);
+  const [filteredLineItems, setFilteredLineItems] =useState<any>(lineItems);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
-    if (addManualLineItem) return setAddManualLineItem(false);
-
-    if (addNew) {
-      loadNewLineItems();
-    }
-  }, [addNew]);
+    loadNewLineItems();
+  }, [filteredLineItems]);
 
   const loadNewLineItems = () => {
     fetchNewLineItems(
@@ -50,7 +46,6 @@ const InvoiceTable = ({
 
   const addManualEntryItem = () => {
     setAddNew(!addNew);
-    setAddManualLineItem(true);
   };
 
   useOutsideClick(wrapperRef, () => {
@@ -63,12 +58,9 @@ const InvoiceTable = ({
     if (selectedClient && lineItems && showNewLineItemTable) {
       return <NewLineItemTable
         setAddNew={setAddNew}
-        lineItems={lineItems}
-        setLineItems={setLineItems}
+        filteredLineItems={filteredLineItems}
+        setFilteredLineItems={setFilteredLineItems}
         loadMoreItems={loadNewLineItems}
-        totalLineItems={totalLineItems}
-        pageNumber={pageNumber}
-        setPageNumber={setPageNumber}
         selectedLineItems={selectedLineItems}
         setSelectedLineItems={setSelectedLineItems}
         setMultiLineItemModal={setMultiLineItemModal}
@@ -113,7 +105,8 @@ const InvoiceTable = ({
                 setAddNew={setAddNew}
                 showNewLineItemTable={showNewLineItemTable}
                 lineItems={lineItems}
-                setLineItems={setLineItems}
+                filteredLineItems={filteredLineItems}
+                setFilteredLineItems={setFilteredLineItems}
               />
 
           }

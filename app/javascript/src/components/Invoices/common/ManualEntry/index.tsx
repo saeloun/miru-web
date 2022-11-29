@@ -13,7 +13,8 @@ const ManualEntry = ({
   setAddNew,
   showNewLineItemTable,
   lineItems,
-  setLineItems
+  setFilteredLineItems,
+  filteredLineItems
 }) => {
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<string>("");
@@ -40,10 +41,13 @@ const ManualEntry = ({
 
   }, [name, date, description, rate, quantity, lineTotal]);
 
-  useEffect(()=>{
-    if (name && lineItems.length > 0){
-      const newLineItems = lineItems.filter((item) => item.first_name.toLowerCase().includes(name.toLowerCase()));
-      newLineItems && setLineItems(newLineItems);
+  useEffect( () => {
+    if (name && filteredLineItems.length > 0){
+      const newLineItems = filteredLineItems.filter((item) => item.first_name.toLowerCase().includes(name.toLowerCase()));
+      newLineItems ? setFilteredLineItems(newLineItems) : setFilteredLineItems([]);
+    }
+    else {
+      setFilteredLineItems(lineItems);
     }
   },[name]);
 
