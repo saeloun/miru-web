@@ -17,8 +17,6 @@ AllCops:
     - ".vscode/**/*"
     - ".husky/**/*"
     - ".bundle/**/*"
-    - ".circleci/**/*"
-    - ".semaphore/**/*"
     - "**/log/**/*"
     - "**/public/**/*"
     - "**/tmp/**/*"
