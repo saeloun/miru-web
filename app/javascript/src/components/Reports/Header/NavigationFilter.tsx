@@ -8,18 +8,44 @@ import { useEntry } from "../context/EntryContext";
 import { customDateFilter } from "../revenueByClient/Filters/filterOptions";
 
 const NavigationFilter = () => {
-  const { revenueByClientReport, currentReport, timeEntryReport, outstandingOverdueInvoice } = useEntry();
+  const {
+    revenueByClientReport,
+    currentReport,
+    timeEntryReport,
+    outstandingOverdueInvoice,
+  } = useEntry();
 
-  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport, outstandingOverdueInvoice });
+  const selectedReport = getReports({
+    currentReport,
+    timeEntryReport,
+    revenueByClientReport,
+    outstandingOverdueInvoice,
+  });
 
   const filterHtml = (value, key, filterKey) => (
-    <li key={key} className="flex px-2 mr-4 py-1 rounded-xl tracking-widest font-semibold px-1 text-xs tracking-widest bg-miru-gray-400 text-miru-dark-purple-1000">
-      <span>{filterKey === "groupBy" && "Group By:"} {value}</span>
-      <button onClick={() => selectedReport.handleRemoveSingleFilter(filterKey, value)} className="inline-block ml-1">
-        <XIcon size={11} color="#1D1A31" className="inline-block" weight="bold" />
+    <li
+      className="mr-4 flex rounded-xl bg-miru-gray-400 px-2 py-1 px-1 text-xs font-semibold tracking-widest tracking-widest text-miru-dark-purple-1000"
+      key={key}
+    >
+      <span>
+        {filterKey === "groupBy" && "Group By:"} {value}
+      </span>
+      <button
+        className="ml-1 inline-block"
+        onClick={() =>
+          selectedReport.handleRemoveSingleFilter(filterKey, value)
+        }
+      >
+        <XIcon
+          className="inline-block"
+          color="#1D1A31"
+          size={11}
+          weight="bold"
+        />
       </button>
     </li>
   );
+
   const getFilterValues = () => {
     let filterOptions = [];
     for (const filterKey in selectedReport.selectedFilter) {
@@ -27,19 +53,23 @@ const NavigationFilter = () => {
       if (filterKey === customDateFilter) {
         continue;
       } else if (Array.isArray(filterValue)) {
-        filterOptions = [...filterOptions, filterValue.map((item, index) => filterHtml(item.label, `${item}-${index}`, filterKey))];
-      }
-      else if (filterValue.value !== "") {
-        filterOptions = [...filterOptions, filterHtml(filterValue.label, filterKey, filterKey)];
+        filterOptions = [
+          ...filterOptions,
+          filterValue.map((item, index) =>
+            filterHtml(item.label, `${item}-${index}`, filterKey)
+          ),
+        ];
+      } else if (filterValue.value !== "") {
+        filterOptions = [
+          ...filterOptions,
+          filterHtml(filterValue.label, filterKey, filterKey),
+        ];
       }
     }
+
     return filterOptions;
   };
 
-  return (
-    <Fragment>
-      {getFilterValues()}
-    </Fragment>
-  );
+  return <Fragment>{getFilterValues()}</Fragment>;
 };
 export default NavigationFilter;

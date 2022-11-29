@@ -1,22 +1,28 @@
-/* eslint-disable import/order  */
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useRef } from "react";
-import DatePicker from "react-datepicker";
+
 import { getMonth, getYear } from "date-fns";
 import dayjs from "dayjs";
+import {
+  CaretCircleLeftIcon,
+  CaretCircleRightIcon,
+  LeftArrowIcon,
+} from "miruIcons";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { CaretCircleLeftIcon, CaretCircleRightIcon, LeftArrowIcon } from "miruIcons"; //eslint-disable-line
 
 const CustomDateRangePicker = ({
   hideCustomFilter,
   handleSelectDate,
   onClickInput,
   selectedInput,
-  dateRange
+  dateRange,
 }) => {
   const fromInput = "from-input";
   const toInput = "to-input";
 
-  const range = (start, end) => Array.from({ length: (end - start) }, (v, k) => k + start);
+  const range = (start, end) =>
+    Array.from({ length: end - start }, (v, k) => k + start);
 
   const years = range(1990, getYear(new Date()) + 1);
   const months = [
@@ -31,7 +37,7 @@ const CustomDateRangePicker = ({
     "Sep",
     "Oct",
     "Nov",
-    "Dec"
+    "Dec",
   ];
 
   const textInput = useRef(null);
@@ -41,11 +47,19 @@ const CustomDateRangePicker = ({
 
   return (
     <DatePicker
-      wrapperClassName="datePicker absolute"
       inline
       calendarClassName="miru-calendar-date-range"
-      minDate={(selectedInput === toInput && dateRange.from) ? new Date(dateRange.from) : null}
-      maxDate={(selectedInput === fromInput && dateRange.to) ? new Date(dateRange.to) : null}
+      wrapperClassName="datePicker absolute"
+      maxDate={
+        selectedInput === fromInput && dateRange.to
+          ? new Date(dateRange.to)
+          : null
+      }
+      minDate={
+        selectedInput === toInput && dateRange.from
+          ? new Date(dateRange.from)
+          : null
+      }
       renderCustomHeader={({
         date,
         changeYear,
@@ -53,40 +67,50 @@ const CustomDateRangePicker = ({
         decreaseMonth,
         increaseMonth,
         prevMonthButtonDisabled,
-        nextMonthButtonDisabled
+        nextMonthButtonDisabled,
       }) => (
         <div className="bg-miru-white-1000 ">
-          <div className="flex justify-start mt-2">
+          <div className="mt-2 flex justify-start">
             <button onClick={hideCustomFilter}>
               <LeftArrowIcon color="#5b34ea" size={10} />
             </button>
-            <p className="text-sm	font-medium ml-2"> Custom Date Range </p>
+            <p className="ml-2	text-sm font-medium"> Custom Date Range </p>
           </div>
-          <div className="flex flex-row mt-4">
+          <div className="mt-4 flex flex-row">
             <input
-              type={"text"}
-              placeholder={" From "}
-              value={dateRange.from ? dayjs(dateRange.from).format("DD MMM YYYY") : null}
-              ref={textInput}
-              className={`bg-miru-gray-100 h-8 w-32 mr-1 rounded p-1 ${selectedInput === fromInput && "border-2 border-miru-han-purple-1000"}`}
-              onClick={onClickInput}
               id={fromInput}
               name={fromInput}
+              placeholder=" From "
+              ref={textInput}
+              type="text"
+              className={`mr-1 h-8 w-32 rounded bg-miru-gray-100 p-1 ${
+                selectedInput === fromInput &&
+                "border-2 border-miru-han-purple-1000"
+              }`}
+              value={
+                dateRange.from
+                  ? dayjs(dateRange.from).format("DD MMM YYYY")
+                  : null
+              }
+              onClick={onClickInput}
             />
             <input
-              type={"text"}
-              placeholder={" To "}
-              value={dateRange.to ? dayjs(dateRange.to).format("DD MMM YYYY") : null}
-              className={`bg-miru-gray-100 h-8 w-32 ml-1 rounded p-1 ${selectedInput === toInput && "border-2 border-miru-han-purple-1000"}`}
-              onClick={onClickInput}
               id={toInput}
               name={toInput}
+              placeholder=" To "
+              type="text"
+              className={`ml-1 h-8 w-32 rounded bg-miru-gray-100 p-1 ${
+                selectedInput === toInput &&
+                "border-2 border-miru-han-purple-1000"
+              }`}
+              value={
+                dateRange.to ? dayjs(dateRange.to).format("DD MMM YYYY") : null
+              }
+              onClick={onClickInput}
             />
           </div>
-          <div
-            className="headerWrapper mt-4"
-          >
-            <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
+          <div className="headerWrapper mt-4">
+            <button disabled={prevMonthButtonDisabled} onClick={decreaseMonth}>
               <CaretCircleLeftIcon color="#5b34ea" size={16} />
             </button>
             <div>
@@ -96,7 +120,7 @@ const CustomDateRangePicker = ({
                   changeMonth(months.indexOf(value))
                 }
               >
-                {months.map((option) => (
+                {months.map(option => (
                   <option key={option} value={option}>
                     {option}
                   </option>
@@ -106,14 +130,14 @@ const CustomDateRangePicker = ({
                 value={getYear(date)}
                 onChange={({ target: { value } }) => changeYear(value)}
               >
-                {years.map((option) => (
+                {years.map(option => (
                   <option key={option} value={option}>
                     {option}
                   </option>
                 ))}
               </select>
             </div>
-            <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
+            <button disabled={nextMonthButtonDisabled} onClick={increaseMonth}>
               <CaretCircleRightIcon color="#5b34ea" size={16} />
             </button>
           </div>

@@ -10,18 +10,22 @@ const month = [
   "Sep",
   "Oct",
   "Nov",
-  "Dec"
+  "Dec",
 ];
 
-const getDayWithSuffix = (day) => {
+const getDayWithSuffix = day => {
   switch (day) {
-    case 1: case 21: case 31: {
+    case 1:
+    case 21:
+    case 31: {
       return `${day}st`;
     }
-    case 2: case 22: {
+    case 2:
+    case 22: {
       return `${day}nd`;
     }
-    case 3: case 23: {
+    case 3:
+    case 23: {
       return `${day}rd`;
     }
     default: {
@@ -34,27 +38,23 @@ const quarters = {
   1: {
     months: ["Jan", "Feb", "Mar"],
     startDay: "1st Jan",
-    endDay: "31st Mar"
+    endDay: "31st Mar",
   },
   2: {
     months: ["Apr", "May", "Jun"],
     startDay: "1st Apr",
-    endDay: "30th Jun"
+    endDay: "30th Jun",
   },
   3: {
     months: ["Jul", "Aug", "Sep"],
     startDay: "1st Jul",
-    endDay: "30th Sep"
+    endDay: "30th Sep",
   },
   4: {
     months: ["Oct", "Nov", "Dec"],
     startDay: "1st Jul",
-    endDay: "30th Sep"
-  }
+    endDay: "30th Sep",
+  },
 };
 
-export {
-  month,
-  getDayWithSuffix,
-  quarters
-};
+export { month, getDayWithSuffix, quarters };
