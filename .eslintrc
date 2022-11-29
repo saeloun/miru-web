@@ -85,8 +85,6 @@
     "no-undef": "error",
     // not-auto-fixable: Dont use console statements. Use logger which babel will remove during bundling.
     "no-console": "error",
-    // not-auto-fixable: require `return` statements to either always or never specify values.
-    "consistent-return": "error",
     // auto-fixable: sadly this doesn't support guard clauses yet.
     "padding-line-between-statements": [
       "error",
@@ -132,7 +130,7 @@
     // auto-fixable: If a variable is never reassigned, using the const declaration is better.
     "prefer-const": "error",
     // auto-fixable: It is considered good practice to use the type-safe equality operators === and !==.
-    "eqeqeq": "error",
+    // "eqeqeq": "error",
     // not-auto-fixable: Rule flags optional chaining expressions in positions where short-circuiting to undefined causes throwing a TypeError afterward.
     "no-unsafe-optional-chaining": "error",
     // auto-fixable: Remove all unused imports.
