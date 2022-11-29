@@ -115,7 +115,9 @@ class Client < ApplicationRecord
 
   def outstanding_and_overdue_invoices
     outstanding_overdue_statuses = ["overdue", "sent", "viewed"]
-    filtered_invoices = invoices.select { |invoice| outstanding_overdue_statuses.include?(invoice.status) }
+    filtered_invoices = invoices
+      .order(updated_at: :desc)
+      .select { |invoice| outstanding_overdue_statuses.include?(invoice.status) }
     status_and_amount = invoices.group(:status).sum(:amount)
     status_and_amount.default = 0
 
