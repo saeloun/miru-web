@@ -10,18 +10,14 @@ module Reports::AccountsAging
 
     def process
       {
-        clients: process_clients,
-        total_amount_overdue_by_date_range: amount_overdue_by_date_range(invoice_overdue)
+        clients: fetch_client_details,
+        total_amount_overdue_by_date_range: amount_overdue_by_date_range(overdue_invoices_for_all_clients)
       }
     end
 
     private
 
-      def clients
-        @_clients ||= current_company.clients.order(name: :asc).uniq
-      end
-
-      def process_clients
+      def fetch_client_details
         clients.map do |client|
           {
             id: client.id,
@@ -31,13 +27,13 @@ module Reports::AccountsAging
         end
       end
 
-      def invoice_overdue
+      def overdue_invoices_for_all_clients
         Invoice.overdue.for_clients(clients)
       end
 
       def amount_overdue_by_date_range(invoices)
         {
-          zero_to_thirty_days: total_amount_due_during(invoices, ((1.month.ago)...(Date.today + 1.day))),
+          zero_to_thirty_days: total_amount_due_during(invoices, ((1.month.ago)...(1.day.from_now))),
           thirty_one_to_sixty_days: total_amount_due_during(invoices, ((2.month.ago)...1.month.ago)),
           sixty_one_to_ninety_days: total_amount_due_during(invoices, ((3.month.ago)...2.month.ago)),
           ninety_plus_days: total_amount_due_during(invoices, (10.year.ago...3.month.ago)),
@@ -47,6 +43,10 @@ module Reports::AccountsAging
 
       def total_amount_due_during (invoices, duration)
         invoices.during(duration).pluck(:amount_due).sum
+      end
+
+      def clients
+        @_clients ||= current_company.clients.order(name: :asc).uniq
       end
   end
 end
