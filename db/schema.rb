@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -23,8 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_25_114927) do
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness",
-      unique: true
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
@@ -57,8 +54,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_25_114927) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "state", null: false
-    t.index ["addressable_type", "addressable_id", "address_type"],
-      name: "index_addresses_on_addressable_and_address_type", unique: true
+    t.index ["addressable_type", "addressable_id", "address_type"], name: "index_addresses_on_addressable_and_address_type", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
 
@@ -332,25 +328,4 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_25_114927) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "clients", "companies"
   add_foreign_key "devices", "companies"
-  add_foreign_key "devices", "users"
-  add_foreign_key "employments", "companies"
-  add_foreign_key "employments", "users"
-  add_foreign_key "identities", "users"
-  add_foreign_key "invitations", "companies"
-  add_foreign_key "invitations", "users", column: "sender_id"
-  add_foreign_key "invoice_line_items", "invoices"
-  add_foreign_key "invoice_line_items", "timesheet_entries"
-  add_foreign_key "invoices", "clients"
-  add_foreign_key "payments", "invoices"
-  add_foreign_key "payments_providers", "companies"
-  add_foreign_key "previous_employments", "users"
-  add_foreign_key "project_members", "projects"
-  add_foreign_key "project_members", "users"
-  add_foreign_key "projects", "clients"
-  add_foreign_key "stripe_connected_accounts", "companies"
-  add_foreign_key "timesheet_entries", "projects"
-  add_foreign_key "timesheet_entries", "users"
-  add_foreign_key "users", "companies", column: "current_workspace_id"
-  add_foreign_key "wise_accounts", "companies"
-  add_foreign_key "wise_accounts", "users"
 end
