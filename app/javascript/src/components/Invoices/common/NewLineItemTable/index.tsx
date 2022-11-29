@@ -6,19 +6,14 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 import NewLineItemTableHeader from "./Header";
 
-import { getMaxIdx } from "../utils";
-
 const NewLineItemTable = ({
-  setShowItemInputs,
-  addNew, setAddNew,
+  setAddNew,
   lineItems, setLineItems,
   loadMoreItems,
   totalLineItems,
   pageNumber, setPageNumber,
   selectedLineItems, setSelectedLineItems,
-  manualEntryArr, setManualEntryArr,
-  setMultiLineItemModal,
-  setAddManualLineItem
+  setMultiLineItemModal
 }) => {
   const hasMoreItems = lineItems.length != totalLineItems;
 
@@ -29,17 +24,9 @@ const NewLineItemTable = ({
     setLineItems([]);
     setPageNumber(1);
   };
-
-  const addManualEntryItem = () => {
-    setShowItemInputs(true);
-    setAddNew(!addNew);
-    setAddManualLineItem(true);
-    setManualEntryArr([...manualEntryArr, { idx: getMaxIdx(manualEntryArr) + 1 }]);
-  };
-
   return (
     <div>
-      <NewLineItemTableHeader setShowMultilineModal={setMultiLineItemModal} addManualEntryItem={addManualEntryItem} />
+      <NewLineItemTableHeader setShowMultilineModal={setMultiLineItemModal}/>
       <div className="overflow-scroll mt-4 relative">
         <InfiniteScroll
           dataLength={pageNumber * 10}

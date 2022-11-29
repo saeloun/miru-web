@@ -32,8 +32,8 @@ const Header = ({
   return (
     <Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <div className="sm:flex mt-6 mb-3 sm:items-center sm:justify-between">
-        <div className="flex">
+      <div className="md:flex mt-6 mb-3 items-center justify-between">
+        <div className="flex md:my-0 my-2">
           <h2 className="header__title font-bold">{formType == "edit" ?  `Edit Invoice #${invoiceNumber}`: "Generate Invoice"}</h2>
 
           {formType == "generate" &&
@@ -46,18 +46,18 @@ const Header = ({
           </button>
           }
         </div>
-        <div className="flex w-2/5">
+        <div className="flex flex-col md:flex-row md:w-2/5">
           <Link
             to={formType == "edit" ? `/invoices/${id}`: "/invoices"}
             type="button"
-            className="header__button w-1/3 p-0"
+            className="header__button md:w-1/3 p-0 md:my-0 my-1"
           >
             <XIcon size={12} />
             <span className="ml-2 inline-block">CANCEL</span>
           </Link>
           <button
             type="button"
-            className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
+            className="header__button bg-miru-han-purple-1000 text-white md:w-1/3 md:my-0 my-1 p-0 hover:text-white"
             onClick={handleSaveInvoice}
             data-cy='save-invoice'
           >
@@ -67,7 +67,7 @@ const Header = ({
           <button
             type="button"
             onClick={handleSendInvoice}
-            className="header__button bg-miru-han-purple-1000 text-white w-1/3 p-0 hover:text-white"
+            className="header__button bg-miru-han-purple-1000 text-white md:w-1/3 md:my-0 my-1 p-0 hover:text-white"
           >
             <PaperPlaneTiltIcon size={18} color="White" />
             <span className="ml-2 inline-block" data-cy="send-invoice">SEND TO</span>

@@ -45,7 +45,7 @@ const InvoiceDetails = ({
   };
 
   return (
-    <div className="flex justify-between border-b-2 border-miru-gray-400 px-10 py-5 h-36">
+    <div className="flex flex-col md:flex-row justify-between border-b-2 border-miru-gray-400 md:px-10 px-5 py-5 md:h-36">
       <ClientSelection
         selectedClient={selectedClient}
         setSelectedClient={setSelectedClient}
@@ -102,11 +102,11 @@ const InvoiceDetails = ({
       </div>
 
       <div>
-        <p className="font-normal text-xs text-miru-dark-purple-1000 text-right">
+        <p className="font-normal text-xs text-miru-dark-purple-1000 md:text-right text-left">
           Amount
         </p>
         <p className="font-normal text-4xl text-miru-dark-purple-1000 mt-6">
-          {currencyFormat({ baseCurrency: currency, amount: amount })}
+          {amount ? currencyFormat({ baseCurrency: currency, amount: amount }) : "-"}
         </p>
       </div>
     </div>

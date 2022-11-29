@@ -20,11 +20,12 @@ const InvoiceTable = ({
   setManualEntryArr
 }) => {
   const [addNew, setAddNew] = useState<boolean>(false);
-  const [showItemInputs, setShowItemInputs] = useState<boolean>(false);
+  const [showNewLineItemTable, setNewLineItemTable] = useState<boolean>(false);
   const [totalLineItems, setTotalLineItems] = useState<number>(null);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [showMultiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
   const [addManualLineItem, setAddManualLineItem] = useState<boolean>(false);
+  const [isEdit, setEdit] = useState<boolean>(false);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
@@ -47,17 +48,20 @@ const InvoiceTable = ({
     );
   };
 
+  const addManualEntryItem = () => {
+    setAddNew(!addNew);
+    setAddManualLineItem(true);
+  };
+
   useOutsideClick(wrapperRef, () => {
+    setNewLineItemTable(false);
     setAddNew(false);
-    setPageNumber(1);
-    setLineItems([]);
+    setEdit(false);
   }, addNew);
 
   const getNewLineItemDropdown = () => {
-    if (selectedClient && lineItems) {
+    if (selectedClient && lineItems && showNewLineItemTable) {
       return <NewLineItemTable
-        setShowItemInputs={setShowItemInputs}
-        addNew={addNew}
         setAddNew={setAddNew}
         lineItems={lineItems}
         setLineItems={setLineItems}
@@ -67,53 +71,64 @@ const InvoiceTable = ({
         setPageNumber={setPageNumber}
         selectedLineItems={selectedLineItems}
         setSelectedLineItems={setSelectedLineItems}
-        manualEntryArr={manualEntryArr}
-        setManualEntryArr={setManualEntryArr}
         setMultiLineItemModal={setMultiLineItemModal}
-        setAddManualLineItem={setAddManualLineItem}
       />;
     }
     return (
-      <div className="h-48 flex items-center justify-center">Please select Client to add line item.</div>
+      <div className="sm:h-48 h-10 flex items-center justify-center">Please select Client to add line item.</div>
     );
   };
 
   const getAddNewButton = () => {
-    if (addNew) {
-      return <div ref={wrapperRef} className="box-shadow rounded absolute m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white top-0 w-full">
-        {getNewLineItemDropdown()}
-      </div>;
-    } else {
-      return <button
-        className=" py-1 tracking-widest w-full bg-white font-bold text-base text-center text-miru-dark-purple-200 rounded-md border-2 border-miru-dark-purple-200 border-dashed"
-        onClick={() => {
-          setAddNew(!addNew);
-        }}
-        data-cy="new-line-item"
-      >
+    if (!addNew) {
+      return <tr className="w-full">
+        <td colSpan={6} className="py-4 pr-10 relative">
+          <button
+            className="py-1 pr-10 tracking-widest w-full bg-white font-bold text-base text-center text-miru-dark-purple-200 rounded-md border-2 border-miru-dark-purple-200 border-dashed"
+            onClick={addManualEntryItem}
+            data-cy="new-line-item"
+          >
         + NEW LINE ITEM
-      </button>;
+          </button>
+        </td>
+      </tr>;
     }
   };
 
   return (
     <Fragment>
-      <table className="w-full table-fixed">
+      <table className="w-128 sm:w-full table-fixed bg-miru-han-1000">
         <LineItemTableHeader />
-        <tbody className="w-full">
-          <tr className="w-full">
-            <td colSpan={6} className="py-4 relative">
-              {getAddNewButton()}
-            </td>
-          </tr>
+        <tbody className="w-full" ref={wrapperRef}>
+          {getAddNewButton()}
           {
-            showItemInputs
-            && (manualEntryArr.map((entry, index) =>
+            addNew
+            &&
               <ManualEntry
-                key={index}
-                entry={entry}
                 manualEntryArr={manualEntryArr}
                 setManualEntryArr={setManualEntryArr}
+                setNewLineItemTable={setNewLineItemTable}
+                getNewLineItemDropdown={getNewLineItemDropdown}
+                addNew={addNew}
+                setAddNew={setAddNew}
+                showNewLineItemTable={showNewLineItemTable}
+                lineItems={lineItems}
+                setLineItems={setLineItems}
+              />
+
+          }
+          {
+            manualEntryArr[0]?.name
+            && manualEntryArr.map((item, index) => (
+              !item._destroy &&
+              <NewLineItemRow
+                key={index}
+                currency={currency}
+                item={item}
+                selectedOption={manualEntryArr}
+                setSelectedOption={setManualEntryArr}
+                isEdit={isEdit}
+                setEdit={setEdit}
               />
             ))
           }
@@ -127,6 +142,8 @@ const InvoiceTable = ({
                 item={item}
                 selectedOption={selectedLineItems}
                 setSelectedOption={setSelectedLineItems}
+                isEdit={isEdit}
+                setEdit={setEdit}
               />
             ))
           }

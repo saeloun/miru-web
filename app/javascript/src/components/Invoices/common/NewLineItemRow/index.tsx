@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import EditLineItems from "./EditLineItems";
 import NewLineItemStatic from "./NewLineItemStatic";
@@ -8,9 +8,10 @@ const NewLineItemRow = ({
   item,
   setSelectedOption,
   selectedOption,
-  removeElement = false
+  removeElement = false,
+  isEdit,
+  setEdit
 }) => {
-  const [isEdit, setEdit] = useState<boolean>(false);
 
   const handleDelete = (item) => {
     const deleteItem = {

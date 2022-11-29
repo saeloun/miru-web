@@ -22,7 +22,7 @@ const Container = ({
   selectedOption, setSelectedOption,
   manualEntryArr, setManualEntryArr
 }) => (
-  <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
+  <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full relative">
     <CompanyInfo company={invoiceDetails.companyDetails} />
     <InvoiceDetails
       currency={invoiceDetails.companyDetails.currency}
@@ -41,7 +41,7 @@ const Container = ({
       optionSelected={false}
       clientVisible={false}
     />
-    <div className="pl-10 py-5">
+    <div className="md:pl-10 py-5 overflow-x-auto md:overflow-x-visible block whitespace-nowrap md:whitespace-normal">
       <InvoiceTable
         currency={invoiceDetails.companyDetails.currency}
         selectedClient={selectedClient}
