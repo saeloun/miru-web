@@ -17,7 +17,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       invoices:,
       recently_updated_invoices:,
       pagy: pagy_metadata(pagy),
-      summary: calc_overdue_and_outstanding_and_draft_amount(invoices_query)
+      summary: current_company.overdue_and_outstanding_and_draft_amount
     }
   end
 
