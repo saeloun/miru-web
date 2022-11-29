@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
-import { ApiStatus as PaymentSettingsStatus } from "constants/index";
-
 import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader/index";
+import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "../../Header";
@@ -25,13 +24,14 @@ const PaymentSettings = () => {
     const res = await paymentSettings.connectStripe();
     setAccountLink(res.data.accountLink);
   };
+
   const fetchPaymentSettings = async () => {
     try {
       setStatus(PaymentSettingsStatus.LOADING);
       const res = await paymentSettings.get();
       setIsStripeConnected(res.data.providers.stripe.connected);
       setStatus(PaymentSettingsStatus.SUCCESS);
-    } catch (err) {
+    } catch {
       setStatus(PaymentSettingsStatus.ERROR);
     }
   };
@@ -49,38 +49,42 @@ const PaymentSettings = () => {
   }, [isStripeConnected]);
 
   return (
-    <React.Fragment>
-      <div className="flex flex-col w-4/5">
-        <Header
-          title={"Payment Settings"}
-          subTitle={"Connect payment gateways"}
-          showButtons={false}
-        />
-        {(status === PaymentSettingsStatus.LOADING) ? <Loader /> : (status === PaymentSettingsStatus.SUCCESS) && (
+    <div className="flex w-4/5 flex-col">
+      <Header
+        showButtons={false}
+        subTitle="Connect payment gateways"
+        title="Payment Settings"
+      />
+      {status === PaymentSettingsStatus.LOADING ? (
+        <Loader />
+      ) : (
+        status === PaymentSettingsStatus.SUCCESS && (
           <div className="flex">
             <div className="flex flex-col">
-              <div className="py-10 px-20 mt-4 bg-miru-gray-100 h-screen">
-                <div className="h-36 p-5 bg-white flex flex-row items-center">
-                  <div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
+              <div className="mt-4 h-screen bg-miru-gray-100 py-10 px-20">
+                <div className="flex h-36 flex-row items-center bg-white p-5">
+                  <div className="w-fit border-r-2 border-miru-gray-200 pr-12">
                     <img src={Stripe_Logo} />
                   </div>
-                  <span className="px-4 font-normal text-sm text-miru-dark-purple-1000 leading-5 w-2/5">
-                    {isStripeConnected ? "Your stripe account is now connected and ready to accept online payments" : "Connect with your existing stripe account or create a new account"}
+                  <span className="w-2/5 px-4 text-sm font-normal leading-5 text-miru-dark-purple-1000">
+                    {isStripeConnected
+                      ? "Your stripe account is now connected and ready to accept online payments"
+                      : "Connect with your existing stripe account or create a new account"}
                   </span>
-                  {
-                    isStripeConnected ?
-                      <div className="flex flex-row">
-                        <div className="logo-container mr-1">
-                          <img src={connectedCheck} />
-                        </div>
-                        <p className="ml-1 text-miru-alert-green-800 font-extrabold text-base">Connected</p>
-                      </div> :
-                      <button
-                        onClick={connectStripe}
-                      >
-                        <img src={Connect} className="pr-5" />
-                      </button>
-                  }
+                  {isStripeConnected ? (
+                    <div className="flex flex-row">
+                      <div className="logo-container mr-1">
+                        <img src={connectedCheck} />
+                      </div>
+                      <p className="ml-1 text-base font-extrabold text-miru-alert-green-800">
+                        Connected
+                      </p>
+                    </div>
+                  ) : (
+                    <button onClick={connectStripe}>
+                      <img className="pr-5" src={Connect} />
+                    </button>
+                  )}
                 </div>
                 {/* <div className="h-36 p-5 mt-6 bg-white flex justify-between items-center">
                   <div className="pr-12 border-r-2 border-miru-gray-200 w-fit">
@@ -96,9 +100,9 @@ const PaymentSettings = () => {
               </div>
             </div>
           </div>
-        )}
-      </div>
-    </React.Fragment>
+        )
+      )}
+    </div>
   );
 };
 

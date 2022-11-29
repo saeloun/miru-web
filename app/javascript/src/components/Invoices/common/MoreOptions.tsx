@@ -2,20 +2,22 @@ import React from "react";
 
 import { Trash, DownloadSimple } from "phosphor-react";
 
-const MoreOptions = ({ deleteInvoice, downloadInvoice, invoice=null }) => (
-  <ul className="py-2 absolute right-20 bg-white border-2 rounded border-miru-gray-200 drop-shadow">
-    {downloadInvoice != null && invoice.status != "draft" && <li
-      onClick={downloadInvoice}
-      className="flex items-center py-2.5 px-4 cursor-pointer text-miru-han-purple-1000 hover:bg-miru-gray-100"
-    >
-      <DownloadSimple size={16} className="mr-4" />
-      Download
-    </li>}
+const MoreOptions = ({ deleteInvoice, downloadInvoice, invoice = null }) => (
+  <ul className="absolute right-20 rounded border-2 border-miru-gray-200 bg-white py-2 drop-shadow">
+    {downloadInvoice != null && invoice.status != "draft" && (
+      <li
+        className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+        onClick={downloadInvoice}
+      >
+        <DownloadSimple className="mr-4" size={16} />
+        Download
+      </li>
+    )}
     <li
+      className="flex cursor-pointer items-center py-2.5 px-4 text-miru-red-400 hover:bg-miru-gray-100"
       onClick={deleteInvoice}
-      className="flex items-center py-2.5 px-4 cursor-pointer text-miru-red-400 hover:bg-miru-gray-100"
     >
-      <Trash size={16} className="mr-4" />
+      <Trash className="mr-4" size={16} />
       Delete
     </li>
   </ul>

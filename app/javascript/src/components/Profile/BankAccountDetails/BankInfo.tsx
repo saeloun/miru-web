@@ -1,16 +1,21 @@
 import React, { useEffect } from "react";
 
+import Logger from "js-logger";
+
 import wiseApi from "apis/wise";
 
 const BankInfo = ({
   recipientId,
-  sourceCurrency, targetCurrency,
+  sourceCurrency,
+  targetCurrency,
   fetchAccountRequirements,
-  setBankDetailsModal, setIsLoading,
-  setFirstName, setLastName,
-  setRecipientDetails, setIsUpdate
+  setBankDetailsModal,
+  setIsLoading,
+  setFirstName,
+  setLastName,
+  setRecipientDetails,
+  setIsUpdate,
 }) => {
-
   useEffect(() => {
     fetchRecipientDetails(recipientId);
   }, []);
@@ -19,7 +24,7 @@ const BankInfo = ({
     fetchAccountRequirements(sourceCurrency, targetCurrency, true);
   }, []);
 
-  const fetchRecipientDetails = async (recipientId) => {
+  const fetchRecipientDetails = async recipientId => {
     try {
       setIsLoading(true);
       const response = await wiseApi.fetchRecipient(recipientId);
@@ -29,19 +34,17 @@ const BankInfo = ({
       setLastName(name.join(" "));
       setIsUpdate(true);
     } catch (error) {
-      console.error(error);
+      Logger.error(error);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="mx-2 w-5/8 h-12 px-8 py-3.5 bg-gray-200 flex justify-center">
-      <p>
-        You have already submitted your bank details.
-      </p>
+    <div className="w-5/8 mx-2 flex h-12 justify-center bg-gray-200 px-8 py-3.5">
+      <p>You have already submitted your bank details.</p>
       <button
-        className="bg-transparent text-miru-han-purple-1000 font-semibold underline mx-1"
+        className="mx-1 bg-transparent font-semibold text-miru-han-purple-1000 underline"
         onClick={() => setBankDetailsModal(true)}
       >
         View or update bank details

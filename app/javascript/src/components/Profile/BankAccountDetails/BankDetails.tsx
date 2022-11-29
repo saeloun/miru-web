@@ -13,14 +13,22 @@ const Shield = require("../../../../../assets/images/shield.svg");
 
 const BankDetails = ({
   bankRequirements,
-  firstName, setFirstName,
-  lastName, setLastName,
-  recipientDetails, setRecipientDetails,
-  validRecipientDetails, setValidRecipientDetails,
-  setBankDetailsModal, submitBankDetails
+  firstName,
+  setFirstName,
+  lastName,
+  setLastName,
+  recipientDetails,
+  setRecipientDetails,
+  validRecipientDetails,
+  setValidRecipientDetails,
+  setBankDetailsModal,
+  submitBankDetails,
 }) => {
   useEffect(() => {
-    setRecipientDetails({ ...recipientDetails, type: bankRequirements[0]["type"] });
+    setRecipientDetails({
+      ...recipientDetails,
+      type: bankRequirements[0]["type"],
+    });
   }, []);
 
   const updateDetails = (isValid, key, value) => {
@@ -43,23 +51,23 @@ const BankDetails = ({
     setValidRecipientDetails(valid);
   };
 
-  const handleBankDetails = (key, value, fieldDetails) => {
+  const handleBankDetails = async (key, value, fieldDetails) => {
     const validationAsync = fieldDetails["validationAsync"];
 
     if (validationAsync) {
-      const url = `${validationAsync.url}?${validationAsync.params[0]["key"]}=${value}`;
-      wiseApi.validateAccountDetail(url)
-      /* eslint-disable @typescript-eslint/no-unused-vars */
-        .then(_response => {
-          updateDetails(true, key, value);
-        })
-        .catch(error => {
-          if (error.response.status == 400) {
-            updateDetails(false, key, value);
-          }
-        });
+      try {
+        const url = `${validationAsync.url}?${validationAsync.params[0]["key"]}=${value}`;
+        await wiseApi.validateAccountDetail(url);
+        updateDetails(true, key, value);
+      } catch (error) {
+        if (error.response.status == 400) {
+          updateDetails(false, key, value);
+        }
+      }
     } else if (fieldDetails["validationRegexp"]) {
-      value.match(new RegExp(fieldDetails["validationRegexp"])) ? updateDetails(true, key, value) : updateDetails(false, key, value);
+      value.match(new RegExp(fieldDetails["validationRegexp"]))
+        ? updateDetails(true, key, value)
+        : updateDetails(false, key, value);
     } else {
       updateDetails(true, key, value);
     }
@@ -67,86 +75,88 @@ const BankDetails = ({
 
   const handleAddressDetails = (key, value, fieldDetails) => {
     if (fieldDetails["validationRegexp"]) {
-      value.match(new RegExp(fieldDetails["validationRegexp"])) ? updateAddressDetails(true, key, value) : updateAddressDetails(false, key, value);
+      value.match(new RegExp(fieldDetails["validationRegexp"]))
+        ? updateAddressDetails(true, key, value)
+        : updateAddressDetails(false, key, value);
     } else {
       updateAddressDetails(true, key, value);
     }
   };
 
-  const isFormValid = Object.values(validRecipientDetails["details"]).every(value => value) &&
-    Object.values(validRecipientDetails["details"]["address"]).every(value => value) && !isEmpty(firstName) && !isEmpty(lastName);
+  const isFormValid =
+    Object.values(validRecipientDetails["details"]).every(value => value) &&
+    Object.values(validRecipientDetails["details"]["address"]).every(
+      value => value
+    ) &&
+    !isEmpty(firstName) &&
+    !isEmpty(lastName);
 
   return (
     <>
-      <div
-        className="justify-center items-center flex overflow-XIcon-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-      >
-        <div className="relative w-auto my-6 mx-auto max-w-sm">
+      <div className="overflow-XIcon-hidden outline-none focus:outline-none fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+        <div className="relative my-6 mx-auto w-auto max-w-sm">
           {/*content*/}
-          <div className="rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+          <div className="outline-none focus:outline-none relative flex w-full flex-col rounded-lg bg-white shadow-lg">
             {/*header*/}
-            <div className="flex items-start justify-between p-5 pb-2 rounded-t">
-              <h3 className="text-sm font-semibold">
-                Enter Bank Details
-              </h3>
+            <div className="flex items-start justify-between rounded-t p-5 pb-2">
+              <h3 className="text-sm font-semibold">Enter Bank Details</h3>
               <button
-                className="p-1 ml-auto bg-transparent border-0 text-black opacity-1 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                className="opacity-1 outline-none focus:outline-none float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black"
                 onClick={() => setBankDetailsModal(false)}
               >
                 <XIcon size={12} />
               </button>
             </div>
             {/*Info*/}
-            <div className="mx-5 px-5 py-3 bg-gray-100 text-xs inline-flex">
+            <div className="mx-5 inline-flex bg-gray-100 px-5 py-3 text-xs">
               <img className="h-4 w-4" src={Shield} />
-              <p className="mx-2 text-slate-500">
-                We don't store your bank details on our servers to ensure security of your information
+              <p className="text-slate-500 mx-2">
+                We don't store your bank details on our servers to ensure
+                security of your information
               </p>
             </div>
             {/*body*/}
-            <div className="relative px-5 py-2 flex-auto text-xs">
+            <div className="relative flex-auto px-5 py-2 text-xs">
               <label className="text-xs">Name</label>
-              <div className="inline-flex w-full my-2">
+              <div className="my-2 inline-flex w-full">
                 <input
+                  className="mr-1 w-2/4 rounded-sm bg-gray-100 p-1 text-xs"
                   name="firstName"
-                  value={firstName}
-                  className="rounded-sm mr-1 p-1 bg-gray-100 w-2/4 text-xs"
                   placeholder="First name"
+                  value={firstName}
                   onChange={({ target: { value } }) => setFirstName(value)}
                 />
                 <input
+                  className="ml-1 w-2/4 rounded-sm bg-gray-100 p-1 text-xs"
                   name="lastName"
-                  value={lastName}
-                  className="rounded-sm ml-1 p-1 bg-gray-100 w-2/4 text-xs"
                   placeholder="Last name"
+                  value={lastName}
                   onChange={({ target: { value } }) => setLastName(value)}
                 />
               </div>
-              {
-                bankRequirements[0]["fields"].map(field =>
-                  <BankDetailInput
-                    field={field}
-                    key={field["name"]}
-                    recipientDetails={recipientDetails}
-                    handleBankDetails={handleBankDetails}
-                  />
-                )
-              }
+              {bankRequirements[0]["fields"].map(field => (
+                <BankDetailInput
+                  field={field}
+                  handleBankDetails={handleBankDetails}
+                  key={field["name"]}
+                  recipientDetails={recipientDetails}
+                />
+              ))}
               <AddressDetails
                 fields={bankRequirements[0]["addressFields"]}
-                recipientDetails={recipientDetails}
                 handleAddressDetails={handleAddressDetails}
                 handleBankDetails={handleBankDetails}
+                recipientDetails={recipientDetails}
               />
             </div>
             {/*footer*/}
-            <div className="flex items-center justify-center px-5 rounded-b text-white font-bold text-sm">
+            <div className="flex items-center justify-center rounded-b px-5 text-sm font-bold text-white">
               <button
                 disabled={!isFormValid}
-                className={
-                  `w-full background-transparent uppercase rounded-md px-6 py-2 outline-none mb-3 ease-linear transition-all duration-150 ${isFormValid ? "bg-miru-han-purple-1000" : "bg-gray-200"}`
-                }
                 type="button"
+                className={`background-transparent outline-none mb-3 w-full rounded-md px-6 py-2 uppercase transition-all duration-150 ease-linear ${
+                  isFormValid ? "bg-miru-han-purple-1000" : "bg-gray-200"
+                }`}
                 onClick={() => submitBankDetails()}
               >
                 Submit Bank Details
@@ -155,7 +165,7 @@ const BankDetails = ({
           </div>
         </div>
       </div>
-      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      <div className="fixed inset-0 z-40 bg-black opacity-25" />
     </>
   );
 };

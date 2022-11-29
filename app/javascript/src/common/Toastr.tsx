@@ -2,14 +2,12 @@ import React from "react";
 
 import { toast, Slide } from "react-toastify";
 
-import { GetToasterIcon, getToasterCloseButton } from "../constants/index";
+import { GetToasterIcon, getToasterCloseButton } from "../constants";
 
 const customId = "custom-toaster-id";
 
 const ToastrComponent = ({ message }) => (
-  <div className="text-center">
-    {message}
-  </div>
+  <div className="text-center">{message}</div>
 );
 
 const showToastr = message => {
@@ -19,8 +17,9 @@ const showToastr = message => {
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="success" />,
-    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "success" }),
-    hideProgressBar: true
+    closeButton: ({ closeToast }) =>
+      getToasterCloseButton({ closeToast, type: "success" }),
+    hideProgressBar: true,
   });
 };
 
@@ -34,8 +33,9 @@ const showErrorToastr = error => {
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="error" />,
-    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "error" }),
-    hideProgressBar: true
+    closeButton: ({ closeToast }) =>
+      getToasterCloseButton({ closeToast, type: "error" }),
+    hideProgressBar: true,
   });
 };
 
@@ -46,8 +46,9 @@ const showWarningToastr = warning => {
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="warning" />,
-    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "warning" }),
-    hideProgressBar: true
+    closeButton: ({ closeToast }) =>
+      getToasterCloseButton({ closeToast, type: "warning" }),
+    hideProgressBar: true,
   });
 };
 
@@ -58,8 +59,9 @@ const showInfoToastr = info => {
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="info" />,
-    closeButton: ({ closeToast }) => getToasterCloseButton({ closeToast, type: "info" }),
-    hideProgressBar: true
+    closeButton: ({ closeToast }) =>
+      getToasterCloseButton({ closeToast, type: "info" }),
+    hideProgressBar: true,
   });
 };
 
@@ -67,7 +69,7 @@ export const Toastr = {
   success: showToastr,
   error: showErrorToastr,
   warning: showWarningToastr,
-  info: showInfoToastr
+  info: showInfoToastr,
 };
 
 export default Toastr;

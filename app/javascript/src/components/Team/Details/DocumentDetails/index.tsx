@@ -2,10 +2,10 @@ import React, { Fragment } from "react";
 
 const DocumentDetails = () => (
   <Fragment>
-    <div className="px-10 py-4 bg-miru-han-purple-1000 flex items-center justify-between">
-      <h1 className="text-white font-bold text-2xl">Document Details</h1>
+    <div className="flex items-center justify-between bg-miru-han-purple-1000 px-10 py-4">
+      <h1 className="text-2xl font-bold text-white">Document Details</h1>
     </div>
-    <div className="bg-miru-gray-100 px-10 mt-4 h-full"></div>
+    <div className="mt-4 h-full bg-miru-gray-100 px-10" />
   </Fragment>
 );
 

@@ -8,37 +8,37 @@ const MoreOptions = ({
   setIsMenuOpen,
   setShowDeleteDialog,
   setInvoiceToDelete,
-  invoice
+  invoice,
 }) => {
   useDebounce(isMenuOpen, 500);
 
   return (
     <div
+      className="absolute top-4 right-5 z-10 flex-col items-end group-hover:flex"
       onMouseLeave={() => setIsMenuOpen(false)}
-      className="group-hover:flex flex-col items-end z-10 absolute top-4 right-5"
     >
       <div className="w-12 overflow-hidden">
-        <div className="h-6 w-6 bg-white border-2 border-miru-gray-200 rotate-45 transform origin-bottom-left"></div>
+        <div className="h-6 w-6 origin-bottom-left rotate-45 transform border-2 border-miru-gray-200 bg-white" />
       </div>
-      <ul className="p-4 bg-white border-2 border-t-0 border-miru-gray-200">
-        <li className="flex items-center py-1 cursor-pointer">
-          <PrinterIcon size={16} className="mr-4 text-miru-han-purple-1000" />
+      <ul className="border-2 border-t-0 border-miru-gray-200 bg-white p-4">
+        <li className="flex cursor-pointer items-center py-1">
+          <PrinterIcon className="mr-4 text-miru-han-purple-1000" size={16} />
           Print
         </li>
         <li
+          className="flex cursor-pointer items-center py-1"
           onClick={() => {
             setShowDeleteDialog(true);
             setInvoiceToDelete(invoice.id);
           }}
-          className="flex items-center py-1 cursor-pointer"
         >
-          <DeleteIcon size={16} className="mr-4 text-miru-han-purple-1000" />
+          <DeleteIcon className="mr-4 text-miru-han-purple-1000" size={16} />
           Delete
         </li>
-        <li className="flex items-center py-1 cursor-pointer">
+        <li className="flex cursor-pointer items-center py-1">
           <PaperPlaneTiltIcon
-            size={16}
             className="mr-4 text-miru-han-purple-1000"
+            size={16}
           />
           Send via link
         </li>

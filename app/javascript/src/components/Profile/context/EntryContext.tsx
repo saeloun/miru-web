@@ -1,13 +1,13 @@
 import { createContext, useContext } from "react";
 
-const EntryContext = createContext(({
+const EntryContext = createContext({
   profileSettings: {},
   organizationSettings: {},
   bankAccDetails: {},
   paymentSettings: {},
   billing: {},
-  setUserState: (key, value) => { }  //eslint-disable-line
-}));
+  setUserState: (key, value) => {}, //eslint-disable-line
+});
 
 export const useProfile = () => useContext(EntryContext);
 

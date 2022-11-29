@@ -7,66 +7,77 @@ import InvoiceTotal from "../common/InvoiceTotal";
 
 const Container = ({
   invoiceDetails,
-  lineItems, setLineItems,
-  selectedClient, setSelectedClient,
-  invoiceNumber, setInvoiceNumber,
-  amount, setAmount,
+  lineItems,
+  setLineItems,
+  selectedClient,
+  setSelectedClient,
+  invoiceNumber,
+  setInvoiceNumber,
+  amount,
+  setAmount,
   reference,
   setReference,
-  issueDate, setIssueDate,
-  dueDate, setDueDate,
-  amountDue, setAmountDue,
+  issueDate,
+  setIssueDate,
+  dueDate,
+  setDueDate,
+  amountDue,
+  setAmountDue,
   amountPaid,
-  discount, setDiscount,
-  tax, setTax,
-  selectedOption, setSelectedOption,
-  manualEntryArr, setManualEntryArr
+  discount,
+  setDiscount,
+  tax,
+  setTax,
+  selectedOption,
+  setSelectedOption,
+  manualEntryArr,
+  setManualEntryArr,
 }) => (
-  <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
+  <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
     <CompanyInfo company={invoiceDetails.companyDetails} />
     <InvoiceDetails
-      currency={invoiceDetails.companyDetails.currency}
-      clientList={invoiceDetails.clientList}
       amount={amount}
-      selectedClient={selectedClient}
-      setSelectedClient={setSelectedClient}
-      issueDate={issueDate}
-      setIssueDate={setIssueDate}
-      dueDate={dueDate}
-      setDueDate={setDueDate}
-      invoiceNumber={invoiceNumber}
-      setInvoiceNumber={setInvoiceNumber}
-      reference={reference}
-      setReference={setReference}
-      optionSelected={false}
+      clientList={invoiceDetails.clientList}
       clientVisible={false}
+      currency={invoiceDetails.companyDetails.currency}
+      dueDate={dueDate}
+      invoiceNumber={invoiceNumber}
+      issueDate={issueDate}
+      optionSelected={false}
+      reference={reference}
+      selectedClient={selectedClient}
+      setDueDate={setDueDate}
+      setInvoiceNumber={setInvoiceNumber}
+      setIssueDate={setIssueDate}
+      setReference={setReference}
+      setSelectedClient={setSelectedClient}
     />
-    <div className="pl-10 py-5">
+    <div className="py-5 pl-10">
       <InvoiceTable
         currency={invoiceDetails.companyDetails.currency}
-        selectedClient={selectedClient}
         lineItems={lineItems}
-        setLineItems={setLineItems}
-        selectedLineItems={selectedOption}
-        setSelectedLineItems={setSelectedOption}
         manualEntryArr={manualEntryArr}
+        selectedClient={selectedClient}
+        selectedLineItems={selectedOption}
+        setLineItems={setLineItems}
         setManualEntryArr={setManualEntryArr}
+        setSelectedLineItems={setSelectedOption}
       />
     </div>
     <InvoiceTotal
-      currency={invoiceDetails.companyDetails.currency}
-      newLineItems={selectedOption}
-      amountPaid={amountPaid}
       amountDue={amountDue}
-      setAmountDue={setAmountDue}
-      setAmount={setAmount}
+      amountPaid={amountPaid}
+      currency={invoiceDetails.companyDetails.currency}
       discount={discount}
+      manualEntryArr={manualEntryArr}
+      newLineItems={selectedOption}
+      setAmount={setAmount}
+      setAmountDue={setAmountDue}
       setDiscount={setDiscount}
-      tax={tax}
       setTax={setTax}
       showDiscountInput={false}
       showTax={false}
-      manualEntryArr={manualEntryArr}
+      tax={tax}
     />
   </div>
 );

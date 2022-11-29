@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 
-import { ArrowLeftIcon, DotsThreeVerticalIcon, ReportsIcon, PencilIcon, CaretDownIcon, DeleteIcon } from "miruIcons";
+import {
+  ArrowLeftIcon,
+  DotsThreeVerticalIcon,
+  ReportsIcon,
+  PencilIcon,
+  CaretDownIcon,
+  DeleteIcon,
+} from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
 import AddProject from "../Modals/AddProject";
@@ -8,9 +15,9 @@ import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 
 const Header = ({ clientDetails }) => {
-
-  const [isHeaderMenuVisible, setHeaderMenuVisibility] = useState<boolean>(false);
-  const [isClientOpen, toggleClientDetails] = useState<boolean>(false);
+  const [isHeaderMenuVisible, setIsHeaderMenuVisible] =
+    useState<boolean>(false);
+  const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
@@ -18,11 +25,11 @@ const Header = ({ clientDetails }) => {
   const navigate = useNavigate();
 
   const handleClientDetails = () => {
-    toggleClientDetails(!isClientOpen);
+    setIsClientOpen(!isClientOpen);
   };
 
   const handleMenuVisibility = () => {
-    setHeaderMenuVisibility(!isHeaderMenuVisible);
+    setIsHeaderMenuVisible(!isHeaderMenuVisible);
   };
 
   const handleBackButtonClick = () => {
@@ -39,18 +46,19 @@ const Header = ({ clientDetails }) => {
 
   const handleAddProject = () => {
     setShowProjectModal(true);
-    setHeaderMenuVisibility(false);
+    setIsHeaderMenuVisible(false);
   };
 
   const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
+
   return (
     <div className="my-6">
       <div className="flex min-w-0 items-center justify-between">
         <div className="flex items-center">
           <button className="button-icon__back" onClick={handleBackButtonClick}>
-            <ArrowLeftIcon size={20} color="#5b34ea" weight="bold" />
+            <ArrowLeftIcon color="#5b34ea" size={20} weight="bold" />
           </button>
-          <h2 className="text-3xl mr-6 font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1">
+          <h2 className="mr-6 py-1 text-3xl font-extrabold text-gray-900 sm:truncate sm:text-4xl">
             {clientDetails.name}
           </h2>
           <button onClick={handleClientDetails}>
@@ -58,64 +66,70 @@ const Header = ({ clientDetails }) => {
           </button>
         </div>
         <div className="relative h-8">
-          <button onClick = {handleMenuVisibility} className={`menuButton__button ${menuBackground}`}>
-            <DotsThreeVerticalIcon size={20} color="#000000" />
+          <button
+            className={`menuButton__button ${menuBackground}`}
+            onClick={handleMenuVisibility}
+          >
+            <DotsThreeVerticalIcon color="#000000" size={20} />
           </button>
-          { isHeaderMenuVisible && <ul className="menuButton__wrapper">
-            <li onClick={handleAddProject}>
-              <button className="menuButton__list-item">
-                <ReportsIcon size={16} color="#5B34EA" weight="bold" />
-                <span className="ml-3">Add Project</span>
-              </button>
-            </li>
-            <li onClick={handleEdit}>
-              <button className="menuButton__list-item">
-                <PencilIcon size={16} color="#5b34ea" weight="bold" />
-                <span className="ml-3">Edit</span>
-              </button>
-            </li>
-            <li onClick={handleDelete}>
-              <button className="menuButton__list-item text-miru-red-400">
-                <DeleteIcon size={16} color="#E04646" weight="bold" />
-                <span className="ml-3">Delete</span>
-              </button>
-            </li>
-          </ul> }
+          {isHeaderMenuVisible && (
+            <ul className="menuButton__wrapper">
+              <li onClick={handleAddProject}>
+                <button className="menuButton__list-item">
+                  <ReportsIcon color="#5B34EA" size={16} weight="bold" />
+                  <span className="ml-3">Add Project</span>
+                </button>
+              </li>
+              <li onClick={handleEdit}>
+                <button className="menuButton__list-item">
+                  <PencilIcon color="#5b34ea" size={16} weight="bold" />
+                  <span className="ml-3">Edit</span>
+                </button>
+              </li>
+              <li onClick={handleDelete}>
+                <button className="menuButton__list-item text-miru-red-400">
+                  <DeleteIcon color="#E04646" size={16} weight="bold" />
+                  <span className="ml-3">Delete</span>
+                </button>
+              </li>
+            </ul>
+          )}
         </div>
       </div>
-      {isClientOpen && <div className="flex ml-12 mt-4">
-        <div className="text-xs text-miru-dark-purple-400">
-          <h6 className="font-semibold">Email ID(s)</h6>
-          <p>{clientDetails.email}</p>
+      {isClientOpen && (
+        <div className="ml-12 mt-4 flex">
+          <div className="text-xs text-miru-dark-purple-400">
+            <h6 className="font-semibold">Email ID(s)</h6>
+            <p>{clientDetails.email}</p>
+          </div>
+          <div className="ml-28 text-xs text-miru-dark-purple-400">
+            <h6 className="font-semibold">Address</h6>
+            <p>{clientDetails.address}</p>
+          </div>
+          <div className="ml-28 text-xs text-miru-dark-purple-400">
+            <h6 className="font-semibold">Phone number</h6>
+            <p>{clientDetails.phone}</p>
+          </div>
         </div>
-        <div className="ml-28 text-xs text-miru-dark-purple-400">
-          <h6 className="font-semibold">Address</h6>
-          <p>{clientDetails.address}</p>
-        </div>
-        <div className="ml-28 text-xs text-miru-dark-purple-400">
-          <h6 className="font-semibold">Phone number</h6>
-          <p>{clientDetails.phone}</p>
-        </div>
-      </div>
-      }
-      { showDeleteDialog &&
-          <DeleteClient
-            client={clientDetails}
-            setShowDeleteDialog={setShowDeleteDialog}
-          />
-      }
-      { showEditDialog &&
-          <EditClient
-            client={clientDetails}
-            setShowEditDialog={setShowEditDialog}
-          />
-      }
-      { showProjectModal &&
-          <AddProject
-            setShowProjectModal = {setShowProjectModal}
-            clientDetails = {clientDetails}
-          />
-      }
+      )}
+      {showDeleteDialog && (
+        <DeleteClient
+          client={clientDetails}
+          setShowDeleteDialog={setShowDeleteDialog}
+        />
+      )}
+      {showEditDialog && (
+        <EditClient
+          client={clientDetails}
+          setShowEditDialog={setShowEditDialog}
+        />
+      )}
+      {showProjectModal && (
+        <AddProject
+          clientDetails={clientDetails}
+          setShowProjectModal={setShowProjectModal}
+        />
+      )}
     </div>
   );
 };

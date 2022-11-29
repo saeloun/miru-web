@@ -4,40 +4,45 @@ const Header = ({
   title,
   subTitle,
   showButtons = false,
-  cancelAction = function () { 0; },
-  saveAction = function () { 0; },
-  isDisableUpdateBtn = false
-}) => (
-  <div className="h-16 pl-10 p-4 bg-miru-han-purple-1000 flex justify-between  text-white">
-    <span className="font-bold text-2xl">{title}</span>
-    <span className="font-normal text-sm pt-2">
-      {subTitle}
-    </span>
-    {
-      (
-        <div className={`mt-1 text-center ${showButtons ? "visible" : "invisible"}`}>
-          <div>
-            <button
-              className="border rounded-md px-3 mx-1 "
-              onClick={cancelAction}
-              disabled={!isDisableUpdateBtn}
-            >
-              CANCEL
-            </button>
-            <button
-              className={
-                `border rounded-md px-3 mx-1 ${!isDisableUpdateBtn ? "bg-miru-gray-1000 cursor-auto" : "bg-white"} text-miru-han-purple-1000`
-              }
-              onClick={saveAction}
-              disabled={!isDisableUpdateBtn}
-            >
-              UPDATE
-            </button>
-          </div>
-        </div>
-      )
-    }
+  cancelAction,
+  saveAction,
+  isDisableUpdateBtn = false,
+}: Iprops) => (
+  <div className="flex h-16 justify-between bg-miru-han-purple-1000 p-4 pl-10  text-white">
+    <span className="text-2xl font-bold">{title}</span>
+    <span className="pt-2 text-sm font-normal">{subTitle}</span>
+    <div
+      className={`mt-1 text-center ${showButtons ? "visible" : "invisible"}`}
+    >
+      <div>
+        <button
+          className="mx-1 rounded-md border px-3 "
+          disabled={!isDisableUpdateBtn}
+          onClick={cancelAction}
+        >
+          CANCEL
+        </button>
+        <button
+          disabled={!isDisableUpdateBtn}
+          className={`mx-1 rounded-md border px-3 ${
+            !isDisableUpdateBtn ? "cursor-auto bg-miru-gray-1000" : "bg-white"
+          } text-miru-han-purple-1000`}
+          onClick={saveAction}
+        >
+          UPDATE
+        </button>
+      </div>
+    </div>
   </div>
 );
+
+interface Iprops {
+  title: string;
+  subTitle: string;
+  showButtons?: boolean;
+  cancelAction?: () => any;
+  saveAction?: () => any;
+  isDisableUpdateBtn?: boolean;
+}
 
 export default Header;

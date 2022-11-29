@@ -4,75 +4,99 @@ const AddressDetails = ({
   fields,
   handleAddressDetails,
   handleBankDetails,
-  recipientDetails
+  recipientDetails,
 }) => {
-  const legalType = fields.filter(field => field["group"][0]["key"] == "legalType")[0];
-  const countries = fields.filter(field => field["group"][0]["key"] == "address.country")[0];
-  const postCode = fields.filter(field => field["group"][0]["key"] == "address.postCode")[0];
+  const legalType = fields.filter(
+    field => field["group"][0]["key"] == "legalType"
+  )[0];
+
+  const countries = fields.filter(
+    field => field["group"][0]["key"] == "address.country"
+  )[0];
+
+  const postCode = fields.filter(
+    field => field["group"][0]["key"] == "address.postCode"
+  )[0];
 
   return (
     <div className="w-full">
       <div className="inline-flex w-full">
-        <div className="w-2/4 mr-1">
+        <div className="mr-1 w-2/4">
           <label>Reference Type</label>
           <div className="my-2">
             <select
-              className="p-1 bg-gray-100 rounded-sm w-full"
-              name="legalType"
+              className="w-full rounded-sm bg-gray-100 p-1"
               defaultValue={recipientDetails["details"]["legalType"]}
-              onChange={ ({ target: { name, value } }) => handleBankDetails(name, value, {}) }
+              name="legalType"
+              onChange={({ target: { name, value } }) =>
+                handleBankDetails(name, value, {})
+              }
             >
               <option value={null}>Select reference type</option>
-              {
-                legalType["group"][0]["valuesAllowed"].map(value => (
-                  <option value={value.key} key={value.key}>{value.name}</option>
-                ))
-              }
+              {legalType["group"][0]["valuesAllowed"].map(value => (
+                <option key={value.key} value={value.key}>
+                  {value.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>
-        <div className="w-2/4 ml-1">
+        <div className="ml-1 w-2/4">
           <label>Country</label>
           <div className="my-2">
             <select
-              name="country"
-              className="p-1 bg-gray-100 rounded-sm w-full"
+              className="w-full rounded-sm bg-gray-100 p-1"
               defaultValue={recipientDetails["details"]["address"]["country"]}
-              onChange={ ( { target: { name, value } }) => handleAddressDetails(name, value, {})}
+              name="country"
+              onChange={({ target: { name, value } }) =>
+                handleAddressDetails(name, value, {})
+              }
             >
               <option value={null}>Select Country</option>
-              {
-                countries["group"][0]["valuesAllowed"].map(value => (
-                  <option value={value.key} key={value.key}>{value.name}</option>
-                ))
-              }
+              {countries["group"][0]["valuesAllowed"].map(value => (
+                <option key={value.key} value={value.key}>
+                  {value.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>
       </div>
       <div className="inline-flex w-full">
-        <div className="w-2/4 mr-1">
+        <div className="mr-1 w-2/4">
           <label>City</label>
           <div className="my-2">
             <input
-              className="bg-gray-100 rounded-sm p-1 w-full"
-              placeholder="City"
-              name="city"
+              className="w-full rounded-sm bg-gray-100 p-1"
               defaultValue={recipientDetails["details"]["address"]["city"]}
-              onBlur={({ target: { name, value } }) => handleAddressDetails(name, value, { validationRegexp: "^.{1,255}$" })}
+              name="city"
+              placeholder="City"
+              onBlur={({ target: { name, value } }) =>
+                handleAddressDetails(name, value, {
+                  validationRegexp: "^.{1,255}$",
+                })
+              }
             />
           </div>
         </div>
-        <div className="w-2/4 ml-1">
+        <div className="ml-1 w-2/4">
           <label>Post Code</label>
           <div className="my-2">
             <input
-              className="bg-gray-100 rounded-sm p-1 w-full"
-              placeholder="Post Code"
-              name="postCode"
-              defaultValue={recipientDetails["details"]["address"]["postCode"]}
+              className="w-full rounded-sm bg-gray-100 p-1"
               data-regexp={postCode["group"][0]["validationRegexp"]}
-              onBlur={({ target: { name, value, dataset: { regexp } } }) => handleAddressDetails(name, value, { validationRegexp: regexp })}
+              defaultValue={recipientDetails["details"]["address"]["postCode"]}
+              name="postCode"
+              placeholder="Post Code"
+              onBlur={({
+                target: {
+                  name,
+                  value,
+                  dataset: { regexp },
+                },
+              }) =>
+                handleAddressDetails(name, value, { validationRegexp: regexp })
+              }
             />
           </div>
         </div>
@@ -81,12 +105,16 @@ const AddressDetails = ({
         <label>Address</label>
         <div className="my-2">
           <input
-            type="text"
-            className="bg-gray-100 rounded-sm p-1 w-full h-12"
-            placeholder="Address"
+            className="h-12 w-full rounded-sm bg-gray-100 p-1"
+            defaultValue={recipientDetails["details"]["address"]["firstLine"]}
             name="firstLine"
-            defaultValue={ recipientDetails["details"]["address"]["firstLine"] }
-            onBlur={ ( { target: { name, value } }) => handleAddressDetails(name, value, { validationRegexp: "^.{1,255}$" }) }
+            placeholder="Address"
+            type="text"
+            onBlur={({ target: { name, value } }) =>
+              handleAddressDetails(name, value, {
+                validationRegexp: "^.{1,255}$",
+              })
+            }
           />
         </div>
       </div>
