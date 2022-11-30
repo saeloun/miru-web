@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Pencil } from "phosphor-react";
+import { PencilIcon } from "miruIcons";
 import { Link } from "react-router-dom";
 
 const EditButton = ({ editInvoiceLink }) => (
@@ -12,7 +12,7 @@ const EditButton = ({ editInvoiceLink }) => (
     >
       <div className="self-center flex flex-row justify-between items-center">
         <div className="mr-1">
-          <Pencil size={16} className="text-col-han-app-1000" weight="bold"/>
+          <PencilIcon size={16} className="text-col-han-app-1000" weight="bold"/>
         </div>
         <p className="font-bold tracking-widest text-base text-miru-han-purple-1000 ml-1">EDIT</p>
       </div>

@@ -10,6 +10,7 @@ module InvoicePayment
       @client = invoice.client
       @success_url = params[:success_url]
       @cancel_url = params[:cancel_url]
+      @metadata = params[:metadata]
       @checkout_session = nil
     end
 
@@ -25,7 +26,7 @@ module InvoicePayment
 
     private
 
-      attr_reader :invoice, :company, :client, :success_url, :cancel_url
+      attr_reader :invoice, :company, :client, :success_url, :cancel_url, :metadata
 
       def ensure_client_registered!
         return if client.stripe_id?
@@ -62,7 +63,8 @@ module InvoicePayment
             mode: "payment",
             customer: client.reload.stripe_id,
             success_url:,
-            cancel_url:
+            cancel_url:,
+            metadata:
           }, {
             stripe_account: stripe_connected_account.account_id
           })

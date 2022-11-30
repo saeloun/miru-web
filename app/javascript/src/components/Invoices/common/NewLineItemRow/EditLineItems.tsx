@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import { minFromHHMM, minToHHMM, lineTotalCalc, useOutsideClick } from "helpers";
-import { Trash } from "phosphor-react";
+import { DeleteIcon } from "miruIcons";
 import DatePicker from "react-datepicker";
 
 const EditLineItems = ({
@@ -82,7 +82,7 @@ const EditLineItems = ({
       <td className="w-full">
         <DatePicker
           wrapperClassName="datePicker invoice-datepicker"
-          calendarClassName="miru-calendar invoice-datepicker-option"
+          calendarClassName="miru-CalendarIcon invoice-datepicker-option"
           dateFormat="dd.MM.yyyy"
           selected={lineItemDate}
           onChange={(date) => setLineItemDate(date)}
@@ -122,7 +122,7 @@ const EditLineItems = ({
       </td>
       <td>
         <button onClick={() => handleDelete(item)} className="w-full flex items-center px-2.5 text-left py-4 hover:bg-miru-gray-100">
-          <Trash size={16} className="text-col-red-400" weight="bold" />
+          <DeleteIcon size={16} className="text-col-red-400" weight="bold" />
         </button>
       </td>
     </tr>

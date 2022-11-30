@@ -316,7 +316,7 @@
     @apply block;
   }
   &__radio:checked + label i {
-    @apply bg-miru-han-purple-1000 h-3 w-3;
+    @apply bg-miru-han-purple-1000;
     box-shadow: 0px 0px 0px 2px white inset;
   }
   &__radio-text {
@@ -536,4 +536,12 @@ body {
   &__header-number{
     @apply w-5 h-5 flex justify-center items-center text-xs font-semibold rounded-full bg-miru-han-purple-1000 text-white
   }
+}
+
+.truncateOverflowText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Pencil, Trash } from "phosphor-react";
+import { PencilIcon, DeleteIcon } from "miruIcons";
 import PropTypes from "prop-types";
 import { useTable, useRowSelect } from "react-table";
 
@@ -111,14 +111,14 @@ const Table = ({
                       e.stopPropagation();
                       handleEditClick(row.original.rowId);
                     }}>
-                      <Pencil size={16} className="text-col-han-app-1000" weight="bold" />
+                      <PencilIcon size={16} className="text-col-han-app-1000" weight="bold" />
                     </button>}
                     {hasDeleteAction && <button onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       handleDeleteClick(row.original.rowId);
                     }} className="ml-10">
-                      <Trash size={16} className="text-col-han-app-1000" weight="bold" />
+                      <DeleteIcon size={16} className="text-col-han-app-1000" weight="bold" />
                     </button>}
                   </div>
                 </td>

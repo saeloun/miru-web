@@ -1,9 +1,9 @@
 {
   "name": "A∝C",
-  "repository": "https://github.com/saeloun/miru-web",
-  "description": "???",
-  "website": "https://getmiru.com/",
-  "logo": "https://getmiru.com/assets/images/image01.svg",
+  "repository": "...",
+  "description": "...",
+  "website": "...",
+  "logo": "...",
   "success_url": "/",
   "env": {
     "SECRET_TOKEN": {

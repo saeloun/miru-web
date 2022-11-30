@@ -1,7 +1,7 @@
 import React from "react";
 
 import { getMonth, getYear } from "date-fns";
-import { CaretCircleLeft, CaretCircleRight } from "phosphor-react";
+import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -48,7 +48,7 @@ const CustomDatePicker = ({ handleChange, date }) => {
           className="headerWrapper"
         >
           <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
-            <CaretCircleLeft className="text-col-han-app-1000" size={16} />
+            <CaretCircleLeftIcon className="text-col-han-app-1000" size={16} />
           </button>
           <div>
             <select
@@ -76,7 +76,7 @@ const CustomDatePicker = ({ handleChange, date }) => {
             </select>
           </div>
           <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
-            <CaretCircleRight className="text-col-han-app-1000" size={16} />
+            <CaretCircleRightIcon className="text-col-han-app-1000" size={16} />
           </button>
         </div>
       )}

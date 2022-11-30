@@ -29,7 +29,7 @@ const InvoiceEmail = ({ url, invoice, logo, lineItems, company, client }) => (
         © AC 2022
       </span>
       {/* <span className="flex justify-between w-1/4 text-xs font-normal leading-4 text-center">
-        www.getmiru.com/
+        www.ac.com/
         <img src={Instagram} height="16px" width="16px" />
         <img src={Twitter} height="16px" width="16px" />
       </span> */}

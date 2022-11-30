@@ -1,23 +1,25 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useEffect, useState } from "react";
 
 import { Paths } from "constants/index";
 
+// eslint-disable-next-line import/order
 import {
-  Timer,
-  UsersThree,
-  Buildings,
-  Briefcase,
-  Receipt,
-  ChartLine,
-  Wallet,
-  Gear,
-  SignOut,
-  Planet,
-  Swap,
-  Leaf,
-  Equalizer,
-  UserSwitch
-} from "phosphor-react";
+  TimeTrackingIcon,
+  TeamsIcon,
+  ClientsIcon,
+  ProjectsIcon,
+  SettingIcon,
+  SignOutIcon,
+  ReportsIcon,
+  InvoicesIcon,
+  PaymentsIcon,
+  SpaceIcon,
+  TackleIcon,
+  LeadIcon,
+  EngagementIcon,
+  RecruitmentIcon
+} from "miruIcons";
 import { NavLink, Link } from "react-router-dom";
 
 import "./style.scss";
@@ -35,57 +37,57 @@ const Navbar = ({ isAdminUser, user, permissions }) => {
 
   const navEmployeeOptions = [
     {
-      logo: <Planet size={26} className="mr-0 md:mr-4" />,
+      logo: <SpaceIcon size={26} className="mr-0 md:mr-4" />,
       label: "Spaces",
       dataCy: "spaces-tab",
       path: Paths.SPACES
     },
     {
-      logo: <Swap size={26} className="mr-0 md:mr-4" />,
+      logo: <TackleIcon size={26} className="mr-0 md:mr-4" />,
       label: "TackLe",
       dataCy: "devices-tab",
       path: Paths.DEVICES
     },
     permissions.engagementsDashboard ? {
-      logo: <Equalizer size={26} className="mr-0 md:mr-4" />,
+      logo: <EngagementIcon size={26} className="mr-0 md:mr-4" />,
       label: "Engagements",
       dataCy: "engagements-tab",
       path: Paths.ENGAGEMENTS_DASHBOARD,
       permissionId: 'engagementsDashboard'
     } : {
-      logo: <Equalizer size={26} className="mr-0 md:mr-4" />,
+      logo: <EngagementIcon size={26} className="mr-0 md:mr-4" />,
       label: "Engagements",
       dataCy: "engagements-tab",
       path: Paths.ENGAGEMENTS,
       permissionId: 'engagements'
     },
     {
-      logo: <Leaf size={26} className="mr-0 md:mr-4" />,
+      logo: <LeadIcon size={26} className="mr-0 md:mr-4" />,
       label: "Leads",
       dataCy: "leads-tab",
       path: Paths.LEADS,
       permissionId: 'leads'
     },
     {
-      logo: <Timer size={26} className="mr-0 md:mr-4" />,
+      logo: <TimeTrackingIcon size={26} className="mr-0 md:mr-4" />,
       label: "Time Tracking",
       dataCy: "time-tracking-tab",
       path: Paths.TIME_TRACKING
     },
     {
-      logo: <UsersThree size={26} className="mr-0 md:mr-4" />,
+      logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Team",
       dataCy: "team-tab",
       path: Paths.TEAM
     },
     // {
-    //   logo: <Buildings size={26} className="mr-0 md:mr-4" />,
+    //   logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
     //   label: "Clients",
     //   dataCy: "clients-tab",
     //   path: Paths.CLIENTS
     // },
     {
-      logo: <Briefcase size={26} className="mr-0 md:mr-4" />,
+      logo: <ProjectsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Projects",
       dataCy: "projects-tab",
       path: Paths.PROJECTS
@@ -94,73 +96,73 @@ const Navbar = ({ isAdminUser, user, permissions }) => {
 
   const navAdminOptions = [
     {
-      logo: <Planet size={26} className="mr-0 md:mr-4" />,
+      logo: <SpaceIcon size={26} className="mr-0 md:mr-4" />,
       label: "Spaces",
       dataCy: "spaces-tab",
       path: Paths.SPACES
     },
     {
-      logo: <Swap size={26} className="mr-0 md:mr-4" />,
+      logo: <TackleIcon size={26} className="mr-0 md:mr-4" />,
       label: "TackLe",
       dataCy: "devices-tab",
       path: Paths.DEVICES
     },
     {
-      logo: <Equalizer size={26} className="mr-0 md:mr-4" />,
+      logo: <EngagementIcon size={26} className="mr-0 md:mr-4" />,
       label: "Engagements",
       dataCy: "engagements-tab",
       path: Paths.ENGAGEMENTS_DASHBOARD
     },
     {
-      logo: <Leaf size={26} className="mr-0 md:mr-4" />,
+      logo: <LeadIcon size={26} className="mr-0 md:mr-4" />,
       label: "Leads",
       dataCy: "leads-tab",
       path: Paths.LEADS
     },
     {
-      logo: <UserSwitch size={26} className="mr-0 md:mr-4" />,
+      logo: <RecruitmentIcon size={26} className="mr-0 md:mr-4" />,
       label: "Recruitment",
       dataCy: "recruitment-tab",
       path: Paths.RECRUITMENT
     },
     {
-      logo: <Timer size={26} className="mr-0 md:mr-4" />,
+      logo: <TimeTrackingIcon size={26} className="mr-0 md:mr-4" />,
       label: "Time Tracking",
       dataCy: "time-tracking-tab",
       path: Paths.TIME_TRACKING
     },
     {
-      logo: <UsersThree size={26} className="mr-0 md:mr-4" />,
+      logo: <TeamsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Team",
       dataCy: "team-tab",
       path: Paths.TEAM
     },
     {
-      logo: <Buildings size={26} className="mr-0 md:mr-4" />,
+      logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Clients",
       dataCy: "clients-tab",
       path: Paths.CLIENTS
     },
     {
-      logo: <Briefcase size={26} className="mr-0 md:mr-4" />,
+      logo: <ProjectsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Projects",
       dataCy: "projects-tab",
       path: Paths.PROJECTS
     },
     {
-      logo: <Receipt size={26} className="mr-0 md:mr-4" />,
+      logo: <InvoicesIcon size={26} className="mr-0 md:mr-4" />,
       label: "Invoices",
       dataCy: "invoices-tab",
       path: Paths.INVOICES
     },
     {
-      logo: <ChartLine size={26} className="mr-0 md:mr-4" />,
+      logo: <ReportsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Reports",
       dataCy: "reports-tab",
       path: Paths.REPORTS
     },
     {
-      logo: <Wallet size={26} className="mr-0 md:mr-4" />,
+      logo: <PaymentsIcon size={26} className="mr-0 md:mr-4" />,
       label: "Payments",
       dataCy: "payments-tab",
       path: Paths.PAYMENTS
@@ -225,7 +227,7 @@ const Navbar = ({ isAdminUser, user, permissions }) => {
               to="/profile/edit"
               className={({ isActive }) => isActive ? activeClassName : inActiveClassName }
             >
-              <Gear size={26} className="mr-0 md:mr-4" />
+              <SettingIcon size={26} className="mr-0 md:mr-4" />
               {isDesktop && "Settings"}
             </NavLink>
           </li>
@@ -236,14 +238,14 @@ const Navbar = ({ isAdminUser, user, permissions }) => {
           </a> */}
           <a data-method="delete" href="/users/sign_out" rel="nofollow">
             <li className={inActiveClassName}>
-              <SignOut size={26} className="mr-0 md:mr-4" />
+              <SignOutIcon size={26} className="mr-0 md:mr-4" />
               {isDesktop && "Logout"}
             </li>
           </a>
         </ul>
-        <div className="md:mt-6 mt-auto w-full p-3 bg-miru-gray-100 flex items-center overflow-x-auto">
-          <img src={avatar} alt="avatar" />
-          { isDesktop && <div className="flex flex-col overflow-x-auto mr-2">
+        <div className="md:mt-6 mt-auto w-full h-16 p-3 bg-miru-gray-100 flex items-center overflow-XIcon-auto">
+          <img src={avatar} className="mr-2" alt="avatar" />
+          {isDesktop && <div className="flex flex-col overflow-XIcon-auto">
             <span className="font-bold text-base leading-5 pt-1">{`${user.first_name} ${user.last_name}`}</span>
             <span className="font-normal text-xs leading-4">{user.email}</span>
           </div> }

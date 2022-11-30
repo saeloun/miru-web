@@ -1,8 +1,9 @@
 import * as React from "react";
 
 import { minToHHMM } from "helpers";
-import { Pen, Trash } from "phosphor-react";
+import { PenIcon, DeleteIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { Badge } from "StyledComponents";
 
 import { IProject } from "../interface";
 
@@ -50,11 +51,13 @@ export const Project = ({
           {clientName}
         </p>
       </td>
-      <td className="table__cell text-center">
-        {isBillable ?
-          <span className="px-1 tracking-widest rounded-lg text-xs font-semibold leading-4 bg-miru-han-purple-100 text-miru-han-purple-1000">BILLABLE</span>
-          : <span className="px-1 tracking-widest rounded-lg text-xs font-semibold leading-4 bg-miru-gray-1000">NON BILLABLE</span>
-        }
+      <td className="table__cell text-right">
+        {isBillable &&(
+          <Badge text="billable"
+            bgColor="bg-miru-han-purple-100"
+            color="text-miru-han-purple-1000"
+            className="px-1 tracking-widest rounded-lg capitalize" />
+        )}
       </td>
       <td className="table__cell text-xl text-right font-bold">
         {minToHHMM(minutesSpent)}
@@ -68,7 +71,7 @@ export const Project = ({
             setEditProjectData({ id, name, clientName, isBillable });
           }}
         >
-          <Pen size={16} className="text-col-han-app-1000" />
+          <PenIcon size={16} className="text-col-han-app-1000" />
         </button>
         }
       </td>
@@ -81,7 +84,7 @@ export const Project = ({
             setDeleteProjectData({ id, name });
           }}
         >
-          <Trash size={16} className="text-col-han-app-1000" />
+          <DeleteIcon size={16} className="text-col-han-app-1000" />
         </button>
         }
       </td>
