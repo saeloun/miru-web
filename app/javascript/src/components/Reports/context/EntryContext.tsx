@@ -4,12 +4,12 @@ import OutstandingOverdueInvoiceContext from "./outstandingOverdueInvoiceContext
 import RevenueByClientReportContext from "./RevenueByClientContext";
 import TimeEntryReportContext from "./TimeEntryReportContext";
 
-const EntryContext = createContext(({
+const EntryContext = createContext({
   currentReport: "",
   revenueByClientReport: RevenueByClientReportContext,
   timeEntryReport: TimeEntryReportContext,
-  outstandingOverdueInvoice: OutstandingOverdueInvoiceContext
-}));
+  outstandingOverdueInvoice: OutstandingOverdueInvoiceContext,
+});
 
 export const useEntry = () => useContext(EntryContext);
 

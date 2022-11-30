@@ -11,24 +11,24 @@ const Header = ({
   setFilterParams,
   selectedInput,
   setSelectedInput,
-  filterIntialValues
+  filterIntialValues,
 }) => (
   <div>
-    <div className='flex justify-between px-6 pb-2 pt-6'>
-      <span className='text-miru-dark-purple-1000 text-base font-extrabold'>Select Time Entries</span>
-      <button
-        onClick={() => setMultiLineItemModal(false)}
-      >
-        <XIcon size={16} color="#CDD6DF" />
+    <div className="flex justify-between px-6 pb-2 pt-6">
+      <span className="text-base font-extrabold text-miru-dark-purple-1000">
+        Select Time Entries
+      </span>
+      <button onClick={() => setMultiLineItemModal(false)}>
+        <XIcon color="#CDD6DF" size={16} />
       </button>
     </div>
     <Filters
-      teamMembers={teamMembers}
-      filterParams={filterParams}
-      setFilterParams={setFilterParams}
-      selectedInput={selectedInput}
-      setSelectedInput={setSelectedInput}
       filterIntialValues={filterIntialValues}
+      filterParams={filterParams}
+      selectedInput={selectedInput}
+      setFilterParams={setFilterParams}
+      setSelectedInput={setSelectedInput}
+      teamMembers={teamMembers}
     />
   </div>
 );

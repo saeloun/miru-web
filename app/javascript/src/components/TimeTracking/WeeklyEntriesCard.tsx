@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import * as React from "react";
+/* eslint-disable no-unused-vars */
+import React, { useState, useEffect } from "react";
 
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import Logger from "js-logger";
@@ -11,14 +12,11 @@ const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
 const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 const editIcon = require("../../../../assets/images/edit.svg");
 
-const { useState, useEffect } = React;
-
 const WeeklyEntriesCard = ({
   client,
   project,
   currentEntries,
   setProjectSelected,
-  // handleDeleteEntries,
   currentProjectId,
   setEntryList,
   setCurrentEntries,
@@ -27,8 +25,7 @@ const WeeklyEntriesCard = ({
   dayInfo,
   isWeeklyEditing,
   setIsWeeklyEditing,
-  selectedEmployeeId
-
+  selectedEmployeeId,
 }: Iprops) => {
   const [selectedInputBox, setSelectedInputBox] = useState<number>(-1);
   const [note, setNote] = useState<string>("");
@@ -42,34 +39,31 @@ const WeeklyEntriesCard = ({
     project_id: currentProjectId,
     duration: minFromHHMM(duration),
     bill_status: billable ? "unbilled" : "non_billable",
-    note: note
+    note,
   });
 
-  const handleUpdateRow = (entry) => {
+  const handleUpdateRow = entry => {
     setCurrentEntries(prevState => {
       const newState: any = [...prevState];
       newState[selectedInputBox] = entry;
+
       return newState;
     });
   };
 
   const handleDurationClick = (num: number) => {
     if (dataChanged) return;
+
     if (isWeeklyEditing) return;
     setSelectedInputBox(num);
     setShowNote(true);
-    setNote(
-      currentEntries[num] ? currentEntries[num]["note"] : ""
-    );
+    setNote(currentEntries[num] ? currentEntries[num]["note"] : "");
     setDuration(
-      minToHHMM(
-        currentEntries[num] ? currentEntries[num]["duration"] : 0
-      )
+      minToHHMM(currentEntries[num] ? currentEntries[num]["duration"] : 0)
     );
+
     currentEntries[num] &&
-      ["unbilled", "billed"].includes(
-        currentEntries[num]["bill_status"]
-      )
+    ["unbilled", "billed"].includes(currentEntries[num]["bill_status"])
       ? setBillable(true)
       : setBillable(false);
     setIsWeeklyEditing(true);
@@ -81,6 +75,7 @@ const WeeklyEntriesCard = ({
       const message = validateTimesheetEntry(payload);
       if (message) {
         Toastr.error(message);
+
         return;
       }
       payload["work_date"] = dayInfo[selectedInputBox]["fullDate"];
@@ -91,11 +86,12 @@ const WeeklyEntriesCard = ({
           if (newState[res.data.entry.work_date]) {
             newState[res.data.entry.work_date] = [
               ...newState[res.data.entry.work_date],
-              res.data.entry
+              res.data.entry,
             ];
           } else {
             newState[res.data.entry.work_date] = [res.data.entry];
           }
+
           return newState;
         });
         handleUpdateRow(res.data.entry);
@@ -116,6 +112,7 @@ const WeeklyEntriesCard = ({
       const message = validateTimesheetEntry(payload);
       if (message) {
         Toastr.error(message);
+
         return;
       }
       const res = await timesheetEntryApi.update(timesheetEntryId, payload);
@@ -127,6 +124,7 @@ const WeeklyEntriesCard = ({
           ].map(entry =>
             entry.id === res.data.entry.id ? res.data.entry : entry
           );
+
           return newState;
         });
         handleUpdateRow(res.data.entry);
@@ -167,31 +165,35 @@ const WeeklyEntriesCard = ({
   }, []);
 
   return (
-    <div className="week-card p-6 w-full mt-4 shadow-xl rounded-lg">
+    <div className="week-card mt-4 w-full rounded-lg p-6 shadow-xl">
       <div className="flex items-center">
-        <div className="flex mr-10 w-44 overflow-scroll">
+        <div className="mr-10 flex w-44 overflow-scroll">
           <p className="text-lg">{client}</p>
-          <p className="text-lg mx-2">•</p>
+          <p className="mx-2 text-lg">•</p>
           <p className="text-lg">{project}</p>
         </div>
-        <div className="w-138 flex justify-between items-center mr-7">
+        <div className="mr-7 flex w-138 items-center justify-between">
           {[0, 1, 2, 3, 4, 5, 6].map((num: number) =>
             num === selectedInputBox ? (
               <input
-                key={num}
+                className=" focus:outline-none bold h-15 w-18 content-center rounded border-2 border-miru-han-purple-400 bg-miru-gray-100 px-1 py-4 text-xl focus:border-miru-han-purple-400"
                 id="selectedInput"
+                key={num}
                 value={duration}
                 onChange={e => {
                   setDataChanged(true);
                   setDuration(e.target.value);
                 }}
-                className=" focus:outline-none focus:border-miru-han-purple-400 bold text-xl content-center px-1 py-4 w-18 h-15 border-2 border-miru-han-purple-400 rounded bg-miru-gray-100"
               />
             ) : (
               <div
                 key={num}
+                className={`bold h-15 w-18 content-center rounded border-2 border-transparent bg-miru-gray-100 px-1 py-4 text-xl ${
+                  currentEntries[num]
+                    ? "text-miru-gray-500"
+                    : "text-miru-dark-purple-200"
+                }`}
                 onClick={() => handleDurationClick(num)}
-                className={`bold text-xl content-center px-1 py-4 w-18 h-15 border-2 border-transparent rounded bg-miru-gray-100 ${currentEntries[num] ? "text-miru-gray-500" : "text-miru-dark-purple-200"}`}
               >
                 {currentEntries[num]
                   ? minToHHMM(currentEntries[num]["duration"])
@@ -200,63 +202,59 @@ const WeeklyEntriesCard = ({
             )
           )}
         </div>
-        <div className="text-xl font-bold">
-          {minToHHMM(weeklyTotalHours)}
-        </div>
+        <div className="text-xl font-bold">{minToHHMM(weeklyTotalHours)}</div>
         <div className="flex justify-around">
           <img
-            onClick={() => {if (! isWeeklyEditing) setProjectSelected(false); setIsWeeklyEditing(true); }}
-            src={editIcon}
             alt="edit"
-            className="icon-hover ml-8 cursor-pointer w-4 h-4"
+            className="icon-hover ml-8 h-4 w-4 cursor-pointer"
+            src={editIcon}
+            onClick={() => {
+              if (!isWeeklyEditing) setProjectSelected(false);
+              setIsWeeklyEditing(true);
+            }}
           />
-          {/* <img
-            onClick={handleDeleteEntries}
-            src={deleteIcon}
-            alt="delete"
-            className="icon-hover ml-8 cursor-pointer w-4 h-4"
-          /> */}
         </div>
       </div>
       {showNote && (
-        <div className="mt-4 mx-54 justify-between bg-miru-gray-100 w-138 border border-miru-gray-1000 rounded">
+        <div className="mx-54 mt-4 w-138 justify-between rounded border border-miru-gray-1000 bg-miru-gray-100">
           <textarea
+            className="outline-none w-full resize-none rounded bg-miru-gray-100 p-2"
+            placeholder="Note"
             value={note}
             onChange={e => {
               setNote(e.target.value);
               setDataChanged(true);
               setDataChanged(true);
             }}
-            placeholder="Note"
-            className="rounded w-full p-2 bg-miru-gray-100 outline-none resize-none"
-          ></textarea>
-          <div className="h-10 w-full flex justify-between bg-miru-gray-200">
+          />
+          <div className="flex h-10 w-full justify-between bg-miru-gray-200">
             <div className="flex items-center">
               {billable ? (
                 <img
+                  alt="checkbox"
+                  className="inline"
+                  src={checkedIcon}
                   onClick={() => {
                     setBillable(false);
                     setDataChanged(true);
                   }}
-                  className="inline"
-                  src={checkedIcon}
-                  alt="checkbox"
                 />
               ) : (
                 <img
+                  alt="checkbox"
+                  className="inline"
+                  src={uncheckedIcon}
                   onClick={() => {
                     setBillable(true);
                     setDataChanged(true);
                   }}
-                  className="inline"
-                  src={uncheckedIcon}
-                  alt="checkbox"
                 />
               )}
               <h4>Billable</h4>
             </div>
             <div>
               <button
+                className="m-2 inline-block h-6 w-30 justify-center rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-center align-middle text-xs font-bold tracking-widest text-miru-han-purple-600  hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
                 onClick={() => {
                   setNote("");
                   setShowNote(false);
@@ -265,34 +263,32 @@ const WeeklyEntriesCard = ({
                   setBillable(false);
                   setIsWeeklyEditing(false);
                 }}
-                className="m-2 inline-block h-6 w-30 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest  text-center justify-center align-middle"
               >
                 CANCEL
               </button>
-              {currentEntries[selectedInputBox] ?
+              {currentEntries[selectedInputBox] ? (
                 <button
-                  className={
-                    "m-2 mb-1 inline-block h-6 w-30 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-                  (dataChanged && duration
-                    ? "bg-miru-han-purple-1000 hover:border-transparent"
-                    : "bg-miru-gray-1000")
-                  }
+                  className={`m-2 mb-1 inline-block h-6 w-30 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
+                    dataChanged && duration
+                      ? "bg-miru-han-purple-1000 hover:border-transparent"
+                      : "bg-miru-gray-1000"
+                  }`}
                   onClick={handleUpdateEntry}
                 >
-                UPDATE
+                  UPDATE
                 </button>
-                :
+              ) : (
                 <button
-                  className={
-                    "m-2 mb-1 inline-block h-6 w-30 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-                  (dataChanged && duration
-                    ? "bg-miru-han-purple-1000 hover:border-transparent"
-                    : "bg-miru-gray-1000")
-                  }
+                  className={`m-2 mb-1 inline-block h-6 w-30 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
+                    dataChanged && duration
+                      ? "bg-miru-han-purple-1000 hover:border-transparent"
+                      : "bg-miru-gray-1000"
+                  }`}
                   onClick={handleSaveEntry}
                 >
-                SAVE
-                </button>}
+                  SAVE
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -309,17 +305,12 @@ interface Iprops {
   setCurrentEntries: React.Dispatch<React.SetStateAction<[]>>;
   currentProjectId: number;
   setProjectSelected: React.Dispatch<React.SetStateAction<boolean>>;
-  projectSelected: boolean;
   newRowView: boolean;
   setNewRowView: React.Dispatch<React.SetStateAction<boolean>>;
   setEntryList: React.Dispatch<React.SetStateAction<[]>>;
-  // handleDeleteEntries: () => any;
-  handleEditEntries: () => any;
   dayInfo: Array<any>;
   isWeeklyEditing: boolean;
   setIsWeeklyEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  weeklyData: any[];
-  setWeeklyData: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 export default WeeklyEntriesCard;

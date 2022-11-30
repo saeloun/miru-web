@@ -8,25 +8,23 @@ const Header = ({
   invoice,
   handleSendInvoice,
   setShowDeleteDialog,
-  setInvoiceToDelete
+  setInvoiceToDelete,
 }) => (
-  <>
-    <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
-      <div className="flex flex-row">
-        <BackButton href="/invoices" />
-        <InvoiceStatus invoice={invoice} />
-      </div>
-      <InvoiceActions
-        deleteInvoice={() => {
-          setShowDeleteDialog(true);
-          setInvoiceToDelete(invoice.id);
-        }}
-        editInvoiceLink={`/invoices/${invoice.id}/edit`}
-        sendInvoice={handleSendInvoice}
-        invoice={invoice}
-      />
+  <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
+    <div className="flex flex-row">
+      <BackButton href="/invoices" />
+      <InvoiceStatus invoice={invoice} />
     </div>
-  </>
+    <InvoiceActions
+      editInvoiceLink={`/invoices/${invoice.id}/edit`}
+      invoice={invoice}
+      sendInvoice={handleSendInvoice}
+      deleteInvoice={() => {
+        setShowDeleteDialog(true);
+        setInvoiceToDelete(invoice.id);
+      }}
+    />
+  </div>
 );
 
 export default Header;

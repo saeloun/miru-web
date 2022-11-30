@@ -1,14 +1,10 @@
-const unmapper = (input) => {
-  const {
-    reports,
-    filterOptions
-  } = input;
+const unmapper = input => {
+  const { reports, filterOptions } = input;
+
   return {
     reports,
-    filterOptions
+    filterOptions,
   };
 };
 
-export {
-  unmapper
-};
+export { unmapper };

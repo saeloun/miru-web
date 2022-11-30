@@ -1,4 +1,4 @@
-const locale = (baseCurrency) => {
+const locale = baseCurrency => {
   switch (baseCurrency) {
     case "INR":
       return "en-IN";
@@ -24,7 +24,7 @@ const currencyFormat = ({ baseCurrency, amount }) => {
     style: "currency",
     currency: baseCurrency,
     maximumFractionDigits: 2,
-    minimumFractionDigits: 0
+    minimumFractionDigits: 0,
   }).format(amount);
 
   return formattedAmount;
@@ -36,7 +36,7 @@ const currencyNotationFormat = ({ baseCurrency, amount }) => {
     currency: baseCurrency,
     maximumFractionDigits: 2,
     minimumFractionDigits: 0,
-    notation: amount > 99999 ? "compact" : "standard"
+    notation: amount > 99999 ? "compact" : "standard",
   }).format(amount);
 
   return formattedAmount;

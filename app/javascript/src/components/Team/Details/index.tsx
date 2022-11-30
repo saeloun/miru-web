@@ -7,14 +7,13 @@ import OutletWrapper from "./Layout/OutletWrapper";
 import SideNav from "./Layout/SideNav";
 
 const TeamDetails = () => {
-
   const [details, setDetails] = useState({
     personalDetails: {},
     employmentDetails: [],
     documentDetails: {},
     deviceDetails: {},
     compensationDetails: {},
-    reimburstmentDetails: {}
+    reimburstmentDetails: {},
   });
 
   const updateDetails = (key, payload) => {
@@ -22,12 +21,14 @@ const TeamDetails = () => {
   };
 
   return (
-    <TeamDetailsContext.Provider value={{
-      details,
-      updateDetails
-    }}>
+    <TeamDetailsContext.Provider
+      value={{
+        details,
+        updateDetails,
+      }}
+    >
       <Header />
-      <div className="flex mt-6 mb-10">
+      <div className="mt-6 mb-10 flex">
         <SideNav />
         <OutletWrapper />
       </div>
