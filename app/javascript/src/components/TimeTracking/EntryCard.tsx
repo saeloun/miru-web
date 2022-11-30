@@ -15,48 +15,45 @@ interface props {
   project: string;
   note: string;
   duration: number;
-  handleDeleteEntry: (id: number) => void;
+  handleDeleteEntry: (id: number) => void; // eslint-disable-line
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   bill_status: string;
   currentUserRole: string;
 }
 
-const canEditTimeEntry = (billStatus, role) => (billStatus != "billed" || role == Roles["OWNER"] || role == Roles["ADMIN"]);
+const canEditTimeEntry = (billStatus, role) =>
+  billStatus != "billed" || role == Roles["OWNER"] || role == Roles["ADMIN"];
 
 const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
   if (canEditTimeEntry(billStatus, role)) {
     return (
-      <button onClick={() => setEditEntryId(id)} className="mx-10">
+      <button className="mx-10" onClick={() => setEditEntryId(id)}>
         <img
-          src={editIcon}
           alt="edit"
-          className="icon-hover text-miru-han-purple-600 hover:text-miru-han-purple-1000 w-4 h-4"
+          className="icon-hover h-4 w-4 text-miru-han-purple-600 hover:text-miru-han-purple-1000"
+          src={editIcon}
         />
       </button>
     );
-  } else {
-    return (
-      <div className="mx-10 w-4 h-4"></div>
-    );
   }
+
+  return <div className="mx-10 h-4 w-4" />;
 };
 
 const showDeleteAction = (billStatus, role, id, handleDeleteEntry) => {
   if (canEditTimeEntry(billStatus, role)) {
     return (
-      <button onClick={() => handleDeleteEntry(id)} className="mr-10">
+      <button className="mr-10" onClick={() => handleDeleteEntry(id)}>
         <img
-          src={deleteIcon}
           alt="delete"
-          className="icon-hover fill-blue text-miru-han-purple-1000 hover:text-miru-han-purple-1000 w-4 h-4"
+          className="icon-hover fill-blue h-4 w-4 text-miru-han-purple-1000 hover:text-miru-han-purple-1000"
+          src={deleteIcon}
         />
       </button>
     );
-  } else {
-    return (
-      <div className="mr-10 w-4 h-4"></div>
-    );
   }
+
+  return <div className="mr-10 h-4 w-4" />;
 };
 
 const EntryCard: React.FC<props> = ({
@@ -68,45 +65,45 @@ const EntryCard: React.FC<props> = ({
   handleDeleteEntry,
   setEditEntryId,
   bill_status,
-  currentUserRole
+  currentUserRole,
 }) => (
-  <div className="week-card flex justify-between items-center shadow-2xl w-full p-4 mt-10 rounded-lg">
+  <div className="week-card mt-10 flex w-full items-center justify-between rounded-lg p-4 shadow-2xl">
     <div className="flex-auto">
       <div className="flex">
         <p className="text-lg">{client}</p>
-        <p className="text-lg mx-2">•</p>
+        <p className="mx-2 text-lg">•</p>
         <p className="text-lg">{project}</p>
       </div>
-      <p className="max-h-32 w-160 overflow-auto text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
+      <p className="max-h-32 w-160 overflow-auto whitespace-pre-wrap break-words text-sm text-miru-dark-purple-400">
         {note}
       </p>
     </div>
     <div className="flex items-center">
       {bill_status === "unbilled" ? (
         <Badge
-          text="unbilled"
-          color="text-miru-alert-green-1000"
           bgColor="bg-miru-alert-yellow-400"
           className="uppercase"
+          color="text-miru-alert-green-1000"
+          text="unbilled"
         />
       ) : bill_status === "non_billable" ? (
         <Badge
-          text="non billable"
-          color="text-miru-dark-purple-600"
           bgColor="bg-miru-dark-purple-100"
           className="uppercase"
+          color="text-miru-dark-purple-600"
+          text="non billable"
         />
       ) : (
         <Badge
-          text="billed"
-          color="text-miru-alert-green-800"
           bgColor="bg-miru-alert-green-400"
           className="uppercase"
+          color="text-miru-alert-green-800"
+          text="billed"
         />
       )}
-      <p className="text-4xl ml-6">{minToHHMM(duration)}</p>
-      { showUpdateAction(bill_status, currentUserRole, id, setEditEntryId) }
-      { showDeleteAction(bill_status, currentUserRole, id, handleDeleteEntry) }
+      <p className="ml-6 text-4xl">{minToHHMM(duration)}</p>
+      {showUpdateAction(bill_status, currentUserRole, id, setEditEntryId)}
+      {showDeleteAction(bill_status, currentUserRole, id, handleDeleteEntry)}
     </div>
   </div>
 );
