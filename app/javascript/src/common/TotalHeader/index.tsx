@@ -6,13 +6,12 @@ const TotalHeader = ({
   secondTitle,
   secondAmount,
   thirdTitle,
-  thirdAmount
-
+  thirdAmount,
 }) => (
-  <div className="px-10 pb-10 pt-8 mt-3 bg-miru-gray-100">
-    <ul className="mt-0 border-t-0 page-display__wrap">
+  <div className="mt-3 bg-miru-gray-100 px-10 pb-10 pt-8">
+    <ul className="page-display__wrap mt-0 border-t-0">
       <li className="page-display__box">
-        <p className="text-sm font-normal tracking-widest uppercase">
+        <p className="text-sm font-normal uppercase tracking-widest">
           {firstTitle}
         </p>
         <p className="mt-3 text-5xl font-normal tracking-widest">
@@ -20,7 +19,7 @@ const TotalHeader = ({
         </p>
       </li>
       <li className="page-display__box">
-        <p className="text-sm font-normal tracking-widest uppercase">
+        <p className="text-sm font-normal uppercase tracking-widest">
           {secondTitle}
         </p>
         <p className="mt-3 text-5xl font-normal tracking-widest">
@@ -28,7 +27,7 @@ const TotalHeader = ({
         </p>
       </li>
       <li className="page-display__box">
-        <p className="text-sm font-normal tracking-widest uppercase">
+        <p className="text-sm font-normal uppercase tracking-widest">
           {thirdTitle}
         </p>
         <p className="mt-3 text-5xl font-normal tracking-widest">

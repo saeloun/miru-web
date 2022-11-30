@@ -2,8 +2,7 @@
 import React, { useState } from "react";
 
 import dayjs from "dayjs";
-import { XIcon, CalendarIcon } from "miruIcons";
-import { SearchIcon } from "miruIcons";
+import { XIcon, CalendarIcon, SearchIcon } from "miruIcons";
 import Select, { DropdownIndicatorProps, components } from "react-select";
 
 import payment from "apis/payments/payments";
@@ -12,14 +11,19 @@ import Toastr from "common/Toastr";
 
 import { mapPayment } from "../../../mapper/payment.mapper";
 
-const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList, fetchInvoiceList }) => {
+const AddManualEntry = ({
+  setShowManualEntryModal,
+  invoiceList,
+  fetchPaymentList,
+  fetchInvoiceList,
+}) => {
   const [invoice, setInvoice] = useState<any>(null);
   const [transactionDate, setTransactionDate] = useState<any>(null);
   const [transactionType, setTransactionType] = useState<any>(null);
   const [amount, setAmount] = useState<any>(null);
   const [note, setNote] = useState<any>(null);
   const [showDatePicker, setShowDatePicker] = useState<any>(false);
-  const [isOpen, setOpen] = useState<any>(false);
+  const [isOpen, setIsOpen] = useState<any>(false);
 
   const transactionTypes = [
     { label: "Visa", value: "visa" },
@@ -32,7 +36,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
     { label: "Credit Card", value: "credit_card" },
     { label: "Debit Card", value: "debit_card" },
     { label: "Paypal", value: "paypal" },
-    { label: "Stripe", value: "stripe" }
+    { label: "Stripe", value: "stripe" },
   ];
 
   const handleAddPayment = async () => {
@@ -42,7 +46,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
         transactionDate,
         transactionType,
         amount,
-        note
+        note,
       });
       await payment.create(sanitized);
       Toastr.success("Manual entry added successfully.");
@@ -54,66 +58,66 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
       setAmount("");
       setNote("");
       setShowManualEntryModal(false);
-
-    } catch (err) {
+    } catch {
       Toastr.error("Failed to add manual entry");
     }
   };
 
-  const handleDatePicker = (date) => {
+  const handleDatePicker = date => {
     setTransactionDate(date);
     setShowDatePicker(false);
   };
 
-  const handleInvoiceSelect = (val) => {
+  const handleInvoiceSelect = val => {
     setInvoice(val);
     setAmount(val.amount);
   };
 
   const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
     <components.DropdownIndicator {...props}>
-      {isOpen && <SearchIcon size={20} color="#1D1A31" />}
+      {isOpen && <SearchIcon color="#1D1A31" size={20} />}
     </components.DropdownIndicator>
   );
 
   const customStyles = {
-    placeholder: (defaultStyles) => ({
+    placeholder: defaultStyles => ({
       ...defaultStyles,
       background: "#F5F7F9",
-      color: "#A5A3AD"
+      color: "#A5A3AD",
     }),
-    menu: (base) => ({
+    menu: base => ({
       ...base,
-      border: 0
+      border: 0,
     }),
-    control: (provided) => ({
+    control: provided => ({
       ...provided,
       border: 0,
       background: "#F5F7F9",
-      boxShadow: "none"
+      boxShadow: "none",
     }),
     option: (styles, { isSelected }) => ({
       ...styles,
       backgroundColor: isSelected ? "#F5F7F9" : null,
       "&:hover": {
-        backgroundColor: "#F5F7F9"
-      }
-    })
+        backgroundColor: "#F5F7F9",
+      },
+    }),
   };
 
-  const CustomOption = (props) => {
+  const CustomOption = props => {
     const { innerProps, innerRef } = props;
+
     return (
       <div
         ref={innerRef}
         {...innerProps}
-        className=" p-2 flex justify-between items-center"
+        className=" flex items-center justify-between p-2"
       >
-        <div className="pr-6 pl-0 py-2.5 text-left">
+        <div className="py-2.5 pr-6 pl-0 text-left">
           <h1 className="text-base font-bold leading-5 text-miru-dark-purple-1000">
             {props.data.label}
           </h1>
-          <h3 className="pt-1 font-normal text-sm text-miru-dark-purple-400 leading-5">
+          <h3 className="pt-1 text-sm font-normal leading-5 text-miru-dark-purple-400">
             {props.data.invoiceNumber}
           </h3>
         </div>
@@ -121,12 +125,12 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
           <h1 className="text-base font-bold leading-5 text-miru-dark-purple-1000">
             {props.data.amount}
           </h1>
-          <h3 className="pt-1 font-normal text-sm text-miru-dark-purple-400 leading-5">
+          <h3 className="pt-1 text-sm font-normal leading-5 text-miru-dark-purple-400">
             {props.data.invoiceDate}
           </h3>
         </div>
-        <div className="pl-6 pr-0 py-2.5 text-sm font-semibold tracking-wider leading-4 text-right">
-          <span className="bg-miru-alert-green-400 text-miru-alert-green-800 rounded-lg px-1">
+        <div className="py-2.5 pl-6 pr-0 text-right text-sm font-semibold leading-4 tracking-wider">
+          <span className="rounded-lg bg-miru-alert-green-400 px-1 text-miru-alert-green-800">
             {props.data.status}
           </span>
         </div>
@@ -148,7 +152,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
                 className="modal__button"
                 onClick={() => setShowManualEntryModal(false)}
               >
-                <XIcon size={15} color="#CDD6DF" />
+                <XIcon color="#CDD6DF" size={15} />
               </button>
             </div>
           </div>
@@ -156,27 +160,27 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
             <div className="mt-4">
               <div className="field">
                 <div className="field_with_errors">
-                  <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                  <label className="block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
                     Invoice
                   </label>
                 </div>
                 <div className="mt-1">
                   <Select
-                    onMenuOpen={() => setOpen(true)}
-                    onMenuClose={() => setOpen(false)}
+                    isSearchable
+                    className="m-0 mt-2 w-full border-0 font-medium text-miru-dark-purple-1000"
+                    classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
                     defaultValue={null}
-                    onChange={handleInvoiceSelect}
                     options={invoiceList.invoiceList}
                     placeholder="Search by client name or invoice ID"
-                    isSearchable={true}
-                    className="m-0 mt-2 w-full font-medium text-miru-dark-purple-1000 border-0"
-                    classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
                     styles={customStyles}
                     components={{
                       Option: CustomOption,
                       DropdownIndicator,
-                      IndicatorSeparator: () => null
+                      IndicatorSeparator: () => null,
                     }}
+                    onChange={handleInvoiceSelect}
+                    onMenuClose={() => setIsOpen(false)}
+                    onMenuOpen={() => setIsOpen(true)}
                   />
                 </div>
               </div>
@@ -184,117 +188,117 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
             <div className="mt-4">
               <div className="field">
                 <div className="field_with_errors">
-                  <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                  <label className="block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
                     Transaction Date
                   </label>
                 </div>
                 <div
-                  className="mt-1 relative"
+                  className="relative mt-1"
                   onClick={() => setShowDatePicker(!showDatePicker)}
                 >
                   <input
-                    type="text"
                     disabled
+                    className="focus:outline-none block h-8 w-full appearance-none rounded border-0 bg-miru-gray-100 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
                     placeholder="DD.MM.YYYY"
-                    className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                    value={transactionDate && dayjs(transactionDate).format("DD.MM.YYYY") }
+                    type="text"
+                    value={
+                      transactionDate &&
+                      dayjs(transactionDate).format("DD.MM.YYYY")
+                    }
                   />
                   <CalendarIcon
-                    size={20}
                     className="absolute top-0 right-0 m-2"
                     color="#5B34EA"
+                    size={20}
                   />
                 </div>
                 {showDatePicker && (
                   <CustomDatePicker
-                    handleChange={handleDatePicker}
                     date={transactionDate}
+                    handleChange={handleDatePicker}
                   />
                 )}
-
               </div>
             </div>
-
             <div className="mt-4">
               <div className="field">
                 <div className="field_with_errors">
-                  <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                  <label className="block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
                     Transaction Type
                   </label>
                 </div>
                 <div className="mt-1">
                   <select
-                    className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                    onChange={(e) => setTransactionType(e.target.value)}
+                    className="focus:outline-none block h-8 w-full rounded border-0 bg-miru-gray-100 px-2 py-1 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
+                    onChange={e => setTransactionType(e.target.value)}
                   >
                     <option
-                      value=""
                       disabled
                       hidden
                       selected
                       style={{ color: "#A5A3AD" }}
+                      value=""
                     >
                       Select
                     </option>
-                    {transactionTypes.map((type) => (
-                      <option value={type.value}>{type.label}</option>
+                    {transactionTypes.map(type => (
+                      <option key={type.value} value={type.value}>
+                        {type.label}
+                      </option>
                     ))}
                   </select>
                 </div>
               </div>
             </div>
-
             <div className="mt-4">
               <div className="field">
                 <div className="field_with_errors">
-                  <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                  <label className="block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
                     Amount
                   </label>
                 </div>
                 <div className="mt-1">
                   <input
                     disabled
+                    className="focus:outline-none block h-8 w-full appearance-none rounded border-0 bg-miru-gray-100 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
+                    placeholder="Payment Amount"
                     type="text"
                     value={amount}
-                    placeholder="Payment Amount"
-                    className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
                   />
                 </div>
               </div>
             </div>
-
             <div className="mt-4">
               <div className="field">
                 <div className="field_with_errors">
-                  <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                  <label className="block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
                     Notes(Optional)
                   </label>
                 </div>
                 <div className="mt-1">
                   <textarea
-                    rows={3}
-                    onChange={(e) => setNote(e.target.value)}
+                    className="focus:outline-none block w-full appearance-none rounded border-0 bg-miru-gray-100 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
                     placeholder="Note"
-                    className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
+                    rows={3}
+                    onChange={e => setNote(e.target.value)}
                   />
                 </div>
               </div>
             </div>
-
             <div className="actions mt-4">
               {invoice && transactionDate && transactionType && amount ? (
                 <button
-                  onClick={handleAddPayment}
+                  className="focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 font-sans text-base font-medium tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
                   type="submit"
-                  className="tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer"
+                  onClick={handleAddPayment}
                 >
                   ADD PAYMENT
                 </button>
               ) : (
                 <button
-                  type="submit"
-                  className="tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-gray-1000 focus:outline-none rounded cursor-pointer"
                   disabled
+                  className="focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent bg-miru-gray-1000 py-1 px-4 font-sans text-base font-medium tracking-widest text-miru-white-1000 shadow-sm"
+                  type="submit"
                 >
                   ADD PAYMENT
                 </button>
