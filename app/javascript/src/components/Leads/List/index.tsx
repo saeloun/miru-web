@@ -140,7 +140,8 @@ const Leads = ({ permissions }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header isAdminUser={permissions.leads} setnewLead={setnewLead} setFilterVisibilty={setFilterVisibilty} setDisplayActions={setDisplayActions} />
+      <Header isAdminUser={permissions.leads} setnewLead={setnewLead} setFilterVisibilty={setFilterVisibilty} 
+        isFilterVisible={isFilterVisible} setDisplayActions={setDisplayActions} />
       <div>
         <div className="flex flex-col">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

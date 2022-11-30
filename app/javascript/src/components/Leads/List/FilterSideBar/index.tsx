@@ -145,6 +145,7 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
             const sanitized = unmapLeadList(res);
             setLeadData(sanitized.leadList);
             setIsApplyFilter(false);
+            setFilterVisibilty(false);
           });
       };
 
@@ -343,7 +344,7 @@ const FilterSideBar = ({ setLeadData, setFilterVisibilty, rememberFilter, setRem
       <div className="sidebar__footer">
         <button
           className="sidebar__reset"
-          onClick={() => resetFilter()} >
+          onClick={resetFilter} >
             RESET
         </button>
         <button className="sidebar__apply" onClick={() => setIsApplyFilter(true)}>APPLY</button>
