@@ -231,6 +231,7 @@ const UserDetails = () => {
                     <img
                       alt="profile_pic"
                       className="h-full min-w-full rounded-full"
+                      data-cy="profile-image"
                       src={profileImage}
                     />
                   </div>
@@ -249,7 +250,11 @@ const UserDetails = () => {
                     type="file"
                     onChange={handleProfileImageChange}
                   />
-                  <button className="" onClick={handleDeleteLogo}>
+                  <button
+                    className=""
+                    data-cy="delete-image"
+                    onClick={handleDeleteLogo}
+                  >
                     <img
                       alt="delete"
                       src={deleteIcon}

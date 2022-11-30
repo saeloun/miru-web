@@ -23,6 +23,7 @@ const Header = ({
           CANCEL
         </button>
         <button
+          data-cy="update-profile"
           disabled={!isDisableUpdateBtn}
           className={`mx-1 rounded-md border px-3 ${
             !isDisableUpdateBtn ? "cursor-auto bg-miru-gray-1000" : "bg-white"
