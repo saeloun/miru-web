@@ -1,13 +1,18 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
-import leads from "apis/leads";
+
 import { Funnel, MagnifyingGlass, Plus, CheckSquare } from "phosphor-react";
+
+import leads from "apis/leads";
+
 import AutoComplete from "./AutoComplete";
+
 import { unmapLeadListForDropdown } from "../../../mapper/lead.mapper";
 
 const Header = ({
   setnewLead,
   isAdminUser,
+  isFilterVisible,
   setFilterVisibilty,
   setDisplayActions
 }) => {
@@ -37,7 +42,7 @@ const Header = ({
             <MagnifyingGlass size={12} />
           </button>
         </div>
-        <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
+        <button className="ml-7" onClick={() => setFilterVisibilty(!isFilterVisible)}>
           <Funnel size={16} />
         </button>
       </div>
