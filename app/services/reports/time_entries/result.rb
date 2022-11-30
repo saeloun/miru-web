@@ -42,7 +42,7 @@ module Reports::TimeEntries
           end
         end
 
-        return report_result.sort_by { |report| report[:label] } unless group_by == "week" || group_by.blank?
+        report_result.sort_by! { |report| report[:label] } unless group_by == "week"
 
         report_result
       end

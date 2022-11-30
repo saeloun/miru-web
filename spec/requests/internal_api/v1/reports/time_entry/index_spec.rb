@@ -59,6 +59,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
           date_range: "this_week"
         }
         expect(response).to have_http_status(:ok)
+        puts "-" * 10, "response: #{response.body}"
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
         timesheet_ids_in_response = reports["entries"].pluck("id")
