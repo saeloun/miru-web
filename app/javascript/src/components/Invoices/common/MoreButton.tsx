@@ -4,10 +4,10 @@ import { DotsThreeVertical } from "phosphor-react";
 
 const MoreButton = ({ onClick }) => (
   <button
+    className="ml-2 rounded border border-miru-han-purple-1000 bg-miru-gray-1000 p-2.5 text-miru-han-purple-1000 opacity-50"
     onClick={onClick}
-    className="p-2.5 ml-2 bg-miru-gray-1000 border border-miru-han-purple-1000 text-miru-han-purple-1000 rounded opacity-50"
   >
-    <DotsThreeVertical size={16}/>
+    <DotsThreeVertical size={16} />
   </button>
 );
 
