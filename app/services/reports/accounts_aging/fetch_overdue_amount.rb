@@ -46,7 +46,7 @@ module Reports::AccountsAging
       end
 
       def clients
-        @_clients ||= current_company.clients.order(name: :asc).uniq
+        @_clients ||= current_company.clients.kept.order(name: :asc).uniq
       end
   end
 end
