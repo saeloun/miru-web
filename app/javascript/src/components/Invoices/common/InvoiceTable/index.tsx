@@ -21,37 +21,29 @@ const InvoiceTable = ({
 }) => {
   const [addNew, setAddNew] = useState<boolean>(false);
   const [showNewLineItemTable, setNewLineItemTable] = useState<boolean>(false);
-  const [totalLineItems, setTotalLineItems] = useState<number>(null); //eslint-disable-line
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [showMultiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
-  const [isEdit, setEdit] = useState<boolean>(false);
   const [filteredLineItems, setFilteredLineItems] =useState<any>(lineItems);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
-    loadNewLineItems();
-  }, [filteredLineItems]);
+    setFilteredLineItems(lineItems);
+  }, [lineItems]);
 
   const loadNewLineItems = () => {
     fetchNewLineItems(
       selectedClient,
       lineItems,
       setLineItems,
-      setTotalLineItems,
       pageNumber,
       setPageNumber,
       selectedLineItems
     );
   };
 
-  const addManualEntryItem = () => {
-    setAddNew(!addNew);
-  };
-
   useOutsideClick(wrapperRef, () => {
     setNewLineItemTable(false);
     setAddNew(false);
-    setEdit(false);
   }, addNew);
 
   const getNewLineItemDropdown = () => {
@@ -77,11 +69,37 @@ const InvoiceTable = ({
         <td colSpan={6} className="py-4 pr-10 relative">
           <button
             className="py-1 pr-10 tracking-widest w-full bg-white font-bold text-base text-center text-miru-dark-purple-200 rounded-md border-2 border-miru-dark-purple-200 border-dashed"
-            onClick={addManualEntryItem}
+            onClick={()=> setAddNew(!addNew)}
             data-cy="new-line-item"
           >
         + NEW LINE ITEM
           </button>
+        </td>
+      </tr>;
+    }
+  };
+
+  const getManualEntryItem = () => {
+    if (selectedClient){
+      return <ManualEntry
+        manualEntryArr={manualEntryArr}
+        setManualEntryArr={setManualEntryArr}
+        setNewLineItemTable={setNewLineItemTable}
+        getNewLineItemDropdown={getNewLineItemDropdown}
+        addNew={addNew}
+        setAddNew={setAddNew}
+        showNewLineItemTable={showNewLineItemTable}
+        lineItems={lineItems}
+        filteredLineItems={filteredLineItems}
+        setFilteredLineItems={setFilteredLineItems}
+      />;
+    }
+    else {
+      return <tr>
+        <td colSpan={5}>
+          <div className="sm:h-48 mt-4 h-10 flex shadow-2 items-center justify-center bg-white w-full">
+            Please select Client to add line item.
+          </div>
         </td>
       </tr>;
     }
@@ -94,21 +112,8 @@ const InvoiceTable = ({
         <tbody className="w-full" ref={wrapperRef}>
           {getAddNewButton()}
           {
-            addNew
-            &&
-              <ManualEntry
-                manualEntryArr={manualEntryArr}
-                setManualEntryArr={setManualEntryArr}
-                setNewLineItemTable={setNewLineItemTable}
-                getNewLineItemDropdown={getNewLineItemDropdown}
-                addNew={addNew}
-                setAddNew={setAddNew}
-                showNewLineItemTable={showNewLineItemTable}
-                lineItems={lineItems}
-                filteredLineItems={filteredLineItems}
-                setFilteredLineItems={setFilteredLineItems}
-              />
-
+            addNew &&
+            getManualEntryItem()
           }
           {
             manualEntryArr[0]?.name
@@ -120,8 +125,6 @@ const InvoiceTable = ({
                 item={item}
                 selectedOption={manualEntryArr}
                 setSelectedOption={setManualEntryArr}
-                isEdit={isEdit}
-                setEdit={setEdit}
               />
             ))
           }
@@ -135,8 +138,6 @@ const InvoiceTable = ({
                 item={item}
                 selectedOption={selectedLineItems}
                 setSelectedOption={setSelectedLineItems}
-                isEdit={isEdit}
-                setEdit={setEdit}
               />
             ))
           }

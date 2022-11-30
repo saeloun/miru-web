@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { lineTotalCalc, minFromHHMM, minToHHMM, useOutsideClick } from "helpers";
+import { lineTotalCalc, minFromHHMM, minToHHMM, useOutsideClick,useDebounce } from "helpers";
 import { DeleteIcon } from "miruIcons";
 import TextareaAutosize from "react-autosize-textarea";
 
@@ -27,10 +27,11 @@ const ManualEntry = ({
   const [isEnter, setEnter] =useState<boolean>(false);
   const ref = useRef(null);
   const wrapperRef = useRef(null);
+  const debouncedSearchName = useDebounce(name, 500);
 
   useEffect(() => {
     setLineItem({ ...lineItem,
-      idx: manualEntryArr.length + 1,
+      id: manualEntryArr.length + 1,
       name,
       date,
       description,
@@ -42,14 +43,14 @@ const ManualEntry = ({
   }, [name, date, description, rate, quantity, lineTotal]);
 
   useEffect( () => {
-    if (name && filteredLineItems.length > 0){
-      const newLineItems = filteredLineItems.filter((item) => item.first_name.toLowerCase().includes(name.toLowerCase()));
+    if (debouncedSearchName && filteredLineItems.length > 0){
+      const newLineItems = lineItems.filter((item) => item.first_name.toLowerCase().includes(debouncedSearchName.toLowerCase()));
       newLineItems ? setFilteredLineItems(newLineItems) : setFilteredLineItems([]);
     }
     else {
       setFilteredLineItems(lineItems);
     }
-  },[name]);
+  },[debouncedSearchName]);
 
   useEffect(() => {
     if (isEnter){
@@ -62,7 +63,7 @@ const ManualEntry = ({
   const handleDelete = async () => {
     const tempManualEntryArr = [...manualEntryArr];
 
-    const indexOfItem = tempManualEntryArr.findIndex(object => object.idx === manualEntryArr.length + 1);
+    const indexOfItem = tempManualEntryArr.findIndex(object => object.id === manualEntryArr.length + 1);
     indexOfItem !== -1 && tempManualEntryArr.splice(indexOfItem, 1);
     await setManualEntryArr(tempManualEntryArr);
     setAddNew(false);

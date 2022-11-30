@@ -36,15 +36,14 @@ const EditLineItems = ({
     };
 
     const selectedOptionArr = selectedOption.map((option) => {
-      if ((option.id && option.id === item.id) || (option.timesheet_entry_id && option.timesheet_entry_id === item.timesheet_entry_id) ||
-        (option.idx === item.idx)) {
+      if ((option.id && option.id === item.id) || (option.timesheet_entry_id && option.timesheet_entry_id === item.timesheet_entry_id)) {
         return newItem;
       }
 
       return option;
     });
 
-    setSelectedOption(selectedOptionArr);
+    name && setSelectedOption(selectedOptionArr);
   }, [name, lineItemDate, description, quantity, rate, lineTotal]);
 
   const closeEditField = (event) => {

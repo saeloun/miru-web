@@ -24,7 +24,7 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
 
   invoiceLineItems = invoiceLineItems.concat(
     manualEntryArr.map((item) => ({
-      idx: item.id,
+      id: item.id,
       name: item.name,
       description: item.description,
       date: dayjs(item.date).format("DD/MM/YYYY"),
@@ -38,21 +38,10 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
   return invoiceLineItems;
 };
 
-export const getMaxIdx = (arr) => {
-  const ids = arr.map((object) => object.idx);
-
-  if (ids.length > 0) {
-    return Math.max(...ids);
-  }
-
-  return 0;
-};
-
 export const fetchNewLineItems = async (
   selectedClient,
   lineItems,
   setLineItems,
-  setTotalLineItems,
   pageNumber,
   setPageNumber,
   selectedEntries = [],
@@ -71,7 +60,6 @@ export const fetchNewLineItems = async (
     const mergedItems = [...res.data.new_line_item_entries, ...lineItems];
     const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
     setLineItems(sortedData);
-    setTotalLineItems(res.data.total_new_line_items);
   }
 };
 
