@@ -23,90 +23,111 @@ const InvoiceDetails = ({
   reference,
   setReference,
   optionSelected,
-  clientVisible
+  clientVisible,
 }) => {
-  const [showDateOfIssuePicker, setShowDateOfIssuePicker] = useState<boolean>(false);
+  const [showDateOfIssuePicker, setShowDateOfIssuePicker] =
+    useState<boolean>(false);
   const [showDueDatePicker, setShowDueDatePicker] = useState<boolean>(false);
   const wrapperRef = useRef(null);
 
   const getIssuedDate = dayjs(issueDate).format("DD.MM.YYYY");
   const getDueDate = dayjs(dueDate).format("DD.MM.YYYY");
 
-  const handleDatePickerChange = (date) => {
+  const handleDatePickerChange = date => {
     setIssueDate(date);
     setShowDateOfIssuePicker(false);
     const newDueDate = new Date(date);
     setDueDate(new Date(newDueDate.setMonth(newDueDate.getMonth() + 1)));
   };
 
-  const handleDueDatePicker = (date) => {
+  const handleDueDatePicker = date => {
     setDueDate(date);
     setShowDueDatePicker(false);
   };
 
   return (
-    <div className="flex justify-between border-b-2 border-miru-gray-400 px-10 py-5 h-36">
+    <div className="flex h-36 justify-between border-b-2 border-miru-gray-400 px-10 py-5">
       <ClientSelection
+        clientList={clientList}
+        clientVisible={clientVisible}
+        optionSelected={optionSelected}
         selectedClient={selectedClient}
         setSelectedClient={setSelectedClient}
-        clientList={clientList}
-        optionSelected={optionSelected}
-        clientVisible={clientVisible}
       />
       <div className="group">
         <div className="hoverPencil">
-          <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
+          <p className="flex text-xs font-normal text-miru-dark-purple-1000">
             <span>Date of Issue</span>
-            <button className="ml-2 invisible" onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}>
-              <EditIcon size={13} color="#1D1A31" />
+            <button
+              className="invisible ml-2"
+              onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}
+            >
+              <EditIcon color="#1D1A31" size={13} />
             </button>
           </p>
-          {showDateOfIssuePicker && <CustomDatePicker handleChange={handleDatePickerChange} date={issueDate} />}
-          <p className="font-normal text-base text-miru-dark-purple-1000">
+          {showDateOfIssuePicker && (
+            <CustomDatePicker
+              date={issueDate}
+              handleChange={handleDatePickerChange}
+            />
+          )}
+          <p className="text-base font-normal text-miru-dark-purple-1000">
             {getIssuedDate}
           </p>
         </div>
         <div className="hoverPencil">
-          <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4 flex">
+          <p className="mt-4 flex text-xs font-normal text-miru-dark-purple-1000">
             <span>Due Date</span>
-            <button className="ml-2 invisible" onClick={() => setShowDueDatePicker(!showDueDatePicker)}>
-              <EditIcon size={13} color="#1D1A31" />
+            <button
+              className="invisible ml-2"
+              onClick={() => setShowDueDatePicker(!showDueDatePicker)}
+            >
+              <EditIcon color="#1D1A31" size={13} />
             </button>
           </p>
-          {showDueDatePicker && <CustomDatePicker handleChange={handleDueDatePicker} date={dueDate} />}
-          <p className="font-normal text-base text-miru-dark-purple-1000">
+          {showDueDatePicker && (
+            <CustomDatePicker
+              date={dueDate}
+              handleChange={handleDueDatePicker}
+            />
+          )}
+          <p className="text-base font-normal text-miru-dark-purple-1000">
             {getDueDate}
           </p>
         </div>
       </div>
-
       <div>
         <div className="flex flex-col" ref={wrapperRef}>
-          <p className="font-normal text-xs text-miru-dark-purple-1000">
+          <p className="text-xs font-normal text-miru-dark-purple-1000">
             Invoice Number
           </p>
-          <input type="text" value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)} className="px-2 w-3/5" data-cy="invoice-number"/>
+          <input
+            className="w-3/5 px-2"
+            data-cy="invoice-number"
+            type="text"
+            value={invoiceNumber}
+            onChange={e => setInvoiceNumber(e.target.value)}
+          />
         </div>
         <div className="flex flex-col">
-          <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
+          <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
             Reference
           </p>
           <input
+            className="w-3/5 px-2"
+            data-cy="invoice-reference"
             type="text"
             value={reference}
-            onChange={(e) => setReference(e.target.value)}
-            className="px-2 w-3/5"
-            data-cy="invoice-reference"
+            onChange={e => setReference(e.target.value)}
           />
         </div>
       </div>
-
       <div>
-        <p className="font-normal text-xs text-miru-dark-purple-1000 text-right">
+        <p className="text-right text-xs font-normal text-miru-dark-purple-1000">
           Amount
         </p>
-        <p className="font-normal text-4xl text-miru-dark-purple-1000 mt-6">
-          {currencyFormat({ baseCurrency: currency, amount: amount })}
+        <p className="mt-6 text-4xl font-normal text-miru-dark-purple-1000">
+          {currencyFormat({ baseCurrency: currency, amount })}
         </p>
       </div>
     </div>

@@ -16,7 +16,7 @@ type SidePanelProps = {
 const SidePanel = ({
   WrapperClassname,
   setFilterVisibilty,
-  children
+  children,
 }: SidePanelProps) => {
   const wrapperRef = useRef(null);
 
@@ -26,7 +26,7 @@ const SidePanel = ({
     <div
       ref={wrapperRef}
       className={classnames(
-        "sidebar__container flex flex-col w-1/5",
+        "sidebar__container flex w-1/5 flex-col",
         WrapperClassname
       )}
     >

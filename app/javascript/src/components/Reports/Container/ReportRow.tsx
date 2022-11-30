@@ -11,30 +11,27 @@ const ReportRow = ({
   note,
   teamMember,
   workDate,
-  duration
+  duration,
 }: ITimeEntry) => (
-
-  <div key={id} className="grid grid-cols-5 gap-2 border-b">
-    <div className="pr-6 py-4 text-left whitespace-nowrap">
-      <p className="font-semibold whitespace-normal text-base text-miru-dark-purple-1000">
+  <div className="grid grid-cols-5 gap-2 border-b" key={id}>
+    <div className="whitespace-nowrap py-4 pr-6 text-left">
+      <p className="whitespace-normal text-base font-semibold text-miru-dark-purple-1000">
         {project}
       </p>
-      <p className="font-normal text-sm text-miru-dark-purple-400">
-        {client}
-      </p>
+      <p className="text-sm font-normal text-miru-dark-purple-400">{client}</p>
     </div>
-    <div className="col-span-2 px-6 py-4 text-xs font-normal text-miru-dark-purple-1000 whitespace-pre-wrap break-words text-justify">
+    <div className="col-span-2 whitespace-pre-wrap break-words px-6 py-4 text-justify text-xs font-normal text-miru-dark-purple-1000">
       {note}
     </div>
-    <div className="px-6 py-4 text-left break-normal">
-      <p className="font-semibold text-base text-miru-dark-purple-1000">
+    <div className="break-normal px-6 py-4 text-left">
+      <p className="text-base font-semibold text-miru-dark-purple-1000">
         {teamMember}
       </p>
-      <p className="font-normal text-sm text-miru-dark-purple-400">
+      <p className="text-sm font-normal text-miru-dark-purple-400">
         {workDate}
       </p>
     </div>
-    <div className="pl-6 py-4 text-xl text-right whitespace-nowrap font-bold text-miru-dark-purple-1000">
+    <div className="whitespace-nowrap py-4 pl-6 text-right text-xl font-bold text-miru-dark-purple-1000">
       {minToHHMM(duration)}
     </div>
   </div>

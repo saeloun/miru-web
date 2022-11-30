@@ -1,4 +1,6 @@
-import * as React from "react";
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-unused-vars */
+import React, { useState, useEffect } from "react";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import Toastr from "common/Toastr";
@@ -6,9 +8,7 @@ import Toastr from "common/Toastr";
 import SelectProject from "./SelectProject";
 import WeeklyEntriesCard from "./WeeklyEntriesCard";
 
-const { useState, useEffect } = React;
-
-const WeeklyEntries: React.FC<Props> = ({
+const WeeklyEntries = ({
   clients,
   projects,
   newRowView,
@@ -24,9 +24,8 @@ const WeeklyEntries: React.FC<Props> = ({
   setIsWeeklyEditing,
   weeklyData,
   setWeeklyData,
-  selectedEmployeeId
-
-}) => {
+  selectedEmployeeId,
+}: Props) => {
   const [client, setClient] = useState("");
   const [project, setProject] = useState("");
   const [projectSelected, setProjectSelected] = useState(false);
@@ -36,6 +35,7 @@ const WeeklyEntries: React.FC<Props> = ({
   const setProjectId = () => {
     const pid = projects[client].find(p => p.name === project).id;
     setCurrentProjectId(pid);
+
     return pid;
   };
 
@@ -44,6 +44,7 @@ const WeeklyEntries: React.FC<Props> = ({
     currentEntries.forEach(entry => {
       if (entry) ids.push(entry["id"]);
     });
+
     return ids;
   };
 
@@ -52,11 +53,12 @@ const WeeklyEntries: React.FC<Props> = ({
       const ids = getIds();
       const res = await timesheetEntryApi.updateBulk({
         project_id: setProjectId(),
-        ids: ids
+        ids,
       });
       if (res.status === 200) {
         setEntryList(prevState => {
           const newState = { ...prevState, ...res.data.entries };
+
           return newState;
         });
       }
@@ -96,51 +98,44 @@ const WeeklyEntries: React.FC<Props> = ({
     handleSetData();
   }, [entries]);
 
-  return projectSelected ?
+  return projectSelected ? (
     <WeeklyEntriesCard
       client={client}
-      project={project}
       currentEntries={currentEntries}
-      setCurrentEntries={setCurrentEntries}
       currentProjectId={currentProjectId}
-      setProjectSelected={setProjectSelected}
-      projectSelected={projectSelected}
-      newRowView={newRowView}
-      setNewRowView={setNewRowView}
-      setEntryList={setEntryList}
-      // handleDeleteEntries={handleDeleteEntries}
-      handleEditEntries={handleEditEntries}
       dayInfo={dayInfo}
       isWeeklyEditing={isWeeklyEditing}
-      setIsWeeklyEditing={setIsWeeklyEditing}
-      weeklyData={weeklyData}
-      setWeeklyData={setWeeklyData}
-      selectedEmployeeId={selectedEmployeeId}
-
-    />
-    : <SelectProject
-      clients={clients}
-      client={client}
-      setClient={setClient}
-      clientName={clientName}
-      projects={projects}
-      project={project}
-      setProject={setProject}
-      projectName={projectName}
-      projectId={projectId}
-      setProjectId={setProjectId}
-      projectSelected={projectSelected}
-      setProjectSelected={setProjectSelected}
       newRowView={newRowView}
+      project={project}
+      selectedEmployeeId={selectedEmployeeId}
+      setCurrentEntries={setCurrentEntries}
+      setEntryList={setEntryList}
+      setIsWeeklyEditing={setIsWeeklyEditing}
       setNewRowView={setNewRowView}
+      setProjectSelected={setProjectSelected}
+    />
+  ) : (
+    <SelectProject
+      client={client}
+      clientName={clientName}
+      clients={clients}
       handleEditEntries={handleEditEntries}
       isWeeklyEditing={isWeeklyEditing}
+      newRowView={newRowView}
+      project={project}
+      projectName={projectName}
+      projects={projects}
+      setClient={setClient}
       setIsWeeklyEditing={setIsWeeklyEditing}
-    />;
+      setNewRowView={setNewRowView}
+      setProject={setProject}
+      setProjectId={setProjectId}
+      setProjectSelected={setProjectSelected}
+    />
+  );
 };
 
 interface Props {
-  key: number;
   clients: [];
   selectedEmployeeId: number;
   projects: object;
@@ -157,7 +152,6 @@ interface Props {
   setIsWeeklyEditing: React.Dispatch<React.SetStateAction<boolean>>;
   weeklyData: any[];
   setWeeklyData: React.Dispatch<React.SetStateAction<any[]>>;
-  parseWeeklyViewData: () => void;
 }
 
 export default WeeklyEntries;

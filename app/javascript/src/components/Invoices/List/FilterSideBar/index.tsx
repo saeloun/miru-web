@@ -18,20 +18,22 @@ dayjs.extend(advancedFormat);
 
 const FilterSideBar = ({
   filterIntialValues,
-  setFilterVisibilty,
+  setIsFilterVisible,
   filterParams,
   setFilterParams,
   selectedInput,
-  setSelectedInput
+  setSelectedInput,
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [clientList, setClientList] = useState<null | any[]>([]);
-  const [filteredClientList, setFilteredClientList] = useState<null | any[]>(clientList);
+  const [filteredClientList, setFilteredClientList] = useState<null | any[]>(
+    clientList
+  );
   const [showCustomFilter, setShowCustomFilter] = useState<boolean>(false);
   const [dateRange, setDateRange] = useState<any>({ from: "", to: "" });
   const [customDate, setCustomDate] = useState<boolean>(false);
   const [filters, setFilters] = useState<any>(filterParams);
-  const [diableDateBtn, setdisableDateBtn] = useState<boolean>(true);
+  const [disableDateBtn, setDisableDateBtn] = useState<boolean>(true);
   const [isDateRangeOpen, setIsDateRangeOpen] = useState<boolean>(false);
   const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
   const [isStatusOpen, setIsStatusOpen] = useState<boolean>(false);
@@ -43,12 +45,11 @@ const FilterSideBar = ({
   useEffect(() => {
     const { value, from, to } = filterParams.dateRange;
     if (value == "custom" && from && to) {
-      setDateRange({ ...dateRange, from: from, to: to });
+      setDateRange({ ...dateRange, from, to });
       setCustomDate(true);
       setDateRangeList(dateRangeOptions);
-      setdisableDateBtn(false);
-    }
-    else {
+      setDisableDateBtn(false);
+    } else {
       dateRangeOptions[5].label = "Custom";
     }
     fetchCompanyDetails();
@@ -59,12 +60,14 @@ const FilterSideBar = ({
     if (value == "custom" && from && to) {
       setCustomDate(true);
     }
+
     if (value == "all") {
       setDateRange({ ...dateRange, from: "", to: "" });
       setCustomDate(false);
     }
+
     if (dateRange.from && dateRange.to) {
-      setdisableDateBtn(false);
+      setDisableDateBtn(false);
     }
   }, [filters.dateRange.value, dateRange.from, dateRange.to]);
 
@@ -72,29 +75,30 @@ const FilterSideBar = ({
     if (a.label.toLowerCase() < b.label.toLowerCase()) {
       return -1;
     }
+
     if (a.label.toLowerCase() > b.label.toLowerCase()) {
       return 1;
     }
+
     return 0;
   };
 
   const fetchCompanyDetails = async () => {
     try {
       const res = await companiesApi.index();
-      const clientArr = res.data.company_client_list.map((item) => ({
+      const clientArr = res.data.company_client_list.map(item => ({
         label: item.name,
-        value: item.id
+        value: item.id,
       }));
       setClientList(clientArr.sort(sortClients));
       setFilteredClientList(clientArr.sort(sortClients));
       setLoading(false);
-    } catch (e) {
+    } catch {
       handleReset();
     }
   };
 
   const handleSelectFilter = (selectedValue, field) => {
-
     if (selectedValue.value !== "custom") {
       dateRangeOptions[5].label = "Custom";
       setDefaultDateRange();
@@ -104,14 +108,14 @@ const FilterSideBar = ({
       setShowCustomFilter(true);
       setFilters({
         ...filters,
-        [field.name]: { ...selectedValue, ...dateRange }
+        [field.name]: { ...selectedValue, ...dateRange },
       });
     }
 
     if (field.name == "dateRange") {
       setFilters({
         ...filters,
-        [field.name]: selectedValue
+        [field.name]: selectedValue,
       });
     }
 
@@ -119,21 +123,22 @@ const FilterSideBar = ({
       if (field.checked) {
         setFilters({
           ...filters,
-          [field.name]: filters[field.name].concat(selectedValue)
+          [field.name]: filters[field.name].concat(selectedValue),
         });
       } else {
         const newarr = filters[field.name].filter(
-          (client) => client.value != selectedValue.value
+          client => client.value != selectedValue.value
         );
+
         setFilters({
           ...filters,
-          [field.name]: newarr
+          [field.name]: newarr,
         });
       }
     }
   };
 
-  const handleSelectDate = (date) => {
+  const handleSelectDate = date => {
     if (selectedInput === "from-input") {
       setDateRange({ ...dateRange, ...{ from: date } });
     } else {
@@ -145,7 +150,7 @@ const FilterSideBar = ({
     setShowCustomFilter(false);
   };
 
-  const onClickInput = (e) => {
+  const onClickInput = e => {
     setSelectedInput(e.target.name);
   };
 
@@ -160,8 +165,8 @@ const FilterSideBar = ({
         ["dateRange"]: {
           value: "custom",
           label: `Custom (${fromDate} - ${toDate})`,
-          ...dateRange
-        }
+          ...dateRange,
+        },
       });
       setCustomDate(true);
     }
@@ -174,14 +179,14 @@ const FilterSideBar = ({
       return true;
     } else if (value == "custom" && !customDate) {
       return true;
-    } else {
-      return false;
     }
+
+    return false;
   };
 
   const setDefaultDateRange = () => ({
     ...filters,
-    ["dateRange"]: { value: "all", label: "All", from: "", to: "" }
+    ["dateRange"]: { value: "all", label: "All", from: "", to: "" },
   });
 
   const resetCustomDatePicker = () => {
@@ -191,19 +196,22 @@ const FilterSideBar = ({
 
   const handleReset = () => {
     setFilterParams(filterIntialValues);
-    setFilterVisibilty(false);
+    setIsFilterVisible(false);
   };
 
   const handleApply = () => {
     defaultDateRange()
       ? setFilterParams(setDefaultDateRange())
       : setFilterParams(filters);
-    setFilterVisibilty(false);
+    setIsFilterVisible(false);
   };
 
   useEffect(() => {
     if (debouncedSearchQuery && filteredClientList.length > 0) {
-      const newClientList = filteredClientList.filter((client) => client.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase()));
+      const newClientList = filteredClientList.filter(client =>
+        client.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      );
+
       newClientList.length > 0
         ? setFilteredClientList(newClientList)
         : setFilteredClientList([]);
@@ -217,21 +225,20 @@ const FilterSideBar = ({
   }
 
   return (
-    <SidePanel setFilterVisibilty={setFilterVisibilty}>
-      <SidePanel.Header className="flex px-5 pt-5 mb-7 justify-between items-center text-miru-dark-purple-1000 font-bold">
-        <h4 className="text-base flex items-center">
-          <FilterIcon size={16} className="mr-2.5" /> Filters
+    <SidePanel setFilterVisibilty={setIsFilterVisible}>
+      <SidePanel.Header className="mb-7 flex items-center justify-between px-5 pt-5 font-bold text-miru-dark-purple-1000">
+        <h4 className="flex items-center text-base">
+          <FilterIcon className="mr-2.5" size={16} /> Filters
         </h4>
-        <Button style="ternary" onClick={() => setFilterVisibilty(false)}>
-          <XIcon size={16} className="text-miru-dark-purple-1000" />
+        <Button style="ternary" onClick={() => setIsFilterVisible(false)}>
+          <XIcon className="text-miru-dark-purple-1000" size={16} />
         </Button>
       </SidePanel.Header>
-
-      <SidePanel.Body className="sidebar__filters" hasFooter>
+      <SidePanel.Body hasFooter className="sidebar__filters">
         <ul>
-          <li className="pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000 border-b border-miru-gray-200 cursor-pointer">
+          <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000">
             <div
-              className="px-5 flex justify-between items-center"
+              className="flex items-center justify-between px-5"
               onClick={() => {
                 setIsStatusOpen(false);
                 setIsClientOpen(false);
@@ -243,50 +250,55 @@ const FilterSideBar = ({
               </h5>
               <div className="flex items-center">
                 {filters.dateRange.value != "all" && (
-                  <span className="flex items-center justify-center rounded-full h-5 w-5 bg-miru-han-purple-1000 text-white text-xs font-semibold mr-7">
+                  <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
                     {1}
                   </span>
                 )}
-                {isDateRangeOpen ? <MinusIcon size={16} /> : <PlusIcon size={16} />}
+                {isDateRangeOpen ? (
+                  <MinusIcon size={16} />
+                ) : (
+                  <PlusIcon size={16} />
+                )}
               </div>
             </div>
             {isDateRangeOpen && (
               <div className="md:mt-7">
-                {dateRangeList.map((dateRange) => (
+                {dateRangeList.map(dateRange => (
                   <CustomRadioButton
-                    id={dateRange.value}
-                    label={dateRange.label}
-                    groupName="dateRange"
+                    classNameWrapper="px-5 py-2.5"
                     defaultCheck={dateRange.value == filters.dateRange.value}
-                    handleOnChange={(event) =>
+                    groupName="dateRange"
+                    id={dateRange.value}
+                    key={dateRange.value}
+                    label={dateRange.label}
+                    value={dateRange.value}
+                    handleOnChange={event =>
                       handleSelectFilter(dateRange, event.target)
                     }
-                    value={dateRange.value}
-                    classNameWrapper="px-5 py-2.5"
                   />
                 ))}
               </div>
             )}
             {showCustomFilter && (
-              <div className="mt-1 absolute flex flex-col bg-miru-white-1000 z-20 shadow-c1 rounded-lg">
+              <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1">
                 <CustomDateRangePicker
-                  hideCustomFilter={hideCustomFilter}
-                  handleSelectDate={handleSelectDate}
-                  onClickInput={onClickInput}
-                  selectedInput={selectedInput}
                   dateRange={dateRange}
+                  handleSelectDate={handleSelectDate}
+                  hideCustomFilter={hideCustomFilter}
+                  selectedInput={selectedInput}
+                  onClickInput={onClickInput}
                 />
-                <div className="p-6 flex h-full items-end justify-center bg-miru-white-1000 ">
+                <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
                   <button
-                    onClick={resetCustomDatePicker}
                     className="sidebar__reset"
+                    onClick={resetCustomDatePicker}
                   >
                     Cancel
                   </button>
                   <button
-                    disabled={diableDateBtn}
+                    disabled={disableDateBtn}
                     className={`sidebar__apply ${
-                      diableDateBtn
+                      disableDateBtn
                         ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
                         : "cursor-pointer"
                     }`}
@@ -298,9 +310,9 @@ const FilterSideBar = ({
               </div>
             )}
           </li>
-          <li className="pb-5 pt-6 text-miru-dark-purple-1000 border-b border-miru-gray-200 cursor-pointer">
+          <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
             <div
-              className="px-5 flex justify-between items-center hover:text-miru-han-purple-1000"
+              className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
               onClick={() => {
                 setIsStatusOpen(false);
                 setIsDateRangeOpen(false);
@@ -312,59 +324,62 @@ const FilterSideBar = ({
               </h5>
               <div className="flex items-center">
                 {filters.clients.length > 0 && (
-                  <span className="flex items-center justify-center rounded-full h-5 w-5 bg-miru-han-purple-1000 text-white text-xs font-semibold mr-7">
+                  <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
                     {filters.clients.length}
                   </span>
                 )}
-                {isClientOpen ? <MinusIcon size={16} /> : <PlusIcon size={16} />}
+                {isClientOpen ? (
+                  <MinusIcon size={16} />
+                ) : (
+                  <PlusIcon size={16} />
+                )}
               </div>
             </div>
-
             {isClientOpen && (
               <div className="md:mt-7">
-                <div className="w-full px-5 mt-2 relative flex items-center">
+                <div className="relative mt-2 flex w-full items-center px-5">
                   <input
+                    placeholder="Search"
                     type="text"
                     value={searchQuery}
-                    placeholder="Search"
-                    className="p-2 w-full bg-miru-gray-100 text-sm font-medium
-            rounded focus:outline-none focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-                    onChange={(e) => {
-
+                    className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
+            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+                    onChange={e => {
                       setSearchQuery(e.target.value);
                     }}
                   />
                   {searchQuery ? (
                     <XIcon
-                      size={16}
-                      color="#1D1A31"
                       className="absolute right-8"
+                      color="#1D1A31"
+                      size={16}
                       onClick={() => setSearchQuery("")}
                     />
                   ) : (
                     <SearchIcon
-                      size={16}
-                      color="#1D1A31"
                       className="absolute right-8"
+                      color="#1D1A31"
+                      size={16}
                     />
                   )}
                 </div>
-                <div className="md:mt-7 h-96 overflow-y-auto">
+                <div className="h-96 overflow-y-auto md:mt-7">
                   {filteredClientList.length > 0 ? (
-                    filteredClientList.map((client) => (
+                    filteredClientList.map(client => (
                       <CustomCheckbox
-                        id={client.value}
-                        text={client.label}
-                        name="clients"
                         checkboxValue={client.value}
-                        isChecked={filters.clients.some(
-                          (e) => e.value === client.value
-                        )}
-                        handleCheck={(event) =>
+                        id={client.value}
+                        key={client.value}
+                        labelClassName="ml-4"
+                        name="clients"
+                        text={client.label}
+                        wrapperClassName="py-3 px-5 hover:bg-miru-gray-100 text-miru-dark-purple-1000"
+                        handleCheck={event =>
                           handleSelectFilter(client, event.target)
                         }
-                        wrapperClassName="py-3 px-5 hover:bg-miru-gray-100 text-miru-dark-purple-1000"
-                        labelClassName="ml-4"
+                        isChecked={filters.clients.some(
+                          e => e.value === client.value
+                        )}
                       />
                     ))
                   ) : (
@@ -374,9 +389,9 @@ const FilterSideBar = ({
               </div>
             )}
           </li>
-          <li className="pb-5 pt-6 text-miru-dark-purple-1000 border-b border-miru-gray-200 cursor-pointer">
+          <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
             <div
-              className="px-5 flex justify-between items-center hover:text-miru-han-purple-1000"
+              className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
               onClick={() => {
                 setIsDateRangeOpen(false);
                 setIsClientOpen(false);
@@ -388,36 +403,40 @@ const FilterSideBar = ({
               </h5>
               <div className="flex items-center">
                 {filters.status.length > 0 && (
-                  <span className="flex items-center justify-center rounded-full h-5 w-5 bg-miru-han-purple-1000 text-white text-xs font-semibold mr-7">
+                  <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
                     {filters.status.length}
                   </span>
                 )}
-                {isStatusOpen ? <MinusIcon size={16} /> : <PlusIcon size={16} />}
+                {isStatusOpen ? (
+                  <MinusIcon size={16} />
+                ) : (
+                  <PlusIcon size={16} />
+                )}
               </div>
             </div>
-
             {isStatusOpen && (
               <div className="md:mt-7">
                 {statusOptions.length &&
-                  statusOptions.map((status) => (
+                  statusOptions.map(status => (
                     <CustomCheckbox
-                      id={status.value}
-                      text={
-                        <Badge
-                          text={status.label}
-                          className={getStatusCssClass(status.label)}
-                        />
-                      }
-                      name="status"
                       checkboxValue={status.value}
-                      isChecked={filters.status.some(
-                        (e) => e.value === status.value
-                      )}
-                      handleCheck={(event) =>
+                      id={status.value}
+                      key={status.value}
+                      labelClassName="ml-4"
+                      name="status"
+                      wrapperClassName="py-3 px-5 hover:bg-miru-gray-100"
+                      handleCheck={event =>
                         handleSelectFilter(status, event.target)
                       }
-                      wrapperClassName="py-3 px-5 hover:bg-miru-gray-100"
-                      labelClassName="ml-4"
+                      isChecked={filters.status.some(
+                        e => e.value === status.value
+                      )}
+                      text={
+                        <Badge
+                          className={getStatusCssClass(status.label)}
+                          text={status.label}
+                        />
+                      }
                     />
                   ))}
               </div>
@@ -427,14 +446,14 @@ const FilterSideBar = ({
       </SidePanel.Body>
       <SidePanel.Footer className="sidebar__footer">
         <Button
-          onClick={handleReset}
-          style="secondary"
+          className="mr-4 flex items-center justify-between"
           size="medium"
-          className="mr-4 flex justify-between items-center"
+          style="secondary"
+          onClick={handleReset}
         >
           RESET
         </Button>
-        <Button onClick={handleApply} style="primary" size="medium">
+        <Button size="medium" style="primary" onClick={handleApply}>
           APPLY
         </Button>
       </SidePanel.Footer>
