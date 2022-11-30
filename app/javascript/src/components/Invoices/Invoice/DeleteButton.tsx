@@ -3,16 +3,18 @@ import React from "react";
 import { DeleteIcon } from "miruIcons";
 
 const DeleteButton = ({ onClick }) => (
-  <div className="flex flex-row justify-items-center delete-button-container mr-1">
+  <div className="delete-button-container mr-1 flex flex-row justify-items-center">
     <button
-      className="flex flex-row justify-center items-center border border-miru-red-400 rounded h-10 w-32"
+      className="flex h-10 w-32 flex-row items-center justify-center rounded border border-miru-red-400"
       onClick={onClick}
     >
-      <div className="flex flex-row justify-between items-center">
+      <div className="flex flex-row items-center justify-between">
         <div className="mr-1">
-          <DeleteIcon size={16} color="#E04646" weight="bold"/>
+          <DeleteIcon color="#E04646" size={16} weight="bold" />
         </div>
-        <p className="font-bold tracking-widest text-base text-miru-red-400 ml-1">DELETE</p>
+        <p className="ml-1 text-base font-bold tracking-widest text-miru-red-400">
+          DELETE
+        </p>
       </div>
     </button>
   </div>

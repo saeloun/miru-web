@@ -1,5 +1,4 @@
-import React, { Fragment } from "react";
-import { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 
 import { useTeamDetails } from "context/TeamDetailsContext";
 
@@ -13,14 +12,14 @@ const PersonalDetails = () => {
       name: "Jane Cooper",
       dob: "04. 05. 1989",
       phone: "+123345234",
-      email: "jane.cooper@gmail.com"
+      email: "jane.cooper@gmail.com",
     });
   }, []);
 
   return (
     <Fragment>
-      <div className="px-10 py-4 bg-miru-han-purple-1000 flex items-center justify-between">
-        <h1 className="text-white font-bold text-2xl">Personal Details</h1>
+      <div className="flex items-center justify-between bg-miru-han-purple-1000 px-10 py-4">
+        <h1 className="text-2xl font-bold text-white">Personal Details</h1>
       </div>
       <StaticPage />
     </Fragment>

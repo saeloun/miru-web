@@ -3,8 +3,12 @@ import React, { useState, useEffect, useRef, MutableRefObject } from "react";
 
 import { format } from "date-fns";
 import dayjs from "dayjs";
-import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
-import { useOutsideClick } from "helpers";
+import {
+  minFromHHMM,
+  minToHHMM,
+  useOutsideClick,
+  validateTimesheetEntry,
+} from "helpers";
 import TextareaAutosize from "react-autosize-textarea";
 import { TimeInput } from "StyledComponents";
 
@@ -26,7 +30,7 @@ const AddEntry: React.FC<Iprops> = ({
   editEntryId,
   setEditEntryId,
   handleFilterEntry,
-  handleRelocateEntry
+  handleRelocateEntry,
 }) => {
   const [note, setNote] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
@@ -38,12 +42,14 @@ const AddEntry: React.FC<Iprops> = ({
   const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
 
-  const datePickerRef: MutableRefObject<any>  = useRef();
+  const datePickerRef: MutableRefObject<any> = useRef();
 
-  useOutsideClick(datePickerRef, () => { setDisplayDatePicker(false); } );
+  useOutsideClick(datePickerRef, () => {
+    setDisplayDatePicker(false);
+  });
 
   const handleFillData = () => {
-    if (! editEntryId) return;
+    if (!editEntryId) return;
     const entry = entryList[selectedFullDate].find(
       entry => entry.id === editEntryId
     );
@@ -73,15 +79,15 @@ const AddEntry: React.FC<Iprops> = ({
     }
   }, [project]);
 
-  const handleDurationChange = (val) => {
+  const handleDurationChange = val => {
     setDuration(val);
   };
 
   const getPayload = () => ({
     work_date: selectedDate,
     duration: minFromHHMM(duration),
-    note: note,
-    bill_status: billable ? "unbilled" : "non_billable"
+    note,
+    bill_status: billable ? "unbilled" : "non_billable",
   });
 
   const handleSave = async () => {
@@ -89,15 +95,23 @@ const AddEntry: React.FC<Iprops> = ({
     const message = validateTimesheetEntry(tse);
     if (message) {
       Toastr.error(message);
+
       return;
     }
-    const res = await timesheetEntryApi.create({
-      project_id: projectId,
-      timesheet_entry: tse
-    }, selectedEmployeeId);
+
+    const res = await timesheetEntryApi.create(
+      {
+        project_id: projectId,
+        timesheet_entry: tse,
+      },
+      selectedEmployeeId
+    );
 
     if (res.status === 200) {
-      const fetchEntriesRes = await fetchEntries(selectedFullDate, selectedFullDate);
+      const fetchEntriesRes = await fetchEntries(
+        selectedFullDate,
+        selectedFullDate
+      );
       if (fetchEntriesRes) {
         setNewEntryView(false);
       }
@@ -110,16 +124,17 @@ const AddEntry: React.FC<Iprops> = ({
       const message = validateTimesheetEntry(tse);
       if (message) {
         Toastr.error(message);
+
         return;
       }
 
       const updateRes = await timesheetEntryApi.update(editEntryId, {
         project_id: projectId,
-        timesheet_entry: tse
+        timesheet_entry: tse,
       });
 
       if (updateRes.status >= 200 && updateRes.status < 300) {
-        if (selectedDate  !== selectedFullDate) {
+        if (selectedDate !== selectedFullDate) {
           await handleFilterEntry(selectedFullDate, editEntryId);
           await handleRelocateEntry(selectedDate, updateRes.data.entry);
         } else {
@@ -144,107 +159,112 @@ const AddEntry: React.FC<Iprops> = ({
 
   return (
     <div
-      className={
-        "min-h-24 p-4 flex justify-between rounded-lg shadow-2xl " +
-        (editEntryId ? "mt-10" : "")
-      }
+      className={`min-h-24 flex justify-between rounded-lg p-4 shadow-2xl ${
+        editEntryId ? "mt-10" : ""
+      }`}
     >
       <div className="w-1/2">
-        <div className="w-129 mb-2 flex justify-between">
+        <div className="mb-2 flex w-129 justify-between">
           <select
+            className="h-8 w-64 rounded-sm bg-miru-gray-100"
+            id="client"
+            name="client"
+            value={client || "Client"}
             onChange={e => {
               setClient(e.target.value);
               setProject(projects[e.target.value][0].name);
             }}
-            value={client || "Client"}
-            name="client"
-            id="client"
-            className="w-64 bg-miru-gray-100 rounded-sm h-8"
           >
             {!client && (
               <option disabled selected className="text-miru-gray-100">
-              Client
+                Client
               </option>
             )}
             {clients.map((client, i) => (
               <option key={i.toString()}>{client["name"]}</option>
             ))}
           </select>
-
           <select
+            className="h-8 w-64 rounded-sm bg-miru-gray-100"
+            id="project"
+            name="project"
+            value={project}
             onChange={e => {
               setProject(e.target.value);
             }}
-            value={project}
-            name="project"
-            id="project"
-            className="w-64 bg-miru-gray-100 rounded-sm h-8"
           >
             {!project && (
               <option disabled selected className="text-miru-gray-100">
-              Project
+                Project
               </option>
             )}
             {client &&
-            projects[client].map((project, i) => (
-              <option data-project-id={project.id} key={i.toString()}>
-                {project.name}
-              </option>
-            ))}
+              projects[client].map((project, i) => (
+                <option data-project-id={project.id} key={i.toString()}>
+                  {project.name}
+                </option>
+              ))}
           </select>
         </div>
         <TextareaAutosize
-          value={note}
-          onChange={e => setNote(e.target["value"])}
-          rows={5}
           cols={60}
           name="notes"
           placeholder=" Notes"
-          className={("w-129 px-1 rounded-sm bg-miru-gray-100 focus:miru-han-purple-1000 outline-none resize-none mt-2 overflow-y-auto " + (editEntryId ? "h-auto" : "h-8") )}
+          rows={5}
+          value={note}
+          className={`focus:miru-han-purple-1000 outline-none mt-2 w-129 resize-none overflow-y-auto rounded-sm bg-miru-gray-100 px-1 ${
+            editEntryId ? "h-auto" : "h-8"
+          }`}
+          onChange={e => setNote(e.target["value"])}
         />
       </div>
       <div className="w-60">
         <div className="mb-2 flex justify-between">
           <div>
-            { displayDatePicker &&
-            <div className="relative" ref={datePickerRef}>
-              <div className="absolute h-100 w-100 z-10 top-8">
-                <CustomDatePicker
-                  handleChange={handleDateChangeFromDatePicker}
-                  date={dayjs(selectedDate).toDate()}
-                />
+            {displayDatePicker && (
+              <div className="relative" ref={datePickerRef}>
+                <div className="h-100 w-100 absolute top-8 z-10">
+                  <CustomDatePicker
+                    date={dayjs(selectedDate).toDate()}
+                    handleChange={handleDateChangeFromDatePicker}
+                  />
+                </div>
               </div>
-            </div>
-            }
-            <div className="formatted-date p-1 h-8 w-29 bg-miru-gray-100 rounded-sm text-sm flex justify-center items-center" onClick={() => { if (editEntryId) setDisplayDatePicker(true);} }>
+            )}
+            <div
+              className="formatted-date flex h-8 w-29 items-center justify-center rounded-sm bg-miru-gray-100 p-1 text-sm"
+              onClick={() => {
+                if (editEntryId) setDisplayDatePicker(true);
+              }}
+            >
               {format(new Date(selectedDate), "do MMM, yyyy")}
             </div>
           </div>
           <TimeInput
-            name="timeInput"
-            className="p-1 h-8 w-20 bg-miru-gray-100 rounded-sm text-sm placeholder:text-miru-gray-1000"
+            className="h-8 w-20 rounded-sm bg-miru-gray-100 p-1 text-sm placeholder:text-miru-gray-1000"
             initTime={duration}
+            name="timeInput"
             onTimeChange={handleDurationChange}
           />
         </div>
-        <div className="flex items-center mt-2">
+        <div className="mt-2 flex items-center">
           {billable ? (
             <img
+              alt="checkbox"
+              className="inline"
+              src={checkedIcon}
               onClick={() => {
                 setBillable(false);
               }}
-              className="inline"
-              src={checkedIcon}
-              alt="checkbox"
             />
           ) : (
             <img
+              alt="checkbox"
+              className="inline"
+              src={uncheckedIcon}
               onClick={() => {
                 if (projectBillable) setBillable(true);
               }}
-              className="inline"
-              src={uncheckedIcon}
-              alt="checkbox"
             />
           )}
           <h4>Billable</h4>
@@ -253,35 +273,33 @@ const AddEntry: React.FC<Iprops> = ({
       <div className="max-w-min">
         {editEntryId === 0 ? (
           <button
-            onClick={handleSave}
-            className={
-              "mb-1 h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-              (note && client && project
+            className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
+              note && client && project
                 ? "bg-miru-han-purple-1000 hover:border-transparent"
-                : "bg-miru-gray-1000")
-            }
+                : "bg-miru-gray-1000"
+            }`}
+            onClick={handleSave}
           >
             SAVE
           </button>
         ) : (
           <button
-            onClick={() => handleEdit()}
-            className={
-              "mb-1 h-8 w-38 text-xs py-1 px-6 rounded border text-white font-bold tracking-widest " +
-              (note && client && project
+            className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
+              note && client && project
                 ? "bg-miru-han-purple-1000 hover:border-transparent"
-                : "bg-miru-gray-1000")
-            }
+                : "bg-miru-gray-1000"
+            }`}
+            onClick={() => handleEdit()}
           >
             UPDATE
           </button>
         )}
         <button
+          className="mt-1 h-8 w-38 rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-xs font-bold tracking-widest text-miru-han-purple-600 hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
           onClick={() => {
             setNewEntryView(false);
             setEditEntryId(0);
           }}
-          className="mt-1 h-8 w-38 text-xs py-1 px-6 rounded border border-miru-han-purple-1000 bg-transparent hover:bg-miru-han-purple-1000 text-miru-han-purple-600 font-bold hover:text-white hover:border-transparent tracking-widest"
         >
           CANCEL
         </button>
@@ -292,19 +310,16 @@ const AddEntry: React.FC<Iprops> = ({
 
 interface Iprops {
   selectedEmployeeId: number;
-  fetchEntries: (from: string, to: string) => Promise<any>
+  fetchEntries: (from: string, to: string) => Promise<any>; // eslint-disable-line
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
   clients: any[];
   projects: object;
-  selectedDateInfo: object;
-  setEntryList: React.Dispatch<React.SetStateAction<object[]>>;
   selectedFullDate: string;
   editEntryId: number;
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
-  dayInfo: object;
   entryList: object;
-  handleFilterEntry: (date: string, entryId: (string | number)) => object;
-  handleRelocateEntry: (date: string, entry: object) => void;
+  handleFilterEntry: (date: string, entryId: string | number) => object; // eslint-disable-line
+  handleRelocateEntry: (date: string, entry: object) => void; // eslint-disable-line
 }
 
 export default AddEntry;
