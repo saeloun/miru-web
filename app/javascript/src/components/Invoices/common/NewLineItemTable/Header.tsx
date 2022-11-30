@@ -1,8 +1,11 @@
 import React from "react";
 // import { SearchIcon } from "miruIcons";
 
-const NewLineItemTableHeader = ({ setShowMultilineModal, addManualEntryItem }) => (
-  <div className="flex items-center justify-between pt-6 pb-2 px-3">
+const NewLineItemTableHeader = ({
+  setShowMultilineModal,
+  addManualEntryItem,
+}) => (
+  <div className="flex items-center justify-between px-3 pt-6 pb-2">
     {/* Commented the search box as it is intended for next release */}
     {/* <div className="mt-1 relative rounded-md shadow-sm col-span-2 ">
       <input
@@ -16,10 +19,16 @@ const NewLineItemTableHeader = ({ setShowMultilineModal, addManualEntryItem }) =
         />
       </button>
     </div> */}
-    <button onClick={addManualEntryItem} className="font-bold text-xs tracking-widest text-miru-han-purple-1000">
+    <button
+      className="text-xs font-bold tracking-widest text-miru-han-purple-1000"
+      onClick={addManualEntryItem}
+    >
       ADD MANUAL ENTRY
     </button>
-    <button onClick={() => setShowMultilineModal(true)} className="font-bold text-xs tracking-widest text-miru-han-purple-1000">
+    <button
+      className="text-xs font-bold tracking-widest text-miru-han-purple-1000"
+      onClick={() => setShowMultilineModal(true)}
+    >
       CLICK TO ADD MULTIPLE ENTRIES
     </button>
   </div>

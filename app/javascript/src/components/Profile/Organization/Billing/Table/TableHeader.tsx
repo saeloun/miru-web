@@ -1,35 +1,38 @@
-import * as React from "react";
+import React from "react";
 
 const TableHeader = () => (
   <tr>
-    <th className="px-2 py-1 text-xs font-normal tracking-widest text-left text-miru-black-1000" scope="col">
-        DATE
+    <th
+      className="px-2 py-1 text-left text-xs font-normal tracking-widest text-miru-black-1000"
+      scope="col"
+    >
+      DATE
     </th>
     <th
+      className="px-4 py-1 text-left text-xs font-normal tracking-widest text-miru-black-1000"
       scope="col"
-      className="px-4 py-1 text-xs font-normal tracking-widest text-left text-miru-black-1000"
     >
-        DESCRIPTION
+      DESCRIPTION
     </th>
     <th
+      className="px-2 py-1 text-left text-xs font-normal tracking-widest text-miru-black-1000"
       scope="col"
-      className="px-2 py-1 text-xs font-normal tracking-widest text-left text-miru-black-1000"
     >
-        TEAM MEMBERS
+      TEAM MEMBERS
     </th>
     <th
+      className="px-2 py-1 text-center text-xs font-normal tracking-widest text-miru-black-1000"
       scope="col"
-      className="px-2 py-1 text-xs font-normal tracking-widest text-center text-miru-black-1000"
     >
-        TOTAL BILL AMT
+      TOTAL BILL AMT
     </th>
     <th
+      className="px-2 py-1 text-center text-xs font-normal tracking-widest text-miru-black-1000"
       scope="col"
-      className="px-2 py-1 text-xs font-normal tracking-widest text-center text-miru-black-1000"
     >
-        PAYMENT TYPE
+      PAYMENT TYPE
     </th>
-    <th scope="col" className="relative px-6 py-3"></th>
+    <th className="relative px-6 py-3" scope="col" />
   </tr>
 );
 
