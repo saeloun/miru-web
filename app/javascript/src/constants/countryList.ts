@@ -241,5 +241,5 @@ export const CountryList = [
   { name: "Western Sahara", code: "EH" },
   { name: "Yemen", code: "YE" },
   { name: "Zambia", code: "ZM" },
-  { name: "Zimbabwe", code: "ZW" }
+  { name: "Zimbabwe", code: "ZW" },
 ];

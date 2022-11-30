@@ -1,12 +1,11 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { TeamModalType, TOASTER_DURATION } from "constants/index";
-
-import { unmapList } from "mapper/team.mapper";
 import { ToastContainer } from "react-toastify";
 
 import teamApi from "apis/team";
+import { TeamModalType, TOASTER_DURATION } from "constants/index";
 import { ListContext } from "context/TeamContext";
+import { unmapList } from "mapper/team.mapper";
 
 import Header from "./Header";
 import Table from "./Table";
@@ -14,13 +13,12 @@ import Table from "./Table";
 import Modals from "../modals/Modals";
 
 export const ProjectList = () => {
-
   const [teamList, setTeamList] = useState([]);
   const [modal, setModal] = useState("");
-  const [modalUser, setModaluser] = useState({});
+  const [modalUser, setModalUser] = useState({});
 
   const setModalState = (modalName, user = {}) => {
-    setModaluser(user);
+    setModalUser(user);
     setModal(modalName);
   };
 
@@ -33,34 +31,34 @@ export const ProjectList = () => {
   };
 
   useEffect(() => {
-    if (modal == TeamModalType.NONE){
+    if (modal == TeamModalType.NONE) {
       getTeamList();
     }
   }, [modal]);
 
   return (
-    <Fragment>
-      <ListContext.Provider value={{
+    <ListContext.Provider
+      value={{
         teamList,
         setModalState,
-        modal
-      }}>
-        <ToastContainer autoClose={TOASTER_DURATION} />
-        <Header />
-        <div>
-          <div className="table__flex">
-            <div className="table__position-one">
-              <div className="table__position-two">
-                <div className="table__border border-b-0 border-miru-gray-200">
-                  <Table />
-                </div>
+        modal,
+      }}
+    >
+      <ToastContainer autoClose={TOASTER_DURATION} />
+      <Header />
+      <div>
+        <div className="table__flex">
+          <div className="table__position-one">
+            <div className="table__position-two">
+              <div className="table__border border-b-0 border-miru-gray-200">
+                <Table />
               </div>
             </div>
           </div>
         </div>
-        <Modals user={modalUser} />
-      </ListContext.Provider>
-    </Fragment>
+      </div>
+      <Modals user={modalUser} />
+    </ListContext.Provider>
   );
 };
 export default ProjectList;

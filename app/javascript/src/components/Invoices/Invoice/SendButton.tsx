@@ -3,16 +3,18 @@ import React from "react";
 import { PaperPlaneTiltIcon } from "miruIcons";
 
 const SendButton = ({ onClick }) => (
-  <div className="flex flex-row justify-items-center send-button-container ml-1">
+  <div className="send-button-container ml-1 flex flex-row justify-items-center">
     <button
-      className="flex flex-row justify-center items-center bg-miru-han-purple-1000 rounded h-10 w-32"
+      className="flex h-10 w-32 flex-row items-center justify-center rounded bg-miru-han-purple-1000"
       onClick={onClick}
     >
-      <div className="flex flex-row justify-between items-center">
+      <div className="flex flex-row items-center justify-between">
         <div className="mr-1">
-          <PaperPlaneTiltIcon size={16} color="#FFFFFF" weight="bold"/>
+          <PaperPlaneTiltIcon color="#FFFFFF" size={16} weight="bold" />
         </div>
-        <p className="font-bold tracking-widest text-base text-miru-white-1000 ml-1">SEND</p>
+        <p className="ml-1 text-base font-bold tracking-widest text-miru-white-1000">
+          SEND
+        </p>
       </div>
     </button>
   </div>
