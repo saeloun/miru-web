@@ -34,7 +34,7 @@ const InvoiceLineItems = ({ currency, items, showHeader }) => {
           {items.length > 0 &&
             items.map(
               item =>
-                item._destroy && (
+                !item._destroy && (
                   <LineItem currency={currency} item={item} key={item.id} />
                 )
             )}
