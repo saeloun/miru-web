@@ -50,7 +50,7 @@ describe("Sign Up", () => {
   it("user should be able to signup by entering correct values", function () {
     cy.get(authSelectors.firstNameInput).type(fake.firstName);
     cy.get(authSelectors.lastNameInput).type(fake.lastName);
-    cy.get(authSelectors.emailInput).type(testEmail);
+    cy.get(authSelectors.emailInput).type(fake.email);
     cy.get(authSelectors.passwordInput).type("password");
     cy.get(authSelectors.confirmPasswordInput).type("password");
     cy.get(authSelectors.signUpButton).click();
