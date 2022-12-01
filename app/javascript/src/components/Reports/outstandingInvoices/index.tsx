@@ -129,7 +129,7 @@ const OutstandingInvoiceReport = () => {
           type={"Invoices Report"}
         />
         <Container />
-        {false && <Filters
+        {isFilterVisible && <Filters
           handleApplyFilter={handleApplyFilter}
           resetFilter={resetFilter}
           setFilterVisibilty={setFilterVisibilty}
