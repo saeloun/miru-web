@@ -107,6 +107,7 @@ const InvoiceTotal = ({
       (sum, { lineTotal }) => sum + Number(lineTotal),
       0
     );
+
     const subTotal = Number(newLineItemsSubTotal) + Number(manualEntryTotal);
     const newTotal = subTotal + Number(tax) - Number(discount);
     setSubTotal(subTotal);
@@ -124,10 +125,12 @@ const InvoiceTotal = ({
               Sub total
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-              {currencyFormat({
-                baseCurrency: currency,
-                amount: subTotal.toFixed(2),
-              })}
+              {subTotal
+                ? currencyFormat({
+                    baseCurrency: currency,
+                    amount: subTotal.toFixed(2),
+                  })
+                : 0}
             </td>
           </tr>
           <tr
@@ -163,7 +166,9 @@ const InvoiceTotal = ({
               Total
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
-              {currencyFormat({ baseCurrency: currency, amount: total })}
+              {total
+                ? currencyFormat({ baseCurrency: currency, amount: total })
+                : 0}
             </td>
           </tr>
           <tr>
@@ -171,7 +176,9 @@ const InvoiceTotal = ({
               Amount Paid
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-              {currencyFormat({ baseCurrency: currency, amount: amountPaid })}
+              {amountPaid
+                ? currencyFormat({ baseCurrency: currency, amount: amountPaid })
+                : 0}
             </td>
           </tr>
           <tr>
@@ -179,7 +186,9 @@ const InvoiceTotal = ({
               Amount Due
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
-              {currencyFormat({ baseCurrency: currency, amount: amountDue })}
+              {amountDue
+                ? currencyFormat({ baseCurrency: currency, amount: amountDue })
+                : 0}
             </td>
           </tr>
           <tr>

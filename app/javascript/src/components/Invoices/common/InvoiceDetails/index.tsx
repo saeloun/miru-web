@@ -127,7 +127,7 @@ const InvoiceDetails = ({
           Amount
         </p>
         <p className="mt-6 text-4xl font-normal text-miru-dark-purple-1000">
-          {amount ? currencyFormat({ baseCurrency: currency, amount }) : "-"}
+          {amount ? currencyFormat({ baseCurrency: currency, amount }) : 0}
         </p>
       </div>
     </div>
