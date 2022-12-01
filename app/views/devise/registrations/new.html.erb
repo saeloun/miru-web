@@ -26,10 +26,10 @@
                     </div>
                     <div class="mt-1 flex -space-x-px">
                       <div class="mr-4 w-1/2 flex-1 min-w-0">
-                        <%= f.text_field :first_name, placeholder: t('registration.first_name').titlecase , autofocus: true, class: "form__input #{error_message_class(f.object, :first_name)}" %>
+                        <%= f.text_field :first_name, placeholder: t('registration.first_name').titlecase , autofocus: true, data: { cy: "first-name-input" }, class: "form__input #{error_message_class(f.object, :first_name)}" %>
                       </div>
                       <div class="w-1/2 flex-1 min-w-0">
-                        <%= f.text_field :last_name, placeholder: t('registration.last_name').titlecase, autofocus: true, class: "form__input #{error_message_class(f.object, :last_name)}" %>
+                        <%= f.text_field :last_name, placeholder: t('registration.last_name').titlecase, autofocus: true, data: { cy: "last-name-input" }, class: "form__input #{error_message_class(f.object, :last_name)}" %>
                       </div>
                     </div>
                   </div>
@@ -43,7 +43,7 @@
                       </div>
                     </div>
                     <div class="mt-1">
-                        <%= f.text_field :email, placeholder: t('registration.email_id').capitalize, autofocus: true, class: "form__input #{error_message_class(f.object, :email)}" %>
+                        <%= f.text_field :email, placeholder: t('registration.email_id').capitalize, autofocus: true, data: { cy: "email-input" }, class: "form__input #{error_message_class(f.object, :email)}" %>
                     </div>
                   </div>
                 </div>
@@ -56,7 +56,7 @@
                       </div>
                     </div>
                     <div class="mt-1 relative">
-                      <input name="user[password]" placeholder="<%= t('registration.password').capitalize %>" id="user_password" :type="show ? 'password' : 'text'" class="form__input <%= error_message_class(f.object, :password) %>" >
+                      <input name="user[password]" data-cy="password-input" placeholder="<%= t('registration.password').capitalize %>" id="user_password" :type="show ? 'password' : 'text'" class="form__input <%= error_message_class(f.object, :password) %>" >
                       <div class="password_eye__position">
                         <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="password_eye__icon">
                         <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="password_eye__icon">
@@ -73,7 +73,7 @@
                       </div>
                     </div>
                     <div class="mt-1 relative">
-                      <input name="user[password_confirmation]" placeholder="<%= t('registration.confirm_password').titlecase %>" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="form__input <%= error_message_class(f.object, :password_confirmation) %>">
+                      <input name="user[password_confirmation]" data-cy="confirm-password-input" placeholder="<%= t('registration.confirm_password').titlecase %>" id="user_password_confirmation" :type="show ? 'password' : 'text'" class="form__input <%= error_message_class(f.object, :password_confirmation) %>">
                       <div class="password_eye__position">
                         <img src="<%= image_url 'password_icon.svg' %>" @click="show = !show" :class="{'hidden': !show, 'block':show }" class="password_eye__icon">
                         <img src="<%= image_url 'password_icon_text.svg' %>" @click="show = !show" :class="{'block': !show, 'hidden':show }" class="password_eye__icon">
