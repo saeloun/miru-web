@@ -12,7 +12,7 @@ RSpec.describe InvoicePayment::StripeCheckoutFulfillment do
 }
 
   context "when correct stripe event is passed" do
-    let!(:intent_id) { Faker::String.random(length: [0, 6]) }
+    let!(:intent_id) { Faker::Number.number(digits: 10).to_s }
     let!(:current_time) { DateTime.now }
     let!(:event) { {
       data: {
@@ -50,7 +50,7 @@ RSpec.describe InvoicePayment::StripeCheckoutFulfillment do
   end
 
   context "when intent id of invoice and stripe event doesn't match" do
-    let!(:intent_id) { Faker::String.random(length: [0, 6]) }
+    let!(:intent_id) { Faker::Number.number(digits: 10).to_s }
     let!(:current_time) { DateTime.now }
     let!(:event) { {
       data: {
@@ -80,7 +80,7 @@ RSpec.describe InvoicePayment::StripeCheckoutFulfillment do
   end
 
   context "when stripe event status is not complete" do
-    let!(:intent_id) { Faker::String.random(length: [0, 6]) }
+    let!(:intent_id) { Faker::Number.number(digits: 10).to_s }
     let!(:current_time) { DateTime.now }
     let!(:event) { {
       data: {
@@ -110,7 +110,7 @@ RSpec.describe InvoicePayment::StripeCheckoutFulfillment do
   end
 
   context "when stripe event payment_status is not paid" do
-    let!(:intent_id) { Faker::String.random(length: [0, 6]) }
+    let!(:intent_id) { Faker::Number.number(digits: 10).to_s }
     let!(:current_time) { DateTime.now }
     let!(:event) { {
       data: {

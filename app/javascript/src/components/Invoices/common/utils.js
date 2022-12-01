@@ -8,7 +8,7 @@ import Toastr from "common/Toastr";
 export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
   let invoiceLineItems = [];
   invoiceLineItems = invoiceLineItems.concat(
-    selectedLineItems.map((item) => ({
+    selectedLineItems.map(item => ({
       id: item.id,
       name: item.name ? item.name : `${item.first_name} ${item.last_name}`,
       description: item.description,
@@ -18,12 +18,12 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
       timesheet_entry_id: item.time_sheet_entry
         ? item.time_sheet_entry
         : item.timesheet_entry_id,
-      _destroy: !!item._destroy
+      _destroy: !!item._destroy,
     }))
   );
 
   invoiceLineItems = invoiceLineItems.concat(
-    manualEntryArr.map((item) => ({
+    manualEntryArr.map(item => ({
       id: item.id,
       name: item.name,
       description: item.description,
@@ -31,7 +31,7 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
       rate: item.rate,
       quantity: Number(item.quantity),
       timesheet_entry_id: item.time_sheet_entry,
-      _destroy: !!item._destroy
+      _destroy: !!item._destroy,
     }))
   );
 
@@ -44,12 +44,12 @@ export const fetchNewLineItems = async (
   setLineItems,
   pageNumber,
   setPageNumber,
-  selectedEntries = [],
+  selectedEntries = []
 ) => {
   if (selectedClient) {
     let selectedEntriesString = "";
-    selectedEntries.forEach((entry) => {
-      if (!entry._destroy){
+    selectedEntries.forEach(entry => {
+      if (!entry._destroy) {
         selectedEntriesString += `&selected_entries[]=${entry.timesheet_entry_id}`;
       }
     });
@@ -58,7 +58,9 @@ export const fetchNewLineItems = async (
     const res = await generateInvoice.getLineItems(queryParams);
     setPageNumber(pageNumber + 1);
     const mergedItems = [...res.data.new_line_item_entries, ...lineItems];
-    const sortedData = mergedItems.sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
+    const sortedData = mergedItems.sort((item1, item2) =>
+      dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1
+    );
     setLineItems(sortedData);
   }
 };
@@ -73,15 +75,20 @@ export const fetchMultipleNewLineItems = async (
   setTeamMembers
 ) => {
   const res = await generateInvoice.getLineItems(handleFilterParams());
-  const itemSelected = (id) => selectedLineItems.filter((selectedItem) => id == selectedItem.timesheet_entry_id).length;
+  const itemSelected = id =>
+    selectedLineItems.filter(
+      selectedItem => id == selectedItem.timesheet_entry_id
+    ).length;
 
   const items = res.data.new_line_item_entries.map(item => ({
     ...item,
     checked: itemSelected(item.timesheet_entry_id),
-    lineTotal: lineTotalCalc(item.quantity, item.rate)
+    lineTotal: lineTotalCalc(item.quantity, item.rate),
   }));
 
-  const sortedData = [...items].sort((item1, item2) => dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1);
+  const sortedData = [...items].sort((item1, item2) =>
+    dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1
+  );
   setLineItems(sortedData);
   if (allCheckboxSelected) {
     setSelectedLineItems(sortedData);
@@ -90,7 +97,7 @@ export const fetchMultipleNewLineItems = async (
   setLoading(false);
 };
 
-export const handleDownloadInvoice = async (invoice) => {
+export const handleDownloadInvoice = async invoice => {
   try {
     const res = await invoicesApi.downloadInvoice(invoice.id);
     const url = window.URL.createObjectURL(new Blob([res.data]));

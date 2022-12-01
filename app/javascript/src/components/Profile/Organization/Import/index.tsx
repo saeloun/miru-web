@@ -8,19 +8,39 @@ import ImportModal from "./importModal";
 
 import Header from "../../Header";
 
-const importList = [{
-  id: 1,
-  title: "Invoices",
-  description: "Import past invoice data from your previous invoicing tool or software",
-  btnText: "START IMPORT",
-  fields: ["Invoice number", "Client name", "Issue Date", "Due Date", "Amount", "Status"]
-}, {
-  id: 2,
-  title: "Time Entries",
-  description: "Import past time entries from your previous time tracking tool or software",
-  btnText: "START IMPORT",
-  fields: ["Employee Name", "Date", "Hours", "Status", "Client", "Project", "Description"]
-}];
+const importList = [
+  {
+    id: 1,
+    title: "Invoices",
+    description:
+      "Import past invoice data from your previous invoicing tool or software",
+    btnText: "START IMPORT",
+    fields: [
+      "Invoice number",
+      "Client name",
+      "Issue Date",
+      "Due Date",
+      "Amount",
+      "Status",
+    ],
+  },
+  {
+    id: 2,
+    title: "Time Entries",
+    description:
+      "Import past time entries from your previous time tracking tool or software",
+    btnText: "START IMPORT",
+    fields: [
+      "Employee Name",
+      "Date",
+      "Hours",
+      "Status",
+      "Client",
+      "Project",
+      "Description",
+    ],
+  },
+];
 
 const columnNames = [];
 
@@ -32,14 +52,14 @@ const Import = () => {
   const [selectedModal, setSelectedModal] = useState("");
   const [selectedField, setSelectedField] = useState([]);
 
-  const handleOnShowModalClick = (id) => {
+  const handleOnShowModalClick = id => {
     const selectedImportList = importList.find(item => item.id == id);
     setSelectedModal(selectedImportList.title);
     setSelectedField(selectedImportList.fields);
     setShowImportModal(!showImportModal);
   };
 
-  const handleSelectFile = (e) => {
+  const handleSelectFile = e => {
     setFile(e.target.files[0]);
   };
 
@@ -56,35 +76,43 @@ const Import = () => {
   };
 
   return (
-    <div className="flex flex-col w-4/5">
+    <div className="flex w-4/5 flex-col">
       <Header
-        title={"Import"}
-        subTitle={"Import your data into Miru"}
-        showButtons={false}
-        cancelAction={() => { }} //eslint-disable-line
-        saveAction={() => { }} //eslint-disable-line
         isDisableUpdateBtn={false}
+        showButtons={false}
+        subTitle="Import your data into Miru"
+        title="Import"
       />
-      {isLoading ? <Loader /> : (
-        <div className="px-10 py-5 mt-4 bg-miru-gray-100 min-h-70v">
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="mt-4 min-h-70v bg-miru-gray-100 px-10 py-5">
           {importList.map((item, index) => (
             <Fragment key={index}>
-              <ImportCard id={item.id} title={item.title} description={item.description} btnText={item.btnText} handleOnShowModalClick={handleOnShowModalClick} />
+              <ImportCard
+                btnText={item.btnText}
+                description={item.description}
+                handleOnShowModalClick={handleOnShowModalClick}
+                id={item.id}
+                title={item.title}
+              />
             </Fragment>
           ))}
         </div>
       )}
-      {showImportModal && <ImportModal
-        handleSelectFile={handleSelectFile}
-        handleContinueClick={handleContinueClick}
-        file={file}
-        step={step}
-        data={selectedField}
-        columnNames={columnNames}
-        handleToggleModal={handleToggleModal}
-        handleRemoveFile={handleRemoveFile}
-        title={selectedModal}
-      />}
+      {showImportModal && (
+        <ImportModal
+          columnNames={columnNames}
+          data={selectedField}
+          file={file}
+          handleContinueClick={handleContinueClick}
+          handleRemoveFile={handleRemoveFile}
+          handleSelectFile={handleSelectFile}
+          handleToggleModal={handleToggleModal}
+          step={step}
+          title={selectedModal}
+        />
+      )}
     </div>
   );
 };

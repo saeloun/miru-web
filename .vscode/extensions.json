@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "kaiwood.endwise",
+    "rebornix.ruby",
+    "redhat.vscode-yaml",
+    "editorconfig.editorconfig",
+    "dbaeumer.vscode-eslint",
+    "streetsidesoftware.code-spell-checker",
+    "CraigMaslowski.erb",
+    "eamodio.gitlens"
+  ]
+}
