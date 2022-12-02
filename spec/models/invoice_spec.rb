@@ -41,7 +41,7 @@ RSpec.describe Invoice, type: :model do
 
   describe "Associations" do
     describe "belongs to" do
-      it { is_expected.not_to belong_to(:company) }
+      it { is_expected.to belong_to(:company) }
       it { is_expected.to belong_to(:client) }
     end
 
@@ -81,6 +81,7 @@ RSpec.describe Invoice, type: :model do
     end
 
     describe "issue_date_range" do
+      debugger
       it "returns all invoices if date range is not specified" do
         expect(company.invoices.issue_date_range(nil).size).to eq(25)
       end

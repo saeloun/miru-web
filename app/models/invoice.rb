@@ -19,10 +19,12 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  client_id          :bigint           not null
+#  company_id         :bigint
 #
 # Indexes
 #
 #  index_invoices_on_client_id          (client_id)
+#  index_invoices_on_company_id         (company_id)
 #  index_invoices_on_external_view_key  (external_view_key) UNIQUE
 #  index_invoices_on_invoice_number     (invoice_number) UNIQUE
 #  index_invoices_on_issue_date         (issue_date)
@@ -31,6 +33,7 @@
 # Foreign Keys
 #
 #  fk_rails_...  (client_id => clients.id)
+#  fk_rails_...  (company_id => companies.id)
 #
 
 # frozen_string_literal: true
@@ -50,9 +53,9 @@ class Invoice < ApplicationRecord
     :overdue
   ]
 
+  belongs_to :company
   belongs_to :client
   has_many :invoice_line_items, dependent: :destroy
-  has_one :company, through: :client
   has_many :payments, dependent: :destroy
   accepts_nested_attributes_for :invoice_line_items, allow_destroy: true
 
@@ -60,6 +63,7 @@ class Invoice < ApplicationRecord
   store_accessor :payment_infos, :stripe_payment_intent
 
   before_validation :set_external_view_key, on: :create
+  # before_save :set_default, on: :create
 
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }
@@ -102,5 +106,9 @@ class Invoice < ApplicationRecord
 
     def set_external_view_key
       self.external_view_key = "#{SecureRandom.hex}"
+    end
+
+    def set_default
+      self.company_id = client.company_id
     end
 end
