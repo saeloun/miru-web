@@ -44,6 +44,7 @@ class Company < ApplicationRecord
   # scopes
   scope :valid_invitations, -> { where(company: self).valid_invitations }
 
+  # Note: Possible dead fn
   def project_list(client_id = nil, user_id = nil, billable = nil, search)
     project_list = project_list_query(client_id, user_id, billable)
     minutes_spent = timesheet_entries.group(:project_id).sum(:duration)
@@ -71,6 +72,7 @@ class Company < ApplicationRecord
     end
   end
 
+  # Note: Possible dead fn
   def project_list_query(client_id, user_id, billable)
     db_query = projects.kept.left_outer_joins(:project_members).joins(:client)
     db_query = db_query.where(project_members: { user_id: }) if user_id.present?
@@ -83,10 +85,12 @@ class Company < ApplicationRecord
        clients.name as project_client_name")
   end
 
+  # Note: Possible dead fn
   def client_details(time_frame = "week")
     clients.kept.map { |client| client.client_detail(time_frame) }
   end
 
+  # Note: Possible dead fn
   def client_list
     clients.kept.map do |client|
       { id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.address }
@@ -106,6 +110,7 @@ class Company < ApplicationRecord
     }
   end
 
+  # Note: Possible dead fn
   def user_details
     users.kept.map do |user|
       {
