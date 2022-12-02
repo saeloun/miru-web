@@ -8,15 +8,15 @@ const TimeEntryReportContext = {
     groupBy: { label: "None", value: "" },
     customDateFilter: {
       from: "",
-      to: ""
-    }
+      to: "",
+    },
   },
   filterOptions: {
     clients: [],
-    teamMembers: []
+    teamMembers: [],
   },
   filterCounter: 0,
-  handleRemoveSingleFilter: (key, value) => { }, //eslint-disable-line
+  handleRemoveSingleFilter: (key, value) => {}, //eslint-disable-line
 };
 
 export default TimeEntryReportContext;

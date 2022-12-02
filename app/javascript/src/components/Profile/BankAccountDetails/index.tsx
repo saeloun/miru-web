@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-import { bankFieldValidationRequirements, separateAddressFields } from "helpers";
+import {
+  bankFieldValidationRequirements,
+  separateAddressFields,
+} from "helpers";
+import Logger from "js-logger";
 import { isEmpty } from "ramda";
 
 import profilesApi from "apis/profiles";
@@ -20,10 +24,15 @@ const BankAccountDetails = () => {
   const [currencies, setCurrencies] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currency, setCurrency] = useState<any>();
-  const [showBankDetailsModal, setBankDetailsModal] = useState<boolean>(false);
+  const [bankDetailsModal, setBankDetailsModal] = useState<boolean>(false);
   const [bankRequirements, setBankRequirements] = useState<any>();
-  const [recipientDetails, setRecipientDetails] = useState<any>({ details: { address: {} } });
-  const [validRecipientDetails, setValidRecipientDetails] = useState<any>({ details: { address: {} } });
+  const [recipientDetails, setRecipientDetails] = useState<any>({
+    details: { address: {} },
+  });
+
+  const [validRecipientDetails, setValidRecipientDetails] = useState<any>({
+    details: { address: {} },
+  });
 
   const [firstName, setFirstName] = useState<any>();
   const [lastName, setLastName] = useState<any>();
@@ -39,18 +48,18 @@ const BankAccountDetails = () => {
       const response = await profilesApi.get();
       setBillingDetails(response.data);
     } catch (error) {
-      console.error(error);
+      Logger.error(error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const createRecipient = async (payload) => {
+  const createRecipient = async payload => {
     try {
       const response = await wiseApi.createRecipient(payload);
       const billingResponse = await profilesApi.post(response.data);
       setBillingDetails(billingResponse.data);
-    } catch (_error) {
+    } catch {
       setBankDetailsModal(true);
       throw new Error("Error while creating recipient");
     } finally {
@@ -58,13 +67,16 @@ const BankAccountDetails = () => {
     }
   };
 
-  const updateRecipient = async (payload) => {
+  const updateRecipient = async payload => {
     try {
       const response = await wiseApi.updateRecipient(payload);
-      const billingResponse = await profilesApi.put(billingDetails.id, response.data);
+      const billingResponse = await profilesApi.put(
+        billingDetails.id,
+        response.data
+      );
       setBillingDetails(billingResponse.data);
       setRecipientDetails(response.data);
-    } catch (_error) {
+    } catch {
       setBankDetailsModal(true);
       throw new Error("Error while creating recipient");
     } finally {
@@ -73,20 +85,33 @@ const BankAccountDetails = () => {
   };
 
   // TODO: Try to remove duplicate code as much as possible and optimize
-  const fetchAccountRequirements = async (sourceCurrency, targetCurrency, isUpdate = false) => {
+  const fetchAccountRequirements = async (
+    sourceCurrency,
+    targetCurrency,
+    isUpdate = false
+  ) => {
     try {
       setIsLoading(true);
-      const response = await wiseApi.fetchAccountRequirements(sourceCurrency, targetCurrency);
+      const response = await wiseApi.fetchAccountRequirements(
+        sourceCurrency,
+        targetCurrency
+      );
       const data = response.data;
-      const validRecipientDetails = bankFieldValidationRequirements(data, isUpdate);
+      const validRecipientDetails = bankFieldValidationRequirements(
+        data,
+        isUpdate
+      );
       setValidRecipientDetails(validRecipientDetails);
       if (!isUpdate) {
         setRecipientDetails({ details: { address: {} } });
       }
-      const fields = data.map(requirement => separateAddressFields(requirement));
+
+      const fields = data.map(requirement =>
+        separateAddressFields(requirement)
+      );
       setBankRequirements(fields);
     } catch (error) {
-      console.error(error);
+      Logger.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -96,72 +121,71 @@ const BankAccountDetails = () => {
     const payload = {
       ...recipientDetails,
       accountHolderName: `${firstName} ${lastName}`,
-      currency: currency || billingDetails.targetCurrency
+      currency: currency || billingDetails.targetCurrency,
     };
     setIsLoading(true);
     setBankDetailsModal(false);
     isUpdate ? updateRecipient(payload) : createRecipient(payload);
   };
 
-  const renderBankDetails = (billingDetails) => {
+  const renderBankDetails = billingDetails => {
     if (isEmpty(billingDetails)) {
-      return (<></>);
+      return <div />;
     } else if (!billingDetails.recipientId) {
       return (
         <CurrencyDropdown
           currencies={currencies}
-          setCurrencies={setCurrencies}
           currency={currency}
+          fetchAccountRequirements={fetchAccountRequirements}
+          setBankDetailsModal={setBankDetailsModal}
+          setCurrencies={setCurrencies}
           setCurrency={setCurrency}
-          setIsLoading={setIsLoading}
-          setBankDetailsModal={setBankDetailsModal}
-          fetchAccountRequirements={fetchAccountRequirements}
-        />
-      );
-    } else {
-      return (
-        <BankInfo
-          recipientId={billingDetails.recipientId}
-          setBankDetailsModal={setBankDetailsModal}
-          setFirstName={setFirstName}
-          setLastName={setLastName}
-          setRecipientDetails={setRecipientDetails}
-          fetchAccountRequirements={fetchAccountRequirements}
-          sourceCurrency={billingDetails.sourceCurrency}
-          targetCurrency={billingDetails.targetCurrency}
-          setIsUpdate={setIsUpdate}
           setIsLoading={setIsLoading}
         />
       );
     }
+
+    return (
+      <BankInfo
+        fetchAccountRequirements={fetchAccountRequirements}
+        recipientId={billingDetails.recipientId}
+        setBankDetailsModal={setBankDetailsModal}
+        setFirstName={setFirstName}
+        setIsLoading={setIsLoading}
+        setIsUpdate={setIsUpdate}
+        setLastName={setLastName}
+        setRecipientDetails={setRecipientDetails}
+        sourceCurrency={billingDetails.sourceCurrency}
+        targetCurrency={billingDetails.targetCurrency}
+      />
+    );
   };
 
   return (
-    <div className="flex flex-col w-4/5 text-sm">
+    <div className="flex w-4/5 flex-col text-sm">
       <Header
-        title={"Bank Account Details"}
-        subTitle={"Settings to receive payment from your employer"}
+        subTitle="Settings to receive payment from your employer"
+        title="Bank Account Details"
       />
-      <div className="py-10 pl-10 mt-4 bg-miru-gray-100 h-screen inline-flex">
-        {isLoading && <Loader message={"Loading..."} /> }
-        <div className="w-26 h-12 float-left my-2">Bank Account Details</div>
-        { renderBankDetails(billingDetails) }
-        {
-          showBankDetailsModal &&
+      <div className="mt-4 inline-flex h-screen bg-miru-gray-100 py-10 pl-10">
+        {isLoading && <Loader message="Loading..." />}
+        <div className="float-left my-2 h-12 w-26">Bank Account Details</div>
+        {renderBankDetails(billingDetails)}
+        {bankDetailsModal && (
           <BankDetails
-            setBankDetailsModal={setBankDetailsModal}
             bankRequirements={bankRequirements}
             firstName={firstName}
-            setFirstName={setFirstName}
             lastName={lastName}
-            setLastName={setLastName}
             recipientDetails={recipientDetails}
+            setBankDetailsModal={setBankDetailsModal}
+            setFirstName={setFirstName}
+            setLastName={setLastName}
             setRecipientDetails={setRecipientDetails}
-            validRecipientDetails={validRecipientDetails}
             setValidRecipientDetails={setValidRecipientDetails}
             submitBankDetails={submitBankDetails}
+            validRecipientDetails={validRecipientDetails}
           />
-        }
+        )}
       </div>
     </div>
   );
