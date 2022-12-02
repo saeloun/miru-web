@@ -36,7 +36,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
   const [weekDay, setWeekDay] = useState<number>(0);
-  const [currentDay, setCurrentDay] = useState<number>(0);
   const [weeklyTotalHours, setWeeklyTotalHours] = useState<string>("00:00");
   const [dailyTotalHours, setDailyTotalHours] = useState<number[]>([]);
   const [entryList, setEntryList] = useState<object>({});
@@ -115,10 +114,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   useEffect(() => {
     setSelectedFullDate(
       dayjs()
-        .weekday(currentDay + selectDate)
+        .weekday(weekDay + selectDate)
         .format("YYYY-MM-DD")
     );
-  }, [selectDate, currentDay]);
+  }, [selectDate, weekDay]);
 
   useEffect(() => {
     if (dayInfo.length <= 0) return;
@@ -127,7 +126,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const handleWeekTodayButton = () => {
     setSelectDate(0);
-    setCurrentDay(dayjs().weekday());
+    setWeekDay(dayjs().weekday());
   };
 
   const handleWeekInfo = () => {

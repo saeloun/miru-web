@@ -212,12 +212,12 @@ const MonthCalender = ({
       </div>
       <div className="bg-miru-gray-100 p-4">
         <div className="mb-4 flex justify-between bg-miru-gray-100">
-          {dayInfo.map((d, index) => (
+          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d, index) => (
             <div
               className="w-28 items-center rounded-xl text-center text-xs font-medium text-miru-dark-purple-1000"
               key={index}
             >
-              {d.day}
+              {d}
             </div>
           ))}
           <div className="w-28 items-center rounded-xl text-center text-xs font-medium text-miru-dark-purple-1000">
