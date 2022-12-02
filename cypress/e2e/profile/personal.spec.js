@@ -23,4 +23,26 @@ describe("Sign Up", () => {
     cy.contains("Avatar deleted successfully")
   })
 
+  it("should be able to update first name and last name", function(){
+    cy.get(profileSelectors.firstName).clear().type(fake.firstName)
+    cy.get(profileSelectors.lastName).clear().type(fake.lastName)
+    cy.get(profileSelectors.updateProfile).click();
+
+    cy.contains("User updated")
+    // Chnage it again to original name
+    cy.get(profileSelectors.firstName).clear().type("Supriya")
+    cy.get(profileSelectors.lastName).clear().type("Agarwal")
+    cy.get(profileSelectors.updateProfile).click();
+    cy.contains("User updated")
+  })
+
+  it("should be able to change password", function(){
+    cy.get(profileSelectors.changePassword).click()
+    cy.get(profileSelectors.currentPassword).type("password")
+    cy.get(profileSelectors.password).type("password")
+    cy.get(profileSelectors.confirmPassword).type("password")
+    cy.get(profileSelectors.updateProfile).click()
+    cy.contains("Password updated")
+  })
+
 });
