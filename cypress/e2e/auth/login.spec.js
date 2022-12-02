@@ -45,5 +45,6 @@ describe("Sign In", () => {
     cy.get(authSelectors.signUpLink).should("be.visible");
     cy.get(authSelectors.signUpLink).click();
     cy.location("pathname").should("eq", "/users/sign_up");
+    
   });
 });
