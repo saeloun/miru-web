@@ -2,22 +2,21 @@
 
 module GenerateInvoice
   class NewLineItemsService < ApplicationService
-    attr_reader :client, :projects, :project_ids, :params
+    attr_reader :client, :projects, :params
     attr_accessor :total_count
 
     def initialize(client, params)
       @client = client
       @params = params
       @projects = client.projects.includes(:project_members).kept
-      @project_ids = @projects.pluck(:id).uniq
-      @total_count = nil
     end
 
     def process
-      line_item_entries = new_line_item_entries
       {
-        filter_options:,
-        new_line_item_entries: line_item_entries,
+        filter_options: {
+          team_members: team_members_of_projects
+        },
+        new_line_item_entries:,
         total_new_line_items: total_count
       }
     end
@@ -25,24 +24,23 @@ module GenerateInvoice
     private
 
       # Sending team members list for filter dropdown options
-      def filter_options
-        user_ids = TimesheetEntry.where(project_id: project_ids).pluck(:user_id).uniq
-        @_filter_options ||= {
-          team_members: User.where(id: user_ids)
-        }
+      def team_members_of_projects
+        User.where(
+          id: TimesheetEntry.where(project_id: @projects).pluck(:user_id)
+        )
       end
 
       def search_term
-        @search_term ||= (params[:search_term].present?) ? params[:search_term] : "*"
+        @search_term = params[:search_term].presence || "*"
       end
 
       # merging selected_entries from params with ids already present in other invoice line items
       def filtered_ids
         invoice_line_item_timesheet_entry_ids = InvoiceLineItem.joins(:timesheet_entry)
           .where(timesheet_entries: { bill_status: "unbilled" })
-          .pluck(:timesheet_entry_id).uniq
-        selected_entries = (params[:selected_entries].present?) ? params[:selected_entries] : []
-        filtered_ids = (selected_entries + invoice_line_item_timesheet_entry_ids).uniq
+          .pluck(:timesheet_entry_id)
+
+        params[:selected_entries].to_a | invoice_line_item_timesheet_entry_ids
       end
 
       def unselected_time_entries_filter
@@ -50,7 +48,7 @@ module GenerateInvoice
       end
 
       def project_filter
-        { project_id: project_ids }
+        { project_id: @projects.pluck(:id) }
       end
 
       def unbilled_status_filter
@@ -61,8 +59,10 @@ module GenerateInvoice
         default_filter = project_filter.merge(unselected_time_entries_filter)
         bill_status_filter = default_filter.merge(unbilled_status_filter)
         where_clause = bill_status_filter.merge(TimeEntries::Filters.process(params))
+
         timesheet_entries = fetch_timesheet_entries(search_term, where_clause)
         total_count = timesheet_entries.total_count
+
         format_timesheet_entries(timesheet_entries)
       end
 
@@ -72,11 +72,13 @@ module GenerateInvoice
           fields: [:note, :user_name],
           match: :text_middle,
           where: where_clause,
-          includes: [:user, { project: :client } ])
+          includes: [:user, { project: :client }]
+        )
       end
 
       def format_timesheet_entries(timesheet_entries)
         user_project_rates = project_to_member_rates
+
         timesheet_entries.map do |timesheet_entry|
           {
             timesheet_entry_id: timesheet_entry.id,
@@ -94,27 +96,20 @@ module GenerateInvoice
 
       def project_to_member_rates
         projects_members_rates = {}
-        projects.each { |projectt| projects_members_rates[projectt.id] = project_members_rate(projectt) }
+        projects.each do |project|
+          projects_members_rates[project.id] = project_members_hourly_rate(project)
+        end
+
         projects_members_rates
       end
 
-      def project_members_rate(project)
+      def project_members_hourly_rate(project)
         member_rates = {}
-        project.project_members.each do | project_member |
+        project.project_members.each do |project_member|
           member_rates[project_member.user_id] = project_member.hourly_rate
         end
-        member_rates
-      end
 
-      def get_user_project_rate(project_members, project_id)
-        rate = nil
-        project_members.each do | project_member |
-          if project_member.project_id == project_id
-            rate = project_member.hourly_rate
-            break
-          end
-        end
-        rate
+        member_rates
       end
   end
 end
