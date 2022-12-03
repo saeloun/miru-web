@@ -25,7 +25,7 @@ module GenerateInvoice
 
       # Sending team members list for filter dropdown options
       def team_members_of_projects
-        User.where(
+        @team_members_of_projects ||= User.where(
           id: TimesheetEntry.where(project_id: @projects).pluck(:user_id)
         )
       end
@@ -36,11 +36,9 @@ module GenerateInvoice
 
       # merging selected_entries from params with ids already present in other invoice line items
       def filtered_ids
-        invoice_line_item_timesheet_entry_ids = InvoiceLineItem.joins(:timesheet_entry)
+        @filtered_ids ||= params[:selected_entries].to_a | InvoiceLineItem.joins(:timesheet_entry)
           .where(timesheet_entries: { bill_status: "unbilled" })
           .pluck(:timesheet_entry_id)
-
-        params[:selected_entries].to_a | invoice_line_item_timesheet_entry_ids
       end
 
       def unselected_time_entries_filter
