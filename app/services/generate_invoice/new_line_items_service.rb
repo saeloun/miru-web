@@ -30,10 +30,6 @@ module GenerateInvoice
         )
       end
 
-      def search_term
-        @search_term = params[:search_term].presence || "*"
-      end
-
       # merging selected_entries from params with ids already present in other invoice line items
       def filtered_ids
         @filtered_ids ||= params[:selected_entries].to_a | InvoiceLineItem.joins(:timesheet_entry)
@@ -53,18 +49,25 @@ module GenerateInvoice
         { bill_status: "unbilled" }
       end
 
+      def where_clause
+        project_filter
+          .merge(unselected_time_entries_filter)
+          .merge(unbilled_status_filter)
+          .merge(TimeEntries::Filters.process(params))
+      end
+
+      def search_term
+        @search_term = params[:search_term].presence || "*"
+      end
+
       def new_line_item_entries
-        default_filter = project_filter.merge(unselected_time_entries_filter)
-        bill_status_filter = default_filter.merge(unbilled_status_filter)
-        where_clause = bill_status_filter.merge(TimeEntries::Filters.process(params))
+        timesheet_entries = search_timesheet_entries(search_term, where_clause)
 
-        timesheet_entries = fetch_timesheet_entries(search_term, where_clause)
-        total_count = timesheet_entries.total_count
-
+        @total_count = timesheet_entries.total_count
         format_timesheet_entries(timesheet_entries)
       end
 
-      def fetch_timesheet_entries(search_term, where_clause)
+      def search_timesheet_entries(search_term, where_clause)
         TimesheetEntry.search(
           search_term,
           fields: [:note, :user_name],
