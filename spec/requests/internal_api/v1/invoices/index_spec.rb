@@ -182,7 +182,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
 
     describe "from_to with date_range" do
       it "returns invoices with in the custom date range" do
-        from = Date.parse("2021-01-01")
+        from = Date.parse("2022-01-01")
         to = Date.today
         from_to = { date_range: "custom", from:, to: }
         send_request :get, internal_api_v1_invoices_path(from_to:)
