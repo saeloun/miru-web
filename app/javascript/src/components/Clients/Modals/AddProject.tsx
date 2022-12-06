@@ -90,8 +90,8 @@ const AddProject = ({ setShowProjectModal, clientDetails }) => {
                   Project Type
                 </label>
                 <div className="mt-1">
-                  <div className="sm:space-XIcon-10 space-y-4 sm:flex sm:items-center sm:space-y-0">
-                    <div className="flex items-center">
+                  <div className="sm:space-XIcon-10 flex w-56 justify-between space-y-4 sm:items-center sm:space-y-0">
+                    <div className="mr-4 flex items-center">
                       <input
                         defaultChecked
                         className="h-4 w-4 cursor-pointer border-miru-han-purple-1000 text-miru-dark-purple-1000 focus:ring-miru-han-purple-1000"
@@ -107,7 +107,7 @@ const AddProject = ({ setShowProjectModal, clientDetails }) => {
                         Billable
                       </label>
                     </div>
-                    <div className="flex items-center">
+                    <div className="ml-4 flex items-center ">
                       <input
                         className="bg--miru-han-purple-1000 h-4 w-4 cursor-pointer border-miru-han-purple-1000 text-miru-dark-purple-1000 focus:ring-miru-han-purple-1000"
                         defaultChecked={false}
