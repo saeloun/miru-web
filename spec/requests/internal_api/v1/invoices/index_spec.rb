@@ -33,6 +33,10 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     end
 
     describe "page param" do
+      let(:company) do
+        create(:company_with_invoices, length: 10)
+      end
+
       it "returns invoices offset by page" do
         page, invoices_per_page = 2, 5
         send_request :get, internal_api_v1_invoices_path(page:, invoices_per_page:)
@@ -161,6 +165,10 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     end
 
     describe "page param" do
+      let(:company) do
+        create(:company_with_invoices, length: 10)
+      end
+
       it "returns invoices offset by page" do
         page, invoices_per_page = 2, 5
         send_request :get, internal_api_v1_invoices_path(page:, invoices_per_page:)
