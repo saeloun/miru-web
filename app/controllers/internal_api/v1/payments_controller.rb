@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::PaymentsController < ApplicationController
+  before_action :set_invoice, only: [:create]
+
   def new
     authorize :new, policy_class: PaymentPolicy
+
     render :new, locals: {
       invoices: current_company.invoices.includes(:client)
         .with_statuses(["sent", "viewed", "overdue"])
@@ -12,7 +15,8 @@ class InternalApi::V1::PaymentsController < ApplicationController
 
   def create
     authorize :create, policy_class: PaymentPolicy
-    payment = InvoicePayment::AddPayment.process(payment_params)
+
+    payment = InvoicePayment::Settle.process(payment_params, @invoice)
     render :create, locals: {
       payment:
     }
@@ -31,5 +35,9 @@ class InternalApi::V1::PaymentsController < ApplicationController
       params.require(:payment).permit(
         :invoice_id, :transaction_date, :transaction_type, :amount, :note
       )
+    end
+
+    def set_invoice
+      @invoice = current_company.invoices.find(payment_params[:invoice_id])
     end
 end

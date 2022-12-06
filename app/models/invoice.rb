@@ -98,6 +98,19 @@ class Invoice < ApplicationRecord
     (amount * Money::Currency.new(base_currency).subunit_to_unit).to_i
   end
 
+  def settle!(payment)
+    self.amount_paid += payment.amount
+
+    if payment.settles?(self)
+      self.status = :paid
+      self.amount_due = 0
+    else
+      self.amount_due = amount_due - payment.amount
+    end
+
+    self.save!
+  end
+
   private
 
     def set_external_view_key

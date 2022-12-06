@@ -46,6 +46,22 @@ class Payment < ApplicationRecord
   belongs_to :invoice
   delegate :company, to: :invoice
 
+  before_validation :set_status, if: :new_record?
+
   validates :invoice, :transaction_date, :transaction_type, :amount, :status, presence: true
   validates :amount, numericality: { greater_than: 0 }
+
+  def settles?(invoice)
+    invoice.amount_due <= amount
+  end
+
+  private
+
+    def set_status
+      if settles?(invoice)
+        self.status = :paid
+      else
+        self.status = :partially_paid
+      end
+    end
 end
