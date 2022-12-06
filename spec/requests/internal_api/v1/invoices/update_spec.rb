@@ -4,7 +4,8 @@ require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
   let(:company) do
-    create(:company, clients: create_list(:client_with_invoices, 5))
+    # create(:company, clients: create_list(:client_with_invoices, 5))
+    create(:company_with_invoices)
   end
 
   let(:user) { create(:user, current_workspace_id: company.id) }
@@ -19,7 +20,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
     describe "invoice updation" do
       it "updates invoice successfully" do
         send_request :patch, internal_api_v1_invoice_path(
-          id: company.clients.first.invoices.first.id, params: {
+          id: company.invoices.first.id, params: {
             invoice: {
               reference: "foo"
             }
@@ -31,7 +32,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
       context "when client doesn't exist" do
         it "throws 404" do
           send_request :patch, internal_api_v1_invoice_path(
-            id: company.clients.first.invoices.first.id, params: {
+            id: company.invoices.first.id, params: {
               invoice: {
                 client_id: 100000,
                 reference: "foo"
@@ -49,7 +50,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
       user.add_role :employee, company
       sign_in user
       send_request :patch, internal_api_v1_invoice_path(
-        id: company.clients.first.invoices.first.id, params: {
+        id: company.invoices.first.id, params: {
           invoice: {
             reference: "foo"
           }
@@ -67,7 +68,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
       user.add_role :book_keeper, company
       sign_in user
       send_request :patch, internal_api_v1_invoice_path(
-        id: company.clients.first.invoices.first.id, params: {
+        id: company.invoices.first.id, params: {
           invoice: {
             reference: "foo"
           }
@@ -82,7 +83,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
   context "when unauthenticated" do
     it "is not be permitted to update an invoice" do
       send_request :patch, internal_api_v1_invoice_path(
-        id: company.clients.first.invoices.first.id, params: {
+        id: company.invoices.first.id, params: {
           invoice: {
             reference: "foo"
           }

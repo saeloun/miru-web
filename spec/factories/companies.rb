@@ -11,6 +11,9 @@ FactoryBot.define do
     date_format { "DD-MM-YYYY" }
     country { "US" }
     timezone { Faker::Address.time_zone }
+    factory :company_with_invoices do
+      invoices { Array.new(5) { association(:invoice) } }
+    end
 
     trait :with_logo do
       after :build do |company|
