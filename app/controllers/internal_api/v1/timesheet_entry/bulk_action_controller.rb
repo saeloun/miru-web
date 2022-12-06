@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::TimesheetEntry::BulkActionController < InternalApi::V1::ApplicationController
-  include Timesheet
-
   skip_after_action :verify_authorized, only: [:update, :destroy]
   after_action :verify_policy_scoped, only: [:update, :destroy]
 

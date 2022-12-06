@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Api::V1::TimesheetEntryController < Api::V1::BaseController
-  include Timesheet
-
   before_action :ensure_project_member
 
   def create
