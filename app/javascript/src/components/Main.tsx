@@ -22,7 +22,7 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
 };
 
 const Main: React.FC<Iprops> = props => (
-  <div className="overflow-y-0 absolute top-0 bottom-0 right-0 w-5/6 px-8 font-manrope md:px-20 md:py-3">
+  <div className="overflow-x-scroll px-8 py-12 font-manrope md:absolute md:top-0 md:bottom-0 md:right-0 md:w-5/6 md:px-20 md:py-3">
     <Routes>
       {ROUTES.map(parentRoute => (
         <Route
