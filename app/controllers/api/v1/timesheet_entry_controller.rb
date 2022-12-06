@@ -11,7 +11,7 @@ class Api::V1::TimesheetEntryController < Api::V1::BaseController
     timesheet_entry.save!
     render json: {
       notice: I18n.t("timesheet_entry.create.message"),
-      entry: timesheet_entry.formatted_entry
+      entry: timesheet_entry.snippet
     }
   end
 

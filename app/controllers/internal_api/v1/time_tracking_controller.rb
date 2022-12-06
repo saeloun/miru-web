@@ -2,7 +2,6 @@
 
 # TODO: Refactoring -> can be merge with time entries controller
 class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationController
-  include Timesheet
   skip_after_action :verify_authorized
 
   def index
@@ -21,7 +20,7 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
         1.month.ago.beginning_of_month,
         1.month.since.end_of_month
         )
-    entries = TimesheetEntryPresenters::GroupByDatePresenter.new(timesheet_entries).format_entries
+    entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
     entries[:currentUserRole] = current_user.primary_role current_company
     render json: { clients:, projects:, entries:, employees: }, status: :ok
   end
