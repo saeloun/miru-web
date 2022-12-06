@@ -12,7 +12,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
       params[:from],
       params[:to]
     )
-    entries = formatted_entries_by_date(timesheet_entries)
+    entries = TimesheetEntryPresenters::GroupByDatePresenter.new(timesheet_entries).format_entries
     entries[:currentUserRole] = current_user.primary_role current_company
     render json: { entries: }, status: :ok
   end
