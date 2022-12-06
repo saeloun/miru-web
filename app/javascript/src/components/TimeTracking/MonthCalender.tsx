@@ -169,6 +169,11 @@ const MonthCalender = ({
   }, [firstDay]);
 
   useEffect(() => {
+    handleMonthNumberChange();
+    handleMonthChange();
+  }, [currentYear]);
+
+  useEffect(() => {
     handleMonthChange();
   }, [entryList]);
 

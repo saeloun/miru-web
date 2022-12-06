@@ -65,6 +65,8 @@ jobs:
       - name: Setup Env's
         run: |
           cp .env.example .env
+      - name: ffi pristine
+        run: bundle pristine ffi
       - name: Setup test database
         env:
           RAILS_ENV: test
