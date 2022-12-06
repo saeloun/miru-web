@@ -94,7 +94,22 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
   end
 
   context "when user is an employee" do
+    let!(:client1_sent_invoice1) {
+      create(
+        :invoice,
+        client: client1, status: "sent",
+        amount: 100, amount_due: 100, amount_paid: 0
+      )
+    }
+
     before do
+      @payment = {
+        invoice_id: client1_sent_invoice1.id,
+        transaction_date: Date.current,
+        transaction_type: "visa",
+        amount: 80,
+        note: "This is transaction ID - 123"
+      }
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
@@ -102,14 +117,29 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
 
     describe "when tries to create manual payment entry" do
       it "returns forbidden" do
-        send_request :post, internal_api_v1_payments_path(payment: {})
+        send_request :post, internal_api_v1_payments_path(payment: @payment)
         expect(response).to have_http_status(:forbidden)
       end
     end
   end
 
   context "when user is a book keeper" do
+    let!(:client1_sent_invoice1) {
+      create(
+        :invoice,
+        client: client1, status: "sent",
+        amount: 100, amount_due: 100, amount_paid: 0
+      )
+    }
+
     before do
+      @payment = {
+        invoice_id: client1_sent_invoice1.id,
+        transaction_date: Date.current,
+        transaction_type: "visa",
+        amount: 80,
+        note: "This is transaction ID - 123"
+      }
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
@@ -117,7 +147,7 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
 
     describe "when tries to create manual payment entry" do
       it "returns forbidden" do
-        send_request :post, internal_api_v1_payments_path(payment: {})
+        send_request :post, internal_api_v1_payments_path(payment: @payment)
         expect(response).to have_http_status(:forbidden)
       end
     end

@@ -15,7 +15,6 @@ class InternalApi::V1::PaymentsController < ApplicationController
 
   def create
     authorize :create, policy_class: PaymentPolicy
-
     payment = InvoicePayment::Settle.process(payment_params, @invoice)
     render :create, locals: {
       payment:
