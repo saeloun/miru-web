@@ -198,6 +198,9 @@ group :test do
   gem "selenium-webdriver", ">= 4.0.0"
   gem "webdrivers"
 
+  # Test Analytics on BuildKite
+  gem "buildkite-test_collector"
+
   # Use Codecov for code coverage analysis
   gem "simplecov", require: false
 

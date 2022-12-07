@@ -5,6 +5,10 @@ require "pundit/rspec"
 require "sidekiq/testing"
 require "webmock/rspec"
 
+require "buildkite/test_collector"
+
+Buildkite::TestCollector.configure(hook: :rspec)
+
 if ENV.fetch("COVERAGE", false)
   SimpleCov.start "rails" do
     add_filter "/bin/"
