@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends git build-essen
 
 FROM build-deps AS gems
 
-RUN gem install bundler -v $BUNDLER_VERSION
+RUN gem install bundler -v 2.3.11
 
 COPY Gemfile Gemfile.lock ./
 
