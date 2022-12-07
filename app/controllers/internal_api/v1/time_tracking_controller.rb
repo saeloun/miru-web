@@ -7,50 +7,16 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
 
   def index
     authorize :index, policy_class: TimeTrackingPolicy
-    user_id = current_user.id
-    employees = is_admin ? current_company.users.select(:id, :first_name, :last_name) : [current_user]
-
-    clients = get_clients
-    projects = get_projects(is_admin, clients)
-
-    timesheet_entries = current_user
-      .timesheet_entries
-      .includes([:project, :user])
-      .in_workspace(current_company)
-      .during(
-        1.month.ago.beginning_of_month,
-        1.month.since.end_of_month
-        )
-    entries = formatted_entries_by_date(timesheet_entries)
-    entries[:currentUserRole] = current_user.primary_role current_company
-    render json: { clients:, projects:, entries:, employees: }, status: :ok
+    data = TimeTrackingIndexDetailsService.new(current_user, current_company).process
+    data[:entries] = format_timesheet_entries(data[:timesheet_entries])
+    render json: data, status: :ok
   end
 
   private
 
-    def is_admin
-      @_is_admin = current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
-    end
-
-    def get_clients
-      if is_admin
-        current_company.clients.kept.order(name: :asc).includes(:projects)
-      else
-        current_user.clients.kept
-          .where(company_id: current_company.id)
-          .order(name: :asc)
-          .includes(:projects).distinct
-      end
-    end
-
-    def get_projects(is_admin, clients)
-      projects = {}
-      if is_admin
-        clients.map { |client| projects[client.name] = client.projects.kept }
-      else
-        employee_projects = current_user.projects.kept.joins(:client).where(clients: { company_id: current_company.id })
-        clients.map { |client| projects[client.name] = client.projects.kept & employee_projects }
-      end
-      projects
+    def format_timesheet_entries(timesheet_entries)
+      entries = formatted_entries_by_date(timesheet_entries)
+      entries[:currentUserRole] = current_user.primary_role current_company
+      entries
     end
 end
