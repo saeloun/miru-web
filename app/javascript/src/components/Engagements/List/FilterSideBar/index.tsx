@@ -92,6 +92,7 @@ const FilterSideBar = ({ setEngagementData, setFilterVisibilty, rememberFilter, 
           setEngagementData(sanitized.list);
           setPagy(res.data.pagy);
           setIsApplyFilter(false);
+          setFilterVisibilty(false);
         });
     }
   }, [isApplyFilter]);

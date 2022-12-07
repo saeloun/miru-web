@@ -193,6 +193,7 @@ const Engagements = ( { isAdminUser, permissions } ) => {
       <Tab permissions={permissions} tabClassName={'list'}/>
       <Header
         setFilterVisibilty={setFilterVisibilty}
+        isFilterVisible={isFilterVisible}
         setEngagementData={setEngagementData}
         setPagy={setPagy}
         params={params}

@@ -73,6 +73,7 @@ const FilterSideBar = ({
 
   const submitApplyFilter = () => {
     handleApplyFilter(filters);
+    setFilterVisibilty(false);
   };
 
   const hideCustomFilter = () => {

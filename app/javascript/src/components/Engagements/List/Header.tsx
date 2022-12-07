@@ -1,12 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
-import engagements from "apis/engagements";
+
 import { Funnel } from "phosphor-react";
+
+import engagements from "apis/engagements";
+
 import Search from "./Search";
+
 import { unmapEngagementList } from "../../../mapper/engagement.mapper";
 
 const Header = ({
   setFilterVisibilty,
+  isFilterVisible,
   setEngagementData,
   setPagy,
   params,
@@ -41,7 +46,7 @@ const Header = ({
         <div className="header__searchInnerWrapper">
           <Search searchCallBack={searchCallBack} />
         </div>
-        <button className="ml-7" onClick={() => setFilterVisibilty(true)}>
+        <button className="ml-7" onClick={() => setFilterVisibilty(!isFilterVisible)}>
           <Funnel size={16} />
         </button>
       </div>
