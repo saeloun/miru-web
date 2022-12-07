@@ -41,7 +41,9 @@ const Header = ({ setnewClient, isAdminUser }) => {
               onClick={() => setnewClient(true)}
             >
               <PlusIcon size={16} weight="fill" />
-              <span className="ml-2 inline-block">NEW CLIENT</span>
+              <span className="ml-2 inline-block" data-cy="new-client-button">
+                NEW CLIENT
+              </span>
             </button>
           </div>
         </Fragment>

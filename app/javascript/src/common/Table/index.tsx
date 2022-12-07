@@ -130,6 +130,7 @@ const Table = ({
                 <td className="table__cell">
                   <div className="iconWrapper invisible">
                     <button
+                      data-cy="edit-icon"
                       onClick={e => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -140,6 +141,7 @@ const Table = ({
                     </button>
                     <button
                       className="ml-10"
+                      data-cy="delete-icon"
                       onClick={e => {
                         e.preventDefault();
                         e.stopPropagation();
