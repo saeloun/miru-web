@@ -23,6 +23,7 @@
 # Indexes
 #
 #  index_invoices_on_client_id          (client_id)
+#  index_invoices_on_due_date           (due_date)
 #  index_invoices_on_external_view_key  (external_view_key) UNIQUE
 #  index_invoices_on_invoice_number     (invoice_number) UNIQUE
 #  index_invoices_on_issue_date         (issue_date)

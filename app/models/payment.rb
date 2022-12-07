@@ -17,6 +17,7 @@
 # Indexes
 #
 #  index_payments_on_invoice_id  (invoice_id)
+#  index_payments_on_status      (status)
 #
 # Foreign Keys
 #
