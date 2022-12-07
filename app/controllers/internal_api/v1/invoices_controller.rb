@@ -17,7 +17,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       invoices:,
       recently_updated_invoices:,
       pagy: pagy_metadata(pagy),
-      summary: calc_overdue_and_outstanding_and_draft_amount(invoices_query)
+      summary: current_company.overdue_and_outstanding_and_draft_amount
     }
   end
 
@@ -112,36 +112,5 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
       if from_to
         DateRangeService.new(timeframe: from_to[:date_range], from: from_to[:from], to: from_to[:to]).process
       end
-    end
-
-    def calc_overdue_and_outstanding_and_draft_amount(invoices)
-      # TODO: Need to write similar method to current_company.overdue_and_outstanding_and_draft_amount
-      currency = current_company.base_currency
-      sent_amount = 0
-      viewed_amount = 0
-      overdue_amount = 0
-      draft_amount = 0
-
-      invoices.each do |invoice|
-        case invoice.status
-        when "sent"
-          sent_amount = sent_amount + invoice.amount
-        when "viewed"
-          viewed_amount = viewed_amount + invoice.amount
-        when "overdue"
-          overdue_amount = overdue_amount + invoice.amount
-        when "draft"
-          draft_amount = draft_amount + invoice.amount
-        end
-      end
-
-      outstanding_amount = sent_amount + viewed_amount + overdue_amount
-
-      {
-        overdue_amount:,
-        outstanding_amount:,
-        draft_amount:,
-        currency:
-      }
     end
 end
