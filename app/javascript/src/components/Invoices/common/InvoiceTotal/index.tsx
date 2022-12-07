@@ -99,11 +99,11 @@ const InvoiceTotal = ({
       0
     );
 
-    const manualEntryTotalArr = manualEntryArr.filter(
+    const allManualEntries = manualEntryArr.filter(
       lineItem => !lineItem._destroy
     );
 
-    const manualEntryTotal = manualEntryTotalArr.reduce(
+    const manualEntryTotal = allManualEntries.reduce(
       (sum, { lineTotal }) => sum + Number(lineTotal),
       0
     );

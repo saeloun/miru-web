@@ -25,6 +25,7 @@ const InvoiceTable = ({
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [multiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
   const [filteredLineItems, setFilteredLineItems] = useState<any>(lineItems);
+  const [lineItem, setLineItem] = useState<any>({});
   const wrapperRef = useRef(null);
 
   useEffect(() => {
@@ -41,6 +42,14 @@ const InvoiceTable = ({
       selectedLineItems
     );
   };
+
+  const handleAddEntry = () => {
+    if (!addNew && lineItem.name && lineItem.date) {
+      setManualEntryArr([...manualEntryArr, lineItem]);
+    }
+  };
+
+  useEffect(() => handleAddEntry(), [addNew]);
 
   useOutsideClick(
     wrapperRef,
@@ -98,10 +107,12 @@ const InvoiceTable = ({
           addNew={addNew}
           filteredLineItems={filteredLineItems}
           getNewLineItemDropdown={getNewLineItemDropdown}
+          lineItem={lineItem}
           lineItems={lineItems}
           manualEntryArr={manualEntryArr}
           setAddNew={setAddNew}
           setFilteredLineItems={setFilteredLineItems}
+          setLineItem={setLineItem}
           setManualEntryArr={setManualEntryArr}
           setNewLineItemTable={setShowNewLineItemTable}
           showNewLineItemTable={showNewLineItemTable}

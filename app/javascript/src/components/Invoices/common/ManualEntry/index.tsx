@@ -14,6 +14,8 @@ const ManualEntry = ({
   addNew,
   filteredLineItems,
   getNewLineItemDropdown,
+  lineItem,
+  setLineItem,
   lineItems,
   manualEntryArr,
   setManualEntryArr,
@@ -28,7 +30,6 @@ const ManualEntry = ({
   const [rate, setRate] = useState<number>(0);
   const [quantity, setQuantity] = useState<any>(0);
   const [lineTotal, setLineTotal] = useState<string>("0");
-  const [lineItem, setLineItem] = useState<any>({});
   const [qtyInHHrMin, setQtyInHHrMin] = useState<any>(minToHHMM(quantity));
   const [isEnter, setIsEnter] = useState<boolean>(false);
   const ref = useRef(null);
@@ -66,7 +67,6 @@ const ManualEntry = ({
 
   useEffect(() => {
     if (isEnter) {
-      setManualEntryArr([...manualEntryArr, lineItem]);
       setIsEnter(false);
       setAddNew(false);
     }
