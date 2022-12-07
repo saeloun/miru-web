@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::ApplicationController
@@ -26,7 +25,7 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
     end
 
     def current_clients
-      @current_clients ||= client_ids_params.blank? ?
+      @_current_clients ||= client_ids_params.blank? ?
       current_company.clients : current_company.clients.where(id: client_ids_params)
     end
 

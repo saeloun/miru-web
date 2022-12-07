@@ -13,7 +13,7 @@ class InternalApi::V1::Projects::SearchController < InternalApi::V1::Application
   private
 
     def search_term
-      @search_term ||= (params[:search_term].present?) ? params[:search_term] : ""
+      @_search_term ||= (params[:search_term].present?) ? params[:search_term] : ""
     end
 
     def client_list

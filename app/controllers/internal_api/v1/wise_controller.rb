@@ -20,7 +20,7 @@ class InternalApi::V1::WiseController < InternalApi::V1::ApplicationController
   private
 
     def wise
-      @wise ||= Wise::Api.new
+      @_wise ||= Wise::Api.new
     end
 
     def bank_requirement_params

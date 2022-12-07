@@ -21,7 +21,7 @@ class InternalApi::V1::Payments::ProvidersController < ApplicationController
   private
 
     def payments_provider
-      current_company.payments_providers.find(params[:id])
+      @_payments_provider ||= current_company.payments_providers.find(params[:id])
     end
 
     def provider_params
