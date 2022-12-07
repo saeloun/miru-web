@@ -88,9 +88,6 @@ class User < ApplicationRecord
   after_discard :discard_project_members
   before_create :set_token
 
-  # scopes
-  scope :valid_invitations, -> { invitations.where(sender: self).valid_invitations }
-
   def primary_role(company)
     roles = self.roles.where(resource: company)
     return "employee" if roles.empty?
