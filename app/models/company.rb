@@ -44,7 +44,6 @@ class Company < ApplicationRecord
   # scopes
   scope :valid_invitations, -> { where(company: self).valid_invitations }
 
-  # Note: Possible dead fn
   def project_list(client_id = nil, user_id = nil, billable = nil, search)
     project_list = project_list_query(client_id, user_id, billable)
     minutes_spent = timesheet_entries.group(:project_id).sum(:duration)
@@ -72,7 +71,6 @@ class Company < ApplicationRecord
     end
   end
 
-  # Note: Possible dead fn
   def project_list_query(client_id, user_id, billable)
     db_query = projects.kept.left_outer_joins(:project_members).joins(:client)
     db_query = db_query.where(project_members: { user_id: }) if user_id.present?
