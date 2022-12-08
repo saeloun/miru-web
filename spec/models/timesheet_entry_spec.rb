@@ -117,15 +117,39 @@ RSpec.describe TimesheetEntry, type: :model do
           timesheet_entry.update(bill_status: "unbilled")
 
           expect(timesheet_entry.valid?).to be_truthy
+          expect(timesheet_entry.bill_status).to eq("unbilled")
           expect(timesheet_entry.errors.blank?).to be true
         end
       end
 
-      context "when time entry is not billed" do
-        it "allows owners and admins to edit the billed time entry" do
+      context "when time entry is non billable" do
+        before do
+          timesheet_entry.update!(bill_status: "non_billable")
+        end
+
+        it "allows owners and admins to edit the non billable time entry to unbilled" do
+          expect(timesheet_entry.bill_status).to eq("non_billable")
+
           timesheet_entry.update(bill_status: "unbilled")
 
           expect(timesheet_entry.valid?).to be_truthy
+          expect(timesheet_entry.bill_status).to eq("unbilled")
+          expect(timesheet_entry.errors.blank?).to be true
+        end
+      end
+
+      context "when time entry is unbilled" do
+        before do
+          timesheet_entry.update!(bill_status: "unbilled")
+        end
+
+        it "allows owners and admins to edit the unbilled time entry to non billable" do
+          expect(timesheet_entry.bill_status).to eq("unbilled")
+
+          timesheet_entry.update(bill_status: "non_billable")
+
+          expect(timesheet_entry.valid?).to be_truthy
+          expect(timesheet_entry.bill_status).to eq("non_billable")
           expect(timesheet_entry.errors.blank?).to be true
         end
       end

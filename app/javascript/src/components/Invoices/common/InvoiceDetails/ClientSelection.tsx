@@ -11,89 +11,94 @@ const ClientSelection = ({
   selectedClient,
   setSelectedClient,
   optionSelected,
-  clientVisible
+  clientVisible,
 }) => {
-  const [isOptionSelected, setOptionSelection] = useState<boolean>(optionSelected);
-  const [isClientVisible, setClientVisible] = useState<boolean>(clientVisible);
+  const [isOptionSelected, setIsOptionSelected] =
+    useState<boolean>(optionSelected);
+
+  const [isClientVisible, setIsClientVisible] =
+    useState<boolean>(clientVisible);
   const wrapperRef = useRef(null);
 
-  useOutsideClick(wrapperRef, () => setClientVisible(false), isClientVisible);
+  useOutsideClick(wrapperRef, () => setIsClientVisible(false), isClientVisible);
 
   useEffect(() => {
-    const prePopulatedClient = window.location.search.split("?").join("").replace(/%20/g, " ");
+    const prePopulatedClient = window.location.search
+      .split("?")
+      .join("")
+      .replace(/%20/g, " ");
 
     if (prePopulatedClient) {
       const selection = clientList.filter(
-        (client) => client.label == prePopulatedClient
+        client => client.label == prePopulatedClient
       );
       selection[0] && handleClientChange(selection[0]);
     }
   }, []);
 
   const handleSelectClientClick = async () => {
-    setClientVisible(true);
-    setOptionSelection(false);
+    setIsClientVisible(true);
+    setIsOptionSelected(false);
   };
 
   const handleGetClientList = async () => {
-    setClientVisible(true);
+    setIsClientVisible(true);
   };
 
-  const handleClientChange = (selection) => {
+  const handleClientChange = selection => {
     setSelectedClient(selection);
-    setClientVisible(false);
-    setOptionSelection(true);
+    setIsClientVisible(false);
+    setIsOptionSelected(true);
   };
 
   const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
     <components.DropdownIndicator {...props}>
-      <SearchIcon size={20} color="#1D1A31" />
+      <SearchIcon color="#1D1A31" size={20} />
     </components.DropdownIndicator>
   );
 
   return (
     <div className="group" ref={wrapperRef}>
-      <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
+      <p className="flex text-xs font-normal text-miru-dark-purple-1000">
         Billed to
         {isOptionSelected && (
           <button
+            className="mx-1 hidden rounded  bg-miru-gray-1000 p-1 group-hover:block"
             onClick={handleSelectClientClick}
-            className="bg-miru-gray-1000 rounded mx-1  p-1 hidden group-hover:block"
           >
-            <EditIcon size={13} color="#1D1A31" />
+            <EditIcon color="#1D1A31" size={13} />
           </button>
         )}
       </p>
-
       {isClientVisible && (
         <Select
-          defaultValue={null}
-          onChange={handleClientChange}
-          options={clientList}
-          placeholder="Search"
-          isSearchable={true}
+          defaultMenuIsOpen
+          isSearchable
           className="m-0 mt-2 w-52 text-white"
           classNamePrefix="m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white"
-          defaultMenuIsOpen={true}
-          styles={reactSelectStyles.InvoiceDetails}
           components={{ DropdownIndicator, IndicatorSeparator: () => null }}
+          defaultValue={null}
+          options={clientList}
+          placeholder="Search"
+          styles={reactSelectStyles.InvoiceDetails}
+          onChange={handleClientChange}
         />
       )}
       {!isOptionSelected && !isClientVisible && (
         <button
-          className="py-5 mt-2 px-6 font-bold text-base text-miru-dark-purple-200 bg-white border-2 border-dashed border-miru-dark-purple-200 rounded-md tracking-widest"
+          className="mt-2 rounded-md border-2 border-dashed border-miru-dark-purple-200 bg-white py-5 px-6 text-base font-bold tracking-widest text-miru-dark-purple-200"
+          data-cy="add-client-button"
           onClick={handleGetClientList}
-          data-cy= "add-client-button"
         >
           + ADD CLIENT
         </button>
       )}
       {isOptionSelected && (
         <div>
-          <p className="font-bold text-base text-miru-dark-purple-1000">
+          <p className="text-base font-bold text-miru-dark-purple-1000">
             {selectedClient.label}
           </p>
-          <p className="font-normal text-xs text-miru-dark-purple-400 w-52">
+          <p className="w-52 text-xs font-normal text-miru-dark-purple-400">
             {selectedClient.address}
             <br />
             {selectedClient.phone}

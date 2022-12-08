@@ -9,16 +9,17 @@ const AddEditProject = ({
   setEditProjectData,
   editProjectData,
   setShowProjectModal,
-  projectData
+  projectData,
 }) => {
   const [client, setClient] = useState<number>(0);
   const [projectName, setProjectName] = useState<string>("");
   const [projectType, setProjectType] = useState<string>("Billable");
   const [clientList, setClientList] = useState<[]>([]);
 
-  const projectId = (projectData && projectData["id"])
-    || (editProjectData && editProjectData["id"])
-    || Number(window.location.pathname.split("/").at(-1));
+  const projectId =
+    (projectData && projectData["id"]) ||
+    (editProjectData && editProjectData["id"]) ||
+    Number(window.location.pathname.split("/").at(-1));
 
   const isEdit = !!projectId;
   const isFormFilled = client && projectName && projectType;
@@ -43,39 +44,45 @@ const AddEditProject = ({
 
   const handleProjectData = () => {
     if (!editProjectData?.name || !clientList.length) return;
-    const clientName = editProjectData?.client?.name || editProjectData?.clientName;
-    const currentClient = clientList.find(clientItem => clientItem["name"] === clientName);
+    const clientName =
+      editProjectData?.client?.name || editProjectData?.clientName;
+
+    const currentClient = clientList.find(
+      clientItem => clientItem["name"] === clientName
+    );
     if (currentClient) setClient(currentClient["id"]);
     setProjectName(isEdit ? editProjectData.name : "");
-    setProjectType(editProjectData.is_billable || editProjectData.isBillable ? "Billable" : "Non-Billable");
+    setProjectType(
+      editProjectData.is_billable || editProjectData.isBillable
+        ? "Billable"
+        : "Non-Billable"
+    );
   };
 
-  const editProject = () => {
-    projectApi.update(editProjectData.id, {
+  const editProject = async () => {
+    await projectApi.update(editProjectData.id, {
       project: {
-        "client_id": client,
-        "name": projectName,
-        "billable": projectType === "Billable"
-      }
-    }).then(() => {
-      setEditProjectData("");
-      setShowProjectModal(false);
-      window.location.reload();
+        client_id: client,
+        name: projectName,
+        billable: projectType === "Billable",
+      },
     });
+    setEditProjectData("");
+    setShowProjectModal(false);
+    window.location.reload();
   };
 
-  const createProject = () => {
-    projectApi.create({
+  const createProject = async () => {
+    await projectApi.create({
       project: {
-        "client_id": client,
-        "name": projectName,
-        "billable": projectType === "Billable"
-      }
-    }).then(() => {
-      setEditProjectData("");
-      window.location.reload();
-      setShowProjectModal(false);
+        client_id: client,
+        name: projectName,
+        billable: projectType === "Billable",
+      },
     });
+    setEditProjectData("");
+    window.location.reload();
+    setShowProjectModal(false);
   };
 
   const handleSubmit = () => {
@@ -96,11 +103,16 @@ const AddEditProject = ({
   }, [editProjectData, clientList]);
 
   return (
-    <div className="modal__modal main-modal" style={{ background: "rgba(29, 26, 49,0.6)" }}>
+    <div
+      className="modal__modal main-modal"
+      style={{ background: "rgba(29, 26, 49,0.6)" }}
+    >
       <div className="modal__container modal-container">
         <div className="modal__content modal-content">
           <div className="modal__position">
-            <h6 className="modal__title">{isEdit ? "Edit Project Details" : "Add New Project"}</h6>
+            <h6 className="modal__title">
+              {isEdit ? "Edit Project Details" : "Add New Project"}
+            </h6>
             <div className="modal__close">
               <button
                 className="modal__button"
@@ -109,7 +121,7 @@ const AddEditProject = ({
                   setShowProjectModal(false);
                 }}
               >
-                <XIcon size={15} color="#CDD6DF" />
+                <XIcon color="#CDD6DF" size={15} />
               </button>
             </div>
           </div>
@@ -117,18 +129,27 @@ const AddEditProject = ({
             <div className="mt-4">
               <div className="field">
                 <div className="field_with_errors">
-                  <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                  <label className="block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
                     Client
                   </label>
                 </div>
                 <div className="mt-1">
                   <select
+                    className="focus:outline-none block h-8 w-full rounded border-0 bg-miru-gray-100 px-2 py-1 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
                     defaultValue={client}
-                    className="rounded border-0 block w-full px-2 py-1 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base"
-                    onChange={(event) => setClient(+ event.target.value)}>
-                    <option value='0'>Select Client</option>
+                    onChange={event => setClient(Number(event.target.value))}
+                  >
+                    <option value="0">Select Client</option>
                     {clientList &&
-                      clientList.map((event, index) => <option key={index} value={event["id"]} selected={event["id"] == client}>{event["name"]}</option>)}
+                      clientList.map((event, index) => (
+                        <option
+                          key={index}
+                          selected={event["id"] == client}
+                          value={event["id"]}
+                        >
+                          {event["name"]}
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>
@@ -136,30 +157,65 @@ const AddEditProject = ({
             <div className="mt-4">
               <div className="field">
                 <div className="field_with_errors">
-                  <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">
+                  <label className="block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
                     Project Name
                   </label>
                 </div>
                 <div className="mt-1">
-                  <input type="text" placeholder=" Enter Project Name" className="rounded appearance-none border-0 block w-full px-3 py-2 bg-miru-gray-100 h-8 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none sm:text-base" value={projectName} onChange={(event) => setProjectName(event.target.value)} />
+                  <input
+                    className="focus:outline-none block h-8 w-full appearance-none rounded border-0 bg-miru-gray-100 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
+                    placeholder=" Enter Project Name"
+                    type="text"
+                    value={projectName}
+                    onChange={event => setProjectName(event.target.value)}
+                  />
                 </div>
               </div>
             </div>
             <div className="mt-4">
               <div className="field">
-                <label className="tracking-wider block text-xs font-normal text-miru-dark-purple-1000">Project Type</label>
+                <label className="block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
+                  Project Type
+                </label>
                 <div className="mt-1">
-                  <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-XIcon-10">
+                  <div className="sm:space-XIcon-10 space-y-4 sm:flex sm:items-center sm:space-y-0">
                     <div className="flex items-center">
-                      { (editProjectData || !isEdit) && <input type="radio" id='billable' name='project_type' defaultChecked={isEdit ? editProjectData.is_billable : true} className="focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Billable")} /> }
-                      <label htmlFor="billable" className="ml-3 block text-sm font-medium text-miru-dark-purple-1000">
+                      {(editProjectData || !isEdit) && (
+                        <input
+                          className="h-4 w-4 cursor-pointer border-miru-han-purple-1000 text-miru-dark-purple-1000 focus:ring-miru-han-purple-1000"
+                          id="billable"
+                          name="project_type"
+                          type="radio"
+                          defaultChecked={
+                            isEdit ? editProjectData.is_billable : true
+                          }
+                          onClick={() => setProjectType("Billable")}
+                        />
+                      )}
+                      <label
+                        className="ml-3 block text-sm font-medium text-miru-dark-purple-1000"
+                        htmlFor="billable"
+                      >
                         Billable
                       </label>
                     </div>
-
                     <div className="flex items-center">
-                      { (editProjectData ||!isEdit) && <input type="radio" id='non-billable' name='project_type' defaultChecked={isEdit ? !editProjectData.is_billable : false} className="focus:ring-miru-han-purple-1000 h-4 w-4 bg--miru-han-purple-1000 border-miru-han-purple-1000 text-miru-dark-purple-1000 cursor-pointer" onClick={() => setProjectType("Non-Billable")} /> }
-                      <label htmlFor="non-billable" className="ml-3 block text-sm font-medium text-miru-dark-purple-1000 ">
+                      {(editProjectData || !isEdit) && (
+                        <input
+                          className="bg--miru-han-purple-1000 h-4 w-4 cursor-pointer border-miru-han-purple-1000 text-miru-dark-purple-1000 focus:ring-miru-han-purple-1000"
+                          id="non-billable"
+                          name="project_type"
+                          type="radio"
+                          defaultChecked={
+                            isEdit ? !editProjectData.is_billable : false
+                          }
+                          onClick={() => setProjectType("Non-Billable")}
+                        />
+                      )}
+                      <label
+                        className="ml-3 block text-sm font-medium text-miru-dark-purple-1000 "
+                        htmlFor="non-billable"
+                      >
                         Non-billable
                       </label>
                     </div>
@@ -167,13 +223,16 @@ const AddEditProject = ({
                 </div>
               </div>
             </div>
-
             <div className="actions mt-4">
               <button
-                type="submit"
-                className={`tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 focus:outline-none rounded cursor-pointer ${isFormFilled ? "bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 " : " bg-miru-gray-1000"}`  }
-                onClick={handleSubmit}
                 disabled={!isFormFilled}
+                type="submit"
+                className={`focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent py-1 px-4 font-sans text-base font-medium tracking-widest text-miru-white-1000 shadow-sm ${
+                  isFormFilled
+                    ? "bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 "
+                    : " bg-miru-gray-1000"
+                }`}
+                onClick={handleSubmit}
               >
                 {isEdit ? "SAVE CHANGES" : "ADD PROJECT"}
               </button>
@@ -186,7 +245,7 @@ const AddEditProject = ({
 };
 
 AddEditProject.defaultProps = {
-  projectData: {}
+  projectData: {},
 };
 
 export default AddEditProject;

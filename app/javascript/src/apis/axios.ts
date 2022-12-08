@@ -11,13 +11,13 @@ interface CommonHeaderProperties extends HeadersDefaults {
   "X-CSRF-TOKEN": string;
 }
 
-export const setAuthHeaders = () => {
+const setAuthHeaders = () => {
   axios.defaults.headers = {
     Accept: "application/json",
     "Content-Type": "application/json",
     "X-CSRF-TOKEN": document
-      .querySelector("[name=\"csrf-token\"]")
-      .getAttribute("content")
+      .querySelector('[name="csrf-token"]')
+      .getAttribute("content"),
   } as CommonHeaderProperties;
 };
 
@@ -28,25 +28,29 @@ const handleSuccessResponse = response => {
       Toastr.success(response.data.notice);
     }
   }
+
   return response;
 };
 
 const handleErrorResponse = error => {
   Toastr.error(
     error.response?.data?.errors ||
-    error.response?.data?.notice ||
-    error.message ||
-    error.notice ||
-    "Something went wrong!"
+      error.response?.data?.notice ||
+      error.message ||
+      error.notice ||
+      "Something went wrong!"
   );
   if (error.response?.status === 423) {
     window.location.href = "/";
   }
+
   return Promise.reject(error);
 };
 
-export const registerIntercepts = () => {
+const registerIntercepts = () => {
   axios.interceptors.response.use(handleSuccessResponse, error =>
     handleErrorResponse(error)
   );
 };
+
+export { setAuthHeaders, registerIntercepts };

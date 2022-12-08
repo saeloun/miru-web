@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef } from "react";
 
 import { isValid } from "./validate";
 
 const TimeInput = ({
-  autoFocus=false,
+  autoFocus = false,
   initTime,
   disabled,
   mountFocus,
@@ -13,7 +14,7 @@ const TimeInput = ({
   placeholder,
   className,
   name,
-  onBlurHandler
+  onBlurHandler,
 }: Iprops) => {
   const [time, setTime] = useState<string>("");
 
@@ -33,17 +34,18 @@ const TimeInput = ({
 
   let lastVal = "";
 
-  const onChangeHandler = (val) => {
+  const onChangeHandler = val => {
     if (val == time) {
       return;
     }
+
     if (isValid(val)) {
       if (val.length === 2 && lastVal.length === 3) {
         val = val.slice(0, 1);
       }
 
       if (val.length > 10) {
-        return false;
+        false;
       }
 
       lastVal = val;
@@ -58,44 +60,42 @@ const TimeInput = ({
     if (type) {
       return type;
     }
+
     return "tel";
   };
 
   return (
     <input
-      name={name ? name : undefined}
       className={className}
-      type={getType()}
       disabled={disabled}
+      name={name || undefined}
       placeholder={placeholder}
-      value={time}
-      onChange={(e) => onChangeHandler(e.target.value)}
-      onFocus={(onFocusHandler) ? (e) => onFocusHandler(e) : undefined}
-      onBlur={(onBlurHandler) ? (e) => onBlurHandler(e) : undefined}
       ref={_input}
+      type={getType()}
+      value={time}
+      onBlur={onBlurHandler ? e => onBlurHandler(e) : undefined}
+      onChange={e => onChangeHandler(e.target.value)}
+      onFocus={onFocusHandler ? e => onFocusHandler(e) : undefined}
     />
   );
-
 };
 
 TimeInput.defaultProps = {
-  placeholder: "HH:MM"
+  placeholder: "HH:MM",
 };
 
 interface Iprops {
-	autoFocus?: boolean;
-	initTime?: string;
-	disabled?: boolean;
-	mountFocus?: string;
-	classNameInitials?: string;
-	classNameInitialsWrapper?: string;
-	onTimeChange?: (val) => any,
-	type?: string,
-	onFocusHandler?: (e) => any,
-	placeholder?: string,
-	className?: string ,
-	name?: string,
-	onBlurHandler?: (e) => any
-  }
+  autoFocus?: boolean;
+  initTime?: string;
+  disabled?: boolean;
+  mountFocus?: string;
+  onTimeChange?: (val) => any;
+  type?: string;
+  onFocusHandler?: (e) => any;
+  placeholder?: string;
+  className?: string;
+  name?: string;
+  onBlurHandler?: (e) => any;
+}
 
 export default TimeInput;

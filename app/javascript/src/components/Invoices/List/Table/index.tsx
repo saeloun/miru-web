@@ -10,30 +10,31 @@ const Table = ({
   selectedInvoices,
   setShowDeleteDialog,
   setInvoiceToDelete,
-  fetchInvoices
+  fetchInvoices,
 }) => (
-
-  <table className="min-w-full mt-4 divide-y divide-gray-200 overflow-x-scroll">
+  <table className="mt-4 min-w-full divide-y divide-gray-200 overflow-x-scroll">
     <thead>
       <TableHeader
-        invoices={invoices}
-        selectedInvoices={selectedInvoices}
-        selectInvoices={selectInvoices}
         deselectInvoices={deselectInvoices}
+        invoices={invoices}
+        selectInvoices={selectInvoices}
+        selectedInvoices={selectedInvoices}
       />
     </thead>
-
-    <tbody className="min-w-full bg-white divide-y divide-gray-200" data-cy="invoices-list">
-      {invoices.map((invoice) => (
+    <tbody
+      className="min-w-full divide-y divide-gray-200 bg-white"
+      data-cy="invoices-list"
+    >
+      {invoices.map(invoice => (
         <TableRow
-          key={invoice.id}
-          isSelected={selectedInvoices.includes(invoice.id)}
-          invoice={invoice}
-          selectInvoices={selectInvoices}
           deselectInvoices={deselectInvoices}
-          setShowDeleteDialog={setShowDeleteDialog}
-          setInvoiceToDelete={setInvoiceToDelete}
           fetchInvoices={fetchInvoices}
+          invoice={invoice}
+          isSelected={selectedInvoices.includes(invoice.id)}
+          key={invoice.id}
+          selectInvoices={selectInvoices}
+          setInvoiceToDelete={setInvoiceToDelete}
+          setShowDeleteDialog={setShowDeleteDialog}
         />
       ))}
     </tbody>

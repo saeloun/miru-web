@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { Fragment } from "react";
 
 import { SearchIcon, PlusIcon } from "miruIcons";
 
@@ -9,7 +9,7 @@ import { unmapClientListForDropdown } from "../../../mapper/client.mapper";
 
 const Header = ({ setnewClient, isAdminUser }) => {
   const searchCallBack = async (searchString, setDropdownItems) => {
-    await clientApi.get(`?q=${searchString}`).then((res) => {
+    await clientApi.get(`?q=${searchString}`).then(res => {
       const dropdownList = unmapClientListForDropdown(res);
       setDropdownItems(dropdownList);
     });
@@ -19,33 +19,32 @@ const Header = ({ setnewClient, isAdminUser }) => {
     <div
       className={
         isAdminUser
-          ? "sm:flex mt-6 mb-3 sm:items-center sm:justify-between"
-          : "sm:flex mt-6 mb-3 sm:items-center"
+          ? "mt-6 mb-3 sm:flex sm:items-center sm:justify-between"
+          : "mt-6 mb-3 sm:flex sm:items-center"
       }
     >
       <h2 className="header__title ml-4">Clients</h2>
-
       {isAdminUser && (
-        <React.Fragment>
+        <Fragment>
           <div className="header__searchWrap">
             <div className="header__searchInnerWrapper">
               <AutoComplete searchCallBack={searchCallBack} />
-              <button className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
+              <button className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3">
                 <SearchIcon size={12} />
               </button>
             </div>
           </div>
           <div className="flex">
             <button
-              type="button"
               className="header__button"
+              type="button"
               onClick={() => setnewClient(true)}
             >
-              <PlusIcon weight="fill" size={16} />
+              <PlusIcon size={16} weight="fill" />
               <span className="ml-2 inline-block">NEW CLIENT</span>
             </button>
           </div>
-        </React.Fragment>
+        </Fragment>
       )}
     </div>
   );
