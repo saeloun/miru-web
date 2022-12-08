@@ -53,7 +53,7 @@ const EditEntry: React.FC<Iprops> = ({
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false);
-  const [reportConfirmOpen, setReportConfirmOpen] = useState<boolean>(false);
+  // const [reportConfirmOpen, setReportConfirmOpen] = useState<boolean>(false);
   const [selectedTeamMembers, setSelectedTeamMembers] = useState<any>([]);
   const [teamMembers, setTeamMembers] = useState<any>([]);
 
@@ -388,7 +388,7 @@ const EditEntry: React.FC<Iprops> = ({
                         Are you sure you want to remove the space occupation?
                       </ConfirmDialog>
                     </div>
-                    <div className="flex justify-between">
+                    {/* <div className="flex justify-between">
                       <a
                         onClick={() => {
                           // setReportConfirmOpen(true);
@@ -404,7 +404,7 @@ const EditEntry: React.FC<Iprops> = ({
                       >
                         Coming Soon!
                       </ConfirmDialog>
-                    </div>
+                    </div> */}
                     <button
                       onClick={handleEdit}
                       disabled={!(space && purpose && note) || isProcessing}
