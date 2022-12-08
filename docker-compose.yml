@@ -79,7 +79,7 @@ services:
     environment:
       discovery.type: single-node
       network.host: 0.0.0.0
-      xpack.security.enabled: 'false'
+      xpack.security.enabled: 'true'
     ports:
       - "9200:9200"
 
