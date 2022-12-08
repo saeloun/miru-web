@@ -7,7 +7,7 @@ const MoreOptions = ({ deleteInvoice, downloadInvoice, invoice = null }) => (
     {downloadInvoice != null && invoice.status != "draft" && (
       <li
         className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
-        onClick={downloadInvoice}
+        onClick={() => downloadInvoice(invoice)}
       >
         <DownloadSimple className="mr-4" size={16} />
         Download
