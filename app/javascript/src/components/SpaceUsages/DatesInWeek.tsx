@@ -9,7 +9,7 @@ const WeeklyEntries: React.FC<Iprops> = ({
   setSelectDate
 }) => (
   view === "day" ? (
-    <div className="h-16 bg-miru-gray-100 flex justify-evenly">
+    <div className="flex justify-evenly">
       {dayInfo.map((d, index) => (
         <button
           onClick={() => {
@@ -17,16 +17,16 @@ const WeeklyEntries: React.FC<Iprops> = ({
           }}
           key={index}
           className={
-            "px-5 py-1 my-2 w-26 h-12 text-left items-center rounded-xl border-2 border-transparent " +
+            "px-2 py-0 m-1 w-11 h-11 text-left items-center rounded-3xl border-2  border-white text-white " +
             (index === selectDate &&
-              "bg-white border-miru-han-purple-1000")
+              " bg-miru-han-purple-200 ")
           }
         >
-          <p className="text-xs text-miru-dark-purple-1000 font-medium">
+          <p className="text-xs flex items-center justify-center">
             {d.day}
           </p>
-          <p className="text-xs">
-            {getNumberWithOrdinal(d.date)} {d.month}{" "}
+          <p className="text-xs flex items-center justify-center">
+            {d.date}
           </p>
         </button>
       ))}
