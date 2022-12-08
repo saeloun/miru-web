@@ -15,6 +15,9 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "devise"
 require "rspec/rails"
 require "support/database_cleaner"
+require "buildkite/test_collector"
+
+Buildkite::TestCollector.configure(hook: :rspec)
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -52,6 +55,7 @@ VCR.configure do |config|
   config.hook_into :webmock
   config.ignore_localhost = true
   config.configure_rspec_metadata!
+  config.ignore_hosts "127.0.0.1", "localhost", "elasticsearch", "analytics-api.buildkite.com"
 end
 
 RSpec.configure do |config|
