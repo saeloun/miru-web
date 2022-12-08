@@ -63,7 +63,6 @@ class Invoice < ApplicationRecord
   store_accessor :payment_infos, :stripe_payment_intent
 
   before_validation :set_external_view_key, on: :create
-  # before_save :set_default, on: :create
 
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }
@@ -76,7 +75,8 @@ class Invoice < ApplicationRecord
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
   scope :for_clients, -> (client_ids) { where(client_id: client_ids) if client_ids.present? }
   scope :search, -> (query) {
-    where("invoice_number ILIKE :query OR clients.name ILIKE :query", query: "%#{query}%") if query.present?
+    where("invoice_number ILIKE :query OR clients.name ILIKE :query", query: "%#{query}%")
+      .references(:clients) if query.present?
   }
   scope :during, -> (duration) {
     where(due_date: duration)
@@ -106,9 +106,5 @@ class Invoice < ApplicationRecord
 
     def set_external_view_key
       self.external_view_key = "#{SecureRandom.hex}"
-    end
-
-    def set_default
-      self.company_id = client.company_id
     end
 end

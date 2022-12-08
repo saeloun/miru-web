@@ -4,7 +4,6 @@ require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
   let(:company) do
-    # create(:company, clients: create_list(:client_with_invoices, 5))
     create(:company_with_invoices)
   end
 
@@ -105,6 +104,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
       before do
         flipkart.invoices << invoice
         company.clients << flipkart
+        company.invoices << invoice
         company.save!
         company.reload
       end
