@@ -536,7 +536,7 @@ GEM
     zeitwerk (2.6.6)
 
 PLATFORMS
-  x86_64-darwin-21
+  x86_64-darwin-22
 
 DEPENDENCIES
   active_interaction
@@ -609,7 +609,7 @@ DEPENDENCIES
   webpacker
 
 RUBY VERSION
-   ruby 3.1.2p20
+   ruby 3.1.3p185
 
 BUNDLED WITH
-   2.3.24
+   2.3.26
