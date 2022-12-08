@@ -11,7 +11,7 @@ const SearchDropdown = ({ list = [], display, SearchedDataRow }) => {
 
   return (
     <section className="absolute top-9 w-full rounded-lg bg-miru-white-1000 shadow drop-shadow-md">
-      {list.map((item, index) => (
+      {list?.map((item, index) => (
         <SearchedDataRow item={item} key={index} />
       ))}
     </section>
