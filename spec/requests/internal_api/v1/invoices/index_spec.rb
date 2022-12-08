@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
   let(:company) do
-    create(:company_with_invoices)
+    create(:company_with_invoices, length: 10)
   end
 
   let(:user) { create(:user, current_workspace_id: company.id) }
@@ -21,7 +21,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         invoices_per_page = 10
         send_request :get, internal_api_v1_invoices_path(invoices_per_page:)
         expect(response).to have_http_status(:ok)
-        expect(json_response["invoices"].size).to eq(5)
+        expect(json_response["invoices"].size).to eq(10)
       end
 
       it "throws 400 bad_request error if invoices_per_page is less than or equal to zero" do
@@ -61,7 +61,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
       it "returns all invoices issued if nothing is provided" do
         send_request :get, internal_api_v1_invoices_path(from_to: nil, invoices_per_page:)
         expect(response).to have_http_status(:ok)
-        expect(json_response["invoices"].size).to eq(5)
+        expect(json_response["invoices"].size).to eq(10)
       end
     end
 
@@ -154,7 +154,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         invoices_per_page = 10
         send_request :get, internal_api_v1_invoices_path(invoices_per_page:)
         expect(response).to have_http_status(:ok)
-        expect(json_response["invoices"].size).to eq(5)
+        expect(json_response["invoices"].size).to eq(10)
       end
 
       it "throws 400 bad_request error if invoices_per_page is less than or equal to zero" do
