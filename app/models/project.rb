@@ -101,11 +101,6 @@ class Project < ApplicationRecord
     }
   end
 
-  # Note: Possibly dead fn
-  def format_amount(amount)
-    FormatAmountService.new(client.company.base_currency, amount).process
-  end
-
   private
 
     def discard_project_members
