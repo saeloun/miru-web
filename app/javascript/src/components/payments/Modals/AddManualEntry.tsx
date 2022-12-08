@@ -201,8 +201,7 @@ const AddManualEntry = ({ setShowManualEntryModal, invoiceList, fetchPaymentList
                   />
                   <CalendarIcon
                     size={20}
-                    className="absolute top-0 right-0 m-2"
-                    color="#5B34EA"
+                    className="absolute top-0 right-0 m-2 text-miru-han-purple-1000"
                   />
                 </div>
                 {showDatePicker && (
