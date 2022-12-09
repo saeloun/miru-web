@@ -1,27 +1,21 @@
 import React from "react";
 
 import Logger from "js-logger";
-import { SearchIcon, PlusIcon } from "miruIcons";
+import { PlusIcon } from "miruIcons";
 
 import projectApi from "apis/projects";
-import AutoComplete from "common/AutoComplete";
+import AutoSearch from "common/AutoSearch";
+
+import SearchDataRow from "./SearchDataRow";
 
 const Header = ({ setShowProjectModal, isAdminUser }) => {
-  const searchCallBack = async (searchString, setDropdownItems) => {
+  const fetchProjects = async searchString => {
     try {
-      if (!searchString) return;
       const res = await projectApi.search(searchString);
-      const dropdownList = res.data.projects.map(project => ({
-        label: `${project.name} • ${project.client_name}`,
-        value: project.id,
-      }));
 
-      const searchList = dropdownList.filter(item =>
-        item.label.toLowerCase().includes(searchString.toLowerCase())
-      );
-      setDropdownItems(searchList);
-    } catch (err) {
-      Logger.error(err);
+      return res?.data?.projects;
+    } catch (error) {
+      Logger.error(error);
     }
   };
 
@@ -32,19 +26,7 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
       }`}
     >
       <h2 className="header__title">Projects</h2>
-      <div className="header__searchWrap">
-        <div className="header__searchInnerWrapper">
-          <AutoComplete searchCallBack={searchCallBack} />
-          <button className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3">
-            <SearchIcon size={12} />
-          </button>
-        </div>
-        {/* {isAdminUser && (
-            <button className="ml-7">
-              <FilterIcon size={16} />
-            </button>
-          )} */}
-      </div>
+      <AutoSearch SearchDataRow={SearchDataRow} searchAction={fetchProjects} />
       {isAdminUser && (
         <button
           className="header__button flex"
