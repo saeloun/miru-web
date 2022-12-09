@@ -57,7 +57,7 @@ module GenerateInvoice
       end
 
       def search_term
-        @search_term = params[:search_term].presence || "*"
+        @_search_term = params[:search_term].presence || "*"
       end
 
       def new_line_item_entries
