@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 
+import Logger from "js-logger";
 import { PlusIcon } from "miruIcons";
 
 import clientApi from "apis/clients";
@@ -11,10 +12,14 @@ import { unmapClientListForDropdown } from "../../../mapper/client.mapper";
 
 const Header = ({ setnewClient, isAdminUser }) => {
   const fetchClients = async searchString => {
-    const res = await clientApi.get(`?q=${searchString}`);
-    const dropdownList = unmapClientListForDropdown(res);
+    try {
+      const res = await clientApi.get(`?q=${searchString}`);
+      const dropdownList = unmapClientListForDropdown(res);
 
-    return dropdownList;
+      return dropdownList;
+    } catch (error) {
+      Logger.error(error);
+    }
   };
 
   return (
