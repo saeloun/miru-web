@@ -47,13 +47,6 @@ RSpec.describe Invoice, type: :model do
 
     describe "has many" do
       it { is_expected.to have_many(:invoice_line_items) }
-
-      it "sub_total should tally with amount of all invoice line items combined" do
-        expect(invoice.sub_total).to eq(
-          invoice.invoice_line_items.sum { |line_item|
-            line_item[:rate] * line_item[:quantity]
-          })
-      end
     end
 
     describe "accepts_nested_attributes_for" do
