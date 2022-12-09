@@ -100,4 +100,55 @@ RSpec.describe Project, type: :model do
       end
     end
   end
+
+  describe "#discard_project_members" do
+    let(:company) { create(:company) }
+    let(:user) { create(:user) }
+    let(:client) { create(:client, company:) }
+    let(:project) { create(:project, client:) }
+    let!(:project_member1) { create(:project_member, project:, user:, hourly_rate: 5000) }
+    let!(:project_member2) { create(:project_member, project:, user:, hourly_rate: 1000) }
+
+    it "returns empty list of project members when project is discarded" do
+      expect(project.project_members.kept.pluck(:id)).to match_array([project_member1.id, project_member2.id])
+      project.discard!
+      expect(project.reload.project_members.kept.pluck(:id)).to eq([])
+    end
+  end
+
+  describe "#overdue_and_outstanding_amounts" do
+    let(:company) { create(:company) }
+    let(:user) { create(:user) }
+    let(:client) { create(:client, company:) }
+    let(:project) { create(:project, client:) }
+    let(:sent_invoice1) { create(:invoice, client:, status: "sent") }
+    let(:viewed_invoice1) { create(:invoice, client:, status: "sent") }
+    let(:overdue_invoice1) { create(:invoice, client:, status: "overdue") }
+    let(:overdue_invoice2) { create(:invoice, client:, status: "overdue") }
+
+    before do
+      create(:project_member, user:, project:)
+      create_list(:timesheet_entry, 20, user:, project:)
+      project.timesheet_entries.each_with_index do |timesheet_entry, index|
+        invoice = if (index % 2) == 0
+          index > 10 ? sent_invoice1 : overdue_invoice1
+        else
+          index > 10 ? viewed_invoice1 : overdue_invoice2
+        end
+        create(:invoice_line_item, invoice:, timesheet_entry:)
+      end
+    end
+
+    it "return outstanding_amount overdue_amount amounts" do
+      outstanding_amount = sent_invoice1.amount +
+        viewed_invoice1.amount +
+        overdue_invoice1.amount +
+        overdue_invoice2.amount
+      overdue_amount = overdue_invoice1.amount + overdue_invoice2.amount
+      overdue_and_outstanding_amounts = project.overdue_and_outstanding_amounts
+
+      expect(overdue_and_outstanding_amounts[:overdue_amount]).to eq(overdue_amount)
+      expect(overdue_and_outstanding_amounts[:outstanding_amount]).to eq(outstanding_amount)
+    end
+  end
 end
