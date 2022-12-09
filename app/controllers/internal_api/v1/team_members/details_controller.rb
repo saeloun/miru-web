@@ -19,7 +19,7 @@ class InternalApi::V1::TeamMembers::DetailsController < InternalApi::V1::Applica
   private
 
     def employment
-      @employment ||= Employment.find(params[:team_id])
+      @_employment ||= Employment.find(params[:team_id])
     end
 
     def detail_params
