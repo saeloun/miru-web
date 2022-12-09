@@ -63,40 +63,84 @@ export const navAdminOptions = [
 
 export const activeClassName =
   "py-3 px-2 md:px-4 flex items-center justify-center md:justify-start text-miru-han-purple-1000 bg-miru-gray-100  border-l-0 md:border-l-8 border-miru-han-purple-1000 font-extrabold";
+export const mobileActiveClassName =
+  "flex flex-col items-center justify-center text-miru-han-purple-1000 font-bold text-xs";
+
+export const ListOption = ({ option, key }) => (
+  <li className="items-center hover:bg-miru-gray-100" key={key}>
+    <NavLink
+      data-cy={option.dataCy}
+      to={option.path}
+      className={({ isActive }) =>
+        isActive
+          ? activeClassName
+          : "flex items-center justify-center py-3 px-2 hover:bg-miru-gray-100 md:justify-start md:px-6"
+      }
+    >
+      {option.logo} {option.label}
+    </NavLink>
+  </li>
+);
+
+export const MobileListOption = ({ option, key, setSelectedTab }) => (
+  <li
+    className="flex items-center justify-center p-2 hover:bg-miru-gray-100"
+    key={key}
+    onClick={() => setSelectedTab(option.label)}
+  >
+    <NavLink
+      data-cy={option.dataCy}
+      to={option.path}
+      className={({ isActive }) =>
+        isActive
+          ? mobileActiveClassName
+          : "flex flex-col items-center justify-center text-xs hover:bg-miru-gray-100"
+      }
+    >
+      {option.logo} {option.label}
+    </NavLink>
+  </li>
+);
 
 export const getEmployeeOptions = () =>
   navEmployeeOptions.map((option, index) => (
-    <li className="items-center hover:bg-miru-gray-100" key={index}>
-      <NavLink
-        data-cy={option.dataCy}
-        to={option.path}
-        className={({ isActive }) =>
-          isActive
-            ? activeClassName
-            : "flex items-center justify-center py-3 px-2 hover:bg-miru-gray-100 md:justify-start md:px-6"
-        }
-      >
-        /{option.logo} {option.label}
-      </NavLink>
-    </li>
+    <ListOption key={index} option={option} />
   ));
 
 export const getAdminOptions = () =>
   navAdminOptions.map((option, index) => (
-    <li
-      className="items-center justify-center hover:bg-miru-gray-100 md:justify-start"
-      key={index}
-    >
-      <NavLink
-        data-cy={option.dataCy}
-        to={option.path}
-        className={({ isActive }) =>
-          isActive
-            ? activeClassName
-            : "flex items-center justify-center py-3 px-2 hover:bg-miru-gray-100 md:justify-start md:px-6"
-        }
-      >
-        {option.logo} {option.label}
-      </NavLink>
-    </li>
+    <ListOption key={index} option={option} />
   ));
+
+export const MobileMenuOptions = ({
+  isAdminUser,
+  setSelectedTab,
+  from,
+  to,
+}) => {
+  if (isAdminUser) {
+    return (
+      <>
+        {navAdminOptions.slice(from, to).map((option, index) => (
+          <MobileListOption
+            key={index}
+            option={option}
+            setSelectedTab={setSelectedTab}
+          />
+        ))}
+      </>
+    );
+  }
+
+  return (
+    <>
+      {navEmployeeOptions.slice(from, to).map((option, index) => (
+        <MobileListOption
+          key={index}
+          option={option}
+          setSelectedTab={setSelectedTab}
+        />
+      ))}
+    </>
+  );
+};

@@ -2,19 +2,13 @@ import React, { useState } from "react";
 
 import dayjs from "dayjs";
 import { currencyFormat, useDebounce } from "helpers";
-import {
-  PaperPlaneTiltIcon,
-  PenIcon,
-  DotsThreeVerticalIcon,
-  DownloadSimpleIcon,
-} from "miruIcons";
-import { Link, useNavigate } from "react-router-dom";
-import { Avatar, Badge, Tooltip } from "StyledComponents";
+import { DotsThreeVerticalIcon } from "miruIcons";
+import { useNavigate } from "react-router-dom";
+import { Avatar, Badge } from "StyledComponents";
 
 import CustomCheckbox from "common/CustomCheckbox";
 import getStatusCssClass from "utils/getBadgeStatus";
 
-import { handleDownloadInvoice } from "../../common/utils";
 import MoreOptions from "../MoreOptions";
 import SendInvoice from "../SendInvoice";
 
@@ -26,9 +20,11 @@ const TableRow = ({
   setShowDeleteDialog,
   setInvoiceToDelete,
   fetchInvoices,
+  isDesktop,
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   useDebounce(isMenuOpen, 500);
   const navigate = useNavigate();
 
@@ -49,7 +45,7 @@ const TableRow = ({
 
   return (
     <tr className="group last:border-b-0 hover:bg-miru-gray-100">
-      <td className="px-4 py-5 md:pl-6 md:pr-0">
+      <td className="px-4 py-5 lg:pl-6 lg:pr-0">
         <CustomCheckbox
           checkboxValue={isSelected}
           handleCheck={handleCheckboxChange}
@@ -59,82 +55,47 @@ const TableRow = ({
         />
       </td>
       <td
-        className="flex cursor-pointer items-center whitespace-nowrap py-5 pr-6 text-left font-medium tracking-wider md:w-1/5 md:pr-2"
+        className="flex cursor-pointer items-center whitespace-nowrap py-5 pr-2 text-left font-medium tracking-wider lg:w-1/5 lg:pr-2"
         onClick={() => navigate(`/invoices/${invoice.id}`)}
       >
-        <Avatar />
-        <div className="ml-2 md:ml-10">
-          <span className="text-xs font-normal capitalize text-miru-dark-purple-1000 md:text-base md:font-semibold">
+        {isDesktop && <Avatar />}
+        <div className="ml-2 lg:ml-10">
+          <span className="text-xs font-normal capitalize text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
             {invoice.client.name}
           </span>
-          <h3 className="text-xs font-normal text-miru-dark-purple-400 md:text-sm">
+          <h3 className="text-xs font-normal text-miru-dark-purple-400 lg:text-sm">
             {invoice.invoiceNumber}
           </h3>
         </div>
       </td>
-      <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-wider md:px-6">
-        <h1 className="text-xs font-normal text-miru-dark-purple-1000 md:text-base md:font-semibold">
-          {formattedDate(invoice.issueDate)}
-        </h1>
-        <h3 className="text-xs font-normal text-miru-dark-purple-400 md:text-sm">
-          Due on {formattedDate(invoice.dueDate)}
-        </h3>
-      </td>
-      <td className="px-6 pt-2 pb-7 text-right text-sm font-bold tracking-wider text-miru-dark-purple-1000 md:w-1/4 md:text-xl">
+      {isDesktop && (
+        <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-wider lg:px-6">
+          <h1 className="text-xs font-normal text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
+            {formattedDate(invoice.issueDate)}
+          </h1>
+          <h3 className="text-xs font-normal text-miru-dark-purple-400 lg:text-sm">
+            Due on {formattedDate(invoice.dueDate)}
+          </h3>
+        </td>
+      )}
+      <td className="px-2 text-right text-sm font-bold tracking-wider text-miru-dark-purple-1000 lg:w-1/4 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
         {formattedAmount}
       </td>
       <td
-        className="relative px-6 pb-10 text-right font-medium"
+        className="relative px-2 text-right font-medium lg:px-6 lg:pb-10"
         onMouseLeave={() => setIsMenuOpen(false)}
       >
-        <div className="absolute bottom-16 left-24 flex hidden w-40 items-center justify-between rounded-xl border-2 border-miru-gray-200 bg-white p-3 group-hover:flex">
-          <Tooltip content="Send To">
-            <button
-              className="text-miru-han-purple-1000"
-              onClick={() => setIsSending(!isSending)}
-            >
-              <PaperPlaneTiltIcon size={16} />
-            </button>
-          </Tooltip>
-          <Tooltip content="Download">
-            <button
-              disabled={invoice.status == "draft"}
-              className={
-                invoice.status == "draft"
-                  ? "text-miru-gray-1000"
-                  : "text-miru-han-purple-1000"
-              }
-              onClick={() => handleDownloadInvoice(invoice)}
-            >
-              <DownloadSimpleIcon size={16} />
-            </button>
-          </Tooltip>
-          <Tooltip content="Edit">
-            <Link
-              className="text-miru-han-purple-1000"
-              data-cy="edit-invoice"
-              to={`/invoices/${invoice.id}/edit`}
-              type="button"
-            >
-              <PenIcon size={16} />
-            </Link>
-          </Tooltip>
-          <Tooltip content="More">
-            <button
-              className="text-miru-han-purple-1000"
-              onClick={() => setIsMenuOpen(true)}
-            >
-              <DotsThreeVerticalIcon size={16} />
-            </button>
-          </Tooltip>
-        </div>
-        {isMenuOpen && (
+        {isDesktop && (
           <MoreOptions
             invoice={invoice}
+            isDesktop={isDesktop}
             isMenuOpen={isMenuOpen}
+            isSending={isSending}
             setInvoiceToDelete={setInvoiceToDelete}
             setIsMenuOpen={setIsMenuOpen}
+            setIsSending={setIsSending}
             setShowDeleteDialog={setShowDeleteDialog}
+            setShowMoreOptions={setShowMoreOptions}
           />
         )}
         <Badge
@@ -142,6 +103,30 @@ const TableRow = ({
           text={invoice.status}
         />
       </td>
+      {!isDesktop && (
+        <td className="text-right text-sm text-miru-dark-purple-1000">
+          <button
+            onClick={() => {
+              setShowMoreOptions(true);
+            }}
+          >
+            <DotsThreeVerticalIcon size={26} />
+          </button>
+        </td>
+      )}
+      {!isDesktop && showMoreOptions && (
+        <MoreOptions
+          invoice={invoice}
+          isDesktop={isDesktop}
+          isMenuOpen={isMenuOpen}
+          isSending={isSending}
+          setInvoiceToDelete={setInvoiceToDelete}
+          setIsMenuOpen={setIsMenuOpen}
+          setIsSending={setIsSending}
+          setShowDeleteDialog={setShowDeleteDialog}
+          setShowMoreOptions={setShowMoreOptions}
+        />
+      )}
       {isSending && (
         <SendInvoice
           isSending

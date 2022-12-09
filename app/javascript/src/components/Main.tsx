@@ -22,7 +22,7 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
 };
 
 const Main: React.FC<Iprops> = props => (
-  <div className="overflow-x-scroll px-8 py-12 font-manrope md:absolute md:top-0 md:bottom-0 md:right-0 md:w-5/6 md:px-20 md:py-3">
+  <div className="overflow-x-scroll px-4 py-12 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
     <Routes>
       {ROUTES.map(parentRoute => (
         <Route
@@ -50,6 +50,7 @@ interface Iprops {
   user: object;
   companyRole: Roles;
   company: object;
+  isDesktop: boolean;
 }
 
 export default Main;

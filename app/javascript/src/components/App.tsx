@@ -15,7 +15,7 @@ import Navigation from "./Navbar/Mobile/Navigation";
 const App = props => {
   const { user, companyRole } = props;
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
-  const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 650);
+  const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1025);
   const [selectedTab, setSelectedTab] = useState<string>("Time Tracking");
 
   useEffect(() => {
@@ -24,11 +24,11 @@ const App = props => {
   }, []);
 
   window.addEventListener("resize", () =>
-    setIsDesktop(window.innerWidth > 650)
+    setIsDesktop(window.innerWidth > 1025)
   );
 
   window.removeEventListener("resize", () =>
-    setIsDesktop(window.innerWidth > 650)
+    setIsDesktop(window.innerWidth > 1025)
   );
 
   const getView = () => {
@@ -36,7 +36,7 @@ const App = props => {
       return (
         <div className="absolute inset-0 flex h-full w-full">
           <Navbar isAdminUser={isAdminUser} user={user} />
-          <Main {...props} isAdminUser={isAdminUser} />
+          <Main {...props} isAdminUser={isAdminUser} isDesktop={isDesktop} />
         </div>
       );
     }
@@ -44,7 +44,7 @@ const App = props => {
     return (
       <div className="flex h-full w-full flex-col">
         <Header selectedTab={selectedTab} />
-        <Main {...props} isAdminUser={isAdminUser} />
+        <Main {...props} isAdminUser={isAdminUser} isDesktop={isDesktop} />
         <Navigation isAdminUser={isAdminUser} setSelectedTab={setSelectedTab} />
       </div>
     );
