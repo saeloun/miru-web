@@ -83,7 +83,6 @@ class Company < ApplicationRecord
        clients.name as project_client_name")
   end
 
-  # Note: Possible dead fn
   def client_list
     clients.kept.map do |client|
       { id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.address }
