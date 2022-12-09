@@ -1,7 +1,7 @@
 import React from "react";
 
-const SearchDropdown = ({ list = [], display, SearchedDataRow }) => {
-  if (display && list.length == 0) {
+const SearchDropdown = ({ list = [], SearchedDataRow, loading }) => {
+  if (!loading && list.length == 0) {
     return (
       <section className="absolute top-8 flex w-full items-center bg-miru-white-1000 py-2 shadow drop-shadow-md">
         <div className="mx-auto text-center">No results found</div>

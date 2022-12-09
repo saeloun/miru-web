@@ -8,18 +8,21 @@ import SearchDropdown from "./SearchDropdown";
 const AutoSearch = ({ searchAction, searchDataRow }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResult, setSearchResult] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const handleSearchAction = async () => {
     if (searchQuery) {
       const result = await searchAction(debouncedSearchQuery);
       setSearchResult(result);
+      setLoading(false);
     } else {
       setSearchResult([]);
     }
   };
 
   useEffect(() => {
+    setLoading(true);
     handleSearchAction();
   }, [debouncedSearchQuery]);
 
@@ -48,8 +51,8 @@ const AutoSearch = ({ searchAction, searchDataRow }) => {
           </button>
           <SearchDropdown
             SearchedDataRow={searchDataRow}
-            display={searchQuery}
             list={searchResult}
+            loading={loading}
           />
         </div>
       </div>
