@@ -37,7 +37,7 @@ class InternalApi::V1::AddressesController < InternalApi::V1::ApplicationControl
     end
 
     def address
-      @address ||= Address.find(params[:id])
+      @_address ||= Address.find(params[:id])
     end
 
     def address_params
