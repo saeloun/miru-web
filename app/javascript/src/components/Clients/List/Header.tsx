@@ -34,8 +34,8 @@ const Header = ({ setnewClient, isAdminUser }) => {
       {isAdminUser && (
         <Fragment>
           <AutoSearch
+            SearchDataRow={SearchDataRow}
             searchAction={fetchClients}
-            searchDataRow={SearchDataRow}
           />
           <div className="flex">
             <button

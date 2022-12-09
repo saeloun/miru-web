@@ -5,7 +5,7 @@ import { SearchIcon, XIcon } from "miruIcons";
 
 import SearchDropdown from "./SearchDropdown";
 
-const AutoSearch = ({ searchAction, searchDataRow }) => {
+const AutoSearch = ({ searchAction, SearchDataRow }: Iprops) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResult, setSearchResult] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +50,7 @@ const AutoSearch = ({ searchAction, searchDataRow }) => {
             )}
           </button>
           <SearchDropdown
-            SearchedDataRow={searchDataRow}
+            SearchedDataRow={SearchDataRow}
             list={searchResult}
             loading={loading}
           />
@@ -59,5 +59,10 @@ const AutoSearch = ({ searchAction, searchDataRow }) => {
     </div>
   );
 };
+
+interface Iprops {
+  searchAction: (val) => any; // eslint-disable-line
+  SearchDataRow;
+}
 
 export default AutoSearch;

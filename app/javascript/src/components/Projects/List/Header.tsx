@@ -26,7 +26,7 @@ const Header = ({ setShowProjectModal, isAdminUser }) => {
       }`}
     >
       <h2 className="header__title">Projects</h2>
-      <AutoSearch searchAction={fetchProjects} searchDataRow={SearchDataRow} />
+      <AutoSearch SearchDataRow={SearchDataRow} searchAction={fetchProjects} />
       {isAdminUser && (
         <button
           className="header__button flex"

@@ -1,6 +1,6 @@
 import React from "react";
 
-const SearchDropdown = ({ list = [], SearchedDataRow, loading }) => {
+const SearchDropdown = ({ list = [], loading, SearchedDataRow }: Iprops) => {
   if (!loading && list.length == 0) {
     return (
       <section className="absolute top-8 flex w-full items-center bg-miru-white-1000 py-2 shadow drop-shadow-md">
@@ -17,5 +17,11 @@ const SearchDropdown = ({ list = [], SearchedDataRow, loading }) => {
     </section>
   );
 };
+
+interface Iprops {
+  list: any;
+  loading: boolean;
+  SearchedDataRow;
+}
 
 export default SearchDropdown;
