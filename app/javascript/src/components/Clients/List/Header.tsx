@@ -1,18 +1,25 @@
 import React, { Fragment } from "react";
 
-import { SearchIcon, PlusIcon } from "miruIcons";
+import Logger from "js-logger";
+import { PlusIcon } from "miruIcons";
 
 import clientApi from "apis/clients";
-import AutoComplete from "common/AutoComplete";
+import AutoSearch from "common/AutoSearch";
+
+import SearchDataRow from "./SearchDataRow";
 
 import { unmapClientListForDropdown } from "../../../mapper/client.mapper";
 
 const Header = ({ setnewClient, isAdminUser }) => {
-  const searchCallBack = async (searchString, setDropdownItems) => {
-    await clientApi.get(`?q=${searchString}`).then(res => {
+  const fetchClients = async searchString => {
+    try {
+      const res = await clientApi.get(`?q=${searchString}`);
       const dropdownList = unmapClientListForDropdown(res);
-      setDropdownItems(dropdownList);
-    });
+
+      return dropdownList;
+    } catch (error) {
+      Logger.error(error);
+    }
   };
 
   return (
@@ -26,14 +33,10 @@ const Header = ({ setnewClient, isAdminUser }) => {
       <h2 className="header__title ml-4">Clients</h2>
       {isAdminUser && (
         <Fragment>
-          <div className="header__searchWrap">
-            <div className="header__searchInnerWrapper">
-              <AutoComplete searchCallBack={searchCallBack} />
-              <button className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3">
-                <SearchIcon size={12} />
-              </button>
-            </div>
-          </div>
+          <AutoSearch
+            SearchDataRow={SearchDataRow}
+            searchAction={fetchClients}
+          />
           <div className="flex">
             <button
               className="header__button"
