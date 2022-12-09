@@ -1,5 +1,6 @@
 import React from "react";
 
+import Logger from "js-logger";
 import { PlusIcon } from "miruIcons";
 
 import projectApi from "apis/projects";
@@ -9,9 +10,13 @@ import SearchDataRow from "./SearchDataRow";
 
 const Header = ({ setShowProjectModal, isAdminUser }) => {
   const fetchProjects = async searchString => {
-    const res = await projectApi.search(searchString);
+    try {
+      const res = await projectApi.search(searchString);
 
-    return res?.data?.projects;
+      return res?.data?.projects;
+    } catch (error) {
+      Logger.error(error);
+    }
   };
 
   return (
