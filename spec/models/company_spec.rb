@@ -70,63 +70,6 @@ RSpec.describe Company, type: :model do
       create_list(:timesheet_entry, 5, user: user_2, project: project_2)
     end
 
-    describe "#client_details" do
-      subject { company.client_details(time_frame) }
-
-      let(:result) do
-        [
-          {
-            id: client_1.id,
-            name: client_1.name,
-            email: client_1.email,
-            phone: client_1.phone,
-            address: client_1.address,
-            minutes_spent: client_1.total_hours_logged(time_frame)
-          },
-          {
-            id: client_2.id,
-            name: client_2.name,
-            email: client_2.email,
-            phone: client_2.phone,
-            address: client_2.address,
-            minutes_spent: client_2.total_hours_logged(time_frame)
-          }
-        ]
-      end
-
-      context "when time_frame is last_week" do
-        let(:time_frame) { "last_week" }
-
-        it "returns the total hours logged for all the clients of a Company in the last_week" do
-          expect(subject).to match_array(result)
-        end
-      end
-
-      context "when time_frame is week" do
-        let(:time_frame) { "week" }
-
-        it "returns the total hours logged for all the clients of a Company in that week" do
-          expect(subject).to match_array(result)
-        end
-      end
-
-      context "when time_frame is month" do
-        let(:time_frame) { "month" }
-
-        it "returns the total hours logged for all the clients of a Company in that week" do
-          expect(subject).to match_array(result)
-        end
-      end
-
-      context "when time_frame is year" do
-        let(:time_frame) { "year" }
-
-        it "returns the total hours logged for all the clients of a Company in that week" do
-          expect(subject).to match_array(result)
-        end
-      end
-    end
-
     describe "#client_list" do
       it "returns list of all the clients of a company" do
         expect(company.client_list).to match_array [

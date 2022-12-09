@@ -84,11 +84,6 @@ class Company < ApplicationRecord
   end
 
   # Note: Possible dead fn
-  def client_details(time_frame = "week")
-    clients.kept.map { |client| client.client_detail(time_frame) }
-  end
-
-  # Note: Possible dead fn
   def client_list
     clients.kept.map do |client|
       { id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.address }
