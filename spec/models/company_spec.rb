@@ -79,15 +79,6 @@ RSpec.describe Company, type: :model do
       end
     end
 
-    describe "#user_details" do
-      it "return list of all users of a company" do
-        expect(company.user_details).to match_array [
-          a_hash_including(id: user_1.id, name: user_1.full_name),
-          a_hash_including(id: user_2.id, name: user_2.full_name),
-        ]
-      end
-    end
-
     describe "#overdue_and_outstanding_and_draft_amount" do
       let(:company) do
         create(:company, clients: create_list(:client_with_invoices, 5))

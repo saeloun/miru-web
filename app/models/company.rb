@@ -102,16 +102,6 @@ class Company < ApplicationRecord
     }
   end
 
-  # Note: Possible dead fn
-  def user_details
-    users.kept.map do |user|
-      {
-        id: user.id,
-        name: user.full_name
-      }
-    end
-  end
-
   def company_logo
     return nil if !logo.attached?
 
