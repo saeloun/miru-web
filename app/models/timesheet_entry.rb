@@ -64,7 +64,7 @@ class TimesheetEntry < ApplicationRecord
     }
   end
 
-  def formatted_entry
+  def snippet
     {
       id:,
       project: project.name,
