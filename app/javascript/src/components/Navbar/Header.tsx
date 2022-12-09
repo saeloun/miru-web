@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
 import { Link } from "react-router-dom";
 
 import { Paths } from "constants/index";
 
-const miruLogo = require("../../../../assets/images/PurpleMiruLogoWithText.svg"); //eslint-disable-line
+const miruLogo = require("../../../../assets/images/PurpleMiruLogoWithText.svg");
 
 const Header = () => (
   <div className="flex h-20 items-center justify-center bg-miru-gray-100">

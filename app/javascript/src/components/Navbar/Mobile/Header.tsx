@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
 import { Link } from "react-router-dom";
 
 import { Paths } from "constants/index";
 
-const miruLogo = require("../../../../../assets/images/logo.jpg"); //eslint-disable-line
+const miruLogo = require("../../../../../assets/images/logo.jpg");
 
 const Header = ({ selectedTab }) => (
   <div className="fixed top-0 left-0 right-0 z-50 flex h-12 items-center bg-white px-4 shadow-lg">
