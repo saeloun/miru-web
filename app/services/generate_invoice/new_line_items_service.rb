@@ -78,7 +78,7 @@ module GenerateInvoice
       end
 
       def format_timesheet_entries(timesheet_entries)
-        user_project_rates = project_to_member_rates
+        user_project_rates = ProjectMembersPresenter.new(projects).project_to_member_hourly_rate
 
         timesheet_entries.map do |timesheet_entry|
           {
@@ -93,24 +93,6 @@ module GenerateInvoice
             rate: user_project_rates[timesheet_entry.project_id][timesheet_entry.user_id]
           }
         end
-      end
-
-      def project_to_member_rates
-        projects_members_rates = {}
-        projects.each do |project|
-          projects_members_rates[project.id] = project_members_hourly_rate(project)
-        end
-
-        projects_members_rates
-      end
-
-      def project_members_hourly_rate(project)
-        member_rates = {}
-        project.project_members.each do |project_member|
-          member_rates[project_member.user_id] = project_member.hourly_rate
-        end
-
-        member_rates
       end
   end
 end
