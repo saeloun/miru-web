@@ -2,13 +2,12 @@
 
 # TODO: Refactoring -> can be merge with time entries controller
 class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationController
-  include Timesheet
   skip_after_action :verify_authorized
 
   def index
     authorize :index, policy_class: TimeTrackingPolicy
     data = TimeTrackingIndexDetailsService.new(current_user, current_company).process
-    data[:entries] = format_timesheet_entries(data[:timesheet_entries])
+    data[:entries] = TimesheetEntriesPresenter.new(data[:timesheet_entries]).group_snippets_by_work_date
     render json: data, status: :ok
   end
 
