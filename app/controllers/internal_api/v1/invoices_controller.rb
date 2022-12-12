@@ -24,7 +24,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def create
     authorize Invoice
     render :create, locals: {
-      invoice: @client.invoices.create!(invoice_params),
+      invoice: current_company.invoices.create!(invoice_params),
       client: @client
     }
   end
