@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationController
-  include Timesheet
-
   skip_after_action :verify_authorized, only: [:index]
   after_action :verify_policy_scoped, only: [:index]
 
@@ -12,7 +10,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
       params[:from],
       params[:to]
     )
-    entries = formatted_entries_by_date(timesheet_entries)
+    entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
     entries[:currentUserRole] = current_user.primary_role current_company
     render json: { entries: }, status: :ok
   end
@@ -23,7 +21,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
     timesheet_entry.user = current_company.users.find(params[:user_id])
     render json: {
       notice: I18n.t("timesheet_entry.create.message"),
-      entry: timesheet_entry.formatted_entry
+      entry: timesheet_entry.snippet
     } if timesheet_entry.save!
   end
 
@@ -31,7 +29,7 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
     authorize current_timesheet_entry
     current_timesheet_entry.project = current_project
     current_timesheet_entry.update!(timesheet_entry_params)
-    render json: { notice: I18n.t("timesheet_entry.update.message"), entry: current_timesheet_entry.formatted_entry },
+    render json: { notice: I18n.t("timesheet_entry.update.message"), entry: current_timesheet_entry.snippet },
       status: :ok
   end
 
