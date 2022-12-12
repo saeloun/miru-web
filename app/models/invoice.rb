@@ -75,7 +75,7 @@ class Invoice < ApplicationRecord
     where("invoice_number ILIKE :query OR clients.name ILIKE :query", query: "%#{query}%") if query.present?
   }
   scope :during, -> (duration) {
-    where(issue_date: duration)
+    where(issue_date: duration) if duration.present?
   }
 
   delegate :name, to: :client, prefix: :client

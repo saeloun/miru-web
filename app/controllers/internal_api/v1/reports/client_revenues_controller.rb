@@ -37,7 +37,7 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
       if params[:duration_from].present? && params[:duration_to].present?
         params[:duration_from].to_date..params[:duration_to].to_date
       else
-        "2019-04-01".to_date..Date.today
+        nil
       end
     end
 end
