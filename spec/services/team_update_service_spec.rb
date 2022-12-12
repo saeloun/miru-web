@@ -9,10 +9,6 @@ RSpec.describe TeamUpdateService do
   let(:user_params) { { first_name: "Jane", last_name: "Smith" } }
 
   describe "#process" do
-    before do
-      user.add_role :employee, company
-    end
-
     subject { described_class.new(employment:, user_params:, current_company: company, new_role: "admin").process }
 
     it "updates the user's attributes" do
@@ -23,7 +19,7 @@ RSpec.describe TeamUpdateService do
 
     it "updates the user's role" do
       expect { subject }.to change {
-        employment.user.reload.roles.find_by(resource: company).name
+        employment.user.reload.primary_role(company)
       }.from("employee").to("admin")
     end
   end
