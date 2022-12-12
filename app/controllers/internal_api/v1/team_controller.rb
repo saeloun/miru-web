@@ -17,11 +17,9 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
 
   def update
     authorize employment, policy_class: TeamPolicy
-    User.transaction do
-      employment.user.skip_reconfirmation!
-      employment.user.update!(user_params)
-      update_company_user_role
-    end
+
+    TeamUpdateService.new(employment:, user_params:, current_company:, new_role: params[:role]).process
+
     render json: {
       user: employment.user,
       notice: I18n.t("team.update.success.message")
@@ -45,16 +43,5 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
 
     def user_params
       params.permit(policy(:team).permitted_attributes)
-    end
-
-    def update_company_user_role
-      current_role = current_company_role(employment.user)
-
-      employment.user.remove_role(current_role.name.to_sym, current_company) if current_role.present?
-      employment.user.add_role(params[:role].downcase.to_sym, current_company)
-    end
-
-    def current_company_role(user)
-      user.roles.find_by(resource: current_company)
     end
 end
