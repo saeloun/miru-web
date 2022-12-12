@@ -44,6 +44,7 @@ const MoreOptions = ({
         </Tooltip>
         <Tooltip content="Download">
           <button
+            data-cy="invoice-download"
             disabled={invoice.status == "draft"}
             className={
               invoice.status == "draft"
@@ -127,6 +128,7 @@ const MoreOptions = ({
         </li>
         <li className="flex cursor-pointer items-center py-2">
           <button
+            data-cy="invoice-download"
             disabled={invoice.status == "draft"}
             className={
               invoice.status == "draft"

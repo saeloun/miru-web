@@ -55,7 +55,8 @@ const TableRow = ({
         />
       </td>
       <td
-        className="flex cursor-pointer items-center whitespace-nowrap py-5 pr-2 text-left font-medium tracking-wider lg:w-1/5 lg:pr-2"
+        className="flex cursor-pointer items-center whitespace-nowrap py-5 pr-6 text-left font-medium tracking-wider lg:w-1/5 lg:pr-2"
+        data-cy="view-invoice"
         onClick={() => navigate(`/invoices/${invoice.id}`)}
       >
         {isDesktop && <Avatar />}
