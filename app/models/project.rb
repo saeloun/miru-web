@@ -78,6 +78,7 @@ class Project < ApplicationRecord
     end
   end
 
+  # Note: Possibly dead fn
   def total_hours_logged(time_frame = "week")
     timesheet_entries.where(work_date: DateRangeService.new(timeframe: time_frame).process).sum(:duration)
   end
@@ -105,6 +106,7 @@ class Project < ApplicationRecord
     }
   end
 
+  # Note: Possibly dead fn
   def format_amount(amount)
     FormatAmountService.new(client.company.base_currency, amount).process
   end
