@@ -6,7 +6,7 @@ class InternalApi::V1::TimeTrackingController < InternalApi::V1::ApplicationCont
 
   def index
     authorize :index, policy_class: TimeTrackingPolicy
-    data = TimeTrackingIndexDetailsService.new(current_user, current_company).process
+    data = TimeTrackingIndexService.new(current_user, current_company).process
     data[:entries] = TimesheetEntriesPresenter.new(data[:timesheet_entries]).group_snippets_by_work_date
     render json: data, status: :ok
   end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TimeTrackingIndexDetailsService
+class TimeTrackingIndexService
   attr_reader :current_user, :current_company
   attr_accessor :clients, :projects, :is_admin, :timesheet_entries, :employees
 
