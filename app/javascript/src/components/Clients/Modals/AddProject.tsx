@@ -107,7 +107,7 @@ const AddProject = ({ setShowProjectModal, clientDetails }) => {
                         Billable
                       </label>
                     </div>
-                    <div className="ml-4 flex items-center ">
+                    <div className="flex items-center">
                       <input
                         className="bg--miru-han-purple-1000 h-4 w-4 cursor-pointer border-miru-han-purple-1000 text-miru-dark-purple-1000 focus:ring-miru-han-purple-1000"
                         defaultChecked={false}
