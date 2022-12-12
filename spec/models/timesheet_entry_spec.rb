@@ -59,9 +59,9 @@ RSpec.describe TimesheetEntry, type: :model do
     pending("Will work on this")
   end
 
-  describe "#formatted_entry" do
+  describe "#snippet" do
     it "returns proper data" do
-      expect(timesheet_entry.formatted_entry).to eq(
+      expect(timesheet_entry.snippet).to eq(
         {
           id: timesheet_entry.id,
           project: timesheet_entry.project.name,
