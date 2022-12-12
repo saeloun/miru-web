@@ -33,7 +33,7 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:postgres@database:5432/
       - REDIS_URL=redis://redis:6379/1
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
       - PIDFILE=/tmp/pids/server.pid
     depends_on:
       - database
@@ -41,21 +41,6 @@ services:
       - elasticsearch
     tmpfs:
       - /tmp/pids/
-
-  webpack:
-    build:
-      context: .
-      dockerfile: Dockerfile.local
-    command: bin/webpack-dev-server
-    ports:
-      - "3035:3035"
-    environment:
-      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
-      - DATABASE_URL=postgres://postgres:postgres@database:5432/
-      - REDIS_URL=redis://redis:6379/1
-      - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
-    depends_on:
-      - database
 
   sidekiq:
     build:
