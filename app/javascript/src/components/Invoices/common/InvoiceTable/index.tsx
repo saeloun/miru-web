@@ -29,8 +29,24 @@ const InvoiceTable = ({
   const wrapperRef = useRef(null);
 
   useEffect(() => {
-    setFilteredLineItems(lineItems);
+    const tempFiltered = lineItems.filter(
+      item =>
+        !selectedLineItems.some(
+          selected => selected.timesheet_entry_id === item.timesheet_entry_id
+        )
+    );
+    setFilteredLineItems(tempFiltered);
   }, [lineItems]);
+
+  useEffect(() => {
+    const tempFiltered = lineItems.filter(
+      item =>
+        !selectedLineItems.some(
+          selected => selected.timesheet_entry_id === item.timesheet_entry_id
+        )
+    );
+    setLineItems(tempFiltered);
+  }, [selectedLineItems]);
 
   const loadNewLineItems = () => {
     fetchNewLineItems(
