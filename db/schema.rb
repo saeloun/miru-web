@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_25_114927) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_09_132247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,8 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_25_114927) do
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness",
-      unique: true
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
@@ -57,8 +54,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_25_114927) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "state", null: false
-    t.index ["addressable_type", "addressable_id", "address_type"],
-      name: "index_addresses_on_addressable_and_address_type", unique: true
+    t.index ["addressable_type", "addressable_id", "address_type"], name: "index_addresses_on_addressable_and_address_type", unique: true
     t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
   end
 
@@ -177,7 +173,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_25_114927) do
     t.datetime "updated_at", null: false
     t.string "external_view_key"
     t.jsonb "payment_infos", default: {}
+    t.bigint "company_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
+    t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
@@ -341,6 +339,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_25_114927) do
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"
+  add_foreign_key "invoices", "companies"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "previous_employments", "users"
