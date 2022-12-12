@@ -111,7 +111,7 @@ const AddEditProject = ({
         <div className="modal__content modal-content">
           <div className="modal__position">
             <h6 className="modal__title">
-              {isEdit ? "Edit Project Details" : "Add New Project"}
+              {isEdit ? "Edit Project Details" : "New Project"}
             </h6>
             <div className="modal__close">
               <button
@@ -178,7 +178,7 @@ const AddEditProject = ({
                   Project Type
                 </label>
                 <div className="mt-1">
-                  <div className="sm:space-XIcon-10 space-y-4 sm:flex sm:items-center sm:space-y-0">
+                  <div className="sm:space-XIcon-10 flex w-57.5 justify-between space-y-4 sm:items-center sm:space-y-0">
                     <div className="flex items-center">
                       {(editProjectData || !isEdit) && (
                         <input
