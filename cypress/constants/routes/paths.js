@@ -3,3 +3,4 @@ export const signInPath = "/users/sign_in";
 export const teamPath = "/team";
 export const mailPath = "/sent_emails";
 export const invoicesPath = "/invoices";
+export const profileSettings = "/profile/edit"
