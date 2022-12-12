@@ -53,7 +53,7 @@ services:
       - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
       - DATABASE_URL=postgres://postgres:postgres@database:5432/
       - REDIS_URL=redis://redis:6379/1
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
     depends_on:
       - database
 
@@ -80,6 +80,7 @@ services:
       discovery.type: single-node
       network.host: 0.0.0.0
       xpack.security.enabled: 'true'
+      ELASTIC_PASSWORD: 'x2Sy5FK51zu'
     ports:
       - "9200:9200"
 
