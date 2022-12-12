@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Invoices#send_invoice", type: :request do
   let(:invoice) { create :invoice_with_invoice_line_items }
   let(:client) { invoice.client }
-  let(:company) { client.company }
+  let(:company) { invoice.company }
   let(:user) { create :user, current_workspace_id: company.id }
 
   context "when user is signed in" do

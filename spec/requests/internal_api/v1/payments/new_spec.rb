@@ -6,12 +6,12 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client1) { create(:client, company:, name: "bob") }
-  let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent") }
-  let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent") }
-  let!(:client1_viewed_invoice1) { create(:invoice, client: client1, status: "viewed") }
-  let!(:client1_paid_invoice1) { create(:invoice, client: client1, status: "paid") }
-  let!(:client1_overdue_invoice1) { create(:invoice, client: client1, status: "overdue") }
-  let!(:client1_draft_invoice1) { create(:invoice, client: client1, status: "draft") }
+  let!(:client1_sent_invoice1) { create(:invoice, client: client1, company:, status: "sent") }
+  let!(:client1_sent_invoice2) { create(:invoice, client: client1, company:, status: "sent") }
+  let!(:client1_viewed_invoice1) { create(:invoice, client: client1, company:, status: "viewed") }
+  let!(:client1_paid_invoice1) { create(:invoice, client: client1, company:, status: "paid") }
+  let!(:client1_overdue_invoice1) { create(:invoice, client: client1, company:, status: "overdue") }
+  let!(:client1_draft_invoice1) { create(:invoice, client: client1, company:, status: "draft") }
 
   context "when user is an admin" do
     before do
