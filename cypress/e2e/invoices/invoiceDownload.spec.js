@@ -32,7 +32,6 @@ describe("invoices index page", () => {
     const invoice_number = fake.invoiceNumber
     const reference = fake.validReference
     cy.sendInvoice(invoice_number, reference)
-    cy.visit(invoicesPath)
     cy.get(invoicesSelector.searchBar).clear().type(invoice_number).type('{enter}')
     cy.get(invoicesSelector.viewInvoice).first().click({force:true})
     cy.get(invoicesSelector.moreOptionsView).click()
