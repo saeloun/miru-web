@@ -29,7 +29,7 @@ class InternalApi::V1::GenerateInvoiceController < InternalApi::V1::ApplicationC
     end
 
     def search_term
-      @search_term ||= (params[:search_term].present?) ? params[:search_term] : "*"
+      @_search_term ||= (params[:search_term].present?) ? params[:search_term] : "*"
     end
 
     # merging selected_entries from params with ids already present in other invoice line items
