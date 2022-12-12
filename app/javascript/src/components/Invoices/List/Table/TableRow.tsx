@@ -60,6 +60,7 @@ const TableRow = ({
       </td>
       <td
         className="flex cursor-pointer items-center whitespace-nowrap py-5 pr-6 text-left font-medium tracking-wider md:w-1/5 md:pr-2"
+        data-cy="view-invoice"
         onClick={() => navigate(`/invoices/${invoice.id}`)}
       >
         <Avatar />
@@ -98,6 +99,7 @@ const TableRow = ({
           </Tooltip>
           <Tooltip content="Download">
             <button
+              data-cy="invoice-download"
               disabled={invoice.status == "draft"}
               className={
                 invoice.status == "draft"
