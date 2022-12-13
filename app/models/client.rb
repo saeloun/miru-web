@@ -33,7 +33,7 @@ class Client < ApplicationRecord
   has_many :projects
   has_many :timesheet_entries, through: :projects
   has_many :invoices, dependent: :destroy
-  has_one_attached :client_logo
+  has_one_attached :logo
   belongs_to :company
 
   validates :name, :email, presence: true
@@ -70,8 +70,8 @@ class Client < ApplicationRecord
       email:,
       phone:,
       address:,
-      client_logo: client_logo.attached? ? Rails.application.routes.url_helpers.polymorphic_url(
-        client_logo,
+      logo: logo.attached? ? Rails.application.routes.url_helpers.polymorphic_url(
+        logo,
         only_path: true) : "",
       minutes_spent: total_hours_logged(time_frame)
     }

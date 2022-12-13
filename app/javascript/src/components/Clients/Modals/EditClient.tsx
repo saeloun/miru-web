@@ -4,7 +4,7 @@ import { XIcon } from "miruIcons";
 
 import clientApi from "apis/clients";
 
-import { ClientForm } from "./ClientForm";
+import ClientForm from "./ClientForm";
 
 interface IEditClient {
   setShowEditDialog: any;
@@ -13,9 +13,7 @@ interface IEditClient {
 
 const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
   const [apiError, setApiError] = useState<string>("");
-  const [clientLogoUrl, setClientLogoUrl] = useState<string>(
-    client.client_logo
-  );
+  const [clientLogoUrl, setClientLogoUrl] = useState<string>(client.logo);
   const [clientLogo, setClientLogo] = useState("");
 
   const handleSubmit = async values => {
@@ -24,7 +22,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
     formData.append("client[email]", values.email);
     formData.append("client[phone]", values.phone);
     formData.append("client[address]", values.address);
-    formData.append("client[client_logo]", clientLogo);
+    formData.append("client[logo]", clientLogo);
 
     await clientApi
       .update(client.id, formData)

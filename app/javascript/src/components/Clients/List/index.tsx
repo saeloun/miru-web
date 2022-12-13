@@ -25,7 +25,7 @@ const getTableData = clients => {
       col1: (
         <div className="flex">
           <div className="mx-2">
-            {client.client_logo === "" ? (
+            {client.logo === "" ? (
               <div className="flex h-12 w-12 justify-center">
                 <span className="w-22 rounded-full bg-miru-han-purple-1000 pt-1 text-center text-lg leading-10 text-gray-50">
                   {client.name
@@ -39,7 +39,7 @@ const getTableData = clients => {
               <img
                 alt="alt text"
                 className="h-12 w-12 rounded-full"
-                src={client.client_logo}
+                src={client.logo}
               />
             )}
           </div>
