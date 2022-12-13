@@ -36,8 +36,6 @@ class InternalApi::V1::Reports::ClientRevenuesController < InternalApi::V1::Appl
     def duration_params
       if params[:duration_from].present? && params[:duration_to].present?
         params[:duration_from].to_date..params[:duration_to].to_date
-      else
-        nil
       end
     end
 end
