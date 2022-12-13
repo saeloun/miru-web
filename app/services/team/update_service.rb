@@ -8,8 +8,8 @@ module Team
       @user = user
       @user_params = user_params
       @current_company = current_company
-      @current_role = user.roles.find_by(resource: current_company)
-      @new_role = new_role
+      @current_role = user.roles.find_by(resource: current_company)&.name&.to_sym
+      @new_role = new_role.downcase.to_sym
     end
 
     def process
@@ -25,10 +25,10 @@ module Team
 
       def update_company_user_role
         if current_role.present?
-          user.remove_role(current_role.name.to_sym, current_company)
+          user.remove_role(current_role, current_company)
         end
 
-        user.add_role(new_role.downcase.to_sym, current_company)
+        user.add_role(new_role, current_company)
       end
   end
 end
