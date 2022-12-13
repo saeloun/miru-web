@@ -40,3 +40,15 @@ Cypress.Commands.add("generateNewInvoice", function(invoice_number, reference){
   cy.get(invoicesSelector.entriesList).first().click({force: true})
   cy.get(invoicesSelector.saveInvoice).click()
 })
+
+Cypress.Commands.add("sendInvoice", function(invoice_number, reference){
+  cy.get(invoicesSelector.newInvoiceButton).click()
+  cy.get(invoicesSelector.addClientButton).click()
+  cy.contains("Microsoft").click()
+  cy.get(invoicesSelector.invoiceNumberField).click().type(invoice_number)
+  cy.get(invoicesSelector.referenceInput).click().type(reference)
+  cy.get(invoicesSelector.newLineItemButton).click()
+  cy.get(invoicesSelector.entriesList).first().click({force: true})
+  cy.get(invoicesSelector.sendInvoice).click({force: true})
+  cy.get(invoicesSelector.sendEmail).click()
+})
