@@ -50,6 +50,7 @@ services:
       dockerfile: Dockerfile.local
     command: bin/webpack-dev-server
     image: miru-web:latest
+    user: ${CURRENT_UID}
     ports:
       - "3035:3035"
     environment:
