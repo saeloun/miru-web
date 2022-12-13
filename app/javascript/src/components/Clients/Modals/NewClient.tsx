@@ -16,6 +16,7 @@ const EditClient = ({
   setClientLogoUrl,
   clientLogo,
   setClientLogo,
+  setShowDialog,
 }) => {
   const handleSubmit = async values => {
     const formData = new FormData();
@@ -56,6 +57,7 @@ const EditClient = ({
               <button
                 type="button"
                 onClick={() => {
+                  setShowDialog(false);
                   setnewClient(false);
                 }}
               >

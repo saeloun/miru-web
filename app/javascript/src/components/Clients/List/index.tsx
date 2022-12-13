@@ -78,6 +78,7 @@ const Clients = ({ isAdminUser }) => {
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -242,15 +243,16 @@ const Clients = ({ isAdminUser }) => {
           setShowDeleteDialog={setShowDeleteDialog}
         />
       )}
-      {client && (
+      {client && showDialog && (
         <NewClient
           clientData={clientData}
           clientLogo={clientLogo}
           clientLogoUrl={clientLogoUrl}
-          setClientData={undefined}
+          setClientData={setClientData}
           setClientLogo={setClientLogo}
           setClientLogoUrl={setClientLogoUrl}
-          setnewClient={undefined}
+          setShowDialog={setShowDialog}
+          setnewClient={setClient}
         />
       )}
     </>
