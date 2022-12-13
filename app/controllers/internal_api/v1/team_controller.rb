@@ -17,11 +17,12 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
 
   def update
     authorize employment, policy_class: TeamPolicy
-
-    TeamUpdateService.new(employment:, user_params:, current_company:, new_role: params[:role]).process
+    user = employment.user
+    Team::UpdateService.new(
+      user_params:, current_company:, new_role: params[:role], user:).process
 
     render json: {
-      user: employment.user,
+      user:,
       notice: I18n.t("team.update.success.message")
     }, status: :ok
   end
