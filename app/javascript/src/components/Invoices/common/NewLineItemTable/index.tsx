@@ -13,6 +13,8 @@ const NewLineItemTable = ({
   selectedLineItems,
   setSelectedLineItems,
   setMultiLineItemModal,
+  loading,
+  setLoading,
 }) => {
   const selectRowId = items => {
     const option = {
@@ -24,11 +26,19 @@ const NewLineItemTable = ({
     setFilteredLineItems([]);
   };
 
-  useEffect(() => loadMoreItems(), []);
+  useEffect(() => {
+    filteredLineItems.length < 1 && setLoading(true);
+    loadMoreItems();
+  }, []);
 
   return (
     <div>
       <NewLineItemTableHeader setShowMultilineModal={setMultiLineItemModal} />
+      {loading && (
+        <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
+          Loading..
+        </p>
+      )}
       {filteredLineItems.length > 0 ? (
         <div className="relative mt-4 h-20 overflow-scroll md:h-50">
           {filteredLineItems.map((item, index) => {

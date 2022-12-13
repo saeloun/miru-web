@@ -26,26 +26,24 @@ const InvoiceTable = ({
   const [multiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
   const [filteredLineItems, setFilteredLineItems] = useState<any>(lineItems);
   const [lineItem, setLineItem] = useState<any>({});
+  const [loading, setLoading] = useState<boolean>(false);
   const wrapperRef = useRef(null);
 
   useEffect(() => {
-    const tempFiltered = lineItems.filter(
-      item =>
-        !selectedLineItems.some(
-          selected => selected.timesheet_entry_id === item.timesheet_entry_id
-        )
-    );
-    setFilteredLineItems(tempFiltered);
+    setLoading(false);
+    setFilteredLineItems(lineItems);
   }, [lineItems]);
 
+  const tempFiltered = lineItems.filter(
+    item =>
+      !selectedLineItems.some(
+        selected => selected.timesheet_entry_id === item.timesheet_entry_id
+      )
+  );
+
   useEffect(() => {
-    const tempFiltered = lineItems.filter(
-      item =>
-        !selectedLineItems.some(
-          selected => selected.timesheet_entry_id === item.timesheet_entry_id
-        )
-    );
     setLineItems(tempFiltered);
+    setFilteredLineItems(tempFiltered);
   }, [selectedLineItems]);
 
   const loadNewLineItems = () => {
@@ -82,9 +80,11 @@ const InvoiceTable = ({
         <NewLineItemTable
           filteredLineItems={filteredLineItems}
           loadMoreItems={loadNewLineItems}
+          loading={loading}
           selectedLineItems={selectedLineItems}
           setAddNew={setAddNew}
           setFilteredLineItems={setFilteredLineItems}
+          setLoading={setLoading}
           setMultiLineItemModal={setMultiLineItemModal}
           setSelectedLineItems={setSelectedLineItems}
         />
