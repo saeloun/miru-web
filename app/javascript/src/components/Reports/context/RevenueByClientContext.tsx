@@ -1,14 +1,14 @@
-const RevenueByClientReportContext =  {
+const RevenueByClientReportContext = {
   filterOptions: {
-    clients: []
+    clients: [],
   },
   selectedFilter: {
     dateRange: { label: "All", value: "" },
-    clients: []
+    clients: [],
   },
   customDateFilter: {
     from: "",
-    to: ""
+    to: "",
   },
   filterCounter: 0,
   clientList: [],
@@ -16,9 +16,9 @@ const RevenueByClientReportContext =  {
   summary: {
     totalPaidAmount: 0,
     totalUnpaidAmount: 0,
-    totalRevenue: 0
+    totalRevenue: 0,
   },
-  handleRemoveSingleFilter: (key, value) => { }, //eslint-disable-line
+  handleRemoveSingleFilter: (key, value) => {}, //eslint-disable-line
 };
 
 export default RevenueByClientReportContext;

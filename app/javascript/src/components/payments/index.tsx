@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Logger from "js-logger";
 
@@ -7,13 +7,13 @@ import payment from "apis/payments/payments";
 
 import Header from "./Header";
 import AddManualEntry from "./Modals/AddManualEntry";
-import Table from "./Table/index";
+import Table from "./Table";
 
 import { unmapPayment } from "../../mapper/payment.mapper";
 
 const Payments = () => {
-
-  const [showManualEntryModal, setShowManualEntryModal] = useState<boolean>(false);
+  const [showManualEntryModal, setShowManualEntryModal] =
+    useState<boolean>(false);
   const [paymentList, setPaymentList] = useState<any>([]);
   const [invoiceList, setInvoiceList] = useState<any>([]);
   const [baseCurrency, setBaseCurrency] = useState<any>("");
@@ -38,7 +38,7 @@ const Payments = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
     fetchInvoiceList();
@@ -47,11 +47,16 @@ const Payments = () => {
 
   return (
     <div className="flex-col">
-      <Header setShowManualEntryModal={setShowManualEntryModal}/>
-      <Table payments={paymentList} baseCurrency={baseCurrency}/>
-      {
-        showManualEntryModal && <AddManualEntry setShowManualEntryModal={setShowManualEntryModal} invoiceList={invoiceList} fetchPaymentList={fetchPaymentList} fetchInvoiceList={fetchInvoiceList}/>
-      }
+      <Header setShowManualEntryModal={setShowManualEntryModal} />
+      <Table baseCurrency={baseCurrency} payments={paymentList} />
+      {showManualEntryModal && (
+        <AddManualEntry
+          fetchInvoiceList={fetchInvoiceList}
+          fetchPaymentList={fetchPaymentList}
+          invoiceList={invoiceList}
+          setShowManualEntryModal={setShowManualEntryModal}
+        />
+      )}
     </div>
   );
 };

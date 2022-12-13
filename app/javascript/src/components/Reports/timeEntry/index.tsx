@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import reportsApi from "apis/reports";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import applyFilter, { getQueryParams } from "../api/applyFilter";
+import { applyFilter, getQueryParams } from "../api/applyFilter";
 import Container from "../Container";
 import EntryContext from "../context/EntryContext";
 import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
@@ -19,17 +19,17 @@ const TimeEntryReports = () => {
     clients: [],
     teamMember: [],
     status: [],
-    groupBy: { label: "None", value: "" }
+    groupBy: { label: "None", value: "" },
   };
 
   const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
-  const [filterOptions, getFilterOptions] = useState({
+  const [filterOptions, setFilterOptions] = useState({
     clients: [],
-    teamMembers: []
+    teamMembers: [],
   });
   const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
-  const [isFilterVisible, setFilterVisibilty] = useState<boolean>(false);
-  const [showNavFilters, setNavFilters] = useState<boolean>(false);
+  const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
+  const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
   const [selectedInput, setSelectedInput] = useState("from-input");
 
@@ -56,21 +56,27 @@ const TimeEntryReports = () => {
 
   useEffect(() => {
     updateFilterCounter();
-    applyFilter(selectedFilter, setTimeEntries, setNavFilters, setFilterVisibilty, getFilterOptions);
+    applyFilter(
+      selectedFilter,
+      setTimeEntries,
+      setShowNavFilters,
+      setIsFilterVisible,
+      setFilterOptions
+    );
   }, [selectedFilter]);
 
-  const onClickInput = (e) => {
+  const onClickInput = e => {
     setSelectedInput(e.target.name);
   };
 
-  const handleApplyFilter = async (filters) => {
+  const handleApplyFilter = async filters => {
     setSelectedFilter(filters);
   };
 
   const resetFilter = () => {
     setSelectedFilter(filterIntialValues);
-    setFilterVisibilty(false);
-    setNavFilters(false);
+    setIsFilterVisible(false);
+    setShowNavFilters(false);
   };
 
   const handleRemoveSingleFilter = (key, value) => {
@@ -78,10 +84,12 @@ const TimeEntryReports = () => {
     if (Array.isArray(filterValue)) {
       const closedFilter = filterValue.filter(item => item.label !== value);
       setSelectedFilter({ ...selectedFilter, [key]: closedFilter });
-    }
-    else {
+    } else {
       if (key === "dateRange") {
-        setSelectedFilter({ ...selectedFilter, [key]: filterIntialValues.dateRange });
+        setSelectedFilter({
+          ...selectedFilter,
+          [key]: filterIntialValues.dateRange,
+        });
       } else {
         const label = "None";
         setSelectedFilter({ ...selectedFilter, [key]: { label, value: "" } });
@@ -89,7 +97,7 @@ const TimeEntryReports = () => {
     }
   };
 
-  const handleDownload = async (type) => {
+  const handleDownload = async type => {
     const queryParams = getQueryParams(selectedFilter).substring(1);
     const response = await reportsApi.download(type, `?${queryParams}`);
     const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -105,43 +113,48 @@ const TimeEntryReports = () => {
     timeEntryReport: {
       reports: timeEntries,
       filterOptions,
-      selectedFilter: { ...selectedFilter,
+      selectedFilter: {
+        ...selectedFilter,
         customDateFilter: {
           from: "",
-          to: ""
-        }
+          to: "",
+        },
       },
       filterCounter,
-      handleRemoveSingleFilter: handleRemoveSingleFilter
+      handleRemoveSingleFilter,
     },
 
     currentReport: "TimeEntryReport",
     revenueByClientReport: RevenueByClientReportContext,
-    outstandingOverdueInvoice: OutstandingOverdueInvoiceContext
+    outstandingOverdueInvoice: OutstandingOverdueInvoiceContext,
   };
 
   return (
     <div>
-      <EntryContext.Provider value={{
-        ...contextValues
-      }}>
+      <EntryContext.Provider
+        value={{
+          ...contextValues,
+        }}
+      >
         <Header
-          showNavFilters={showNavFilters}
-          setFilterVisibilty={setFilterVisibilty}
-          isFilterVisible={isFilterVisible}
-          showExportButon={true}
-          resetFilter={resetFilter}
+          showExportButon
           handleDownload={handleDownload}
-          type={"Time Entry Report"}
+          isFilterVisible={isFilterVisible}
+          resetFilter={resetFilter}
+          setIsFilterVisible={setIsFilterVisible}
+          showNavFilters={showNavFilters}
+          type="Time Entry Report"
         />
         <Container />
-        {isFilterVisible && <Filters
-          handleApplyFilter={handleApplyFilter}
-          resetFilter={resetFilter}
-          setFilterVisibilty={setFilterVisibilty}
-          onClickInput={onClickInput}
-          selectedInput={selectedInput}
-        />}
+        {isFilterVisible && (
+          <Filters
+            handleApplyFilter={handleApplyFilter}
+            resetFilter={resetFilter}
+            selectedInput={selectedInput}
+            setIsFilterVisible={setIsFilterVisible}
+            onClickInput={onClickInput}
+          />
+        )}
       </EntryContext.Provider>
     </div>
   );

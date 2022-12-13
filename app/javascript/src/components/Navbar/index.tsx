@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 
-import { Paths } from "constants/index";
-
 // eslint-disable-next-line import/order
 import {
   TimeTrackingIcon,
@@ -13,15 +11,17 @@ import {
   SignOutIcon,
   ReportsIcon,
   InvoicesIcon,
-  PaymentsIcon
-
+  PaymentsIcon,
 } from "miruIcons";
 import { NavLink, Link } from "react-router-dom";
+
+import { Paths } from "constants/index";
 
 const miruLogo = require("../../../../assets/images/PurpleMiruLogoWithText.svg"); //eslint-disable-line
 const avatar = require("../../../../assets/images/NavAvatar.svg"); //eslint-disable-line
 
 const Navbar = ({ isAdminUser, user }) => {
+  const innerWidth = window.innerWidth;
   const [isDesktop, setIsDesktop] = useState(innerWidth > 650);
 
   useEffect(() => {
@@ -31,74 +31,74 @@ const Navbar = ({ isAdminUser, user }) => {
 
   const navEmployeeOptions = [
     {
-      logo: <TimeTrackingIcon size={26} className="mr-0 md:mr-4" />,
+      logo: <TimeTrackingIcon className="mr-0 md:mr-4" size={26} />,
       label: "Time Tracking",
       dataCy: "time-tracking-tab",
-      path: Paths.TIME_TRACKING
+      path: Paths.TIME_TRACKING,
     },
     {
-      logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
+      logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
       label: "Team",
       dataCy: "team-tab",
-      path: Paths.TEAM
+      path: Paths.TEAM,
     },
     {
-      logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
+      logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
       label: "Clients",
       dataCy: "clients-tab",
-      path: Paths.CLIENTS
+      path: Paths.CLIENTS,
     },
     {
-      logo: <ProjectsIcon size={26} className="mr-0 md:mr-4" />,
+      logo: <ProjectsIcon className="mr-0 md:mr-4" size={26} />,
       label: "Projects",
       dataCy: "projects-tab",
-      path: Paths.PROJECTS
-    }
+      path: Paths.PROJECTS,
+    },
   ];
 
   const navAdminOptions = [
     {
-      logo: <TimeTrackingIcon size={26} className="mr-0 md:mr-4" />,
+      logo: <TimeTrackingIcon className="mr-0 md:mr-4" size={26} />,
       label: "Time Tracking",
       dataCy: "time-tracking-tab",
-      path: Paths.TIME_TRACKING
+      path: Paths.TIME_TRACKING,
     },
     {
-      logo: <TeamsIcon size={26} className="mr-0 md:mr-4" />,
+      logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
       label: "Team",
       dataCy: "team-tab",
-      path: Paths.TEAM
+      path: Paths.TEAM,
     },
     {
-      logo: <ClientsIcon size={26} className="mr-0 md:mr-4" />,
+      logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
       label: "Clients",
       dataCy: "clients-tab",
-      path: Paths.CLIENTS
+      path: Paths.CLIENTS,
     },
     {
-      logo: <ProjectsIcon size={26} className="mr-0 md:mr-4" />,
+      logo: <ProjectsIcon className="mr-0 md:mr-4" size={26} />,
       label: "Projects",
       dataCy: "projects-tab",
-      path: Paths.PROJECTS
+      path: Paths.PROJECTS,
     },
     {
-      logo: <InvoicesIcon size={26} className="mr-0 md:mr-4" />,
+      logo: <InvoicesIcon className="mr-0 md:mr-4" size={26} />,
       label: "Invoices",
       dataCy: "invoices-tab",
-      path: Paths.INVOICES
+      path: Paths.INVOICES,
     },
     {
-      logo: <ReportsIcon size={26} className="mr-0 md:mr-4" />,
+      logo: <ReportsIcon className="mr-0 md:mr-4" size={26} />,
       label: "Reports",
       dataCy: "reports-tab",
-      path: Paths.REPORTS
+      path: Paths.REPORTS,
     },
     {
-      logo: <PaymentsIcon size={26} className="mr-0 md:mr-4" />,
+      logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
       label: "Payments",
       dataCy: "payments-tab",
-      path: Paths.PAYMENTS
-    }
+      path: Paths.PAYMENTS,
+    },
   ];
 
   const activeClassName =
@@ -106,14 +106,14 @@ const Navbar = ({ isAdminUser, user }) => {
 
   const getEmployeeOptions = () =>
     navEmployeeOptions.map((option, index) => (
-      <li key={index} className="items-center hover:bg-miru-gray-100">
+      <li className="items-center hover:bg-miru-gray-100" key={index}>
         <NavLink
-          to={option.path}
           data-cy={option.dataCy}
+          to={option.path}
           className={({ isActive }) =>
             isActive
               ? activeClassName
-              : "flex py-3 md:px-6 px-2 items-center md:justify-start justify-center hover:bg-miru-gray-100"
+              : "flex items-center justify-center py-3 px-2 hover:bg-miru-gray-100 md:justify-start md:px-6"
           }
         >
           {option.logo} {isDesktop && option.label}
@@ -124,16 +124,16 @@ const Navbar = ({ isAdminUser, user }) => {
   const getAdminOption = () =>
     navAdminOptions.map((option, index) => (
       <li
+        className="items-center justify-center hover:bg-miru-gray-100 md:justify-start"
         key={index}
-        className="items-center md:justify-start justify-center hover:bg-miru-gray-100"
       >
         <NavLink
-          to={option.path}
           data-cy={option.dataCy}
+          to={option.path}
           className={({ isActive }) =>
             isActive
               ? activeClassName
-              : "flex py-3 md:px-6 px-2 items-center md:justify-start justify-center hover:bg-miru-gray-100"
+              : "flex items-center justify-center py-3 px-2 hover:bg-miru-gray-100 md:justify-start md:px-6"
           }
         >
           {option.logo} {isDesktop && option.label}
@@ -142,34 +142,34 @@ const Navbar = ({ isAdminUser, user }) => {
     ));
 
   return (
-    <div className="fixed top-0 bottom-0 left-0 shadow-2xl w-1/6 h-full flex flex-col justify-between ">
+    <div className="fixed top-0 bottom-0 left-0 flex h-full w-1/6 flex-col justify-between shadow-2xl ">
       <div>
-        <div className="h-20 bg-miru-gray-100 flex items-center justify-center">
+        <div className="flex h-20 items-center justify-center bg-miru-gray-100">
           <Link to={Paths.TIME_TRACKING}>
-            <img src={miruLogo} alt="miru-logo" />
+            <img alt="miru-logo" src={miruLogo} />
           </Link>
         </div>
-        <ul className="md:mt-8 mt:auto">
+        <ul className="mt:auto md:mt-8">
           {isAdminUser ? getAdminOption() : getEmployeeOptions()}
         </ul>
       </div>
       <div>
-        <ul className="md:mt-32 mt:auto">
+        <ul className="mt:auto md:mt-32">
           {/* <a>
             <li className="flex py-3 md:px-6 px-2 items-center md:justify-start justify-center hover:bg-miru-gray-100">
               <Bell size={26} className="mr-0 md:mr-4" /> Notification
             </li>
           </a> */}
-          <li className="flex items-center md:justify-start justify-center hover:bg-miru-gray-100">
+          <li className="flex items-center justify-center hover:bg-miru-gray-100 md:justify-start">
             <NavLink
+              to="/profile/edit"
               className={({ isActive }) =>
                 isActive
                   ? activeClassName
-                  : "flex py-3 md:px-6 px-2 items-center md:justify-start justify-center hover:bg-miru-gray-100"
+                  : "flex items-center justify-center py-3 px-2 hover:bg-miru-gray-100 md:justify-start md:px-6"
               }
-              to="/profile/edit"
             >
-              <SettingIcon size={26} className="mr-0 md:mr-4" />
+              <SettingIcon className="mr-0 md:mr-4" size={26} />
               {isDesktop && "Settings"}
             </NavLink>
           </li>
@@ -179,17 +179,17 @@ const Navbar = ({ isAdminUser, user }) => {
             </li>
           </a> */}
           <a data-method="delete" href="/users/sign_out" rel="nofollow">
-            <li className="flex py-3 md:px-6 px-2 items-center md:justify-start justify-center hover:bg-miru-gray-100">
-              <SignOutIcon size={26} className="mr-0 md:mr-4" />
+            <li className="flex items-center justify-center py-3 px-2 hover:bg-miru-gray-100 md:justify-start md:px-6">
+              <SignOutIcon className="mr-0 md:mr-4" size={26} />
               {isDesktop && "Logout"}
             </li>
           </a>
         </ul>
-        <div className="md:mt-6 mt-auto w-full h-16 p-4 bg-miru-gray-100 flex items-center overflow-XIcon-auto">
-          <img src={avatar} className="mr-2" alt="avatar" />
-          <div className="flex flex-col overflow-XIcon-auto">
-            <span className="font-bold text-base leading-5 pt-1">{`${user.first_name} ${user.last_name}`}</span>
-            <span className="font-normal text-xs leading-4">{user.email}</span>
+        <div className="overflow-XIcon-auto mt-auto flex h-16 w-full items-center bg-miru-gray-100 p-4 md:mt-6">
+          <img alt="avatar" className="mr-2" src={avatar} />
+          <div className="overflow-XIcon-auto flex flex-col">
+            <span className="pt-1 text-base font-bold leading-5">{`${user.first_name} ${user.last_name}`}</span>
+            <span className="text-xs font-normal leading-4">{user.email}</span>
           </div>
         </div>
       </div>

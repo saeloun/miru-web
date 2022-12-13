@@ -5,7 +5,7 @@ interface GenerateInvoiceClientList {
   id: number;
   name: string;
   phone_number: number;
-  email: string
+  email: string;
 }
 
 interface CompanyDetails {
@@ -17,26 +17,28 @@ interface CompanyDetails {
   phone_number: string;
 }
 
-const getClientList = (clientList: Array<GenerateInvoiceClientList>) => clientList.map(client => ({
-  address: client.address,
-  value: client.id,
-  label: client.name,
-  phone: client.phone_number,
-  email: client.email
-}));
+const getClientList = (clientList: Array<GenerateInvoiceClientList>) =>
+  clientList.map(client => ({
+    address: client.address,
+    value: client.id,
+    label: client.name,
+    phone: client.phone_number,
+    email: client.email,
+  }));
 
 const getCompanyDetails = (input: CompanyDetails) => input;
 
-const unmapGenerateInvoice = (input) => {
+const unmapGenerateInvoice = input => {
   const companyDetails = getCompanyDetails(input.company_details);
   const clientList = getClientList(input.company_client_list);
+
   return {
     companyDetails,
-    clientList
+    clientList,
   };
 };
 
-const mapGenerateInvoice = (input) => ({
+const mapGenerateInvoice = input => ({
   client_id: input.selectedClient.value,
   invoice_number: input.invoiceNumber,
   reference: input.reference,
@@ -53,11 +55,8 @@ const mapGenerateInvoice = (input) => ({
     date: ilt.date,
     rate: ilt.rate,
     quantity: ilt.quantity,
-    timesheet_entry_id: ilt.timesheet_entry_id
-  }))
+    timesheet_entry_id: ilt.timesheet_entry_id,
+  })),
 });
 
-export {
-  unmapGenerateInvoice,
-  mapGenerateInvoice
-};
+export { unmapGenerateInvoice, mapGenerateInvoice };

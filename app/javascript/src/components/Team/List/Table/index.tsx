@@ -7,15 +7,14 @@ import TableRow from "./TableRow";
 
 const Table = () => {
   const { teamList } = useList();
+
   return (
     <table className="table__width">
       <TableHead />
       <tbody>
-        {
-          teamList.map((item, index) => (
-            <TableRow key={index} item={item} />
-          ))
-        }
+        {teamList.map((item, index) => (
+          <TableRow item={item} key={index} />
+        ))}
       </tbody>
     </table>
   );

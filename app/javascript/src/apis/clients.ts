@@ -2,9 +2,9 @@ import axios from "axios";
 
 const path = "/clients";
 
-const get = async (queryParam) => axios.get(`${path}${queryParam}`);
+const get = async queryParam => axios.get(`${path}${queryParam}`);
 
-const create = async (payload) => axios.post(`${path}`, payload);
+const create = async payload => axios.post(`${path}`, payload);
 
 const show = async (id, queryParam) => axios.get(`${path}/${id}${queryParam}`);
 

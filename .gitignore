@@ -59,6 +59,7 @@ cypress/artifacts/screenshots
 cypress/artifacts/videos
 cypress/screenshots
 cypress/videos
+cypress/downloads
 
 .DS_Store
 

@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.1.2"
+ruby "3.1.3"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.4"
@@ -109,6 +109,8 @@ gem "data_migrate", "~> 8.0.0.rc2"
 # pagy for Pagination
 gem "pagy", "~> 5.10"
 
+gem "nokogiri", ">= 1.13.10"
+
 # Manage application specific business logic. https://github.com/AaronLasseigne/active_interaction
 gem "active_interaction"
 
@@ -116,7 +118,7 @@ gem "active_interaction"
 gem "stripe"
 
 # Background job processing adapter
-gem "sidekiq"
+gem "sidekiq", "<7"
 
 #  job scheduler extension for Sidekiq
 gem "sidekiq-scheduler"
@@ -145,13 +147,15 @@ group :development, :test do
 
   # Add Rubocop to lint and format Ruby code
   gem "rubocop", require: false
-  gem "rubocop-packaging", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rails", require: false
-  gem "rubocop-rspec", "~> 2.8", require: false
+  gem "rubocop-rspec", require: false
 
   # Use RSpec as the testing framework
   gem "rspec-rails", "~> 5.0", ">= 5.0.2"
+
+  # For linting ERB files
+  gem "erb_lint", require: false, git: "https://github.com/Shopify/erb-lint.git", branch: "main"
 
   # Simple one-liner tests for common Rails functionality
   gem "shoulda-callback-matchers", "~> 1.1.1"
