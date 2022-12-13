@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: Dockerfile.local
     command: bundle exec rails s -p 3000 -b 0.0.0.0
-    user: CURRENT_UID
+    # user: CURRENT_UID
     ports:
       - "3000:3000"
     image: miru-web:latest
@@ -50,7 +50,7 @@ services:
       dockerfile: Dockerfile.local
     command: bin/webpack-dev-server
     image: miru-web:latest
-    user: CURRENT_UID
+    # user: CURRENT_UID
     ports:
       - "3035:3035"
     environment:
