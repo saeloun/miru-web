@@ -69,9 +69,11 @@ const NewLineItemTable = ({
           })}
         </div>
       ) : (
-        <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
-          No Data Found
-        </p>
+        !loading && (
+          <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
+            No Data Found
+          </p>
+        )
       )}
     </div>
   );

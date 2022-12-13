@@ -5,22 +5,18 @@ import {
   minFromHHMM,
   minToHHMM,
   useOutsideClick,
-  useDebounce,
 } from "helpers";
 import { DeleteIcon } from "miruIcons";
 import TextareaAutosize from "react-autosize-textarea";
 
 const ManualEntry = ({
   addNew,
-  filteredLineItems,
   getNewLineItemDropdown,
   lineItem,
   setLineItem,
-  lineItems,
   manualEntryArr,
   setManualEntryArr,
   setNewLineItemTable,
-  setFilteredLineItems,
   setAddNew,
   showNewLineItemTable,
 }) => {
@@ -34,7 +30,6 @@ const ManualEntry = ({
   const [isEnter, setIsEnter] = useState<boolean>(false);
   const ref = useRef(null);
   const wrapperRef = useRef(null);
-  const debouncedSearchName = useDebounce(name, 500);
 
   useEffect(() => {
     setLineItem({
@@ -48,22 +43,6 @@ const ManualEntry = ({
       lineTotal,
     });
   }, [name, date, description, rate, quantity, lineTotal]);
-
-  useEffect(() => {
-    if (debouncedSearchName && filteredLineItems.length > 0) {
-      const newLineItems = lineItems.filter(item =>
-        item.first_name
-          .toLowerCase()
-          .includes(debouncedSearchName.toLowerCase())
-      );
-
-      newLineItems
-        ? setFilteredLineItems(newLineItems)
-        : setFilteredLineItems([]);
-    } else {
-      setFilteredLineItems(lineItems);
-    }
-  }, [debouncedSearchName]);
 
   useEffect(() => {
     if (isEnter) {

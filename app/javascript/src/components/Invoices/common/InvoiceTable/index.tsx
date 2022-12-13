@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState, useRef } from "react";
 
-import { useOutsideClick } from "helpers";
+import { useOutsideClick, useDebounce } from "helpers";
 
 import MultipleEntriesModal from "../../MultipleEntriesModal";
 import LineItemTableHeader from "../LineItemTableHeader";
@@ -28,6 +28,7 @@ const InvoiceTable = ({
   const [lineItem, setLineItem] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const wrapperRef = useRef(null);
+  const debouncedSearchName = useDebounce(lineItem.name, 500);
 
   useEffect(() => {
     setLoading(false);
@@ -56,6 +57,19 @@ const InvoiceTable = ({
       selectedLineItems
     );
   };
+
+  useEffect(() => {
+    if (debouncedSearchName) {
+      const newLineItems = lineItems.filter(item =>
+        item.first_name
+          .toLowerCase()
+          .includes(debouncedSearchName.toLowerCase())
+      );
+      setFilteredLineItems(newLineItems);
+    } else {
+      setFilteredLineItems(lineItems);
+    }
+  }, [debouncedSearchName, lineItems]);
 
   const handleAddEntry = () => {
     if (!addNew && lineItem.name && lineItem.date) {
@@ -121,13 +135,10 @@ const InvoiceTable = ({
       return (
         <ManualEntry
           addNew={addNew}
-          filteredLineItems={filteredLineItems}
           getNewLineItemDropdown={getNewLineItemDropdown}
           lineItem={lineItem}
-          lineItems={lineItems}
           manualEntryArr={manualEntryArr}
           setAddNew={setAddNew}
-          setFilteredLineItems={setFilteredLineItems}
           setLineItem={setLineItem}
           setManualEntryArr={setManualEntryArr}
           setNewLineItemTable={setShowNewLineItemTable}
