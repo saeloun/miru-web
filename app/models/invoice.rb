@@ -19,10 +19,12 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  client_id          :bigint           not null
+#  company_id         :bigint
 #
 # Indexes
 #
 #  index_invoices_on_client_id          (client_id)
+#  index_invoices_on_company_id         (company_id)
 #  index_invoices_on_external_view_key  (external_view_key) UNIQUE
 #  index_invoices_on_invoice_number     (invoice_number) UNIQUE
 #  index_invoices_on_issue_date         (issue_date)
@@ -31,6 +33,7 @@
 # Foreign Keys
 #
 #  fk_rails_...  (client_id => clients.id)
+#  fk_rails_...  (company_id => companies.id)
 #
 
 # frozen_string_literal: true
@@ -50,9 +53,9 @@ class Invoice < ApplicationRecord
     :overdue
   ]
 
+  belongs_to :company
   belongs_to :client
   has_many :invoice_line_items, dependent: :destroy
-  has_one :company, through: :client
   has_many :payments, dependent: :destroy
   accepts_nested_attributes_for :invoice_line_items, allow_destroy: true
 
@@ -72,7 +75,8 @@ class Invoice < ApplicationRecord
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
   scope :for_clients, -> (client_ids) { where(client_id: client_ids) if client_ids.present? }
   scope :search, -> (query) {
-    where("invoice_number ILIKE :query OR clients.name ILIKE :query", query: "%#{query}%") if query.present?
+    where("invoice_number ILIKE :query OR clients.name ILIKE :query", query: "%#{query}%")
+      .references(:clients) if query.present?
   }
   scope :during, -> (duration) {
     where(due_date: duration)
@@ -81,6 +85,7 @@ class Invoice < ApplicationRecord
   delegate :name, to: :client, prefix: :client
   delegate :email, to: :client, prefix: :client
 
+  # Note: Possible dead fn
   def sub_total
     @_sub_total ||= invoice_line_items.sum { |line_item| line_item[:rate] * line_item[:quantity] }
   end

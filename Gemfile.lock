@@ -377,8 +377,6 @@ GEM
       railties (>= 3.2)
       tilt
     redis (4.8.0)
-    redis-client (0.11.2)
-      connection_pool
     regexp_parser (2.6.1)
     reline (0.3.1)
       io-console (~> 0.5)
@@ -465,11 +463,10 @@ GEM
       activesupport (>= 3)
     shoulda-matchers (5.2.0)
       activesupport (>= 5.2.0)
-    sidekiq (7.0.2)
-      concurrent-ruby (< 2)
-      connection_pool (>= 2.3.0)
-      rack (>= 2.2.4)
-      redis-client (>= 0.11.0)
+    sidekiq (6.5.8)
+      connection_pool (>= 2.2.5, < 3)
+      rack (~> 2.0)
+      redis (>= 4.5.0, < 5)
     sidekiq-scheduler (4.0.2)
       redis (>= 4.2.0)
       rufus-scheduler (~> 3.2)
@@ -533,6 +530,7 @@ GEM
     zeitwerk (2.6.6)
 
 PLATFORMS
+  ruby
   x86_64-darwin-22
 
 DEPENDENCIES
@@ -592,7 +590,7 @@ DEPENDENCIES
   sentry-sidekiq
   shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers (~> 5.1)
-  sidekiq
+  sidekiq (< 7)
   sidekiq-scheduler
   simplecov
   spring
