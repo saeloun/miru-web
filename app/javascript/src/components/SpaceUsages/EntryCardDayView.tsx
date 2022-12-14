@@ -29,7 +29,7 @@ const EntryCardDayView = ({
         setNewEntryView(true)
         setSelectedSpaceId(spaceCode.split('/')[0])
         const minutes = event.clientY - event.currentTarget.getBoundingClientRect().top
-        const timeHHMM = (minutes / 60) + ":" + (minutes % 60)
+        const timeHHMM = (minutes / 60) + ":"
         const selectedTime = minToHHMM(minFromHHMM(timeHHMM) - (minFromHHMM(timeHHMM) % 15))
         setSelectedTime(selectedTime)
       }
