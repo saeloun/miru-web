@@ -11,33 +11,25 @@ module InvoicePayment
 
     def process
       formatted_invoice = format_invoice(@invoice.invoice_line_items)
-      controller = ActionController::Base.new
-      html = controller.render_to_string(
-        template: "invoices/pdf",
-        layout: "layouts/pdf",
-        locals: {
-          invoice: @invoice,
-          invoice_amount: format_currency(@base_currency, @invoice.amount),
-          invoice_tax: format_currency(@base_currency, @invoice.tax),
-          invoice_amount_due: format_currency(@base_currency, @invoice.amount_due),
-          invoice_amount_paid: format_currency(@base_currency, @invoice.amount_paid),
-          invoice_discount: format_currency(@base_currency, @invoice.discount),
-          company_logo: @company_logo,
-          client: @invoice.client,
-          invoice_line_items: formatted_invoice[:invoice_line_items],
-          sub_total: format_currency(@base_currency, formatted_invoice[:sub_total]),
-          total: format_currency(@base_currency, formatted_invoice[:total])
-        }
-      )
-
-      options = {
-        wait_until: ["networkidle0", "load", "domcontentloaded", "networkidle2"]
+      locals = {
+        invoice: @invoice,
+        invoice_amount: format_currency(@base_currency, @invoice.amount),
+        invoice_tax: format_currency(@base_currency, @invoice.tax),
+        invoice_amount_due: format_currency(@base_currency, @invoice.amount_due),
+        invoice_amount_paid: format_currency(@base_currency, @invoice.amount_paid),
+        invoice_discount: format_currency(@base_currency, @invoice.discount),
+        company_logo: @company_logo,
+        client: @invoice.client,
+        invoice_line_items: formatted_invoice[:invoice_line_items],
+        sub_total: format_currency(@base_currency, formatted_invoice[:sub_total]),
+        total: format_currency(@base_currency, formatted_invoice[:total])
       }
 
-      absolute_html = Grover::HTMLPreprocessor.process html, "#{@root_url}/", "http"
-
-      grover = Grover.new(absolute_html, **options)
-      grover.to_pdf
+      Pdf::HtmlGenerator.new(
+        "invoices/pdf",
+        locals:,
+        root_url:
+      ).process
     end
 
     private

@@ -9,17 +9,10 @@ module Reports::TimeEntries
     end
 
     def process
-      controller = ActionController::Base.new
-      html = controller.render_to_string(
-        template: "reports/pdf",
-        layout: "layouts/pdf",
+      Pdf::HtmlGenerator.new(
+        "reports/pdf",
         locals: { report_entries: }
-      )
-
-      options = {
-        wait_until: ["networkidle0", "load", "domcontentloaded", "networkidle2"]
-      }
-      Grover.new(html, **options).to_pdf
+      ).process
     end
   end
 end

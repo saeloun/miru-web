@@ -13,7 +13,7 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
 
     respond_to do |format|
       format.csv { send_data Reports::TimeEntries::GenerateCsv.new(entries).process }
-      format.pdf { send_data Reports::TimeEntries::GeneratePdf.new(reports).process }
+      format.pdf { send_data Reports::TimeEntries::GeneratePdf.new(entries).process }
     end
   end
 

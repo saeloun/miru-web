@@ -1,0 +1,44 @@
+# frozen_string_literal: true
+
+class Pdf::HtmlGenerator
+  attr_accessor :template, :layout, :locals, :root_url
+
+  def initialize(template, layout: "layouts/pdf", locals: {}, options: {}, root_url: nil)
+    @template = template
+    @layout = layout
+    @locals = locals
+    @root_url = root_url
+
+    set_options(options)
+  end
+
+  def make
+    Grover.new(make_html, **options).to_pdf
+  end
+
+  private
+
+    def set_options(user_defined_options)
+      if user_defined_options.present?
+        @options = user_defined_options
+      else
+        @options = {
+          wait_until: ["networkidle0", "load", "domcontentloaded", "networkidle2"]
+        }
+      end
+    end
+
+    def make_html
+      html = ActionController::Base.new.render_to_string(
+        template:,
+        layout:,
+        locals:
+      )
+
+      if root_url
+        Grover::HTMLPreprocessor.process html, "#{root_url}/", "http"
+      else
+        html
+      end
+    end
+end
