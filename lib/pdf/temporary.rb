@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class TempPdf
+class Pdf::Temporary
   attr_accessor :pdf_content, :name
 
   def initialize(name, pdf_content)
@@ -10,7 +10,7 @@ class TempPdf
 
   attr_reader :name
 
-  def tempfile
+  def file
     Tempfile.open do |file|
       utf_8_encoded_content = pdf_content.encode(
         "UTF-8",

@@ -28,7 +28,7 @@ class BulkInvoiceDownloadService
     def invoices_temp_pdf_data
       invoices.map do |invoice|
         temp_pdf = invoice.temp_pdf(company_logo, root_url)
-        { name: temp_pdf.name, file: temp_pdf.tempfile }
+        { name: temp_pdf.name, file: temp_pdf.file }
       end
     end
 end

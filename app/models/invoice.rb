@@ -107,7 +107,7 @@ class Invoice < ApplicationRecord
   end
 
   def temp_pdf(company_logo, root_url)
-    TempPdf.new(
+    Pdf::Temporary.new(
       "#{invoice_number}.pdf",
       pdf_content(company_logo, root_url)
     )
