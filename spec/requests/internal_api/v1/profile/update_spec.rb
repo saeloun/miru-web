@@ -14,7 +14,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
 
     it "updates user data without password" do
       params = { user: { first_name: "Sam", last_name: "Smith" } }
-      send_request :put, internal_api_v1_profile_path, params: params
+      send_request(:put, internal_api_v1_profile_path, params:)
       expect(response).to have_http_status(:ok)
       expect(user.first_name).to eq("Sam")
       expect(user.last_name).to eq("Smith")
@@ -28,7 +28,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
           password_confirmation: "123456"
         }
       }
-      send_request :put, internal_api_v1_profile_path, params: params
+      send_request(:put, internal_api_v1_profile_path, params:)
       expect(response).to have_http_status(:ok)
       expect(user.first_name).to eq("Example")
       expect(user.last_name).to eq("User")
@@ -42,7 +42,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
           password_confirmation: "123456"
         }
       }
-      send_request :put, internal_api_v1_profile_path, params: params
+      send_request(:put, internal_api_v1_profile_path, params:)
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json_response["error"]).to eq("Current password is not correct")
     end
@@ -54,7 +54,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
           password_confirmation: "123098"
         }
       }
-      send_request :put, internal_api_v1_profile_path, params: params
+      send_request(:put, internal_api_v1_profile_path, params:)
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json_response["error"]).to eq("Password and password confirmation does not match")
     end
@@ -66,7 +66,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
           password_confirmation: "12345"
         }
       }
-      send_request :put, internal_api_v1_profile_path, params: params
+      send_request(:put, internal_api_v1_profile_path, params:)
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json_response["error"]).to eq("Password and password confirmation should be of minimum 6 characters")
     end

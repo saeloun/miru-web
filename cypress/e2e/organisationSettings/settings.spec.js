@@ -19,7 +19,7 @@ describe("organisation settings", () => {
       "cypress/fixtures/images/saeloun.jpg",
       { force: true }
     );
-    cy.get(orgSettingsSelectors.updateButton).click();
+    cy.get(orgSettingsSelectors.updateProfile).click();
     cy.contains("Changes saved successfully");
   });
 
@@ -30,7 +30,7 @@ describe("organisation settings", () => {
 
   it("should throw error on empty company name", function () {
     cy.get(orgSettingsSelectors.companyName).clear();
-    cy.get(orgSettingsSelectors.updateButton).click();
+    cy.get(orgSettingsSelectors.updateProfile).click();
     cy.contains("Name cannot be blank");
   });
 
@@ -38,13 +38,13 @@ describe("organisation settings", () => {
     cy.get(orgSettingsSelectors.companyName)
       .clear()
       .type("Saeloun India Pvt. Ltd.");
-    cy.get(orgSettingsSelectors.updateButton).click();
+    cy.get(orgSettingsSelectors.updateProfile).click();
     cy.contains("Changes saved successfully");
   });
 
   it("should throw error on empty business phone", function () {
     cy.get(orgSettingsSelectors.businessPhone).clear();
-    cy.get(orgSettingsSelectors.updateButton).click();
+    cy.get(orgSettingsSelectors.updateProfile).click();
     cy.contains("Phone number cannot be blank");
   });
 
@@ -53,13 +53,13 @@ describe("organisation settings", () => {
       .clear()
       .type("403, Sky Vista, Pune, India");
     cy.get(orgSettingsSelectors.businessPhone).clear().type("+91 0000000000");
-    cy.get(orgSettingsSelectors.updateButton).click();
+    cy.get(orgSettingsSelectors.updateProfile).click();
     cy.contains("Changes saved successfully");
   });
 
   it("should throw error on empty standard rate", function () {
     cy.get(orgSettingsSelectors.standardRate).clear();
-    cy.get(orgSettingsSelectors.updateButton).click();
+    cy.get(orgSettingsSelectors.updateProfile).click();
     cy.contains("Amount must be a number");
   });
 
@@ -77,7 +77,7 @@ describe("organisation settings", () => {
       .type("US Dollar ($)")
       .type("{enter}");
     cy.get(orgSettingsSelectors.standardRate).clear().type("100000");
-    cy.get(orgSettingsSelectors.updateButton).click();
+    cy.get(orgSettingsSelectors.updateProfile).click();
     cy.contains("Changes saved successfully");
   });
 
@@ -100,7 +100,7 @@ describe("organisation settings", () => {
       .focus()
       .type("January-December")
       .type("{enter}");
-    cy.get(orgSettingsSelectors.updateButton).click();
+    cy.get(orgSettingsSelectors.updateProfile).click();
     cy.contains("Changes saved successfully");
   });
 });

@@ -1,7 +1,7 @@
 import { dataCy } from "../../support/utils/datacy";
 
 export const orgSettingsSelectors ={
-  updateButton: dataCy('update-button'),
+  updateProfile: dataCy('update-profile'),
   deleteLogo: dataCy('delete-logo'),
   companyName: dataCy('company-name'),
   businessPhone: dataCy('business-phone'),
