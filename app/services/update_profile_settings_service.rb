@@ -15,15 +15,13 @@ class UpdateProfileSettingsService
     else
       update_profile_along_with_password
     end
-    rescue Exception => e
-      { res: { error: e.message }, status: :unprocessable_entity }
   end
 
   def update_profile_along_with_password
     if current_user.update_with_password(user_params)
       { res: { notice: "Password updated" }, status: :ok }
     else
-      raise Exception.new(current_user.errors.full_messages)
+      { res: { errors: current_user.errors.full_messages }, status: :unprocessable_entity }
     end
   end
 end
