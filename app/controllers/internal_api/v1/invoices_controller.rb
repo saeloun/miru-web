@@ -36,7 +36,6 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def update
     authorize invoice
-
     invoice.update!(invoice_params)
     render :update, locals: {
       invoice:,
@@ -86,9 +85,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     end
 
     def invoice_params
-      params.require(:invoice).permit(
-        policy(Invoice).permitted_attributes
-      )
+      params.require(:invoice).permit(InvoicePolicy.permitted_attributes)
     end
 
     def invoice_email_params

@@ -1,6 +1,9 @@
 import React, { useState, useRef } from "react";
 
 import { useOutsideClick } from "helpers";
+import { useNavigate } from "react-router-dom";
+
+import invoicesApi from "apis/invoices";
 
 import EditButton from "./EditButton";
 import SendButton from "./SendButton";
@@ -19,6 +22,15 @@ const InvoiceActions = ({
     useState<boolean>(false);
 
   const wrapperRef = useRef(null);
+
+  const navigate = useNavigate();
+
+  const markInvoiceAsPaid = async (id: number) => {
+    const res = await invoicesApi.updateInvoice(id, {
+      invoice: { status: "paid" },
+    });
+    if (res.status === 200) navigate("/invoices");
+  };
 
   useOutsideClick(
     wrapperRef,
@@ -39,6 +51,7 @@ const InvoiceActions = ({
             deleteInvoice={deleteInvoice}
             downloadInvoice={handleDownloadInvoice}
             invoice={invoice}
+            markInvoiceAsPaid={markInvoiceAsPaid}
           />
         )}
       </div>

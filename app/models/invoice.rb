@@ -70,6 +70,7 @@ class Invoice < ApplicationRecord
     :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
   validates :invoice_number, uniqueness: true
   validates :reference, length: { maximum: 12 }, allow_blank: true
+  validate :check_if_invoice_paid, on: :update
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
@@ -107,5 +108,9 @@ class Invoice < ApplicationRecord
 
     def set_external_view_key
       self.external_view_key = "#{SecureRandom.hex}"
+    end
+
+    def check_if_invoice_paid
+      errors.add(:status, "can't be changed to paid") if status_changed? && status_was == "paid"
     end
 end

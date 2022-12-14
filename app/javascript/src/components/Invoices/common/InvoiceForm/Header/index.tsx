@@ -90,6 +90,8 @@ const Header = ({
               <MoreOptions
                 deleteInvoice={deleteInvoice}
                 downloadInvoice={null}
+                invoice={undefined}
+                markInvoiceAsPaid={() => null}
               />
             )}
           </div>
