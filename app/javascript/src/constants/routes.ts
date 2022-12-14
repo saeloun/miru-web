@@ -17,6 +17,7 @@ import OutstandingInvoiceReport from "../components/Reports/OutstandingInvoiceRe
 import RevenueByClientReport from "../components/Reports/RevenueByClientReport";
 import TimeEntryReports from "../components/Reports/TimeEntryReport";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
+import SignUp from "../components/SignUp";
 import PlanSelection from "../components/Subscriptions/PlanSelection";
 import TeamRouteConfig from "../components/Team/RouteConfig";
 import TimeTracking from "../components/TimeTracking";
@@ -68,6 +69,12 @@ const TeamRoutes = [{ path: "*", Component: TeamRouteConfig }];
 
 const ProfileRoutes = [{ path: "*", Component: ProfileLayout }];
 
+const SignUpRoutes = [
+  { path: "*", Component: SignUp },
+  // { path: "/email_confirmation", Component: ProfileLayout },
+  // { path: "/email_confirmation/success", Component: ProfileLayout },
+];
+
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
 
 const ROUTES = [
@@ -115,6 +122,11 @@ const ROUTES = [
     path: Paths.PROFILE,
     subRoutes: ProfileRoutes,
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+  },
+  {
+    path: Paths.SIGN_UP,
+    subRoutes: SignUpRoutes,
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
   },
 ];
 
