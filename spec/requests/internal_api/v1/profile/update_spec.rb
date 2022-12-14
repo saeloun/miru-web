@@ -56,7 +56,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
       }
       send_request(:put, internal_api_v1_profile_path, params:)
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json_response["errors"]).to eq(["Password confirmation and password dont' match"])
+      expect(json_response["errors"]).to eq(["Password confirmation doesn't match with new password"])
     end
 
     it "throws error when password is less than 6 of characters" do
