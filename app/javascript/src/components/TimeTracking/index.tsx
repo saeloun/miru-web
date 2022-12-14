@@ -324,7 +324,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             <MonthCalender
               currentMonthNumber={currentMonthNumber}
               currentYear={currentYear}
-              dayInfo={dayInfo}
               entryList={entryList}
               fetchEntries={fetchEntries}
               handleWeekTodayButton={handleWeekTodayButton}

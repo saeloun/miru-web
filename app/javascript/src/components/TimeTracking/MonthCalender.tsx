@@ -12,7 +12,6 @@ dayjs.Ls.en.weekStart = 1;
 const MonthCalender = ({
   fetchEntries,
   selectedEmployeeId,
-  dayInfo,
   entryList,
   selectedFullDate,
   setSelectedFullDate,
@@ -287,7 +286,6 @@ const MonthCalender = ({
 interface Iprops {
   fetchEntries: (from: string, to: string) => void;
   selectedEmployeeId: number;
-  dayInfo: any[];
   selectedFullDate: string;
   setSelectedFullDate: any;
   entryList: object;
