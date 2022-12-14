@@ -15,7 +15,7 @@ Grover.configure do |config|
     launch_args: ["--no-sandbox", "--disable-setuid-sandbox"]
   }
 
-  if !(Rails.env.development?)
+  if !(Rails.env.development? || Rails.env.test?)
     config.options[:executable_path] = "google-chrome"
   end
 end
