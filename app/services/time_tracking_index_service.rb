@@ -63,6 +63,8 @@ class TimeTrackingIndexService
     end
 
     def set_projects
-      @projects = ClientsPresenter.new(clients, current_company, current_user, is_admin).client_name_to_projects
+      @projects = ClientsPresenter
+        .new(clients, current_company, current_user)
+        .group_projects_by_client_name
     end
 end
