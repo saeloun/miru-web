@@ -4,17 +4,18 @@
 #
 # Table name: employments
 #
-#  id              :bigint           not null, primary key
-#  designation     :string
-#  discarded_at    :datetime
-#  employment_type :string
-#  joined_at       :date
-#  resigned_at     :date
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  company_id      :bigint           not null
-#  employee_id     :string
-#  user_id         :bigint           not null
+#  id                  :bigint           not null, primary key
+#  designation         :string
+#  discarded_at        :datetime
+#  employment_type     :string
+#  fixed_working_hours :integer          default(40), not null
+#  joined_at           :date
+#  resigned_at         :date
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  company_id          :bigint           not null
+#  employee_id         :string
+#  user_id             :bigint           not null
 #
 # Indexes
 #
