@@ -136,7 +136,7 @@ const Header = ({
                   </button>)
                 }
                 {
-                  candidateDetails.discarded_at ? null :
+                  isEdit ? null :
                     <button
                       className="w-1/3 p-0 header__button text-col-red-400 hover:text-col-red-400" onClick={() => handleDeleteClick(candidateDetails.id)}>
                       <Trash size={16} className="text-col-red-400" weight="bold" />
