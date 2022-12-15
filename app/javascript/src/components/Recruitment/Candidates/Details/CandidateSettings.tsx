@@ -87,7 +87,7 @@ const CandidateSettings = ({ candidateDetails, setCandidateDetails, setShowCandi
 
   return (
     <>
-      <span className='fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50' />
+      <span className='absolute top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50' />
       <div aria-hidden="true" className="fixed top-0 left-0 right-0 z-50 w-full overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
         <div className="relative float-right w-full h-full max-w-md md:h-auto">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
