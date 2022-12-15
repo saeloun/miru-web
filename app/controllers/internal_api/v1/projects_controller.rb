@@ -8,7 +8,13 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
 
   def show
     authorize project
-    render :show, locals: { project: }, status: :ok
+    render :show,
+      locals: {
+        project:,
+        team_member_details: project.project_team_member_details(params[:time_frame]),
+        overdue_and_outstanding_amounts: project.overdue_and_outstanding_amounts
+      },
+      status: :ok
   end
 
   def create
