@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InvoiceMailer < ApplicationMailer
-  after_action -> { @invoice.sent! if @invoice.draft? || @invoice.viewed? || @invoice.declined? }
+  after_action -> { @invoice.sent! if @invoice.draft? || @invoice.viewed? || @invoice.declined? || @invoice.sending? }
 
   def invoice
     @invoice = params[:invoice]
@@ -11,6 +11,7 @@ class InvoiceMailer < ApplicationMailer
     @invoice_url = view_invoice_url(@invoice.external_view_key)
     @company = @invoice.company
     @company_logo = company_logo
+    sleep 10
     @amount = FormatAmountService.new(@company.base_currency, @invoice.amount).process
 
     pdf = InvoicePayment::PdfGeneration.process(@invoice, @company_logo, root_url)
