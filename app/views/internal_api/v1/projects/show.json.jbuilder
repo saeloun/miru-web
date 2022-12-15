@@ -7,7 +7,7 @@ json.project_details do
   json.client do
     json.name project.client.name
   end
-  json.members summary[:team_member_details]
-  json.total_minutes_logged summary[:total_minutes_logged]
-  json.overdue_and_outstanding_amounts summary[:overdue_and_outstanding_amounts]
+  json.members team_member_details
+  json.total_minutes_logged (team_member_details.map { |user_details| user_details[:minutes_logged] }).sum
+  json.overdue_and_outstanding_amounts overdue_and_outstanding_amounts
 end
