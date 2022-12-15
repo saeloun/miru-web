@@ -3,7 +3,7 @@
 class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationController
   def index
     authorize Project
-    render :index, locals: { current_company:, current_company_clients:, current_company_users: }, status: :ok
+    render :index, locals: ProjectsIndexService.new(current_company, params).process, status: :ok
   end
 
   def show
@@ -32,15 +32,6 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
   end
 
   private
-
-    def current_company_clients
-      @_current_company_clients ||= current_company.clients.kept
-    end
-
-    def current_company_users
-      @_current_company_users ||= current_company.employments.joins(:user)
-        .select("users.id as id, users.first_name as first_name, users.last_name as last_name")
-    end
 
     def project
       @_project ||= Project.includes(:project_members, project_members: [:user]).find(params[:id])
