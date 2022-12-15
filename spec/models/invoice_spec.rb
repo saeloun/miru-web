@@ -41,7 +41,7 @@ RSpec.describe Invoice, type: :model do
 
   describe "Associations" do
     describe "belongs to" do
-      it { is_expected.not_to belong_to(:company) }
+      it { is_expected.to belong_to(:company) }
       it { is_expected.to belong_to(:client) }
     end
 
@@ -56,36 +56,37 @@ RSpec.describe Invoice, type: :model do
 
   describe "Scopes" do
     let(:company) do
-      create(:company, clients: create_list(:client_with_invoices, 5))
+      create(:company_with_invoices)
     end
 
     describe ".with_statuses" do
       it "returns all invoices if statuses are not specified" do
-        expect(company.invoices.with_statuses(nil).size).to eq(25)
+        expect(company.invoices.with_statuses(nil).size).to eq(5)
       end
 
       it "returns draft and paid invoices" do
-        expect(company.invoices.with_statuses([:draft, :paid]).size).to eq(25)
+        expect(company.invoices.with_statuses([:draft, :paid]).size).to eq(5)
       end
 
       it "returns draft, overdue and paid invoices" do
-        expect(company.invoices.with_statuses([:draft, :overdue, :paid]).size).to eq(25)
+        expect(company.invoices.with_statuses([:draft, :overdue, :paid]).size).to eq(5)
       end
     end
 
     describe "issue_date_range" do
       it "returns all invoices if date range is not specified" do
-        expect(company.invoices.issue_date_range(nil).size).to eq(25)
+        # debugger
+        expect(company.invoices.issue_date_range(nil).size).to eq(5)
       end
     end
 
     describe ".for_clients" do
       it "returns all invoices if clients are not specified" do
-        expect(company.invoices.for_clients(nil).size).to eq(25)
+        expect(company.invoices.for_clients(nil).size).to eq(5)
       end
 
       it "returns invoices for specific clients" do
-        expect(company.invoices.for_clients(company.clients.map { |c| c.id }).size).to eq(25)
+        expect(company.invoices.for_clients(company.clients.map { |c| c.id }).size).to eq(5)
       end
     end
   end
