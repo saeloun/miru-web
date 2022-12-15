@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
@@ -37,7 +36,6 @@ const ConsultancyList = ({ isAdminUser }) => {
   const [consultancyToEdit, setedit] = useState({});
   const [consultancyToDelete, setDelete] = useState({});
   const [consultancyData, setConsultancyData] = useState<any>();
-  const navigate = useNavigate();
 
   const handleEditClick = (id) => {
     setShowEditDialog(true);
@@ -49,10 +47,6 @@ const ConsultancyList = ({ isAdminUser }) => {
     setShowDeleteDialog(true);
     const editSelection = consultancyData.find(consultancy => consultancy.id === id);
     setDelete(editSelection);
-  };
-
-  const handleRowClick = (id) => {
-    navigate(`/recruitment/consultancies/${id}`);
   };
 
   useEffect(() => {
@@ -107,7 +101,6 @@ const ConsultancyList = ({ isAdminUser }) => {
                   hasRowIcons={isAdminUser}
                   tableHeader={tableHeader}
                   tableRowArray={tableData}
-                  rowOnClick={isAdminUser ? handleRowClick : () => { }}// eslint-disable-line
                 />}
               </div>
             </div>
