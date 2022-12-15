@@ -8,7 +8,12 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
 
   def show
     authorize project
-    render :show, locals: { project: }, status: :ok
+    render :show,
+      locals: {
+        project:,
+        summary: ProjectPresenter.new(project, params[:time_frame]).summary
+      },
+      status: :ok
   end
 
   def create
