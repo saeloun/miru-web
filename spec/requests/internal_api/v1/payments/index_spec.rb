@@ -6,8 +6,8 @@ RSpec.describe "InternalApi::V1::Payments#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client1) { create(:client, company:, name: "bob") }
-  let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent") }
-  let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent") }
+  let!(:client1_sent_invoice1) { create(:invoice, client: client1, company:, status: "sent") }
+  let!(:client1_sent_invoice2) { create(:invoice, client: client1, company:, status: "sent") }
   let!(:payment1) { create(:payment, invoice: client1_sent_invoice1, status: "failed") }
   let!(:payment2) { create(:payment, invoice: client1_sent_invoice1, status: "paid") }
   let!(:payment3) { create(:payment, invoice: client1_sent_invoice2, status: "partially_paid") }
