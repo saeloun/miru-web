@@ -10,14 +10,21 @@ class UpdateProfileSettingsService
 
   def process
     if user_params[:current_password].blank?
-      current_user.update_without_password(user_params.except(:current_password))
-      { res: { notice: "User updated" }, status: :ok }
+      update_user_without_password
     else
-      update_profile_along_with_password
+      update_user_with_password
     end
   end
 
-  def update_profile_along_with_password
+  def update_user_without_password
+    if current_user.update_without_password(user_params.except(:current_password))
+      { res: { notice: "User updated" }, status: :ok }
+    else
+      { res: { errors: current_user.errors.full_messages }, status: :unprocessable_entity }
+    end
+  end
+
+  def update_user_with_password
     if current_user.update_with_password(user_params)
       { res: { notice: "Password updated" }, status: :ok }
     else

@@ -35,6 +35,44 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
       expect(json_response["notice"]).to eq("Password updated")
     end
 
+    it "throws error when first name is blank" do
+      params = {
+        user: {
+          first_name: "", last_name: "User"
+        }
+      }
+      send_request(:put, internal_api_v1_profile_path, params:)
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json_response["errors"]).to eq(
+        ["First name can't be blank",
+         "First name must only contain letters or spaces"])
+    end
+
+    it "throws error when last name is blank" do
+      params = {
+        user: {
+          first_name: "Example", last_name: ""
+        }
+      }
+      send_request(:put, internal_api_v1_profile_path, params:)
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json_response["errors"]).to eq(
+        ["Last name can't be blank",
+         "Last name must only contain letters or spaces"])
+    end
+
+    it "throws error when name fields are invalid" do
+      params = {
+        user: {
+          first_name: "@#", last_name: "@"
+        }
+      }
+      send_request(:put, internal_api_v1_profile_path, params:)
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json_response["errors"]).to eq(
+        ["First name must only contain letters or spaces", "Last name must only contain letters or spaces"])
+    end
+
     it "throws error when current password is incorrect" do
       params = {
         user: {
