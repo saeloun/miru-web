@@ -174,7 +174,11 @@ const Clients = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header isAdminUser={isAdminUser} setnewClient={setClient} />
+      <Header
+        isAdminUser={isAdminUser}
+        setShowDialog={setShowDialog}
+        setnewClient={setClient}
+      />
       <div>
         {isAdminUser && (
           <div className="bg-miru-gray-100 py-10 px-10">

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React from "react";
+import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
 import * as Yup from "yup";
@@ -55,10 +55,40 @@ const ClientForm = ({
   formType = "new",
   apiError = "",
 }: IClientForm) => {
+  const [fileUploadError, setFileUploadError] = useState<string>("");
+
   const onLogoChange = e => {
     const file = e.target.files[0];
-    setClientLogoUrl(URL.createObjectURL(file));
-    setClientLogo(file);
+    const isValid = isValidFileUploaded(file);
+
+    if (isValid.fileExtension && isValid.fileSizeValid) {
+      setClientLogoUrl(URL.createObjectURL(file));
+      setClientLogo(file);
+    } else {
+      if (!isValid.fileExtension && !isValid.fileSizeValid) {
+        setFileUploadError(
+          "Incorrect file format. Please upload an image of type PNG or JPG. Max size (10kb)"
+        );
+      } else if (isValid.fileExtension && !isValid.fileSizeValid) {
+        setFileUploadError("File size exceeded the max limit of 10KB.");
+      } else {
+        setFileUploadError(
+          "Incorrect file format. Please upload an image of type PNG or JPG"
+        );
+      }
+    }
+  };
+
+  const isValidFileUploaded = file => {
+    const validExtensions = ["png", "jpeg", "jpg"];
+    const fileExtensions = file.type.split("/")[1];
+    const validFileByteSize = "10000";
+    const fileSize = file.size;
+
+    return {
+      fileExtension: validExtensions.includes(fileExtensions),
+      fileSizeValid: fileSize <= validFileByteSize,
+    };
   };
 
   const showInitialOrNew = () => {
@@ -183,6 +213,9 @@ const ClientForm = ({
                     ) : (
                       showInitialOrNew()
                     )}
+                    <p className="mt-3 block max-w-xs text-center text-xs tracking-wider text-red-600">
+                      {fileUploadError}
+                    </p>
                   </div>
                 </div>
               </div>
