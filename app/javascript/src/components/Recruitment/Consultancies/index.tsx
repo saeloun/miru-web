@@ -13,6 +13,7 @@ import { unmapConsultancyList } from "../../../mapper/consultancy.mapper";
 import DeleteConsultancy from "../Modals/DeleteConsultancy";
 import EditConsultancy from "../Modals/EditConsultancy";
 import NewConsultancy from "../Modals/NewConsultancy";
+import Tab from "../Tab";
 
 const getTableData = (consultancies) => {
   if (consultancies) {
@@ -89,6 +90,7 @@ const ConsultancyList = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
+      <Tab isAdminUser={isAdminUser} />
       <Header isAdminUser={isAdminUser} setnewConsultancy={setnewConsultancy} />
       <div>
         <div className="flex flex-col">

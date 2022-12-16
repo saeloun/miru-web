@@ -6,10 +6,9 @@ import { ToastContainer } from "react-toastify";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 
-import Tab from "./Tab";
+import ConsultancyList from "./Consultancies";
 
 const Recruitments = ({ isAdminUser }) => {
-
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
@@ -18,7 +17,7 @@ const Recruitments = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Tab isAdminUser={isAdminUser} />
+      <ConsultancyList isAdminUser={isAdminUser} />
     </>
   );
 };

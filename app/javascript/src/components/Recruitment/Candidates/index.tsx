@@ -14,6 +14,7 @@ import { unmapCandidateList } from "../../../mapper/candidate.mapper";
 import DeleteCandidate from "../Modals/DeleteCandidate";
 import EditCandidate from "../Modals/EditCandidate";
 import NewCandidate from "../Modals/NewCandidate";
+import Tab from "../Tab";
 
 const getTableData = (candidates) => {
   if (candidates) {
@@ -95,6 +96,7 @@ const CandidateList = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
+      <Tab isAdminUser={isAdminUser} />
       <Header isAdminUser={isAdminUser} setnewCandidate={setnewCandidate} />
       <div>
         <div className="flex flex-col">
