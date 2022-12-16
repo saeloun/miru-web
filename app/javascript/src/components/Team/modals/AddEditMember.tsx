@@ -176,6 +176,54 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                     </div>
                     <div className="mt-4">
                       <div className="field">
+                        <div className="flex">
+                          <div className="mt-1">
+                            <div className="field_with_errors">
+                              <label className="form__label">
+                                Fixed Working Hours
+                              </label>
+                            </div>
+                            <Field
+                              data-cy="new-member-fixed-working-hours"
+                              name="fixedWorkingHours"
+                              placeholder="Fixed working hours"
+                              className={`form__input ${
+                                errors.firstName &&
+                                touched.firstName &&
+                                "border-red-600 focus:border-red-600 focus:ring-red-600"
+                              } `}
+                            />
+                            <div className="block flex text-xs tracking-wider text-red-600">
+                              {errors.firstName && touched.firstName && (
+                                <div>{errors.firstName}</div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="mt-1 ml-8">
+                            <div className="field_with_errors">
+                              <label className="form__label">Balance PTO</label>
+                            </div>
+                            <Field
+                              data-cy="new-member-balance-pto"
+                              name="balancePto"
+                              placeholder="Balance PTO"
+                              className={`form__input ${
+                                errors.lastName &&
+                                touched.lastName &&
+                                "border-red-600 focus:border-red-600 focus:ring-red-600"
+                              } `}
+                            />
+                            <div className="block flex text-xs tracking-wider text-red-600">
+                              {errors.lastName && touched.lastName && (
+                                <div className="ml-2">{errors.lastName}</div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <div className="field">
                         <label className="form__label block text-xs font-normal tracking-wider text-miru-dark-purple-1000">
                           Role
                         </label>

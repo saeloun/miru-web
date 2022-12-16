@@ -6,6 +6,7 @@ const mapper = item => ({
   email: item.email,
   role: item.role,
   status: item.status,
+  fixedWorkingHours: item.fixedWorkingHours,
   profilePicture: item.profilePicture,
 });
 

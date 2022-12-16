@@ -31,6 +31,10 @@ const TableRow = ({ item }) => {
       <td className="table__data p-6 capitalize">{item.name}</td>
       <td className="table__data table__text p-6">{item.email}</td>
       <td className="table__data table__text p-6 capitalize">{item.role}</td>
+      <td className="table__data table__text p-6 capitalize">
+        {item.fixedWorkingHours}
+      </td>
+      <td>0</td>
       {isAdminUser && (
         <Fragment>
           <td className="w-48 py-6 pr-6 text-right">
