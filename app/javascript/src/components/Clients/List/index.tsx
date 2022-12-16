@@ -19,6 +19,13 @@ import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 import NewClient from "../Modals/NewClient";
 
+const createInitials = client =>
+  client.name
+    .split(" ")
+    .map(name => name[0])
+    .join("")
+    .toUpperCase();
+
 const getTableData = clients => {
   if (clients) {
     return clients.map(client => ({
@@ -27,12 +34,12 @@ const getTableData = clients => {
           <div className="mx-2">
             {client.logo === "" ? (
               <div className="flex h-12 w-12 justify-center">
-                <span className="w-22 rounded-full bg-miru-han-purple-1000 pt-1 text-center text-lg leading-10 text-gray-50">
-                  {client.name
-                    .split(" ")
-                    .map(name => name[0])
-                    .join("")
-                    .toUpperCase()}
+                <span
+                  className={`w-22 rounded-full bg-miru-han-purple-1000 pt-1 text-center ${
+                    createInitials(client).length > 3 ? "" : "text-lg"
+                  } leading-10 text-gray-50`}
+                >
+                  {createInitials(client)}
                 </span>
               </div>
             ) : (
