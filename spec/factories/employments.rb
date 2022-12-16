@@ -10,4 +10,12 @@ FactoryBot.define do
     joined_at { Faker::Date.between(from: "2020-01-01", to: "2021-01-01") }
     resigned_at {}
   end
+
+  trait :part_time do
+    fixed_working_hours { 20 }
+  end
+
+  trait :without_working_hours do
+    fixed_working_hours { nil }
+  end
 end
