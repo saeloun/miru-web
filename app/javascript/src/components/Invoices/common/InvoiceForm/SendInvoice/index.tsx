@@ -74,11 +74,13 @@ const SendInvoice: React.FC<any> = ({
   const handleSubmit = async (event: FormEvent) => {
     try {
       event.preventDefault();
+      setStatus(InvoiceStatus.LOADING);
       const res = await handleSaveSendInvoice();
       if (res.status === 200) {
         handleSendInvoice(res.data.id);
       } else {
         Toastr.error("Send invoice failed");
+        setStatus(InvoiceStatus.ERROR);
       }
     } catch {
       setStatus(InvoiceStatus.ERROR);
@@ -87,7 +89,6 @@ const SendInvoice: React.FC<any> = ({
 
   const handleSendInvoice = async invoiceId => {
     try {
-      setStatus(InvoiceStatus.LOADING);
       const payload = { invoice_email: invoiceEmail };
       const resp = await invoicesApi.sendInvoice(invoiceId, payload);
       Toastr.success(resp.data.message);
@@ -246,6 +247,8 @@ const SendInvoice: React.FC<any> = ({
                     {
                       "bg-miru-chart-green-600 hover:bg-miru-chart-green-400":
                         status === InvoiceStatus.SUCCESS,
+                      "bg-miru-dark-purple-600":
+                        status === InvoiceStatus.LOADING,
                     }
                   )}
                   disabled={

@@ -85,7 +85,7 @@ const Container = ({
       </div>
       <div className="mb-4 flex items-center">
         <h1 className="text-2xl font-normal text-miru-dark-purple-1000">
-          All invoices
+          All Invoices
         </h1>
         <div className="ml-4 flex items-center justify-between">
           {Object.values(filterParams).map(param =>

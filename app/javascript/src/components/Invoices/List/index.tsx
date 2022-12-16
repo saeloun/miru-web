@@ -24,7 +24,7 @@ const Invoices = () => {
   };
 
   const [status, setStatus] = useState<InvoicesStatus>(InvoicesStatus.IDLE);
-  const [invoices, setInvoices] = useState<null | any[]>(null);
+  const [invoices, setInvoices] = useState<any[]>([]);
   const [summary, setSummary] = useState<any>(null);
   const [pagy, setPagy] = useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -67,6 +67,35 @@ const Invoices = () => {
     }
 
     return newParams;
+  };
+
+  //Pooling
+  useEffect(() => {
+    if (!invoices || !invoiceIsSending) return;
+    const DELAY = 5000;
+
+    const timer = setTimeout(() => fetchInvoicesWithoutRefresh(), DELAY);
+
+    return () => clearTimeout(timer);
+  }, [invoices]);
+
+  const invoiceIsSending = invoices.some(
+    invoice => invoice.status === "sending"
+  );
+
+  const fetchInvoicesWithoutRefresh = async () => {
+    try {
+      const {
+        data: { invoices, pagy, summary, recentlyUpdatedInvoices },
+      } = await invoicesApi.get(queryParams().concat(handleFilterParams()));
+
+      setInvoices(invoices);
+      setSummary(summary);
+      setPagy(pagy);
+      setRecentlyUpdatedInvoices(recentlyUpdatedInvoices);
+    } catch {
+      return;
+    }
   };
 
   const fetchInvoices = async () => {
