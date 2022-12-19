@@ -49,7 +49,11 @@ class TimesheetEntry < ApplicationRecord
   delegate :name, to: :client, prefix: true, allow_nil: true
   delegate :full_name, to: :user, prefix: true, allow_nil: true
 
-  searchkick text_middle: [:user_name, :note]
+  scope :search_import, -> { includes(:project, :client, :user) }
+  searchable = [:id, :user_name]
+  filterable = [:user_name, :created_at, :work_date, :project_name, :client_name ]
+
+  searchkick(batch_size: 300, searchable:, filterable:, word_middle: [:note])
 
   def search_data
     {
@@ -60,7 +64,12 @@ class TimesheetEntry < ApplicationRecord
       user_id:,
       work_date: work_date.to_time,
       note:,
-      user_name: user.full_name
+      user_name: user.full_name,
+      project_name: project.name,
+      client_name: project.client.name,
+      bill_status:,
+      duration: duration.to_i,
+      created_at: created_at.to_time
     }
   end
 
