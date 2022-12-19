@@ -31,7 +31,11 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def edit
     authorize invoice
-    render :edit, locals: { invoice: }
+    render :edit, locals: {
+      invoice:,
+      client: invoice.client,
+      current_company_clients: current_company.client_list
+    }
   end
 
   def update
@@ -47,7 +51,8 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def show
     authorize invoice
     render :show, locals: {
-      invoice:
+      invoice:,
+      client: invoice.client
     }
   end
 
