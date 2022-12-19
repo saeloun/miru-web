@@ -32,12 +32,25 @@ RSpec.describe Employment, type: :model do
       expect(employment.fixed_working_hours).to eq 40
     end
 
+    it "adds 0 as a balance PTO" do
+      expect(employment.balance_pto).to eq 0
+    end
+
     context "when working hours are not present" do
       let(:employment) { build(:employment, :without_working_hours) }
 
       it "adds validation error" do
         expect(employment.valid?).to be false
         expect(employment.errors.full_messages.first).to eq "Fixed working hours can't be blank"
+      end
+    end
+
+    context "when balance pto is missing" do
+      let(:employment) { build(:employment, :without_balance_pto) }
+
+      it "adds validation error" do
+        expect(employment.valid?).to be false
+        expect(employment.errors.full_messages.first).to eq "Balance pto can't be blank"
       end
     end
   end
