@@ -7,6 +7,7 @@ const mapper = item => ({
   role: item.role,
   status: item.status,
   fixedWorkingHours: item.fixedWorkingHours,
+  balancePto: item.balancePto,
   profilePicture: item.profilePicture,
 });
 

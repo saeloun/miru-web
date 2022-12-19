@@ -34,7 +34,7 @@ const TableRow = ({ item }) => {
       <td className="table__data table__text p-6 capitalize">
         {item.fixedWorkingHours}
       </td>
-      <td>0</td>
+      <td>{item.balancePto}</td>
       {isAdminUser && (
         <Fragment>
           <td className="w-48 py-6 pr-6 text-right">

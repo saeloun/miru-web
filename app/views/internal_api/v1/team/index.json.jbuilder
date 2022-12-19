@@ -28,6 +28,7 @@ json.team teams do |company_user|
   json.email member.email
   json.role member.primary_role(current_company)
   json.fixed_working_hours company_user.fixed_working_hours
+  json.balance_pto company_user.balance_pto
   json.status team_member_status(member)
 end
 
