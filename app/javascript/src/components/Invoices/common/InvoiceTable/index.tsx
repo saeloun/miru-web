@@ -22,40 +22,15 @@ const InvoiceTable = ({
   const [addNew, setAddNew] = useState<boolean>(false);
   const [showNewLineItemTable, setShowNewLineItemTable] =
     useState<boolean>(false);
-  const [pageNumber, setPageNumber] = useState<number>(1);
   const [multiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
-  const [filteredLineItems, setFilteredLineItems] = useState<any>(lineItems);
+  const [filteredLineItems, setFilteredLineItems] = useState<any>();
   const [lineItem, setLineItem] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(false);
   const wrapperRef = useRef(null);
   const debouncedSearchName = useDebounce(lineItem.name, 500);
 
-  useEffect(() => {
-    setLoading(false);
-    setFilteredLineItems(lineItems);
-  }, [lineItems]);
-
-  const tempFiltered = lineItems.filter(
-    item =>
-      !selectedLineItems.some(
-        selected => selected.timesheet_entry_id === item.timesheet_entry_id
-      )
-  );
-
-  useEffect(() => {
-    setLineItems(tempFiltered);
-    setFilteredLineItems(tempFiltered);
-  }, [selectedLineItems]);
-
   const loadNewLineItems = () => {
-    fetchNewLineItems(
-      selectedClient,
-      lineItems,
-      setLineItems,
-      pageNumber,
-      setPageNumber,
-      selectedLineItems
-    );
+    fetchNewLineItems(selectedClient, setLineItems, selectedLineItems);
   };
 
   useEffect(() => {
@@ -66,8 +41,10 @@ const InvoiceTable = ({
           .includes(debouncedSearchName.toLowerCase())
       );
       setFilteredLineItems(newLineItems);
+      setLoading(false);
     } else {
       setFilteredLineItems(lineItems);
+      setLoading(false);
     }
   }, [debouncedSearchName, lineItems]);
 

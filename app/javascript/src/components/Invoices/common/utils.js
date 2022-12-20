@@ -40,10 +40,7 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
 
 export const fetchNewLineItems = async (
   selectedClient,
-  lineItems,
   setLineItems,
-  pageNumber,
-  setPageNumber,
   selectedEntries = []
 ) => {
   if (selectedClient) {
@@ -54,10 +51,9 @@ export const fetchNewLineItems = async (
       }
     });
 
-    const queryParams = `client_id=${selectedClient.value}&page=${pageNumber}${selectedEntriesString}`;
+    const queryParams = `client_id=${selectedClient.value}${selectedEntriesString}`;
     const res = await generateInvoice.getLineItems(queryParams);
-    setPageNumber(pageNumber + 1);
-    const mergedItems = [...res.data.new_line_item_entries, ...lineItems];
+    const mergedItems = [...res.data.new_line_item_entries];
     const sortedData = mergedItems.sort((item1, item2) =>
       dayjs(item1.date).isAfter(dayjs(item2.date)) ? 1 : -1
     );
