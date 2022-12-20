@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InvoiceMailer < ApplicationMailer
-  after_action -> { @invoice.sent! if @invoice.draft? || @invoice.viewed? || @invoice.declined? }
+  after_action -> { @invoice.sent! if @invoice.draft? || @invoice.viewed? || @invoice.declined? || @invoice.sending? }
 
   def invoice
     @invoice = params[:invoice]
