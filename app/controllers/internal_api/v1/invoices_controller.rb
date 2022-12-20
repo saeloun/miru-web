@@ -85,7 +85,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     end
 
     def invoice_params
-      params.require(:invoice).permit(InvoicePolicy.permitted_attributes)
+      params.require(:invoice).permit(policy(Invoice).permitted_attributes)
     end
 
     def invoice_email_params

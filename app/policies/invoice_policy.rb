@@ -33,7 +33,7 @@ class InvoicePolicy < ApplicationPolicy
     authorize_current_user
   end
 
-  def self.permitted_attributes
+  def permitted_attributes
     [
       :issue_date, :due_date, :status,
       :invoice_number, :reference, :amount,
