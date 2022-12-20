@@ -142,7 +142,7 @@ const MultipleEntriesModal = ({
             Loading...
           </p>
         ) : (
-          <div className="mx-6 overflow-y-scroll">
+          <div className="mx-6 flex-1 overflow-y-scroll">
             {lineItems.length > 0 ? (
               <Table
                 allCheckboxSelected={allCheckboxSelected}

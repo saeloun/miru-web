@@ -356,7 +356,7 @@ const OrgEdit = () => {
                     type="file"
                     onChange={onLogoChange}
                   />
-                  <button onClick={handleDeleteLogo}>
+                  <button data-cy="delete-logo" onClick={handleDeleteLogo}>
                     <DeleteIcon
                       className="mt-5 ml-2 cursor-pointer rounded-full"
                       style={{ minWidth: "40px" }}
@@ -386,6 +386,7 @@ const OrgEdit = () => {
                 <label className="mb-2">Company Name</label>
                 <input
                   className="w-full border py-1 px-1"
+                  data-cy="company-name"
                   id="company_name"
                   name="company_name"
                   type="text"
@@ -408,6 +409,7 @@ const OrgEdit = () => {
                 <label className="mb-2">Address</label>
                 <textarea
                   className="w-5/6 border py-1 px-1	"
+                  data-cy="address"
                   id="company_addr"
                   name="company_addr"
                   value={orgDetails.companyAddr}
@@ -416,6 +418,7 @@ const OrgEdit = () => {
                 <label className="mb-2 mt-4">Business Phone</label>
                 <input
                   className="w-80 border py-1 px-1"
+                  data-cy="business-phone"
                   id="company_phone"
                   name="company_phone"
                   type="text"
@@ -437,7 +440,7 @@ const OrgEdit = () => {
             </div>
             <div className=" w-full p-2">
               <div className="flex flex-row ">
-                <div className="w-1/2 p-2">
+                <div className="w-1/2 p-2" data-cy="country">
                   <label className="mb-2">Country</label>
                   <Select
                     className="mt-2"
@@ -454,7 +457,7 @@ const OrgEdit = () => {
                     onChange={handleCountryChange}
                   />
                 </div>
-                <div className="w-1/2 p-2">
+                <div className="w-1/2 p-2" data-cy="base-currency">
                   <label className="mb-2">Base Currency</label>
                   <Select
                     className="mt-2"
@@ -476,6 +479,7 @@ const OrgEdit = () => {
                 <label className="mb-2">Standard Rate</label>
                 <input
                   className="w-full border py-1 px-1"
+                  data-cy="standard-rate"
                   id="company_rate"
                   min={0}
                   name="company_rate"
@@ -496,7 +500,7 @@ const OrgEdit = () => {
             <div className="mt-2 w-4/12 p-2 font-bold">Date and Time</div>
             <div className="w-full p-2">
               <div className="flex flex-row ">
-                <div className="w-1/2 p-2">
+                <div className="w-1/2 p-2" data-cy="timezone">
                   <label className="mb-2">Timezone</label>
                   <Select
                     className="mt-2"
@@ -513,7 +517,7 @@ const OrgEdit = () => {
                     onChange={handleTimezoneChange}
                   />
                 </div>
-                <div className="w-1/2 p-2">
+                <div className="w-1/2 p-2" data-cy="date-format">
                   <label className="mb-2">Date Format</label>
                   <Select
                     className="mt-2"
@@ -531,7 +535,7 @@ const OrgEdit = () => {
                   />
                 </div>
               </div>
-              <div className="flex w-1/2 flex-col p-2">
+              <div className="flex w-1/2 flex-col p-2" data-cy="fiscal-year">
                 <label className="mb-2"> Fiscal Year End</label>
                 <Select
                   className="mt-2"
