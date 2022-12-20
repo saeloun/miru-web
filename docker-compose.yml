@@ -24,7 +24,6 @@ services:
       context: .
       dockerfile: Dockerfile.local
     command: bundle exec rails s -p 3000 -b 0.0.0.0
-    # user: CURRENT_UID
     ports:
       - "3000:3000"
     image: miru-web:latest
@@ -41,25 +40,24 @@ services:
       - database
       - redis
       - elasticsearch
-  #   tmpfs:
-  #     - /tmp/pids/
+    tmpfs:
+      - /tmp/pids/
 
-  # webpack:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.local
-  #   command: bin/webpack-dev-server
-  #   image: miru-web:latest
-  #   # user: CURRENT_UID
-  #   ports:
-  #     - "3035:3035"
-  #   environment:
-  #     - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
-  #     - DATABASE_URL=postgres://postgres:postgres@database:5432/
-  #     - REDIS_URL=redis://redis:6379/1
-  #     - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
-  #   depends_on:
-  #     - database
+  webpack:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    command: bin/webpack-dev-server
+    image: miru-web:latest
+    ports:
+      - "3035:3035"
+    environment:
+      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+      - DATABASE_URL=postgres://postgres:postgres@database:5432/
+      - REDIS_URL=redis://redis:6379/1
+      - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
+    depends_on:
+      - database
 
   sidekiq:
     build:
