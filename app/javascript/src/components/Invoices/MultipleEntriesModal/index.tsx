@@ -124,7 +124,7 @@ const MultipleEntriesModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex h-full w-full justify-center px-52 py-20"
+      className="fixed inset-0 z-50 flex h-full w-full justify-center px-10 py-20 md:px-52"
       style={{ background: "rgba(29, 26, 49,0.6)" }}
     >
       <div className="flex h-160 w-full flex-col justify-between rounded-lg bg-white">
