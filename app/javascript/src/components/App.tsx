@@ -7,8 +7,7 @@ import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import { Roles, TOASTER_DURATION } from "constants/index";
 import UserContext from "context/UserContext";
 
-import Main from "./Main";
-import Navbar from "./Navbar";
+import DisplayView from "./DisplayView";
 
 const App = props => {
   const { user, companyRole } = props;
@@ -23,10 +22,7 @@ const App = props => {
     <UserContext.Provider value={{ isAdminUser, user, companyRole }}>
       <BrowserRouter>
         <ToastContainer autoClose={TOASTER_DURATION} />
-        <div className="absolute inset-0 flex h-full w-full">
-          <Navbar isAdminUser={isAdminUser} user={user} />
-          <Main {...props} isAdminUser={isAdminUser} />
-        </div>
+        <DisplayView {...props} isAdminUser={isAdminUser} user={user} />
       </BrowserRouter>
     </UserContext.Provider>
   );
