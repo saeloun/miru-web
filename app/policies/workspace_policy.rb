@@ -2,10 +2,14 @@
 
 class WorkspacePolicy < ApplicationPolicy
   def index?
-    user_owner_role? || user_admin_role? || user_employee_role?
+    logged_in_user?
   end
 
   def update?
+    logged_in_user?
+  end
+
+  def logged_in_user?
     user_owner_role? || user_admin_role? || user_employee_role?
   end
 end
