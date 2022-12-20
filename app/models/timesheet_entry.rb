@@ -51,7 +51,7 @@ class TimesheetEntry < ApplicationRecord
 
   scope :search_import, -> { includes(:project, :client, :user) }
   searchable = [:id, :user_name]
-  filterable = [:user_name, :created_at, :project_name, :client_name ]
+  filterable = [:user_name, :created_at, :project_name, :client_name, :bill_status ]
 
   searchkick(batch_size: 300, searchable:, filterable:, word_middle: [:note])
 
@@ -67,7 +67,7 @@ class TimesheetEntry < ApplicationRecord
       user_name: user.full_name,
       project_name: project.name,
       client_name: project.client.name,
-      bill_status:,
+      bill_status: bill_status,
       duration: duration.to_i,
       created_at: created_at.to_time
     }
