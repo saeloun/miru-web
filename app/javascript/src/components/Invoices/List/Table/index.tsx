@@ -11,12 +11,14 @@ const Table = ({
   setShowDeleteDialog,
   setInvoiceToDelete,
   fetchInvoices,
+  isDesktop,
 }) => (
   <table className="mt-4 min-w-full divide-y divide-gray-200 overflow-x-scroll">
     <thead>
       <TableHeader
         deselectInvoices={deselectInvoices}
         invoices={invoices}
+        isDesktop={isDesktop}
         selectInvoices={selectInvoices}
         selectedInvoices={selectedInvoices}
       />
@@ -30,6 +32,7 @@ const Table = ({
           deselectInvoices={deselectInvoices}
           fetchInvoices={fetchInvoices}
           invoice={invoice}
+          isDesktop={isDesktop}
           isSelected={selectedInvoices.includes(invoice.id)}
           key={invoice.id}
           selectInvoices={selectInvoices}

@@ -20,13 +20,13 @@ const RecentlyUpdated = ({ invoice }) => {
       <h3 className="mr-0.5 text-center text-xs font-normal text-miru-dark-purple-400">
         {invoice.invoiceNumber}
       </h3>
-      <div className="my-1 flex justify-center md:my-3">
+      <div className="my-1 flex justify-center lg:my-3">
         <Avatar />
       </div>
-      <div className="mt-1 mb-2.5 flex h-11 items-center justify-center text-center text-sm font-semibold capitalize leading-5 text-miru-dark-purple-1000 md:text-base">
+      <div className="mt-1 mb-2.5 flex h-11 items-center justify-center text-center text-sm font-semibold capitalize leading-5 text-miru-dark-purple-1000 lg:text-base">
         <p className="truncateOverflowText">{invoice.client.name}</p>
       </div>
-      <h1 className="mt-2.5 mb-1 truncate text-base font-bold text-miru-dark-purple-1000 md:text-xl">
+      <h1 className="mt-2.5 mb-1 truncate text-base font-bold text-miru-dark-purple-1000 lg:text-xl">
         {" "}
         {formattedAmount(invoice.amount, invoice.company.baseCurrency)}{" "}
       </h1>
