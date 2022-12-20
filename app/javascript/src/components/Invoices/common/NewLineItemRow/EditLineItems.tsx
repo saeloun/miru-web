@@ -1,12 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
-import {
-  minFromHHMM,
-  minToHHMM,
-  lineTotalCalc,
-  useOutsideClick,
-} from "helpers";
+import { minFromHHMM, minToHHMM, lineTotalCalc } from "helpers";
 import { DeleteIcon } from "miruIcons";
+import TextareaAutosize from "react-autosize-textarea";
 import DatePicker from "react-datepicker";
 
 const EditLineItems = ({
@@ -24,7 +20,6 @@ const EditLineItems = ({
   const [rate, setRate] = useState<number>(item.rate);
   const [quantity, setQuantity] = useState<any>(minToHHMM(item.quantity));
   const [lineTotal, setLineTotal] = useState<string>(item.lineTotal);
-  const wrapperRef = useRef(null);
 
   useEffect(() => {
     const names = name.split(" ");
@@ -52,12 +47,8 @@ const EditLineItems = ({
       return option;
     });
 
-    setSelectedOption(selectedOptionArr);
+    name && setSelectedOption(selectedOptionArr);
   }, [name, lineItemDate, description, quantity, rate, lineTotal]);
-
-  useOutsideClick(wrapperRef, () => {
-    setIsEdit(false);
-  });
 
   const closeEditField = event => {
     if (event.key === "Enter") setIsEdit(false);
@@ -76,67 +67,74 @@ const EditLineItems = ({
   };
 
   return (
-    <tr className="my-1 w-full" ref={wrapperRef}>
-      <td className="w-full p-1">
-        <input
-          className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          placeholder="Name"
-          type="text"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          onKeyDown={closeEditField}
-        />
-      </td>
-      <td className="w-full">
-        <DatePicker
-          calendarClassName="miru-CalendarIcon invoice-datepicker-option"
-          dateFormat="dd.MM.yyyy"
-          selected={lineItemDate}
-          wrapperClassName="datePicker invoice-datepicker"
-          onChange={date => setLineItemDate(date)}
-          onKeyDown={closeEditField}
-        />
-      </td>
-      <td className="w-full p-1">
-        <input
-          className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          placeholder="Description"
-          type="text"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          onKeyDown={closeEditField}
-        />
-      </td>
-      <td className=" w-full">
-        <input
-          className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          placeholder="Rate"
-          type="text"
-          value={rate}
-          onChange={handleSetRate}
-        />
-      </td>
-      <td className="w-full p-1">
-        <input
-          className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          placeholder="Quantity"
-          type="text"
-          value={quantity}
-          onChange={handleSetQuantity}
-        />
-      </td>
-      <td className="focus:outline-none text-right text-base font-normal text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000">
-        {lineTotal}
-      </td>
-      <td>
-        <button
-          className="flex w-full items-center px-2.5 py-4 text-left hover:bg-miru-gray-100"
-          onClick={() => handleDelete(item)}
-        >
-          <DeleteIcon color="#E04646" size={16} weight="bold" />
-        </button>
-      </td>
-    </tr>
+    <>
+      <tr className="my-1 w-full">
+        <td className="w-full p-1">
+          <input
+            className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            placeholder="Name"
+            type="text"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            onKeyDown={closeEditField}
+          />
+        </td>
+        <td className="w-full">
+          <DatePicker
+            calendarClassName="miru-CalendarIcon invoice-datepicker-option text-right"
+            dateFormat="dd.MM.yyyy"
+            selected={lineItemDate}
+            wrapperClassName="datePicker invoice-datepicker"
+            onChange={date => setLineItemDate(date)}
+            onKeyDown={closeEditField}
+          />
+        </td>
+        <td className=" w-full">
+          <input
+            className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            placeholder="Rate"
+            type="text"
+            value={rate}
+            onChange={handleSetRate}
+            onKeyDown={closeEditField}
+          />
+        </td>
+        <td className="w-full p-1">
+          <input
+            className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            placeholder="Quantity"
+            type="text"
+            value={quantity}
+            onChange={handleSetQuantity}
+            onKeyDown={closeEditField}
+          />
+        </td>
+        <td className="focus:outline-none text-right text-base font-normal text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000">
+          {lineTotal}
+        </td>
+        <td>
+          <button
+            className="flex w-full items-center px-2.5 py-4 text-left hover:bg-miru-gray-100"
+            onClick={() => handleDelete(item)}
+          >
+            <DeleteIcon color="#E04646" size={16} weight="bold" />
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td className="w-full p-1" colSpan={2}>
+          <TextareaAutosize
+            className="focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            placeholder="Description"
+            type="text"
+            value={description}
+            onChange={e => setDescription(e.target["value"])}
+            onKeyDown={closeEditField}
+          />
+        </td>
+        <td colSpan={3} />
+      </tr>
+    </>
   );
 };
 
