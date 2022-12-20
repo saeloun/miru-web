@@ -16,7 +16,7 @@ import { TOASTER_DURATION } from "../../../constants";
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
 
-const Invoices = () => {
+const Invoices = ({ isDesktop }) => {
   const filterIntialValues = {
     dateRange: { label: "All", value: "all", from: "", to: "" },
     clients: [],
@@ -150,6 +150,7 @@ const Invoices = () => {
             filterParams={filterParams}
             filterParamsStr={filterParamsStr}
             invoices={invoices}
+            isDesktop={isDesktop}
             recentlyUpdatedInvoices={recentlyUpdatedInvoices}
             selectInvoices={selectInvoices}
             selectedInvoices={selectedInvoices}
@@ -169,7 +170,12 @@ const Invoices = () => {
             />
           )}
           {invoices.length && (
-            <Pagination pagy={pagy} params={params} setParams={setParams} />
+            <Pagination
+              isDesktop={isDesktop}
+              pagy={pagy}
+              params={params}
+              setParams={setParams}
+            />
           )}
           {showDeleteDialog && (
             <DeleteInvoice
