@@ -13,6 +13,7 @@ const NavigationFilter = () => {
     currentReport,
     timeEntryReport,
     outstandingOverdueInvoice,
+    accountsAgingReport,
   } = useEntry();
 
   const selectedReport = getReports({
@@ -20,6 +21,7 @@ const NavigationFilter = () => {
     timeEntryReport,
     revenueByClientReport,
     outstandingOverdueInvoice,
+    accountsAgingReport,
   });
 
   const filterHtml = (value, key, filterKey) => (
