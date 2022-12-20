@@ -50,10 +50,10 @@ class TimesheetEntry < ApplicationRecord
   delegate :full_name, to: :user, prefix: true, allow_nil: true
 
   scope :search_import, -> { includes(:project, :client, :user) }
-  searchable = [:id, :user_name]
+
   filterable = [:user_name, :created_at, :project_name, :client_name, :bill_status ]
 
-  searchkick(batch_size: 300, searchable:, filterable:, word_middle: [:note])
+  searchkick filterable:, text_middle: [:user_name, :note]
 
   def search_data
     {
