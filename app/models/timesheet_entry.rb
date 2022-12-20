@@ -62,11 +62,11 @@ class TimesheetEntry < ApplicationRecord
       client_id: self.project&.client_id,
       user_id:,
       work_date: work_date.to_time,
-      note:note,
+      note:,
       user_name: user.full_name,
       project_name: project.name,
       client_name: project.client.name,
-      bill_status: bill_status,
+      bill_status:,
       duration: duration.to_i,
       created_at: created_at.to_time
     }
