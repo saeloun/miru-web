@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
+import Logger from "js-logger";
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -69,7 +70,7 @@ const Invoices = () => {
     return newParams;
   };
 
-  //Pooling
+  //Polling
   useEffect(() => {
     if (!invoices || !invoiceIsSending) return;
     const DELAY = 5000;
@@ -93,8 +94,8 @@ const Invoices = () => {
       setSummary(summary);
       setPagy(pagy);
       setRecentlyUpdatedInvoices(recentlyUpdatedInvoices);
-    } catch {
-      return;
+    } catch (e) {
+      Logger.error(e);
     }
   };
 
