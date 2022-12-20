@@ -3,14 +3,11 @@ import React from "react";
 const LineItemTableHeader = () => (
   <thead className="my-2">
     <tr>
-      <th className="text-left text-xs font-normal tracking-widest text-miru-dark-purple-600">
+      <th className="text-left text-xs font-normal tracking-widest text-miru-dark-purple-600 sm:w-1/2">
         NAME
       </th>
-      <th className=" px-3 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600">
+      <th className=" px-3 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600 sm:w-1/5">
         DATE
-      </th>
-      <th className="w-2/5 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600">
-        DESCRIPTION
       </th>
       <th className="text-right text-xs font-normal tracking-widest text-miru-dark-purple-600">
         RATE

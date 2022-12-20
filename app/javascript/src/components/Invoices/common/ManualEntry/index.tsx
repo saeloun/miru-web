@@ -1,57 +1,71 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import { lineTotalCalc, minFromHHMM, minToHHMM } from "helpers";
+import {
+  lineTotalCalc,
+  minFromHHMM,
+  minToHHMM,
+  useOutsideClick,
+} from "helpers";
 import { DeleteIcon } from "miruIcons";
+import TextareaAutosize from "react-autosize-textarea";
 
-const ManualEntry = ({ entry, manualEntryArr, setManualEntryArr }) => {
-  const [name, setName] = useState<string>(entry.name || "");
-  const [date, setDate] = useState<string>(entry.date || "");
-  const [description, setDescription] = useState<string>(
-    entry.description || ""
-  );
-  const [rate, setRate] = useState<number>(entry.rate || 0);
-  const [quantity, setQuantity] = useState<any>(entry.quantity || 0);
-  const [lineTotal, setLineTotal] = useState<string>(entry.lineTotal || 0);
-  const [lineItem, setLineItem] = useState<any>({});
+const ManualEntry = ({
+  addNew,
+  getNewLineItemDropdown,
+  lineItem,
+  setLineItem,
+  manualEntryArr,
+  setManualEntryArr,
+  setNewLineItemTable,
+  setAddNew,
+  showNewLineItemTable,
+}) => {
+  const [name, setName] = useState<string>("");
+  const [date, setDate] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [rate, setRate] = useState<number>(0);
+  const [quantity, setQuantity] = useState<any>(0);
+  const [lineTotal, setLineTotal] = useState<string>("0");
   const [qtyInHHrMin, setQtyInHHrMin] = useState<any>(minToHHMM(quantity));
-  const ref = useRef();
+  const [isEnter, setIsEnter] = useState<boolean>(false);
+  const ref = useRef(null);
+  const wrapperRef = useRef(null);
 
   useEffect(() => {
-    if (entry.idx) {
-      setLineItem({
-        ...lineItem,
-        idx: entry.idx,
-        name,
-        date,
-        description,
-        rate,
-        quantity,
-        lineTotal,
-      });
-    }
+    setLineItem({
+      ...lineItem,
+      id: manualEntryArr.length + 1,
+      name,
+      date,
+      description,
+      rate,
+      quantity,
+      lineTotal,
+    });
   }, [name, date, description, rate, quantity, lineTotal]);
 
   useEffect(() => {
-    const newManualEntryArr = manualEntryArr.map(option => {
-      if (option.idx === lineItem.idx) {
-        return lineItem;
-      }
-
-      return option;
-    });
-
-    setManualEntryArr(newManualEntryArr);
-  }, [lineItem]);
+    if (isEnter) {
+      setIsEnter(false);
+      setAddNew(false);
+    }
+  }, [isEnter]);
 
   const handleDelete = async () => {
     const tempManualEntryArr = [...manualEntryArr];
 
     const indexOfItem = tempManualEntryArr.findIndex(
-      object => object.idx === entry.idx
+      object => object.id === manualEntryArr.length + 1
     );
     indexOfItem !== -1 && tempManualEntryArr.splice(indexOfItem, 1);
-
     await setManualEntryArr(tempManualEntryArr);
+    setAddNew(false);
+  };
+
+  const handleEnter = event => {
+    if (event.key == "Enter") {
+      setIsEnter(true);
+    }
   };
 
   const handleSetRate = e => {
@@ -66,67 +80,97 @@ const ManualEntry = ({ entry, manualEntryArr, setManualEntryArr }) => {
     setLineTotal(lineTotalCalc(quantityInMin, rate));
   };
 
+  useOutsideClick(
+    wrapperRef,
+    () => {
+      setNewLineItemTable(false);
+    },
+    addNew
+  );
+
   return (
-    <tr className="my-1 w-full">
-      <td className="w-full p-1">
-        <input
-          className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          placeholder="Name"
-          type="text"
-          value={name}
-          onChange={e => setName(e.target.value)}
-        />
-      </td>
-      <td className="w-full">
-        <input
-          className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          placeholder="Date"
-          ref={ref}
-          type="text"
-          value={date}
-          onChange={e => setDate(e.target.value)}
-          onFocus={e => (e.target.type = "date")}
-        />
-      </td>
-      <td className="w-full p-1">
-        <input
-          className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          placeholder="Description"
-          type="text"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-        />
-      </td>
-      <td className=" w-full">
-        <input
-          className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          placeholder="Rate"
-          type="text"
-          value={rate}
-          onChange={handleSetRate}
-        />
-      </td>
-      <td className="w-full p-1">
-        <input
-          className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-          placeholder="quantity"
-          type="text"
-          value={qtyInHHrMin}
-          onChange={handleSetQuantity}
-        />
-      </td>
-      <td className="focus:outline-none text-right text-base font-normal text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000">
-        {entry.lineTotal}
-      </td>
-      <td>
-        <button
-          className="flex w-full items-center px-2.5 py-4 text-left hover:bg-miru-gray-100"
-          onClick={handleDelete}
-        >
-          <DeleteIcon color="#E04646" size={16} weight="bold" />
-        </button>
-      </td>
-    </tr>
+    <>
+      <tr className="my-1 w-full">
+        <td className="w-full p-1">
+          <input
+            className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            placeholder="Name"
+            type="text"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            onClick={() => setNewLineItemTable(true)}
+            onKeyDown={handleEnter}
+          />
+        </td>
+        <td className="w-full">
+          <input
+            className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            placeholder="Date"
+            ref={ref}
+            type="text"
+            value={date}
+            onChange={e => setDate(e.target.value)}
+            onFocus={e => (e.target.type = "date")}
+            onKeyDown={handleEnter}
+          />
+        </td>
+        <td className=" w-full">
+          <input
+            className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            placeholder="Rate"
+            type="text"
+            value={rate}
+            onChange={handleSetRate}
+            onKeyDown={handleEnter}
+          />
+        </td>
+        <td className="w-full p-1">
+          <input
+            className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            placeholder="quantity"
+            type="text"
+            value={qtyInHHrMin}
+            onChange={handleSetQuantity}
+            onKeyDown={handleEnter}
+          />
+        </td>
+        <td className="focus:outline-none text-right text-base font-normal text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000">
+          {lineTotal}
+        </td>
+        <td>
+          <button
+            className="flex w-full items-center px-2.5 py-4 text-left hover:bg-miru-gray-100"
+            onClick={handleDelete}
+          >
+            <DeleteIcon color="#E04646" size={16} weight="bold" />
+          </button>
+        </td>
+      </tr>
+      {showNewLineItemTable && (
+        <tr>
+          <td className="relative w-full" colSpan={5}>
+            <div
+              className="box-shadow absolute m-0 w-full rounded bg-white text-sm font-medium text-miru-dark-purple-1000"
+              ref={wrapperRef}
+            >
+              {getNewLineItemDropdown()}
+            </div>
+          </td>
+        </tr>
+      )}
+      <tr>
+        <td className="w-full p-1" colSpan={2}>
+          <TextareaAutosize
+            className="focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            placeholder="Description"
+            value={description}
+            onChange={e => setDescription(e.target["value"])}
+            onKeyDown={handleEnter}
+          />
+        </td>
+        <td colSpan={3} />
+      </tr>
+    </>
   );
 };
 
