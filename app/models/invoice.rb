@@ -50,7 +50,8 @@ class Invoice < ApplicationRecord
     :viewed,
     :paid,
     :declined,
-    :overdue
+    :overdue,
+    :sending
   ]
 
   belongs_to :company
