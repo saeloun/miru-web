@@ -70,13 +70,13 @@ const Header = ({
   };
 
   return (
-    <div className="mt-6 mb-3 flex h-40 flex-col flex-wrap items-center justify-between md:h-auto md:flex-row">
+    <div className="mt-6 mb-3 flex h-40 flex-col flex-wrap items-center justify-between lg:h-auto lg:flex-row">
       <h2 className="header__title" data-cy="header__invoices">
         Invoices
       </h2>
       {!isInvoiceSelected && (
         <Fragment>
-          <div className="header__searchWrap ml-auto md:ml-0">
+          <div className="header__searchWrap">
             <div className="header__searchInnerWrapper relative">
               <div>
                 <input

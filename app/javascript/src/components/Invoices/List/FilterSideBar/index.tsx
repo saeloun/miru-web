@@ -226,12 +226,15 @@ const FilterSideBar = ({
 
   return (
     <SidePanel setFilterVisibilty={setIsFilterVisible}>
-      <SidePanel.Header className="mb-7 flex items-center justify-between px-5 pt-5 font-bold text-miru-dark-purple-1000">
+      <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
         <h4 className="flex items-center text-base">
           <FilterIcon className="mr-2.5" size={16} /> Filters
         </h4>
         <Button style="ternary" onClick={() => setIsFilterVisible(false)}>
-          <XIcon className="text-miru-dark-purple-1000" size={16} />
+          <XIcon
+            className="text-white lg:text-miru-dark-purple-1000"
+            size={16}
+          />
         </Button>
       </SidePanel.Header>
       <SidePanel.Body hasFooter className="sidebar__filters">
@@ -262,7 +265,7 @@ const FilterSideBar = ({
               </div>
             </div>
             {isDateRangeOpen && (
-              <div className="md:mt-7">
+              <div className="lg:mt-7">
                 {dateRangeList.map(dateRange => (
                   <CustomRadioButton
                     classNameWrapper="px-5 py-2.5"
@@ -336,7 +339,7 @@ const FilterSideBar = ({
               </div>
             </div>
             {isClientOpen && (
-              <div className="md:mt-7">
+              <div className="lg:mt-7">
                 <div className="relative mt-2 flex w-full items-center px-5">
                   <input
                     placeholder="Search"
@@ -363,7 +366,7 @@ const FilterSideBar = ({
                     />
                   )}
                 </div>
-                <div className="h-96 overflow-y-auto md:mt-7">
+                <div className="h-96 overflow-y-auto lg:mt-7">
                   {filteredClientList.length > 0 ? (
                     filteredClientList.map(client => (
                       <CustomCheckbox
@@ -415,7 +418,7 @@ const FilterSideBar = ({
               </div>
             </div>
             {isStatusOpen && (
-              <div className="md:mt-7">
+              <div className="lg:mt-7">
                 {statusOptions.length &&
                   statusOptions.map(status => (
                     <CustomCheckbox
@@ -444,7 +447,7 @@ const FilterSideBar = ({
           </li>
         </ul>
       </SidePanel.Body>
-      <SidePanel.Footer className="sidebar__footer">
+      <SidePanel.Footer className="sidebar__footer justify-between">
         <Button
           className="mr-4 flex items-center justify-between"
           size="medium"

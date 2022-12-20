@@ -58,6 +58,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def send_invoice
     authorize invoice
 
+    invoice.sending!
     invoice.send_to_email(
       subject: invoice_email_params[:subject],
       message: invoice_email_params[:message],
