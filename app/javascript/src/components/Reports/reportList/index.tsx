@@ -3,6 +3,7 @@ import React from "react";
 
 import ReportCard from "./reportCard";
 
+const accounts_aging = require("../../../../../assets/images/accounts-aging.svg");
 const calendar = require("../../../../images/Calendar.svg"); // eslint-disable-line
 const hours = require("../../../../images/Hours.svg");
 const overdueOutstandingIcon = require("../../../../images/OverdueOutstanding.svg");
@@ -37,6 +38,13 @@ const listDetails = [
     title: "Revenue Report",
     description: "A detailed report of revenue from each client.",
     url: "revenue-by-client",
+    show: true,
+  },
+  {
+    icon: accounts_aging,
+    title: "Accounts Aging",
+    description: "Find out which client have been taking a long time to pay",
+    url: "accounts-aging",
     show: true,
   },
 ];

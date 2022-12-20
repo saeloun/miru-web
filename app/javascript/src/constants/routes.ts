@@ -1,4 +1,5 @@
 import ErrorPage from "common/Error";
+import AccountsAging from "components/Reports/accountsAging";
 import { Roles, Paths } from "constants/index";
 
 import ClientDetails from "../components/Clients/Details";
@@ -31,6 +32,7 @@ const ReportsRoutes = [
   { path: "revenue-by-client", Component: RevenueByClientReport },
   { path: "outstanding-overdue-invoice", Component: OutstandingInvoiceReport },
   { path: "total-hours", Component: TotalHoursReport },
+  { path: "accounts-aging", Component: AccountsAging },
 ];
 
 const InvoicesRoutes = [

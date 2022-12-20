@@ -5,6 +5,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import { applyFilter, getQueryParams } from "../api/applyFilter";
 import Container from "../Container";
+import AccountsAgingReportContext from "../context/AccountsAgingReportContext";
 import EntryContext from "../context/EntryContext";
 import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
@@ -127,6 +128,7 @@ const TimeEntryReports = () => {
     currentReport: "TimeEntryReport",
     revenueByClientReport: RevenueByClientReportContext,
     outstandingOverdueInvoice: OutstandingOverdueInvoiceContext,
+    accountsAgingReport: AccountsAgingReportContext,
   };
 
   return (
