@@ -1,32 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import dayjs from "dayjs";
 import { lineTotalCalc, minToHHMM } from "helpers";
-import InfiniteScroll from "react-infinite-scroll-component";
 
 import NewLineItemTableHeader from "./Header";
 
-import { getMaxIdx } from "../utils";
-
 const NewLineItemTable = ({
-  setShowItemInputs,
-  addNew,
   setAddNew,
-  lineItems,
-  setLineItems,
+  filteredLineItems,
+  setFilteredLineItems,
   loadMoreItems,
-  totalLineItems,
-  pageNumber,
-  setPageNumber,
   selectedLineItems,
   setSelectedLineItems,
-  manualEntryArr,
-  setManualEntryArr,
   setMultiLineItemModal,
-  setAddManualLineItem,
+  loading,
+  setLoading,
 }) => {
-  const hasMoreItems = lineItems.length != totalLineItems;
-
   const selectRowId = items => {
     const option = {
       ...items,
@@ -34,44 +23,25 @@ const NewLineItemTable = ({
     };
     setAddNew(false);
     setSelectedLineItems([...selectedLineItems, option]);
-    setLineItems([]);
-    setPageNumber(1);
+    setFilteredLineItems([]);
   };
 
-  const addManualEntryItem = () => {
-    setShowItemInputs(true);
-    setAddNew(!addNew);
-    setAddManualLineItem(true);
-    setManualEntryArr([
-      ...manualEntryArr,
-      { idx: getMaxIdx(manualEntryArr) + 1 },
-    ]);
-  };
+  useEffect(() => {
+    filteredLineItems.length < 1 && setLoading(true);
+    loadMoreItems();
+  }, []);
 
   return (
     <div>
-      <NewLineItemTableHeader
-        addManualEntryItem={addManualEntryItem}
-        setShowMultilineModal={setMultiLineItemModal}
-      />
-      <div className="relative mt-4 overflow-scroll">
-        <InfiniteScroll
-          dataLength={pageNumber * 10}
-          hasMore={hasMoreItems}
-          height={250}
-          next={loadMoreItems}
-          endMessage={
-            <p className="py-2 text-center">
-              <b>End of the list</b>
-            </p>
-          }
-          loader={
-            <div className="py-2 text-center">
-              <h4>Loading...</h4>
-            </div>
-          }
-        >
-          {lineItems.map((item, index) => {
+      <NewLineItemTableHeader setShowMultilineModal={setMultiLineItemModal} />
+      {loading && (
+        <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
+          Loading..
+        </p>
+      )}
+      {filteredLineItems.length > 0 ? (
+        <div className="relative mt-4 h-20 overflow-scroll md:h-50">
+          {filteredLineItems.map((item, index) => {
             const hoursLogged = minToHHMM(item.quantity);
             const date = dayjs(item.date).format("DD.MM.YYYY");
 
@@ -97,8 +67,14 @@ const NewLineItemTable = ({
               </div>
             );
           })}
-        </InfiniteScroll>
-      </div>
+        </div>
+      ) : (
+        !loading && (
+          <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
+            No Data Found
+          </p>
+        )
+      )}
     </div>
   );
 };

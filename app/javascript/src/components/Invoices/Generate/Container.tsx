@@ -33,7 +33,7 @@ const Container = ({
   manualEntryArr,
   setManualEntryArr,
 }) => (
-  <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
+  <div className="relative m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
     <CompanyInfo company={invoiceDetails.companyDetails} />
     <InvoiceDetails
       amount={amount}
@@ -52,7 +52,7 @@ const Container = ({
       setReference={setReference}
       setSelectedClient={setSelectedClient}
     />
-    <div className="py-5 pl-10">
+    <div className="block overflow-x-auto whitespace-nowrap py-5 md:overflow-x-visible md:whitespace-normal md:pl-10">
       <InvoiceTable
         currency={invoiceDetails.companyDetails.currency}
         lineItems={lineItems}
