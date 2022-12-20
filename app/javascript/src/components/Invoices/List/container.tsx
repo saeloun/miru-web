@@ -78,7 +78,7 @@ const Container = ({
       </div>
       <div className="mb-4 flex flex-col items-start lg:flex-row lg:items-center">
         <h1 className="text-2xl font-normal text-miru-dark-purple-1000">
-          All invoices
+          All Invoices
         </h1>
         <div className="flex flex-col items-start justify-between lg:ml-4 lg:flex-row lg:items-center">
           {Object.values(filterParams).map(param =>
