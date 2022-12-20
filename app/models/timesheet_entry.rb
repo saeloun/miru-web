@@ -58,12 +58,11 @@ class TimesheetEntry < ApplicationRecord
   def search_data
     {
       id: id.to_i,
-      bill_status:,
       project_id:,
       client_id: self.project&.client_id,
       user_id:,
       work_date: work_date.to_time,
-      note:,
+      note:note,
       user_name: user.full_name,
       project_name: project.name,
       client_name: project.client.name,
