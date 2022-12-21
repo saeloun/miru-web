@@ -7,6 +7,7 @@ const TableHeader = ({
   selectedInvoices,
   selectInvoices,
   deselectInvoices,
+  isDesktop,
 }) => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
@@ -32,7 +33,7 @@ const TableHeader = ({
 
   return (
     <tr>
-      <th className="px-4 py-5 md:pl-6 md:pr-0" scope="col">
+      <th className="px-4 py-5 lg:pl-6 lg:pr-0" scope="col">
         <CustomCheckbox
           checkboxValue={1}
           handleCheck={handleCheck}
@@ -42,25 +43,28 @@ const TableHeader = ({
         />
       </th>
       <th
-        className="py-5 pr-6 text-left text-xs font-normal tracking-widest text-miru-black-1000 md:w-1/5 md:pr-2"
+        className="whitespace-nowrap py-5 pr-0 text-left text-xs font-normal tracking-widest text-miru-black-1000 lg:w-1/5 lg:pr-2 lg:pr-2"
         scope="col"
       >
-        CLIENT / INVOICE NO.
+        CLIENT / <br />
+        INVOICE NO.
       </th>
+      {isDesktop && (
+        <th
+          className="w-1/4 px-4 py-5 text-left text-xs font-normal tracking-widest text-miru-black-1000 lg:px-6"
+          scope="col"
+        >
+          ISSUED DATE / DUE DATE
+        </th>
+      )}
       <th
-        className="w-1/4 px-4 py-5 text-left text-xs font-normal tracking-widest text-miru-black-1000 md:px-6"
-        scope="col"
-      >
-        ISSUED DATE / DUE DATE
-      </th>
-      <th
-        className="w-1/4 px-6 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000"
+        className="w-1/4 px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 lg:px-6"
         scope="col"
       >
         AMOUNT
       </th>
       <th
-        className="px-6 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000"
+        className="px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 lg:px-6"
         scope="col"
       >
         STATUS
