@@ -30,6 +30,7 @@ class Project < ApplicationRecord
   belongs_to :client
   has_many :timesheet_entries, inverse_of: :project
   has_many :project_members, dependent: :destroy
+  accepts_nested_attributes_for :project_members, allow_destroy: true
 
   # Validations
   validates :name, presence: true
@@ -63,6 +64,7 @@ class Project < ApplicationRecord
       cost = calculate_cost(entry&.duration.presence || 0, member.hourly_rate)
       {
         id: member.user_id,
+        project_member_id: member.id,
         name: member.full_name,
         hourly_rate: member.hourly_rate,
         minutes_logged: entry&.duration.presence || 0,
