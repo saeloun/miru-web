@@ -29,5 +29,13 @@ export const emailBody = (invoice: any): string => {
 export const isDisabled = (status: string): boolean =>
   status === InvoiceStatus.LOADING || status === InvoiceStatus.SUCCESS;
 
-export const buttonText = (status: string): string =>
-  status === InvoiceStatus.SUCCESS ? "🎉  Invoice Sent!" : "Send Invoice";
+export const buttonText = (status: string): string => {
+  switch (status) {
+    case InvoiceStatus.SUCCESS:
+      return "🎉 Invoice will be sent!";
+    case InvoiceStatus.LOADING:
+      return "processing...";
+    default:
+      return "Send Invoice";
+  }
+};
