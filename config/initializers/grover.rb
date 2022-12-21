@@ -11,7 +11,8 @@ Grover.configure do |config|
     emulate_media: "screen",
     cache: false,
     timeout: 0, # Timeout in ms. A value of `0` means 'no timeout'
-    wait_until: "domcontentloaded"
+    wait_until: "domcontentloaded",
+    launch_args: ["--no-sandbox", "--disable-setuid-sandbox"]
   }
 
   if !(Rails.env.development? || Rails.env.test?)
