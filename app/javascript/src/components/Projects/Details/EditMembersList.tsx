@@ -64,38 +64,52 @@ const EditMembersList = ({
     setMembers(modalMembers);
   };
 
+  const mappedMembers = (member, alreadyAddedMembersMap) => ({
+    ...member,
+    id: alreadyAddedMembersMap[member.id]?.project_member_id,
+    user_id: member.id,
+    hourly_rate: member.hourlyRate,
+  });
+
   const handleSubmit = async e => {
     e.preventDefault();
-    const oldIds = existingMembers.map(member => member.id);
     const currentIds = members.map(member => member.id);
-    const removedIds = oldIds.filter(id => !currentIds.includes(id));
+    const removedMembers = existingMembers.filter(
+      member => !currentIds.includes(member.id)
+    );
     const alreadyAddedMembersMap = {};
     existingMembers.forEach(member => {
-      alreadyAddedMembersMap[member.id] = member.hourlyRate;
+      alreadyAddedMembersMap[member.id] = {
+        hourly_rate: member.hourlyRate,
+        project_member_id: member.project_member_id,
+      };
     });
 
-    const newlyAddedMembers = members.filter(
-      member => !alreadyAddedMembersMap[member.id]
-    );
+    const newAndUpdatedMembers = members.reduce((acc, member) => {
+      if (
+        !alreadyAddedMembersMap[member.id] ||
+        alreadyAddedMembersMap[member.id].hourly_rate != member.hourlyRate
+      ) {
+        acc = [...acc, mappedMembers(member, alreadyAddedMembersMap)];
+      }
 
-    const updatedMembers = members.filter(
-      member =>
-        alreadyAddedMembersMap[member.id] &&
-        alreadyAddedMembersMap[member.id] != member.hourlyRate
-    );
-    if (
-      newlyAddedMembers.length > 0 ||
-      updatedMembers.length > 0 ||
-      removedIds.length > 0
-    ) {
+      return acc;
+    }, []);
+    if (newAndUpdatedMembers.length > 0 || removedMembers.length > 0) {
       try {
-        await projectMembersApi.update(projectId, {
-          members: {
-            added_members: newlyAddedMembers,
-            removed_member_ids: removedIds,
-            updated_members: updatedMembers,
+        const payload = {
+          project: {
+            project_members_attributes: [
+              ...newAndUpdatedMembers,
+              ...removedMembers.map(member => ({
+                id: member.project_member_id,
+                _destroy: true,
+              })),
+            ],
           },
-        });
+        };
+
+        await projectMembersApi.update(projectId, payload);
         setExistingMembers(members);
         handleAddProjectDetails();
         closeAddRemoveMembers();

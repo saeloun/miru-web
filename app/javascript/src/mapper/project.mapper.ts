@@ -2,6 +2,7 @@ const getMember = (input: any) =>
   input.map(elem => ({
     hourlyRate: elem.hourly_rate,
     id: elem.id,
+    project_member_id: elem.project_member_id,
     minutes: elem.minutes_logged,
     name: elem.name,
     cost: elem.cost,
