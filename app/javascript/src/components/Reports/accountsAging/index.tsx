@@ -13,7 +13,7 @@ import Header from "../Header";
 const AccountsAging = () => {
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
-  const [selectedFilter, setSelectedFilter] = useState(""); //eslint-disable-line
+  const [selectedFilter, setSelectedFilter] = useState([]); //eslint-disable-line
   const [filterCounter, setFilterCounter] = useState(0); //eslint-disable-line
   const [clientList, setClientList] = useState<any>([]);
   const [totalAmount, setTotalAmount] = useState<any>({
@@ -25,7 +25,8 @@ const AccountsAging = () => {
   });
 
   const resetFilter = () => {
-    setSelectedFilter("");
+    setSelectedFilter([]);
+    setFilterCounter(selectedFilter.length);
     setIsFilterVisible(false);
     setShowNavFilters(false);
   };
@@ -41,9 +42,9 @@ const AccountsAging = () => {
     timeEntryReport: TimeEntryReportContext,
     accountsAgingReport: {
       selectedFilter: {
-        clients: [],
+        clients: selectedFilter,
       },
-      filterCounter: 0,
+      filterCounter,
       clientList,
       currency: "INR",
       summary: {
@@ -58,20 +59,26 @@ const AccountsAging = () => {
   };
 
   return (
-    <div>
+    <div className="overflow-x-scroll">
       <EntryContext.Provider value={{ ...contextValues }}>
         <Header
           handleDownload
-          showExportButon
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
           setIsFilterVisible={setIsFilterVisible}
+          showExportButon={false}
           showNavFilters={showNavFilters}
           type="Accounts Aging Report"
         />
         <Container />
         {isFilterVisible && (
-          <FilterSideBar setIsFilterVisible={setIsFilterVisible} />
+          <FilterSideBar
+            resetFilter={resetFilter}
+            selectedFilter={selectedFilter}
+            setFilterCounter={setFilterCounter}
+            setIsFilterVisible={setIsFilterVisible}
+            setSelectedFilter={setSelectedFilter}
+          />
         )}
       </EntryContext.Provider>
     </div>

@@ -15,7 +15,18 @@ const Container = () => {
   );
 
   useEffect(() => {
-    setClientList(accountsAgingReport.clientList);
+    if (accountsAgingReport.selectedFilter.clients.length > 0) {
+      const temp = accountsAgingReport.selectedFilter.clients.map(
+        client => client.name
+      );
+
+      const filterd = accountsAgingReport.clientList.filter(client =>
+        temp.includes(client.name)
+      );
+      setClientList(filterd);
+    } else {
+      setClientList(accountsAgingReport.clientList);
+    }
   }, [accountsAgingReport]);
 
   const sortClientList = () => {

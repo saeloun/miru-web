@@ -50,13 +50,13 @@ const listDetails = [
 ];
 
 const ReportsList = () => (
-  <div>
+  <div className="pb-14">
     <div className="mt-4 text-3xl font-bold">Reports</div>
-    <div className="grid grid-cols-2">
+    <div className="grid grid-cols-1 lg:grid-cols-2">
       {listDetails.map(
         (item, key) =>
           item.show && (
-            <div className="" key={key}>
+            <div key={key}>
               <ReportCard
                 description={item.description}
                 icon={item.icon}

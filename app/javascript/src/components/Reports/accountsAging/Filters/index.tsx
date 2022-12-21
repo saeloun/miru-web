@@ -7,19 +7,24 @@ import { SidePanel, Button } from "StyledComponents";
 import CustomCheckbox from "common/CustomCheckbox";
 import { useEntry } from "components/Reports/context/EntryContext";
 
-const FilterSideBar = ({ setIsFilterVisible }) => {
+const FilterSideBar = ({
+  setIsFilterVisible,
+  selectedFilter,
+  setSelectedFilter,
+  setFilterCounter,
+  resetFilter,
+}) => {
   const { accountsAgingReport } = useEntry();
 
   const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [clientList, setClientList] = useState<null | any[]>(
-    accountsAgingReport.clientList
-  ); //eslint-disable-line
+  const [selectedClients, setSelectedClients] = useState<null | any[]>(
+    selectedFilter
+  );
 
   const [filteredClientList, setFilteredClientList] = useState<null | any[]>(
-    clientList
+    accountsAgingReport.clientList
   );
-  const [selectedFilter, setSelectedFilter] = useState([]);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   useEffect(() => {
@@ -32,23 +37,26 @@ const FilterSideBar = ({ setIsFilterVisible }) => {
         ? setFilteredClientList(newClientList)
         : setFilteredClientList([]);
     } else {
-      setFilteredClientList(clientList);
-      setClientList(accountsAgingReport.clientList);
+      setFilteredClientList(accountsAgingReport.clientList);
     }
   }, [debouncedSearchQuery]);
 
   const handleSelectClient = selectedClient => {
-    if (selectedFilter.includes(selectedClient)) {
-      const newarr = selectedFilter.filter(
+    if (selectedClients.includes(selectedClient)) {
+      const newarr = selectedClients.filter(
         client => client.id != selectedClient.id
       );
-      setSelectedFilter(newarr);
+      setSelectedClients(newarr);
     } else {
-      setSelectedFilter([...selectedFilter, selectedClient]);
+      setSelectedClients([...selectedClients, selectedClient]);
     }
   };
 
-  const handleApply = () => {}; //eslint-disable-line
+  const handleApply = () => {
+    setSelectedFilter(selectedClients);
+    setFilterCounter(selectedClients.length);
+    setIsFilterVisible(false);
+  }; //eslint-disable-line
 
   const handleReset = () => {}; //eslint-disable-line
 
@@ -117,7 +125,7 @@ const FilterSideBar = ({ setIsFilterVisible }) => {
                       checkboxValue={client.id}
                       handleCheck={() => handleSelectClient(client)}
                       id={client.id}
-                      isChecked={selectedFilter.includes(client)}
+                      isChecked={selectedClients.includes(client)}
                       key={client.id}
                       labelClassName="ml-4"
                       name="clients"
@@ -138,7 +146,7 @@ const FilterSideBar = ({ setIsFilterVisible }) => {
           className="mr-4 flex items-center justify-between"
           size="medium"
           style="secondary"
-          onClick={handleReset}
+          onClick={resetFilter}
         >
           RESET
         </Button>
