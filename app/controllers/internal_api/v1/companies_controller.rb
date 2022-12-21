@@ -8,12 +8,7 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
 
   def create
     authorize Company
-    company = Company.new(company_params)
-    if company.save!
-      current_user.companies << company
-      current_user.current_workspace_id = company.id
-      current_user.add_role(:owner, company)
-      current_user.save!
+    if CreateCompanyService.new(company_params, current_user).process
       render json: { notice: I18n.t("companies.create.success") }
     end
   end
