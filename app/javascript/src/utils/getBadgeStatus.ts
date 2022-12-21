@@ -9,6 +9,7 @@ const getStatusCssClass = status => {
     nonbilled: "bg-miru-dark-purple-100 text-miru-dark-purple-600",
     paid: "bg-miru-han-purple-100 text-miru-han-purple-1000",
     declined: "bg-miru-dark-purple-100 text-miru-dark-purple-600",
+    sending: "bg-miru-gray-6000 text-miru-black-1000",
   };
   const lowerCaseStatus = status.toLowerCase();
 
