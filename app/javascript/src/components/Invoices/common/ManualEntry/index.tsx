@@ -94,6 +94,7 @@ const ManualEntry = ({
         <td className="w-full p-1">
           <input
             className=" focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            data-cy="invoice-name-input"
             placeholder="Name"
             type="text"
             value={name}
