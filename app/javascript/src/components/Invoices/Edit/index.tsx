@@ -139,6 +139,7 @@ const EditInvoice = () => {
     return (
       <Fragment>
         <Header
+          showMoreButton
           formType="edit"
           handleSaveInvoice={handleSaveInvoice}
           handleSendInvoice={handleSendInvoice}
