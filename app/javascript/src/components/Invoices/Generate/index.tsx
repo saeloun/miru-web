@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import companiesApi from "apis/companies";
 import invoicesApi from "apis/invoices";
@@ -20,6 +20,7 @@ import { generateInvoiceLineItems } from "../common/utils";
 
 const GenerateInvoices = () => {
   const navigate = useNavigate();
+  const clientId = useParams()["id"];
   const [invoiceDetails, setInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
   const [selectedClient, setSelectedClient] = useState<any>();
@@ -58,10 +59,21 @@ const GenerateInvoices = () => {
     }
   };
 
+  const setClientListIfClientIdPresent = () => {
+    const client = invoiceDetails?.clientList?.find(
+      client => client.value === parseInt(clientId)
+    );
+    if (client) setSelectedClient(client);
+  };
+
   useEffect(() => {
     sendGAPageView();
     fetchCompanyDetails();
   }, []);
+
+  useEffect(() => {
+    if (clientId) setClientListIfClientIdPresent();
+  }, [invoiceDetails]);
 
   const saveInvoice = async () => {
     const sanitized = mapGenerateInvoice({

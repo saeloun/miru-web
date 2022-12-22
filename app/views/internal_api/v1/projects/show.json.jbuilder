@@ -5,6 +5,7 @@ json.project_details do
   json.name project.name
   json.is_billable project.billable
   json.client do
+    json.id project.client_id
     json.name project.client.name
   end
   project_team_member_details = json.members project.project_team_member_details(params[:time_frame])

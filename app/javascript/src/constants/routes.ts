@@ -36,6 +36,7 @@ const ReportsRoutes = [
 const InvoicesRoutes = [
   { path: "", Component: InvoicesList },
   { path: "generate", Component: GenerateInvoices },
+  { path: "generate/:id", Component: GenerateInvoices },
   { path: ":id/edit", Component: EditInvoice },
   { path: ":id", Component: Invoice },
   { path: "*", Component: ErrorPage },
