@@ -82,9 +82,9 @@ const FilterSideBar = ({
               CLIENTS
             </h5>
             <div className="flex items-center">
-              {selectedFilter.length > 0 && (
+              {selectedClients.length > 0 && (
                 <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
-                  {selectedFilter.length}
+                  {selectedClients.length}
                 </span>
               )}
               {isClientOpen ? <MinusIcon size={16} /> : <PlusIcon size={16} />}

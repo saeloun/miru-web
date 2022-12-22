@@ -26,7 +26,7 @@ const AccountsAging = () => {
 
   const resetFilter = () => {
     setSelectedFilter([]);
-    setFilterCounter(selectedFilter.length);
+    setFilterCounter(0);
     setIsFilterVisible(false);
     setShowNavFilters(false);
   };

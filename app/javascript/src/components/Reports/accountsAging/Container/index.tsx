@@ -13,6 +13,7 @@ const Container = () => {
   const [clientList, setClientList] = useState<any>(
     accountsAgingReport.clientList
   );
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (accountsAgingReport.selectedFilter.clients.length > 0) {
@@ -24,8 +25,10 @@ const Container = () => {
         temp.includes(client.name)
       );
       setClientList(filterd);
+      setLoading(false);
     } else {
       setClientList(accountsAgingReport.clientList);
+      setLoading(false);
     }
   }, [accountsAgingReport]);
 
@@ -37,6 +40,7 @@ const Container = () => {
   return (
     <>
       <SummaryDashboard
+        currency={accountsAgingReport.currency}
         summaryList={[
           {
             label: "0 - 30 DAYS",
@@ -58,8 +62,12 @@ const Container = () => {
       />
       <table className="mt-4 min-w-full divide-y divide-gray-200">
         <TableHeader sortClientList={sortClientList} />
-        <tbody className="divide-y divide-gray-200 bg-white">
-          {clientList.length &&
+        <tbody className="divide-y divide-gray-200 overflow-scroll bg-white">
+          {loading ? (
+            <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+              Loading...
+            </p>
+          ) : clientList.length ? (
             clientList.map((client, index) => (
               <Fragment key={index}>
                 <TableRow
@@ -68,11 +76,18 @@ const Container = () => {
                   report={client}
                 />
               </Fragment>
-            ))}
-          <TableTotal
-            currency={accountsAgingReport.currency}
-            report={accountsAgingReport.summary}
-          />
+            ))
+          ) : (
+            <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
+              No Data Found
+            </p>
+          )}
+          {clientList.length > 0 && (
+            <TableTotal
+              currency={accountsAgingReport.currency}
+              report={accountsAgingReport.summary}
+            />
+          )}
         </tbody>
       </table>
     </>
