@@ -195,6 +195,7 @@ const FilterSideBar = ({
   };
 
   const handleReset = () => {
+    window.localStorage.removeItem("filters");
     setFilterParams(filterIntialValues);
     setIsFilterVisible(false);
   };
@@ -203,6 +204,7 @@ const FilterSideBar = ({
     defaultDateRange()
       ? setFilterParams(setDefaultDateRange())
       : setFilterParams(filters);
+    window.localStorage.setItem("filters", JSON.stringify(filters));
     setIsFilterVisible(false);
   };
 

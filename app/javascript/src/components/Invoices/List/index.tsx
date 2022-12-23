@@ -34,7 +34,11 @@ const Invoices = ({ isDesktop }) => {
     page: searchParams.get("page") || 1,
     query: searchParams.get("query") || "",
   });
-  const [filterParams, setFilterParams] = useState(filterIntialValues);
+
+  const filters = window.localStorage.getItem("filters");
+  const [filterParams, setFilterParams] = useState<any>(
+    JSON.parse(filters) || filterIntialValues
+  );
   const [filterParamsStr, setFilterParamsStr] = useState("");
   const [selectedInput, setSelectedInput] = useState("from-input");
 
