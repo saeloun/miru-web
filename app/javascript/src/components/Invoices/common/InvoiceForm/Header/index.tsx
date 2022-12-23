@@ -23,6 +23,7 @@ const Header = ({
   invoiceNumber = null,
   id = null,
   deleteInvoice = null,
+  showMoreButton = false,
 }) => {
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
     useState<boolean>(false);
@@ -82,19 +83,21 @@ const Header = ({
               SEND TO
             </span>
           </button>
-          <div ref={wrapperRef}>
-            <MoreButton
-              onClick={() => setIsMoreOptionsVisible(!isMoreOptionsVisible)}
-            />
-            {isMoreOptionsVisible && (
-              <MoreOptions
-                deleteInvoice={deleteInvoice}
-                downloadInvoice={null}
-                invoice={undefined}
-                markInvoiceAsPaid={() => null}
+          {showMoreButton && (
+            <div ref={wrapperRef}>
+              <MoreButton
+                onClick={() => setIsMoreOptionsVisible(!isMoreOptionsVisible)}
               />
-            )}
-          </div>
+              {isMoreOptionsVisible && (
+                <MoreOptions
+                  deleteInvoice={deleteInvoice}
+                  downloadInvoice={null}
+                  invoice={undefined}
+                  markInvoiceAsPaid={() => null}
+                />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </Fragment>
