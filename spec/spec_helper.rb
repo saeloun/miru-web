@@ -117,7 +117,7 @@ RSpec.configure do |config|
 =end
 end
 
-https :/ / github.com / NoRedInk / rspec - retry # installation
+# https :/ / github.com / NoRedInk / rspec - retry 
 RSpec.configure do |config|
   # show retry status in spec process
   config.verbose_retry = true
