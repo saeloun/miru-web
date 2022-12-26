@@ -70,11 +70,15 @@ class Client < ApplicationRecord
       email:,
       phone:,
       address:,
-      logo: logo.attached? ? Rails.application.routes.url_helpers.polymorphic_url(
-        logo,
-        only_path: true) : "",
+      logo: logo_url,
       minutes_spent: total_hours_logged(time_frame)
     }
+  end
+
+  def logo_url
+    logo.attached? ? Rails.application.routes.url_helpers.polymorphic_url(
+      logo, only_path: true
+    ) : ""
   end
 
   def client_overdue_and_outstanding_calculation

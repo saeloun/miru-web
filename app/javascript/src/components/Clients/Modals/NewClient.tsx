@@ -18,13 +18,17 @@ const EditClient = ({
   setClientLogo,
   setShowDialog,
 }) => {
-  const handleSubmit = async values => {
-    const formData = new FormData();
+  const formatFormData = (formData, values) => {
     formData.append("client[name]", values.name);
     formData.append("client[email]", values.email);
     formData.append("client[phone]", values.phone);
     formData.append("client[address]", values.address);
     if (clientLogoUrl) formData.append("client[logo]", clientLogo);
+  };
+
+  const handleSubmit = async values => {
+    const formData = new FormData();
+    formatFormData(formData, values);
 
     try {
       const res = await clientApi.create(formData);

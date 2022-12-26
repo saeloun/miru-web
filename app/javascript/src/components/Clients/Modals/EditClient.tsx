@@ -16,13 +16,17 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
   const [clientLogoUrl, setClientLogoUrl] = useState<string>(client.logo);
   const [clientLogo, setClientLogo] = useState("");
 
-  const handleSubmit = async values => {
-    const formData = new FormData();
+  const formatFormData = (formData, values) => {
     formData.append("client[name]", values.name);
     formData.append("client[email]", values.email);
     formData.append("client[phone]", values.phone);
     formData.append("client[address]", values.address);
     formData.append("client[logo]", clientLogo);
+  };
+
+  const handleSubmit = async values => {
+    const formData = new FormData();
+    formatFormData(formData, values);
 
     await clientApi
       .update(client.id, formData)

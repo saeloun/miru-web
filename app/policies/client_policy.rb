@@ -23,10 +23,6 @@ class ClientPolicy < ApplicationPolicy
     authorize_current_user
   end
 
-  def purge_logo?
-    user_owner_role? || user_admin_role?
-  end
-
   def permitted_attributes
     [:name, :email, :phone, :address, :logo]
   end

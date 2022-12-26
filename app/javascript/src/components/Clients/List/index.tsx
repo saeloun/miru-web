@@ -26,6 +26,9 @@ const createInitials = client =>
     .join("")
     .toUpperCase();
 
+const isValidCharLength = client =>
+  createInitials(client).length > 3 ? "" : "text-lg";
+
 const getTableData = clients => {
   if (clients) {
     return clients.map(client => ({
@@ -35,9 +38,9 @@ const getTableData = clients => {
             {client.logo === "" ? (
               <div className="flex h-12 w-12 justify-center">
                 <span
-                  className={`w-22 rounded-full bg-miru-han-purple-1000 pt-1 text-center ${
-                    createInitials(client).length > 3 ? "" : "text-lg"
-                  } leading-10 text-gray-50`}
+                  className={`w-22 rounded-full bg-miru-han-purple-1000 pt-1 text-center ${isValidCharLength(
+                    client
+                  )} leading-10 text-gray-50`}
                 >
                   {createInitials(client)}
                 </span>

@@ -91,6 +91,13 @@ const ClientForm = ({
     };
   };
 
+  const createInitials = client =>
+    client.name
+      .split(" ")
+      .map(name => name[0])
+      .join("")
+      .toUpperCase();
+
   const showInitialOrNew = () => {
     if (formType === "edit") {
       return (
@@ -98,11 +105,7 @@ const ClientForm = ({
           <div className="h-16 w-16">
             <div className="flex h-full w-full justify-center">
               <span className="w-22 rounded-full bg-miru-han-purple-1000 pt-2 text-center text-2xl leading-10 text-gray-50">
-                {clientData.name
-                  .split(" ")
-                  .map(name => name[0])
-                  .join("")
-                  .toUpperCase()}
+                {createInitials(clientData)}
               </span>
             </div>
           </div>
