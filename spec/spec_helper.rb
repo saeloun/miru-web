@@ -117,7 +117,6 @@ RSpec.configure do |config|
 =end
 end
 
-- retry 
 RSpec.configure do |config|
   # show retry status in spec process
   config.verbose_retry = true
