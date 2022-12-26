@@ -21,5 +21,6 @@ export const invoicesSelector = {
   invoiceDownload:dataCy('invoice-download'),
   invoiceDownloadPage:dataCy('invoice-download-page'),
   viewInvoice: dataCy('view-invoice'),
-  moreOptionsView:dataCy('more-options-view')
+  moreOptionsView:dataCy('more-options-view'),
+  invoiceNameInput: dataCy('invoice-name-input')
 }
