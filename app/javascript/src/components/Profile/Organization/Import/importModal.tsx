@@ -2,14 +2,13 @@
 import React, { Fragment } from "react";
 
 import { bytesToSize } from "helpers";
-import { XIcon } from "miruIcons";
+import { XIcon, FileCsvIcon } from "miruIcons";
 
 import ProgressBar from "common/ProgressBar";
 
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 
-const fileIcon = require("../../../../../images/fileIcon.svg"); //eslint-disable-line
 const Step = require("../../../../../images/Step.svg"); //eslint-disable-line
 const xls = require("../../../../../images/xls.svg"); //eslint-disable-line
 
@@ -31,7 +30,7 @@ const ImportModal = ({
           <label className="" htmlFor="file-input">
             <div className="dashed-border flex min-h-full min-w-full cursor-pointer flex-col items-center justify-center rounded border-miru-dark-purple-200">
               <div className="flex flex-row ">
-                <img className="" src={fileIcon} />
+                <img className="" src={FileCsvIcon} />
                 <p className="ml-4 text-base	font-bold tracking-widest text-miru-dark-purple-200">
                   UPLOAD FILE
                 </p>

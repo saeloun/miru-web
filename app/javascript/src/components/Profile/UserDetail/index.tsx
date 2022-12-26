@@ -2,7 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 
-import { deleteIconSVG } from "miruIcons";
+import {
+  DeleteIconSVG,
+  EditImageButtonSVG,
+  PasswordIconSVG,
+  PasswordIconTextSVG,
+  PlusIconSVG,
+} from "miruIcons";
 import * as Yup from "yup";
 
 import profileApi from "apis/profile";
@@ -13,12 +19,6 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import { useProfile } from "../context/EntryContext";
 import Header from "../Header";
-
-// const deleteIcon = require("../../../../../assets/images/delete.svg");
-const editButton = require("../../../../../assets/images/edit_image_button.svg");
-const password_icon = require("../../../../../assets/images/password_icon.svg");
-const password_icon_text = require("../../../../../assets/images/password_icon_text.svg");
-const img = require("../../../../../assets/images/plus_icon.svg");
 
 const userProfileSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name cannot be blank"),
@@ -240,7 +240,7 @@ const UserDetails = () => {
                     <img
                       alt="edit_pencil"
                       className="mt-5 cursor-pointer rounded-full"
-                      src={editButton}
+                      src={EditImageButtonSVG}
                       style={{ minWidth: "40px" }}
                     />
                   </label>
@@ -258,7 +258,7 @@ const UserDetails = () => {
                   >
                     <img
                       alt="delete"
-                      src={deleteIconSVG}
+                      src={DeleteIconSVG}
                       style={{ minWidth: "20px" }}
                     />
                   </button>
@@ -273,7 +273,7 @@ const UserDetails = () => {
                       <img
                         alt="profile_box"
                         className="object-none"
-                        src={img}
+                        src={PlusIconSVG}
                       />
                     </label>
                   </div>
@@ -367,11 +367,11 @@ const UserDetails = () => {
                             }
                           >
                             {!showCurrentPassword ? (
-                              <img alt="pass_icon" src={password_icon} />
+                              <img alt="pass_icon" src={PasswordIconSVG} />
                             ) : (
                               <img
                                 alt="pass_icon_text"
-                                src={password_icon_text}
+                                src={PasswordIconTextSVG}
                               />
                             )}
                           </button>
@@ -397,11 +397,11 @@ const UserDetails = () => {
                               onClick={() => setShowPassword(!showPassword)}
                             >
                               {!showPassword ? (
-                                <img alt="pass_icon" src={password_icon} />
+                                <img alt="pass_icon" src={PasswordIconSVG} />
                               ) : (
                                 <img
                                   alt="pass_icon_text"
-                                  src={password_icon_text}
+                                  src={PasswordIconTextSVG}
                                 />
                               )}
                             </button>
@@ -428,11 +428,11 @@ const UserDetails = () => {
                               }
                             >
                               {!showConfirmPassword ? (
-                                <img alt="pass_icon" src={password_icon} />
+                                <img alt="pass_icon" src={PasswordIconSVG} />
                               ) : (
                                 <img
                                   alt="pass_icon_text"
-                                  src={password_icon_text}
+                                  src={PasswordIconTextSVG}
                                 />
                               )}
                             </button>
