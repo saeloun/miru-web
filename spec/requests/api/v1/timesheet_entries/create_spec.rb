@@ -68,7 +68,6 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
     context "when user does not send all params(note & bill status) in the request" do
       it "sets default values" do
         create(:employment, company:, user:)
-        create(:project_member, project:, user:)
         send_request :post, api_v1_timesheet_entry_index_path,
           params:
           {

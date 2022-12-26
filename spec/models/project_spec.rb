@@ -33,7 +33,8 @@ RSpec.describe Project, type: :model do
         id: user.id,
         name: user.full_name,
         minutes_logged: 480.0,
-        hourly_rate:
+        hourly_rate:,
+        project_member_id: member.id
       }]
     end
 
@@ -47,7 +48,8 @@ RSpec.describe Project, type: :model do
             name: user.full_name,
             hourly_rate:,
             minutes_logged: 0,
-            cost: 0
+            cost: 0,
+            project_member_id: member.id
           }])
       end
     end
