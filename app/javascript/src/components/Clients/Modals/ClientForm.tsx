@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { Formik, Form, Field, FormikProps } from "formik";
 import * as Yup from "yup";
 
+import { i18n } from "../../../i18n";
+
 const deleteImage = require("../../../../../assets/images/delete.svg");
 const editButton = require("../../../../../assets/images/edit_image_button.svg");
 const img = require("../../../../../assets/images/plus_icon.svg");
@@ -66,15 +68,11 @@ const ClientForm = ({
       setClientLogo(file);
     } else {
       if (!isValid.fileExtension && !isValid.fileSizeValid) {
-        setFileUploadError(
-          "Incorrect file format. Please upload an image of type PNG or JPG. Max size (10kb)"
-        );
+        setFileUploadError(i18n.t("invalidImageFormatSize"));
       } else if (isValid.fileExtension && !isValid.fileSizeValid) {
-        setFileUploadError("File size exceeded the max limit of 10KB.");
+        setFileUploadError(i18n.t("invalidImageSize"));
       } else {
-        setFileUploadError(
-          "Incorrect file format. Please upload an image of type PNG or JPG"
-        );
+        setFileUploadError(i18n.t("invalidImageFormat"));
       }
     }
   };
