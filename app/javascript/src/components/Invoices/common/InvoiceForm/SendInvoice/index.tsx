@@ -74,11 +74,13 @@ const SendInvoice: React.FC<any> = ({
   const handleSubmit = async (event: FormEvent) => {
     try {
       event.preventDefault();
+      setStatus(InvoiceStatus.LOADING);
       const res = await handleSaveSendInvoice();
       if (res.status === 200) {
         handleSendInvoice(res.data.id);
       } else {
         Toastr.error("Send invoice failed");
+        setStatus(InvoiceStatus.ERROR);
       }
     } catch {
       setStatus(InvoiceStatus.ERROR);
@@ -87,7 +89,6 @@ const SendInvoice: React.FC<any> = ({
 
   const handleSendInvoice = async invoiceId => {
     try {
-      setStatus(InvoiceStatus.LOADING);
       const payload = { invoice_email: invoiceEmail };
       const resp = await invoicesApi.sendInvoice(invoiceId, payload);
       Toastr.success(resp.data.message);
@@ -237,7 +238,8 @@ const SendInvoice: React.FC<any> = ({
                     `mt-6 flex w-full justify-center rounded-md border border-transparent p-3 text-lg font-bold
                     uppercase text-white shadow-sm
                     ${
-                      invoiceEmail?.recipients.length > 0
+                      invoiceEmail?.recipients.length > 0 &&
+                      status !== InvoiceStatus.LOADING
                         ? `focus:outline-none cursor-pointer bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:ring-2
                         focus:ring-miru-han-purple-600 focus:ring-offset-2`
                         : "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
