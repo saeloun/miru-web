@@ -5,12 +5,15 @@ class ProjectMemberPolicy < ApplicationPolicy
     authorize_current_user
   end
 
+  def permitted_attributes
+    [project_members_attributes: [:id, :user_id, :hourly_rate, :_destroy]]
+  end
+
   def authorize_current_user
     unless user.current_workspace_id == record.client.company_id
       @error_message_key = :different_workspace
       return false
     end
-
     user_owner_role? || user_admin_role?
   end
 end

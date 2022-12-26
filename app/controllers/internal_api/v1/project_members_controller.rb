@@ -15,8 +15,6 @@ class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationCo
     end
 
     def project_params
-      params.require(:project).permit(
-        project_members_attributes: [:id, :user_id, :hourly_rate, :_destroy]
-      )
+      params.require(:project).permit(policy(ProjectMember).permitted_attributes)
     end
 end
