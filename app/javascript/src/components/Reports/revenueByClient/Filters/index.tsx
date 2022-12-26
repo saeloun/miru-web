@@ -8,38 +8,39 @@ import * as Yup from "yup";
 import clientApi from "apis/clients";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 
-import {
-  dateRangeOptions
-} from "./filterOptions";
+import { dateRangeOptions } from "./filterOptions";
 import { customStyles } from "./style";
 
 import { useEntry } from "../../context/EntryContext";
 
 const dateSchema = Yup.object().shape({
   fromDate: Yup.string().required("Must include From date"),
-  toDate: Yup.string().required("Must include To date")
+  toDate: Yup.string().required("Must include To date"),
 });
 
 const FilterSideBar = ({
   selectedFilter,
-  setFilterVisibilty: setFilterVisibility, // TODO: fix typo setFilterVisibility
+  setIsFilterVisible,
   resetFilter,
   handleApplyFilter,
   handleSelectDate,
   onClickInput,
   selectedInput,
-  dateRange
+  dateRange,
 }) => {
   const { revenueByClientReport } = useEntry();
   const [filters, setFilters] = useState(revenueByClientReport.selectedFilter);
   const [showCustomFilter, setShowCustomFilter] = useState(false);
   const [errorMessage, setErrorMessage] = useState({
     fromDateErr: "",
-    toDateErr: ""
+    toDateErr: "",
   });
   const [clientList, setClientList] = useState([]);
 
-  const selectedClients = selectedFilter["clients"][0]["value"] === "" ? selectedFilter["clients"].slice(1) : selectedFilter["clients"];
+  const selectedClients =
+    selectedFilter["clients"][0]["value"] === ""
+      ? selectedFilter["clients"].slice(1)
+      : selectedFilter["clients"];
 
   useEffect(() => {
     fetchAndSetClients();
@@ -49,36 +50,38 @@ const FilterSideBar = ({
     try {
       const { data } = await clientApi.get("");
       setClientList(
-        data.client_details.map(client => ({ value: client.id, label: client.name }))
+        data.client_details.map(client => ({
+          value: client.id,
+          label: client.name,
+        }))
       );
     } catch {
       Logger.error("Error fetching clients");
     }
   };
 
-  const handleSelectClientFilter = (selectedValue) => {
+  const handleSelectClientFilter = selectedValue => {
     if (Array.isArray(selectedValue) && selectedValue.length > 0) {
       setFilters({
         ...filters,
-        clients: selectedValue
+        clients: selectedValue,
       });
-    }
-    else {
+    } else {
       setFilters({
         ...filters,
-        clients: [{ label: "All Clients" , value: "" }]
+        clients: [{ label: "All Clients", value: "" }],
       });
     }
   };
 
-  const handleSelectDateFilter = (selectedValue) => {
+  const handleSelectDateFilter = selectedValue => {
     if (selectedValue.value === "custom") {
       setShowCustomFilter(true);
     }
 
     setFilters({
       ...filters,
-      dateRange: selectedValue
+      dateRange: selectedValue,
     });
   };
 
@@ -90,20 +93,25 @@ const FilterSideBar = ({
     setShowCustomFilter(false);
   };
 
-  const submitCustomDatePicker = () => {
-    dateSchema.validate({ fromDate: dateRange.from, toDate: dateRange.to }, { abortEarly: false }).then(async () => {
-      hideCustomFilter();
-    }).catch(function (err) {
+  const submitCustomDatePicker = async () => {
+    try {
+      await dateSchema.validate(
+        { fromDate: dateRange.from, toDate: dateRange.to },
+        { abortEarly: false }
+      );
+      await hideCustomFilter();
+    } catch (err) {
       const errObj = {
         fromDateErr: "",
-        toDateErr: ""
+        toDateErr: "",
       };
-      err.inner.map((item) => {
-        errObj[item.path + "Err"] = item.message;
+
+      err.inner.map(item => {
+        errObj[`${item.path}Err`] = item.message;
       });
       setErrorMessage(errObj);
       hideCustomFilter();
-    });
+    }
   };
 
   const resetCustomDatePicker = () => {
@@ -111,13 +119,11 @@ const FilterSideBar = ({
   };
 
   return (
-    <div className="sidebar__container flex flex-col min-w-max	">
+    <div className="sidebar__container flex min-w-max flex-col	">
       <div>
-        <div className="flex px-5 pt-5 mb-7 justify-between items-center">
-          <h4 className="text-base font-bold">
-            Filters
-          </h4>
-          <button onClick={() => setFilterVisibility(false)}>
+        <div className="mb-7 flex items-center justify-between px-5 pt-5">
+          <h4 className="text-base font-bold">Filters</h4>
+          <button onClick={() => setIsFilterVisible(false)}>
             <XIcon size={12} />
           </button>
         </div>
@@ -127,42 +133,68 @@ const FilterSideBar = ({
               <h5 className="text-xs font-normal">Date Range</h5>
               <Select
                 classNamePrefix="react-select-filter"
+                name="dateRange"
+                options={dateRangeOptions}
+                styles={customStyles}
                 value={filters.dateRange}
                 onChange={handleSelectDateFilter}
-                name="dateRange"
-                styles={customStyles}
-                options={dateRangeOptions}
               />
-              {showCustomFilter &&
-                <div className="mt-1 absolute flex flex-col bg-miru-white-1000 z-20 shadow-c1 rounded-lg">
+              {showCustomFilter && (
+                <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1">
                   <CustomDateRangePicker
-                    hideCustomFilter={hideCustomFilter}
-                    handleSelectDate={handleSelectDate}
-                    onClickInput={onClickInput}
-                    selectedInput={selectedInput}
                     dateRange={dateRange}
+                    handleSelectDate={handleSelectDate}
+                    hideCustomFilter={hideCustomFilter}
+                    selectedInput={selectedInput}
+                    onClickInput={onClickInput}
                   />
                   <div className="flex flex-col text-center">
-                    <span className="text-red-600 text-sm">{errorMessage.fromDateErr}</span>
-                    <span className="text-red-600 text-sm">{errorMessage.toDateErr}</span>
+                    <span className="text-sm text-red-600">
+                      {errorMessage.fromDateErr}
+                    </span>
+                    <span className="text-sm text-red-600">
+                      {errorMessage.toDateErr}
+                    </span>
                   </div>
-                  <div className="p-6 flex h-full items-end justify-center bg-miru-white-1000 ">
-                    <button onClick={resetCustomDatePicker} className="sidebar__reset">Cancel</button>
-                    <button onClick={submitCustomDatePicker} className="sidebar__apply">Done</button>
+                  <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
+                    <button
+                      className="sidebar__reset"
+                      onClick={resetCustomDatePicker}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="sidebar__apply"
+                      onClick={submitCustomDatePicker}
+                    >
+                      Done
+                    </button>
                   </div>
                 </div>
-              }
+              )}
             </li>
             <li className="px-5 pb-5">
               <h5 className="text-xs font-normal">Clients</h5>
-              <Select isMulti={true} defaultValue={selectedClients} options={clientList} classNamePrefix="react-select-filter" name="clients" onChange={handleSelectClientFilter} styles={customStyles}/>
+              <Select
+                isMulti
+                classNamePrefix="react-select-filter"
+                defaultValue={selectedClients}
+                name="clients"
+                options={clientList}
+                styles={customStyles}
+                onChange={handleSelectClientFilter}
+              />
             </li>
           </ul>
         </div>
       </div>
       <div className="sidebar__footer">
-        <button onClick={resetFilter} className="sidebar__reset">RESET</button>
-        <button onClick={submitApplyFilter} className="sidebar__apply">APPLY</button>
+        <button className="sidebar__reset" onClick={resetFilter}>
+          RESET
+        </button>
+        <button className="sidebar__apply" onClick={submitApplyFilter}>
+          APPLY
+        </button>
       </div>
     </div>
   );

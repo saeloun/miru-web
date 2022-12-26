@@ -15,7 +15,7 @@ export interface IProject {
   setShowProjectModal: any;
   setEditProjectId: any;
   setEditProjectData: any;
-  setDeleteProjectData: any,
+  setDeleteProjectData: any;
 }
 
 export interface IMember {

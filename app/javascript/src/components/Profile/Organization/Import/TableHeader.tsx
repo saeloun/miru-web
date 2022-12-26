@@ -1,14 +1,11 @@
-import * as React from "react";
+import React from "react";
 
 const TableHeader = () => (
   <tr>
     <th className="table__import_header" scope="col">
       FIELD
     </th>
-    <th
-      scope="col"
-      className="table__import_header"
-    >
+    <th className="table__import_header" scope="col">
       COLUMN NAME
     </th>
   </tr>

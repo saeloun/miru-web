@@ -1,13 +1,21 @@
 # frozen_string_literal: true
 
-module UtilityFunctions
+class DateRangeService
+  attr_reader :timeframe, :from, :to
+
   class InvalidDatePassed < StandardError
     def message
       "Date value passed is invalid"
     end
   end
 
-  def range_from_timeframe(timeframe, from = nil, to = nil)
+  def initialize(timeframe:, from: nil, to: nil)
+    @timeframe = timeframe
+    @from = from
+    @to = to
+  end
+
+  def process
     case timeframe
     when "last_week"
       1.weeks.ago.beginning_of_week..1.weeks.ago.end_of_week
@@ -28,9 +36,11 @@ module UtilityFunctions
     end
   end
 
-  def convert_to_date(value)
-    raise InvalidDatePassed if value.nil?
+  private
 
-    Date.parse(value)
-  end
+    def convert_to_date(value)
+      raise InvalidDatePassed if value.nil?
+
+      Date.parse(value)
+    end
 end

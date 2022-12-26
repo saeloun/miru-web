@@ -4,17 +4,19 @@ import { PencilIcon } from "miruIcons";
 import { Link } from "react-router-dom";
 
 const EditButton = ({ editInvoiceLink }) => (
-  <div className="flex flex-col justify-items-center edit-button-container mx-1">
+  <div className="edit-button-container mx-1 flex flex-col justify-items-center">
     <Link
+      className="flex h-10 w-32 flex-row justify-center rounded border border-miru-han-purple-1000"
       to={editInvoiceLink}
       type="button"
-      className="flex flex-row justify-center border border-miru-han-purple-1000 rounded h-10 w-32"
     >
-      <div className="self-center flex flex-row justify-between items-center">
+      <div className="flex flex-row items-center justify-between self-center">
         <div className="mr-1">
-          <PencilIcon size={16} color="#5B34EA" weight="bold"/>
+          <PencilIcon color="#5B34EA" size={16} weight="bold" />
         </div>
-        <p className="font-bold tracking-widest text-base text-miru-han-purple-1000 ml-1">EDIT</p>
+        <p className="ml-1 text-base font-bold tracking-widest text-miru-han-purple-1000">
+          EDIT
+        </p>
       </div>
     </Link>
   </div>

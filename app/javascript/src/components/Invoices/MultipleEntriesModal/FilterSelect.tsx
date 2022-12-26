@@ -3,20 +3,20 @@ import React, { useState } from "react";
 import Select from "react-select";
 
 const FilterSelect = ({ option, placeholder }) => {
-
   const [selectedOption, setSelectedOption] = useState<any>();
+
   return (
     <Select
+      isSearchable
+      className="w-40 rounded bg-miru-gray-100 text-sm font-medium"
       defaultValue={selectedOption}
-      onChange={e => {
-        setSelectedOption(e);
-      }}
       options={option}
       placeholder={placeholder}
-      isSearchable={true}
-      className="w-40 bg-miru-gray-100 rounded text-sm font-medium"
       components={{
-        IndicatorSeparator: () => null
+        IndicatorSeparator: () => null,
+      }}
+      onChange={e => {
+        setSelectedOption(e);
       }}
     />
   );

@@ -16,45 +16,31 @@ import Header from "../Header";
 const OutstandingInvoiceReport = () => {
   const filterIntialValues = {
     dateRange: { label: "All", value: "" },
-    clients: []
+    clients: [],
   };
 
-  const [filterOptions, getFilterOptions] = useState({ clients: [] }); //eslint-disable-line
   const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
-  const [isFilterVisible, setFilterVisibilty] = useState<boolean>(false);
-  const [showNavFilters, setNavFilters] = useState<boolean>(false);
-  const [filterCounter, setFilterCounter] = useState(0);
+  const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
+  const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
+  const [filterCounter, setFilterCounter] = useState(0); // eslint-disable-line
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
   const [selectedInput, setSelectedInput] = useState("from-input");
-  const [clientList, setClientList] = useState<Array<OutstandingOverdueInvoice>>([]);
+  const [clientList, setClientList] = useState<
+    Array<OutstandingOverdueInvoice>
+  >([]);
   const [currency, setCurrency] = useState("");
   const [summary, setSummary] = useState({
     totalInvoiceAmount: 0,
     totalOutstandingAmount: 0,
-    totalOverdueAmount: 0
+    totalOverdueAmount: 0,
   });
 
   useEffect(() => {
     sendGAPageView();
   }, []);
 
-  const onClickInput = (e) => {
+  const onClickInput = e => {
     setSelectedInput(e.target.name);
-  };
-
-  const updateFilterCounter = async () => {
-    let counter = 0;
-    for (const filterkey in selectedFilter) {
-      const filterValue = selectedFilter[filterkey];
-      if (Array.isArray(filterValue)) {
-        counter = counter + filterValue.length;
-      } else {
-        if (filterValue.value !== "") {
-          counter = counter + 1;
-        }
-      }
-    }
-    await setFilterCounter(counter);
   };
 
   const handleRemoveSingleFilter = (key, value) => {
@@ -69,8 +55,13 @@ const OutstandingInvoiceReport = () => {
   };
 
   useEffect(() => {
-    // updateFilterCounter();
-    getReportData({ selectedFilter, setClientList, setNavFilters, setFilterVisibilty, setSummary, setCurrency });
+    getReportData({
+      setClientList,
+      setShowNavFilters,
+      setIsFilterVisible,
+      setSummary,
+      setCurrency,
+    });
   }, [selectedFilter]);
 
   const contextValues = {
@@ -78,35 +69,35 @@ const OutstandingInvoiceReport = () => {
     revenueByClientReport: RevenueByClientReportContext,
     outstandingOverdueInvoice: {
       filterOptions: {
-        clients: []
+        clients: [],
       },
-      selectedFilter: selectedFilter,
+      selectedFilter,
       customDateFilter: {
         from: dateRange.from,
-        to: dateRange.to
+        to: dateRange.to,
       },
-      filterCounter: filterCounter,
-      clientList: clientList,
+      filterCounter,
+      clientList,
       handleRemoveSingleFilter: handleRemoveSingleFilter, //eslint-disable-line
-      currency: currency,
-      summary: summary
+      currency,
+      summary,
     },
-    currentReport: "outstandingOverdueInvoiceReport"
+    currentReport: "outstandingOverdueInvoiceReport",
   };
 
-  const handleApplyFilter = (filters) => {
+  const handleApplyFilter = filters => {
     setSelectedFilter(filters);
   };
 
   const resetFilter = () => {
     setSelectedFilter(filterIntialValues);
-    setFilterVisibilty(false);
-    setNavFilters(false);
+    setIsFilterVisible(false);
+    setShowNavFilters(false);
   };
 
   const handleDownload = () => {}; //eslint-disable-line
 
-  const handleSelectDate = (date) => {
+  const handleSelectDate = date => {
     if (selectedInput === "from-input") {
       setDateRange({ ...dateRange, from: date });
     } else {
@@ -116,28 +107,32 @@ const OutstandingInvoiceReport = () => {
 
   return (
     <div>
-      <EntryContext.Provider value={{
-        ...contextValues
-      }}>
+      <EntryContext.Provider
+        value={{
+          ...contextValues,
+        }}
+      >
         <Header
-          showNavFilters={showNavFilters}
-          setFilterVisibilty={setFilterVisibilty}
-          showExportButon={false}
+          handleDownload={handleDownload}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
-          handleDownload={handleDownload}
-          type={"Invoices Report"}
+          setIsFilterVisible={setIsFilterVisible}
+          showExportButon={false}
+          showNavFilters={showNavFilters}
+          type="Invoices Report"
         />
         <Container />
-        {false && <Filters
-          handleApplyFilter={handleApplyFilter}
-          resetFilter={resetFilter}
-          setFilterVisibilty={setFilterVisibilty}
-          onClickInput={onClickInput}
-          handleSelectDate={handleSelectDate}
-          selectedInput={selectedInput}
-          dateRange={dateRange}
-        />}
+        {false && (
+          <Filters
+            dateRange={dateRange}
+            handleApplyFilter={handleApplyFilter}
+            handleSelectDate={handleSelectDate}
+            resetFilter={resetFilter}
+            selectedInput={selectedInput}
+            setIsFilterVisible={setIsFilterVisible}
+            onClickInput={onClickInput}
+          />
+        )}
       </EntryContext.Provider>
     </div>
   );

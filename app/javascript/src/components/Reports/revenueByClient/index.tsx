@@ -14,14 +14,15 @@ import TimeEntryReportContext from "../context/TimeEntryReportContext";
 import Header from "../Header";
 
 const RevenueByClientReport = () => {
-  const filterIntialValues = { // TODO: fix typo filterInitialValues
+  const filterIntialValues = {
+    // TODO: fix typo filterInitialValues
     dateRange: { label: "All", value: "" },
-    clients: [{ label: "All Clients", value: "" }]
+    clients: [{ label: "All Clients", value: "" }],
   };
 
   const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
-  const [isFilterVisible, setFilterVisibilty] = useState<boolean>(false);
-  const [showNavFilters, setNavFilters] = useState<boolean>(false);
+  const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
+  const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
   const [selectedInput, setSelectedInput] = useState("from-input");
@@ -30,14 +31,14 @@ const RevenueByClientReport = () => {
   const [summary, setSummary] = useState({
     totalPaidAmount: 0,
     totalUnpaidAmount: 0,
-    totalRevenue: 0
+    totalRevenue: 0,
   });
 
   useEffect(() => {
     sendGAPageView();
   }, []);
 
-  const onClickInput = (e) => {
+  const onClickInput = e => {
     setSelectedInput(e.target.name);
   };
 
@@ -64,13 +65,25 @@ const RevenueByClientReport = () => {
       setSelectedFilter({ ...selectedFilter, [key]: closedFilter });
     } else {
       const label = key === "dateRange" ? "All" : "All Clients";
-      setSelectedFilter((prevState) => ( { ...prevState, [key]: key === "dateRange" ? { label, value: "" } : [{ label, value: "" }] } ));
+      setSelectedFilter(prevState => ({
+        ...prevState,
+        [key]:
+          key === "dateRange" ? { label, value: "" } : [{ label, value: "" }],
+      }));
     }
   };
 
   useEffect(() => {
     updateFilterCounter();
-    getReportData({ selectedFilter, setClientList, setNavFilters, setFilterVisibilty, setSummary, setCurrency, customDate: dateRange });
+    getReportData({
+      selectedFilter,
+      setClientList,
+      setShowNavFilters,
+      setIsFilterVisible,
+      setSummary,
+      setCurrency,
+      customDate: dateRange,
+    });
   }, [selectedFilter]);
 
   const contextValues = {
@@ -78,35 +91,35 @@ const RevenueByClientReport = () => {
     outstandingOverdueInvoice: OutstandingOverdueInvoiceContext,
     revenueByClientReport: {
       filterOptions: {
-        clients: [{ label: "All Clients", value: "" }]
+        clients: [{ label: "All Clients", value: "" }],
       },
-      selectedFilter: selectedFilter,
+      selectedFilter,
       customDateFilter: {
         from: dateRange.from,
-        to: dateRange.to
+        to: dateRange.to,
       },
-      filterCounter: filterCounter,
-      clientList: clientList,
+      filterCounter,
+      clientList,
       handleRemoveSingleFilter: handleRemoveSingleFilter, //eslint-disable-line
-      currency: currency,
-      summary: summary
+      currency,
+      summary,
     },
-    currentReport: "RevenueByClientReport"
+    currentReport: "RevenueByClientReport",
   };
 
-  const handleApplyFilter = (filters) => {
+  const handleApplyFilter = filters => {
     setSelectedFilter(filters);
   };
 
   const resetFilter = () => {
     setSelectedFilter(filterIntialValues);
-    setFilterVisibilty(false);
-    setNavFilters(false);
+    setIsFilterVisible(false);
+    setShowNavFilters(false);
   };
 
   const handleDownload = () => {}; //eslint-disable-line
 
-  const handleSelectDate = (date) => {
+  const handleSelectDate = date => {
     if (selectedInput === "from-input") {
       setDateRange({ ...dateRange, ...{ from: date } });
     } else {
@@ -116,29 +129,33 @@ const RevenueByClientReport = () => {
 
   return (
     <div>
-      <EntryContext.Provider value={{
-        ...contextValues
-      }}>
+      <EntryContext.Provider
+        value={{
+          ...contextValues,
+        }}
+      >
         <Header
-          showNavFilters={showNavFilters}
-          setFilterVisibilty={setFilterVisibilty}
-          showExportButon={false}
+          handleDownload={handleDownload}
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
-          handleDownload={handleDownload}
-          type={"Revenue Report"}
+          setIsFilterVisible={setIsFilterVisible}
+          showExportButon={false}
+          showNavFilters={showNavFilters}
+          type="Revenue Report"
         />
         <Container />
-        {isFilterVisible && <Filters
-          selectedFilter={selectedFilter}
-          handleApplyFilter={handleApplyFilter}
-          resetFilter={resetFilter}
-          setFilterVisibilty={setFilterVisibilty}
-          onClickInput={onClickInput}
-          handleSelectDate={handleSelectDate}
-          selectedInput={selectedInput}
-          dateRange={dateRange}
-        />}
+        {isFilterVisible && (
+          <Filters
+            dateRange={dateRange}
+            handleApplyFilter={handleApplyFilter}
+            handleSelectDate={handleSelectDate}
+            resetFilter={resetFilter}
+            selectedFilter={selectedFilter}
+            selectedInput={selectedInput}
+            setIsFilterVisible={setIsFilterVisible}
+            onClickInput={onClickInput}
+          />
+        )}
       </EntryContext.Provider>
     </div>
   );
