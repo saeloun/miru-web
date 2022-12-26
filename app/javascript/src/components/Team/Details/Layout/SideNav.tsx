@@ -4,71 +4,76 @@ import { NavLink, useParams } from "react-router-dom";
 
 const userAvatar = require("../../../../../../assets/images/user_avatar.svg"); //eslint-disable-line
 
-const getActiveClassName = (isActive) => {
+const getActiveClassName = isActive => {
   if (isActive) {
     return "pl-4 py-5 border-l-8 border-miru-han-purple-600 bg-miru-gray-200 text-miru-han-purple-600 block";
   }
+
   return "pl-6 py-5 border-b-1 border-miru-gray-400 block";
 };
 
-const getTeamUrls = (memberId) => [
+const getTeamUrls = memberId => [
   {
     url: `/team/${memberId}`,
-    text: "PERSONAL DETAILS"
+    text: "PERSONAL DETAILS",
   },
   {
     url: `/team/${memberId}/employment`,
-    text: "EMPLOYEMENT DETAILS"
+    text: "EMPLOYEMENT DETAILS",
   },
   {
     url: `/team/${memberId}/devices`,
-    text: "ALLOCATED DEVICES"
+    text: "ALLOCATED DEVICES",
   },
   {
     url: `/team/${memberId}/compensation`,
-    text: "COMPENSATION"
+    text: "COMPENSATION",
   },
   {
     url: `/team/${memberId}/documents`,
-    text: "DOCUMENTS"
+    text: "DOCUMENTS",
   },
   {
     url: `/team/${memberId}/reimburstment`, // TODO: fix spelling reimbursement
-    text: "REIMBURSEMENTS"
-  }
+    text: "REIMBURSEMENTS",
+  },
 ];
 
 const UserInformation = () => (
   <div>
-    <div className="mr-2 w-60 h-20 p-4 bg-miru-han-purple-1000 flex text-white items-center">
-    </div>
-    <div className='bg-miru-gray-100 flex flex-col justify-center mr-2'>
-      <div className="h-12 flex relative justify-center">
+    <div className="mr-2 flex h-20 w-60 items-center bg-miru-han-purple-1000 p-4 text-white" />
+    <div className="mr-2 flex flex-col justify-center bg-miru-gray-100">
+      <div className="relative flex h-12 justify-center">
         <div className="userAvatarWrapper">
-          <img src={userAvatar} className='w-24 h-24' />
+          <img className="h-24 w-24" src={userAvatar} />
         </div>
       </div>
-
-      <div className='flex flex-col justify-center items-center mt-3 pb-8 border-b-8 border-miru-gray-200'>
-        <span className='text-miru-han-purple-1000 text-xl font-bold mb-1'>Jane Cooper</span>
-        <span className='text-miru-dark-purple-1000 text-xs tracking-wider leading-4'>SENIOR SOFTWARE DEVELOPER</span>
+      <div className="mt-3 flex flex-col items-center justify-center border-b-8 border-miru-gray-200 pb-8">
+        <span className="mb-1 text-xl font-bold text-miru-han-purple-1000">
+          Jane Cooper
+        </span>
+        <span className="text-xs leading-4 tracking-wider text-miru-dark-purple-1000">
+          SENIOR SOFTWARE DEVELOPER
+        </span>
       </div>
     </div>
   </div>
 );
 
 const TeamUrl = ({ urlList }) => (
-  <div className='mr-2 mt-4 w-60 bg-miru-gray-100'>
-    <ul className='list-none text-sm font-medium leading-5 tracking-wider'>
-      {
-        urlList.map((item, index) => (
-          <li className='border-b-2 border-miru-gray-400' key={index}>
-            <NavLink end to={item.url} className={({ isActive }) => getActiveClassName(isActive)}>
-              {item.text}
-            </NavLink>
-          </li>
-        ))
-      }
+  <div className="mr-2 mt-4 w-60 bg-miru-gray-100">
+    <ul className="list-none text-sm font-medium leading-5 tracking-wider">
+      {urlList.map((item, index) => (
+        <li className="border-b-2 border-miru-gray-400" key={index}>
+          <NavLink
+            end
+            className={({ isActive }) => getActiveClassName(isActive)}
+            to={item.url}
+          >
+            {item.text}
+          </NavLink>
+        </li>
+      ))}
     </ul>
   </div>
 );
@@ -76,6 +81,7 @@ const TeamUrl = ({ urlList }) => (
 const SideNav = () => {
   const { memberId } = useParams();
   const urlList = getTeamUrls(memberId);
+
   return (
     <div>
       <UserInformation />

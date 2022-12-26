@@ -4,7 +4,7 @@ const path = "/payments";
 
 const get = () => axios.get(`${path}`);
 
-const create = async (payload) => axios.post(`${path}`, payload);
+const create = async payload => axios.post(`${path}`, payload);
 
 const show = async (id, queryParam) => axios.get(`${path}/${id}${queryParam}`);
 

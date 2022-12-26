@@ -1,4 +1,3 @@
-
 import React from "react";
 
 import { useList } from "context/TeamContext";
@@ -11,7 +10,7 @@ const Modals = ({ user }) => {
 
   switch (modal) {
     case "addEdit":
-      return <AddEditMember user={user} isEdit={user?.id} />;
+      return <AddEditMember isEdit={user?.id} user={user} />;
     case "delete":
       return <DeleteMember user={user} />;
     default:

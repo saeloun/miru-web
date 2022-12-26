@@ -9,5 +9,10 @@ export const authSelectors = {
     emailField: dataCy("email-field"),
     passwordField: dataCy("passsword-field"),
     forgotPasswordLink: dataCy("forgot-password-link"),
-    signUpLink: dataCy("sign-up-link")
+    signUpLink: dataCy("sign-up-link"),
+    firstNameInput: dataCy("first-name-input"),
+    lastNameInput: dataCy("last-name-input"),
+    emailInput: dataCy("email-input"),
+    passwordInput: dataCy("password-input"),
+    confirmPasswordInput: dataCy("confirm-password-input")
 }

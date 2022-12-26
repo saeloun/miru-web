@@ -9,15 +9,15 @@ import CompanyInfo from "../common/CompanyInfo";
 
 const InvoiceDetails = ({ invoice }) => (
   <>
-    <CompanyInfo company={invoice.company}/>
-    <div className="flex justify-between border-b-2 border-miru-gray-400 px-10 py-5 h-36">
-      <ClientInfo client={invoice.client}/>
+    <CompanyInfo company={invoice.company} />
+    <div className="flex h-36 justify-between border-b-2 border-miru-gray-400 px-10 py-5">
+      <ClientInfo client={invoice.client} />
       <InvoiceInfo invoice={invoice} />
     </div>
     <InvoiceLineItems
+      showHeader
       currency={invoice.company.currency}
       items={invoice.invoiceLineItems}
-      showHeader={true}
     />
     <InvoiceTotalSummary invoice={invoice} />
   </>

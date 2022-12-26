@@ -6,13 +6,13 @@ import getStatusCssClass from "utils/getBadgeStatus";
 
 const InvoiceStatus = ({ invoice }) => (
   <div className="flex flex-row">
-    <div className="flex self-center mr-2">
+    <div className="mr-2 flex self-center">
       <p className="text-4xl font-bold">Invoice #{invoice.invoiceNumber}</p>
     </div>
-    <div className="flex self-center ml-2">
+    <div className="ml-2 flex self-center">
       <Badge
-        text={invoice.status}
         className={`${getStatusCssClass(invoice.status)} uppercase`}
+        text={invoice.status}
       />
     </div>
   </div>

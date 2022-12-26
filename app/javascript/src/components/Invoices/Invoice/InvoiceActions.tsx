@@ -1,17 +1,49 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 
-import DeleteButton from "./DeleteButton";
+import { useOutsideClick } from "helpers";
+
 import EditButton from "./EditButton";
 import SendButton from "./SendButton";
 
-const InvoiceActions = ({ deleteInvoice, editInvoiceLink, sendInvoice }) => (
-  <>
-    <div className="flex flex-row justify-items-right">
-      <DeleteButton onClick={deleteInvoice}/>
+import MoreButton from "../common/MoreButton";
+import MoreOptions from "../common/MoreOptions";
+import { handleDownloadInvoice } from "../common/utils";
+
+const InvoiceActions = ({
+  editInvoiceLink,
+  sendInvoice,
+  deleteInvoice,
+  invoice,
+}) => {
+  const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
+    useState<boolean>(false);
+
+  const wrapperRef = useRef(null);
+
+  useOutsideClick(
+    wrapperRef,
+    () => setIsMoreOptionsVisible(false),
+    isMoreOptionsVisible
+  );
+
+  return (
+    <div className="justify-items-right flex flex-row">
       <EditButton editInvoiceLink={editInvoiceLink} />
-      <SendButton onClick={sendInvoice}/>
+      <SendButton onClick={sendInvoice} />
+      <div ref={wrapperRef}>
+        <MoreButton
+          onClick={() => setIsMoreOptionsVisible(!isMoreOptionsVisible)}
+        />
+        {isMoreOptionsVisible && (
+          <MoreOptions
+            deleteInvoice={deleteInvoice}
+            downloadInvoice={handleDownloadInvoice}
+            invoice={invoice}
+          />
+        )}
+      </div>
     </div>
-  </>
-);
+  );
+};
 
 export default InvoiceActions;

@@ -1,4 +1,4 @@
-export const currencySymbol = (baseCurrency) => {
+export const currencySymbol = baseCurrency => {
   switch (baseCurrency) {
     case "INR":
       return "₹";

@@ -4,15 +4,16 @@ import dayjs from "dayjs";
 import { month, quarters } from "../../../../utils/dateUtil";
 
 const quarterOfYear = require("dayjs/plugin/quarterOfYear");
+
 dayjs.extend(quarterOfYear);
 
-const getQuarter = (isCurrentQuarter) => {
+const getQuarter = isCurrentQuarter => {
   const currentDate = new Date();
   const monthCount = dayjs(currentDate);
   const monthStr = month[monthCount.month()];
 
   let quarter = 1;
-  Object.keys(quarters).map((item) => {
+  Object.keys(quarters).map(item => {
     if (quarters[item].months.includes(monthStr)) {
       quarter = parseInt(item);
     }
@@ -24,8 +25,9 @@ const getQuarter = (isCurrentQuarter) => {
     quarter -= 1;
   }
 
-  return isCurrentQuarter ? `This Quarter (${quarters[quarter].startDay} - ${quarters[quarter].endDay})`:
-    `Last Quarter (${quarters[quarter].startDay} - ${quarters[quarter].endDay})`;
+  return isCurrentQuarter
+    ? `This Quarter (${quarters[quarter].startDay} - ${quarters[quarter].endDay})`
+    : `Last Quarter (${quarters[quarter].startDay} - ${quarters[quarter].endDay})`;
 };
 
 const getDateRangeOptions = () => {
@@ -37,15 +39,10 @@ const getDateRangeOptions = () => {
     { value: "last_quarter", label: previousQuarter },
     { value: "this_year", label: "This Year" },
     { value: "last_year", label: "Last Year" },
-    { value: "custom", label: "Custom" }
+    { value: "custom", label: "Custom" },
   ];
 };
 
-const dateRangeOptions = [
-  ...getDateRangeOptions()
-];
+const dateRangeOptions = [...getDateRangeOptions()];
 
-export {
-  dateRangeOptions,
-  getQuarter
-};
+export { dateRangeOptions, getQuarter };

@@ -8,7 +8,7 @@ RSpec.describe "InternalApi::V1::InvoicesController", type: :request do
   let(:employee) { create(:user, current_workspace_id: company.id) }
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
-  let(:invoice) { create(:invoice, client:) }
+  let(:invoice) { create(:invoice, client:, company:) }
 
   before do
     admin.add_role :admin, company

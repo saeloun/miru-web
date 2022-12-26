@@ -7,7 +7,7 @@ type FooterProps = {
   className: string;
 };
 
-const Footer = ({ children, className }:FooterProps) => (
+const Footer = ({ children, className }: FooterProps) => (
   <div className={classnames(className)}>{children}</div>
 );
 

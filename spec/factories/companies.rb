@@ -12,6 +12,13 @@ FactoryBot.define do
     country { "US" }
     timezone { Faker::Address.time_zone }
 
+    factory :company_with_invoices do
+      transient do
+        length { 5 }
+      end
+      invoices { Array.new(length) { association(:invoice) } }
+    end
+
     trait :with_logo do
       after :build do |company|
         file_name = "test-image.png"

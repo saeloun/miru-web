@@ -8,7 +8,7 @@ import {
   FilterIcon,
   PrinterIcon,
   ShareIcon,
-  XIcon
+  XIcon,
 } from "miruIcons";
 import { Link } from "react-router-dom";
 
@@ -20,48 +20,66 @@ import { useEntry } from "../context/EntryContext";
 const leftArrow = require("../../../../images/back-arrow.svg");
 
 const Header = ({
-  setFilterVisibilty,
+  setIsFilterVisible,
   isFilterVisible,
   showNavFilters,
   resetFilter,
   handleDownload,
   type,
-  showExportButon
+  showExportButon,
 }) => {
-  const { timeEntryReport, revenueByClientReport, currentReport, outstandingOverdueInvoice } = useEntry();
+  const {
+    timeEntryReport,
+    revenueByClientReport,
+    currentReport,
+    outstandingOverdueInvoice,
+  } = useEntry();
 
-  const selectedReport = getReports({ currentReport, timeEntryReport, revenueByClientReport, outstandingOverdueInvoice });
+  const selectedReport = getReports({
+    currentReport,
+    timeEntryReport,
+    revenueByClientReport,
+    outstandingOverdueInvoice,
+  });
 
   const [showExportOptions, setShowExportOptions] = useState<boolean>(false);
 
   return (
     <div>
-      <div className="sm:flex sm:items-center sm:justify-between mt-6 mb-3">
+      <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
         <div className="flex items-center">
-          <Link
-            to={"/reports"}
-            type="button"
-          >
-            <img src={leftArrow}></img>
+          <Link to="/reports" type="button">
+            <img src={leftArrow} />
           </Link>
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl sm:truncate py-1 ml-5">
+          <h2 className="ml-5 py-1 text-3xl font-extrabold text-gray-900 sm:truncate sm:text-4xl">
             {type}
           </h2>
-          <button className="ml-7 p-3 rounded hover:bg-miru-gray-1000 relative" onClick={() => { setFilterVisibilty(!isFilterVisible); }}>
-            <FilterIcon size={16} color="#7C5DEE" />
-            {selectedReport.filterCounter > 0 && <sup className="filter__counter">{selectedReport.filterCounter}</sup>}
+          <button
+            className="relative ml-7 rounded p-3 hover:bg-miru-gray-1000"
+            onClick={() => {
+              setIsFilterVisible(!isFilterVisible);
+            }}
+          >
+            <FilterIcon color="#7C5DEE" size={16} />
+            {selectedReport.filterCounter > 0 && (
+              <sup className="filter__counter">
+                {selectedReport.filterCounter}
+              </sup>
+            )}
           </button>
         </div>
         {showExportButon && (
           <div className="inline-flex">
-            <div className="px-3 relative">
+            <div className="relative px-3">
               <button
-                className={"border inline-flex justify-center rounded-md border-miru-han-purple-1000 p-2 bg-white text-miru-han-purple-1000 hover:bg-gray-50 menuButton__button"}
-                onClick={ () => setShowExportOptions(!showExportOptions) }
+                className="menuButton__button inline-flex justify-center rounded-md border border-miru-han-purple-1000 bg-white p-2 text-miru-han-purple-1000 hover:bg-gray-50"
+                onClick={() => setShowExportOptions(!showExportOptions)}
               >
-                <ShareIcon className="" weight="bold" size={20} />
-                <p className="mx-2 uppercase text-base font-medium tracking-wider">Export</p>
-                <CaretDownIcon size={20} weight={"bold"} />
+                <ShareIcon className="" size={20} weight="bold" />
+                <p className="mx-2 text-base font-medium uppercase tracking-wider">
+                  Export
+                </p>
+                <CaretDownIcon size={20} weight="bold" />
               </button>
               {showExportOptions && (
                 <ul className="menuButton__wrapper">
@@ -73,7 +91,7 @@ const Header = ({
                         handleDownload("csv");
                       }}
                     >
-                      <FileCsvIcon size={16} color="#5B34EA" weight="bold" />
+                      <FileCsvIcon color="#5B34EA" size={16} weight="bold" />
                       <span className="ml-3">Export as CSV</span>
                     </button>
                   </li>
@@ -85,13 +103,16 @@ const Header = ({
                         handleDownload("pdf");
                       }}
                     >
-                      <FilePdfIcon size={16} color="#5B34EA" weight="bold" />
+                      <FilePdfIcon color="#5B34EA" size={16} weight="bold" />
                       <span className="ml-3">Export as PDF</span>
                     </button>
                   </li>
                   <li>
-                    <button className="menuButton__list-item" onClick={ () => window.print() }>
-                      <PrinterIcon size={16} color="#5B34EA" weight="bold" />
+                    <button
+                      className="menuButton__list-item"
+                      onClick={() => window.print()}
+                    >
+                      <PrinterIcon color="#5B34EA" size={16} weight="bold" />
                       <span className="ml-3">Print</span>
                     </button>
                   </li>
@@ -110,20 +131,29 @@ const Header = ({
         )}
       </div>
       <div>
-        {
-          showNavFilters &&
+        {showNavFilters && (
           <ul className="flex">
             <NavigationFilter />
-            {
-              selectedReport.filterCounter > 0 && <li key={"clear_all"} className="flex px-2 mr-4 py-1 px-1 ">
-                <button onClick={resetFilter} className="inline-block ml-1 flex items-center">
-                  <XIcon size={12} color="#5B34EA" className="inline-block" weight="bold" />
-                  <span className="text-miru-han-purple-1000 ml-1 text-xs tracking-widest font-bold">CLEAR ALL</span>
+            {selectedReport.filterCounter > 0 && (
+              <li className="mr-4 flex px-2 py-1 px-1 " key="clear_all">
+                <button
+                  className="ml-1 inline-block flex items-center"
+                  onClick={resetFilter}
+                >
+                  <XIcon
+                    className="inline-block"
+                    color="#5B34EA"
+                    size={12}
+                    weight="bold"
+                  />
+                  <span className="ml-1 text-xs font-bold tracking-widest text-miru-han-purple-1000">
+                    CLEAR ALL
+                  </span>
                 </button>
               </li>
-            }
+            )}
           </ul>
-        }
+        )}
       </div>
     </div>
   );

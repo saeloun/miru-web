@@ -3,7 +3,7 @@ interface ClientArray {
 }
 
 export interface IChartBar extends ClientArray {
-  handleSelectChange: any
+  handleSelectChange: any;
   totalMinutes: number;
 }
 
