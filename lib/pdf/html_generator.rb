@@ -13,7 +13,7 @@ class Pdf::HtmlGenerator
   end
 
   def make
-    Grover.new(make_html, **options).to_pdf
+    Grover.new(make_html, **@options).to_pdf
   end
 
   private
