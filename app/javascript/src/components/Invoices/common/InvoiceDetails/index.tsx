@@ -46,7 +46,7 @@ const InvoiceDetails = ({
   };
 
   return (
-    <div className="flex h-36 justify-between border-b-2 border-miru-gray-400 px-10 py-5">
+    <div className="flex flex-col justify-between border-b-2 border-miru-gray-400 px-5 py-5 md:h-36 md:flex-row md:px-10">
       <ClientSelection
         clientList={clientList}
         clientVisible={clientVisible}
@@ -123,11 +123,11 @@ const InvoiceDetails = ({
         </div>
       </div>
       <div>
-        <p className="text-right text-xs font-normal text-miru-dark-purple-1000">
+        <p className="text-left text-xs font-normal text-miru-dark-purple-1000 md:text-right">
           Amount
         </p>
         <p className="mt-6 text-4xl font-normal text-miru-dark-purple-1000">
-          {currencyFormat({ baseCurrency: currency, amount })}
+          {amount ? currencyFormat({ baseCurrency: currency, amount }) : 0}
         </p>
       </div>
     </div>

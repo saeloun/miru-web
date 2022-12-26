@@ -181,16 +181,16 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         </label>
                         <div className="mt-1 flex">
                           <div className="sm:space-XIcon-10 space-y-4 sm:flex sm:items-center sm:space-y-0">
-                            <div className="flex items-center">
+                            <div className="flex items-center justify-between">
                               <Field
-                                className="custom__radio hidden"
+                                className="custom__radio"
                                 id="role-1"
                                 name="role"
                                 type="radio"
                                 value="admin"
                               />
                               <label
-                                className="flex cursor-pointer items-center text-xl"
+                                className="ml-2 flex cursor-pointer items-center text-xl"
                                 data-cy="admin-radio-button"
                                 htmlFor="role-1"
                               >
@@ -200,14 +200,14 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                             </div>
                             <div className="ml-8 flex items-center">
                               <Field
-                                className="custom__radio hidden"
+                                className="custom__radio"
                                 id="role-2"
                                 name="role"
                                 type="radio"
                                 value="employee"
                               />
                               <label
-                                className="flex cursor-pointer items-center text-xl"
+                                className="ml-2 flex cursor-pointer items-center text-xl"
                                 data-cy="employee-radio-button"
                                 htmlFor="role-2"
                               >
@@ -217,14 +217,14 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                             </div>
                             <div className="ml-8 flex items-center">
                               <Field
-                                className="custom__radio hidden"
+                                className="custom__radio"
                                 id="role-3"
                                 name="role"
                                 type="radio"
                                 value="book_keeper"
                               />
                               <label
-                                className="flex cursor-pointer items-center text-xl"
+                                className="ml-2 flex cursor-pointer items-center text-xl"
                                 htmlFor="role-3"
                               >
                                 <i className="custom__radio-text" />
