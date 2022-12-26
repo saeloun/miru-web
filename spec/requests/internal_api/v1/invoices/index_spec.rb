@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
   let(:company) do
-    create(:company, clients: create_list(:client_with_invoices, 5))
+    create(:company_with_invoices, length: 10)
   end
 
   let(:user) { create(:user, current_workspace_id: company.id) }
@@ -32,6 +32,10 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     end
 
     describe "page param" do
+      let(:company) do
+        create(:company_with_invoices, length: 10)
+      end
+
       it "returns invoices offset by page" do
         page, invoices_per_page = 2, 5
         send_request :get, internal_api_v1_invoices_path(page:, invoices_per_page:)
@@ -100,6 +104,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
       before do
         flipkart.invoices << invoice
         company.clients << flipkart
+        company.invoices << invoice
         company.save!
         company.reload
       end
@@ -160,6 +165,10 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     end
 
     describe "page param" do
+      let(:company) do
+        create(:company_with_invoices, length: 10)
+      end
+
       it "returns invoices offset by page" do
         page, invoices_per_page = 2, 5
         send_request :get, internal_api_v1_invoices_path(page:, invoices_per_page:)

@@ -11,6 +11,7 @@ const CustomDatePicker = ({ handleChange, date }) => {
     for (let i = start; i <= end; i++) {
       ans.push(i);
     }
+
     return ans;
   };
 
@@ -27,14 +28,15 @@ const CustomDatePicker = ({ handleChange, date }) => {
     "Sep",
     "Oct",
     "Nov",
-    "Dec"
+    "Dec",
   ];
+
   return (
     <DatePicker
-      wrapperClassName="datePicker"
       inline
       calendarClassName="miru-calendar"
       selected={date}
+      wrapperClassName="datePicker"
       renderCustomHeader={({
         date,
         changeYear,
@@ -42,12 +44,10 @@ const CustomDatePicker = ({ handleChange, date }) => {
         decreaseMonth,
         increaseMonth,
         prevMonthButtonDisabled,
-        nextMonthButtonDisabled
+        nextMonthButtonDisabled,
       }) => (
-        <div
-          className="headerWrapper"
-        >
-          <button onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
+        <div className="headerWrapper">
+          <button disabled={prevMonthButtonDisabled} onClick={decreaseMonth}>
             <CaretCircleLeftIcon color="#5b34ea" size={16} />
           </button>
           <div>
@@ -57,25 +57,24 @@ const CustomDatePicker = ({ handleChange, date }) => {
                 changeMonth(months.indexOf(value))
               }
             >
-              {months.map((option) => (
+              {months.map(option => (
                 <option key={option} value={option}>
                   {option}
                 </option>
               ))}
             </select>
-
             <select
               value={getYear(date)}
               onChange={({ target: { value } }) => changeYear(value)}
             >
-              {years.map((option) => (
+              {years.map(option => (
                 <option key={option} value={option}>
                   {option}
                 </option>
               ))}
             </select>
           </div>
-          <button onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
+          <button disabled={nextMonthButtonDisabled} onClick={increaseMonth}>
             <CaretCircleRightIcon color="#5b34ea" size={16} />
           </button>
         </div>

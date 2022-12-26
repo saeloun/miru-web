@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import { minToHHMM } from "helpers";
 import { PenIcon, DeleteIcon } from "miruIcons";
@@ -17,76 +17,80 @@ export const Project = ({
   setShowProjectModal,
   setEditProjectData,
   setShowDeleteDialog,
-  setDeleteProjectData
+  setDeleteProjectData,
 }: IProject) => {
   const [grayColor, setGrayColor] = React.useState<string>("");
-  const [isHover, setHover] = React.useState<boolean>(false);
+  const [isHover, setIsHover] = React.useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleMouseEnter = () => {
     setGrayColor("bg-miru-gray-100");
-    setHover(true);
+    setIsHover(true);
   };
 
   const handleMouseLeave = () => {
     setGrayColor("");
-    setHover(false);
+    setIsHover(false);
   };
-  const projectClickHandler = (id) => {
+
+  const projectClickHandler = id => {
     navigate(`${id}`);
   };
 
   return (
-    <tr key={id}
+    <tr
       className={`last:border-b-0 ${grayColor}`}
-      onMouseLeave={handleMouseLeave}
+      key={id}
+      onClick={() => isAdminUser && projectClickHandler(id)}
       onMouseEnter={handleMouseEnter}
-      onClick={() => isAdminUser ? projectClickHandler(id) : () => {}} // eslint-disable-line
+      onMouseLeave={handleMouseLeave} // eslint-disable-line
     >
       <td className="table__cell text-base">
-        <div className="flex items-center justify-between">
-          {name}
-        </div>
-        <p className="max-h-32 overflow-auto text-sm text-miru-dark-purple-400 break-words whitespace-pre-wrap">
+        <div className="flex items-center justify-between">{name}</div>
+        <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-sm text-miru-dark-purple-400">
           {clientName}
         </p>
       </td>
       <td className="table__cell text-right">
-        {isBillable &&(
-          <Badge text="billable"
+        {isBillable && (
+          <Badge
             bgColor="bg-miru-han-purple-100"
+            className="rounded-lg px-1 capitalize tracking-widest"
             color="text-miru-han-purple-1000"
-            className="px-1 tracking-widest rounded-lg capitalize" />
+            text="billable"
+          />
         )}
       </td>
-      <td className="table__cell text-xl text-right font-bold">
+      <td className="table__cell text-right text-xl font-bold">
         {minToHHMM(minutesSpent)}
       </td>
       <td className="table__cell px-3 py-3">
-        {isAdminUser && isHover && <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setShowProjectModal(true);
-            setEditProjectData({ id, name, clientName, isBillable });
-          }}
-        >
-          <PenIcon size={16} color="#5B34EA" />
-        </button>
-        }
+        {isAdminUser && isHover && (
+          <button
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowProjectModal(true);
+              setEditProjectData({ id, name, clientName, isBillable });
+            }}
+          >
+            <PenIcon color="#5B34EA" size={16} />
+          </button>
+        )}
       </td>
       <td className="table__cell px-3 py-3">
-        {isAdminUser && isHover && <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setShowDeleteDialog(true);
-            setDeleteProjectData({ id, name });
-          }}
-        >
-          <DeleteIcon size={16} color="#5B34EA" />
-        </button>
-        }
+        {isAdminUser && isHover && (
+          <button
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowDeleteDialog(true);
+              setDeleteProjectData({ id, name });
+            }}
+          >
+            <DeleteIcon color="#5B34EA" size={16} />
+          </button>
+        )}
       </td>
     </tr>
   );

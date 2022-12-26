@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Api::V1::TimesheetEntryController < Api::V1::BaseController
-  include Timesheet
-
   before_action :ensure_project_member
 
   def create
@@ -11,7 +9,7 @@ class Api::V1::TimesheetEntryController < Api::V1::BaseController
     timesheet_entry.save!
     render json: {
       notice: I18n.t("timesheet_entry.create.message"),
-      entry: timesheet_entry.formatted_entry
+      entry: timesheet_entry.snippet
     }
   end
 

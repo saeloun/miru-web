@@ -1,10 +1,9 @@
 import React, { Fragment } from "react";
 
-import { TeamModalType } from "constants/index";
-
 import { EditIcon, DeleteIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
+import { TeamModalType } from "constants/index";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
 
@@ -15,47 +14,52 @@ const TableRow = ({ item }) => {
 
   const actionIconVisible = isAdminUser && item.role !== "owner";
 
-  const handleAction = (e,action) => {
+  const handleAction = (e, action) => {
     e.preventDefault();
     e.stopPropagation();
     setModalState(action, item);
   };
 
   return (
-    <tr data-cy="team-table-row" className="border-b last:border-0 border-miru-gray-200 hoverIcon" onClick={() => {
-      navigate("1");
-    }}>
-      <td className="table__data p-6 capitalize">
-        {item.name}
-      </td>
-      <td className="table__data table__text p-6">
-        {item.email}
-      </td>
-      <td className="table__data table__text p-6 capitalize">
-        {item.role}
-      </td>
-      {isAdminUser &&
+    <tr
+      className="hoverIcon border-b border-miru-gray-200 last:border-0"
+      data-cy="team-table-row"
+      onClick={() => {
+        navigate("1");
+      }}
+    >
+      <td className="table__data p-6 capitalize">{item.name}</td>
+      <td className="table__data table__text p-6">{item.email}</td>
+      <td className="table__data table__text p-6 capitalize">{item.role}</td>
+      {isAdminUser && (
         <Fragment>
-          <td className="pr-6 py-6 text-right w-48">
-            {
-              item.status && <span className="table__pending">
-                Pending Invitation
-              </span>
-            }
+          <td className="w-48 py-6 pr-6 text-right">
+            {item.status && (
+              <span className="table__pending">Pending Invitation</span>
+            )}
           </td>
-          <td className="pr-6 py-6 text-right w-44">
+          <td className="w-44 py-6 pr-6 text-right">
             {actionIconVisible && (
-              <div className="invisible iconWrapper">
-                <button data-cy="edit-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.ADD_EDIT)}>
-                  <EditIcon size={16} color="#5b34ea" weight="bold" />
+              <div className="iconWrapper invisible">
+                <button
+                  className="ml-12"
+                  data-cy="edit-team-member-button"
+                  onClick={e => handleAction(e, TeamModalType.ADD_EDIT)}
+                >
+                  <EditIcon color="#5b34ea" size={16} weight="bold" />
                 </button>
-                <button data-cy="delete-team-member-button" className="ml-12" onClick={(e) => handleAction(e, TeamModalType.DELETE)}>
-                  <DeleteIcon size={16} color="#5b34ea" weight="bold" />
+                <button
+                  className="ml-12"
+                  data-cy="delete-team-member-button"
+                  onClick={e => handleAction(e, TeamModalType.DELETE)}
+                >
+                  <DeleteIcon color="#5b34ea" size={16} weight="bold" />
                 </button>
-              </div>)}
+              </div>
+            )}
           </td>
         </Fragment>
-      }
+      )}
     </tr>
   );
 };

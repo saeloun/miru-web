@@ -19,7 +19,7 @@ module Reports::TimeEntries
       options = {
         wait_until: ["networkidle0", "load", "domcontentloaded", "networkidle2"]
       }
-      Grover.new(html, options).to_pdf
+      Grover.new(html, **options).to_pdf
     end
   end
 end

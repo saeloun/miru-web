@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState, useRef } from "react";
 
-import { useOutsideClick } from "helpers";
+import { useOutsideClick, useDebounce } from "helpers";
 
 import MultipleEntriesModal from "../../MultipleEntriesModal";
 import LineItemTableHeader from "../LineItemTableHeader";
@@ -17,128 +17,168 @@ const InvoiceTable = ({
   selectedLineItems,
   setSelectedLineItems,
   manualEntryArr,
-  setManualEntryArr
+  setManualEntryArr,
 }) => {
   const [addNew, setAddNew] = useState<boolean>(false);
-  const [showItemInputs, setShowItemInputs] = useState<boolean>(false);
-  const [totalLineItems, setTotalLineItems] = useState<number>(null);
-  const [pageNumber, setPageNumber] = useState<number>(1);
-  const [showMultiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
-  const [addManualLineItem, setAddManualLineItem] = useState<boolean>(false);
+  const [showNewLineItemTable, setShowNewLineItemTable] =
+    useState<boolean>(false);
+  const [multiLineItemModal, setMultiLineItemModal] = useState<boolean>(false);
+  const [filteredLineItems, setFilteredLineItems] = useState<any>();
+  const [lineItem, setLineItem] = useState<any>({});
+  const [loading, setLoading] = useState<boolean>(false);
   const wrapperRef = useRef(null);
-
-  useEffect(() => {
-    if (addManualLineItem) return setAddManualLineItem(false);
-
-    if (addNew) {
-      loadNewLineItems();
-    }
-  }, [addNew]);
+  const debouncedSearchName = useDebounce(lineItem.name, 500);
 
   const loadNewLineItems = () => {
-    fetchNewLineItems(
-      selectedClient,
-      lineItems,
-      setLineItems,
-      setTotalLineItems,
-      pageNumber,
-      setPageNumber,
-      selectedLineItems
-    );
+    fetchNewLineItems(selectedClient, setLineItems, selectedLineItems);
   };
 
-  useOutsideClick(wrapperRef, () => {
-    setAddNew(false);
-    setPageNumber(1);
-    setLineItems([]);
-  }, addNew);
+  useEffect(() => {
+    if (debouncedSearchName) {
+      const newLineItems = lineItems.filter(item =>
+        item.first_name
+          .toLowerCase()
+          .includes(debouncedSearchName.toLowerCase())
+      );
+      setFilteredLineItems(newLineItems);
+      setLoading(false);
+    } else {
+      setFilteredLineItems(lineItems);
+      setLoading(false);
+    }
+  }, [debouncedSearchName, lineItems]);
+
+  const handleAddEntry = () => {
+    if (!addNew && lineItem.name && lineItem.date) {
+      setManualEntryArr([...manualEntryArr, lineItem]);
+    }
+  };
+
+  useEffect(() => handleAddEntry(), [addNew]);
+
+  useOutsideClick(
+    wrapperRef,
+    () => {
+      setShowNewLineItemTable(false);
+      setAddNew(false);
+    },
+    addNew
+  );
 
   const getNewLineItemDropdown = () => {
-    if (selectedClient && lineItems) {
-      return <NewLineItemTable
-        setShowItemInputs={setShowItemInputs}
-        addNew={addNew}
-        setAddNew={setAddNew}
-        lineItems={lineItems}
-        setLineItems={setLineItems}
-        loadMoreItems={loadNewLineItems}
-        totalLineItems={totalLineItems}
-        pageNumber={pageNumber}
-        setPageNumber={setPageNumber}
-        selectedLineItems={selectedLineItems}
-        setSelectedLineItems={setSelectedLineItems}
-        manualEntryArr={manualEntryArr}
-        setManualEntryArr={setManualEntryArr}
-        setMultiLineItemModal={setMultiLineItemModal}
-        setAddManualLineItem={setAddManualLineItem}
-      />;
+    if (selectedClient && lineItems && showNewLineItemTable) {
+      return (
+        <NewLineItemTable
+          filteredLineItems={filteredLineItems}
+          loadMoreItems={loadNewLineItems}
+          loading={loading}
+          selectedLineItems={selectedLineItems}
+          setAddNew={setAddNew}
+          setFilteredLineItems={setFilteredLineItems}
+          setLoading={setLoading}
+          setMultiLineItemModal={setMultiLineItemModal}
+          setSelectedLineItems={setSelectedLineItems}
+        />
+      );
     }
+
     return (
-      <div className="h-48 flex items-center justify-center">Please select Client to add line item.</div>
+      <div className="flex h-10 items-center justify-center sm:h-48">
+        Please select Client to add line item.
+      </div>
     );
   };
 
   const getAddNewButton = () => {
-    if (addNew) {
-      return <div ref={wrapperRef} className="box-shadow rounded absolute m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white top-0 w-full">
-        {getNewLineItemDropdown()}
-      </div>;
-    } else {
-      return <button
-        className=" py-1 tracking-widest w-full bg-white font-bold text-base text-center text-miru-dark-purple-200 rounded-md border-2 border-miru-dark-purple-200 border-dashed"
-        onClick={() => {
-          setAddNew(!addNew);
-        }}
-        data-cy="new-line-item"
-      >
-        + NEW LINE ITEM
-      </button>;
+    if (!addNew) {
+      return (
+        <tr className="w-full">
+          <td className="relative py-4 pr-10" colSpan={6}>
+            <button
+              className="w-full rounded-md border-2 border-dashed border-miru-dark-purple-200 bg-white py-1 pr-10 text-center text-base font-bold tracking-widest text-miru-dark-purple-200"
+              data-cy="new-line-item"
+              onClick={() => setAddNew(!addNew)}
+            >
+              + NEW LINE ITEM
+            </button>
+          </td>
+        </tr>
+      );
     }
+  };
+
+  const getManualEntryItem = () => {
+    if (selectedClient) {
+      return (
+        <ManualEntry
+          addNew={addNew}
+          getNewLineItemDropdown={getNewLineItemDropdown}
+          lineItem={lineItem}
+          manualEntryArr={manualEntryArr}
+          setAddNew={setAddNew}
+          setLineItem={setLineItem}
+          setManualEntryArr={setManualEntryArr}
+          setNewLineItemTable={setShowNewLineItemTable}
+          showNewLineItemTable={showNewLineItemTable}
+        />
+      );
+    }
+
+    return (
+      <tr>
+        <td colSpan={5}>
+          <div className="shadow-2 mt-4 flex h-10 w-full items-center justify-center bg-white sm:h-48">
+            Please select Client to add line item.
+          </div>
+        </td>
+      </tr>
+    );
   };
 
   return (
     <Fragment>
-      <table className="w-full table-fixed">
+      <table className="bg-miru-han-1000 w-128 table-fixed sm:w-full">
         <LineItemTableHeader />
-        <tbody className="w-full">
-          <tr className="w-full">
-            <td colSpan={6} className="py-4 relative">
-              {getAddNewButton()}
-            </td>
-          </tr>
-          {
-            showItemInputs
-            && (manualEntryArr.map((entry, index) =>
-              <ManualEntry
-                key={index}
-                entry={entry}
-                manualEntryArr={manualEntryArr}
-                setManualEntryArr={setManualEntryArr}
-              />
-            ))
-          }
-          {
-            selectedLineItems.length > 0
-            && selectedLineItems.map((item, index) => (
-              !item._destroy &&
-              <NewLineItemRow
-                key={index}
-                currency={currency}
-                item={item}
-                selectedOption={selectedLineItems}
-                setSelectedOption={setSelectedLineItems}
-              />
-            ))
-          }
+        <tbody className="w-full" ref={wrapperRef}>
+          {getAddNewButton()}
+          {addNew && getManualEntryItem()}
+          {manualEntryArr[0]?.name &&
+            manualEntryArr.map(
+              (item, index) =>
+                !item._destroy && (
+                  <NewLineItemRow
+                    currency={currency}
+                    item={item}
+                    key={index}
+                    selectedOption={manualEntryArr}
+                    setSelectedOption={setManualEntryArr}
+                  />
+                )
+            )}
+          {selectedLineItems.length > 0 &&
+            selectedLineItems.map(
+              (item, index) =>
+                !item._destroy && (
+                  <NewLineItemRow
+                    currency={currency}
+                    item={item}
+                    key={index}
+                    selectedOption={selectedLineItems}
+                    setSelectedOption={setSelectedLineItems}
+                  />
+                )
+            )}
         </tbody>
       </table>
       <div>
-        {showMultiLineItemModal && <MultipleEntriesModal
-          selectedClient={selectedClient}
-          selectedOption={selectedLineItems}
-          setSelectedOption={setSelectedLineItems}
-          setMultiLineItemModal={setMultiLineItemModal}
-        />}
+        {multiLineItemModal && (
+          <MultipleEntriesModal
+            selectedClient={selectedClient}
+            selectedOption={selectedLineItems}
+            setMultiLineItemModal={setMultiLineItemModal}
+            setSelectedOption={setSelectedLineItems}
+          />
+        )}
       </div>
     </Fragment>
   );

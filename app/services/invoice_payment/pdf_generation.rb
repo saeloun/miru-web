@@ -36,7 +36,7 @@ module InvoicePayment
 
       absolute_html = Grover::HTMLPreprocessor.process html, "#{@root_url}/", "http"
 
-      grover = Grover.new(absolute_html, options)
+      grover = Grover.new(absolute_html, **options)
       grover.to_pdf
     end
 

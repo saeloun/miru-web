@@ -1,39 +1,39 @@
-import * as React from "react";
+import React from "react";
 
 const TableHeader = () => (
   <tr>
     <th
+      className="py-5 pr-6 pl-0 text-left text-xs font-normal tracking-widest text-miru-black-1000"
       scope="col"
-      className="pr-6 pl-0 py-5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
     >
-        CLIENT / <br />
-        INVOICE NUMBER
+      CLIENT / <br />
+      INVOICE NUMBER
     </th>
     <th
+      className="px-6 py-5 text-left text-xs font-normal tracking-widest text-miru-black-1000"
       scope="col"
-      className="px-6 py-5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
     >
-        TRANSACTION DATE
+      TRANSACTION DATE
     </th>
     <th
+      className="w-2/5 px-6 py-5 text-left text-xs font-normal tracking-widest text-miru-black-1000"
       scope="col"
-      className="px-6 py-5 w-2/5 text-xs font-normal tracking-widest text-left text-miru-black-1000"
     >
-        NOTES/
+      NOTES/
       <br />
-        TRANSACTION TYPE
+      TRANSACTION TYPE
     </th>
     <th
+      className="px-6 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000"
       scope="col"
-      className="px-6 py-5 text-xs font-normal tracking-widest text-right text-miru-black-1000"
     >
-        AMOUNT
+      AMOUNT
     </th>
     <th
+      className="py-5 pl-6 pr-0 text-right text-xs font-normal tracking-widest text-miru-black-1000"
       scope="col"
-      className="pl-6 pr-0 py-5 text-xs font-normal tracking-widest text-right text-miru-black-1000"
     >
-        STATUS
+      STATUS
     </th>
   </tr>
 );

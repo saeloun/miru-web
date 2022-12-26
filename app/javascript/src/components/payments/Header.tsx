@@ -2,8 +2,8 @@ import React from "react";
 
 import { PlusIcon } from "miruIcons";
 
-const Header = ( { setShowManualEntryModal } ) => (
-  <div className="mt-6 mb-3 sm:flex sm:items-center justify-between">
+const Header = ({ setShowManualEntryModal }) => (
+  <div className="mt-6 mb-3 justify-between sm:flex sm:items-center">
     <div className="flex">
       <h2 className="header__title">Payments</h2>
       {/* <div className="header__searchWrap ml-12">
@@ -22,11 +22,11 @@ const Header = ( { setShowManualEntryModal } ) => (
     </div>
     <div className="flex">
       <button
-        type="button"
         className="header__button"
-        onClick={()=>setShowManualEntryModal(true)}
+        type="button"
+        onClick={() => setShowManualEntryModal(true)}
       >
-        <PlusIcon weight="fill" size={16} />
+        <PlusIcon size={16} weight="fill" />
         <span className="ml-2 inline-block">ADD MANUAL ENTRY</span>
       </button>
     </div>

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::ApplicationController
-  include Timesheet
-
   def index
     authorize :report
     render :index, locals: { reports:, filter_options: }, status: :ok
@@ -22,19 +20,22 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
   private
 
     def filter_options
-      @_filter_options ||= { clients: current_company.clients, team_members: current_company.users }
+      @_filter_options ||= {
+        clients: current_company.clients.order(:name),
+        team_members: current_company.users.order(:first_name)
+      }
     end
 
     def reports
       default_filter = current_company_filter.merge(this_month_filter)
       where_clause = default_filter.merge(TimeEntries::Filters.process(params))
       group_by_clause = Reports::TimeEntries::GroupBy.process(params["group_by"])
-
       search_result = TimesheetEntry.search(
         where: where_clause,
         order: { work_date: :desc },
         body_options: group_by_clause,
-        includes: [:user, { project: :client } ])
+        includes: [:user, { project: :client } ]
+        )
 
       Reports::TimeEntries::Result.process(search_result, params["group_by"])
     end

@@ -3,7 +3,7 @@ import React from "react";
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 
-const formatDate = (date) => dayjs(date).format("DD-MM-YYYY");
+const formatDate = date => dayjs(date).format("DD-MM-YYYY");
 
 const InvoiceInfo = ({ invoice }) => {
   const formattedIssueDate = formatDate(invoice.issueDate);
@@ -12,41 +12,42 @@ const InvoiceInfo = ({ invoice }) => {
   return (
     <>
       <div className="group">
-        <p className="font-normal text-xs text-miru-dark-purple-1000 flex">
+        <p className="flex text-xs font-normal text-miru-dark-purple-1000">
           Date of Issue
         </p>
-        <p className="font-normal text-base text-miru-dark-purple-1000">
+        <p className="text-base font-normal text-miru-dark-purple-1000">
           {formattedIssueDate}
         </p>
-        <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
+        <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
           Due Date
         </p>
-        <p className="font-normal text-base text-miru-dark-purple-1000">
+        <p className="text-base font-normal text-miru-dark-purple-1000">
           {formattedDueDate}
         </p>
       </div>
-
       <div className="group">
-        <p className="font-normal text-xs text-miru-dark-purple-1000">
+        <p className="text-xs font-normal text-miru-dark-purple-1000">
           Invoice Number
         </p>
-        <p className="font-normal text-base text-miru-dark-purple-1000">
+        <p className="text-base font-normal text-miru-dark-purple-1000">
           {invoice.invoiceNumber}
         </p>
-        <p className="font-normal text-xs text-miru-dark-purple-1000 mt-4">
+        <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
           Reference
         </p>
-        <p className="font-normal text-base text-miru-dark-purple-1000">
+        <p className="text-base font-normal text-miru-dark-purple-1000">
           {invoice.reference}
         </p>
       </div>
-
       <div>
-        <p className="font-normal text-xs text-miru-dark-purple-1000 text-right">
+        <p className="text-right text-xs font-normal text-miru-dark-purple-1000">
           Amount
         </p>
-        <p className="font-normal text-4xl text-miru-dark-purple-1000 mt-6">
-          {currencyFormat({ baseCurrency: invoice.company.currency, amount: invoice.amount })}
+        <p className="mt-6 text-4xl font-normal text-miru-dark-purple-1000">
+          {currencyFormat({
+            baseCurrency: invoice.company.currency,
+            amount: invoice.amount,
+          })}
         </p>
       </div>
     </>

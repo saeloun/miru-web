@@ -9,29 +9,29 @@ const MiruLogowithText = require("../../../../assets/images/MiruWhiteLogowithTex
 
 const InvoiceEmail = ({ url, invoice, logo, lineItems, company, client }) => (
   <div className="flex flex-col justify-between">
-    <div className="font-manrope px-24 h-16 flex justify-start bg-miru-han-purple-1000 text-white">
+    <div className="flex h-16 justify-start bg-miru-han-purple-1000 px-24 font-manrope text-white">
       <img src={MiruLogowithText} />
     </div>
-    <div className="max-w-6xl mx-auto px-2 md:px-11 font-manrope">
+    <div className="mx-auto max-w-6xl px-2 font-manrope md:px-11">
       <Header invoice={invoice} stripeUrl={url} />
-      <div className="bg-miru-gray-100 mt-5 mb-10 p-0 m-0 w-full">
+      <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
         <InvoiceDetails
-          invoice={invoice}
-          company={company}
-          lineItems={lineItems}
           client={client}
+          company={company}
+          invoice={invoice}
+          lineItems={lineItems}
           logo={logo}
         />
       </div>
     </div>
-    <div className="font-manrope px-28 py-3 flex justify-between bg-miru-han-purple-1000 text-white">
-      <span className="text-xs font-normal leading-4 text-center">
+    <div className="flex justify-between bg-miru-han-purple-1000 px-28 py-3 font-manrope text-white">
+      <span className="text-center text-xs font-normal leading-4">
         © Miru 2022. All rights reserved.
       </span>
-      <span className="flex justify-between w-1/4 text-xs font-normal leading-4 text-center">
+      <span className="flex w-1/4 justify-between text-center text-xs font-normal leading-4">
         miru.so/
-        <img src={Instagram} height="16px" width="16px" />
-        <img src={Twitter} height="16px" width="16px" />
+        <img height="16px" src={Instagram} width="16px" />
+        <img height="16px" src={Twitter} width="16px" />
       </span>
     </div>
   </div>

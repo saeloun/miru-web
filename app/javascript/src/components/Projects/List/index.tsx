@@ -1,12 +1,11 @@
 import React from "react";
 
-import { TOASTER_DURATION } from "constants/index";
-
 import Logger from "js-logger";
 import { ToastContainer } from "react-toastify";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectApi from "apis/projects";
+import { TOASTER_DURATION } from "constants/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
@@ -17,9 +16,11 @@ import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
 
 export const ProjectList = ({ isAdminUser }) => {
+  const [showProjectModal, setShowProjectModal] =
+    React.useState<boolean>(false);
 
-  const [showProjectModal, setShowProjectModal] = React.useState<boolean>(false);
-  const [showDeleteDialog, setShowDeleteDialog] = React.useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] =
+    React.useState<boolean>(false);
   const [editProjectData, setEditProjectData] = React.useState<any>({});
   const [deleteProjectData, setDeleteProjectData] = React.useState({});
   const [projects, setProjects] = React.useState<IProject[]>([]);
@@ -44,48 +45,37 @@ export const ProjectList = ({ isAdminUser }) => {
     <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
-        setShowProjectModal={setShowProjectModal}
         isAdminUser={isAdminUser}
+        setShowProjectModal={setShowProjectModal}
       />
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <div className="overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200 mt-4">
+              <table className="mt-4 min-w-full divide-y divide-gray-200">
                 <thead>
                   <tr>
-                    <th
-                      scope="col"
-                      className="table__header"
-                    >
+                    <th className="table__header" scope="col">
                       PROJECT/CLIENT
                     </th>
-                    <th
-                      scope="col"
-                      className="table__header"
-                    >
-
-                    </th>
-                    <th
-                      scope="col"
-                      className="table__header text-right"
-                    >
+                    <th className="table__header" scope="col" />
+                    <th className="table__header text-right" scope="col">
                       HOURS LOGGED
                     </th>
-                    <th scope="col" className="table__header"></th>
-                    <th scope="col" className="table__header"></th>
+                    <th className="table__header" scope="col" />
+                    <th className="table__header" scope="col" />
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200 bg-white">
                   {projects.map((project, index) => (
                     <Project
                       key={index}
                       {...project}
                       isAdminUser={isAdminUser}
-                      setShowProjectModal={setShowProjectModal}
+                      setDeleteProjectData={setDeleteProjectData}
                       setEditProjectData={setEditProjectData}
                       setShowDeleteDialog={setShowDeleteDialog}
-                      setDeleteProjectData={setDeleteProjectData}
+                      setShowProjectModal={setShowProjectModal}
                     />
                   ))}
                 </tbody>
@@ -94,19 +84,18 @@ export const ProjectList = ({ isAdminUser }) => {
           </div>
         </div>
       </div>
-
-      {showProjectModal &&
+      {showProjectModal && (
         <AddEditProject
-          setShowProjectModal={setShowProjectModal}
-          setEditProjectData={setEditProjectData}
           editProjectData={editProjectData}
+          setEditProjectData={setEditProjectData}
+          setShowProjectModal={setShowProjectModal}
         />
-      }
+      )}
       {showDeleteDialog && (
         <DeleteProject
-          setShowDeleteDialog={setShowDeleteDialog}
-          project={deleteProjectData}
           fetchProjectList={fetchProjects}
+          project={deleteProjectData}
+          setShowDeleteDialog={setShowDeleteDialog}
         />
       )}
     </React.Fragment>
