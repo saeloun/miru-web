@@ -50,7 +50,8 @@ class Invoice < ApplicationRecord
     :viewed,
     :paid,
     :declined,
-    :overdue
+    :overdue,
+    :sending
   ]
 
   belongs_to :company
@@ -84,11 +85,6 @@ class Invoice < ApplicationRecord
 
   delegate :name, to: :client, prefix: :client
   delegate :email, to: :client, prefix: :client
-
-  # Note: Possible dead fn
-  def sub_total
-    @_sub_total ||= invoice_line_items.sum { |line_item| line_item[:rate] * line_item[:quantity] }
-  end
 
   def update_timesheet_entry_status!
     timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
