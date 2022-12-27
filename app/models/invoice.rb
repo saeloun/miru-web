@@ -108,7 +108,7 @@ class Invoice < ApplicationRecord
 
     def check_if_invoice_paid
       if status_changed? && status_was == "paid"
-        errors.add(:status, "can't be changed to paid") unless status == "sending"
+        errors.add(:status, "can't be changed to paid")
       end
     end
 end
