@@ -22,8 +22,10 @@ class InternalApi::V1::PaymentsController < ApplicationController
 
   def index
     authorize :index, policy_class: PaymentPolicy
-    payments = current_company.payments.includes(invoice: [:client]).order(created_at: :desc)
-    render :index, locals: PaymentsPresenter.new(payments).index_data
+    render :index,
+      locals: PaymentsPresenter.new(
+        current_company.payments.includes(invoice: [:client]).order(created_at: :desc)
+        ).index_data
   end
 
   private
