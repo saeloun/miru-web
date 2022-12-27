@@ -1,0 +1,5 @@
+steps:
+  - label: ":rocket: Push to :kubernetes:"
+    command: script/buildkite/deploy
+    concurrency: 1
+    concurrency_group: deploy/miry

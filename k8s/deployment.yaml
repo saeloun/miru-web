@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: miru
+  annotations:
+    configmap.reloader.stakater.com/reload: "miru"
+    reloader.stakater.com/auto: "true"
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: miru
+  template:
+    metadata:
+      labels:
+        app: miru
+    spec:
+      containers:
+      - name: miru
+        image: "${DOCKER_IMAGE}"
+        imagePullPolicy: Always
+        env:
+        - name: PORT
+          value: "3000"
+        envFrom:
+        - configMapRef:
+            name: miru
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "600m"
+        command: ["bundle"]
+        args:
+          - "exec"
+          - "rails"
+          - "server"
+          - "-b"
+          - "0.0.0.0"
+
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 10
