@@ -1,3 +1,4 @@
 steps:
   - name: ":rspec:"
-    command: "bundle install && bundle exec rspec --color specs"
+    command: "scripts/ci/setup.sh && scripts/ci/parallel_specs.sh"
+    parallelism: 1

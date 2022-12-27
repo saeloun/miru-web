@@ -211,4 +211,5 @@ group :test do
   gem "hash_dot"
 
   gem "rspec-retry"
+  gem "rspec-buildkite"
 end
