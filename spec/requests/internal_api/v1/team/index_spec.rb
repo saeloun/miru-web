@@ -18,6 +18,32 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
       send_request :get, internal_api_v1_team_index_path
     end
 
+    let(:actual_team_data) do
+      json_response["team"].map { |member| member.slice("id", "name", "email", "role", "status") }
+    end
+    let(:actual_invited_user_data) do
+      json_response["invitation"].map { |member| member.slice("id", "name", "email", "role", "status") }
+    end
+
+    let(:expected_team_data) do
+      [{
+        "id" => user.id,
+        "name" => user.full_name,
+        "email" => user.email,
+        "role" => "admin",
+        "status" => nil
+      }]
+    end
+    let(:expected_invited_user_data) do
+      [{
+        "id" => invitation.id,
+        "name" => invitation.full_name,
+        "email" => invitation.recipient_email,
+        "role" => "employee",
+        "status" => I18n.t("team.invitation")
+      }]
+    end
+
     it "returns http success" do
       expect(response).to have_http_status(:ok)
     end
@@ -28,30 +54,12 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
     end
 
     it "checks if correct team members data is returned" do
-      actual_team_data = json_response["team"].map do |member|
-                              member.slice("id", "name", "email", "role", "status")
-                            end
-      actual_invited_user_data = json_response["invitation"].map do |member|
-                            member.slice("id", "name", "email", "role", "status")
-                          end
-
-      expected_team_data =
-        [{
-          "id" => user.id, "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
-        }]
-      expected_invited_user_data =
-        [{
-          "id" => invitation.id, "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => I18n.t("team.invitation")
-        }]
-
       expect(actual_team_data).to eq(expected_team_data)
       expect(actual_invited_user_data).to eq(expected_invited_user_data)
     end
   end
 
   context "when user is employee" do
-    let(:user3) { create(:user, current_workspace_id: company.id) }
-
     before do
       create(:employment, company:, user: user3)
       user3.add_role :employee, company
@@ -59,27 +67,37 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
       send_request :get, internal_api_v1_team_index_path
     end
 
+    let(:user3) { create(:user, current_workspace_id: company.id) }
+    let(:actual_members_data) do
+      json_response["team"].map { |member| member.slice("name", "email", "role", "status") }
+    end
+    let(:actual_invited_user_data) do
+      json_response["invitation"].map { |member| member.slice("name", "email", "role", "status") }
+    end
+    let(:expected_members_data) do
+      [{
+        "name" => user.full_name,
+        "email" => user.email,
+        "role" => "admin",
+        "status" => nil
+      }, {
+        "name" => user3.full_name,
+        "email" => user3.email,
+        "role" => "employee",
+        "status" => nil
+      }]
+    end
+    let(:expected_invited_user_data) do
+      [{
+        "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => nil
+      }]
+    end
+
     it "is permitted to access Team#index page" do
       expect(response).to have_http_status(:ok)
     end
 
     it "checks if correct team members data is returned" do
-      actual_members_data = json_response["team"].map do |member|
-                              member.slice("name", "email", "role", "status")
-                            end
-      actual_invited_user_data = json_response["invitation"].map do |member|
-                                      member.slice("name", "email", "role", "status")
-                                    end
-
-      expected_members_data = [{
-        "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
-      }, {
-        "name" => user3.full_name, "email" => user3.email, "role" => "employee", "status" => nil
-      }]
-
-      expected_invited_user_data = [{
-        "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => nil
-      }]
       expect(actual_members_data).to eq(expected_members_data)
       expect(actual_invited_user_data).to eq(expected_invited_user_data)
     end

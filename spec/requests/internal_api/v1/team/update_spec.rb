@@ -29,6 +29,13 @@ RSpec.describe "InternalApi::V1::Team#update", type: :request do
         .to change { employee_user.primary_role(company) }.from("employee").to("admin")
     end
 
+    it "updates the fixed working hours" do
+      send_request :put, internal_api_v1_team_path(employee_company_user.user),
+        params: { balance_pto: 10, fixed_working_hours: 20, role: "admin" }
+      expect(employee_user.employments.first.balance_pto).to eq 10
+      expect(employee_user.employments.first.fixed_working_hours).to eq 20
+    end
+
     context "when team member is present in multiple company" do
       let(:team_user) { create(:user) }
       let(:other_company_1) { create(:company) }
@@ -45,6 +52,14 @@ RSpec.describe "InternalApi::V1::Team#update", type: :request do
           .to change { team_user.primary_role(company) }.from("employee").to("admin")
 
         expect(team_user.primary_role(other_company_1)).to eq("employee")
+      end
+
+      it "updates the fixed working hours and balance pto for only current company" do
+        send_request :put, internal_api_v1_team_path(@team_company_user.user),
+          params: { balance_pto: 10, fixed_working_hours: 20, role: "admin" }
+
+        expect(team_user.employments.first.balance_pto).to eq 10
+        expect(team_user.employments.first.fixed_working_hours).to eq 20
       end
     end
   end

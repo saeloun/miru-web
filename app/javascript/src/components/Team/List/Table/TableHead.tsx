@@ -17,6 +17,12 @@ const TableHead = () => {
         <th className="table__header p-6" scope="col">
           ROLE
         </th>
+        <th className="table__header p-6" scope="col">
+          FIXED WORKING HOURS
+        </th>
+        <th className="table__header p-6" scope="col">
+          BALANCE PTO
+        </th>
         {isAdminUser && (
           <Fragment>
             <th className="table__header p-6" scope="col" />

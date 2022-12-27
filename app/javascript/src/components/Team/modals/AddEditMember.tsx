@@ -11,6 +11,10 @@ import { useList } from "context/TeamContext";
 const TeamMemberSchema = Yup.object().shape({
   firstName: Yup.string().required("First Name cannot be blank"),
   lastName: Yup.string().required("Last Name cannot be blank"),
+  fixedWorkingHours: Yup.string().required(
+    "Fixed working hours cannot be blank"
+  ),
+  balancePto: Yup.string().required("Balance PTO cannot be blank"),
   email: Yup.string()
     .email("Invalid email ID")
     .required("Email ID cannot be blank"),
@@ -21,6 +25,8 @@ const getInitialvalues = user => ({
   firstName: user.firstName,
   lastName: user.lastName,
   email: user.email,
+  fixedWorkingHours: user.fixedWorkingHours,
+  balancePto: user.balancePto,
   role: user.role ? user.role : "employee",
 });
 
@@ -30,6 +36,8 @@ interface FormValues {
   lastName: string;
   email: string;
   role: string;
+  fixedWorkingHours: string;
+  balancePto: string;
 }
 interface Props {
   user: any;
@@ -41,10 +49,21 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
   const { setModalState } = useList();
 
   const handleSubmit = async values => {
-    const { id, firstName, lastName, email, role } = values;
+    const {
+      id,
+      firstName,
+      lastName,
+      email,
+      role,
+      fixedWorkingHours,
+      balancePto,
+    } = values;
+
     const payload = {
       first_name: firstName,
       last_name: lastName,
+      fixed_working_hours: fixedWorkingHours,
+      balance_pto: balancePto,
       email,
       role,
     };
@@ -170,6 +189,55 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                             {errors.email && touched.email && (
                               <div>{errors.email}</div>
                             )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <div className="field">
+                        <div className="flex">
+                          <div className="mt-1">
+                            <div className="field_with_errors">
+                              <label className="form__label">
+                                Fixed Working Hours
+                              </label>
+                            </div>
+                            <Field
+                              data-cy="new-member-fixed-working-hours"
+                              name="fixedWorkingHours"
+                              placeholder="Fixed working hours"
+                              className={`form__input ${
+                                errors.fixedWorkingHours &&
+                                touched.fixedWorkingHours &&
+                                "border-red-600 focus:border-red-600 focus:ring-red-600"
+                              } `}
+                            />
+                            <div className="block flex text-xs tracking-wider text-red-600">
+                              {errors.fixedWorkingHours &&
+                                touched.fixedWorkingHours && (
+                                  <div>{errors.fixedWorkingHours}</div>
+                                )}
+                            </div>
+                          </div>
+                          <div className="mt-1 ml-8">
+                            <div className="field_with_errors">
+                              <label className="form__label">Balance PTO</label>
+                            </div>
+                            <Field
+                              data-cy="new-member-balance-pto"
+                              name="balancePto"
+                              placeholder="Balance PTO"
+                              className={`form__input ${
+                                errors.balancePto &&
+                                touched.balancePto &&
+                                "border-red-600 focus:border-red-600 focus:ring-red-600"
+                              } `}
+                            />
+                            <div className="block flex text-xs tracking-wider text-red-600">
+                              {errors.balancePto && touched.balancePto && (
+                                <div className="ml-2">{errors.balancePto}</div>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
