@@ -1,22 +1,21 @@
 env:
-  RAILS_ENV=test
-  DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL=true
-  BUILDKITE_ANALYTICS_TOKEN=dtnAJbMh9fgGZFBLqFvPxnJ9
-  WISE_API_URL=https://api.sandbox.transferwise.tech
-  WISE_ACCESS_TOKEN=access-token-12345
-  WISE_PROFILE_ID=123456
-  EMAIL_DELIVERY_METHOD=letter_opener
-  MAILER_SENDER=info@miru.saeloun.com
-  REPLY_TO_EMAIL=no-reply@getmiru.com
-  STRIPE_PUBLISHABLE_KEY=stripe_publishable_key
-  STRIPE_SECRET_KEY=stripe_secret_key
-  STRIPE_WEBHOOK_ENDPOINT_SECRET=stripe_webhook_endpoint_secret
-  CURRENT_UID=998:998
-  SENDGRID_USERNAME=apikey
-  SENDGRID_PASSWORD=pass
-  SMTP_DOMAIN=saeloun.com
-  SMTP_PORT=587
-  DATABASE_URL=postgres://postgres:postgres@localhost:5432
+  RAILS_ENV: test
+  DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: true
+  BUILDKITE_ANALYTICS_TOKEN: dtnAJbMh9fgGZFBLqFvPxnJ9
+  WISE_API_URL: https://api.sandbox.transferwise.tech
+  WISE_ACCESS_TOKEN: access-token-12345
+  WISE_PROFILE_ID: 123456
+  EMAIL_DELIVERY_METHOD: letter_opener
+  MAILER_SENDER: info@miru.saeloun.com
+  REPLY_TO_EMAIL: no-reply@getmiru.com
+  STRIPE_PUBLISHABLE_KEY: stripe_publishable_key
+  STRIPE_SECRET_KEY: stripe_secret_key
+  STRIPE_WEBHOOK_ENDPOINT_SECRET: stripe_webhook_endpoint_secret
+  SENDGRID_USERNAME: apikey
+  SENDGRID_PASSWORD: pass
+  SMTP_DOMAIN: saeloun.com
+  SMTP_PORT: 587
+  DATABASE_URL: postgres://postgres:postgres@localhost:5432
 
 steps:
   - name: ":default setup:"
