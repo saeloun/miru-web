@@ -2,7 +2,7 @@
 
 set -eu
 
-yarn install
-rake assets:precompile
+bin/yarn install
+bundle rake assets:precompile
 bundle install --with test
 bundle exec rspec --color spec
