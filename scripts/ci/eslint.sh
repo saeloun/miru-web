@@ -2,4 +2,4 @@
 
 set -eu
 
-yarn && npx eslint './app/javascript/**/*.{ts,tsx,js,jsx,json}'
+bin/yarn install && npx eslint './app/javascript/**/*.{ts,tsx,js,jsx,json}'
