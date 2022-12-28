@@ -53,22 +53,12 @@ class Project < ApplicationRecord
   end
 
   def project_team_member_details(time_frame)
-    entries = timesheet_entries.includes(:user)
-      .where(user_id: project_members.pluck(:user_id), work_date: DateRangeService.new(timeframe: time_frame).process)
-      .select(:user_id, "SUM(duration) as duration")
-      .group(:user_id)
+    @_project_team_member_details = team_member_details(time_frame)
+  end
 
-    project_members.map do |member|
-      entry = entries.find { |entry| entry.user_id == member.user_id }
-      cost = calculate_cost(entry&.duration.presence || 0, member.hourly_rate)
-      {
-        id: member.user_id,
-        name: member.full_name,
-        hourly_rate: member.hourly_rate,
-        minutes_logged: entry&.duration.presence || 0,
-        cost:
-      }
-    end
+  def project_total_logged_duration(time_frame)
+    @_project_total_logged_duration = (project_team_member_details
+                                        .map { |user_details| user_details[:minutes_logged] }).sum
   end
 
   def project_member_full_names
@@ -109,5 +99,24 @@ class Project < ApplicationRecord
 
     def calculate_cost(duration, hourly_rate)
       (duration.to_f / 60) * hourly_rate
+    end
+
+    def team_member_details(time_frame)
+      entries = timesheet_entries.includes(:user)
+        .where(user_id: project_members.pluck(:user_id), work_date: DateRangeService.new(timeframe: time_frame).process)
+        .select(:user_id, "SUM(duration) as duration")
+        .group(:user_id)
+
+      project_members.map do |member|
+        entry = entries.find { |entry| entry.user_id == member.user_id }
+        cost = calculate_cost(entry&.duration.presence || 0, member.hourly_rate)
+        {
+          id: member.user_id,
+          name: member.full_name,
+          hourly_rate: member.hourly_rate,
+          minutes_logged: entry&.duration.presence || 0,
+          cost:
+        }
+      end
     end
 end
