@@ -14,7 +14,7 @@ import { getMonth } from "../Filters/filterOptions";
 import Header from "../Header";
 import { ITimeEntry } from "../interface";
 
-const TimeEntryReports = () => {
+const TimeEntryReport = () => {
   const filterIntialValues = {
     dateRange: { label: getMonth(true), value: "this_month" },
     clients: [],
@@ -162,4 +162,4 @@ const TimeEntryReports = () => {
   );
 };
 
-export default TimeEntryReports;
+export default TimeEntryReport;

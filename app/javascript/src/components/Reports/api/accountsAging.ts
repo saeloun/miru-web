@@ -2,15 +2,18 @@
 import accountsAgingApi from "apis/reports/accountsAging";
 import { Toastr } from "common/Toastr";
 
-const getReportData = async ({ setClientList, setTotalAmount }) => {
+const getReportData = async ({
+  setClientList,
+  setTotalAmount,
+  setCurrency,
+}) => {
   try {
     const res = await accountsAgingApi.get();
-    setClientList(res.data.report.clients);
-    setTotalAmount(res.data.report.total_amount_overdue);
-    //setCurrency(res.data.currency);
-    //setSummary(res.data.summary);
-    //setShowNavFilters(true);
-    //setIsFilterVisible(false);
+    const { clients, total_amount_overdue, base_currency } = res.data.report;
+
+    setClientList(clients);
+    setTotalAmount(total_amount_overdue);
+    setCurrency(base_currency);
   } catch (error) {
     Toastr.error(error.message);
   }

@@ -13,28 +13,54 @@ const Container = () => {
   const [clientList, setClientList] = useState<any>(
     accountsAgingReport.clientList
   );
-  const [loading, setLoading] = useState(true);
+
+  const [total, setTotal] = useState<any>({
+    zero_to_thirty_days: 0,
+    thirty_one_to_sixty_days: 0,
+    sixty_one_to_ninety_days: 0,
+    ninety_plus_days: 0,
+    total: 0,
+  });
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    const sortedClients = accountsAgingReport.clientList.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
     if (accountsAgingReport.selectedFilter.clients.length > 0) {
       const temp = accountsAgingReport.selectedFilter.clients.map(
         client => client.name
       );
 
-      const filterd = accountsAgingReport.clientList.filter(client =>
+      const filterd = sortedClients.filter(client =>
         temp.includes(client.name)
       );
+
       setClientList(filterd);
       setLoading(false);
     } else {
-      setClientList(accountsAgingReport.clientList);
+      setClientList(sortedClients);
       setLoading(false);
     }
   }, [accountsAgingReport]);
 
+  useEffect(() => calculateTotal(), [clientList]);
+
   const sortClientList = () => {
     const temp = clientList.reverse();
     setClientList(temp);
+  };
+
+  const calculateTotal = () => {
+    const result = clientList.reduce((acc, n) => {
+      for (const key in n.amount_overdue) {
+        if (acc.hasOwn(key)) acc[key] += n.amount_overdue[key];
+        else acc[key] = n.amount_overdue[key];
+      }
+
+      return acc;
+    }, {});
+    setTotal(result);
   };
 
   return (
@@ -85,7 +111,7 @@ const Container = () => {
           {clientList.length > 0 && (
             <TableTotal
               currency={accountsAgingReport.currency}
-              report={accountsAgingReport.summary}
+              report={total}
             />
           )}
         </tbody>

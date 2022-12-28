@@ -7,7 +7,7 @@ import { SidePanel, Button } from "StyledComponents";
 import CustomCheckbox from "common/CustomCheckbox";
 import { useEntry } from "components/Reports/context/EntryContext";
 
-const FilterSideBar = ({
+const Filters = ({
   setIsFilterVisible,
   selectedFilter,
   setSelectedFilter,
@@ -28,8 +28,11 @@ const FilterSideBar = ({
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   useEffect(() => {
+    const sortedClients = filteredClientList.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
     if (debouncedSearchQuery && filteredClientList.length > 0) {
-      const newClientList = filteredClientList.filter(client =>
+      const newClientList = sortedClients.filter(client =>
         client.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       );
 
@@ -56,9 +59,7 @@ const FilterSideBar = ({
     setSelectedFilter(selectedClients);
     setFilterCounter(selectedClients.length);
     setIsFilterVisible(false);
-  }; //eslint-disable-line
-
-  const handleReset = () => {}; //eslint-disable-line
+  };
 
   return (
     <SidePanel setFilterVisibilty={setIsFilterVisible}>
@@ -158,4 +159,4 @@ const FilterSideBar = ({
   );
 };
 
-export default FilterSideBar;
+export default Filters;

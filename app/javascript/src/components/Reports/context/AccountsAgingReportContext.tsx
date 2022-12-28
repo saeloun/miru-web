@@ -4,7 +4,7 @@ const AccountsAgingReportContext = {
   },
   filterCounter: 0,
   clientList: [],
-  currency: "INR",
+  currency: "",
   summary: {
     zero_to_thirty_days: 0,
     thirty_one_to_sixty_days: 0,
@@ -12,7 +12,6 @@ const AccountsAgingReportContext = {
     ninety_plus_days: 0,
     total: 0,
   },
-  handleRemoveSingleFilter: (key, value) => {}, //eslint-disable-line
 };
 
 export default AccountsAgingReportContext;
