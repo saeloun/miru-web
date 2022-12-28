@@ -4,13 +4,13 @@ steps:
     key: "setup"
 
   - name: ":rubocop:"
-    command: "bash scripts/ci/rubocop.sh"
+    command: "scripts/ci/rubocop.sh"
     depends_on: "setup"
 
   - name: ":eslint:"
-    command: "bash scripts/ci/eslint.sh"
+    command: "scripts/ci/eslint.sh"
     depends_on: "setup"
 
   - name: ":rspec:"
-    command: "bash scripts/ci/rspec.sh"
+    command: "scripts/ci/rspec.sh"
     depends_on: "setup"
