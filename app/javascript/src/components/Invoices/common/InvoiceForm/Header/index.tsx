@@ -23,6 +23,7 @@ const Header = ({
   invoiceNumber = null,
   id = null,
   deleteInvoice = null,
+  showMoreButton = false,
 }) => {
   const [isMoreOptionsVisible, setIsMoreOptionsVisible] =
     useState<boolean>(false);
@@ -54,9 +55,9 @@ const Header = ({
             </button>
           )}
         </div>
-        <div className="flex w-2/5">
+        <div className="flex flex-col md:w-2/5 md:flex-row">
           <Link
-            className="header__button w-1/3 p-0"
+            className="header__button my-1 p-0 md:my-0 md:w-1/3"
             to={formType == "edit" ? `/invoices/${id}` : "/invoices"}
             type="button"
           >
@@ -64,7 +65,7 @@ const Header = ({
             <span className="ml-2 inline-block">CANCEL</span>
           </Link>
           <button
-            className="header__button w-1/3 bg-miru-han-purple-1000 p-0 text-white hover:text-white"
+            className="header__button my-1 bg-miru-han-purple-1000 p-0 text-white hover:text-white md:my-0 md:w-1/3"
             data-cy="save-invoice"
             type="button"
             onClick={handleSaveInvoice}
@@ -73,7 +74,7 @@ const Header = ({
             <span className="ml-2 inline-block">SAVE</span>
           </button>
           <button
-            className="header__button w-1/3 bg-miru-han-purple-1000 p-0 text-white hover:text-white"
+            className="header__button my-1 bg-miru-han-purple-1000 p-0 text-white hover:text-white md:my-0 md:w-1/3"
             type="button"
             onClick={handleSendInvoice}
           >
@@ -82,17 +83,19 @@ const Header = ({
               SEND TO
             </span>
           </button>
-          <div ref={wrapperRef}>
-            <MoreButton
-              onClick={() => setIsMoreOptionsVisible(!isMoreOptionsVisible)}
-            />
-            {isMoreOptionsVisible && (
-              <MoreOptions
-                deleteInvoice={deleteInvoice}
-                downloadInvoice={null}
+          {showMoreButton && (
+            <div ref={wrapperRef}>
+              <MoreButton
+                onClick={() => setIsMoreOptionsVisible(!isMoreOptionsVisible)}
               />
-            )}
-          </div>
+              {isMoreOptionsVisible && (
+                <MoreOptions
+                  deleteInvoice={deleteInvoice}
+                  downloadInvoice={null}
+                />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </Fragment>

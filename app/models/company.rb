@@ -28,7 +28,7 @@ class Company < ApplicationRecord
   has_many :current_workspace_users, foreign_key: "current_workspace_id", class_name: "User", dependent: :nullify
   has_one_attached :logo
   has_many :timesheet_entries, through: :clients
-  has_many :invoices, through: :clients
+  has_many :invoices
   has_many :payments, through: :invoices
   has_one :stripe_connected_account, dependent: :destroy
   has_many :payments_providers, dependent: :destroy
@@ -80,10 +80,6 @@ class Company < ApplicationRecord
        clients.name as project_client_name")
   end
 
-  def client_details(time_frame = "week")
-    clients.kept.map { |client| client.client_detail(time_frame) }
-  end
-
   def client_list
     clients.kept.map do |client|
       { id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.address }
@@ -101,15 +97,6 @@ class Company < ApplicationRecord
       draft_amount: status_and_amount["draft"],
       currency:
     }
-  end
-
-  def user_details
-    users.kept.map do |user|
-      {
-        id: user.id,
-        name: user.full_name
-      }
-    end
   end
 
   def company_logo

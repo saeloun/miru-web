@@ -79,10 +79,6 @@ class Project < ApplicationRecord
     end
   end
 
-  def total_hours_logged(time_frame = "week")
-    timesheet_entries.where(work_date: DateRangeService.new(timeframe: time_frame).process).sum(:duration)
-  end
-
   def overdue_and_outstanding_amounts
     currency = client.company.base_currency
     timesheet_entries_ids = timesheet_entries.ids
@@ -104,10 +100,6 @@ class Project < ApplicationRecord
       outstanding_amount:,
       currency:
     }
-  end
-
-  def format_amount(amount)
-    FormatAmountService.new(client.company.base_currency, amount).process
   end
 
   private
