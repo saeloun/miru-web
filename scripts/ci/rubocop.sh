@@ -1,5 +1,5 @@
 #!/bin/bash
 
-set -euo pipefail
+set -eu
 
 bundle exec rubocop

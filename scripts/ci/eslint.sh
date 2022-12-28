@@ -1,5 +1,5 @@
 #!/bin/bash
 
-set -euo pipefail
+set -eu
 
 npx eslint './app/javascript/**/*.{ts,tsx,js,jsx,json}'

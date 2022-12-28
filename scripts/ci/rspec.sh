@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -euo pipefail
-
-rake db:reset
+set -eu
 
 bundle exec rake rspec
