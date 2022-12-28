@@ -2,4 +2,4 @@
 
 set -eu
 
-npx eslint './app/javascript/**/*.{ts,tsx,js,jsx,json}'
+yarn && npx eslint './app/javascript/**/*.{ts,tsx,js,jsx,json}'
