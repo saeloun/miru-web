@@ -2,4 +2,4 @@
 
 set -eu
 
-bundle install && bundle exec rspec
+bundle exec rspec
