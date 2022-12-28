@@ -18,18 +18,11 @@ env:
   DATABASE_URL: postgres://postgres:postgres@localhost:5432
 
 steps:
-  - name: ":default setup:"
-    command: "scripts/ci/setup.sh"
-    key: "setup"
-
   - name: ":rubocop:"
     command: "scripts/ci/rubocop.sh"
-    depends_on: "setup"
 
   - name: ":eslint:"
     command: "scripts/ci/eslint.sh"
-    depends_on: "setup"
 
   - name: ":rspec:"
     command: "scripts/ci/rspec.sh"
-    depends_on: "setup"
