@@ -1,3 +1,16 @@
 steps:
+  - name: ":default setup:"
+    command: "scripts/ci/setup.sh.sh"
+    key: "setup"
+
+  - name: ":rubocop:"
+    command: "bash scripts/ci/rubocop.sh"
+    depends_on: "setup"
+
+  - name: ":eslint:"
+    command: "bash scripts/ci/eslint.sh"
+    depends_on: "setup"
+
   - name: ":rspec:"
-    command: "bundle install && bundle exec rspec --color specs"
+    command: "bash scripts/ci/rspec.sh"
+    depends_on: "setup"
