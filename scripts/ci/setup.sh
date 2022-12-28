@@ -6,6 +6,6 @@ bundle install --with test
 
 yarn install
 
-bundle exec rails webpacker:compile
+rakes assets: precompile
 
 bundle exec rake db:reset

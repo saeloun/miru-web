@@ -196,7 +196,7 @@ end
 
 group :test do
   # BuildKite Test Collector
-  # gem "buildkite-test_collector"
+  gem "buildkite-test_collector"
 
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara", ">= 3.26"
