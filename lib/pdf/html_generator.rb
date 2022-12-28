@@ -4,7 +4,8 @@ class Pdf::HtmlGenerator
   attr_accessor :template, :layout, :locals, :root_url
 
   def initialize(template, layout: "layouts/pdf", locals: {}, options: {}, root_url: nil)
-    @template = template
+    # all HTML template files must be stored inside app/views/pdfs folder
+    @template = "pdfs/#{template}"
     @layout = layout
     @locals = locals
     @root_url = root_url

@@ -10,9 +10,9 @@ module Reports::TimeEntries
 
     def process
       Pdf::HtmlGenerator.new(
-        "reports/pdf",
-        locals: { report_entries: }
-      ).process
+        :reports,
+        locals: { report_entries: @report_entries }
+      ).make
     end
   end
 end

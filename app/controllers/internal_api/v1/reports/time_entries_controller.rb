@@ -13,7 +13,7 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
 
     respond_to do |format|
       format.csv { send_data Reports::TimeEntries::GenerateCsv.new(entries).process }
-      format.pdf { send_data Reports::TimeEntries::GeneratePdf.new(entries).process }
+      format.pdf { send_data Reports::TimeEntries::GeneratePdf.new(reports).process }
     end
   end
 
@@ -35,7 +35,7 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
         order: { work_date: :desc },
         body_options: group_by_clause,
         includes: [:user, { project: :client } ]
-        )
+      )
 
       Reports::TimeEntries::Result.process(search_result, params["group_by"])
     end

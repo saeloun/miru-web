@@ -26,7 +26,7 @@ module InvoicePayment
       }
 
       Pdf::HtmlGenerator.new(
-        "invoices/pdf",
+        :invoices,
         locals:,
         root_url: @root_url
       ).make
