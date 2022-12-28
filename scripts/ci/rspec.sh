@@ -2,4 +2,4 @@
 
 set -eu
 
-bundle exec rspec --color specs
+bundle exec rspec
