@@ -195,9 +195,6 @@ group :development do
 end
 
 group :test do
-  # BuildKite Test Collector
-  # gem "buildkite-test_collector"
-
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara", ">= 3.26"
   gem "selenium-webdriver", ">= 4.0.0"
@@ -212,4 +209,7 @@ group :test do
 
   gem "rspec-buildkite"
   gem "rspec-retry"
+
+  # BuildKite Test Collector
+  gem "buildkite-test_collector", git: "https://github.com/buildkite/test-collector-ruby.git", branch: "main"
 end
