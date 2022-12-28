@@ -210,5 +210,6 @@ group :test do
   gem "database_cleaner", "~> 2.0"
   gem "hash_dot"
 
+  gem "rspec-buildkite"
   gem "rspec-retry"
 end
