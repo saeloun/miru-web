@@ -1,6 +1,6 @@
 steps:
   - name: ":default setup:"
-    command: "scripts/ci/setup.sh.sh"
+    command: "scripts/ci/setup.sh"
     key: "setup"
 
   - name: ":rubocop:"
