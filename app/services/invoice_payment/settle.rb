@@ -11,10 +11,7 @@ module InvoicePayment
     end
 
     def process
-      # create payment
       @payment = Payment.create!(payment_params)
-
-      # update invoice
       @invoice.settle!(payment)
 
       @payment
