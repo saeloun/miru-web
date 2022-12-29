@@ -6,5 +6,9 @@ FactoryBot.define do
     name { "Conduit" }
     description { "Blog site." }
     billable { false }
+
+    after(:create) do |project, _evaluator|
+      project.reindex(refresh: true)
+    end
   end
 end

@@ -8,5 +8,9 @@ FactoryBot.define do
     note { "Did that" }
     work_date { Date.current }
     bill_status { "non_billable" }
+
+    after(:create) do |timesheet, _evaluator|
+      timesheet.reindex(refresh: true)
+    end
   end
 end
