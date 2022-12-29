@@ -3,10 +3,13 @@ import React from "react";
 import { SettingIcon, SignOutIcon } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
+import { LocalStorageKeys } from "constants/index";
+
 import { activeClassName } from "./utils";
 
 const UserActions = () => {
   const handleLogout = () => {
+    window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
     window.localStorage.removeItem("filters");
   };
 

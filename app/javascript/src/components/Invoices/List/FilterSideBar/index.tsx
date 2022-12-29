@@ -10,6 +10,7 @@ import companiesApi from "apis/companies";
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";
+import { LocalStorageKeys } from "constants/index";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import { dateRangeOptions, statusOptions } from "./filterOptions";
@@ -195,7 +196,7 @@ const FilterSideBar = ({
   };
 
   const handleReset = () => {
-    window.localStorage.removeItem("filters");
+    window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
     setFilterParams(filterIntialValues);
     setIsFilterVisible(false);
   };
@@ -204,7 +205,11 @@ const FilterSideBar = ({
     defaultDateRange()
       ? setFilterParams(setDefaultDateRange())
       : setFilterParams(filters);
-    window.localStorage.setItem("filters", JSON.stringify(filters));
+
+    window.localStorage.setItem(
+      LocalStorageKeys.INVOICE_FILTERS,
+      JSON.stringify(filters)
+    );
     setIsFilterVisible(false);
   };
 
