@@ -27,6 +27,7 @@ const AddManualEntry = ({
   const [note, setNote] = useState<any>(null);
   const [showDatePicker, setShowDatePicker] = useState<any>(false);
   const [isOpen, setIsOpen] = useState<any>(false);
+  const [showSelectInvoice, setShowSelectInvoice] = useState<any>(false);
 
   const transactionTypes = [
     { label: "Visa", value: "visa" },
@@ -84,11 +85,16 @@ const AddManualEntry = ({
     if (selectedInvoice) {
       setInvoice(selectedInvoice);
       setAmount(selectedInvoice.amount);
+      setShowSelectInvoice(true);
     }
   };
 
   useEffect(() => {
-    if (invoiceId) handleSelectedInvoice();
+    if (invoiceId) {
+      handleSelectedInvoice();
+    } else {
+      setShowSelectInvoice(true);
+    }
   }, [invoiceList]);
 
   const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
@@ -183,23 +189,25 @@ const AddManualEntry = ({
                   </label>
                 </div>
                 <div className="mt-1">
-                  <Select
-                    isSearchable
-                    className="m-0 mt-2 w-full border-0 font-medium text-miru-dark-purple-1000"
-                    classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
-                    defaultValue={null}
-                    options={invoiceList.invoiceList}
-                    placeholder="Search by client name or invoice ID"
-                    styles={customStyles}
-                    components={{
-                      Option: CustomOption,
-                      DropdownIndicator,
-                      IndicatorSeparator: () => null,
-                    }}
-                    onChange={handleInvoiceSelect}
-                    onMenuClose={() => setIsOpen(false)}
-                    onMenuOpen={() => setIsOpen(true)}
-                  />
+                  {showSelectInvoice && (
+                    <Select
+                      isSearchable
+                      className="m-0 mt-2 w-full border-0 font-medium text-miru-dark-purple-1000"
+                      classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
+                      defaultValue={invoice}
+                      options={invoiceList.invoiceList}
+                      placeholder="Search by client name or invoice ID"
+                      styles={customStyles}
+                      components={{
+                        Option: CustomOption,
+                        DropdownIndicator,
+                        IndicatorSeparator: () => null,
+                      }}
+                      onChange={handleInvoiceSelect}
+                      onMenuClose={() => setIsOpen(false)}
+                      onMenuOpen={() => setIsOpen(true)}
+                    />
+                  )}
                 </div>
               </div>
             </div>
