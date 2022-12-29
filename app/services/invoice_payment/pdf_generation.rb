@@ -37,14 +37,14 @@ module InvoicePayment
       def build_invoice
         sub_total = 0
 
-        snippets = @invoice.invoice_line_items.map do |invoice_line_item|
+        rows = @invoice.invoice_line_items.map do |invoice_line_item|
           sub_total += invoice_line_item.total_rate
 
-          invoice_line_item.pdf_snippet(@base_currency)
+          InvoiceLineItemPresenter.new(invoice_line_item).pdf_row(@base_currency)
         end
 
         {
-          invoice_line_items: snippets,
+          invoice_line_items: rows,
           sub_total:,
           total: sub_total + @invoice.tax - @invoice.discount
         }

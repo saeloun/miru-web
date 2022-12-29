@@ -59,15 +59,4 @@ class InvoiceLineItem < ApplicationRecord
   def total_rate
     @_total_rate = ((hours_spent) * rate)
   end
-
-  # must be moved to a presenter
-  def pdf_snippet(base_currency)
-    snippet = { name:, date:, description: }
-
-    snippet[:quantity] = time_spent
-    snippet[:rate] = FormatAmountService.new(base_currency, rate).process
-    snippet[:line_total] = FormatAmountService.new(base_currency, total_rate).process
-
-    snippet
-  end
 end
