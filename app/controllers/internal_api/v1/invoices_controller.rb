@@ -24,7 +24,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def create
     authorize Invoice
     render :create, locals: {
-      invoice: @client.invoices.create!(invoice_params),
+      invoice: current_company.invoices.create!(invoice_params),
       client: @client
     }
   end
@@ -59,6 +59,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def send_invoice
     authorize invoice
 
+    invoice.sending!
     invoice.send_to_email(
       subject: invoice_email_params[:subject],
       message: invoice_email_params[:message],

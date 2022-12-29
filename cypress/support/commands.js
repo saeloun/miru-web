@@ -2,7 +2,6 @@ import { authSelectors } from "../constants/selectors/auth";
 import { teamTabSelector } from "../constants/selectors/team";
 import { invoicesSelector } from "../constants/selectors/invoices";
 
-
 Cypress.Commands.add("loginAsOwner", function () {
   cy.get(authSelectors.emailField).clear().type(this.data.email);
   cy.get(authSelectors.passwordField).clear().type(this.data.password);
@@ -37,6 +36,20 @@ Cypress.Commands.add("generateNewInvoice", function(invoice_number, reference){
   cy.get(invoicesSelector.invoiceNumberField).click().type(invoice_number)
   cy.get(invoicesSelector.referenceInput).click().type(reference)
   cy.get(invoicesSelector.newLineItemButton).click()
+  cy.get(invoicesSelector.invoiceNameInput).click()
   cy.get(invoicesSelector.entriesList).first().click({force: true})
   cy.get(invoicesSelector.saveInvoice).click()
+})
+
+Cypress.Commands.add("sendInvoice", function(invoice_number, reference){
+  cy.get(invoicesSelector.newInvoiceButton).click()
+  cy.get(invoicesSelector.addClientButton).click()
+  cy.contains("Microsoft").click()
+  cy.get(invoicesSelector.invoiceNumberField).click().type(invoice_number)
+  cy.get(invoicesSelector.referenceInput).click().type(reference)
+  cy.get(invoicesSelector.newLineItemButton).click()
+  cy.get(invoicesSelector.invoiceNameInput).click()
+  cy.get(invoicesSelector.entriesList).first().click({force: true})
+  cy.get(invoicesSelector.sendInvoice).click({force: true})
+  cy.get(invoicesSelector.sendEmail).click()
 })
