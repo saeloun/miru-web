@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import dayjs from "dayjs";
 import { XIcon, CalendarIcon, SearchIcon } from "miruIcons";
@@ -17,6 +17,9 @@ const AddManualEntry = ({
   fetchPaymentList,
   fetchInvoiceList,
 }) => {
+  const invoiceId = new URLSearchParams(window.location.search).get(
+    "invoiceId"
+  );
   const [invoice, setInvoice] = useState<any>(null);
   const [transactionDate, setTransactionDate] = useState<any>(null);
   const [transactionType, setTransactionType] = useState<any>(null);
@@ -72,6 +75,21 @@ const AddManualEntry = ({
     setInvoice(val);
     setAmount(val.amount);
   };
+
+  const handleSelectedInvoice = () => {
+    if (!invoiceList || invoiceList.length == 0) return;
+    const selectedInvoice = invoiceList.invoiceList.find(
+      invoice => invoice.value === Number(invoiceId)
+    );
+    if (selectedInvoice) {
+      setInvoice(selectedInvoice);
+      setAmount(selectedInvoice.amount);
+    }
+  };
+
+  useEffect(() => {
+    if (invoiceId) handleSelectedInvoice();
+  }, [invoiceList]);
 
   const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (
     <components.DropdownIndicator {...props}>
