@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import companiesApi from "apis/companies";
 import invoicesApi from "apis/invoices";
@@ -20,7 +20,7 @@ import { generateInvoiceLineItems } from "../common/utils";
 
 const GenerateInvoices = () => {
   const navigate = useNavigate();
-  const clientId = useParams()["id"];
+  const clientId = new URLSearchParams(window.location.search).get("clientId");
   const [invoiceDetails, setInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
   const [selectedClient, setSelectedClient] = useState<any>();

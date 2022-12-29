@@ -58,7 +58,7 @@ const ProjectDetails = () => {
   };
 
   const handleGenerateInvoice = () => {
-    navigate(`/invoices/generate/${project?.client?.id}`);
+    navigate(`/invoices/generate/?clientId=${project?.client?.id}`);
   };
 
   const currencySymb = currencySymbol(project?.currency);
