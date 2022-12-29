@@ -103,13 +103,13 @@ en:
               too_short: "must be at least %{count} characters long"
               blank: "can't be blank"
             password_confirmation:
-              confirmation: "Passwords dont' match"
+              confirmation: "doesn't match with new password"
             first_name:
-              blank: "First and last name can't be blank"
-              invalid: "First name must only contain letters or spaces"
+              blank: "can't be blank"
+              invalid: "must only contain letters or spaces"
             last_name:
-              blank: "First and last name can't be blank"
-              invalid: "Last name must only contain letters or spaces"
+              blank: "can't be blank"
+              invalid: "must only contain letters or spaces"
             email:
               blank: "Email can't be blank"
               invalid: "Invalid Email ID"
