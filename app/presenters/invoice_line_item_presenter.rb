@@ -14,7 +14,7 @@ class InvoiceLineItemPresenter
       description: invoice_line_item.description,
       quantity: invoice_line_item.time_spent,
       rate: FormatAmountService.new(base_currency, invoice_line_item.rate).process,
-      line_total: FormatAmountService.new(base_currency, invoice_line_item.total_rate).process
+      line_total: FormatAmountService.new(base_currency, invoice_line_item.total_cost).process
     }
   end
 end

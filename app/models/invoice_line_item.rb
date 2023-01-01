@@ -34,6 +34,10 @@ class InvoiceLineItem < ApplicationRecord
   validates :rate, numericality: { greater_than_or_equal_to: 0 }
   validates :quantity, numericality: { greater_than: 0 }
 
+  def self.total_cost
+    (self.sum("quantity * rate") / 60).round(3)
+  end
+
   def hours_spent
     @_hours_spent ||= quantity.to_f / 60
   end
@@ -56,7 +60,7 @@ class InvoiceLineItem < ApplicationRecord
     end
   end
 
-  def total_rate
-    @_total_rate = ((hours_spent) * rate)
+  def total_cost
+    @_total_cost = (hours_spent * rate).round(3)
   end
 end

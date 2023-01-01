@@ -4,6 +4,7 @@ module InvoicePayment
   class PdfGeneration < ApplicationService
     def initialize(invoice, company_logo, root_url)
       @invoice = invoice
+      @invoice_line_items = @invoice.invoice_line_items
       @company_logo = company_logo || ""
       @base_currency = invoice.company.base_currency
       @root_url = root_url
@@ -35,11 +36,9 @@ module InvoicePayment
     private
 
       def build_invoice
-        sub_total = 0
+        sub_total = @invoice_line_items.total_cost
 
-        rows = @invoice.invoice_line_items.map do |invoice_line_item|
-          sub_total += invoice_line_item.total_rate
-
+        rows = @invoice_line_items.map do |invoice_line_item|
           InvoiceLineItemPresenter.new(invoice_line_item).pdf_row(@base_currency)
         end
 
