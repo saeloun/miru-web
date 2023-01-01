@@ -3,7 +3,14 @@
 class InternalApi::V1::WorkspacesController < ApplicationController
   skip_after_action :verify_authorized
 
+  def index
+    authorize :index, policy_class: WorkspacePolicy
+    render :index, locals: { workspaces: current_user.companies }, status: :ok
+  end
+
   def update
+    authorize :update, policy_class: WorkspacePolicy
+
     workspace = current_user.companies.find(params[:id])
     current_user.update!(current_workspace_id: workspace.id)
 
