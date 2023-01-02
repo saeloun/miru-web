@@ -4,20 +4,18 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
   def index
     authorize :report
     render :index,
-      locals: Reports::TimeEntries::ReportService.new(params, current_company, true).process,
+      locals: Reports::TimeEntries::ReportService.new(params, current_company).process,
       status: :ok
   end
 
   def download
     authorize :report
 
-    reports = Reports::TimeEntries::ReportService.new(params, current_company).process[:reports]
-
     respond_to do |format|
       format.csv { send_data Reports::TimeEntries::GenerateCsv
-        .new(reports.map { |e| e[:entries] }.flatten)
+        .new(Reports::TimeEntries::ReportService.new(params, current_company, true).process[:entries])
         .process
-}
+      }
       format.pdf { send_data Reports::TimeEntries::GeneratePdf.new(reports).process }
     end
   end
