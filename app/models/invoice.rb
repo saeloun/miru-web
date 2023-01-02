@@ -81,7 +81,7 @@ class Invoice < ApplicationRecord
       .references(:clients) if query.present?
   }
   scope :during, -> (duration) {
-    where(due_date: duration)
+    where(issue_date: duration) if duration.present?
   }
 
   delegate :name, to: :client, prefix: :client
