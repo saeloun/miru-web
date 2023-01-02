@@ -85,3 +85,7 @@ export enum TeamModalType {
   ADD_EDIT = "addEdit",
   DELETE = "delete",
 }
+
+export enum LocalStorageKeys {
+  INVOICE_FILTERS = "invoiceFilters",
+}
