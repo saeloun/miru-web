@@ -44,6 +44,7 @@ module.exports = {
         fit: "fit-content",
         30: "7.5rem", //120px
         128: "32rem", // 512px
+        168: "10.5rem", // 168px
         352: "22rem", //352px
         228: "14.25rem", //228px
         180: "11.25rem", //180px
