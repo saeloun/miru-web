@@ -38,11 +38,20 @@ const Payments = () => {
     }
   };
 
+  const checkInvoiceIdInUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const invoiceId = urlParams.get("invoiceId");
+    if (invoiceId) {
+      setShowManualEntryModal(true);
+    }
+  };
+
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
     fetchInvoiceList();
     fetchPaymentList();
+    checkInvoiceIdInUrl();
   }, []);
 
   return (

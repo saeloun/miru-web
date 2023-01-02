@@ -34,6 +34,7 @@ import {
   PaperPlaneTilt,
   FloppyDisk,
   Minus,
+  CurrencyCircleDollar,
 } from "phosphor-react";
 
 export const EditIcon = PencilSimple;
@@ -71,3 +72,4 @@ export const DownloadSimpleIcon = DownloadSimple;
 export const CalendarIcon = Calendar;
 export const PaperPlaneTiltIcon = PaperPlaneTilt;
 export const FloppyDiskIcon = FloppyDisk;
+export const CurrencyCircleDollarIcon = CurrencyCircleDollar;
