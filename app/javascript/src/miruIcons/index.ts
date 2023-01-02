@@ -35,6 +35,7 @@ import {
   PaperPlaneTilt,
   FloppyDisk,
   Minus,
+  CurrencyCircleDollar,
 } from "phosphor-react";
 
 const alert = require("../../../assets/images/alert-error-close.svg");
@@ -130,6 +131,7 @@ export const DownloadSimpleIcon = DownloadSimple;
 export const CalendarIcon = Calendar;
 export const PaperPlaneTiltIcon = PaperPlaneTilt;
 export const FloppyDiskIcon = FloppyDisk;
+export const CurrencyCircleDollarIcon = CurrencyCircleDollar;
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
 export const WarningCloseIconSVG = warningCloseIcon;
