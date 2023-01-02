@@ -26,17 +26,26 @@ const showToastr = message => {
 const isError = e => e && e.stack && e.message;
 
 const showErrorToastr = error => {
+  const arrayOfErrorMsgs = Array.isArray(error);
   const errorMessage = isError(error) ? error.message : error;
-  toast.error(<ToastrComponent message={errorMessage} />, {
-    toastId: customId,
-    position: toast.POSITION.BOTTOM_CENTER,
-    transition: Slide,
-    theme: "colored",
-    icon: <GetToasterIcon type="error" />,
-    closeButton: ({ closeToast }) =>
-      getToasterCloseButton({ closeToast, type: "error" }),
-    hideProgressBar: true,
-  });
+
+  const toastMsg = err =>
+    toast.error(<ToastrComponent message={err} />, {
+      toastId: customId,
+      position: toast.POSITION.BOTTOM_CENTER,
+      transition: Slide,
+      theme: "colored",
+      icon: <GetToasterIcon type="error" />,
+      closeButton: ({ closeToast }) =>
+        getToasterCloseButton({ closeToast, type: "error" }),
+      hideProgressBar: true,
+    });
+
+  arrayOfErrorMsgs
+    ? error.forEach(err => {
+        toastMsg(err);
+      })
+    : toastMsg(errorMessage);
 };
 
 const showWarningToastr = warning => {
