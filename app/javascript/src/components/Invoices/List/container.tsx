@@ -24,7 +24,7 @@ const Container = ({
   isDesktop,
 }) => {
   let appliedFilterCount = (filterParamsStr.match(/&/g) || []).length;
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   filterParamsStr.includes("custom") &&
     (appliedFilterCount = appliedFilterCount - 2);
 
@@ -50,10 +50,12 @@ const Container = ({
 
   useEffect(() => setLoading(true), []);
 
-  useEffect(() => setLoading(false), [invoices]);
+  useEffect(() => {
+    if (invoices.length > 0) setLoading(false);
+  }, [invoices]);
 
   return loading ? (
-    <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+    <p className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
       Loading...
     </p>
   ) : invoices.length > 0 ? (
