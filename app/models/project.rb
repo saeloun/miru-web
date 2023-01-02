@@ -57,8 +57,11 @@ class Project < ApplicationRecord
   end
 
   def project_total_logged_duration(time_frame)
-    @_project_total_logged_duration = (project_team_member_details
-                                        .map { |user_details| user_details[:minutes_logged] }).sum
+    @_project_total_logged_duration = timesheet_entries
+      .includes(:user)
+      .where(user_id: project_members.pluck(:user_id),
+        work_date: DateRangeService.new(timeframe: time_frame).process)
+      .sum(:duration)
   end
 
   def project_member_full_names
