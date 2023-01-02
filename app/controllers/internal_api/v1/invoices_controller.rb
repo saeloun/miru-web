@@ -57,7 +57,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def destroy
     authorize invoice
-    invoice.destroy
+    invoice.discard!
   end
 
   def send_invoice
@@ -103,7 +103,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     end
 
     def invoices_query
-      @_invoices_query ||= current_company.invoices.includes(:client)
+      @_invoices_query ||= current_company.invoices.kept.includes(:client)
         .search(params[:query])
         .issue_date_range(from_to_date(params[:from_to]))
         .for_clients(params[:client_ids])
