@@ -27,7 +27,7 @@ namespace :internal_api, defaults: { format: "json" } do
       resources :accounts_aging, only: [:index]
     end
 
-    resources :workspaces, only: [:update]
+    resources :workspaces, only: [:index, :update]
     namespace :invoices do
       resources :bulk_deletion, only: [:create]
       resources :bulk_download, only: [:index]
