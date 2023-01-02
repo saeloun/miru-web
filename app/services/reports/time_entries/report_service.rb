@@ -4,7 +4,7 @@ module Reports::TimeEntries
   class ReportService
     attr_reader :params, :is_download_request, :current_company
 
-    def initialize(params, current_company, is_download_request = false)
+    def initialize(params, current_company, download: false)
       @params = params
       @current_company = current_company
       @is_download_request = is_download_request
@@ -21,10 +21,12 @@ module Reports::TimeEntries
     private
 
       def filter_options
-        @_filter_options ||= {
-          clients: current_company.clients.order(:name),
-          team_members: current_company.users.order(:first_name)
-        } if !is_download_request
+        if !is_download_request
+          @_filter_options ||= {
+            clients: current_company.clients.order(:name),
+            team_members: current_company.users.order(:first_name)
+          }
+        end
        end
 
       def reports
