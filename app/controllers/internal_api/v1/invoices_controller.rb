@@ -34,7 +34,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     render :edit, locals: {
       invoice:,
       client: invoice.client,
-      current_company_clients: current_company.client_list
+      client_list: current_company.client_list
     }
   end
 

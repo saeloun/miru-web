@@ -18,6 +18,6 @@ json.invoice_line_items invoice.invoice_line_items do |invoice_line_item|
   json.partial! "internal_api/v1/partial/invoice_line_item", locals: { invoice_line_item: }
 end
 
-json.company_client_list current_company_clients do |client|
+json.company_client_list client_list do |client|
   json.partial! "internal_api/v1/partial/client_list", locals: { client: }
 end
