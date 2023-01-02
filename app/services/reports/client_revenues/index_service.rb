@@ -44,10 +44,8 @@ module Reports::ClientRevenues
       end
 
       def duration_params
-        if params[:duration_from].present?
+        if params[:duration_from].present? && params[:duration_to].present?
           params[:duration_from].to_date..params[:duration_to].to_date
-        else
-          current_company.created_at..Date.today
         end
       end
   end
