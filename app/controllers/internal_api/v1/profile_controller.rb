@@ -17,17 +17,8 @@ class InternalApi::V1::ProfileController < InternalApi::V1::ApplicationControlle
 
   def update
     authorize :update, policy_class: ProfilePolicy
-    if params[:user][:current_password].blank?
-      current_user.update_without_password(user_params.except(:current_password))
-      render json: { notice: "User updated" }, status: :ok
-    elsif validate_current_password && validate_password_length && validate_password_confirmation
-      current_user.update_with_password(user_params)
-      render json: { notice: "Password updated" }, status: :ok
-    else
-      render json: { error: "Something went wrong" }, status: :unprocessable_entity
-    end
-  rescue Exception => e
-    render json: { error: e.message }, status: :unprocessable_entity
+    service = UpdateProfileSettingsService.new(current_user, user_params).process
+    render json: service[:res], status: service[:status]
   end
 
   private
@@ -36,25 +27,5 @@ class InternalApi::V1::ProfileController < InternalApi::V1::ApplicationControlle
       params.require(:user).permit(
         :first_name, :last_name, :current_password, :password, :password_confirmation, :avatar
       )
-    end
-
-    def validate_current_password
-      return true if current_user.valid_password?(params[:user][:current_password])
-
-      raise Exception.new("Current password is not correct")
-    end
-
-    def validate_password_confirmation
-      return true if params[:user][:password] == params[:user][:password_confirmation]
-
-      raise Exception.new("Password and password confirmation does not match")
-    end
-
-    def validate_password_length
-      return true if params[:user][:password].present? &&
-      params[:user][:password].length > 5 &&
-      params[:user][:password_confirmation].length > 5
-
-      raise Exception.new("Password and password confirmation should be of minimum 6 characters")
     end
 end
