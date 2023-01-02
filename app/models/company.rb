@@ -45,42 +45,7 @@ class Company < ApplicationRecord
   scope :valid_invitations, -> { where(company: self).valid_invitations }
 
   def project_list(client_id = nil, user_id = nil, billable = nil, search)
-    project_list = project_list_query(client_id, user_id, billable)
-    minutes_spent = timesheet_entries.group(:project_id).sum(:duration)
-    query = project_list.ransack({ name_or_client_name_cont: search })
-    project_list = query.result
-    project_ids = project_list.ids.uniq
-    project_ids.map do |id|
-      billable_array = []
-      project_name_array = []
-      client_name_array = []
-      project_list.each do |project|
-        if id == project.id
-          billable_array.push(project.is_billable)
-          client_name_array.push(project.project_client_name)
-          project_name_array.push(project.project_name)
-        end
-      end
-      {
-        id:,
-        name: project_name_array[0],
-        clientName: client_name_array[0],
-        isBillable: billable_array[0],
-        minutesSpent: minutes_spent[id]
-      }
-    end
-  end
-
-  def project_list_query(client_id, user_id, billable)
-    db_query = projects.kept.left_outer_joins(:project_members).joins(:client)
-    db_query = db_query.where(project_members: { user_id: }) if user_id.present?
-    db_query = db_query.where(client_id:) if client_id.present?
-    db_query = db_query.where(projects: { billable: }) if billable.present?
-    db_query.select(
-      "projects.id as id,
-       projects.name as project_name,
-       projects.billable as is_billable,
-       clients.name as project_client_name")
+    ProjectListService.new(self, client_id, user_id, billable, search).process
   end
 
   def client_list
