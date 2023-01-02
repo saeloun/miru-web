@@ -12,7 +12,7 @@ import ProfileLayout from "../components/Profile/Layout";
 import ProjectDetails from "../components/Projects/Details";
 import ProjectList from "../components/Projects/List";
 import OutstandingInvoiceReport from "../components/Reports/outstandingInvoices";
-import ReportList from "../components/Reports/reportList";
+import ReportList from "../components/Reports/ReportList";
 import RevenueByClientReport from "../components/Reports/revenueByClient";
 import TimeEntryReports from "../components/Reports/timeEntry";
 import TotalHoursReport from "../components/Reports/totalHoursLogged";
