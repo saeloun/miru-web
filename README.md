@@ -5,13 +5,13 @@
 
 Miru is an open-source tool, designed to make time tracking, invoice management, and accounting easy for small businesses worldwide. It is a platform for organizations to help them streamline their workflow.
 
+[![Build status](https://badge.buildkite.com/c21ea1f95172e59eeeecec486c49130e578e4daf99d90dcba1.svg?branch=develop)](https://buildkite.com/saeloun-bk/miruweb)
 ![GitHub contributors](https://img.shields.io/github/contributors/saeloun/miru-web)
 [![GitHub stars](https://img.shields.io/github/stars/saeloun/miru-web)](https://github.com/saeloun/miru-web/stargazers)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/saeloun/miru-web)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/saeloun/miru-web)
 [![GitHub license](https://img.shields.io/github/license/saeloun/miru-web)](https://github.com/saeloun/miru-web)
 [![Twitter Follow](https://img.shields.io/twitter/follow/GetMiru?style=social)](https://twitter.com/getmiru)
-
 <img src="https://user-images.githubusercontent.com/22231095/170423540-e10ada9e-cf1b-4a05-bbb6-2342955f46b0.png"  width="100%" alt="Miru Monthly Timetracking page"/>
 
 <img src="https://user-images.githubusercontent.com/22231095/170424136-42f45a24-caa9-4b0e-b5fa-35bfe6f2e70b.png" width="100%" alt="Miru Invoice page"/>
@@ -62,7 +62,7 @@ brew services start elasticsearch-full
    - Install Docker Desktop ( M1 / Intel ) https://www.docker.com/products/docker-desktop/
    - Run below command in your terminal & you can check by opening `localhost:9200`
    ```
-   docker run -p 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.7
+   docker run -dp 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.7
    ```
    - Install Chrome Extension to browse the Cluster ( Kind of like PGAdmin for Elastic Search ) https://chrome.google.com/webstore/search/multi%20elastic%20search%20head
    More information available at https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
