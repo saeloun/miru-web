@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProjectsIndexService
+class ProjectsFetchService
   attr_reader :current_company, :params
   attr_accessor :clients, :projects, :users
 
