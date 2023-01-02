@@ -21,7 +21,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
         Download
       </li>
     )}
-    {["sent", "overdue, viewed"].includes(invoice?.status) && (
+    {["sent", "overdue", "viewed"].includes(invoice?.status) && (
       <li
         className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
         onClick={() => markInvoiceAsPaid(invoice.id)}
