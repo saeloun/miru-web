@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 
 import { useOutsideClick } from "helpers";
+import { useNavigate } from "react-router-dom";
 
 import EditButton from "./EditButton";
 import SendButton from "./SendButton";
@@ -19,6 +20,12 @@ const InvoiceActions = ({
     useState<boolean>(false);
 
   const wrapperRef = useRef(null);
+
+  const navigate = useNavigate();
+
+  const markInvoiceAsPaid = async (id: number) => {
+    navigate(`/payments/?invoiceId=${id}`);
+  };
 
   useOutsideClick(
     wrapperRef,
@@ -39,6 +46,7 @@ const InvoiceActions = ({
             deleteInvoice={deleteInvoice}
             downloadInvoice={handleDownloadInvoice}
             invoice={invoice}
+            markInvoiceAsPaid={markInvoiceAsPaid}
           />
         )}
       </div>
