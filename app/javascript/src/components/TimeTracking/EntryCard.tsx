@@ -2,7 +2,7 @@
 import React from "react";
 
 import { minToHHMM } from "helpers";
-import { DeleteIcon, EditIcon } from "miruIcons";
+import { DeleteIconSVG, EditImageButtonSVG } from "miruIcons";
 import { Badge } from "StyledComponents";
 
 import { Roles } from "../../constants";
@@ -29,7 +29,7 @@ const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
         <img
           alt="edit"
           className="icon-hover h-4 w-4 text-miru-han-purple-600 hover:text-miru-han-purple-1000"
-          src={EditIcon}
+          src={EditImageButtonSVG}
         />
       </button>
     );
@@ -45,7 +45,7 @@ const showDeleteAction = (billStatus, role, id, handleDeleteEntry) => {
         <img
           alt="delete"
           className="icon-hover fill-blue h-4 w-4 text-miru-han-purple-1000 hover:text-miru-han-purple-1000"
-          src={DeleteIcon}
+          src={DeleteIconSVG}
         />
       </button>
     );
