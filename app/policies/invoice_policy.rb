@@ -35,7 +35,7 @@ class InvoicePolicy < ApplicationPolicy
 
   def permitted_attributes
     [
-      :issue_date, :due_date,
+      :issue_date, :due_date, :status,
       :invoice_number, :reference, :amount,
       :outstanding_amount, :tax, :amount_paid,
       :amount_due, :discount, :client_id, :external_view_key,
