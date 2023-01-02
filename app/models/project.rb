@@ -105,20 +105,21 @@ class Project < ApplicationRecord
     end
 
     def team_member_details(time_frame)
-      entries = timesheet_entries.includes(:user)
+      user_id_to_duration = {}
+      timesheet_entries.includes(:user)
         .where(user_id: project_members.pluck(:user_id), work_date: DateRangeService.new(timeframe: time_frame).process)
         .select(:user_id, "SUM(duration) as duration")
         .group(:user_id)
+        .each { |entry| user_id_to_duration[entry.user_id] = entry.duration }
 
       project_members.map do |member|
-        entry = entries.find { |entry| entry.user_id == member.user_id }
-        cost = calculate_cost(entry&.duration.presence || 0, member.hourly_rate)
+        duration = user_id_to_duration[member.user_id] || 0
         {
           id: member.user_id,
           name: member.full_name,
           hourly_rate: member.hourly_rate,
-          minutes_logged: entry&.duration.presence || 0,
-          cost:
+          minutes_logged: duration,
+          cost: calculate_cost(duration, member.hourly_rate)
         }
       end
     end
