@@ -8,7 +8,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     authorize Invoice
     pagy, invoices = pagy(invoices_query, items_param: :invoices_per_page)
 
-    recently_updated_invoices = current_company.invoices
+    recently_updated_invoices = current_company.invoices.kept
       .includes(:client)
       .order("updated_at desc")
       .limit(10)
