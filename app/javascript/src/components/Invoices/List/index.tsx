@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 
 import invoicesApi from "apis/invoices";
 import Pagination from "common/Pagination";
-import { ApiStatus as InvoicesStatus } from "constants/index";
+import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./container";
@@ -34,7 +34,14 @@ const Invoices = ({ isDesktop }) => {
     page: searchParams.get("page") || 1,
     query: searchParams.get("query") || "",
   });
-  const [filterParams, setFilterParams] = useState(filterIntialValues);
+
+  const LS_INVOICE_FILTERS = window.localStorage.getItem(
+    LocalStorageKeys.INVOICE_FILTERS
+  );
+
+  const [filterParams, setFilterParams] = useState<any>(
+    JSON.parse(LS_INVOICE_FILTERS) || filterIntialValues
+  );
   const [filterParamsStr, setFilterParamsStr] = useState("");
   const [selectedInput, setSelectedInput] = useState("from-input");
 
