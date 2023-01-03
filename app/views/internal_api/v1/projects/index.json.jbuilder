@@ -11,10 +11,11 @@ json.projects current_company.project_list(params[:client_id], params[:user_id],
   json.minutesSpent project.minutes_spent
 end
 json.clients current_company_clients do |client|
+json.clients clients do |client|
   json.id client.id
   json.name client.name
 end
-json.team_members current_company_users do |user|
+json.team_members users do |user|
   json.id user.id
   json.user_name "#{user.first_name} #{user.last_name}"
 end
