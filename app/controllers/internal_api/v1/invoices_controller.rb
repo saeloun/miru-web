@@ -8,7 +8,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     authorize Invoice
     pagy, invoices = pagy(invoices_query, items_param: :invoices_per_page)
 
-    recently_updated_invoices = current_company.invoices
+    recently_updated_invoices = current_company.invoices.kept
       .includes(:client)
       .order("updated_at desc")
       .limit(10)
@@ -31,12 +31,15 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def edit
     authorize invoice
-    render :edit, locals: { invoice: }
+    render :edit, locals: {
+      invoice:,
+      client: invoice.client,
+      client_list: current_company.client_list
+    }
   end
 
   def update
     authorize invoice
-
     invoice.update!(invoice_params)
     render :update, locals: {
       invoice:,
@@ -47,19 +50,20 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def show
     authorize invoice
     render :show, locals: {
-      invoice:
+      invoice:,
+      client: invoice.client
     }
   end
 
   def destroy
     authorize invoice
-    invoice.destroy
+    invoice.discard!
   end
 
   def send_invoice
     authorize invoice
 
-    invoice.sending!
+    invoice.sending! unless invoice.paid?
     invoice.send_to_email(
       subject: invoice_email_params[:subject],
       message: invoice_email_params[:message],
@@ -87,9 +91,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     end
 
     def invoice_params
-      params.require(:invoice).permit(
-        policy(Invoice).permitted_attributes
-      )
+      params.require(:invoice).permit(policy(Invoice).permitted_attributes)
     end
 
     def invoice_email_params
@@ -101,7 +103,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     end
 
     def invoices_query
-      @_invoices_query ||= current_company.invoices.includes(:client)
+      @_invoices_query ||= current_company.invoices.kept.includes(:client)
         .search(params[:query])
         .issue_date_range(from_to_date(params[:from_to]))
         .for_clients(params[:client_ids])
