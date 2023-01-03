@@ -22,7 +22,7 @@ class BulkInvoiceDownloadService
       zip_data = zipper.read
       zipper.cleanup!
 
-      zip_data
+      zip_data.force_encoding("ISO-8859-1").encode("UTF-8")
     end
 
     def invoices_temp_pdf_data
