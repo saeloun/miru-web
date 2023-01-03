@@ -2,6 +2,8 @@ import React from "react";
 
 import { XIcon } from "miruIcons";
 
+import { LocalStorageKeys } from "constants/index";
+
 const AppliedFilters = ({
   filterParams,
   filterParamsStr,
@@ -27,10 +29,12 @@ const AppliedFilters = ({
           ((name = key), (newArr = filterIntialValues.dateRange));
     }
 
-    setFilterParams({
-      ...filterParams,
-      [name]: newArr,
-    });
+    const updatedFilters = { ...filterParams, [name]: newArr };
+    setFilterParams(updatedFilters);
+    window.localStorage.setItem(
+      LocalStorageKeys.INVOICE_FILTERS,
+      JSON.stringify(updatedFilters)
+    );
   };
 
   return (
@@ -64,7 +68,10 @@ const AppliedFilters = ({
       {appliedFilterCount > 1 && (
         <span
           className="my-2 flex w-16 cursor-pointer items-center justify-between text-xs font-normal text-miru-han-purple-1000 lg:mx-2 lg:my-0"
-          onClick={() => setFilterParams(filterIntialValues)}
+          onClick={() => {
+            window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
+            setFilterParams(filterIntialValues);
+          }}
         >
           <XIcon size={12} /> Clear all
         </span>

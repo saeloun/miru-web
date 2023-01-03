@@ -1,7 +1,7 @@
 import React from "react";
 
-import RecentlyUpdated from "./RecentlyUpdated";
 import BulkActionsWrapper from "./BulkActionsWrapper";
+import RecentlyUpdated from "./RecentlyUpdated";
 import Table from "./Table";
 
 import InvoiceSummary from "../InvoiceSummary";
@@ -26,8 +26,8 @@ const Container = ({
   setShowBulkDeleteDialog,
   setShowBulkDownloadDialog,
   clearCheckboxes,
-}) => {
-  return invoices.length > 0 ? (
+}) =>
+  invoices.length > 0 ? (
     <div
       className={`${
         isDesktop ? null : "overflow-x-scroll"
@@ -39,21 +39,18 @@ const Container = ({
         setFilterParams={setFilterParams}
         summary={summary}
       />
-
       <RecentlyUpdated recentlyUpdatedInvoices={recentlyUpdatedInvoices} />
-
       <BulkActionsWrapper
+        clearCheckboxes={clearCheckboxes}
+        filterIntialValues={filterIntialValues}
         filterParams={filterParams}
         filterParamsStr={filterParamsStr}
-        setFilterParams={setFilterParams}
-        filterIntialValues={filterIntialValues}
         isInvoiceSelected={isInvoiceSelected}
         selectedInvoiceCount={selectedInvoiceCount}
+        setFilterParams={setFilterParams}
         setShowBulkDeleteDialog={setShowBulkDeleteDialog}
         setShowBulkDownloadDialog={setShowBulkDownloadDialog}
-        clearCheckboxes={clearCheckboxes}
       />
-
       <Table
         deselectInvoices={deselectInvoices}
         fetchInvoices={fetchInvoices}
@@ -68,6 +65,5 @@ const Container = ({
   ) : (
     <div>No invoices to show</div>
   );
-};
 
 export default Container;

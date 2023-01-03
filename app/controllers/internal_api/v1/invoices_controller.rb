@@ -31,12 +31,15 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def edit
     authorize invoice
-    render :edit, locals: { invoice: }
+    render :edit, locals: {
+      invoice:,
+      client: invoice.client,
+      client_list: current_company.client_list
+    }
   end
 
   def update
     authorize invoice
-
     invoice.update!(invoice_params)
     render :update, locals: {
       invoice:,
@@ -47,7 +50,8 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def show
     authorize invoice
     render :show, locals: {
-      invoice:
+      invoice:,
+      client: invoice.client
     }
   end
 
@@ -59,7 +63,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def send_invoice
     authorize invoice
 
-    invoice.sending!
+    invoice.sending! unless invoice.paid?
     invoice.send_to_email(
       subject: invoice_email_params[:subject],
       message: invoice_email_params[:message],
@@ -87,9 +91,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     end
 
     def invoice_params
-      params.require(:invoice).permit(
-        policy(Invoice).permitted_attributes
-      )
+      params.require(:invoice).permit(policy(Invoice).permitted_attributes)
     end
 
     def invoice_email_params

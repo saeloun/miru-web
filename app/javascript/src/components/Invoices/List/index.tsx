@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 
 import invoicesApi from "apis/invoices";
 import Pagination from "common/Pagination";
-import { ApiStatus as InvoicesStatus } from "constants/index";
+import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./container";
@@ -17,7 +17,6 @@ import { TOASTER_DURATION } from "../../../constants";
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
 import BulkDownloadInvoices from "../popups/BulkDownloadInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
-
 
 const Invoices = ({ isDesktop }) => {
   const filterIntialValues = {
@@ -36,7 +35,14 @@ const Invoices = ({ isDesktop }) => {
     page: searchParams.get("page") || 1,
     query: searchParams.get("query") || "",
   });
-  const [filterParams, setFilterParams] = useState(filterIntialValues);
+
+  const LS_INVOICE_FILTERS = window.localStorage.getItem(
+    LocalStorageKeys.INVOICE_FILTERS
+  );
+
+  const [filterParams, setFilterParams] = useState<any>(
+    JSON.parse(LS_INVOICE_FILTERS) || filterIntialValues
+  );
   const [filterParamsStr, setFilterParamsStr] = useState("");
   const [selectedInput, setSelectedInput] = useState("from-input");
 
@@ -48,7 +54,9 @@ const Invoices = ({ isDesktop }) => {
 
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] =
     useState<boolean>(false);
-  const [showBulkDownloadDialog, setShowBulkDownloadDialog] = useState<boolean>(false);
+
+  const [showBulkDownloadDialog, setShowBulkDownloadDialog] =
+    useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] = useState(null);
 
@@ -184,17 +192,17 @@ const Invoices = ({ isDesktop }) => {
             filterParamsStr={filterParamsStr}
             invoices={invoices}
             isDesktop={isDesktop}
+            isInvoiceSelected={isInvoiceSelected}
             recentlyUpdatedInvoices={recentlyUpdatedInvoices}
             selectInvoices={selectInvoices}
+            selectedInvoiceCount={selectedInvoiceCount}
             selectedInvoices={selectedInvoices}
             setFilterParams={setFilterParams}
             setInvoiceToDelete={setInvoiceToDelete}
-            setShowDeleteDialog={setShowDeleteDialog}
-            summary={summary}
-            isInvoiceSelected={isInvoiceSelected}
-            selectedInvoiceCount={selectedInvoiceCount}
             setShowBulkDeleteDialog={setShowBulkDeleteDialog}
             setShowBulkDownloadDialog={setShowBulkDownloadDialog}
+            setShowDeleteDialog={setShowDeleteDialog}
+            summary={summary}
             clearCheckboxes={() =>
               deselectInvoices(invoices.map(invoice => invoice.id))
             }
@@ -232,7 +240,7 @@ const Invoices = ({ isDesktop }) => {
             />
           )}
           {showBulkDownloadDialog && (
-            <BulkDownloadInvoices selectedInvoices={selectedInvoices}/>
+            <BulkDownloadInvoices selectedInvoices={selectedInvoices} />
           )}
         </Fragment>
       )}
