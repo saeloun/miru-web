@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { SettingIcon, SignOutIcon } from "miruIcons";
 import { NavLink } from "react-router-dom";
+import { Avatar } from "StyledComponents";
 
 import companiesApi from "apis/companies";
 import WorkspaceApi from "apis/workspaces";
@@ -11,7 +12,6 @@ import { LocalStorageKeys } from "constants/index";
 import { activeClassName } from "./utils";
 
 import { useOutsideClick } from "../../helpers/outsideClick";
-import Avatar from "../../StyledComponents/Avatar";
 
 const switcher = require("../../../../assets/images/switcher.svg");
 
@@ -23,17 +23,6 @@ const UserActions = () => {
   const [workSpaceList, setWorkSpaceList] = useState<any[]>([]);
   const [showWorkSpaceList, setShowWorkSpaceList] = useState<boolean>(false);
   const wrapperRef = useRef(null);
-
-  useEffect(() => {
-    fetchWorkspaces();
-    fetchCurrentComapny();
-  }, []);
-
-  useOutsideClick(
-    wrapperRef,
-    () => setShowWorkSpaceList(false),
-    showWorkSpaceList
-  );
 
   const WorkspaceList = () => (
     <ul
@@ -54,6 +43,17 @@ const UserActions = () => {
         </li>
       ))}
     </ul>
+  );
+
+  useEffect(() => {
+    fetchWorkspaces();
+    fetchCurrentComapny();
+  }, []);
+
+  useOutsideClick(
+    wrapperRef,
+    () => setShowWorkSpaceList(false),
+    showWorkSpaceList
   );
 
   const fetchCurrentComapny = async () => {
