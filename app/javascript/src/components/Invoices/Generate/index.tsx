@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import companiesApi from "apis/companies";
 import invoicesApi from "apis/invoices";
@@ -20,7 +20,6 @@ import { generateInvoiceLineItems } from "../common/utils";
 
 const GenerateInvoices = () => {
   const navigate = useNavigate();
-  const clientId = new URLSearchParams(window.location.search).get("clientId");
   const [invoiceDetails, setInvoiceDetails] = useState<any>();
   const [lineItems, setLineItems] = useState<any>([]);
   const [selectedClient, setSelectedClient] = useState<any>();
@@ -32,6 +31,7 @@ const GenerateInvoices = () => {
   const [tax, setTax] = useState<any>(0);
   const [issueDate, setIssueDate] = useState(new Date());
   const today = new Date();
+  const [searchParams] = useSearchParams();
   const [dueDate, setDueDate] = useState(
     today.setMonth(issueDate.getMonth() + 1)
   );
@@ -43,6 +43,7 @@ const GenerateInvoices = () => {
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
 
   const amountPaid = 0;
+  const clientId = searchParams.get("clientId");
 
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
   const SELECT_CLIENT_ERROR =
