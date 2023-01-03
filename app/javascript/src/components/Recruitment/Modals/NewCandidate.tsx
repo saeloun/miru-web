@@ -34,7 +34,7 @@ const NewCandidate = ({ setnewCandidate, candidateData, setCandidateData }) => {
     })
       .then(res => {
         setCandidateData([...candidateData, { ...res.data }]);
-        navigate("/recruitment/candidates");
+        navigate(`/recruitment/candidates`);
         setnewCandidate(false);
         Toastr.success("Consultancy added successfully");
       }).catch((e) => {

@@ -16,9 +16,7 @@ const DeleteCandidate = ({ candidate, setShowDeleteDialog }: IProps) => {
 
   const deleteCandidate = async (candidate: any) => {
     await candidates.destroy(candidate.id);
-    setTimeout(() => {
-      navigate('recruitment/candidates')
-    }, 500);
+    navigate('/recruitment/candidates')
   };
   return (
     <ConfirmDialog

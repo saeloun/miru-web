@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { X, Pencil, FloppyDisk, ArrowLeft, CaretDown, Trash, Gear } from "phosphor-react";
+import { X, Pencil, FloppyDisk, ArrowLeft,DotsThreeVertical, Receipt, CaretDown, Trash, Gear } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
@@ -9,6 +9,7 @@ import candidates from "apis/candidates";
 import { unmapCandidateList } from "../../../../mapper/candidate.mapper";
 import getStatusCssClass from "../../../../utils/getBadgeStatus";
 import DeleteCandidate from "../../Modals/DeleteCandidate";
+import NewCandidate from "../../Modals/NewCandidate";
 
 const Header = ({
   candidateDetails,
@@ -26,6 +27,7 @@ const Header = ({
 
   const [isHeaderMenuVisible, setHeaderMenuVisibility] = useState<boolean>(false);
   const [isCandidateOpen, toggleCandidateDetails] = useState<boolean>(false);
+  const [newCandidate, setnewCandidate] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -43,6 +45,10 @@ const Header = ({
     setShowDeleteDialog(true);
     const editSelection = candidateData.find((candidate: any) => candidate.id === id);
     setDelete(editSelection);
+  };
+
+  const handleMenuVisibility = () => {
+    setHeaderMenuVisibility(!isHeaderMenuVisible);
   };
 
   const handleCandidateDetails = () => {
@@ -63,6 +69,8 @@ const Header = ({
         setCandidateData(sanitized.recruitmentCandidate);
       });
   }, []);
+
+  const menuBackground = isHeaderMenuVisible ? "bg-miru-gray-1000" : "";
 
   return (
     <>
@@ -135,14 +143,35 @@ const Header = ({
                     <span className="inline-block ml-2">EDIT</span>
                   </button>)
                 }
-                {
+                <div className="relative" ref={wrapperRef}>
+                  <button onClick = {handleMenuVisibility} className={`menuButton__button ${menuBackground}`}>
+                    <DotsThreeVertical size={20} color="#000000" />
+                  </button>
+                  { isHeaderMenuVisible && <ul className="menuButton__wrapper">
+                    <li>
+                      <button className="menuButton__list-item" onClick={() => setnewCandidate(true)}>
+                        <Receipt size={16} className="text-col-han-app-1000" weight="bold" />
+                        <span className="ml-3">Add Candidate</span>
+                      </button>
+                    </li>
+                    { candidateDetails.discarded_at ? null :
+                      <li>
+                        <button className="menuButton__list-item text-col-red-400" onClick={() => handleDeleteClick(candidateDetails.id)}>
+                          <Trash size={16} className="text-col-red-400" weight="bold" />
+                          <span className="ml-3">Delete</span>
+                        </button>
+                      </li>
+                    }
+                  </ul> }
+                </div>
+                {/* {
                   isEdit ? null :
                     <button
                       className="w-1/3 p-0 header__button text-col-red-400 hover:text-col-red-400" onClick={() => handleDeleteClick(candidateDetails.id)}>
                       <Trash size={16} className="text-col-red-400" weight="bold" />
                       <span className="ml-3">Delete</span>
                     </button>
-                }
+                } */}
               </div>
             </>
           }
@@ -176,6 +205,11 @@ const Header = ({
         <DeleteCandidate
           setShowDeleteDialog={setShowDeleteDialog}
           candidate={candidateToDelete}
+        />
+
+      )}
+      {newCandidate && (
+        <NewCandidate setnewCandidate={setnewCandidate} candidateData={candidateData} setCandidateData={setCandidateData}
         />
       )}
     </>
