@@ -3,7 +3,7 @@
 class ProjectListService
   attr_accessor :current_company, :client_id, :user_id, :billable, :search
 
-  def initialize(current_company, client_id, user_id, billable, search)
+  def initialize(current_company, client_id = nil, user_id = nil, billable = nil, search)
     @current_company = current_company
     @client_id = client_id
     @user_id = user_id
@@ -12,7 +12,7 @@ class ProjectListService
   end
 
   def process
-    project_list = project_list_query(client_id, user_id, billable)
+    project_list = project_list_query
     minutes_spent = current_company.timesheet_entries.group(:project_id).sum(:duration)
     query = project_list.ransack({ name_or_client_name_cont: search })
     project_list = query.result
@@ -29,7 +29,7 @@ class ProjectListService
   ).group("projects.id, clients.name").where(projects: { id: project_ids }).order("projects.name DESC")
   end
 
-  def project_list_query(client_id, user_id, billable)
+  def project_list_query
     db_query = current_company.projects.kept.left_outer_joins(:project_members).joins(:client)
     db_query = db_query.where(project_members: { user_id: }) if user_id.present?
     db_query = db_query.where(client_id:) if client_id.present?

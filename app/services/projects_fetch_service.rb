@@ -23,9 +23,13 @@ class ProjectsFetchService
   private
 
     def set_projects
-      @projects = current_company.project_list(
-        params[:client_id], params[:user_id], params[:billable],
-        params[:search])
+      @projects = ProjectListService.new(
+        current_company,
+        params[:client_id],
+        params[:user_id],
+        params[:billable],
+        params[:search]
+        ).process
     end
 
     def set_clients
