@@ -54,6 +54,25 @@ RSpec.describe Invoice, type: :model do
     end
   end
 
+  describe "Discard" do
+    let(:company) do
+      create(:company_with_invoices)
+    end
+
+    before do
+      @current_invoice = company.invoices.first
+    end
+
+    it "discards the invoices" do
+      expect { @current_invoice.discard! }.to change(company.invoices.discarded, :count).by(1)
+    end
+
+    it "does not discard the invoices if already discarded" do
+      @current_invoice.discard!
+      expect { @current_invoice.discard! }.to raise_error(Discard::RecordNotDiscarded)
+    end
+  end
+
   describe "Scopes" do
     let(:company) do
       create(:company_with_invoices)
