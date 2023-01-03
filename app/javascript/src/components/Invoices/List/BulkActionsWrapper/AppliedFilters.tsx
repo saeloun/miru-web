@@ -1,0 +1,76 @@
+import React from "react";
+
+import { XIcon } from "miruIcons";
+
+const AppliedFilters = ({
+  filterParams,
+  filterParamsStr,
+  setFilterParams,
+  filterIntialValues,
+}) => {
+  let appliedFilterCount = (filterParamsStr.match(/&/g) || []).length;
+
+  filterParamsStr.includes("custom") &&
+    (appliedFilterCount = appliedFilterCount - 2);
+
+  const handleRemoveFilter = removeval => {
+    let name, newArr;
+    for (const [key, value] of Object.entries(filterParams)) {
+      Array.isArray(value)
+        ? value.map(v => {
+            if (v == removeval) {
+              name = key;
+              newArr = value.filter(v => v != removeval);
+            }
+          })
+        : value == removeval &&
+          ((name = key), (newArr = filterIntialValues.dateRange));
+    }
+
+    setFilterParams({
+      ...filterParams,
+      [name]: newArr,
+    });
+  };
+
+  return (
+    <div className="flex flex-col items-start justify-between lg:ml-4 lg:flex-row lg:items-center">
+      {Object.values(filterParams).map(param =>
+        Array.isArray(param)
+          ? param.map(val => (
+              <span
+                className="my-2 flex h-6 items-center justify-between rounded-xl bg-miru-gray-400 px-2 text-xs font-normal capitalize text-miru-dark-purple-1000 lg:mx-2 lg:my-0"
+                key={val.value}
+              >
+                {val.label}
+                <XIcon
+                  className="ml-2 cursor-pointer"
+                  size={12}
+                  onClick={() => handleRemoveFilter(val)}
+                />
+              </span>
+            ))
+          : Object(param).value != "all" && (
+              <span className="my-2 flex h-6 items-center justify-between rounded-xl bg-miru-gray-400 px-2 text-xs font-normal capitalize text-miru-dark-purple-1000 lg:mx-2 lg:my-0">
+                {Object(param).label}
+                <XIcon
+                  className="ml-2 cursor-pointer"
+                  size={12}
+                  onClick={() => handleRemoveFilter(Object(param))}
+                />
+              </span>
+            )
+      )}
+      {appliedFilterCount > 1 && (
+        <span
+          className="my-2 flex w-16 cursor-pointer items-center justify-between text-xs font-normal text-miru-han-purple-1000 lg:mx-2 lg:my-0"
+          onClick={() => setFilterParams(filterIntialValues)}
+        >
+          <XIcon size={12} /> Clear all
+        </span>
+      )}
+    </div>
+  );
+};
+
+export default AppliedFilters;

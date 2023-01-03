@@ -3,4 +3,6 @@
 
 import { createConsumer } from "@rails/actioncable";
 
-export default createConsumer();
+const URL = "ws://localhost:3000/cable";
+const consumer = createConsumer(URL);
+export default consumer;

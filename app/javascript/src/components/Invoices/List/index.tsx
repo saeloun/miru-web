@@ -15,7 +15,9 @@ import Header from "./Header";
 
 import { TOASTER_DURATION } from "../../../constants";
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
+import BulkDownloadInvoices from "../popups/BulkDownloadInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
+
 
 const Invoices = ({ isDesktop }) => {
   const filterIntialValues = {
@@ -46,6 +48,7 @@ const Invoices = ({ isDesktop }) => {
 
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] =
     useState<boolean>(false);
+  const [showBulkDownloadDialog, setShowBulkDownloadDialog] = useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] = useState(null);
 
@@ -188,6 +191,13 @@ const Invoices = ({ isDesktop }) => {
             setInvoiceToDelete={setInvoiceToDelete}
             setShowDeleteDialog={setShowDeleteDialog}
             summary={summary}
+            isInvoiceSelected={isInvoiceSelected}
+            selectedInvoiceCount={selectedInvoiceCount}
+            setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+            setShowBulkDownloadDialog={setShowBulkDownloadDialog}
+            clearCheckboxes={() =>
+              deselectInvoices(invoices.map(invoice => invoice.id))
+            }
           />
           {isFilterVisible && (
             <FilterSideBar
@@ -220,6 +230,9 @@ const Invoices = ({ isDesktop }) => {
               invoices_ids={selectedInvoices}
               setShowBulkDeleteDialog={setShowBulkDeleteDialog}
             />
+          )}
+          {showBulkDownloadDialog && (
+            <BulkDownloadInvoices selectedInvoices={selectedInvoices}/>
           )}
         </Fragment>
       )}
