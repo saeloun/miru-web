@@ -44,7 +44,7 @@ const listDetails = [
 const ReportsList = () => (
   <div>
     <div className="mt-4 text-3xl font-bold">Reports</div>
-    <div className="grid grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       {listDetails.map(
         (item, key) =>
           item.show && (
