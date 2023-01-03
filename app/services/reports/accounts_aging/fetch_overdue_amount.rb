@@ -43,7 +43,7 @@ module Reports::AccountsAging
       end
 
       def total_amount_due_during (invoices, duration)
-        invoices.overdue.during(duration).pluck(:amount_due).sum
+        invoices.overdue.where(due_date: duration).pluck(:amount_due).sum
       end
 
       def clients
