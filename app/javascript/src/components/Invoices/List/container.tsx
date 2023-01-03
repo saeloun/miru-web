@@ -52,8 +52,6 @@ const Container = ({
     );
   };
 
-  useEffect(() => setLoading(true), []);
-
   useEffect(() => {
     if (invoices.length > 0) setLoading(false);
   }, [invoices]);
