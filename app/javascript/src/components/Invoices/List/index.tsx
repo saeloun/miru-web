@@ -172,15 +172,9 @@ const Invoices = ({ isDesktop }) => {
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         filterParamsStr={filterParamsStr}
-        isInvoiceSelected={isInvoiceSelected}
         params={params}
-        selectedInvoiceCount={selectedInvoiceCount}
         setIsFilterVisible={setIsFilterVisible}
         setParams={setParams}
-        setShowBulkDeleteDialog={setShowBulkDeleteDialog}
-        clearCheckboxes={() =>
-          deselectInvoices(invoices.map(invoice => invoice.id))
-        }
       />
       {status === InvoicesStatus.SUCCESS && (
         <Fragment>
