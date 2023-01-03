@@ -88,7 +88,7 @@ const Table = ({
 
   return (
     <table
-      className="mt-4 min-w-full divide-y divide-gray-200"
+      className="mt-4 min-w-full divide-y divide-gray-200 md:w-72 md:table-fixed"
       {...getTableProps()}
     >
       <thead>

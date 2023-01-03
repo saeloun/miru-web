@@ -7,6 +7,7 @@ import {
   ReportsIcon,
   InvoicesIcon,
   PaymentsIcon,
+  TeamsIcon,
 } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
@@ -20,7 +21,7 @@ export const navEmployeeOptions = [
     path: Paths.TIME_TRACKING,
   },
   {
-    logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
+    logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
     dataCy: "team-tab",
     path: Paths.TEAM,
