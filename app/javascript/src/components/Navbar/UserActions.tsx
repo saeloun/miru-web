@@ -24,27 +24,6 @@ const UserActions = () => {
   const [showWorkSpaceList, setShowWorkSpaceList] = useState<boolean>(false);
   const wrapperRef = useRef(null);
 
-  const WorkspaceList = () => (
-    <ul
-      className="absolute bottom-20 w-full rounded-lg bg-white p-4 shadow-c1"
-      ref={wrapperRef}
-    >
-      <span className="text-xs font-medium leading-4 tracking-wider text-miru-dark-purple-200">
-        SELECT WORKSPACE
-      </span>
-      {workSpaceList.map(workspace => (
-        <li
-          className="flex cursor-pointer items-center justify-center py-3 px-2 hover:bg-miru-gray-100 lg:justify-start lg:px-6"
-          key={workspace.id}
-          onClick={() => handleSwitch(workspace.id)}
-        >
-          <Avatar classNameImg="lg:w-6 lg:h-6 lg:mr-4" url={workspace.logo} />
-          {workspace.name}
-        </li>
-      ))}
-    </ul>
-  );
-
   useEffect(() => {
     fetchWorkspaces();
     fetchCurrentComapny();
@@ -69,13 +48,33 @@ const UserActions = () => {
   const handleSwitch = async id => {
     await WorkspaceApi.update(id);
     setShowWorkSpaceList(false);
-    fetchCurrentComapny();
+    window.location.reload();
   };
 
   const handleLogout = () => {
     window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
-    window.localStorage.removeItem("filters");
   };
+
+  const WorkspaceList = () => (
+    <ul
+      className="absolute bottom-20 w-full rounded-lg bg-white p-4 shadow-c1"
+      ref={wrapperRef}
+    >
+      <span className="text-xs font-medium leading-4 tracking-wider text-miru-dark-purple-200">
+        SELECT WORKSPACE
+      </span>
+      {workSpaceList.map(workspace => (
+        <li
+          className="flex cursor-pointer items-center justify-center py-3 px-2 hover:bg-miru-gray-100 lg:justify-start lg:px-6"
+          key={workspace.id}
+          onClick={() => handleSwitch(workspace.id)}
+        >
+          <Avatar classNameImg="lg:w-6 lg:h-6 lg:mr-4" url={workspace.logo} />
+          {workspace.name}
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
     <ul className="mt-auto lg:mt-32">
