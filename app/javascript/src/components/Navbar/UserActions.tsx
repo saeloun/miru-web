@@ -6,6 +6,7 @@ import { NavLink } from "react-router-dom";
 
 import companiesApi from "apis/companies";
 import WorkspaceApi from "apis/workspaces";
+import { LocalStorageKeys } from "constants/index";
 
 import { activeClassName } from "./utils";
 
@@ -71,6 +72,11 @@ const UserActions = () => {
     fetchCurrentComapny();
   };
 
+  const handleLogout = () => {
+    window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
+    window.localStorage.removeItem("filters");
+  };
+
   return (
     <ul className="mt-auto lg:mt-32">
       <li className="flex items-center justify-center hover:bg-miru-gray-100 lg:justify-start">
@@ -87,7 +93,10 @@ const UserActions = () => {
         </NavLink>
       </li>
       <a data-method="delete" href="/users/sign_out" rel="nofollow">
-        <li className="flex items-center justify-center py-3 px-2 hover:bg-miru-gray-100 lg:justify-start lg:px-6">
+        <li
+          className="flex items-center justify-center py-3 px-2 hover:bg-miru-gray-100 lg:justify-start lg:px-6"
+          onClick={handleLogout}
+        >
           <SignOutIcon className="mr-0 lg:mr-4" size={26} />
           Logout
         </li>
