@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useCallback, useEffect, useState } from "react";
 
-import { DeleteIcon } from "miruIcons";
+import { DeleteIcon, EditImageButtonSVG, PlusIconSVG } from "miruIcons";
 import Select from "react-select";
 import * as Yup from "yup";
 
@@ -15,10 +15,6 @@ import { currencyList } from "constants/currencyList";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "../../Header";
-
-// const deleteImage = require("../../../../../../assets/images/delete.svg");
-const editButton = require("../../../../../../assets/images/edit_image_button.svg");
-const img = require("../../../../../../assets/images/plus_icon.svg");
 
 const orgSchema = Yup.object().shape({
   companyName: Yup.string().required("Name cannot be blank"),
@@ -345,7 +341,7 @@ const OrgEdit = () => {
                     <img
                       alt="edit"
                       className="mt-5 cursor-pointer rounded-full"
-                      src={editButton}
+                      src={EditImageButtonSVG}
                       style={{ minWidth: "40px" }}
                     />
                   </label>
@@ -370,7 +366,11 @@ const OrgEdit = () => {
                       className="items-cente flex h-full w-full cursor-pointer justify-center"
                       htmlFor="file-input"
                     >
-                      <img alt="file_input" className="object-none" src={img} />
+                      <img
+                        alt="file_input"
+                        className="object-none"
+                        src={PlusIconSVG}
+                      />
                     </label>
                   </div>
                   <input

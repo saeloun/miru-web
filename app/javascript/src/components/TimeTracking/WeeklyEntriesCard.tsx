@@ -4,13 +4,10 @@ import React, { useState, useEffect } from "react";
 
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import Logger from "js-logger";
+import { CheckedCheckboxSVG, UncheckedCheckboxSVG, EditSVG } from "miruIcons";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import Toastr from "common/Toastr";
-
-const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
-const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
-const editIcon = require("../../../../assets/images/edit.svg");
 
 const WeeklyEntriesCard = ({
   client,
@@ -207,7 +204,7 @@ const WeeklyEntriesCard = ({
           <img
             alt="edit"
             className="icon-hover ml-8 h-4 w-4 cursor-pointer"
-            src={editIcon}
+            src={EditSVG}
             onClick={() => {
               if (!isWeeklyEditing) setProjectSelected(false);
               setIsWeeklyEditing(true);
@@ -233,7 +230,7 @@ const WeeklyEntriesCard = ({
                 <img
                   alt="checkbox"
                   className="inline"
-                  src={checkedIcon}
+                  src={CheckedCheckboxSVG}
                   onClick={() => {
                     setBillable(false);
                     setDataChanged(true);
@@ -243,7 +240,7 @@ const WeeklyEntriesCard = ({
                 <img
                   alt="checkbox"
                   className="inline"
-                  src={uncheckedIcon}
+                  src={UncheckedCheckboxSVG}
                   onClick={() => {
                     setBillable(true);
                     setDataChanged(true);
