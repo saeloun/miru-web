@@ -3,6 +3,7 @@ import React from "react";
 import {
   TimeTrackingIcon,
   ClientsIcon,
+  TeamsIcon,
   ProjectsIcon,
   ReportsIcon,
   InvoicesIcon,
@@ -20,7 +21,7 @@ export const navEmployeeOptions = [
     path: Paths.TIME_TRACKING,
   },
   {
-    logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
+    logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
     dataCy: "team-tab",
     path: Paths.TEAM,

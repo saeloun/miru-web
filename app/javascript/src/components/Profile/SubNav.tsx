@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
+import { AvatarPaymentsSVG } from "miruIcons";
 import { NavLink } from "react-router-dom";
-
-const profile = require("../../../../assets/images/avatar_payments.svg");
 
 const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
   const getActiveClassName = isActive => {
@@ -88,7 +87,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
   return (
     <div className="flex flex-col ">
       <div className="mr-2 flex h-16 w-60 items-center bg-miru-han-purple-1000 p-4 text-white">
-        <img className="mr-2" src={profile} />
+        <img className="mr-2" src={AvatarPaymentsSVG} />
         <div className="flex flex-col overflow-x-auto">
           <span className="pt-1 text-base font-bold leading-5">{`${firstName} ${lastName}`}</span>
           <span className="text-xs font-normal leading-4">{email}</span>
