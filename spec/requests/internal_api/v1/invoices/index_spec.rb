@@ -149,6 +149,24 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
       sign_in user
     end
 
+    describe "Show only kept invoices" do
+      let(:company) do
+        create(:company_with_invoices, length: 10)
+      end
+
+      before do
+        @current_invoice = company.invoices.first
+      end
+
+      it "returns the only kept invoices" do
+        @current_invoice.discard!
+        invoices_per_page = 10
+        send_request :get, internal_api_v1_invoices_path(invoices_per_page:)
+        expect(response).to have_http_status(:ok)
+        expect(json_response["invoices"].size).to eq(9)
+      end
+    end
+
     describe "invoices_per_page param" do
       it "returns the number the invoices specified by invoices_per_page" do
         invoices_per_page = 10
@@ -191,20 +209,15 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
 
     describe "from_to with date_range" do
       it "returns invoices with in the custom date range" do
-        from = Date.parse("2021-01-01")
-        to = Time.now
+        from = Date.parse("2022-01-01")
+        to = Date.today
         from_to = { date_range: "custom", from:, to: }
         send_request :get, internal_api_v1_invoices_path(from_to:)
-        expected_invoices = company.invoices.select { |inv| inv.issue_date.after?(from) && inv.issue_date.before?(to) }
+        expected_invoices = company.invoices.during(from..to)
 
         expect(response).to have_http_status(:ok)
-        expect(
-          json_response["invoices"].map { |invoice|
-            invoice["id"]
-          }).to match_array(
-            expected_invoices.map { |invoice|
-              invoice["id"]
-            })
+        expect(json_response["invoices"].map { |invoice| invoice["id"] })
+          .to match_array(expected_invoices.map { |invoice| invoice["id"] })
       end
     end
 
@@ -235,7 +248,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     describe "recently_updated_invoices return value" do
       it "returns top 10 recently updated invoices" do
         send_request :get, internal_api_v1_invoices_path()
-        expected_ids = Invoice.order("updated_at desc").limit(10).pluck(:id)
+        expected_ids = Invoice.kept.order("updated_at desc").limit(10).pluck(:id)
         expect(json_response["recentlyUpdatedInvoices"].pluck("id")).to eq(expected_ids)
       end
     end

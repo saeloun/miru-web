@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_09_132247) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -184,9 +184,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_09_132247) do
     t.string "external_view_key"
     t.jsonb "payment_infos", default: {}
     t.bigint "company_id"
+    t.datetime "discarded_at"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["due_date"], name: "index_invoices_on_due_date"
     t.index ["company_id"], name: "index_invoices_on_company_id"
+    t.index ["discarded_at"], name: "index_invoices_on_discarded_at"
     t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"

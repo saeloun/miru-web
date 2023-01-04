@@ -2,14 +2,16 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 
-const alertErrorClose = require("../../../assets/images/alert-error-close.svg");
-const errorOctagon = require("../../../assets/images/error-octagon.svg");
-const infoCircle = require("../../../assets/images/info-circle.svg");
-const infoCloseIcon = require("../../../assets/images/info-close-icon.svg");
-const successCheckCircle = require("../../../assets/images/success-check-circle.svg");
-const successCloseIcon = require("../../../assets/images/success-close-icon.svg");
-const warningCloseIcon = require("../../../assets/images/warning-close-icon.svg");
-const warningTriangle = require("../../../assets/images/warning-triangle.svg");
+import {
+  AlertSVG,
+  ErrorOctagonSVG,
+  CircleInfoSVG,
+  CloseInfoSVG,
+  ClickSuccessSVG,
+  SuccessSVG,
+  WarningTriangleSVG,
+  WarningCloseIconSVG,
+} from "miruIcons";
 
 export enum ApiStatus {
   IDLE = "idle",
@@ -44,19 +46,19 @@ export const GetToasterIcon = ({ type }) => {
   switch (type) {
     case "success":
       return (
-        <img alt="success" className="items-center" src={successCheckCircle} />
+        <img alt="success" className="items-center" src={ClickSuccessSVG} />
       );
     case "error":
-      return <img alt="error" className="items-center" src={errorOctagon} />;
+      return <img alt="error" className="items-center" src={ErrorOctagonSVG} />;
     case "warning":
       return (
-        <img alt="warning" className="items-center" src={warningTriangle} />
+        <img alt="warning" className="items-center" src={WarningTriangleSVG} />
       );
     case "info":
-      return <img alt="info" className="items-center" src={infoCircle} />;
+      return <img alt="info" className="items-center" src={CircleInfoSVG} />;
     default:
       return (
-        <img alt="success" className="items-center" src={successCheckCircle} />
+        <img alt="success" className="items-center" src={ClickSuccessSVG} />
       );
   }
 };
@@ -64,15 +66,17 @@ export const GetToasterIcon = ({ type }) => {
 export const getToasterCloseButton = ({ closeToast, type }) => {
   switch (type) {
     case "success":
-      return <img alt="success" src={successCloseIcon} onClick={closeToast} />;
+      return <img alt="success" src={SuccessSVG} onClick={closeToast} />;
     case "error":
-      return <img alt="error" src={alertErrorClose} onClick={closeToast} />;
+      return <img alt="error" src={AlertSVG} onClick={closeToast} />;
     case "warning":
-      return <img alt="warning" src={warningCloseIcon} onClick={closeToast} />;
+      return (
+        <img alt="warning" src={WarningCloseIconSVG} onClick={closeToast} />
+      );
     case "info":
-      return <img alt="info" src={infoCloseIcon} onClick={closeToast} />;
+      return <img alt="info" src={CloseInfoSVG} onClick={closeToast} />;
     default:
-      return <img alt="success" src={successCloseIcon} onClick={closeToast} />;
+      return <img alt="success" src={SuccessSVG} onClick={closeToast} />;
   }
 };
 
@@ -84,4 +88,8 @@ export enum TeamModalType {
   NONE = "",
   ADD_EDIT = "addEdit",
   DELETE = "delete",
+}
+
+export enum LocalStorageKeys {
+  INVOICE_FILTERS = "invoiceFilters",
 }
