@@ -19,8 +19,8 @@ RSpec.describe Project, type: :model do
     it { is_expected.to callback(:discard_project_members).after(:discard) }
   end
 
-  describe "#project_team_member_details" do
-    subject { project.project_team_member_details time_frame }
+  describe "#project_members_snippet" do
+    subject { project.project_members_snippet time_frame }
 
     let(:company) { create(:company) }
     let(:user) { create(:user) }
@@ -55,7 +55,7 @@ RSpec.describe Project, type: :model do
     context "when time_frame is last_week" do
       let(:time_frame) { "last_week" }
 
-      it "returns the project_team_member_details for a project in the last week" do
+      it "returns the project_members_snippet for a project in the last week" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.last_week)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
@@ -67,7 +67,7 @@ RSpec.describe Project, type: :model do
     context "when time_frame is week" do
       let(:time_frame) { "week" }
 
-      it "returns the project_team_member_details for a project in a week" do
+      it "returns the project_members_snippet for a project in a week" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_week)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
@@ -79,7 +79,7 @@ RSpec.describe Project, type: :model do
     context "when time_frame is month" do
       let(:time_frame) { "month" }
 
-      it "returns the project_team_member_details for a project in a month" do
+      it "returns the project_members_snippet for a project in a month" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_month)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
@@ -91,7 +91,7 @@ RSpec.describe Project, type: :model do
     context "when time_frame is year" do
       let(:time_frame) { "year" }
 
-      it "returns the project_team_member_details for a project in a year" do
+      it "returns the project_members_snippet for a project in a year" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.beginning_of_year)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate

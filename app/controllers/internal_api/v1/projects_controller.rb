@@ -11,7 +11,7 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
     render :show,
       locals: {
         project:,
-        team_member_details: project.project_team_member_details(params[:time_frame]),
+        team_member_details: project.project_members_snippet(params[:time_frame]),
         total_duration: project.project_total_logged_duration(params[:time_frame]),
         overdue_and_outstanding_amounts: project.overdue_and_outstanding_amounts
       },

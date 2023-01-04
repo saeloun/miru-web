@@ -41,6 +41,9 @@ class Project < ApplicationRecord
 
   searchkick text_middle: [:name, :client_name]
 
+  # Concerns
+  include ProjectSqlQueries
+
   def search_data
     {
       id: id.to_i,
@@ -52,8 +55,9 @@ class Project < ApplicationRecord
     }
   end
 
-  def project_team_member_details(time_frame)
-    @_project_team_member_details = team_member_details(time_frame)
+  def project_members_snippet(time_frame)
+    date_range = DateRangeService.new(timeframe: time_frame).process
+    @_project_members_snippet = project_members_snippet_sql(date_range)
   end
 
   def project_total_logged_duration(time_frame)
@@ -102,25 +106,5 @@ class Project < ApplicationRecord
 
     def calculate_cost(duration, hourly_rate)
       (duration.to_f / 60) * hourly_rate
-    end
-
-    def team_member_details(time_frame)
-      user_id_to_duration = {}
-      timesheet_entries.includes(:user)
-        .where(user_id: project_members.pluck(:user_id), work_date: DateRangeService.new(timeframe: time_frame).process)
-        .select(:user_id, "SUM(duration) as duration")
-        .group(:user_id)
-        .each { |entry| user_id_to_duration[entry.user_id] = entry.duration }
-
-      project_members.map do |member|
-        duration = user_id_to_duration[member.user_id] || 0
-        {
-          id: member.user_id,
-          name: member.full_name,
-          hourly_rate: member.hourly_rate,
-          minutes_logged: duration,
-          cost: calculate_cost(duration, member.hourly_rate)
-        }
-      end
     end
 end
