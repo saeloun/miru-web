@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import classnames from "classnames";
-
-const avatar = require("../../../assets/images/NavAvatar.svg"); //eslint-disable-line
+import { NavAvatarSVG } from "miruIcons";
 
 type AvatarProps = {
   url?: string;
@@ -72,7 +71,7 @@ const Avatar = ({
     <img
       alt="avatar"
       className={classnames(DEFAULT_STYLE_IMAGE, classNameImg)}
-      src={avatar}
+      src={NavAvatarSVG}
     />
   );
 };
