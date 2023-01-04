@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from "react";
 
-const miruLogo = require("../../../../assets/images/miru-logo.svg"); //eslint-disable-line
+import { MiruLogoSVG } from "miruIcons";
 
 const EmailVerification = ({ userEmail, resendUrl }) => {
   const handleKeyPress = useCallback(event => {
@@ -19,7 +19,7 @@ const EmailVerification = ({ userEmail, resendUrl }) => {
 
   return (
     <div className="modal__modal flex-col justify-start bg-miru-dark-purple-1000 pt-32">
-      <img height="64px" src={miruLogo} width="64px" />
+      <img height="64px" src={MiruLogoSVG} width="64px" />
       <div className="modal__container modal-container mt-10">
         <div className="modal__content text-center">
           <h6 className="modal__title ">Email Verification</h6>

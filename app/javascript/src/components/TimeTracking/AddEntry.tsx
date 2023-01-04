@@ -9,15 +9,13 @@ import {
   useOutsideClick,
   validateTimesheetEntry,
 } from "helpers";
+import { CheckedCheckboxSVG, UncheckedCheckboxSVG } from "miruIcons";
 import TextareaAutosize from "react-autosize-textarea";
 import { TimeInput } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
 import Toastr from "common/Toastr";
-
-const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
-const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 
 const AddEntry: React.FC<Iprops> = ({
   selectedEmployeeId,
@@ -252,7 +250,7 @@ const AddEntry: React.FC<Iprops> = ({
             <img
               alt="checkbox"
               className="inline"
-              src={checkedIcon}
+              src={CheckedCheckboxSVG}
               onClick={() => {
                 setBillable(false);
               }}
@@ -261,7 +259,7 @@ const AddEntry: React.FC<Iprops> = ({
             <img
               alt="checkbox"
               className="inline"
-              src={uncheckedIcon}
+              src={UncheckedCheckboxSVG}
               onClick={() => {
                 if (projectBillable) setBillable(true);
               }}

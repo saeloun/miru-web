@@ -1,18 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
+import { ConnectSVG, ConnectedCheckSVG, StripeLogoSVG } from "miruIcons";
+
 import paymentSettings from "apis/payment-settings";
 import Loader from "common/Loader/index";
 import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "../../Header";
-
-const Connect = require("../../../../../../assets/images/Connect.svg");
-const connectedCheck = require("../../../../../../assets/images/connected_check.svg");
-// const Connect_Paypal = require("../../../../../../assets/images/ConnectPaypal.svg");
-// const Paypal_Logo = require("../../../../../../assets/images/PaypalLogo.svg");
-const Stripe_Logo = require("../../../../../../assets/images/stripe_logo.svg");
 
 const PaymentSettings = () => {
   const [status, setStatus] = React.useState<PaymentSettingsStatus>(
@@ -64,7 +60,7 @@ const PaymentSettings = () => {
               <div className="mt-4 h-screen bg-miru-gray-100 py-10 px-20">
                 <div className="flex h-36 flex-row items-center bg-white p-5">
                   <div className="w-fit border-r-2 border-miru-gray-200 pr-12">
-                    <img src={Stripe_Logo} />
+                    <img src={StripeLogoSVG} />
                   </div>
                   <span className="w-2/5 px-4 text-sm font-normal leading-5 text-miru-dark-purple-1000">
                     {isStripeConnected
@@ -74,7 +70,7 @@ const PaymentSettings = () => {
                   {isStripeConnected ? (
                     <div className="flex flex-row">
                       <div className="logo-container mr-1">
-                        <img src={connectedCheck} />
+                        <img src={ConnectedCheckSVG} />
                       </div>
                       <p className="ml-1 text-base font-extrabold text-miru-alert-green-800">
                         Connected
@@ -82,7 +78,7 @@ const PaymentSettings = () => {
                     </div>
                   ) : (
                     <button onClick={connectStripe}>
-                      <img className="pr-5" src={Connect} />
+                      <img className="pr-5" src={ConnectSVG} />
                     </button>
                   )}
                 </div>
