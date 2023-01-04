@@ -3,16 +3,19 @@
 class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::ApplicationController
   def index
     authorize :report
-    render :index, locals: { reports:, filter_options: }, status: :ok
+    render :index,
+      locals: Reports::TimeEntries::ReportService.new(params, current_company).process,
+      status: :ok
   end
 
   def download
     authorize :report
 
-    entries = reports.map { |e| e[:entries] }.flatten
-
     respond_to do |format|
-      format.csv { send_data Reports::TimeEntries::GenerateCsv.new(entries).process }
+      format.csv { send_data Reports::TimeEntries::GenerateCsv
+        .new(Reports::TimeEntries::ReportService.new(params, current_company, download: true).process[:entries])
+        .process
+      }
       format.pdf { send_data Reports::TimeEntries::GeneratePdf.new(reports).process }
     end
   end
@@ -34,7 +37,7 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
         where: where_clause,
         order: { work_date: :desc },
         body_options: group_by_clause,
-        includes: [:user, { project: :client } ]
+        includes: [:user, { project: :client }, :client ]
         )
 
       Reports::TimeEntries::Result.process(search_result, params["group_by"])

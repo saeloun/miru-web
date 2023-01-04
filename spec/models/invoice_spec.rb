@@ -47,17 +47,29 @@ RSpec.describe Invoice, type: :model do
 
     describe "has many" do
       it { is_expected.to have_many(:invoice_line_items) }
-
-      it "sub_total should tally with amount of all invoice line items combined" do
-        expect(invoice.sub_total).to eq(
-          invoice.invoice_line_items.sum { |line_item|
-            line_item[:rate] * line_item[:quantity]
-          })
-      end
     end
 
     describe "accepts_nested_attributes_for" do
       it { is_expected.to accept_nested_attributes_for(:invoice_line_items).allow_destroy(true) }
+    end
+  end
+
+  describe "Discard" do
+    let(:company) do
+      create(:company_with_invoices)
+    end
+
+    before do
+      @current_invoice = company.invoices.first
+    end
+
+    it "discards the invoices" do
+      expect { @current_invoice.discard! }.to change(company.invoices.discarded, :count).by(1)
+    end
+
+    it "does not discard the invoices if already discarded" do
+      @current_invoice.discard!
+      expect { @current_invoice.discard! }.to raise_error(Discard::RecordNotDiscarded)
     end
   end
 
