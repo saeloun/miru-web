@@ -3,14 +3,19 @@ import React from "react";
 
 import ReportCard from "./reportCard";
 
-const calendar = require("../../../../images/Calendar.svg"); // eslint-disable-line
-const hours = require("../../../../images/Hours.svg");
-const overdueOutstandingIcon = require("../../../../images/OverdueOutstanding.svg");
-const revenue = require("../../../../images/Revenue.svg");
+const calendar = require("../../../miruIcons/Calendar.svg");
+const calendarHover = require("../../../miruIcons/CalendarHover.svg");
+const hours = require("../../../miruIcons/Hours.svg");
+const hoursHover = require("../../../miruIcons/HoursHover.svg");
+const overdueOutstandingIcon = require("../../../miruIcons/OverdueOutstanding.svg");
+const overdueOutstandingHover = require("../../../miruIcons/OverdueOutstandingHover.svg");
+const revenue = require("../../../miruIcons/Revenue.svg");
+const revenueHover = require("../../../miruIcons/RevenueHover.svg");
 
 const listDetails = [
   {
     icon: calendar,
+    iconHover: calendarHover,
     title: "Time Entry Report",
     description: "A summary of the time entries added by your team.",
     url: "time-entry",
@@ -18,6 +23,7 @@ const listDetails = [
   },
   {
     icon: overdueOutstandingIcon,
+    iconHover: overdueOutstandingHover,
     title: "Invoices Report",
     description:
       "A detailed summary of outstanding and overdue of all clients for a period of time.",
@@ -26,6 +32,7 @@ const listDetails = [
   },
   {
     icon: hours,
+    iconHover: hoursHover,
     title: "Total hours logged",
     description:
       "A detailed summary of billed, unbilled and non-billable hours by team grouped by project.",
@@ -34,6 +41,7 @@ const listDetails = [
   },
   {
     icon: revenue,
+    iconHover: revenueHover,
     title: "Revenue Report",
     description: "A detailed report of revenue from each client.",
     url: "revenue-by-client",
@@ -52,6 +60,7 @@ const ReportsList = () => (
               <ReportCard
                 description={item.description}
                 icon={item.icon}
+                iconHover={item.iconHover}
                 title={item.title}
                 url={item.url}
               />
