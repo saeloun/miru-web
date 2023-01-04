@@ -38,12 +38,16 @@ import {
   CurrencyCircleDollar,
 } from "phosphor-react";
 
+const revenueHoverIcon = require(".../../../assets/images/RevenueHover.svg");
+
 const alert = require("../../../assets/images/alert-error-close.svg");
 const amex = require("../../../assets/images/amex.svg");
 const apple = require("../../../assets/images/apple.svg");
 const applePay = require("../../../assets/images/applePay.svg");
 const avatar = require("../../../assets/images/avatar.svg");
 const avatar_payments = require("../../../assets/images/avatar_payments.svg");
+const reportcalendarIcon = require("../../../assets/images/Calendar.svg");
+const calendarHoverIcon = require("../../../assets/images/CalendarHover.svg");
 const cancel_button = require("../../../assets/images/cancel_button.svg");
 const checkedCheckbox = require("../../../assets/images/checkbox-checked.svg");
 const uncheckedCheckbox = require("../../../assets/images/checkbox-unchecked.svg");
@@ -61,6 +65,8 @@ const edit_image_button = require("../../../assets/images/edit_image_button.svg"
 const errorOctagon = require("../../../assets/images/error-octagon.svg");
 const google = require("../../../assets/images/google.svg");
 const help_icon = require("../../../assets/images/help_icon.png");
+const hoursIcon = require("../../../assets/images/Hours.svg");
+const hoursHoverIcon = require("../../../assets/images/HoursHover.svg");
 const circleInfo = require("../../../assets/images/info-circle.svg");
 const closeInfo = require("../../../assets/images/info-close-icon.svg");
 const Instagram = require("../../../assets/images/Instagram.svg");
@@ -73,6 +79,8 @@ const MiruWhiteLogoWithText = require("../../../assets/images/MiruWhiteLogowithT
 const mobile = require("../../../assets/images/mobile-menu.svg");
 const NavAvatar = require("../../../assets/images/NavAvatar.svg");
 const notification = require("../../../assets/images/notification.svg");
+const overdueOutstandingIcon = require("../../../assets/images/OverdueOutstanding.svg");
+const overdueOutstandingHoverIcon = require("../../../assets/images/OverdueOutstandingHover.svg");
 const password_icon = require("../../../assets/images/password_icon.svg");
 const password_icon_text = require("../../../assets/images/password_icon_text.svg");
 const PaypalDropdown = require("../../../assets/images/PaypalDropdown.svg");
@@ -80,6 +88,7 @@ const PaypalLogo = require("../../../assets/images/PaypalLogo.svg");
 const pConnectInvoice = require("../../../assets/images/pConnectInvoice.svg");
 const plus_icon = require("../../../assets/images/plus_icon.svg");
 const PurpleMiruLogoWithText = require("../../../assets/images/PurpleMiruLogoWithText.svg");
+const revenueIcon = require("../../../assets/images/Revenue.svg");
 const saeloun_logo = require("../../../assets/images/saeloun_logo.png");
 const save_button = require("../../../assets/images/save_button.svg");
 const sConnectInvoice = require("../../../assets/images/sConnectInvoice.svg");
@@ -95,6 +104,7 @@ const userAvatar = require("../../../assets/images/user_avatar.svg");
 const visa = require("../../../assets/images/visa.svg");
 const warningCloseIcon = require("../../../assets/images/warning-close-icon.svg");
 const warningTriangle = require("../../../assets/images/warning-triangle.svg");
+
 // icons from phosphor
 export const EditIcon = PencilSimple;
 export const DeleteIcon = Trash;
@@ -190,3 +200,11 @@ export const ConnectPaypalSVG = ConnectPaypal;
 export const ConnectSVG = Connect;
 export const MiruLogoSVG = miruLogo;
 export const DeleteIconSVG = deleteSVG;
+export const ReportcalendarIcon = reportcalendarIcon;
+export const CalendarHoverIcon = calendarHoverIcon;
+export const HoursIcon = hoursIcon;
+export const HoursHoverIcon = hoursHoverIcon;
+export const OverdueOutstandingIcon = overdueOutstandingIcon;
+export const OverdueOutstandingHoverIcon = overdueOutstandingHoverIcon;
+export const RevenueIcon = revenueIcon;
+export const RevenueHoverIcon = revenueHoverIcon;

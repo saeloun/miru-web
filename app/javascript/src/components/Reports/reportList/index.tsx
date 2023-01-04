@@ -1,29 +1,31 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
-import ReportCard from "./reportCard";
+import {
+  ReportcalendarIcon,
+  CalendarHoverIcon,
+  HoursIcon,
+  HoursHoverIcon,
+  OverdueOutstandingIcon,
+  OverdueOutstandingHoverIcon,
+  RevenueIcon,
+  RevenueHoverIcon,
+} from "miruIcons";
 
-const calendar = require("../../../miruIcons/Calendar.svg");
-const calendarHover = require("../../../miruIcons/CalendarHover.svg");
-const hours = require("../../../miruIcons/Hours.svg");
-const hoursHover = require("../../../miruIcons/HoursHover.svg");
-const overdueOutstandingIcon = require("../../../miruIcons/OverdueOutstanding.svg");
-const overdueOutstandingHover = require("../../../miruIcons/OverdueOutstandingHover.svg");
-const revenue = require("../../../miruIcons/Revenue.svg");
-const revenueHover = require("../../../miruIcons/RevenueHover.svg");
+import ReportCard from "./reportCard";
 
 const listDetails = [
   {
-    icon: calendar,
-    iconHover: calendarHover,
+    icon: ReportcalendarIcon,
+    iconHover: CalendarHoverIcon,
     title: "Time Entry Report",
     description: "A summary of the time entries added by your team.",
     url: "time-entry",
     show: true,
   },
   {
-    icon: overdueOutstandingIcon,
-    iconHover: overdueOutstandingHover,
+    icon: OverdueOutstandingIcon,
+    iconHover: OverdueOutstandingHoverIcon,
     title: "Invoices Report",
     description:
       "A detailed summary of outstanding and overdue of all clients for a period of time.",
@@ -31,8 +33,8 @@ const listDetails = [
     show: true,
   },
   {
-    icon: hours,
-    iconHover: hoursHover,
+    icon: HoursIcon,
+    iconHover: HoursHoverIcon,
     title: "Total hours logged",
     description:
       "A detailed summary of billed, unbilled and non-billable hours by team grouped by project.",
@@ -40,8 +42,8 @@ const listDetails = [
     show: false,
   },
   {
-    icon: revenue,
-    iconHover: revenueHover,
+    icon: RevenueIcon,
+    iconHover: RevenueHoverIcon,
     title: "Revenue Report",
     description: "A detailed report of revenue from each client.",
     url: "revenue-by-client",
