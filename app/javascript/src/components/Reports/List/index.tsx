@@ -49,7 +49,7 @@ const listDetails = [
   },
 ];
 
-const ReportsList = () => (
+const List = () => (
   <div className="pb-14">
     <div className="mt-4 text-3xl font-bold">Reports</div>
     <div className="grid grid-cols-1 lg:grid-cols-2">
@@ -70,4 +70,4 @@ const ReportsList = () => (
   </div>
 );
 
-export default ReportsList;
+export default List;
