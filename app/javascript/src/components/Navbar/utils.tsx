@@ -3,6 +3,7 @@ import React from "react";
 import {
   TimeTrackingIcon,
   ClientsIcon,
+  TeamsIcon,
   ProjectsIcon,
   ReportsIcon,
   InvoicesIcon,
