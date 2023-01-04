@@ -109,17 +109,17 @@ const ClientList = ({ isAdminUser }) => {
     {
       Header: "PROJECT",
       accessor: "col1", // accessor is the "key" in the data
-      cssClass: "",
+      cssClass: "md:w-1/3",
     },
     {
       Header: "TEAM",
       accessor: "col2",
-      cssClass: "",
+      cssClass: "md:w-1/3",
     },
     {
       Header: "HOURS LOGGED",
       accessor: "col3",
-      cssClass: "text-right", // accessor is the "key" in the data
+      cssClass: "text-right  md:w-1/5", // accessor is the "key" in the data
     },
   ];
 

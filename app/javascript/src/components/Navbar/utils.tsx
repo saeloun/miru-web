@@ -8,7 +8,6 @@ import {
   ReportsIcon,
   InvoicesIcon,
   PaymentsIcon,
-  TeamsIcon,
 } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
