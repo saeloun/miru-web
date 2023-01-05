@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import reportsApi from "apis/reports";
 
 import { unmapper } from "../../../mapper/report.mapper";
-import { customDateFilter } from "../revenueByClient/Filters/filterOptions";
+import { customDateFilter } from "../RevenueByClientReport/Filters/filterOptions";
 
 const isValuePresent = filterValue =>
   filterValue.value && filterValue.value !== "";

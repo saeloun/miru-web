@@ -11,7 +11,8 @@ module Reports::AccountsAging
     def process
       {
         clients: fetch_client_details,
-        total_amount_overdue_by_date_range: amount_overdue_by_date_range(overdue_invoices_for_all_clients)
+        total_amount_overdue_by_date_range: amount_overdue_by_date_range(overdue_invoices_for_all_clients),
+        base_currency: current_company.base_currency
       }
     end
 
