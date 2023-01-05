@@ -48,7 +48,7 @@ const UserActions = () => {
   const handleSwitch = async id => {
     await WorkspaceApi.update(id);
     setShowWorkSpaceList(false);
-    window.location.reload();
+    setTimeout(() => window.location.reload(), 600);
   };
 
   const handleLogout = () => {
