@@ -55,11 +55,14 @@ const Invoices = ({ isDesktop }) => {
     useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] = useState(null);
-
+  const [loading, setLoading] = useState<boolean>(true);
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
 
   useEffect(() => sendGAPageView(), []);
+  useEffect(() => {
+    if (invoices.length > 0) setLoading(false);
+  }, [invoices]);
 
   useEffect(() => {
     fetchInvoices();
@@ -163,7 +166,11 @@ const Invoices = ({ isDesktop }) => {
       selectedInvoices.filter(id => !invoiceIds.includes(id))
     );
 
-  return (
+  return loading ? (
+    <p className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
+      Loading...
+    </p>
+  ) : (
     <Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
