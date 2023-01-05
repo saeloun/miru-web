@@ -18,6 +18,10 @@ class Zipper
     end
   end
 
+  def file
+    tempfile
+  end
+
   def read
     zip_data = File.read(tempfile.path)
     tempfile.close
