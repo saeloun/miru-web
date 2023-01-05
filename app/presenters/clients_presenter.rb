@@ -15,7 +15,10 @@ class ClientsPresenter
       clients.each { |client| projects[client.name] = client.projects.kept }
     else
       employee_projects = current_user.projects.kept.joins(:client).where(clients: { company_id: current_company.id })
-      clients.each { |client| projects[client.name] = client.projects.kept & employee_projects }
+      client_projects = clients.joins(:projects).select(
+        "projects.id, projects.name, projects.billable, projects.description, clients.name"
+      ).where(projects: { id: employee_projects })
+      client_projects.each { |client| projects[client.name] = client.projects.kept }
     end
     projects
   end
