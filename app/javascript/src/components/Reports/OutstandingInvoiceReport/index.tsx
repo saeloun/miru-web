@@ -8,6 +8,7 @@ import Filters from "./Filters";
 import { OutstandingOverdueInvoice } from "./interface";
 
 import getReportData from "../api/outstandingOverdueInvoice";
+import AccountsAgingReportContext from "../context/AccountsAgingReportContext";
 import EntryContext from "../context/EntryContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
 import TimeEntryReportContext from "../context/TimeEntryReportContext";
@@ -67,6 +68,7 @@ const OutstandingInvoiceReport = () => {
   const contextValues = {
     timeEntryReport: TimeEntryReportContext,
     revenueByClientReport: RevenueByClientReportContext,
+    accountsAgingReport: AccountsAgingReportContext,
     outstandingOverdueInvoice: {
       filterOptions: {
         clients: [],

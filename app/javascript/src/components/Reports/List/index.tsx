@@ -3,6 +3,7 @@ import React from "react";
 
 import ReportCard from "./reportCard";
 
+const accounts_aging = require("../../../../../assets/images/accounts-aging.svg");
 const calendar = require("../../../../images/Calendar.svg"); // eslint-disable-line
 const hours = require("../../../../images/Hours.svg");
 const overdueOutstandingIcon = require("../../../../images/OverdueOutstanding.svg");
@@ -39,16 +40,23 @@ const listDetails = [
     url: "revenue-by-client",
     show: true,
   },
+  {
+    icon: accounts_aging,
+    title: "Accounts Aging",
+    description: "Find out which client have been taking a long time to pay",
+    url: "accounts-aging",
+    show: true,
+  },
 ];
 
-const ReportsList = () => (
-  <div>
+const List = () => (
+  <div className="pb-14">
     <div className="mt-4 text-3xl font-bold">Reports</div>
-    <div className="grid grid-cols-2">
+    <div className="grid grid-cols-1 lg:grid-cols-2">
       {listDetails.map(
         (item, key) =>
           item.show && (
-            <div className="" key={key}>
+            <div key={key}>
               <ReportCard
                 description={item.description}
                 icon={item.icon}
@@ -62,4 +70,4 @@ const ReportsList = () => (
   </div>
 );
 
-export default ReportsList;
+export default List;

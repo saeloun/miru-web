@@ -5,6 +5,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import { applyFilter, getQueryParams } from "../api/applyFilter";
 import Container from "../Container";
+import AccountsAgingReportContext from "../context/AccountsAgingReportContext";
 import EntryContext from "../context/EntryContext";
 import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
@@ -13,7 +14,7 @@ import { getMonth } from "../Filters/filterOptions";
 import Header from "../Header";
 import { ITimeEntry } from "../interface";
 
-const TimeEntryReports = () => {
+const TimeEntryReport = () => {
   const filterIntialValues = {
     dateRange: { label: getMonth(true), value: "this_month" },
     clients: [],
@@ -127,6 +128,7 @@ const TimeEntryReports = () => {
     currentReport: "TimeEntryReport",
     revenueByClientReport: RevenueByClientReportContext,
     outstandingOverdueInvoice: OutstandingOverdueInvoiceContext,
+    accountsAgingReport: AccountsAgingReportContext,
   };
 
   return (
@@ -160,4 +162,4 @@ const TimeEntryReports = () => {
   );
 };
 
-export default TimeEntryReports;
+export default TimeEntryReport;
