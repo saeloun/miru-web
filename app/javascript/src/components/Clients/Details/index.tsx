@@ -28,14 +28,14 @@ const getTableData = clients => {
         </div>
       ),
       col2: (
-        <div className="text-base text-miru-dark-purple-1000">
+        <div className="text-sm font-medium text-miru-dark-purple-1000">
           {client.team.map((member, index) => (
             <span key={index}>{member},&nbsp;</span>
           ))}
         </div>
       ),
       col3: (
-        <div className="text-right text-base text-miru-dark-purple-1000">
+        <div className="text-right text-lg font-bold text-miru-dark-purple-1000">
           {minToHHMM(client.minutes)}
         </div>
       ),
@@ -109,17 +109,17 @@ const ClientList = ({ isAdminUser }) => {
     {
       Header: "PROJECT",
       accessor: "col1", // accessor is the "key" in the data
-      cssClass: "",
+      cssClass: "md:w-1/3",
     },
     {
       Header: "TEAM",
       accessor: "col2",
-      cssClass: "",
+      cssClass: "md:w-1/3",
     },
     {
       Header: "HOURS LOGGED",
       accessor: "col3",
-      cssClass: "text-right", // accessor is the "key" in the data
+      cssClass: "text-right  md:w-1/5", // accessor is the "key" in the data
     },
   ];
 
