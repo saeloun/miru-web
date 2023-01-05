@@ -19,9 +19,13 @@
 #
 # Indexes
 #
-#  index_invitations_on_company_id  (company_id)
-#  index_invitations_on_sender_id   (sender_id)
-#  index_invitations_on_token       (token) UNIQUE
+#  index_invitations_on_accepted_at      (accepted_at)
+#  index_invitations_on_company_id       (company_id)
+#  index_invitations_on_expired_at       (expired_at)
+#  index_invitations_on_recipient_email  (recipient_email)
+#  index_invitations_on_role             (role)
+#  index_invitations_on_sender_id        (sender_id)
+#  index_invitations_on_token            (token) UNIQUE
 #
 # Foreign Keys
 #
