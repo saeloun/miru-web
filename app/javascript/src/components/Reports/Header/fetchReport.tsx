@@ -3,6 +3,7 @@ export const getReports = ({
   timeEntryReport,
   revenueByClientReport,
   outstandingOverdueInvoice,
+  accountsAgingReport,
 }) => {
   switch (currentReport) {
     case "RevenueByClientReport":
@@ -11,6 +12,8 @@ export const getReports = ({
       return timeEntryReport;
     case "outstandingOverdueInvoiceReport":
       return outstandingOverdueInvoice;
+    case "accountsAgingReport":
+      return accountsAgingReport;
     default:
       return;
   }

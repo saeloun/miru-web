@@ -6,6 +6,7 @@
 #  amount             :decimal(20, 2)   default(0.0)
 #  amount_due         :decimal(20, 2)   default(0.0)
 #  amount_paid        :decimal(20, 2)   default(0.0)
+#  discarded_at       :datetime
 #  discount           :decimal(20, 2)   default(0.0)
 #  due_date           :date
 #  external_view_key  :string
@@ -24,7 +25,9 @@
 # Indexes
 #
 #  index_invoices_on_client_id          (client_id)
+#  index_invoices_on_due_date           (due_date)
 #  index_invoices_on_company_id         (company_id)
+#  index_invoices_on_discarded_at       (discarded_at)
 #  index_invoices_on_external_view_key  (external_view_key) UNIQUE
 #  index_invoices_on_invoice_number     (invoice_number) UNIQUE
 #  index_invoices_on_issue_date         (issue_date)
@@ -39,8 +42,8 @@
 # frozen_string_literal: true
 
 class Invoice < ApplicationRecord
+  include Discard::Model
   include InvoiceSendable
-  require "securerandom"
 
   attr_accessor :sub_total
 

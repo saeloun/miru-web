@@ -3,6 +3,7 @@ import React from "react";
 import {
   TimeTrackingIcon,
   ClientsIcon,
+  TeamsIcon,
   ProjectsIcon,
   ReportsIcon,
   InvoicesIcon,
@@ -20,7 +21,7 @@ export const navEmployeeOptions = [
     path: Paths.TIME_TRACKING,
   },
   {
-    logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
+    logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
     dataCy: "team-tab",
     path: Paths.TEAM,
@@ -62,7 +63,7 @@ export const navAdminOptions = [
 ];
 
 export const activeClassName =
-  "py-3 px-2 md:px-4 flex items-center justify-center md:justify-start text-miru-han-purple-1000 bg-miru-gray-100  border-l-0 md:border-l-8 border-miru-han-purple-1000 font-extrabold";
+  "w-full py-3 px-2 md:px-4 flex items-center justify-center md:justify-start text-miru-han-purple-1000 bg-miru-gray-100  border-l-0 md:border-l-8 border-miru-han-purple-1000 font-extrabold";
 export const mobileActiveClassName =
   "flex flex-col items-center justify-center text-miru-han-purple-1000 font-bold text-xs";
 
