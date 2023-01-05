@@ -101,13 +101,50 @@ RSpec.describe Project, type: :model do
     end
   end
 
+  describe "#total_logged_duration" do
+    let(:company) { create(:company) }
+    let(:user_1) { create(:user) }
+    let(:user_2) { create(:user) }
+    let(:user_3) { create(:user) }
+    let(:client) { create(:client, company:) }
+
+    let(:project_member_1) { create(:project_member, project:, user: user_1, hourly_rate: 5000) }
+    let(:project_member_2) { create(:project_member, project:, user: user_2, hourly_rate: 1000) }
+    let(:project_member_3) { create(:project_member, project:, user: user_3, hourly_rate: 1000) }
+
+    let(:time_frame) { "last_week" }
+    let(:timesheet_entry_1) { create(:timesheet_entry, user: user_1, project:, work_date: Date.today.last_week) }
+    let(:timesheet_entry_2) { create(:timesheet_entry, user: user_2, project:, work_date: Date.today.last_week) }
+    let(:timesheet_entry_3) { create(:timesheet_entry, user: user_3, project:, work_date: Date.today.last_week) }
+
+    it "returns the total logged duration" do
+      total = timesheet_entry_1.duration + timesheet_entry_2.duration + timesheet_entry_3.duration
+
+      expect(project.total_logged_duration(time_frame)).to eq(total)
+    end
+
+    it "returns the total logged duration only for current project_members" do
+      project.reload
+      timesheet_entry_1.reload
+      timesheet_entry_2.reload
+      timesheet_entry_3.reload
+
+      project_member_3.delete
+      total = timesheet_entry_1.duration + timesheet_entry_2.duration
+
+      expect(project.total_logged_duration(time_frame)).to eq(total)
+      expect(project.timesheet_entries.count).to eq(3)
+      expect(project.project_members.count).to eq(2)
+    end
+  end
+
   describe "#discard_project_members" do
     let(:company) { create(:company) }
     let(:user) { create(:user) }
     let(:client) { create(:client, company:) }
     let(:project) { create(:project, client:) }
-    let!(:project_member1) { create(:project_member, project:, user:, hourly_rate: 5000) }
-    let!(:project_member2) { create(:project_member, project:, user:, hourly_rate: 1000) }
+    let(:project_member1) { create(:project_member, project:, user:, hourly_rate: 5000) }
+    let(:project_member2) { create(:project_member, project:, user:, hourly_rate: 1000) }
 
     it "returns empty list of project members when project is discarded" do
       expect(project.project_members.kept.pluck(:id)).to match_array([project_member1.id, project_member2.id])

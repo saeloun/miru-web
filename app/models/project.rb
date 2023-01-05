@@ -60,12 +60,13 @@ class Project < ApplicationRecord
     @_project_members_snippet = project_members_snippet_sql(date_range)
   end
 
-  def project_total_logged_duration(time_frame)
-    @_project_total_logged_duration = timesheet_entries
-      .includes(:user)
-      .where(user_id: project_members.pluck(:user_id),
-        work_date: DateRangeService.new(timeframe: time_frame).process)
-      .sum(:duration)
+  def total_logged_duration(time_frame)
+    @_total_logged_duration = timesheet_entries.joins(
+      "RIGHT JOIN project_members ON project_members.user_id = timesheet_entries.user_id"
+    ).where(
+      project_members: { project_id: id },
+      work_date: DateRangeService.new(timeframe: time_frame).process
+    ).sum(:duration)
   end
 
   def project_member_full_names
