@@ -13,6 +13,7 @@
 #
 # Indexes
 #
+#  index_projects_on_billable      (billable)
 #  index_projects_on_client_id     (client_id)
 #  index_projects_on_discarded_at  (discarded_at)
 #
