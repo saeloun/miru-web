@@ -62,6 +62,28 @@ export const navAdminOptions = [
   },
 ];
 
+export const navAdminMobileOptions = [
+  {
+    logo: <InvoicesIcon className="mr-0 md:mr-4" size={26} />,
+    label: "Invoices",
+    dataCy: "invoices-tab",
+    path: Paths.INVOICES,
+  },
+  ...navEmployeeOptions,
+  {
+    logo: <ReportsIcon className="mr-0 md:mr-4" size={26} />,
+    label: "Reports",
+    dataCy: "reports-tab",
+    path: Paths.REPORTS,
+  },
+  {
+    logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
+    label: "Payments",
+    dataCy: "payments-tab",
+    path: Paths.PAYMENTS,
+  },
+];
+
 export const activeClassName =
   "w-full py-3 px-2 md:px-4 flex items-center justify-center md:justify-start text-miru-han-purple-1000 bg-miru-gray-100  border-l-0 md:border-l-8 border-miru-han-purple-1000 font-extrabold";
 export const mobileActiveClassName =
@@ -122,7 +144,7 @@ export const MobileMenuOptions = ({
   if (isAdminUser) {
     return (
       <>
-        {navAdminOptions.slice(from, to).map((option, index) => (
+        {navAdminMobileOptions.slice(from, to).map((option, index) => (
           <MobileListOption
             key={index}
             option={option}
