@@ -67,7 +67,7 @@ const Table = ({ accountsAgingReport }) => {
           <tr className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
             <td>Loading...</td>
           </tr>
-        ) : [].length ? (
+        ) : clientList.length ? (
           clientList.map((client, index) => (
             <Fragment key={index}>
               <TableRow
