@@ -31,6 +31,11 @@ class Zipper
     tempfile.unlink
   end
 
+  def upload(filename)
+    file = File.open(tempfile)
+    ActiveStorage::Blob.create_and_upload!(io: file, filename:)
+  end
+
   private
 
     def randomized_name

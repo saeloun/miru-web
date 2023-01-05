@@ -109,10 +109,13 @@ class Invoice < ApplicationRecord
   end
 
   def temp_pdf(company_logo, root_url)
-    TempPdf.new(
-      "#{invoice_number}.pdf",
-      pdf_content(company_logo, root_url)
-    )
+    file = Tempfile.new()
+    InvoicePayment::PdfGeneration.process(
+      self,
+      company_logo,
+      root_url,
+      file.path)
+    file
   end
 
   private

@@ -18,17 +18,14 @@ class BulkInvoiceDownloadService
     def zip_invoices
       zipper = Zipper.new(invoices_temp_pdf_data)
       zipper.zip
-
-      zip_data = zipper.read
+      blob = zipper.upload("Invoices_" + Time.now.to_i.to_s + ".zip")
       zipper.cleanup!
-
-      zip_data
+      blob.url
     end
 
     def invoices_temp_pdf_data
       invoices.map do |invoice|
-        temp_pdf = invoice.temp_pdf(company_logo, root_url)
-        { name: temp_pdf.name, file: temp_pdf.tempfile }
+        { name: "#{invoice.invoice_number}.pdf", file: invoice.temp_pdf(company_logo, root_url) }
       end
     end
 end
