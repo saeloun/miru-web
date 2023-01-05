@@ -3,15 +3,15 @@ import React from "react";
 
 import ReportCard from "./reportCard";
 
-const accounts_aging = require("../../../../../assets/images/accounts-aging.svg");
-const calendar = require("../../../../images/Calendar.svg"); // eslint-disable-line
-const hours = require("../../../../images/Hours.svg");
-const overdueOutstandingIcon = require("../../../../images/OverdueOutstanding.svg");
-const revenue = require("../../../../images/Revenue.svg");
+const accounts_aging = require("../../../../../assets/images/accountsAgingReport.svg");
+const hours = require("../../../../../assets/images/hoursLoggedReport.svg");
+const overdueOutstandingIcon = require("../../../../../assets/images/InvoiceReport.svg");
+const revenue = require("../../../../../assets/images/revenueReport.svg");
+const timeEntry = require("../../../../../assets/images/timeEntryReport.svg");
 
 const listDetails = [
   {
-    icon: calendar,
+    icon: timeEntry,
     title: "Time Entry Report",
     description: "A summary of the time entries added by your team.",
     url: "time-entry",
