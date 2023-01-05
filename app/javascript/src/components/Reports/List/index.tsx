@@ -10,6 +10,8 @@ import {
   OverdueOutstandingHoverIcon,
   RevenueIcon,
   RevenueHoverIcon,
+  AccountsAgingIcon,
+  AccountsAgingHoverIcon,
 } from "miruIcons";
 
 import ReportCard from "./reportCard";
@@ -50,7 +52,8 @@ const listDetails = [
     show: true,
   },
   {
-    icon: accounts_aging,
+    icon: AccountsAgingIcon,
+    iconHover: AccountsAgingHoverIcon,
     title: "Accounts Aging",
     description: "Find out which client have been taking a long time to pay",
     url: "accounts-aging",
