@@ -5,7 +5,7 @@ import { XIcon } from "miruIcons";
 import { getReports } from "./fetchReport";
 
 import { useEntry } from "../context/EntryContext";
-import { customDateFilter } from "../revenueByClient/Filters/filterOptions";
+import { customDateFilter } from "../RevenueByClientReport/Filters/filterOptions";
 
 const NavigationFilter = () => {
   const {
@@ -13,6 +13,7 @@ const NavigationFilter = () => {
     currentReport,
     timeEntryReport,
     outstandingOverdueInvoice,
+    accountsAgingReport,
   } = useEntry();
 
   const selectedReport = getReports({
@@ -20,6 +21,7 @@ const NavigationFilter = () => {
     timeEntryReport,
     revenueByClientReport,
     outstandingOverdueInvoice,
+    accountsAgingReport,
   });
 
   const filterHtml = (value, key, filterKey) => (
