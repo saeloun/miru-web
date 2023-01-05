@@ -49,8 +49,9 @@ const Table = ({ accountsAgingReport }) => {
   const calculateTotal = () => {
     const result = clientList.reduce((acc, n) => {
       for (const key in n.amount_overdue) {
-        if (acc.hasOwn(key)) acc[key] += n.amount_overdue[key];
-        else acc[key] = n.amount_overdue[key];
+        if (Object.hasOwnProperty.bind(acc)(key)) {
+          acc[key] += parseInt(n.amount_overdue[key]);
+        } else acc[key] = n.amount_overdue[key];
       }
 
       return acc;
@@ -63,10 +64,10 @@ const Table = ({ accountsAgingReport }) => {
       <TableHeader sortClientList={sortClientList} />
       <tbody className="divide-y divide-gray-200 overflow-scroll bg-white">
         {loading ? (
-          <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
-            Loading...
-          </p>
-        ) : clientList.length ? (
+          <tr className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+            <td>Loading...</td>
+          </tr>
+        ) : [].length ? (
           clientList.map((client, index) => (
             <Fragment key={index}>
               <TableRow
@@ -77,9 +78,9 @@ const Table = ({ accountsAgingReport }) => {
             </Fragment>
           ))
         ) : (
-          <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
-            No Data Found
-          </p>
+          <tr className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
+            <td>No Data Found</td>
+          </tr>
         )}
         {clientList.length > 0 && (
           <TableTotal currency={accountsAgingReport.currency} report={total} />
