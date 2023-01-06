@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 
 const ReportCard = ({ icon, title, description, url }) => (
   <NavLink end to={`/reports/${url}`}>
-    <div className="mt-5 box-border flex	h-[148px]	w-128 cursor-pointer	rounded-lg border-2 border-miru-gray-100 p-5  hover:shadow-c1">
+    <div className="mt-5 box-border flex	cursor-pointer	rounded-lg border-2	border-miru-gray-100 p-5 hover:shadow-c1 lg:h-[148px]  lg:w-128">
       <div className="flex h-120 w-30 items-center justify-center rounded bg-miru-gray-100	">
         <img height="31.25px" src={icon} width="31.25px" />
       </div>

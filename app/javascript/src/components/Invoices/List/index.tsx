@@ -59,7 +59,6 @@ const Invoices = ({ isDesktop }) => {
     useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] = useState(null);
-
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
 
@@ -176,7 +175,11 @@ const Invoices = ({ isDesktop }) => {
         setIsFilterVisible={setIsFilterVisible}
         setParams={setParams}
       />
-      {status === InvoicesStatus.SUCCESS && (
+      {status === InvoicesStatus.LOADING ? (
+        <p className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
+          Loading...
+        </p>
+      ) : status === InvoicesStatus.SUCCESS ? (
         <Fragment>
           <Container
             deselectInvoices={deselectInvoices}
@@ -211,7 +214,7 @@ const Invoices = ({ isDesktop }) => {
               setSelectedInput={setSelectedInput}
             />
           )}
-          {invoices.length && (
+          {invoices.length > 0 && (
             <Pagination
               isDesktop={isDesktop}
               pagy={pagy}
@@ -237,6 +240,12 @@ const Invoices = ({ isDesktop }) => {
             <BulkDownloadInvoices selectedInvoices={selectedInvoices} />
           )}
         </Fragment>
+      ) : (
+        status === InvoicesStatus.ERROR && (
+          <div className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
+            Something went Wrong!
+          </div>
+        )
       )}
     </Fragment>
   );

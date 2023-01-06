@@ -23,17 +23,17 @@ const getTableData = clients => {
   if (clients) {
     return clients.map(client => ({
       col1: (
-        <div className="text-base text-miru-dark-purple-1000">
+        <div className="text-base font-medium text-miru-dark-purple-1000">
           {client.name}
         </div>
       ),
       col2: (
-        <div className="text-right text-base text-miru-dark-purple-1000">
+        <div className="text-sm font-medium text-miru-dark-purple-1000">
           {client.email}
         </div>
       ),
       col3: (
-        <div className="text-right text-base text-miru-dark-purple-1000">
+        <div className="text-right text-lg font-bold text-miru-dark-purple-1000">
           {minToHHMM(client.minutes)}
         </div>
       ),
@@ -94,17 +94,17 @@ const Clients = ({ isAdminUser }) => {
     {
       Header: "CLIENT",
       accessor: "col1", // accessor is the "key" in the data
-      cssClass: "",
+      cssClass: "md:w-1/3",
     },
     {
       Header: "EMAIL ID",
       accessor: "col2",
-      cssClass: "text-right",
+      cssClass: "md:w-1/3",
     },
     {
       Header: "HOURS LOGGED",
       accessor: "col3",
-      cssClass: "text-right", // accessor is the "key" in the data
+      cssClass: "text-right md:w-1/5", // accessor is the "key" in the data
     },
   ];
 
