@@ -1,8 +1,7 @@
 import React from "react";
 
+import { UserAvatarSVG } from "miruIcons";
 import { NavLink, useParams } from "react-router-dom";
-
-const userAvatar = require("../../../../../../assets/images/user_avatar.svg"); //eslint-disable-line
 
 const getActiveClassName = isActive => {
   if (isActive) {
@@ -19,7 +18,7 @@ const getTeamUrls = memberId => [
   },
   {
     url: `/team/${memberId}/employment`,
-    text: "EMPLOYEMENT DETAILS",
+    text: "EMPLOYEMENT DETAILS", // TODO: fix spelling employment
   },
   {
     url: `/team/${memberId}/devices`,
@@ -45,7 +44,7 @@ const UserInformation = () => (
     <div className="mr-2 flex flex-col justify-center bg-miru-gray-100">
       <div className="relative flex h-12 justify-center">
         <div className="userAvatarWrapper">
-          <img className="h-24 w-24" src={userAvatar} />
+          <img className="h-24 w-24" src={UserAvatarSVG} />
         </div>
       </div>
       <div className="mt-3 flex flex-col items-center justify-center border-b-8 border-miru-gray-200 pb-8">
