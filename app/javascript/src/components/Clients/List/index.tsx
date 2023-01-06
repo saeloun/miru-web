@@ -59,12 +59,12 @@ const getTableData = clients => {
         </div>
       ),
       col2: (
-        <div className="text-left text-base text-miru-dark-purple-1000">
+        <div className="text-left text-sm text-miru-dark-purple-1000">
           {client.email}
         </div>
       ),
       col3: (
-        <div className="text-left text-base text-miru-dark-purple-1000">
+        <div className="text-left text-base font-bold text-miru-dark-purple-1000">
           {minToHHMM(client.minutes)}
         </div>
       ),
@@ -128,17 +128,17 @@ const Clients = ({ isAdminUser }) => {
     {
       Header: "CLIENT",
       accessor: "col1", // accessor is the "key" in the data
-      cssClass: "",
+      cssClass: "md:w-1/3",
     },
     {
       Header: "EMAIL ID",
       accessor: "col2",
-      cssClass: "text-left",
+      cssClass: "text-left md:w-1/3",
     },
     {
       Header: "HOURS LOGGED",
       accessor: "col3",
-      cssClass: "text-left", // accessor is the "key" in the data
+      cssClass: "text-left md:w-1/5", // accessor is the "key" in the data
     },
   ];
 
