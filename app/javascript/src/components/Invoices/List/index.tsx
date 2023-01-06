@@ -57,12 +57,20 @@ const Invoices = ({ isDesktop }) => {
 
   const [showBulkDownloadDialog, setShowBulkDownloadDialog] =
     useState<boolean>(false);
-  const [invoiceToDelete, setInvoiceToDelete] = useState(null);
-  const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] = useState(null);
+  const [invoiceToDelete, setInvoiceToDelete] = useState<any>(null);
+  const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] =
+    useState<any>(null);
+  const [downloaded, setDownloaded] = useState<boolean>(false);
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
 
   useEffect(() => sendGAPageView(), []);
+
+  useEffect(() => {
+    if (downloaded) {
+      setTimeout(() => setShowBulkDownloadDialog(false), 10000);
+    }
+  }, [downloaded]);
 
   useEffect(() => {
     fetchInvoices();
@@ -237,7 +245,11 @@ const Invoices = ({ isDesktop }) => {
             />
           )}
           {showBulkDownloadDialog && (
-            <BulkDownloadInvoices selectedInvoices={selectedInvoices} />
+            <BulkDownloadInvoices
+              downloaded={downloaded}
+              selectedInvoices={selectedInvoices}
+              setDownloaded={setDownloaded}
+            />
           )}
         </Fragment>
       ) : (
