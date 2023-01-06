@@ -18,6 +18,10 @@ class Zipper
     end
   end
 
+  def file
+    tempfile
+  end
+
   def read
     zip_data = File.read(tempfile.path)
     tempfile.close
@@ -29,6 +33,11 @@ class Zipper
       file_hash[:file].unlink
     end
     tempfile.unlink
+  end
+
+  def upload(filename)
+    file = File.open(tempfile)
+    ActiveStorage::Blob.create_and_upload!(io: file, filename:)
   end
 
   private
