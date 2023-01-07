@@ -9,11 +9,16 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
 
   let(:user) { create(:user, current_workspace_id: company.id) }
 
+  before do
+    Invoice.reindex
+  end
+
   context "when user is a book keeper" do
     before do
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
+      Invoice.search_index.refresh
     end
 
     describe "invoices_per_page param" do
@@ -24,42 +29,41 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         expect(json_response["invoices"].size).to eq(10)
       end
 
-      it "throws 400 bad_request error if invoices_per_page is less than or equal to zero" do
+      it "return total invoices if invoices_per_page is less than or equal to zero" do
         invoices_per_page = 0
         send_request :get, internal_api_v1_invoices_path(invoices_per_page:)
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_http_status(:ok)
+        expect(json_response["invoices"].size).to eq(company.invoices.kept.count)
       end
     end
 
     describe "page param" do
-      let(:company) do
-        create(:company_with_invoices, length: 10)
-      end
-
       it "returns invoices offset by page" do
-        page, invoices_per_page = 2, 5
+        page, invoices_per_page = 1, 5
         send_request :get, internal_api_v1_invoices_path(page:, invoices_per_page:)
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].size).to eq(5)
       end
 
-      it "throws 400 bad_request error if page is less than or equal to zero" do
+      it "return invoices offset by page one if page is less than or equal to zero" do
         page, invoices_per_page = -1, 5
         send_request :get, internal_api_v1_invoices_path(page:, invoices_per_page:)
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_http_status(:ok)
+        expect(json_response["invoices"].size).to eq(5)
       end
 
-      it "throws 400 bad_request error if page overflows the total number of invoices" do
+      it "return zero invoices if page overflows the total number of invoices" do
         page, invoices_per_page = 10, 5
         send_request :get, internal_api_v1_invoices_path(page:, invoices_per_page:)
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_http_status(:ok)
+        expect(json_response["invoices"].size).to eq(0)
       end
     end
 
-    describe "from_to" do
+    describe "date_range" do
       invoices_per_page = 10
       it "returns all invoices issued if nothing is provided" do
-        send_request :get, internal_api_v1_invoices_path(from_to: nil, invoices_per_page:)
+        send_request :get, internal_api_v1_invoices_path(date_range: nil, invoices_per_page:)
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].size).to eq(10)
       end
@@ -67,9 +71,9 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
 
     describe "client_ids[] param" do
       it "returns invoices generated for clients specified by client_ids[]" do
-        client_ids = [9, 15, 29]
-        send_request :get, internal_api_v1_invoices_path(client_ids:)
-        expected_invoices = company.invoices.select { |inv| client_ids.include?(inv.client_id) }
+        client = [9, 15, 29]
+        send_request :get, internal_api_v1_invoices_path(client:)
+        expected_invoices = company.invoices.select { |inv| client.include?(inv.client_id) }
         expect(response).to have_http_status(:ok)
         expect(
           json_response["invoices"].map { |invoice|
@@ -107,12 +111,13 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         company.invoices << invoice
         company.save!
         company.reload
+        Invoice.search_index.refresh
       end
 
       it "returns invoices with client.name specified by query" do
         query = "flip"
         send_request :get, internal_api_v1_invoices_path(query:)
-        expected_invoices = company.invoices.select { |inv| inv.client.name.include?(query) }
+        expected_invoices = company.invoices.kept.select { |inv| inv.client.name.include?(query) }
 
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].length) .to be_positive
@@ -128,7 +133,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
       it "returns invoices with invoice_number specified by query" do
         query = "SAI"
         send_request :get, internal_api_v1_invoices_path(query:)
-        expected_invoices = company.invoices.select { |inv| inv.invoice_number.include?(query) }
+        expected_invoices = company.invoices.kept.where("invoice_number ILIKE :query", query: "%#{query}%")
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].length) .to be_positive
         expect(
@@ -147,6 +152,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
+      Invoice.reindex
     end
 
     describe "Show only kept invoices" do
@@ -155,6 +161,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
       end
 
       before do
+        Invoice.reindex
         @current_invoice = company.invoices.first
       end
 
@@ -175,45 +182,44 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         expect(json_response["invoices"].size).to eq(10)
       end
 
-      it "throws 400 bad_request error if invoices_per_page is less than or equal to zero" do
+      it "return total invoices if invoices_per_page is less than or equal to zero" do
         invoices_per_page = 0
         send_request :get, internal_api_v1_invoices_path(invoices_per_page:)
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_http_status(:ok)
+        expect(json_response["invoices"].size).to eq(company.invoices.kept.count)
       end
     end
 
     describe "page param" do
-      let(:company) do
-        create(:company_with_invoices, length: 10)
-      end
-
       it "returns invoices offset by page" do
-        page, invoices_per_page = 2, 5
+        page, invoices_per_page = 1, 5
         send_request :get, internal_api_v1_invoices_path(page:, invoices_per_page:)
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].size).to eq(5)
       end
 
-      it "throws 400 bad_request error if page is less than or equal to zero" do
+      it "return invoices offset by page one if page is less than or equal to zero" do
         page, invoices_per_page = -1, 5
         send_request :get, internal_api_v1_invoices_path(page:, invoices_per_page:)
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_http_status(:ok)
+        expect(json_response["invoices"].size).to eq(5)
       end
 
-      it "throws 400 bad_request error if page overflows the total number of invoices" do
+      it "return zero invoices if page overflows the total number of invoices" do
         page, invoices_per_page = 10, 5
         send_request :get, internal_api_v1_invoices_path(page:, invoices_per_page:)
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_http_status(:ok)
+        expect(json_response["invoices"].size).to eq(0)
       end
     end
 
     describe "from_to with date_range" do
       it "returns invoices with in the custom date range" do
-        from = Date.parse("2022-01-01")
-        to = Date.today
-        from_to = { date_range: "custom", from:, to: }
-        send_request :get, internal_api_v1_invoices_path(from_to:)
-        expected_invoices = company.invoices.during(from..to)
+        from_date_range = Date.parse("2022-01-01")
+        to_date_range = Date.today
+        send_request :get,
+          internal_api_v1_invoices_path(date_range: "custom", from_date_range:, to_date_range:)
+        expected_invoices = company.invoices.during(from_date_range..to_date_range)
 
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].map { |invoice| invoice["id"] })
@@ -221,11 +227,11 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
       end
     end
 
-    describe "client_ids[] param" do
+    describe "client[] param" do
       it "returns invoices generated for clients specified by client_ids[]" do
-        client_ids = [9, 15, 29]
-        send_request :get, internal_api_v1_invoices_path(client_ids:)
-        expected_invoices = company.invoices.select { |inv| client_ids.include?(inv.client_id) }
+        client = [9, 15, 29]
+        send_request :get, internal_api_v1_invoices_path(client:)
+        expected_invoices = company.invoices.select { |inv| client.include?(inv.client_id) }
         expect(response).to have_http_status(:ok)
         expect(
           json_response["invoices"].map { |invoice|
