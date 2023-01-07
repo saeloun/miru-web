@@ -87,7 +87,13 @@ class Invoice < ApplicationRecord
 
   filterable = [:issue_date, :created_at, :client_name, :status, :invoice_number ]
 
-  searchkick filterable:, word_middle: [:invoice_number, :client_name]
+  # searchkick filterable:, word_middle: [:invoice_number, :client_name]
+
+  searchkick(
+    filterable:,
+    searchable: [:invoice_number, :client_name],
+    word_middle: [:invoice_number, :client_name]
+  )
 
   def search_data
     {
