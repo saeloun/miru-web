@@ -131,9 +131,11 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
       end
 
       it "returns invoices with invoice_number specified by query" do
+        # Invoice.search_index.refresh
         query = "SAI"
         send_request :get, internal_api_v1_invoices_path(query:)
-        expected_invoices = company.invoices.kept.where("invoice_number ILIKE :query", query: "%#{query}%")
+        # expected_invoices = company.invoices.kept.where("invoice_number ILIKE :query", query: "%#{query}%")
+        expected_invoices = company.invoices.kept.select { |inv| inv.invoice_number.include?(query) }
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].length) .to be_positive
         expect(
