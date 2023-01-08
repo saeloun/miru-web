@@ -1,24 +1,33 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
-import ReportCard from "./reportCard";
+import {
+  ReportcalendarIcon,
+  CalendarHoverIcon,
+  HoursIcon,
+  HoursHoverIcon,
+  OverdueOutstandingIcon,
+  OverdueOutstandingHoverIcon,
+  RevenueIcon,
+  RevenueHoverIcon,
+  AccountsAgingIcon,
+  AccountsAgingHoverIcon,
+} from "miruIcons";
 
-const accounts_aging = require("../../../../../assets/images/accounts-aging.svg");
-const calendar = require("../../../../images/Calendar.svg"); // eslint-disable-line
-const hours = require("../../../../images/Hours.svg");
-const overdueOutstandingIcon = require("../../../../images/OverdueOutstanding.svg");
-const revenue = require("../../../../images/Revenue.svg");
+import ReportCard from "./reportCard";
 
 const listDetails = [
   {
-    icon: calendar,
+    icon: ReportcalendarIcon,
+    iconHover: CalendarHoverIcon,
     title: "Time Entry Report",
     description: "A summary of the time entries added by your team.",
     url: "time-entry",
     show: true,
   },
   {
-    icon: overdueOutstandingIcon,
+    icon: OverdueOutstandingIcon,
+    iconHover: OverdueOutstandingHoverIcon,
     title: "Invoices Report",
     description:
       "A detailed summary of outstanding and overdue of all clients for a period of time.",
@@ -26,7 +35,8 @@ const listDetails = [
     show: true,
   },
   {
-    icon: hours,
+    icon: HoursIcon,
+    iconHover: HoursHoverIcon,
     title: "Total hours logged",
     description:
       "A detailed summary of billed, unbilled and non-billable hours by team grouped by project.",
@@ -34,14 +44,16 @@ const listDetails = [
     show: false,
   },
   {
-    icon: revenue,
+    icon: RevenueIcon,
+    iconHover: RevenueHoverIcon,
     title: "Revenue Report",
     description: "A detailed report of revenue from each client.",
     url: "revenue-by-client",
     show: true,
   },
   {
-    icon: accounts_aging,
+    icon: AccountsAgingIcon,
+    iconHover: AccountsAgingHoverIcon,
     title: "Accounts Aging",
     description: "Find out which client have been taking a long time to pay",
     url: "accounts-aging",
@@ -52,7 +64,7 @@ const listDetails = [
 const List = () => (
   <div className="pb-14">
     <div className="mt-4 text-3xl font-bold">Reports</div>
-    <div className="grid grid-cols-1 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       {listDetails.map(
         (item, key) =>
           item.show && (
@@ -60,6 +72,7 @@ const List = () => (
               <ReportCard
                 description={item.description}
                 icon={item.icon}
+                iconHover={item.iconHover}
                 title={item.title}
                 url={item.url}
               />
