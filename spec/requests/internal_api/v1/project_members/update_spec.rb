@@ -33,6 +33,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
         send_request(:put, internal_api_v1_project_member_path(project.id), params:)
         expect(response).to have_http_status(:ok)
         db_added_users = ProjectMember
+          .kept
           .where(project_id: project.id)
           .map { |project_member| project_member.slice(:user_id, :hourly_rate) }
         expected_added_users = [ { user_id: user1.id, hourly_rate: 10 },
@@ -68,17 +69,12 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
         create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: 20)
       end
 
-      it "destroys the respective project_members" do
+      it "discard the respective project_members" do
         remove_member_params = { members: { removed_member_ids: [user1.id] } }
         send_request(:put, internal_api_v1_project_member_path(project.id), params: remove_member_params)
 
         expect(response).to have_http_status(:ok)
-
-        db_users = ProjectMember
-          .where(project_id: project.id)
-          .map { |project_member| project_member.slice(:user_id, :hourly_rate) }
-        expected_users = [{ user_id: user2.id, hourly_rate: 20 }]
-        expect(db_users).to match_array(expected_users)
+        expect(ProjectMember.where(project_id: project.id, user_id: user1.id).first.discarded_at).to be_present
       end
     end
 
@@ -100,7 +96,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
 
         expect(response).to have_http_status(:ok)
 
-        db_users = ProjectMember
+        db_users = ProjectMember.kept
           .where(project_id: project.id)
           .map { |project_member| project_member.slice(:user_id, :hourly_rate) }
         expected_users = [{ user_id: user2.id, hourly_rate: 100 },
