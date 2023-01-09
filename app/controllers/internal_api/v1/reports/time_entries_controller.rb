@@ -16,7 +16,10 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
         .new(Reports::TimeEntries::ReportService.new(params, current_company, download: true).process[:entries])
         .process
       }
-      format.pdf { send_data Reports::TimeEntries::GeneratePdf.new(reports).process }
+      format.pdf { send_data Reports::TimeEntries::GeneratePdf
+        .new(Reports::TimeEntries::ReportService.new(params, current_company, download: true).process[:reports])
+        .process
+}
     end
   end
 end
