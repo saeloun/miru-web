@@ -114,11 +114,12 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         Invoice.search_index.refresh
       end
 
-      it "returns invoices with client.name specified by query" do
+      it "returns invoices with client name or invoice number specified by query" do
         query = "flip"
         send_request :get, internal_api_v1_invoices_path(query:)
-        expected_invoices = company.invoices.kept.select { |inv| inv.client.name.include?(query) }
-
+        expected_invoices = company.invoices.kept.select { |inv|
+          inv.client.name.include?(query) || inv.invoice_number.include?(query)
+        }
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].length) .to be_positive
         expect(
@@ -130,10 +131,12 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
           })
       end
 
-      it "returns invoices with invoice_number specified by query" do
+      it "returns invoices with invoice_number or client name specified by query" do
         query = "SAI"
         send_request :get, internal_api_v1_invoices_path(query:)
-        expected_invoices = company.invoices.kept.select { |inv| inv.invoice_number.include?(query) }
+        expected_invoices = company.invoices.kept.select { |inv|
+          inv.client.name.include?(query) || inv.invoice_number.include?(query)
+        }
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].length) .to be_positive
         expect(
