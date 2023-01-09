@@ -107,6 +107,7 @@ RSpec.describe Project, type: :model do
     let(:user_2) { create(:user) }
     let(:user_3) { create(:user) }
     let(:client) { create(:client, company:) }
+    let(:project) { create(:project, client:) }
 
     let(:project_member_1) { create(:project_member, project:, user: user_1, hourly_rate: 5000) }
     let(:project_member_2) { create(:project_member, project:, user: user_2, hourly_rate: 1000) }
@@ -118,6 +119,14 @@ RSpec.describe Project, type: :model do
     let(:timesheet_entry_3) { create(:timesheet_entry, user: user_3, project:, work_date: Date.today.last_week) }
 
     it "returns the total logged duration" do
+      project.reload
+      timesheet_entry_1.reload
+      timesheet_entry_2.reload
+      timesheet_entry_3.reload
+      project_member_1.reload
+      project_member_2.reload
+      project_member_3.reload
+
       total = timesheet_entry_1.duration + timesheet_entry_2.duration + timesheet_entry_3.duration
 
       expect(project.total_logged_duration(time_frame)).to eq(total)
@@ -128,6 +137,9 @@ RSpec.describe Project, type: :model do
       timesheet_entry_1.reload
       timesheet_entry_2.reload
       timesheet_entry_3.reload
+      project_member_1.reload
+      project_member_2.reload
+      project_member_3.reload
 
       project_member_3.delete
       total = timesheet_entry_1.duration + timesheet_entry_2.duration
@@ -147,6 +159,10 @@ RSpec.describe Project, type: :model do
     let(:project_member2) { create(:project_member, project:, user:, hourly_rate: 1000) }
 
     it "returns empty list of project members when project is discarded" do
+      project.reload
+      project_member1.reload
+      project_member2.reload
+
       expect(project.project_members.kept.pluck(:id)).to match_array([project_member1.id, project_member2.id])
       project.discard!
       expect(project.reload.project_members.kept.pluck(:id)).to eq([])
