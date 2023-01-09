@@ -132,6 +132,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
       end
 
       it "returns invoices with invoice_number or client name specified by query" do
+        Invoice.reindex
         query = "SAI"
         send_request :get, internal_api_v1_invoices_path(query:)
         expected_invoices = company.invoices.kept.select { |inv|
