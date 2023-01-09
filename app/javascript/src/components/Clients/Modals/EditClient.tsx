@@ -97,6 +97,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                         </div>
                         <div className="mt-1">
                           <Field
+                            data-cy="edit-client-name"
                             name="name"
                             className={`form__input ${
                               errors.name &&
@@ -141,6 +142,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                         </div>
                         <div className="mt-1">
                           <Field
+                            data-cy="edit-client-phone"
                             name="phone"
                             className={`form__input ${
                               errors.phone &&
@@ -163,6 +165,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                         </div>
                         <div className="mt-1">
                           <Field
+                            data-cy="edit-client-address"
                             name="address"
                             className={`form__input ${
                               errors.address &&
@@ -179,6 +182,7 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
                     <div className="actions mt-4">
                       <input
                         className="form__input_submit"
+                        data-cy="edit-client-submit"
                         name="commit"
                         type="submit"
                         value="SAVE CHANGES"

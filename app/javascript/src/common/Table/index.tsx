@@ -140,10 +140,16 @@ const Table = ({
                         handleEditClick(row.original.rowId);
                       }}
                     >
-                      <PencilIcon color="#5b34ea" size={16} weight="bold" />
+                      <PencilIcon
+                        color="#5b34ea"
+                        data-cy="edit-icon"
+                        size={16}
+                        weight="bold"
+                      />
                     </button>
                     <button
                       className="ml-10"
+                      data-cy="delete-icon"
                       onClick={e => {
                         e.preventDefault();
                         e.stopPropagation();
