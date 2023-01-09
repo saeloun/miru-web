@@ -55,6 +55,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
         expect(response).to have_http_status(:ok)
 
         db_users = ProjectMember
+          .kept
           .where(project_id: project.id)
           .map { |project_member| project_member.slice(:user_id, :hourly_rate) }
         expected_users = [{ user_id: user1.id, hourly_rate: 100 },

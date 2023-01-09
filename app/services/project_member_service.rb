@@ -20,7 +20,7 @@ class ProjectMemberService
     added_members = added_members.filter_map do |member|
       next unless member.key?("hourly_rate")
 
-      { user_id: member["id"], project_id: @project.id, hourly_rate: member["hourly_rate"] }
+      { user_id: member["id"], project_id: members[:project].id, hourly_rate: member["hourly_rate"] }
     end
 
     ProjectMember.create!(added_members)
@@ -31,7 +31,7 @@ class ProjectMemberService
 
     updated_members.each do |member_params|
       ProjectMember
-        .where(user_id: member_params["id"], project_id: @project.id)
+        .where(user_id: member_params["id"], project_id: members[:project].id)
         .update!(hourly_rate: member_params["hourly_rate"])
     end
   end
@@ -39,6 +39,6 @@ class ProjectMemberService
   def remove_members(removed_members)
     return if removed_members.blank?
 
-    @project.project_members.where(user_id: removed_members).discard_all
+    members[:project].project_members.where(user_id: removed_members).discard_all
   end
 end
