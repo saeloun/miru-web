@@ -8,7 +8,7 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
 
   def create
     authorize Company
-    if CreateCompanyService.new(company_params, current_user).process
+    if CreateCompanyService.new(current_user, params: company_params).process
       render json: { notice: I18n.t("companies.create.success") }
     end
   end
