@@ -19,8 +19,8 @@ RSpec.describe Project, type: :model do
     it { is_expected.to callback(:discard_project_members).after(:discard) }
   end
 
-  describe "#project_team_member_details" do
-    subject { project.project_team_member_details time_frame }
+  describe "#project_members_snippet" do
+    subject { project.project_members_snippet time_frame }
 
     let(:company) { create(:company) }
     let(:user) { create(:user) }
@@ -55,7 +55,7 @@ RSpec.describe Project, type: :model do
     context "when time_frame is last_week" do
       let(:time_frame) { "last_week" }
 
-      it "returns the project_team_member_details for a project in the last week" do
+      it "returns the project_members_snippet for a project in the last week" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.last_week)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
@@ -67,7 +67,7 @@ RSpec.describe Project, type: :model do
     context "when time_frame is week" do
       let(:time_frame) { "week" }
 
-      it "returns the project_team_member_details for a project in a week" do
+      it "returns the project_members_snippet for a project in a week" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_week)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
@@ -79,7 +79,7 @@ RSpec.describe Project, type: :model do
     context "when time_frame is month" do
       let(:time_frame) { "month" }
 
-      it "returns the project_team_member_details for a project in a month" do
+      it "returns the project_members_snippet for a project in a month" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_month)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
@@ -91,7 +91,7 @@ RSpec.describe Project, type: :model do
     context "when time_frame is year" do
       let(:time_frame) { "year" }
 
-      it "returns the project_team_member_details for a project in a year" do
+      it "returns the project_members_snippet for a project in a year" do
         timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.beginning_of_year)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
@@ -101,15 +101,68 @@ RSpec.describe Project, type: :model do
     end
   end
 
+  describe "#total_logged_duration" do
+    let(:company) { create(:company) }
+    let(:user_1) { create(:user) }
+    let(:user_2) { create(:user) }
+    let(:user_3) { create(:user) }
+    let(:client) { create(:client, company:) }
+    let(:project) { create(:project, client:) }
+
+    let(:project_member_1) { create(:project_member, project:, user: user_1, hourly_rate: 5000) }
+    let(:project_member_2) { create(:project_member, project:, user: user_2, hourly_rate: 1000) }
+    let(:project_member_3) { create(:project_member, project:, user: user_3, hourly_rate: 1000) }
+
+    let(:time_frame) { "last_week" }
+    let(:timesheet_entry_1) { create(:timesheet_entry, user: user_1, project:, work_date: Date.today.last_week) }
+    let(:timesheet_entry_2) { create(:timesheet_entry, user: user_2, project:, work_date: Date.today.last_week) }
+    let(:timesheet_entry_3) { create(:timesheet_entry, user: user_3, project:, work_date: Date.today.last_week) }
+
+    it "returns the total logged duration" do
+      project.reload
+      timesheet_entry_1.reload
+      timesheet_entry_2.reload
+      timesheet_entry_3.reload
+      project_member_1.reload
+      project_member_2.reload
+      project_member_3.reload
+
+      total = timesheet_entry_1.duration + timesheet_entry_2.duration + timesheet_entry_3.duration
+
+      expect(project.total_logged_duration(time_frame)).to eq(total)
+    end
+
+    it "returns the total logged duration only for current project_members" do
+      project.reload
+      timesheet_entry_1.reload
+      timesheet_entry_2.reload
+      timesheet_entry_3.reload
+      project_member_1.reload
+      project_member_2.reload
+      project_member_3.reload
+
+      project_member_3.delete
+      total = timesheet_entry_1.duration + timesheet_entry_2.duration
+
+      expect(project.total_logged_duration(time_frame)).to eq(total)
+      expect(project.timesheet_entries.count).to eq(3)
+      expect(project.project_members.count).to eq(2)
+    end
+  end
+
   describe "#discard_project_members" do
     let(:company) { create(:company) }
     let(:user) { create(:user) }
     let(:client) { create(:client, company:) }
     let(:project) { create(:project, client:) }
-    let!(:project_member1) { create(:project_member, project:, user:, hourly_rate: 5000) }
-    let!(:project_member2) { create(:project_member, project:, user:, hourly_rate: 1000) }
+    let(:project_member1) { create(:project_member, project:, user:, hourly_rate: 5000) }
+    let(:project_member2) { create(:project_member, project:, user:, hourly_rate: 1000) }
 
     it "returns empty list of project members when project is discarded" do
+      project.reload
+      project_member1.reload
+      project_member2.reload
+
       expect(project.project_members.kept.pluck(:id)).to match_array([project_member1.id, project_member2.id])
       project.discard!
       expect(project.reload.project_members.kept.pluck(:id)).to eq([])
