@@ -39,6 +39,17 @@ import {
   CheckCircle,
 } from "phosphor-react";
 
+const accountsAgingIcon = require("./svgIcons/accountsAging.svg");
+const accountsAgingHoverIcon = require("./svgIcons/accountsAgingHover.svg");
+const reportcalendarIcon = require("./svgIcons/Calendar.svg");
+const calendarHoverIcon = require("./svgIcons/CalendarHover.svg");
+const hoursIcon = require("./svgIcons/Hours.svg");
+const hoursHoverIcon = require("./svgIcons/HoursHover.svg");
+const overdueOutstandingIcon = require("./svgIcons/OverdueOutstanding.svg");
+const overdueOutstandingHoverIcon = require("./svgIcons/OverdueOutstandingHover.svg");
+const revenueIcon = require("./svgIcons/Revenue.svg");
+const revenueHoverIcon = require("./svgIcons/RevenueHover.svg");
+
 const alert = require("../../../assets/images/alert-error-close.svg");
 const amex = require("../../../assets/images/amex.svg");
 const apple = require("../../../assets/images/apple.svg");
@@ -96,6 +107,7 @@ const userAvatar = require("../../../assets/images/user_avatar.svg");
 const visa = require("../../../assets/images/visa.svg");
 const warningCloseIcon = require("../../../assets/images/warning-close-icon.svg");
 const warningTriangle = require("../../../assets/images/warning-triangle.svg");
+
 // icons from phosphor
 export const EditIcon = PencilSimple;
 export const DeleteIcon = Trash;
@@ -192,3 +204,13 @@ export const ConnectPaypalSVG = ConnectPaypal;
 export const ConnectSVG = Connect;
 export const MiruLogoSVG = miruLogo;
 export const DeleteIconSVG = deleteSVG;
+export const ReportcalendarIcon = reportcalendarIcon;
+export const CalendarHoverIcon = calendarHoverIcon;
+export const HoursIcon = hoursIcon;
+export const HoursHoverIcon = hoursHoverIcon;
+export const OverdueOutstandingIcon = overdueOutstandingIcon;
+export const OverdueOutstandingHoverIcon = overdueOutstandingHoverIcon;
+export const RevenueIcon = revenueIcon;
+export const RevenueHoverIcon = revenueHoverIcon;
+export const AccountsAgingIcon = accountsAgingIcon;
+export const AccountsAgingHoverIcon = accountsAgingHoverIcon;
