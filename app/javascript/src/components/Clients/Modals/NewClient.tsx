@@ -49,7 +49,12 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
         <div className="relative h-full w-full px-4 md:flex md:items-center md:justify-center">
           <div className="modal-width transform rounded-lg bg-white px-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle">
             <div className="mt-6 flex items-center justify-between">
-              <h6 className="text-base font-extrabold">Add New Client</h6>
+              <h6
+                className="text-base font-extrabold"
+                data-cy="add-client-heading"
+              >
+                Add New Client
+              </h6>
               <button
                 type="button"
                 onClick={() => {
@@ -81,6 +86,7 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
                         </div>
                         <div className="mt-1">
                           <Field
+                            data-cy="name-input"
                             name="name"
                             className={`form__input ${
                               errors.name &&
@@ -103,6 +109,7 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
                         </div>
                         <div className="mt-1">
                           <Field
+                            data-cy="email-input"
                             name="email"
                             className={`form__input ${
                               errors.email &&
@@ -125,6 +132,7 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
                         </div>
                         <div className="mt-1">
                           <Field
+                            data-cy="phone-number-input"
                             name="phone"
                             className={`form__input ${
                               errors.phone &&
@@ -148,6 +156,7 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
                         <div className="mt-1">
                           <Field
                             as="textarea"
+                            data-cy="address-input"
                             name="address"
                             className={`form__input h-12 p-2 ${
                               errors.address &&
@@ -161,6 +170,7 @@ const EditClient = ({ setnewClient, clientData, setClientData }) => {
                     <div className="actions mt-4">
                       <input
                         className="form__input_submit"
+                        data-cy="submit-button"
                         name="commit"
                         type="submit"
                         value="SAVE CHANGES"
