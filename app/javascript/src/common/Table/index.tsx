@@ -134,14 +134,18 @@ const Table = ({
                 <td className="table__cell md:w-1/5">
                   <div className="iconWrapper invisible">
                     <button
-                      data-cy="edit-icon"
                       onClick={e => {
                         e.preventDefault();
                         e.stopPropagation();
                         handleEditClick(row.original.rowId);
                       }}
                     >
-                      <PencilIcon color="#5b34ea" size={16} weight="bold" />
+                      <PencilIcon
+                        color="#5b34ea"
+                        data-cy="edit-icon"
+                        size={16}
+                        weight="bold"
+                      />
                     </button>
                     <button
                       className="ml-10"

@@ -3,6 +3,11 @@ import { clientsSelectors } from "../../constants/selectors/clients";
 import { fake } from "../../fixtures/fake";
 
 describe("Clients page for admin", () => {
+  const clientName = fake.clientName
+  const email = fake.email
+  const address = fake.address
+  const editedClientName = fake.clientName
+  const editedAddress = fake.address
   beforeEach(function () {
     cy.visit(signInPath);
     cy.fixture("credentials").then(function (data) {
@@ -19,10 +24,8 @@ describe("Clients page for admin", () => {
     cy.get(clientsSelectors.clientsListTable).contains("CLIENT");
   });
 
-  it("should be able to add new client", function () {
-    const clientName = fake.clientName
-    const email = fake.email
-    const address = fake.address
+  it.only("should be able to add new client", function () {
+
     cy.get(clientsSelectors.newClientButton).should("be.visible").click();
     cy.get(clientsSelectors.addClientHeading).should("be.visible");
     cy.get(clientsSelectors.nameInput).type(clientName)
@@ -35,9 +38,25 @@ describe("Clients page for admin", () => {
     cy.get(clientsSelectors.clientsAdminData).should("be.visible");
   });
 
-  it("should  be able to delete a client", function () {
-    // thinking over it
-    // cy.contains(clientName).click({force: true});
-    // cy.get(clientsSelectors.deleteClientButton).click()
+  it.only("should be able to edit client details", function(){
+    cy.get(clientsSelectors.searchBar).clear().type(clientName)
+    cy.wait(3000)
+    cy.contains(clientName).first().click({force: true});
+    cy.get(clientsSelectors.threeDotsMenu).click();
+    cy.contains("Edit").click()
+    cy.get(clientsSelectors.editClientName).clear().type(editedClientName)
+    cy.get(clientsSelectors.editClientAddress).clear().type(editedAddress)
+    cy.get(clientsSelectors.editClientPhone).clear().type("+91111100000")
+    cy.get(clientsSelectors.editClientSubmit).click()
+
+  })
+
+  it.only("should  be able to delete a client", function () {
+    cy.get(clientsSelectors.searchBar).clear().type(editedClientName)
+    cy.wait(3000)
+    cy.contains(editedClientName).first().click({force: true})
+    cy.get(clientsSelectors.threeDotsMenu).click();
+    cy.contains("Delete").click()
+    cy.get(clientsSelectors.deleteButton).click()
   });
 });

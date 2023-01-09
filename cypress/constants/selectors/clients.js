@@ -13,5 +13,11 @@ export const clientsSelectors = {
   addressInput: dataCy("address-input"),
   nameInput: dataCy("name-input"),
   submitButton: dataCy("submit-button"),
-  deleteClientButton: dataCy("delete-client-button")
+  searchBar: dataCy('search-invoice'),
+  threeDotsMenu: dataCy('three-dots'),
+  editClientName: dataCy('edit-client-name'),
+  editClientAddress: dataCy('edit-client-address'),
+  editClientSubmit: dataCy('edit-client-submit'),
+  editClientPhone: dataCy('edit-client-phone'),
+  deleteButton: dataCy('delete-button')
 };
