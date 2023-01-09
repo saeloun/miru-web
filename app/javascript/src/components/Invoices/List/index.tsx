@@ -68,7 +68,7 @@ const Invoices = ({ isDesktop }) => {
 
   useEffect(() => {
     if (downloaded) {
-      setTimeout(() => setShowBulkDownloadDialog(false), 10000);
+      setTimeout(() => setShowBulkDownloadDialog(false), 3000);
     }
   }, [downloaded]);
 
