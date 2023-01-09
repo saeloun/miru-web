@@ -42,6 +42,9 @@ class Project < ApplicationRecord
 
   searchkick text_middle: [:name, :client_name]
 
+  # Concerns
+  include ProjectSqlQueries
+
   def search_data
     {
       id: id.to_i,
@@ -53,23 +56,18 @@ class Project < ApplicationRecord
     }
   end
 
-  def project_team_member_details(time_frame)
-    entries = timesheet_entries.includes(:user)
-      .where(user_id: project_members.pluck(:user_id), work_date: DateRangeService.new(timeframe: time_frame).process)
-      .select(:user_id, "SUM(duration) as duration")
-      .group(:user_id)
+  def project_members_snippet(time_frame)
+    date_range = DateRangeService.new(timeframe: time_frame).process
+    @_project_members_snippet = project_members_snippet_sql(date_range)
+  end
 
-    project_members.map do |member|
-      entry = entries.find { |entry| entry.user_id == member.user_id }
-      cost = calculate_cost(entry&.duration.presence || 0, member.hourly_rate)
-      {
-        id: member.user_id,
-        name: member.full_name,
-        hourly_rate: member.hourly_rate,
-        minutes_logged: entry&.duration.presence || 0,
-        cost:
-      }
-    end
+  def total_logged_duration(time_frame)
+    @_total_logged_duration = timesheet_entries.joins(
+      "RIGHT JOIN project_members ON project_members.user_id = timesheet_entries.user_id"
+    ).where(
+      project_members: { project_id: id },
+      work_date: DateRangeService.new(timeframe: time_frame).process
+    ).sum(:duration)
   end
 
   def project_member_full_names
