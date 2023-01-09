@@ -71,6 +71,10 @@ const EditClient = ({ setShowEditDialog, client }: IEditClient) => {
               apiError={apiError}
               clientData={client}
               clientLogoUrl={clientLogoUrl}
+              dataCyAddress="edit-client-address"
+              dataCyName="edit-client-name"
+              dataCyPhone="edit-client-phone"
+              dataCySubmit="edit-client-submit"
               formType="edit"
               handleDeleteLogo={handleDeleteLogo}
               handleSubmit={handleSubmit}

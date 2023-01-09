@@ -191,7 +191,10 @@ const Clients = ({ isAdminUser }) => {
       />
       <div>
         {isAdminUser && (
-          <div className="bg-miru-gray-100 py-10 px-10">
+          <div
+            className="bg-miru-gray-100 py-10 px-10"
+            data-cy="clients-admin-data"
+          >
             <div className="flex justify-end">
               <select
                 className="focus:outline-none
@@ -224,7 +227,7 @@ const Clients = ({ isAdminUser }) => {
             <AmountBoxContainer amountBox={amountBox} />
           </div>
         )}
-        <div className="flex flex-col">
+        <div className="flex flex-col" data-cy="clients-list-table">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden">
