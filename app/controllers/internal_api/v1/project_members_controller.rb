@@ -45,7 +45,6 @@ class InternalApi::V1::ProjectMembersController < InternalApi::V1::ApplicationCo
 
       return if member_ids.blank?
 
-      debugger
       current_company.projects.find(params[:id]).project_members.where(user_id: member_ids).discard_all
     end
 
