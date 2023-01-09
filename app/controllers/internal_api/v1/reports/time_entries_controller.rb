@@ -38,7 +38,7 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
         order: { work_date: :desc },
         body_options: group_by_clause,
         includes: [:user, { project: :client }, :client ]
-        )
+      )
 
       Reports::TimeEntries::Result.process(search_result, params["group_by"])
     end
