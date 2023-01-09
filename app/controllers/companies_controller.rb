@@ -10,16 +10,12 @@ class CompaniesController < ApplicationController
   end
 
   def create
-    @company = Company.new(permitted_attributes(Company))
-    authorize @company
-    if @company.save
-      current_user.companies << @company
-      current_user.current_workspace_id = @company.id
-      current_user.add_role(:owner, @company)
-      current_user.save!
-
+    company = Company.new(permitted_attributes(Company))
+    authorize company
+    begin
+      CreateCompanyService.new(current_user, company:).process
       redirect_to root_path, notice: t(".success")
-    else
+    rescue => e
       flash.now[:error] = t(".failure")
       render :new, status: :unprocessable_entity
     end
