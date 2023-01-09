@@ -28,7 +28,7 @@ const InvoiceSummary = ({
           <p className="text-sm font-normal uppercase tracking-widest text-white">
             Overdue
           </p>
-          <p className="text-2xl font-normal tracking-widest text-white lg:mt-3 lg:text-5xl">
+          <p className="text-2xl font-semibold tracking-normal text-white lg:mt-3 lg:text-4.5xl">
             {formattedAmount(summary.overdueAmount)}
           </p>
         </li>
@@ -45,7 +45,7 @@ const InvoiceSummary = ({
           <p className="text-sm font-normal uppercase tracking-widest text-white">
             Outstanding
           </p>
-          <p className="text-2xl font-normal tracking-widest text-white lg:mt-3 lg:text-5xl">
+          <p className="text-2xl font-semibold tracking-normal text-white lg:mt-3 lg:text-4.5xl">
             {formattedAmount(summary.outstandingAmount)}
           </p>
         </li>
@@ -56,7 +56,7 @@ const InvoiceSummary = ({
           <p className="text-sm font-normal uppercase tracking-widest text-white">
             Amount in draft
           </p>
-          <p className="text-2xl font-normal tracking-widest text-white lg:mt-3 lg:text-5xl">
+          <p className="text-2xl font-semibold tracking-normal text-white lg:mt-3 lg:text-4.5xl">
             {formattedAmount(summary.draftAmount)}
           </p>
         </li>

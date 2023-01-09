@@ -88,7 +88,7 @@ const Table = ({
 
   return (
     <table
-      className="mt-4 min-w-full divide-y divide-gray-200"
+      className="mt-4 min-w-full divide-y divide-gray-200 md:w-full md:table-fixed"
       {...getTableProps()}
     >
       <thead>
@@ -103,7 +103,7 @@ const Table = ({
                 {column.render("Header")}
               </th>
             ))}
-            {hasRowIcons && <th className="table__header" />}
+            {hasRowIcons && <th className="table__header md:w-1/5" />}
           </tr>
         ))}
       </thead>
@@ -122,12 +122,16 @@ const Table = ({
               onClick={() => rowOnClick(row.original.rowId)}
             >
               {row.cells.map((cell, idx) => (
-                <td className="table__cell" {...cell.getCellProps()} key={idx}>
+                <td
+                  className="table__cell md:w-1/3"
+                  {...cell.getCellProps()}
+                  key={idx}
+                >
                   {cell.render("Cell")}
                 </td>
               ))}
               {hasRowIcons && (
-                <td className="table__cell">
+                <td className="table__cell md:w-1/5">
                   <div className="iconWrapper invisible">
                     <button
                       data-cy="edit-icon"

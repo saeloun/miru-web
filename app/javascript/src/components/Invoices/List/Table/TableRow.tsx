@@ -55,7 +55,7 @@ const TableRow = ({
         />
       </td>
       <td
-        className="flex cursor-pointer items-center whitespace-nowrap py-5 pr-6 text-left font-medium tracking-wider lg:w-1/5 lg:pr-2"
+        className="flex cursor-pointer items-center whitespace-nowrap py-5 pr-6 text-left font-medium tracking-normal lg:w-1/5 lg:pr-2"
         data-cy="view-invoice"
         onClick={() => navigate(`/invoices/${invoice.id}`)}
       >
@@ -64,22 +64,22 @@ const TableRow = ({
           <span className="text-xs font-normal capitalize text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
             {invoice.client.name}
           </span>
-          <h3 className="text-xs font-normal text-miru-dark-purple-400 lg:text-sm">
+          <h3 className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
             {invoice.invoiceNumber}
           </h3>
         </div>
       </td>
       {isDesktop && (
-        <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-wider lg:px-6">
+        <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:px-6">
           <h1 className="text-xs font-normal text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
             {formattedDate(invoice.issueDate)}
           </h1>
-          <h3 className="text-xs font-normal text-miru-dark-purple-400 lg:text-sm">
+          <h3 className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
             Due on {formattedDate(invoice.dueDate)}
           </h3>
         </td>
       )}
-      <td className="px-2 text-right text-sm font-bold tracking-wider text-miru-dark-purple-1000 lg:w-1/4 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
+      <td className="px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:w-1/4 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
         {formattedAmount}
       </td>
       <td
