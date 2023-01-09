@@ -150,6 +150,10 @@ module.exports = {
         "miru-chart-purple": {
           600: "#7768AE",
         },
+        "miru-report-purple": {
+          600: "#3111A6",
+          400: "#8062EF",
+        },
       },
       fontFamily: {
         manrope: "'Manrope', serif",
@@ -166,8 +170,9 @@ module.exports = {
         30: "7.5rem",
         34: "8.5rem",
         38: "9.5rem",
-        54: "13.5rem",
         50: "12.5rem",
+        54: "13.5rem",
+        57.5: "14.375rem",
         104: "26rem",
         112: "28rem",
         129: "33rem",

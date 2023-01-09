@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { XIcon } from "miruIcons";
+
+import { LocalStorageKeys } from "constants/index";
 
 import RecentlyUpdated from "./RecentlyUpdated";
 import Table from "./Table";
@@ -21,10 +23,8 @@ const Container = ({
   filterIntialValues,
   filterParamsStr,
   fetchInvoices,
+  isDesktop,
 }) => {
-  const innerWidth = window.innerWidth;
-  const [isDesktop, setIsDesktop] = useState(innerWidth > 650);
-
   let appliedFilterCount = (filterParamsStr.match(/&/g) || []).length;
 
   filterParamsStr.includes("custom") &&
@@ -44,16 +44,13 @@ const Container = ({
           ((name = key), (newArr = filterIntialValues.dateRange));
     }
 
-    setFilterParams({
-      ...filterParams,
-      [name]: newArr,
-    });
+    const updatedFilters = { ...filterParams, [name]: newArr };
+    setFilterParams(updatedFilters);
+    window.localStorage.setItem(
+      LocalStorageKeys.INVOICE_FILTERS,
+      JSON.stringify(updatedFilters)
+    );
   };
-
-  useEffect(() => {
-    window.addEventListener("resize", () => setIsDesktop(innerWidth > 650));
-    window.removeEventListener("resize", () => setIsDesktop(innerWidth > 650));
-  }, [innerWidth]);
 
   return invoices.length > 0 ? (
     <div
@@ -83,16 +80,16 @@ const Container = ({
           )}
         </div>
       </div>
-      <div className="mb-4 flex items-center">
+      <div className="mb-4 flex flex-col items-start lg:flex-row lg:items-center">
         <h1 className="text-2xl font-normal text-miru-dark-purple-1000">
-          All invoices
+          All Invoices
         </h1>
-        <div className="ml-4 flex items-center justify-between">
+        <div className="flex flex-col items-start justify-between lg:ml-4 lg:flex-row lg:items-center">
           {Object.values(filterParams).map(param =>
             Array.isArray(param)
               ? param.map(val => (
                   <span
-                    className="mx-2 flex h-6 items-center justify-between rounded-xl bg-miru-gray-400 px-2 text-xs font-normal capitalize text-miru-dark-purple-1000"
+                    className="my-2 flex h-6 items-center justify-between rounded-xl bg-miru-gray-400 px-2 text-xs font-normal capitalize text-miru-dark-purple-1000 lg:mx-2 lg:my-0"
                     key={val.value}
                   >
                     {val.label}
@@ -104,7 +101,7 @@ const Container = ({
                   </span>
                 ))
               : Object(param).value != "all" && (
-                  <span className="mx-2 flex h-6 items-center justify-between rounded-xl bg-miru-gray-400 px-2 text-xs font-normal capitalize text-miru-dark-purple-1000">
+                  <span className="my-2 flex h-6 items-center justify-between rounded-xl bg-miru-gray-400 px-2 text-xs font-normal capitalize text-miru-dark-purple-1000 lg:mx-2 lg:my-0">
                     {Object(param).label}
                     <XIcon
                       className="ml-2 cursor-pointer"
@@ -116,8 +113,13 @@ const Container = ({
           )}
           {appliedFilterCount > 1 && (
             <span
-              className="ml-2 flex w-16 cursor-pointer items-center justify-between text-xs font-normal text-miru-han-purple-1000"
-              onClick={() => setFilterParams(filterIntialValues)}
+              className="my-2 flex w-16 cursor-pointer items-center justify-between text-xs font-normal text-miru-han-purple-1000 lg:mx-2 lg:my-0"
+              onClick={() => {
+                window.localStorage.removeItem(
+                  LocalStorageKeys.INVOICE_FILTERS
+                );
+                setFilterParams(filterIntialValues);
+              }}
             >
               <XIcon size={12} /> Clear all
             </span>
@@ -128,6 +130,7 @@ const Container = ({
         deselectInvoices={deselectInvoices}
         fetchInvoices={fetchInvoices}
         invoices={invoices}
+        isDesktop={isDesktop}
         selectInvoices={selectInvoices}
         selectedInvoices={selectedInvoices}
         setInvoiceToDelete={setInvoiceToDelete}

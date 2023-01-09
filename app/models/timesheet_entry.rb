@@ -16,9 +16,10 @@
 #
 # Indexes
 #
-#  index_timesheet_entries_on_project_id  (project_id)
-#  index_timesheet_entries_on_user_id     (user_id)
-#  index_timesheet_entries_on_work_date   (work_date)
+#  index_timesheet_entries_on_bill_status  (bill_status)
+#  index_timesheet_entries_on_project_id   (project_id)
+#  index_timesheet_entries_on_user_id      (user_id)
+#  index_timesheet_entries_on_work_date    (work_date)
 #
 # Foreign Keys
 #
@@ -49,18 +50,26 @@ class TimesheetEntry < ApplicationRecord
   delegate :name, to: :client, prefix: true, allow_nil: true
   delegate :full_name, to: :user, prefix: true, allow_nil: true
 
-  searchkick text_middle: [:user_name, :note]
+  scope :search_import, -> { includes(:project, :client, :user) }
+
+  filterable = [:user_name, :created_at, :project_name, :client_name, :bill_status ]
+
+  searchkick filterable:, text_middle: [:user_name, :note]
 
   def search_data
     {
       id: id.to_i,
-      bill_status:,
       project_id:,
       client_id: self.project&.client_id,
       user_id:,
       work_date: work_date.to_time,
       note:,
-      user_name: user.full_name
+      user_name: user.full_name,
+      project_name: project.name,
+      client_name: project.client.name,
+      bill_status:,
+      duration: duration.to_i,
+      created_at: created_at.to_time
     }
   end
 

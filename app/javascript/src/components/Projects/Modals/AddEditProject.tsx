@@ -179,7 +179,7 @@ const AddEditProject = ({
                   Project Type
                 </label>
                 <div className="mt-1">
-                  <div className="sm:space-XIcon-10 space-y-4 sm:flex sm:items-center sm:space-y-0">
+                  <div className="sm:space-XIcon-10 flex w-57.5 items-center justify-between space-y-4 sm:space-y-0">
                     <div className="flex items-center">
                       {(editProjectData || !isEdit) && (
                         <input

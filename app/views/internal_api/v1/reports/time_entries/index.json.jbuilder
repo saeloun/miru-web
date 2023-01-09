@@ -7,13 +7,13 @@ json.reports reports do |grouped_report|
   json.entries grouped_report[:entries] do |report|
     json.id report.id
     json.note report.note
-    json.project report.project.name
+    json.project report.project_name
     json.project_id report.project_id
-    json.client report.project.client.name
+    json.client report.client_name
     json.duration report.duration
     json.work_date report.work_date
     json.bill_status report.bill_status
-    json.team_member report.user.full_name
+    json.team_member report.user_full_name
   end
 end
 json.filter_options do

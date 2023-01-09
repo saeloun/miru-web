@@ -13,7 +13,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
     @user_details = {
       # first name is kept the same for testing, rest all fields are updated
       first_name: user.first_name,
-      last_name: Faker::Name.last_name,
+      last_name: Faker::Alphanumeric.alpha(number: 2..10),
       phone: Faker::PhoneNumber.phone_number_with_country_code,
       date_of_birth: Faker::Date.between(from: "1990-01-01", to: "2000-01-01"),
       personal_email_id: Faker::Internet.safe_email,

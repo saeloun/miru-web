@@ -1,11 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
 
+import Logger from "js-logger";
 import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import invoicesApi from "apis/invoices";
 import Pagination from "common/Pagination";
-import { ApiStatus as InvoicesStatus } from "constants/index";
+import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./container";
@@ -16,7 +17,7 @@ import { TOASTER_DURATION } from "../../../constants";
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
 
-const Invoices = () => {
+const Invoices = ({ isDesktop }) => {
   const filterIntialValues = {
     dateRange: { label: "All", value: "all", from: "", to: "" },
     clients: [],
@@ -24,7 +25,7 @@ const Invoices = () => {
   };
 
   const [status, setStatus] = useState<InvoicesStatus>(InvoicesStatus.IDLE);
-  const [invoices, setInvoices] = useState<null | any[]>(null);
+  const [invoices, setInvoices] = useState<any[]>([]);
   const [summary, setSummary] = useState<any>(null);
   const [pagy, setPagy] = useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,7 +34,14 @@ const Invoices = () => {
     page: searchParams.get("page") || 1,
     query: searchParams.get("query") || "",
   });
-  const [filterParams, setFilterParams] = useState(filterIntialValues);
+
+  const LS_INVOICE_FILTERS = window.localStorage.getItem(
+    LocalStorageKeys.INVOICE_FILTERS
+  );
+
+  const [filterParams, setFilterParams] = useState<any>(
+    JSON.parse(LS_INVOICE_FILTERS) || filterIntialValues
+  );
   const [filterParamsStr, setFilterParamsStr] = useState("");
   const [selectedInput, setSelectedInput] = useState("from-input");
 
@@ -47,7 +55,6 @@ const Invoices = () => {
     useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] = useState(null);
-
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
 
@@ -67,6 +74,35 @@ const Invoices = () => {
     }
 
     return newParams;
+  };
+
+  //Polling
+  useEffect(() => {
+    if (!invoices || !invoiceIsSending) return;
+    const DELAY = 5000;
+
+    const timer = setTimeout(() => fetchInvoicesWithoutRefresh(), DELAY);
+
+    return () => clearTimeout(timer);
+  }, [invoices]);
+
+  const invoiceIsSending = invoices.some(
+    invoice => invoice.status === "sending"
+  );
+
+  const fetchInvoicesWithoutRefresh = async () => {
+    try {
+      const {
+        data: { invoices, pagy, summary, recentlyUpdatedInvoices },
+      } = await invoicesApi.get(queryParams().concat(handleFilterParams()));
+
+      setInvoices(invoices);
+      setSummary(summary);
+      setPagy(pagy);
+      setRecentlyUpdatedInvoices(recentlyUpdatedInvoices);
+    } catch (e) {
+      Logger.error(e);
+    }
   };
 
   const fetchInvoices = async () => {
@@ -141,7 +177,11 @@ const Invoices = () => {
           deselectInvoices(invoices.map(invoice => invoice.id))
         }
       />
-      {status === InvoicesStatus.SUCCESS && (
+      {status === InvoicesStatus.LOADING ? (
+        <p className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
+          Loading...
+        </p>
+      ) : status === InvoicesStatus.SUCCESS ? (
         <Fragment>
           <Container
             deselectInvoices={deselectInvoices}
@@ -150,6 +190,7 @@ const Invoices = () => {
             filterParams={filterParams}
             filterParamsStr={filterParamsStr}
             invoices={invoices}
+            isDesktop={isDesktop}
             recentlyUpdatedInvoices={recentlyUpdatedInvoices}
             selectInvoices={selectInvoices}
             selectedInvoices={selectedInvoices}
@@ -168,8 +209,13 @@ const Invoices = () => {
               setSelectedInput={setSelectedInput}
             />
           )}
-          {invoices.length && (
-            <Pagination pagy={pagy} params={params} setParams={setParams} />
+          {invoices.length > 0 && (
+            <Pagination
+              isDesktop={isDesktop}
+              pagy={pagy}
+              params={params}
+              setParams={setParams}
+            />
           )}
           {showDeleteDialog && (
             <DeleteInvoice
@@ -186,6 +232,12 @@ const Invoices = () => {
             />
           )}
         </Fragment>
+      ) : (
+        status === InvoicesStatus.ERROR && (
+          <div className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
+            Something went Wrong!
+          </div>
+        )
       )}
     </Fragment>
   );
