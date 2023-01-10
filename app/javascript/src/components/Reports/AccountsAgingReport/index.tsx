@@ -59,7 +59,7 @@ const AccountsAgingReport = () => {
   };
 
   return (
-    <div className="overflow-x-scroll">
+    <div>
       <EntryContext.Provider value={{ ...contextValues }}>
         <Header
           handleDownload

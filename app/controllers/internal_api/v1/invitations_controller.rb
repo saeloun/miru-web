@@ -5,11 +5,7 @@ class InternalApi::V1::InvitationsController < InternalApi::V1::ApplicationContr
 
   def create
     authorize :invitation
-    @invitation = Invitation.new(invitation_params)
-    @invitation.company = current_company
-    @invitation.sender = current_user
-
-    @invitation.save!
+    Invitations::CreateInvitationService.new(invitation_params, current_company, current_user).process
     render json: { notice: I18n.t("invitation.create.success.message") }, status: :created
   end
 

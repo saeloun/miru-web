@@ -407,6 +407,9 @@ GEM
       rspec-support (~> 3.10)
     rspec-retry (0.6.2)
       rspec-core (> 3.3)
+    rspec-sidekiq (3.1.0)
+      rspec-core (~> 3.0, >= 3.0.0)
+      sidekiq (>= 2.4.0)
     rspec-support (3.12.0)
     rubocop (1.40.0)
       json (~> 2.3)
@@ -587,11 +590,13 @@ DEPENDENCIES
   rspec-buildkite
   rspec-rails (~> 5.0, >= 5.0.2)
   rspec-retry
+  rspec-sidekiq
   rubocop
   rubocop-performance
   rubocop-rails
   rubocop-rspec
   ruby_audit
+  rubyzip
   sass-rails
   searchkick
   selenium-webdriver (>= 4.0.0)
