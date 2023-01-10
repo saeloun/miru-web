@@ -103,6 +103,24 @@ class Invoice < ApplicationRecord
     (amount * Money::Currency.new(base_currency).subunit_to_unit).to_i
   end
 
+  def pdf_content(company_logo, root_url)
+    InvoicePayment::PdfGeneration.process(
+      self,
+      company_logo,
+      root_url
+    )
+  end
+
+  def temp_pdf(company_logo, root_url)
+    file = Tempfile.new()
+    InvoicePayment::PdfGeneration.process(
+      self,
+      company_logo,
+      root_url,
+      file.path)
+    file
+  end
+
   private
 
     def set_external_view_key

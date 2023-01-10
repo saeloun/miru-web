@@ -2,11 +2,12 @@
 
 module InvoicePayment
   class PdfGeneration < ApplicationService
-    def initialize(invoice, company_logo, root_url)
+    def initialize(invoice, company_logo, root_url, filepath = nil)
       @invoice = invoice
       @company_logo = company_logo || ""
       @base_currency = invoice.company.base_currency
       @root_url = root_url
+      @filepath = filepath
     end
 
     def process
@@ -31,7 +32,8 @@ module InvoicePayment
       )
 
       options = {
-        wait_until: ["networkidle0", "load", "domcontentloaded", "networkidle2"]
+        wait_until: ["networkidle0", "load", "domcontentloaded", "networkidle2"],
+        path: @filepath
       }
 
       absolute_html = Grover::HTMLPreprocessor.process html, "#{@root_url}/", "http"
