@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 
+import dayjs from "dayjs";
 import { DownloadSimpleIcon, CheckCircleIcon } from "miruIcons";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { v4 as uuidv4 } from "uuid";
@@ -104,7 +105,10 @@ const BulkDownloadInvoices = ({
     }
   }, 2000);
 
-  useEffect(() => setDownloadId(uuidv4()), []);
+  useEffect(() => {
+    setDownloadId(uuidv4());
+    setReceived(null);
+  }, []);
 
   useEffect(() => {
     sendInvoiceIds();
@@ -116,7 +120,8 @@ const BulkDownloadInvoices = ({
       setDownloadStatus(status);
       setTimeout(() => {
         const link = document.createElement("a");
-        link.download = "invoiceBulk";
+        const fileName = `Invoices-${dayjs().format("DD-MM-YY-h:mm")}`;
+        link.download = fileName;
         link.href = received.file_url;
         document.body.appendChild(link);
         link.click();
