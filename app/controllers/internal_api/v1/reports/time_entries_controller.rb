@@ -22,7 +22,6 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
 }
     end
   end
-<<<<<<< HEAD
 
   private
 
@@ -54,6 +53,4 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
     def this_month_filter
       { work_date: DateTime.current.beginning_of_month..DateTime.current.end_of_month }
     end
-=======
->>>>>>> 1085e3aca15b353dd646d3f082d5bd4cfb37ea9d
 end
