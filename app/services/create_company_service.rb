@@ -4,10 +4,10 @@ class CreateCompanyService
   attr_reader :params, :current_user
   attr_accessor :company
 
-  def initialize(params, current_user)
+  def initialize(current_user, params: nil, company: nil)
     @params = params
     @current_user = current_user
-    @company = Company.new(params)
+    @company = company || Company.new(params)
   end
 
   def process

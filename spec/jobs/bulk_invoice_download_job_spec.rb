@@ -14,13 +14,13 @@ RSpec.describe BulkInvoiceDownloadJob, type: :job do
 
   describe "executed job" do
     before do
-      allow_any_instance_of(BulkInvoiceDownloadService).to receive(:process).and_return("zipped_content")
+      allow_any_instance_of(BulkInvoiceDownloadService).to receive(:process).and_return("file_url")
     end
 
     it "broadcast the data on the expected channel" do
       expect {
-        BulkInvoiceDownloadJob.perform_now([6], nil, "abc", "")
-      }.to have_broadcasted_to("bulk_invoice_download_channel_abc").with(content: "zipped_content")
+        BulkInvoiceDownloadJob.perform_now([6], nil, "abc", "", { host: "localhost", port: 3000 })
+      }.to have_broadcasted_to("bulk_invoice_download_channel_abc").with(file_url: "file_url")
     end
   end
 end
