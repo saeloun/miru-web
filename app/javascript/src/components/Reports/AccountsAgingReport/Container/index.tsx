@@ -32,7 +32,9 @@ const Container = () => {
           },
         ]}
       />
-      <Table accountsAgingReport={accountsAgingReport} />
+      <div className="overflow-x-scroll">
+        <Table accountsAgingReport={accountsAgingReport} />
+      </div>
     </>
   );
 };

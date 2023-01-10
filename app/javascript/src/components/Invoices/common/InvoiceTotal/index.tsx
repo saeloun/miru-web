@@ -191,12 +191,6 @@ const InvoiceTotal = ({
                 : 0}
             </td>
           </tr>
-          <tr>
-            <td className="pt-2 pr-10 text-right text-xs font-bold tracking-widest text-miru-han-purple-1000">
-              REQUEST DEPOSIT
-            </td>
-            <td />
-          </tr>
         </tbody>
       </table>
       {showDiscountMenu && (
