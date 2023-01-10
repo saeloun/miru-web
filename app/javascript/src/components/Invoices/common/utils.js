@@ -24,7 +24,7 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
 
   invoiceLineItems = invoiceLineItems.concat(
     manualEntryArr.map(item => ({
-      id: item.id,
+      idx: item.id,
       name: item.name,
       description: item.description,
       date: dayjs(item.date).format("DD/MM/YYYY"),
