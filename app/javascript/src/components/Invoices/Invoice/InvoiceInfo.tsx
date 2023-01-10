@@ -47,6 +47,7 @@ const InvoiceInfo = ({ invoice }) => {
           {currencyFormat({
             baseCurrency: invoice.company.currency,
             amount: invoice.amount,
+            notation: "standard",
           })}
         </p>
       </div>

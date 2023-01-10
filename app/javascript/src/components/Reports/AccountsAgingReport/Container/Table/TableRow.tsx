@@ -18,6 +18,7 @@ const TableRow = ({ currency, report }) => {
         {currencyFormat({
           baseCurrency: currency,
           amount: amount_overdue.zero_to_thirty_days,
+          notation: "standard",
         })}
       </td>
       <td className="w-2/12 whitespace-nowrap px-8 text-right">
@@ -25,6 +26,7 @@ const TableRow = ({ currency, report }) => {
           {currencyFormat({
             baseCurrency: currency,
             amount: amount_overdue.thirty_one_to_sixty_days,
+            notation: "standard",
           })}
         </p>
       </td>
@@ -33,6 +35,7 @@ const TableRow = ({ currency, report }) => {
           {currencyFormat({
             baseCurrency: currency,
             amount: amount_overdue.sixty_one_to_ninety_days,
+            notation: "standard",
           })}
         </p>
       </td>
@@ -41,6 +44,7 @@ const TableRow = ({ currency, report }) => {
           {currencyFormat({
             baseCurrency: currency,
             amount: amount_overdue.ninety_plus_days,
+            notation: "standard",
           })}
         </p>
       </td>
@@ -48,6 +52,7 @@ const TableRow = ({ currency, report }) => {
         {currencyFormat({
           baseCurrency: currency,
           amount: amount_overdue.total,
+          notation: "standard",
         })}
       </td>
     </tr>

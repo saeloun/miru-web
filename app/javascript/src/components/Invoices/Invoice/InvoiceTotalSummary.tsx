@@ -23,6 +23,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               {currencyFormat({
                 baseCurrency: invoice.company.currency,
                 amount: parseFloat(subTotal).toFixed(2),
+                notation: "standard",
               })}
             </td>
           </tr>
@@ -34,6 +35,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               {currencyFormat({
                 baseCurrency: invoice.company.currency,
                 amount: parseFloat(discount).toFixed(2),
+                notation: "standard",
               })}
             </td>
           </tr>
@@ -45,6 +47,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               {currencyFormat({
                 baseCurrency: invoice.company.currency,
                 amount: tax,
+                notation: "standard",
               })}
             </td>
           </tr>
@@ -56,6 +59,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               {currencyFormat({
                 baseCurrency: invoice.company.currency,
                 amount: total,
+                notation: "standard",
               })}
             </td>
           </tr>
@@ -67,6 +71,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               {currencyFormat({
                 baseCurrency: invoice.company.currency,
                 amount: invoice.amountPaid,
+                notation: "standard",
               })}
             </td>
           </tr>
@@ -78,6 +83,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               {currencyFormat({
                 baseCurrency: invoice.company.currency,
                 amount: invoice.amountDue,
+                notation: "standard",
               })}
             </td>
           </tr>

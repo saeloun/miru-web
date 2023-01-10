@@ -17,7 +17,11 @@ const LineItem = ({ currency, item }) => {
           {date}
         </td>
         <td className="px-1 py-3 text-right text-base font-normal text-miru-dark-purple-1000 ">
-          {currencyFormat({ baseCurrency: currency, amount: item.rate })}
+          {currencyFormat({
+            baseCurrency: currency,
+            amount: item.rate,
+            notation: "standard",
+          })}
         </td>
         <td className="px-1 py-3 text-right text-base font-normal text-miru-dark-purple-1000 ">
           {minToHHMM(item.quantity)}
@@ -26,6 +30,7 @@ const LineItem = ({ currency, item }) => {
           {currencyFormat({
             baseCurrency: currency,
             amount: lineTotalCalc(item.quantity, item.rate),
+            notation: "standard",
           })}
         </td>
       </tr>

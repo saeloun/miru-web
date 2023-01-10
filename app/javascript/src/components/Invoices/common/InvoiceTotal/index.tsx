@@ -47,6 +47,7 @@ const InvoiceTotal = ({
           {currencyFormat({
             baseCurrency: currency,
             amount: parseFloat(discount).toFixed(2),
+            notation: "standard",
           })}
         </td>
       );
@@ -84,7 +85,11 @@ const InvoiceTotal = ({
 
     return (
       <td className="w-22 pt-4 text-right text-base font-bold text-miru-dark-purple-1000">
-        {currencyFormat({ baseCurrency: currency, amount: tax })}
+        {currencyFormat({
+          baseCurrency: currency,
+          amount: tax,
+          notation: "standard",
+        })}
       </td>
     );
   };
@@ -129,6 +134,7 @@ const InvoiceTotal = ({
                 ? currencyFormat({
                     baseCurrency: currency,
                     amount: subTotal.toFixed(2),
+                    notation: "standard",
                   })
                 : 0}
             </td>
@@ -167,7 +173,11 @@ const InvoiceTotal = ({
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
               {total
-                ? currencyFormat({ baseCurrency: currency, amount: total })
+                ? currencyFormat({
+                    baseCurrency: currency,
+                    amount: total,
+                    notation: "standard",
+                  })
                 : 0}
             </td>
           </tr>
@@ -177,7 +187,11 @@ const InvoiceTotal = ({
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
               {amountPaid
-                ? currencyFormat({ baseCurrency: currency, amount: amountPaid })
+                ? currencyFormat({
+                    baseCurrency: currency,
+                    amount: amountPaid,
+                    notation: "standard",
+                  })
                 : 0}
             </td>
           </tr>
@@ -187,7 +201,11 @@ const InvoiceTotal = ({
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
               {amountDue
-                ? currencyFormat({ baseCurrency: currency, amount: amountDue })
+                ? currencyFormat({
+                    baseCurrency: currency,
+                    amount: amountDue,
+                    notation: "standard",
+                  })
                 : 0}
             </td>
           </tr>

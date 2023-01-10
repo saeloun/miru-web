@@ -9,9 +9,6 @@ import getStatusCssClass from "utils/getBadgeStatus";
 const RecentlyUpdated = ({ invoice }) => {
   const navigate = useNavigate();
 
-  const formattedAmount = (amount, baseCurrency) =>
-    currencyFormat({ baseCurrency, amount });
-
   return (
     <div
       className="mx-2 flex h-auto w-40 cursor-pointer flex-col justify-between rounded-xl border-2 border-miru-gray-200 p-4 text-center"
@@ -27,8 +24,11 @@ const RecentlyUpdated = ({ invoice }) => {
         <p className="truncateOverflowText">{invoice.client.name}</p>
       </div>
       <h1 className="mt-2.5 mb-1 truncate text-base font-bold text-miru-dark-purple-1000 lg:text-xl">
-        {" "}
-        {formattedAmount(invoice.amount, invoice.company.baseCurrency)}{" "}
+        {currencyFormat({
+          baseCurrency: invoice.company.baseCurrency,
+          amount: invoice.amount,
+          notation: "standard",
+        })}
       </h1>
       <div>
         <Badge
