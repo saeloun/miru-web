@@ -26,10 +26,10 @@ const NavigationFilter = () => {
 
   const filterHtml = (value, key, filterKey) => (
     <li
-      className="mr-4 flex rounded-xl bg-miru-gray-400 px-2 py-1 px-1 text-xs font-semibold tracking-widest tracking-widest text-miru-dark-purple-1000"
+      className="my-1 mr-4 flex rounded-xl bg-miru-gray-400 px-2 py-1 px-1 text-xs font-semibold tracking-widest tracking-widest text-miru-dark-purple-1000"
       key={key}
     >
-      <span>
+      <span className="whitespace-nowrap">
         {filterKey === "groupBy" && "Group By:"} {value}
       </span>
       <button
