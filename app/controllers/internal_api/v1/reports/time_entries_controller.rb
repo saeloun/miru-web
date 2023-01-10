@@ -16,9 +16,13 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
         .new(Reports::TimeEntries::ReportService.new(params, current_company, download: true).process[:entries])
         .process
       }
-      format.pdf { send_data Reports::TimeEntries::GeneratePdf.new(reports).process }
+      format.pdf { send_data Reports::TimeEntries::GeneratePdf
+        .new(Reports::TimeEntries::ReportService.new(params, current_company, download: true).process[:reports])
+        .process
+}
     end
   end
+<<<<<<< HEAD
 
   private
 
@@ -50,4 +54,6 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
     def this_month_filter
       { work_date: DateTime.current.beginning_of_month..DateTime.current.end_of_month }
     end
+=======
+>>>>>>> 1085e3aca15b353dd646d3f082d5bd4cfb37ea9d
 end
