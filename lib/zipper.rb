@@ -35,9 +35,11 @@ class Zipper
     tempfile.unlink
   end
 
-  def upload(filename)
-    file = File.open(tempfile)
-    ActiveStorage::Blob.create_and_upload!(io: file, filename:)
+  def temp_upload(filename, duration)
+    file_uploader = FileUploader.new(tempfile, filename)
+    file_uploader.upload
+    file_uploader.delete_after(duration)
+    file_uploader
   end
 
   private
