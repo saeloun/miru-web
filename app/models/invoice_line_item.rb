@@ -33,4 +33,34 @@ class InvoiceLineItem < ApplicationRecord
   validates :name, :date, :rate, :quantity, presence: true
   validates :rate, numericality: { greater_than_or_equal_to: 0 }
   validates :quantity, numericality: { greater_than: 0 }
+
+  def self.total_cost
+    (self.sum("quantity * rate") / 60).round(3)
+  end
+
+  def hours_spent
+    @_hours_spent ||= quantity.to_f / 60
+  end
+
+  def minutes_spent
+    @_minutes_spent ||= quantity.to_f % 60
+  end
+
+  def time_spent
+    if quantity <= 0
+      "00:00"
+    else
+      hours = hours_spent.to_i
+      hours = "0#{hours}" if hours.digits.count == 1
+
+      minutes = minutes_spent.to_i
+      minutes = "0#{minutes}" if minutes.digits.count == 1
+
+      "#{hours}:#{minutes}"
+    end
+  end
+
+  def total_cost
+    @_total_cost = (hours_spent * rate).round(3)
+  end
 end
