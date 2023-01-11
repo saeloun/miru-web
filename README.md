@@ -194,4 +194,4 @@ Thanks goes to all our contributors
 
 ## License
 
-*Miru* &copy; 2022, Saeloun - Released under the MIT License.
+*Miru* &copy; 2023, Saeloun - Released under the MIT License.
