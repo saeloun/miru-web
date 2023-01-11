@@ -1,10 +1,13 @@
-import { projects, signInPath } from "../../constants/routes/paths";
+import { projects, signInPath, clientsPath} from "../../constants/routes/paths";
 import { projectsSelectors } from "../../constants/selectors/projects";
 import { fake } from "../../fixtures/fake";
 
 describe("Projects specs for admin", () => {
   const projectName = fake.projectName
   const editedProjectName = fake.projectName
+  const clientName = fake.clientName
+  const email = fake.email
+  const address = fake.address
   beforeEach(function () {
     cy.visit(signInPath);
     cy.fixture("credentials").then(function (data) {
@@ -24,13 +27,14 @@ describe("Projects specs for admin", () => {
   })
 
   it("should be able to add a new project", function (){
+    cy.visit(clientsPath);
+    cy.addNewClient(clientName,email,address)
+    cy.visit(projects)
     cy.get(projectsSelectors.addNewProjectButton).should('be.visible').click();
-    // Select the first client
-    cy.get('select').select(1);
+    cy.get('select').select(clientName);
     cy.get(projectsSelectors.projectName).type(projectName);
     cy.get(projectsSelectors.addProjectButton).click();
     cy.contains(projectName).should('be.visible')
-
   })
 
   it("should be able to edit a project", function(){
