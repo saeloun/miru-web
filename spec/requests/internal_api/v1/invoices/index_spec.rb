@@ -110,8 +110,14 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         company.clients << flipkart
         company.invoices << invoice
         company.save!
+
         company.reload
+        invoice.reload
         Invoice.search_index.refresh
+      end
+
+      after do
+        invoice.destroy
       end
 
       it "returns invoices with client name or invoice number specified by query" do
@@ -123,12 +129,10 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].length) .to be_positive
         expect(
-          json_response["invoices"].map { |inv|
-            inv["id"]
-          }).to match_array(
-            expected_invoices.map { |inv|
-            inv["id"]
-          })
+          json_response["invoices"].map { |invoice| invoice["id"] }
+        ).to match_array(
+          expected_invoices.map { |invoice| invoice["id"] }
+        )
       end
 
       it "returns invoices with invoice_number or client name specified by query" do
@@ -138,14 +142,12 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
           inv.client.name.include?(query) || inv.invoice_number.include?(query)
         }
         expect(response).to have_http_status(:ok)
-        expect(json_response["invoices"].length) .to be_positive
+        expect(json_response["invoices"].length).to be_positive
         expect(
-          json_response["invoices"].map { |invoice|
-            invoice["id"]
-          }).to match_array(
-            expected_invoices.map { |invoice|
-            invoice["id"]
-          })
+          json_response["invoices"].map { |invoice| invoice["id"] }
+        ).to match_array(
+          expected_invoices.map { |invoice| invoice["id"] }
+        )
       end
     end
   end

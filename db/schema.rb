@@ -97,6 +97,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_devices_on_company_id"
+    t.index ["device_type"], name: "index_devices_on_device_type"
     t.index ["user_id"], name: "index_devices_on_user_id"
   end
 
@@ -122,6 +123,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["provider"], name: "index_identities_on_provider"
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
@@ -137,7 +139,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.integer "role", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["accepted_at"], name: "index_invitations_on_accepted_at"
     t.index ["company_id"], name: "index_invitations_on_company_id"
+    t.index ["expired_at"], name: "index_invitations_on_expired_at"
+    t.index ["recipient_email"], name: "index_invitations_on_recipient_email"
+    t.index ["role"], name: "index_invitations_on_role"
     t.index ["sender_id"], name: "index_invitations_on_sender_id"
     t.index ["token"], name: "index_invitations_on_token", unique: true
   end
@@ -178,6 +184,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["discarded_at"], name: "index_invoices_on_discarded_at"
+    t.index ["due_date"], name: "index_invoices_on_due_date"
     t.index ["external_view_key"], name: "index_invoices_on_external_view_key", unique: true
     t.index ["invoice_number"], name: "index_invoices_on_invoice_number", unique: true
     t.index ["issue_date"], name: "index_invoices_on_issue_date"
@@ -194,6 +201,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
+    t.index ["status"], name: "index_payments_on_status"
   end
 
   create_table "payments_providers", force: :cascade do |t|
@@ -205,6 +213,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_payments_providers_on_company_id"
+    t.index ["connected"], name: "index_payments_providers_on_connected"
+    t.index ["enabled"], name: "index_payments_providers_on_enabled"
     t.index ["name", "company_id"], name: "index_payments_providers_on_name_and_company_id", unique: true
   end
 
@@ -237,6 +247,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "discarded_at"
+    t.index ["billable"], name: "index_projects_on_billable"
     t.index ["client_id"], name: "index_projects_on_client_id"
     t.index ["discarded_at"], name: "index_projects_on_discarded_at"
   end
@@ -269,6 +280,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.integer "bill_status", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["bill_status"], name: "index_timesheet_entries_on_bill_status"
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
     t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
     t.index ["work_date"], name: "index_timesheet_entries_on_work_date"
@@ -300,6 +312,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.jsonb "social_accounts"
     t.string "phone"
     t.string "token", limit: 50
+    t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true

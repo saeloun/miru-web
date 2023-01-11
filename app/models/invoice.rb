@@ -27,6 +27,7 @@
 #  index_invoices_on_client_id          (client_id)
 #  index_invoices_on_company_id         (company_id)
 #  index_invoices_on_discarded_at       (discarded_at)
+#  index_invoices_on_due_date           (due_date)
 #  index_invoices_on_external_view_key  (external_view_key) UNIQUE
 #  index_invoices_on_invoice_number     (invoice_number) UNIQUE
 #  index_invoices_on_issue_date         (issue_date)
@@ -85,9 +86,8 @@ class Invoice < ApplicationRecord
   delegate :name, to: :client, prefix: :client
   delegate :email, to: :client, prefix: :client
 
-  filterable = [:issue_date, :created_at, :client_name, :status, :invoice_number ]
-
-  searchkick filterable:, word_middle: [:invoice_number, :client_name]
+  searchkick filterable: [:issue_date, :created_at, :client_name, :status, :invoice_number ],
+    word_middle: [:invoice_number, :client_name]
 
   def search_data
     {
@@ -99,7 +99,8 @@ class Invoice < ApplicationRecord
       status:,
       company_id:,
       client_name:,
-      created_at:
+      created_at:,
+      discarded_at:
     }
   end
 
