@@ -31,7 +31,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns list of all projects" do
         user_id, client_id, billable, search = nil
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
@@ -41,7 +41,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns projects with project_names matching search" do
         user_id, client_id, billable = nil, search = project_1.name
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
@@ -51,7 +51,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns projects with client_name matching search" do
         user_id, client_id, billable = nil, search = client_1.name
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
@@ -61,7 +61,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns projects which are non billable" do
         client_id, search, user_id = nil, billable = false
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
@@ -71,7 +71,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns projects which have user_1 as it's team member" do
         client_id, search, billable = nil, user_id = [user_1.id]
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
@@ -81,7 +81,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns projects which belongs to client_1" do
         search, billable, user_id = nil, client_id = [client_1.id]
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
@@ -91,7 +91,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns projects as per filters and search" do
         search = project_2.name, billable = false, user_id = [user_1.id], client_id = [client_2.id]
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
@@ -118,7 +118,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns list of all projects" do
         user_id, client_id, billable, search = nil
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
@@ -128,7 +128,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns projects with project_names matching search" do
         user_id, client_id, billable = nil, search = project_1.name
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
@@ -138,7 +138,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns projects with client_name matching search" do
         user_id, client_id, billable = nil, search = client_1.name
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
@@ -148,7 +148,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns projects which are non billable" do
         client_id, search, user_id = nil, billable = false
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
@@ -158,7 +158,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns projects which have user_1 as it's team member" do
         client_id, search, billable = nil, user_id = [user_1.id]
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
@@ -168,7 +168,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns projects which belongs to client_1" do
         search, billable, user_id = nil, client_id = [client_1.id]
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
@@ -178,7 +178,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
       it "returns projects as per filters and search" do
         search = project_2.name, billable = false, user_id = [user_1.id], client_id = [client_2.id]
         send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
-        projects = user_1.current_workspace.project_list(client_id, user_id, billable, search)
+        projects = ProjectListService.new(user_1.current_workspace, client_id, user_id, billable, search)
         expect(response).to have_http_status(:ok)
         expect(json_response["projects"]).to eq(JSON.parse(projects.to_json))
       end
