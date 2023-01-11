@@ -23,7 +23,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     project_details = client.project_details(params[:time_frame])
     client_details = {
       id: client.id, name: client.name, email: client.email, address: client.address,
-      phone: client.phone
+      phone: client.phone, logo: client.logo_url
     }
     total_minutes = (project_details.map { |project| project[:minutes_spent] }).sum
     overdue_outstanding_amount = client.client_overdue_and_outstanding_calculation
@@ -33,7 +33,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
   def update
     authorize client
 
-    if client.update!(client_params)
+    if client.update!(update_client_params)
       render json: {
         success: true,
         client:,
@@ -64,6 +64,15 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
         policy(Client).permitted_attributes
       ).tap do |client_params|
         client_params[:company_id] = current_company.id
+      end
+    end
+
+    def update_client_params
+      if client_params.key?(:logo) && client_params[:logo].blank?
+        client.logo.destroy
+        client_params.except(:logo)
+      else
+        client_params
       end
     end
 end
