@@ -33,7 +33,7 @@ const MoreOptions = ({
 
   return isDesktop ? (
     <>
-      <div className="absolute bottom-16 left-24 flex hidden w-40 items-center justify-between rounded-xl border-2 border-miru-gray-200 bg-white p-3 lg:group-hover:flex">
+      <div className="absolute bottom-16 right-0 flex hidden items-center justify-between rounded-xl border-2 border-miru-gray-200 bg-white lg:w-28 lg:p-2 lg:group-hover:flex xl:w-40 xl:p-3">
         <Tooltip content="Send To">
           <button
             className="text-miru-han-purple-1000"
@@ -77,36 +77,39 @@ const MoreOptions = ({
       </div>
       {isMenuOpen && (
         <div
-          className="absolute top-4 right-5 z-10 flex-col items-end group-hover:flex"
+          className="absolute top-4 right-0 z-10 flex-col items-end group-hover:flex"
           onMouseLeave={() => setIsMenuOpen(false)}
         >
-          <div className="w-12 overflow-hidden">
+          <div className="overflow-hidden lg:w-10 xl:w-12">
             <div className="h-6 w-6 origin-bottom-left rotate-45 transform border-2 border-miru-gray-200 bg-white" />
           </div>
-          <ul className="border-2 border-t-0 border-miru-gray-200 bg-white p-4">
-            <li className="flex cursor-pointer items-center py-2">
+          <ul className="border-2 border-t-0 border-miru-gray-200 bg-white lg:p-3 xl:p-4">
+            <li className="flex cursor-pointer items-center lg:py-1 xl:py-2">
               <PrinterIcon
-                className="mr-4 text-miru-han-purple-1000"
+                className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
                 size={16}
               />
               Print
             </li>
             <li
-              className="flex cursor-pointer items-center py-2 text-miru-red-400"
+              className="flex cursor-pointer items-center text-miru-red-400 lg:py-1 xl:py-2"
               onClick={() => {
                 setShowDeleteDialog(true);
                 setInvoiceToDelete(invoice.id);
               }}
             >
-              <DeleteIcon className="mr-4 text-miru-red-400" size={16} />
-              Delete
-            </li>
-            <li className="flex cursor-pointer items-center py-2">
-              <PaperPlaneTiltIcon
-                className="mr-4 text-miru-han-purple-1000"
+              <DeleteIcon
+                className="text-miru-red-400 lg:mr-2 xl:mr-4"
                 size={16}
               />
-              Send via link
+              Delete
+            </li>
+            <li className="flex cursor-pointer items-center lg:py-1 xl:py-2">
+              <PaperPlaneTiltIcon
+                className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
+                size={16}
+              />
+              Send link
             </li>
           </ul>
         </div>
@@ -156,7 +159,7 @@ const MoreOptions = ({
         </li>
         <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
           <PaperPlaneTiltIcon className="mr-4" size={16} />
-          Send via link
+          Send link
         </li>
         <li
           className="flex cursor-pointer items-center py-2 text-miru-red-400"
