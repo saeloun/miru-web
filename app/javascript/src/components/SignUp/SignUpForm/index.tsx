@@ -3,7 +3,6 @@ import React from "react";
 import { Formik, Form, Field, FormikProps } from "formik";
 import { XIcon } from "miruIcons";
 import { Square, CheckSquare } from "phosphor-react";
-import { Link } from "react-router-dom";
 
 import { signUpFormInitialValues, signUpFormValidationSchema } from "./utils";
 
@@ -22,7 +21,7 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="w-full md:w-1/2 md:pt-36">
+    <div className="w-full px-8 pt-16 pb-4 md:w-1/2 md:px-0 md:pt-36">
       <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
         <h1 className="text-center font-manrope text-4xl font-extrabold text-miru-han-purple-1000">
           Signup for Miru
@@ -184,10 +183,10 @@ const SignUpForm = () => {
                       className="form__link cursor-pointer"
                       data-cy="sign-in-link"
                     >
-                      <Link to={Paths.SIGN_IN}>
+                      <a href={Paths.SIGN_IN}>
                         <XIcon size={12} />
-                        <span className="ml-2 inline-block">CANCEL</span>
-                      </Link>
+                        <span className="mr-2 inline-block">CANCEL</span>
+                      </a>
                       Sign In
                     </span>
                   </p>

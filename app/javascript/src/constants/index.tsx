@@ -28,7 +28,7 @@ export enum Roles {
 }
 
 export enum Paths {
-  SIGN_UP = "users/sign_up",
+  SIGN_UP = "/users/sign_up",
   SIGN_IN = "/user/sign_in",
   CLIENTS = "/clients",
   INVOICES = "/invoices",
