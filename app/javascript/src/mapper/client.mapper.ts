@@ -6,6 +6,7 @@ const getClientList = input =>
     phone: client.phone,
     minutes: client.minutes_spent,
     name: client.name,
+    logo: client.logo,
   }));
 
 const unmapClientList = input => {
