@@ -117,7 +117,8 @@ class Invoice < ApplicationRecord
       self,
       company_logo,
       root_url,
-      file.path)
+      file.path
+    )
     file
   end
 
