@@ -12,6 +12,7 @@ const BulkActionsWrapper = ({
   filterParamsStr,
   filterIntialValues,
   isInvoiceSelected,
+  downloading,
   setFilterParams,
   selectedInvoiceCount,
   setShowBulkDeleteDialog,
@@ -35,6 +36,7 @@ const BulkActionsWrapper = ({
       <div>
         <BulkActions
           clearCheckboxes={clearCheckboxes}
+          downloading={downloading}
           isInvoiceSelected={isInvoiceSelected}
           isMoreOptionsOpen={isMoreOptionsOpen}
           selectedInvoiceCount={selectedInvoiceCount}

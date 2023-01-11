@@ -26,6 +26,7 @@ const Container = ({
   setShowBulkDeleteDialog,
   setShowBulkDownloadDialog,
   clearCheckboxes,
+  downloading,
 }) =>
   invoices.length > 0 ? (
     <div
@@ -42,6 +43,7 @@ const Container = ({
       <RecentlyUpdated recentlyUpdatedInvoices={recentlyUpdatedInvoices} />
       <BulkActionsWrapper
         clearCheckboxes={clearCheckboxes}
+        downloading={downloading}
         filterIntialValues={filterIntialValues}
         filterParams={filterParams}
         filterParamsStr={filterParamsStr}

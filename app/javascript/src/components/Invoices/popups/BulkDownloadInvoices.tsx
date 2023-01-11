@@ -11,16 +11,23 @@ import consumer from "./consumer";
 
 const BulkDownloadInvoices = ({
   selectedInvoices,
-  downloaded,
-  setDownloaded,
+  downloading,
+  received,
+  connected,
+  counter,
+  setConnected,
+  setDownloading,
+  setReceived,
+  setCounter,
+  selectedInvoiceCounter,
+  setSelectedInvoiceCounter,
 }) => {
   const [downloadId, setDownloadId] = useState(null);
-  const [downloadStatus, setDownloadStatus] = useState<string>(
-    "Preparing download..."
-  );
-  const [connected, setConnected] = useState<boolean>(false);
-  const [received, setReceived] = useState<any>(null);
-  const [counter, setCounter] = useState<number>(1);
+  const [downloadStatus, setDownloadStatus] = useState<any>({
+    label: "Preparing download...",
+    icon: "",
+  });
+  let channel = null;
 
   const sendInvoiceIds = async () => {
     const payload = {
@@ -79,7 +86,7 @@ const BulkDownloadInvoices = ({
       }
     }
 
-    consumer.subscriptions.create(
+    channel = consumer.subscriptions.create(
       {
         channel: "BulkInvoiceDownloadChannel",
         download_id: downloadId.toString(),
@@ -99,24 +106,33 @@ const BulkDownloadInvoices = ({
 
   const Timer = setTimeout(() => {
     if (connected) {
-      if (counter < selectedInvoices.length) {
+      if (counter < selectedInvoiceCounter) {
         setCounter(counter + 1);
       }
     }
   }, 2000);
 
   useEffect(() => {
-    setDownloadId(uuidv4());
-    setReceived(null);
+    if (!downloading) {
+      setDownloadId(uuidv4());
+      setReceived(null);
+    }
   }, []);
 
   useEffect(() => {
-    sendInvoiceIds();
+    if (selectedInvoices.length > 0 && downloadId) {
+      sendInvoiceIds();
+      setDownloading(true);
+      setSelectedInvoiceCounter(selectedInvoices.length);
+    }
   }, [downloadId]);
 
   useEffect(() => {
-    if (received) {
-      const status = "Downloading files...";
+    if (received && downloading) {
+      const status = {
+        label: "Downloading files...",
+        icon: <DownloadSimpleIcon className="text-white" />,
+      };
       setDownloadStatus(status);
       setTimeout(() => {
         const link = document.createElement("a");
@@ -125,44 +141,42 @@ const BulkDownloadInvoices = ({
         link.href = received.file_url;
         document.body.appendChild(link);
         link.click();
-        setDownloaded(true);
-        setDownloadStatus("Download Complete");
+        setDownloading(false);
+        channel && channel.unsubscribe();
+        setDownloadStatus({
+          label: "Download Complete",
+          icon: <CheckCircleIcon className="text-white" />,
+        });
         clearTimeout(Timer);
       }, 5000);
-    } else if (connected) {
-      const status = `Preparing download...${counter}/${selectedInvoices.length}`;
+    } else if (connected || downloading) {
+      const status = {
+        label: `Preparing download...${counter}/${selectedInvoiceCounter}`,
+        icon: (
+          <CircularProgressbar
+            strokeWidth={10}
+            value={(counter / selectedInvoiceCounter) * 100}
+            styles={buildStyles({
+              textColor: "white",
+              textSize: "10px",
+              pathColor: "white",
+            })}
+          />
+        ),
+      };
       setDownloadStatus(status);
     } else {
-      const status = `Something went wrong!`;
-      setDownloadStatus(status);
+      setDownloadStatus({ label: "Something went wrong!" });
     }
   }, [counter, received, connected]);
 
   return (
     <div className="fixed right-20 bottom-16 flex items-center justify-center rounded bg-miru-dark-purple-1000 p-4">
       <div className="mr-2.5 h-4 w-4 bg-miru-dark-purple-1000">
-        {received ? (
-          downloaded ? (
-            <CheckCircleIcon className="text-white" />
-          ) : (
-            <DownloadSimpleIcon className="text-white" />
-          )
-        ) : (
-          connected && (
-            <CircularProgressbar
-              strokeWidth={10}
-              value={(counter / selectedInvoices.length) * 100}
-              styles={buildStyles({
-                textColor: "white",
-                textSize: "10px",
-                pathColor: "white",
-              })}
-            />
-          )
-        )}
+        {downloadStatus.icon}
       </div>
       <span className="text-sm font-medium leading-5 text-miru-dark-purple-100">
-        {downloadStatus}
+        {downloadStatus.label}
       </span>
     </div>
   );

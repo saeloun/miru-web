@@ -6,6 +6,7 @@ const BulkActions = ({
   clearCheckboxes,
   isInvoiceSelected,
   isMoreOptionsOpen,
+  downloading,
   selectedInvoiceCount,
   setIsMoreOptionsOpen,
 }) =>
@@ -26,13 +27,16 @@ const BulkActions = ({
           border: "1px solid rgba(91, 52, 234, .2)",
         }}
       >
-        <div
-          className="flex items-center text-base font-bold leading-5 text-miru-han-purple-1000 opacity-100"
+        <button
+          disabled={downloading}
+          className={`flex items-center text-base font-bold leading-5 opacity-100 ${
+            downloading ? "text-miru-gray-1000" : "text-miru-han-purple-1000"
+          }`}
           onClick={() => setIsMoreOptionsOpen(!isMoreOptionsOpen)}
         >
           <span className="mr-2.5">Actions</span>
           <CaretDownIcon className="font-bold" size={18} />
-        </div>
+        </button>
       </div>
     </div>
   );
