@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_11_104506) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -119,6 +119,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.index ["company_id"], name: "index_employments_on_company_id"
     t.index ["discarded_at"], name: "index_employments_on_discarded_at"
     t.index ["user_id"], name: "index_employments_on_user_id"
+  end
+
+  create_table "expense_categories", force: :cascade do |t|
+    t.string "name"
+    t.string "icon"
+    t.string "color"
+    t.boolean "default", default: false
+    t.bigint "company_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_expense_categories_on_company_id"
   end
 
   create_table "identities", force: :cascade do |t|
@@ -352,6 +363,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
   add_foreign_key "devices", "users"
   add_foreign_key "employments", "companies"
   add_foreign_key "employments", "users"
+  add_foreign_key "expense_categories", "companies"
   add_foreign_key "identities", "users"
   add_foreign_key "invitations", "companies"
   add_foreign_key "invitations", "users", column: "sender_id"
