@@ -54,7 +54,7 @@ class TimesheetEntry < ApplicationRecord
 
   filterable = [:user_name, :created_at, :project_name, :client_name, :bill_status ]
 
-  searchkick filterable:, text_middle: [:user_name, :note]
+  searchkick filterable:, word_middle: [:user_name, :note]
 
   def search_data
     {
