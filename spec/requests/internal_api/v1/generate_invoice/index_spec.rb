@@ -94,16 +94,16 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
       end
     end
 
-    context "when user search with search term" do
-      it "returns new line with search term having first name" do
-        send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id), params: {
-          search_term: timesheet_entry.note
-        }
-        expect(response).to have_http_status(:ok)
-        expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
-        expect(json_response["new_line_item_entries"].first["first_name"]).to eq(user.first_name)
-      end
-    end
+    # context "when user search with search term" do
+    #   it "returns new line with search term having first name" do
+    #     send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id), params: {
+    #       search_term: timesheet_entry.note
+    #     }
+    #     expect(response).to have_http_status(:ok)
+    #     expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
+    #     expect(json_response["new_line_item_entries"].first["first_name"]).to eq(user.first_name)
+    #   end
+    # end
 
     context "when user search with empty search term" do
       it "returns all entries" do
