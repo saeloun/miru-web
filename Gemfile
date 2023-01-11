@@ -137,9 +137,6 @@ gem "bundler-audit", require: false
 gem "ruby_audit", require: false
 
 # For reporting messages, exceptions, and tracing events.
-gem "sentry-rails"
-gem "sentry-ruby"
-gem "sentry-sidekiq"
 
 gem "rubyzip"
 
@@ -194,6 +191,10 @@ group :development do
   gem "annotate"
 
   gem "letter_opener"
+end
+
+group :production do
+  gem "elastic-apm"
 end
 
 group :test do
