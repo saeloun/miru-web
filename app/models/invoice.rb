@@ -25,6 +25,7 @@
 # Indexes
 #
 #  index_invoices_on_client_id          (client_id)
+#  index_invoices_on_due_date           (due_date)
 #  index_invoices_on_company_id         (company_id)
 #  index_invoices_on_discarded_at       (discarded_at)
 #  index_invoices_on_due_date           (due_date)
@@ -115,6 +116,25 @@ class Invoice < ApplicationRecord
 
   def unit_amount(base_currency)
     (amount * Money::Currency.new(base_currency).subunit_to_unit).to_i
+  end
+
+  def pdf_content(company_logo, root_url)
+    InvoicePayment::PdfGeneration.process(
+      self,
+      company_logo,
+      root_url
+    )
+  end
+
+  def temp_pdf(company_logo, root_url)
+    file = Tempfile.new()
+    InvoicePayment::PdfGeneration.process(
+      self,
+      company_logo,
+      root_url,
+      file.path
+    )
+    file
   end
 
   private

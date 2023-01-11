@@ -19,21 +19,52 @@ import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 import NewClient from "../Modals/NewClient";
 
+const createInitials = client =>
+  client.name
+    .split(" ")
+    .map(name => name[0])
+    .join("")
+    .toUpperCase();
+
+const isValidCharLength = client =>
+  createInitials(client).length > 3 ? "" : "text-lg";
+
 const getTableData = clients => {
   if (clients) {
     return clients.map(client => ({
       col1: (
-        <div className="text-base text-miru-dark-purple-1000">
-          {client.name}
+        <div className="flex">
+          <div className="mx-2">
+            {client.logo === "" ? (
+              <div className="flex h-12 w-12 justify-center">
+                <span
+                  className={`w-22 rounded-full bg-miru-han-purple-1000 pt-1 text-center ${isValidCharLength(
+                    client
+                  )} leading-10 text-gray-50`}
+                >
+                  {createInitials(client)}
+                </span>
+              </div>
+            ) : (
+              <img
+                alt="alt text"
+                className="h-12 w-12 rounded-full"
+                src={client.logo}
+              />
+            )}
+          </div>
+          <div className="pt-2 text-base text-miru-dark-purple-1000">
+            {client.name}
+          </div>
         </div>
       ),
       col2: (
-        <div className="text-right text-base text-miru-dark-purple-1000">
+        <div className="text-left text-sm text-miru-dark-purple-1000">
           {client.email}
         </div>
       ),
       col3: (
-        <div className="text-right text-base text-miru-dark-purple-1000">
+        <div className="text-left text-base font-bold text-miru-dark-purple-1000">
           {minToHHMM(client.minutes)}
         </div>
       ),
@@ -52,9 +83,12 @@ const Clients = ({ isAdminUser }) => {
   const [clientToDelete, setClientToDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
+  const [clientLogoUrl, setClientLogoUrl] = useState("");
+  const [clientLogo, setClientLogo] = useState("");
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -94,17 +128,17 @@ const Clients = ({ isAdminUser }) => {
     {
       Header: "CLIENT",
       accessor: "col1", // accessor is the "key" in the data
-      cssClass: "",
+      cssClass: "md:w-1/3",
     },
     {
       Header: "EMAIL ID",
       accessor: "col2",
-      cssClass: "text-right",
+      cssClass: "text-left md:w-1/3",
     },
     {
       Header: "HOURS LOGGED",
       accessor: "col3",
-      cssClass: "text-right", // accessor is the "key" in the data
+      cssClass: "text-left md:w-1/5", // accessor is the "key" in the data
     },
   ];
 
@@ -117,7 +151,7 @@ const Clients = ({ isAdminUser }) => {
     {
       Header: "HOURS LOGGED",
       accessor: "col3",
-      cssClass: "text-right", // accessor is the "key" in the data
+      cssClass: "text-left", // accessor is the "key" in the data
     },
   ];
 
@@ -150,10 +184,17 @@ const Clients = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header isAdminUser={isAdminUser} setnewClient={setClient} />
+      <Header
+        isAdminUser={isAdminUser}
+        setShowDialog={setShowDialog}
+        setnewClient={setClient}
+      />
       <div>
         {isAdminUser && (
-          <div className="bg-miru-gray-100 py-10 px-10">
+          <div
+            className="bg-miru-gray-100 py-10 px-10"
+            data-cy="clients-admin-data"
+          >
             <div className="flex justify-end">
               <select
                 className="focus:outline-none
@@ -186,7 +227,7 @@ const Clients = ({ isAdminUser }) => {
             <AmountBoxContainer amountBox={amountBox} />
           </div>
         )}
-        <div className="flex flex-col">
+        <div className="flex flex-col" data-cy="clients-list-table">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden">
@@ -219,10 +260,15 @@ const Clients = ({ isAdminUser }) => {
           setShowDeleteDialog={setShowDeleteDialog}
         />
       )}
-      {client && (
+      {client && showDialog && (
         <NewClient
           clientData={clientData}
+          clientLogo={clientLogo}
+          clientLogoUrl={clientLogoUrl}
           setClientData={setClientData}
+          setClientLogo={setClientLogo}
+          setClientLogoUrl={setClientLogoUrl}
+          setShowDialog={setShowDialog}
           setnewClient={setClient}
         />
       )}
