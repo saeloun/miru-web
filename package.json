@@ -29,6 +29,7 @@
     "faker": "5.5.3",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
     "formik": "^2.2.9",
+    "i18n-js": "^4.2.2",
     "jquery": "^3.6.0",
     "js-logger": "^1.6.1",
     "phosphor-react": "^1.4.1",
