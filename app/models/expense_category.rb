@@ -5,9 +5,7 @@
 # Table name: expense_categories
 #
 #  id         :bigint           not null, primary key
-#  color      :string
 #  default    :boolean          default(FALSE)
-#  icon       :string
 #  name       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null

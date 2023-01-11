@@ -123,8 +123,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_11_121547) do
 
   create_table "expense_categories", force: :cascade do |t|
     t.string "name"
-    t.string "icon"
-    t.string "color"
     t.boolean "default", default: false
     t.bigint "company_id"
     t.datetime "created_at", null: false
