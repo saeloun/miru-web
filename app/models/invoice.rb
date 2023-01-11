@@ -6,6 +6,7 @@
 #  amount             :decimal(20, 2)   default(0.0)
 #  amount_due         :decimal(20, 2)   default(0.0)
 #  amount_paid        :decimal(20, 2)   default(0.0)
+#  discarded_at       :datetime
 #  discount           :decimal(20, 2)   default(0.0)
 #  due_date           :date
 #  external_view_key  :string
@@ -24,7 +25,9 @@
 # Indexes
 #
 #  index_invoices_on_client_id          (client_id)
+#  index_invoices_on_due_date           (due_date)
 #  index_invoices_on_company_id         (company_id)
+#  index_invoices_on_discarded_at       (discarded_at)
 #  index_invoices_on_external_view_key  (external_view_key) UNIQUE
 #  index_invoices_on_invoice_number     (invoice_number) UNIQUE
 #  index_invoices_on_issue_date         (issue_date)
@@ -39,8 +42,8 @@
 # frozen_string_literal: true
 
 class Invoice < ApplicationRecord
+  include Discard::Model
   include InvoiceSendable
-  require "securerandom"
 
   attr_accessor :sub_total
 
@@ -71,16 +74,19 @@ class Invoice < ApplicationRecord
     :amount_paid, :amount_due, :discount, numericality: { greater_than_or_equal_to: 0 }
   validates :invoice_number, uniqueness: true
   validates :reference, length: { maximum: 12 }, allow_blank: true
+  validate :check_if_invoice_paid, on: :update
 
   scope :with_statuses, -> (statuses) { where(status: statuses) if statuses.present? }
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
   scope :for_clients, -> (client_ids) { where(client_id: client_ids) if client_ids.present? }
   scope :search, -> (query) {
-    where("invoice_number ILIKE :query OR clients.name ILIKE :query", query: "%#{query}%")
-      .references(:clients) if query.present?
+    where(
+      "invoice_number ILIKE :query OR clients.name ILIKE :query",
+      query: "%#{query}%"
+    ).references(:clients) if query.present?
   }
   scope :during, -> (duration) {
-    where(due_date: duration)
+    where(issue_date: duration) if duration.present?
   }
 
   delegate :name, to: :client, prefix: :client
@@ -112,9 +118,34 @@ class Invoice < ApplicationRecord
     self.save!
   end
 
+  def pdf_content(company_logo, root_url)
+    InvoicePayment::PdfGeneration.process(
+      self,
+      company_logo,
+      root_url
+    )
+  end
+
+  def temp_pdf(company_logo, root_url)
+    file = Tempfile.new()
+    InvoicePayment::PdfGeneration.process(
+      self,
+      company_logo,
+      root_url,
+      file.path
+    )
+    file
+  end
+
   private
 
     def set_external_view_key
-      self.external_view_key = "#{SecureRandom.hex}"
+      self.external_view_key = SecureRandom.hex
+    end
+
+    def check_if_invoice_paid
+      if status_changed? && status_was == "paid"
+        errors.add(:status, "can't be changed to paid")
+      end
     end
 end

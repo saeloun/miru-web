@@ -5,7 +5,7 @@ import { XIcon } from "miruIcons";
 import { getReports } from "./fetchReport";
 
 import { useEntry } from "../context/EntryContext";
-import { customDateFilter } from "../revenueByClient/Filters/filterOptions";
+import { customDateFilter } from "../RevenueByClientReport/Filters/filterOptions";
 
 const NavigationFilter = () => {
   const {
@@ -13,6 +13,7 @@ const NavigationFilter = () => {
     currentReport,
     timeEntryReport,
     outstandingOverdueInvoice,
+    accountsAgingReport,
   } = useEntry();
 
   const selectedReport = getReports({
@@ -20,14 +21,15 @@ const NavigationFilter = () => {
     timeEntryReport,
     revenueByClientReport,
     outstandingOverdueInvoice,
+    accountsAgingReport,
   });
 
   const filterHtml = (value, key, filterKey) => (
     <li
-      className="mr-4 flex rounded-xl bg-miru-gray-400 px-2 py-1 px-1 text-xs font-semibold tracking-widest tracking-widest text-miru-dark-purple-1000"
+      className="my-1 mr-4 flex rounded-xl bg-miru-gray-400 px-2 py-1 px-1 text-xs font-semibold tracking-widest tracking-widest text-miru-dark-purple-1000"
       key={key}
     >
-      <span>
+      <span className="whitespace-nowrap">
         {filterKey === "groupBy" && "Group By:"} {value}
       </span>
       <button

@@ -16,9 +16,10 @@
 #
 # Indexes
 #
-#  index_timesheet_entries_on_project_id  (project_id)
-#  index_timesheet_entries_on_user_id     (user_id)
-#  index_timesheet_entries_on_work_date   (work_date)
+#  index_timesheet_entries_on_bill_status  (bill_status)
+#  index_timesheet_entries_on_project_id   (project_id)
+#  index_timesheet_entries_on_user_id      (user_id)
+#  index_timesheet_entries_on_work_date    (work_date)
 #
 # Foreign Keys
 #
@@ -53,7 +54,7 @@ class TimesheetEntry < ApplicationRecord
 
   filterable = [:user_name, :created_at, :project_name, :client_name, :bill_status ]
 
-  searchkick filterable:, text_middle: [:user_name, :note]
+  searchkick filterable:, word_middle: [:user_name, :note]
 
   def search_data
     {

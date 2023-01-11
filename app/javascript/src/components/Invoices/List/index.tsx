@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 
 import invoicesApi from "apis/invoices";
 import Pagination from "common/Pagination";
-import { ApiStatus as InvoicesStatus } from "constants/index";
+import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./container";
@@ -34,7 +34,14 @@ const Invoices = ({ isDesktop }) => {
     page: searchParams.get("page") || 1,
     query: searchParams.get("query") || "",
   });
-  const [filterParams, setFilterParams] = useState(filterIntialValues);
+
+  const LS_INVOICE_FILTERS = window.localStorage.getItem(
+    LocalStorageKeys.INVOICE_FILTERS
+  );
+
+  const [filterParams, setFilterParams] = useState<any>(
+    JSON.parse(LS_INVOICE_FILTERS) || filterIntialValues
+  );
   const [filterParamsStr, setFilterParamsStr] = useState("");
   const [selectedInput, setSelectedInput] = useState("from-input");
 
@@ -48,7 +55,6 @@ const Invoices = ({ isDesktop }) => {
     useState<boolean>(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] = useState(null);
-
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
 
@@ -171,7 +177,11 @@ const Invoices = ({ isDesktop }) => {
           deselectInvoices(invoices.map(invoice => invoice.id))
         }
       />
-      {status === InvoicesStatus.SUCCESS && (
+      {status === InvoicesStatus.LOADING ? (
+        <p className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
+          Loading...
+        </p>
+      ) : status === InvoicesStatus.SUCCESS ? (
         <Fragment>
           <Container
             deselectInvoices={deselectInvoices}
@@ -199,7 +209,7 @@ const Invoices = ({ isDesktop }) => {
               setSelectedInput={setSelectedInput}
             />
           )}
-          {invoices.length && (
+          {invoices.length > 0 && (
             <Pagination
               isDesktop={isDesktop}
               pagy={pagy}
@@ -222,6 +232,12 @@ const Invoices = ({ isDesktop }) => {
             />
           )}
         </Fragment>
+      ) : (
+        status === InvoicesStatus.ERROR && (
+          <div className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
+            Something went Wrong!
+          </div>
+        )
       )}
     </Fragment>
   );
