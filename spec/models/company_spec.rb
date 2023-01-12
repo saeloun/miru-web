@@ -14,6 +14,7 @@ RSpec.describe Company, type: :model do
     it { is_expected.to have_many(:current_workspace_users).dependent(:nullify) }
     it { is_expected.to have_many(:addresses).dependent(:destroy) }
     it { is_expected.to have_many(:devices).dependent(:destroy) }
+    it { is_expected.to have_many(:expenses).dependent(:destroy) }
   end
 
   describe "Validations" do

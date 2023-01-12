@@ -8,4 +8,8 @@ RSpec.describe ExpenseCategory, type: :model do
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
   end
+
+  describe "Associations" do
+    it { is_expected.to have_many(:expenses) }
+  end
 end
