@@ -24,21 +24,15 @@ describe("Clients page for admin", () => {
     cy.get(clientsSelectors.clientsListTable).contains("CLIENT");
   });
 
-  it.only("should be able to add new client", function () {
-
-    cy.get(clientsSelectors.newClientButton).should("be.visible").click();
-    cy.get(clientsSelectors.addClientHeading).should("be.visible");
-    cy.get(clientsSelectors.nameInput).type(clientName)
-    cy.get(clientsSelectors.emailInput).type(email)
-    cy.get(clientsSelectors.addressInput).type(address)
-    cy.get(clientsSelectors.submitButton).click()
+  it("should be able to add new client", function () {
+    cy.addNewClient(clientName,email,address)
   });
 
   it("should be able to see clients chart data", function () {
     cy.get(clientsSelectors.clientsAdminData).should("be.visible");
   });
 
-  it.only("should be able to edit client details", function(){
+  it("should be able to edit client details", function(){
     cy.get(clientsSelectors.searchBar).clear().type(clientName)
     cy.wait(3000)
     cy.contains(clientName).first().click({force: true});
@@ -48,10 +42,9 @@ describe("Clients page for admin", () => {
     cy.get(clientsSelectors.editClientAddress).clear().type(editedAddress)
     cy.get(clientsSelectors.editClientPhone).clear().type("+91111100000")
     cy.get(clientsSelectors.editClientSubmit).click()
-
   })
 
-  it.only("should  be able to delete a client", function () {
+  it("should  be able to delete a client", function () {
     cy.get(clientsSelectors.searchBar).clear().type(editedClientName)
     cy.wait(3000)
     cy.contains(editedClientName).first().click({force: true})
