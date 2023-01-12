@@ -15,6 +15,7 @@ import Header from "./Header";
 
 import { TOASTER_DURATION } from "../../../constants";
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
+import BulkDownloadInvoices from "../popups/BulkDownloadInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
 
 const Invoices = ({ isDesktop }) => {
@@ -53,12 +54,36 @@ const Invoices = ({ isDesktop }) => {
 
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] =
     useState<boolean>(false);
-  const [invoiceToDelete, setInvoiceToDelete] = useState(null);
-  const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] = useState(null);
+
+  const [showBulkDownloadDialog, setShowBulkDownloadDialog] =
+    useState<boolean>(false);
+  const [invoiceToDelete, setInvoiceToDelete] = useState<any>(null);
+  const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] =
+    useState<any>(null);
+  const [downloading, setDownloading] = useState<boolean>(false);
+  const [connected, setConnected] = useState<boolean>(false);
+  const [received, setReceived] = useState<any>(null);
+  const [counter, setCounter] = useState<number>(1);
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
+  const [selectedInvoiceCounter, setSelectedInvoiceCounter] =
+    useState<number>(selectedInvoiceCount);
 
   useEffect(() => sendGAPageView(), []);
+
+  useEffect(() => {
+    if (!downloading) {
+      const timer = setTimeout(() => {
+        setCounter(0);
+        setReceived(null);
+        setConnected(false);
+        setSelectedInvoiceCounter(selectedInvoices.length);
+        setShowBulkDownloadDialog(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [downloading]);
 
   useEffect(() => {
     fetchInvoices();
@@ -167,15 +192,9 @@ const Invoices = ({ isDesktop }) => {
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         filterParamsStr={filterParamsStr}
-        isInvoiceSelected={isInvoiceSelected}
         params={params}
-        selectedInvoiceCount={selectedInvoiceCount}
         setIsFilterVisible={setIsFilterVisible}
         setParams={setParams}
-        setShowBulkDeleteDialog={setShowBulkDeleteDialog}
-        clearCheckboxes={() =>
-          deselectInvoices(invoices.map(invoice => invoice.id))
-        }
       />
       {status === InvoicesStatus.LOADING ? (
         <p className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
@@ -185,19 +204,27 @@ const Invoices = ({ isDesktop }) => {
         <Fragment>
           <Container
             deselectInvoices={deselectInvoices}
+            downloading={downloading}
             fetchInvoices={fetchInvoices}
             filterIntialValues={filterIntialValues}
             filterParams={filterParams}
             filterParamsStr={filterParamsStr}
             invoices={invoices}
             isDesktop={isDesktop}
+            isInvoiceSelected={isInvoiceSelected}
             recentlyUpdatedInvoices={recentlyUpdatedInvoices}
             selectInvoices={selectInvoices}
+            selectedInvoiceCount={selectedInvoiceCount}
             selectedInvoices={selectedInvoices}
             setFilterParams={setFilterParams}
             setInvoiceToDelete={setInvoiceToDelete}
+            setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+            setShowBulkDownloadDialog={setShowBulkDownloadDialog}
             setShowDeleteDialog={setShowDeleteDialog}
             summary={summary}
+            clearCheckboxes={() =>
+              deselectInvoices(invoices.map(invoice => invoice.id))
+            }
           />
           {isFilterVisible && (
             <FilterSideBar
@@ -229,6 +256,21 @@ const Invoices = ({ isDesktop }) => {
               fetchInvoices={fetchInvoices}
               invoices_ids={selectedInvoices}
               setShowBulkDeleteDialog={setShowBulkDeleteDialog}
+            />
+          )}
+          {showBulkDownloadDialog && (
+            <BulkDownloadInvoices
+              connected={connected}
+              counter={counter}
+              downloading={downloading}
+              received={received}
+              selectedInvoiceCounter={selectedInvoiceCounter}
+              selectedInvoices={selectedInvoices}
+              setConnected={setConnected}
+              setCounter={setCounter}
+              setDownloading={setDownloading}
+              setReceived={setReceived}
+              setSelectedInvoiceCounter={setSelectedInvoiceCounter}
             />
           )}
         </Fragment>

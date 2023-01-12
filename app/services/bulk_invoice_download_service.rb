@@ -18,11 +18,9 @@ class BulkInvoiceDownloadService
     def zip_invoices
       zipper = Zipper.new(invoices_temp_pdf_data)
       zipper.zip
-      file_uploader = FileUploader.new(zipper.file, "Invoices_" + Time.now.to_i.to_s + ".zip")
-      file_uploader.upload
-      file_uploader.delete_after(1.hours)
+      zip_url = zipper.temp_upload(1.hours).url
       zipper.cleanup!
-      file_uploader.url
+      zip_url
     end
 
     def invoices_temp_pdf_data
