@@ -22,7 +22,7 @@
 #  fk_rails_...  (company_id => companies.id)
 #
 class ExpenseCategory < ApplicationRecord
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: { scope: :company_id }
 
   has_many :expenses
 end
