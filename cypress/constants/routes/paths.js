@@ -6,3 +6,4 @@ export const invoicesPath = "/invoices";
 export const clientsPath = "/clients";
 export const organisationSettingsPath = "/profile/edit/organization"
 export const profileSettings = "/profile/edit"
+export const projects = "/projects";
