@@ -43,8 +43,13 @@ const MonthCalender = ({
     const monthData = [];
     let weeksData = [];
     let currentWeekTotalHours = 0;
-    let dayInWeekCounter = firstDay;
-    for (let i = 1; i <= daysInMonth; i++) {
+    const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber + 1}-01`;
+    const daysInCurrentMonth = dayjs(firstDateOfTheMonth).daysInMonth();
+    let dayInWeekCounter = dayjs(firstDateOfTheMonth)
+      .startOf("month")
+      .weekday();
+
+    for (let i = 1; i <= daysInCurrentMonth; i++) {
       // Ex. date = "2020-01-01"
       const date = dayjs(
         `${currentYear}-${currentMonthNumber + 1}-${i}`
@@ -161,16 +166,8 @@ const MonthCalender = ({
 
   useEffect(() => {
     handleMonthNumberChange();
-  }, [currentMonthNumber]);
-
-  useEffect(() => {
     handleMonthChange();
-  }, [firstDay]);
-
-  useEffect(() => {
-    handleMonthNumberChange();
-    handleMonthChange();
-  }, [currentYear]);
+  }, [currentMonthNumber, currentYear]);
 
   useEffect(() => {
     handleMonthChange();
