@@ -3,16 +3,13 @@
 json.key_format! camelize: :lower
 json.deep_format_keys!
 
-json.projects ProjectListService.new(
-    current_company, params[:client_id], params[:user_id], params[:billable],
-    params[:search]
-  ).process.map do |project|
-    json.id project.id
-    json.name project.name
-    json.isBillable project.billable
-    json.clientName project._client_name
-    json.minutesSpent project.minutes_spent
-  end
+json.projects projects.map do |project|
+  json.id project.id
+  json.name project.name
+  json.isBillable project.billable
+  json.clientName project._client_name
+  json.minutesSpent project.minutes_spent
+end
 json.clients clients do |client|
   json.id client.id
   json.name client.name

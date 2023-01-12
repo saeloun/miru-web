@@ -30,6 +30,7 @@ class ProjectsFetchService
         params[:billable],
         params[:search]
         ).process
+      puts @projects
     end
 
     def set_clients

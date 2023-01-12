@@ -12,13 +12,13 @@ class ProjectListService
   end
 
   def process
-    project_list = project_list_query
     minutes_spent = current_company.timesheet_entries.group(:project_id).sum(:duration)
-    project_list = project_list.ransack({ name_or_client_name_cont: search }).result
+    project_list = project_list_query.ransack({ name_or_client_name_cont: search }).result
     project_ids = project_list.ids.uniq
 
     current_company.projects.left_outer_joins([:project_members, :timesheet_entries]).joins([:client]).select(
-      "projects.id,
+      "
+      projects.id,
       projects.name,
       projects.billable,
       clients.name as _client_name,
