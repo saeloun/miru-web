@@ -106,6 +106,7 @@ const userAvatar = require("../../../assets/images/user_avatar.svg");
 const visa = require("../../../assets/images/visa.svg");
 const warningCloseIcon = require("../../../assets/images/warning-close-icon.svg");
 const warningTriangle = require("../../../assets/images/warning-triangle.svg");
+//const expenseIcon = require("../../../assets/images/expense.svg");
 
 // icons from phosphor
 export const EditIcon = PencilSimple;
@@ -212,3 +213,4 @@ export const RevenueIcon = revenueIcon;
 export const RevenueHoverIcon = revenueHoverIcon;
 export const AccountsAgingIcon = accountsAgingIcon;
 export const AccountsAgingHoverIcon = accountsAgingHoverIcon;
+//export const ExpenseIcon = expenseIcon;
