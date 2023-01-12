@@ -22,12 +22,13 @@ module Invoices
 
       def invoices_query
         filters = Invoices::Filters.new(current_company, params)
+        filters.process
 
         @_invoices_query = Invoice.search(
           filters.search_term,
           fields: [:invoice_number, :client_name],
           match: :word_middle,
-          where: filters.process,
+          where: filters.where_clause,
           order: { created_at: :desc },
           page: filters.page,
           per_page: filters.per_page,

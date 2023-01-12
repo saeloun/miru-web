@@ -70,18 +70,20 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     end
 
     describe "client_ids[] param" do
+      before do
+        Invoice.reindex
+      end
+
       it "returns invoices generated for clients specified by client_ids[]" do
         client = [9, 15, 29]
         send_request :get, internal_api_v1_invoices_path(client:)
         expected_invoices = company.invoices.select { |inv| client.include?(inv.client_id) }
         expect(response).to have_http_status(:ok)
         expect(
-          json_response["invoices"].map { |invoice|
-            invoice["id"]
-          }).to match_array(
-            expected_invoices.map { |invoice|
-              invoice["id"]
-            })
+          json_response["invoices"].map { |invoice| invoice["id"] }
+        ).to match_array(
+          expected_invoices.map { |invoice| invoice["id"] }
+        )
       end
 
       describe "recently_updated_invoices return value" do
@@ -172,6 +174,9 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
 
       it "returns the only kept invoices" do
         @current_invoice.discard!
+        @current_invoice.reload
+        @current_invoice.reindex
+
         invoices_per_page = 10
         send_request :get, internal_api_v1_invoices_path(invoices_per_page:)
         expect(response).to have_http_status(:ok)

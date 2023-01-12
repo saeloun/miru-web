@@ -4,12 +4,12 @@ module Invoices
   class Filters < ApplicationService
     CUSTOM_PARAM_LIST = %i[date_range status client]
 
-    attr_reader :current_company, :filters, :params
+    attr_reader :current_company, :where_clause, :params
 
     def initialize(current_company, params)
       @current_company = current_company
       @params = params
-      @filters = {}
+      @where_clause = {}
      end
 
     def process
@@ -42,14 +42,14 @@ module Invoices
       def add_custom_filters
         CUSTOM_PARAM_LIST.each do |key|
           if params[key].present?
-            @filters[:key] = public_send("#{key}_filter")
+            @where_clause.merge! send("#{key}_filter")
           end
         end
       end
 
       def add_default_filters
-        @filters[:company_id] = current_company.id
-        @filters[:discarded_at] = nil
+        @where_clause[:company_id] = current_company.id
+        @where_clause[:discarded_at] = nil
       end
 
       def client_filter
