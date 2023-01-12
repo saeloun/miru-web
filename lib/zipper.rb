@@ -35,8 +35,8 @@ class Zipper
     tempfile.unlink
   end
 
-  def temp_upload(filename, duration)
-    file_uploader = FileUploader.new(tempfile, filename)
+  def temp_upload(duration)
+    file_uploader = FileUploader.new(tempfile, randomized_name)
     file_uploader.upload
     file_uploader.delete_after(duration)
     file_uploader
