@@ -1,6 +1,7 @@
 import { authSelectors } from "../constants/selectors/auth";
 import { teamTabSelector } from "../constants/selectors/team";
 import { invoicesSelector } from "../constants/selectors/invoices";
+import { clientsSelectors } from "../constants/selectors/clients";
 
 Cypress.Commands.add("loginAsOwner", function () {
   cy.get(authSelectors.emailField).clear().type(this.data.email);
@@ -52,4 +53,13 @@ Cypress.Commands.add("sendInvoice", function(invoice_number, reference){
   cy.get(invoicesSelector.entriesList).first().click({force: true})
   cy.get(invoicesSelector.sendInvoice).click({force: true})
   cy.get(invoicesSelector.sendEmail).click()
+})
+
+Cypress.Commands.add("addNewClient", function(name,email,address){
+  cy.get(clientsSelectors.newClientButton).should("be.visible").click();
+  cy.get(clientsSelectors.addClientHeading).should("be.visible");
+  cy.get(clientsSelectors.nameInput).type(name)
+  cy.get(clientsSelectors.emailInput).type(email)
+  cy.get(clientsSelectors.addressInput).type(address)
+  cy.get(clientsSelectors.submitButton).click()
 })
