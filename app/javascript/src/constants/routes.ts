@@ -1,4 +1,5 @@
 import ErrorPage from "common/Error";
+import Expenses from "components/Expenses";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import { Roles, Paths } from "constants/index";
 
@@ -68,6 +69,8 @@ const TeamRoutes = [{ path: "*", Component: TeamRouteConfig }];
 
 const ProfileRoutes = [{ path: "*", Component: ProfileLayout }];
 
+const ExpenseRoutes = [{ path: "", Component: Expenses }];
+
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
 
 const ROUTES = [
@@ -115,6 +118,11 @@ const ROUTES = [
     path: Paths.PROFILE,
     subRoutes: ProfileRoutes,
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+  },
+  {
+    path: Paths.EXPENSES,
+    subRoutes: ExpenseRoutes,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
   },
 ];
 

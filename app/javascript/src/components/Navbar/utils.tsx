@@ -60,6 +60,12 @@ export const navAdminOptions = [
     dataCy: "payments-tab",
     path: Paths.PAYMENTS,
   },
+  {
+    logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
+    label: "Expenses",
+    dataCy: "expenses-tab",
+    path: Paths.EXPENSES,
+  },
 ];
 
 export const navAdminMobileOptions = [
@@ -81,6 +87,12 @@ export const navAdminMobileOptions = [
     label: "Payments",
     dataCy: "payments-tab",
     path: Paths.PAYMENTS,
+  },
+  {
+    logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
+    label: "Expenses",
+    dataCy: "expenses-tab",
+    path: Paths.EXPENSES,
   },
 ];
 
