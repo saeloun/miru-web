@@ -10,7 +10,7 @@ def project_list_service(client_id, user_id, billable, search)
       id: project.id, name: project.name, isBillable: project.billable,
       clientName: project._client_name, minutesSpent: project.minutes_spent
     }
-}
+    }
     .to_json
   )
 end
