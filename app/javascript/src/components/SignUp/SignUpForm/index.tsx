@@ -1,7 +1,6 @@
 import React from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
-import { XIcon } from "miruIcons";
 import { Square, CheckSquare } from "phosphor-react";
 
 import { signUpFormInitialValues, signUpFormValidationSchema } from "./utils";
@@ -180,14 +179,12 @@ const SignUpForm = () => {
                   <p className="text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
                     Already have an account?&nbsp;
                     <span
-                      className="form__link cursor-pointer"
+                      className="form__link inline cursor-pointer"
                       data-cy="sign-in-link"
                     >
                       <a href={Paths.SIGN_IN}>
-                        <XIcon size={12} />
-                        <span className="mr-2 inline-block">CANCEL</span>
+                        <span className="mr-2 inline-block">Sign In</span>
                       </a>
-                      Sign In
                     </span>
                   </p>
                 </Form>
