@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe InvoicePayment::AddPayment do
+RSpec.describe InvoicePayment::Settle do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client1) { create(:client, company:, name: "bob") }
@@ -11,8 +11,9 @@ RSpec.describe InvoicePayment::AddPayment do
     let!(:client1_sent_invoice1) { create(
       :invoice,
       client: client1, status: "sent",
-      amount: 100, amount_due: 100, amount_paid: 0)
-      }
+      amount: 100, amount_due: 100, amount_paid: 0
+      )
+    }
     let!(:payment_params) { {
       invoice_id: client1_sent_invoice1.id,
       transaction_date: Date.current,
@@ -20,9 +21,9 @@ RSpec.describe InvoicePayment::AddPayment do
       amount: 100,
       note: "This is transaction ID - 123"
     }
-}
+    }
 
-    subject { described_class.new(payment_params).process }
+    subject { described_class.new(payment_params, client1_sent_invoice1).process }
 
     before do
       subject
@@ -45,8 +46,9 @@ RSpec.describe InvoicePayment::AddPayment do
     let!(:client1_sent_invoice1) { create(
       :invoice,
       client: client1, status: "sent",
-      amount: 100, amount_due: 100, amount_paid: 0)
-      }
+      amount: 100, amount_due: 100, amount_paid: 0
+      )
+    }
     let!(:payment_params) { {
       invoice_id: client1_sent_invoice1.id,
       transaction_date: Date.current,
@@ -56,7 +58,7 @@ RSpec.describe InvoicePayment::AddPayment do
     }
 }
 
-    subject { described_class.new(payment_params).process }
+    subject { described_class.new(payment_params, client1_sent_invoice1).process }
 
     before do
       subject
@@ -90,7 +92,7 @@ RSpec.describe InvoicePayment::AddPayment do
     }
 }
 
-    subject { described_class.new(payment_params).process }
+    subject { described_class.new(payment_params, client1_sent_invoice1).process }
 
     before do
       subject
