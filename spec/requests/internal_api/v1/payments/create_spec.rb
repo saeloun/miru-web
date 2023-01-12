@@ -17,9 +17,14 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
     context "when adds the manual payment entry with total invoice amount" do
       let!(:client1_sent_invoice1) { create(
         :invoice,
-        client: client1, status: "sent",
-        amount: 100, amount_due: 100, amount_paid: 0)
-        }
+        company:,
+        client: client1,
+        status: "sent",
+        amount: 100,
+        amount_due: 100,
+        amount_paid: 0
+        )
+      }
 
       before do
         @payment = {
@@ -65,8 +70,13 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
     context "when adds the manual payment entry with partial invoice amount" do
       let!(:client1_sent_invoice1) { create(
         :invoice,
-        client: client1, status: "sent",
-        amount: 100, amount_due: 100, amount_paid: 0)
+        company:,
+        client: client1,
+        status: "sent",
+        amount: 100,
+        amount_due: 100,
+        amount_paid: 0
+        )
       }
 
       before do
@@ -97,8 +107,12 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
     let!(:client1_sent_invoice1) {
       create(
         :invoice,
-        client: client1, status: "sent",
-        amount: 100, amount_due: 100, amount_paid: 0
+        company:,
+        client: client1,
+        status: "sent",
+        amount: 100,
+        amount_due: 100,
+        amount_paid: 0
       )
     }
 
@@ -127,8 +141,12 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
     let!(:client1_sent_invoice1) {
       create(
         :invoice,
-        client: client1, status: "sent",
-        amount: 100, amount_due: 100, amount_paid: 0
+        company:,
+        client: client1,
+        status: "sent",
+        amount: 100,
+        amount_due: 100,
+        amount_paid: 0
       )
     }
 
