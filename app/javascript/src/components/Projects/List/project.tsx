@@ -67,6 +67,7 @@ export const Project = ({
       <td className="table__cell px-3 py-3">
         {isAdminUser && isHover && (
           <button
+            data-cy="edit-icon"
             onClick={e => {
               e.preventDefault();
               e.stopPropagation();
@@ -81,6 +82,7 @@ export const Project = ({
       <td className="table__cell px-3 py-3">
         {isAdminUser && isHover && (
           <button
+            data-cy="delete-icon"
             onClick={e => {
               e.preventDefault();
               e.stopPropagation();
