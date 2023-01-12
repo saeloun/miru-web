@@ -383,7 +383,7 @@ const FilterSideBar = ({
                         labelClassName="ml-4"
                         name="clients"
                         text={client.label}
-                        wrapperClassName="py-3 px-5 hover:bg-miru-gray-100 text-miru-dark-purple-1000"
+                        wrapperClassName="py-3 px-5 flex items-center hover:bg-miru-gray-100 text-miru-dark-purple-1000"
                         handleCheck={event =>
                           handleSelectFilter(client, event.target)
                         }
@@ -434,7 +434,7 @@ const FilterSideBar = ({
                       key={status.value}
                       labelClassName="ml-4"
                       name="status"
-                      wrapperClassName="py-3 px-5 hover:bg-miru-gray-100"
+                      wrapperClassName="py-3 px-5 flex items-center hover:bg-miru-gray-100"
                       handleCheck={event =>
                         handleSelectFilter(status, event.target)
                       }
