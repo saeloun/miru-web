@@ -191,7 +191,11 @@ module.exports = {
         "10/100": "10%",
       },
       zIndex: {
+        1: "-1",
         15: "15",
+      },
+      transformOrigin: {
+        0: "0%",
       },
     },
   },

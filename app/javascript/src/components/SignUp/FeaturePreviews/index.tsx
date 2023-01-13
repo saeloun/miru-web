@@ -6,14 +6,9 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { carouselItems } from "./utils";
 
 const FeaturePreviews = () => (
-  // const [currentSlideItemIndex, setCurrentSlideItemIndex] = useState<number>(0);
-  // const handleCarouselSlide = (currentIndex: number) => {
-  //   setCurrentSlideItemIndex(currentIndex);
-  // };
-  <div className="hidden min-h-full bg-miru-han-purple-1000 md:block md:w-1/2 md:pt-40">
+  <div className="hidden min-h-full bg-miru-han-purple-1000 md:w-1/2 md:pt-40 lg:block">
     <div className="mx-auto w-7/12 md:pt-20">
       <Carousel
-        // onChange={handleCarouselSlide}
         autoPlay
         infiniteLoop
         showArrows={false}

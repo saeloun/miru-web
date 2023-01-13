@@ -20,7 +20,7 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="w-full px-8 pt-16 pb-4 md:w-1/2 md:px-0 md:pt-36">
+    <div className="w-full px-8 pt-16 pb-4 md:px-0 md:pt-36 lg:w-1/2">
       <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
         <h1 className="text-center font-manrope text-4xl font-extrabold text-miru-han-purple-1000">
           Signup for Miru
@@ -38,80 +38,90 @@ const SignUpForm = () => {
               return (
                 <Form>
                   <div className="mb-3 flex justify-between">
-                    {/* <div className="floating-input">
-                      <div className="material-textfield">
-                        <input placeholder="label" type="text" />
-                        <label> label</label>
+                    {/* First Name */}
+                    <div className="field relative mr-6 w-1/2 lg:w-168">
+                      <div className="outline relative">
+                        <Field
+                          name="firstName"
+                          placeholder=" "
+                          className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
+                            errors.firstName &&
+                            touched.firstName &&
+                            "border-red-600 focus:border-red-600 focus:ring-red-600"
+                          } `}
+                        />
+                        <label
+                          className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                          htmlFor="Name"
+                        >
+                          First Name
+                        </label>
                       </div>
-                    </div> */}
-                    {/* Fisrt name */}
-                    <div className="w-5/12 lg:w-168">
-                      <div className="field_with_errors">
-                        <label className="form__label">First name</label>
-                      </div>
-                      <Field
-                        data-cy="sign-up-firstName"
-                        label="First Name"
-                        name="firstName"
-                        className={`form__input border-miru-gray-1000 bg-transparent px-4 py-3 ${
-                          errors.firstName &&
-                          touched.firstName &&
-                          "border-red-600 focus:border-red-600 focus:ring-red-600"
-                        } `}
-                      />
-                      <div className="text-xs tracking-wider text-red-600">
+                      <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                         {errors.firstName && touched.firstName && (
-                          <p>{errors.firstName}</p>
+                          <div>{errors.firstName}</div>
                         )}
                       </div>
                     </div>
-                    {/* Last name */}
-                    <div className="w-5/12 lg:w-168">
-                      <div className="field_with_errors">
-                        <label className="form__label">Last name</label>
+                    {/* Last Name */}
+                    <div className="field relative w-1/2 lg:w-168">
+                      <div className="outline relative">
+                        <Field
+                          data-cy="sign-up-lastName"
+                          name="lastName"
+                          placeholder=" "
+                          className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
+                            errors.lastName &&
+                            touched.lastName &&
+                            "border-red-600 focus:border-red-600 focus:ring-red-600"
+                          } `}
+                        />
+                        <label
+                          className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                          htmlFor="Name"
+                        >
+                          Last Name
+                        </label>
                       </div>
-                      <Field
-                        data-cy="sign-up-lastName"
-                        label="Last Name"
-                        name="lastName"
-                        className={`form__input border-miru-gray-1000 bg-transparent px-4 py-3 ${
-                          errors.lastName &&
-                          touched.lastName &&
-                          "border-red-600 focus:border-red-600 focus:ring-red-600"
-                        } `}
-                      />
-                      <div className="text-xs tracking-wider text-red-600">
+                      <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                         {errors.lastName && touched.lastName && (
-                          <p>{errors.lastName}</p>
+                          <div>{errors.lastName}</div>
                         )}
                       </div>
                     </div>
                   </div>
                   {/* Email */}
-                  <div className="mb-3">
-                    <div className="field_with_errors">
-                      <label className="form__label">Email</label>
+                  <div className="field relative">
+                    <div className="outline relative">
+                      <Field
+                        data-cy="sign-up-email"
+                        name="email"
+                        placeholder=" "
+                        className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
+                          errors.email &&
+                          touched.email &&
+                          "border-red-600 focus:border-red-600 focus:ring-red-600"
+                        } `}
+                      />
+                      <label
+                        className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                        htmlFor="Name"
+                      >
+                        Email
+                      </label>
                     </div>
-                    <Field
-                      data-cy="sign-up-email"
-                      label="Email"
-                      name="email"
-                      className={`form__input border-miru-gray-1000 bg-transparent ${
-                        errors.email &&
-                        touched.email &&
-                        "border-red-600 focus:border-red-600 focus:ring-red-600"
-                      } `}
-                    />
-                    <div className="text-xs tracking-wider text-red-600">
-                      {errors.email && touched.email && <p>{errors.email}</p>}
+                    <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
+                      {errors.email && touched.email && (
+                        <div>{errors.email}</div>
+                      )}
                     </div>
                   </div>
                   {/* Privacy Policy Checkbox */}
-                  <div className="mb-3 mt-7 flex text-xs font-normal leading-4 text-miru-dark-purple-1000">
+                  <div className="my-6 flex text-xs font-normal leading-4 text-miru-dark-purple-1000">
                     <div className="mt-2 flex">
                       {values.isAgreedTermsOfServices ? (
                         <CheckSquare
-                          className="mr-3 cursor-pointer text-miru-han-purple-1000"
+                          className="mr-2 cursor-pointer text-miru-han-purple-1000"
                           size={16}
                           weight="bold"
                           onClick={() => {
@@ -120,7 +130,7 @@ const SignUpForm = () => {
                         />
                       ) : (
                         <Square
-                          className="mr-3 cursor-pointer text-miru-han-purple-1000"
+                          className="mr-2 cursor-pointer text-miru-han-purple-1000"
                           size={16}
                           weight="bold"
                           onClick={() => {
