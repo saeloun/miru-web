@@ -160,6 +160,7 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
                       id={stripe.id}
                       isChecked={stripeAcceptedPaymentMethods.includes("card")}
                       name="stripePaymentMethods"
+                      wrapperClassName="flex items-center"
                       checkboxValue={stripeAcceptedPaymentMethods.find(
                         m => m === "card"
                       )}

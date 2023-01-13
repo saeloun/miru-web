@@ -80,8 +80,10 @@ class Invoice < ApplicationRecord
   scope :issue_date_range, -> (date_range) { where(issue_date: date_range) if date_range.present? }
   scope :for_clients, -> (client_ids) { where(client_id: client_ids) if client_ids.present? }
   scope :search, -> (query) {
-    where("invoice_number ILIKE :query OR clients.name ILIKE :query", query: "%#{query}%")
-      .references(:clients) if query.present?
+    where(
+      "invoice_number ILIKE :query OR clients.name ILIKE :query",
+      query: "%#{query}%"
+    ).references(:clients) if query.present?
   }
   scope :during, -> (duration) {
     where(issue_date: duration) if duration.present?
@@ -103,6 +105,19 @@ class Invoice < ApplicationRecord
     (amount * Money::Currency.new(base_currency).subunit_to_unit).to_i
   end
 
+  def settle!(payment)
+    self.amount_paid += payment.amount
+
+    if payment.settles?(self)
+      self.status = :paid
+      self.amount_due = 0
+    else
+      self.amount_due = amount_due - payment.amount
+    end
+
+    self.save!
+  end
+
   def pdf_content(company_logo, root_url)
     InvoicePayment::PdfGeneration.process(
       self,
@@ -117,14 +132,15 @@ class Invoice < ApplicationRecord
       self,
       company_logo,
       root_url,
-      file.path)
+      file.path
+    )
     file
   end
 
   private
 
     def set_external_view_key
-      self.external_view_key = "#{SecureRandom.hex}"
+      self.external_view_key = SecureRandom.hex
     end
 
     def check_if_invoice_paid
