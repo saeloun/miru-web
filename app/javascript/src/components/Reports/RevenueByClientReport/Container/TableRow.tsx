@@ -16,27 +16,15 @@ const TableRow = ({ currency, report }) => {
         </p>
       </td>
       <td className="w-2/5 whitespace-pre-wrap px-6 py-4 text-left text-base font-normal text-miru-dark-purple-1000">
-        {currencyFormat({
-          baseCurrency: currency,
-          amount: unpaidAmount,
-          notation: "standard",
-        })}
+        {currencyFormat(currency, unpaidAmount)}
       </td>
       <td className="w-1/5 whitespace-nowrap px-6 py-4 text-left">
         <p className="text-base	 font-normal text-miru-dark-purple-1000">
-          {currencyFormat({
-            baseCurrency: currency,
-            amount: paidAmount,
-            notation: "standard",
-          })}
+          {currencyFormat(currency, paidAmount)}
         </p>
       </td>
       <td className="w-1/5 whitespace-nowrap py-4 pl-6 text-right text-xl font-bold text-miru-dark-purple-1000">
-        {currencyFormat({
-          baseCurrency: currency,
-          amount: totalAmount,
-          notation: "standard",
-        })}
+        {currencyFormat(currency, totalAmount)}
       </td>
     </tr>
   );

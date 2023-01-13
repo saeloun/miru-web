@@ -37,12 +37,7 @@ const TableRow = ({ payment, baseCurrency }) => {
         </h3>
       </td>
       <td className="px-6 py-2.5 text-right text-xl font-bold leading-7 text-miru-dark-purple-1000">
-        {baseCurrency &&
-          currencyFormat({
-            baseCurrency,
-            amount: payment.amount,
-            notation: "standard",
-          })}
+        {baseCurrency && currencyFormat(baseCurrency, payment.amount)}
       </td>
       <td className="py-2.5 pl-6 pr-0 text-right text-sm font-semibold leading-4 tracking-wider">
         <Badge

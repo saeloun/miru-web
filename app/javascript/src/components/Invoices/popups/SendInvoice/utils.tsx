@@ -14,11 +14,10 @@ export const emailSubject = (invoice: any): string =>
   `${invoice.company.name} sent you an invoice (${invoice.invoiceNumber})`;
 
 export const emailBody = (invoice: any): string => {
-  const formattedAmount = currencyFormat({
-    baseCurrency: invoice.company.baseCurrency || invoice.company.currency,
-    amount: invoice.amount,
-    notation: "standard",
-  });
+  const formattedAmount = currencyFormat(
+    invoice.company.baseCurrency || invoice.company.currency,
+    invoice.amount
+  );
 
   const dueDate = dayjs(invoice.dueDate).format(
     invoice.company.dateFormat || "DD.MM.YYYY"

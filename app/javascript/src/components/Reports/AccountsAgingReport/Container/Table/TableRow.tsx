@@ -15,45 +15,25 @@ const TableRow = ({ currency, report }) => {
         </p>
       </td>
       <td className="w-2/12 whitespace-pre-wrap px-8 text-right text-base font-normal text-miru-dark-purple-1000">
-        {currencyFormat({
-          baseCurrency: currency,
-          amount: amount_overdue.zero_to_thirty_days,
-          notation: "standard",
-        })}
+        {currencyFormat(currency, amount_overdue.zero_to_thirty_days)}
       </td>
       <td className="w-2/12 whitespace-nowrap px-8 text-right">
         <p className="text-base	font-normal text-miru-dark-purple-1000">
-          {currencyFormat({
-            baseCurrency: currency,
-            amount: amount_overdue.thirty_one_to_sixty_days,
-            notation: "standard",
-          })}
+          {currencyFormat(currency, amount_overdue.thirty_one_to_sixty_days)}
         </p>
       </td>
       <td className="w-2/12 whitespace-nowrap px-8 text-right">
         <p className="text-base	font-normal text-miru-dark-purple-1000">
-          {currencyFormat({
-            baseCurrency: currency,
-            amount: amount_overdue.sixty_one_to_ninety_days,
-            notation: "standard",
-          })}
+          {currencyFormat(currency, amount_overdue.sixty_one_to_ninety_days)}
         </p>
       </td>
       <td className="w-2/12 whitespace-nowrap px-8 text-right">
         <p className="text-base	 font-normal text-miru-dark-purple-1000">
-          {currencyFormat({
-            baseCurrency: currency,
-            amount: amount_overdue.ninety_plus_days,
-            notation: "standard",
-          })}
+          {currencyFormat(currency, amount_overdue.ninety_plus_days)}
         </p>
       </td>
       <td className="w-2/12 whitespace-nowrap pl-8 text-right text-xl font-bold text-miru-dark-purple-1000">
-        {currencyFormat({
-          baseCurrency: currency,
-          amount: amount_overdue.total,
-          notation: "standard",
-        })}
+        {currencyFormat(currency, amount_overdue.total)}
       </td>
     </tr>
   );

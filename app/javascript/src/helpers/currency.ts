@@ -19,7 +19,11 @@ const locale = baseCurrency => {
   }
 };
 
-const currencyFormat = ({ baseCurrency, amount, notation }) => {
+const currencyFormat = (
+  baseCurrency,
+  amount,
+  notation?: "standard" | "compact"
+) => {
   const formattedAmount = new Intl.NumberFormat(locale(baseCurrency), {
     style: "currency",
     currency: baseCurrency,

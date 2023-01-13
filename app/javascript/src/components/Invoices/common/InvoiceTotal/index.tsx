@@ -44,11 +44,7 @@ const InvoiceTotal = ({
     if (showDiscount && discount) {
       return (
         <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-          {currencyFormat({
-            baseCurrency: currency,
-            amount: parseFloat(discount).toFixed(2),
-            notation: "standard",
-          })}
+          {currencyFormat(currency, parseFloat(discount).toFixed(2))}
         </td>
       );
     } else if (addDiscount) {
@@ -85,11 +81,7 @@ const InvoiceTotal = ({
 
     return (
       <td className="w-22 pt-4 text-right text-base font-bold text-miru-dark-purple-1000">
-        {currencyFormat({
-          baseCurrency: currency,
-          amount: tax,
-          notation: "standard",
-        })}
+        {currencyFormat(currency, tax)}
       </td>
     );
   };
@@ -130,13 +122,7 @@ const InvoiceTotal = ({
               Sub total
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-              {subTotal
-                ? currencyFormat({
-                    baseCurrency: currency,
-                    amount: subTotal.toFixed(2),
-                    notation: "standard",
-                  })
-                : 0}
+              {subTotal ? currencyFormat(currency, subTotal.toFixed(2)) : 0}
             </td>
           </tr>
           <tr
@@ -172,13 +158,7 @@ const InvoiceTotal = ({
               Total
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
-              {total
-                ? currencyFormat({
-                    baseCurrency: currency,
-                    amount: total,
-                    notation: "standard",
-                  })
-                : 0}
+              {total ? currencyFormat(currency, total) : 0}
             </td>
           </tr>
           <tr>
@@ -186,13 +166,7 @@ const InvoiceTotal = ({
               Amount Paid
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-              {amountPaid
-                ? currencyFormat({
-                    baseCurrency: currency,
-                    amount: amountPaid,
-                    notation: "standard",
-                  })
-                : 0}
+              {amountPaid ? currencyFormat(currency, amountPaid) : 0}
             </td>
           </tr>
           <tr>
@@ -200,13 +174,7 @@ const InvoiceTotal = ({
               Amount Due
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
-              {amountDue
-                ? currencyFormat({
-                    baseCurrency: currency,
-                    amount: amountDue,
-                    notation: "standard",
-                  })
-                : 0}
+              {amountDue ? currencyFormat(currency, amountDue) : 0}
             </td>
           </tr>
         </tbody>

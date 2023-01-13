@@ -26,11 +26,7 @@ const InvoiceSummary = ({
             Overdue
           </p>
           <p className="text-2xl font-semibold tracking-normal text-white lg:mt-3 xl:pr-8 xl:text-4.5xl">
-            {currencyFormat({
-              baseCurrency,
-              amount: summary.overdueAmount,
-              notation: "compact",
-            })}
+            {currencyFormat(baseCurrency, summary.overdueAmount, "compact")}
           </p>
         </li>
         <li
@@ -47,11 +43,7 @@ const InvoiceSummary = ({
             Outstanding
           </p>
           <p className="text-2xl font-semibold tracking-normal text-white lg:mt-3 xl:pr-8 xl:text-4.5xl">
-            {currencyFormat({
-              baseCurrency,
-              amount: summary.outstandingAmount,
-              notation: "compact",
-            })}
+            {currencyFormat(baseCurrency, summary.outstandingAmount, "compact")}
           </p>
         </li>
         <li
@@ -62,11 +54,7 @@ const InvoiceSummary = ({
             Amount in draft
           </p>
           <p className="text-2xl font-semibold tracking-normal text-white lg:mt-3 xl:pr-8 xl:text-4.5xl">
-            {currencyFormat({
-              baseCurrency,
-              amount: summary.draftAmount,
-              notation: "compact",
-            })}
+            {currencyFormat(baseCurrency, summary.draftAmount, "compact")}
           </p>
         </li>
       </ul>

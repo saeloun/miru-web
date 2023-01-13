@@ -24,11 +24,7 @@ const RecentlyUpdated = ({ invoice }) => {
         <p className="truncateOverflowText">{invoice.client.name}</p>
       </div>
       <h1 className="mt-2.5 mb-1 truncate text-base font-bold text-miru-dark-purple-1000 lg:text-xl">
-        {currencyFormat({
-          baseCurrency: invoice.company.baseCurrency,
-          amount: invoice.amount,
-          notation: "standard",
-        })}
+        {currencyFormat(invoice.company.baseCurrency, invoice.amount)}
       </h1>
       <div>
         <Badge

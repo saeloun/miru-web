@@ -75,11 +75,7 @@ const TableRow = ({
         </td>
       )}
       <td className="px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
-        {currencyFormat({
-          baseCurrency: invoice.company.baseCurrency,
-          amount: invoice.amount,
-          notation: "standard",
-        })}
+        {currencyFormat(invoice.company.baseCurrency, invoice.amount)}
       </td>
       <td
         className="relative px-2 text-right font-medium lg:px-6 lg:pb-10"

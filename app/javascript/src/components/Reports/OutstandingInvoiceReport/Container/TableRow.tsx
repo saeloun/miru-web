@@ -43,11 +43,7 @@ const TableRow = ({ currency, reportData }) => {
         </h3>
       </td>
       <td className="col-span-2 py-2 text-right text-xl font-bold tracking-wider text-miru-dark-purple-1000">
-        {currencyFormat({
-          baseCurrency: currency,
-          amount,
-          notation: "standard",
-        })}
+        {currencyFormat(currency, amount)}
       </td>
       <td className="col-span-3 py-2 text-right font-medium">
         <Badge

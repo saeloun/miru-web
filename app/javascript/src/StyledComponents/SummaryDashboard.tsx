@@ -22,11 +22,7 @@ const SummaryDashboard = ({ summaryList, currency }: SummaryDashboardProps) => (
           {summary.label}
         </p>
         <p className="2xl:text-5xl text-2xl font-semibold tracking-widest text-white lg:mt-3 xl:text-3xl">
-          {currencyFormat({
-            baseCurrency: currency,
-            amount: summary.value,
-            notation: "compact",
-          })}
+          {currencyFormat(currency, summary.value, "compact")}
         </p>
       </li>
     ))}
