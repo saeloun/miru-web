@@ -6,18 +6,13 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def index
     authorize Invoice
-    pagy, invoices = pagy(invoices_query, items_param: :invoices_per_page)
-
-    recently_updated_invoices = current_company.invoices.kept
-      .includes(:client)
-      .order("updated_at desc")
-      .limit(10)
+    data = Invoices::IndexService.new(params, current_company).process
 
     render :index, locals: {
-      invoices:,
-      recently_updated_invoices:,
-      pagy: pagy_metadata(pagy),
-      summary: current_company.overdue_and_outstanding_and_draft_amount
+      invoices: data[:invoices_query],
+      pagination_details: data[:pagination_details],
+      recently_updated_invoices: data[:recently_updated_invoices],
+      summary: data[:summary]
     }
   end
 
@@ -100,20 +95,5 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
     def ensure_time_entries_billed
       invoice.update_timesheet_entry_status!
-    end
-
-    def invoices_query
-      @_invoices_query ||= current_company.invoices.kept.includes(:client)
-        .search(params[:query])
-        .issue_date_range(from_to_date(params[:from_to]))
-        .for_clients(params[:client_ids])
-        .with_statuses(params[:statuses])
-        .order(created_at: :desc)
-    end
-
-    def from_to_date(from_to)
-      if from_to
-        DateRangeService.new(timeframe: from_to[:date_range], from: from_to[:from], to: from_to[:to]).process
-      end
     end
 end

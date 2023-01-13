@@ -9,10 +9,10 @@ const Pagination = ({ pagy, params, setParams, isDesktop }) => (
       {pagy?.pages > 1 && (
         <div className="flex items-center justify-center">
           <button
-            disabled={!pagy?.prev}
+            disabled={pagy?.first}
             className={cn("m-1 mx-4 font-bold", {
-              "text-miru-gray-400": !pagy?.prev,
-              "text-miru-han-purple-1000": pagy?.prev,
+              "text-miru-gray-400": pagy?.first,
+              "text-miru-han-purple-1000": !pagy?.first,
             })}
             onClick={() => setParams({ ...params, page: pagy?.prev })}
           >
@@ -34,10 +34,10 @@ const Pagination = ({ pagy, params, setParams, isDesktop }) => (
             </button>
           ))}
           <button
-            disabled={!pagy?.next}
+            disabled={pagy?.last}
             className={cn("m-1 mx-4 font-bold", {
-              "text-miru-gray-400": !pagy?.next,
-              "text-miru-han-purple-1000": pagy?.next,
+              "text-miru-gray-400": pagy?.last,
+              "text-miru-han-purple-1000": !pagy?.last,
             })}
             onClick={() => setParams({ ...params, page: pagy?.next })}
           >
