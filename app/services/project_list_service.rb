@@ -17,8 +17,7 @@ class ProjectListService
     project_ids = project_list.ids.uniq
 
     current_company.projects.left_outer_joins([:project_members, :timesheet_entries]).joins([:client]).select(
-      "
-      projects.id,
+      "projects.id,
       projects.name,
       projects.billable,
       clients.name as _client_name,
