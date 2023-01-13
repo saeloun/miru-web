@@ -16,7 +16,9 @@ FactoryBot.define do
       transient do
         length { 5 }
       end
-      invoices { Array.new(length) { association(:invoice) } }
+
+      clients { create_list(:client, 1) }
+      invoices { Array.new(length) { create(:invoice, client: clients.first) } }
     end
 
     trait :with_logo do

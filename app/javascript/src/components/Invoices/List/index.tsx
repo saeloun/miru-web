@@ -152,23 +152,23 @@ const Invoices = ({ isDesktop }) => {
     let filterQueryParams = "";
 
     filterParams.clients.forEach(client => {
-      filterQueryParams += `&client_ids[]=${client.value}`;
+      filterQueryParams += `&client[]=${client.value}`;
     });
 
     filterParams.status.forEach(status => {
-      filterQueryParams += `&statuses[]=${status.value}`;
+      filterQueryParams += `&status[]=${status.value}`;
     });
 
     const { value, from, to } = filterParams.dateRange;
 
     if (value != "all" && value != "custom") {
-      filterQueryParams += `&from_to[date_range]=${value}`;
+      filterQueryParams += `&date_range=${value}`;
     }
 
     if (value === "custom" && from && to) {
-      filterQueryParams += `&from_to[date_range]=${value}`;
-      filterQueryParams += `&from_to[from]=${from}`;
-      filterQueryParams += `&from_to[to]=${to}`;
+      filterQueryParams += `&date_range=${value}`;
+      filterQueryParams += `&from_date_range=${from}`;
+      filterQueryParams += `&to_date_range=${to}`;
     }
 
     setFilterParamsStr(filterQueryParams);
