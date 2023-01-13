@@ -118,6 +118,19 @@ class Invoice < ApplicationRecord
     (amount * Money::Currency.new(base_currency).subunit_to_unit).to_i
   end
 
+  def settle!(payment)
+    self.amount_paid += payment.amount
+
+    if payment.settles?(self)
+      self.status = :paid
+      self.amount_due = 0
+    else
+      self.amount_due = amount_due - payment.amount
+    end
+
+    self.save!
+  end
+
   def pdf_content(company_logo, root_url)
     InvoicePayment::PdfGeneration.process(
       self,
@@ -140,7 +153,7 @@ class Invoice < ApplicationRecord
   private
 
     def set_external_view_key
-      self.external_view_key = "#{SecureRandom.hex}"
+      self.external_view_key = SecureRandom.hex
     end
 
     def check_if_invoice_paid

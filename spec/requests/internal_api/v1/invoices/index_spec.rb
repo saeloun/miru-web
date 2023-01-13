@@ -206,8 +206,11 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         expected_invoices = company.invoices.during(from_date_range..to_date_range)
 
         expect(response).to have_http_status(:ok)
-        expect(json_response["invoices"].map { |invoice| invoice["id"] })
-          .to match_array(expected_invoices.map { |invoice| invoice["id"] })
+        expect(
+          json_response["invoices"].map { |invoice| invoice["id"] }
+        ).to match_array(
+          expected_invoices.map { |invoice| invoice["id"] }
+        )
       end
     end
 
@@ -218,12 +221,10 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         expected_invoices = company.invoices.select { |inv| client.include?(inv.client_id) }
         expect(response).to have_http_status(:ok)
         expect(
-          json_response["invoices"].map { |invoice|
-            invoice["id"]
-          }).to match_array(
-            expected_invoices.map { |invoice|
-              invoice["id"]
-            })
+          json_response["invoices"].map { |invoice| invoice["id"] }
+        ).to match_array(
+          expected_invoices.map { |invoice| invoice["id"] }
+        )
       end
     end
 
