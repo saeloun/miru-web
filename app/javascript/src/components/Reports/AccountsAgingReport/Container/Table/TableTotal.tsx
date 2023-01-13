@@ -10,40 +10,25 @@ const TableTotal = ({ currency, report }) => (
       </p>
     </td>
     <td className="w-2/12 whitespace-pre-wrap px-8 text-right text-base font-normal text-miru-dark-purple-1000">
-      {currencyFormat({
-        baseCurrency: currency,
-        amount: report.zero_to_thirty_days,
-      })}
+      {currencyFormat(currency, report.zero_to_thirty_days)}
     </td>
     <td className="w-2/12 whitespace-nowrap px-8 text-right">
       <p className="text-base	font-normal text-miru-dark-purple-1000">
-        {currencyFormat({
-          baseCurrency: currency,
-          amount: report.thirty_one_to_sixty_days,
-        })}
+        {currencyFormat(currency, report.thirty_one_to_sixty_days)}
       </p>
     </td>
     <td className="w-2/12 whitespace-nowrap px-8 text-right">
       <p className="text-base	font-normal text-miru-dark-purple-1000">
-        {currencyFormat({
-          baseCurrency: currency,
-          amount: report.sixty_one_to_ninety_days,
-        })}
+        {currencyFormat(currency, report.sixty_one_to_ninety_days)}
       </p>
     </td>
     <td className="w-2/12 whitespace-nowrap px-8 text-right">
       <p className="text-base	 font-normal text-miru-dark-purple-1000">
-        {currencyFormat({
-          baseCurrency: currency,
-          amount: report.ninety_plus_days,
-        })}
+        {currencyFormat(currency, report.ninety_plus_days)}
       </p>
     </td>
     <td className="w-2/12 whitespace-nowrap pl-8 text-right text-xl font-bold text-miru-dark-purple-1000">
-      {currencyFormat({
-        baseCurrency: currency,
-        amount: report.total,
-      })}
+      {currencyFormat(currency, report.total)}
     </td>
   </tr>
 );

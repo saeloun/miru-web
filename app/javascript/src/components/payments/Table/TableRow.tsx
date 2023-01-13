@@ -15,13 +15,6 @@ const TableRow = ({ payment, baseCurrency }) => {
     return `rounded-lg px-1 ${STATUS_LIST[lowerCaseStatus]}`;
   };
 
-  const formattedAmount =
-    baseCurrency &&
-    currencyFormat({
-      baseCurrency,
-      amount: payment.amount,
-    });
-
   return (
     <tr className="group last:border-b-0 hover:bg-miru-gray-100">
       <td className="py-2.5 pr-6 pl-0 text-left">
@@ -44,7 +37,7 @@ const TableRow = ({ payment, baseCurrency }) => {
         </h3>
       </td>
       <td className="px-6 py-2.5 text-right text-xl font-bold leading-7 text-miru-dark-purple-1000">
-        {formattedAmount}
+        {baseCurrency && currencyFormat(baseCurrency, payment.amount)}
       </td>
       <td className="py-2.5 pl-6 pr-0 text-right text-sm font-semibold leading-4 tracking-wider">
         <Badge
