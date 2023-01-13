@@ -125,7 +125,7 @@ RSpec.configure do |config|
 
   # run retry only on features
   config.around do |ex|
-    ex.run_with_retry retry: 3
+    ex.run_with_retry retry: 0
   end
 
   # callback to be run between retries

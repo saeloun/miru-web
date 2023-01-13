@@ -59,8 +59,10 @@ module Invoices
       def date_range_filter
         {
           issue_date: DateRangeService.new(
-            timeframe: params[:date_range], from: params[:from_date_range],
-            to: params[:to_date_range]).process
+            timeframe: params[:date_range],
+            from: params[:from_date_range],
+            to: params[:to_date_range]
+          ).process
         }
       end
 

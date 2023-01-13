@@ -7,18 +7,26 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     create(:company_with_invoices, length: 10)
   end
 
-  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:book_keeper) { create(:user, current_workspace_id: company.id) }
+  let(:admin) { create(:user, current_workspace_id: company.id) }
+  let(:employee) { create(:user, current_workspace_id: company.id) }
 
   before do
-    Invoice.reindex
+    create(:employment, company:, user: book_keeper)
+    book_keeper.add_role :book_keeper, company
+
+    create(:employment, company:, user: admin)
+    admin.add_role :admin, company
+
+    create(:employment, company:, user: employee)
+    employee.add_role :employee, company
+
+    Invoice.search_index.refresh
   end
 
   context "when user is a book keeper" do
     before do
-      create(:employment, company:, user:)
-      user.add_role :book_keeper, company
-      sign_in user
-      Invoice.search_index.refresh
+      sign_in book_keeper
     end
 
     describe "invoices_per_page param" do
@@ -70,10 +78,6 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     end
 
     describe "client_ids[] param" do
-      before do
-        Invoice.reindex
-      end
-
       it "returns invoices generated for clients specified by client_ids[]" do
         client = [9, 15, 29]
         send_request :get, internal_api_v1_invoices_path(client:)
@@ -103,31 +107,14 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
       end
     end
 
-    describe "search query param" do
-      let(:flipkart) { build(:client, company:, name: "flipkart") }
-      let(:invoice) { build(:invoice, client: flipkart, invoice_number: "SAI-01") }
-
-      before do
-        flipkart.invoices << invoice
-        company.clients << flipkart
-        company.invoices << invoice
-        company.save!
-
-        company.reload
-        invoice.reload
-        Invoice.search_index.refresh
-      end
-
-      after do
-        invoice.destroy
-      end
-
-      it "returns invoices with client name or invoice number specified by query" do
-        query = "flip"
+    describe "search query" do
+      it "returns invoices when query partially matches client name" do
+        query = company.clients.first.name[0..2]
         send_request :get, internal_api_v1_invoices_path(query:)
         expected_invoices = company.invoices.kept.select { |inv|
           inv.client.name.include?(query) || inv.invoice_number.include?(query)
         }
+
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].length) .to be_positive
         expect(
@@ -137,12 +124,13 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         )
       end
 
-      it "returns invoices with invoice_number or client name specified by query" do
-        query = "SAI"
+      it "returns invoices when query partially matches invoice number" do
+        query = company.invoices.first.invoice_number[0..2]
         send_request :get, internal_api_v1_invoices_path(query:)
         expected_invoices = company.invoices.kept.select { |inv|
           inv.client.name.include?(query) || inv.invoice_number.include?(query)
         }
+
         expect(response).to have_http_status(:ok)
         expect(json_response["invoices"].length).to be_positive
         expect(
@@ -156,26 +144,12 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
 
   context "when user is an admin" do
     before do
-      create(:employment, company:, user:)
-      user.add_role :admin, company
-      sign_in user
-      Invoice.reindex
+      sign_in admin
     end
 
-    describe "Show only kept invoices" do
-      let(:company) do
-        create(:company_with_invoices, length: 10)
-      end
-
-      before do
-        Invoice.reindex
-        @current_invoice = company.invoices.first
-      end
-
+    describe "search for wildcard" do
       it "returns the only kept invoices" do
-        @current_invoice.discard!
-        @current_invoice.reload
-        @current_invoice.reindex
+        company.invoices.first.discard!
 
         invoices_per_page = 10
         send_request :get, internal_api_v1_invoices_path(invoices_per_page:)
@@ -272,9 +246,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
 
   context "when user is an employee" do
     before do
-      create(:employment, company:, user:)
-      user.add_role :employee, company
-      sign_in user
+      sign_in employee
       send_request :get, internal_api_v1_invoices_path
     end
 
