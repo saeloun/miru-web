@@ -10,7 +10,7 @@ const RecentlyUpdatedCard = ({ invoice }) => {
   const navigate = useNavigate();
 
   const formattedAmount = (amount, baseCurrency) =>
-    currencyFormat({ baseCurrency, amount });
+    currencyFormat(baseCurrency, amount);
 
   return (
     <div

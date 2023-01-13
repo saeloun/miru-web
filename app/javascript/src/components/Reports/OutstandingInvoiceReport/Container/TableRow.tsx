@@ -21,11 +21,6 @@ const TableRow = ({ currency, reportData }) => {
 
   const formattedDate = date => dayjs(date).format("DD.MM.YYYY");
 
-  const formattedAmount = currencyFormat({
-    baseCurrency: currency,
-    amount,
-  });
-
   return (
     <tr
       className="grid grid-cols-12 items-center gap-4 hover:bg-miru-gray-100"
@@ -48,7 +43,7 @@ const TableRow = ({ currency, reportData }) => {
         </h3>
       </td>
       <td className="col-span-2 py-2 text-right text-xl font-bold tracking-wider text-miru-dark-purple-1000">
-        {formattedAmount}
+        {currencyFormat(currency, amount)}
       </td>
       <td className="col-span-3 py-2 text-right font-medium">
         <Badge
