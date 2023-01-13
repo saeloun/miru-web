@@ -94,5 +94,6 @@ namespace :internal_api, defaults: { format: "json" } do
     end
 
     resources :vendors, only: [:create]
+    resources :expense_categories, only: [:create]
   end
 end

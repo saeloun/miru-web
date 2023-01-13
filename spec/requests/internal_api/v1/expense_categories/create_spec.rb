@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Vendors#create", type: :request do
+RSpec.describe "InternalApi::V1::ExpenseCategories#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
@@ -13,18 +13,20 @@ RSpec.describe "InternalApi::V1::Vendors#create", type: :request do
       sign_in user
     end
 
-    context "when creates the vendor" do
+    context "when creates the expense_category" do
       before do
-        @vendor = attributes_for(:vendor)
-        send_request :post, internal_api_v1_vendors_path(vendor: @vendor)
+        @expense_category = attributes_for(:expense_category, company:)
+        send_request :post, internal_api_v1_expense_categories_path(expense_category: @expense_category)
       end
 
       it "return the success" do
         expect(response).to have_http_status(:ok)
       end
 
-      it "adds the vendor entry to the database" do
-        expect(Vendor.last.name).to eq(@vendor[:name])
+      it "adds the expense_category entry to the database" do
+        expense_category = ExpenseCategory.last
+        expect(expense_category.name).to eq(@expense_category[:name])
+        expect(expense_category.company_id).to eq(company.id)
       end
 
       it "return the id in the response" do
@@ -40,9 +42,9 @@ RSpec.describe "InternalApi::V1::Vendors#create", type: :request do
       sign_in user
     end
 
-    describe "when creates the vendor" do
+    describe "when creates the expense_category" do
       it "returns forbidden" do
-        send_request :post, internal_api_v1_vendors_path(vendor: {})
+        send_request :post, internal_api_v1_expense_categories_path(expense_category: {})
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -55,18 +57,18 @@ RSpec.describe "InternalApi::V1::Vendors#create", type: :request do
       sign_in user
     end
 
-    describe "when creates the vendor" do
+    describe "when creates the expense_category" do
       it "returns forbidden" do
-        send_request :post, internal_api_v1_vendors_path(vendor: {})
+        send_request :post, internal_api_v1_expense_categories_path(expense_category: {})
         expect(response).to have_http_status(:forbidden)
       end
     end
   end
 
   context "when unauthenticated" do
-    describe "when creates the vendor" do
+    describe "when creates the expense_category" do
       it "returns unauthorized" do
-        send_request :post, internal_api_v1_vendors_path(vendor: {})
+        send_request :post, internal_api_v1_expense_categories_path(expense_category: {})
         expect(response).to have_http_status(:unauthorized)
         expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
       end

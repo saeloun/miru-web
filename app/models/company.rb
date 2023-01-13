@@ -36,6 +36,7 @@ class Company < ApplicationRecord
   has_many :devices, dependent: :destroy
   has_many :invitations, dependent: :destroy
   has_many :expenses, dependent: :destroy
+  has_many :expense_categories, dependent: :destroy
   resourcify
 
   # Validations
