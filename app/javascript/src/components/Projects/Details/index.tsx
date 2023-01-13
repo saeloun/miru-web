@@ -19,12 +19,12 @@ import projectAPI from "apis/projects";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
+import { unmapper } from "mapper/project.mapper";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import EditMembersList from "./EditMembersList";
 
 import { TOASTER_DURATION } from "../../../constants";
-import { unmapper } from "../../../mapper/project.mapper";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
 

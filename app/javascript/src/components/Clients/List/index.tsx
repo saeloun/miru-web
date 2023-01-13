@@ -10,11 +10,11 @@ import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 import { TOASTER_DURATION } from "constants/index";
+import { unmapClientList } from "mapper/client.mapper";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
 
-import { unmapClientList } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 import NewClient from "../Modals/NewClient";

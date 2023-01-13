@@ -8,8 +8,7 @@ import Select, { DropdownIndicatorProps, components } from "react-select";
 import payment from "apis/payments/payments";
 import CustomDatePicker from "common/CustomDatePicker";
 import Toastr from "common/Toastr";
-
-import { mapPayment } from "../../../mapper/payment.mapper";
+import { mapPayment } from "mapper/payment.mapper";
 
 const AddManualEntry = ({
   setShowManualEntryModal,

@@ -13,11 +13,10 @@ import Table from "common/Table";
 import AddEditProject from "components/Projects/Modals/AddEditProject";
 import DeleteProject from "components/Projects/Modals/DeleteProject";
 import { TOASTER_DURATION } from "constants/index";
+import { unmapClientDetails } from "mapper/client.mapper";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
-
-import { unmapClientDetails } from "../../../mapper/client.mapper";
 
 const getTableData = clients => {
   if (clients) {
