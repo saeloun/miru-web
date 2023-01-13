@@ -269,9 +269,9 @@ const AddEntry: React.FC<Iprops> = ({
           <button
             disabled={handleDisableBtn()}
             className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-              note && client && project
-                ? "bg-miru-han-purple-1000 hover:border-transparent"
-                : "cursor-not-allowed bg-miru-gray-1000"
+              handleDisableBtn()
+                ? "cursor-not-allowed bg-miru-gray-1000"
+                : "bg-miru-han-purple-1000 hover:border-transparent"
             }`}
             onClick={handleSave}
           >
@@ -281,9 +281,9 @@ const AddEntry: React.FC<Iprops> = ({
           <button
             disabled={handleDisableBtn()}
             className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-              note && client && project
-                ? "bg-miru-han-purple-1000 hover:border-transparent"
-                : "cursor-not-allowed bg-miru-gray-1000"
+              handleDisableBtn()
+                ? "cursor-not-allowed bg-miru-gray-1000"
+                : "bg-miru-han-purple-1000 hover:border-transparent"
             }`}
             onClick={() => handleEdit()}
           >
