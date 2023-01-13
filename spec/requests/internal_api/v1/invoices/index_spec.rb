@@ -150,6 +150,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     describe "search for wildcard" do
       it "returns the only kept invoices" do
         company.invoices.first.discard!
+        Invoice.reindex
 
         invoices_per_page = 10
         send_request :get, internal_api_v1_invoices_path(invoices_per_page:)
