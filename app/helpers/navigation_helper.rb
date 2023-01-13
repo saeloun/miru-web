@@ -6,7 +6,7 @@ module NavigationHelper
       if item[:permitted]
         link_to item[:title],
           item[:url],
-          class: "#{style} #{active?(item[:url]) ? active_style : inactive_style}",
+          class: "#{style} #{active?(item[:url]).present? ? active_style : inactive_style}",
           data: item[:data]
       end
     end
