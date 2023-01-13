@@ -11,5 +11,6 @@ RSpec.describe Vendor, type: :model do
 
   describe "Associations" do
     it { is_expected.to have_many(:expenses) }
+    it { is_expected.to belong_to(:company) }
   end
 end

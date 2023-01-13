@@ -357,8 +357,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_11_121547) do
 
   create_table "vendors", force: :cascade do |t|
     t.string "name"
+    t.bigint "company_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_vendors_on_company_id"
   end
 
   create_table "wise_accounts", force: :cascade do |t|
@@ -403,6 +405,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_11_121547) do
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies", column: "current_workspace_id"
+  add_foreign_key "vendors", "companies"
   add_foreign_key "wise_accounts", "companies"
   add_foreign_key "wise_accounts", "users"
 end
