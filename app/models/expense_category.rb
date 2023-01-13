@@ -23,4 +23,5 @@ class ExpenseCategory < ApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :company_id }
 
   has_many :expenses
+  belongs_to :company, optional: true
 end
