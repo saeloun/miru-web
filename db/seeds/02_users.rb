@@ -25,9 +25,9 @@ users = [
 ]
 @users = users.map { |user| User.create!(user) }
 puts "Users Created"
-@vipul, @supriya, @akhil, @keshav, @rohit, @book_keeper =
+@vipul, @supriya, @akhil, @keshav, @book_keeper =
   ["vipul@example.com", "supriya@example.com", "akhil@example.com",
-   "keshav@example.com", "rohit@example.com", "book.keeper@example.com"].map { |user|
+   "keshav@example.com", "book.keeper@example.com"].map { |user|
   User.find_by(email: user)
 }
 # User Create End
