@@ -163,14 +163,6 @@ cd cypress
 yarn run cy:open:staging
 ```
 
-## Deployment
-
-### Heroku one-click deploy
-
-You can deploy Miru on Heroku using the one-click-deployment button:
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/saeloun/miru-web/tree/main)
-
 ## Community Support
 
 - Feel free to join our [Discord](https://discord.gg/UABXyQQ82c) channel for support and questions.
