@@ -19,10 +19,6 @@ users = [
     password_confirmation: "password", confirmed_at: Time.current, current_workspace_id: @saeloun_india.id
   },
   {
-    first_name: "Rohit", last_name: "Joshi", email: "rohit@example.com", password: "password",
-    password_confirmation: "password", confirmed_at: Time.current, current_workspace_id: @saeloun_india.id
-  },
-  {
     first_name: "Book", last_name: "Keeper", email: "book.keeper@example.com", password: "password",
     password_confirmation: "password", confirmed_at: Time.current, current_workspace_id: @saeloun_india.id
   }
