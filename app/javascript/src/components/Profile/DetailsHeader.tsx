@@ -15,9 +15,9 @@ const DetailsHeader = ({
     >
       <div>
         <button
-          className="mx-1 cursor-auto rounded-md border bg-miru-gray-1000 px-3 text-miru-han-purple-1000"
+          className="mx-1 cursor-auto rounded-md border bg-white px-3 text-miru-han-purple-1000"
           data-cy="update-profile"
-          disabled={!isDisableUpdateBtn}
+          disabled={isDisableUpdateBtn}
           onClick={editAction}
         >
           Edit
