@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 categories = [
-    { name: "Salary", icon: "", color: "", default: true },
-    { name: "Repair & Maintenance", icon: "", color: "", default: true },
-    { name: "Rent", icon: "", color: "", default: true },
-    { name: "Food", icon: "", color: "", default: true },
-    { name: "Travel", icon: "", color: "", default: true },
-    { name: "Tax", icon: "", color: "", default: true },
-    { name: "Furniture", icon: "", color: "", default: true },
-    { name: "Health Insurance", icon: "", color: "", default: true },
-    { name: "Other", icon: "", color: "", default: true }
+    { name: "Salary", default: true },
+    { name: "Repair & Maintenance", default: true },
+    { name: "Rent", default: true },
+    { name: "Food", default: true },
+    { name: "Travel", default: true },
+    { name: "Tax", default: true },
+    { name: "Furniture", default: true },
+    { name: "Health Insurance", default: true },
+    { name: "Other", default: true }
 ]
 
 categories.each do |category|
