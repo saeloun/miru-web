@@ -17,10 +17,7 @@ const MoreOptions = ({ isAdminUser, setVisiblity, setSelectedTab }) => {
 
   return (
     <SidePanel WrapperClassname="pt-13 pb-16" setFilterVisibilty={setVisiblity}>
-      <SidePanel.Body
-        className="flex h-full w-full flex-col items-start justify-between"
-        hasFooter={false}
-      >
+      <SidePanel.Body className="flex h-full w-full flex-col items-start justify-between">
         <div className="w-full">
           <UserInfo user={user} />
           <ul className="w-full" onClick={() => setVisiblity(false)}>

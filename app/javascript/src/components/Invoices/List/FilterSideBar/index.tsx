@@ -244,7 +244,7 @@ const FilterSideBar = ({
           />
         </Button>
       </SidePanel.Header>
-      <SidePanel.Body hasFooter className="sidebar__filters">
+      <SidePanel.Body className="sidebar__filters">
         <ul>
           <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000">
             <div
