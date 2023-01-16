@@ -5,7 +5,7 @@ import { PlusIcon } from "miruIcons";
 
 import clientApi from "apis/clients";
 import AutoSearch from "common/AutoSearch";
-import { unmapClientListForDropdown } from "mapper/client.mapper";
+import { unmapClientListForDropdown } from "mapper/mappedIndex";
 
 import SearchDataRow from "./SearchDataRow";
 

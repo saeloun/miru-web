@@ -4,7 +4,7 @@ import Logger from "js-logger";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import payment from "apis/payments/payments";
-import { unmapPayment } from "mapper/payment.mapper";
+import { unmapPayment } from "mapper/mappedIndex";
 
 import Header from "./Header";
 import AddManualEntry from "./Modals/AddManualEntry";

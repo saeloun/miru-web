@@ -10,7 +10,7 @@ import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 import { TOASTER_DURATION } from "constants/index";
-import { unmapClientList } from "mapper/client.mapper";
+import { unmapClientList } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";

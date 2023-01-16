@@ -19,7 +19,7 @@ import projectAPI from "apis/projects";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
-import { unmapper } from "mapper/project.mapper";
+import { unmapper } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import EditMembersList from "./EditMembersList";

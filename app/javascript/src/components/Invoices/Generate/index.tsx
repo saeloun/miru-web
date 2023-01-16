@@ -5,10 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import companiesApi from "apis/companies";
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
-import {
-  mapGenerateInvoice,
-  unmapGenerateInvoice,
-} from "mapper/generateInvoice.mapper";
+import { mapGenerateInvoice, unmapGenerateInvoice } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
