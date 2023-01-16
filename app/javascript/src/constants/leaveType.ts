@@ -17,15 +17,15 @@ export const leaveTypes = [
   },
   {
     value: "period",
-    label: "Paternity leave",
+    label: "Period leave",
   },
 ];
 
 export const repitationTypeObj = {
   per_month: "per month",
   per_year: "per year",
-  per_week: "per_week",
-  per_quarter: "per_quarter",
+  per_week: "per week",
+  per_quarter: "per quarter",
 };
 
 export const countTypeOptions = [
@@ -39,4 +39,64 @@ export const repetitionType = [
   { value: "per_month", label: "per month" },
   { value: "per_quarter", label: "per quarter" },
   { value: "per_year", label: "per year" },
+];
+
+export const quarter_one = [
+  {
+    id: 0,
+    name: "January",
+  },
+  {
+    id: 1,
+    name: "February",
+  },
+  {
+    id: 2,
+    name: "March",
+  },
+];
+
+export const quarter_two = [
+  {
+    id: 3,
+    name: "April",
+  },
+  {
+    id: 4,
+    name: "May",
+  },
+  {
+    id: 5,
+    name: "June",
+  },
+];
+
+export const quarter_three = [
+  {
+    id: 6,
+    name: "July",
+  },
+  {
+    id: 7,
+    name: "August",
+  },
+  {
+    id: 8,
+    name: "September",
+  },
+];
+
+export const quarter_four = [
+  {
+    id: 9,
+    name: "October",
+  },
+  {
+    id: 10,
+    name: "November",
+  },
+  {
+    id: 11,
+    name: "December",
+  },
 ];
