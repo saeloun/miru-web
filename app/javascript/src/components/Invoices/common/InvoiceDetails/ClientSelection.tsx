@@ -36,6 +36,10 @@ const ClientSelection = ({
     }
   }, []);
 
+  useEffect(() => {
+    handleAlreadySelectedClient();
+  }, [selectedClient]);
+
   const handleSelectClientClick = async () => {
     setIsClientVisible(true);
     setIsOptionSelected(false);
@@ -49,6 +53,13 @@ const ClientSelection = ({
     setSelectedClient(selection);
     setIsClientVisible(false);
     setIsOptionSelected(true);
+  };
+
+  const handleAlreadySelectedClient = () => {
+    if (selectedClient) {
+      setIsOptionSelected(true);
+      setIsClientVisible(false);
+    }
   };
 
   const DropdownIndicator = (props: DropdownIndicatorProps<true>) => (

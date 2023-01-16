@@ -13,7 +13,8 @@ class ClientPresenter
       name: client.name,
       email: client.email,
       address: client.address,
-      phone: client.phone
+      phone: client.phone,
+      logo: client.logo_url
     }
   end
 end

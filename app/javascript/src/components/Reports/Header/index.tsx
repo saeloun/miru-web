@@ -134,7 +134,7 @@ const Header = ({
       </div>
       <div>
         {showNavFilters && (
-          <ul className="flex">
+          <ul className="flex flex-wrap">
             <NavigationFilter />
             {selectedReport.filterCounter > 0 && (
               <li className="mr-4 flex px-2 py-1 px-1 " key="clear_all">
@@ -148,7 +148,7 @@ const Header = ({
                     size={12}
                     weight="bold"
                   />
-                  <span className="ml-1 text-xs font-bold tracking-widest text-miru-han-purple-1000">
+                  <span className="ml-1 whitespace-nowrap text-xs font-bold tracking-widest text-miru-han-purple-1000">
                     CLEAR ALL
                   </span>
                 </button>
