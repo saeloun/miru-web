@@ -19,6 +19,7 @@
 #
 #  index_expenses_on_company_id           (company_id)
 #  index_expenses_on_expense_category_id  (expense_category_id)
+#  index_expenses_on_expense_type         (expense_type)
 #  index_expenses_on_vendor_id            (vendor_id)
 #
 # Foreign Keys

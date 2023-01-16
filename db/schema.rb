@@ -142,6 +142,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_11_121547) do
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_expenses_on_company_id"
     t.index ["expense_category_id"], name: "index_expenses_on_expense_category_id"
+    t.index ["expense_type"], name: "index_expenses_on_expense_type"
     t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
   end
 

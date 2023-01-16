@@ -10,7 +10,7 @@ class CreateExpenses < ActiveRecord::Migration[7.0]
       t.references :company, foreign_key: true, null: false
       t.references :expense_category, foreign_key: true, null: false
       t.references :vendor, foreign_key: true
-
+      t.index :expense_type
       t.timestamps
     end
   end
