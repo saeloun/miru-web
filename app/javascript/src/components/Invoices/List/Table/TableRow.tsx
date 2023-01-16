@@ -36,16 +36,11 @@ const TableRow = ({
     }
   };
 
-  const formattedAmount = currencyFormat({
-    baseCurrency: invoice.company.baseCurrency,
-    amount: invoice.amount,
-  });
-
   const formattedDate = date => dayjs(date).format(invoice.company.dateFormat);
 
   return (
     <tr className="group last:border-b-0 hover:bg-miru-gray-100">
-      <td className="px-4 py-5 lg:pl-6 lg:pr-0">
+      <td className="px-4 py-5">
         <CustomCheckbox
           checkboxValue={isSelected}
           handleCheck={handleCheckboxChange}
@@ -55,7 +50,7 @@ const TableRow = ({
         />
       </td>
       <td
-        className="flex cursor-pointer items-center whitespace-nowrap py-5 pr-6 text-left font-medium tracking-normal lg:w-1/5 lg:pr-2"
+        className="flex cursor-pointer items-center whitespace-nowrap py-5 pr-6 text-left font-medium tracking-normal lg:w-1/3 lg:pr-2"
         data-cy="view-invoice"
         onClick={() => navigate(`/invoices/${invoice.id}`)}
       >
@@ -79,8 +74,8 @@ const TableRow = ({
           </h3>
         </td>
       )}
-      <td className="px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:w-1/4 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
-        {formattedAmount}
+      <td className="px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
+        {currencyFormat(invoice.company.baseCurrency, invoice.amount)}
       </td>
       <td
         className="relative px-2 text-right font-medium lg:px-6 lg:pb-10"
