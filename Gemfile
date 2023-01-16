@@ -213,9 +213,6 @@ group :test do
 
   gem "rspec-buildkite"
   gem "rspec-retry"
-
-  # BuildKite Test Collector
-  gem "buildkite-test_collector"
 end
 
 # https://github.com/ankane/strong_migrations
