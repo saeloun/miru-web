@@ -20,10 +20,10 @@ const InvoiceTotalSummary = ({ invoice }) => {
               Sub total
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-              {currencyFormat({
-                baseCurrency: invoice.company.currency,
-                amount: parseFloat(subTotal).toFixed(2),
-              })}
+              {currencyFormat(
+                invoice.company.currency,
+                parseFloat(subTotal).toFixed(2)
+              )}
             </td>
           </tr>
           <tr className="miru-gray-400 border-b-2 pb-5 ">
@@ -31,10 +31,10 @@ const InvoiceTotalSummary = ({ invoice }) => {
               Discount
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-              {currencyFormat({
-                baseCurrency: invoice.company.currency,
-                amount: parseFloat(discount).toFixed(2),
-              })}
+              {currencyFormat(
+                invoice.company.currency,
+                parseFloat(discount).toFixed(2)
+              )}
             </td>
           </tr>
           <tr>
@@ -42,10 +42,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               Tax
             </td>
             <td className="w-22 pt-4 text-right text-base font-bold text-miru-dark-purple-1000">
-              {currencyFormat({
-                baseCurrency: invoice.company.currency,
-                amount: tax,
-              })}
+              {currencyFormat(invoice.company.currency, tax)}
             </td>
           </tr>
           <tr>
@@ -53,10 +50,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               Total
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
-              {currencyFormat({
-                baseCurrency: invoice.company.currency,
-                amount: total,
-              })}
+              {currencyFormat(invoice.company.currency, total)}
             </td>
           </tr>
           <tr>
@@ -64,10 +58,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               Amount Paid
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-              {currencyFormat({
-                baseCurrency: invoice.company.currency,
-                amount: invoice.amountPaid,
-              })}
+              {currencyFormat(invoice.company.currency, invoice.amountPaid)}
             </td>
           </tr>
           <tr>
@@ -75,10 +66,7 @@ const InvoiceTotalSummary = ({ invoice }) => {
               Amount Due
             </td>
             <td className="text-right text-base font-bold text-miru-dark-purple-1000">
-              {currencyFormat({
-                baseCurrency: invoice.company.currency,
-                amount: invoice.amountDue,
-              })}
+              {currencyFormat(invoice.company.currency, invoice.amountDue)}
             </td>
           </tr>
         </tbody>

@@ -131,7 +131,7 @@ const Filters = ({
                       labelClassName="ml-4"
                       name="clients"
                       text={client.name}
-                      wrapperClassName="py-3 px-5 hover:bg-miru-gray-100 text-miru-dark-purple-1000"
+                      wrapperClassName="py-3 px-5 flex items-center hover:bg-miru-gray-100 text-miru-dark-purple-1000"
                     />
                   ))
                 ) : (

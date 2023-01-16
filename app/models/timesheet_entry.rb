@@ -52,9 +52,8 @@ class TimesheetEntry < ApplicationRecord
 
   scope :search_import, -> { includes(:project, :client, :user) }
 
-  filterable = [:user_name, :created_at, :project_name, :client_name, :bill_status ]
-
-  searchkick filterable:, text_middle: [:user_name, :note]
+  searchkick filterable: [:user_name, :created_at, :project_name, :client_name, :bill_status ],
+    word_middle: [:user_name, :note]
 
   def search_data
     {

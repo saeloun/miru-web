@@ -41,10 +41,7 @@ const InvoiceInfo = ({ invoice, company }) => {
           Amount
         </p>
         <p className="mt-6 text-4xl font-normal text-miru-dark-purple-1000">
-          {currencyFormat({
-            baseCurrency: company.base_currency,
-            amount: invoice.amount,
-          })}
+          {currencyFormat(company.base_currency, invoice.amount)}
         </p>
       </div>
     </>

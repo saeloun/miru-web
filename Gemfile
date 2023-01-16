@@ -137,9 +137,6 @@ gem "bundler-audit", require: false
 gem "ruby_audit", require: false
 
 # For reporting messages, exceptions, and tracing events.
-gem "sentry-rails"
-gem "sentry-ruby"
-gem "sentry-sidekiq"
 
 gem "rubyzip"
 
@@ -196,6 +193,10 @@ group :development do
   gem "letter_opener"
 end
 
+group :production do
+  gem "elastic-apm"
+end
+
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara", ">= 3.26"
@@ -214,5 +215,8 @@ group :test do
   gem "rspec-retry"
 
   # BuildKite Test Collector
-  # gem "buildkite-test_collector", git: "https://github.com/buildkite/test-collector-ruby.git", branch: "main"
+  gem "buildkite-test_collector"
 end
+
+# https://github.com/ankane/strong_migrations
+gem "strong_migrations"
