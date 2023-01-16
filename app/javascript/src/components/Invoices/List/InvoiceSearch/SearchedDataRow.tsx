@@ -10,11 +10,6 @@ const formattedDate = (date, format) => dayjs(date).format(format);
 
 const SearchDataRow = ({ invoice }) => {
   const navigate = useNavigate();
-  const formattedAmount = invoice =>
-    currencyFormat({
-      baseCurrency: invoice.company.baseCurrency,
-      amount: invoice.amount,
-    });
 
   const handleClick = invoice => {
     navigate(`/invoices/${invoice.id}`);
@@ -34,7 +29,7 @@ const SearchDataRow = ({ invoice }) => {
         </div>
       </div>
       <div className="w-4/12 px-6 font-medium tracking-wider">
-        {formattedAmount(invoice)}
+        {currencyFormat(invoice.company.baseCurrency, invoice.amount)}
         <div className="text-sm font-normal text-miru-dark-purple-400">
           {formattedDate(invoice.issueDate, invoice.company.dateFormat)}
         </div>

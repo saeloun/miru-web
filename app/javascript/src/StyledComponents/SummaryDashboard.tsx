@@ -1,7 +1,7 @@
 import React from "react";
 
 import classnames from "classnames";
-import { currencyNotationFormat } from "helpers";
+import { currencyFormat } from "helpers";
 
 type SummaryDashboardProps = {
   summaryList: any;
@@ -10,9 +10,6 @@ type SummaryDashboardProps = {
 
 const DEFAULT_STYLE =
   "mt-6 px-10 py-10 flex flex-col lg:flex-row lg:overflow-x-auto rounded-2xl bg-miru-han-purple-1000 text-white";
-
-const formattedAmount = (amount, baseCurrency) =>
-  currencyNotationFormat({ baseCurrency, amount });
 
 const SummaryDashboard = ({ summaryList, currency }: SummaryDashboardProps) => (
   <ul className={classnames(DEFAULT_STYLE)}>
@@ -25,7 +22,7 @@ const SummaryDashboard = ({ summaryList, currency }: SummaryDashboardProps) => (
           {summary.label}
         </p>
         <p className="2xl:text-5xl text-2xl font-semibold tracking-widest text-white lg:mt-3 xl:text-3xl">
-          {formattedAmount(summary.value, currency)}
+          {currencyFormat(currency, summary.value, "compact")}
         </p>
       </li>
     ))}

@@ -134,6 +134,9 @@ GEM
     bootsnap (1.15.0)
       msgpack (~> 1.2)
     builder (3.2.4)
+    buildkite-test_collector (1.4.1)
+      activesupport (>= 4.2)
+      websocket (~> 1.2)
     bullet (7.0.4)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
@@ -511,6 +514,8 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     stripe (8.0.0)
+    strong_migrations (1.4.1)
+      activerecord (>= 5.2)
     thor (1.2.1)
     tilt (2.0.11)
     timeout (0.3.1)
@@ -564,6 +569,7 @@ DEPENDENCIES
   annotate
   aws-sdk-s3
   bootsnap (>= 1.4.4)
+  buildkite-test_collector
   bullet
   bundler-audit
   capybara (>= 3.26)
@@ -622,6 +628,7 @@ DEPENDENCIES
   simplecov
   spring
   stripe
+  strong_migrations
   tzinfo-data
   vcr (~> 3.0.1)
   web-console (>= 4.1.0)
