@@ -35,5 +35,8 @@ invoice_1_us = {
 @invoice_3_microsoft_saeloun_india = @saeloun_india.invoices.create!(invoice_3_india)
 @invoice_1_client_one_saeloun_us = @saeloun_us.invoices.create!(invoice_1_us)
 
+# Reindex Searchkick indexes
+Invoice.reindex
+
 puts "Invoice Created"
 # Invoice End
