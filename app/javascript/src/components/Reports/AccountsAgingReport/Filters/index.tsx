@@ -62,7 +62,7 @@ const Filters = ({
   };
 
   return (
-    <SidePanel setFilterVisibilty={setIsFilterVisible}>
+    <SidePanel WrapperClassname="z-50" setFilterVisibilty={setIsFilterVisible}>
       <SidePanel.Header className="mb-7 flex items-center justify-between px-5 pt-5 font-bold text-miru-dark-purple-1000">
         <h4 className="flex items-center text-base">
           <FilterIcon className="mr-2.5" size={16} /> Filters

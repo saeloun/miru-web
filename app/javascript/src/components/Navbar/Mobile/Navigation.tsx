@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 
 import { DotsThreeVerticalIcon } from "miruIcons";
 import { NavLink } from "react-router-dom";
@@ -11,8 +11,8 @@ const Navigation = ({ isAdminUser, setSelectedTab }) => {
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
 
   return (
-    <>
-      <ul className="fixed bottom-0 left-0 right-0 flex h-20 justify-between bg-white px-3 shadow-c1">
+    <Fragment>
+      <ul className="fixed bottom-0 left-0 right-0 z-50 flex h-14 justify-between bg-white px-3 shadow-c1">
         <MobileMenuOptions
           from={0}
           isAdminUser={isAdminUser}
@@ -43,7 +43,7 @@ const Navigation = ({ isAdminUser, setSelectedTab }) => {
           setVisiblity={setShowMoreOptions}
         />
       )}
-    </>
+    </Fragment>
   );
 };
 export default Navigation;
