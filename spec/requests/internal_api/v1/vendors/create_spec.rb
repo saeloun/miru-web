@@ -15,7 +15,7 @@ RSpec.describe "InternalApi::V1::Vendors#create", type: :request do
 
     context "when creates the vendor" do
       before do
-        @vendor = attributes_for(:vendor)
+        @vendor = attributes_for(:vendor, company:)
         send_request :post, internal_api_v1_vendors_path(vendor: @vendor)
       end
 
@@ -24,7 +24,9 @@ RSpec.describe "InternalApi::V1::Vendors#create", type: :request do
       end
 
       it "adds the vendor entry to the database" do
-        expect(Vendor.last.name).to eq(@vendor[:name])
+        vendor = Vendor.last
+        expect(vendor.name).to eq(@vendor[:name])
+        expect(vendor.company_id).to eq(company.id)
       end
 
       it "return the id in the response" do

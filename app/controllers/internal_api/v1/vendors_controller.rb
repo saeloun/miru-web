@@ -4,7 +4,7 @@
 class InternalApi::V1::VendorsController < ApplicationController
   def create
     authorize :create, policy_class: VendorPolicy
-    vendor = Vendor.create!(vendor_params)
+    vendor = current_company.vendors.create!(vendor_params)
     render :create, locals: { vendor: }
   end
 
