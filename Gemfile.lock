@@ -134,9 +134,6 @@ GEM
     bootsnap (1.15.0)
       msgpack (~> 1.2)
     builder (3.2.4)
-    buildkite-test_collector (1.4.1)
-      activesupport (>= 4.2)
-      websocket (~> 1.2)
     bullet (7.0.4)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
@@ -569,7 +566,6 @@ DEPENDENCIES
   annotate
   aws-sdk-s3
   bootsnap (>= 1.4.4)
-  buildkite-test_collector
   bullet
   bundler-audit
   capybara (>= 3.26)
