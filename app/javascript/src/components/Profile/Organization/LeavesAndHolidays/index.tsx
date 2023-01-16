@@ -1,88 +1,34 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable */
 import React, { useEffect, useState } from "react";
 
-import dayjs from "dayjs";
-import { CalendarIcon, DeleteIcon } from "miruIcons";
-import Select from "react-select";
-
-import CustomDatePicker from "common/CustomDatePicker";
-import { Divider } from "common/Divider";
 import Loader from "common/Loader/index";
 import Toastr from "common/Toastr";
+import DetailsHeader from "components/Profile/DetailsHeader";
 import { leaveTypes } from "constants/leaveType";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import Header from "../../Header";
-import DetailsHeader from "components/Profile/DetailsHeader";
 import Details from "./Details";
+import EditLeavesAndHolidays from "./EditLeavesAndHolidays";
 
-const countTypeOptions = [
-  { value: "days", label: "days" },
-  { value: "weeks", label: "weeks" },
-  { value: "months", label: "months" },
-];
-
-const repetitionType = [
-  { value: "per_week", label: "per week" },
-  { value: "per_month", label: "per month" },
-  { value: "per_quarter", label: "per quarter" },
-  { value: "per_year", label: "per year" },
-];
-
-const customStyles = {
-  control: provided => ({
-    ...provided,
-    backgroundColor: "#FFFFFF",
-    color: "red",
-    minHeight: 32,
-    padding: "0",
-  }),
-  menu: provided => ({
-    ...provided,
-    fontSize: "12px",
-    letterSpacing: "2px",
-  }),
-};
-
-// const initialState = {
-//   leaveBalance: [
-//     {
-//       leaveType: "",
-//       total: 0,
-//       countType: "days",
-//       repetitionType: "per_year",
-//       carryforwardedCount: 0
-//     }
-//   ],
-//   holidays: [],
-//   optionalHolidays: {
-//     enableOptionHoliday: false,
-//     totalHolidays: 0,
-//     repetitionType: "per_year",
-//     optionalHolidaysList: []
-//   }
-// }
+import Header from "../../Header";
 
 const LeavesAndHolidays = () => {
   const leaveTypeOptions = leaveTypes;
 
   const [leaveBalanceList, setLeaveBalanceList] = useState([]);
   const [holidayList, setHolidayList] = useState([]);
-  /* eslint-disable no-unused-vars */
-  const [errDetails, setErrDetails] = useState({
-    companyNameErr: "",
-    companyPhoneErr: "",
-    companyRateErr: "",
-  });
+  const [errDetails, setErrDetails] = useState({}); //eslint-disable-line
   const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState<any>({
     visibility: false,
     index: 0,
   });
+
   const [enableOptionalHolidays, setEnableOptionalHolidays] =
     useState<any>(false);
+
   const [showOptionalDatePicker, setShowOptionalDatePicker] = useState<any>({
     visibility: false,
     index: 0,
@@ -96,6 +42,8 @@ const LeavesAndHolidays = () => {
   const getData = async () => {
     setIsLoading(true);
   };
+
+  const toggleCalendarModal = () => setShowCalendar(!showCalendar);
 
   useEffect(() => {
     sendGAPageView();
@@ -232,7 +180,6 @@ const LeavesAndHolidays = () => {
   const handleupdateLeaveDetails = async () => {
     try {
       setIsEditable(false);
-      //   setIsLoading(true);
     } catch {
       setIsLoading(false);
       Toastr.error("Error in Updating Leave Details");
@@ -255,8 +202,8 @@ const LeavesAndHolidays = () => {
       {!isEditable ? (
         <DetailsHeader
           showButtons
+          editAction={() => setIsEditable(true)}
           isDisableUpdateBtn={false}
-          editAction={() => setIsEditable(false)}
           subTitle=""
           title="Leaves & Holidays"
         />
@@ -264,13 +211,49 @@ const LeavesAndHolidays = () => {
         <Header
           showButtons
           cancelAction={handleCancelAction}
-          isDisableUpdateBtn={!isDetailUpdated}
+          isDisableUpdateBtn={isDetailUpdated}
           saveAction={handleupdateLeaveDetails}
           subTitle=""
           title="Leaves & Holidays"
         />
       )}
-      {isLoading ? <Loader /> : <Details />}
+      {isLoading ? (
+        <Loader />
+      ) : !isEditable ? (
+        <Details
+          showCalendar={showCalendar}
+          toggleCalendarModal={toggleCalendarModal}
+        />
+      ) : (
+        <EditLeavesAndHolidays
+          enableOptionalHolidays={enableOptionalHolidays}
+          errDetails={errDetails}
+          handleAddHoliday={handleAddHoliday}
+          handleAddLeaveType={handleAddLeaveType}
+          handleCarryForwardCountChange={handleCarryForwardCountChange}
+          handleChangeRepetitionOpHoliday={handleChangeRepetitionOpHoliday}
+          handleChangeTotalOpHoliday={handleChangeTotalOpHoliday}
+          handleCheckboxClick={handleCheckboxClick}
+          handleCountTypeChange={handleCountTypeChange}
+          handleDatePicker={handleDatePicker}
+          handleDeleteHoliday={handleDeleteHoliday}
+          handleDeleteLeaveBalance={handleDeleteLeaveBalance}
+          handleHolidateNameChange={handleHolidateNameChange}
+          handleLeaveTypeChange={handleLeaveTypeChange}
+          handleRepetitionTypeChange={handleRepetitionTypeChange}
+          handleTotalChange={handleTotalChange}
+          holidayList={holidayList}
+          leaveBalanceList={leaveBalanceList}
+          leaveTypeOptions={leaveTypeOptions}
+          optionalHolidaysList={optionalHolidaysList}
+          optionalRepetitionType={optionalRepetitionType}
+          setShowDatePicker={setShowDatePicker}
+          setShowOptionalDatePicker={setShowOptionalDatePicker}
+          showDatePicker={showDatePicker}
+          showOptionalDatePicker={showOptionalDatePicker}
+          totalOptionalHolidays={totalOptionalHolidays}
+        />
+      )}
     </div>
   );
 };
