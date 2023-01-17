@@ -53,8 +53,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
           PAYMENT SETTINGS
         </NavLink>
       </li>
-      {!isAdmin && (
-        <li className="border-b-2 border-miru-gray-400">
+      {/* <li className="border-b-2 border-miru-gray-400">
           <NavLink
             end
             className={({ isActive }) => getActiveClassName(isActive)}
@@ -62,8 +61,7 @@ const SideNav = ({ isAdmin, firstName, company, lastName, email }) => {
           >
             BILLING
           </NavLink>
-        </li>
-      )}
+        </li> */}
       <li className="border-b-2 border-miru-gray-400">
         {/* <NavLink end to="/profile/edit/import" className={({ isActive }) => getActiveClassName(isActive)}>
           IMPORT
