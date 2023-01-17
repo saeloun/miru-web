@@ -20,7 +20,7 @@ const Navigation = ({ isAdminUser, setSelectedTab }) => {
           to={4}
         />
         <li
-          className="flex items-center p-2 hover:bg-miru-gray-100"
+          className="flex items-center p-2"
           onClick={() => setSelectedTab("More")}
         >
           <NavLink
@@ -28,7 +28,7 @@ const Navigation = ({ isAdminUser, setSelectedTab }) => {
             className={({ isActive }) =>
               isActive
                 ? mobileActiveClassName
-                : "flex flex-col items-center justify-center text-xs hover:bg-miru-gray-100"
+                : "flex flex-col items-center justify-center text-xs"
             }
             onClick={() => setShowMoreOptions(true)}
           >
@@ -38,7 +38,6 @@ const Navigation = ({ isAdminUser, setSelectedTab }) => {
       </ul>
       {showMoreOptions && (
         <MoreOptions
-          isAdminUser={isAdminUser}
           setSelectedTab={setSelectedTab}
           setVisiblity={setShowMoreOptions}
         />

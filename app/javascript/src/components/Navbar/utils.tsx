@@ -141,7 +141,7 @@ const ListOption = ({ option, key }) => (
 
 const MobileListOption = ({ from, index, option, setSelectedTab }) => (
   <li
-    className="flex items-center justify-start p-2 text-base font-medium leading-5 hover:bg-miru-gray-100"
+    className="flex items-center justify-start border-b border-miru-gray-100 py-3 text-base font-medium leading-5 last:border-b-0"
     key={index}
     onClick={() => setSelectedTab(option.label)}
   >

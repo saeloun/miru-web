@@ -77,14 +77,14 @@ const UserActions = () => {
   );
 
   return (
-    <ul className="w-full">
-      <li className="flex px-6 hover:bg-miru-gray-100 lg:justify-start lg:px-0">
+    <ul className="w-full px-6">
+      <li className="flex  border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 lg:justify-start lg:px-0">
         <NavLink
           to="/profile/edit"
           className={({ isActive }) =>
             isActive
               ? activeClassName
-              : "flex w-full items-start justify-start py-3 hover:bg-miru-gray-100 lg:px-6"
+              : "flex w-full items-start justify-start py-3 hover:bg-miru-gray-100"
           }
         >
           <SettingIcon className="mr-4" size={26} />
@@ -92,11 +92,11 @@ const UserActions = () => {
         </NavLink>
       </li>
       <li
-        className="flex items-start justify-start px-6 hover:bg-miru-gray-100 lg:px-0"
+        className="flex items-start justify-start  border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 lg:px-0"
         onClick={handleLogout}
       >
         <NavLink
-          className="flex w-full items-start justify-start py-3 hover:bg-miru-gray-100 lg:px-6"
+          className="flex w-full items-start justify-start py-3 hover:bg-miru-gray-100"
           data-method="delete"
           rel="nofollow"
           to="/users/sign_out"
@@ -106,7 +106,7 @@ const UserActions = () => {
         </NavLink>
       </li>
       <li
-        className="flex w-full cursor-pointer items-center justify-between px-6 py-4 px-2 text-sm font-bold leading-4 hover:bg-miru-gray-100 lg:px-0 lg:px-6"
+        className="flex w-full cursor-pointer items-center justify-between  py-4 px-2 text-sm font-bold leading-4 hover:bg-miru-gray-100 lg:px-0"
         onClick={() => {
           setShowWorkSpaceList(true);
         }}
