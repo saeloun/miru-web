@@ -51,7 +51,7 @@ class Client < ApplicationRecord
   end
 
   def project_details(time_frame = "week")
-    projects.kept.map do | project |
+    projects.includes([:project_members]).kept.map do | project |
       {
         id: project.id,
         name: project.name,
