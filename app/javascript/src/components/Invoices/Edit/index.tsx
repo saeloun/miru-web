@@ -6,9 +6,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
+import { unmapLineItems } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import { unmapLineItems } from "../../../mapper/editInvoice.mapper";
 import CompanyInfo from "../common/CompanyInfo";
 import InvoiceDetails from "../common/InvoiceDetails";
 import Header from "../common/InvoiceForm/Header";
