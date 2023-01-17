@@ -9,6 +9,13 @@ const Table = ({ accountsAgingReport }) => {
     accountsAgingReport.clientList
   );
 
+  const [total, setTotal] = useState<any>({
+    zero_to_thirty_days: 0,
+    thirty_one_to_sixty_days: 0,
+    sixty_one_to_ninety_days: 0,
+    ninety_plus_days: 0,
+    total: 0,
+  });
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -32,9 +39,24 @@ const Table = ({ accountsAgingReport }) => {
     }
   }, [accountsAgingReport]);
 
+  useEffect(() => calculateTotal(), [clientList]);
+
   const sortClientList = () => {
     const temp = clientList.reverse();
     setClientList(temp);
+  };
+
+  const calculateTotal = () => {
+    const result = clientList.reduce((acc, n) => {
+      for (const key in n.amount_overdue) {
+        if (Object.hasOwnProperty.bind(acc)(key)) {
+          acc[key] += parseInt(n.amount_overdue[key]);
+        } else acc[key] = n.amount_overdue[key];
+      }
+
+      return acc;
+    }, {});
+    setTotal(result);
   };
 
   return (
@@ -61,10 +83,7 @@ const Table = ({ accountsAgingReport }) => {
           </tr>
         )}
         {clientList.length > 0 && (
-          <TableTotal
-            currency={accountsAgingReport.currency}
-            report={accountsAgingReport.summary}
-          />
+          <TableTotal currency={accountsAgingReport.currency} report={total} />
         )}
       </tbody>
     </table>
