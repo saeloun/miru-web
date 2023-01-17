@@ -1,6 +1,6 @@
 import React from "react";
 
-import { currencyNotationFormat } from "helpers";
+import { currencyFormat } from "helpers";
 
 const InvoiceSummary = ({
   summary,
@@ -8,9 +8,6 @@ const InvoiceSummary = ({
   filterParams,
   setFilterParams,
 }) => {
-  const formattedAmount = amount =>
-    currencyNotationFormat({ baseCurrency, amount });
-
   const applyFilter = status => {
     setFilterParams({
       ...filterParams,
@@ -29,7 +26,7 @@ const InvoiceSummary = ({
             Overdue
           </p>
           <p className="text-2xl font-semibold tracking-normal text-white lg:mt-3 xl:pr-8 xl:text-4.5xl">
-            {formattedAmount(summary.overdueAmount)}
+            {currencyFormat(baseCurrency, summary.overdueAmount, "compact")}
           </p>
         </li>
         <li
@@ -46,7 +43,7 @@ const InvoiceSummary = ({
             Outstanding
           </p>
           <p className="text-2xl font-semibold tracking-normal text-white lg:mt-3 xl:pr-8 xl:text-4.5xl">
-            {formattedAmount(summary.outstandingAmount)}
+            {currencyFormat(baseCurrency, summary.outstandingAmount, "compact")}
           </p>
         </li>
         <li
@@ -57,7 +54,7 @@ const InvoiceSummary = ({
             Amount in draft
           </p>
           <p className="text-2xl font-semibold tracking-normal text-white lg:mt-3 xl:pr-8 xl:text-4.5xl">
-            {formattedAmount(summary.draftAmount)}
+            {currencyFormat(baseCurrency, summary.draftAmount, "compact")}
           </p>
         </li>
       </ul>

@@ -1,6 +1,4 @@
 import { createConsumer } from "@rails/actioncable";
 
-const { APP_BASE_URL } = process.env;
-
-const consumer = createConsumer(`ws://${APP_BASE_URL}/cable`);
+const consumer = createConsumer(process.env.WEBSOCKET_URL);
 export default consumer;
