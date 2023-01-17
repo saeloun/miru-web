@@ -33,7 +33,7 @@ git clone https://github.com/saeloun/miru-web.git
    your project as you `cd` into the directory follow
    [this](https://github.com/nvm-sh/nvm#deeper-shell-integration))
 
-3. Install ruby 3.1.1
+3. Install ruby 3.2.0
 
 ```
 rvm install $(cat .ruby-version)
@@ -162,14 +162,6 @@ command
 cd cypress
 yarn run cy:open:staging
 ```
-
-## Deployment
-
-### Heroku one-click deploy
-
-You can deploy Miru on Heroku using the one-click-deployment button:
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/saeloun/miru-web/tree/main)
 
 ## Community Support
 

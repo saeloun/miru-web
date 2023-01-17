@@ -5,10 +5,10 @@ import Logger from "js-logger";
 import {
   ArrowLeftIcon,
   DotsThreeVerticalIcon,
-  ReportsIcon,
   PencilIcon,
   TeamsIcon,
   DeleteIcon,
+  InvoicesIcon,
 } from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -19,12 +19,12 @@ import projectAPI from "apis/projects";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
+import { unmapper } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import EditMembersList from "./EditMembersList";
 
 import { TOASTER_DURATION } from "../../../constants";
-import { unmapper } from "../../../mapper/project.mapper";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
 
@@ -55,6 +55,10 @@ const ProjectDetails = () => {
       Logger.error(e);
       navigate("/projects");
     }
+  };
+
+  const handleGenerateInvoice = () => {
+    navigate(`/invoices/generate/?clientId=${project?.client?.id}`);
   };
 
   const currencySymb = currencySymbol(project?.currency);
@@ -206,13 +210,9 @@ const ProjectDetails = () => {
                 <li>
                   <button
                     className="menuButton__list-item"
-                    onClick={() =>
-                      document.location.assign(
-                        `${window.location.origin}/invoices/generate?${project.client.name}`
-                      )
-                    }
+                    onClick={handleGenerateInvoice}
                   >
-                    <ReportsIcon color="#5B34EA" size={16} weight="bold" />
+                    <InvoicesIcon color="#5B34EA" size={16} weight="bold" />
                     <span className="ml-3">Generate Invoice</span>
                   </button>
                 </li>
