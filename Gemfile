@@ -215,5 +215,8 @@ group :test do
   gem "rspec-retry"
 
   # BuildKite Test Collector
-  # gem "buildkite-test_collector", git: "https://github.com/buildkite/test-collector-ruby.git", branch: "main"
+  gem "buildkite-test_collector", git: "https://github.com/buildkite/test-collector-ruby.git", branch: "main"
 end
+
+# https://github.com/ankane/strong_migrations
+gem "strong_migrations"

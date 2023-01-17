@@ -11,7 +11,7 @@ FactoryBot.define do
       transient do
         length { 5 }
       end
-      invoices { Array.new(length) { association(:invoice) } }
+      invoices { Array.new(length) { create(:invoice, company:) } }
     end
     factory :client_with_phone_number_without_country_code do
       phone { Faker::PhoneNumber.cell_phone_in_e164 }
