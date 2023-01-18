@@ -53,11 +53,7 @@ const CustomValueContainer = props => {
 const EditLeavesAndHolidays = ({
   leaveBalanceList,
   leaveTypeOptions,
-  handleLeaveTypeChange,
-  handleTotalChange,
-  handleRepetitionTypeChange,
-  handleCarryForwardCountChange,
-  handleCountTypeChange,
+  updateCondition,
   errDetails, //eslint-disable-line
   handleDeleteLeaveBalance,
   handleAddLeaveType,
@@ -103,7 +99,7 @@ const EditLeavesAndHolidays = ({
                         )
                       : leaveTypeOptions[0]
                   }
-                  onChange={e => handleLeaveTypeChange(e, index)}
+                  onChange={e => updateCondition("leaveType", e.value, index)}
                 />
               </div>
               <div className="mb-4 flex w-full flex-row">
@@ -120,7 +116,9 @@ const EditLeavesAndHolidays = ({
                             name="total"
                             type="number"
                             value={leaveBalance.total}
-                            onChange={e => handleTotalChange(e, index)}
+                            onChange={e =>
+                              updateCondition("total", e.target.value, index)
+                            }
                           />
                           <label
                             className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
@@ -145,7 +143,9 @@ const EditLeavesAndHolidays = ({
                               )
                             : countTypeOptions[0]
                         }
-                        onChange={e => handleCountTypeChange(e, index)}
+                        onChange={e =>
+                          updateCondition("countType", e.value, index)
+                        }
                       />
                     </div>
                     <div className="w-5/12 px-2">
@@ -162,7 +162,9 @@ const EditLeavesAndHolidays = ({
                               )
                             : repetitionType[0]
                         }
-                        onChange={e => handleRepetitionTypeChange(e, index)}
+                        onChange={e =>
+                          updateCondition("repetitionType", e.value, index)
+                        }
                       />
                     </div>
                   </div>
@@ -176,7 +178,13 @@ const EditLeavesAndHolidays = ({
                         name="carryForward"
                         type="number"
                         value={leaveBalance.carryforwardedCount}
-                        onChange={e => handleCarryForwardCountChange(e, index)}
+                        onChange={e =>
+                          updateCondition(
+                            "carryforwardedCount",
+                            e.target.value,
+                            index
+                          )
+                        }
                       />
                       <label
                         className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"

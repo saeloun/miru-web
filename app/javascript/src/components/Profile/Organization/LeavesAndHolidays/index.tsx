@@ -71,26 +71,6 @@ const LeavesAndHolidays = () => {
     setIsDetailUpdated(true);
   };
 
-  const handleRepetitionTypeChange = (e, index) => {
-    updateCondition("repetitionType", e.value, index);
-  };
-
-  const handleCountTypeChange = (e, index) => {
-    updateCondition("countType", e.value, index);
-  };
-
-  const handleTotalChange = (e, index) => {
-    updateCondition("total", e.target.value, index);
-  };
-
-  const handleLeaveTypeChange = (e, index) => {
-    updateCondition("leaveType", e.value, index);
-  };
-
-  const handleCarryForwardCountChange = (e, index) => {
-    updateCondition("carryforwardedCount", e.target.value, index);
-  };
-
   const handleDatePicker = (date, index, isoptionalHoliday) => {
     setIsDetailUpdated(true);
     if (!isoptionalHoliday) {
@@ -222,18 +202,13 @@ const LeavesAndHolidays = () => {
           errDetails={errDetails}
           handleAddHoliday={handleAddHoliday}
           handleAddLeaveType={handleAddLeaveType}
-          handleCarryForwardCountChange={handleCarryForwardCountChange}
           handleChangeRepetitionOpHoliday={handleChangeRepetitionOpHoliday}
           handleChangeTotalOpHoliday={handleChangeTotalOpHoliday}
           handleCheckboxClick={handleCheckboxClick}
-          handleCountTypeChange={handleCountTypeChange}
           handleDatePicker={handleDatePicker}
           handleDeleteHoliday={handleDeleteHoliday}
           handleDeleteLeaveBalance={handleDeleteLeaveBalance}
           handleHolidateNameChange={handleHolidateNameChange}
-          handleLeaveTypeChange={handleLeaveTypeChange}
-          handleRepetitionTypeChange={handleRepetitionTypeChange}
-          handleTotalChange={handleTotalChange}
           holidayList={holidayList}
           leaveBalanceList={leaveBalanceList}
           leaveTypeOptions={leaveTypeOptions}
@@ -244,6 +219,7 @@ const LeavesAndHolidays = () => {
           showDatePicker={showDatePicker}
           showOptionalDatePicker={showOptionalDatePicker}
           totalOptionalHolidays={totalOptionalHolidays}
+          updateCondition={updateCondition}
         />
       )}
     </div>
