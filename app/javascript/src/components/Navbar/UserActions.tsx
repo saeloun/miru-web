@@ -78,7 +78,7 @@ const UserActions = () => {
 
   return (
     <ul className="w-full px-6">
-      <li className="flex  border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 lg:justify-start lg:px-0">
+      <li className="flex  border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0 lg:justify-start lg:px-0">
         <NavLink
           to="/profile/edit"
           className={({ isActive }) =>
@@ -92,7 +92,7 @@ const UserActions = () => {
         </NavLink>
       </li>
       <li
-        className="flex items-start justify-start  border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 lg:px-0"
+        className="flex items-start justify-start  border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0 lg:px-0"
         onClick={handleLogout}
       >
         <NavLink
@@ -106,7 +106,7 @@ const UserActions = () => {
         </NavLink>
       </li>
       <li
-        className="flex w-full cursor-pointer items-center justify-between  py-4 px-2 text-sm font-bold leading-4 hover:bg-miru-gray-100 lg:px-0"
+        className="flex w-full cursor-pointer items-center justify-between py-4 text-sm font-bold leading-4 hover:bg-miru-gray-100 lg:px-0"
         onClick={() => {
           setShowWorkSpaceList(true);
         }}
@@ -118,7 +118,7 @@ const UserActions = () => {
           />
           <span>{currentWorkspace.name}</span>
         </div>
-        <img className="h-8 w-8 lg:h-10 lg:w-10" src={switcher} />
+        <img className="lg:h-10 lg:w-10" src={switcher} />
       </li>
       {showWorkSpaceList && <WorkspaceList />}
     </ul>
