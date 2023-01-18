@@ -64,39 +64,31 @@ const LeavesAndHolidays = () => {
     ]);
   };
 
-  const handleRepetitionTypeChange = (e, index) => {
+  const updateCondition = (type, value, index) => {
     const editLeaveList = [...leaveBalanceList];
-    editLeaveList[index].repetitionType = e.value;
+    editLeaveList[index][type] = value;
     setLeaveBalanceList([...editLeaveList]);
     setIsDetailUpdated(true);
+  };
+
+  const handleRepetitionTypeChange = (e, index) => {
+    updateCondition("repetitionType", e.value, index);
   };
 
   const handleCountTypeChange = (e, index) => {
-    const editLeaveList = [...leaveBalanceList];
-    editLeaveList[index].countType = e.value;
-    setLeaveBalanceList([...editLeaveList]);
-    setIsDetailUpdated(true);
+    updateCondition("countType", e.value, index);
   };
 
   const handleTotalChange = (e, index) => {
-    const editLeaveList = [...leaveBalanceList];
-    editLeaveList[index].total = e.target.value;
-    setLeaveBalanceList([...editLeaveList]);
-    setIsDetailUpdated(true);
+    updateCondition("total", e.target.value, index);
   };
 
   const handleLeaveTypeChange = (e, index) => {
-    const editLeaveList = [...leaveBalanceList];
-    editLeaveList[index].leaveType = e.value;
-    setLeaveBalanceList([...editLeaveList]);
-    setIsDetailUpdated(true);
+    updateCondition("leaveType", e.value, index);
   };
 
   const handleCarryForwardCountChange = (e, index) => {
-    const editLeaveList = [...leaveBalanceList];
-    editLeaveList[index].carryforwardedCount = e.target.value;
-    setLeaveBalanceList([...editLeaveList]);
-    setIsDetailUpdated(true);
+    updateCondition("carryforwardedCount", e.target.value, index);
   };
 
   const handleDatePicker = (date, index, isoptionalHoliday) => {
