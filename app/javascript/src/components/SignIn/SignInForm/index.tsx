@@ -156,7 +156,7 @@ const SignInForm = () => {
                       className="form__link inline cursor-pointer"
                       data-cy="sign-in-link"
                     >
-                      <a href={Paths.SIGN_IN}>
+                      <a href={Paths.FORGOT_PASSWORD}>
                         <span className="mr-2 inline-block">
                           Forgot Password?
                         </span>

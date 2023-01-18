@@ -1,4 +1,5 @@
 import ErrorPage from "common/Error";
+import ForgotPassword from "components/ForgotPassword";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import SignIn from "components/SignIn";
 import { Roles, Paths } from "constants/index";
@@ -78,6 +79,8 @@ const SignUpRoutes = [
 
 const SignInRoutes = [{ path: "*", Component: SignIn }];
 
+const ForgotPasswordRoutes = [{ path: "*", Component: ForgotPassword }];
+
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
 
 const ROUTES = [
@@ -134,6 +137,11 @@ const ROUTES = [
   {
     path: Paths.SIGN_IN,
     subRoutes: SignInRoutes,
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
+  },
+  {
+    path: Paths.FORGOT_PASSWORD,
+    subRoutes: ForgotPasswordRoutes,
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
   },
 ];
