@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
 import { Square, CheckSquare } from "phosphor-react";
@@ -7,14 +7,23 @@ import { signUpFormInitialValues, signUpFormValidationSchema } from "./utils";
 
 import { Paths } from "../../../constants";
 
+const password_icon = require("../../../../../assets/images/password_icon.svg"); // eslint-disable-line
+const password_icon_text = require("../../../../../assets/images/password_icon_text.svg"); // eslint-disable-line
+
 interface SignUpFormValues {
   firstName: string;
   lastName: string;
   email: string;
   isAgreedTermsOfServices: boolean;
+  password: string;
+  confirm_password: string;
 }
 
 const SignUpForm = () => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
+
   const handleSignUpFormSubmit = () => {
     // eslint-disable-line @typescript-eslint/no-empty-function
   };
@@ -42,6 +51,7 @@ const SignUpForm = () => {
                     <div className="field relative mr-6 w-1/2 lg:w-168">
                       <div className="outline relative">
                         <Field
+                          autoFocus
                           name="firstName"
                           placeholder=" "
                           className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
@@ -113,6 +123,101 @@ const SignUpForm = () => {
                     <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
                       {errors.email && touched.email && (
                         <div>{errors.email}</div>
+                      )}
+                    </div>
+                  </div>
+                  {/* Password */}
+                  <div className="field">
+                    <div className="outline relative">
+                      <Field
+                        name="password"
+                        placeholder=" "
+                        type={showPassword ? "text" : "password"}
+                        className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
+                          errors.password &&
+                          touched.password &&
+                          "border-red-600 focus:border-red-600 focus:ring-red-600"
+                        } `}
+                      />
+                      <label
+                        className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                        htmlFor="Name"
+                      >
+                        Password
+                      </label>
+                      <span
+                        className="absolute right-2 top-1/3 z-10 cursor-pointer"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {!showPassword ? (
+                          <img
+                            alt="pass_icon"
+                            height="12"
+                            src={password_icon}
+                            width="12"
+                          />
+                        ) : (
+                          <img
+                            alt="pass_icon_text"
+                            height="12"
+                            src={password_icon_text}
+                            width="12"
+                          />
+                        )}
+                      </span>
+                    </div>
+                    <div className="mb-6 block text-xs tracking-wider text-red-600">
+                      {errors.password && touched.password && (
+                        <div>{errors.password}</div>
+                      )}
+                    </div>
+                  </div>
+                  {/* Confirm Password */}
+                  <div className="field">
+                    <div className="outline relative">
+                      <Field
+                        // data-cy={dataCyName}
+                        name="confirm_password"
+                        placeholder=" "
+                        type={showConfirmPassword ? "text" : "password"}
+                        className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
+                          errors.confirm_password &&
+                          touched.confirm_password &&
+                          "border-red-600 focus:border-red-600 focus:ring-red-600"
+                        } `}
+                      />
+                      <label
+                        className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                        htmlFor="Name"
+                      >
+                        Confirm Password
+                      </label>
+                      <span
+                        className="absolute right-2 top-1/3 z-10 cursor-pointer"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                      >
+                        {!showPassword ? (
+                          <img
+                            alt="pass_icon"
+                            height="12"
+                            src={password_icon}
+                            width="12"
+                          />
+                        ) : (
+                          <img
+                            alt="pass_icon_text"
+                            height="12"
+                            src={password_icon_text}
+                            width="12"
+                          />
+                        )}
+                      </span>
+                    </div>
+                    <div className="mb-6 block text-xs tracking-wider text-red-600">
+                      {errors.confirm_password && touched.confirm_password && (
+                        <div>{errors.confirm_password}</div>
                       )}
                     </div>
                   </div>

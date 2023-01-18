@@ -5,6 +5,8 @@ export const signUpFormInitialValues = {
   lastName: "",
   email: "",
   isAgreedTermsOfServices: false,
+  password: "",
+  confirm_password: "",
 };
 
 export const signUpFormValidationSchema = Yup.object().shape({
@@ -17,4 +19,17 @@ export const signUpFormValidationSchema = Yup.object().shape({
     [true],
     "You have to accept the Terms of Service and Privacy Policy"
   ),
+  password: Yup.string()
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/, // eslint-disable-line
+      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Character"
+    )
+    .required("Password can not be blank"),
+  confirm_password: Yup.string()
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/, // eslint-disable-line
+      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Character"
+    )
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Password can not be blank"),
 });

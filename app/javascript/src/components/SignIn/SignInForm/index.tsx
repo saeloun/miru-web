@@ -46,6 +46,7 @@ const SignInForm = () => {
                     <div className="outline relative">
                       <Field
                         // data-cy={dataCyName}
+                        autoFocus
                         name="email"
                         placeholder=" "
                         className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
