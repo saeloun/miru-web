@@ -131,7 +131,7 @@ const UserActions = () => {
             />
             <span>{currentWorkspace.name}</span>
           </div>
-          <img className="w-1/4 lg:h-10 lg:w-10" src={Switcher} />
+          <img className="lg:h-10 lg:w-10" src={Switcher} />
         </li>
       </Tooltip>
       {showWorkSpaceList && <WorkspaceList />}
