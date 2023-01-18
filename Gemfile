@@ -137,9 +137,8 @@ gem "bundler-audit", require: false
 gem "ruby_audit", require: false
 
 # For reporting messages, exceptions, and tracing events.
-gem "sentry-rails"
-gem "sentry-ruby"
-gem "sentry-sidekiq"
+
+gem "rubyzip"
 
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -194,10 +193,11 @@ group :development do
   gem "letter_opener"
 end
 
-group :test do
-  # BuildKite Test Collector
-  # gem "buildkite-test_collector"
+group :production do
+  gem "elastic-apm"
+end
 
+group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara", ">= 3.26"
   gem "selenium-webdriver", ">= 4.0.0"
@@ -209,6 +209,14 @@ group :test do
   # Strategies for cleaning databases in Ruby.
   gem "database_cleaner", "~> 2.0"
   gem "hash_dot"
+  gem "rspec-sidekiq"
 
+  gem "rspec-buildkite"
   gem "rspec-retry"
+
+  # BuildKite Test Collector
+  gem "buildkite-test_collector", git: "https://github.com/buildkite/test-collector-ruby.git", branch: "main"
 end
+
+# https://github.com/ankane/strong_migrations
+gem "strong_migrations"

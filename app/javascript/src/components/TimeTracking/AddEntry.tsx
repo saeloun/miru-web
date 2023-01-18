@@ -9,15 +9,13 @@ import {
   useOutsideClick,
   validateTimesheetEntry,
 } from "helpers";
+import { CheckedCheckboxSVG, UncheckedCheckboxSVG } from "miruIcons";
 import TextareaAutosize from "react-autosize-textarea";
 import { TimeInput } from "StyledComponents";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
 import Toastr from "common/Toastr";
-
-const checkedIcon = require("../../../../assets/images/checkbox-checked.svg");
-const uncheckedIcon = require("../../../../assets/images/checkbox-unchecked.svg");
 
 const AddEntry: React.FC<Iprops> = ({
   selectedEmployeeId,
@@ -92,13 +90,6 @@ const AddEntry: React.FC<Iprops> = ({
 
   const handleSave = async () => {
     const tse = getPayload();
-    const message = validateTimesheetEntry(tse);
-    if (message) {
-      Toastr.error(message);
-
-      return;
-    }
-
     const res = await timesheetEntryApi.create(
       {
         project_id: projectId,
@@ -121,13 +112,6 @@ const AddEntry: React.FC<Iprops> = ({
   const handleEdit = async () => {
     try {
       const tse = getPayload();
-      const message = validateTimesheetEntry(tse);
-      if (message) {
-        Toastr.error(message);
-
-        return;
-      }
-
       const updateRes = await timesheetEntryApi.update(editEntryId, {
         project_id: projectId,
         timesheet_entry: tse,
@@ -151,6 +135,16 @@ const AddEntry: React.FC<Iprops> = ({
   const handleDateChangeFromDatePicker = (date: Date) => {
     setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
     setDisplayDatePicker(false);
+  };
+
+  const handleDisableBtn = () => {
+    const tse = getPayload();
+    const message = validateTimesheetEntry(tse, client, projectId);
+    if (message) {
+      return true;
+    }
+
+    return false;
   };
 
   useEffect(() => {
@@ -252,7 +246,7 @@ const AddEntry: React.FC<Iprops> = ({
             <img
               alt="checkbox"
               className="inline"
-              src={checkedIcon}
+              src={CheckedCheckboxSVG}
               onClick={() => {
                 setBillable(false);
               }}
@@ -261,7 +255,7 @@ const AddEntry: React.FC<Iprops> = ({
             <img
               alt="checkbox"
               className="inline"
-              src={uncheckedIcon}
+              src={UncheckedCheckboxSVG}
               onClick={() => {
                 if (projectBillable) setBillable(true);
               }}
@@ -273,10 +267,11 @@ const AddEntry: React.FC<Iprops> = ({
       <div className="max-w-min">
         {editEntryId === 0 ? (
           <button
+            disabled={handleDisableBtn()}
             className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-              note && client && project
-                ? "bg-miru-han-purple-1000 hover:border-transparent"
-                : "bg-miru-gray-1000"
+              handleDisableBtn()
+                ? "cursor-not-allowed bg-miru-gray-1000"
+                : "bg-miru-han-purple-1000 hover:border-transparent"
             }`}
             onClick={handleSave}
           >
@@ -284,10 +279,11 @@ const AddEntry: React.FC<Iprops> = ({
           </button>
         ) : (
           <button
+            disabled={handleDisableBtn()}
             className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-              note && client && project
-                ? "bg-miru-han-purple-1000 hover:border-transparent"
-                : "bg-miru-gray-1000"
+              handleDisableBtn()
+                ? "cursor-not-allowed bg-miru-gray-1000"
+                : "bg-miru-han-purple-1000 hover:border-transparent"
             }`}
             onClick={() => handleEdit()}
           >

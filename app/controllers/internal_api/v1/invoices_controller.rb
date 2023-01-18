@@ -6,18 +6,13 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def index
     authorize Invoice
-    pagy, invoices = pagy(invoices_query, items_param: :invoices_per_page)
-
-    recently_updated_invoices = current_company.invoices
-      .includes(:client)
-      .order("updated_at desc")
-      .limit(10)
+    data = Invoices::IndexService.new(params, current_company).process
 
     render :index, locals: {
-      invoices:,
-      recently_updated_invoices:,
-      pagy: pagy_metadata(pagy),
-      summary: current_company.overdue_and_outstanding_and_draft_amount
+      invoices: data[:invoices_query],
+      pagination_details: data[:pagination_details],
+      recently_updated_invoices: data[:recently_updated_invoices],
+      summary: data[:summary]
     }
   end
 
@@ -31,12 +26,15 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def edit
     authorize invoice
-    render :edit, locals: { invoice: }
+    render :edit, locals: {
+      invoice:,
+      client: invoice.client,
+      client_list: current_company.client_list
+    }
   end
 
   def update
     authorize invoice
-
     invoice.update!(invoice_params)
     render :update, locals: {
       invoice:,
@@ -47,19 +45,20 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def show
     authorize invoice
     render :show, locals: {
-      invoice:
+      invoice:,
+      client: invoice.client
     }
   end
 
   def destroy
     authorize invoice
-    invoice.destroy
+    invoice.discard!
   end
 
   def send_invoice
     authorize invoice
 
-    invoice.sending!
+    invoice.sending! unless invoice.paid?
     invoice.send_to_email(
       subject: invoice_email_params[:subject],
       message: invoice_email_params[:message],
@@ -87,9 +86,7 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
     end
 
     def invoice_params
-      params.require(:invoice).permit(
-        policy(Invoice).permitted_attributes
-      )
+      params.require(:invoice).permit(policy(Invoice).permitted_attributes)
     end
 
     def invoice_email_params
@@ -98,20 +95,5 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
     def ensure_time_entries_billed
       invoice.update_timesheet_entry_status!
-    end
-
-    def invoices_query
-      @_invoices_query ||= current_company.invoices.includes(:client)
-        .search(params[:query])
-        .issue_date_range(from_to_date(params[:from_to]))
-        .for_clients(params[:client_ids])
-        .with_statuses(params[:statuses])
-        .order(created_at: :desc)
-    end
-
-    def from_to_date(from_to)
-      if from_to
-        DateRangeService.new(timeframe: from_to[:date_range], from: from_to[:from], to: from_to[:to]).process
-      end
     end
 end

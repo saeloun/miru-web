@@ -12,6 +12,15 @@ GIT
       smart_properties
 
 GIT
+  remote: https://github.com/buildkite/test-collector-ruby.git
+  revision: 58577eac6208a11b7a1198a5ab2c75cb0d40ba9f
+  branch: main
+  specs:
+    buildkite-test_collector (1.4.1)
+      activesupport (>= 4.2)
+      websocket (~> 1.2)
+
+GIT
   remote: https://github.com/heartcombo/devise
   revision: 6d32d2447cc0f3739d9732246b5a5bde98d9e032
   branch: main
@@ -175,10 +184,15 @@ GEM
     discard (1.2.1)
       activerecord (>= 4.2, < 8)
     docile (1.4.0)
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
       railties (>= 3.2)
+    elastic-apm (4.5.1)
+      concurrent-ruby (~> 1.0)
+      http (>= 3.0)
     elasticsearch (7.13.3)
       elasticsearch-api (= 7.13.3)
       elasticsearch-transport (= 7.13.3)
@@ -222,6 +236,9 @@ GEM
     faraday-rack (1.0.0)
     faraday-retry (1.0.3)
     ffi (1.15.5)
+    ffi-compiler (1.0.1)
+      ffi (>= 1.0.0)
+      rake
     foreman (0.87.2)
     fugit (1.8.0)
       et-orbi (~> 1, >= 1.2.7)
@@ -234,6 +251,14 @@ GEM
     hash_dot (2.5.0)
     hashdiff (1.0.1)
     hashie (5.0.0)
+    http (5.1.1)
+      addressable (~> 2.8)
+      http-cookie (~> 1.0)
+      http-form_data (~> 2.2)
+      llhttp-ffi (~> 0.4.0)
+    http-cookie (1.0.5)
+      domain_name (~> 0.5)
+    http-form_data (2.3.0)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     image_processing (1.12.2)
@@ -257,6 +282,9 @@ GEM
       letter_opener (~> 1.7)
       railties (>= 5.2)
       rexml
+    llhttp-ffi (0.4.0)
+      ffi-compiler (~> 1.0)
+      rake (~> 13.0)
     loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -387,6 +415,8 @@ GEM
       railties (>= 5.0)
     rexml (3.2.5)
     rolify (6.0.0)
+    rspec-buildkite (0.1.6)
+      rspec-core (~> 3.0)
     rspec-core (3.12.0)
       rspec-support (~> 3.12.0)
     rspec-expectations (3.12.0)
@@ -405,6 +435,9 @@ GEM
       rspec-support (~> 3.10)
     rspec-retry (0.6.2)
       rspec-core (> 3.3)
+    rspec-sidekiq (3.1.0)
+      rspec-core (~> 3.0, >= 3.0.0)
+      sidekiq (>= 2.4.0)
     rspec-support (3.12.0)
     rubocop (1.40.0)
       json (~> 2.3)
@@ -455,14 +488,6 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     semantic_range (3.0.0)
-    sentry-rails (5.7.0)
-      railties (>= 5.0)
-      sentry-ruby (~> 5.7.0)
-    sentry-ruby (5.7.0)
-      concurrent-ruby (~> 1.0, >= 1.0.2)
-    sentry-sidekiq (5.7.0)
-      sentry-ruby (~> 5.7.0)
-      sidekiq (>= 3.0)
     shoulda-callback-matchers (1.1.4)
       activesupport (>= 3)
     shoulda-matchers (5.2.0)
@@ -495,12 +520,17 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     stripe (8.0.0)
+    strong_migrations (1.4.1)
+      activerecord (>= 5.2)
     thor (1.2.1)
     tilt (2.0.11)
     timeout (0.3.1)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     unaccent (0.4.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.8.2)
     unicode-display_width (2.3.0)
     uniform_notifier (1.16.0)
     vcr (3.0.3)
@@ -535,6 +565,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  x86_64-darwin-21
   x86_64-darwin-22
   x86_64-linux
 
@@ -544,6 +575,7 @@ DEPENDENCIES
   annotate
   aws-sdk-s3
   bootsnap (>= 1.4.4)
+  buildkite-test_collector!
   bullet
   bundler-audit
   capybara (>= 3.26)
@@ -554,6 +586,7 @@ DEPENDENCIES
   devise!
   discard (~> 1.2)
   dotenv-rails
+  elastic-apm
   elasticsearch (< 7.14)
   erb_lint!
   factory_bot_rails
@@ -581,19 +614,19 @@ DEPENDENCIES
   react-rails
   redis (~> 4.0)
   rolify (~> 6.0)
+  rspec-buildkite
   rspec-rails (~> 5.0, >= 5.0.2)
   rspec-retry
+  rspec-sidekiq
   rubocop
   rubocop-performance
   rubocop-rails
   rubocop-rspec
   ruby_audit
+  rubyzip
   sass-rails
   searchkick
   selenium-webdriver (>= 4.0.0)
-  sentry-rails
-  sentry-ruby
-  sentry-sidekiq
   shoulda-callback-matchers (~> 1.1.1)
   shoulda-matchers (~> 5.1)
   sidekiq (< 7)
@@ -601,6 +634,7 @@ DEPENDENCIES
   simplecov
   spring
   stripe
+  strong_migrations
   tzinfo-data
   vcr (~> 3.0.1)
   web-console (>= 4.1.0)

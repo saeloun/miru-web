@@ -8,7 +8,10 @@ FactoryBot.define do
     phone { Faker::PhoneNumber.phone_number_with_country_code }
     address { Faker::Address.street_address }
     factory :client_with_invoices do
-      invoices { Array.new(5) { association(:invoice) } }
+      transient do
+        length { 5 }
+      end
+      invoices { Array.new(length) { create(:invoice, company:) } }
     end
     factory :client_with_phone_number_without_country_code do
       phone { Faker::PhoneNumber.cell_phone_in_e164 }
