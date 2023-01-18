@@ -165,7 +165,7 @@ const BulkDownloadInvoices = ({
         ),
       };
       setDownloadStatus(status);
-    } else {
+    } else if (counter > 1) {
       setDownloadStatus({ label: "Something went wrong!" });
     }
   }, [counter, received, connected]);
