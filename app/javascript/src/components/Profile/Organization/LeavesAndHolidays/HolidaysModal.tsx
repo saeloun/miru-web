@@ -2,12 +2,7 @@ import React from "react";
 
 import { CaretCircleLeftIcon, CaretCircleRightIcon, XIcon } from "miruIcons";
 
-import {
-  quarter_four,
-  quarter_one,
-  quarter_three,
-  quarter_two,
-} from "constants/leaveType";
+import { yearCalendar } from "constants/leaveType";
 
 import CalendarComponent from "./CalendarComponent";
 
@@ -38,71 +33,25 @@ const HolidayModal = ({ tileContent, toggleCalendarModal }) => (
             </button>
           </div>
         </div>
-        <div className="modal__form flex-col pt-4">
-          <div className="flex flex-row justify-around">
-            {quarter_one.map(
-              (
-                month,
+        <div className="modal__form flex-col">
+          {Object.keys(yearCalendar).map((quarters, key) => (
+            <div className="flex flex-row justify-around pt-4" key={key}>
+              {yearCalendar[quarters].quarter.map(
+                (
+                  month,
                   key //eslint-disable-line
-              ) => (
-                <CalendarComponent
-                  id={month.id}
-                  key={key}
-                  name={month.name}
-                  tileContent={tileContent}
-                  year="2023"
-                />
-              )
-            )}
-          </div>
-          <div className="flex flex-row justify-around pt-4">
-            {quarter_two.map(
-              (
-                month,
-                  key //eslint-disable-line
-              ) => (
-                <CalendarComponent
-                  id={month.id}
-                  key={key}
-                  name={month.name}
-                  tileContent={tileContent}
-                  year="2023"
-                />
-              )
-            )}
-          </div>
-          <div className="flex flex-row justify-around pt-4">
-            {quarter_three.map(
-              (
-                month,
-                  key //eslint-disable-line
-              ) => (
-                <CalendarComponent
-                  id={month.id}
-                  key={key}
-                  name={month.name}
-                  tileContent={tileContent}
-                  year="2023"
-                />
-              )
-            )}
-          </div>
-          <div className="flex flex-row justify-around pt-4">
-            {quarter_four.map(
-              (
-                month,
-                  key //eslint-disable-line
-              ) => (
-                <CalendarComponent
-                  id={month.id}
-                  key={key}
-                  name={month.name}
-                  tileContent={tileContent}
-                  year="2023"
-                />
-              )
-            )}
-          </div>
+                ) => (
+                  <CalendarComponent
+                    id={month.id}
+                    key={key}
+                    name={month.name}
+                    tileContent={tileContent}
+                    year="2023"
+                  />
+                )
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>
