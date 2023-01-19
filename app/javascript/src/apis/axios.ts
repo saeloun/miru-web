@@ -27,6 +27,10 @@ const handleSuccessResponse = response => {
     if (response?.data?.notice) {
       Toastr.success(response.data.notice);
     }
+
+    if (response?.data?.redirect_route) {
+      window.location.href = response.data.redirect_route;
+    }
   }
 
   return response;
