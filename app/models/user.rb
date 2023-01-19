@@ -101,7 +101,9 @@ class User < ApplicationRecord
   end
 
   def active_for_authentication?
-    super and self.kept?
+    super and self.kept? and !self.employments.kept.empty?
+  end
+
   end
 
   def current_workspace(load_associations: [:logo_attachment])
@@ -130,7 +132,7 @@ class User < ApplicationRecord
  end
 
   def employed_at?(company_id)
-    employments.exists?(company_id:)
+    employments.kept.exists?(company_id:)
   end
 
   private

@@ -43,6 +43,13 @@ class Employment < ApplicationRecord
   # Callbacks
   before_destroy :remove_user_invitations
 
+  after_discard do
+    if user.employments.count > 1
+      user.current_workspace = user.employments.kept.first.company
+      user.save!
+    end
+  end
+
   private
 
     def remove_user_invitations
