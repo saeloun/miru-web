@@ -4,14 +4,8 @@ json.key_format! camelize: :lower
 json.deep_format_keys!
 
 json.payments payments do |payment|
-  json.id payment.id
-  json.client_name payment.invoice.client.name
-  json.invoice_number payment.invoice.invoice_number
-  json.transaction_date payment.transaction_date
-  json.note payment.note
-  json.transaction_type payment.transaction_type
-  json.amount payment.amount
-  json.status payment.status
+  json.extract! payment,
+    :id, :client_name, :invoice_number, :transaction_date, :note, :transaction_type, :amount, :status
 end
 
 json.base_currency current_company.base_currency

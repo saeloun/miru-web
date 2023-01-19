@@ -1,15 +1,12 @@
 import React, { useEffect } from "react";
 
-import { XIcon } from "miruIcons";
+import { XIcon, ShieldSVG } from "miruIcons";
 import { isEmpty } from "ramda";
 
 import wiseApi from "apis/wise";
 
 import AddressDetails from "./AddressDetails";
 import BankDetailInput from "./BillingDetailInput";
-
-/* eslint-disable @typescript-eslint/no-var-requires */
-const Shield = require("../../../../../assets/images/shield.svg");
 
 const BankDetails = ({
   bankRequirements,
@@ -109,7 +106,7 @@ const BankDetails = ({
             </div>
             {/*Info*/}
             <div className="mx-5 inline-flex bg-gray-100 px-5 py-3 text-xs">
-              <img className="h-4 w-4" src={Shield} />
+              <img className="h-4 w-4" src={ShieldSVG} />
               <p className="text-slate-500 mx-2">
                 We don't store your bank details on our servers to ensure
                 security of your information

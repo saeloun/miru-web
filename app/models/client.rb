@@ -33,6 +33,7 @@ class Client < ApplicationRecord
   has_many :projects
   has_many :timesheet_entries, through: :projects
   has_many :invoices, dependent: :destroy
+  has_one_attached :logo
   belongs_to :company
 
   validates :name, :email, presence: true
@@ -50,7 +51,7 @@ class Client < ApplicationRecord
   end
 
   def project_details(time_frame = "week")
-    projects.kept.map do | project |
+    projects.includes([:project_members]).kept.map do | project |
       {
         id: project.id,
         name: project.name,
@@ -69,8 +70,15 @@ class Client < ApplicationRecord
       email:,
       phone:,
       address:,
+      logo: logo_url,
       minutes_spent: total_hours_logged(time_frame)
     }
+  end
+
+  def logo_url
+    logo.attached? ? Rails.application.routes.url_helpers.polymorphic_url(
+      logo, only_path: true
+    ) : ""
   end
 
   def client_overdue_and_outstanding_calculation

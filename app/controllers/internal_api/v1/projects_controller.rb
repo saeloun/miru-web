@@ -3,12 +3,19 @@
 class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationController
   def index
     authorize Project
-    render :index, locals: { current_company:, current_company_clients:, current_company_users: }, status: :ok
+    render :index, locals: ProjectsFetchService.new(current_company, params).process, status: :ok
   end
 
   def show
     authorize project
-    render :show, locals: { project: }, status: :ok
+    render :show,
+      locals: {
+        project:,
+        team_member_details: project.project_members_snippet(params[:time_frame]),
+        total_duration: project.total_logged_duration(params[:time_frame]),
+        overdue_and_outstanding_amounts: project.overdue_and_outstanding_amounts
+      },
+      status: :ok
   end
 
   def create
@@ -32,15 +39,6 @@ class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationControll
   end
 
   private
-
-    def current_company_clients
-      @_current_company_clients ||= current_company.clients.kept
-    end
-
-    def current_company_users
-      @_current_company_users ||= current_company.employments.joins(:user)
-        .select("users.id as id, users.first_name as first_name, users.last_name as last_name")
-    end
 
     def project
       @_project ||= Project.includes(:project_members, project_members: [:user]).find(params[:id])

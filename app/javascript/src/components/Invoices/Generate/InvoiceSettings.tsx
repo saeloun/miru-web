@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
-import { XIcon } from "miruIcons";
+import {
+  XIcon,
+  AmexSVG,
+  ApplePaySVG,
+  MasterCardSVG,
+  PaypalLogoSVG,
+  SConnectInvoiceSVG,
+  StripeLogoSVG,
+  VisaSVG,
+} from "miruIcons";
 
 import paymentSettings from "apis/payment-settings";
 import PaymentsProviders from "apis/payments/providers";
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomToggle from "common/CustomToggle";
 import { ApiStatus as PaymentSettingsStatus } from "constants/index";
-
-const amex = require("../../../../../assets/images/amex.svg");
-const applePay = require("../../../../../assets/images/applePay.svg");
-const masterCard = require("../../../../../assets/images/masterCard.svg");
-const paypal = require("../../../../../assets/images/PaypalLogo.svg");
-const paypalConnect = require("../../../../../assets/images/pConnectInvoice.svg"); //eslint-disable-line
-const stripeConnect = require("../../../../../assets/images/sConnectInvoice.svg");
-const stripeLogo = require("../../../../../assets/images/stripe_logo.svg");
-const visa = require("../../../../../assets/images/visa.svg");
 
 interface IProvider {
   id: number;
@@ -123,7 +123,11 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
               <div className="border-b-2 border-miru-gray-200">
                 {stripe.connected && (
                   <div className="flex items-center justify-between">
-                    <img className="mr-38 pb-4" src={stripeLogo} width="64px" />
+                    <img
+                      className="mr-38 pb-4"
+                      src={StripeLogoSVG}
+                      width="64px"
+                    />
                     <CustomToggle
                       id={stripe.id}
                       isChecked={isStripeEnabled}
@@ -135,7 +139,11 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
                 )}
                 {isPaypalConnected && (
                   <div className="flex items-center justify-between">
-                    <img className="mr-38 pb-4" src={paypal} width="64px" />
+                    <img
+                      className="mr-38 pb-4"
+                      src={PaypalLogoSVG}
+                      width="64px"
+                    />
                     <CustomToggle
                       id="2"
                       isChecked={isChecked}
@@ -152,6 +160,7 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
                       id={stripe.id}
                       isChecked={stripeAcceptedPaymentMethods.includes("card")}
                       name="stripePaymentMethods"
+                      wrapperClassName="flex items-center"
                       checkboxValue={stripeAcceptedPaymentMethods.find(
                         m => m === "card"
                       )}
@@ -166,10 +175,10 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
                     <h4 className="pl-2">Accept Credit Cards</h4>
                   </div>
                   <div className="mt-6 flex justify-between">
-                    <img src={visa} />
-                    <img src={masterCard} />
-                    <img src={amex} />
-                    <img src={applePay} />
+                    <img src={VisaSVG} />
+                    <img src={MasterCardSVG} />
+                    <img src={AmexSVG} />
+                    <img src={ApplePaySVG} />
                   </div>
                 </>
               )}
@@ -180,7 +189,7 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
               <img
                 className="mb-4"
                 height="32px"
-                src={stripeLogo}
+                src={StripeLogoSVG}
                 width="64px"
               />
               <span className="text-sm font-normal leading-5 text-miru-dark-purple-1000">
@@ -189,7 +198,7 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
               </span>
               <img
                 className="mt-4 cursor-pointer"
-                src={stripeConnect}
+                src={SConnectInvoiceSVG}
                 onClick={connectStripe}
               />
             </div>
@@ -201,7 +210,7 @@ const InvoiceSettings = ({ setShowInvoiceSetting }) => {
               Connect with your existing paypal account or create a new account
             </span>
             <img
-              src={paypalConnect}
+              src={ConnectPaypalSVG}
               className="mt-4 cursor-pointer"
               onClick={() => setPaypalConnected(true)}
             />
