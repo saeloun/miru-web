@@ -7,7 +7,7 @@ import { repitationTypeObj } from "constants/leaveType";
 
 import HolidayModal from "./HolidaysModal";
 
-const Details = ({ showCalendar, toggleCalendarModal }) => {
+const Details = ({ showCalendar, toggleCalendarModal, wrapperRef }) => {
   const holiday = [
     {
       date: "26-01-2023",
@@ -16,50 +16,6 @@ const Details = ({ showCalendar, toggleCalendarModal }) => {
     {
       date: "19-02-2023",
       name: "shivjayanti",
-    },
-  ];
-
-  const annualLeave = [
-    {
-      date: "12-01-2023",
-      name: "Family Function",
-    },
-  ];
-
-  const partialAnnualLeave = [
-    {
-      date: "11-01-2023",
-      name: "patial Annual leave",
-    },
-  ];
-
-  const sickLeave = [
-    {
-      date: "10-01-2023",
-      name: "Sick Leave",
-    },
-  ];
-
-  const maternityLeave = [
-    {
-      date: "23-01-2023",
-      name: "Maternity Leave",
-    },
-    {
-      date: "24-01-2023",
-      name: "Maternity Leave",
-    },
-    {
-      date: "25-01-2023",
-      name: "Maternity Leave",
-    },
-    {
-      date: "26-01-2023",
-      name: "Maternity Leave",
-    },
-    {
-      date: "27-01-2023",
-      name: "Maternity Leave",
     },
   ];
 
@@ -143,46 +99,6 @@ const Details = ({ showCalendar, toggleCalendarModal }) => {
       (result = holiday.find(o => o.date === dayjs(date).format("DD-MM-YYYY")))
     ) {
       return <CalendarButton className="holiday" date={date} result={result} />;
-    } else if (
-      (result = annualLeave.find(
-        o => o.date === dayjs(date).format("DD-MM-YYYY")
-      ))
-    ) {
-      return (
-        <CalendarButton className="annual-leave" date={date} result={result} />
-      );
-    } else if (
-      (result = partialAnnualLeave.find(
-        o => o.date === dayjs(date).format("DD-MM-YYYY")
-      ))
-    ) {
-      return (
-        <CalendarButton
-          className="annual-leave-partial"
-          date={date}
-          result={result}
-        />
-      );
-    } else if (
-      (result = sickLeave.find(
-        o => o.date === dayjs(date).format("DD-MM-YYYY")
-      ))
-    ) {
-      return (
-        <CalendarButton className="sick-leave" date={date} result={result} />
-      );
-    } else if (
-      (result = maternityLeave.find(
-        o => o.date === dayjs(date).format("DD-MM-YYYY")
-      ))
-    ) {
-      return (
-        <CalendarButton
-          className="maternity-leave"
-          date={date}
-          result={result}
-        />
-      );
     } else if (
       (result = upcomingOptionHoliday.find(
         o => o.date === dayjs(date).format("DD-MM-YYYY")
@@ -296,6 +212,7 @@ const Details = ({ showCalendar, toggleCalendarModal }) => {
         <HolidayModal
           tileContent={tileContent}
           toggleCalendarModal={toggleCalendarModal}
+          wrapperRef={wrapperRef}
         />
       )}
     </div>

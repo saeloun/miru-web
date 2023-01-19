@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+import { useOutsideClick } from "helpers";
 
 import Loader from "common/Loader/index";
 import Toastr from "common/Toastr";
@@ -25,6 +27,9 @@ const LeavesAndHolidays = () => {
     visibility: false,
     index: 0,
   });
+  const wrapperRef = useRef(null);
+  const optionalWrapperRef = useRef(null);
+  const modalWrapperRef = useRef(null);
 
   const [enableOptionalHolidays, setEnableOptionalHolidays] =
     useState<any>(false);
@@ -42,6 +47,24 @@ const LeavesAndHolidays = () => {
   const getData = async () => {
     setIsLoading(true);
   };
+
+  useOutsideClick(wrapperRef, () => {
+    setShowDatePicker({
+      visibility: false,
+      index: 0,
+    });
+  });
+
+  useOutsideClick(optionalWrapperRef, () => {
+    setShowOptionalDatePicker({
+      visibility: false,
+      index: 0,
+    });
+  });
+
+  useOutsideClick(modalWrapperRef, () => {
+    setShowCalendar(false);
+  });
 
   const toggleCalendarModal = () => setShowCalendar(!showCalendar);
 
@@ -195,6 +218,7 @@ const LeavesAndHolidays = () => {
         <Details
           showCalendar={showCalendar}
           toggleCalendarModal={toggleCalendarModal}
+          wrapperRef={modalWrapperRef}
         />
       ) : (
         <EditLeavesAndHolidays
@@ -214,12 +238,14 @@ const LeavesAndHolidays = () => {
           leaveTypeOptions={leaveTypeOptions}
           optionalHolidaysList={optionalHolidaysList}
           optionalRepetitionType={optionalRepetitionType}
+          optionalWrapperRef={optionalWrapperRef}
           setShowDatePicker={setShowDatePicker}
           setShowOptionalDatePicker={setShowOptionalDatePicker}
           showDatePicker={showDatePicker}
           showOptionalDatePicker={showOptionalDatePicker}
           totalOptionalHolidays={totalOptionalHolidays}
           updateCondition={updateCondition}
+          wrapperRef={wrapperRef}
         />
       )}
     </div>

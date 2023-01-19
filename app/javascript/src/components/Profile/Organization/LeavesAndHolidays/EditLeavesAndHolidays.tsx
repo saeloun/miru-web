@@ -70,9 +70,11 @@ const EditLeavesAndHolidays = ({
   handleAddHoliday,
   optionalRepetitionType,
   optionalHolidaysList,
+  optionalWrapperRef,
   handleChangeRepetitionOpHoliday,
   setShowOptionalDatePicker,
   showOptionalDatePicker,
+  wrapperRef,
 }) => (
   <div className="mt-4 min-h-80v bg-miru-gray-100 p-10">
     <div className="flex flex-row py-6">
@@ -232,7 +234,10 @@ const EditLeavesAndHolidays = ({
           {holidayList.map((holiday, index) => (
             <div className="mb-4 flex flex-row" key={index}>
               <div className="flex w-11/12 flex-row py-2">
-                <div className="field w-1/2 border bg-white pr-1">
+                <div
+                  className="field w-1/2 border bg-white pr-1"
+                  ref={wrapperRef}
+                >
                   <div
                     className="relative"
                     onClick={() =>
@@ -388,7 +393,10 @@ const EditLeavesAndHolidays = ({
               {optionalHolidaysList.map((optionalHoliday, index) => (
                 <div className="flex flex-row" key={index}>
                   <div className="flex w-11/12 flex-row py-3">
-                    <div className="field w-1/2 border bg-white pr-1">
+                    <div
+                      className="field w-1/2 border bg-white pr-1"
+                      ref={optionalWrapperRef}
+                    >
                       <div
                         className="relative"
                         onClick={() =>
