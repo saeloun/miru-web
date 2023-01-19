@@ -1,4 +1,8 @@
 import ErrorPage from "common/Error";
+import ForgotPassword from "components/Authentication/ForgotPassword";
+import ResetPassword from "components/Authentication/ResetPassword";
+import SignIn from "components/Authentication/SignIn";
+import SignUp from "components/Authentication/SignUp";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import { Roles, Paths } from "constants/index";
 
@@ -68,6 +72,18 @@ const TeamRoutes = [{ path: "*", Component: TeamRouteConfig }];
 
 const ProfileRoutes = [{ path: "*", Component: ProfileLayout }];
 
+const SignInRoutes = [{ path: "*", Component: SignIn }];
+
+const SignUpRoutes = [
+  { path: "*", Component: SignUp },
+  // { path: "/email_confirmation", Component: ProfileLayout },
+  // { path: "/email_confirmation/success", Component: ProfileLayout },
+];
+
+const ForgotPasswordRoutes = [{ path: "*", Component: ForgotPassword }];
+
+const ResetPasswordRoutes = [{ path: "*", Component: ResetPassword }];
+
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
 
 const ROUTES = [
@@ -115,6 +131,23 @@ const ROUTES = [
     path: Paths.PROFILE,
     subRoutes: ProfileRoutes,
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+  },
+  {
+    path: Paths.SIGN_IN,
+    subRoutes: SignInRoutes,
+  },
+  {
+    path: Paths.SIGN_UP,
+    subRoutes: SignUpRoutes,
+  },
+  {
+    path: Paths.FORGOT_PASSWORD,
+    subRoutes: ForgotPasswordRoutes,
+  },
+  {
+    path: Paths.RESET_PASSWORD,
+    subRoutes: ResetPasswordRoutes,
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
   },
 ];
 
