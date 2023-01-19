@@ -55,7 +55,7 @@ const Header = ({ setIsFilterVisible, params, setParams, filterParamsStr }) => {
 
   return (
     <div className="mt-6 mb-3 flex h-40 flex-col flex-wrap items-center justify-between lg:h-auto lg:flex-row">
-      <h2 className="header__title" data-cy="header__invoices">
+      <h2 className="header__title font-bold" data-cy="header__invoices">
         Invoices
       </h2>
       <div className="header__searchWrap">
@@ -72,7 +72,7 @@ const Header = ({ setIsFilterVisible, params, setParams, filterParamsStr }) => {
             />
             <button className=" absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 ">
               {searchQuery ? (
-                <XIcon size={12} onClick={onSearchClear} />
+                <XIcon size={12} weight="bold" onClick={onSearchClear} />
               ) : (
                 <SearchIcon size={12} />
               )}
@@ -96,14 +96,22 @@ const Header = ({ setIsFilterVisible, params, setParams, filterParamsStr }) => {
           <FilterIcon
             color={filterParamsStr ? "#5B34EA" : "#303A4B"}
             size={16}
+            weight="bold"
           />
         </button>
       </div>
       <div className="flex">
-        <Link className="header__button" to="/invoices/generate" type="button">
-          <PlusIcon size={16} weight="fill" />
-          <span className="ml-2 inline-block" data-cy="new-invoice-button">
-            NEW INVOICE
+        <Link
+          className="header__button border"
+          to="/invoices/generate"
+          type="button"
+        >
+          <PlusIcon size={16} weight="bold" />
+          <span
+            className="ml-2 inline-block tracking-normal"
+            data-cy="new-invoice-button"
+          >
+            New Invoice
           </span>
         </Link>
       </div>

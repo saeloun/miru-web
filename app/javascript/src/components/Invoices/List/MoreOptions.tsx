@@ -37,9 +37,12 @@ const MoreOptions = ({
         <Tooltip content="Send To">
           <button
             className="text-miru-han-purple-1000"
-            onClick={() => setIsSending(!isSending)}
+            onClick={e => {
+              e.stopPropagation();
+              setIsSending(!isSending);
+            }}
           >
-            <PaperPlaneTiltIcon size={16} />
+            <PaperPlaneTiltIcon size={16} weight="bold" />
           </button>
         </Tooltip>
         <Tooltip content="Download">
@@ -51,9 +54,12 @@ const MoreOptions = ({
                 ? "text-miru-gray-1000"
                 : "text-miru-han-purple-1000"
             }
-            onClick={() => handleDownloadInvoice(invoice)}
+            onClick={e => {
+              e.stopPropagation();
+              handleDownloadInvoice(invoice);
+            }}
           >
-            <DownloadSimpleIcon size={16} />
+            <DownloadSimpleIcon size={16} weight="bold" />
           </button>
         </Tooltip>
         <Tooltip content="Edit">
@@ -62,37 +68,48 @@ const MoreOptions = ({
             data-cy="edit-invoice"
             to={`/invoices/${invoice.id}/edit`}
             type="button"
+            onClick={e => e.stopPropagation()}
           >
-            <PenIcon size={16} />
+            <PenIcon size={16} weight="bold" />
           </Link>
         </Tooltip>
         <Tooltip content="More">
           <button
-            className="text-miru-han-purple-1000"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className={`p-2  text-miru-han-purple-1000 ${
+              isMenuOpen && `bg-miru-gray-100`
+            }`}
+            onClick={e => {
+              e.stopPropagation();
+              setIsMenuOpen(!isMenuOpen);
+            }}
           >
-            <DotsThreeVerticalIcon size={16} />
+            <DotsThreeVerticalIcon size={16} weight="bold" />
           </button>
         </Tooltip>
       </div>
       {isMenuOpen && (
         <div
           className="absolute top-4 right-0 z-10 flex-col items-end group-hover:flex"
+          onClick={e => e.stopPropagation()}
           onMouseLeave={() => setIsMenuOpen(false)}
         >
-          <div className="overflow-hidden lg:w-10 xl:w-12">
+          <div className="hidden overflow-hidden lg:w-10 xl:w-12">
             <div className="h-6 w-6 origin-bottom-left rotate-45 transform border-2 border-miru-gray-200 bg-white" />
           </div>
-          <ul className="border-2 border-t-0 border-miru-gray-200 bg-white lg:p-3 xl:p-4">
-            <li className="flex cursor-pointer items-center lg:py-1 xl:py-2">
+          <ul
+            className="mt-1 rounded-lg border-miru-gray-200 bg-white shadow-c1 lg:py-3 xl:py-4"
+            onClick={e => e.stopPropagation()}
+          >
+            <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
               <PrinterIcon
                 className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
                 size={16}
+                weight="bold"
               />
               Print
             </li>
             <li
-              className="flex cursor-pointer items-center text-miru-red-400 lg:py-1 xl:py-2"
+              className="flex cursor-pointer items-center px-5 text-sm text-miru-red-400 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
               onClick={() => {
                 setShowDeleteDialog(true);
                 setInvoiceToDelete(invoice.id);
@@ -101,13 +118,15 @@ const MoreOptions = ({
               <DeleteIcon
                 className="text-miru-red-400 lg:mr-2 xl:mr-4"
                 size={16}
+                weight="bold"
               />
               Delete
             </li>
-            <li className="flex cursor-pointer items-center lg:py-1 xl:py-2">
+            <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
               <PaperPlaneTiltIcon
                 className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
                 size={16}
+                weight="bold"
               />
               Send link
             </li>
