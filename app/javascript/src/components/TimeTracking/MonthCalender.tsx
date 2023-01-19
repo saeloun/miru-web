@@ -279,7 +279,6 @@ const MonthCalender = ({
             <div className="relative h-14 w-24 rounded-md bg-white font-bold">
               <div className="absolute bottom-0 right-0 flex justify-end p-1">
                 <p className="mr-auto text-2xl">
-                  {/* {weekInfo[7] ? minToHHMM(weekInfo[7]) : ""} */}
                   {(() => {
                     if (weekInfo[7]) {
                       return minToHHMM(weekInfo[7]);
