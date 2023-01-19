@@ -84,8 +84,8 @@ const UserActions = () => {
   );
 
   return (
-    <ul className="w-full px-6">
-      <li className="flex  border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0 lg:justify-start lg:px-0">
+    <ul className="w-full">
+      <li className="flex border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0 lg:justify-start">
         <NavLink
           to="/profile/edit"
           className={({ isActive }) =>
@@ -99,7 +99,7 @@ const UserActions = () => {
         </NavLink>
       </li>
       <li
-        className="flex items-start justify-start  border-b border-miru-gray-100 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0 lg:px-0"
+        className="flex items-start justify-start  border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0"
         onClick={handleLogout}
       >
         <NavLink
@@ -112,10 +112,9 @@ const UserActions = () => {
           Logout
         </NavLink>
       </li>
-
       <Tooltip content={currentWorkspace.name} show={showToolTip}>
         <li
-          className="flex w-full cursor-pointer items-center justify-between py-4 px-2 text-sm font-bold leading-4 hover:bg-miru-gray-100 md:px-6"
+          className="flex w-full cursor-pointer items-center justify-between py-4  px-6 text-sm font-bold leading-4 hover:bg-miru-gray-100"
           onClick={() => {
             setShowWorkSpaceList(true);
           }}
@@ -126,7 +125,7 @@ const UserActions = () => {
             onMouseEnter={handleTooltip}
           >
             <Avatar
-              classNameImg="lg:w-6 lg:h-6 lg:mr-4"
+              classNameImg="lg:w-6 lg:h-6 mr-4"
               url={currentWorkspace.logo}
             />
             <span>{currentWorkspace.name}</span>
