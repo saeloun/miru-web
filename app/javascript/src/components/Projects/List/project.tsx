@@ -45,7 +45,7 @@ export const Project = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave} // eslint-disable-line
     >
-      <td className="table__cell text-base">
+      <td className="table__cell text-base capitalize">
         <div className="flex items-center justify-between">{name}</div>
         <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-sm text-miru-dark-purple-400">
           {clientName}
