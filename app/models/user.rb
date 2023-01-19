@@ -102,8 +102,14 @@ class User < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
+  # Do user authentication if
+  # 1. user is not soft deleted
+  # AND
+  # 2.1 user is part of atleast one active employment OR
+  # 2.2 initial phase i.e, user is owner and setting up the company
+  #     and hence no associated company
   def active_for_authentication?
-    super and self.kept? and !self.employments.kept.empty?
+    super and self.kept? and (!self.employments.kept.empty? or self.companies.empty?)
   end
 
   def inactive_message
