@@ -3,14 +3,18 @@ import React from "react";
 import RecentlyUpdatedCard from "./RecentlyUpdatedCard";
 
 const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => (
-  <div className="my-20">
+  <div className="my-15">
     <h1 className="mb-4 text-2xl font-normal text-miru-dark-purple-1000">
       Recently updated
     </h1>
     <div className="grid grid-cols-10 gap-44 overflow-x-auto overflow-y-hidden">
       {recentlyUpdatedInvoices.length > 0 ? (
-        recentlyUpdatedInvoices.map(invoice => (
-          <RecentlyUpdatedCard invoice={invoice} key={invoice.id} />
+        recentlyUpdatedInvoices.map((invoice, index) => (
+          <RecentlyUpdatedCard
+            index={index}
+            invoice={invoice}
+            key={invoice.id}
+          />
         ))
       ) : (
         <span className="col-span-5 grid text-xl font-medium text-miru-dark-purple-200">
