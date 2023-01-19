@@ -8,7 +8,7 @@ import Navigation from "./Navbar/Mobile/Navigation";
 const DisplayView = props => {
   const { isAdminUser, user } = props;
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1025);
-  const [selectedTab, setSelectedTab] = useState<string>("Invoices");
+  const [selectedTab, setSelectedTab] = useState<string>(null);
 
   window.addEventListener("resize", () =>
     setIsDesktop(window.innerWidth > 1025)
