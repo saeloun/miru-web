@@ -34,13 +34,13 @@ const NewLineItemStatic = ({ currency, item, setIsEdit, handleDelete }) => {
           {date}
         </td>
         <td className="px-1 py-3 text-right text-base font-normal text-miru-dark-purple-1000 ">
-          {currencyFormat({ baseCurrency: currency, amount: item.rate })}
+          {currencyFormat(currency, item.rate)}
         </td>
         <td className="px-1 py-3 text-right text-base font-normal text-miru-dark-purple-1000 ">
           {hoursLogged}
         </td>
         <td className="px-1 py-3 text-right text-base font-normal text-miru-dark-purple-1000 ">
-          {currencyFormat({ baseCurrency: currency, amount: totalRate })}
+          {currencyFormat(currency, totalRate)}
         </td>
         <td className="w-10">
           {isSideMenuVisible && (
