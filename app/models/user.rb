@@ -104,6 +104,12 @@ class User < ApplicationRecord
     super and self.kept? and !self.employments.kept.empty?
   end
 
+  def inactive_message
+    if self.employments.kept.empty? && self.kept?
+      I18n.t("user.login.failure.disabled")
+    else
+      I18n.t("user.login.failure.pending_invitation")
+    end
   end
 
   def current_workspace(load_associations: [:logo_attachment])
