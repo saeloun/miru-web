@@ -45,7 +45,6 @@ const BulkActionsWrapper = ({
         />
         {isMoreOptionsOpen && (
           <MoreOptions
-            isMoreOptionsOpen={isMoreOptionsOpen}
             setVisibilty={setIsMoreOptionsOpen}
             wrapperRef={wrapperRef}
           >
