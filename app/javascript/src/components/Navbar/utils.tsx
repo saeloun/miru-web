@@ -113,8 +113,8 @@ const activeClassName =
 const mobileActiveClassName =
   "flex flex-col items-center justify-center text-miru-han-purple-1000 text-xs font-bold";
 
-const getMobileListClassName = (isActive, index) => {
-  if (isActive) return mobileActiveClassName;
+const getMobileListClassName = (isActive, index, showMoreOptions) => {
+  if (isActive && !showMoreOptions) return mobileActiveClassName;
 
   if (index > 3) {
     return "px-4 flex items-center justify-start hover:bg-miru-gray-100";
@@ -139,16 +139,24 @@ const ListOption = ({ option, key }) => (
   </li>
 );
 
-const MobileListOption = ({ from, index, option, setSelectedTab }) => (
+const MobileListOption = ({
+  from,
+  index,
+  option,
+  setSelectedTab,
+  showMoreOptions,
+}) => (
   <li
     className="flex items-center justify-start border-b border-miru-gray-100 py-3 text-base font-medium leading-5 last:border-b-0"
     key={index}
     onClick={() => setSelectedTab(option.label)}
   >
     <NavLink
-      className={({ isActive }) => getMobileListClassName(isActive, from)}
       data-cy={option.dataCy}
       to={option.path}
+      className={({ isActive }) =>
+        getMobileListClassName(isActive, from, showMoreOptions)
+      }
     >
       {option.logo} <span className="text-center">{option.label}</span>
     </NavLink>
@@ -165,7 +173,13 @@ const getAdminOptions = () =>
     <ListOption key={index} option={option} />
   ));
 
-const MobileMenuOptions = ({ isAdminUser, setSelectedTab, from, to }) => {
+const MobileMenuOptions = ({
+  isAdminUser,
+  setSelectedTab,
+  from,
+  to,
+  showMoreOptions,
+}) => {
   if (isAdminUser) {
     return (
       <>
@@ -176,6 +190,7 @@ const MobileMenuOptions = ({ isAdminUser, setSelectedTab, from, to }) => {
             key={index}
             option={option}
             setSelectedTab={setSelectedTab}
+            showMoreOptions={showMoreOptions}
           />
         ))}
       </>
@@ -191,6 +206,7 @@ const MobileMenuOptions = ({ isAdminUser, setSelectedTab, from, to }) => {
           key={index}
           option={option}
           setSelectedTab={setSelectedTab}
+          showMoreOptions={showMoreOptions}
         />
       ))}
     </>
