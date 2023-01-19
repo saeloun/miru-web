@@ -44,7 +44,7 @@ class Employment < ApplicationRecord
   before_destroy :remove_user_invitations
 
   after_discard do
-    if user.employments.count > 1
+    if user.employments.kept.count > 1
       user.current_workspace = user.employments.kept.first.company
       user.save!
     end
