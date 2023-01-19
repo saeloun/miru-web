@@ -26,11 +26,11 @@ class ProjectListService
   end
 
   def project_list_query
-    @db_query ||= current_company.projects.kept.left_outer_joins(:project_members).joins(:client)
-    @db_query ||= db_query.where(project_members: { user_id: }) if user_id.present?
-    @db_query ||= db_query.where(client_id:) if client_id.present?
-    @db_query ||= db_query.where(projects: { billable: }) if billable.present?
-    @db_query.select(
+    @_project_list_query ||= current_company.projects.kept.left_outer_joins(:project_members).joins(:client)
+    @_project_list_query ||= @_project_list_query.where(project_members: { user_id: }) if user_id.present?
+    @_project_list_query ||= @_project_list_query.where(client_id:) if client_id.present?
+    @_project_list_query ||= @_project_list_query.where(projects: { billable: }) if billable.present?
+    @_project_list_query.select(
       "projects.id as id,
       projects.name as project_name,
       projects.billable as is_billable,

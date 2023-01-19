@@ -50,7 +50,7 @@ describe ProjectListService do
       user = create(:user, current_workspace_id: company.id)
       create(:project_member, user:, project: project1)
       service = ProjectListService.new(company, nil, user.id, true, nil)
-      expect(service.process).to eq(user.projects.kept.where(billable: true))
+      expect(service.process).to eq([project1])
     end
 
     it "returns projects by user and search" do
