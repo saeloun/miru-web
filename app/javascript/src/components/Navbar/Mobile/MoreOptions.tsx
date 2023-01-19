@@ -12,7 +12,7 @@ import {
   MobileMenuOptions,
 } from "../utils";
 
-const MoreOptions = ({ setVisiblity, setSelectedTab }) => {
+const MoreOptions = ({ setVisiblity, setSelectedTab, showMoreOptions }) => {
   const { user, isAdminUser } = useUserContext();
 
   return (
@@ -29,6 +29,7 @@ const MoreOptions = ({ setVisiblity, setSelectedTab }) => {
               from={4}
               isAdminUser={isAdminUser}
               setSelectedTab={setSelectedTab}
+              showMoreOptions={showMoreOptions}
               to={
                 isAdminUser ? navAdminOptions.length : navEmployeeOptions.length
               }
