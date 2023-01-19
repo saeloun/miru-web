@@ -122,6 +122,13 @@ const Clients = ({ isAdminUser }) => {
     setAuthHeaders();
     registerIntercepts();
     fetchClientDetails("week");
+
+    const close = e => {
+      if (e.keyCode === 27) {
+        setClient(false);
+      }
+    };
+    window.addEventListener("keydown", close);
   }, []);
 
   const tableHeader = [

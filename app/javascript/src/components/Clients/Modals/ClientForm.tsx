@@ -29,7 +29,12 @@ interface FormValues {
   name: string;
   email: string;
   phone: string;
-  address: string;
+  address1: string;
+  address2: string;
+  country: string;
+  state: string;
+  city: string;
+  zipcode: string;
   logo: any;
 }
 
@@ -46,7 +51,12 @@ const getInitialvalues = (client?: any) => ({
   name: client?.name || "",
   email: client?.email || "",
   phone: client?.phone || "",
-  address: client?.address || "",
+  address1: client?.address1 || "",
+  address2: client?.address2 || "",
+  country: client?.country || "",
+  state: client?.state || "",
+  city: client?.city || "",
+  zipcode: client?.zipcode || "",
   minutes: client?.minutes || "",
   logo: client?.logo || null,
 });
@@ -228,87 +238,189 @@ const ClientForm = ({
                   </div>
                 </div>
               </div>
-              <div className="field">
-                <div className="field_with_errors">
-                  <label className="form__label">Name</label>
-                  <div className="block text-xs tracking-wider text-red-600">
-                    {errors.name && touched.name && <div>{errors.name}</div>}
-                  </div>
-                </div>
-                <div className="mt-1">
-                  <Field
-                    data-cy={dataCyName}
-                    name="name"
-                    className={`form__input ${
-                      errors.name &&
-                      touched.name &&
-                      "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
-                  />
-                </div>
+            </div>
+            <div className="field">
+              <div className="block text-right text-xs tracking-wider text-red-600">
+                {errors.name && touched.name && <div>{errors.name}</div>}
+              </div>
+              <div className="outline relative">
+                <Field
+                  data-cy={dataCyName}
+                  name="name"
+                  placeholder=" "
+                  className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
+                    errors.name &&
+                    touched.name &&
+                    "border-red-600 focus:border-red-600 focus:ring-red-600"
+                  } `}
+                />
+                <label
+                  className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                  htmlFor="Name"
+                >
+                  Name
+                </label>
               </div>
             </div>
             <div className="mt-4">
               <div className="field">
-                <div className="field_with_errors">
-                  <label className="form__label">Email</label>
-                  <div className="block text-xs tracking-wider text-red-600">
-                    {errors.email && touched.email && <div>{errors.email}</div>}
-                  </div>
+                <div className="block text-right text-xs tracking-wider text-red-600">
+                  {errors.email && touched.email && <div>{errors.email}</div>}
                 </div>
-                <div className="mt-1">
+                <div className="outline relative">
                   <Field
                     name="email"
-                    className={`form__input ${
+                    placeholder=" "
+                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
                       errors.email &&
                       touched.email &&
                       "border-red-600 focus:border-red-600 focus:ring-red-600"
                     } `}
                   />
+                  <label
+                    className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                    htmlFor="Email"
+                  >
+                    Email
+                  </label>
                 </div>
               </div>
             </div>
             <div className="mt-4">
               <div className="field">
-                <div className="field_with_errors">
-                  <label className="form__label">Phone number</label>
-                  <div className="block text-xs tracking-wider text-red-600">
-                    {errors.phone && touched.phone && <div>{errors.phone}</div>}
-                  </div>
+                <div className="block text-right text-xs tracking-wider text-red-600">
+                  {errors.phone && touched.phone && <div>{errors.phone}</div>}
                 </div>
-                <div className="mt-1">
+                <div className="outline relative">
                   <Field
                     data-cy={dataCyPhone}
                     name="phone"
-                    className={`form__input ${
+                    placeholder=" "
+                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
                       errors.phone &&
                       touched.phone &&
                       "border-red-600 focus:border-red-600 focus:ring-red-600"
                     } `}
                   />
+                  <label
+                    className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                    htmlFor="Phone number"
+                  >
+                    Phone number
+                  </label>
                 </div>
               </div>
             </div>
             <div className="mt-4">
               <div className="field">
-                <div className="field_with_errors">
-                  <label className="form__label">Address</label>
-                  <div className="block text-xs tracking-wider text-red-600">
-                    {errors.address && touched.address && (
-                      <div>{errors.address}</div>
-                    )}
-                  </div>
+                <div className="block text-right text-xs tracking-wider text-red-600">
+                  {errors.address1 && touched.address1 && (
+                    <div>{errors.address1}</div>
+                  )}
                 </div>
-                <div className="mt-1">
+                <div className="outline relative">
                   <Field
                     data-cy={dataCyAddress}
-                    name="address"
-                    className={`form__input ${
-                      errors.address &&
-                      touched.address &&
+                    name="address1"
+                    placeholder=" "
+                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
+                      errors.address1 &&
+                      touched.address1 &&
                       "border-red-600 focus:border-red-600 focus:ring-red-600"
                     } `}
                   />
+                  <label
+                    className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                    htmlFor="address1"
+                  >
+                    Address line 1
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4">
+              <div className="field">
+                <div className="outline relative">
+                  <Field
+                    className="form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000"
+                    data-cy="address-input"
+                    name="address2"
+                    placeholder=" "
+                  />
+                  <label
+                    className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                    htmlFor="address2"
+                  >
+                    Address line 2 (optional)
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 flex justify-between">
+              <div className="field">
+                <div className="outline relative border focus-within:border-miru-han-purple-1000">
+                  <Field
+                    className="form__input focus:outline-none block h-12 w-full appearance-none bg-transparent p-4 text-base"
+                    data-cy="address-input"
+                    name="country"
+                    placeholder=" "
+                  />
+                  <label
+                    className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                    htmlFor="country"
+                  >
+                    Country
+                  </label>
+                </div>
+              </div>
+              <div className="field">
+                <div className="outline relative border focus-within:border-miru-han-purple-1000">
+                  <Field
+                    className="form__input focus:outline-none block h-12 w-full appearance-none bg-transparent p-4 text-base"
+                    data-cy="address-input"
+                    name="state"
+                    placeholder=" "
+                  />
+                  <label
+                    className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                    htmlFor="state"
+                  >
+                    State
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 flex justify-between">
+              <div className="field">
+                <div className="outline relative">
+                  <Field
+                    className="form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000"
+                    data-cy="address-input"
+                    name="city"
+                    placeholder=" "
+                  />
+                  <label
+                    className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                    htmlFor="city"
+                  >
+                    City
+                  </label>
+                </div>
+              </div>
+              <div className="field">
+                <div className="outline relative">
+                  <Field
+                    className="form__input focus:outline-none block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000"
+                    data-cy="address-input"
+                    name="zipcode"
+                    placeholder=" "
+                  />
+                  <label
+                    className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
+                    htmlFor="zipcode"
+                  >
+                    Zipcode
+                  </label>
                 </div>
               </div>
             </div>
