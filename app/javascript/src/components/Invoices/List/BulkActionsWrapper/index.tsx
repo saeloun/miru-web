@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { DeleteIcon, DownloadSimpleIcon } from "miruIcons";
 import { MoreOptions } from "StyledComponents";
@@ -19,6 +19,7 @@ const BulkActionsWrapper = ({
   setShowBulkDownloadDialog,
 }) => {
   const [isMoreOptionsOpen, setIsMoreOptionsOpen] = useState<boolean>(false);
+  const wrapperRef = useRef(null);
 
   return (
     <div className="mb-4 flex w-full flex-wrap items-center justify-between">
@@ -33,7 +34,7 @@ const BulkActionsWrapper = ({
           setFilterParams={setFilterParams}
         />
       </div>
-      <div>
+      <div ref={wrapperRef}>
         <BulkActions
           clearCheckboxes={clearCheckboxes}
           downloading={downloading}
@@ -43,7 +44,10 @@ const BulkActionsWrapper = ({
           setIsMoreOptionsOpen={setIsMoreOptionsOpen}
         />
         {isMoreOptionsOpen && (
-          <MoreOptions setVisibilty={setIsMoreOptionsOpen}>
+          <MoreOptions
+            setVisibilty={setIsMoreOptionsOpen}
+            wrapperRef={wrapperRef}
+          >
             <li
               className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
               onClick={() => {
@@ -51,7 +55,8 @@ const BulkActionsWrapper = ({
                 setIsMoreOptionsOpen(false);
               }}
             >
-              <DownloadSimpleIcon className="mr-4" size={16} /> Download
+              <DownloadSimpleIcon className="mr-2" size={16} weight="bold" />{" "}
+              Download
             </li>
             <li
               className="flex cursor-pointer items-center py-2.5 px-4 text-miru-red-400 hover:bg-miru-gray-100"
@@ -59,7 +64,7 @@ const BulkActionsWrapper = ({
                 setShowBulkDeleteDialog(true);
               }}
             >
-              <DeleteIcon className="mr-4" size={16} /> Delete
+              <DeleteIcon className="mr-2" size={16} weight="bold" /> Delete
             </li>
           </MoreOptions>
         )}
