@@ -62,7 +62,7 @@ const Filters = ({
   };
 
   return (
-    <SidePanel setFilterVisibilty={setIsFilterVisible}>
+    <SidePanel WrapperClassname="z-50" setFilterVisibilty={setIsFilterVisible}>
       <SidePanel.Header className="mb-7 flex items-center justify-between px-5 pt-5 font-bold text-miru-dark-purple-1000">
         <h4 className="flex items-center text-base">
           <FilterIcon className="mr-2.5" size={16} /> Filters
@@ -71,7 +71,7 @@ const Filters = ({
           <XIcon className="text-miru-dark-purple-1000" size={16} />
         </Button>
       </SidePanel.Header>
-      <SidePanel.Body hasFooter className="sidebar__filters">
+      <SidePanel.Body className="sidebar__filters">
         <div className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
           <div
             className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
