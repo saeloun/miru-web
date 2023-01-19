@@ -3,7 +3,8 @@ default: &default
   encoding: unicode
   host: localhost
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  password:
+  user: <%= ENV.fetch("DB_USER") { "" } %>
+  password: <%= ENV.fetch("DB_PASS") { "" } %>
 
 development:
   <<: *default
@@ -11,7 +12,7 @@ development:
 
 test:
   <<: *default
-  database: "miru_web_test"
+  database: <%= "miru_web_test_#{ENV['TEST_ENV_NUMBER']}" %>
 
 production:
   adapter: postgresql

@@ -104,7 +104,7 @@
       @apply pt-5 w-full flex items-stretch flex-col sm:flex-row text-miru-dark-purple-1000 border-t border-miru-gray-1000;
     }
     &__box {
-      @apply flex flex-col justify-start mr-12 w-full border-r-0 sm:border-r sm:border-miru-gray-1000;
+      @apply flex flex-col justify-start mr-10 w-full  lg:border-r border-miru-han-purple-600;
     }
     &__box:last-child {
       @apply border-r-0;

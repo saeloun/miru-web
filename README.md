@@ -5,13 +5,13 @@
 
 Miru is an open-source tool, designed to make time tracking, invoice management, and accounting easy for small businesses worldwide. It is a platform for organizations to help them streamline their workflow.
 
+[![Build status](https://badge.buildkite.com/c21ea1f95172e59eeeecec486c49130e578e4daf99d90dcba1.svg?branch=develop)](https://buildkite.com/saeloun-bk/miruweb)
 ![GitHub contributors](https://img.shields.io/github/contributors/saeloun/miru-web)
 [![GitHub stars](https://img.shields.io/github/stars/saeloun/miru-web)](https://github.com/saeloun/miru-web/stargazers)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/saeloun/miru-web)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/saeloun/miru-web)
 [![GitHub license](https://img.shields.io/github/license/saeloun/miru-web)](https://github.com/saeloun/miru-web)
 [![Twitter Follow](https://img.shields.io/twitter/follow/GetMiru?style=social)](https://twitter.com/getmiru)
-
 <img src="https://user-images.githubusercontent.com/22231095/170423540-e10ada9e-cf1b-4a05-bbb6-2342955f46b0.png"  width="100%" alt="Miru Monthly Timetracking page"/>
 
 <img src="https://user-images.githubusercontent.com/22231095/170424136-42f45a24-caa9-4b0e-b5fa-35bfe6f2e70b.png" width="100%" alt="Miru Invoice page"/>
@@ -33,7 +33,7 @@ git clone https://github.com/saeloun/miru-web.git
    your project as you `cd` into the directory follow
    [this](https://github.com/nvm-sh/nvm#deeper-shell-integration))
 
-3. Install ruby 3.1.1
+3. Install ruby 3.2.0
 
 ```
 rvm install $(cat .ruby-version)
@@ -163,14 +163,6 @@ cd cypress
 yarn run cy:open:staging
 ```
 
-## Deployment
-
-### Heroku one-click deploy
-
-You can deploy Miru on Heroku using the one-click-deployment button:
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/saeloun/miru-web/tree/main)
-
 ## Community Support
 
 - Feel free to join our [Discord](https://discord.gg/UABXyQQ82c) channel for support and questions.
@@ -194,4 +186,4 @@ Thanks goes to all our contributors
 
 ## License
 
-*Miru* &copy; 2022, Saeloun - Released under the MIT License.
+*Miru* &copy; 2023, Saeloun - Released under the MIT License.

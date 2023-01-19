@@ -17,7 +17,10 @@ FactoryBot.define do
     status { [:draft, :paid].sample }
     external_view_key { "#{SecureRandom.hex}" }
     factory :invoice_with_invoice_line_items do
-      invoice_line_items { Array.new(5) { association(:invoice_line_item) } }
+      transient do
+        length { 5 }
+      end
+      invoice_line_items { Array.new(length) { association(:invoice_line_item) } }
     end
   end
 end

@@ -45,7 +45,7 @@ export const Project = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave} // eslint-disable-line
     >
-      <td className="table__cell text-base">
+      <td className="table__cell text-base capitalize">
         <div className="flex items-center justify-between">{name}</div>
         <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-sm text-miru-dark-purple-400">
           {clientName}
@@ -67,6 +67,7 @@ export const Project = ({
       <td className="table__cell px-3 py-3">
         {isAdminUser && isHover && (
           <button
+            data-cy="edit-icon"
             onClick={e => {
               e.preventDefault();
               e.stopPropagation();
@@ -81,6 +82,7 @@ export const Project = ({
       <td className="table__cell px-3 py-3">
         {isAdminUser && isHover && (
           <button
+            data-cy="delete-icon"
             onClick={e => {
               e.preventDefault();
               e.stopPropagation();
