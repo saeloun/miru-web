@@ -74,15 +74,27 @@ const EditMembersList = ({
       alreadyAddedMembersMap[member.id] = member.hourlyRate;
     });
 
-    const newlyAddedMembers = members.filter(
-      member => !alreadyAddedMembersMap[member.id]
-    );
+    const newlyAddedMembers = members.filter(member => {
+      if (!alreadyAddedMembersMap[member.id]) {
+        member.hourly_rate = member.hourlyRate;
+        delete member.hourlyRate;
 
-    const updatedMembers = members.filter(
-      member =>
+        return member;
+      }
+    });
+
+    const updatedMembers = members.filter(member => {
+      if (
         alreadyAddedMembersMap[member.id] &&
         alreadyAddedMembersMap[member.id] != member.hourlyRate
-    );
+      ) {
+        member.hourly_rate = member.hourlyRate;
+        delete member.hourlyRate;
+
+        return member;
+      }
+    });
+
     if (
       newlyAddedMembers.length > 0 ||
       updatedMembers.length > 0 ||
@@ -92,8 +104,8 @@ const EditMembersList = ({
         await projectMembersApi.update(projectId, {
           members: {
             added_members: newlyAddedMembers,
-            removed_member_ids: removedIds,
             updated_members: updatedMembers,
+            removed_member_ids: removedIds,
           },
         });
         setExistingMembers(members);

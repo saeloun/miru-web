@@ -15,9 +15,6 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "devise"
 require "rspec/rails"
 require "support/database_cleaner"
-# require "buildkite/test_collector"
-
-# Buildkite::TestCollector.configure(hook: :rspec)
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are

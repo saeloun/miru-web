@@ -13,8 +13,12 @@ FactoryBot.define do
     current_workspace factory: :company
 
     trait :with_avatar do
-      after :build do |user|
-        file_name = "test-image.png"
+      transient do
+        upload_file_name { "test-image.png" }
+      end
+
+      after :build do |user, evaluator|
+        file_name = evaluator.upload_file_name
         file_path = Rails.root.join("spec", "support", "fixtures", file_name)
         user.avatar.attach(io: File.open(file_path), filename: file_name, content_type: "image/png")
       end

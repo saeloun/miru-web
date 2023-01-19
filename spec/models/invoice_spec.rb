@@ -54,6 +54,25 @@ RSpec.describe Invoice, type: :model do
     end
   end
 
+  describe "Discard" do
+    let(:company) do
+      create(:company_with_invoices)
+    end
+
+    before do
+      @current_invoice = company.invoices.first
+    end
+
+    it "discards the invoices" do
+      expect { @current_invoice.discard! }.to change(company.invoices.discarded, :count).by(1)
+    end
+
+    it "does not discard the invoices if already discarded" do
+      @current_invoice.discard!
+      expect { @current_invoice.discard! }.to raise_error(Discard::RecordNotDiscarded)
+    end
+  end
+
   describe "Scopes" do
     let(:company) do
       create(:company_with_invoices)
@@ -75,7 +94,6 @@ RSpec.describe Invoice, type: :model do
 
     describe "issue_date_range" do
       it "returns all invoices if date range is not specified" do
-        # debugger
         expect(company.invoices.issue_date_range(nil).size).to eq(5)
       end
     end

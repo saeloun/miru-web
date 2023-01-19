@@ -12,7 +12,7 @@ const CustomCheckbox = ({
   wrapperClassName = "",
   labelClassName = "",
 }) => (
-  <div className={classnames("flex items-center", wrapperClassName)}>
+  <div className={classnames(wrapperClassName)}>
     <div
       className={classnames(
         "grid grid-cols-1 grid-rows-1 content-center justify-items-center"

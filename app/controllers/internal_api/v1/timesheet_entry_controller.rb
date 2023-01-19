@@ -6,10 +6,10 @@ class InternalApi::V1::TimesheetEntryController < InternalApi::V1::ApplicationCo
 
   def index
     timesheet_entries = policy_scope(TimesheetEntry)
-    timesheet_entries = timesheet_entries.where(user_id: params[:user_id] || current_user.id).during(
-      params[:from],
-      params[:to]
-    )
+    timesheet_entries = timesheet_entries
+      .where(user_id: params[:user_id] || current_user.id)
+      .during(params[:from], params[:to])
+      .includes(:user, :project, :client)
     entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
     entries[:currentUserRole] = current_user.primary_role current_company
     render json: { entries: }, status: :ok

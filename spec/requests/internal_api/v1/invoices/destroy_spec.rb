@@ -19,6 +19,7 @@ RSpec.describe "InternalApi::V1::Invoices#destroy", type: :request do
       it "deletes invoice successfully" do
         send_request :delete, internal_api_v1_invoice_path(id: invoice.id)
         expect(response).to be_successful
+        expect(company.invoices.discarded.pluck(:id).include?(invoice.id)).to eq(true)
       end
     end
   end

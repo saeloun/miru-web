@@ -33,7 +33,7 @@ const TableHeader = ({
 
   return (
     <tr>
-      <th className="px-4 py-5 lg:pl-6 lg:pr-0" scope="col">
+      <th className="px-4 py-5" scope="col">
         <CustomCheckbox
           checkboxValue={1}
           handleCheck={handleCheck}
@@ -43,7 +43,7 @@ const TableHeader = ({
         />
       </th>
       <th
-        className="whitespace-nowrap py-5 pr-0 text-left text-xs font-normal tracking-widest text-miru-black-1000 lg:w-1/5 lg:pr-2 lg:pr-2"
+        className="whitespace-nowrap py-5 pr-0 text-left text-xs font-normal tracking-widest text-miru-black-1000 lg:w-1/3 lg:pr-2 lg:pr-2"
         scope="col"
       >
         CLIENT / <br />
@@ -51,14 +51,14 @@ const TableHeader = ({
       </th>
       {isDesktop && (
         <th
-          className="w-1/4 px-4 py-5 text-left text-xs font-normal tracking-widest text-miru-black-1000 lg:px-6"
+          className="w-1/5 px-4 py-5 text-left text-xs font-normal tracking-widest text-miru-black-1000 lg:px-6"
           scope="col"
         >
           ISSUED DATE / DUE DATE
         </th>
       )}
       <th
-        className="w-1/4 px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 lg:px-6"
+        className="w-1/6 px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 lg:px-6"
         scope="col"
       >
         AMOUNT

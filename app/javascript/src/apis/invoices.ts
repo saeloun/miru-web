@@ -21,6 +21,9 @@ const editInvoice = async id => axios.get(`${path}/${id}/edit`);
 const downloadInvoice = async id =>
   await axios.get(`${path}/${id}/download`, { responseType: "blob" });
 
+const bulkDownloadInvoices = async queryString =>
+  await axios.get(`${path}/bulk_download?${queryString}`);
+
 const updateInvoice = async (id, body) => axios.patch(`${path}/${id}/`, body);
 
 const sendInvoice = async (id, payload) =>
@@ -37,6 +40,7 @@ const invoicesApi = {
   editInvoice,
   updateInvoice,
   downloadInvoice,
+  bulkDownloadInvoices,
 };
 
 export default invoicesApi;

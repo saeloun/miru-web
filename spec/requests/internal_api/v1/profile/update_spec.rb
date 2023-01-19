@@ -35,6 +35,44 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
       expect(json_response["notice"]).to eq("Password updated")
     end
 
+    it "throws error when first name is blank" do
+      params = {
+        user: {
+          first_name: "", last_name: "User"
+        }
+      }
+      send_request(:put, internal_api_v1_profile_path, params:)
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json_response["errors"]).to eq(
+        ["First name can't be blank",
+         "First name must only contain letters or spaces"])
+    end
+
+    it "throws error when last name is blank" do
+      params = {
+        user: {
+          first_name: "Example", last_name: ""
+        }
+      }
+      send_request(:put, internal_api_v1_profile_path, params:)
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json_response["errors"]).to eq(
+        ["Last name can't be blank",
+         "Last name must only contain letters or spaces"])
+    end
+
+    it "throws error when name fields are invalid" do
+      params = {
+        user: {
+          first_name: "@#", last_name: "@"
+        }
+      }
+      send_request(:put, internal_api_v1_profile_path, params:)
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json_response["errors"]).to eq(
+        ["First name must only contain letters or spaces", "Last name must only contain letters or spaces"])
+    end
+
     it "throws error when current password is incorrect" do
       params = {
         user: {
@@ -44,7 +82,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
       }
       send_request(:put, internal_api_v1_profile_path, params:)
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json_response["error"]).to eq("Current password is not correct")
+      expect(json_response["errors"]).to eq(["Current password is invalid"])
     end
 
     it "throws error when password_confirmation does not match password" do
@@ -56,7 +94,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
       }
       send_request(:put, internal_api_v1_profile_path, params:)
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json_response["error"]).to eq("Password and password confirmation does not match")
+      expect(json_response["errors"]).to eq(["Password confirmation doesn't match with new password"])
     end
 
     it "throws error when password is less than 6 of characters" do
@@ -68,7 +106,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
       }
       send_request(:put, internal_api_v1_profile_path, params:)
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json_response["error"]).to eq("Password and password confirmation should be of minimum 6 characters")
+      expect(json_response["errors"]).to eq(["Password must be at least 6 characters long"])
     end
   end
 end

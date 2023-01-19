@@ -5,12 +5,11 @@ import { PlusIcon } from "miruIcons";
 
 import clientApi from "apis/clients";
 import AutoSearch from "common/AutoSearch";
+import { unmapClientListForDropdown } from "mapper/mappedIndex";
 
 import SearchDataRow from "./SearchDataRow";
 
-import { unmapClientListForDropdown } from "../../../mapper/client.mapper";
-
-const Header = ({ setnewClient, isAdminUser }) => {
+const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
   const fetchClients = async searchString => {
     try {
       const res = await clientApi.get(`?q=${searchString}`);
@@ -41,10 +40,15 @@ const Header = ({ setnewClient, isAdminUser }) => {
             <button
               className="header__button"
               type="button"
-              onClick={() => setnewClient(true)}
+              onClick={() => {
+                setShowDialog(true);
+                setnewClient(true);
+              }}
             >
               <PlusIcon size={16} weight="fill" />
-              <span className="ml-2 inline-block">NEW CLIENT</span>
+              <span className="ml-2 inline-block" data-cy="new-client-button">
+                NEW CLIENT
+              </span>
             </button>
           </div>
         </Fragment>

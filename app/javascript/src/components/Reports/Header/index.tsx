@@ -33,6 +33,7 @@ const Header = ({
     revenueByClientReport,
     currentReport,
     outstandingOverdueInvoice,
+    accountsAgingReport,
   } = useEntry();
 
   const selectedReport = getReports({
@@ -40,22 +41,23 @@ const Header = ({
     timeEntryReport,
     revenueByClientReport,
     outstandingOverdueInvoice,
+    accountsAgingReport,
   });
 
   const [showExportOptions, setShowExportOptions] = useState<boolean>(false);
 
   return (
     <div>
-      <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
-        <div className="flex items-center">
+      <div className="mt-6 mb-3 flex flex-col items-center justify-between lg:flex-row">
+        <div className="flex items-center lg:justify-between">
           <Link to="/reports" type="button">
             <img src={leftArrow} />
           </Link>
-          <h2 className="ml-5 py-1 text-3xl font-extrabold text-gray-900 sm:truncate sm:text-4xl">
+          <h2 className="leading:10 py-1 text-center text-xl font-bold text-miru-dark-purple-1000 lg:ml-5 lg:truncate lg:text-2xl">
             {type}
           </h2>
           <button
-            className="relative ml-7 rounded p-3 hover:bg-miru-gray-1000"
+            className="relative rounded p-3 hover:bg-miru-gray-1000 lg:ml-7"
             onClick={() => {
               setIsFilterVisible(!isFilterVisible);
             }}
@@ -69,7 +71,7 @@ const Header = ({
           </button>
         </div>
         {showExportButon && (
-          <div className="inline-flex">
+          <div className="mt-10 inline-flex lg:mt-0">
             <div className="relative px-3">
               <button
                 className="menuButton__button inline-flex justify-center rounded-md border border-miru-han-purple-1000 bg-white p-2 text-miru-han-purple-1000 hover:bg-gray-50"
@@ -132,7 +134,7 @@ const Header = ({
       </div>
       <div>
         {showNavFilters && (
-          <ul className="flex">
+          <ul className="flex flex-wrap">
             <NavigationFilter />
             {selectedReport.filterCounter > 0 && (
               <li className="mr-4 flex px-2 py-1 px-1 " key="clear_all">
@@ -146,7 +148,7 @@ const Header = ({
                     size={12}
                     weight="bold"
                   />
-                  <span className="ml-1 text-xs font-bold tracking-widest text-miru-han-purple-1000">
+                  <span className="ml-1 whitespace-nowrap text-xs font-bold tracking-widest text-miru-han-purple-1000">
                     CLEAR ALL
                   </span>
                 </button>

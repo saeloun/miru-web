@@ -19,19 +19,15 @@ users = [
     password_confirmation: "password", confirmed_at: Time.current, current_workspace_id: @saeloun_india.id
   },
   {
-    first_name: "Rohit", last_name: "Joshi", email: "rohit@example.com", password: "password",
-    password_confirmation: "password", confirmed_at: Time.current, current_workspace_id: @saeloun_india.id
-  },
-  {
     first_name: "Book", last_name: "Keeper", email: "book.keeper@example.com", password: "password",
     password_confirmation: "password", confirmed_at: Time.current, current_workspace_id: @saeloun_india.id
   }
 ]
 @users = users.map { |user| User.create!(user) }
 puts "Users Created"
-@vipul, @supriya, @akhil, @keshav, @rohit, @book_keeper =
+@vipul, @supriya, @akhil, @keshav, @book_keeper =
   ["vipul@example.com", "supriya@example.com", "akhil@example.com",
-   "keshav@example.com", "rohit@example.com", "book.keeper@example.com"].map { |user|
+   "keshav@example.com", "book.keeper@example.com"].map { |user|
   User.find_by(email: user)
 }
 # User Create End

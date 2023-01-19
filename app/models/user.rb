@@ -31,6 +31,7 @@
 #
 # Indexes
 #
+#  index_users_on_confirmation_token    (confirmation_token)
 #  index_users_on_current_workspace_id  (current_workspace_id)
 #  index_users_on_discarded_at          (discarded_at)
 #  index_users_on_email                 (email) UNIQUE
@@ -87,9 +88,6 @@ class User < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
   before_create :set_token
-
-  # scopes
-  scope :valid_invitations, -> { invitations.where(sender: self).valid_invitations }
 
   def primary_role(company)
     roles = self.roles.where(resource: company)

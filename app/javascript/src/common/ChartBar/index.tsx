@@ -23,11 +23,11 @@ const Client = ({ element, totalMinutes, index }: ISingleClient) => {
   return (
     <div style={divStyle}>
       <ReactTooltip
-        backgroundColor="white"
+        backgroundColor="#1D1A31"
         effect="solid"
         id={`registerTip-${index}`}
         place="top"
-        textColor="#1D1A31"
+        textColor="#FFF"
       >
         <p className="text-xs">{element.name}</p>
         <p className="text-center text-2xl">{minToHHMM(element.minutes)}</p>
