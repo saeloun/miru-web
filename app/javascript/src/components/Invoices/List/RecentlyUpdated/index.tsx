@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import RecentlyUpdatedCard from "./RecentlyUpdatedCard";
 
@@ -10,11 +10,15 @@ const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => (
     <div className="grid grid-cols-10 gap-44 overflow-x-auto overflow-y-hidden">
       {recentlyUpdatedInvoices.length > 0 ? (
         recentlyUpdatedInvoices.map((invoice, index) => (
-          <RecentlyUpdatedCard
-            index={index}
-            invoice={invoice}
-            key={invoice.id}
-          />
+          <Fragment key={invoice.id}>
+            {index <= 5 && (
+              <RecentlyUpdatedCard
+                index={index}
+                invoice={invoice}
+                key={invoice.id}
+              />
+            )}
+          </Fragment>
         ))
       ) : (
         <span className="col-span-5 grid text-xl font-medium text-miru-dark-purple-200">
