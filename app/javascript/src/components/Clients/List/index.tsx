@@ -53,7 +53,7 @@ const getTableData = clients => {
               />
             )}
           </div>
-          <div className="pt-2 text-base text-miru-dark-purple-1000">
+          <div className="pt-2 text-base capitalize text-miru-dark-purple-1000">
             {client.name}
           </div>
         </div>
