@@ -65,6 +65,8 @@ class User < ApplicationRecord
 
   rolify strict: true
 
+  scope :with_kept_employments, -> { merge(Employment.kept) }
+
   # Social account details
   store_accessor :social_accounts, :github_url, :linkedin_url
 
