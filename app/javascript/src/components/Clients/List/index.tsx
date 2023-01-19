@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { Avatar } from "StyledComponents";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clientApi from "apis/clients";
@@ -19,39 +20,13 @@ import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 import NewClient from "../Modals/NewClient";
 
-const createInitials = client =>
-  client.name
-    .split(" ")
-    .map(name => name[0])
-    .join("")
-    .toUpperCase();
-
-const isValidCharLength = client =>
-  createInitials(client).length > 3 ? "" : "text-lg";
-
 const getTableData = clients => {
   if (clients) {
     return clients.map(client => ({
       col1: (
         <div className="flex">
           <div className="mx-2">
-            {client.logo === "" ? (
-              <div className="flex h-12 w-12 justify-center">
-                <span
-                  className={`w-22 rounded-full bg-miru-han-purple-1000 pt-1 text-center ${isValidCharLength(
-                    client
-                  )} leading-10 text-gray-50`}
-                >
-                  {createInitials(client)}
-                </span>
-              </div>
-            ) : (
-              <img
-                alt="alt text"
-                className="h-12 w-12 rounded-full"
-                src={client.logo}
-              />
-            )}
+            <Avatar name={client.name} url={client.logo} />
           </div>
           <div className="pt-2 text-base text-miru-dark-purple-1000">
             {client.name}
@@ -187,7 +162,7 @@ const Clients = ({ isAdminUser }) => {
       <Header
         isAdminUser={isAdminUser}
         setShowDialog={setShowDialog}
-        setnewClient={setClient}
+        setnewClient={setClient} // FIXME: typo 'setNewClient'
       />
       <div>
         {isAdminUser && (
