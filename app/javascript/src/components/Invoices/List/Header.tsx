@@ -9,7 +9,13 @@ import { ApiStatus as InvoiceStatus } from "constants/index";
 
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 
-const Header = ({ setIsFilterVisible, params, setParams, filterParamsStr }) => {
+const Header = ({
+  setIsFilterVisible,
+  params,
+  setParams,
+  filterParamsStr,
+  isDesktop,
+}) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResult, setSearchResult] = useState<any[]>([]);
   const [status, setStatus] = useState<InvoiceStatus>(InvoiceStatus.IDLE);
@@ -54,10 +60,12 @@ const Header = ({ setIsFilterVisible, params, setParams, filterParamsStr }) => {
   };
 
   return (
-    <div className="mt-6 mb-3 flex h-40 flex-col flex-wrap items-center justify-between lg:h-auto lg:flex-row">
-      <h2 className="header__title font-bold" data-cy="header__invoices">
-        Invoices
-      </h2>
+    <div className="mt-6 mb-3 flex flex-wrap items-center justify-around lg:justify-between">
+      {isDesktop && (
+        <h2 className="header__title" data-cy="header__invoices">
+          Invoices
+        </h2>
+      )}
       <div className="header__searchWrap">
         <div className="header__searchInnerWrapper relative">
           <div>
@@ -107,12 +115,14 @@ const Header = ({ setIsFilterVisible, params, setParams, filterParamsStr }) => {
           type="button"
         >
           <PlusIcon size={16} weight="bold" />
-          <span
-            className="ml-2 inline-block tracking-normal"
-            data-cy="new-invoice-button"
-          >
-            New Invoice
-          </span>
+          {isDesktop && (
+            <span
+              className="ml-2 inline-block tracking-normal"
+              data-cy="new-invoice-button"
+            >
+              NEW INVOICE
+            </span>
+          )}
         </Link>
       </div>
     </div>

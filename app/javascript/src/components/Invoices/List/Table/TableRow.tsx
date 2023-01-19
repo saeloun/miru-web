@@ -66,13 +66,13 @@ const TableRow = ({
           wrapperClassName="h-8 w-8 m-auto rounded-3xl p-2 hover:bg-miru-gray-1000"
         />
       </td>
-      <td className="flex cursor-pointer items-center whitespace-nowrap py-5 pr-6 text-left font-medium tracking-normal lg:w-1/3 lg:pr-2">
-        {isDesktop && <Avatar />}
-        <div className="ml-2 lg:ml-10">
-          <span className="text-xs font-normal capitalize text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
+      <td className="flex cursor-pointer items-center whitespace-nowrap py-5 pr-2 text-left font-medium tracking-normal lg:w-1/3">
+        <Avatar />
+        <div className="ml-2 lg:ml-4">
+          <span className="text-sm font-semibold capitalize leading-4 text-miru-dark-purple-1000 lg:text-base lg:leading-5">
             {invoice.client.name}
           </span>
-          <h3 className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
+          <h3 className="text-xs font-medium leading-4 text-miru-dark-purple-400 lg:text-sm lg:leading-5">
             {invoice.invoiceNumber}
           </h3>
         </div>
@@ -87,7 +87,7 @@ const TableRow = ({
           </h3>
         </td>
       )}
-      <td className="px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
+      <td className="hidden px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 md:table-cell lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
         {currencyFormat(invoice.company.baseCurrency, invoice.amount)}
       </td>
       <td
@@ -111,6 +111,11 @@ const TableRow = ({
           className={`${getStatusCssClass(invoice.status)} uppercase`}
           text={invoice.status}
         />
+        <dl className="text-right text-sm font-medium leading-5 md:hidden">
+          <dt className="mt-1">
+            {currencyFormat(invoice.company.baseCurrency, invoice.amount)}
+          </dt>
+        </dl>
       </td>
       {!isDesktop && (
         <td className="text-right text-sm text-miru-dark-purple-1000">
