@@ -6,7 +6,6 @@ FactoryBot.define do
     expense_type { [:personal, :business].sample }
     date { Faker::Time.between(from: 60.days.ago, to: Time.now) }
     description { Faker::Lorem.paragraphs(number: rand(2..8)).join('\n') }
-    company
     expense_category
     vendor
   end
