@@ -1,12 +1,19 @@
 import React from "react";
 
+import { BlurredMiruLogo } from "miruIcons";
 import { Carousel } from "react-responsive-carousel";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
+
+import { MIRU_APP_URL } from "constants/index";
 
 import { carouselItems } from "./utils";
 
 const FeaturePreviews = () => (
   <div className="hidden min-h-full bg-miru-han-purple-1000 md:w-1/2 md:pt-40 lg:block">
+    <a href={MIRU_APP_URL} rel="noreferrer noopener">
+      <div className="absolute right-10 top-10 z-10">
+        <img alt="" height="64" src={BlurredMiruLogo} width="64" />
+      </div>
+    </a>
     <div className="mx-auto w-7/12 md:pt-20">
       <Carousel
         autoPlay

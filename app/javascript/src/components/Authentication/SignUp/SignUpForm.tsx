@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
-import { PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
-import { Square, CheckSquare } from "phosphor-react";
+import { GoogleSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
 import { Paths, TOASTER_DURATION } from "constants/index";
 
 import { signUpFormInitialValues, signUpFormValidationSchema } from "./utils";
+
+import FooterLinks from "../FooterLinks";
 
 interface SignUpFormValues {
   firstName: string;
@@ -52,7 +53,7 @@ const SignUpForm = () => {
               onSubmit={handleSignUpFormSubmit}
             >
               {(props: FormikProps<SignUpFormValues>) => {
-                const { touched, errors, values, setFieldValue } = props;
+                const { touched, errors } = props;
 
                 return (
                   <Form>
@@ -232,40 +233,6 @@ const SignUpForm = () => {
                           )}
                       </div>
                     </div>
-                    {/* Privacy Policy Checkbox */}
-                    <div className="my-6 flex text-xs font-normal leading-4 text-miru-dark-purple-1000">
-                      <div className="mt-2 flex">
-                        {values.isAgreedTermsOfServices ? (
-                          <CheckSquare
-                            className="mr-2 cursor-pointer text-miru-han-purple-1000"
-                            size={16}
-                            weight="bold"
-                            onClick={() => {
-                              setFieldValue("isAgreedTermsOfServices", false);
-                            }}
-                          />
-                        ) : (
-                          <Square
-                            className="mr-2 cursor-pointer text-miru-han-purple-1000"
-                            size={16}
-                            weight="bold"
-                            onClick={() => {
-                              setFieldValue("isAgreedTermsOfServices", true);
-                            }}
-                          />
-                        )}
-                        <h4>
-                          I agree to the&nbsp;
-                          <span className="form__link cursor-pointer">
-                            Terms of Service&nbsp;
-                          </span>
-                          and&nbsp;
-                          <span className="form__link cursor-pointer">
-                            Privacy Policy
-                          </span>
-                        </h4>
-                      </div>
-                    </div>
                     {/* Sign Up Button */}
                     <div className="mb-3">
                       <button
@@ -290,18 +257,19 @@ const SignUpForm = () => {
                         className="form__button whitespace-nowrap"
                         data-cy="sign-up-button"
                       >
+                        <img alt="" className="mr-2" src={GoogleSVG} />
                         Sign Up with Google
                       </button>
                     </div>
                     {/* Sign Up with Apple */}
-                    <div className="mb-3">
+                    {/* <div className="mb-3">
                       <button
                         className="form__button whitespace-nowrap"
                         data-cy="sign-up-button"
                       >
                         Sign Up with Apple
                       </button>
-                    </div>
+                    </div> */}
                     <p className="text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
                       Already have an account?&nbsp;
                       <span
@@ -318,6 +286,7 @@ const SignUpForm = () => {
               }}
             </Formik>
           </div>
+          <FooterLinks />
         </div>
       </div>
     </>
