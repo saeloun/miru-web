@@ -67,6 +67,7 @@ const TimeInput = ({
   return (
     <input
       className={className}
+      data-cy="time-input"
       disabled={disabled}
       name={name || undefined}
       placeholder={placeholder}

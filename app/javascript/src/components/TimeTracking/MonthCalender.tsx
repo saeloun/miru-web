@@ -228,6 +228,7 @@ const MonthCalender = ({
             {Array.from(Array(7).keys()).map(dayNum =>
               weekInfo[dayNum] ? (
                 <div
+                  data-cy="month-calendar"
                   key={dayNum}
                   className={`flex h-14 w-24 cursor-pointer justify-end rounded-md border-2 bg-white p-1
                     ${

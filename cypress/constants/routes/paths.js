@@ -7,3 +7,4 @@ export const clientsPath = "/clients";
 export const organisationSettingsPath = "/profile/edit/organization"
 export const profileSettings = "/profile/edit"
 export const projects = "/projects";
+export const timetracking ="/time-tracking";

@@ -404,6 +404,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           {view !== "week" && !newEntryView && (
             <button
               className="h-14 w-full border-2 border-miru-han-purple-600 p-4 text-lg font-bold tracking-widest text-miru-han-purple-600"
+              data-cy="new-entry-button"
               onClick={() => {
                 setNewEntryView(true);
                 setEditEntryId(0);

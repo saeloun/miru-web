@@ -161,6 +161,7 @@ const AddEntry: React.FC<Iprops> = ({
         <div className="mb-2 flex w-129 justify-between">
           <select
             className="h-8 w-64 rounded-sm bg-miru-gray-100"
+            data-cy="client-selector"
             id="client"
             name="client"
             value={client || "Client"}
@@ -180,6 +181,7 @@ const AddEntry: React.FC<Iprops> = ({
           </select>
           <select
             className="h-8 w-64 rounded-sm bg-miru-gray-100"
+            data-cy="project-selector"
             id="project"
             name="project"
             value={project}
@@ -202,6 +204,7 @@ const AddEntry: React.FC<Iprops> = ({
         </div>
         <TextareaAutosize
           cols={60}
+          data-cy="notes"
           name="notes"
           placeholder=" Notes"
           rows={5}
@@ -267,6 +270,7 @@ const AddEntry: React.FC<Iprops> = ({
       <div className="max-w-min">
         {editEntryId === 0 ? (
           <button
+            data-cy="save-button"
             disabled={handleDisableBtn()}
             className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
               handleDisableBtn()
