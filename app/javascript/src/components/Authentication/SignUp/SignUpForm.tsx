@@ -25,7 +25,7 @@ const SignUpForm = () => {
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
 
-  const handleSignUpFormSubmit = async values => {
+  const handleSignUpFormSubmit = async (values: any) => {
     const { firstName, lastName, email, password, confirm_password } = values;
     const payload = {
       first_name: firstName,
@@ -244,47 +244,47 @@ const SignUpForm = () => {
                       </button>
                     </div>
                     {/* OR seperator */}
-                    <div className="relative mb-3 flex items-center py-5">
-                      <div className="flex-grow border-t border-miru-gray-1000" />
-                      <span className="mx-4 flex-shrink text-xs text-miru-dark-purple-1000">
-                        or
-                      </span>
-                      <div className="flex-grow border-t border-miru-gray-1000" />
-                    </div>
-                    {/* Sign Up with Google */}
-                    <div className="mb-3">
-                      <button
-                        className="form__button whitespace-nowrap"
-                        data-cy="sign-up-button"
-                      >
-                        <img alt="" className="mr-2" src={GoogleSVG} />
-                        Sign Up with Google
-                      </button>
-                    </div>
-                    {/* Sign Up with Apple */}
-                    {/* <div className="mb-3">
-                      <button
-                        className="form__button whitespace-nowrap"
-                        data-cy="sign-up-button"
-                      >
-                        Sign Up with Apple
-                      </button>
-                    </div> */}
-                    <p className="text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
-                      Already have an account?&nbsp;
-                      <span
-                        className="form__link inline cursor-pointer"
-                        data-cy="sign-in-link"
-                      >
-                        <a href={Paths.SIGN_IN}>
-                          <span className="mr-2 inline-block">Sign In</span>
-                        </a>
-                      </span>
-                    </p>
                   </Form>
                 );
               }}
             </Formik>
+            <div className="relative mb-3 flex items-center py-5">
+              <div className="flex-grow border-t border-miru-gray-1000" />
+              <span className="mx-4 flex-shrink text-xs text-miru-dark-purple-1000">
+                or
+              </span>
+              <div className="flex-grow border-t border-miru-gray-1000" />
+            </div>
+            {/* Sign Up with Google */}
+            <div className="mb-3">
+              <button
+                className="form__button whitespace-nowrap"
+                data-cy="sign-up-button"
+              >
+                <img alt="" className="mr-2" src={GoogleSVG} />
+                Sign Up with Google
+              </button>
+            </div>
+            {/* Sign Up with Apple */}
+            <div className="mb-3">
+              <button
+                className="form__button whitespace-nowrap"
+                data-cy="sign-up-button"
+              >
+                Sign Up with Apple
+              </button>
+            </div>
+            <p className="text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+              Already have an account?&nbsp;
+              <span
+                className="form__link inline cursor-pointer"
+                data-cy="sign-in-link"
+              >
+                <a href={Paths.SIGN_IN}>
+                  <span className="mr-2 inline-block">Sign In</span>
+                </a>
+              </span>
+            </p>
           </div>
           <FooterLinks />
         </div>

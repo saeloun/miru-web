@@ -135,54 +135,52 @@ const SignInForm = () => {
                       </span>
                       <div className="flex-grow border-t border-miru-gray-1000" />
                     </div>
-                    {/* Sign In with Google */}
-                    <div className="mb-3">
-                      <button
-                        className="form__button whitespace-nowrap"
-                        data-cy="sign-up-button"
-                      >
-                        <img alt="" className="mr-2" src={GoogleSVG} />
-                        Sign In with Google
-                      </button>
-                    </div>
-                    {/* Sign In with Apple */}
-                    {/* <div className="mb-3">
-                      <button
-                        className="form__button whitespace-nowrap"
-                        data-cy="sign-up-button"
-                      >
-                        Sign In with Apple
-                      </button>
-                    </div> */}
-                    {/* Forgot Password */}
-                    <p className="mb-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
-                      <span
-                        className="form__link inline cursor-pointer"
-                        data-cy="sign-in-link"
-                      >
-                        <a href={Paths.FORGOT_PASSWORD}>
-                          <span className="mr-2 inline-block">
-                            Forgot Password?
-                          </span>
-                        </a>
-                      </span>
-                    </p>
-                    {/* Don't have an account? */}
-                    <p className="text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
-                      Don't have an account?&nbsp;
-                      <span
-                        className="form__link inline cursor-pointer"
-                        data-cy="sign-in-link"
-                      >
-                        <a href={Paths.SIGN_UP}>
-                          <span className="mr-2 inline-block">Sign Up</span>
-                        </a>
-                      </span>
-                    </p>
                   </Form>
                 );
               }}
             </Formik>
+            {/* Sign In with Google */}
+            <div className="mb-3">
+              <button
+                className="form__button whitespace-nowrap"
+                data-cy="sign-up-button"
+              >
+                <img alt="" className="mr-2" src={GoogleSVG} />
+                Sign In with Google
+              </button>
+            </div>
+            {/* Sign In with Apple */}
+            <div className="mb-3">
+              <button
+                className="form__button whitespace-nowrap"
+                data-cy="sign-up-button"
+              >
+                Sign In with Apple
+              </button>
+            </div>
+            {/* Forgot Password */}
+            <p className="mb-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+              <span
+                className="form__link inline cursor-pointer"
+                data-cy="sign-in-link"
+              >
+                <a href={Paths.FORGOT_PASSWORD}>
+                  <span className="mr-2 inline-block">Forgot Password?</span>
+                </a>
+              </span>
+            </p>
+            {/* Don't have an account? */}
+            <p className="text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+              Don't have an account?&nbsp;
+              <span
+                className="form__link inline cursor-pointer"
+                data-cy="sign-in-link"
+              >
+                <a href={Paths.SIGN_UP}>
+                  <span className="mr-2 inline-block">Sign Up</span>
+                </a>
+              </span>
+            </p>
           </div>
           <FooterLinks />
         </div>
