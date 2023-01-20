@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
-import { PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
+import { GoogleSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
 import { Paths, TOASTER_DURATION } from "constants/index";
 
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
+
+import FooterLinks from "../FooterLinks";
 
 interface SignInFormValues {
   email: string;
@@ -24,7 +26,7 @@ const SignInForm = () => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <div className="w-full px-8 pt-16 pb-4 md:px-0 md:pt-36 lg:w-1/2">
+      <div className="relative w-full px-8 pt-16 pb-4 md:px-0 md:pt-36 lg:w-1/2">
         <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
           <h1 className="text-center font-manrope text-4xl font-extrabold text-miru-han-purple-1000">
             Welcome back!
@@ -139,18 +141,19 @@ const SignInForm = () => {
                         className="form__button whitespace-nowrap"
                         data-cy="sign-up-button"
                       >
+                        <img alt="" className="mr-2" src={GoogleSVG} />
                         Sign In with Google
                       </button>
                     </div>
                     {/* Sign In with Apple */}
-                    <div className="mb-3">
+                    {/* <div className="mb-3">
                       <button
                         className="form__button whitespace-nowrap"
                         data-cy="sign-up-button"
                       >
                         Sign In with Apple
                       </button>
-                    </div>
+                    </div> */}
                     {/* Forgot Password */}
                     <p className="mb-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
                       <span
@@ -181,6 +184,7 @@ const SignInForm = () => {
               }}
             </Formik>
           </div>
+          <FooterLinks />
         </div>
       </div>
     </>

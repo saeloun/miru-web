@@ -1,36 +1,59 @@
-import { SaelounLogoSVG as timeTrackingScreen } from "miruIcons";
+import {
+  MiruTimeTrackingScreen,
+  MiruReportAndAnalysisScreen,
+  MiruPaymentAndInvoicesScreen,
+  MiruManagingProjectsScreen,
+  MiruManagingClientsScreen,
+  MiruManagingEmployeesScreen,
+} from "miruIcons";
 
 export const carouselItems = [
   {
-    image: timeTrackingScreen,
+    image: MiruTimeTrackingScreen,
     texts: {
-      title: "Start with effortless time tracking today 1",
+      title: "Start with effortless time tracking today",
       description:
         "Get a detailed report of your team's efforts & measure their time distribution across different projects. Identify team burnouts & underworked members for better decision-making.",
     },
   },
   {
-    image: timeTrackingScreen,
+    image: MiruReportAndAnalysisScreen,
     texts: {
-      title: "Start with effortless time tracking today 2",
+      title: "Powerful Reporting & Analysis ",
       description:
-        "Get a detailed report of your team's efforts & measure their time distribution across different projects. Identify team burnouts & underworked members for better decision-making.",
+        "Get a wide range of business reports with accurate insights and data into your business profitability, sales revenue, and operational efficiency.",
     },
   },
   {
-    image: timeTrackingScreen,
+    image: MiruPaymentAndInvoicesScreen,
     texts: {
-      title: "Start with effortless time tracking today 3",
+      title: "Payment & Invoices",
       description:
-        "Get a detailed report of your team's efforts & measure their time distribution across different projects. Identify team burnouts & underworked members for better decision-making.",
+        "Create and send invoices instantly to clients, and accept payments in a seamless way with integrated online payment methods.",
     },
   },
   {
-    image: timeTrackingScreen,
+    image: MiruManagingClientsScreen,
     texts: {
-      title: "Start with effortless time tracking today 4",
+      title: "Managing Clients",
       description:
-        "Get a detailed report of your team's efforts & measure their time distribution across different projects. Identify team burnouts & underworked members for better decision-making.",
+        "Analyze and manage clients effectively, gauge your team efforts on every client, and track budgets, cost constraints, and profitability.",
+    },
+  },
+  {
+    image: MiruManagingEmployeesScreen,
+    texts: {
+      title: "Managing Employees",
+      description:
+        "Store and manage employee details, track team contribution, and settle salary payments securely.",
+    },
+  },
+  {
+    image: MiruManagingProjectsScreen,
+    texts: {
+      title: "Managing Projects",
+      description:
+        "Get comprehensive and in-depth reports on all projects handled by your teams and monitor team contributions in individual projects.",
     },
   },
 ];

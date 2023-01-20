@@ -97,3 +97,6 @@ export enum TeamModalType {
 export enum LocalStorageKeys {
   INVOICE_FILTERS = "invoiceFilters",
 }
+
+export const MIRU_APP_URL = "https://miru.so/";
+export const MIRU_APP_SUPPORT_EMAIL_ID = "mailto:mirusupport@saeloun.com";

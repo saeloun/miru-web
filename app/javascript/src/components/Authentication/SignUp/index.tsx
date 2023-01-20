@@ -13,7 +13,7 @@ const SignUp = () => {
   }, []);
 
   return (
-    <div className="flex min-h-screen">
+    <div className="relative flex min-h-screen">
       <SignUpForm />
       <FeaturePreviews />
     </div>
