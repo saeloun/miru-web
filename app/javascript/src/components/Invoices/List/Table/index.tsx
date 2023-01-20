@@ -27,10 +27,11 @@ const Table = ({
       className="min-w-full divide-y divide-gray-200 bg-white"
       data-cy="invoices-list"
     >
-      {invoices.map(invoice => (
+      {invoices.map((invoice, index) => (
         <TableRow
           deselectInvoices={deselectInvoices}
           fetchInvoices={fetchInvoices}
+          index={index}
           invoice={invoice}
           isDesktop={isDesktop}
           isSelected={selectedInvoices.includes(invoice.id)}

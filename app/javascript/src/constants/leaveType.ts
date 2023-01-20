@@ -100,3 +100,22 @@ export const quarter_four = [
     name: "December",
   },
 ];
+
+export const yearCalendar = {
+  0: {
+    name: "Jan - Mar",
+    quarter: quarter_one,
+  },
+  1: {
+    name: "Apr - Jun",
+    quarter: quarter_two,
+  },
+  2: {
+    name: "Jul - Sept",
+    quarter: quarter_three,
+  },
+  3: {
+    name: "Oct - Dec",
+    quarter: quarter_four,
+  },
+};

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+import { useOutsideClick } from "helpers";
 
 import Loader from "common/Loader/index";
 import Toastr from "common/Toastr";
@@ -25,6 +27,9 @@ const LeavesAndHolidays = () => {
     visibility: false,
     index: 0,
   });
+  const wrapperRef = useRef(null);
+  const optionalWrapperRef = useRef(null);
+  const modalWrapperRef = useRef(null);
 
   const [enableOptionalHolidays, setEnableOptionalHolidays] =
     useState<any>(false);
@@ -42,6 +47,24 @@ const LeavesAndHolidays = () => {
   const getData = async () => {
     setIsLoading(true);
   };
+
+  useOutsideClick(wrapperRef, () => {
+    setShowDatePicker({
+      visibility: false,
+      index: 0,
+    });
+  });
+
+  useOutsideClick(optionalWrapperRef, () => {
+    setShowOptionalDatePicker({
+      visibility: false,
+      index: 0,
+    });
+  });
+
+  useOutsideClick(modalWrapperRef, () => {
+    setShowCalendar(false);
+  });
 
   const toggleCalendarModal = () => setShowCalendar(!showCalendar);
 
@@ -64,37 +87,9 @@ const LeavesAndHolidays = () => {
     ]);
   };
 
-  const handleRepetitionTypeChange = (e, index) => {
+  const updateCondition = (type, value, index) => {
     const editLeaveList = [...leaveBalanceList];
-    editLeaveList[index].repetitionType = e.value;
-    setLeaveBalanceList([...editLeaveList]);
-    setIsDetailUpdated(true);
-  };
-
-  const handleCountTypeChange = (e, index) => {
-    const editLeaveList = [...leaveBalanceList];
-    editLeaveList[index].countType = e.value;
-    setLeaveBalanceList([...editLeaveList]);
-    setIsDetailUpdated(true);
-  };
-
-  const handleTotalChange = (e, index) => {
-    const editLeaveList = [...leaveBalanceList];
-    editLeaveList[index].total = e.target.value;
-    setLeaveBalanceList([...editLeaveList]);
-    setIsDetailUpdated(true);
-  };
-
-  const handleLeaveTypeChange = (e, index) => {
-    const editLeaveList = [...leaveBalanceList];
-    editLeaveList[index].leaveType = e.value;
-    setLeaveBalanceList([...editLeaveList]);
-    setIsDetailUpdated(true);
-  };
-
-  const handleCarryForwardCountChange = (e, index) => {
-    const editLeaveList = [...leaveBalanceList];
-    editLeaveList[index].carryforwardedCount = e.target.value;
+    editLeaveList[index][type] = value;
     setLeaveBalanceList([...editLeaveList]);
     setIsDetailUpdated(true);
   };
@@ -223,6 +218,7 @@ const LeavesAndHolidays = () => {
         <Details
           showCalendar={showCalendar}
           toggleCalendarModal={toggleCalendarModal}
+          wrapperRef={modalWrapperRef}
         />
       ) : (
         <EditLeavesAndHolidays
@@ -230,28 +226,26 @@ const LeavesAndHolidays = () => {
           errDetails={errDetails}
           handleAddHoliday={handleAddHoliday}
           handleAddLeaveType={handleAddLeaveType}
-          handleCarryForwardCountChange={handleCarryForwardCountChange}
           handleChangeRepetitionOpHoliday={handleChangeRepetitionOpHoliday}
           handleChangeTotalOpHoliday={handleChangeTotalOpHoliday}
           handleCheckboxClick={handleCheckboxClick}
-          handleCountTypeChange={handleCountTypeChange}
           handleDatePicker={handleDatePicker}
           handleDeleteHoliday={handleDeleteHoliday}
           handleDeleteLeaveBalance={handleDeleteLeaveBalance}
           handleHolidateNameChange={handleHolidateNameChange}
-          handleLeaveTypeChange={handleLeaveTypeChange}
-          handleRepetitionTypeChange={handleRepetitionTypeChange}
-          handleTotalChange={handleTotalChange}
           holidayList={holidayList}
           leaveBalanceList={leaveBalanceList}
           leaveTypeOptions={leaveTypeOptions}
           optionalHolidaysList={optionalHolidaysList}
           optionalRepetitionType={optionalRepetitionType}
+          optionalWrapperRef={optionalWrapperRef}
           setShowDatePicker={setShowDatePicker}
           setShowOptionalDatePicker={setShowOptionalDatePicker}
           showDatePicker={showDatePicker}
           showOptionalDatePicker={showOptionalDatePicker}
           totalOptionalHolidays={totalOptionalHolidays}
+          updateCondition={updateCondition}
+          wrapperRef={wrapperRef}
         />
       )}
     </div>
