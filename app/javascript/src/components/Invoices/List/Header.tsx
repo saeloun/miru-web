@@ -101,11 +101,7 @@ const Header = ({
               {appliedFilterCount}
             </span>
           )}
-          <FilterIcon
-            color={filterParamsStr ? "#5B34EA" : "#303A4B"}
-            size={16}
-            weight="bold"
-          />
+          <FilterIcon color="#5B34EA" size={16} weight="bold" />
         </button>
       </div>
       <div className="flex">

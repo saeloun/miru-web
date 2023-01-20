@@ -231,6 +231,7 @@ const Invoices = ({ isDesktop }) => {
             <FilterSideBar
               filterIntialValues={filterIntialValues}
               filterParams={filterParams}
+              isDesktop={isDesktop}
               selectedInput={selectedInput}
               setFilterParams={setFilterParams}
               setIsFilterVisible={setIsFilterVisible}

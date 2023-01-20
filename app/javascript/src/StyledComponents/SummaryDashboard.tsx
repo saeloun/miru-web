@@ -16,9 +16,9 @@ const SummaryDashboard = ({ summaryList, currency }: SummaryDashboardProps) => (
     {summaryList.map((summary, index) => (
       <li
         key={index}
-        className={`page-display__box cursor-pointer pt-4 md:w-full lg:mt-6 ${
+        className={`page-display__box w-auto flex-1 cursor-pointer pt-4 md:w-full lg:mt-6 ${
           summaryList.length > 3 &&
-          "w-1/2 border-b pb-2 md:w-full md:border-b-0"
+          "w-1/2 flex-auto border-b pb-2 md:w-full md:border-b-0"
         }`}
         onClick={summary.onClick}
       >
