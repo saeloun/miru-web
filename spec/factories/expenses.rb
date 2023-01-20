@@ -8,5 +8,6 @@ FactoryBot.define do
     description { Faker::Lorem.paragraphs(number: rand(2..8)).join('\n') }
     expense_category
     vendor
+    company
   end
 end

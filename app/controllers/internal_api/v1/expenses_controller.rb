@@ -2,16 +2,25 @@
 
 class InternalApi::V1::ExpensesController < ApplicationController
   def create
-    authorize :create, policy_class: ExpensePolicy
+    authorize Expense
     expense = current_company.expenses.create!(expense_params)
     render :create, locals: {
-      expense:,
-      vendor: expense.vendor,
-      expense_category: expense.expense_category
+      expense: ExpensePresenter.new(expense).snippet
+    }
+  end
+
+  def show
+    authorize expense
+    render :show, locals: {
+      expense: ExpensePresenter.new(expense).snippet
     }
   end
 
   private
+
+    def expense
+      @_expense ||= Expense.find(params[:id])
+    end
 
     def expense_params
       params.require(:expense).permit(
