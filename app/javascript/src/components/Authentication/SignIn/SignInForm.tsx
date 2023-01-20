@@ -150,14 +150,14 @@ const SignInForm = () => {
               </button>
             </div>
             {/* Sign In with Apple */}
-            <div className="mb-3">
+            {/* <div className="mb-3">
               <button
                 className="form__button whitespace-nowrap"
                 data-cy="sign-up-button"
               >
                 Sign In with Apple
               </button>
-            </div>
+            </div> */}
             {/* Forgot Password */}
             <p className="mb-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
               <span
