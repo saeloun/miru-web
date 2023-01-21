@@ -4,7 +4,7 @@ require "rails_helper"
 
 def project_list_service(client_id, user_id, billable, search)
   JSON.parse(
-    ProjectListService.new(Company.first, client_id, user_id, billable, search)
+    Projects::SearchService.new(search, Company.first, client_id, user_id, billable)
     .process
     .map { |project| {
       id: project.id, name: project.name, isBillable: project.billable,
