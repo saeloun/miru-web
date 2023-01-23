@@ -72,7 +72,7 @@ const SignInForm = () => {
                     </div>
                     {/* Password */}
                     <div className="field">
-                      <div className="outline relative mb-6">
+                      <div className="outline relative">
                         <Field
                           // data-cy={dataCyName}
                           name="password"
@@ -85,8 +85,9 @@ const SignInForm = () => {
                           } `}
                         />
                         <label
-                          className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
                           htmlFor="Name"
+                          className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium
+                          text-miru-dark-purple-200 duration-300"
                         >
                           Password
                         </label>
@@ -112,7 +113,7 @@ const SignInForm = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="block text-xs tracking-wider text-red-600">
+                    <div className="mb-6 block text-xs tracking-wider text-red-600">
                       {errors.password && touched.password && (
                         <div>{errors.password}</div>
                       )}
