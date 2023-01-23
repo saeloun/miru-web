@@ -27,8 +27,10 @@ const AddEntry: React.FC<Iprops> = ({
   selectedFullDate,
   editEntryId,
   setEditEntryId,
+  handleAddEntryDateChange,
   handleFilterEntry,
   handleRelocateEntry,
+  setSelectedFullDate,
 }) => {
   const [note, setNote] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
@@ -45,6 +47,10 @@ const AddEntry: React.FC<Iprops> = ({
   useOutsideClick(datePickerRef, () => {
     setDisplayDatePicker(false);
   });
+
+  useEffect(() => {
+    setSelectedDate(selectedFullDate);
+  }, [selectedFullDate]);
 
   const handleFillData = () => {
     if (!editEntryId) return;
@@ -133,8 +139,9 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   const handleDateChangeFromDatePicker = (date: Date) => {
-    setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
+    setSelectedFullDate(dayjs(date).format("YYYY-MM-DD"));
     setDisplayDatePicker(false);
+    handleAddEntryDateChange(dayjs(date));
   };
 
   const handleDisableBtn = () => {
@@ -153,9 +160,10 @@ const AddEntry: React.FC<Iprops> = ({
 
   return (
     <div
-      className={`min-h-24 flex justify-between rounded-lg p-4 shadow-2xl ${
-        editEntryId ? "mt-10" : ""
-      }`}
+      className={`
+        min-h-24 flex justify-between rounded-lg p-4 shadow-2xl ${
+          editEntryId ? "mt-10" : ""
+        }`}
     >
       <div className="w-1/2">
         <div className="mb-2 flex w-129 justify-between">
@@ -206,9 +214,11 @@ const AddEntry: React.FC<Iprops> = ({
           placeholder=" Notes"
           rows={5}
           value={note}
-          className={`focus:miru-han-purple-1000 outline-none mt-2 w-129 resize-none overflow-y-auto rounded-sm bg-miru-gray-100 px-1 ${
-            editEntryId ? "h-auto" : "h-8"
-          }`}
+          className={`
+            focus:miru-han-purple-1000 outline-none mt-2 w-129 resize-none overflow-y-auto rounded-sm bg-miru-gray-100 px-1 ${
+              editEntryId ? "h-auto" : "h-8"
+            }
+          `}
           onChange={e => setNote(e.target["value"])}
         />
       </div>
@@ -228,7 +238,7 @@ const AddEntry: React.FC<Iprops> = ({
             <div
               className="formatted-date flex h-8 w-29 items-center justify-center rounded-sm bg-miru-gray-100 p-1 text-sm"
               onClick={() => {
-                if (editEntryId) setDisplayDatePicker(true);
+                setDisplayDatePicker(true);
               }}
             >
               {format(new Date(selectedDate), "do MMM, yyyy")}
@@ -314,8 +324,10 @@ interface Iprops {
   editEntryId: number;
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   entryList: object;
+  handleAddEntryDateChange: any;
   handleFilterEntry: (date: string, entryId: string | number) => object; // eslint-disable-line
   handleRelocateEntry: (date: string, entry: object) => void; // eslint-disable-line
+  setSelectedFullDate: any;
 }
 
 export default AddEntry;
