@@ -78,7 +78,7 @@ const Header = ({
               onChange={e => setSearchQuery(e.target.value)}
               onKeyDown={e => onKeydownHandler(e)}
             />
-            <button className=" absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 ">
+            <button className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3 ">
               {searchQuery ? (
                 <XIcon size={12} weight="bold" onClick={onSearchClear} />
               ) : (

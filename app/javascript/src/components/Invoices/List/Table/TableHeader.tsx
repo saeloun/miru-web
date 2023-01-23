@@ -59,19 +59,19 @@ const TableHeader = ({
         </th>
       )}
       <th
-        className="hidden w-1/6 px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 md:table-cell lg:px-6"
+        className="hidden w-1/6 px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 lg:table-cell lg:px-6"
         scope="col"
       >
         AMOUNT
       </th>
       <th
-        className="hidden px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 md:table-cell lg:px-6"
+        className="hidden px-2 py-5 text-right text-xs font-normal tracking-widest text-miru-black-1000 lg:table-cell lg:px-6"
         scope="col"
       >
         STATUS
       </th>
       <th
-        className="table-cell px-2 py-5 text-right text-xs font-medium leading-4 tracking-widest text-miru-black-1000 md:hidden lg:px-6"
+        className="table-cell px-2 py-5 text-right text-xs font-medium leading-4 tracking-widest text-miru-black-1000 lg:hidden lg:px-6"
         scope="col"
       >
         STATUS/ <br />
