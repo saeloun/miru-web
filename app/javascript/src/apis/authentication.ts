@@ -10,11 +10,19 @@ const forgotPassword = payload =>
 const resetPassword = payload =>
   axios.put("/reset_password", { user: payload });
 
+const googleAuth = () =>
+  axios
+    .create({
+      baseURL: "/",
+    })
+    .post("users/auth/google_oauth2");
+
 const authenticationApi = {
   signin,
   signup,
   forgotPassword,
   resetPassword,
+  googleAuth,
 };
 
 export default authenticationApi;
