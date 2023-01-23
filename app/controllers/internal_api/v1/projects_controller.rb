@@ -3,7 +3,7 @@
 class InternalApi::V1::ProjectsController < InternalApi::V1::ApplicationController
   def index
     authorize Project
-    render :index, locals: ProjectsFetchService.new(current_company, params).process, status: :ok
+    render :index, locals: Projects::IndexService.new(current_company, params).process, status: :ok
   end
 
   def show
