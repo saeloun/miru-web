@@ -260,6 +260,7 @@ const SignUpForm = () => {
               <button
                 className="form__button whitespace-nowrap"
                 data-cy="sign-up-button"
+                onClick={authenticationApi.googleAuth}
               >
                 <img alt="" className="mr-2" src={GoogleSVG} />
                 Sign Up with Google
