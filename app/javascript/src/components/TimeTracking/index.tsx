@@ -291,6 +291,17 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     setWeeklyData(() => weekArr);
   };
 
+  const handleAddEntryDateChange = date => {
+    const date1 = dayjs(date).weekday(dayjs().weekday());
+    const date2 = dayjs();
+
+    const days = date1.diff(date2, "days");
+    setWeekDay(days > 0 ? days + 1 : days); //The difference between selected date to current date is always comes 1 day less. This condition resolves that issue.
+    setSelectDate(dayjs(date).weekday());
+    setCurrentMonthNumber(dayjs(date).get("month"));
+    setCurrentYear(dayjs(date).year());
+  };
+
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
@@ -392,6 +403,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               editEntryId={editEntryId}
               entryList={entryList}
               fetchEntries={fetchEntries}
+              handleAddEntryDateChange={handleAddEntryDateChange}
               handleFilterEntry={handleFilterEntry}
               handleRelocateEntry={handleRelocateEntry}
               projects={projects}
@@ -399,6 +411,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               selectedFullDate={selectedFullDate}
               setEditEntryId={setEditEntryId}
               setNewEntryView={setNewEntryView}
+              setSelectedFullDate={setSelectedFullDate}
             />
           )}
           {view !== "week" && !newEntryView && (
@@ -453,6 +466,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 editEntryId={editEntryId}
                 entryList={entryList}
                 fetchEntries={fetchEntries}
+                handleAddEntryDateChange={handleAddEntryDateChange}
                 handleFilterEntry={handleFilterEntry}
                 handleRelocateEntry={handleRelocateEntry}
                 key={entry.id}
@@ -461,6 +475,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 selectedFullDate={selectedFullDate}
                 setEditEntryId={setEditEntryId}
                 setNewEntryView={setNewEntryView}
+                setSelectedFullDate={setSelectedFullDate}
               />
             ) : (
               <EntryCard
