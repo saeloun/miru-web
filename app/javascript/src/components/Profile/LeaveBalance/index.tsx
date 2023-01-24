@@ -83,64 +83,27 @@ const LeaveBalance = () => {
     </button>
   );
 
+  const getDateWithType = (holiday, date) =>
+    holiday.find(o => o.date === dayjs(date).format("DD-MM-YYYY"));
+
+  const getCalendarButton = (className, date, result) => (
+    <CalendarButton className={className} date={date} result={result} />
+  );
+
   const tileContent = ({ date }) => {
     let result;
-    if (
-      (result = holiday.find(o => o.date === dayjs(date).format("DD-MM-YYYY")))
-    ) {
-      return <CalendarButton className="holiday" date={date} result={result} />;
-    } else if (
-      (result = annualLeave.find(
-        o => o.date === dayjs(date).format("DD-MM-YYYY")
-      ))
-    ) {
-      return (
-        <CalendarButton className="annual-leave" date={date} result={result} />
-      );
-    } else if (
-      (result = partialAnnualLeave.find(
-        o => o.date === dayjs(date).format("DD-MM-YYYY")
-      ))
-    ) {
-      return (
-        <CalendarButton
-          className="annual-leave-partial"
-          date={date}
-          result={result}
-        />
-      );
-    } else if (
-      (result = sickLeave.find(
-        o => o.date === dayjs(date).format("DD-MM-YYYY")
-      ))
-    ) {
-      return (
-        <CalendarButton className="sick-leave" date={date} result={result} />
-      );
-    } else if (
-      (result = maternityLeave.find(
-        o => o.date === dayjs(date).format("DD-MM-YYYY")
-      ))
-    ) {
-      return (
-        <CalendarButton
-          className="maternity-leave"
-          date={date}
-          result={result}
-        />
-      );
-    } else if (
-      (result = upcomingOptionHoliday.find(
-        o => o.date === dayjs(date).format("DD-MM-YYYY")
-      ))
-    ) {
-      return (
-        <CalendarButton
-          className="optional-holiday"
-          date={date}
-          result={result}
-        />
-      );
+    if ((result = getDateWithType(holiday, date))) {
+      return getCalendarButton("holiday", date, result);
+    } else if ((result = getDateWithType(annualLeave, date))) {
+      return getCalendarButton("annual-leave", date, result);
+    } else if ((result = getDateWithType(partialAnnualLeave, date))) {
+      return getCalendarButton("annual-leave-partial", date, result);
+    } else if ((result = getDateWithType(sickLeave, date))) {
+      return getCalendarButton("sick-leave", date, result);
+    } else if ((result = getDateWithType(maternityLeave, date))) {
+      return getCalendarButton("maternity-leave", date, result);
+    } else if ((result = getDateWithType(upcomingOptionHoliday, date))) {
+      return getCalendarButton("optional-holiday", date, result);
     }
 
     return <button>{date.getDate()}</button>;
