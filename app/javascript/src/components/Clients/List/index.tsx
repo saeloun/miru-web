@@ -10,11 +10,11 @@ import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 import { TOASTER_DURATION } from "constants/index";
+import { unmapClientList } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
 
-import { unmapClientList } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 import NewClient from "../Modals/NewClient";
@@ -53,7 +53,7 @@ const getTableData = clients => {
               />
             )}
           </div>
-          <div className="pt-2 text-base text-miru-dark-purple-1000">
+          <div className="pt-2 text-base capitalize text-miru-dark-purple-1000">
             {client.name}
           </div>
         </div>
