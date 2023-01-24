@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { Avatar } from "StyledComponents";
+import { Avatar, Tooltip } from "StyledComponents";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clientApi from "apis/clients";
@@ -20,20 +20,22 @@ import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 import NewClient from "../Modals/NewClient";
 
-const getTableData = clients => {
+const getTableData = (clients, handleTooltip, showTooltip, toolTipRef) => {
   if (clients) {
     return clients.map(client => ({
       col1: (
-        <div className="flex">
-          {client.logo ? (
+        <Tooltip content={client.name} show={showTooltip}>
+          <div className="flex">
             <Avatar classNameImg="mr-4" url={client.logo} />
-          ) : (
-            <Avatar classNameInitialsWrapper="mr-4" name={client.name} />
-          )}
-          <div className="overflow-hidden truncate whitespace-nowrap pt-2 text-base capitalize text-miru-dark-purple-1000">
-            {client.name}
+            <span
+              className="overflow-hidden truncate whitespace-nowrap pt-2 text-base capitalize text-miru-dark-purple-1000"
+              ref={toolTipRef}
+              onMouseEnter={handleTooltip}
+            >
+              {client.name}
+            </span>
           </div>
-        </div>
+        </Tooltip>
       ),
       col2: (
         <div className="text-left text-sm text-miru-dark-purple-1000">
@@ -66,8 +68,10 @@ const Clients = ({ isAdminUser }) => {
     useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showToolTip, setShowToolTip] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const toolTipRef = useRef(null);
 
   const handleEditClick = id => {
     setShowEditDialog(true);
@@ -92,6 +96,14 @@ const Clients = ({ isAdminUser }) => {
 
   const handleRowClick = id => {
     navigate(`${id}`);
+  };
+
+  const handleTooltip = () => {
+    if (toolTipRef?.current?.offsetWidth < toolTipRef?.current?.scrollWidth) {
+      setShowToolTip(true);
+    } else {
+      setShowToolTip(false);
+    }
   };
 
   useEffect(() => {
@@ -148,7 +160,12 @@ const Clients = ({ isAdminUser }) => {
     },
   ];
 
-  const tableData = getTableData(clientData);
+  const tableData = getTableData(
+    clientData,
+    handleTooltip,
+    showToolTip,
+    toolTipRef
+  );
 
   if (loading) {
     return (
