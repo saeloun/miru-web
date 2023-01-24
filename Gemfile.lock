@@ -12,15 +12,6 @@ GIT
       smart_properties
 
 GIT
-  remote: https://github.com/buildkite/test-collector-ruby.git
-  revision: 58577eac6208a11b7a1198a5ab2c75cb0d40ba9f
-  branch: main
-  specs:
-    buildkite-test_collector (1.4.1)
-      activesupport (>= 4.2)
-      websocket (~> 1.2)
-
-GIT
   remote: https://github.com/heartcombo/devise
   revision: 6d32d2447cc0f3739d9732246b5a5bde98d9e032
   branch: main
@@ -575,7 +566,6 @@ DEPENDENCIES
   annotate
   aws-sdk-s3
   bootsnap (>= 1.4.4)
-  buildkite-test_collector!
   bullet
   bundler-audit
   capybara (>= 3.26)

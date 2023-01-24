@@ -16,7 +16,7 @@ const InvoiceSummary = ({
   };
 
   return (
-    <div className="mt-6 overflow-x-auto rounded-2xl bg-miru-han-purple-1000 px-10 py-10 text-white">
+    <div className="mt-6 overflow-x-auto rounded-2xl bg-miru-han-purple-1000 px-10 py-6 text-white">
       <ul className="page-display__wrap mt-0 border-t-0">
         <li
           className="page-display__box mt-6 flex cursor-pointer items-center lg:mt-0 lg:items-start"

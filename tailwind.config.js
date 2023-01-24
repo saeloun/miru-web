@@ -44,6 +44,7 @@ module.exports = {
         fit: "fit-content",
         30: "7.5rem", //120px
         128: "32rem", // 512px
+        34: "8.6rem",
         352: "22rem", //352px
         228: "14.25rem", //228px
         180: "11.25rem", //180px
@@ -95,6 +96,7 @@ module.exports = {
           400: "#E1E6EC",
           200: "#EBEFF2",
           100: "#F5F7F9",
+          800: "#ADA4CE",
         },
         "miru-red": {
           400: "#E04646",
@@ -188,8 +190,15 @@ module.exports = {
         "10/100": "10%",
       },
       zIndex: {
+        1: "-1",
         15: "15",
       },
+      transformOrigin: {
+        0: "0%",
+      },
+      inset: {
+        '-10': '-10px',
+      }
     },
   },
   boxShadow: {

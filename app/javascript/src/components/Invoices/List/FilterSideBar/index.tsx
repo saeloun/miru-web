@@ -232,7 +232,7 @@ const FilterSideBar = ({
   }
 
   return (
-    <SidePanel setFilterVisibilty={setIsFilterVisible}>
+    <SidePanel WrapperClassname="z-50" setFilterVisibilty={setIsFilterVisible}>
       <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
         <h4 className="flex items-center text-base">
           <FilterIcon className="mr-2.5" size={16} /> Filters
@@ -244,7 +244,7 @@ const FilterSideBar = ({
           />
         </Button>
       </SidePanel.Header>
-      <SidePanel.Body hasFooter className="sidebar__filters">
+      <SidePanel.Body className="sidebar__filters">
         <ul>
           <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000">
             <div
