@@ -56,6 +56,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     dayjs().month()
   );
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
+  const [updateView, setUpdateView] = useState(true);
 
   const employeeOptions = employees.map(e => ({
     value: `${e["id"]}`,
@@ -112,12 +113,14 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   }, [view]);
 
   useEffect(() => {
-    setSelectedFullDate(
-      dayjs()
-        .weekday(weekDay + selectDate)
-        .format("YYYY-MM-DD")
-    );
-  }, [selectDate, weekDay]);
+    if (updateView) {
+      setSelectedFullDate(
+        dayjs()
+          .weekday(weekDay + selectDate)
+          .format("YYYY-MM-DD")
+      );
+    }
+  }, [selectDate, weekDay, updateView]);
 
   useEffect(() => {
     if (dayInfo.length <= 0) return;
@@ -412,6 +415,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               setEditEntryId={setEditEntryId}
               setNewEntryView={setNewEntryView}
               setSelectedFullDate={setSelectedFullDate}
+              setUpdateView={setUpdateView}
             />
           )}
           {view !== "week" && !newEntryView && (
@@ -476,6 +480,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 setEditEntryId={setEditEntryId}
                 setNewEntryView={setNewEntryView}
                 setSelectedFullDate={setSelectedFullDate}
+                setUpdateView={setUpdateView}
               />
             ) : (
               <EntryCard
