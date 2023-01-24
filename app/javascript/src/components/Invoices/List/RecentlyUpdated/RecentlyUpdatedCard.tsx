@@ -6,7 +6,7 @@ import { Avatar, Badge } from "StyledComponents";
 
 import getStatusCssClass from "utils/getBadgeStatus";
 
-const RecentlyUpdatedCard = ({ invoice }) => {
+const RecentlyUpdatedCard = ({ invoice, index }) => {
   const navigate = useNavigate();
 
   const formattedAmount = (amount, baseCurrency) =>
@@ -14,7 +14,9 @@ const RecentlyUpdatedCard = ({ invoice }) => {
 
   return (
     <div
-      className="mx-2 flex h-auto w-40 cursor-pointer flex-col justify-between rounded-xl border-2 border-miru-gray-200 p-4 text-center"
+      className={`${
+        index == 0 ? "mr-2" : "mx-2"
+      } flex h-auto w-40 cursor-pointer flex-col justify-between rounded-xl border-2 border-miru-gray-200 p-4 text-center`}
       onClick={() => navigate(`/invoices/${invoice.id}`)}
     >
       <h3 className="mr-0.5 text-center text-xs font-normal text-miru-dark-purple-400">
