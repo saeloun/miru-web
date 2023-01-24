@@ -67,7 +67,9 @@ const MonthCalender = ({
       };
       // if the day is sunday, create a new week
       if (dayInWeekCounter === 6) {
-        weeksData[7] = currentWeekTotalHours;
+        if (weeksData[6].date < today) {
+          weeksData[7] = currentWeekTotalHours;
+        } else weeksData[7] = currentWeekTotalHours || null;
         currentWeekTotalHours = 0;
         monthData.push(weeksData);
         weeksData = [];
@@ -77,7 +79,9 @@ const MonthCalender = ({
       }
     }
     if (weeksData.length) {
-      weeksData[7] = currentWeekTotalHours;
+      if (weeksData[weeksData.length - 1].date < today) {
+        weeksData[7] = currentWeekTotalHours;
+      } else weeksData[7] = currentWeekTotalHours || null;
       monthData.push(weeksData);
     }
 
@@ -254,9 +258,15 @@ const MonthCalender = ({
                       </p>
                     </div>
                     <p className="mx-3 text-2xl text-miru-dark-purple-1000">
-                      {weekInfo[dayNum]["totalDuration"] > 0
-                        ? minToHHMM(weekInfo[dayNum]["totalDuration"])
-                        : ""}
+                      {(() => {
+                        if (weekInfo[dayNum]["totalDuration"] > 0) {
+                          return minToHHMM(weekInfo[dayNum]["totalDuration"]);
+                        } else if (weekInfo[dayNum]["date"] < today) {
+                          return "00:00";
+                        }
+
+                        return "";
+                      })()}
                     </p>
                   </div>
                 </div>
@@ -270,7 +280,13 @@ const MonthCalender = ({
             <div className="relative h-14 w-24 rounded-md bg-white font-bold">
               <div className="absolute bottom-0 right-0 flex justify-end p-1">
                 <p className="mr-auto text-2xl">
-                  {weekInfo[7] ? minToHHMM(weekInfo[7]) : ""}
+                  {(() => {
+                    if (weekInfo[7]) {
+                      return minToHHMM(weekInfo[7]);
+                    } else if (weekInfo[7] === 0) {
+                      return "00:00";
+                    }
+                  })()}
                 </p>
               </div>
             </div>
