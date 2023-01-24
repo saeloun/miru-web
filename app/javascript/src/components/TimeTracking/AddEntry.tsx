@@ -31,6 +31,7 @@ const AddEntry: React.FC<Iprops> = ({
   handleFilterEntry,
   handleRelocateEntry,
   setSelectedFullDate,
+  setUpdateView,
 }) => {
   const [note, setNote] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
@@ -105,12 +106,11 @@ const AddEntry: React.FC<Iprops> = ({
     );
 
     if (res.status === 200) {
-      const fetchEntriesRes = await fetchEntries(
-        selectedFullDate,
-        selectedFullDate
-      );
+      const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
       if (fetchEntriesRes) {
         setNewEntryView(false);
+        setUpdateView(true);
+        handleAddEntryDateChange(dayjs(selectedDate));
       }
     }
   };
@@ -128,10 +128,13 @@ const AddEntry: React.FC<Iprops> = ({
           await handleFilterEntry(selectedFullDate, editEntryId);
           await handleRelocateEntry(selectedDate, updateRes.data.entry);
         } else {
-          await fetchEntries(selectedFullDate, selectedFullDate);
+          await fetchEntries(selectedDate, selectedDate);
         }
         setEditEntryId(0);
         setNewEntryView(false);
+        setUpdateView(true);
+        handleAddEntryDateChange(dayjs(selectedDate));
+        setSelectedFullDate(dayjs(selectedDate).format("YYYY-MM-DD"));
       }
     } catch (error) {
       Toastr.error(error);
@@ -139,9 +142,9 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   const handleDateChangeFromDatePicker = (date: Date) => {
-    setSelectedFullDate(dayjs(date).format("YYYY-MM-DD"));
+    setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
     setDisplayDatePicker(false);
-    handleAddEntryDateChange(dayjs(date));
+    setUpdateView(false);
   };
 
   const handleDisableBtn = () => {
@@ -328,6 +331,7 @@ interface Iprops {
   handleFilterEntry: (date: string, entryId: string | number) => object; // eslint-disable-line
   handleRelocateEntry: (date: string, entry: object) => void; // eslint-disable-line
   setSelectedFullDate: any;
+  setUpdateView: any;
 }
 
 export default AddEntry;
