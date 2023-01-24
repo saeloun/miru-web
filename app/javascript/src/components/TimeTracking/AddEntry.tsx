@@ -249,6 +249,7 @@ const AddEntry: React.FC<Iprops> = ({
             <img
               alt="checkbox"
               className="inline"
+              data-cy="billable-checkbox"
               src={CheckedCheckboxSVG}
               onClick={() => {
                 setBillable(false);
@@ -283,6 +284,7 @@ const AddEntry: React.FC<Iprops> = ({
           </button>
         ) : (
           <button
+            data-cy="update-button"
             disabled={handleDisableBtn()}
             className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
               handleDisableBtn()

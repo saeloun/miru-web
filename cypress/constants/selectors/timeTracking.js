@@ -7,5 +7,9 @@ export const timeTrackingSelectors = {
   projectSelector:dataCy("project-selector"),
   notes:dataCy("notes"),
   timeInput:dataCy("time-input"),
-  saveButton: dataCy("save-button")
+  saveButton: dataCy("save-button"),
+  editEntry: dataCy("edit-entry"),
+  deleteEntry:dataCy("delete-entry"),
+  updateButton: dataCy("update-button"),
+  billableCheckbox:dataCy("billable-checkbox")
 };
