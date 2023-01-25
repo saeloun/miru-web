@@ -34,6 +34,23 @@ class Expense < ApplicationRecord
       :business
   ]
 
+  searchkick
+
+  def search_data
+    {
+      id: id.to_i,
+      amount:,
+      date: date.to_time,
+      description:,
+      expense_type:,
+      category_name: expense_category.name,
+      category_id: expense_category_id,
+      vendor_name: vendor&.name,
+      vendor_id:,
+      company_id: company.id
+    }
+  end
+
   has_many_attached :receipt
   belongs_to :company
   belongs_to :expense_category
