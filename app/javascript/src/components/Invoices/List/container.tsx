@@ -37,6 +37,7 @@ const Container = ({
       <InvoiceSummary
         baseCurrency={invoices[0].company.baseCurrency}
         filterParams={filterParams}
+        isDesktop={isDesktop}
         setFilterParams={setFilterParams}
         summary={summary}
       />
@@ -47,6 +48,7 @@ const Container = ({
         filterIntialValues={filterIntialValues}
         filterParams={filterParams}
         filterParamsStr={filterParamsStr}
+        isDesktop={isDesktop}
         isInvoiceSelected={isInvoiceSelected}
         selectedInvoiceCount={selectedInvoiceCount}
         setFilterParams={setFilterParams}

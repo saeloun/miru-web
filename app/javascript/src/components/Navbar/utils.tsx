@@ -123,8 +123,8 @@ const getMobileListClassName = (isActive, index, showMoreOptions) => {
   return "w-full flex flex-col items-center justify-center hover:bg-miru-gray-100 text-xs font-medium";
 };
 
-const ListOption = ({ option, key }) => (
-  <li className="items-center hover:bg-miru-gray-100" key={key}>
+const ListOption = ({ option, index }) => (
+  <li className="items-center hover:bg-miru-gray-100" key={index}>
     <NavLink
       data-cy={option.dataCy}
       to={option.path}
@@ -165,12 +165,12 @@ const MobileListOption = ({
 
 const getEmployeeOptions = () =>
   navEmployeeOptions.map((option, index) => (
-    <ListOption key={index} option={option} />
+    <ListOption index={index} key={index} option={option} />
   ));
 
 const getAdminOptions = () =>
   navAdminOptions.map((option, index) => (
-    <ListOption key={index} option={option} />
+    <ListOption index={index} key={index} option={option} />
   ));
 
 const MobileMenuOptions = ({
