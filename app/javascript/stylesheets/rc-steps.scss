@@ -1,0 +1,26 @@
+.rc-steps-item-process {
+    .rc-steps-item-icon.bg-miru-han-purple-1000 {
+      background-color: #5b34ea !important;
+    }
+  }
+  .rc-steps-item-finish {
+    .rc-steps-item-icon {
+      position: relative !important;
+      border: none !important;
+    }
+    .green-tick {
+      position: absolute;
+      left: -2px !important;
+      top: -2px !important;
+    }
+    .text-miru-chart-green-400 {
+      color: #0da163 !important;
+    }
+    .bg-miru-chart-green-400 {
+      background-color: #0da163 !important;
+    }
+  }
+
+  .rc-steps-item-title:after {
+    background-color: #ebeff2 !important;
+  }

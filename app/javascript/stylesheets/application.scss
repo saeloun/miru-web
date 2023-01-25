@@ -549,3 +549,8 @@ body {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
+
+.outline input:focus-within ~ label,
+.outline input:not(:placeholder-shown) ~ label {
+  @apply top-2 z-0 ml-3 -translate-y-4 scale-75 transform px-1 py-0 text-xs text-miru-dark-purple-400;
+}
