@@ -2,20 +2,20 @@ import * as Yup from "yup";
 
 import { currencyList } from "constants/currencyList";
 
-export const financialDetailsFormInitialValues = {
-  base_currency: currencyList[0].code,
-  standard_rate: 0.0,
-  year_end: "MAR",
-  date_format: "DD-MM-YYYY",
-};
-
 export const financialDetailsFormValidationSchema = Yup.object().shape({
-  base_currency: Yup.string().required("Company name can not be blank"),
+  base_currency: Yup.object().shape({
+    value: Yup.string().required("Base currency end can not be blank"),
+  }),
   standard_rate: Yup.string().required(
     "Business phone number can not be blank"
   ),
-  year_end: Yup.string().required("Address line1 can not be blank"),
-  date_format: Yup.string().required("Country can not be blank"),
+  year_end: Yup.object().shape({
+    value: Yup.string().required("Fiscal year end can not be blank"),
+  }),
+
+  date_format: Yup.object().shape({
+    value: Yup.string().required("Date format can not be blank"),
+  }),
 });
 
 export const currencyListOptions = currencyList.map(currency => {
@@ -56,3 +56,13 @@ export const dateFormatOptions = [
     value: "YYYY-MM-DD",
   },
 ];
+
+export const financialDetailsFormInitialValues = {
+  base_currency: {
+    label: `${currencyList[0].symbol} (${currencyList[0].code})`,
+    value: currencyList[0].code,
+  },
+  standard_rate: 0.0,
+  year_end: fiscalYearEndOptions[0],
+  date_format: dateFormatOptions[0],
+};

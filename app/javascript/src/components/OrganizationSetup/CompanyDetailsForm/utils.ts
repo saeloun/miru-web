@@ -2,24 +2,18 @@ import * as Yup from "yup";
 
 import { CountryList } from "constants/countryList";
 
-export const companyDetailsFormInitialValues = {
-  company: "",
-  business_phone: "",
-  address: "",
-  logo_url: null,
-  // address_line2: "",
-  country: "US",
-  timezone: "",
-};
-
 export const companyDetailsFormValidationSchema = Yup.object().shape({
-  company: Yup.string().required("Company name can not be blank"),
+  company_name: Yup.string().required("Company name can not be blank"),
   business_phone: Yup.string().required(
     "Business phone number can not be blank"
   ),
   address: Yup.string().required("Address line1 can not be blank"),
-  country: Yup.string().required("Country can not be blank"),
-  timezone: Yup.string().required("Timezone can not be blank"),
+  country: Yup.object().shape({
+    value: Yup.string().required("Country can not be blank"),
+  }),
+  timezone: Yup.object().shape({
+    value: Yup.string().required("Timezone can not be blank"),
+  }),
 });
 
 export const mostSelectedCountries = [
@@ -53,3 +47,17 @@ export const groupedCountryListOptions = [
     options: countryListOptions,
   },
 ];
+
+export const companyDetailsFormInitialValues = {
+  company_name: "",
+  business_phone: "",
+  address: "",
+  logo_url: null,
+  // address_line2: "",
+  logo: null,
+  country: mostSelectedCountries[0],
+  timezone: {
+    label: "(GMT-10:00) America/Adak",
+    value: "(GMT-10:00) America/Adak",
+  },
+};

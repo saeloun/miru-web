@@ -1,15 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { CheckCircle } from "phosphor-react";
 
 const Step = (props: any) => {
-  const { title, status, currentStep } = props;
+  const [stepNumber, setStepNumber] = useState<number>(1);
+  const { title, status } = props;
+
+  useEffect(() => {
+    getStepNumber();
+  }, []);
+
+  const getStepNumber = () => {
+    if (title?.toLowerCase()?.trim() == "company details") {
+      setStepNumber(1);
+    } else if (title?.toLowerCase()?.trim() == "financial details") {
+      setStepNumber(2);
+    }
+  };
 
   const stepIsFinished = (status: string) =>
     status?.toLowerCase()?.trim() == "finish";
 
   return (
-    <div className={`rc-steps-item rc-steps-item-${status}`}>
+    <div className={`rc-steps-item rc-steps-item-${status} whitespace-nowrap`}>
       <div className="rc-steps-item-container">
         <div className="rc-steps-item-tail" />
         {stepIsFinished(status) ? (
@@ -23,13 +36,13 @@ const Step = (props: any) => {
           </div>
         ) : (
           <div className="rc-steps-item-icon bg-miru-han-purple-1000">
-            <span className="rc-steps-icon font-manrope">{currentStep}</span>
+            <span className="rc-steps-icon font-manrope">{stepNumber}</span>
           </div>
         )}
       </div>
       <div className="rc-steps-item-content">
         <div
-          className={`rc-steps-item-title font-manrope text-sm ${
+          className={`rc-steps-item-title font-manrope text-xs md:text-sm ${
             stepIsFinished(status) ? "text-miru-chart-green-400" : ""
           }`}
         >

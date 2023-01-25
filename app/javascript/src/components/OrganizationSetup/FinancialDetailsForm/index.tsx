@@ -4,19 +4,16 @@ import { Formik, Form, Field, FormikProps } from "formik";
 import Select, { components } from "react-select";
 
 import {
+  FinancialDetailsFormProps,
+  FinancialDetailsFormValues,
+} from "./interface";
+import {
   currencyListOptions,
   dateFormatOptions,
   financialDetailsFormInitialValues,
   financialDetailsFormValidationSchema,
   fiscalYearEndOptions,
 } from "./utils";
-
-interface FinancialDetailsFormValues {
-  base_currency: string;
-  standard_rate: number | string;
-  year_end: string;
-  date_format: string;
-}
 
 const customStyles = {
   control: provided => ({
@@ -60,9 +57,19 @@ const CustomValueContainer = props => {
   );
 };
 
-const FinancialDetailsForm = () => {
-  const handleFinancialDetailsFormSubmit = (values: any) => {
-    console.log(values); // eslint-disable-line
+const FinancialDetailsForm = ({
+  onSaveBtnClick,
+}: FinancialDetailsFormProps) => {
+  const handleFinancialDetailsFormSubmit = (
+    values: FinancialDetailsFormValues
+  ) => {
+    const formattedFinancialDetails = {
+      ...values,
+      base_currency: values.base_currency?.value || "",
+      year_end: values.year_end?.value || "",
+      date_format: values.date_format?.value || "",
+    };
+    onSaveBtnClick(formattedFinancialDetails);
   };
 
   return (
@@ -74,7 +81,7 @@ const FinancialDetailsForm = () => {
         onSubmit={handleFinancialDetailsFormSubmit}
       >
         {(props: FormikProps<FinancialDetailsFormValues>) => {
-          const { touched, errors, setFieldValue } = props;
+          const { touched, errors, setFieldValue, values } = props;
 
           return (
             <Form>
@@ -88,11 +95,11 @@ const FinancialDetailsForm = () => {
                     options={currencyListOptions}
                     placeholder="Base Currency"
                     styles={customStyles}
-                    value={currencyListOptions[0]}
+                    value={values.base_currency}
                     components={{
                       ValueContainer: CustomValueContainer,
                     }}
-                    onChange={e => setFieldValue("base_currency", e.value)}
+                    onChange={e => setFieldValue("base_currency", e)}
                   />
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
@@ -137,11 +144,11 @@ const FinancialDetailsForm = () => {
                     options={fiscalYearEndOptions}
                     placeholder="Fiscal Year End"
                     styles={customStyles}
-                    value={fiscalYearEndOptions[0]}
+                    value={values.year_end}
                     components={{
                       ValueContainer: CustomValueContainer,
                     }}
-                    onChange={e => setFieldValue("year_end", e.value)}
+                    onChange={e => setFieldValue("year_end", e)}
                   />
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
@@ -160,11 +167,11 @@ const FinancialDetailsForm = () => {
                     options={dateFormatOptions}
                     placeholder="Date Format"
                     styles={customStyles}
-                    value={dateFormatOptions[0]}
+                    value={values.date_format}
                     components={{
                       ValueContainer: CustomValueContainer,
                     }}
-                    onChange={e => setFieldValue("date_format", e.value)}
+                    onChange={e => setFieldValue("date_format", e)}
                   />
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">

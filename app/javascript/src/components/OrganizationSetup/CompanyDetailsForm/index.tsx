@@ -7,21 +7,13 @@ import Select, { components } from "react-select";
 import { registerIntercepts, setAuthHeaders } from "apis/axios";
 import companyProfileApi from "apis/companyProfile";
 
+import { CompanyDetailsFormProps, CompanyDetailsFormValues } from "./interface";
 import {
   companyDetailsFormInitialValues,
   companyDetailsFormValidationSchema,
   groupedCountryListOptions,
-  mostSelectedCountries,
 } from "./utils";
 
-interface CompanyDetailsFormValues {
-  company: string;
-  business_phone: string;
-  address: string;
-  country: string;
-  timezone: string;
-  logo_url: string | null;
-}
 const { ValueContainer, Placeholder } = components;
 const customStyles = {
   control: provided => ({
@@ -75,7 +67,7 @@ const CustomValueContainer = props => {
   );
 };
 
-const CompanyDetailsForm = () => {
+const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
   const [allTimezones, setAllTimezones] = useState({});
   const [timezonesOfSelectedCountry, setTimezonesOfSelectedCountry] = useState(
     []
@@ -90,7 +82,7 @@ const CompanyDetailsForm = () => {
   useEffect(() => {
     if (Object.keys(allTimezones || {})?.length) {
       const defaultSelectedCountryCode =
-        companyDetailsFormInitialValues?.country || "US";
+        companyDetailsFormInitialValues?.country?.value || "US";
       getTimezonesOfCurrentCountry(defaultSelectedCountryCode);
     }
   }, [allTimezones]);
@@ -101,11 +93,17 @@ const CompanyDetailsForm = () => {
     setAllTimezones(tempAllTimezones);
   };
 
-  const getTimezonesOfCurrentCountry = (countryCode: string) => {
+  const getTimezonesOfCurrentCountry = (
+    countryCode: string,
+    setFieldValue?: any
+  ) => {
     const timezoneOfSelectedCountry = allTimezones[countryCode];
     const formattedTimeZoneOptions = timezoneOfSelectedCountry?.map(
       timezone => ({ value: timezone, label: timezone })
     );
+    if (setFieldValue) {
+      setFieldValue("timezone", formattedTimeZoneOptions[0]);
+    }
     setTimezonesOfSelectedCountry(formattedTimeZoneOptions);
   };
 
@@ -113,10 +111,16 @@ const CompanyDetailsForm = () => {
     const file = e.target.files[0];
     const logoUrl = URL.createObjectURL(file);
     setFieldValue("logo_url", logoUrl);
+    setFieldValue("logo", file);
   };
 
-  const handleCompanyDetailsFormSubmit = (values: any) => {
-    console.log(values); // eslint-disable-line
+  const handleCompanyDetailsFormSubmit = (values: CompanyDetailsFormValues) => {
+    const formattedCompanyDetails = {
+      ...values,
+      country: values.country?.value || "",
+      timezone: values.timezone?.value || "",
+    };
+    onNextBtnClick(formattedCompanyDetails);
   };
 
   return (
@@ -133,7 +137,7 @@ const CompanyDetailsForm = () => {
           return (
             <Form>
               <div className="my-6 mx-auto w-full">
-                {values.logo_url ? (
+                {values?.logo_url ? (
                   <div className="mx-auto mt-2 flex flex-row items-center justify-center">
                     <div className="h-20 w-20">
                       <img
@@ -167,7 +171,7 @@ const CompanyDetailsForm = () => {
                   </div>
                 ) : (
                   <>
-                    <div className="mx-auto mt-2 h-20 w-20 rounded-full border border-dotted border-miru-dark-purple-200">
+                    <div className="mx-auto mt-2 h-20 w-20 rounded-full border border-dashed border-miru-dark-purple-200">
                       <label
                         className="flex h-full w-full cursor-pointer items-center justify-center rounded-full px-1 py-2 text-center text-xs text-miru-dark-purple-200"
                         htmlFor="file-input"
@@ -190,11 +194,11 @@ const CompanyDetailsForm = () => {
                 <div className="outline relative">
                   <Field
                     autoFocus
-                    name="company"
+                    name="company_name"
                     placeholder=" "
                     className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                      errors.company &&
-                      touched.company &&
+                      errors.company_name &&
+                      touched.company_name &&
                       "border-red-600 focus:border-red-600 focus:ring-red-600"
                     } `}
                   />
@@ -206,8 +210,8 @@ const CompanyDetailsForm = () => {
                   </label>
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.company && touched.company && (
-                    <div>{errors.company}</div>
+                  {errors.company_name && touched.company_name && (
+                    <div>{errors.company_name}</div>
                   )}
                 </div>
               </div>
@@ -272,14 +276,13 @@ const CompanyDetailsForm = () => {
                     options={groupedCountryListOptions}
                     placeholder="Country"
                     styles={customStyles}
-                    value={mostSelectedCountries[0]}
+                    value={values.country}
                     components={{
                       ValueContainer: CustomValueContainer,
                     }}
                     onChange={e => {
-                      getTimezonesOfCurrentCountry(e.value);
-
-                      return setFieldValue("country", e.value);
+                      getTimezonesOfCurrentCountry(e.value, setFieldValue);
+                      setFieldValue("country", e);
                     }}
                   />
                 </div>
@@ -299,15 +302,11 @@ const CompanyDetailsForm = () => {
                     options={timezonesOfSelectedCountry}
                     placeholder="Timezone"
                     styles={customStyles}
+                    value={values.timezone}
                     components={{
                       ValueContainer: CustomValueContainer,
                     }}
-                    value={
-                      timezonesOfSelectedCountry?.length
-                        ? timezonesOfSelectedCountry[0]
-                        : []
-                    }
-                    onChange={e => setFieldValue("timezone", e.value)}
+                    onChange={e => setFieldValue("timezone", e)}
                   />
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
