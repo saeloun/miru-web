@@ -24,6 +24,7 @@ const FilterSideBar = ({
   setFilterParams,
   selectedInput,
   setSelectedInput,
+  isDesktop,
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [clientList, setClientList] = useState<null | any[]>([]);
@@ -232,11 +233,17 @@ const FilterSideBar = ({
   }
 
   return (
-    <SidePanel setFilterVisibilty={setIsFilterVisible}>
+    <SidePanel WrapperClassname="z-50" setFilterVisibilty={setIsFilterVisible}>
       <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
-        <h4 className="flex items-center text-base">
-          <FilterIcon className="mr-2.5" size={16} /> Filters
-        </h4>
+        {isDesktop ? (
+          <h4 className="flex items-center text-base">
+            <FilterIcon className="mr-2.5" size={16} /> <span>Filters</span>
+          </h4>
+        ) : (
+          <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
+            Filters
+          </span>
+        )}
         <Button style="ternary" onClick={() => setIsFilterVisible(false)}>
           <XIcon
             className="text-white lg:text-miru-dark-purple-1000"
@@ -244,7 +251,7 @@ const FilterSideBar = ({
           />
         </Button>
       </SidePanel.Header>
-      <SidePanel.Body hasFooter className="sidebar__filters">
+      <SidePanel.Body className="sidebar__filters">
         <ul>
           <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000">
             <div
