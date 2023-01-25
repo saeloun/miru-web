@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 import RecentlyUpdatedCard from "./RecentlyUpdatedCard";
 
 const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => (
-  <div className="my-15">
+  <div className="mt-4 mb-6 md:my-15">
     <h1 className="mb-4 text-2xl font-normal text-miru-dark-purple-1000">
       Recently updated
     </h1>
