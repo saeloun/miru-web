@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
+import { Avatar } from "StyledComponents";
 import * as Yup from "yup";
 
 import { i18n } from "../../../i18n";
@@ -97,23 +98,12 @@ const ClientForm = ({
     };
   };
 
-  const createInitials = client =>
-    client.name
-      .split(" ")
-      .map(name => name[0])
-      .join("")
-      .toUpperCase();
-
   const showInitialOrNew = () => {
     if (formType === "edit") {
       return (
         <div className="flex flex-row items-center justify-center">
-          <div className="h-16 w-16">
-            <div className="flex h-full w-full justify-center">
-              <span className="w-22 rounded-full bg-miru-han-purple-1000 pt-2 text-center text-2xl leading-10 text-gray-50">
-                {createInitials(clientData)}
-              </span>
-            </div>
+          <div className="flex h-16 w-16 items-center justify-center">
+            <Avatar url={clientData.logo} />
           </div>
           <input
             className="hidden"
@@ -137,9 +127,15 @@ const ClientForm = ({
             type="file"
             onChange={onLogoChange}
           />
-          <button onClick={handleDeleteLogo}>
-            <img alt="delete" src={deleteImage} style={{ minWidth: "10px" }} />
-          </button>
+          {clientData.logo && (
+            <button onClick={handleDeleteLogo}>
+              <img
+                alt="delete"
+                src={deleteImage}
+                style={{ minWidth: "10px" }}
+              />
+            </button>
+          )}
         </div>
       );
     }
