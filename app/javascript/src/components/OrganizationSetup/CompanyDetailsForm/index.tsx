@@ -146,8 +146,8 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
             <Form>
               <div className="my-6 mx-auto w-full">
                 {values?.logo_url ? (
-                  <div className="mx-auto mt-2 ml-20 flex flex-row items-center justify-center">
-                    <div className="h-16 w-16">
+                  <div className="mx-auto mt-2 ml-16 flex flex-row items-center justify-center">
+                    <div className="mr-5 h-16 w-16">
                       <img
                         alt="org_logo"
                         className="h-full min-w-full rounded-full object-contain"
@@ -159,7 +159,7 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
                         alt="edit"
                         className="cursor-pointer rounded-full"
                         src={EditImageButtonSVG}
-                        style={{ minWidth: "40px" }}
+                        style={{ minWidth: "12px" }}
                       />
                     </label>
                     <input
@@ -172,7 +172,7 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
                     <button data-cy="delete-logo">
                       <DeleteIcon
                         className="ml-2 cursor-pointer rounded-full"
-                        style={{ minWidth: "40px" }}
+                        style={{ minWidth: "12px", color: "#5B34EA" }}
                         onClick={() => setFieldValue("logo_url", null)}
                       />
                     </button>
