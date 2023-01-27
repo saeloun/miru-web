@@ -17,19 +17,19 @@ const BulkActions = ({
   return (
     isInvoiceSelected && (
       <div className="flex items-center justify-end">
-        <span className="text-sm font-semibold leading-4 text-miru-dark-purple-1000">
+        <span className="text-xs font-semibold leading-4 text-miru-dark-purple-1000 lg:text-sm lg:leading-5">
           {selectedInvoiceCount > 1
             ? `${selectedInvoiceCount} invoices selected`
             : `${selectedInvoiceCount} invoice selected`}
         </span>
         <button
-          className="ml-4 p-1 hover:bg-miru-gray-100"
+          className="ml-2 p-1 hover:bg-miru-gray-100 lg:ml-4"
           onClick={clearCheckboxes}
         >
           <XIcon color="#5b34ea" size={16} weight="bold" />
         </button>
         <div
-          className="ml-4 cursor-pointer rounded px-6 py-2"
+          className="ml-2 cursor-pointer rounded px-2 py-1 lg:ml-4 lg:px-6 lg:py-2"
           style={{
             background: hover && "rgba(205,214,223, 0.2)",
             border: "1px solid rgba(91, 52, 234, .2)",
@@ -39,7 +39,7 @@ const BulkActions = ({
         >
           <button
             disabled={downloading}
-            className={`flex items-center text-base font-bold leading-5 opacity-100 ${
+            className={`flex items-center text-xs font-bold leading-4 opacity-100 lg:text-base lg:leading-5 ${
               downloading ? "text-miru-gray-1000" : "text-miru-han-purple-1000"
             }`}
             onClick={() => setIsMoreOptionsOpen(!isMoreOptionsOpen)}

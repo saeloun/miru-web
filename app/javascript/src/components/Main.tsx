@@ -41,6 +41,7 @@ const Main: React.FC<Iprops> = props => (
           ))}
         </Route>
       ))}
+      <Route path={Paths.AUTHORIZATION} />
       <Route element={<ErrorPage />} path="*" />
     </Routes>
   </div>

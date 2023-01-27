@@ -192,6 +192,7 @@ const Invoices = ({ isDesktop }) => {
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         filterParamsStr={filterParamsStr}
+        isDesktop={isDesktop}
         params={params}
         setIsFilterVisible={setIsFilterVisible}
         setParams={setParams}
@@ -230,6 +231,7 @@ const Invoices = ({ isDesktop }) => {
             <FilterSideBar
               filterIntialValues={filterIntialValues}
               filterParams={filterParams}
+              isDesktop={isDesktop}
               selectedInput={selectedInput}
               setFilterParams={setFilterParams}
               setIsFilterVisible={setIsFilterVisible}
