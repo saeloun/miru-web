@@ -6,9 +6,7 @@ export const financialDetailsFormValidationSchema = Yup.object().shape({
   base_currency: Yup.object().shape({
     value: Yup.string().required("Base currency end can not be blank"),
   }),
-  standard_rate: Yup.string().required(
-    "Business phone number can not be blank"
-  ),
+  standard_rate: Yup.string().required("Standard rate can not be blank"),
   year_end: Yup.object().shape({
     value: Yup.string().required("Fiscal year end can not be blank"),
   }),

@@ -63,8 +63,8 @@ const OrganizationSetup = () => {
 
   return (
     <div className="w-full px-8 pt-16 pb-4 md:px-0 md:pt-36">
-      <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
-        <h1 className="text-center font-manrope text-4xl font-extrabold text-miru-han-purple-1000">
+      <div className="org-setup-form-wrapper mx-auto min-h-full md:w-1/2 lg:w-352">
+        <h1 className="text-center font-manrope text-4.75xl font-extrabold not-italic text-miru-han-purple-1000">
           Setup Org
         </h1>
         <div className="mx-auto mt-6 mb-11 w-full">

@@ -1,8 +1,24 @@
-.rc-steps-item-process {
+.org-setup-form-wrapper {
+  .rc-steps-item-process {
     .rc-steps-item-icon.bg-miru-han-purple-1000 {
       background-color: #5b34ea !important;
     }
+    .rc-steps-item-title {
+      color: #5b34ea !important;
+    }
   }
+  .rc-steps-item-wait {
+    .rc-steps-icon {
+      color: #fff !important;
+    }
+    .rc-steps-item-icon {
+      background: #bdaef7 !important;
+    }
+    .rc-steps-item-title {
+      color: #9d85f2 !important;
+    }
+  }
+
   .rc-steps-item-finish {
     .rc-steps-item-icon {
       position: relative !important;
@@ -24,3 +40,16 @@
   .rc-steps-item-title:after {
     background-color: #ebeff2 !important;
   }
+  .rc-steps-item-title {
+    @media screen and (max-width: 500px) {
+      font-size: 0.75rem !important;
+    }
+  }
+
+  .react-select-filter__indicator-separator {
+    display: none !important;
+  }
+  .react-select-filter__input {
+    font-family: "Manrope", "sans-serif" !important;
+  }
+}

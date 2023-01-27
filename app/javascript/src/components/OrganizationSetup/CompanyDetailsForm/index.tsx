@@ -123,6 +123,14 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
     onNextBtnClick(formattedCompanyDetails);
   };
 
+  const isBtnDisabled = (values: CompanyDetailsFormValues) =>
+    !(
+      values.country?.value?.trim() &&
+      values.timezone?.value?.trim() &&
+      values.address?.trim() &&
+      values.business_phone?.trim()
+    );
+
   return (
     <div>
       <Formik
@@ -138,8 +146,8 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
             <Form>
               <div className="my-6 mx-auto w-full">
                 {values?.logo_url ? (
-                  <div className="mx-auto mt-2 flex flex-row items-center justify-center">
-                    <div className="h-20 w-20">
+                  <div className="mx-auto mt-2 ml-20 flex flex-row items-center justify-center">
+                    <div className="h-16 w-16">
                       <img
                         alt="org_logo"
                         className="h-full min-w-full rounded-full object-contain"
@@ -171,7 +179,7 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
                   </div>
                 ) : (
                   <>
-                    <div className="mx-auto mt-2 h-20 w-20 rounded-full border border-dashed border-miru-dark-purple-200">
+                    <div className="mx-auto mt-2 h-16 w-16 rounded-full border border-dashed border-miru-dark-purple-200">
                       <label
                         className="flex h-full w-full cursor-pointer items-center justify-center rounded-full px-1 py-2 text-center text-xs text-miru-dark-purple-200"
                         htmlFor="file-input"
@@ -318,9 +326,14 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
               {/* Next Button */}
               <div className="mb-3">
                 <button
-                  className="form__button whitespace-nowrap"
                   data-cy="sign-up-button"
+                  disabled={isBtnDisabled(values)}
                   type="submit"
+                  className={`form__button whitespace-nowrap ${
+                    isBtnDisabled(values)
+                      ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                      : "cursor-pointer"
+                  }`}
                 >
                   Next
                 </button>

@@ -72,6 +72,15 @@ const FinancialDetailsForm = ({
     onSaveBtnClick(formattedFinancialDetails);
   };
 
+  const isBtnDisabled = (values: FinancialDetailsFormValues) =>
+    !(
+      values.base_currency?.value?.trim() &&
+      values.year_end?.value?.trim() &&
+      values.date_format?.value?.trim() &&
+      values.standard_rate >= 0 &&
+      typeof values.standard_rate == "number"
+    );
+
   return (
     <div>
       <Formik
@@ -183,9 +192,13 @@ const FinancialDetailsForm = ({
               {/* Save Org Details Button */}
               <div className="mb-3">
                 <button
-                  className="form__button whitespace-nowrap"
                   data-cy="sign-up-button"
                   type="submit"
+                  className={`form__button whitespace-nowrap ${
+                    isBtnDisabled(values)
+                      ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                      : "cursor-pointer"
+                  }`}
                 >
                   Save Org Details
                 </button>

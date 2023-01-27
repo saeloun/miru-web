@@ -7,7 +7,7 @@ export const companyDetailsFormValidationSchema = Yup.object().shape({
   business_phone: Yup.string().required(
     "Business phone number can not be blank"
   ),
-  address: Yup.string().required("Address line1 can not be blank"),
+  address: Yup.string().required("Address line can not be blank"),
   country: Yup.object().shape({
     value: Yup.string().required("Country can not be blank"),
   }),

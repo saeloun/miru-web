@@ -16,6 +16,7 @@ module.exports = {
       "3xl": "1.875rem",
       "4xl": "2.25rem",
       "4.5xl": "2.5rem",
+      "4.75xl": "2.75rem",
       "5xl": "3rem",
       "6xl": "4rem",
       "7xl": "5rem",
@@ -197,8 +198,8 @@ module.exports = {
         0: "0%",
       },
       inset: {
-        '-10': '-10px',
-      }
+        "-10": "-10px",
+      },
     },
   },
   boxShadow: {
