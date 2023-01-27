@@ -98,69 +98,6 @@ const ClientForm = ({
     };
   };
 
-  const showInitialOrNew = () => {
-    if (formType === "edit") {
-      return (
-        <div className="flex flex-row items-center justify-center">
-          <div className="flex h-16 w-16 items-center justify-center">
-            <Avatar url={clientData.logo} />
-          </div>
-          <input
-            className="hidden"
-            id="file-input"
-            name="logo"
-            type="file"
-            onChange={onLogoChange}
-          />
-          <label htmlFor="file_input">
-            <img
-              alt="edit"
-              className="mx-1 cursor-pointer rounded-full"
-              src={editButton}
-              style={{ minWidth: "30px" }}
-            />
-          </label>
-          <input
-            className="hidden"
-            id="file_input"
-            name="logo"
-            type="file"
-            onChange={onLogoChange}
-          />
-          {clientData.logo && (
-            <button onClick={handleDeleteLogo}>
-              <img
-                alt="delete"
-                src={deleteImage}
-                style={{ minWidth: "10px" }}
-              />
-            </button>
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <div className="mt-2 flex flex-row justify-center">
-        <div className="mt-2 h-20 w-20 rounded-full border border-miru-han-purple-1000 ">
-          <label
-            className="flex h-full w-full cursor-pointer justify-center"
-            htmlFor="file-input"
-          >
-            <img alt="profile_box" className="object-none" src={img} />
-          </label>
-          <input
-            className="hidden"
-            id="file-input"
-            name="logo"
-            type="file"
-            onChange={onLogoChange}
-          />
-        </div>
-      </div>
-    );
-  };
-
   return (
     <Formik
       initialValues={getInitialvalues(clientData)}
@@ -176,14 +113,10 @@ const ClientForm = ({
               <div className="mt-4">
                 <div className="field">
                   <div className="mt-1">
-                    {clientLogoUrl !== "" ? (
-                      <div className="mt-2 flex flex-row justify-center">
-                        <div className="h-20 w-20">
-                          <img
-                            alt="client logo"
-                            className="h-full min-w-full rounded-full"
-                            src={clientLogoUrl}
-                          />
+                    {formType == "edit" ? (
+                      <div className="mt-2 flex flex-row items-center justify-center">
+                        <div className="flex h-16 w-16 items-center justify-center">
+                          <Avatar url={clientLogoUrl} />
                         </div>
                         <input
                           className="hidden"
@@ -195,7 +128,7 @@ const ClientForm = ({
                         <label htmlFor="file_input">
                           <img
                             alt="edit"
-                            className="mt-5 cursor-pointer rounded-full"
+                            className="cursor-pointer rounded-full"
                             src={editButton}
                             style={{ minWidth: "40px" }}
                           />
@@ -207,16 +140,38 @@ const ClientForm = ({
                           type="file"
                           onClick={onLogoChange}
                         />
-                        <button type="button" onClick={handleDeleteLogo}>
-                          <img
-                            alt="delete"
-                            src={deleteImage}
-                            style={{ minWidth: "20px" }}
-                          />
-                        </button>
+                        {clientLogoUrl && (
+                          <button type="button" onClick={handleDeleteLogo}>
+                            <img
+                              alt="delete"
+                              src={deleteImage}
+                              style={{ minWidth: "20px" }}
+                            />
+                          </button>
+                        )}
                       </div>
                     ) : (
-                      showInitialOrNew()
+                      <div className="mt-2 flex flex-row justify-center">
+                        <div className="mt-2 h-20 w-20 rounded-full border border-miru-han-purple-1000 ">
+                          <label
+                            className="flex h-full w-full cursor-pointer justify-center"
+                            htmlFor="file-input"
+                          >
+                            <img
+                              alt="profile_box"
+                              className="object-none"
+                              src={img}
+                            />
+                          </label>
+                          <input
+                            className="hidden"
+                            id="file-input"
+                            name="logo"
+                            type="file"
+                            onChange={onLogoChange}
+                          />
+                        </div>
+                      </div>
                     )}
                     <p className="mt-3 block max-w-xs text-center text-xs tracking-wider text-red-600">
                       {fileUploadError}
