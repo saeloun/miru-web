@@ -39,12 +39,16 @@ const MoreOptions = ({
       >
         <Tooltip content="Send To">
           <button
-            className="text-miru-han-purple-1000"
+            className="p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
             onClick={() => {
               setIsSending(!isSending);
             }}
           >
-            <PaperPlaneTiltIcon size={16} weight="bold" />
+            <PaperPlaneTiltIcon
+              className="hover:bg-miru-gray-1000"
+              size={16}
+              weight="bold"
+            />
           </button>
         </Tooltip>
         <Tooltip content="Download">
@@ -54,7 +58,7 @@ const MoreOptions = ({
             className={
               invoice.status == "draft"
                 ? "text-miru-gray-1000"
-                : "text-miru-han-purple-1000"
+                : "p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
             }
             onClick={e => {
               e.stopPropagation();
@@ -66,7 +70,7 @@ const MoreOptions = ({
         </Tooltip>
         <Tooltip content="Edit">
           <Link
-            className="text-miru-han-purple-1000"
+            className="p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
             data-cy="edit-invoice"
             to={`/invoices/${invoice.id}/edit`}
             type="button"
@@ -77,7 +81,7 @@ const MoreOptions = ({
         </Tooltip>
         <Tooltip content="More">
           <button
-            className={`p-2  text-miru-han-purple-1000 ${
+            className={`p-2 text-miru-han-purple-1000  hover:bg-miru-gray-1000 ${
               isMenuOpen && `bg-miru-gray-100`
             }`}
             onClick={e => {
