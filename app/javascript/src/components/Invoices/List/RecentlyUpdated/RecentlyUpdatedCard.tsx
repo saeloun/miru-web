@@ -16,7 +16,7 @@ const RecentlyUpdatedCard = ({ invoice, index }) => {
     <div
       className={`${
         index == 0 ? "mr-2" : "mx-2"
-      } flex h-auto w-40 cursor-pointer flex-col justify-between rounded-xl border-2 border-miru-gray-200 p-4 text-center`}
+      } flex h-auto w-40 cursor-pointer flex-col justify-between rounded-xl border-2 border-miru-gray-200 p-4 text-center hover:shadow-c1`}
       onClick={() => navigate(`/invoices/${invoice.id}`)}
     >
       <h3 className="mr-0.5 text-center text-xs font-normal text-miru-dark-purple-400">
