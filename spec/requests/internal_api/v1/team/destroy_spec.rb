@@ -95,6 +95,9 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
         @team_company_user = create(:employment, company:, user: team_user)
         create(:employment, company: other_company_1, user: team_user)
         create(:employment, company: other_company_2, user: team_user)
+        create(:employment, company:, user: admin_user)
+        team_user.current_workspace_id = company.id
+        team_user.save!
         admin_user.add_role :admin, company
         sign_in admin_user
       end
@@ -105,6 +108,11 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
           .and change(team_user.employments.discarded, :count).from(0).to(1)
 
         expect(@team_company_user.reload.discarded?).to be_truthy
+      end
+
+      it "updates the current_workspace_id of the user" do
+        send_request :delete, internal_api_v1_team_path(team_user)
+        expect(team_user.reload.current_workspace_id).not_to eq(company.id)
       end
     end
   end
