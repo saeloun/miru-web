@@ -16,6 +16,11 @@ class InternalApi::V1::ExpensesController < ApplicationController
     }
   end
 
+  def index
+    authorize Expense
+    render :index, locals: Expenses::FetchService.new(current_company, params).process
+  end
+
   private
 
     def expense

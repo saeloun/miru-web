@@ -34,7 +34,8 @@ class Expense < ApplicationRecord
       :business
   ]
 
-  searchkick
+  searchkick filterable: [ :amount, :date, :expense_type, :category_id, :vendor_id, :company_id],
+    word_start: [ :category_name, :vendor_name, :description]
 
   def search_data
     {
@@ -47,7 +48,8 @@ class Expense < ApplicationRecord
       category_id: expense_category_id,
       vendor_name: vendor&.name,
       vendor_id:,
-      company_id: company.id
+      company_id: company.id,
+      created_at:
     }
   end
 

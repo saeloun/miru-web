@@ -3,12 +3,20 @@
 class ExpensePolicy < ApplicationPolicy
   attr_reader :error_message_key
 
+  def index?
+    admin_access?
+  end
+
   def create?
-    user_owner_role? || user_admin_role?
+    admin_access?
   end
 
   def show?
     authorize_current_user
+  end
+
+  def admin_access?
+    user_owner_role? || user_admin_role?
   end
 
   def authorize_current_user
@@ -17,6 +25,6 @@ class ExpensePolicy < ApplicationPolicy
       return false
     end
 
-    user_owner_role? || user_admin_role?
+    admin_access?
   end
 end
