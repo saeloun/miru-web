@@ -157,9 +157,8 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
                     <label htmlFor="file-input">
                       <img
                         alt="edit"
-                        className="cursor-pointer rounded-full"
+                        className="min-w-12 cursor-pointer rounded-full"
                         src={EditImageButtonSVG}
-                        style={{ minWidth: "12px" }}
                       />
                     </label>
                     <input
@@ -171,8 +170,7 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
                     />
                     <button data-cy="delete-logo">
                       <DeleteIcon
-                        className="ml-2 cursor-pointer rounded-full"
-                        style={{ minWidth: "12px", color: "#5B34EA" }}
+                        className="ml-2 min-w-12 cursor-pointer rounded-full text-miru-han-purple-1000"
                         onClick={() => setFieldValue("logo_url", null)}
                       />
                     </button>

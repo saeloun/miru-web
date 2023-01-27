@@ -51,6 +51,7 @@ module.exports = {
         180: "11.25rem", //180px
       },
       minWidth: {
+        12: "12px",
         24: "24px",
       },
       maxWidth: {
