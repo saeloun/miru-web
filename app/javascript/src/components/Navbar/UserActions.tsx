@@ -102,15 +102,15 @@ const UserActions = () => {
         className="flex items-start justify-start  border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0"
         onClick={handleLogout}
       >
-        <NavLink
+        <a
           className="flex w-full items-start justify-start py-3 hover:bg-miru-gray-100"
           data-method="delete"
+          href="/users/sign_out"
           rel="nofollow"
-          to="/users/sign_out"
         >
           <SignOutIcon className="mr-4" size={26} />
           Logout
-        </NavLink>
+        </a>
       </li>
       <Tooltip content={currentWorkspace.name} show={showToolTip}>
         <li
