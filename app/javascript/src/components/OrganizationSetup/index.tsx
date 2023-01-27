@@ -2,8 +2,10 @@ import React, { useState } from "react";
 
 import Steps from "rc-steps";
 import "rc-steps/assets/index.css";
+import { ToastContainer } from "react-toastify";
 
 import companiesApi from "apis/companies";
+import { Paths, TOASTER_DURATION } from "constants/index";
 
 import CompanyDetailsForm from "./CompanyDetailsForm";
 import FinancialDetailsForm from "./FinancialDetailsForm";
@@ -58,30 +60,36 @@ const OrganizationSetup = () => {
 
   const onSaveBtnClick = async (financialDetails: FinancialDetails) => {
     const payload = generatePayload(companyDetails, financialDetails);
-    await companiesApi.create(payload);
+    const res = await companiesApi.create(payload);
+    if (res?.status == 200) {
+      window.location.href = Paths.TIME_TRACKING;
+    }
   };
 
   return (
-    <div className="w-full px-8 pt-16 pb-4 md:px-0 md:pt-36">
-      <div className="org-setup-form-wrapper mx-auto min-h-full md:w-1/2 lg:w-352">
-        <h1 className="text-center font-manrope text-4.75xl font-extrabold not-italic text-miru-han-purple-1000">
-          Setup Org
-        </h1>
-        <div className="mx-auto mt-6 mb-11 w-full">
-          <Steps
-            current={currentStep - 1}
-            itemRender={props => <Step {...props} />}
-            items={organizationSetupSteps}
-            labelPlacement="horizontal"
-          />
+    <>
+      <ToastContainer autoClose={TOASTER_DURATION} />
+      <div className="w-full px-8 pt-16 pb-4 md:px-0 md:pt-36">
+        <div className="org-setup-form-wrapper mx-auto min-h-full md:w-1/2 lg:w-352">
+          <h1 className="text-center font-manrope text-4.75xl font-extrabold not-italic text-miru-han-purple-1000">
+            Setup Org
+          </h1>
+          <div className="mx-auto mt-6 mb-11 w-full">
+            <Steps
+              current={currentStep - 1}
+              itemRender={props => <Step {...props} />}
+              items={organizationSetupSteps}
+              labelPlacement="horizontal"
+            />
+          </div>
+          {currentStep == 1 ? (
+            <CompanyDetailsForm onNextBtnClick={onNextBtnClick} />
+          ) : (
+            <FinancialDetailsForm onSaveBtnClick={onSaveBtnClick} />
+          )}
         </div>
-        {currentStep == 1 ? (
-          <CompanyDetailsForm onNextBtnClick={onNextBtnClick} />
-        ) : (
-          <FinancialDetailsForm onSaveBtnClick={onSaveBtnClick} />
-        )}
       </div>
-    </div>
+    </>
   );
 };
 
