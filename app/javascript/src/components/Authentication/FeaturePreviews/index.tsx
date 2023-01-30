@@ -14,7 +14,7 @@ const FeaturePreviews = () => (
         <img alt="" height="64" src={BlurredMiruLogo} width="64" />
       </div>
     </a>
-    <div className="mx-auto w-7/12 md:pt-20">
+    <div className="mx-auto w-8/12 md:pt-20">
       <Carousel
         autoPlay
         infiniteLoop

@@ -13,7 +13,7 @@ const SignIn = () => {
   }, []);
 
   return (
-    <div className="relative flex">
+    <div className="relative flex min-h-screen">
       <SignInForm />
       <FeaturePreviews />
     </div>
