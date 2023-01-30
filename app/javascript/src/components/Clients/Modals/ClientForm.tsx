@@ -98,6 +98,41 @@ const ClientForm = ({
     };
   };
 
+  const LogoComponent = () => (
+    <div className="mt-2 flex flex-row items-center justify-center">
+      <div className="flex h-16 w-16 items-center justify-center">
+        <Avatar url={clientLogoUrl} />
+      </div>
+      <input
+        className="hidden"
+        id="file_input"
+        name="logo"
+        type="file"
+        onChange={onLogoChange}
+      />
+      <label htmlFor="file_input">
+        <img
+          alt="edit"
+          className="cursor-pointer rounded-full"
+          src={editButton}
+          style={{ minWidth: "40px" }}
+        />
+      </label>
+      <input
+        className="hidden"
+        id="file_input"
+        name="logo"
+        type="file"
+        onClick={onLogoChange}
+      />
+      {clientLogoUrl && (
+        <button type="button" onClick={handleDeleteLogo}>
+          <img alt="delete" src={deleteImage} style={{ minWidth: "20px" }} />
+        </button>
+      )}
+    </div>
+  );
+
   return (
     <Formik
       initialValues={getInitialvalues(clientData)}
@@ -114,42 +149,9 @@ const ClientForm = ({
                 <div className="field">
                   <div className="mt-1">
                     {formType == "edit" ? (
-                      <div className="mt-2 flex flex-row items-center justify-center">
-                        <div className="flex h-16 w-16 items-center justify-center">
-                          <Avatar url={clientLogoUrl} />
-                        </div>
-                        <input
-                          className="hidden"
-                          id="file_input"
-                          name="logo"
-                          type="file"
-                          onChange={onLogoChange}
-                        />
-                        <label htmlFor="file_input">
-                          <img
-                            alt="edit"
-                            className="cursor-pointer rounded-full"
-                            src={editButton}
-                            style={{ minWidth: "40px" }}
-                          />
-                        </label>
-                        <input
-                          className="hidden"
-                          id="file_input"
-                          name="logo"
-                          type="file"
-                          onClick={onLogoChange}
-                        />
-                        {clientLogoUrl && (
-                          <button type="button" onClick={handleDeleteLogo}>
-                            <img
-                              alt="delete"
-                              src={deleteImage}
-                              style={{ minWidth: "20px" }}
-                            />
-                          </button>
-                        )}
-                      </div>
+                      <LogoComponent />
+                    ) : clientLogoUrl ? (
+                      <LogoComponent />
                     ) : (
                       <div className="mt-2 flex flex-row justify-center">
                         <div className="mt-2 h-20 w-20 rounded-full border border-miru-han-purple-1000 ">
