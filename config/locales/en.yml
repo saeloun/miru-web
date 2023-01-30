@@ -44,6 +44,11 @@ en:
     help: Help
     time_tracking: Time Tracking
     view_notifications: View Notifications
+  user:
+    login:
+      failure:
+        disabled: "Your access has been disabled."
+        pending_invitation: "Your account is not activated yet."
   projects:
     projects: Projects
     hours_logged: HOURS LOGGED
