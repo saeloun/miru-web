@@ -8,4 +8,15 @@ json.expenses expenses do |expense|
   json.date DateTime.parse(expense.date).strftime("%m.%d.%Y")
 end
 
+json.vendors vendors do | vendor |
+  json.id vendor.id
+  json.name vendor.name
+end
+
+json.categories categories do | category |
+  json.id category.id
+  json.name category.name
+  json.default category.default
+end
+
 json.pagy pagination_details

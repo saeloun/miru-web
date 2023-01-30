@@ -30,4 +30,6 @@ class ExpenseCategory < ApplicationRecord
 
   has_many :expenses
   belongs_to :company, optional: true
+
+  scope :defaults, -> { where(default: true) }
 end

@@ -33,7 +33,7 @@ RSpec.describe "InternalApi::V1::Expense#index", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns expected data in the response" do
+      it "returns expenses data in the response" do
         expected_data = [expense2, expense1].map do | expense|
                           {
                             "id" => expense.id,
@@ -45,8 +45,22 @@ RSpec.describe "InternalApi::V1::Expense#index", type: :request do
                           }
                         end
         expect(json_response["expenses"]).to eq(expected_data)
+      end
+
+      it "returns pagination information in the response" do
         expect(json_response["pagy"]).to eq(
           { "pages" => 1, "first" => true, "prev" => nil, "next" => nil, "last" => true })
+      end
+
+      it "returns list of vendors in the response" do
+        expect(json_response["vendors"]).to eq(
+          [{ "id" => vendor.id, "name" => vendor.name }])
+      end
+
+      it "returns list of categories in the response" do
+        expect(json_response["categories"]).to eq(
+          [{ "id" => expense_category.id, "name" => expense_category.name, "default" => false },
+           { "id" => expense_category_2.id, "name" => expense_category_2.name, "default" => false }])
       end
     end
   end

@@ -14,7 +14,10 @@ class Expenses::FetchService
     @expenses = search_expenses
     {
       expenses:,
-      pagination_details:
+      pagination_details:,
+      vendors: current_company.vendors,
+      categories: ExpenseCategory.defaults.order(:created_at) +
+                    current_company.expense_categories.order(:created_at)
     }
   end
 
