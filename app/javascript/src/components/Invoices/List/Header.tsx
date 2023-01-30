@@ -93,7 +93,7 @@ const Header = ({
           </div>
         </div>
         <button
-          className="relative ml-7"
+          className="relative ml-7 p-1 hover:bg-miru-gray-1000"
           onClick={() => setIsFilterVisible(true)}
         >
           {appliedFilterCount > 0 && (
@@ -101,7 +101,12 @@ const Header = ({
               {appliedFilterCount}
             </span>
           )}
-          <FilterIcon color="#5B34EA" size={16} weight="bold" />
+          <FilterIcon
+            className="hover:bg-miru-gray-1000"
+            color="#5B34EA"
+            size={16}
+            weight="bold"
+          />
         </button>
       </div>
       <div className="flex">
