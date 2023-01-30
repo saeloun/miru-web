@@ -23,6 +23,9 @@ const SignInForm = () => {
     await authenticationApi.signin(values);
   };
 
+  const isBtnDisabled = (values: SignInFormValues) =>
+    !(values.email?.trim() && values?.password?.trim());
+
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
@@ -39,7 +42,7 @@ const SignInForm = () => {
               onSubmit={handleSignInFormSubmit}
             >
               {(props: FormikProps<SignInFormValues>) => {
-                const { touched, errors } = props;
+                const { touched, errors, values } = props;
 
                 return (
                   <Form>
@@ -121,9 +124,13 @@ const SignInForm = () => {
                     {/* Sign In Button */}
                     <div>
                       <button
-                        className="form__button whitespace-nowrap"
                         data-cy="sign-up-button"
                         type="submit"
+                        className={`form__button whitespace-nowrap ${
+                          isBtnDisabled(values)
+                            ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                            : "cursor-pointer"
+                        }`}
                       >
                         Sign In
                       </button>
