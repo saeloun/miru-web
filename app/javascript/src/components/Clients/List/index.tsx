@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { Avatar, Tooltip } from "StyledComponents";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clientApi from "apis/clients";
@@ -19,44 +20,22 @@ import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 import NewClient from "../Modals/NewClient";
 
-const createInitials = client =>
-  client.name
-    .split(" ")
-    .map(name => name[0])
-    .join("")
-    .toUpperCase();
-
-const isValidCharLength = client =>
-  createInitials(client).length > 3 ? "" : "text-lg";
-
-const getTableData = clients => {
+const getTableData = (clients, handleTooltip, showTooltip, toolTipRef) => {
   if (clients) {
     return clients.map(client => ({
       col1: (
-        <div className="flex">
-          <div className="mx-2">
-            {client.logo === "" ? (
-              <div className="flex h-12 w-12 justify-center">
-                <span
-                  className={`w-22 rounded-full bg-miru-han-purple-1000 pt-1 text-center ${isValidCharLength(
-                    client
-                  )} leading-10 text-gray-50`}
-                >
-                  {createInitials(client)}
-                </span>
-              </div>
-            ) : (
-              <img
-                alt="alt text"
-                className="h-12 w-12 rounded-full"
-                src={client.logo}
-              />
-            )}
+        <Tooltip content={client.name} show={showTooltip}>
+          <div className="flex">
+            <Avatar classNameImg="mr-4" url={client.logo} />
+            <span
+              className="my-auto overflow-hidden truncate whitespace-nowrap text-base font-medium capitalize text-miru-dark-purple-1000"
+              ref={toolTipRef}
+              onMouseEnter={handleTooltip}
+            >
+              {client.name}
+            </span>
           </div>
-          <div className="my-auto text-base font-medium capitalize text-miru-dark-purple-1000">
-            {client.name}
-          </div>
-        </div>
+        </Tooltip>
       ),
       col2: (
         <div className="text-sm font-medium text-miru-dark-purple-1000">
@@ -89,8 +68,10 @@ const Clients = ({ isAdminUser }) => {
     useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showToolTip, setShowToolTip] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const toolTipRef = useRef(null);
 
   const handleEditClick = id => {
     setShowEditDialog(true);
@@ -115,6 +96,14 @@ const Clients = ({ isAdminUser }) => {
 
   const handleRowClick = id => {
     navigate(`${id}`);
+  };
+
+  const handleTooltip = () => {
+    if (toolTipRef?.current?.offsetWidth < toolTipRef?.current?.scrollWidth) {
+      setShowToolTip(true);
+    } else {
+      setShowToolTip(false);
+    }
   };
 
   useEffect(() => {
@@ -171,7 +160,12 @@ const Clients = ({ isAdminUser }) => {
     },
   ];
 
-  const tableData = getTableData(clientData);
+  const tableData = getTableData(
+    clientData,
+    handleTooltip,
+    showToolTip,
+    toolTipRef
+  );
 
   if (loading) {
     return (
