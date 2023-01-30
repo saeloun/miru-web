@@ -110,6 +110,8 @@
   "scripts": {
     "prepare": "husky install",
     "cy:open:dev": "cypress open",
+    "cy:open:prod": "cypress open --config-file cypress_production.config.ts",
+    "cy:run:prod": "cypress run --config-file cypress_production.config.ts",
     "cy:run:dev": "cypress run --browser chrome --headless --record --key 78e63e75-c093-4cfa-bc9b-d01afbb2aa49",
     "cy:run:staging": "cypress run --browser chrome --headless --config baseUrl=https://miru-staging.fly.dev/  --record --key 78e63e75-c093-4cfa-bc9b-d01afbb2aa49",
     "cy:open:staging": "cypress open --config baseUrl=https://miru-staging.fly.dev/",

@@ -117,6 +117,7 @@ const SendInvoice: React.FC<any> = ({
       aria-modal="true"
       className="fixed inset-0 z-10 overflow-y-auto"
       role="dialog"
+      onClick={e => e.stopPropagation()}
     >
       <div className="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div
