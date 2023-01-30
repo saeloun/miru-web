@@ -21,9 +21,9 @@ module.exports = {
       "7xl": "5rem",
     },
     letterSpacing: {
-      widest: "0.125rem",
-      wider: ".05rem",
-      normal: "0",
+      widest: "0.125em",
+      wider: ".05em",
+      normal: "0em",
     },
     screens: {
       xsm: "380px",
