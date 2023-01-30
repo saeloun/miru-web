@@ -37,6 +37,16 @@ const SignUpForm = () => {
     await authenticationApi.signup(payload);
   };
 
+  const isBtnDisabled = (values: SignUpFormValues) =>
+    !(
+      values?.firstName?.trim() &&
+      values?.lastName?.trim() &&
+      values.email?.trim() &&
+      values?.password?.trim() &&
+      values?.confirm_password?.trim() &&
+      values?.password?.trim() == values?.confirm_password?.trim()
+    );
+
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
@@ -53,7 +63,7 @@ const SignUpForm = () => {
               onSubmit={handleSignUpFormSubmit}
             >
               {(props: FormikProps<SignUpFormValues>) => {
-                const { touched, errors } = props;
+                const { touched, errors, values } = props;
 
                 return (
                   <Form>
@@ -236,9 +246,13 @@ const SignUpForm = () => {
                     {/* Sign Up Button */}
                     <div className="mb-3">
                       <button
-                        className="form__button whitespace-nowrap"
                         data-cy="sign-up-button"
                         type="submit"
+                        className={`form__button whitespace-nowrap ${
+                          isBtnDisabled(values)
+                            ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                            : "cursor-pointer"
+                        }`}
                       >
                         Sign Up
                       </button>
