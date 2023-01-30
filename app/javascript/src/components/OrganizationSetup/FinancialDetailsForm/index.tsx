@@ -20,7 +20,7 @@ const customStyles = {
     ...provided,
     backgroundColor: "#FFFFFF",
     color: "red",
-    minHeight: 32,
+    minHeight: 48,
     padding: "0",
   }),
   menu: provided => ({
@@ -35,7 +35,7 @@ const customStyles = {
   placeholder: base => ({
     ...base,
     position: "absolute",
-    top: "-30%",
+    top: "-45%",
     transition: "top 0.2s, font-size 0.2s",
     fontSize: 10,
     backgroundColor: "#FFFFFF",

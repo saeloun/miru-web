@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
-import { DeleteIcon, EditImageButtonSVG } from "miruIcons";
+import { DeleteImageButtonSVG, EditImageButtonSVG } from "miruIcons";
 import Select, { components } from "react-select";
 
 import { registerIntercepts, setAuthHeaders } from "apis/axios";
@@ -20,7 +20,7 @@ const customStyles = {
     ...provided,
     backgroundColor: "#FFFFFF",
     color: "red",
-    minHeight: 32,
+    minHeight: 48,
     padding: "0",
   }),
   menu: provided => ({
@@ -35,7 +35,7 @@ const customStyles = {
   placeholder: base => ({
     ...base,
     position: "absolute",
-    top: "-30%",
+    top: "-45%",
     transition: "top 0.2s, font-size 0.2s",
     fontSize: 10,
     backgroundColor: "#FFFFFF",
@@ -157,7 +157,7 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
                     <label htmlFor="file-input">
                       <img
                         alt="edit"
-                        className="min-w-12 cursor-pointer rounded-full"
+                        className="min-w-12 cursor-pointer rounded-full hover:bg-miru-gray-1000"
                         src={EditImageButtonSVG}
                       />
                     </label>
@@ -168,18 +168,22 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
                       type="file"
                       onChange={e => onLogoChange(e, setFieldValue)}
                     />
-                    <button data-cy="delete-logo">
-                      <DeleteIcon
-                        className="ml-2 min-w-12 cursor-pointer rounded-full text-miru-han-purple-1000"
-                        onClick={() => setFieldValue("logo_url", null)}
+                    <button
+                      data-cy="delete-logo"
+                      onClick={() => setFieldValue("logo_url", null)}
+                    >
+                      <img
+                        alt="edit"
+                        className="min-w-12 cursor-pointer rounded-full hover:bg-miru-gray-1000"
+                        src={DeleteImageButtonSVG}
                       />
                     </button>
                   </div>
                 ) : (
                   <>
-                    <div className="mx-auto mt-2 h-16 w-16 rounded-full border border-dashed border-miru-dark-purple-200">
+                    <div className="mx-auto mt-2 h-16 w-16 rounded-full border border-dashed border-miru-dark-purple-200 hover:bg-miru-gray-1000">
                       <label
-                        className="flex h-full w-full cursor-pointer items-center justify-center rounded-full px-1 py-2 text-center text-xs text-miru-dark-purple-200"
+                        className="flex h-full w-full cursor-pointer items-center justify-center rounded-full px-1 py-2 text-center text-xs text-miru-dark-purple-200 hover:text-miru-white-1000"
                         htmlFor="file-input"
                       >
                         Add company logo
