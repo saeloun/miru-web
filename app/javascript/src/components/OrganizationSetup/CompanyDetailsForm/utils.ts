@@ -11,9 +11,6 @@ export const companyDetailsFormValidationSchema = Yup.object().shape({
   country: Yup.object().shape({
     value: Yup.string().required("Country can not be blank"),
   }),
-  timezone: Yup.object().shape({
-    value: Yup.string().required("Timezone can not be blank"),
-  }),
 });
 
 export const mostSelectedCountries = [

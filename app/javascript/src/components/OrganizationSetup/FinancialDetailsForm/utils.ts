@@ -6,7 +6,10 @@ export const financialDetailsFormValidationSchema = Yup.object().shape({
   base_currency: Yup.object().shape({
     value: Yup.string().required("Base currency end can not be blank"),
   }),
-  standard_rate: Yup.string().required("Standard rate can not be blank"),
+  standard_rate: Yup.number().min(
+    0,
+    "Standard rate(per hour) must be greater than or equal to 0"
+  ),
   year_end: Yup.object().shape({
     value: Yup.string().required("Fiscal year end can not be blank"),
   }),
@@ -27,6 +30,10 @@ export const currencyListOptions = currencyList.map(currency => {
 
 export const fiscalYearEndOptions = [
   {
+    label: "December",
+    value: "Dec",
+  },
+  {
     label: "March",
     value: "Mar",
   },
@@ -34,20 +41,16 @@ export const fiscalYearEndOptions = [
     label: "September",
     value: "Sep",
   },
-  {
-    label: "December",
-    value: "Dec",
-  },
 ];
 
 export const dateFormatOptions = [
   {
-    label: "DD-MM-YYYY",
-    value: "DD-MM-YYYY",
-  },
-  {
     label: "MM-DD-YYYY",
     value: "MM-DD-YYYY",
+  },
+  {
+    label: "DD-MM-YYYY",
+    value: "DD-MM-YYYY",
   },
   {
     label: "YYYY-MM-DD",
