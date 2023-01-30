@@ -194,7 +194,7 @@ const FinancialDetailsForm = ({
                 <button
                   data-cy="sign-up-button"
                   type="submit"
-                  className={`form__button whitespace-nowrap ${
+                  className={`form__button whitespace-nowrap tracking-normal ${
                     isBtnDisabled(values)
                       ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
                       : "cursor-pointer"

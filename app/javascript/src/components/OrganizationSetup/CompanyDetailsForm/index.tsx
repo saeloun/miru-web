@@ -150,7 +150,7 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
                     <div className="mr-5 h-16 w-16">
                       <img
                         alt="org_logo"
-                        className="h-full min-w-full rounded-full object-contain"
+                        className="h-full min-w-full rounded-full object-cover"
                         src={values.logo_url}
                       />
                     </div>
@@ -327,7 +327,7 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
                   data-cy="sign-up-button"
                   disabled={isBtnDisabled(values)}
                   type="submit"
-                  className={`form__button whitespace-nowrap ${
+                  className={`form__button whitespace-nowrap tracking-normal ${
                     isBtnDisabled(values)
                       ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
                       : "cursor-pointer"
