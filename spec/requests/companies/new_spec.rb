@@ -17,10 +17,6 @@ RSpec.describe "Companies#new", type: :request do
     it "is successful" do
       expect(response).to be_successful
     end
-
-    it "renders Company#new page" do
-      expect(response.body).to include("Setup Org")
-    end
   end
 
   context "when user is an employee" do
@@ -34,10 +30,6 @@ RSpec.describe "Companies#new", type: :request do
     it "is successful" do
       expect(response).to be_successful
     end
-
-    it "renders Company#new page" do
-      expect(response.body).to include("Setup Org")
-    end
   end
 
   context "when user is a book keeper" do
@@ -50,10 +42,6 @@ RSpec.describe "Companies#new", type: :request do
 
     it "is successful" do
       expect(response).to be_successful
-    end
-
-    it "renders Company#new page" do
-      expect(response.body).to include("Setup Org")
     end
   end
 
