@@ -39,4 +39,10 @@ describe("Time tracking specs for admin", () => {
     cy.contains("Timesheet deleted")
   })
 
+  it.only("should be able to view other user's entries", function(){
+    cy.get("input[role='combobox']").click()
+    cy.contains('Keshav Biswa').first().click()
+    cy.get(timeTrackingSelectors.selectEmployee).should('contain', 'Keshav Biswa')
+  })
+
 });

@@ -3,7 +3,7 @@ import { dataCy } from "../../support/utils/datacy";
 export const timeTrackingSelectors = {
   monthCalender: dataCy("month-calendar"),
   newEntry: dataCy("new-entry-button"),
-  clientSelector: dataCy("client-selector"),
+  selectEmployee: dataCy("select-wrapper-employee"),
   projectSelector:dataCy("project-selector"),
   notes:dataCy("notes"),
   timeInput:dataCy("time-input"),
@@ -11,5 +11,6 @@ export const timeTrackingSelectors = {
   editEntry: dataCy("edit-entry"),
   deleteEntry:dataCy("delete-entry"),
   updateButton: dataCy("update-button"),
-  billableCheckbox:dataCy("billable-checkbox")
+  billableCheckbox:dataCy("billable-checkbox"),
+  selectUser: dataCy("select-user")
 };

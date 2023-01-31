@@ -311,13 +311,15 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               </button>
             ))}
           </nav>
-          {isAdminUser && selectedEmployeeId && (
-            <SearchTimeEntries
-              employeeList={employeeOptions}
-              selectedEmployeeId={selectedEmployeeId}
-              setSelectedEmployeeId={setSelectedEmployeeId}
-            />
-          )}
+          <div data-cy="select-wrapper-employee">
+            {isAdminUser && selectedEmployeeId && (
+              <SearchTimeEntries
+                employeeList={employeeOptions}
+                selectedEmployeeId={selectedEmployeeId}
+                setSelectedEmployeeId={setSelectedEmployeeId}
+              />
+            )}
+          </div>
         </div>
         <div>
           {view === "month" ? (
