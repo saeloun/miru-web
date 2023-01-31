@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
+import { Avatar } from "StyledComponents";
 import * as Yup from "yup";
 
 import { i18n } from "../../../i18n";
@@ -97,73 +98,40 @@ const ClientForm = ({
     };
   };
 
-  const createInitials = client =>
-    client.name
-      .split(" ")
-      .map(name => name[0])
-      .join("")
-      .toUpperCase();
-
-  const showInitialOrNew = () => {
-    if (formType === "edit") {
-      return (
-        <div className="flex flex-row items-center justify-center">
-          <div className="h-16 w-16">
-            <div className="flex h-full w-full justify-center">
-              <span className="w-22 rounded-full bg-miru-han-purple-1000 pt-2 text-center text-2xl leading-10 text-gray-50">
-                {createInitials(clientData)}
-              </span>
-            </div>
-          </div>
-          <input
-            className="hidden"
-            id="file-input"
-            name="logo"
-            type="file"
-            onChange={onLogoChange}
-          />
-          <label htmlFor="file_input">
-            <img
-              alt="edit"
-              className="mx-1 cursor-pointer rounded-full"
-              src={editButton}
-              style={{ minWidth: "30px" }}
-            />
-          </label>
-          <input
-            className="hidden"
-            id="file_input"
-            name="logo"
-            type="file"
-            onChange={onLogoChange}
-          />
-          <button onClick={handleDeleteLogo}>
-            <img alt="delete" src={deleteImage} style={{ minWidth: "10px" }} />
-          </button>
-        </div>
-      );
-    }
-
-    return (
-      <div className="mt-2 flex flex-row justify-center">
-        <div className="mt-2 h-20 w-20 rounded-full border border-miru-han-purple-1000 ">
-          <label
-            className="flex h-full w-full cursor-pointer justify-center"
-            htmlFor="file-input"
-          >
-            <img alt="profile_box" className="object-none" src={img} />
-          </label>
-          <input
-            className="hidden"
-            id="file-input"
-            name="logo"
-            type="file"
-            onChange={onLogoChange}
-          />
-        </div>
+  const LogoComponent = () => (
+    <div className="mt-2 flex flex-row items-center justify-center">
+      <div className="flex h-16 w-16 items-center justify-center">
+        <Avatar url={clientLogoUrl} />
       </div>
-    );
-  };
+      <input
+        className="hidden"
+        id="file_input"
+        name="logo"
+        type="file"
+        onChange={onLogoChange}
+      />
+      <label htmlFor="file_input">
+        <img
+          alt="edit"
+          className="cursor-pointer rounded-full"
+          src={editButton}
+          style={{ minWidth: "40px" }}
+        />
+      </label>
+      <input
+        className="hidden"
+        id="file_input"
+        name="logo"
+        type="file"
+        onClick={onLogoChange}
+      />
+      {clientLogoUrl && (
+        <button type="button" onClick={handleDeleteLogo}>
+          <img alt="delete" src={deleteImage} style={{ minWidth: "20px" }} />
+        </button>
+      )}
+    </div>
+  );
 
   return (
     <Formik
@@ -180,47 +148,32 @@ const ClientForm = ({
               <div className="mt-4">
                 <div className="field">
                   <div className="mt-1">
-                    {clientLogoUrl !== "" ? (
+                    {formType == "edit" ? (
+                      <LogoComponent />
+                    ) : clientLogoUrl ? (
+                      <LogoComponent />
+                    ) : (
                       <div className="mt-2 flex flex-row justify-center">
-                        <div className="h-20 w-20">
-                          <img
-                            alt="client logo"
-                            className="h-full min-w-full rounded-full"
-                            src={clientLogoUrl}
+                        <div className="mt-2 h-20 w-20 rounded-full border border-miru-han-purple-1000 ">
+                          <label
+                            className="flex h-full w-full cursor-pointer justify-center"
+                            htmlFor="file-input"
+                          >
+                            <img
+                              alt="profile_box"
+                              className="object-none"
+                              src={img}
+                            />
+                          </label>
+                          <input
+                            className="hidden"
+                            id="file-input"
+                            name="logo"
+                            type="file"
+                            onChange={onLogoChange}
                           />
                         </div>
-                        <input
-                          className="hidden"
-                          id="file_input"
-                          name="logo"
-                          type="file"
-                          onChange={onLogoChange}
-                        />
-                        <label htmlFor="file_input">
-                          <img
-                            alt="edit"
-                            className="mt-5 cursor-pointer rounded-full"
-                            src={editButton}
-                            style={{ minWidth: "40px" }}
-                          />
-                        </label>
-                        <input
-                          className="hidden"
-                          id="file_input"
-                          name="logo"
-                          type="file"
-                          onClick={onLogoChange}
-                        />
-                        <button type="button" onClick={handleDeleteLogo}>
-                          <img
-                            alt="delete"
-                            src={deleteImage}
-                            style={{ minWidth: "20px" }}
-                          />
-                        </button>
                       </div>
-                    ) : (
-                      showInitialOrNew()
                     )}
                     <p className="mt-3 block max-w-xs text-center text-xs tracking-wider text-red-600">
                       {fileUploadError}

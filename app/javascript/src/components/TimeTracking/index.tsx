@@ -56,6 +56,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     dayjs().month()
   );
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
+  const [updateView, setUpdateView] = useState(true);
 
   const employeeOptions = employees.map(e => ({
     value: `${e["id"]}`,
@@ -112,12 +113,14 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   }, [view]);
 
   useEffect(() => {
-    setSelectedFullDate(
-      dayjs()
-        .weekday(weekDay + selectDate)
-        .format("YYYY-MM-DD")
-    );
-  }, [selectDate, weekDay]);
+    if (updateView) {
+      setSelectedFullDate(
+        dayjs()
+          .weekday(weekDay + selectDate)
+          .format("YYYY-MM-DD")
+      );
+    }
+  }, [selectDate, weekDay, updateView]);
 
   useEffect(() => {
     if (dayInfo.length <= 0) return;
@@ -291,6 +294,17 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     setWeeklyData(() => weekArr);
   };
 
+  const handleAddEntryDateChange = date => {
+    const date1 = dayjs(date).weekday(dayjs().weekday());
+    const date2 = dayjs();
+
+    const days = date1.diff(date2, "days");
+    setWeekDay(days > 0 ? days + 1 : days); //The difference between selected date to current date is always comes 1 day less. This condition resolves that issue.
+    setSelectDate(dayjs(date).weekday());
+    setCurrentMonthNumber(dayjs(date).get("month"));
+    setCurrentYear(dayjs(date).year());
+  };
+
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
@@ -394,6 +408,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               editEntryId={editEntryId}
               entryList={entryList}
               fetchEntries={fetchEntries}
+              handleAddEntryDateChange={handleAddEntryDateChange}
               handleFilterEntry={handleFilterEntry}
               handleRelocateEntry={handleRelocateEntry}
               projects={projects}
@@ -401,6 +416,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               selectedFullDate={selectedFullDate}
               setEditEntryId={setEditEntryId}
               setNewEntryView={setNewEntryView}
+              setSelectedFullDate={setSelectedFullDate}
+              setUpdateView={setUpdateView}
             />
           )}
           {view !== "week" && !newEntryView && (
@@ -456,6 +473,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 editEntryId={editEntryId}
                 entryList={entryList}
                 fetchEntries={fetchEntries}
+                handleAddEntryDateChange={handleAddEntryDateChange}
                 handleFilterEntry={handleFilterEntry}
                 handleRelocateEntry={handleRelocateEntry}
                 key={entry.id}
@@ -464,6 +482,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 selectedFullDate={selectedFullDate}
                 setEditEntryId={setEditEntryId}
                 setNewEntryView={setNewEntryView}
+                setSelectedFullDate={setSelectedFullDate}
+                setUpdateView={setUpdateView}
               />
             ) : (
               <EntryCard
