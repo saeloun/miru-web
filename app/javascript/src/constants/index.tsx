@@ -38,6 +38,7 @@ export enum Paths {
   TIME_TRACKING = "/time-tracking",
   TEAM = "/team/*",
   PROFILE = "/profile/*",
+  AUTHORIZATION = "/authorization",
 }
 
 export const TOASTER_DURATION = 3000;

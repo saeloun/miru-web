@@ -16,7 +16,24 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
   if (authorisedRoles.includes(role)) {
     return <Outlet />;
   }
-  const url = role === Roles.BOOK_KEEPER ? Paths.PAYMENTS : Paths.TIME_TRACKING;
+
+  const url =
+    role === Roles.BOOK_KEEPER
+      ? Paths.PAYMENTS
+      : role === Roles.OWNER
+      ? Paths.INVOICES
+      : Paths.TIME_TRACKING;
+
+  return <Navigate to={url} />;
+};
+
+const RootElement = ({ role }) => {
+  const url =
+    role === Roles.OWNER
+      ? Paths.INVOICES
+      : role === Roles.BOOK_KEEPER
+      ? Paths.PAYMENTS
+      : Paths.TIME_TRACKING;
 
   return <Navigate to={url} />;
 };
@@ -24,6 +41,7 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
 const Main: React.FC<Iprops> = props => (
   <div className="overflow-x-scroll px-4 py-12 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
     <Routes>
+      <Route element={<RootElement role={props.companyRole} />} path="/" />
       {ROUTES.map(parentRoute => (
         <Route
           key={parentRoute.path}
@@ -41,6 +59,7 @@ const Main: React.FC<Iprops> = props => (
           ))}
         </Route>
       ))}
+      <Route path={Paths.AUTHORIZATION} />
       <Route element={<ErrorPage />} path="*" />
     </Routes>
   </div>

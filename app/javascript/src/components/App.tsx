@@ -4,7 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
-import { Roles, TOASTER_DURATION } from "constants/index";
+import { Roles, TOASTER_DURATION, Paths } from "constants/index";
+import { miruApp } from "constants/miruApp";
 import UserContext from "context/UserContext";
 
 import DisplayView from "./DisplayView";
@@ -16,6 +17,9 @@ const App = props => {
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
+    if (document.location.pathname == Paths.AUTHORIZATION) {
+      document.location.assign(miruApp.url);
+    }
   }, []);
 
   return (

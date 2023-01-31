@@ -42,6 +42,7 @@ class Company < ApplicationRecord
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
 
   # scopes
+  scope :with_kept_employments, -> { merge(Employment.kept) }
   scope :valid_invitations, -> { where(company: self).valid_invitations }
 
   def client_list

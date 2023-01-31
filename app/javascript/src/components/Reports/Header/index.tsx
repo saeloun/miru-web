@@ -49,7 +49,7 @@ const Header = ({
   return (
     <div>
       <div className="mt-6 mb-3 flex flex-col items-center justify-between lg:flex-row">
-        <div className="flex items-center lg:justify-between">
+        <div className="flex w-full items-center justify-between lg:w-auto">
           <Link to="/reports" type="button">
             <img src={leftArrow} />
           </Link>

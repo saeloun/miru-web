@@ -20,7 +20,7 @@ const Avatar = ({
 }: AvatarProps) => {
   const [initials, setInitials] = useState<string>(null);
   const DEFAULT_STYLE_IMAGE =
-    "inline-block md:h-10 md:w-10 h-5 w-5 rounded-full";
+    "inline-block md:h-10 md:w-10 h-8 w-8 rounded-full";
 
   const DEFAULT_STYLE_INITIALS =
     "md:text-xl text-xs md:font-medium font-light leading-none text-white";
