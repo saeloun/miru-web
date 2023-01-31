@@ -33,13 +33,22 @@ const MoreOptions = ({
 
   return isDesktop ? (
     <>
-      <div className="absolute bottom-16 left-24 flex hidden w-40 items-center justify-between rounded-xl border-2 border-miru-gray-200 bg-white p-3 lg:group-hover:flex">
+      <div
+        className="absolute bottom-16 right-0 flex hidden items-center justify-between rounded-xl border-2 border-miru-gray-200 bg-white lg:w-28 lg:p-2 lg:group-hover:flex xl:w-40 xl:p-3"
+        onClick={e => e.stopPropagation()}
+      >
         <Tooltip content="Send To">
           <button
-            className="text-miru-han-purple-1000"
-            onClick={() => setIsSending(!isSending)}
+            className="p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
+            onClick={() => {
+              setIsSending(!isSending);
+            }}
           >
-            <PaperPlaneTiltIcon size={16} />
+            <PaperPlaneTiltIcon
+              className="hover:bg-miru-gray-1000"
+              size={16}
+              weight="bold"
+            />
           </button>
         </Tooltip>
         <Tooltip content="Download">
@@ -49,64 +58,83 @@ const MoreOptions = ({
             className={
               invoice.status == "draft"
                 ? "text-miru-gray-1000"
-                : "text-miru-han-purple-1000"
+                : "p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
             }
-            onClick={() => handleDownloadInvoice(invoice)}
+            onClick={e => {
+              e.stopPropagation();
+              handleDownloadInvoice(invoice);
+            }}
           >
-            <DownloadSimpleIcon size={16} />
+            <DownloadSimpleIcon size={16} weight="bold" />
           </button>
         </Tooltip>
         <Tooltip content="Edit">
           <Link
-            className="text-miru-han-purple-1000"
+            className="p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
             data-cy="edit-invoice"
             to={`/invoices/${invoice.id}/edit`}
             type="button"
+            onClick={e => e.stopPropagation()}
           >
-            <PenIcon size={16} />
+            <PenIcon size={16} weight="bold" />
           </Link>
         </Tooltip>
         <Tooltip content="More">
           <button
-            className="text-miru-han-purple-1000"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className={`p-2 text-miru-han-purple-1000  hover:bg-miru-gray-1000 ${
+              isMenuOpen && `bg-miru-gray-100`
+            }`}
+            onClick={e => {
+              e.stopPropagation();
+              setIsMenuOpen(!isMenuOpen);
+            }}
           >
-            <DotsThreeVerticalIcon size={16} />
+            <DotsThreeVerticalIcon size={16} weight="bold" />
           </button>
         </Tooltip>
       </div>
       {isMenuOpen && (
         <div
-          className="absolute top-4 right-5 z-10 flex-col items-end group-hover:flex"
+          className="absolute top-4 right-0 z-10 flex-col items-end group-hover:flex"
+          onClick={e => e.stopPropagation()}
           onMouseLeave={() => setIsMenuOpen(false)}
         >
-          <div className="w-12 overflow-hidden">
+          <div className="hidden overflow-hidden lg:w-10 xl:w-12">
             <div className="h-6 w-6 origin-bottom-left rotate-45 transform border-2 border-miru-gray-200 bg-white" />
           </div>
-          <ul className="border-2 border-t-0 border-miru-gray-200 bg-white p-4">
-            <li className="flex cursor-pointer items-center py-2">
+          <ul
+            className="mt-1 rounded-lg border-miru-gray-200 bg-white shadow-c1 lg:py-3 xl:py-4"
+            onClick={e => e.stopPropagation()}
+          >
+            <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
               <PrinterIcon
-                className="mr-4 text-miru-han-purple-1000"
+                className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
                 size={16}
+                weight="bold"
               />
               Print
             </li>
             <li
-              className="flex cursor-pointer items-center py-2 text-miru-red-400"
+              className="flex cursor-pointer items-center px-5 text-sm text-miru-red-400 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
               onClick={() => {
                 setShowDeleteDialog(true);
                 setInvoiceToDelete(invoice.id);
               }}
             >
-              <DeleteIcon className="mr-4 text-miru-red-400" size={16} />
+              <DeleteIcon
+                className="text-miru-red-400 lg:mr-2 xl:mr-4"
+                size={16}
+                weight="bold"
+              />
               Delete
             </li>
-            <li className="flex cursor-pointer items-center py-2">
+            <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
               <PaperPlaneTiltIcon
-                className="mr-4 text-miru-han-purple-1000"
+                className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
                 size={16}
+                weight="bold"
               />
-              Send via link
+              Send link
             </li>
           </ul>
         </div>
@@ -156,7 +184,7 @@ const MoreOptions = ({
         </li>
         <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
           <PaperPlaneTiltIcon className="mr-4" size={16} />
-          Send via link
+          Send link
         </li>
         <li
           className="flex cursor-pointer items-center py-2 text-miru-red-400"

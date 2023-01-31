@@ -1,19 +1,16 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect, useRef } from "react";
 
-import { SettingIcon, SignOutIcon } from "miruIcons";
+import { useOutsideClick } from "helpers";
+import { SettingIcon, SignOutIcon, Switcher } from "miruIcons";
 import { NavLink } from "react-router-dom";
-import { Avatar } from "StyledComponents";
+import { Avatar, Tooltip } from "StyledComponents";
 
 import companiesApi from "apis/companies";
 import WorkspaceApi from "apis/workspaces";
 import { LocalStorageKeys } from "constants/index";
 
 import { activeClassName } from "./utils";
-
-import { useOutsideClick } from "../../helpers/outsideClick";
-
-const switcher = require("../../../../assets/images/switcher.svg");
 
 const UserActions = () => {
   const [currentWorkspace, setCurrentWorkspace] = useState<any>({
@@ -22,12 +19,22 @@ const UserActions = () => {
   });
   const [workSpaceList, setWorkSpaceList] = useState<any[]>([]);
   const [showWorkSpaceList, setShowWorkSpaceList] = useState<boolean>(false);
+  const [showToolTip, setShowToolTip] = useState<boolean>(false);
   const wrapperRef = useRef(null);
+  const toolTipRef = useRef(null);
 
   useEffect(() => {
     fetchWorkspaces();
     fetchCurrentComapny();
   }, []);
+
+  const handleTooltip = () => {
+    if (toolTipRef?.current?.offsetWidth < toolTipRef?.current?.scrollWidth) {
+      setShowToolTip(true);
+    } else {
+      setShowToolTip(false);
+    }
+  };
 
   useOutsideClick(
     wrapperRef,
@@ -57,19 +64,19 @@ const UserActions = () => {
 
   const WorkspaceList = () => (
     <ul
-      className="absolute bottom-20 w-full rounded-lg bg-white p-4 shadow-c1"
+      className="absolute bottom-20 w-full rounded-lg bg-white py-4 lg:shadow-c1"
       ref={wrapperRef}
     >
-      <span className="text-xs font-medium leading-4 tracking-wider text-miru-dark-purple-200">
+      <span className="px-4 text-xs font-medium leading-4 tracking-wider text-miru-dark-purple-200">
         SELECT WORKSPACE
       </span>
       {workSpaceList.map(workspace => (
         <li
-          className="flex cursor-pointer items-center justify-center py-3 px-2 hover:bg-miru-gray-100 lg:justify-start lg:px-6"
+          className="flex cursor-pointer items-start justify-start py-3 px-4 hover:bg-miru-gray-100"
           key={workspace.id}
           onClick={() => handleSwitch(workspace.id)}
         >
-          <Avatar classNameImg="lg:w-6 lg:h-6 lg:mr-4" url={workspace.logo} />
+          <Avatar classNameImg="lg:w-6 lg:h-6 mr-4" url={workspace.logo} />
           {workspace.name}
         </li>
       ))}
@@ -77,44 +84,55 @@ const UserActions = () => {
   );
 
   return (
-    <ul className="mt-auto lg:mt-32">
-      <li className="flex items-center justify-center hover:bg-miru-gray-100 lg:justify-start">
+    <ul className="w-full">
+      <li className="flex border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0 lg:justify-start">
         <NavLink
           to="/profile/edit"
           className={({ isActive }) =>
             isActive
               ? activeClassName
-              : "flex w-full items-center justify-center py-3 px-2 hover:bg-miru-gray-100 lg:justify-start lg:px-6"
+              : "flex w-full items-start justify-start py-3 hover:bg-miru-gray-100"
           }
         >
-          <SettingIcon className="mr-0 lg:mr-4" size={26} />
+          <SettingIcon className="mr-4" size={26} />
           Settings
         </NavLink>
       </li>
-      <a data-method="delete" href="/users/sign_out" rel="nofollow">
-        <li
-          className="flex items-center justify-center py-3 px-2 hover:bg-miru-gray-100 lg:justify-start lg:px-6"
-          onClick={handleLogout}
-        >
-          <SignOutIcon className="mr-0 lg:mr-4" size={26} />
-          Logout
-        </li>
-      </a>
       <li
-        className="flex w-full cursor-pointer items-center justify-between py-4 px-2 text-sm font-bold leading-4 hover:bg-miru-gray-100 md:px-6"
-        onClick={() => {
-          setShowWorkSpaceList(true);
-        }}
+        className="flex items-start justify-start  border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0"
+        onClick={handleLogout}
       >
-        <div>
-          <Avatar
-            classNameImg="lg:w-6 lg:h-6 lg:mr-4"
-            url={currentWorkspace.logo}
-          />
-          <span>{currentWorkspace.name}</span>
-        </div>
-        <img className="h-10 w-10" src={switcher} />
+        <a
+          className="flex w-full items-start justify-start py-3 hover:bg-miru-gray-100"
+          data-method="delete"
+          href="/users/sign_out"
+          rel="nofollow"
+        >
+          <SignOutIcon className="mr-4" size={26} />
+          Logout
+        </a>
       </li>
+      <Tooltip content={currentWorkspace.name} show={showToolTip}>
+        <li
+          className="flex w-full cursor-pointer items-center justify-between py-4  px-6 text-sm font-bold leading-4 hover:bg-miru-gray-100"
+          onClick={() => {
+            setShowWorkSpaceList(true);
+          }}
+        >
+          <div
+            className="overflow-hidden truncate whitespace-nowrap lg:pr-4"
+            ref={toolTipRef}
+            onMouseEnter={handleTooltip}
+          >
+            <Avatar
+              classNameImg="lg:w-6 lg:h-6 mr-4"
+              url={currentWorkspace.logo}
+            />
+            <span>{currentWorkspace.name}</span>
+          </div>
+          <img className="lg:h-10 lg:w-10" src={Switcher} />
+        </li>
+      </Tooltip>
       {showWorkSpaceList && <WorkspaceList />}
     </ul>
   );

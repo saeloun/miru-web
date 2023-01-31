@@ -1,19 +1,16 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import companiesApi from "apis/companies";
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
+import { mapGenerateInvoice, unmapGenerateInvoice } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
 import InvoiceSettings from "./InvoiceSettings";
 
-import {
-  mapGenerateInvoice,
-  unmapGenerateInvoice,
-} from "../../../mapper/generateInvoice.mapper";
 import Header from "../common/InvoiceForm/Header";
 import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import { generateInvoiceLineItems } from "../common/utils";
@@ -31,6 +28,7 @@ const GenerateInvoices = () => {
   const [tax, setTax] = useState<any>(0);
   const [issueDate, setIssueDate] = useState(new Date());
   const today = new Date();
+  const [searchParams] = useSearchParams();
   const [dueDate, setDueDate] = useState(
     today.setMonth(issueDate.getMonth() + 1)
   );
@@ -42,6 +40,7 @@ const GenerateInvoices = () => {
   const [manualEntryArr, setManualEntryArr] = useState<any>([]);
 
   const amountPaid = 0;
+  const clientId = searchParams.get("clientId");
 
   const INVOICE_NUMBER_ERROR = "Please enter invoice number to proceed";
   const SELECT_CLIENT_ERROR =
@@ -58,10 +57,21 @@ const GenerateInvoices = () => {
     }
   };
 
+  const setClientListIfClientIdPresent = () => {
+    const client = invoiceDetails?.clientList?.find(
+      client => client.value === parseInt(clientId)
+    );
+    if (client) setSelectedClient(client);
+  };
+
   useEffect(() => {
     sendGAPageView();
     fetchCompanyDetails();
   }, []);
+
+  useEffect(() => {
+    if (clientId) setClientListIfClientIdPresent();
+  }, [invoiceDetails]);
 
   const saveInvoice = async () => {
     const sanitized = mapGenerateInvoice({

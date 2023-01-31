@@ -16,7 +16,10 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
         .new(Reports::TimeEntries::ReportService.new(params, current_company, download: true).process[:entries])
         .process
       }
-      format.pdf { send_data Reports::TimeEntries::GeneratePdf.new(reports).process }
+      format.pdf { send_data Reports::TimeEntries::GeneratePdf
+        .new(Reports::TimeEntries::ReportService.new(params, current_company, download: true).process[:reports])
+        .process
+}
     end
   end
 
@@ -38,7 +41,7 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
         order: { work_date: :desc },
         body_options: group_by_clause,
         includes: [:user, { project: :client }, :client ]
-        )
+      )
 
       Reports::TimeEntries::Result.process(search_result, params["group_by"])
     end

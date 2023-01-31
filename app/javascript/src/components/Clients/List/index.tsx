@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { Avatar, Tooltip } from "StyledComponents";
 
 import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clientApi from "apis/clients";
@@ -10,22 +11,31 @@ import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import Table from "common/Table";
 import { TOASTER_DURATION } from "constants/index";
+import { unmapClientList } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
 
-import { unmapClientList } from "../../../mapper/client.mapper";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClient from "../Modals/EditClient";
 import NewClient from "../Modals/NewClient";
 
-const getTableData = clients => {
+const getTableData = (clients, handleTooltip, showTooltip, toolTipRef) => {
   if (clients) {
     return clients.map(client => ({
       col1: (
-        <div className="text-base font-medium text-miru-dark-purple-1000">
-          {client.name}
-        </div>
+        <Tooltip content={client.name} show={showTooltip}>
+          <div className="flex">
+            <Avatar classNameImg="mr-4" url={client.logo} />
+            <span
+              className="my-auto overflow-hidden truncate whitespace-nowrap text-base font-medium capitalize text-miru-dark-purple-1000"
+              ref={toolTipRef}
+              onMouseEnter={handleTooltip}
+            >
+              {client.name}
+            </span>
+          </div>
+        </Tooltip>
       ),
       col2: (
         <div className="text-sm font-medium text-miru-dark-purple-1000">
@@ -33,7 +43,7 @@ const getTableData = clients => {
         </div>
       ),
       col3: (
-        <div className="text-right text-lg font-bold text-miru-dark-purple-1000">
+        <div className="text-right text-xl font-bold text-miru-dark-purple-1000">
           {minToHHMM(client.minutes)}
         </div>
       ),
@@ -52,11 +62,16 @@ const Clients = ({ isAdminUser }) => {
   const [clientToDelete, setClientToDelete] = useState({});
   const [clientData, setClientData] = useState<any>();
   const [totalMinutes, setTotalMinutes] = useState(null);
+  const [clientLogoUrl, setClientLogoUrl] = useState("");
+  const [clientLogo, setClientLogo] = useState("");
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showToolTip, setShowToolTip] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const toolTipRef = useRef(null);
 
   const handleEditClick = id => {
     setShowEditDialog(true);
@@ -81,6 +96,14 @@ const Clients = ({ isAdminUser }) => {
 
   const handleRowClick = id => {
     navigate(`${id}`);
+  };
+
+  const handleTooltip = () => {
+    if (toolTipRef?.current?.offsetWidth < toolTipRef?.current?.scrollWidth) {
+      setShowToolTip(true);
+    } else {
+      setShowToolTip(false);
+    }
   };
 
   useEffect(() => {
@@ -137,7 +160,12 @@ const Clients = ({ isAdminUser }) => {
     },
   ];
 
-  const tableData = getTableData(clientData);
+  const tableData = getTableData(
+    clientData,
+    handleTooltip,
+    showToolTip,
+    toolTipRef
+  );
 
   if (loading) {
     return (
@@ -150,10 +178,17 @@ const Clients = ({ isAdminUser }) => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <Header isAdminUser={isAdminUser} setnewClient={setClient} />
+      <Header
+        isAdminUser={isAdminUser}
+        setShowDialog={setShowDialog}
+        setnewClient={setClient}
+      />
       <div>
         {isAdminUser && (
-          <div className="bg-miru-gray-100 py-10 px-10">
+          <div
+            className="bg-miru-gray-100 py-10 px-10"
+            data-cy="clients-admin-data"
+          >
             <div className="flex justify-end">
               <select
                 className="focus:outline-none
@@ -186,7 +221,7 @@ const Clients = ({ isAdminUser }) => {
             <AmountBoxContainer amountBox={amountBox} />
           </div>
         )}
-        <div className="flex flex-col">
+        <div className="flex flex-col" data-cy="clients-list-table">
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden">
@@ -219,10 +254,15 @@ const Clients = ({ isAdminUser }) => {
           setShowDeleteDialog={setShowDeleteDialog}
         />
       )}
-      {client && (
+      {client && showDialog && (
         <NewClient
           clientData={clientData}
+          clientLogo={clientLogo}
+          clientLogoUrl={clientLogoUrl}
           setClientData={setClientData}
+          setClientLogo={setClientLogo}
+          setClientLogoUrl={setClientLogoUrl}
+          setShowDialog={setShowDialog}
           setnewClient={setClient}
         />
       )}

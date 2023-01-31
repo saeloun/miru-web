@@ -52,9 +52,8 @@ class TimesheetEntry < ApplicationRecord
 
   scope :search_import, -> { includes(:project, :client, :user) }
 
-  filterable = [:user_name, :created_at, :project_name, :client_name, :bill_status ]
-
-  searchkick filterable:, text_middle: [:user_name, :note]
+  searchkick filterable: [:user_name, :created_at, :project_name, :client_name, :bill_status ],
+    word_middle: [:user_name, :note]
 
   def search_data
     {
@@ -88,8 +87,10 @@ class TimesheetEntry < ApplicationRecord
   end
 
   def formatted_duration
-    minutes = duration.to_i
-    Time.parse("#{minutes / 60}:#{minutes % 60}").strftime("%H:%M")
+    total_minutes = duration.to_i
+    hours = total_minutes / 60
+    minutes = total_minutes % 60
+    format("%02d:%02d", hours, minutes)
   end
 
   private

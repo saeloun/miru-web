@@ -27,8 +27,11 @@ const AddEntry: React.FC<Iprops> = ({
   selectedFullDate,
   editEntryId,
   setEditEntryId,
+  handleAddEntryDateChange,
   handleFilterEntry,
   handleRelocateEntry,
+  setSelectedFullDate,
+  setUpdateView,
 }) => {
   const [note, setNote] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
@@ -45,6 +48,10 @@ const AddEntry: React.FC<Iprops> = ({
   useOutsideClick(datePickerRef, () => {
     setDisplayDatePicker(false);
   });
+
+  useEffect(() => {
+    setSelectedDate(selectedFullDate);
+  }, [selectedFullDate]);
 
   const handleFillData = () => {
     if (!editEntryId) return;
@@ -90,13 +97,6 @@ const AddEntry: React.FC<Iprops> = ({
 
   const handleSave = async () => {
     const tse = getPayload();
-    const message = validateTimesheetEntry(tse);
-    if (message) {
-      Toastr.error(message);
-
-      return;
-    }
-
     const res = await timesheetEntryApi.create(
       {
         project_id: projectId,
@@ -106,12 +106,11 @@ const AddEntry: React.FC<Iprops> = ({
     );
 
     if (res.status === 200) {
-      const fetchEntriesRes = await fetchEntries(
-        selectedFullDate,
-        selectedFullDate
-      );
+      const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
       if (fetchEntriesRes) {
         setNewEntryView(false);
+        setUpdateView(true);
+        handleAddEntryDateChange(dayjs(selectedDate));
       }
     }
   };
@@ -119,13 +118,6 @@ const AddEntry: React.FC<Iprops> = ({
   const handleEdit = async () => {
     try {
       const tse = getPayload();
-      const message = validateTimesheetEntry(tse);
-      if (message) {
-        Toastr.error(message);
-
-        return;
-      }
-
       const updateRes = await timesheetEntryApi.update(editEntryId, {
         project_id: projectId,
         timesheet_entry: tse,
@@ -136,10 +128,13 @@ const AddEntry: React.FC<Iprops> = ({
           await handleFilterEntry(selectedFullDate, editEntryId);
           await handleRelocateEntry(selectedDate, updateRes.data.entry);
         } else {
-          await fetchEntries(selectedFullDate, selectedFullDate);
+          await fetchEntries(selectedDate, selectedDate);
         }
         setEditEntryId(0);
         setNewEntryView(false);
+        setUpdateView(true);
+        handleAddEntryDateChange(dayjs(selectedDate));
+        setSelectedFullDate(dayjs(selectedDate).format("YYYY-MM-DD"));
       }
     } catch (error) {
       Toastr.error(error);
@@ -149,6 +144,17 @@ const AddEntry: React.FC<Iprops> = ({
   const handleDateChangeFromDatePicker = (date: Date) => {
     setSelectedDate(dayjs(date).format("YYYY-MM-DD"));
     setDisplayDatePicker(false);
+    setUpdateView(false);
+  };
+
+  const handleDisableBtn = () => {
+    const tse = getPayload();
+    const message = validateTimesheetEntry(tse, client, projectId);
+    if (message) {
+      return true;
+    }
+
+    return false;
   };
 
   useEffect(() => {
@@ -157,9 +163,10 @@ const AddEntry: React.FC<Iprops> = ({
 
   return (
     <div
-      className={`min-h-24 flex justify-between rounded-lg p-4 shadow-2xl ${
-        editEntryId ? "mt-10" : ""
-      }`}
+      className={`
+        min-h-24 flex justify-between rounded-lg p-4 shadow-2xl ${
+          editEntryId ? "mt-10" : ""
+        }`}
     >
       <div className="w-1/2">
         <div className="mb-2 flex w-129 justify-between">
@@ -210,9 +217,11 @@ const AddEntry: React.FC<Iprops> = ({
           placeholder=" Notes"
           rows={5}
           value={note}
-          className={`focus:miru-han-purple-1000 outline-none mt-2 w-129 resize-none overflow-y-auto rounded-sm bg-miru-gray-100 px-1 ${
-            editEntryId ? "h-auto" : "h-8"
-          }`}
+          className={`
+            focus:miru-han-purple-1000 outline-none mt-2 w-129 resize-none overflow-y-auto rounded-sm bg-miru-gray-100 px-1 ${
+              editEntryId ? "h-auto" : "h-8"
+            }
+          `}
           onChange={e => setNote(e.target["value"])}
         />
       </div>
@@ -232,7 +241,7 @@ const AddEntry: React.FC<Iprops> = ({
             <div
               className="formatted-date flex h-8 w-29 items-center justify-center rounded-sm bg-miru-gray-100 p-1 text-sm"
               onClick={() => {
-                if (editEntryId) setDisplayDatePicker(true);
+                setDisplayDatePicker(true);
               }}
             >
               {format(new Date(selectedDate), "do MMM, yyyy")}
@@ -271,10 +280,11 @@ const AddEntry: React.FC<Iprops> = ({
       <div className="max-w-min">
         {editEntryId === 0 ? (
           <button
+            disabled={handleDisableBtn()}
             className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-              note && client && project
-                ? "bg-miru-han-purple-1000 hover:border-transparent"
-                : "bg-miru-gray-1000"
+              handleDisableBtn()
+                ? "cursor-not-allowed bg-miru-gray-1000"
+                : "bg-miru-han-purple-1000 hover:border-transparent"
             }`}
             onClick={handleSave}
           >
@@ -282,10 +292,11 @@ const AddEntry: React.FC<Iprops> = ({
           </button>
         ) : (
           <button
+            disabled={handleDisableBtn()}
             className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-              note && client && project
-                ? "bg-miru-han-purple-1000 hover:border-transparent"
-                : "bg-miru-gray-1000"
+              handleDisableBtn()
+                ? "cursor-not-allowed bg-miru-gray-1000"
+                : "bg-miru-han-purple-1000 hover:border-transparent"
             }`}
             onClick={() => handleEdit()}
           >
@@ -316,8 +327,11 @@ interface Iprops {
   editEntryId: number;
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   entryList: object;
+  handleAddEntryDateChange: any;
   handleFilterEntry: (date: string, entryId: string | number) => object; // eslint-disable-line
   handleRelocateEntry: (date: string, entry: object) => void; // eslint-disable-line
+  setSelectedFullDate: any;
+  setUpdateView: any;
 }
 
 export default AddEntry;

@@ -20,20 +20,20 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
   def show
     authorize client
-    project_details = client.project_details(params[:time_frame])
-    client_details = {
-      id: client.id, name: client.name, email: client.email, address: client.address,
-      phone: client.phone
-    }
-    total_minutes = (project_details.map { |project| project[:minutes_spent] }).sum
-    overdue_outstanding_amount = client.client_overdue_and_outstanding_calculation
-    render json: { client_details:, project_details:, total_minutes:, overdue_outstanding_amount: }, status: :ok
+
+    render json: {
+             client_details: ClientPresenter.new(client).snippet,
+             project_details: client.project_details(params[:time_frame]),
+             total_minutes: client.total_hours_logged(params[:time_frame]),
+             overdue_outstanding_amount: client.client_overdue_and_outstanding_calculation
+           },
+      status: :ok
   end
 
   def update
     authorize client
 
-    if client.update!(client_params)
+    if client.update!(update_client_params)
       render json: {
         success: true,
         client:,
@@ -64,6 +64,15 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
         policy(Client).permitted_attributes
       ).tap do |client_params|
         client_params[:company_id] = current_company.id
+      end
+    end
+
+    def update_client_params
+      if client_params.key?(:logo) && client_params[:logo].blank?
+        client.logo.destroy
+        client_params.except(:logo)
+      else
+        client_params
       end
     end
 end
