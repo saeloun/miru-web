@@ -8,62 +8,88 @@ import companiesApi from "apis/companies";
 import { Paths, TOASTER_DURATION } from "constants/index";
 
 import CompanyDetailsForm from "./CompanyDetailsForm";
+import { CompanyDetailsFormValues } from "./CompanyDetailsForm/interface";
+import { companyDetailsFormInitialValues } from "./CompanyDetailsForm/utils";
 import FinancialDetailsForm from "./FinancialDetailsForm";
-import { CompanyDetails, FinancialDetails } from "./interface";
+import { FinancialDetailsFormValues } from "./FinancialDetailsForm/interface";
+import { financialDetailsFormInitialValues } from "./FinancialDetailsForm/utils";
 import Step from "./Step";
-import { organizationSetupSteps } from "./utils";
+import { organizationSetupSteps, TOTAL_NUMBER_OF_STEPS } from "./utils";
 
 const OrganizationSetup = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [companyDetails, setCompanyDetails] = useState<CompanyDetails>({
-    company_name: "",
-    business_phone: "",
-    address: "",
-    logo_url: null,
-    country: "",
-    timezone: "",
-    logo: null,
-  });
+  const [stepNoOfLastSubmittedForm, setStepNoOfLastSubmittedForm] =
+    useState<number>(0);
 
-  const onNextBtnClick = (companyDetails: CompanyDetails) => {
-    const newStepNo = currentStep + 1;
-    setCurrentStep(newStepNo);
+  const [companyDetails, setCompanyDetails] =
+    useState<CompanyDetailsFormValues>(companyDetailsFormInitialValues);
+
+  const [financialDetails, setFinancialDetails] =
+    useState<FinancialDetailsFormValues>(financialDetailsFormInitialValues);
+
+  const onNextBtnClick = (companyDetails: CompanyDetailsFormValues) => {
+    const nextStepNo = currentStep + 1;
+    setStepNoOfLastSubmittedForm(currentStep);
+    setCurrentStep(nextStepNo);
     setCompanyDetails(companyDetails);
   };
 
   const generatePayload = (
-    companyDetails: CompanyDetails,
-    financialDetails: FinancialDetails
+    companyDetails: CompanyDetailsFormValues,
+    financialDetails: FinancialDetailsFormValues
   ) => {
-    const { company_name, business_phone, address, logo, country, timezone } =
-      companyDetails;
-
-    const { base_currency, standard_rate, year_end, date_format } =
-      financialDetails;
     const formD = new FormData();
-    formD.append("company[name]", company_name);
-    formD.append("company[address]", address);
-    formD.append("company[business_phone]", business_phone);
-    formD.append("company[country]", country);
-    formD.append("company[base_currency]", base_currency);
-    formD.append("company[standard_price]", standard_rate.toString());
+    formD.append("company[name]", companyDetails.company_name);
+    formD.append("company[address]", companyDetails.address);
+    formD.append("company[business_phone]", companyDetails.business_phone);
+    formD.append("company[country]", companyDetails.country?.value);
+    formD.append(
+      "company[base_currency]",
+      financialDetails.base_currency?.value || ""
+    );
 
-    formD.append("company[fiscal_year_end]", year_end);
-    formD.append("company[date_format]", date_format);
-    formD.append("company[timezone]", timezone);
-    if (logo) {
-      formD.append("company[logo]", logo);
+    formD.append(
+      "company[standard_price]",
+      financialDetails.standard_rate.toString()
+    );
+
+    formD.append("company[fiscal_year_end]", financialDetails.year_end?.value);
+    formD.append("company[date_format]", financialDetails.date_format?.value);
+    formD.append("company[timezone]", companyDetails.timezone?.value);
+    if (companyDetails.logo) {
+      formD.append("company[logo]", companyDetails.logo);
     }
 
     return formD;
   };
 
-  const onSaveBtnClick = async (financialDetails: FinancialDetails) => {
+  const onSaveBtnClick = async (
+    financialDetails: FinancialDetailsFormValues
+  ) => {
+    setStepNoOfLastSubmittedForm(currentStep);
     const payload = generatePayload(companyDetails, financialDetails);
     const res = await companiesApi.create(payload);
     if (res?.status == 200) {
       window.location.href = Paths.TIME_TRACKING;
     }
+  };
+
+  const updateStepNumber = (stepNo: number) => {
+    if (isStepFormSubmittedOrVisited(stepNo)) {
+      setCurrentStep(stepNo);
+    }
+  };
+
+  const isStepFormSubmittedOrVisited = stepNo => {
+    if (stepNo == currentStep) {
+      return true;
+    }
+
+    return (
+      stepNo <= TOTAL_NUMBER_OF_STEPS &&
+      stepNo > 0 &&
+      stepNo <= stepNoOfLastSubmittedForm
+    );
   };
 
   return (
@@ -77,15 +103,30 @@ const OrganizationSetup = () => {
           <div className="mx-auto mt-6 mb-11 w-full">
             <Steps
               current={currentStep - 1}
-              itemRender={props => <Step {...props} />}
               items={organizationSetupSteps}
               labelPlacement="horizontal"
+              itemRender={props => (
+                <Step
+                  {...props}
+                  isActiveStep={isStepFormSubmittedOrVisited}
+                  updateStepNumber={updateStepNumber}
+                />
+              )}
             />
           </div>
           {currentStep == 1 ? (
-            <CompanyDetailsForm onNextBtnClick={onNextBtnClick} />
+            <CompanyDetailsForm
+              isFormAlreadySubmitted={stepNoOfLastSubmittedForm >= 1}
+              previousSubmittedValues={companyDetails}
+              onNextBtnClick={onNextBtnClick}
+            />
           ) : (
-            <FinancialDetailsForm onSaveBtnClick={onSaveBtnClick} />
+            <FinancialDetailsForm
+              isUpdatedFormValues={stepNoOfLastSubmittedForm >= 1}
+              prevFormValues={financialDetails}
+              setFinancialDetails={setFinancialDetails}
+              onSaveBtnClick={onSaveBtnClick}
+            />
           )}
         </div>
       </div>

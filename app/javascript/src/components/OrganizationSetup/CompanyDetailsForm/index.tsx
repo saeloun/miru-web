@@ -67,7 +67,11 @@ const CustomValueContainer = props => {
   );
 };
 
-const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
+const CompanyDetailsForm = ({
+  onNextBtnClick,
+  isFormAlreadySubmitted = false,
+  previousSubmittedValues = null,
+}: CompanyDetailsFormProps) => {
   const [allTimezones, setAllTimezones] = useState({});
   const [timezonesOfSelectedCountry, setTimezonesOfSelectedCountry] = useState(
     []
@@ -81,11 +85,12 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
 
   useEffect(() => {
     if (Object.keys(allTimezones || {})?.length) {
-      const defaultSelectedCountryCode =
-        companyDetailsFormInitialValues?.country?.value || "US";
-      getTimezonesOfCurrentCountry(defaultSelectedCountryCode);
+      const selectedCountryCode = isFormAlreadySubmitted
+        ? previousSubmittedValues.country?.value
+        : companyDetailsFormInitialValues?.country?.value || "US";
+      getTimezonesOfCurrentCountry(selectedCountryCode);
     }
-  }, [allTimezones]);
+  }, [allTimezones]); // eslint-disable-line
 
   const getAllTimezones = async () => {
     const res = await companyProfileApi.get();
@@ -114,15 +119,6 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
     setFieldValue("logo", file);
   };
 
-  const handleCompanyDetailsFormSubmit = (values: CompanyDetailsFormValues) => {
-    const formattedCompanyDetails = {
-      ...values,
-      country: values.country?.value || "",
-      timezone: values.timezone?.value || "",
-    };
-    onNextBtnClick(formattedCompanyDetails);
-  };
-
   const isBtnDisabled = (values: CompanyDetailsFormValues) =>
     !(
       values.country?.value?.trim() &&
@@ -134,10 +130,14 @@ const CompanyDetailsForm = ({ onNextBtnClick }: CompanyDetailsFormProps) => {
   return (
     <div>
       <Formik
-        initialValues={companyDetailsFormInitialValues}
         validateOnBlur={false}
         validationSchema={companyDetailsFormValidationSchema}
-        onSubmit={handleCompanyDetailsFormSubmit}
+        initialValues={
+          isFormAlreadySubmitted
+            ? previousSubmittedValues
+            : companyDetailsFormInitialValues
+        }
+        onSubmit={onNextBtnClick}
       >
         {(props: FormikProps<CompanyDetailsFormValues>) => {
           const { touched, errors, setFieldValue, values } = props;

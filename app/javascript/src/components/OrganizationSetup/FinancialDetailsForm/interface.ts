@@ -1,5 +1,3 @@
-import { FinancialDetails } from "../interface";
-
 export interface FinancialDetailsFormValues {
   base_currency: {
     label: string;
@@ -17,5 +15,8 @@ export interface FinancialDetailsFormValues {
 }
 
 export interface FinancialDetailsFormProps {
-  onSaveBtnClick: (financialDetails: FinancialDetails) => void; // eslint-disable-line
+  onSaveBtnClick: (financialDetails: FinancialDetailsFormValues) => void; // eslint-disable-line
+  setFinancialDetails: (values: any) => void; // eslint-disable-line
+  isUpdatedFormValues: boolean;
+  prevFormValues: FinancialDetailsFormValues;
 }

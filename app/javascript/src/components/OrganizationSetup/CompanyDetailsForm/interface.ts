@@ -1,5 +1,3 @@
-import { CompanyDetails } from "../interface";
-
 export interface CompanyDetailsFormValues {
   company_name: string;
   business_phone: string;
@@ -17,5 +15,7 @@ export interface CompanyDetailsFormValues {
 }
 
 export interface CompanyDetailsFormProps {
-  onNextBtnClick: (companyDetails: CompanyDetails) => void; // eslint-disable-line
+  onNextBtnClick: (companyDetails: CompanyDetailsFormValues) => void; // eslint-disable-line
+  isFormAlreadySubmitted: boolean;
+  previousSubmittedValues?: CompanyDetailsFormValues;
 }

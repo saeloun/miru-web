@@ -4,7 +4,7 @@ import { CheckCircle } from "phosphor-react";
 
 const Step = (props: any) => {
   const [stepNumber, setStepNumber] = useState<number>(1);
-  const { title, status } = props;
+  const { title, status, updateStepNumber, isActiveStep } = props;
 
   useEffect(() => {
     getStepNumber();
@@ -22,15 +22,20 @@ const Step = (props: any) => {
     status?.toLowerCase()?.trim() == "finish";
 
   return (
-    <div className={`rc-steps-item rc-steps-item-${status} whitespace-nowrap`}>
+    <div
+      className={`rc-steps-item rc-steps-item-${status} ${
+        isActiveStep(stepNumber) ? "cursor-pointer" : "cursor-not-allowed"
+      } whitespace-nowrap`}
+      onClick={() => updateStepNumber(stepNumber)}
+    >
       <div className="rc-steps-item-container">
         <div className="rc-steps-item-tail" />
         {stepIsFinished(status) ? (
-          <div className="rc-steps-item-icon flex items-center justify-center">
+          <div className="rc-steps-item-icon flex items-center justify-center pb-7 md:pb-0">
             <CheckCircle
               className="green-tick block"
               color="#0DA163"
-              size="32"
+              size="30"
               weight="fill"
             />
           </div>

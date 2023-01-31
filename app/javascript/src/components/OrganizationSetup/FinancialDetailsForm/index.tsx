@@ -59,17 +59,15 @@ const CustomValueContainer = props => {
 
 const FinancialDetailsForm = ({
   onSaveBtnClick,
+  setFinancialDetails,
+  isUpdatedFormValues,
+  prevFormValues,
 }: FinancialDetailsFormProps) => {
-  const handleFinancialDetailsFormSubmit = (
-    values: FinancialDetailsFormValues
-  ) => {
-    const formattedFinancialDetails = {
-      ...values,
-      base_currency: values.base_currency?.value || "",
-      year_end: values.year_end?.value || "",
-      date_format: values.date_format?.value || "",
-    };
-    onSaveBtnClick(formattedFinancialDetails);
+  const handleFormFieldValueChange = (fieldName: string, value: any) => {
+    setFinancialDetails(prevFormValues => ({
+      ...prevFormValues,
+      [fieldName]: value,
+    }));
   };
 
   const isBtnDisabled = (values: FinancialDetailsFormValues) =>
@@ -84,10 +82,14 @@ const FinancialDetailsForm = ({
   return (
     <div>
       <Formik
-        initialValues={financialDetailsFormInitialValues}
         validateOnBlur={false}
         validationSchema={financialDetailsFormValidationSchema}
-        onSubmit={handleFinancialDetailsFormSubmit}
+        initialValues={
+          isUpdatedFormValues
+            ? prevFormValues
+            : financialDetailsFormInitialValues
+        }
+        onSubmit={onSaveBtnClick}
       >
         {(props: FormikProps<FinancialDetailsFormValues>) => {
           const { touched, errors, setFieldValue, values } = props;
@@ -108,7 +110,10 @@ const FinancialDetailsForm = ({
                     components={{
                       ValueContainer: CustomValueContainer,
                     }}
-                    onChange={e => setFieldValue("base_currency", e)}
+                    onChange={e => {
+                      setFieldValue("base_currency", e);
+                      handleFormFieldValueChange("base_currency", e);
+                    }}
                   />
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
@@ -129,6 +134,13 @@ const FinancialDetailsForm = ({
                       touched.standard_rate &&
                       "border-red-600 focus:border-red-600 focus:ring-red-600"
                     } `}
+                    onChange={e => {
+                      setFieldValue("standard_rate", Number(e.target.value));
+                      handleFormFieldValueChange(
+                        "standard_rate",
+                        Number(e.target.value)
+                      );
+                    }}
                   />
                   <label
                     className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
@@ -157,7 +169,10 @@ const FinancialDetailsForm = ({
                     components={{
                       ValueContainer: CustomValueContainer,
                     }}
-                    onChange={e => setFieldValue("year_end", e)}
+                    onChange={e => {
+                      setFieldValue("year_end", e);
+                      handleFormFieldValueChange("year_end", e);
+                    }}
                   />
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
@@ -180,7 +195,10 @@ const FinancialDetailsForm = ({
                     components={{
                       ValueContainer: CustomValueContainer,
                     }}
-                    onChange={e => setFieldValue("date_format", e)}
+                    onChange={e => {
+                      setFieldValue("date_format", e);
+                      handleFormFieldValueChange("date_format", e);
+                    }}
                   />
                 </div>
                 <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
