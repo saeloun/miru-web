@@ -8,6 +8,7 @@
 @import "react-calendar";
 @import "toast";
 @import "pto";
+@import "rc-steps";
 
 @layer base {
   @font-face {
@@ -34,17 +35,17 @@
       @apply fixed right-0 bottom-0 top-0 w-80 bg-white;
     }
     &__footer {
-      @apply p-6 flex h-full items-end justify-center;
+      @apply flex h-full items-end justify-center p-6;
     }
     &__reset {
-      @apply mr-2 tracking-widest items-center w-6/12 py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent focus:outline-none rounded text-base font-medium text-miru-han-purple-1000 text-base bg-transparent hover:text-miru-han-purple-600;
+      @apply focus:outline-none mr-2 w-6/12 items-center rounded border-2 border-miru-han-purple-1000 bg-transparent bg-transparent py-1 px-4 text-base text-base font-medium tracking-widest text-miru-han-purple-1000 shadow-sm hover:text-miru-han-purple-600;
     }
     &__apply {
-      @apply tracking-widest items-center w-6/12 py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-medium text-white text-base bg-miru-han-purple-1000;
+      @apply focus:outline-none w-6/12 items-center rounded border-2 border-miru-han-purple-1000 bg-transparent bg-miru-han-purple-1000 py-1 px-4 text-base text-base font-medium tracking-widest text-white shadow-sm hover:border-miru-han-purple-600;
     }
   }
 
-  .button-icon{
+  .button-icon {
     &__back {
       @apply mr-4 h-8 p-1;
     }
@@ -64,10 +65,10 @@
     }
     &__wrapper {
       box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
-      @apply absolute bg-white right-0 py-5 w-64 rounded-xl;
+      @apply absolute right-0 w-64 rounded-xl bg-white py-5;
     }
     &__list-item {
-      @apply text-sm block hover:bg-miru-gray-100 w-full px-5 py-1.5 text-miru-han-purple-1000 items-center flex;
+      @apply block flex w-full items-center px-5 py-1.5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100;
     }
   }
 
@@ -76,10 +77,10 @@
       @apply text-xl lg:text-3xl font-extrabold leading-7 text-gray-900;
     }
     &__searchWrap {
-      @apply flex items-center
+      @apply flex items-center;
     }
     &__searchInnerWrapper {
-      @apply mt-1 relative rounded-md shadow-sm md:ml-5;
+      @apply relative mt-1 rounded-md shadow-sm md:ml-5;
       input {
         @apply bg-miru-gray-100 text-tiny font-medium;
         width: 224px;
@@ -99,7 +100,7 @@
       }
     }
     &__searchInput {
-      @apply w-24 sm:w-40 md:w-64 lg:w-96 rounded tracking-wider appearance-none border border-gray-100 block  px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-sm
+      @apply focus:outline-none block h-8 w-24 appearance-none rounded border border-gray-100 bg-miru-gray-100 px-3  py-2 text-xs font-semibold tracking-wider text-miru-dark-purple-1000 shadow-sm focus:border-miru-gray-1000 focus:ring-miru-gray-1000 sm:w-40 sm:text-sm md:w-64 lg:w-96;
     }
     &__button {
       @apply ml-2 tracking-widest inline-flex items-center h-10 flex justify-center sm:px-1 lg:py-1 lg:px-4 px-3 py-3 lg:border-2 border border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-xs lg:text-base font-sans font-medium text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer
@@ -124,7 +125,7 @@
 
   .align-page {
     &__outer-wrapper {
-      @apply lg:max-w-3xl xl:max-w-7xl mx-auto font-manrope;
+      @apply mx-auto font-manrope lg:max-w-3xl xl:max-w-7xl;
     }
     &__middle-wrapper {
       @apply px-3 sm:px-6 md:px-10 lg:px-0 xl:px-22;
@@ -135,93 +136,94 @@
   }
 
   .form {
-    &__textarea, &__select {
-      @apply rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none;
+    &__textarea,
+    &__select {
+      @apply focus:outline-none block w-full rounded border bg-miru-gray-100 px-3 py-2 text-sm font-medium tracking-wider text-miru-dark-purple-1000;
     }
     &__input_submit {
-      @apply tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer;
+      @apply focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 font-sans text-base font-medium tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600;
     }
     &__input {
-      @apply rounded tracking-wider border block w-full px-3 py-2 bg-miru-gray-100 font-medium text-sm text-miru-dark-purple-1000 focus:outline-none h-8;
+      @apply focus:outline-none block h-8 w-full rounded border bg-miru-gray-100 px-3 py-2 text-sm font-medium tracking-wider text-miru-dark-purple-1000;
     }
     &__label {
-      @apply tracking-wider block text-xs font-normal text-miru-dark-purple-1000;
+      @apply block text-xs font-normal tracking-wider text-miru-dark-purple-1000;
     }
     &__title {
       @apply text-base font-extrabold tracking-normal text-miru-dark-purple-1000;
     }
     &__button {
-      @apply tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-base font-bold text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer;
+      @apply focus:outline-none flex inline-flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 text-base font-bold tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600;
     }
     &__button_outline {
-      @apply ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-semibold text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer;
+      @apply focus:outline-none ml-2 flex inline-flex h-10 w-full cursor-pointer items-center justify-center rounded border-2 border-miru-han-purple-1000 bg-transparent bg-transparent py-1 px-4 text-base font-semibold tracking-widest text-miru-han-purple-1000 shadow-sm hover:border-miru-han-purple-600 hover:text-miru-han-purple-600;
     }
     &__error {
-      @apply tracking-wider block text-xs font-semibold text-red-600;
+      @apply block text-xs font-semibold tracking-wider text-red-600;
     }
     &__link {
-      @apply font-bold text-miru-han-purple-1000 hover:text-miru-han-purple-600 tracking-wider;
+      @apply font-bold tracking-wider text-miru-han-purple-1000 hover:text-miru-han-purple-600;
     }
     &__save {
-      @apply text-base font-semibold text-miru-white-1000 ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer;
+      @apply focus:outline-none ml-2 flex inline-flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 text-base font-semibold tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600;
     }
     &__cancel {
-      @apply text-base font-semibold text-miru-han-purple-1000 ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded cursor-pointer;
+      @apply focus:outline-none ml-2 flex inline-flex h-10 w-full cursor-pointer items-center justify-center rounded border-2 border-miru-han-purple-1000 bg-transparent py-1 px-4 text-base font-semibold tracking-widest text-miru-han-purple-1000 shadow-sm hover:border-miru-han-purple-600;
     }
     &__radio {
-      @apply focus:ring-miru-han-purple-1000 h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000;
+      @apply h-4 w-4 border-miru-han-purple-1000 text-miru-dark-purple-1000 focus:ring-miru-han-purple-1000;
     }
   }
 
   .button {
-    @apply tracking-widest h-10 w-48 text-base font-bold focus:outline-none rounded;
+    @apply focus:outline-none h-10 w-48 rounded text-base font-bold tracking-widest;
     &__bg_transparent {
       @apply button border border-miru-han-purple-1000 bg-transparent text-miru-han-purple-1000 hover:text-miru-han-purple-600;
     }
     &__bg_purple {
-      @apply button text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600;
+      @apply button bg-miru-han-purple-1000 text-miru-white-1000 hover:bg-miru-han-purple-600;
     }
   }
 
   .password_eye {
     &__icon {
-      @apply h-4 w-4 text-miru-han-purple-1000 cursor-pointer;
+      @apply h-4 w-4 cursor-pointer text-miru-han-purple-1000;
     }
     &__position {
-      @apply absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5
+      @apply absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5;
     }
   }
 
   .page-content {
     &__position {
-      @apply sm:flex sm:items-center sm:justify-between px-1 sm:px-0 mt-6;
+      @apply mt-6 px-1 sm:flex sm:items-center sm:justify-between sm:px-0;
     }
     &__title-width {
       @apply w-full sm:w-1/5;
     }
     &__title {
-      @apply text-3xl font-bold leading-7 text-gray-900 sm:text-4xl py-1;
+      @apply py-1 text-3xl font-bold leading-7 text-gray-900 sm:text-4xl;
     }
     &__search-width {
-      @apply w-full sm:w-3/5 mt-6 sm:mt-0;
+      @apply mt-6 w-full sm:mt-0 sm:w-3/5;
     }
     &__search {
       @apply sm:pr-6 md:pr-10 lg:pr-6 xl:pr-48 xxl:pr-56;
     }
     &__search-input {
-      @apply block w-full pr-10 border border-gray-100 rounded px-3 py-2 bg-miru-gray-100 h-8 shadow-sm font-semibold text-xs text-miru-dark-purple-1000 focus:outline-none focus:ring-miru-gray-1000 focus:border-miru-gray-1000 sm:text-sm;
+      @apply focus:outline-none block h-8 w-full rounded border border-gray-100 bg-miru-gray-100 px-3 py-2 pr-10 text-xs font-semibold text-miru-dark-purple-1000 shadow-sm focus:border-miru-gray-1000 focus:ring-miru-gray-1000 sm:text-sm;
     }
     &__search-image {
-      @apply h-4 absolute inset-y-0 right-0 pr-3 my-2 flex items-center cursor-pointer;
+      @apply absolute inset-y-0 right-0 my-2 flex h-4 cursor-pointer items-center pr-3;
     }
     &__new-user-width {
-      @apply w-full sm:w-1/4 mt-6 sm:mt-0;
+      @apply mt-6 w-full sm:mt-0 sm:w-1/4;
     }
     &__new-user-position {
       @apply md:ml-3 lg:ml-5 xl:ml-22;
     }
     &__new-user-button {
-      @apply sm:ml-2 tracking-widest inline-flex items-center h-10 w-full flex justify-center py-1 md:px-4 border-2 border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-base font-semibold text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer;
+      @apply focus:outline-none flex inline-flex h-10 w-full cursor-pointer items-center justify-center rounded border-2 border-miru-han-purple-1000 bg-transparent bg-transparent py-1 text-base font-semibold tracking-widest text-miru-han-purple-1000 shadow-sm hover:border-miru-han-purple-600 hover:text-miru-han-purple-600 sm:ml-2 md:px-4;
     }
     &__button-image {
       @apply -ml-0.5 mr-2 h-4 w-4;
@@ -236,34 +238,34 @@
       @apply -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8;
     }
     &__position-two {
-      @apply py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8;
+      @apply inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8;
     }
     &__border {
-      @apply overflow-hidden border-b-2 border-miru-gray-200
+      @apply overflow-hidden border-b-2 border-miru-gray-200;
     }
     &__width {
-      @apply min-w-full divide-y divide-gray-200 mt-4;
+      @apply mt-4 min-w-full divide-y divide-gray-200;
     }
     &__header {
-      @apply p-5 text-left font-normal text-xs text-miru-dark-purple-600 tracking-widest;
+      @apply p-5 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600;
     }
     &__cell {
-      @apply p-5 text-left text-xs font-normal text-miru-dark-purple-1000 tracking-normal;
+      @apply p-5 text-left text-xs font-normal tracking-normal text-miru-dark-purple-1000;
     }
     &__body {
-      @apply bg-white divide-y divide-gray-200;
+      @apply divide-y divide-gray-200 bg-white;
     }
     &__data {
-      @apply px-3 py-3 whitespace-nowrap;
+      @apply whitespace-nowrap px-3 py-3;
     }
     &__button {
-      @apply h-6 rounded hover:bg-opacity-20 hover:bg-miru-gray-1000;
+      @apply h-6 rounded hover:bg-miru-gray-1000 hover:bg-opacity-20;
     }
     &__button-design {
       @apply text-right text-sm font-medium;
     }
     &__pending {
-      @apply px-2 inline-flex text-xs leading-5 tracking-widest font-semibold rounded-full bg-miru-han-purple-100 text-miru-han-purple-1000;
+      @apply inline-flex rounded-full bg-miru-han-purple-100 px-2 text-xs font-semibold leading-5 tracking-widest text-miru-han-purple-1000;
     }
     &__text {
       @apply text-xs font-normal text-miru-dark-purple-1000;
@@ -275,41 +277,39 @@
       @apply h-6 w-6 rounded-full;
     }
     &__import_header {
-      @apply px-2 py-1 w-1/2 text-xs font-normal tracking-widest text-left text-miru-dark-purple-600
+      @apply w-1/2 px-2 py-1 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600;
     }
   }
 
   .modal {
     &__modal {
-      @apply px-5 fixed w-full inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster;
+      @apply animated fadeIn faster fixed inset-0 z-50 flex w-full items-center justify-center overflow-hidden px-5;
     }
     &__container {
-      @apply shadow-lg bg-white w-full max-w-md mx-auto rounded-xl z-50 overflow-y-auto;
+      @apply z-50 mx-auto w-full max-w-md overflow-y-auto rounded-xl bg-white shadow-lg;
     }
     &__container__import__modal {
-      @apply shadow-lg bg-white w-full max-w-400 mx-auto rounded-xl z-50 overflow-y-auto;
+      @apply z-50 mx-auto w-full max-w-400 overflow-y-auto rounded-xl bg-white shadow-lg;
     }
     &__content {
-      @apply py-4 text-left px-3;
+      @apply py-4 px-3 text-left;
     }
     &__position {
-      @apply flex justify-between items-center mx-3;
+      @apply mx-3 flex items-center justify-between;
     }
     &__title {
       @apply text-base font-extrabold;
     }
     &__close {
-      @apply cursor-pointer z-50;
+      @apply z-50 cursor-pointer;
     }
     &__button {
-      @apply p-2 rounded hover:bg-opacity-20 hover:bg-miru-gray-1000;
+      @apply rounded p-2 hover:bg-miru-gray-1000 hover:bg-opacity-20;
     }
     &__form {
-      @apply mb-3 mx-3 flex justify-center;
+      @apply mx-3 mb-3 flex justify-center;
     }
   }
-
-
 }
 
 .custom {
@@ -330,10 +330,10 @@
 
 .filter {
   &__subheading {
-    @apply flex justify-between items-center w-full px-5;
+    @apply flex w-full items-center justify-between px-5;
   }
   &__subheading-text {
-    @apply text-xs text-miru-dark-purple-1000 tracking-widest;
+    @apply text-xs tracking-widest text-miru-dark-purple-1000;
   }
 }
 
@@ -347,9 +347,9 @@
   &__dropdown-indicator {
     padding: 4px !important;
   }
-  &__multi-value  {
+  &__multi-value {
     font-size: 12px;
-    background-color: #E1E6EC;
+    background-color: #e1e6ec;
     border-radius: 14px !important;
     padding: 0px 8px;
     align-items: center;
@@ -366,7 +366,7 @@
 
 .filter {
   &__counter {
-    @apply absolute right-0 block rounded-lg text-white bg-miru-han-purple-600;
+    @apply absolute right-0 block rounded-lg bg-miru-han-purple-600 text-white;
     top: 4px;
     padding: 7px 5px;
   }
@@ -374,10 +374,10 @@
 
 .reiTable {
   &__th {
-    @apply text-left text-xs tracking-widest text-miru-dark-purple-600 font-normal py-5;
+    @apply py-5 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600;
   }
   &__tr {
-    @apply text-xs text-miru-dark-purple-1000 py-6;
+    @apply py-6 text-xs text-miru-dark-purple-1000;
   }
 }
 
@@ -404,7 +404,7 @@ body {
 }
 
 .hoverIcon:hover {
-  background-color: #F5F7F9;
+  background-color: #f5f7f9;
   .iconWrapper {
     @apply visible;
   }
@@ -420,10 +420,8 @@ body {
 }
 
 .hoverPencil:hover button {
-  @apply visible
+  @apply visible;
 }
-
-
 
 .hoverPencil .react-datepicker-wrapper {
   width: 20px;
@@ -434,14 +432,14 @@ body {
 }
 
 .customToggle {
-  &__container{
-	  -webkit-transform: translate3d( -50%, -50%, 0 );
-	  transform: translate3d( -50%, -50%, 0 );
+  &__container {
+    -webkit-transform: translate3d(-50%, -50%, 0);
+    transform: translate3d(-50%, -50%, 0);
   }
 
   & {
-     position: absolute;
-      opacity: 0;
+    position: absolute;
+    opacity: 0;
   }
 
   & + div {
@@ -449,9 +447,9 @@ body {
     width: 40px;
     height: 20px;
     border-radius: 999px;
-    background-color: #E1E6EC;
-    -webkit-transition-duration: .4s;
-    transition-duration: .4s;
+    background-color: #e1e6ec;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
     -webkit-transition-property: background-color, box-shadow;
     transition-property: background-color, box-shadow;
     cursor: pointer;
@@ -460,7 +458,7 @@ body {
   &:checked + div {
     width: 48px;
     background-position: 0 0;
-    background-color: #E1E6EC;
+    background-color: #e1e6ec;
   }
 
   & + div {
@@ -469,16 +467,17 @@ body {
   }
 
   &:checked + div {
-    background-color: #5B34EA;
+    background-color: #5b34ea;
   }
 
   & + div > div {
     float: left;
-    width: 16px; height: 16px;
+    width: 16px;
+    height: 16px;
     border-radius: inherit;
     background: #ffffff;
-    -webkit-transition-timing-function: cubic-bezier(1,0,0,1);
-    transition-timing-function: cubic-bezier(1,0,0,1);
+    -webkit-transition-timing-function: cubic-bezier(1, 0, 0, 1);
+    transition-timing-function: cubic-bezier(1, 0, 0, 1);
     -webkit-transition-duration: 0.4s;
     transition-duration: 0.4s;
     -webkit-transition-property: transform, background-color;
@@ -516,13 +515,13 @@ body {
   background-size: 30px 30px;
   background-image: linear-gradient(
     135deg,
-    #5B34EA 25%,
-    #9D85F2 25%,
-    #9D85F2 50%,
-    #5B34EA 50%,
-    #5B34EA 75%,
-    #9D85F2 75%,
-    #9D85F2
+    #5b34ea 25%,
+    #9d85f2 25%,
+    #9d85f2 50%,
+    #5b34ea 50%,
+    #5b34ea 75%,
+    #9d85f2 75%,
+    #9d85f2
   );
   animation: barberpole 1.5s linear infinite;
 }
@@ -537,8 +536,8 @@ body {
 }
 
 .import-modal {
-  &__header-number{
-    @apply w-5 h-5 flex justify-center items-center text-xs font-semibold rounded-full bg-miru-han-purple-1000 text-white
+  &__header-number {
+    @apply flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white;
   }
 }
 
@@ -548,4 +547,9 @@ body {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+.outline input:focus-within ~ label,
+.outline input:not(:placeholder-shown) ~ label {
+  @apply top-2 z-0 ml-3 -translate-y-4 scale-75 transform px-1 py-0 text-xs text-miru-dark-purple-400;
 }
