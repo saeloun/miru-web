@@ -157,7 +157,7 @@ const CompanyDetailsForm = ({
                     <label htmlFor="file-input">
                       <img
                         alt="edit"
-                        className="min-w-12 cursor-pointer rounded-full hover:bg-miru-gray-1000"
+                        className="min-w-12 cursor-pointer rounded-full hover:bg-miru-gray-50"
                         src={EditImageButtonSVG}
                       />
                     </label>
@@ -174,16 +174,16 @@ const CompanyDetailsForm = ({
                     >
                       <img
                         alt="edit"
-                        className="min-w-12 cursor-pointer rounded-full hover:bg-miru-gray-1000"
+                        className="min-w-12 cursor-pointer rounded-full hover:bg-miru-gray-50"
                         src={DeleteImageButtonSVG}
                       />
                     </button>
                   </div>
                 ) : (
                   <>
-                    <div className="mx-auto mt-2 h-16 w-16 rounded-full border border-dashed border-miru-dark-purple-200 hover:bg-miru-gray-1000">
+                    <div className="mx-auto mt-2 h-16 w-16 rounded-full border border-dashed border-miru-dark-purple-200 hover:bg-miru-gray-50">
                       <label
-                        className="flex h-full w-full cursor-pointer items-center justify-center rounded-full px-1 py-2 text-center text-xs text-miru-dark-purple-200 hover:text-miru-white-1000"
+                        className="flex h-full w-full cursor-pointer items-center justify-center rounded-full px-1 py-2 text-center text-xs text-miru-dark-purple-200"
                         htmlFor="file-input"
                       >
                         Add company logo

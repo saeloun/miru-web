@@ -99,6 +99,7 @@ module.exports = {
           200: "#EBEFF2",
           100: "#F5F7F9",
           800: "#ADA4CE",
+          50: "#CDD6DF33",
         },
         "miru-red": {
           400: "#E04646",
