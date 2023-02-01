@@ -1,7 +1,13 @@
 import React from "react";
 
 import dayjs from "dayjs";
-import { CalendarIcon } from "miruIcons";
+import {
+  GlobeIcon,
+  CalendarIcon,
+  PhoneIcon,
+  MapPinIcon,
+  InfoIcon,
+} from "miruIcons";
 
 import { CustomAsyncSelect } from "common/CustomAsyncSelect";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -28,8 +34,9 @@ const StaticPage = ({
   <div className="mt-4 h-full bg-miru-gray-100 px-10">
     <div className="flex border-b border-b-miru-gray-400 py-10">
       <div className="w-2/12 pr-4">
-        <span className="text-sm font-medium text-miru-dark-purple-1000">
-          Basic Details
+        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+          <InfoIcon className="mr-2" color="#1D1A31" size={13.5} /> Basic
+          Details
         </span>
       </div>
       <div className="w-9/12">
@@ -100,7 +107,8 @@ const StaticPage = ({
     </div>
     <div className="flex border-b border-b-miru-gray-400 py-10">
       <div className="w-2/12 pr-4">
-        <span className="text-sm font-medium text-miru-dark-purple-1000">
+        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+          <PhoneIcon className="mr-2" color="#1D1A31" size={13.5} />
           Contact Details
         </span>
       </div>
@@ -137,7 +145,8 @@ const StaticPage = ({
     </div>
     <div className="flex border-b border-b-miru-gray-400 py-10">
       <div className="w-2/12 pr-4">
-        <span className="text-sm font-medium text-miru-dark-purple-1000">
+        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+          <MapPinIcon className="mr-2" color="#1D1A31" size={13.5} />
           Address
         </span>
       </div>
@@ -227,7 +236,8 @@ const StaticPage = ({
     </div>
     <div className="flex py-10">
       <div className="w-2/12 pr-4">
-        <span className="text-sm font-medium text-miru-dark-purple-1000">
+        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+          <GlobeIcon className="mr-2" color="#1D1A31" size={13.5} />
           Social Profiles
         </span>
       </div>
