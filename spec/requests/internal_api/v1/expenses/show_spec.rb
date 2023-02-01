@@ -4,18 +4,30 @@ require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Expense#show", type: :request do
   let(:company) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client: client_1) }
   let(:expense_category) { create(:expense_category, company:) }
   let(:vendor) { create(:vendor, company:) }
   let(:expense) { create(:expense, company:, expense_category:, vendor:) }
 
+  let(:book_keeper) { create(:user, current_workspace_id: company.id) }
+  let(:admin) { create(:user, current_workspace_id: company.id) }
+  let(:employee) { create(:user, current_workspace_id: company.id) }
+
+  before do
+    create(:employment, company:, user: book_keeper)
+    book_keeper.add_role :book_keeper, company
+
+    create(:employment, company:, user: admin)
+    admin.add_role :admin, company
+
+    create(:employment, company:, user: employee)
+    employee.add_role :employee, company
+  end
+
   context "when user is an admin" do
     before do
-      create(:employment, company:, user:)
-      user.add_role :admin, company
-      sign_in user
+      sign_in admin
     end
 
     describe "#show" do
@@ -44,9 +56,7 @@ RSpec.describe "InternalApi::V1::Expense#show", type: :request do
 
   context "when the user is an employee" do
     before do
-      create(:employment, company:, user:)
-      user.add_role :employee, company
-      sign_in user
+      sign_in employee
       send_request :get, internal_api_v1_expense_path(expense)
     end
 
@@ -57,9 +67,7 @@ RSpec.describe "InternalApi::V1::Expense#show", type: :request do
 
   context "when the user is an book keeper" do
     before do
-      create(:employment, company:, user:)
-      user.add_role :book_keeper, company
-      sign_in user
+      sign_in book_keeper
       send_request :get, internal_api_v1_expense_path(expense)
     end
 

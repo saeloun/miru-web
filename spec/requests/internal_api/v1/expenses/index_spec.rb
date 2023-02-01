@@ -4,7 +4,6 @@ require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Expense#index", type: :request do
   let(:company) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client: client_1) }
   let(:expense_category) { create(:expense_category, company:) }
@@ -14,11 +13,24 @@ RSpec.describe "InternalApi::V1::Expense#index", type: :request do
   let(:expense1) { create(:expense, company:, expense_category:, vendor:) }
   let(:expense2) { create(:expense, company:, expense_category: expense_category_2) }
 
+  let(:book_keeper) { create(:user, current_workspace_id: company.id) }
+  let(:admin) { create(:user, current_workspace_id: company.id) }
+  let(:employee) { create(:user, current_workspace_id: company.id) }
+
+  before do
+    create(:employment, company:, user: book_keeper)
+    book_keeper.add_role :book_keeper, company
+
+    create(:employment, company:, user: admin)
+    admin.add_role :admin, company
+
+    create(:employment, company:, user: employee)
+    employee.add_role :employee, company
+  end
+
   context "when user is an admin" do
     before do
-      create(:employment, company:, user:)
-      user.add_role :admin, company
-      sign_in user
+      sign_in admin
       expense1.reindex
       expense2.reindex
       Expense.reindex
@@ -37,7 +49,7 @@ RSpec.describe "InternalApi::V1::Expense#index", type: :request do
         expected_data = [expense2, expense1].map do | expense|
                           {
                             "id" => expense.id,
-                            "amount" => expense.amount.to_f,
+                            "amount" => expense.amount.to_s,
                             "date" => expense.date.strftime("%m.%d.%Y"),
                             "expenseType" => expense.expense_type,
                             "categoryName" => expense.expense_category.name,
@@ -67,9 +79,7 @@ RSpec.describe "InternalApi::V1::Expense#index", type: :request do
 
   context "when the user is an employee" do
     before do
-      create(:employment, company:, user:)
-      user.add_role :employee, company
-      sign_in user
+      sign_in employee
       send_request :get, internal_api_v1_expenses_path
     end
 
@@ -80,9 +90,7 @@ RSpec.describe "InternalApi::V1::Expense#index", type: :request do
 
   context "when the user is an book keeper" do
     before do
-      create(:employment, company:, user:)
-      user.add_role :book_keeper, company
-      sign_in user
+      sign_in book_keeper
       send_request :get, internal_api_v1_expenses_path
     end
 
