@@ -4,8 +4,10 @@ json.key_format! camelize: :lower
 json.deep_format_keys!
 
 json.expenses expenses do |expense|
-  json.extract! expense, :id, :amount, :expense_type, :category_name, :vendor_name
-  json.date DateTime.parse(expense.date).strftime("%m.%d.%Y")
+  json.extract! expense, :id, :amount, :expense_type
+  json.category_name expense.expense_category.name
+  json.vendor_name expense.vendor&.name
+  json.date expense.formatted_date
 end
 
 json.vendors vendors do | vendor |

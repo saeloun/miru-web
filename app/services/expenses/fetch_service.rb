@@ -7,17 +7,15 @@ class Expenses::FetchService
   def initialize(current_company, params)
     @params = params
     @current_company = current_company
-    @expenses = nil
+    @expenses = search_expenses
      end
 
   def process
-    @expenses = search_expenses
     {
       expenses:,
       pagination_details:,
       vendors: current_company.vendors,
-      categories: ExpenseCategory.defaults.order(:created_at) +
-                    current_company.expense_categories.order(:created_at)
+      categories: current_company.all_expense_categories
     }
   end
 
@@ -34,8 +32,7 @@ class Expenses::FetchService
         where: filters.where_clause,
         order: { created_at: :desc },
         page: filters.page,
-        per_page: filters.per_page,
-        load: false
+        per_page: filters.per_page
       )
     end
 

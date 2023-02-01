@@ -60,4 +60,8 @@ class Expense < ApplicationRecord
 
   validates :date, presence: true
   validates :amount, numericality: { greater_than: 0 }
+
+  def formatted_date
+    date.strftime("%m.%d.%Y")
+  end
 end

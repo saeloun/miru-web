@@ -76,4 +76,8 @@ class Company < ApplicationRecord
   def stripe_account_id
     stripe_connected_account&.account_id
   end
+
+  def all_expense_categories
+    ExpenseCategory.defaults.order(:created_at) + expense_categories.order(:created_at)
+  end
 end
