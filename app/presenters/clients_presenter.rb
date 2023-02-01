@@ -14,9 +14,10 @@ class ClientsPresenter
     if is_admin
       clients.each { |client| projects[client.name] = client.projects.kept }
     else
+      # byebug
       current_user.projects.kept.joins(:client).where(clients: { company_id: current_company.id }).select(
-        "projects.id, projects.name, projects.billable, projects.description, clients.name"
-      ).each { |client| projects[client.name] = client.projects.kept }
+        "projects.id, projects.name, projects.billable, projects.description, projects.client_id, clients.name"
+      ).each { |project| projects[project.client.name] = project.client.projects.kept }
     end
     projects
   end
