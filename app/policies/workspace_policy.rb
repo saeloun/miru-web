@@ -10,6 +10,7 @@ class WorkspacePolicy < ApplicationPolicy
   end
 
   def logged_in_user?
-    user_owner_role? || user_admin_role? || user_employee_role?
+    true
+    # user_owner_role? || user_admin_role? || user_employee_role?
   end
 end
