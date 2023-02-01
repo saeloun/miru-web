@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::ExpensesController < ApplicationController
+  def index
+    authorize Expense
+    render :index, locals: Expenses::FetchService.new(current_company, params).process
+  end
+
   def create
     authorize Expense
     expense = current_company.expenses.create!(expense_params)
@@ -14,11 +19,6 @@ class InternalApi::V1::ExpensesController < ApplicationController
     render :show, locals: {
       expense: ExpensePresenter.new(expense).snippet
     }
-  end
-
-  def index
-    authorize Expense
-    render :index, locals: Expenses::FetchService.new(current_company, params).process
   end
 
   private
