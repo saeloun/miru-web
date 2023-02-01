@@ -20,16 +20,16 @@
 #  fk_rails_...  (company_id => companies.id)
 #
 class ExpenseCategory < ApplicationRecord
-  after_commit :reindex_expenses
-
-  def reindex_expenses
-    expenses.reindex
-  end
-
   validates :name, presence: true, uniqueness: { scope: :company_id }
 
   has_many :expenses
   belongs_to :company, optional: true
 
   scope :defaults, -> { where(default: true) }
+
+  after_commit :reindex_expenses
+
+  def reindex_expenses
+    expenses.reindex
+  end
 end

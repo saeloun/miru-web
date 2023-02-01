@@ -19,14 +19,14 @@
 #  fk_rails_...  (company_id => companies.id)
 #
 class Vendor < ApplicationRecord
+  validates :name, presence: true
+
+  has_many :expenses
+  belongs_to :company
+
   after_commit :reindex_expenses
 
   def reindex_expenses
     expenses.reindex
   end
-
-  validates :name, presence: true
-
-  has_many :expenses
-  belongs_to :company
 end
