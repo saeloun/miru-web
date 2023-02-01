@@ -4,7 +4,7 @@ import { EmptyStateInvoices, PlusIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button } from "StyledComponents";
 
-const EmptyState = ({ isDesktop }) => {
+const NoInvoices = ({ isDesktop }) => {
   const navigate = useNavigate();
 
   return (
@@ -28,4 +28,4 @@ const EmptyState = ({ isDesktop }) => {
   );
 };
 
-export default EmptyState;
+export default NoInvoices;

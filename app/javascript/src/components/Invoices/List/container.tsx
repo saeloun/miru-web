@@ -1,7 +1,7 @@
 import React from "react";
 
 import BulkActionsWrapper from "./BulkActionsWrapper";
-import EmptyState from "./EmptyState";
+import NoInvoices from "./NoInvoices";
 import RecentlyUpdated from "./RecentlyUpdated";
 import Table from "./Table";
 
@@ -68,7 +68,7 @@ const Container = ({
       />
     </div>
   ) : (
-    <EmptyState isDesktop={isDesktop} />
+    <NoInvoices isDesktop={isDesktop} />
   );
 
 export default Container;
