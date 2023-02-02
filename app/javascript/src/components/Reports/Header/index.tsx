@@ -6,7 +6,6 @@ import {
   FileCsvIcon,
   FilePdfIcon,
   FilterIcon,
-  PrinterIcon,
   ShareIcon,
   XIcon,
   PaperPlaneTiltIcon,
@@ -105,7 +104,10 @@ const Header = ({
           )}
         </div>
         {showExportButon && isDesktop && (
-          <div className="mt-10 inline-flex lg:mt-0">
+          <div
+            className="mt-10 inline-flex lg:mt-0"
+            onBlur={() => setShowExportOptions(false)}
+          >
             <div className="relative px-3">
               <button
                 className="menuButton__button inline-flex justify-center rounded-md border border-miru-han-purple-1000 bg-white p-2 text-miru-han-purple-1000 hover:bg-gray-50"
@@ -143,7 +145,7 @@ const Header = ({
                       <span className="ml-3">Export as PDF</span>
                     </button>
                   </li>
-                  <li>
+                  {/* <li>
                     <button
                       className="menuButton__list-item"
                       onClick={() => window.print()}
@@ -151,7 +153,7 @@ const Header = ({
                       <PrinterIcon color="#5B34EA" size={16} weight="bold" />
                       <span className="ml-3">Print</span>
                     </button>
-                  </li>
+                  </li> */}
                 </ul>
               )}
             </div>
