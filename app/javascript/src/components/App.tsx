@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -13,7 +13,7 @@ import DisplayView from "./DisplayView";
 const App = props => {
   const { user, companyRole } = props;
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
-
+  const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
@@ -23,10 +23,16 @@ const App = props => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ isAdminUser, user, companyRole }}>
+    <UserContext.Provider value={{ isAdminUser, user, companyRole, isDesktop }}>
       <BrowserRouter>
         <ToastContainer autoClose={TOASTER_DURATION} />
-        <DisplayView {...props} isAdminUser={isAdminUser} user={user} />
+        <DisplayView
+          {...props}
+          isAdminUser={isAdminUser}
+          isDesktop={isDesktop}
+          setIsDesktop={setIsDesktop}
+          user={user}
+        />
       </BrowserRouter>
     </UserContext.Provider>
   );
