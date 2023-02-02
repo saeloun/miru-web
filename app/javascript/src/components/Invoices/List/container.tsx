@@ -28,6 +28,8 @@ const Container = ({
   setShowBulkDownloadDialog,
   clearCheckboxes,
   downloading,
+  handleReset,
+  params,
 }) =>
   invoices.length > 0 ? (
     <div
@@ -68,7 +70,12 @@ const Container = ({
       />
     </div>
   ) : (
-    <NoInvoices isDesktop={isDesktop} />
+    <NoInvoices
+      filterParamsStr={filterParamsStr}
+      handleReset={handleReset}
+      isDesktop={isDesktop}
+      params={params}
+    />
   );
 
 export default Container;
