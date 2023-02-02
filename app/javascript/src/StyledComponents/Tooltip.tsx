@@ -39,7 +39,7 @@ const Tooltip = ({
 
   return (
     <div
-      className={classnames("relative block")}
+      className={classnames("relative block min-w-0")}
       onMouseEnter={showTip}
       onMouseLeave={hideTip}
     >

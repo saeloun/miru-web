@@ -39,7 +39,13 @@ const InvoiceSummary = ({
     },
   ];
 
-  return <SummaryDashboard currency={baseCurrency} summaryList={summaryList} />;
+  return (
+    <SummaryDashboard
+      currency={baseCurrency}
+      summaryList={summaryList}
+      wrapperClassName="mt-1 lg:mt-6"
+    />
+  );
 };
 
 export default InvoiceSummary;
