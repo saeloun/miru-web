@@ -1,6 +1,7 @@
 import Avatar from "./Avatar";
 import Badge from "./Badge";
 import Button from "./Button";
+import MobileMoreOptions from "./MobileMoreOptions";
 import MoreOptions from "./MoreOptions";
 import SidePanel from "./SidePanel";
 import SummaryDashboard from "./SummaryDashboard";
@@ -11,6 +12,7 @@ export {
   Avatar,
   Badge,
   Button,
+  MobileMoreOptions,
   MoreOptions,
   SidePanel,
   SummaryDashboard,

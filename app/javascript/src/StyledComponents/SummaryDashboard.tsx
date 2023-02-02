@@ -6,13 +6,18 @@ import { currencyFormat } from "helpers";
 type SummaryDashboardProps = {
   summaryList: any;
   currency: any;
+  wrapperClassName?: string;
 };
 
 const DEFAULT_STYLE =
-  "mt-6 py-4 lg:py-10 flex flex-wrap md:flex-nowrap lg:overflow-x-auto rounded-2xl bg-miru-han-purple-1000 text-white";
+  "py-4 lg:py-10 flex flex-wrap md:flex-nowrap lg:overflow-x-auto rounded-2xl bg-miru-han-purple-1000 text-white";
 
-const SummaryDashboard = ({ summaryList, currency }: SummaryDashboardProps) => (
-  <ul className={classnames(DEFAULT_STYLE)}>
+const SummaryDashboard = ({
+  summaryList,
+  currency,
+  wrapperClassName = "",
+}: SummaryDashboardProps) => (
+  <ul className={classnames(DEFAULT_STYLE, wrapperClassName)}>
     {summaryList.map((summary, index) => (
       <li
         key={index}
