@@ -31,7 +31,7 @@ const Header = ({ selectedTab }) => {
         >
           <img alt="miru-logo" className="h-6 w-6" src={MiruLogoSVG} />
         </Link>
-        <span className="z-50 w-full pr-3 text-center text-base font-bold leading-5 text-miru-han-purple-1000">
+        <span className="z-40 w-full pr-3 text-center text-base font-bold leading-5 text-miru-han-purple-1000">
           {selectedTab}
         </span>
       </Fragment>
