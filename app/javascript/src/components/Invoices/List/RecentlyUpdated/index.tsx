@@ -4,7 +4,7 @@ import RecentlyUpdatedCard from "./RecentlyUpdatedCard";
 
 const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => (
   <div className="mt-4 mb-6 md:my-15">
-    <h1 className="mb-4 text-2xl font-normal text-miru-dark-purple-1000">
+    <h1 className="mb-4 text-base font-semibold text-miru-dark-purple-1000 lg:text-2xl lg:font-normal">
       Recently updated
     </h1>
     <div className="grid grid-cols-10 gap-44 overflow-x-auto overflow-y-hidden">
