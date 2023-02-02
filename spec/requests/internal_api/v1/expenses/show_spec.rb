@@ -8,7 +8,7 @@ RSpec.describe "InternalApi::V1::Expense#show", type: :request do
   let(:project) { create(:project, client: client_1) }
   let(:expense_category) { create(:expense_category, company:) }
   let(:vendor) { create(:vendor, company:) }
-  let(:expense) { create(:expense, company:, expense_category:, vendor:) }
+  let(:expense) { create(:expense, :with_receipts, company:, expense_category:, vendor:) }
 
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
@@ -45,10 +45,10 @@ RSpec.describe "InternalApi::V1::Expense#show", type: :request do
           "type": expense[:expense_type],
           "vendorName": vendor.name,
           "categoryName": expense_category.name,
-          "description": expense[:description]
-
+          "description": expense[:description],
+          "receipts": expense.attached_receipts
         }
-        expect(json_response.slice("amount", "type", "vendorName", "categoryName", "description"))
+        expect(json_response.slice("amount", "type", "vendorName", "categoryName", "description", "receipts"))
           .to eq(JSON.parse(expected_response.to_json))
       end
     end

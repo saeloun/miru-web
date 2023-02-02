@@ -15,7 +15,8 @@ class ExpensePresenter
       amount: expense.amount,
       date: expense.date,
       description: expense.description,
-      type: expense.expense_type
+      type: expense.expense_type,
+      receipts: expense.attached_receipts
     }
   end
 end

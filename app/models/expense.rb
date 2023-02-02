@@ -53,7 +53,7 @@ class Expense < ApplicationRecord
     }
   end
 
-  has_many_attached :receipt
+  has_many_attached :receipts
   belongs_to :company
   belongs_to :expense_category
   belongs_to :vendor, optional: true
@@ -63,5 +63,13 @@ class Expense < ApplicationRecord
 
   def formatted_date
     date.strftime("%m.%d.%Y")
+  end
+
+  def attached_receipts
+    return [] if !receipts.attached?
+
+    receipts.includes(:blob).references(:blob).order(:filename).map do |image|
+      Rails.application.routes.url_helpers.polymorphic_url(image, only_path: true)
+    end
   end
 end
