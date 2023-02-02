@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { currencyFormat, minToHHMM, lineTotalCalc } from "helpers";
 
 const LineItem = ({ currency, item }) => {
-  const date = dayjs(item.date).format("DD-MM-YYYY");
+  const date = dayjs(item.date).format("MM-DD-YYYY");
 
   return (
     <>

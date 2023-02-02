@@ -77,9 +77,9 @@ const EditInvoice = () => {
         invoice_number: invoiceNumber || invoiceDetails.invoiceNumber,
         reference: reference || invoiceDetails.reference,
         issue_date: dayjs(issueDate || invoiceDetails.issueDate).format(
-          "DD.MM.YYYY"
+          "MM.DD.YYYY"
         ),
-        due_date: dayjs(dueDate || invoiceDetails.dueDate).format("DD.MM.YYYY"),
+        due_date: dayjs(dueDate || invoiceDetails.dueDate).format("MM.DD.YYYY"),
         amount_due: amountDue,
         amount_paid: amountPaid,
         amount,

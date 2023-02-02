@@ -1,7 +1,9 @@
 import React from "react";
 
+import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 import { Badge } from "StyledComponents";
+
 
 const TableRow = ({ payment, baseCurrency }) => {
   const getStatusCss = status => {
@@ -26,7 +28,7 @@ const TableRow = ({ payment, baseCurrency }) => {
         </h3>
       </td>
       <td className="px-6 py-2.5 text-left text-sm font-normal leading-4 text-miru-dark-purple-1000">
-        {payment.transactionDate}
+        {dayjs(payment.transactionDate).format("MM.DD.YYYY")}
       </td>
       <td className="px-6 py-2.5 text-left">
         <h1 className="text-base font-bold leading-5 text-miru-dark-purple-1000">

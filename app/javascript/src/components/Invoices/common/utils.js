@@ -12,7 +12,7 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
       id: item.id,
       name: item.name ? item.name : `${item.first_name} ${item.last_name}`,
       description: item.description,
-      date: dayjs(item.date).format("DD/MM/YYYY"),
+      date: dayjs(item.date).format("MM/DD/YYYY"),
       rate: item.rate,
       quantity: Number(item.quantity),
       timesheet_entry_id: item.time_sheet_entry
@@ -27,7 +27,7 @@ export const generateInvoiceLineItems = (selectedLineItems, manualEntryArr) => {
       idx: item.id,
       name: item.name,
       description: item.description,
-      date: dayjs(item.date).format("DD/MM/YYYY"),
+      date: dayjs(item.date).format("MM/DD/YYYY"),
       rate: item.rate,
       quantity: Number(item.quantity),
       timesheet_entry_id: item.time_sheet_entry,

@@ -49,7 +49,7 @@ const Table = ({
     <tbody className="overflow-y-scroll">
       {lineItems.map((item, index) => {
         const hoursLogged = minToHHMM(item.quantity);
-        const date = dayjs(item.date).format("DD.MM.YYYY");
+        const date = dayjs(item.date).format("MM.DD.YYYY");
 
         return (
           <tr key={index}>

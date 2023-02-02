@@ -19,7 +19,7 @@ const TableRow = ({ currency, reportData }) => {
     issueDate,
   }: OutstandingOverdueInvoice = reportData;
 
-  const formattedDate = date => dayjs(date).format("DD.MM.YYYY");
+  const formattedDate = date => dayjs(date).format("MM.DD.YYYY");
 
   return (
     <tr

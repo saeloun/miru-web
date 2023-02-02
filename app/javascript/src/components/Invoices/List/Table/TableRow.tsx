@@ -51,7 +51,7 @@ const TableRow = ({
     }
   };
 
-  const formattedDate = date => dayjs(date).format(invoice.company.dateFormat);
+  const formattedDate = date => dayjs(date).format('MM-DD-YYYY');
 
   return (
     <tr

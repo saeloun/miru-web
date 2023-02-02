@@ -224,11 +224,11 @@ const AddManualEntry = ({
                   <input
                     disabled
                     className="focus:outline-none block h-8 w-full appearance-none rounded border-0 bg-miru-gray-100 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
-                    placeholder="DD.MM.YYYY"
+                    placeholder="MM.DD.YYYY"
                     type="text"
                     value={
                       transactionDate &&
-                      dayjs(transactionDate).format("DD.MM.YYYY")
+                      dayjs(transactionDate).format("MM.DD.YYYY")
                     }
                   />
                   <CalendarIcon

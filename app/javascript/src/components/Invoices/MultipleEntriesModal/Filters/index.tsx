@@ -91,8 +91,8 @@ const Filters = ({
   };
 
   const handleCustomDate = (from, to) => {
-    const fromDate = dayjs(from).format("DD/MM/YY");
-    const toDate = dayjs(to).format("DD/MM/YY");
+    const fromDate = dayjs(from).format("MM/DD/YY");
+    const toDate = dayjs(to).format("MM/DD/YY");
     setDateRangeOptions(
       handleDateRangeOptions({
         value: "custom",

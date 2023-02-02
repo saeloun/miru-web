@@ -1,5 +1,6 @@
 import React from "react";
 
+import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
 
 import { ITimeEntry } from "../interface";
@@ -28,7 +29,7 @@ const ReportRow = ({
         {teamMember}
       </p>
       <p className="text-sm font-normal text-miru-dark-purple-400">
-        {workDate}
+        {dayjs(workDate).format("MM.DD.YYYY")}
       </p>
     </div>
     <div className="whitespace-nowrap py-4 pl-6 text-right text-xl font-bold text-miru-dark-purple-1000">

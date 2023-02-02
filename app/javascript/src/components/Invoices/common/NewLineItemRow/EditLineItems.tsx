@@ -82,7 +82,7 @@ const EditLineItems = ({
         <td className="w-full">
           <DatePicker
             calendarClassName="miru-CalendarIcon invoice-datepicker-option text-right"
-            dateFormat="dd.MM.yyyy"
+            dateFormat="MM.dd.yyyy"
             selected={lineItemDate}
             wrapperClassName="datePicker invoice-datepicker"
             onChange={date => setLineItemDate(date)}

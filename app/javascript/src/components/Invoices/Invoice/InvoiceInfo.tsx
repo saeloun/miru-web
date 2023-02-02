@@ -3,7 +3,7 @@ import React from "react";
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 
-const formatDate = date => dayjs(date).format("DD-MM-YYYY");
+const formatDate = date => dayjs(date).format("MM-DD-YYYY");
 
 const InvoiceInfo = ({ invoice }) => {
   const formattedIssueDate = formatDate(invoice.issueDate);

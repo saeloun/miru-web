@@ -8,7 +8,7 @@ const NewLineItemStatic = ({ currency, item, setIsEdit, handleDelete }) => {
   const [isSideMenuVisible, setIsSideMenuVisible] = useState(false);
   const [showEditMenu, setShowEditMenu] = useState(false);
   const hoursLogged = minToHHMM(item.quantity);
-  const date = dayjs(item.date).format("DD.MM.YYYY");
+  const date = dayjs(item.date).format("MM.DD.YYYY");
   const totalRate = lineTotalCalc(item.quantity, item.rate);
   const name = item.name || `${item.first_name} ${item.last_name}`;
 

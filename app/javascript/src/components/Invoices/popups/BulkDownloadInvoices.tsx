@@ -136,7 +136,7 @@ const BulkDownloadInvoices = ({
       setDownloadStatus(status);
       setTimeout(() => {
         const link = document.createElement("a");
-        const fileName = `Invoices-${dayjs().format("DD-MM-YY-h:mm")}`;
+        const fileName = `Invoices-${dayjs().format("MM-DD-YY-h:mm")}`;
         link.download = fileName;
         link.href = received.file_url;
         document.body.appendChild(link);
