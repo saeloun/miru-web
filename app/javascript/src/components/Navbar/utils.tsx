@@ -24,7 +24,7 @@ const navEmployeeOptions = [
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
     dataCy: "team-tab",
-    path: Paths.TEAM,
+    path: Paths.TEAMS,
   },
   {
     logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
@@ -73,7 +73,7 @@ const navAdminMobileOptions = [
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
     dataCy: "team-tab",
-    path: Paths.TEAM,
+    path: Paths.TEAMS,
   },
   {
     logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
