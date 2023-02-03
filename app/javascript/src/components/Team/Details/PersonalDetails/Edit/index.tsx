@@ -1,57 +1,115 @@
-import React, { Fragment, useEffect, useState } from "react";
+/* eslint-disable no-unused-vars */
+import React, { Fragment, useEffect, useRef, useState } from "react";
 
 import { Country, State, City } from "country-state-city";
+import dayjs from "dayjs";
+import { useOutsideClick } from "helpers";
+import { useNavigate, useParams } from "react-router-dom";
+import * as Yup from "yup";
 
+import teamsApi from "apis/teams";
+import Loader from "common/Loader/index";
 import { useTeamDetails } from "context/TeamDetailsContext";
+import { teamsMapper } from "mapper/teams.mapper";
 
 import StaticPage from "./StaticPage";
+import { userSchema } from "./validationSchema";
 
 const addressOptions = [
+  { label: "Current", value: "current" },
   { label: "Permanent", value: "permanent" },
-  { label: "Temperory", value: "temperory" },
 ];
 
+const schema = Yup.object().shape(userSchema);
+
 const EmploymentDetails = () => {
+  const initialErrState = {
+    first_name_err: "",
+    last_name_err: "",
+    address_line_1_err: "",
+    country_err: "",
+    state_err: "",
+    city_err: "",
+    email_id_err: "",
+    pin_err: "",
+  };
+
+  const initialSelectValue = {
+    label: "",
+    value: "",
+    code: "",
+  };
+  const { memberId } = useParams();
   const {
     updateDetails,
     details: { personalDetails },
   } = useTeamDetails();
+  const navigate = useNavigate();
 
-  const [countryDetails, setCountryDetails] = useState({
-    label: "",
-    value: "",
-  });
-  const [stateDetails, setStateDetails] = useState({ label: "", value: "" });
-  const [cityList, setCityList] = useState([]);
+  const wrapperRef = useRef(null);
+
+  const [currentCountryDetails, setCurrentCountryDetails] =
+    useState(initialSelectValue);
+  const [currentCityList, setCurrentCityList] = useState([]);
   const [addrType, setAddrType] = useState({ label: "", value: "" });
   const [showDatePicker, setShowDatePicker] = useState({ visibility: false });
   const [countries, setCountries] = useState([]);
+  const [errDetails, setErrDetails] = useState(initialErrState);
+  const [isLoading, setIsLoading] = useState(false);
+  const [addrId, setAddrId] = useState();
+
+  useOutsideClick(wrapperRef, () => setShowDatePicker({ visibility: false }));
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
-      value: country.isoCode,
+      value: country.name,
       label: country.name,
+      code: country.isoCode,
     }));
     setCountries(countryData);
   };
 
+  const getDetails = async () => {
+    const res: any = await teamsApi.get(memberId);
+    const addRes = await teamsApi.getAddress(memberId);
+    const teamsObj = teamsMapper(res.data, addRes.data.addresses[0]);
+    updateDetails("personal", teamsObj);
+    if (teamsObj.addresses.address_type.length > 0) {
+      setAddrType(
+        addressOptions.find(
+          item => item.value === teamsObj.addresses.address_type
+        )
+      );
+    }
+    setAddrId(addRes.data.addresses[0]?.id);
+    setIsLoading(false);
+  };
+
   useEffect(() => {
+    setIsLoading(true);
     const allCountries = Country.getAllCountries();
     assignCountries(allCountries);
+    getDetails();
   }, []);
 
   const handleOnChangeCountry = selectCountry => {
-    setCountryDetails(selectCountry);
+    setCurrentCountryDetails(selectCountry);
     updateDetails("personal", {
       ...personalDetails,
-      ...{ country: selectCountry.value },
+      ...{
+        addresses: {
+          ...personalDetails.addresses,
+          ...{ country: selectCountry.value, state: "", city: "" },
+        },
+      },
     });
   };
 
   const updatedStates = countryCode =>
     State.getStatesOfCountry(countryCode).map(state => ({
       label: state.name,
-      value: state.isoCode,
+      value: state.name,
+      code: state.isoCode,
       ...state,
     }));
 
@@ -59,26 +117,35 @@ const EmploymentDetails = () => {
     setAddrType(addreType);
     updateDetails("personal", {
       ...personalDetails,
-      ...{ address_type: addreType.value },
+      ...{
+        addresses: {
+          ...personalDetails.addresses,
+          ...{ address_type: addreType.value },
+        },
+      },
     });
   };
 
   const handleOnChangeState = selectState => {
-    setStateDetails(selectState);
     updateDetails("personal", {
       ...personalDetails,
-      ...{ state: selectState.value },
+      ...{
+        addresses: {
+          ...personalDetails.addresses,
+          ...{ state: selectState.value },
+        },
+      },
     });
 
     const cities = City.getCitiesOfState(
-      countryDetails.value,
-      selectState.value
+      currentCountryDetails.code,
+      selectState.code
     ).map(city => ({ label: city.name, value: city.name, ...city }));
-    setCityList(cities);
+    setCurrentCityList(cities);
   };
 
   const filterCities = (inputValue: string) => {
-    const city = cityList.filter(i =>
+    const city = currentCityList.filter(i =>
       i.label.toLowerCase().includes(inputValue.toLowerCase())
     );
 
@@ -92,19 +159,96 @@ const EmploymentDetails = () => {
       }, 1000);
     });
 
-  const updateBasicDetails = (value, type) => {
-    updateDetails("personal", {
-      ...personalDetails,
-      ...{ [type]: value },
-    });
+  const updateBasicDetails = (value, type, isAddress = false) => {
+    if (isAddress) {
+      updateDetails("personal", {
+        ...personalDetails,
+        ...{
+          addresses: { ...personalDetails.addresses, ...{ [type]: value } },
+        },
+      });
+    } else {
+      updateDetails("personal", {
+        ...personalDetails,
+        ...{ [type]: value },
+      });
+    }
   };
 
   const handleDatePicker = date => {
     setShowDatePicker({ visibility: !showDatePicker.visibility });
     updateDetails("personal", {
       ...personalDetails,
-      ...{ dob: date },
+      ...{ date_of_birth: dayjs(date).format("MM.DD.YYYY") },
     });
+  };
+
+  const handleUpdateDetails = async () => {
+    try {
+      await schema.validate(
+        {
+          ...personalDetails,
+          ...{
+            is_email: personalDetails.email_id
+              ? personalDetails.email_id.length > 0
+              : false,
+          },
+        },
+        { abortEarly: false }
+      );
+
+      await teamsApi.updateUser(memberId, {
+        user: {
+          first_name: personalDetails.first_name,
+          last_name: personalDetails.last_name,
+          date_of_birth: dayjs(personalDetails.date_of_birth),
+          phone: personalDetails.phone_number,
+          personal_email_id: personalDetails.email_id,
+          social_accounts: {
+            linkedin_url: personalDetails.linkedin,
+            github_url: personalDetails.github,
+          },
+        },
+      });
+
+      await teamsApi.updateAddress(memberId, addrId, {
+        address: { ...personalDetails.addresses },
+      });
+      setErrDetails(initialErrState);
+      navigate(`/team/${memberId}`, { replace: true });
+    } catch (err) {
+      setIsLoading(false);
+      const errObj = initialErrState;
+      err.inner.map(item => {
+        if (item.path.includes("addresses")) {
+          errObj[`${item.path.split(".").pop()}_err`] = item.message;
+        } else {
+          errObj[`${item.path}_err`] = item.message;
+        }
+      });
+      setErrDetails(errObj);
+    }
+  };
+
+  const handleOnChangeCity = selectCity => {
+    updateDetails("personal", {
+      ...personalDetails,
+      ...{
+        addresses: {
+          ...personalDetails.addresses,
+          ...{ city: selectCity.value },
+        },
+      },
+    });
+  };
+
+  const handlePhoneNumberChange = (status, phoneNumber, country) => {
+    updateBasicDetails(phoneNumber, "phone_number", false);
+  };
+
+  const handleCancelDetails = () => {
+    setIsLoading(true);
+    getDetails();
   };
 
   return (
@@ -113,38 +257,45 @@ const EmploymentDetails = () => {
         <h1 className="text-2xl font-bold text-white">Personal Details</h1>
         <div>
           <button
-            className="mx-1 cursor-auto rounded-md border border-white bg-miru-han-purple-1000 px-3 py-2 font-bold text-white	"
+            className="mx-1 cursor-pointer rounded-md border border-white bg-miru-han-purple-1000 px-3 py-2 font-bold text-white	"
             data-cy="update-profile"
-            onClick={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
+            onClick={handleCancelDetails} // eslint-disable-line  @typescript-eslint/no-empty-function
           >
             Cancel
           </button>
           <button
-            className="mx-1 cursor-auto rounded-md border bg-white px-3 py-2 font-bold text-miru-han-purple-1000"
+            className="mx-1 cursor-pointer rounded-md border bg-white px-3 py-2 font-bold text-miru-han-purple-1000"
             data-cy="update-profile"
-            onClick={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
+            onClick={handleUpdateDetails}
           >
             Update
           </button>
         </div>
       </div>
-      <StaticPage
-        addrType={addrType}
-        addressOptions={addressOptions}
-        countries={countries}
-        handleDatePicker={handleDatePicker}
-        handleOnChangeAddrType={handleOnChangeAddrType}
-        handleOnChangeCountry={handleOnChangeCountry}
-        handleOnChangeState={handleOnChangeState}
-        personalDetails={personalDetails}
-        promiseOptions={promiseOptions}
-        selectedCountry={countryDetails}
-        selectedState={stateDetails}
-        setShowDatePicker={setShowDatePicker}
-        showDatePicker={showDatePicker}
-        updateBasicDetails={updateBasicDetails}
-        updatedStates={updatedStates}
-      />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <StaticPage
+          addrType={addrType}
+          addressOptions={addressOptions}
+          countries={countries}
+          currentCountryDetails={currentCountryDetails}
+          errDetails={errDetails}
+          handleDatePicker={handleDatePicker}
+          handleOnChangeAddrType={handleOnChangeAddrType}
+          handleOnChangeCity={handleOnChangeCity}
+          handleOnChangeCountry={handleOnChangeCountry}
+          handleOnChangeState={handleOnChangeState}
+          handlePhoneNumberChange={handlePhoneNumberChange}
+          personalDetails={personalDetails}
+          promiseOptions={promiseOptions}
+          setShowDatePicker={setShowDatePicker}
+          showDatePicker={showDatePicker}
+          updateBasicDetails={updateBasicDetails}
+          updatedStates={updatedStates}
+          wrapperRef={wrapperRef}
+        />
+      )}
     </Fragment>
   );
 };
