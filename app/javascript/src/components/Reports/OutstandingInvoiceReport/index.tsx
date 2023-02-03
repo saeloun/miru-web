@@ -108,7 +108,7 @@ const OutstandingInvoiceReport = () => {
   };
 
   return (
-    <div>
+    <div className="absolute inset-0 z-50 bg-white lg:relative">
       <EntryContext.Provider
         value={{
           ...contextValues,
