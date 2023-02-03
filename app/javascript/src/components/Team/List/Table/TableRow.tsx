@@ -22,10 +22,10 @@ const TableRow = ({ item }) => {
 
   return (
     <tr
-      className="hoverIcon border-b border-miru-gray-200 last:border-0"
+      className="hoverIcon cursor-pointer border-b border-miru-gray-200 last:border-0"
       data-cy="team-table-row"
       onClick={() => {
-        navigate("1");
+        navigate(`/team/${item.id}`, { replace: true });
       }}
     >
       <td className="table__data p-6 capitalize">{item.name}</td>
