@@ -50,7 +50,7 @@ RSpec.describe "InternalApi::V1::Expense#index", type: :request do
                           {
                             "id" => expense.id,
                             "amount" => expense.amount.to_s,
-                            "date" => DateFormatService.new(expense.date, company).process,
+                            "date" => DateFormatter.new(expense.date, company:).company_format,
                             "expenseType" => expense.expense_type,
                             "categoryName" => expense.expense_category.name,
                             "vendorName" => expense.vendor&.name
