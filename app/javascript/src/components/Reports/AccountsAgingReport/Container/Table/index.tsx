@@ -1,5 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 
+import { useUserContext } from "context/UserContext";
+
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 import TableTotal from "./TableTotal";
@@ -8,6 +10,8 @@ const Table = ({ accountsAgingReport }) => {
   const [clientList, setClientList] = useState<any>(
     accountsAgingReport.clientList
   );
+
+  const { isDesktop } = useUserContext();
 
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -39,8 +43,8 @@ const Table = ({ accountsAgingReport }) => {
 
   return (
     <table className="mt-4 min-w-full divide-y divide-gray-200">
-      <TableHeader sortClientList={sortClientList} />
-      <tbody className="divide-y divide-gray-200 overflow-scroll bg-white">
+      {isDesktop && <TableHeader sortClientList={sortClientList} />}
+      <tbody className="flex flex-col divide-y divide-gray-200 overflow-scroll bg-white">
         {loading ? (
           <tr className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
             <td>Loading...</td>
@@ -60,7 +64,7 @@ const Table = ({ accountsAgingReport }) => {
             <td>No Data Found</td>
           </tr>
         )}
-        {clientList.length > 0 && (
+        {clientList.length > 0 && isDesktop && (
           <TableTotal
             currency={accountsAgingReport.currency}
             report={accountsAgingReport.summary}
