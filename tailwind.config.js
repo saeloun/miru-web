@@ -7,6 +7,7 @@ module.exports = {
     },
     fontSize: {
       xsm: ".5625em",
+      xxs: "0.625rem",//10px
       xs: ".75rem",
       sm: ".875rem",
       tiny: ".875rem",
@@ -17,12 +18,14 @@ module.exports = {
       "3xl": "1.875rem",
       "4xl": "2.25rem",
       "4.5xl": "2.5rem",
+      "4.75xl": "2.75rem",
       "5xl": "3rem",
       "6xl": "4rem",
       "7xl": "5rem",
     },
     letterSpacing: {
       widest: "0.125em",
+      semiWidest: "0.09375",//1.5px
       wider: ".05em",
       normal: "0em",
     },
@@ -51,6 +54,7 @@ module.exports = {
         180: "11.25rem", //180px
       },
       minWidth: {
+        12: "12px",
         24: "24px",
       },
       maxWidth: {
@@ -99,6 +103,7 @@ module.exports = {
           200: "#EBEFF2",
           100: "#F5F7F9",
           800: "#ADA4CE",
+          50: "#CDD6DF33",
         },
         "miru-red": {
           400: "#E04646",
@@ -200,8 +205,8 @@ module.exports = {
         0: "0%",
       },
       inset: {
-        '-10': '-10px',
-      }
+        "-10": "-10px",
+      },
     },
   },
   boxShadow: {
