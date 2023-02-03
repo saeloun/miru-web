@@ -2,7 +2,7 @@ import React from "react";
 
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { GlobeIcon, InfoIcon, PhoneIcon } from "miruIcons";
+import { GlobeIcon, InfoIcon, MapPinIcon, PhoneIcon } from "miruIcons";
 
 dayjs.extend(customParseFormat);
 
@@ -63,7 +63,17 @@ const StaticPage = ({ personalDetails }) => (
             </p>
           </div>
         </div>
-        <div className="mt-4 flex">
+      </div>
+    </div>
+    <div className="flex border-b border-b-miru-gray-400 py-10">
+      <div className="w-1/5 pr-4">
+        <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+          <MapPinIcon className="mr-2" color="#1D1A31" size={13.5} />
+          Address
+        </span>
+      </div>
+      <div className="w-4/5">
+        <div className="flex">
           <div className="w-full">
             <span className="text-xs text-miru-dark-purple-1000">Address</span>
             <p className="text-miru-dark-purple-1000">
