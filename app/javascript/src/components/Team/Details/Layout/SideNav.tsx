@@ -47,15 +47,15 @@ const UserInformation = () => {
 
   return (
     <div>
-      <div className="mr-2 flex h-20 w-60 items-center bg-miru-han-purple-1000 p-4 text-white" />
-      <div className="mr-2 flex flex-col justify-center bg-miru-gray-100">
+      <div className="flex h-20 w-full items-center bg-miru-han-purple-1000 p-4 text-white" />
+      <div className="flex flex-col justify-center bg-miru-gray-100">
         <div className="relative flex h-12 justify-center">
           <div className="userAvatarWrapper">
             <img className="h-24 w-24" src={UserAvatarSVG} />
           </div>
         </div>
         <div className="mt-3 flex flex-col items-center justify-center border-b-8 border-miru-gray-200 pb-8">
-          <span className="mb-1 text-xl font-bold text-miru-han-purple-1000">
+          <span className="mb-1 max-w-full overflow-hidden truncate whitespace-nowrap px-4 text-xl font-bold text-miru-han-purple-1000">
             {`${personalDetails.first_name} ${personalDetails.last_name}`}
           </span>
           <span className="text-xs leading-4 tracking-wider text-miru-dark-purple-1000">
@@ -68,7 +68,7 @@ const UserInformation = () => {
 };
 
 const TeamUrl = ({ urlList }) => (
-  <div className="mr-2 mt-4 min-h-70v w-60 bg-miru-gray-100">
+  <div className="mt-4 min-h-50v w-full bg-miru-gray-100">
     <ul className="list-none text-sm font-medium leading-5 tracking-wider">
       {urlList.map((item, index) => (
         <li className="border-b-2 border-miru-gray-400" key={index}>
