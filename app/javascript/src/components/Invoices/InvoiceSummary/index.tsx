@@ -18,12 +18,12 @@ const InvoiceSummary = ({
 
   const summaryList = [
     {
-      label: "Overdue",
+      label: "OVERDUE",
       value: summary.overdueAmount,
       onClick: () => applyFilter([{ value: "overdue", label: "OVERDUE" }]),
     },
     {
-      label: "Outstanding",
+      label: "OUTSTANDING",
       value: summary.outstandingAmount,
       onClick: () =>
         applyFilter([
@@ -33,7 +33,7 @@ const InvoiceSummary = ({
         ]),
     },
     {
-      label: isDesktop ? "Amount in draft" : "AMT IN DRAFT",
+      label: isDesktop ? "AMOUNT IN DRAFT" : "DRAFT",
       value: summary.draftAmount,
       onClick: () => applyFilter([{ value: "draft", label: "DRAFT" }]),
     },

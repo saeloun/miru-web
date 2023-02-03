@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 
 import { DeleteIcon, DownloadSimpleIcon } from "miruIcons";
 import { MoreOptions } from "StyledComponents";
@@ -20,10 +20,9 @@ const BulkActionsWrapper = ({
   setShowBulkDownloadDialog,
 }) => {
   const [isMoreOptionsOpen, setIsMoreOptionsOpen] = useState<boolean>(false);
-  const wrapperRef = useRef(null);
 
   return (
-    <div className="mb-4 flex w-full flex-wrap items-center justify-between">
+    <div className="flex w-full flex-wrap items-center justify-between lg:mb-4">
       <div className="flex items-center justify-start">
         <h1 className="text-base font-semibold text-miru-dark-purple-1000 lg:text-2xl lg:font-normal">
           All Invoices
@@ -37,7 +36,7 @@ const BulkActionsWrapper = ({
           />
         )}
       </div>
-      <div className="relative" ref={wrapperRef}>
+      <div className="relative">
         <BulkActions
           clearCheckboxes={clearCheckboxes}
           downloading={downloading}
@@ -47,11 +46,7 @@ const BulkActionsWrapper = ({
           setIsMoreOptionsOpen={setIsMoreOptionsOpen}
         />
         {isMoreOptionsOpen && (
-          <MoreOptions
-            className="right-0"
-            setVisibilty={setIsMoreOptionsOpen}
-            wrapperRef={wrapperRef}
-          >
+          <MoreOptions className="right-0" setVisibilty={setIsMoreOptionsOpen}>
             <li
               className="flex cursor-pointer items-center py-2.5 px-4 text-xs font-medium text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:text-sm"
               onClick={() => {
