@@ -18,26 +18,26 @@ const getTeamUrls = memberId => [
     url: `/team/${memberId}`,
     text: "PERSONAL DETAILS",
   },
-  {
-    url: `/team/${memberId}/employment`,
-    text: "EMPLOYEMENT DETAILS", // TODO: fix spelling employment
-  },
-  {
-    url: `/team/${memberId}/devices`,
-    text: "ALLOCATED DEVICES",
-  },
-  {
-    url: `/team/${memberId}/compensation`,
-    text: "COMPENSATION",
-  },
-  {
-    url: `/team/${memberId}/documents`,
-    text: "DOCUMENTS",
-  },
-  {
-    url: `/team/${memberId}/reimburstment`, // TODO: fix spelling reimbursement
-    text: "REIMBURSEMENTS",
-  },
+  // {
+  //   url: `/team/${memberId}/employment`,
+  //   text: "EMPLOYEMENT DETAILS", // TODO: fix spelling employment
+  // },
+  // {
+  //   url: `/team/${memberId}/devices`,
+  //   text: "ALLOCATED DEVICES",
+  // },
+  // {
+  //   url: `/team/${memberId}/compensation`,
+  //   text: "COMPENSATION",
+  // },
+  // {
+  //   url: `/team/${memberId}/documents`,
+  //   text: "DOCUMENTS",
+  // },
+  // {
+  //   url: `/team/${memberId}/reimburstment`, // TODO: fix spelling reimbursement
+  //   text: "REIMBURSEMENTS",
+  // },
 ];
 
 const UserInformation = () => {
@@ -68,7 +68,7 @@ const UserInformation = () => {
 };
 
 const TeamUrl = ({ urlList }) => (
-  <div className="mr-2 mt-4 w-60 bg-miru-gray-100">
+  <div className="mr-2 mt-4 min-h-70v w-60 bg-miru-gray-100">
     <ul className="list-none text-sm font-medium leading-5 tracking-wider">
       {urlList.map((item, index) => (
         <li className="border-b-2 border-miru-gray-400" key={index}>
