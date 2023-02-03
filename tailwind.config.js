@@ -6,6 +6,7 @@ module.exports = {
       center: true,
     },
     fontSize: {
+      xsm: ".5625em",
       xs: ".75rem",
       sm: ".875rem",
       tiny: ".875rem",
@@ -73,6 +74,7 @@ module.exports = {
         "80v": "80vh",
         "90v": "90vh",
         "100v": "100vh",
+        24: "24px",
       },
       maxHeight: {
         "10v": "10vh",
@@ -191,6 +193,7 @@ module.exports = {
       },
       zIndex: {
         1: "-1",
+        1: "1",
         15: "15",
       },
       transformOrigin: {
