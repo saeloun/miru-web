@@ -12,7 +12,7 @@ const RecentlyUpdatedCard = ({ invoice, index }) => {
   return (
     <div
       className={`${
-        index == 0 ? "mr-2" : "mx-2"
+        index == 0 ? "mr-1 lg:mr-2" : "mx-1 lg:mx-2"
       } flex h-auto w-40 cursor-pointer flex-col justify-between rounded-xl border-2 border-miru-gray-200 p-4 text-center hover:shadow-c1`}
       onClick={() => navigate(`/invoices/${invoice.id}`)}
     >
