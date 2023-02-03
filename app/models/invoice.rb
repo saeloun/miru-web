@@ -152,11 +152,11 @@ class Invoice < ApplicationRecord
   end
 
   def formatted_due_date
-    DateFormatService.new(due_date, company).process
+    DateFormatter.new(due_date, company:).company_format
   end
 
   def formatted_issue_date
-    DateFormatService.new(issue_date, company).process
+    DateFormatter.new(issue_date, company:).company_format
   end
 
   private
