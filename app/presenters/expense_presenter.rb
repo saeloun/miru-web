@@ -13,7 +13,7 @@ class ExpensePresenter
       vendor_name: expense.vendor&.name,
       category_name: expense.expense_category.name,
       amount: expense.amount,
-      date: expense.date,
+      date: expense.formatted_date,
       description: expense.description,
       type: expense.expense_type,
       receipts: expense.attached_receipts

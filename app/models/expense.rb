@@ -62,7 +62,7 @@ class Expense < ApplicationRecord
   validates :amount, numericality: { greater_than: 0 }
 
   def formatted_date
-    date.strftime("%m.%d.%Y")
+    DateFormatService.new(date, company).process
   end
 
   def attached_receipts
