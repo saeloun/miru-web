@@ -16,3 +16,5 @@ company = Company.create!(
 puts "Company Created"
 
 company.logo.attach(io: File.open(Rails.root.join("app/assets/images/saeloun_logo.png")), filename: "saeloun_logo.png")
+
+@saeloun_us = company

@@ -20,8 +20,8 @@ client_two = {
   name: "client_two", email: "contact@client_two.com", phone: "+91 2020202020"
 }
 
-@microsoft_client = @saeloun_india.clients.create!(microsoft)
-@flipkart_client = @saeloun_india.clients.create!(flipkart)
+@microsoft_client = @saeloun_us.clients.create!(microsoft)
+@flipkart_client = @saeloun_us.clients.create!(flipkart)
 @client_one_us = @saeloun_us.clients.create!(client_one)
 @client_two_us = @saeloun_us.clients.create!(client_two)
 

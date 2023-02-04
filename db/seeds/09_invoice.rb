@@ -30,9 +30,9 @@ invoice_1_us = {
   external_view_key: "2f5c0435c1ffe4d4fe524a1ff9acbe35"
 }
 
-@invoice_1_flipkart_saeloun_india = @saeloun_india.invoices.create!(invoice_1_india)
-@invoice_2_microsoft_saeloun_india = @saeloun_india.invoices.create!(invoice_2_india)
-@invoice_3_microsoft_saeloun_india = @saeloun_india.invoices.create!(invoice_3_india)
+@invoice_1_flipkart_saeloun_india = @saeloun_us.invoices.create!(invoice_1_india)
+@invoice_2_microsoft_saeloun_india = @saeloun_us.invoices.create!(invoice_2_india)
+@invoice_3_microsoft_saeloun_india = @saeloun_us.invoices.create!(invoice_3_india)
 @invoice_1_client_one_saeloun_us = @saeloun_us.invoices.create!(invoice_1_us)
 
 # Reindex Searchkick indexes
