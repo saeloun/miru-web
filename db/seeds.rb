@@ -58,7 +58,7 @@ Project.reindex
 
 puts "Projects Created"
 
-[supriya, vipul, book_keeper, sam].each do |user|
+users.each do |user|
   user.project_members.create(project_id: project_office_com.id, hourly_rate: 5000)
   user.project_members.create(project_id: project_azure_com.id, hourly_rate: 5000)
 end
