@@ -55,11 +55,11 @@ const InvoiceDetails = ({
         setSelectedClient={setSelectedClient}
       />
       <div className="group">
-        <div
-          className="hoverPencil cursor-pointer"
-          onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}
-        >
-          <p className="flex text-xs font-normal text-miru-dark-purple-1000">
+        <div className="hoverPencil cursor-pointer">
+          <p
+            className="flex text-xs font-normal text-miru-dark-purple-1000"
+            onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}
+          >
             <span>Date of Issue</span>
             <button className="invisible ml-2">
               <EditIcon color="#1D1A31" size={13} />
@@ -72,15 +72,18 @@ const InvoiceDetails = ({
               setVisibility={setShowDateOfIssuePicker}
             />
           )}
-          <p className="text-base font-normal text-miru-dark-purple-1000">
+          <p
+            className="text-base font-normal text-miru-dark-purple-1000"
+            onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}
+          >
             {getIssuedDate}
           </p>
         </div>
-        <div
-          className="hoverPencil cursor-pointer"
-          onClick={() => setShowDueDatePicker(!showDueDatePicker)}
-        >
-          <p className="mt-4 flex text-xs font-normal text-miru-dark-purple-1000">
+        <div className="hoverPencil cursor-pointer">
+          <p
+            className="mt-4 flex text-xs font-normal text-miru-dark-purple-1000"
+            onClick={() => setShowDueDatePicker(!showDueDatePicker)}
+          >
             <span>Due Date</span>
             <button className="invisible ml-2">
               <EditIcon color="#1D1A31" size={13} />
@@ -93,7 +96,10 @@ const InvoiceDetails = ({
               setVisibility={setShowDueDatePicker}
             />
           )}
-          <p className="text-base font-normal text-miru-dark-purple-1000">
+          <p
+            className="text-base font-normal text-miru-dark-purple-1000"
+            onClick={() => setShowDueDatePicker(!showDueDatePicker)}
+          >
             {getDueDate}
           </p>
         </div>
