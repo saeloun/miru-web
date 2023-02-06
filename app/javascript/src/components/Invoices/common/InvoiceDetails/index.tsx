@@ -55,13 +55,13 @@ const InvoiceDetails = ({
         setSelectedClient={setSelectedClient}
       />
       <div className="group">
-        <div className="hoverPencil">
+        <div
+          className="hoverPencil cursor-pointer"
+          onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}
+        >
           <p className="flex text-xs font-normal text-miru-dark-purple-1000">
             <span>Date of Issue</span>
-            <button
-              className="invisible ml-2"
-              onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}
-            >
+            <button className="invisible ml-2">
               <EditIcon color="#1D1A31" size={13} />
             </button>
           </p>
@@ -69,19 +69,20 @@ const InvoiceDetails = ({
             <CustomDatePicker
               date={issueDate}
               handleChange={handleDatePickerChange}
+              setVisibility={setShowDateOfIssuePicker}
             />
           )}
           <p className="text-base font-normal text-miru-dark-purple-1000">
             {getIssuedDate}
           </p>
         </div>
-        <div className="hoverPencil">
+        <div
+          className="hoverPencil cursor-pointer"
+          onClick={() => setShowDueDatePicker(!showDueDatePicker)}
+        >
           <p className="mt-4 flex text-xs font-normal text-miru-dark-purple-1000">
             <span>Due Date</span>
-            <button
-              className="invisible ml-2"
-              onClick={() => setShowDueDatePicker(!showDueDatePicker)}
-            >
+            <button className="invisible ml-2">
               <EditIcon color="#1D1A31" size={13} />
             </button>
           </p>
@@ -89,6 +90,7 @@ const InvoiceDetails = ({
             <CustomDatePicker
               date={dueDate}
               handleChange={handleDueDatePicker}
+              setVisibility={setShowDueDatePicker}
             />
           )}
           <p className="text-base font-normal text-miru-dark-purple-1000">

@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useRef } from "react";
 
 import { getMonth, getYear } from "date-fns";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const CustomDatePicker = ({ handleChange, date }) => {
+import { useOutsideClick } from "../../helpers/outsideClick";
+
+type CustomDatePickerProps = {
+  handleChange: any;
+  date: any;
+  setVisibility?: any;
+};
+
+const CustomDatePicker = ({
+  handleChange,
+  date,
+  setVisibility,
+}: CustomDatePickerProps) => {
   const range = (start, end) => {
     const ans = [];
     for (let i = start; i <= end; i++) {
@@ -31,56 +43,64 @@ const CustomDatePicker = ({ handleChange, date }) => {
     "Dec",
   ];
 
+  const wrapperRef = useRef(null);
+
+  useOutsideClick(wrapperRef, () => {
+    setVisibility(false);
+  });
+
   return (
-    <DatePicker
-      inline
-      calendarClassName="miru-calendar"
-      selected={date}
-      wrapperClassName="datePicker"
-      renderCustomHeader={({
-        date,
-        changeYear,
-        changeMonth,
-        decreaseMonth,
-        increaseMonth,
-        prevMonthButtonDisabled,
-        nextMonthButtonDisabled,
-      }) => (
-        <div className="headerWrapper">
-          <button disabled={prevMonthButtonDisabled} onClick={decreaseMonth}>
-            <CaretCircleLeftIcon color="#5b34ea" size={16} />
-          </button>
-          <div>
-            <select
-              value={months[getMonth(date)]}
-              onChange={({ target: { value } }) =>
-                changeMonth(months.indexOf(value))
-              }
-            >
-              {months.map(option => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-            <select
-              value={getYear(date)}
-              onChange={({ target: { value } }) => changeYear(value)}
-            >
-              {years.map(option => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+    <div ref={wrapperRef}>
+      <DatePicker
+        inline
+        calendarClassName="miru-calendar"
+        selected={date}
+        wrapperClassName="datePicker"
+        renderCustomHeader={({
+          date,
+          changeYear,
+          changeMonth,
+          decreaseMonth,
+          increaseMonth,
+          prevMonthButtonDisabled,
+          nextMonthButtonDisabled,
+        }) => (
+          <div className="headerWrapper">
+            <button disabled={prevMonthButtonDisabled} onClick={decreaseMonth}>
+              <CaretCircleLeftIcon color="#5b34ea" size={16} />
+            </button>
+            <div>
+              <select
+                value={months[getMonth(date)]}
+                onChange={({ target: { value } }) =>
+                  changeMonth(months.indexOf(value))
+                }
+              >
+                {months.map(option => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={getYear(date)}
+                onChange={({ target: { value } }) => changeYear(value)}
+              >
+                {years.map(option => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button disabled={nextMonthButtonDisabled} onClick={increaseMonth}>
+              <CaretCircleRightIcon color="#5b34ea" size={16} />
+            </button>
           </div>
-          <button disabled={nextMonthButtonDisabled} onClick={increaseMonth}>
-            <CaretCircleRightIcon color="#5b34ea" size={16} />
-          </button>
-        </div>
-      )}
-      onChange={handleChange}
-    />
+        )}
+        onChange={handleChange}
+      />
+    </div>
   );
 };
 
