@@ -11,7 +11,7 @@ const Navigation = ({ isAdminUser, setSelectedTab }) => {
 
   return (
     <Fragment>
-      <ul className="fixed bottom-0 left-0 right-0 z-40 flex h-14 justify-between bg-white px-3 shadow-c1">
+      <ul className="sticky bottom-0 left-0 right-0 z-40 flex h-1/12 justify-between bg-white px-3 shadow-c1">
         <MobileMenuOptions
           from={0}
           isAdminUser={isAdminUser}
