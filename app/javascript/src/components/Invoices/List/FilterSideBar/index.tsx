@@ -18,13 +18,13 @@ import { dateRangeOptions, statusOptions } from "./filterOptions";
 dayjs.extend(advancedFormat);
 
 const FilterSideBar = ({
-  filterIntialValues,
   setIsFilterVisible,
   filterParams,
   setFilterParams,
   selectedInput,
   setSelectedInput,
   isDesktop,
+  handleReset,
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [clientList, setClientList] = useState<null | any[]>([]);
@@ -194,12 +194,6 @@ const FilterSideBar = ({
   const resetCustomDatePicker = () => {
     defaultDateRange() && setFilters(setDefaultDateRange());
     hideCustomFilter();
-  };
-
-  const handleReset = () => {
-    window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
-    setFilterParams(filterIntialValues);
-    setIsFilterVisible(false);
   };
 
   const handleApply = () => {
