@@ -170,14 +170,14 @@ const Header = ({
                 </ul>
               )}
             </div>
-            <div>
+            {/* <div>
               <button className="inline-flex justify-center rounded-md border border-miru-han-purple-1000 bg-white p-2 text-miru-han-purple-1000 hover:bg-gray-50">
                 <PaperPlaneTiltIcon size={20} weight="bold" />
                 <p className="mx-2 text-base font-medium uppercase tracking-wider">
                   Share
                 </p>
               </button>
-            </div>
+            </div> */}
           </div>
         )}
       </div>
