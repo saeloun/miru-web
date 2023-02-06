@@ -22,7 +22,7 @@ const TimeEntryReport = () => {
     clients: [],
     teamMember: [],
     status: [],
-    groupBy: { label: "None", value: "" },
+    groupBy: { label: "Client", value: "client" },
   };
 
   const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
@@ -49,7 +49,7 @@ const TimeEntryReport = () => {
       } else if (Array.isArray(filterValue)) {
         counter = counter + filterValue.length;
       } else {
-        if (filterValue.value !== "") {
+        if (filterValue?.value) {
           counter = counter + 1;
         }
       }
@@ -149,7 +149,7 @@ const TimeEntryReport = () => {
           showNavFilters={showNavFilters}
           type={TIME_ENTRY_REPORT_PAGE}
         />
-        <Container />
+        <Container selectedFilter={selectedFilter} />
         {isFilterVisible && (
           <Filters
             handleApplyFilter={handleApplyFilter}

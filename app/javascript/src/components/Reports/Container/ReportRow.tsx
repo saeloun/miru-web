@@ -1,6 +1,8 @@
 import React from "react";
 
+import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
+import { ClientsIcon } from "miruIcons";
 
 import { ITimeEntry } from "../interface";
 
@@ -14,24 +16,31 @@ const ReportRow = ({
   duration,
 }: ITimeEntry) => (
   <div className="grid grid-cols-5 gap-2 border-b" key={id}>
-    <div className="whitespace-nowrap py-4 pr-6 text-left">
-      <p className="whitespace-normal text-base font-semibold text-miru-dark-purple-1000">
-        {project}
-      </p>
-      <p className="text-sm font-normal text-miru-dark-purple-400">{client}</p>
+    <div className="flex items-center whitespace-nowrap py-4 pr-6 text-left">
+      <div className="mr-6 md:h-10 md:w-10">
+        <ClientsIcon className="m-0 object-contain" size={40} />
+      </div>
+      <div>
+        <p className="mb-1 whitespace-normal text-base font-semibold text-miru-dark-purple-1000">
+          {project}
+        </p>
+        <p className="font-manrope text-sm font-medium text-miru-dark-purple-400">
+          {client}
+        </p>
+      </div>
     </div>
-    <div className="col-span-2 whitespace-pre-wrap break-words px-6 py-4 text-justify text-xs font-normal text-miru-dark-purple-1000">
+    <div className="col-span-2 flex items-center whitespace-pre-wrap break-words px-6 py-4 text-justify font-manrope text-sm font-normal text-miru-dark-purple-1000">
       {note}
     </div>
     <div className="break-normal px-6 py-4 text-left">
-      <p className="text-base font-semibold text-miru-dark-purple-1000">
+      <p className="mb-1 font-manrope text-base font-semibold not-italic text-miru-dark-purple-1000">
         {teamMember}
       </p>
-      <p className="text-sm font-normal text-miru-dark-purple-400">
-        {workDate}
+      <p className="font-manrope text-sm font-medium text-miru-dark-purple-400">
+        {dayjs(workDate).format("MM.DD.YYYY")}
       </p>
     </div>
-    <div className="whitespace-nowrap py-4 pl-6 text-right text-xl font-bold text-miru-dark-purple-1000">
+    <div className="whitespace-nowrap py-4 pl-6 text-right font-manrope text-xl font-bold text-miru-dark-purple-1000">
       {minToHHMM(duration)}
     </div>
   </div>
