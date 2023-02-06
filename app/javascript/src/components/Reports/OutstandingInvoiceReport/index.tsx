@@ -120,6 +120,7 @@ const OutstandingInvoiceReport = () => {
           resetFilter={resetFilter}
           setIsFilterVisible={setIsFilterVisible}
           showExportButon={false}
+          showFilterIcon={false}
           showNavFilters={showNavFilters}
           type="Invoices Report"
         />
