@@ -187,6 +187,12 @@ const Invoices = ({ isDesktop }) => {
       selectedInvoices.filter(id => !invoiceIds.includes(id))
     );
 
+  const handleReset = () => {
+    window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
+    setFilterParams(filterIntialValues);
+    setIsFilterVisible(false);
+  };
+
   return (
     <Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
@@ -210,9 +216,11 @@ const Invoices = ({ isDesktop }) => {
             filterIntialValues={filterIntialValues}
             filterParams={filterParams}
             filterParamsStr={filterParamsStr}
+            handleReset={handleReset}
             invoices={invoices}
             isDesktop={isDesktop}
             isInvoiceSelected={isInvoiceSelected}
+            params={params}
             recentlyUpdatedInvoices={recentlyUpdatedInvoices}
             selectInvoices={selectInvoices}
             selectedInvoiceCount={selectedInvoiceCount}
@@ -229,8 +237,8 @@ const Invoices = ({ isDesktop }) => {
           />
           {isFilterVisible && (
             <FilterSideBar
-              filterIntialValues={filterIntialValues}
               filterParams={filterParams}
+              handleReset={handleReset}
               isDesktop={isDesktop}
               selectedInput={selectedInput}
               setFilterParams={setFilterParams}
