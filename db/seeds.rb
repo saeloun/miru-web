@@ -19,24 +19,28 @@ company.logo.attach(io: File.open(Rails.root.join("app/assets/images/saeloun_log
 
 puts "Users Created"
 vipul = User.create!(
-  first_name: "Vipul", last_name: "A M", email: "vipul@saeloun.com", password: "welcome",
+  first_name: "Vipul", last_name: "A M", email: "vipul@example.com", password: "welcome",
   password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id)
 supriya = User.create!(
-  first_name: "Supriya", last_name: "Agarwal", email: "supriya@saeloun.com", password: "welcome",
+  first_name: "Supriya", last_name: "Agarwal", email: "supriya@example.com", password: "welcome",
   password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
 )
-
 book_keeper = User.create!(
-  first_name: "Book", last_name: "Keeper", email: "book.keeper@saeloun.com", password: "welcome",
+  first_name: "Book", last_name: "Keeper", email: "book.keeper@example.com", password: "welcome",
+  password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
+)
+sam = User.create!(
+  first_name: "Sam", last_name: "Smith", email: "sam@example.com", password: "welcome",
   password_confirmation: "welcome", confirmed_at: Time.current, current_workspace_id: company.id
 )
 
 vipul.add_role(:owner, company)
 supriya.add_role(:admin, company)
 book_keeper.add_role(:book_keeper, company)
+sam.add_role(:employee, company)
 puts "Users Roles Created"
 
-users = [vipul, supriya, book_keeper]
+users = [vipul, supriya, book_keeper, sam]
 
 users.each { |user| company.employments.create!(user:) }
 puts "Employment Created"
@@ -54,7 +58,7 @@ Project.reindex
 
 puts "Projects Created"
 
-[supriya, vipul, book_keeper].each do |user|
+[supriya, vipul, book_keeper, sam].each do |user|
   user.project_members.create(project_id: project_office_com.id, hourly_rate: 5000)
   user.project_members.create(project_id: project_azure_com.id, hourly_rate: 5000)
 end
