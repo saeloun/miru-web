@@ -3,7 +3,9 @@
   <br/>
 </p>
 
-Miru is an open-source tool, designed to make time tracking, invoice management, and accounting easy for small businesses worldwide. It is a platform for organizations to help them streamline their workflow.
+Miru is an open-source tool, designed to make time tracking, invoice management,
+and accounting easy for small businesses worldwide. It is a platform for
+organizations to help them streamline their workflow.
 
 [![Build status](https://badge.buildkite.com/c21ea1f95172e59eeeecec486c49130e578e4daf99d90dcba1.svg?branch=develop)](https://buildkite.com/saeloun-bk/miruweb)
 ![GitHub contributors](https://img.shields.io/github/contributors/saeloun/miru-web)
@@ -58,14 +60,23 @@ brew install postgresql
 brew install elastic/tap/elasticsearch-full
 brew services start elasticsearch-full
 ```
-   To run elasticsearch on latest macos(ventura) please follow the below instructions
-   - Install Docker Desktop ( M1 / Intel ) https://www.docker.com/products/docker-desktop/
-   - Run below command in your terminal & you can check by opening `localhost:9200`
-   ```
-   docker run -dp 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.7
-   ```
-   - Install Chrome Extension to browse the Cluster ( Kind of like PGAdmin for Elastic Search ) https://chrome.google.com/webstore/search/multi%20elastic%20search%20head
-   More information available at https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+
+To run elasticsearch on latest macos(ventura) please follow the below
+instructions
+
+- Install Docker Desktop ( M1 / Intel )
+  https://www.docker.com/products/docker-desktop/
+- Run below command in your terminal & you can check by opening `localhost:9200`
+
+```
+docker run -dp 127.0.0.1:9200:9200 -p 127.0.0.1:9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.17.7
+```
+
+- Install Chrome Extension to browse the Cluster ( Kind of like PGAdmin for
+  Elastic Search )
+  https://chrome.google.com/webstore/search/multi%20elastic%20search%20head More
+  information available at
+  https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
 
 7. Install Redis
 
@@ -112,11 +123,12 @@ add `EMAIL_DELIVERY_METHOD='letter_opener_web'` to `.env`)
 
 ### User Test credentials
 
-| Role     | Email               | Password |
-| -------- | ------------------- | -------- |
-| Owner    | vipul@example.com   | password |
-| Admin    | supriya@example.com | password |
-| Employee | akhil@example.com   | password |
+| Role        | Email                   | Password |
+| ----------- | ----------------------- | -------- |
+| Owner       | vipul@example.com       | welcome  |
+| Admin       | supriya@example.com     | welcome  |
+| Employee    | sam@example.com         | welcome  |
+| Book keeper | book.keeper@example.com | welcome  |
 
 ## Installation of Cypress Dependencies
 
@@ -165,16 +177,22 @@ yarn run cy:open:staging
 
 ## Community Support
 
-- Feel free to join our [Discord](https://discord.gg/UABXyQQ82c) channel for support and questions.
+- Feel free to join our [Discord](https://discord.gg/UABXyQQ82c) channel for
+  support and questions.
 - Subscribe our latest [blog articles](https://blog.miru.so) and tutorials.
-- [Discussions](https://github.com/saeloun/miru-web/discussions): Post your questions regarding Miru Web
+- [Discussions](https://github.com/saeloun/miru-web/discussions): Post your
+  questions regarding Miru Web
 - [**Twitter**](https://twitter.com/getmiru)
 - [Documentation](https://docs.miru.so)
 
 ## Contributing
-We encourage everyone to contribute to Miru Web! Check out [Contributing Guide](CONTRIBUTING.md) for guidelines about how to proceed.. <br>
 
-Note: We are working on improving the documentation. So we had created a docusaurus app for documentation. Check out the [Miru Docs](https://github.com/saeloun/miru-docs/) Repo.
+We encourage everyone to contribute to Miru Web! Check out
+[Contributing Guide](CONTRIBUTING.md) for guidelines about how to proceed.. <br>
+
+Note: We are working on improving the documentation. So we had created a
+docusaurus app for documentation. Check out the
+[Miru Docs](https://github.com/saeloun/miru-docs/) Repo.
 
 ## Contributors ✨
 
@@ -186,4 +204,4 @@ Thanks goes to all our contributors
 
 ## License
 
-*Miru* &copy; 2023, Saeloun - Released under the MIT License.
+_Miru_ &copy; 2023, Saeloun - Released under the MIT License.
