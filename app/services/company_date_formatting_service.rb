@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DateFormatter
+class CompanyDateFormattingService
   attr_reader :date, :company
 
   def initialize(date, company: nil)
@@ -8,7 +8,7 @@ class DateFormatter
     @company = company
   end
 
-  def company_format
+  def process
     return if !company
 
     date.strftime(company_date_format)

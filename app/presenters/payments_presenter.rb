@@ -16,9 +16,9 @@ class PaymentsPresenter
                   id: payment.id,
                   client_name: payment.invoice.client.name,
                   invoice_number: payment.invoice.invoice_number,
-                  transaction_date: DateFormatter.new(
+                  transaction_date: CompanyDateFormattingService.new(
                     payment.transaction_date,
-                    company: current_company).company_format,
+                    company: current_company).process,
                   note: payment.note,
                   transaction_type: payment.transaction_type,
                   amount: payment.amount,
