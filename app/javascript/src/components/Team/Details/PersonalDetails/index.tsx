@@ -44,7 +44,9 @@ const PersonalDetails = () => {
         </button>
       </div>
       {isLoading ? (
-        <Loader />
+        <div className="flex min-h-70v items-center justify-center">
+          <Loader />
+        </div>
       ) : (
         <StaticPage personalDetails={personalDetails} />
       )}
