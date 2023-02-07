@@ -27,7 +27,7 @@ const DisplayView = props => {
   }
 
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="flex h-screen w-full flex-col">
       <Header selectedTab={selectedTab} />
       <Main {...props} isAdminUser={isAdminUser} isDesktop={isDesktop} />
       <Navigation isAdminUser={isAdminUser} setSelectedTab={setSelectedTab} />
