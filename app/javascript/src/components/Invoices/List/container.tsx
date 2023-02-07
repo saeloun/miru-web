@@ -1,6 +1,7 @@
 import React from "react";
 
 import BulkActionsWrapper from "./BulkActionsWrapper";
+import NoInvoices from "./NoInvoices";
 import RecentlyUpdated from "./RecentlyUpdated";
 import Table from "./Table";
 
@@ -27,6 +28,8 @@ const Container = ({
   setShowBulkDownloadDialog,
   clearCheckboxes,
   downloading,
+  handleReset,
+  params,
 }) =>
   invoices.length > 0 ? (
     <div
@@ -67,7 +70,12 @@ const Container = ({
       />
     </div>
   ) : (
-    <div>No invoices to show</div>
+    <NoInvoices
+      filterParamsStr={filterParamsStr}
+      handleReset={handleReset}
+      isDesktop={isDesktop}
+      params={params}
+    />
   );
 
 export default Container;
