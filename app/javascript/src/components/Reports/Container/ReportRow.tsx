@@ -32,7 +32,7 @@ const ReportRow = ({
     <div className="col-span-2 flex items-center whitespace-pre-wrap break-words px-6 py-4 text-justify font-manrope text-sm font-normal text-miru-dark-purple-1000">
       {note}
     </div>
-    <div className="break-normal px-6 py-4 text-left">
+    <div className="flex flex-col justify-center break-normal px-6 py-4 text-left">
       <p className="mb-1 font-manrope text-base font-semibold not-italic text-miru-dark-purple-1000">
         {teamMember}
       </p>
@@ -40,7 +40,7 @@ const ReportRow = ({
         {dayjs(workDate).format("MM.DD.YYYY")}
       </p>
     </div>
-    <div className="whitespace-nowrap py-4 pl-6 text-right font-manrope text-xl font-bold text-miru-dark-purple-1000">
+    <div className="flex items-center justify-end whitespace-nowrap py-4 pl-6 text-right font-manrope text-xl font-bold text-miru-dark-purple-1000">
       {minToHHMM(duration)}
     </div>
   </div>

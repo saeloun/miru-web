@@ -67,32 +67,46 @@ const Container = ({ selectedFilter }: ContainerProps) => {
       <ReportRow key={`${timeEntry.client}-${index}`} {...timeEntry} />
     ));
 
+  const getAlphabaticallySortedReportList = (reports: any[] | null = []) =>
+    reports?.sort((a, b) => {
+      const firstLabel = a.label.toLowerCase();
+      const secondLabel = b.label.toLowerCase();
+
+      if (firstLabel < secondLabel) return -1;
+      else if (firstLabel > secondLabel) return 1;
+
+      return 0;
+    }) || [];
+
   return (
     <Fragment>
-      {timeEntryReport.reports.map((report, index) => (
-        <Fragment key={index}>
-          {report.label !== "" && (
-            <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-5">
-              <div className="flex items-center">
-                {getTableLogo(selectedFilter?.groupBy?.value || null)}
-                <h1 className="font-manrope text-xl font-bold text-miru-han-purple-1000">
-                  {report.label}
-                </h1>
-              </div>
-              {report.entries?.length > 0 && (
-                <p className="text-right font-manrope text-base font-medium text-miru-dark-purple-1000">
-                  Total Hours for {report.label} : &nbsp;
-                  {getTotalHoursLogged(report.entries)}
-                </p>
+      {timeEntryReport.reports?.length > 0 &&
+        getAlphabaticallySortedReportList(timeEntryReport.reports)?.map(
+          (report, index) => (
+            <Fragment key={index}>
+              {report.label !== "" && (
+                <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-5">
+                  <div className="flex items-center">
+                    {getTableLogo(selectedFilter?.groupBy?.value || null)}
+                    <h1 className="font-manrope text-xl font-bold text-miru-han-purple-1000">
+                      {report.label}
+                    </h1>
+                  </div>
+                  {report.entries?.length > 0 && (
+                    <p className="text-right font-manrope text-base font-medium text-miru-dark-purple-1000">
+                      Total Hours for {report.label} : &nbsp;
+                      {getTotalHoursLogged(report.entries)}
+                    </p>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          <ReportHeader />
-          <div className="mb-6">
-            {report.entries.length > 0 && getEntryList(report.entries)}
-          </div>
-        </Fragment>
-      ))}
+              <ReportHeader />
+              <div className="mb-6">
+                {report.entries.length > 0 && getEntryList(report.entries)}
+              </div>
+            </Fragment>
+          )
+        )}
     </Fragment>
   );
 };
