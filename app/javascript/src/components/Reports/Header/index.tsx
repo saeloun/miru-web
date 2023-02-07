@@ -62,6 +62,14 @@ const Header = ({
     return filterCounter > minNumberOfFilters;
   };
 
+  const handleFilterBtnClick = (isDesktop: any) => {
+    if (isDesktop) {
+      setIsFilterVisible(!isFilterVisible);
+    } else {
+      setShowMoreOptions(true);
+    }
+  };
+
   return (
     <div>
       <div className="sticky top-0 right-0 left-0 mt-0 mb-3 flex items-center justify-between bg-white px-4 py-2 shadow-c1 lg:static lg:mt-6 lg:bg-transparent lg:px-0 lg:shadow-none">
@@ -73,16 +81,13 @@ const Header = ({
             {type}
           </span>
           {showFilterIcon && (
-            <button className="relative rounded p-3 hover:bg-miru-gray-1000 lg:ml-7">
+            <button
+              className="relative rounded p-3 hover:bg-miru-gray-1000 lg:ml-7"
+              onClick={() => handleFilterBtnClick(isDesktop)}
+            >
               {isDesktop ? (
                 <>
-                  <FilterIcon
-                    color="#7C5DEE"
-                    size={16}
-                    onClick={() => {
-                      setIsFilterVisible(!isFilterVisible);
-                    }}
-                  />
+                  <FilterIcon color="#7C5DEE" size={16} />
                   {selectedReport.filterCounter > 0 && (
                     <sup className="filter__counter">
                       {selectedReport.filterCounter}
@@ -90,9 +95,7 @@ const Header = ({
                   )}
                 </>
               ) : (
-                <DotsThreeVerticalIcon
-                  onClick={() => setShowMoreOptions(true)}
-                />
+                <DotsThreeVerticalIcon />
               )}
             </button>
           )}
