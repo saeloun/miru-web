@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import reportsApi from "apis/reports";
 import { sendGAPageView } from "utils/googleAnalytics";
 
+import { TIME_ENTRY_REPORT_PAGE } from "./utils";
+
 import { applyFilter, getQueryParams } from "../api/applyFilter";
 import Container from "../Container";
 import AccountsAgingReportContext from "../context/AccountsAgingReportContext";
@@ -42,7 +44,7 @@ const TimeEntryReport = () => {
     let counter = 0;
     for (const filterkey in selectedFilter) {
       const filterValue = selectedFilter[filterkey];
-      if (filterkey == "customDateFilter" || filterkey == "dateRange") {
+      if (filterkey == "customDateFilter") {
         continue;
       } else if (Array.isArray(filterValue)) {
         counter = counter + filterValue.length;
@@ -145,7 +147,7 @@ const TimeEntryReport = () => {
           resetFilter={resetFilter}
           setIsFilterVisible={setIsFilterVisible}
           showNavFilters={showNavFilters}
-          type="Time Entry Report"
+          type={TIME_ENTRY_REPORT_PAGE}
         />
         <Container />
         {isFilterVisible && (

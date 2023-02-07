@@ -21,6 +21,7 @@ import { getReports } from "./fetchReport";
 import NavigationFilter from "./NavigationFilter";
 
 import { useEntry } from "../context/EntryContext";
+import { TIME_ENTRY_REPORT_PAGE } from "../TimeEntryReport/utils";
 
 const Header = ({
   setIsFilterVisible,
@@ -51,6 +52,15 @@ const Header = ({
   const [showExportOptions, setShowExportOptions] = useState<boolean>(false);
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   const { isDesktop } = useUserContext();
+
+  const showClearAllFilterBtn = (filterCounter = 0, type = "") => {
+    let minNumberOfFilters = 0;
+    if (type == TIME_ENTRY_REPORT_PAGE) {
+      minNumberOfFilters = 1;
+    }
+
+    return filterCounter > minNumberOfFilters;
+  };
 
   return (
     <div>
@@ -172,10 +182,10 @@ const Header = ({
         {showNavFilters && (
           <ul className="flex flex-wrap">
             <NavigationFilter />
-            {selectedReport.filterCounter > 0 && (
-              <li className="mr-4 flex px-2 py-1 px-1 " key="clear_all">
+            {showClearAllFilterBtn(selectedReport.filterCounter, type) && (
+              <li className="mr-4 flex px-2 py-1" key="clear_all">
                 <button
-                  className="ml-1 inline-block flex items-center"
+                  className="ml-1 flex items-center"
                   onClick={resetFilter}
                 >
                   <XIcon
