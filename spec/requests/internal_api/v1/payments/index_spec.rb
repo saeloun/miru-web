@@ -16,7 +16,9 @@ RSpec.describe "InternalApi::V1::Payments#index", type: :request do
                                       id: payment.id,
                                       clientName: client1.name,
                                       invoiceNumber: payment.invoice.invoice_number,
-                                      transactionDate: payment.transaction_date,
+                                      transactionDate: CompanyDateFormattingService.new(
+                                        payment.transaction_date,
+                                        company:).process,
                                       note: payment.note,
                                       transactionType: payment.transaction_type,
                                       amount: payment.amount,
