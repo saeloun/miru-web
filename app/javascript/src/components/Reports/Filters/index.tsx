@@ -122,6 +122,10 @@ const FilterSideBar = ({
     hideCustomFilter();
   };
 
+  const handleApplyBtnDisable = () =>
+    filters.dateRange?.value?.toLowerCase() == "custom" &&
+    (isDisableDateRangePickerDoneBtn || !dateRange.from || !dateRange.to);
+
   return (
     <div className="sidebar__container flex flex-col overflow-y-auto">
       <div>
@@ -245,7 +249,15 @@ const FilterSideBar = ({
         <button className="sidebar__reset" onClick={resetFilter}>
           RESET
         </button>
-        <button className="sidebar__apply" onClick={submitApplyFilter}>
+        <button
+          disabled={handleApplyBtnDisable()}
+          className={
+            handleApplyBtnDisable()
+              ? "sidebar__apply cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+              : "sidebar__apply cursor-pointer"
+          }
+          onClick={submitApplyFilter}
+        >
           APPLY
         </button>
       </div>
