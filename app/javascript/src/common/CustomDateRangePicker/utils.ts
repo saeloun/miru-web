@@ -17,7 +17,6 @@ export const validDateFormats = [
   "DD MMMM YYYY",
   "MM/DD/YYYY",
   "YYYY/MM/DD",
-  "DD-MM-YYYY",
   "MM-DD-YYYY",
   "YYYY-MM-DD",
 ];
