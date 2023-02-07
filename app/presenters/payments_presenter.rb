@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class PaymentsPresenter
-  attr_reader :payments
+  attr_reader :payments, :current_company
 
-  def initialize(payments)
+  def initialize(payments, current_company)
     @payments = payments
+    @current_company = current_company
   end
 
   def index_data
@@ -15,7 +16,9 @@ class PaymentsPresenter
                   id: payment.id,
                   client_name: payment.invoice.client.name,
                   invoice_number: payment.invoice.invoice_number,
-                  transaction_date: payment.transaction_date,
+                  transaction_date: CompanyDateFormattingService.new(
+                    payment.transaction_date,
+                    company: current_company).process,
                   note: payment.note,
                   transaction_type: payment.transaction_type,
                   amount: payment.amount,
