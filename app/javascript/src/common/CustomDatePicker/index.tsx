@@ -1,11 +1,10 @@
 import React, { useRef } from "react";
 
 import { getMonth, getYear } from "date-fns";
+import { useOutsideClick } from "helpers";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-import { useOutsideClick } from "../../helpers/outsideClick";
 
 type CustomDatePickerProps = {
   handleChange: any;

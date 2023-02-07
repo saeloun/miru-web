@@ -69,7 +69,7 @@ const ClientSelection = ({
   );
 
   return (
-    <div className="group" ref={wrapperRef}>
+    <div className="group w-4/12" ref={wrapperRef}>
       <p className="flex text-xs font-normal text-miru-dark-purple-1000">
         Billed to
         {isOptionSelected && (
