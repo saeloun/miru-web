@@ -17,6 +17,12 @@ import { CustomInputText } from "common/CustomInputText";
 import { CustomReactSelect } from "common/CustomReactSelect";
 import { ErrorSpan } from "common/ErrorSpan";
 
+const inputClass =
+  "form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000";
+
+const labelClass =
+  "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300";
+
 const StaticPage = ({
   addressOptions,
   addrType,
@@ -46,7 +52,7 @@ const StaticPage = ({
         </span>
       </div>
       <div className="w-9/12">
-        <div className="flex flex-row">
+        <div className="flex flex-row pb-3">
           <div className="flex w-1/2 flex-col px-2">
             <CustomInputText
               dataCy="first-name"
@@ -55,16 +61,16 @@ const StaticPage = ({
               name="first_name"
               type="text"
               value={personalDetails.first_name}
-              inputBoxClassName={`form__input block w-full appearance-none bg-white p-4 text-base h-12 ${
+              inputBoxClassName={`${inputClass} ${
                 errDetails.first_name_err
                   ? "border-red-600"
                   : "border-miru-gray-1000"
               }`}
-              labelClassName={`absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium ${
+              labelClassName={`${labelClass} ${
                 errDetails.first_name_err
                   ? "text-red-600"
                   : "text-miru-dark-purple-200"
-              } duration-300`}
+              }`}
               onChange={e => {
                 updateBasicDetails(e.target.value, "first_name", false, "");
               }}
@@ -84,16 +90,16 @@ const StaticPage = ({
               name="last_name"
               type="text"
               value={personalDetails.last_name}
-              inputBoxClassName={`form__input block w-full appearance-none bg-white p-4 text-base h-12 ${
+              inputBoxClassName={`${inputClass} ${
                 errDetails.last_name_err
                   ? "border-red-600"
                   : "border-miru-gray-1000"
               }`}
-              labelClassName={`absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium ${
+              labelClassName={`${labelClass} ${
                 errDetails.last_name_err
                   ? "text-red-600"
                   : "text-miru-dark-purple-200"
-              } duration-300`}
+              }`}
               onChange={e => {
                 updateBasicDetails(e.target.value, "last_name", false, "");
               }}
@@ -185,16 +191,16 @@ const StaticPage = ({
               name="email_id"
               type="email"
               value={personalDetails.email_id}
-              inputBoxClassName={`form__input block w-full appearance-none bg-white p-4 text-base h-12 ${
+              inputBoxClassName={`${inputClass} ${
                 errDetails.email_id_err
                   ? "border-red-600"
                   : "border-miru-gray-1000"
               }`}
-              labelClassName={`absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium ${
+              labelClassName={`${labelClass} ${
                 errDetails.email_id_err
                   ? "text-red-600"
                   : "text-miru-dark-purple-200"
-              } duration-300`}
+              } `}
               onChange={e => {
                 updateBasicDetails(e.target.value, "email_id", false);
               }}
@@ -235,16 +241,16 @@ const StaticPage = ({
             label="Address line 1"
             name="address_line_1"
             type="text"
-            inputBoxClassName={`form__input block w-full appearance-none bg-white p-4 text-base h-12 ${
+            inputBoxClassName={`${inputClass} ${
               errDetails.address_line_1_err
                 ? "border-red-600"
                 : "border-miru-gray-1000"
             }`}
-            labelClassName={`absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium ${
+            labelClassName={`${labelClass} ${
               errDetails.address_line_1_err
                 ? "text-red-600"
                 : "text-miru-dark-purple-200"
-            } duration-300`}
+            }`}
             value={
               personalDetails.addresses &&
               personalDetails.addresses.address_line_1
@@ -277,7 +283,7 @@ const StaticPage = ({
           />
         </div>
         <div className="flex flex-row">
-          <div className="flex w-1/2 flex-col px-2 pb-3">
+          <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomReactSelect
               handleOnChange={value => handleOnChangeCountry(value)}
               isErr={!!errDetails.country_err}
@@ -296,7 +302,7 @@ const StaticPage = ({
               />
             )}
           </div>
-          <div className="flex w-1/2 flex-col px-2 pb-3">
+          <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomReactSelect
               handleOnChange={state => handleOnChangeState(state)}
               isErr={!!errDetails.state_err}
@@ -323,7 +329,7 @@ const StaticPage = ({
           </div>
         </div>
         <div className="flex flex-row">
-          <div className="flex w-1/2 flex-col px-2 pb-3">
+          <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomAsyncSelect
               handleOnChange={city => handleOnChangeCity(city)}
               isErr={!!errDetails.city_err}
@@ -342,7 +348,7 @@ const StaticPage = ({
               />
             )}
           </div>
-          <div className="flex w-1/2 flex-col px-2 pb-3">
+          <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomInputText
               dataCy="zipcode"
               id="zipcode"
@@ -350,14 +356,14 @@ const StaticPage = ({
               name="zipcode"
               type="text"
               value={personalDetails.addresses.pin}
-              inputBoxClassName={`form__input block w-full appearance-none bg-white p-4 text-base h-12 ${
+              inputBoxClassName={`${inputClass} ${
                 errDetails.pin_err ? "border-red-600" : "border-miru-gray-1000"
               }`}
-              labelClassName={`absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium ${
+              labelClassName={`${labelClass} ${
                 errDetails.pin_err
                   ? "text-red-600"
                   : "text-miru-dark-purple-200"
-              } duration-300`}
+              }`}
               onChange={e => {
                 updateBasicDetails(e.target.value, "pin", true);
               }}
