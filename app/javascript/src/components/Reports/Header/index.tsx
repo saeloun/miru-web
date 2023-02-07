@@ -31,6 +31,7 @@ const Header = ({
   handleDownload,
   type,
   showExportButon,
+  showFilterIcon = true,
 }) => {
   const {
     timeEntryReport,
@@ -62,26 +63,30 @@ const Header = ({
           <span className="w-full py-1 px-3 text-left text-base font-medium leading-5 text-miru-dark-purple-1000 lg:ml-5 lg:truncate lg:px-0 lg:text-center lg:text-2xl lg:font-bold  lg:leading-10">
             {type}
           </span>
-          <button className="relative rounded p-3 hover:bg-miru-gray-1000 lg:ml-7">
-            {isDesktop ? (
-              <>
-                <FilterIcon
-                  color="#7C5DEE"
-                  size={16}
-                  onClick={() => {
-                    setIsFilterVisible(!isFilterVisible);
-                  }}
+          {showFilterIcon && (
+            <button className="relative rounded p-3 hover:bg-miru-gray-1000 lg:ml-7">
+              {isDesktop ? (
+                <>
+                  <FilterIcon
+                    color="#7C5DEE"
+                    size={16}
+                    onClick={() => {
+                      setIsFilterVisible(!isFilterVisible);
+                    }}
+                  />
+                  {selectedReport.filterCounter > 0 && (
+                    <sup className="filter__counter">
+                      {selectedReport.filterCounter}
+                    </sup>
+                  )}
+                </>
+              ) : (
+                <DotsThreeVerticalIcon
+                  onClick={() => setShowMoreOptions(true)}
                 />
-                {selectedReport.filterCounter > 0 && (
-                  <sup className="filter__counter">
-                    {selectedReport.filterCounter}
-                  </sup>
-                )}
-              </>
-            ) : (
-              <DotsThreeVerticalIcon onClick={() => setShowMoreOptions(true)} />
-            )}
-          </button>
+              )}
+            </button>
+          )}
           {showMoreOptions && (
             <MobileMoreOptions setVisibilty={setShowMoreOptions}>
               <li

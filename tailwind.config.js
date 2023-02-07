@@ -6,6 +6,7 @@ module.exports = {
       center: true,
     },
     fontSize: {
+      xxs: "0.625rem",//10px
       xs: ".75rem",
       sm: ".875rem",
       tiny: ".875rem",
@@ -23,6 +24,7 @@ module.exports = {
     },
     letterSpacing: {
       widest: "0.125em",
+      semiWidest : "0.09375",//1.5px
       wider: ".05em",
       normal: "0em",
     },
@@ -63,6 +65,8 @@ module.exports = {
         512: "32rem",
         304: "19rem",
         87: "5.4rem",
+        "1/12" :"8.333%",
+        "1/15": "6.666%"
       },
       minHeight: {
         "10v": "10vh",
