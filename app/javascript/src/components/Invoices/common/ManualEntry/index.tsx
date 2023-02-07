@@ -130,10 +130,10 @@ const ManualEntry = ({
               color="#5B34EA"
               size={20}
             />
-            {showDatePicker && (
-              <CustomDatePicker date={date} handleChange={handleDatePicker} />
-            )}
           </div>
+          {showDatePicker && (
+            <CustomDatePicker date={date} handleChange={handleDatePicker} />
+          )}
         </td>
         <td className=" w-full">
           <input
