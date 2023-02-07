@@ -61,6 +61,8 @@ const CustomDateRangePicker = ({
     if (isValidDate) {
       handleSelectDate(dateInput);
       resetErrors(fieldName);
+    } else {
+      handleSelectDate("");
     }
   };
 
