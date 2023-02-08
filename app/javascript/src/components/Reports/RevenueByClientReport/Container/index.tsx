@@ -20,7 +20,13 @@ const TableHeader = () => (
         className="w-2/5 px-0 py-5 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        UNPAID AMOUNT
+        OVERDUE AMOUNT
+      </th>
+      <th
+        className="w-2/5 px-0 py-5 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        scope="col"
+      >
+        OUTSTANDING AMOUNT
       </th>
       <th
         className="w-1/5 px-6 py-5 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
@@ -32,13 +38,13 @@ const TableHeader = () => (
         className="w-1/5 py-5 pl-6 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        TOTAL AMOUNT
+        TOTAL REVENUE
       </th>
     </tr>
   </thead>
 );
 
-const Container = () => {
+const Container = overdueAmount => {
   const { revenueByClientReport } = useEntry();
 
   const currencySymb = currencySymbol(revenueByClientReport.currency);
@@ -71,6 +77,9 @@ const Container = () => {
                   currency={revenueByClientReport.currency}
                   key={index}
                   report={client}
+                  overdueAmount={
+                    overdueAmount.overdueAmount?.totalOverdueAmount
+                  }
                 />
               </Fragment>
             ))}

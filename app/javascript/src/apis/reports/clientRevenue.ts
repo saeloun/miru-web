@@ -7,6 +7,8 @@ const get = (from, to, clientIds) =>
     `${path}?duration_from=${from}&duration_to=${to}&client_ids=[${clientIds}]`
   );
 
-const clientRevenueApi = { get };
+const getOverdueAmount = axios.get("/reports/outstanding_overdue_invoices");
+
+const clientRevenueApi = { get, getOverdueAmount };
 
 export default clientRevenueApi;

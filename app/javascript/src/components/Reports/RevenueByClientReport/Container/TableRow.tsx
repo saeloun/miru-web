@@ -4,9 +4,11 @@ import { currencyFormat } from "helpers";
 
 import { RevenueByClients } from "../interface";
 
-const TableRow = ({ currency, report }) => {
-  const { id, name, unpaidAmount, paidAmount, totalAmount }: RevenueByClients =
-    report;
+const TableRow = ({ currency, report, overdueAmount }) => {
+  const { id, name, unpaidAmount, paidAmount }: RevenueByClients = report;
+
+  const totalRevenue =
+    parseInt(overdueAmount) + parseInt(unpaidAmount) + parseInt(paidAmount);
 
   return (
     <tr className="flex flex-row items-center" key={id}>
@@ -14,6 +16,9 @@ const TableRow = ({ currency, report }) => {
         <p className="whitespace-normal text-base font-normal text-miru-dark-purple-1000">
           {name}
         </p>
+      </td>
+      <td className="w-2/5 whitespace-pre-wrap px-6 py-4 text-left text-base font-normal text-miru-dark-purple-1000">
+        {currencyFormat(currency, overdueAmount)}
       </td>
       <td className="w-2/5 whitespace-pre-wrap px-6 py-4 text-left text-base font-normal text-miru-dark-purple-1000">
         {currencyFormat(currency, unpaidAmount)}
@@ -24,7 +29,7 @@ const TableRow = ({ currency, report }) => {
         </p>
       </td>
       <td className="w-1/5 whitespace-nowrap py-4 pl-6 text-right text-xl font-bold text-miru-dark-purple-1000">
-        {currencyFormat(currency, totalAmount)}
+        {currencyFormat(currency, totalRevenue)}
       </td>
     </tr>
   );
