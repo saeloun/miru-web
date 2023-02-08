@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 
 import classnames from "classnames";
 import { useOutsideClick } from "helpers";
@@ -9,18 +9,21 @@ type MoreOptionsProps = {
   children?: any;
   className?: string;
   setVisibilty;
-  wrapperRef: any;
 };
 
 const MoreOptions = ({
   children,
   className,
   setVisibilty,
-  wrapperRef,
 }: MoreOptionsProps) => {
+  const wrapperRef = useRef();
   useOutsideClick(wrapperRef, () => setVisibilty(false));
 
-  return <ul className={classnames(DEFAULT_STYLE, className)}>{children}</ul>;
+  return (
+    <ul className={classnames(DEFAULT_STYLE, className)} ref={wrapperRef}>
+      {children}
+    </ul>
+  );
 };
 
 export default MoreOptions;
