@@ -2,6 +2,7 @@
 import axios, { HeadersDefaults } from "axios";
 
 import Toastr from "common/Toastr";
+import { getFromLocalStorage } from "utils/storage";
 
 axios.defaults.baseURL = "/internal_api/v1";
 
@@ -21,6 +22,28 @@ const setAuthHeaders = () => {
   } as CommonHeaderProperties;
 };
 
+// const setAuthHeaders = () => {
+//   axios.defaults.headers = {
+//     // @ts-ignore
+//     Accept: "application/json",
+//     "Content-Type": "application/json",
+//     "X-CSRF-TOKEN": document
+//       .querySelector('[name="csrf-token"]')
+//       .getAttribute("content"),
+//   };
+//   const token = getFromLocalStorage("authToken");
+//   const email = getFromLocalStorage("authEmail");
+//   if (token && email) {
+//     axios.defaults.headers["X-Auth-Email"] = email;
+//     axios.defaults.headers["X-Auth-Token"] = token;
+//   }
+// };
+
+const resetAuthTokens = () => {
+  delete axios.defaults.headers["X-Auth-Email"];
+  delete axios.defaults.headers["X-Auth-Token"];
+};
+
 const handleSuccessResponse = response => {
   if (response) {
     response.success = response.status === 200;
@@ -36,7 +59,7 @@ const handleSuccessResponse = response => {
   return response;
 };
 
-const handleErrorResponse = error => {
+const handleErrorResponse = (error) => {
   Toastr.error(
     error.response?.data?.errors ||
       error.response?.data?.error ||
@@ -58,4 +81,4 @@ const registerIntercepts = () => {
   );
 };
 
-export { setAuthHeaders, registerIntercepts };
+export { setAuthHeaders, registerIntercepts, resetAuthTokens };

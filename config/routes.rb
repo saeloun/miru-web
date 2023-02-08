@@ -9,12 +9,12 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
-  devise_for :users, controllers: {
-    registrations: "users/registrations",
-    sessions: "users/sessions",
-    passwords: "users/passwords",
-    omniauth_callbacks: "users/omniauth_callbacks"
-  }
+  # devise_for :users, controllers: {
+  #   passwords: "users/passwords",
+  #   omniauth_callbacks: "users/omniauth_callbacks"
+  # }
+
+  devise_for :users, path_prefix: "devise"
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   end
   mount Sidekiq::Web, at: "/sidekiq"
 
-  root to: "root#index"
+  # root to: "root#index"
   draw(:internal_api)
   draw(:api)
   resources :dashboard, only: [:index]
@@ -79,6 +79,8 @@ Rails.application.routes.draw do
   namespace :webhooks do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
   end
+
+  root "home#index"
 
   match "*path", via: :all, to: "home#index", constraints: lambda { |req|
     req.path.exclude? "rails/active_storage"

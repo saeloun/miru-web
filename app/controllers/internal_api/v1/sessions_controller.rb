@@ -8,11 +8,11 @@ class InternalApi::V1::SessionsController < Devise::SessionsController
     def respond_with(user, _opts = {})
       if user.persisted?
         if user.has_role?(:owner) && user.companies.empty?
-          render json: { notice: "Signed successfully", redirect_route: new_company_path }
+          render json: { notice: "Signed in successfully", user:, redirect_route: new_company_path }
         elsif user.has_role?(:book_keeper, current_company)
-          render json: { notice: "Signed successfully", redirect_route: root_path + "payments" }
+          render json: { notice: "Signed in successfully", user:, redirect_route: root_path + "payments" }
         else
-          render json: { notice: "Signed successfully", redirect_route: root_path + "time-tracking" }
+          render json: { notice: "Signed in successfully", user:, redirect_route: root_path + "time-tracking" }
         end
       end
     end

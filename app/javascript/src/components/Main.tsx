@@ -1,69 +1,52 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import { Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 
-import ErrorPage from "common/Error";
-import { Roles, Paths } from "constants/index";
-import ROUTES from "constants/routes";
+import { Roles } from "constants/index";
+import { AUTH_ROUTES} from "constants/routes";
+import { useAuthState, useAuthDispatch } from "context/auth";
+import Dashboard from "./Dashboard";
+import { registerIntercepts, setAuthHeaders } from "apis/axios";
+import { clearLocalStorageCredentials, getFromLocalStorage } from "utils/storage";
 
-const RestrictedRoute = ({ user, role, authorisedRoles }) => {
-  if (!user) {
-    window.location.href = Paths.SIGN_IN;
+const Main = (props) => {
+  // @ts-ignore
+  const { authToken } = useAuthState();
+  const authDispatch = useAuthDispatch();
 
-    return;
+  const isLoggedIn =  props?.user
+
+  useEffect(() => {
+    registerIntercepts();
+    setAuthHeaders();
+  }, [authDispatch, props?.user]);
+
+  useEffect(() => {
+    const previousLoginAuthEmail = getFromLocalStorage("authEmail");
+    const hasDeviseUserSessionExpired = !props?.user;
+    const sessionExpiredButLocalStorageCredsExist =
+      hasDeviseUserSessionExpired && previousLoginAuthEmail;
+
+    if (sessionExpiredButLocalStorageCredsExist) clearLocalStorageCredentials();
+  }, [props?.user?.email]);
+
+  if(isLoggedIn){
+    return <Dashboard {...props}/>
   }
 
-  if (authorisedRoles.includes(role)) {
-    return <Outlet />;
-  }
-
-  const url =
-    role === Roles.BOOK_KEEPER
-      ? Paths.PAYMENTS
-      : role === Roles.OWNER
-      ? Paths.INVOICES
-      : Paths.TIME_TRACKING;
-
-  return <Navigate to={url} />;
-};
-
-const RootElement = ({ role }) => {
-  const url =
-    role === Roles.OWNER
-      ? Paths.INVOICES
-      : role === Roles.BOOK_KEEPER
-      ? Paths.PAYMENTS
-      : Paths.TIME_TRACKING;
-
-  return <Navigate to={url} />;
-};
-
-const Main: React.FC<Iprops> = props => (
-  <div className="h-full overflow-x-scroll p-4 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
+  return (
     <Routes>
-      <Route element={<RootElement role={props.companyRole} />} path="/" />
-      {ROUTES.map(parentRoute => (
+      {AUTH_ROUTES.map((route) => (
         <Route
-          key={parentRoute.path}
-          path={parentRoute.path}
-          element={
-            <RestrictedRoute
-              authorisedRoles={parentRoute.authorisedRoles}
-              role={props.companyRole}
-              user={props.user}
-            />
-          }
-        >
-          {parentRoute.subRoutes.map(({ path, Component }) => (
-            <Route element={<Component {...props} />} key={path} path={path} /> //TODO: Move user data to context
-          ))}
-        </Route>
+          element={ <route.component /> }
+          path={route.path}
+          key={route.path}
+        />
       ))}
-      <Route path={Paths.AUTHORIZATION} />
-      <Route element={<ErrorPage />} path="*" />
+      <Route path="*" element={<Navigate to ="/" />}/>
     </Routes>
-  </div>
-);
+  )
+}
 
 interface Iprops {
   user: object;

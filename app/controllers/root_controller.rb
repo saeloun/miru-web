@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class RootController < ApplicationController
-  skip_after_action :verify_authorized
+  # skip_before_action :authenticate_user_using_x_auth_token
+  # skip_before_action :authenticate_user!, :validate_company!
+  # skip_after_action :verify_authorized
 
   def index
     render

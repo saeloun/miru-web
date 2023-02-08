@@ -86,7 +86,22 @@ const ResetPasswordRoutes = [{ path: "*", Component: ResetPassword }];
 
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
 
-const ROUTES = [
+export const AUTH_ROUTES = [
+  {
+    path: "/",
+    component: SignIn,
+  },
+  {
+    path: "/signup",
+    component: SignUp,
+  },
+  {
+    path: "/login",
+    component: SignIn,
+  },
+];
+
+export const ROUTES = [
   {
     path: Paths.CLIENTS,
     subRoutes: ClientsRoutes,
@@ -141,6 +156,14 @@ const ROUTES = [
     subRoutes: SignUpRoutes,
   },
   {
+    path: Paths.LOGIN,
+    subRoutes: SignInRoutes,
+  },
+  {
+    path: Paths.SIGNUP,
+    subRoutes: SignUpRoutes,
+  },
+  {
     path: Paths.FORGOT_PASSWORD,
     subRoutes: ForgotPasswordRoutes,
   },
@@ -150,5 +173,3 @@ const ROUTES = [
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
   },
 ];
-
-export default ROUTES;

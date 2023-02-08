@@ -34,7 +34,7 @@ module ApplicationHelper
   def get_initial_props
     {
       user: current_user,
-      company_role: current_user.roles.find_by(resource: current_company)&.name,
+      company_role: current_user && current_user.roles.find_by(resource: current_company)&.name,
       company: current_company
     }
   end
