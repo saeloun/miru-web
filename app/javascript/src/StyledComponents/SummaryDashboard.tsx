@@ -22,19 +22,20 @@ const SummaryDashboard = ({
       <li
         key={index}
         className={`page-display__box w-auto flex-1 cursor-pointer pt-4 md:w-full lg:mt-6 ${
-          summaryList.length > 3 &&
-          "w-1/2 flex-auto border-b pb-2 md:w-full md:border-b-0"
+          summaryList.length > 3
+            ? "w-1/2 flex-auto border-b pb-2 md:w-full md:border-b-0"
+            : null
         }`}
         onClick={summary.onClick}
       >
-        <p className="truncate text-xs font-semibold uppercase tracking-widest text-white lg:text-sm">
+        <p className="truncate text-xxs font-semibold uppercase tracking-semiWidest text-white lg:text-sm lg:tracking-widest">
           {summary.label}
         </p>
-        <p className="mt-2 truncate text-lg font-medium tracking-widest text-white md:text-2xl lg:mt-3 lg:text-4.5xl lg:font-semibold">
+        <p className="mt-2 truncate text-lg font-medium text-white md:text-2xl lg:text-4.5xl lg:font-semibold">
           {currencyFormat(
             currency,
             summary.value,
-            summary.value > 9999 ? "compact" : "standard"
+            summary.value > 999 ? "compact" : "standard"
           )}
         </p>
       </li>
