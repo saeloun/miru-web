@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import reportsApi from "apis/reports";
 import { sendGAPageView } from "utils/googleAnalytics";
 
+import { TIME_ENTRY_REPORT_PAGE } from "./utils";
+
 import { applyFilter, getQueryParams } from "../api/applyFilter";
 import Container from "../Container";
 import AccountsAgingReportContext from "../context/AccountsAgingReportContext";
@@ -32,7 +34,7 @@ const TimeEntryReport = () => {
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
-  const [selectedInput, setSelectedInput] = useState("from-input");
+  const [selectedInput, setSelectedInput] = useState<string>("from-input");
 
   useEffect(() => {
     sendGAPageView();
@@ -42,7 +44,7 @@ const TimeEntryReport = () => {
     let counter = 0;
     for (const filterkey in selectedFilter) {
       const filterValue = selectedFilter[filterkey];
-      if (filterkey !== "customDateFilter") {
+      if (filterkey == "customDateFilter") {
         continue;
       } else if (Array.isArray(filterValue)) {
         counter = counter + filterValue.length;
@@ -145,7 +147,7 @@ const TimeEntryReport = () => {
           resetFilter={resetFilter}
           setIsFilterVisible={setIsFilterVisible}
           showNavFilters={showNavFilters}
-          type="Time Entry Report"
+          type={TIME_ENTRY_REPORT_PAGE}
         />
         <Container />
         {isFilterVisible && (
@@ -154,6 +156,7 @@ const TimeEntryReport = () => {
             resetFilter={resetFilter}
             selectedInput={selectedInput}
             setIsFilterVisible={setIsFilterVisible}
+            setSelectedInput={setSelectedInput}
             onClickInput={onClickInput}
           />
         )}
