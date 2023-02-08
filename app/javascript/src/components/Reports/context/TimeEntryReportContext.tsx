@@ -5,7 +5,7 @@ const TimeEntryReportContext = {
     clients: [],
     teamMember: [],
     status: [],
-    groupBy: { label: "None", value: "" },
+    groupBy: { label: "Client", value: "client" },
     customDateFilter: {
       from: "",
       to: "",

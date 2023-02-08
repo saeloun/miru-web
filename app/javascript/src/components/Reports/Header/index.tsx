@@ -56,7 +56,12 @@ const Header = ({
   const showClearAllFilterBtn = (filterCounter = 0, type = "") => {
     let minNumberOfFilters = 0;
     if (type == TIME_ENTRY_REPORT_PAGE) {
-      minNumberOfFilters = 1;
+      minNumberOfFilters =
+        !selectedReport?.selectedFilter?.groupBy?.value?.trim() ||
+        selectedReport?.selectedFilter?.groupBy?.label?.trim()?.toLowerCase() ==
+          "none"
+          ? 1
+          : 2;
     }
 
     return filterCounter > minNumberOfFilters;
@@ -170,14 +175,14 @@ const Header = ({
                 </ul>
               )}
             </div>
-            <div>
+            {/* <div>
               <button className="inline-flex justify-center rounded-md border border-miru-han-purple-1000 bg-white p-2 text-miru-han-purple-1000 hover:bg-gray-50">
                 <PaperPlaneTiltIcon size={20} weight="bold" />
                 <p className="mx-2 text-base font-medium uppercase tracking-wider">
                   Share
                 </p>
               </button>
-            </div>
+            </div> */}
           </div>
         )}
       </div>

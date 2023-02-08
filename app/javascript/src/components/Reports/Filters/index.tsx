@@ -23,6 +23,8 @@ const FilterSideBar = ({
   handleApplyFilter,
   onClickInput,
   selectedInput,
+  setCustomDateRange = (dateRange: any) => {}, // eslint-disable-line
+  customDateRange = { from: "", to: "" },
   setSelectedInput = (inputFieldName: string) => {}, // eslint-disable-line
 }) => {
   const { timeEntryReport } = useEntry();
@@ -43,6 +45,13 @@ const FilterSideBar = ({
     });
   }, [dateRange]);
 
+  useEffect(() => {
+    setDateRange(prevDateRange => ({
+      ...prevDateRange,
+      ...customDateRange,
+    }));
+  }, []);
+
   const handleSelectDate = date => {
     if (selectedInput === "from-input") {
       setDateRange({ ...dateRange, ...{ from: date } });
@@ -54,6 +63,12 @@ const FilterSideBar = ({
   const handleSelectFilter = (selectedValue, field) => {
     if (selectedValue.value === "custom") {
       setShowCustomFilter(true);
+    } else {
+      setCustomDateRange(prevDateRange => ({
+        ...prevDateRange,
+        from: "",
+        to: "",
+      }));
     }
 
     if (Array.isArray(selectedValue)) {
@@ -71,6 +86,12 @@ const FilterSideBar = ({
 
   const submitApplyFilter = () => {
     handleApplyFilter(filters);
+    if (filters?.customDateFilter?.from || filters?.customDateFilter?.to) {
+      setCustomDateRange(prevDateRange => ({
+        ...prevDateRange,
+        ...filters?.customDateFilter,
+      }));
+    }
   };
 
   const hideCustomFilter = () => {
