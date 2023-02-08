@@ -77,6 +77,7 @@ const InvoiceDetails = ({
             </button>
           </label>
           <input
+            autoComplete="off"
             className="focusPadding focus:bg-text-base focus:outline-none cursor-pointer rounded bg-transparent text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
             data-cy="invoice-number"
             id="invoiceNumber"
@@ -102,6 +103,7 @@ const InvoiceDetails = ({
             </button>
           </label>
           <input
+            autoComplete="off"
             className="focusPadding focus:bg-text-base focus:outline-none cursor-pointer rounded bg-transparent text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
             data-cy="invoice-reference"
             id="referenceNumber"
