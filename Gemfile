@@ -33,7 +33,7 @@ gem "puma", "~> 5.0"
 gem "jbuilder", "~> 2.11"
 
 # Use devise for authentication
-gem "devise", git: "https://github.com/heartcombo/devise", branch: "main"
+gem "devise"
 
 # Use Redis adapter to run Action Cable in production
 gem "redis", "~> 4.0"
