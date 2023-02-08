@@ -33,6 +33,7 @@ const ManualEntry = ({
   const [isEnter, setIsEnter] = useState<boolean>(false);
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const wrapperRef = useRef(null);
+  const datePickerRef = useRef(null);
 
   const formattedDate = date => dayjs(date).format("MM.DD.YYYY");
 
@@ -132,7 +133,14 @@ const ManualEntry = ({
             />
           </div>
           {showDatePicker && (
-            <CustomDatePicker date={date} handleChange={handleDatePicker} />
+            <div ref={datePickerRef}>
+              <CustomDatePicker
+                date={date}
+                handleChange={handleDatePicker}
+                setVisibility={setShowDatePicker}
+                wrapperRef={datePickerRef}
+              />
+            </div>
           )}
         </td>
         <td className=" w-full">
