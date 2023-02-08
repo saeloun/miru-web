@@ -140,6 +140,8 @@ gem "ruby_audit", require: false
 
 gem "rubyzip"
 
+gem "rack-cors"
+
 group :development, :test do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
