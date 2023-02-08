@@ -26,6 +26,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
         @client1_paid_amount = client1_paid_invoice1.amount + client1_paid_invoice2.amount
         @client1_unpaid_amount = client1_viewed_invoice1.amount + client1_sent_invoice1.amount +
                                  client1_sent_invoice2.amount
+        @client1_overdue_amount = client2_overdue_invoice1.amount
 
         @client2_paid_amount = 0
         @client2_unpaid_amount = client2_overdue_invoice1.amount
@@ -43,15 +44,15 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
               name: client1.name,
               paidAmount: @client1_paid_amount,
               unpaidAmount: @client1_unpaid_amount,
-              totalAmount: @client1_paid_amount + @client1_unpaid_amount, overdueAmount: 0
+              totalAmount: @client1_paid_amount + @client1_unpaid_amount, overdueAmount: @client1_overdue_amount
             },
             {
               name: client2.name,
               paidAmount: @client2_paid_amount,
               unpaidAmount: @client2_unpaid_amount,
-              totalAmount: @client2_paid_amount + @client2_unpaid_amount, overdueAmount: 0
+              totalAmount: @client2_paid_amount + @client2_unpaid_amount, overdueAmount: @client1_overdue_amount
             }
-          ]
+          ]client1_paid_amount
         expect(json_response["clients"]).to eq(JSON.parse(expected_clients.to_json))
       end
 
