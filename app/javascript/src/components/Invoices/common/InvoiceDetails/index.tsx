@@ -46,6 +46,12 @@ const InvoiceDetails = ({
     setShowDueDatePicker(false);
   };
 
+  const handleEnter = (e, id) => {
+    if (e.key == "Enter") {
+      document.getElementById(id).blur();
+    }
+  };
+
   return (
     <div className="flex w-full flex-col justify-between border-b-2 border-miru-gray-400 px-5 py-5 md:h-36 md:flex-row md:px-10">
       <ClientSelection
@@ -56,8 +62,8 @@ const InvoiceDetails = ({
         setSelectedClient={setSelectedClient}
       />
       <div className="w-3/12">
-        <div className="hoverPencil flex flex-col">
-          <label className="flex" htmlFor="invoiceNumber">
+        <div className="hoverPencil flex w-fit cursor-pointer flex-col">
+          <label className="flex cursor-pointer" htmlFor="invoiceNumber">
             <span className="text-xs font-normal text-miru-dark-purple-1000">
               Invoice Number
             </span>
@@ -71,17 +77,18 @@ const InvoiceDetails = ({
             </button>
           </label>
           <input
-            className="focusPadding focus:bg-text-base focus:outline-none w-3/5 rounded bg-transparent text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+            className="focusPadding focus:bg-text-base focus:outline-none cursor-pointer rounded bg-transparent text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
             data-cy="invoice-number"
             id="invoiceNumber"
             placeholder="Enter invoice number"
             type="text"
             value={invoiceNumber}
             onChange={e => setInvoiceNumber(e.target.value)}
+            onKeyDown={e => handleEnter(e, "invoiceNumber")}
           />
         </div>
-        <div className="hoverPencil flex flex-col ">
-          <label className="mt-4 flex" htmlFor="referenceNumber">
+        <div className="hoverPencil flex w-fit cursor-pointer flex-col">
+          <label className="mt-4 flex cursor-pointer" htmlFor="referenceNumber">
             <span className="text-xs font-normal text-miru-dark-purple-1000">
               Reference
             </span>
@@ -95,13 +102,14 @@ const InvoiceDetails = ({
             </button>
           </label>
           <input
-            className="focusPadding focus:bg-text-base focus:outline-none w-3/5 rounded bg-transparent text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+            className="focusPadding focus:bg-text-base focus:outline-none cursor-pointer rounded bg-transparent text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
             data-cy="invoice-reference"
             id="referenceNumber"
             placeholder="Enter reference"
             type="text"
             value={reference}
             onChange={e => setReference(e.target.value)}
+            onKeyDown={e => handleEnter(e, "referenceNumber")}
           />
         </div>
       </div>
