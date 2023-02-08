@@ -5,10 +5,10 @@ import { currencyFormat } from "helpers";
 import { RevenueByClients } from "../interface";
 
 const TableRow = ({ currency, report, overdueAmount }) => {
-  const { id, name, unpaidAmount, paidAmount }: RevenueByClients = report;
+  const { id, name, unpaidAmount, paidAmount, totalAmount }: RevenueByClients =
+    report;
 
-  const totalRevenue =
-    parseInt(overdueAmount) + parseInt(unpaidAmount) + parseInt(paidAmount);
+  const totalRevenue = parseInt(overdueAmount) + parseInt(totalAmount);
 
   return (
     <tr className="flex flex-row items-center" key={id}>
