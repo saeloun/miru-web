@@ -69,7 +69,7 @@ const ClientSelection = ({
   );
 
   return (
-    <div className="group" ref={wrapperRef}>
+    <div className="group w-4/12">
       <p className="flex text-xs font-normal text-miru-dark-purple-1000">
         Billed to
         {isOptionSelected && (
@@ -81,20 +81,22 @@ const ClientSelection = ({
           </button>
         )}
       </p>
-      {isClientVisible && (
-        <Select
-          defaultMenuIsOpen
-          isSearchable
-          className="m-0 mt-2 w-52 text-white"
-          classNamePrefix="m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white"
-          components={{ DropdownIndicator, IndicatorSeparator: () => null }}
-          defaultValue={null}
-          options={clientList}
-          placeholder="Search"
-          styles={reactSelectStyles.InvoiceDetails}
-          onChange={handleClientChange}
-        />
-      )}
+      <div className="w-fit" ref={wrapperRef}>
+        {isClientVisible && (
+          <Select
+            defaultMenuIsOpen
+            isSearchable
+            className="m-0 mt-2 w-52 text-white"
+            classNamePrefix="m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white"
+            components={{ DropdownIndicator, IndicatorSeparator: () => null }}
+            defaultValue={null}
+            options={clientList}
+            placeholder="Search"
+            styles={reactSelectStyles.InvoiceDetails}
+            onChange={handleClientChange}
+          />
+        )}
+      </div>
       {!isOptionSelected && !isClientVisible && (
         <button
           className="mt-2 rounded-md border-2 border-dashed border-miru-dark-purple-200 bg-white py-5 px-6 text-base font-bold tracking-widest text-miru-dark-purple-200"
