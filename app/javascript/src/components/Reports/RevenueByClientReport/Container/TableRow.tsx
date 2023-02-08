@@ -4,11 +4,15 @@ import { currencyFormat } from "helpers";
 
 import { RevenueByClients } from "../interface";
 
-const TableRow = ({ currency, report, overdueAmount }) => {
-  const { id, name, unpaidAmount, paidAmount, totalAmount }: RevenueByClients =
-    report;
-
-  const totalRevenue = parseInt(overdueAmount) + parseInt(totalAmount);
+const TableRow = ({ currency, report }) => {
+  const {
+    id,
+    name,
+    unpaidAmount,
+    paidAmount,
+    totalAmount,
+    overdueAmount,
+  }: RevenueByClients = report;
 
   return (
     <tr className="flex flex-row items-center" key={id}>
@@ -29,7 +33,7 @@ const TableRow = ({ currency, report, overdueAmount }) => {
         </p>
       </td>
       <td className="w-1/5 whitespace-nowrap py-4 pl-6 text-right text-xl font-bold text-miru-dark-purple-1000">
-        {currencyFormat(currency, totalRevenue)}
+        {currencyFormat(currency, totalAmount)}
       </td>
     </tr>
   );

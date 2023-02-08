@@ -44,7 +44,7 @@ const TableHeader = () => (
   </thead>
 );
 
-const Container = overdueAmount => {
+const Container = () => {
   const { revenueByClientReport } = useEntry();
 
   const currencySymb = currencySymbol(revenueByClientReport.currency);
@@ -77,9 +77,6 @@ const Container = overdueAmount => {
                   currency={revenueByClientReport.currency}
                   key={index}
                   report={client}
-                  overdueAmount={
-                    overdueAmount.overdueAmount?.totalOverdueAmount
-                  }
                 />
               </Fragment>
             ))}

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
-import clientRevenueApi from "apis/reports/clientRevenue";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
@@ -35,7 +34,6 @@ const RevenueByClientReport = () => {
     totalUnpaidAmount: 0,
     totalRevenue: 0,
   });
-  const [overdueAmount, setOverdueAmount] = useState();
 
   useEffect(() => {
     sendGAPageView();
@@ -76,14 +74,8 @@ const RevenueByClientReport = () => {
     }
   };
 
-  const getOverDueAmountdata = async () => {
-    const res = await clientRevenueApi.getOverdueAmount;
-    setOverdueAmount(res.data.summary);
-  };
-
   useEffect(() => {
     updateFilterCounter();
-    getOverDueAmountdata();
     getReportData({
       selectedFilter,
       setClientList,
@@ -153,7 +145,7 @@ const RevenueByClientReport = () => {
           showNavFilters={showNavFilters}
           type="Revenue Report"
         />
-        <Container overdueAmount={overdueAmount} />
+        <Container />
         {isFilterVisible && (
           <Filters
             dateRange={dateRange}

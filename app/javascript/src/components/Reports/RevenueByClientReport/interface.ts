@@ -4,4 +4,5 @@ export interface RevenueByClients {
   unpaidAmount: string;
   paidAmount: string;
   totalAmount: string;
+  overdueAmount: string;
 }
