@@ -2,10 +2,18 @@ import React from "react";
 
 import Calendar from "react-calendar";
 
-const CalendarComponent = ({ id, name, tileContent, year }) => (
+const CalendarComponent = ({
+  id,
+  name,
+  tileContent,
+  year,
+  isWiderScreen = false,
+}) => (
   <div
-    className="flex flex-col items-center justify-start bg-miru-gray-100 py-3 px-2"
     key={id}
+    className={`flex flex-col items-center justify-start bg-miru-gray-100 py-3 ${
+      isWiderScreen ? "px-3" : "px-2"
+    }`}
   >
     <span className="text-sm">{name}</span>
     <Calendar
