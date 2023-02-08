@@ -4,7 +4,6 @@ import { Formik, Form, Field, FormikProps } from "formik";
 import { DeleteImageButtonSVG, EditImageButtonSVG } from "miruIcons";
 import Select, { components } from "react-select";
 
-import { registerIntercepts, setAuthHeaders } from "apis/axios";
 import companyProfileApi from "apis/companyProfile";
 
 import { CompanyDetailsFormProps, CompanyDetailsFormValues } from "./interface";
@@ -78,8 +77,6 @@ const CompanyDetailsForm = ({
   );
 
   useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
     getAllTimezones();
   }, []);
 
@@ -206,11 +203,10 @@ const CompanyDetailsForm = ({
                     autoFocus
                     name="company_name"
                     placeholder=" "
-                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                      errors.company_name &&
+                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${errors.company_name &&
                       touched.company_name &&
                       "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
+                      } `}
                   />
                   <label
                     className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
@@ -231,11 +227,10 @@ const CompanyDetailsForm = ({
                   <Field
                     name="business_phone"
                     placeholder=" "
-                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                      errors.business_phone &&
+                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${errors.business_phone &&
                       touched.business_phone &&
                       "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
+                      } `}
                   />
                   <label
                     className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
@@ -256,11 +251,10 @@ const CompanyDetailsForm = ({
                   <Field
                     name="address"
                     placeholder=" "
-                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                      errors.address &&
+                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${errors.address &&
                       touched.address &&
                       "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
+                      } `}
                   />
                   <label
                     className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
@@ -331,11 +325,10 @@ const CompanyDetailsForm = ({
                   data-cy="sign-up-button"
                   disabled={isBtnDisabled(values)}
                   type="submit"
-                  className={`form__button whitespace-nowrap tracking-normal ${
-                    isBtnDisabled(values)
-                      ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
-                      : "cursor-pointer"
-                  }`}
+                  className={`form__button whitespace-nowrap tracking-normal ${isBtnDisabled(values)
+                    ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                    : "cursor-pointer"
+                    }`}
                 >
                   Next
                 </button>

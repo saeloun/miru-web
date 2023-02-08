@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Avatar, Tooltip } from "StyledComponents";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clientApi from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
@@ -108,8 +107,6 @@ const Clients = ({ isAdminUser }) => {
 
   useEffect(() => {
     sendGAPageView();
-    setAuthHeaders();
-    registerIntercepts();
     fetchClientDetails("week");
   }, []);
 
@@ -230,7 +227,7 @@ const Clients = ({ isAdminUser }) => {
                     handleDeleteClick={handleDeleteClick}
                     handleEditClick={handleEditClick}
                     hasRowIcons={isAdminUser}
-                    rowOnClick={isAdminUser ? handleRowClick : () => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
+                    rowOnClick={isAdminUser ? handleRowClick : () => { }} // eslint-disable-line  @typescript-eslint/no-empty-function
                     tableRowArray={tableData}
                     tableHeader={
                       isAdminUser ? tableHeader : employeeTableHeader
