@@ -93,6 +93,11 @@ const TimeEntryReport = () => {
           ...selectedFilter,
           [key]: filterIntialValues.dateRange,
         });
+      } else if (key === "groupBy") {
+        setSelectedFilter({
+          ...selectedFilter,
+          [key]: filterIntialValues.groupBy,
+        });
       } else {
         const label = "None";
         setSelectedFilter({ ...selectedFilter, [key]: { label, value: "" } });

@@ -56,7 +56,12 @@ const Header = ({
   const showClearAllFilterBtn = (filterCounter = 0, type = "") => {
     let minNumberOfFilters = 0;
     if (type == TIME_ENTRY_REPORT_PAGE) {
-      minNumberOfFilters = 1;
+      minNumberOfFilters =
+        !selectedReport?.selectedFilter?.groupBy?.value?.trim() ||
+        selectedReport?.selectedFilter?.groupBy?.label?.trim()?.toLowerCase() ==
+          "none"
+          ? 1
+          : 2;
     }
 
     return filterCounter > minNumberOfFilters;
