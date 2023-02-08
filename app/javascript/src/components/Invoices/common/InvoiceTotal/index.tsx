@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { currencyFormat } from "helpers";
-import { EditIcon, DotsThreeVerticalIcon } from "miruIcons";
-
-import DiscountMenu from "./DiscountMenu";
+import { DeleteIcon } from "miruIcons";
 
 const InvoiceTotal = ({
   currency,
@@ -16,74 +14,20 @@ const InvoiceTotal = ({
   setDiscount,
   tax,
   setTax,
-  showDiscountInput,
-  showTax,
   manualEntryArr,
 }) => {
-  const [addDiscount, setAddDiscount] = useState<boolean>(false);
-  const [showDiscountMenu, setShowDiscountMenu] = useState<boolean>(false);
-  const [showDiscountButton, setShowDiscountButton] = useState<boolean>(false);
-  const [showDiscount, setShowDiscount] = useState<boolean>(showDiscountInput);
-  const [showTaxInput, setShowTaxInput] = useState<boolean>(showTax);
-  const [showEditTaxButton, setShowEditTaxButton] = useState<boolean>(false);
+  const [showDiscountDeleteButton, setShowDiscountDeleteButton] =
+    useState<boolean>(false);
+
+  const [showDeleteTaxButton, setShowDeleteTaxButton] =
+    useState<boolean>(false);
   const [subTotal, setSubTotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
 
   const onEnter = (e, type) => {
     if (e.key === "Enter") {
-      if (type === "Discount") {
-        setAddDiscount(false);
-        setShowDiscount(true);
-      } else {
-        setShowTaxInput(false);
-      }
+      document.getElementById(type).blur();
     }
-  };
-
-  const getDiscount = () => {
-    if (showDiscount && discount) {
-      return (
-        <td className="text-right text-base font-bold text-miru-dark-purple-1000 ">
-          {currencyFormat(currency, parseFloat(discount).toFixed(2))}
-        </td>
-      );
-    } else if (addDiscount) {
-      return (
-        <td className="pb-1 text-right">
-          <input
-            className="focus:outline-none w-20 rounded p-1 pr-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-            type="text"
-            value={discount}
-            onChange={e => setDiscount(e.target.value)}
-            onKeyDown={e => onEnter(e, "Discount")}
-          />
-        </td>
-      );
-    }
-
-    return null;
-  };
-
-  const getTax = () => {
-    if (showTaxInput) {
-      return (
-        <td className="w-22 pt-4 text-right text-base font-bold text-miru-dark-purple-1000">
-          <input
-            className="focus:outline-none w-20 rounded p-1 pr-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-            type="text"
-            value={tax}
-            onChange={e => setTax(e.target.value)}
-            onKeyDown={e => onEnter(e, "Tax")}
-          />
-        </td>
-      );
-    }
-
-    return (
-      <td className="w-22 pt-4 text-right text-base font-bold text-miru-dark-purple-1000">
-        {currencyFormat(currency, tax)}
-      </td>
-    );
   };
 
   useEffect(() => {
@@ -126,32 +70,54 @@ const InvoiceTotal = ({
             </td>
           </tr>
           <tr
-            className="miru-gray-400 border-b-2 pb-5 "
-            onMouseLeave={() => setShowDiscountButton(false)}
-            onMouseOver={() => setShowDiscountButton(true)}
+            className="miru-gray-400 border-b-2 pb-5"
+            onMouseLeave={() => setShowDiscountDeleteButton(false)}
+            onMouseOver={() => setShowDiscountDeleteButton(true)}
           >
-            {showDiscount && discount ? (
+            {discount ? (
               <td className="py-2 pr-10 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
-                Discount
+                <label className="cursor-pointer" htmlFor="Discount">
+                  Discount
+                </label>
               </td>
             ) : (
-              <td
-                className="cursor-pointer pt-2 pr-10 pb-3 text-right text-xs font-bold tracking-widest text-miru-han-purple-1000"
-                onClick={() => setAddDiscount(true)}
-              >
-                ADD DISCOUNT
+              <td className="cursor-pointer pt-2 pr-10 pb-3 text-right text-xs font-bold tracking-widest text-miru-han-purple-1000">
+                <label className="cursor-pointer" htmlFor="Discount">
+                  ADD DISCOUNT
+                </label>
               </td>
             )}
-            {getDiscount()}
+            <td className="pb-1 text-right">
+              <input
+                className="focus:outline-none w-20 cursor-pointer rounded bg-transparent p-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                id="Discount"
+                type="text"
+                value={discount}
+                onChange={e => setDiscount(e.target.value)}
+                onKeyDown={e => onEnter(e, "Discount")}
+              />
+            </td>
           </tr>
           <tr
-            onMouseLeave={() => setShowEditTaxButton(false)}
-            onMouseOver={() => setShowEditTaxButton(true)}
+            className="cursor-pointer"
+            onMouseLeave={() => setShowDeleteTaxButton(false)}
+            onMouseOver={() => setShowDeleteTaxButton(true)}
           >
             <td className="pt-4 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
-              Tax
+              <label className="cursor-pointer" htmlFor="Tax">
+                Tax
+              </label>
             </td>
-            {getTax()}
+            <td className="w-22 pt-4 text-right text-base font-bold text-miru-dark-purple-1000">
+              <input
+                className="focus:outline-none w-20 cursor-pointer rounded bg-transparent p-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                id="Tax"
+                type="text"
+                value={tax}
+                onChange={e => setTax(e.target.value)}
+                onKeyDown={e => onEnter(e, "Tax")}
+              />
+            </td>
           </tr>
           <tr>
             <td className="pt-1 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
@@ -179,44 +145,38 @@ const InvoiceTotal = ({
           </tr>
         </tbody>
       </table>
-      {showDiscountMenu && (
-        <DiscountMenu
-          setAddDiscount={setAddDiscount}
-          setDiscount={setDiscount}
-          setShowDiscount={setShowDiscount}
-          setShowDiscountMenu={setShowDiscountMenu}
-        />
-      )}
       <div className="flex flex-col">
         <div
           className="w-10"
-          onMouseLeave={() => setShowDiscountButton(false)}
-          onMouseOver={() => setShowDiscountButton(true)}
+          onMouseLeave={() => setShowDiscountDeleteButton(false)}
+          onMouseOver={() => setShowDiscountDeleteButton(true)}
         >
-          {showDiscountButton && (
-            <button
-              className="mx-1 mt-8 rounded bg-miru-gray-1000 p-2"
-              onClick={() => setShowDiscountMenu(!showDiscountMenu)}
-            >
-              <DotsThreeVerticalIcon color="#1D1A31" size={13} />
-            </button>
-          )}
-        </div>
-        <div
-          className="mt-12 w-10"
-          onMouseLeave={() => setShowEditTaxButton(false)}
-          onMouseOver={() => setShowEditTaxButton(true)}
-        >
-          {showEditTaxButton && (
+          {showDiscountDeleteButton && discount ? (
             <button
               className="mx-1 mt-8 rounded bg-miru-gray-1000 p-2"
               onClick={() => {
-                setShowTaxInput(true);
+                setDiscount(0);
               }}
             >
-              <EditIcon color="#1D1A31" size={13} />
+              <DeleteIcon color="#E04646" size={13} />
             </button>
-          )}
+          ) : null}
+        </div>
+        <div
+          className="mt-12 w-10"
+          onMouseLeave={() => setShowDeleteTaxButton(false)}
+          onMouseOver={() => setShowDeleteTaxButton(true)}
+        >
+          {showDeleteTaxButton && tax ? (
+            <button
+              className="mx-1 mt-9 rounded bg-miru-gray-1000 p-2"
+              onClick={() => {
+                setTax(0);
+              }}
+            >
+              <DeleteIcon color="#E04646" size={13} />
+            </button>
+          ) : null}
         </div>
       </div>
     </div>
