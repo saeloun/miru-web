@@ -24,7 +24,6 @@ class TeamPresenter
           member = company_user.user
           {
             id: member.id,
-            # profile_picture: user_avatar(member),
             first_name: member.first_name,
             last_name: member.last_name,
             name: member.full_name,
@@ -39,7 +38,6 @@ class TeamPresenter
     def formatted_invitations
       invitations.map do |member|
           {
-            # profile_picture: image_url "avatar.svg",
             id: member.id,
             name: member.full_name,
             first_name: member.first_name,
