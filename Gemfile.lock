@@ -11,18 +11,6 @@ GIT
       rubocop
       smart_properties
 
-GIT
-  remote: https://github.com/heartcombo/devise
-  revision: d0f0853c75defb10d83f4b2576b8df9e4cbb3695
-  branch: main
-  specs:
-    devise (4.8.1)
-      bcrypt (~> 3.0)
-      orm_adapter (~> 0.1)
-      railties (>= 4.1.0)
-      responders
-      warden (~> 1.2.3)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -172,6 +160,12 @@ GEM
     debug (1.7.1)
       irb (>= 1.5.0)
       reline (>= 0.3.1)
+    devise (4.8.1)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 4.1.0)
+      responders
+      warden (~> 1.2.3)
     diff-lcs (1.5.0)
     discard (1.2.1)
       activerecord (>= 4.2, < 8)
@@ -581,7 +575,7 @@ DEPENDENCIES
   data_migrate (~> 8.0.0.rc2)
   database_cleaner (~> 2.0)
   debug (>= 1.0.0)
-  devise!
+  devise
   discard (~> 1.2)
   dotenv-rails
   elastic-apm
