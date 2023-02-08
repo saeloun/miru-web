@@ -49,7 +49,11 @@ const InvoiceTable = ({
   }, [debouncedSearchName, lineItems]);
 
   const handleAddEntry = () => {
-    if (!addNew && lineItem.name && lineItem.date) {
+    if (!lineItem.date) {
+      lineItem.date = new Date().toISOString();
+    }
+
+    if (!addNew && lineItem.name) {
       setManualEntryArr([...manualEntryArr, lineItem]);
     }
   };

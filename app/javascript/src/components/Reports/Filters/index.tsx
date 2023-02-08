@@ -23,6 +23,7 @@ const FilterSideBar = ({
   handleApplyFilter,
   onClickInput,
   selectedInput,
+  setSelectedInput = (inputFieldName: string) => {}, // eslint-disable-line
 }) => {
   const { timeEntryReport } = useEntry();
   const [filters, setFilters] = useState(timeEntryReport.selectedFilter);
@@ -32,6 +33,8 @@ const FilterSideBar = ({
     toDateErr: "",
   });
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
+  const [isDisableDateRangePickerDoneBtn, setIsDisableDateRangePickerDoneBtn] =
+    useState<boolean>(false);
 
   useEffect(() => {
     setFilters({
@@ -119,6 +122,10 @@ const FilterSideBar = ({
     hideCustomFilter();
   };
 
+  const handleApplyBtnDisable = () =>
+    filters.dateRange?.value?.toLowerCase() == "custom" &&
+    (isDisableDateRangePickerDoneBtn || !dateRange.from || !dateRange.to);
+
   return (
     <div className="sidebar__container flex flex-col overflow-y-auto">
       <div>
@@ -147,6 +154,8 @@ const FilterSideBar = ({
                     handleSelectDate={handleSelectDate}
                     hideCustomFilter={hideCustomFilter}
                     selectedInput={selectedInput}
+                    setIsDisableDoneBtn={setIsDisableDateRangePickerDoneBtn}
+                    setSelectedInput={setSelectedInput}
                     onClickInput={onClickInput}
                   />
                   <div className="flex flex-col text-center">
@@ -159,13 +168,24 @@ const FilterSideBar = ({
                   </div>
                   <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
                     <button
-                      className="sidebar__reset"
+                      className="sidebar__reset cursor-pointer"
                       onClick={resetCustomDatePicker}
                     >
                       Cancel
                     </button>
                     <button
-                      className="sidebar__apply"
+                      className={
+                        isDisableDateRangePickerDoneBtn ||
+                        !dateRange.from ||
+                        !dateRange.to
+                          ? "sidebar__apply cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                          : `sidebar__apply cursor-pointer`
+                      }
+                      disabled={
+                        isDisableDateRangePickerDoneBtn ||
+                        !dateRange.from ||
+                        !dateRange.to
+                      }
                       onClick={submitCustomDatePicker}
                     >
                       Done
@@ -229,7 +249,15 @@ const FilterSideBar = ({
         <button className="sidebar__reset" onClick={resetFilter}>
           RESET
         </button>
-        <button className="sidebar__apply" onClick={submitApplyFilter}>
+        <button
+          disabled={handleApplyBtnDisable()}
+          className={
+            handleApplyBtnDisable()
+              ? "sidebar__apply cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+              : "sidebar__apply cursor-pointer"
+          }
+          onClick={submitApplyFilter}
+        >
           APPLY
         </button>
       </div>
