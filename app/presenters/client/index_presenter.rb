@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ClientsPresenter
+class Client::IndexPresenter
   attr_reader :clients, :current_user, :current_company
 
   def initialize(clients, current_company, current_user)
@@ -9,7 +9,7 @@ class ClientsPresenter
     @current_company = current_company
   end
 
-  def group_projects_by_client_name
+  def projects_grouped_by_client_name
     projects = {}
     if is_admin
       clients.each { |client| projects[client.name] = client.projects.kept }
