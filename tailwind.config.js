@@ -102,6 +102,7 @@ module.exports = {
           400: "#E1E6EC",
           200: "#EBEFF2",
           100: "#F5F7F9",
+          500: "#ADA4CE",
           800: "#ADA4CE",
           50: "#CDD6DF33",
         },
@@ -149,6 +150,7 @@ module.exports = {
         },
         "miru-chart-blue": {
           600: "#0E79B2",
+          1000: "#68AEAA"
         },
         "miru-chart-pink": {
           600: "#BF1363",
