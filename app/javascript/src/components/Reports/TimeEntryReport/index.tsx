@@ -35,6 +35,7 @@ const TimeEntryReport = () => {
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
   const [selectedInput, setSelectedInput] = useState<string>("from-input");
+  const [dateRange, setDateRange] = useState({ from: "", to: "" });
 
   useEffect(() => {
     sendGAPageView();
@@ -157,9 +158,11 @@ const TimeEntryReport = () => {
         <Container selectedFilter={selectedFilter} />
         {isFilterVisible && (
           <Filters
+            customDateRange={dateRange}
             handleApplyFilter={handleApplyFilter}
             resetFilter={resetFilter}
             selectedInput={selectedInput}
+            setCustomDateRange={setDateRange}
             setIsFilterVisible={setIsFilterVisible}
             setSelectedInput={setSelectedInput}
             onClickInput={onClickInput}
