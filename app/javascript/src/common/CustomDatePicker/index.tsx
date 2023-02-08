@@ -1,11 +1,24 @@
 import React from "react";
 
 import { getMonth, getYear } from "date-fns";
+import { useOutsideClick } from "helpers";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const CustomDatePicker = ({ handleChange, date }) => {
+type CustomDatePickerProps = {
+  handleChange: any;
+  date: any;
+  setVisibility?: any;
+  wrapperRef?: any;
+};
+
+const CustomDatePicker = ({
+  handleChange,
+  date,
+  setVisibility,
+  wrapperRef,
+}: CustomDatePickerProps) => {
   const range = (start, end) => {
     const ans = [];
     for (let i = start; i <= end; i++) {
@@ -30,6 +43,10 @@ const CustomDatePicker = ({ handleChange, date }) => {
     "Nov",
     "Dec",
   ];
+
+  useOutsideClick(wrapperRef, () => {
+    setVisibility(false);
+  });
 
   return (
     <DatePicker
