@@ -8,7 +8,6 @@ import {
   FilterIcon,
   ShareIcon,
   XIcon,
-  PaperPlaneTiltIcon,
   ArrowLeftIcon,
   DotsThreeVerticalIcon,
 } from "miruIcons";
@@ -115,9 +114,9 @@ const Header = ({
                 <FilterIcon className="mr-4" color="#7C5DEE" size={16} />{" "}
                 Filters
               </li>
-              <li className="flex items-center p-2 text-miru-dark-purple-400">
+              {/* <li className="flex items-center p-2 text-miru-dark-purple-400">
                 <PaperPlaneTiltIcon className="mr-4" size={16} /> Share
-              </li>
+              </li> */}
             </MobileMoreOptions>
           )}
         </div>
