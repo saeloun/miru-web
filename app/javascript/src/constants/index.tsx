@@ -42,6 +42,8 @@ export enum Paths {
   TEAM = "/team/*",
   PROFILE = "/profile/*",
   AUTHORIZATION = "/authorization",
+  SIGNUP="/signup",
+  LOGIN="/login"
 }
 
 export const TOASTER_DURATION = 3000;

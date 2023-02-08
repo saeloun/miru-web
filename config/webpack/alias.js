@@ -6,6 +6,7 @@ module.exports = {
       common: "src/common",
       components: "src/components",
       context: "src/context",
+      reducers: "src/reducers",
       mapper: "src/mapper",
       constants: "src/constants",
       utils: "src/utils",

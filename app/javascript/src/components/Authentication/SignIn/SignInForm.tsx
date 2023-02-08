@@ -7,9 +7,12 @@ import { ToastContainer } from "react-toastify";
 import authenticationApi from "apis/authentication";
 import { Paths, TOASTER_DURATION } from "constants/index";
 
+import { useAuthDispatch } from "context/auth";
+
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
 
 import FooterLinks from "../FooterLinks";
+import Logger from "js-logger";
 
 interface SignInFormValues {
   email: string;
@@ -19,8 +22,16 @@ interface SignInFormValues {
 const SignInForm = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  const authDispatch = useAuthDispatch();
+
   const handleSignInFormSubmit = async (values: any) => {
-    await authenticationApi.signin(values);
+    try {
+      const res = await authenticationApi.signin(values);
+      // @ts-ignore
+      authDispatch({ type: "LOGIN", payload: { token: res?.data?.user?.token, email: res?.data?.user?.email } });
+    } catch (error) {
+      Logger.error(error);
+    }
   };
 
   const isBtnDisabled = (values: SignInFormValues) =>
