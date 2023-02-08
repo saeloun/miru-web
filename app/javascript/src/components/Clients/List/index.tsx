@@ -227,7 +227,7 @@ const Clients = ({ isAdminUser }) => {
                     handleDeleteClick={handleDeleteClick}
                     handleEditClick={handleEditClick}
                     hasRowIcons={isAdminUser}
-                    rowOnClick={isAdminUser ? handleRowClick : () => { }} // eslint-disable-line  @typescript-eslint/no-empty-function
+                    rowOnClick={isAdminUser ? handleRowClick : () => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
                     tableRowArray={tableData}
                     tableHeader={
                       isAdminUser ? tableHeader : employeeTableHeader
