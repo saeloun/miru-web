@@ -20,7 +20,7 @@ module ProjectSqlQueries
         RIGHT JOIN (
           SELECT user_id, hourly_rate
           FROM project_members
-          WHERE project_id = #{id}
+          WHERE project_id = #{id} AND discarded_at IS NULL
         ) pm ON pm.user_id = te.user_id
         LEFT JOIN users u ON u.id = pm.user_id;
       """

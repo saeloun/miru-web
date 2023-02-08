@@ -24,9 +24,11 @@ RSpec.describe Project, type: :model do
 
     let(:company) { create(:company) }
     let(:user) { create(:user) }
+    let(:user_2) { create(:user) }
     let(:client) { create(:client, company:) }
     let(:project) { create(:project, client:) }
     let!(:member) { create(:project_member, project:, user:, hourly_rate: 5000) }
+    let!(:member_2) { create(:project_member, project:, user:, hourly_rate: 5000) }
     let(:hourly_rate) { member.hourly_rate }
     let(:result) do
       [{
@@ -37,10 +39,14 @@ RSpec.describe Project, type: :model do
       }]
     end
 
+    before do
+      member_2.discard!
+    end
+
     context "when entries are missing" do
       let(:time_frame) { "last_week" }
 
-      it "returns data with 0 values" do
+      it "returns only kept members with 0 values" do
         expect(subject).to eq(
           [{
             id: member.user_id,
