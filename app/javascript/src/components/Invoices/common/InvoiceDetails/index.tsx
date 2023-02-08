@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
+import { EditIcon } from "miruIcons";
 
 import CustomDatePicker from "common/CustomDatePicker";
 
@@ -27,7 +28,8 @@ const InvoiceDetails = ({
   const [showDateOfIssuePicker, setShowDateOfIssuePicker] =
     useState<boolean>(false);
   const [showDueDatePicker, setShowDueDatePicker] = useState<boolean>(false);
-  const wrapperRef = useRef(null);
+  const DueDateWrapper = useRef(null);
+  const DateOfIssueWrapper = useRef(null);
 
   const getIssuedDate = dayjs(issueDate).format("DD.MM.YYYY");
   const getDueDate = dayjs(dueDate).format("DD.MM.YYYY");
@@ -54,27 +56,49 @@ const InvoiceDetails = ({
         setSelectedClient={setSelectedClient}
       />
       <div className="w-3/12">
-        <div className="flex flex-col" ref={wrapperRef}>
-          <p className="text-xs font-normal text-miru-dark-purple-1000">
-            Invoice Number
-          </p>
+        <div className="hoverPencil flex flex-col">
+          <label className="flex" htmlFor="invoiceNumber">
+            <span className="text-xs font-normal text-miru-dark-purple-1000">
+              Invoice Number
+            </span>
+            <button
+              className="invisible ml-2"
+              onClick={() => {
+                document.getElementById("invoiceNumber").focus();
+              }}
+            >
+              <EditIcon color="#7C5DEE" size={13} />
+            </button>
+          </label>
           <input
-            className="w-3/5 bg-transparent text-xs focus:bg-white"
+            className="focusPadding focus:bg-text-base focus:outline-none w-3/5 rounded bg-transparent text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
             data-cy="invoice-number"
-            placeholder="Enter value"
+            id="invoiceNumber"
+            placeholder="Enter invoice number"
             type="text"
             value={invoiceNumber}
             onChange={e => setInvoiceNumber(e.target.value)}
           />
         </div>
-        <div className="flex flex-col">
-          <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
-            Reference
-          </p>
+        <div className="hoverPencil flex flex-col ">
+          <label className="mt-4 flex" htmlFor="referenceNumber">
+            <span className="text-xs font-normal text-miru-dark-purple-1000">
+              Reference
+            </span>
+            <button
+              className="invisible ml-2"
+              onClick={() => {
+                document.getElementById("referenceNumber").focus();
+              }}
+            >
+              <EditIcon color="#7C5DEE" size={13} />
+            </button>
+          </label>
           <input
-            className="w-3/5 bg-transparent text-xs focus:bg-white"
+            className="focusPadding focus:bg-text-base focus:outline-none w-3/5 rounded bg-transparent text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
             data-cy="invoice-reference"
-            placeholder="Enter value (e.g. PO #)"
+            id="referenceNumber"
+            placeholder="Enter reference"
             type="text"
             value={reference}
             onChange={e => setReference(e.target.value)}
@@ -82,17 +106,18 @@ const InvoiceDetails = ({
         </div>
       </div>
       <div className="group w-3/12">
-        <div className="hoverPencil relative cursor-pointer">
-          <span
-            className="flex text-xs font-normal text-miru-dark-purple-1000"
-            onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}
-          >
-            Date of Issue
-          </span>
-          <p
-            className="text-base font-normal text-miru-dark-purple-1000"
-            onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}
-          >
+        <div
+          className="hoverPencil relative w-fit cursor-pointer pr-4"
+          ref={DateOfIssueWrapper}
+          onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}
+        >
+          <p className="flex text-xs font-normal text-miru-dark-purple-1000">
+            <span>Date of Issue</span>
+            <button className="invisible ml-2">
+              <EditIcon color="#7C5DEE" size={13} />
+            </button>
+          </p>
+          <p className="text-base font-normal text-miru-dark-purple-1000">
             {getIssuedDate}
           </p>
           {showDateOfIssuePicker && (
@@ -100,20 +125,22 @@ const InvoiceDetails = ({
               date={issueDate}
               handleChange={handleDatePickerChange}
               setVisibility={setShowDateOfIssuePicker}
+              wrapperRef={DateOfIssueWrapper}
             />
           )}
         </div>
-        <div className="hoverPencil cursor-pointer">
-          <span
-            className="mt-4 flex text-xs font-normal text-miru-dark-purple-1000"
-            onClick={() => setShowDueDatePicker(!showDueDatePicker)}
-          >
-            Due Date
-          </span>
-          <p
-            className="text-base font-normal text-miru-dark-purple-1000"
-            onClick={() => setShowDueDatePicker(!showDueDatePicker)}
-          >
+        <div
+          className="hoverPencil w-fit cursor-pointer pr-4"
+          ref={DueDateWrapper}
+          onClick={() => setShowDueDatePicker(!showDueDatePicker)}
+        >
+          <p className="mt-4 flex text-xs font-normal text-miru-dark-purple-1000">
+            <span>Due Date</span>
+            <button className="invisible ml-2">
+              <EditIcon color="#7C5DEE" size={13} />
+            </button>
+          </p>
+          <p className="text-base font-normal text-miru-dark-purple-1000">
             {getDueDate}
           </p>
           {showDueDatePicker && (
@@ -121,6 +148,7 @@ const InvoiceDetails = ({
               date={dueDate}
               handleChange={handleDueDatePicker}
               setVisibility={setShowDueDatePicker}
+              wrapperRef={DueDateWrapper}
             />
           )}
         </div>

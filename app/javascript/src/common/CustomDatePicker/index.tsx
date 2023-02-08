@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 
 import { getMonth, getYear } from "date-fns";
 import { useOutsideClick } from "helpers";
@@ -10,12 +10,14 @@ type CustomDatePickerProps = {
   handleChange: any;
   date: any;
   setVisibility?: any;
+  wrapperRef?: any;
 };
 
 const CustomDatePicker = ({
   handleChange,
   date,
   setVisibility,
+  wrapperRef,
 }: CustomDatePickerProps) => {
   const range = (start, end) => {
     const ans = [];
@@ -42,64 +44,60 @@ const CustomDatePicker = ({
     "Dec",
   ];
 
-  const wrapperRef = useRef(null);
-
   useOutsideClick(wrapperRef, () => {
     setVisibility(false);
   });
 
   return (
-    <div ref={wrapperRef}>
-      <DatePicker
-        inline
-        calendarClassName="miru-calendar"
-        selected={date}
-        wrapperClassName="datePicker"
-        renderCustomHeader={({
-          date,
-          changeYear,
-          changeMonth,
-          decreaseMonth,
-          increaseMonth,
-          prevMonthButtonDisabled,
-          nextMonthButtonDisabled,
-        }) => (
-          <div className="headerWrapper">
-            <button disabled={prevMonthButtonDisabled} onClick={decreaseMonth}>
-              <CaretCircleLeftIcon color="#5b34ea" size={16} />
-            </button>
-            <div>
-              <select
-                value={months[getMonth(date)]}
-                onChange={({ target: { value } }) =>
-                  changeMonth(months.indexOf(value))
-                }
-              >
-                {months.map(option => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={getYear(date)}
-                onChange={({ target: { value } }) => changeYear(value)}
-              >
-                {years.map(option => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button disabled={nextMonthButtonDisabled} onClick={increaseMonth}>
-              <CaretCircleRightIcon color="#5b34ea" size={16} />
-            </button>
+    <DatePicker
+      inline
+      calendarClassName="miru-calendar"
+      selected={date}
+      wrapperClassName="datePicker"
+      renderCustomHeader={({
+        date,
+        changeYear,
+        changeMonth,
+        decreaseMonth,
+        increaseMonth,
+        prevMonthButtonDisabled,
+        nextMonthButtonDisabled,
+      }) => (
+        <div className="headerWrapper">
+          <button disabled={prevMonthButtonDisabled} onClick={decreaseMonth}>
+            <CaretCircleLeftIcon color="#5b34ea" size={16} />
+          </button>
+          <div>
+            <select
+              value={months[getMonth(date)]}
+              onChange={({ target: { value } }) =>
+                changeMonth(months.indexOf(value))
+              }
+            >
+              {months.map(option => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            <select
+              value={getYear(date)}
+              onChange={({ target: { value } }) => changeYear(value)}
+            >
+              {years.map(option => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
           </div>
-        )}
-        onChange={handleChange}
-      />
-    </div>
+          <button disabled={nextMonthButtonDisabled} onClick={increaseMonth}>
+            <CaretCircleRightIcon color="#5b34ea" size={16} />
+          </button>
+        </div>
+      )}
+      onChange={handleChange}
+    />
   );
 };
 
