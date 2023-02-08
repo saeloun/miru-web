@@ -6,7 +6,6 @@ import {
   FileCsvIcon,
   FilePdfIcon,
   FilterIcon,
-  PrinterIcon,
   ShareIcon,
   XIcon,
   PaperPlaneTiltIcon,
@@ -22,6 +21,7 @@ import { getReports } from "./fetchReport";
 import NavigationFilter from "./NavigationFilter";
 
 import { useEntry } from "../context/EntryContext";
+import { TIME_ENTRY_REPORT_PAGE } from "../TimeEntryReport/utils";
 
 const Header = ({
   setIsFilterVisible,
@@ -53,6 +53,23 @@ const Header = ({
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
   const { isDesktop } = useUserContext();
 
+  const showClearAllFilterBtn = (filterCounter = 0, type = "") => {
+    let minNumberOfFilters = 0;
+    if (type == TIME_ENTRY_REPORT_PAGE) {
+      minNumberOfFilters = 1;
+    }
+
+    return filterCounter > minNumberOfFilters;
+  };
+
+  const handleFilterBtnClick = (isDesktop: any) => {
+    if (isDesktop) {
+      setIsFilterVisible(!isFilterVisible);
+    } else {
+      setShowMoreOptions(true);
+    }
+  };
+
   return (
     <div>
       <div className="sticky top-0 right-0 left-0 mt-0 mb-3 flex items-center justify-between bg-white px-4 py-2 shadow-c1 lg:static lg:mt-6 lg:bg-transparent lg:px-0 lg:shadow-none">
@@ -64,16 +81,13 @@ const Header = ({
             {type}
           </span>
           {showFilterIcon && (
-            <button className="relative rounded p-3 hover:bg-miru-gray-1000 lg:ml-7">
+            <button
+              className="relative rounded p-3 hover:bg-miru-gray-1000 lg:ml-7"
+              onClick={() => handleFilterBtnClick(isDesktop)}
+            >
               {isDesktop ? (
                 <>
-                  <FilterIcon
-                    color="#7C5DEE"
-                    size={16}
-                    onClick={() => {
-                      setIsFilterVisible(!isFilterVisible);
-                    }}
-                  />
+                  <FilterIcon color="#7C5DEE" size={16} />
                   {selectedReport.filterCounter > 0 && (
                     <sup className="filter__counter">
                       {selectedReport.filterCounter}
@@ -81,9 +95,7 @@ const Header = ({
                   )}
                 </>
               ) : (
-                <DotsThreeVerticalIcon
-                  onClick={() => setShowMoreOptions(true)}
-                />
+                <DotsThreeVerticalIcon />
               )}
             </button>
           )}
@@ -105,7 +117,10 @@ const Header = ({
           )}
         </div>
         {showExportButon && isDesktop && (
-          <div className="mt-10 inline-flex lg:mt-0">
+          <div
+            className="mt-10 inline-flex lg:mt-0"
+            onBlur={() => setShowExportOptions(false)}
+          >
             <div className="relative px-3">
               <button
                 className="menuButton__button inline-flex justify-center rounded-md border border-miru-han-purple-1000 bg-white p-2 text-miru-han-purple-1000 hover:bg-gray-50"
@@ -143,7 +158,7 @@ const Header = ({
                       <span className="ml-3">Export as PDF</span>
                     </button>
                   </li>
-                  <li>
+                  {/* <li>
                     <button
                       className="menuButton__list-item"
                       onClick={() => window.print()}
@@ -151,7 +166,7 @@ const Header = ({
                       <PrinterIcon color="#5B34EA" size={16} weight="bold" />
                       <span className="ml-3">Print</span>
                     </button>
-                  </li>
+                  </li> */}
                 </ul>
               )}
             </div>
@@ -170,10 +185,10 @@ const Header = ({
         {showNavFilters && (
           <ul className="flex flex-wrap">
             <NavigationFilter />
-            {selectedReport.filterCounter > 0 && (
-              <li className="mr-4 flex px-2 py-1 px-1 " key="clear_all">
+            {showClearAllFilterBtn(selectedReport.filterCounter, type) && (
+              <li className="mr-4 flex px-2 py-1" key="clear_all">
                 <button
-                  className="ml-1 inline-block flex items-center"
+                  className="ml-1 flex items-center"
                   onClick={resetFilter}
                 >
                   <XIcon
