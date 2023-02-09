@@ -193,8 +193,6 @@ const EditInvoice = () => {
             setAmountDue={setAmountDue}
             setDiscount={setDiscount}
             setTax={setTax}
-            showDiscountInput={!!invoiceDetails.discount}
-            showTax={!!invoiceDetails.tax}
             tax={tax || invoiceDetails.tax}
           />
         </div>
