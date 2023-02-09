@@ -76,8 +76,6 @@ const Container = ({
       setAmountDue={setAmountDue}
       setDiscount={setDiscount}
       setTax={setTax}
-      showDiscountInput={false}
-      showTax={false}
       tax={tax}
     />
   </div>

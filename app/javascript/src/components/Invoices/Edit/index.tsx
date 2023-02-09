@@ -3,7 +3,6 @@ import React, { Fragment, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
 import { unmapLineItems } from "mapper/mappedIndex";
@@ -66,8 +65,6 @@ const EditInvoice = () => {
 
   useEffect(() => {
     sendGAPageView();
-    setAuthHeaders();
-    registerIntercepts();
     fetchInvoice();
   }, []);
 
@@ -193,8 +190,6 @@ const EditInvoice = () => {
             setAmountDue={setAmountDue}
             setDiscount={setDiscount}
             setTax={setTax}
-            showDiscountInput={!!invoiceDetails.discount}
-            showTax={!!invoiceDetails.tax}
             tax={tax || invoiceDetails.tax}
           />
         </div>
