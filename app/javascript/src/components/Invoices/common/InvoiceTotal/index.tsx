@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 import { currencyFormat } from "helpers";
-import { DeleteIcon } from "miruIcons";
 
 const InvoiceTotal = ({
   currency,
@@ -16,11 +15,6 @@ const InvoiceTotal = ({
   setTax,
   manualEntryArr,
 }) => {
-  const [showDiscountDeleteButton, setShowDiscountDeleteButton] =
-    useState<boolean>(false);
-
-  const [showDeleteTaxButton, setShowDeleteTaxButton] =
-    useState<boolean>(false);
   const [subTotal, setSubTotal] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
 
@@ -58,7 +52,7 @@ const InvoiceTotal = ({
   }, [newLineItems, manualEntryArr, discount, subTotal, tax]);
 
   return (
-    <div className="mb-5 flex w-full justify-end pt-3 pb-10">
+    <div className="mb-5 flex w-full justify-end pt-3 pb-10 pr-10">
       <table className="w-1/3">
         <tbody>
           <tr>
@@ -69,11 +63,7 @@ const InvoiceTotal = ({
               {subTotal ? currencyFormat(currency, subTotal.toFixed(2)) : 0}
             </td>
           </tr>
-          <tr
-            className="miru-gray-400 border-b-2 pb-5"
-            onMouseLeave={() => setShowDiscountDeleteButton(false)}
-            onMouseOver={() => setShowDiscountDeleteButton(true)}
-          >
+          <tr className="miru-gray-400 border-b-2 pb-5">
             {discount ? (
               <td className="py-2 pr-10 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
                 <label className="cursor-pointer" htmlFor="Discount">
@@ -89,7 +79,7 @@ const InvoiceTotal = ({
             )}
             <td className="pb-1 text-right">
               <input
-                className="focus:outline-none w-20 cursor-pointer rounded bg-transparent p-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
                 id="Discount"
                 type="text"
                 value={discount}
@@ -98,11 +88,7 @@ const InvoiceTotal = ({
               />
             </td>
           </tr>
-          <tr
-            className="cursor-pointer"
-            onMouseLeave={() => setShowDeleteTaxButton(false)}
-            onMouseOver={() => setShowDeleteTaxButton(true)}
-          >
+          <tr className="cursor-pointer">
             <td className="pt-4 pr-10 text-right text-base font-normal text-miru-dark-purple-1000">
               <label className="cursor-pointer" htmlFor="Tax">
                 Tax
@@ -110,7 +96,7 @@ const InvoiceTotal = ({
             </td>
             <td className="w-22 pt-4 text-right text-base font-bold text-miru-dark-purple-1000">
               <input
-                className="focus:outline-none w-20 cursor-pointer rounded bg-transparent p-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
                 id="Tax"
                 type="text"
                 value={tax}
@@ -145,40 +131,6 @@ const InvoiceTotal = ({
           </tr>
         </tbody>
       </table>
-      <div className="flex flex-col">
-        <div
-          className="w-10"
-          onMouseLeave={() => setShowDiscountDeleteButton(false)}
-          onMouseOver={() => setShowDiscountDeleteButton(true)}
-        >
-          {showDiscountDeleteButton && discount ? (
-            <button
-              className="mx-1 mt-8 rounded bg-miru-gray-1000 p-2"
-              onClick={() => {
-                setDiscount(0);
-              }}
-            >
-              <DeleteIcon color="#E04646" size={13} />
-            </button>
-          ) : null}
-        </div>
-        <div
-          className="mt-12 w-10"
-          onMouseLeave={() => setShowDeleteTaxButton(false)}
-          onMouseOver={() => setShowDeleteTaxButton(true)}
-        >
-          {showDeleteTaxButton && tax ? (
-            <button
-              className="mx-1 mt-9 rounded bg-miru-gray-1000 p-2"
-              onClick={() => {
-                setTax(0);
-              }}
-            >
-              <DeleteIcon color="#E04646" size={13} />
-            </button>
-          ) : null}
-        </div>
-      </div>
     </div>
   );
 };
