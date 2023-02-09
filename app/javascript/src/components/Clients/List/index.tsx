@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Avatar, Tooltip } from "StyledComponents";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clientApi from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
@@ -108,8 +107,6 @@ const Clients = ({ isAdminUser }) => {
 
   useEffect(() => {
     sendGAPageView();
-    setAuthHeaders();
-    registerIntercepts();
     fetchClientDetails("week");
   }, []);
 
