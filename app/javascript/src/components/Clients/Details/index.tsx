@@ -5,7 +5,6 @@ import Logger from "js-logger";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import clientApi from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
@@ -99,8 +98,6 @@ const ClientList = ({ isAdminUser }) => {
 
   useEffect(() => {
     sendGAPageView();
-    setAuthHeaders();
-    registerIntercepts();
     fetchProjectList();
   }, []);
 
