@@ -22,6 +22,7 @@ const ManualEntry = ({
   setNewLineItemTable,
   setAddNew,
   showNewLineItemTable,
+  dateFormat,
 }) => {
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<string>("");
@@ -35,7 +36,7 @@ const ManualEntry = ({
   const wrapperRef = useRef(null);
   const datePickerRef = useRef(null);
 
-  const formattedDate = date => dayjs(date).format("MM.DD.YYYY");
+  const formattedDate = date => dayjs(date).format(dateFormat);
 
   useEffect(() => {
     setLineItem({

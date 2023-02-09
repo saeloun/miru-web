@@ -11,6 +11,7 @@ import { fetchNewLineItems } from "../utils";
 
 const InvoiceTable = ({
   currency,
+  dateFormat,
   selectedClient,
   lineItems,
   setLineItems,
@@ -116,6 +117,7 @@ const InvoiceTable = ({
       return (
         <ManualEntry
           addNew={addNew}
+          dateFormat={dateFormat}
           getNewLineItemDropdown={getNewLineItemDropdown}
           lineItem={lineItem}
           manualEntryArr={manualEntryArr}
