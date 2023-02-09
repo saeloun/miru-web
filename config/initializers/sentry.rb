@@ -10,4 +10,5 @@ Sentry.init do |config|
   config.traces_sample_rate = 1.0
 
   config.environment = Rails.env
+  config.enabled_environments = %w[production staging]
 end
