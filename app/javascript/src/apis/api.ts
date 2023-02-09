@@ -48,12 +48,12 @@ class ApiHandler {
       async (config: any) => {
         // add token headers in below header constant.
         // example
-        const headers = {
-          "X-Auth-Email": "vipul@example.com",
-          "X-Auth-Token": "nyDMsho2Pr2Zgk7dXyf6XEXsf3QLAsrhTUQW1aybMxymSJVACo",
-        };
+        // const headers = {
+        //  "X-Auth-Email": "vipul@example.com",
+        //  "X-Auth-Token": "nyDMsho2Pr2Zgk7dXyf6XEXsf3QLAsrhTUQW1aybMxymSJVACo",
+        // };
 
-        // const headers = {};
+        const headers = {};
 
         const newConfig = {
           ...config,
