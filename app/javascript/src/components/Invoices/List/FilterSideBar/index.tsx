@@ -254,7 +254,7 @@ const FilterSideBar = ({
         </SidePanel.Header>
         <SidePanel.Body className="sidebar__filters max-h-80v min-h-80v overflow-y-auto">
           <ul>
-            <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000">
+            <li className="relative cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000">
               <div
                 className="flex items-center justify-between px-5"
                 onClick={() => {
@@ -299,7 +299,7 @@ const FilterSideBar = ({
               )}
               {showCustomFilter && (
                 <div
-                  className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1"
+                  className="absolute z-20 mt-1 ml-4 flex flex-col overflow-y-auto rounded-lg bg-miru-white-1000 shadow-c1"
                   ref={wrapperRef}
                 >
                   <CustomDateRangePicker
