@@ -40,6 +40,8 @@ const CustomDateRangePicker = ({
 
   const years = range(1990, getYear(new Date()) + 1);
   const textInput = useRef(null);
+  const toInputRef = useRef(null);
+
   useEffect(() => {
     setSelectedInput(fromInput);
     textInput.current.focus();
@@ -260,6 +262,7 @@ const CustomDateRangePicker = ({
                 id={toInput}
                 name={toInput}
                 placeholder=" To "
+                ref={toInputRef}
                 type="text"
                 className={`ml-1 h-8 w-32 rounded bg-miru-gray-100 p-1 ${
                   selectedInput === toInput &&
@@ -317,6 +320,11 @@ const CustomDateRangePicker = ({
         const fieldName = selectedInput == fromInput ? "fromInput" : "toInput";
         handleSelectDate(date);
         validateDateInput(date, fieldName);
+        if (selectedInput == fromInput && !dateRange.to) {
+          toInputRef.current.focus();
+          toInputRef.current.click(onClickInput);
+          resetErrors("toInput");
+        }
       }}
     />
   );
