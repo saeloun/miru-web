@@ -29,7 +29,7 @@ const SignInForm = () => {
       const res = await authenticationApi.signin(values);
       // @ts-ignore
       authDispatch({ type: "LOGIN", payload: { token: res?.data?.user?.token, email: res?.data?.user?.email } });
-      window.location.href ="/"
+      setTimeout(() => window.location.href ="/", 500)
     } catch (error) {
       Logger.error(error);
     }
