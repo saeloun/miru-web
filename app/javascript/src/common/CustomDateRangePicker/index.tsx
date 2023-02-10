@@ -11,7 +11,12 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import { validDateFormats, months } from "./utils";
+import { validDateFormats, months, CUSTOM_DATE_RANGE_ERRORS } from "./utils";
+
+interface DateRange {
+  from: string;
+  to: string;
+}
 
 const CustomDateRangePicker = ({
   hideCustomFilter,
@@ -28,12 +33,15 @@ const CustomDateRangePicker = ({
     fromInput: "",
     toInput: "",
   });
+  const [isValidDateRange, setIsValidDateRange] = useState<boolean>(true);
 
   const range = (start, end) =>
     Array.from({ length: end - start }, (v, k) => k + start);
 
   const years = range(1990, getYear(new Date()) + 1);
   const textInput = useRef(null);
+  const toInputRef = useRef(null);
+
   useEffect(() => {
     setSelectedInput(fromInput);
     textInput.current.focus();
@@ -60,7 +68,9 @@ const CustomDateRangePicker = ({
   ) => {
     if (isValidDate) {
       handleSelectDate(dateInput);
-      resetErrors(fieldName);
+      if (isValidDateRange && errors[fieldName] && fieldName) {
+        resetErrors(fieldName);
+      }
     } else {
       handleSelectDate("");
     }
@@ -78,24 +88,93 @@ const CustomDateRangePicker = ({
     fieldName: string,
     showErrorMsg = true
   ) => {
-    const isValidDate =
-      dayjs(dateInput).isValid() &&
-      validDateFormats.some(
-        (validFormat: string) =>
-          dayjs(dateInput).format(validFormat) == dateInput ||
-          new Date(dateInput).toString() == dateInput
-      );
+    const isValidDate = checkIsValidDateFormat(dateInput);
+    const {
+      isDateRangeValid,
+      dateRangeErrorMessage,
+      showDateRangeErrorMessage,
+    } = checkIsValidDateRange(isValidDate, dateInput, dateRange, fieldName);
+    let errorMsg = "";
+
     if (!isValidDate) {
       if (showErrorMsg) {
-        showDateInputErrorMessage(dateInput, fieldName);
+        showDateInputErrorMessage(dateInput, fieldName, errorMsg);
       }
       setIsDisableDoneBtn(true);
+    } else if (
+      showDateRangeErrorMessage &&
+      dateRangeErrorMessage?.trim() &&
+      !isDateRangeValid
+    ) {
+      showErrorMsg = true;
+      errorMsg = dateRangeErrorMessage;
+      showDateInputErrorMessage(dateInput, fieldName, errorMsg);
+      setIsDisableDoneBtn(true);
     } else {
+      showErrorMsg = false;
+      errorMsg = "";
       resetErrors(fieldName);
       setIsDisableDoneBtn(false);
     }
 
     return isValidDate || false;
+  };
+
+  const checkIsValidDateFormat = (dateInput: string) =>
+    dayjs(dateInput).isValid() &&
+    validDateFormats.some(
+      (validFormat: string) =>
+        dayjs(dateInput).format(validFormat) == dateInput ||
+        new Date(dateInput).toString() == dateInput
+    );
+
+  const checkIsValidDateRange = (
+    isValidDate = false,
+    dateInput = "",
+    dateRange: DateRange,
+    fieldName = "",
+    showDateRangeErrorMessage?: boolean
+  ) => {
+    let isDateRangeValid = false;
+    let dateRangeErrorMessage = "";
+
+    if (!isValidDate) {
+      return {
+        isDateRangeValid,
+        dateRangeErrorMessage,
+        showDateRangeErrorMessage: false,
+      };
+    }
+
+    if (isValidDate && fieldName == "fromInput" && dateRange.to) {
+      isDateRangeValid =
+        dayjs(dateInput).isBefore(dateRange.to, "day") ||
+        dayjs(dateInput).isSame(dateRange.to, "day");
+
+      dateRangeErrorMessage =
+        CUSTOM_DATE_RANGE_ERRORS.FROM_DATE_IS_NOT_BEFORE_TO_DATE;
+    } else if (isValidDate && fieldName == "toInput" && dateRange.from) {
+      isDateRangeValid =
+        dayjs(dateInput).isAfter(dateRange.from, "day") ||
+        dayjs(dateInput).isSame(dateRange.from, "day");
+
+      dateRangeErrorMessage =
+        CUSTOM_DATE_RANGE_ERRORS.TO_DATE_IS_NOT_AFTER_FROM_DATE;
+    }
+    setIsValidDateRange(isDateRangeValid);
+
+    if (isDateRangeValid) {
+      resetErrors("toInput");
+      resetErrors("fromInput");
+    } else {
+      showDateRangeErrorMessage = showDateRangeErrorMessage || true;
+    }
+
+    return {
+      isDateRangeValid,
+      dateRangeErrorMessage,
+      showDateRangeErrorMessage,
+    };
   };
 
   const showDateInputErrorMessage = (
@@ -108,9 +187,9 @@ const CustomDateRangePicker = ({
       errorMsg = errorMessage;
     } else {
       if (!dateInput?.trim()) {
-        errorMsg = "Date can not be blank";
+        errorMsg = CUSTOM_DATE_RANGE_ERRORS.BLANK_DATE;
       } else {
-        errorMsg = "Please enter a valid date";
+        errorMsg = CUSTOM_DATE_RANGE_ERRORS.INVALID_DATE;
       }
     }
 
@@ -183,6 +262,7 @@ const CustomDateRangePicker = ({
                 id={toInput}
                 name={toInput}
                 placeholder=" To "
+                ref={toInputRef}
                 type="text"
                 className={`ml-1 h-8 w-32 rounded bg-miru-gray-100 p-1 ${
                   selectedInput === toInput &&
@@ -240,6 +320,11 @@ const CustomDateRangePicker = ({
         const fieldName = selectedInput == fromInput ? "fromInput" : "toInput";
         handleSelectDate(date);
         validateDateInput(date, fieldName);
+        if (selectedInput == fromInput && !dateRange.to) {
+          toInputRef.current.focus();
+          toInputRef.current.click(onClickInput);
+          resetErrors("toInput");
+        }
       }}
     />
   );
