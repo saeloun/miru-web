@@ -29,6 +29,7 @@ const SignInForm = () => {
       const res = await authenticationApi.signin(values);
       // @ts-ignore
       authDispatch({ type: "LOGIN", payload: { token: res?.data?.user?.token, email: res?.data?.user?.email } });
+      window.location.href ="/"
     } catch (error) {
       Logger.error(error);
     }
@@ -196,7 +197,7 @@ const SignInForm = () => {
                 className="form__link inline cursor-pointer"
                 data-cy="sign-in-link"
               >
-                <a href={Paths.SIGN_UP}>
+                <a href={Paths.SIGNUP}>
                   <span className="mr-2 inline-block">Sign Up</span>
                 </a>
               </span>

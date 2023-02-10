@@ -1,8 +1,10 @@
-import axios from "axios";
+import axios from "./api";
 
 const signin = payload => axios.post("/login", { user: payload });
 
 const signup = payload => axios.post("/signup", { user: payload });
+
+const logout = () => axios.delete("/logout");
 
 const forgotPassword = payload =>
   axios.post("/forgot_password", { user: payload });
@@ -23,6 +25,7 @@ const authenticationApi = {
   forgotPassword,
   resetPassword,
   googleAuth,
+  logout
 };
 
 export default authenticationApi;

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import Toastr from "common/Toastr";
-
+import { clearLocalStorageCredentials, getFromLocalStorage } from "utils/storage";
 class ApiHandler {
   axios: any;
   constructor() {
@@ -28,6 +28,12 @@ class ApiHandler {
         return response;
       },
       (error: any) => {
+        if (error.response?.status === 401) {
+          clearLocalStorageCredentials()
+          Toastr.error(error.response?.data?.error);
+          window.location.href = "/";
+        }
+
         Toastr.error(
           error.response?.data?.errors ||
             error.response?.data?.error ||
@@ -46,14 +52,12 @@ class ApiHandler {
 
     this.axios.interceptors.request.use(
       async (config: any) => {
-        // add token headers in below header constant.
-        // example
-        // const headers = {
-        //  "X-Auth-Email": "vipul@example.com",
-        //  "X-Auth-Token": "nyDMsho2Pr2Zgk7dXyf6XEXsf3QLAsrhTUQW1aybMxymSJVACo",
-        // };
-
-        const headers = {};
+        const token = getFromLocalStorage("authToken");
+        const email = getFromLocalStorage("authEmail");
+        const headers = {
+         "X-Auth-Email": email,
+         "X-Auth-Token": token,
+        };
 
         const newConfig = {
           ...config,

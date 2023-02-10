@@ -9,12 +9,12 @@ import Dashboard from "./Dashboard";
 import { registerIntercepts, setAuthHeaders } from "apis/axios";
 import { clearLocalStorageCredentials, getFromLocalStorage } from "utils/storage";
 
-const Main = (props) => {
+const Main = (props :Iprops) => {
   // @ts-ignore
   const { authToken } = useAuthState();
   const authDispatch = useAuthDispatch();
 
-  const isLoggedIn =  props?.user
+  const isLoggedIn = authToken && props?.user
 
   useEffect(() => {
     registerIntercepts();
@@ -28,6 +28,7 @@ const Main = (props) => {
       hasDeviseUserSessionExpired && previousLoginAuthEmail;
 
     if (sessionExpiredButLocalStorageCredsExist) clearLocalStorageCredentials();
+    //@ts-ignore
   }, [props?.user?.email]);
 
   if(isLoggedIn){

@@ -4,11 +4,16 @@ import React, { useState, useEffect, useRef } from "react";
 import { useOutsideClick } from "helpers";
 import { SettingIcon, SignOutIcon, Switcher } from "miruIcons";
 import { NavLink } from "react-router-dom";
+import Logger from "js-logger";
+
 import { Avatar, Tooltip } from "StyledComponents";
 
 import companiesApi from "apis/companies";
 import WorkspaceApi from "apis/workspaces";
-import { LocalStorageKeys } from "constants/index";
+import authenticationApi from "apis/authentication";
+
+import { LocalStorageKeys, Paths } from "constants/index";
+import { useAuthDispatch } from "context/auth";
 
 import { activeClassName } from "./utils";
 
@@ -22,6 +27,7 @@ const UserActions = () => {
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
   const wrapperRef = useRef(null);
   const toolTipRef = useRef(null);
+  const authDispatch = useAuthDispatch();
 
   useEffect(() => {
     fetchWorkspaces();
@@ -58,8 +64,16 @@ const UserActions = () => {
     setTimeout(() => window.location.reload(), 600);
   };
 
-  const handleLogout = () => {
-    window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
+  const handleLogout = async () => {
+    try {
+      await authenticationApi.logout();
+      window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
+      // @ts-ignore
+      authDispatch({ type: "LOGOUT" });
+      window.location.href = Paths.LOGIN;
+    } catch (error) {
+      Logger.error(error);
+    }
   };
 
   const WorkspaceList = () => (
