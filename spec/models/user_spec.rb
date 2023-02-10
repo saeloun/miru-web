@@ -4,6 +4,7 @@ require "rails_helper"
 
 RSpec.describe User, type: :model do
   let(:company) { create(:company) }
+  let(:company_2) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
@@ -151,6 +152,20 @@ RSpec.describe User, type: :model do
       user.assign_company_and_role
       expect(user.errors.messages.size).to eq(1)
       expect(user.errors.full_messages).to include("Something went wrong")
+    end
+  end
+
+  describe "#remove_all_roles" do
+    before do
+      user.add_role :admin, company
+      user.add_role :owner, company
+      user.add_role :employee, company_2
+    end
+
+    it "removes all roles of user from given company only" do
+      user.remove_all_roles(company)
+      expect(user.roles.where(resource: company)).to eq([])
+      expect(user.roles.where(resource: company_2).first.name).to eq("employee")
     end
   end
 end
