@@ -9,6 +9,7 @@ import { Route, Routes } from "react-router-dom";
 // import EmploymentDetails from "./Details/EmploymentDetails";
 // import PersonalDetails from "./Details/PersonalDetails";
 // import ReimburstmentDetails from "./Details/ReimburstmentDetails";
+// import EmploymentEdit from "./Details/PersonalDetails/Edit";
 import List from "./List";
 
 const RouteConfig = () => (
@@ -22,7 +23,8 @@ const RouteConfig = () => (
         <Route path="compensation" element={<CompensationDetails />} />
         <Route path="documents" element={<DocumentDetails />} />
         <Route path="reimburstment" element={<ReimburstmentDetails />} />
-      </Route> */}
+        <Route path="edit" element={<EmploymentEdit />} />
+    </Route> */}
   </Routes>
 );
 

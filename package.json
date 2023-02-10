@@ -23,6 +23,7 @@
     "babel-plugin-js-logger": "^1.0.17",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "classnames": "^2.3.1",
+    "country-state-city": "^3.1.2",
     "currency-symbol-map": "^5.0.1",
     "date-fns": "^2.28.0",
     "dayjs": "^1.11.0",
