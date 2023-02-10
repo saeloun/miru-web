@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
+import Logger from "js-logger";
 import { GoogleSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
@@ -34,7 +35,12 @@ const SignUpForm = () => {
       password,
       password_confirmation: confirm_password,
     };
-    await authenticationApi.signup(payload);
+    try {
+      await authenticationApi.signup(payload);
+      setTimeout(() => (window.location.href = "/"), 500);
+    } catch (error) {
+      Logger.error(error);
+    }
   };
 
   const isBtnDisabled = (values: SignUpFormValues) =>
