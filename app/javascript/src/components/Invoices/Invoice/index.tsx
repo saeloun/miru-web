@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import invoicesApi from "apis/invoices";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -36,8 +35,6 @@ const Invoice = () => {
 
   useEffect(() => {
     sendGAPageView();
-    setAuthHeaders();
-    registerIntercepts();
     fetchInvoice();
   }, []);
 

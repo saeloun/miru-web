@@ -220,3 +220,7 @@ end
 
 # https://github.com/ankane/strong_migrations
 gem "strong_migrations"
+
+# Error tracking: https://docs.sentry.io/platforms/ruby/guides/rails/
+gem "sentry-rails"
+gem "sentry-ruby"
