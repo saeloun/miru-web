@@ -110,7 +110,7 @@ const ForgotPassword = () => {
                         className="form__link inline cursor-pointer"
                         data-cy="sign-in-link"
                       >
-                        <a href={Paths.SIGN_IN}>
+                        <a href={Paths.LOGIN}>
                           <span className="mr-2 inline-block">
                             Back to Login
                           </span>

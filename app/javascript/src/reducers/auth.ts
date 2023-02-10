@@ -1,4 +1,3 @@
-import { resetAuthTokens, setAuthHeaders } from "apis/axios";
 import { setToLocalStorage } from "utils/storage";
 
 const authReducer = (_, { type, payload }) => {
@@ -6,7 +5,6 @@ const authReducer = (_, { type, payload }) => {
     case "LOGIN": {
       setToLocalStorage("authToken", payload.token);
       setToLocalStorage("authEmail", payload.email);
-      setAuthHeaders();
 
       return {
         isLoggedIn: true,
@@ -17,7 +15,6 @@ const authReducer = (_, { type, payload }) => {
     case "LOGOUT": {
       setToLocalStorage("authToken", null);
       setToLocalStorage("authEmail", null);
-      resetAuthTokens();
 
       return { isLoggedIn: false, authToken: null, authEmail: null };
     }

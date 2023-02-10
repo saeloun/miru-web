@@ -99,6 +99,10 @@ export const AUTH_ROUTES = [
     path: "/login",
     component: SignIn,
   },
+  {
+    path: "/password/new",
+    component: ForgotPassword
+  }
 ];
 
 export const ROUTES = [
@@ -146,14 +150,6 @@ export const ROUTES = [
     path: Paths.PROFILE,
     subRoutes: ProfileRoutes,
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
-  },
-  {
-    path: Paths.SIGN_IN,
-    subRoutes: SignInRoutes,
-  },
-  {
-    path: Paths.SIGN_UP,
-    subRoutes: SignUpRoutes,
   },
   {
     path: Paths.LOGIN,

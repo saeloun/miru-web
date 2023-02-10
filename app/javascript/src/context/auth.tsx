@@ -11,7 +11,7 @@ const AuthDispatchContext = createContext();
 
 const token = getFromLocalStorage("authToken");
 const email = getFromLocalStorage("authEmail");
-console.log("token auth context", token)
+
 const initialState = {
   isLoggedIn: !!token,
   authToken: token || null,
@@ -35,7 +35,6 @@ const useAuthState = () => {
   if (context === undefined) {
     throw new Error("useAuthState must be used within a AuthProvider");
   }
-  console.log("useAuthState context", context)
 
   return context;
 };
