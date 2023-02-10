@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-class ClientPresenter
+class Client::ShowPresenter
   attr_reader :client
 
   def initialize(client)
     @client = client
   end
 
-  def snippet
+  def process
     {
       id: client.id,
       name: client.name,
