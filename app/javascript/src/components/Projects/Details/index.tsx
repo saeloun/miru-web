@@ -14,7 +14,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Badge } from "StyledComponents";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectAPI from "apis/projects";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
@@ -98,8 +97,6 @@ const ProjectDetails = () => {
 
   useEffect(() => {
     sendGAPageView();
-    setAuthHeaders();
-    registerIntercepts();
     fetchProject(timeframe);
   }, [timeframe]);
 

@@ -553,3 +553,8 @@ body {
 .outline input:not(:placeholder-shown) ~ label {
   @apply top-2 z-0 ml-3 -translate-y-4 scale-75 transform px-1 py-0 text-xs text-miru-dark-purple-400;
 }
+
+.focusPadding:focus {
+  padding-left: 8px;
+  padding-right: 4px;
+}
