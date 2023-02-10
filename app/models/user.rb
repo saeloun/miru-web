@@ -92,10 +92,14 @@ class User < ApplicationRecord
   before_create :set_token
 
   def allowed_projects(company)
-    projects.kept
-      .merge(project_members.kept)
-      .joins(:client)
-      .where(clients: { company_id: company.id })
+    if self.has_admin_access(company)
+      company.projects.kept
+    else
+      projects.kept
+        .merge(project_members.kept)
+        .joins(:client)
+        .where(clients: { company_id: company.id })
+    end
   end
 
   def primary_role(company)
@@ -107,6 +111,10 @@ class User < ApplicationRecord
 
   def full_name
     "#{first_name} #{last_name}"
+  end
+
+  def has_admin_access(company)
+    @_has_admin_access ||= self.has_role?(:owner, company) || self.has_role?(:admin, company)
   end
 
   # Do user authentication if
