@@ -41,6 +41,7 @@ const FilterSideBar = ({
   const [isStatusOpen, setIsStatusOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [dateRangeList, setDateRangeList] = useState<any>(dateRangeOptions);
+  const [disableApplyBtn, setDisableApplyBtn] = useState(false);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const wrapperRef = useRef(null);
@@ -199,7 +200,24 @@ const FilterSideBar = ({
     hideCustomFilter();
   };
 
+  useEffect(() => {
+    if (
+      filters.dateRange.value == "custom" &&
+      !filters.dateRange.from &&
+      !filters.dateRange.to &&
+      disableDateBtn
+    ) {
+      setDisableApplyBtn(true);
+    } else {
+      setDisableApplyBtn(false);
+    }
+  }, [filters, disableDateBtn]);
+
   const handleApply = () => {
+    if (disableApplyBtn) {
+      return;
+    }
+
     defaultDateRange()
       ? setFilterParams(setDefaultDateRange())
       : setFilterParams(filters);
@@ -475,8 +493,12 @@ const FilterSideBar = ({
           RESET
         </Button>
         <Button
-          className="px-10 py-2.5 text-base font-bold leading-5"
+          disabled={disableApplyBtn}
           style="primary"
+          className={`${
+            disableApplyBtn &&
+            "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+          } px-10 py-2.5 text-base font-bold leading-5`}
           onClick={handleApply}
         >
           APPLY
