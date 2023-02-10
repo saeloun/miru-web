@@ -153,4 +153,40 @@ RSpec.describe User, type: :model do
       expect(user.errors.full_messages).to include("Something went wrong")
     end
   end
+
+  describe "allowed projects" do
+    let(:company2) { create(:company) }
+    let(:client_1) { create(:client, company:) }
+    let(:client_2) { create(:client, company: company2) }
+    let(:project_1) { create(:project, client: client_1) }
+    let(:project_2) { create(:project, client: client_1) }
+    let(:project_3) { create(:project, client: client_1) }
+    let(:project_4) { create(:project, client: client_2) }
+
+    before do
+      create(:project_member, project: project_1, user:)
+      project_membership = create(:project_member, project: project_2, user:)
+      create(:project_member, project: project_4, user:)
+      project_3.discard!
+      project_membership.discard!
+    end
+
+    context "when user is an admin/owner" do
+      before { user.add_role :admin, company }
+
+      it "returns the list of allowed projects" do
+        expect(user.allowed_projects(company).pluck(:id)).to eq([project_1.id, project_2.id])
+      end
+    end
+
+    context "when user is employee" do
+      before do
+        user.remove_role :admin, company
+      end
+
+      it "returns only allowed projects" do
+        expect(user.allowed_projects(company).pluck(:id)).to eq([project_1.id])
+      end
+    end
+  end
 end
