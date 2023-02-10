@@ -67,8 +67,7 @@ class TimeTrackingIndexService
     end
 
     def set_projects
-      @projects = Client::IndexPresenter
-        .new(clients, current_company, current_user)
-        .projects_grouped_by_client_name
+      user_projects = current_user.allowed_projects(current_company)
+      clients.each { |client| @projects[client.name] = client.projects.kept & user_projects }
     end
 end
