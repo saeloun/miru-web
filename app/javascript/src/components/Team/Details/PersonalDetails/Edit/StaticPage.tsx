@@ -396,7 +396,7 @@ const StaticPage = ({
               type="text"
               value={personalDetails.linkedin}
               onChange={e => {
-                updateBasicDetails(e.target.value, "linkedin", false, "");
+                updateBasicDetails(e.target.value, "linkedin", false);
               }}
             />
           </div>
@@ -409,7 +409,7 @@ const StaticPage = ({
               type="text"
               value={personalDetails.github}
               onChange={e => {
-                updateBasicDetails(e.target.value, "github", false, "");
+                updateBasicDetails(e.target.value, "github", false);
               }}
             />
           </div>
