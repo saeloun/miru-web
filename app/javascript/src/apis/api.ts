@@ -1,7 +1,11 @@
 import axios from "axios";
 
 import Toastr from "common/Toastr";
-import { clearLocalStorageCredentials, getFromLocalStorage } from "utils/storage";
+import {
+  clearLocalStorageCredentials,
+  getFromLocalStorage,
+} from "utils/storage";
+
 class ApiHandler {
   axios: any;
   constructor() {
@@ -29,9 +33,9 @@ class ApiHandler {
       },
       (error: any) => {
         if (error.response?.status === 401) {
-          clearLocalStorageCredentials()
+          clearLocalStorageCredentials();
           Toastr.error(error.response?.data?.error);
-          window.location.href = "/";
+          setTimeout(() => (window.location.href = "/"), 1000);
         }
 
         Toastr.error(
@@ -43,7 +47,7 @@ class ApiHandler {
             "Something went wrong!"
         );
         if (error.response?.status === 423) {
-          window.location.href = "/";
+          setTimeout(() => (window.location.href = "/"), 1000);
         }
 
         return Promise.reject(error);
@@ -55,8 +59,8 @@ class ApiHandler {
         const token = getFromLocalStorage("authToken");
         const email = getFromLocalStorage("authEmail");
         const headers = {
-         "X-Auth-Email": email,
-         "X-Auth-Token": token,
+          "X-Auth-Email": email,
+          "X-Auth-Token": token,
         };
 
         const newConfig = {
