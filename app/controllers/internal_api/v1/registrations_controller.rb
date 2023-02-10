@@ -3,21 +3,11 @@
 class InternalApi::V1::RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
-  private
-
-    def respond_with(user, _opts = {})
-      if user.present?
-        if user.confirmed?
-          render json: {
-            notice: "Already email exists. Please signin",
-            redirect_route: new_user_session_path
-          }, status: :ok
-        else
-          render json: {
-            notice: "Please verify your email to proceed further",
-            redirect_route: email_confirmation_path({ email: user.email })
-          }, status: :ok
-        end
-      end
+  def respond_with(user, _opts = {})
+    if user.errors.present?
+      render json: { error: user.errors }, status: :unprocessable_entity
+    else
+      render json: { notice: "Signed up successfully" }, status: :ok
     end
+  end
 end
