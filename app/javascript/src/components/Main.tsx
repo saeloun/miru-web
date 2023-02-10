@@ -8,6 +8,7 @@ import { useAuthState, useAuthDispatch } from "context/auth";
 import Dashboard from "./Dashboard";
 import { registerIntercepts, setAuthHeaders } from "apis/axios";
 import { clearLocalStorageCredentials, getFromLocalStorage } from "utils/storage";
+import OrganizationSetup from "./OrganizationSetup";
 
 const Main = (props :Iprops) => {
   // @ts-ignore
@@ -32,7 +33,17 @@ const Main = (props :Iprops) => {
   }, [props?.user?.email]);
 
   if(isLoggedIn){
-    return <Dashboard {...props}/>
+    //@ts-ignore
+    if(Boolean(props?.user?.current_workspace_id) == false){
+      return (
+        <Routes>
+          <Route path="/" element={<OrganizationSetup />}/>
+          <Route path="*" element={<Navigate to ="/" />}/>
+        </Routes>
+      )
+    } else {
+      return <Dashboard {...props}/>
+    }
   }
 
   return (
