@@ -14,7 +14,7 @@ class Client::IndexPresenter
     if is_admin
       clients.each { |client| projects[client.name] = client.projects.kept }
     else
-      employee_projects = current_user.projects.kept.joins(:client).where(clients: { company_id: current_company.id })
+      employee_projects = current_user.allowed_projects(current_company)
       clients.each { |client| projects[client.name] = client.projects.kept & employee_projects }
     end
     projects

@@ -91,6 +91,13 @@ class User < ApplicationRecord
   after_discard :discard_project_members
   before_create :set_token
 
+  def allowed_projects(company)
+    projects.kept
+      .merge(project_members.kept)
+      .joins(:client)
+      .where(clients: { company_id: company.id })
+  end
+
   def primary_role(company)
     roles = self.roles.where(resource: company)
     return "employee" if roles.empty?
