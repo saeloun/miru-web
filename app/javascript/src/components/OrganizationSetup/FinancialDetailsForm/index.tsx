@@ -76,7 +76,9 @@ const FinancialDetailsForm = ({
       values.year_end?.value?.trim() &&
       values.date_format?.value?.trim() &&
       values.standard_rate >= 0 &&
-      typeof values.standard_rate == "number"
+      values.standard_rate != "" &&
+      (typeof values.standard_rate == "number" ||
+        !isNaN(Number(values.standard_rate)))
     );
 
   return (
@@ -128,6 +130,7 @@ const FinancialDetailsForm = ({
                   <Field
                     name="standard_rate"
                     placeholder=" "
+                    step="0.01"
                     type="number"
                     className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
                       errors.standard_rate &&
@@ -135,7 +138,7 @@ const FinancialDetailsForm = ({
                       "border-red-600 focus:border-red-600 focus:ring-red-600"
                     } `}
                     onChange={e => {
-                      setFieldValue("standard_rate", Number(e.target.value));
+                      setFieldValue("standard_rate", e.target.value);
                       handleFormFieldValueChange(
                         "standard_rate",
                         Number(e.target.value)

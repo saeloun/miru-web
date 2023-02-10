@@ -57,7 +57,7 @@ export const companyDetailsFormInitialValues = {
   logo: null,
   country: mostSelectedCountries[0],
   timezone: {
-    label: "(GMT-10:00) America/Adak",
-    value: "(GMT-10:00) America/Adak",
+    label: "(GMT-05:00) Eastern Time (US & Canada)",
+    value: "(GMT-05:00) Eastern Time (US & Canada)",
   },
 };
