@@ -29,8 +29,9 @@ class InternalApi::V1::TeamController < InternalApi::V1::ApplicationController
 
   def destroy
     authorize employment, policy_class: TeamPolicy
-    employment.user.remove_all_roles(current_company)
+    employment.user.remove_roles_for(current_company)
     employment.discard!
+
     render json: {
       user: employment.user,
       notice: I18n.t("team.delete.success.message")

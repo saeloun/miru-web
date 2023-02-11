@@ -98,9 +98,9 @@ class User < ApplicationRecord
     roles.first.name
   end
 
-  def remove_all_roles(company)
-    self.roles.each do | role |
-      self.remove_role(role.name.to_sym, company)
+  def remove_roles_for(company)
+    roles.each do | role |
+      remove_role(role.name.to_sym, company)
     end
   end
 
