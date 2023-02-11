@@ -23,14 +23,18 @@ const Client = ({ element, totalMinutes, index }: ISingleClient) => {
 
   return (
     <div style={divStyle}>
-      <Tooltip className="tooltip" id={`registerTip-${index}`} place="top">
+      <Tooltip
+        anchorId={`registerTip-${index}`}
+        className="tooltip"
+        place="top"
+      >
         <p className="text-xs">{element.name}</p>
         <p className="text-center text-2xl">{minToHHMM(element.minutes)}</p>
       </Tooltip>
       <button
         data-tip
         className={`bg-${randomColor}-600 block h-4 w-full border-b border-t hover:border-transparent`}
-        data-for={`registerTip-${index}`}
+        id={`registerTip-${index}`}
         type="button"
       />
     </div>
