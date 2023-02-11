@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This file is copied to spec/ when you run 'rails generate rspec:install'
 require "spec_helper"
 require "vcr"
 
@@ -38,6 +37,14 @@ VCR.configure do |config|
   config.ignore_localhost = true
   config.configure_rspec_metadata!
   config.ignore_hosts "127.0.0.1", "localhost", "elasticsearch", "analytics-api.buildkite.com"
+
+  config.around do |example|
+    if example.metadata[:feature]
+      VCR.turned_off { example.run }
+    else
+      example.run
+    end
+  end
 end
 
 RSpec.configure do |config|
