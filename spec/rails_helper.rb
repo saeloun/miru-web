@@ -14,6 +14,17 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "devise"
 require "rspec/rails"
 require "support/database_cleaner"
+require "capybara/rails"
+require "capybara/rspec"
+
+Capybara.server = :puma
+
+if ENV["CI"].present?
+  Capybara.default_driver = :selenium_chrome_headless
+else
+  puts "selenium_chrome"
+  Capybara.default_driver = :selenium_chrome
+end
 
 Dir[Rails.root.join("spec", "support", "**", "*.rb")].sort.each { |f| require f }
 
@@ -54,6 +65,7 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers
   config.include RequestHelper, type: :request
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Capybara::DSL
   config.before do
     Faker::UniqueGenerator.clear
     OmniAuth.config.test_mode = true
@@ -61,9 +73,12 @@ RSpec.configure do |config|
 
   config.around do |example|
     if example.metadata[:feature]
-      VCR.turned_off { example.run }
-    else
-      example.run
+      VCR.turn_off!
+      WebMock.enable_net_connect!
     end
+    example.run
+  ensure
+    VCR.turn_on!
+    WebMock.disable_net_connect!
   end
 end
