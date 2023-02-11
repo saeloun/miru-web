@@ -155,7 +155,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#remove_all_roles" do
+  describe "#remove_roles_for" do
     before do
       user.add_role :admin, company
       user.add_role :owner, company
@@ -163,7 +163,7 @@ RSpec.describe User, type: :model do
     end
 
     it "removes all roles of user from given company only" do
-      user.remove_all_roles(company)
+      user.remove_roles_for(company)
       expect(user.roles.where(resource: company)).to eq([])
       expect(user.roles.where(resource: company_2).first.name).to eq("employee")
     end
