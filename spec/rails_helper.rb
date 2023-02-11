@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This file is copied to spec/ when you run 'rails generate rspec:install'
 require "spec_helper"
 require "vcr"
 
@@ -58,5 +57,13 @@ RSpec.configure do |config|
   config.before do
     Faker::UniqueGenerator.clear
     OmniAuth.config.test_mode = true
+  end
+
+  config.around do |example|
+    if example.metadata[:feature]
+      VCR.turned_off { example.run }
+    else
+      example.run
+    end
   end
 end
