@@ -22,7 +22,6 @@ Capybara.server = :puma
 if ENV["CI"].present?
   Capybara.default_driver = :selenium_chrome_headless
 else
-  puts "selenium_chrome"
   Capybara.default_driver = :selenium_chrome
 end
 
