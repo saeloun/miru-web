@@ -72,7 +72,7 @@ RSpec.configure do |config|
   end
 
   config.around do |example|
-    if example.metadata[:feature]
+    if example.metadata[:type] == :feature
       VCR.turn_off!
       WebMock.enable_net_connect!
     end
