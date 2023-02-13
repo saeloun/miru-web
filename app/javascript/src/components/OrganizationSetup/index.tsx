@@ -95,7 +95,7 @@ const OrganizationSetup = () => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <div className="w-full px-8 pt-16 pb-4 md:px-0 md:pt-36">
+      <div className="w-full px-8 pt-16 pb-4 md:px-0 md:pt-28">
         <div className="org-setup-form-wrapper mx-auto min-h-full md:w-1/2 lg:w-352">
           <h1 className="text-center font-manrope text-4.75xl font-extrabold not-italic text-miru-han-purple-1000">
             Setup Org
