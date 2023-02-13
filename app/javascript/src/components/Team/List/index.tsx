@@ -68,7 +68,7 @@ const TeamLayout = () => {
   const { isDesktop } = useUserContext();
   const Main = withLayout(TeamList, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return Main;
 };
 
 export default TeamLayout;
