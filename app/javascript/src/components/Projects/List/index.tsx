@@ -4,7 +4,9 @@ import Logger from "js-logger";
 import { ToastContainer } from "react-toastify";
 
 import projectApi from "apis/projects";
+import withLayout from "common/Mobile/HOC/withLayout";
 import { TOASTER_DURATION } from "constants/index";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
@@ -14,7 +16,7 @@ import { IProject } from "../interface";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
 
-export const ProjectList = ({ isAdminUser }) => {
+const ProjectList = ({ isAdminUser }) => {
   const [showProjectModal, setShowProjectModal] =
     React.useState<boolean>(false);
 
@@ -99,4 +101,11 @@ export const ProjectList = ({ isAdminUser }) => {
   );
 };
 
-export default ProjectList;
+const ProjectsLayout = () => {
+  const { isDesktop } = useUserContext();
+  const Main = withLayout(ProjectList, !isDesktop, !isDesktop);
+
+  return <Main />;
+};
+
+export default ProjectsLayout;

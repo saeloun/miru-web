@@ -1,23 +1,37 @@
 /* eslint-disable no-unused-vars */
+import React from "react";
 
 import PropTypes from "prop-types";
 
-const withLayout =
-  (WrappedComponent, includeNavbar, includeSidebar) => props => {
-    // const { selectedTab, setSelectedTab } = useUserContext();
-    // return (
-    //   <>
-    //     {includeNavbar && <Header selectedTab={selectedTab} />}
-    //     <WrappedComponent {...props} />
-    //     {includeSidebar && <Navigation isAdminUser={true} setSelectedTab={setSelectedTab} />}
-    //   </>
-    // );
-  };
+import Header from "components/Navbar/Mobile/Header";
+import Navigation from "components/Navbar/Mobile/Navigation";
+import { useUserContext } from "context/UserContext";
 
-withLayout.propTypes = {
+const WithLayout = (
+  WrappedComponent,
+  includeNavbar,
+  includeSidebar,
+  ...props
+) => {
+  const { selectedTab, setSelectedTab } = useUserContext();
+
+  return (
+    <div className="h-full">
+      {includeNavbar && <Header selectedTab={selectedTab} />}
+      <WrappedComponent {...props} />
+      {includeSidebar && (
+        <Navigation isAdminUser setSelectedTab={setSelectedTab} />
+      )}
+    </div>
+  );
+};
+
+WithLayout.propTypes = {
   WrappedComponent: PropTypes.any,
   includeNavbar: PropTypes.bool.isRequired,
   includeSidebar: PropTypes.bool.isRequired,
 };
 
-export default withLayout;
+WithLayout.displayName = "WithLayout";
+
+export default WithLayout;

@@ -1,13 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 
 import Main from "./Main";
 import Navbar from "./Navbar";
-import Header from "./Navbar/Mobile/Header";
-import Navigation from "./Navbar/Mobile/Navigation";
 
 const DisplayView = props => {
   const { isAdminUser, user, isDesktop, setIsDesktop } = props;
-  const [selectedTab, setSelectedTab] = useState<string>(null);
 
   window.addEventListener("resize", () =>
     setIsDesktop(window.innerWidth > 1023)
@@ -28,9 +25,7 @@ const DisplayView = props => {
 
   return (
     <div className="flex h-screen w-full flex-col">
-      <Header selectedTab={selectedTab} />
       <Main {...props} isAdminUser={isAdminUser} isDesktop={isDesktop} />
-      <Navigation isAdminUser={isAdminUser} setSelectedTab={setSelectedTab} />
     </div>
   );
 };

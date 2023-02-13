@@ -8,8 +8,10 @@ import { Avatar, Tooltip } from "StyledComponents";
 import clientApi from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
+import withLayout from "common/Mobile/HOC/withLayout";
 import Table from "common/Table";
 import { TOASTER_DURATION } from "constants/index";
+import { useUserContext } from "context/UserContext";
 import { unmapClientList } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
@@ -267,4 +269,11 @@ const Clients = ({ isAdminUser }) => {
   );
 };
 
-export default Clients;
+const ClientsLayout = () => {
+  const { isDesktop } = useUserContext();
+  const Main = withLayout(Clients, !isDesktop, !isDesktop);
+
+  return <Main />;
+};
+
+export default ClientsLayout;
