@@ -10,8 +10,10 @@ import { ToastContainer } from "react-toastify";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
+import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";
 import { TOASTER_DURATION } from "constants/index";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import AddEntry from "./AddEntry";
@@ -524,4 +526,11 @@ interface Iprops {
   user: any;
 }
 
-export default TimeTracking;
+const TimeTrackingLayout = () => {
+  const { isDesktop } = useUserContext();
+  const Main = withLayout(TimeTracking, !isDesktop, !isDesktop);
+
+  return <Main />;
+};
+
+export default TimeTrackingLayout;

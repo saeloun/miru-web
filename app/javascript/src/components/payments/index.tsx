@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import Logger from "js-logger";
 
 import payment from "apis/payments/payments";
+import withLayout from "common/Mobile/HOC/withLayout";
+import { useUserContext } from "context/UserContext";
 import { unmapPayment } from "mapper/mappedIndex";
 
 import Header from "./Header";
@@ -66,4 +68,11 @@ const Payments = () => {
   );
 };
 
-export default Payments;
+const PaymentsLayout = () => {
+  const { isDesktop } = useUserContext();
+  const Main = withLayout(Payments, !isDesktop, !isDesktop);
+
+  return <Main />;
+};
+
+export default PaymentsLayout;
