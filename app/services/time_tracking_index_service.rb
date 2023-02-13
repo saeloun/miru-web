@@ -67,6 +67,7 @@ class TimeTrackingIndexService
     end
 
     def set_projects
+      @projects = {}
       user_projects = current_user.allowed_projects(current_company)
       clients.each { |client| @projects[client.name] = client.projects.kept & user_projects }
     end
