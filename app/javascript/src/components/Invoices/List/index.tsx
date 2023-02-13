@@ -313,7 +313,7 @@ const InvoicesLayout = () => {
   const { isDesktop } = useUserContext();
   const Main = withLayout(Invoices, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return Main;
 };
 
 export default InvoicesLayout;

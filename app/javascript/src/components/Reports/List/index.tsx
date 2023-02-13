@@ -94,7 +94,7 @@ const ReportsLayout = () => {
   const { isDesktop } = useUserContext();
   const Main = withLayout(List, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return Main;
 };
 
 export default ReportsLayout;

@@ -72,7 +72,7 @@ const PaymentsLayout = () => {
   const { isDesktop } = useUserContext();
   const Main = withLayout(Payments, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return Main;
 };
 
 export default PaymentsLayout;

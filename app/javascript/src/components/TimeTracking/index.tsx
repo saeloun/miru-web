@@ -530,7 +530,7 @@ const TimeTrackingLayout = () => {
   const { isDesktop } = useUserContext();
   const Main = withLayout(TimeTracking, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return Main;
 };
 
 export default TimeTrackingLayout;

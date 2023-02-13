@@ -273,7 +273,7 @@ const ClientsLayout = () => {
   const { isDesktop } = useUserContext();
   const Main = withLayout(Clients, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return Main;
 };
 
 export default ClientsLayout;

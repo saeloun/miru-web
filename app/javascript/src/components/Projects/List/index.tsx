@@ -105,7 +105,7 @@ const ProjectsLayout = () => {
   const { isDesktop } = useUserContext();
   const Main = withLayout(ProjectList, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return Main;
 };
 
 export default ProjectsLayout;
