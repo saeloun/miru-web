@@ -112,7 +112,7 @@
       @apply pt-5 w-full flex items-stretch sm:flex-row text-miru-dark-purple-1000 border-t border-miru-gray-1000;
     }
     &__box {
-      @apply flex flex-col justify-start items-start px-2 md:px-10 border-r border-miru-han-purple-600;
+      @apply flex flex-col justify-start items-start pl-2 pr-6 md:px-10 border-r border-miru-han-purple-600;
     }
     &__box:last-child {
       @apply border-r-0 border-b-0 pb-0;
@@ -552,4 +552,14 @@ body {
 .outline input:focus-within ~ label,
 .outline input:not(:placeholder-shown) ~ label {
   @apply top-2 z-0 ml-3 -translate-y-4 scale-75 transform px-1 py-0 text-xs text-miru-dark-purple-400;
+}
+
+.focusPadding:focus {
+  padding-left: 8px;
+  padding-right: 4px;
+}
+
+.tooltip{
+  background-color: #1D1A31;
+  text-color: #FFF
 }

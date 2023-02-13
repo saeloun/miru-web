@@ -37,12 +37,17 @@ import {
   Minus,
   CurrencyCircleDollar,
   CheckCircle,
+  Phone,
+  MapPin,
+  Info,
+  Globe,
 } from "phosphor-react";
 
 const accountsAgingIcon = require("./svgIcons/accountsAging.svg");
 const accountsAgingHoverIcon = require("./svgIcons/accountsAgingHover.svg");
 const reportcalendarIcon = require("./svgIcons/Calendar.svg");
 const calendarHoverIcon = require("./svgIcons/CalendarHover.svg");
+const emptyStateInvoices = require("./svgIcons/emptyStateInvoices.svg");
 const hoursIcon = require("./svgIcons/Hours.svg");
 const hoursHoverIcon = require("./svgIcons/HoursHover.svg");
 const overdueOutstandingIcon = require("./svgIcons/OverdueOutstanding.svg");
@@ -147,6 +152,10 @@ export const PaperPlaneTiltIcon = PaperPlaneTilt;
 export const FloppyDiskIcon = FloppyDisk;
 export const CurrencyCircleDollarIcon = CurrencyCircleDollar;
 export const CheckCircleIcon = CheckCircle;
+export const PhoneIcon = Phone;
+export const MapPinIcon = MapPin;
+export const InfoIcon = Info;
+export const GlobeIcon = Globe;
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
 export const WarningCloseIconSVG = warningCloseIcon;
@@ -216,3 +225,4 @@ export const RevenueHoverIcon = revenueHoverIcon;
 export const AccountsAgingIcon = accountsAgingIcon;
 export const AccountsAgingHoverIcon = accountsAgingHoverIcon;
 export const Switcher = switcher;
+export const EmptyStateInvoices = emptyStateInvoices;

@@ -33,7 +33,7 @@ gem "puma", "~> 5.0"
 gem "jbuilder", "~> 2.11"
 
 # Use devise for authentication
-gem "devise", git: "https://github.com/heartcombo/devise", branch: "main"
+gem "devise"
 
 # Use Redis adapter to run Action Cable in production
 gem "redis", "~> 4.0"
@@ -220,3 +220,7 @@ end
 
 # https://github.com/ankane/strong_migrations
 gem "strong_migrations"
+
+# Error tracking: https://docs.sentry.io/platforms/ruby/guides/rails/
+gem "sentry-rails"
+gem "sentry-ruby"

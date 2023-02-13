@@ -108,7 +108,7 @@ const OutstandingInvoiceReport = () => {
   };
 
   return (
-    <div>
+    <div className="absolute inset-0 z-50 bg-white lg:relative">
       <EntryContext.Provider
         value={{
           ...contextValues,
@@ -120,6 +120,7 @@ const OutstandingInvoiceReport = () => {
           resetFilter={resetFilter}
           setIsFilterVisible={setIsFilterVisible}
           showExportButon={false}
+          showFilterIcon={false}
           showNavFilters={showNavFilters}
           type="Invoices Report"
         />

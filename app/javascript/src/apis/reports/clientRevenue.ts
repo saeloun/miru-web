@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../api";
 
 const path = "/reports/client_revenues/";
 

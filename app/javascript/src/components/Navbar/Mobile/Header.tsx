@@ -31,7 +31,7 @@ const Header = ({ selectedTab }) => {
         >
           <img alt="miru-logo" className="h-6 w-6" src={MiruLogoSVG} />
         </Link>
-        <span className="z-50 w-full pr-3 text-center text-base font-bold leading-5 text-miru-han-purple-1000">
+        <span className="z-40 w-full pr-3 text-center text-base font-bold leading-5 text-miru-han-purple-1000">
           {selectedTab}
         </span>
       </Fragment>
@@ -39,7 +39,7 @@ const Header = ({ selectedTab }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex h-12 items-center bg-white px-4 shadow-lg">
+    <div className="sticky top-0 left-0 right-0 z-50 flex h-1/15 items-center bg-white px-4 shadow-lg">
       {getHeaderContent()}
     </div>
   );

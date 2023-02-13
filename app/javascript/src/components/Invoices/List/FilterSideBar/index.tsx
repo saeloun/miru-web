@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import { useDebounce } from "helpers";
+import { useDebounce, useOutsideClick } from "helpers";
 import { XIcon, FilterIcon, PlusIcon, MinusIcon, SearchIcon } from "miruIcons";
 import { Badge, Button, SidePanel } from "StyledComponents";
 
@@ -18,13 +18,13 @@ import { dateRangeOptions, statusOptions } from "./filterOptions";
 dayjs.extend(advancedFormat);
 
 const FilterSideBar = ({
-  filterIntialValues,
   setIsFilterVisible,
   filterParams,
   setFilterParams,
   selectedInput,
   setSelectedInput,
   isDesktop,
+  handleReset,
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [clientList, setClientList] = useState<null | any[]>([]);
@@ -41,8 +41,12 @@ const FilterSideBar = ({
   const [isStatusOpen, setIsStatusOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [dateRangeList, setDateRangeList] = useState<any>(dateRangeOptions);
+  const [disableApplyBtn, setDisableApplyBtn] = useState(false);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const wrapperRef = useRef(null);
+
+  useOutsideClick(wrapperRef, () => setShowCustomFilter(false), selectedInput);
 
   useEffect(() => {
     const { value, from, to } = filterParams.dateRange;
@@ -196,13 +200,24 @@ const FilterSideBar = ({
     hideCustomFilter();
   };
 
-  const handleReset = () => {
-    window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
-    setFilterParams(filterIntialValues);
-    setIsFilterVisible(false);
-  };
+  useEffect(() => {
+    if (
+      filters.dateRange.value == "custom" &&
+      !filters.dateRange.from &&
+      !filters.dateRange.to &&
+      disableDateBtn
+    ) {
+      setDisableApplyBtn(true);
+    } else {
+      setDisableApplyBtn(false);
+    }
+  }, [filters, disableDateBtn]);
 
   const handleApply = () => {
+    if (disableApplyBtn) {
+      return;
+    }
+
     defaultDateRange()
       ? setFilterParams(setDefaultDateRange())
       : setFilterParams(filters);
@@ -233,244 +248,259 @@ const FilterSideBar = ({
   }
 
   return (
-    <SidePanel WrapperClassname="z-50" setFilterVisibilty={setIsFilterVisible}>
-      <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
-        {isDesktop ? (
-          <h4 className="flex items-center text-base">
-            <FilterIcon className="mr-2.5" size={16} /> <span>Filters</span>
-          </h4>
-        ) : (
-          <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
-            Filters
-          </span>
-        )}
-        <Button style="ternary" onClick={() => setIsFilterVisible(false)}>
-          <XIcon
-            className="text-white lg:text-miru-dark-purple-1000"
-            size={16}
-          />
-        </Button>
-      </SidePanel.Header>
-      <SidePanel.Body className="sidebar__filters">
-        <ul>
-          <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000">
-            <div
-              className="flex items-center justify-between px-5"
-              onClick={() => {
-                setIsStatusOpen(false);
-                setIsClientOpen(false);
-                setIsDateRangeOpen(!isDateRangeOpen);
-              }}
-            >
-              <h5 className="text-xs font-bold leading-4 tracking-wider">
-                DATE RANGE
-              </h5>
-              <div className="flex items-center">
-                {filters.dateRange.value != "all" && (
-                  <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
-                    {1}
-                  </span>
-                )}
-                {isDateRangeOpen ? (
-                  <MinusIcon size={16} />
-                ) : (
-                  <PlusIcon size={16} />
-                )}
-              </div>
-            </div>
-            {isDateRangeOpen && (
-              <div className="lg:mt-7">
-                {dateRangeList.map(dateRange => (
-                  <CustomRadioButton
-                    classNameWrapper="px-5 py-2.5"
-                    defaultCheck={dateRange.value == filters.dateRange.value}
-                    groupName="dateRange"
-                    id={dateRange.value}
-                    key={dateRange.value}
-                    label={dateRange.label}
-                    value={dateRange.value}
-                    handleOnChange={event =>
-                      handleSelectFilter(dateRange, event.target)
-                    }
-                  />
-                ))}
-              </div>
-            )}
-            {showCustomFilter && (
-              <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1">
-                <CustomDateRangePicker
-                  dateRange={dateRange}
-                  handleSelectDate={handleSelectDate}
-                  hideCustomFilter={hideCustomFilter}
-                  selectedInput={selectedInput}
-                  onClickInput={onClickInput}
-                />
-                <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
-                  <button
-                    className="sidebar__reset"
-                    onClick={resetCustomDatePicker}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    disabled={disableDateBtn}
-                    className={`sidebar__apply ${
-                      disableDateBtn
-                        ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
-                        : "cursor-pointer"
-                    }`}
-                    onClick={submitCustomDatePicker}
-                  >
-                    Done
-                  </button>
-                </div>
-              </div>
-            )}
-          </li>
-          <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
-            <div
-              className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
-              onClick={() => {
-                setIsStatusOpen(false);
-                setIsDateRangeOpen(false);
-                setIsClientOpen(!isClientOpen);
-              }}
-            >
-              <h5 className="text-xs font-bold leading-4 tracking-wider">
-                CLIENTS
-              </h5>
-              <div className="flex items-center">
-                {filters.clients.length > 0 && (
-                  <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
-                    {filters.clients.length}
-                  </span>
-                )}
-                {isClientOpen ? (
-                  <MinusIcon size={16} />
-                ) : (
-                  <PlusIcon size={16} />
-                )}
-              </div>
-            </div>
-            {isClientOpen && (
-              <div className="lg:mt-7">
-                <div className="relative mt-2 flex w-full items-center px-5">
-                  <input
-                    placeholder="Search"
-                    type="text"
-                    value={searchQuery}
-                    className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-                    onChange={e => {
-                      setSearchQuery(e.target.value);
-                    }}
-                  />
-                  {searchQuery ? (
-                    <XIcon
-                      className="absolute right-8"
-                      color="#1D1A31"
-                      size={16}
-                      onClick={() => setSearchQuery("")}
-                    />
-                  ) : (
-                    <SearchIcon
-                      className="absolute right-8"
-                      color="#1D1A31"
-                      size={16}
-                    />
+    <SidePanel
+      WrapperClassname="z-50 justify-content-between"
+      setFilterVisibilty={setIsFilterVisible}
+    >
+      <div>
+        <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
+          {isDesktop ? (
+            <h4 className="flex items-center text-base">
+              <FilterIcon className="mr-2.5" size={16} /> <span>Filters</span>
+            </h4>
+          ) : (
+            <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
+              Filters
+            </span>
+          )}
+          <Button style="ternary" onClick={() => setIsFilterVisible(false)}>
+            <XIcon
+              className="text-white lg:text-miru-dark-purple-1000"
+              size={16}
+            />
+          </Button>
+        </SidePanel.Header>
+        <SidePanel.Body className="sidebar__filters max-h-80v min-h-80v overflow-y-auto">
+          <ul>
+            <li className="relative cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000">
+              <div
+                className="flex items-center justify-between px-5"
+                onClick={() => {
+                  setIsStatusOpen(false);
+                  setIsClientOpen(false);
+                  setIsDateRangeOpen(!isDateRangeOpen);
+                }}
+              >
+                <h5 className="text-xs font-bold leading-4 tracking-wider">
+                  DATE RANGE
+                </h5>
+                <div className="flex items-center">
+                  {filters.dateRange.value != "all" && (
+                    <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
+                      {1}
+                    </span>
                   )}
-                </div>
-                <div className="h-96 overflow-y-auto lg:mt-7">
-                  {filteredClientList.length > 0 ? (
-                    filteredClientList.map(client => (
-                      <CustomCheckbox
-                        checkboxValue={client.value}
-                        id={client.value}
-                        key={client.value}
-                        labelClassName="ml-4"
-                        name="clients"
-                        text={client.label}
-                        wrapperClassName="py-3 px-5 flex items-center hover:bg-miru-gray-100 text-miru-dark-purple-1000"
-                        handleCheck={event =>
-                          handleSelectFilter(client, event.target)
-                        }
-                        isChecked={filters.clients.some(
-                          e => e.value === client.value
-                        )}
-                      />
-                    ))
+                  {isDateRangeOpen ? (
+                    <MinusIcon size={16} />
                   ) : (
-                    <div className="m-5">No results found</div>
+                    <PlusIcon size={16} />
                   )}
                 </div>
               </div>
-            )}
-          </li>
-          <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
-            <div
-              className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
-              onClick={() => {
-                setIsDateRangeOpen(false);
-                setIsClientOpen(false);
-                setIsStatusOpen(!isStatusOpen);
-              }}
-            >
-              <h5 className="text-xs font-bold leading-4 tracking-wider">
-                STATUS
-              </h5>
-              <div className="flex items-center">
-                {filters.status.length > 0 && (
-                  <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
-                    {filters.status.length}
-                  </span>
-                )}
-                {isStatusOpen ? (
-                  <MinusIcon size={16} />
-                ) : (
-                  <PlusIcon size={16} />
-                )}
-              </div>
-            </div>
-            {isStatusOpen && (
-              <div className="lg:mt-7">
-                {statusOptions.length &&
-                  statusOptions.map(status => (
-                    <CustomCheckbox
-                      checkboxValue={status.value}
-                      id={status.value}
-                      key={status.value}
-                      labelClassName="ml-4"
-                      name="status"
-                      wrapperClassName="py-3 px-5 flex items-center hover:bg-miru-gray-100"
-                      handleCheck={event =>
-                        handleSelectFilter(status, event.target)
-                      }
-                      isChecked={filters.status.some(
-                        e => e.value === status.value
-                      )}
-                      text={
-                        <Badge
-                          className={getStatusCssClass(status.label)}
-                          text={status.label}
-                        />
+              {isDateRangeOpen && (
+                <div className="lg:mt-7">
+                  {dateRangeList.map(dateRange => (
+                    <CustomRadioButton
+                      classNameWrapper="px-5 py-2.5"
+                      defaultCheck={dateRange.value == filters.dateRange.value}
+                      groupName="dateRange"
+                      id={dateRange.value}
+                      key={dateRange.value}
+                      label={dateRange.label}
+                      value={dateRange.value}
+                      handleOnChange={event =>
+                        handleSelectFilter(dateRange, event.target)
                       }
                     />
                   ))}
+                </div>
+              )}
+              {showCustomFilter && (
+                <div
+                  className="absolute z-20 mt-1 ml-4 flex flex-col overflow-y-auto rounded-lg bg-miru-white-1000 shadow-c1"
+                  ref={wrapperRef}
+                >
+                  <CustomDateRangePicker
+                    dateRange={dateRange}
+                    handleSelectDate={handleSelectDate}
+                    hideCustomFilter={hideCustomFilter}
+                    selectedInput={selectedInput}
+                    onClickInput={onClickInput}
+                  />
+                  <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
+                    <button
+                      className="sidebar__reset"
+                      onClick={resetCustomDatePicker}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      disabled={disableDateBtn}
+                      className={`sidebar__apply ${
+                        disableDateBtn
+                          ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                          : "cursor-pointer"
+                      }`}
+                      onClick={submitCustomDatePicker}
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
+              )}
+            </li>
+            <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
+              <div
+                className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
+                onClick={() => {
+                  setIsStatusOpen(false);
+                  setIsDateRangeOpen(false);
+                  setIsClientOpen(!isClientOpen);
+                }}
+              >
+                <h5 className="text-xs font-bold leading-4 tracking-wider">
+                  CLIENTS
+                </h5>
+                <div className="flex items-center">
+                  {filters.clients.length > 0 && (
+                    <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
+                      {filters.clients.length}
+                    </span>
+                  )}
+                  {isClientOpen ? (
+                    <MinusIcon size={16} />
+                  ) : (
+                    <PlusIcon size={16} />
+                  )}
+                </div>
               </div>
-            )}
-          </li>
-        </ul>
-      </SidePanel.Body>
-      <SidePanel.Footer className="sidebar__footer justify-between">
+              {isClientOpen && (
+                <div className="lg:mt-7">
+                  <div className="relative mt-2 flex w-full items-center px-5">
+                    <input
+                      placeholder="Search"
+                      type="text"
+                      value={searchQuery}
+                      className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
+            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+                      onChange={e => {
+                        setSearchQuery(e.target.value);
+                      }}
+                    />
+                    {searchQuery ? (
+                      <XIcon
+                        className="absolute right-8"
+                        color="#1D1A31"
+                        size={16}
+                        onClick={() => setSearchQuery("")}
+                      />
+                    ) : (
+                      <SearchIcon
+                        className="absolute right-8"
+                        color="#1D1A31"
+                        size={16}
+                      />
+                    )}
+                  </div>
+                  <div className="max-h-50v overflow-y-auto lg:mt-7">
+                    {filteredClientList.length > 0 ? (
+                      filteredClientList.map(client => (
+                        <CustomCheckbox
+                          checkboxValue={client.value}
+                          id={client.value}
+                          key={client.value}
+                          labelClassName="ml-4"
+                          name="clients"
+                          text={client.label}
+                          wrapperClassName="py-3 px-5 flex items-center hover:bg-miru-gray-100 text-miru-dark-purple-1000"
+                          handleCheck={event =>
+                            handleSelectFilter(client, event.target)
+                          }
+                          isChecked={filters.clients.some(
+                            e => e.value === client.value
+                          )}
+                        />
+                      ))
+                    ) : (
+                      <div className="m-5">No results found</div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </li>
+            <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
+              <div
+                className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
+                onClick={() => {
+                  setIsDateRangeOpen(false);
+                  setIsClientOpen(false);
+                  setIsStatusOpen(!isStatusOpen);
+                }}
+              >
+                <h5 className="text-xs font-bold leading-4 tracking-wider">
+                  STATUS
+                </h5>
+                <div className="flex items-center">
+                  {filters.status.length > 0 && (
+                    <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
+                      {filters.status.length}
+                    </span>
+                  )}
+                  {isStatusOpen ? (
+                    <MinusIcon size={16} />
+                  ) : (
+                    <PlusIcon size={16} />
+                  )}
+                </div>
+              </div>
+              {isStatusOpen && (
+                <div className="lg:mt-7">
+                  {statusOptions.length &&
+                    statusOptions.map(status => (
+                      <CustomCheckbox
+                        checkboxValue={status.value}
+                        id={status.value}
+                        key={status.value}
+                        labelClassName="ml-4"
+                        name="status"
+                        wrapperClassName="py-3 px-5 flex items-center hover:bg-miru-gray-100"
+                        handleCheck={event =>
+                          handleSelectFilter(status, event.target)
+                        }
+                        isChecked={filters.status.some(
+                          e => e.value === status.value
+                        )}
+                        text={
+                          <Badge
+                            className={getStatusCssClass(status.label)}
+                            text={status.label}
+                          />
+                        }
+                      />
+                    ))}
+                </div>
+              )}
+            </li>
+          </ul>
+        </SidePanel.Body>
+      </div>
+      <SidePanel.Footer className="sidebar__footer h-auto justify-around px-2">
         <Button
-          className="mr-4 flex items-center justify-between"
-          size="medium"
+          className="mr-2 flex items-center justify-between px-10 py-2.5 text-base font-bold leading-5"
           style="secondary"
           onClick={handleReset}
         >
           RESET
         </Button>
-        <Button size="medium" style="primary" onClick={handleApply}>
+        <Button
+          disabled={disableApplyBtn}
+          style="primary"
+          className={`${
+            disableApplyBtn &&
+            "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+          } px-10 py-2.5 text-base font-bold leading-5`}
+          onClick={handleApply}
+        >
           APPLY
         </Button>
       </SidePanel.Footer>

@@ -151,6 +151,14 @@ class Invoice < ApplicationRecord
     file
   end
 
+  def formatted_due_date
+    CompanyDateFormattingService.new(due_date, company:).process
+  end
+
+  def formatted_issue_date
+    CompanyDateFormattingService.new(issue_date, company:).process
+  end
+
   private
 
     def set_external_view_key

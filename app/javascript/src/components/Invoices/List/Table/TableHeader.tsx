@@ -33,7 +33,7 @@ const TableHeader = ({
 
   return (
     <tr>
-      <th className="py-5 pl-2 pr-0 md:px-4" scope="col">
+      <th className="py-5 lg:px-3" scope="col">
         <CustomCheckbox
           isUpdatedDesign
           checkboxValue={1}

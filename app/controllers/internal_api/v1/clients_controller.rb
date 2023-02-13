@@ -22,7 +22,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     authorize client
 
     render json: {
-             client_details: ClientPresenter.new(client).snippet,
+             client_details: Client::ShowPresenter.new(client).process,
              project_details: client.project_details(params[:time_frame]),
              total_minutes: client.total_hours_logged(params[:time_frame]),
              overdue_outstanding_amount: client.client_overdue_and_outstanding_calculation

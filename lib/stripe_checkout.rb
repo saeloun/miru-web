@@ -17,7 +17,8 @@ module StripeCheckout
       render json: { message: "Invalid payload!" }, status: 400 and return
     rescue Stripe::SignatureVerificationError => e
       # Invalid signature
-      puts "Invalid signature!"
+      Rails.logger.error "Invalid stripe webhook signature!"
+      Rails.logger.error payload
       render json: { message: "Invalid signature!" }, status: 400 and return
     end
 

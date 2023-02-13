@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 json.id invoice.id
-json.issue_date invoice.issue_date
-json.due_date invoice.due_date
+json.issue_date invoice.formatted_issue_date
+json.due_date invoice.formatted_due_date
 json.invoice_number invoice.invoice_number
 json.reference invoice.reference
 json.amount invoice.amount

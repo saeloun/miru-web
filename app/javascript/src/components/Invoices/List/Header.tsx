@@ -93,11 +93,11 @@ const Header = ({
           </div>
         </div>
         <button
-          className="relative ml-7 p-1 hover:bg-miru-gray-1000"
+          className="relative ml-7 h-10 w-10 rounded p-3 hover:bg-miru-gray-1000"
           onClick={() => setIsFilterVisible(true)}
         >
           {appliedFilterCount > 0 && (
-            <span className="absolute bottom-2 left-2 mr-7 flex h-4 w-4 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
+            <span className="absolute bottom-5 left-5  flex h-4 w-4 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
               {appliedFilterCount}
             </span>
           )}

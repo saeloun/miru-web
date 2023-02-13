@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import reportsApi from "apis/reports";
 import { sendGAPageView } from "utils/googleAnalytics";
 
+import { TIME_ENTRY_REPORT_PAGE } from "./utils";
+
 import { applyFilter, getQueryParams } from "../api/applyFilter";
 import Container from "../Container";
 import AccountsAgingReportContext from "../context/AccountsAgingReportContext";
@@ -20,7 +22,7 @@ const TimeEntryReport = () => {
     clients: [],
     teamMember: [],
     status: [],
-    groupBy: { label: "None", value: "" },
+    groupBy: { label: "Client", value: "client" },
   };
 
   const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
@@ -32,7 +34,8 @@ const TimeEntryReport = () => {
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
-  const [selectedInput, setSelectedInput] = useState("from-input");
+  const [selectedInput, setSelectedInput] = useState<string>("from-input");
+  const [dateRange, setDateRange] = useState({ from: "", to: "" });
 
   useEffect(() => {
     sendGAPageView();
@@ -42,12 +45,12 @@ const TimeEntryReport = () => {
     let counter = 0;
     for (const filterkey in selectedFilter) {
       const filterValue = selectedFilter[filterkey];
-      if (filterkey !== "customDateFilter") {
+      if (filterkey == "customDateFilter") {
         continue;
       } else if (Array.isArray(filterValue)) {
         counter = counter + filterValue.length;
       } else {
-        if (filterValue.value !== "") {
+        if (filterValue?.value) {
           counter = counter + 1;
         }
       }
@@ -90,6 +93,11 @@ const TimeEntryReport = () => {
         setSelectedFilter({
           ...selectedFilter,
           [key]: filterIntialValues.dateRange,
+        });
+      } else if (key === "groupBy") {
+        setSelectedFilter({
+          ...selectedFilter,
+          [key]: filterIntialValues.groupBy,
         });
       } else {
         const label = "None";
@@ -145,15 +153,18 @@ const TimeEntryReport = () => {
           resetFilter={resetFilter}
           setIsFilterVisible={setIsFilterVisible}
           showNavFilters={showNavFilters}
-          type="Time Entry Report"
+          type={TIME_ENTRY_REPORT_PAGE}
         />
-        <Container />
+        <Container selectedFilter={selectedFilter} />
         {isFilterVisible && (
           <Filters
+            customDateRange={dateRange}
             handleApplyFilter={handleApplyFilter}
             resetFilter={resetFilter}
             selectedInput={selectedInput}
+            setCustomDateRange={setDateRange}
             setIsFilterVisible={setIsFilterVisible}
+            setSelectedInput={setSelectedInput}
             onClickInput={onClickInput}
           />
         )}
