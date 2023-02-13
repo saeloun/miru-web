@@ -10,10 +10,13 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
 
     context "when team member is present in company" do
       let(:team_user) { create(:user, current_workspace_id: company.id) }
+      let(:team_user_2) { create(:user, current_workspace_id: company.id) }
 
       before do
         @team_company_user = create(:employment, company:, user: team_user)
         create(:employment, company:, user: admin_user)
+        team_user.add_role :employee, company
+        team_user_2.add_role :employee, company
         admin_user.add_role :admin, company
         sign_in admin_user
       end
@@ -32,6 +35,13 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
 
         expect(@team_company_user.reload.discarded?).to be_truthy
         expect(team_user.reload.employments.discarded.count).to eq(1)
+      end
+
+      it "changes role of only discarded employee" do
+        send_request :delete, internal_api_v1_team_path(@team_company_user.user)
+
+        expect(team_user.roles.where(resource: company)).to eq([])
+        expect(team_user_2.roles.where(resource: company).first.name).to eq("employee")
       end
     end
 
@@ -93,11 +103,14 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
 
       before do
         @team_company_user = create(:employment, company:, user: team_user)
-        create(:employment, company: other_company_1, user: team_user)
-        create(:employment, company: other_company_2, user: team_user)
+        @team_company_1_user = create(:employment, company: other_company_1, user: team_user)
+        @team_company_2_user = create(:employment, company: other_company_2, user: team_user)
         create(:employment, company:, user: admin_user)
         team_user.current_workspace_id = company.id
         team_user.save!
+        team_user.add_role :employee, company
+        team_user.add_role :employee, other_company_1
+        team_user.add_role :employee, other_company_2
         admin_user.add_role :admin, company
         sign_in admin_user
       end
@@ -108,11 +121,20 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
           .and change(team_user.employments.discarded, :count).from(0).to(1)
 
         expect(@team_company_user.reload.discarded?).to be_truthy
+        expect(@team_company_1_user.reload.discarded?).not_to be_truthy
+        expect(@team_company_2_user.reload.discarded?).not_to be_truthy
       end
 
       it "updates the current_workspace_id of the user" do
         send_request :delete, internal_api_v1_team_path(team_user)
         expect(team_user.reload.current_workspace_id).not_to eq(company.id)
+      end
+
+      it "updates the role only in current company company" do
+        send_request :delete, internal_api_v1_team_path(team_user)
+        expect(team_user.roles.where(resource: company)).to eq([])
+        expect(team_user.roles.where(resource: other_company_1).first.name).to eq("employee")
+        expect(team_user.roles.where(resource: other_company_2).first.name).to eq("employee")
       end
     end
   end
