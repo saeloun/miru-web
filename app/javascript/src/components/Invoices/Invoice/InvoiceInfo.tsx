@@ -12,20 +12,6 @@ const InvoiceInfo = ({ invoice }) => {
   return (
     <>
       <div className="group">
-        <p className="flex text-xs font-normal text-miru-dark-purple-1000">
-          Date of Issue
-        </p>
-        <p className="text-base font-normal text-miru-dark-purple-1000">
-          {formattedIssueDate}
-        </p>
-        <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
-          Due Date
-        </p>
-        <p className="text-base font-normal text-miru-dark-purple-1000">
-          {formattedDueDate}
-        </p>
-      </div>
-      <div className="group">
         <p className="text-xs font-normal text-miru-dark-purple-1000">
           Invoice Number
         </p>
@@ -37,6 +23,20 @@ const InvoiceInfo = ({ invoice }) => {
         </p>
         <p className="text-base font-normal text-miru-dark-purple-1000">
           {invoice.reference}
+        </p>
+      </div>
+      <div className="group">
+        <p className="flex text-xs font-normal text-miru-dark-purple-1000">
+          Date of Issue
+        </p>
+        <p className="text-base font-normal text-miru-dark-purple-1000">
+          {formattedIssueDate}
+        </p>
+        <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
+          Due Date
+        </p>
+        <p className="text-base font-normal text-miru-dark-purple-1000">
+          {formattedDueDate}
         </p>
       </div>
       <div>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import Logger from "js-logger";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import payment from "apis/payments/payments";
 import { unmapPayment } from "mapper/mappedIndex";
 
@@ -46,8 +45,6 @@ const Payments = () => {
   };
 
   useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
     fetchInvoiceList();
     fetchPaymentList();
     checkInvoiceIdInUrl();

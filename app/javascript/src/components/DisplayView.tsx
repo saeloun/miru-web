@@ -6,8 +6,7 @@ import Header from "./Navbar/Mobile/Header";
 import Navigation from "./Navbar/Mobile/Navigation";
 
 const DisplayView = props => {
-  const { isAdminUser, user } = props;
-  const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
+  const { isAdminUser, user, isDesktop, setIsDesktop } = props;
   const [selectedTab, setSelectedTab] = useState<string>(null);
 
   window.addEventListener("resize", () =>
@@ -28,7 +27,7 @@ const DisplayView = props => {
   }
 
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="flex h-screen w-full flex-col">
       <Header selectedTab={selectedTab} />
       <Main {...props} isAdminUser={isAdminUser} isDesktop={isDesktop} />
       <Navigation isAdminUser={isAdminUser} setSelectedTab={setSelectedTab} />

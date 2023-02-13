@@ -4,7 +4,6 @@ import { Formik, Form, Field, FormikProps } from "formik";
 import { DeleteImageButtonSVG, EditImageButtonSVG } from "miruIcons";
 import Select, { components } from "react-select";
 
-import { registerIntercepts, setAuthHeaders } from "apis/axios";
 import companyProfileApi from "apis/companyProfile";
 
 import { CompanyDetailsFormProps, CompanyDetailsFormValues } from "./interface";
@@ -78,8 +77,6 @@ const CompanyDetailsForm = ({
   );
 
   useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
     getAllTimezones();
   }, []);
 
