@@ -4,6 +4,7 @@ require "rails_helper"
 
 RSpec.describe User, type: :model do
   let(:company) { create(:company) }
+  let(:company_2) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
@@ -226,6 +227,20 @@ RSpec.describe User, type: :model do
       it "returns only allowed clients" do
         expect(user.allowed_clients(company).pluck(:id)).to eq([client_1.id])
       end
+    end
+  end
+
+  describe "#remove_roles_for" do
+    before do
+      user.add_role :admin, company
+      user.add_role :owner, company
+      user.add_role :employee, company_2
+    end
+
+    it "removes all roles of user from only from the given company" do
+      user.remove_roles_for(company)
+      expect(user.roles.where(resource: company)).to eq([])
+      expect(user.roles.where(resource: company_2).first.name).to eq("employee")
     end
   end
 end
