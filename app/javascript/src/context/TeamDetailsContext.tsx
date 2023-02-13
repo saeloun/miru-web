@@ -1,9 +1,11 @@
 import { createContext, useContext } from "react";
 
+import { PersonalDetailsState } from "components/Team/Details/PersonalDetails/PersonalDetailsState";
+
 // Context Creation
 export const TeamDetailsContext = createContext({
   details: {
-    personalDetails: {},
+    personalDetails: PersonalDetailsState,
     employmentDetails: [],
     documentDetails: {},
     deviceDetails: {},
