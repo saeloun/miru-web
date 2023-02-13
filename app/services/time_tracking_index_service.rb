@@ -56,14 +56,8 @@ class TimeTrackingIndexService
     end
 
     def set_clients
-      if is_admin
-        @clients = current_company.clients.kept.order(name: :asc).includes(:projects)
-      else
-        @clients = current_user.clients.kept
-          .where(company_id: current_company.id)
-          .order(name: :asc)
-          .includes(:projects).distinct
-      end
+      @clients = current_user.allowed_clients(current_company)
+        .includes(:projects)
     end
 
     def set_projects

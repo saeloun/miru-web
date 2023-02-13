@@ -91,6 +91,17 @@ class User < ApplicationRecord
   after_discard :discard_project_members
   before_create :set_token
 
+  def allowed_clients(company)
+    if self.has_admin_access(company)
+      company.clients.kept.order(:name)
+    else
+      clients.kept
+        .where(company_id: company.id)
+        .merge(project_members.kept)
+        .order(:name)
+    end
+  end
+
   def allowed_projects(company)
     if self.has_admin_access(company)
       company.projects.kept
