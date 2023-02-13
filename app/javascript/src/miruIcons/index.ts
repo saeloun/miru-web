@@ -37,6 +37,10 @@ import {
   Minus,
   CurrencyCircleDollar,
   CheckCircle,
+  Phone,
+  MapPin,
+  Info,
+  Globe,
 } from "phosphor-react";
 
 const accountsAgingIcon = require("./svgIcons/accountsAging.svg");
@@ -148,6 +152,10 @@ export const PaperPlaneTiltIcon = PaperPlaneTilt;
 export const FloppyDiskIcon = FloppyDisk;
 export const CurrencyCircleDollarIcon = CurrencyCircleDollar;
 export const CheckCircleIcon = CheckCircle;
+export const PhoneIcon = Phone;
+export const MapPinIcon = MapPin;
+export const InfoIcon = Info;
+export const GlobeIcon = Globe;
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
 export const WarningCloseIconSVG = warningCloseIcon;
