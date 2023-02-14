@@ -1,6 +1,6 @@
 let focusedState = false;
 
-export const customStyles = {
+export const customStyles = isDesktopView => ({
   control: (provided, state) => {
     focusedState = state.isFocused;
 
@@ -38,7 +38,9 @@ export const customStyles = {
       state.selectProps.inputValue ||
       (state.selectProps.value && state.selectProps.value?.value !== "")
         ? 9
-        : 16,
+        : isDesktopView
+        ? 16
+        : 14,
     backgroundColor: "#FFFFFF",
   }),
   dropdownIndicator: base => ({
@@ -54,10 +56,11 @@ export const customStyles = {
   singleValue: base => ({
     ...base,
     fontWeight: 500,
+    fontSize: isDesktopView ? 16 : 14,
   }),
-};
+});
 
-export const customErrStyles = {
+export const customErrStyles = isDesktopView => ({
   control: provided => ({
     ...provided,
     backgroundColor: "#FFFFFF",
@@ -88,4 +91,9 @@ export const customErrStyles = {
     ...base,
     color: "#5B34EA", // Custom colour
   }),
-};
+  singleValue: base => ({
+    ...base,
+    fontWeight: 500,
+    fontSize: isDesktopView ? 16 : 14,
+  }),
+});
