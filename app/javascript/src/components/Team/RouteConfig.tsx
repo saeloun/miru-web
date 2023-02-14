@@ -3,6 +3,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Details from "./Details";
+import MobileNav from "./Details/Layout/MobileNav";
 import PersonalDetails from "./Details/PersonalDetails";
 // import CompensationDetails from "./Details/CompensationDetails";
 // import DeviceDetails from "./Details/DeviceDetails";
@@ -22,6 +23,8 @@ const RouteConfig = () => (
       <Route path="documents" element={<DocumentDetails />} />
       <Route path="reimburstment" element={<ReimburstmentDetails />} /> */}
       <Route element={<EmploymentEdit />} path="edit" />
+      <Route element={<MobileNav />} path="options" />
+      <Route element={<PersonalDetails />} path="details" />
     </Route>
   </Routes>
 );
