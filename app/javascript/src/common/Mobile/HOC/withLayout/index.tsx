@@ -29,5 +29,5 @@ withLayout.propTypes = {
   includeSidebar: PropTypes.bool.isRequired,
 };
 
-withLayout.displayName = "WithLayout";
+withLayout.displayName = "withLayout";
 export default withLayout;
