@@ -20,6 +20,18 @@
 #  fk_rails_...  (company_id => companies.id)
 #
 class ExpenseCategory < ApplicationRecord
+  DEFAULT_CATEGORIES = [
+    { name: "Salary", default: true },
+    { name: "Repair & Maintenance", default: true },
+    { name: "Rent", default: true },
+    { name: "Food", default: true },
+    { name: "Travel", default: true },
+    { name: "Tax", default: true },
+    { name: "Furniture", default: true },
+    { name: "Health Insurance", default: true },
+    { name: "Other", default: true }
+  ]
+
   validates :name, presence: true, uniqueness: { scope: :company_id }
 
   has_many :expenses
