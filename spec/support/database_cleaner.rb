@@ -2,6 +2,9 @@
 
 RSpec.configure do |config|
   config.before(:suite) do
+    DatabaseCleaner.allow_remote_database_url = true
+    DatabaseCleaner.url_allowlist = ["postgres://postgres:postgres@database:5432/"]
+
     DatabaseCleaner.clean_with :truncation, except: %w(ar_internal_metadata)
   end
 
