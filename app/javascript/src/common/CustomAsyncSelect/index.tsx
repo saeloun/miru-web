@@ -18,29 +18,41 @@ export const CustomAsyncSelect = ({
   handleOnChange,
   value,
   isErr,
-}) => (
-  <div className="outline relative">
-    <AsyncSelect
-      cacheOptions
-      defaultOptions
-      classNamePrefix={classNamePrefix}
-      loadOptions={loadOptions}
-      name={name}
-      placeholder={label}
-      styles={isErr ? customErrStyles : customStyles}
-      value={value || null}
-      components={{
-        ValueContainer: CustomValueContainer,
-        IndicatorSeparator: () => null,
-      }}
-      onChange={handleOnChange}
-    />
-  </div>
-);
+  isDesktopView,
+}) => {
+  const getStyle = () => {
+    if (isErr) {
+      return customErrStyles(isDesktopView);
+    }
+
+    return customStyles(isDesktopView);
+  };
+
+  return (
+    <div className="outline relative">
+      <AsyncSelect
+        cacheOptions
+        defaultOptions
+        classNamePrefix={classNamePrefix}
+        loadOptions={loadOptions}
+        name={name}
+        placeholder={label}
+        styles={getStyle()}
+        value={value || null}
+        components={{
+          ValueContainer: CustomValueContainer,
+          IndicatorSeparator: () => null,
+        }}
+        onChange={handleOnChange}
+      />
+    </div>
+  );
+};
 
 CustomAsyncSelect.defaultProps = {
   classNamePrefix: "react-select-filter",
   label: "Select",
   placeholder: "Date Format",
   handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
+  isDesktopView: false,
 };
