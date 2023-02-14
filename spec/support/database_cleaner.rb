@@ -6,8 +6,6 @@ RSpec.configure do |config|
     DatabaseCleaner.url_allowlist = ["postgres://postgres:postgres@database:5432/",
                                      "postgres://root:password@localhost/miru_web?encoding=utf8&pool=5&timeout=5000"]
 
-    p ENV["DATABASE_URL"]
-
     DatabaseCleaner.clean_with :truncation, except: %w(ar_internal_metadata)
   end
 
