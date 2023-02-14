@@ -22,6 +22,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     employee.add_role :employee, company
 
     Invoice.search_index.refresh
+    Invoice.reindex # added reindex here to make the test pass in CI
   end
 
   context "when user is a book keeper" do
