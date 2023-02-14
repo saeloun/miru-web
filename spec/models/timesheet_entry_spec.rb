@@ -55,10 +55,6 @@ RSpec.describe TimesheetEntry, type: :model do
     end
   end
 
-  describe ".during" do
-    pending("Will work on this")
-  end
-
   describe "#snippet" do
     it "returns proper data" do
       expect(timesheet_entry.snippet).to eq(
