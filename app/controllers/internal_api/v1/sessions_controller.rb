@@ -8,22 +8,17 @@ class InternalApi::V1::SessionsController < InternalApi::V1::ApplicationControll
   def create
     user = User.find_for_database_authentication(email: user_params[:email])
     if invalid_password?(user)
-      render json: { error: "Invalid email or password" }, status: :unprocessable_entity
+      return render json: { error: "Invalid email or password" }, status: :unprocessable_entity
     end
 
-    if user.confirmed?
-      sign_in(user)
-      render json: { notice: "Signed in successfully", user: }, status: :ok
-    end
-
-    unless user.confirmed?
-      render json: { notice: "Please confirm your email address to continue", user: }, status: :ok
-    end
+    sign_in(user)
+    render json: { notice: "Signed in successfully", user: }, status: :ok
   end
 
   def destroy
     sign_out(@user)
     reset_session
+    render json: { notice: "Logged out successfully" }, status: :ok
   end
 
   private

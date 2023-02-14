@@ -12,7 +12,7 @@ import { AuthProvider } from "context/auth";
 import Main from "./Main";
 
 const App = props => {
-  const { user, companyRole } = props;
+  const { user, companyRole, confirmedUser } = props;
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
   useEffect(() => {
@@ -24,7 +24,7 @@ const App = props => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ isAdminUser, user, companyRole, isDesktop }}>
+    <UserContext.Provider value={{ isAdminUser, user, companyRole, isDesktop, confirmedUser }}>
       <AuthProvider>
         <BrowserRouter>
           <ToastContainer autoClose={TOASTER_DURATION} />

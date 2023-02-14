@@ -12,7 +12,7 @@ en:
         with instructions for how to confirm your email address in a few
         minutes."
     failure:
-      already_authenticated: "You are already signed in."
+      already_authenticated: "You are already authenticated."
       inactive: "Your account is not activated yet."
       invalid: "Invalid %{authentication_keys} or password."
       locked: "Your account is locked."

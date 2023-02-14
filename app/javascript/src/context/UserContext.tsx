@@ -5,6 +5,7 @@ const UserContext = createContext({
   user: {},
   companyRole: "", //current company user role
   isDesktop: false,
+  confirmedUser: ""
 });
 
 export const useUserContext = () => useContext(UserContext);

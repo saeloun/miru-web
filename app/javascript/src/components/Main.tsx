@@ -9,6 +9,7 @@ import Dashboard from "./Dashboard";
 import { registerIntercepts, setAuthHeaders } from "apis/axios";
 import { clearLocalStorageCredentials, getFromLocalStorage } from "utils/storage";
 import OrganizationSetup from "./OrganizationSetup";
+import EmailVerification from "./EmailVerification";
 
 const Main = (props :Iprops) => {
   // @ts-ignore
@@ -33,16 +34,25 @@ const Main = (props :Iprops) => {
   }, [props?.user?.email]);
 
   if(isLoggedIn){
-    //@ts-ignore
-    if(Boolean(props?.user?.current_workspace_id) == false){
+    if(props?.confirmedUser){
+      //@ts-ignore
+      if(Boolean(props?.user?.current_workspace_id) == false){
+        return (
+          <Routes>
+            <Route path="/" element={<OrganizationSetup />}/>
+            <Route path="*" element={<Navigate to ="/" />}/>
+          </Routes>
+        )
+      } else {
+        return <Dashboard {...props}/>
+      }
+    } else {
       return (
         <Routes>
-          <Route path="/" element={<OrganizationSetup />}/>
+          <Route path="/" element={<EmailVerification />}/>
           <Route path="*" element={<Navigate to ="/" />}/>
         </Routes>
       )
-    } else {
-      return <Dashboard {...props}/>
     }
   }
 
@@ -65,6 +75,7 @@ interface Iprops {
   companyRole: Roles;
   company: object;
   isDesktop: boolean;
+  confirmedUser: boolean
 }
 
 export default Main;
