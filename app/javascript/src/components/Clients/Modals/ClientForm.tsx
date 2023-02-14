@@ -89,7 +89,7 @@ const ClientForm = ({
   const isValidFileUploaded = file => {
     const validExtensions = ["png", "jpeg", "jpg"];
     const fileExtensions = file.type.split("/")[1];
-    const validFileByteSize = "10000";
+    const validFileByteSize = "30000";
     const fileSize = file.size;
 
     return {
