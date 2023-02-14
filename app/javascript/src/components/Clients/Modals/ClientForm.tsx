@@ -77,9 +77,11 @@ const ClientForm = ({
       setClientLogo(file);
     } else {
       if (!isValid.fileExtension && !isValid.fileSizeValid) {
-        setFileUploadError(i18n.t("invalidImageFormatSize"));
+        setFileUploadError(
+          i18n.t("invalidImageFormatSize", { fileSize: "30" })
+        );
       } else if (isValid.fileExtension && !isValid.fileSizeValid) {
-        setFileUploadError(i18n.t("invalidImageSize"));
+        setFileUploadError(i18n.t("invalidImageSize", { fileSize: "30" }));
       } else {
         setFileUploadError(i18n.t("invalidImageFormat"));
       }
@@ -89,7 +91,7 @@ const ClientForm = ({
   const isValidFileUploaded = file => {
     const validExtensions = ["png", "jpeg", "jpg"];
     const fileExtensions = file.type.split("/")[1];
-    const validFileByteSize = "10000";
+    const validFileByteSize = "30000";
     const fileSize = file.size;
 
     return {
