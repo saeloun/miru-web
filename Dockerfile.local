@@ -50,3 +50,5 @@ COPY --from=node_modules /app/node_modules /app/node_modules
 COPY . ./
 
 RUN RAILS_ENV=$RAILS_ENV rails assets:precompile
+
+RUN ["chmod", "+x", 

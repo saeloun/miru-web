@@ -22,10 +22,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile.local
-    command: bundle exec rails s -p 3000 -b 0.0.0.0
-    ports:
-      - "3000:3000"
+      dockerfile: Dockerfile.test
     image: miru-web:latest
     working_dir: /app
     volumes:
