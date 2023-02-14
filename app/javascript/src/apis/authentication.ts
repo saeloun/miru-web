@@ -12,6 +12,9 @@ const forgotPassword = payload =>
 const resetPassword = payload =>
   axios.put("/reset_password", { user: payload });
 
+const sendEmailConfirmation = payload =>
+  axios.get(`/email_confirmation/resend?${payload}`);
+
 const googleAuth = () =>
   axios
     .create({
@@ -25,7 +28,8 @@ const authenticationApi = {
   forgotPassword,
   resetPassword,
   googleAuth,
-  logout
+  logout,
+  sendEmailConfirmation
 };
 
 export default authenticationApi;

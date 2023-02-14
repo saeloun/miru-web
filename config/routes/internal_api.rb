@@ -102,5 +102,9 @@ namespace :internal_api, defaults: { format: "json" } do
     resource :profile, only: [:update, :show], controller: "profile" do
       delete "/remove_avatar", to: "profile#remove_avatar"
     end
+
+    resource :email_confirmation, only: :show do
+      get :resend
+    end
   end
 end
