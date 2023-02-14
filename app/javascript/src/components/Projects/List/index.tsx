@@ -25,6 +25,7 @@ const ProjectList = ({ isAdminUser }) => {
   const [editProjectData, setEditProjectData] = React.useState<any>({});
   const [deleteProjectData, setDeleteProjectData] = React.useState({});
   const [projects, setProjects] = React.useState<IProject[]>([]);
+  const { isDesktop } = useUserContext();
 
   const fetchProjects = async () => {
     try {
@@ -40,7 +41,7 @@ const ProjectList = ({ isAdminUser }) => {
     fetchProjects();
   }, []);
 
-  return (
+  const ProjectsLayout = () => (
     <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
@@ -99,13 +100,10 @@ const ProjectList = ({ isAdminUser }) => {
       )}
     </React.Fragment>
   );
+
+  const Main = withLayout(ProjectsLayout, !isDesktop, !isDesktop);
+
+  return <Main />;
 };
 
-const ProjectsLayout = () => {
-  const { isDesktop } = useUserContext();
-  const Main = withLayout(ProjectList, !isDesktop, !isDesktop);
-
-  return Main;
-};
-
-export default ProjectsLayout;
+export default ProjectList;

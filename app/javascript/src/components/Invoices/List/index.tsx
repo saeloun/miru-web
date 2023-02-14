@@ -207,7 +207,7 @@ const Invoices = () => {
     setFilterParams(filterIntialValues);
   };
 
-  return (
+  const InvoicesLayout = () => (
     <div className="p-4 lg:p-0">
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
@@ -307,13 +307,10 @@ const Invoices = () => {
       )}
     </div>
   );
+
+  const Main = withLayout(InvoicesLayout, !isDesktop, !isDesktop);
+
+  return <Main />;
 };
 
-const InvoicesLayout = () => {
-  const { isDesktop } = useUserContext();
-  const Main = withLayout(Invoices, !isDesktop, !isDesktop);
-
-  return Main;
-};
-
-export default InvoicesLayout;
+export default Invoices;

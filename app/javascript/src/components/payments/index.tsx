@@ -17,7 +17,7 @@ const Payments = () => {
   const [paymentList, setPaymentList] = useState<any>([]);
   const [invoiceList, setInvoiceList] = useState<any>([]);
   const [baseCurrency, setBaseCurrency] = useState<any>("");
-
+  const { isDesktop } = useUserContext();
   const fetchInvoiceList = async () => {
     try {
       const res = await payment.getInvoiceList();
@@ -52,7 +52,7 @@ const Payments = () => {
     checkInvoiceIdInUrl();
   }, []);
 
-  return (
+  const PaymentsLayout = () => (
     <div className="flex-col">
       <Header setShowManualEntryModal={setShowManualEntryModal} />
       <Table baseCurrency={baseCurrency} payments={paymentList} />
@@ -66,13 +66,10 @@ const Payments = () => {
       )}
     </div>
   );
+
+  const Main = withLayout(PaymentsLayout, !isDesktop, !isDesktop);
+
+  return <Main />;
 };
 
-const PaymentsLayout = () => {
-  const { isDesktop } = useUserContext();
-  const Main = withLayout(Payments, !isDesktop, !isDesktop);
-
-  return Main;
-};
-
-export default PaymentsLayout;
+export default Payments;

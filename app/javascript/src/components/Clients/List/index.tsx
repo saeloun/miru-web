@@ -70,7 +70,7 @@ const Clients = ({ isAdminUser }) => {
   const [loading, setLoading] = useState(true);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
-
+  const { isDesktop } = useUserContext();
   const navigate = useNavigate();
   const toolTipRef = useRef(null);
 
@@ -174,7 +174,7 @@ const Clients = ({ isAdminUser }) => {
     );
   }
 
-  return (
+  const ClientsLayout = () => (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
@@ -267,13 +267,10 @@ const Clients = ({ isAdminUser }) => {
       )}
     </>
   );
+
+  const Main = withLayout(ClientsLayout, !isDesktop, !isDesktop);
+
+  return <Main />;
 };
 
-const ClientsLayout = () => {
-  const { isDesktop } = useUserContext();
-  const Main = withLayout(Clients, !isDesktop, !isDesktop);
-
-  return Main;
-};
-
-export default ClientsLayout;
+export default Clients;

@@ -59,7 +59,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   );
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
   const [updateView, setUpdateView] = useState(true);
-
+  const { isDesktop } = useUserContext();
   const employeeOptions = employees.map(e => ({
     value: `${e["id"]}`,
     label: `${e["first_name"]} ${e["last_name"]}`,
@@ -307,7 +307,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     setCurrentYear(dayjs(date).year());
   };
 
-  return (
+  const TimeTrackingLayout = () => (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="mt-6">
@@ -519,6 +519,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       </div>
     </>
   );
+
+  const Main = withLayout(TimeTrackingLayout, !isDesktop, !isDesktop);
+
+  return <Main />;
 };
 
 interface Iprops {
@@ -526,11 +530,4 @@ interface Iprops {
   user: any;
 }
 
-const TimeTrackingLayout = () => {
-  const { isDesktop } = useUserContext();
-  const Main = withLayout(TimeTracking, !isDesktop, !isDesktop);
-
-  return Main;
-};
-
-export default TimeTrackingLayout;
+export default TimeTracking;

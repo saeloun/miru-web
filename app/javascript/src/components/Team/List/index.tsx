@@ -19,6 +19,8 @@ const TeamList = () => {
   const [modal, setModal] = useState("");
   const [modalUser, setModalUser] = useState({});
 
+  const { isDesktop } = useUserContext();
+
   const setModalState = (modalName, user = {}) => {
     setModalUser(user);
     setModal(modalName);
@@ -38,7 +40,7 @@ const TeamList = () => {
     }
   }, [modal]);
 
-  return (
+  const TeamLayout = () => (
     <ListContext.Provider
       value={{
         teamList,
@@ -62,13 +64,10 @@ const TeamList = () => {
       <Modals user={modalUser} />
     </ListContext.Provider>
   );
+
+  const Main = withLayout(TeamLayout, !isDesktop, !isDesktop);
+
+  return <Main />;
 };
 
-const TeamLayout = () => {
-  const { isDesktop } = useUserContext();
-  const Main = withLayout(TeamList, !isDesktop, !isDesktop);
-
-  return Main;
-};
-
-export default TeamLayout;
+export default TeamList;
