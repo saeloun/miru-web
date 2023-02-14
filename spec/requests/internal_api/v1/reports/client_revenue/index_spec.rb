@@ -14,6 +14,8 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
   let!(:client1_paid_invoice2) { create(:invoice, client: client1, status: "paid") }
   let!(:client2_overdue_invoice1) { create(:invoice, client: client2, status: "overdue") }
   let!(:client1_overdue_invoice1) { create(:invoice, client: client1, status: "overdue") }
+  let!(:client2_sent_invoice2) { create(:invoice, client: client2, status: "sent") }
+  let!(:client2_viewed_invoice1) { create(:invoice, client: client2, status: "viewed") }
 
   context "when user is an admin" do
     before do
@@ -31,7 +33,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
         @client2_overdue_amount = client2_overdue_invoice1.amount
 
         @client2_paid_amount = 0
-        @client2_unpaid_amount = client2_overdue_invoice1.amount
+        @client2_unpaid_amount = client2_sent_invoice2.amount + client2_viewed_invoice1.amount
         get internal_api_v1_reports_client_revenues_path, params: { from_date: 1.month.ago, to_date: Date.today }
       end
 
@@ -41,20 +43,20 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
 
       it "returns the clients data in alaphabetical order with amount details" do
         expected_clients =
-          [
-            {
-              name: client1.name,
-              paidAmount: @client1_paid_amount,
-              unpaidAmount: @client1_unpaid_amount,
-              totalAmount: @client1_paid_amount + @client1_unpaid_amount, overdueAmount: @client1_overdue_amount
-            },
-            {
-              name: client2.name,
-              paidAmount: @client2_paid_amount,
-              unpaidAmount: @client2_unpaid_amount,
-              totalAmount: @client2_paid_amount + @client2_unpaid_amount, overdueAmount: @client2_overdue_amount
-            }
-          ]
+          [{
+            name: client1.name,
+            paidAmount: @client1_paid_amount,
+            unpaidAmount: @client1_unpaid_amount,
+            totalAmount: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
+            overdueAmount: @client1_overdue_amount
+          },
+           {
+             name: client2.name,
+             paidAmount: @client2_paid_amount,
+             unpaidAmount: @client2_unpaid_amount,
+             totalAmount: @client2_paid_amount + @client2_unpaid_amount + @client2_overdue_amount,
+             overdueAmount: @client2_overdue_amount
+           }]
         expect(json_response["clients"]).to eq(JSON.parse(expected_clients.to_json))
       end
 
@@ -77,6 +79,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
         @client1_paid_amount = client1_paid_invoice1.amount + client1_paid_invoice2.amount
         @client1_unpaid_amount = client1_viewed_invoice1.amount + client1_sent_invoice1.amount +
                                  client1_sent_invoice2.amount
+        @client1_overdue_amount = client1_overdue_invoice1.amount
 
         get internal_api_v1_reports_client_revenues_path,
           params: { client_ids: [client1.id].to_json, from_date: 1.month.ago, to_date: Date.today }
@@ -93,7 +96,8 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
               name: client1.name,
               paidAmount: @client1_paid_amount,
               unpaidAmount: @client1_unpaid_amount,
-              totalAmount: @client1_paid_amount + @client1_unpaid_amount
+              totalAmount: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
+              overdueAmount: @client1_overdue_amount
             }
           ]
         expect(json_response["clients"]).to eq(JSON.parse(expected_clients.to_json))
