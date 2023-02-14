@@ -98,6 +98,12 @@ class User < ApplicationRecord
     roles.first.name
   end
 
+  def remove_roles_for(company)
+    roles.each do | role |
+      remove_role(role.name.to_sym, company)
+    end
+  end
+
   def full_name
     "#{first_name} #{last_name}"
   end

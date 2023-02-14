@@ -63,7 +63,7 @@ export const financialDetailsFormInitialValues = {
     label: `${currencyList[0].symbol} (${currencyList[0].code})`,
     value: currencyList[0].code,
   },
-  standard_rate: 0.0,
+  standard_rate: "00.00",
   year_end: fiscalYearEndOptions[0],
   date_format: dateFormatOptions[0],
 };
