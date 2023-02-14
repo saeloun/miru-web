@@ -11,6 +11,7 @@ import { teamsMapper } from "mapper/teams.mapper";
 
 import MobilePersonalDetails from "./MobilePersonalDetails";
 import StaticPage from "./StaticPage";
+// import { useNavigate } from "react-router-dom";
 
 const PersonalDetails = () => {
   const { memberId } = useParams();

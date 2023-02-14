@@ -55,6 +55,7 @@ const Container = ({
     <div className="block overflow-x-auto whitespace-nowrap py-5 md:overflow-x-visible md:whitespace-normal md:pl-10">
       <InvoiceTable
         currency={invoiceDetails.companyDetails.currency}
+        dateFormat={invoiceDetails.companyDetails.date_format}
         lineItems={lineItems}
         manualEntryArr={manualEntryArr}
         selectedClient={selectedClient}
@@ -75,8 +76,6 @@ const Container = ({
       setAmountDue={setAmountDue}
       setDiscount={setDiscount}
       setTax={setTax}
-      showDiscountInput={false}
-      showTax={false}
       tax={tax}
     />
   </div>

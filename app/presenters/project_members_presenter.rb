@@ -8,7 +8,7 @@ class ProjectMembersPresenter
   end
 
   def project_to_member_hourly_rate
-    projects_members_rates ||= projects.group_by(&:id).transform_values do |project|
+    @_project_to_member_hourly_rate ||= projects.group_by(&:id).transform_values do |project|
       project_members_hourly_rate(project.first)
     end
   end
@@ -16,6 +16,6 @@ class ProjectMembersPresenter
   private
 
     def project_members_hourly_rate(project)
-      @member_rates ||= project.project_members.pluck(:user_id, :hourly_rate).to_h
+      @_project_members_hourly_rate ||= project.project_members.pluck(:user_id, :hourly_rate).to_h
     end
 end

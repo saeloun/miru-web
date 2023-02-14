@@ -187,10 +187,20 @@ const Invoices = ({ isDesktop }) => {
       selectedInvoices.filter(id => !invoiceIds.includes(id))
     );
 
+  useEffect(() => {
+    const close = e => {
+      if (e.keyCode === 27) {
+        setIsFilterVisible(false);
+      }
+    };
+    window.addEventListener("keydown", close);
+
+    return () => window.removeEventListener("keydown", close);
+  }, []);
+
   const handleReset = () => {
     window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
     setFilterParams(filterIntialValues);
-    setIsFilterVisible(false);
   };
 
   return (
