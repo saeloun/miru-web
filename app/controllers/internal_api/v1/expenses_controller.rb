@@ -15,16 +15,14 @@ class InternalApi::V1::ExpensesController < ApplicationController
     expense = current_company.expenses.create!(expense_params)
 
     render :create, locals: {
-      expense: ExpensePresenter.new(expense).snippet
+      expense: Expense::ShowPresenter.new(expense).process
     }
   end
 
   def show
     authorize expense
 
-    formatted_expense = Expense::ShowPresenter.new(expense).process
-
-    render :show, locals: { expense: formatted_expense }
+    render :show, locals: { expense: Expense::ShowPresenter.new(expense).process }
   end
 
   private
