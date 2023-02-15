@@ -6,6 +6,6 @@ class AddRolesToUser < ActiveRecord::Migration[7.0]
   end
 
   def down
-    remove_column :users, :role
+    safety_assured { remove_column :users, :role }
   end
 end
