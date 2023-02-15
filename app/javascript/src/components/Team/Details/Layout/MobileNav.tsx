@@ -89,7 +89,7 @@ const UserInformation = () => {
 };
 
 const TeamUrl = ({ urlList }) => (
-  <div className="h-screen w-full bg-white">
+  <div className="h-full w-full bg-white">
     <ul className="list-none text-sm font-medium leading-5 tracking-wider">
       {urlList.map((item, index) => (
         <li className="border-b-2 border-miru-gray-400" key={index}>
