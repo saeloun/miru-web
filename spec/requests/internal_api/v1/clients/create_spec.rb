@@ -16,7 +16,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
     describe "#create" do
       it "creates the client successfully" do
         client = attributes_for(:client)
-        send_request :post, internal_api_v1_clients_path(client:)
+        send_request :post, internal_api_v1_clients_path(client:), headers: headers(user)
         expect(response).to have_http_status(:ok)
         expected_attrs = [ "address", "email", "id", "logo", "name", "phone" ]
         expect(json_response.keys.sort).to match(expected_attrs)
@@ -29,7 +29,8 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
             description: "Rspec Test",
             phone: "7777777777",
             address: "Somewhere on Earth"
-          })
+          }),
+          headers: headers(user)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(json_response["errors"]).to eq("Name can't be blank")
       end
@@ -41,7 +42,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :post, internal_api_v1_clients_path
+      send_request :post, internal_api_v1_clients_path, headers: headers(user)
     end
 
     it "is not be permitted to generate a client" do
@@ -54,7 +55,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :post, internal_api_v1_clients_path
+      send_request :post, internal_api_v1_clients_path, headers: headers(user)
     end
 
     it "is not be permitted to generate a client" do
@@ -66,7 +67,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
     it "is not be permitted to generate a client" do
       send_request :post, internal_api_v1_clients_path
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end

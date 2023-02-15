@@ -26,7 +26,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
               phone: "Test phone",
               address: "India"
             }
-          })
+          }, headers: headers(user))
       end
 
       it "updates client's name and email" do
@@ -52,7 +52,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
               phone: "",
               address: "India"
             }
-          })
+          }, headers: headers(user))
       end
 
       it "returns failed json response" do
@@ -76,7 +76,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
             phone: "Test phone",
             address: "India"
           }
-        })
+        }, headers: headers(user))
     end
 
     it "is not permitted to update client" do
@@ -99,7 +99,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
             phone: "Test phone",
             address: "India"
           }
-        })
+        }, headers: headers(user))
     end
 
     it "is not permitted to update client" do
@@ -119,7 +119,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
             address: "India"
           }
         })
-      expect(json_response["error"]).to match("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to match(I18n.t("devise.failure.unauthenticated"))
     end
   end
 
@@ -134,14 +134,15 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
       sign_in user
       send_request(
         :patch, internal_api_v1_client_path(client), params: {
-          client: {
-            id: client.id,
-            name: "Test Client",
-            email: "test@example.com",
-            phone: "Test phone",
-            address: "India"
-          }
-        }
+                                                       client: {
+                                                         id: client.id,
+                                                         name: "Test Client",
+                                                         email: "test@example.com",
+                                                         phone: "Test phone",
+                                                         address: "India"
+                                                       }
+                                                     },
+        headers: headers(user)
       )
     end
 
