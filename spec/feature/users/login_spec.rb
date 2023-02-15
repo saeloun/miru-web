@@ -21,7 +21,7 @@ describe "User Sign In", type: :feature do
         end
         click_button "SIGN IN"
 
-        expect(page).to have_content "Success"
+        expect(page).to have_content "Signed in successfully."
       end
     end
   end

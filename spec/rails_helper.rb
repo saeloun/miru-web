@@ -65,6 +65,7 @@ RSpec.configure do |config|
   config.include RequestHelper, type: :request
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Capybara::DSL
+  config.include Warden::Test::Helpers
   config.before do
     Faker::UniqueGenerator.clear
     OmniAuth.config.test_mode = true
