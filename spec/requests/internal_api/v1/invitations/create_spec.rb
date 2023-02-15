@@ -18,7 +18,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
           last_name: "example",
           recipient_email: "test@example.com",
           role: "employee"
-        }
+        }, headers: headers(user)
       end
 
       it "returns success response with :CREATED status" do
@@ -46,7 +46,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
           last_name: "example2",
           recipient_email: "test@example.com",
           role: "employee"
-        }
+        }, headers: headers(user)
       end
 
       it "returns failed status" do
@@ -75,7 +75,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
           last_name: "example",
           recipient_email: "testexamplecom",
           role: "employee"
-        }
+        }, headers: headers(user)
       end
 
       it "returns failed status" do
@@ -107,7 +107,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
           last_name: existing_user.last_name,
           recipient_email: existing_user.email,
           role: "employee"
-        }
+        }, headers: headers(user)
       end
 
       it "returns success response with :CREATED status" do
@@ -136,7 +136,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
           last_name: "example2",
           recipient_email: existing_user.email,
           role: "employee"
-        }
+        }, headers: headers(user)
       end
 
       it "returns failed status" do
@@ -166,7 +166,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
           last_name: existing_user.last_name,
           recipient_email: "testexamplecom",
           role: "employee"
-        }
+        }, headers: headers(user)
       end
 
       it "returns failed status" do
@@ -196,7 +196,7 @@ RSpec.describe "InternalApi::V1::Invitations#create", type: :request do
           last_name: existing_user.last_name,
           recipient_email: "test@example.com",
           role: ""
-        }
+        }, headers: headers(user)
       end
 
       it "returns failed status" do
