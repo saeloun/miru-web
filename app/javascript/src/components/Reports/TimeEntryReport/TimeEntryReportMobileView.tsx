@@ -81,13 +81,13 @@ export const TimeEntryReportMobileView = ({
     }) || [];
 
   return (
-    <Fragment>
+    <div className="px-3">
       {timeEntryReport.reports?.length > 0 &&
         getAlphabaticallySortedReportList(timeEntryReport.reports)?.map(
           (report, index) => (
             <Fragment key={index}>
               {report.label !== "" && (
-                <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-5">
+                <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-2">
                   <div className="flex items-center">
                     {getTableLogo(selectedFilter?.groupBy?.value || null)}
                     <h1 className="font-manrope text-xl font-bold text-miru-han-purple-1000">
@@ -108,6 +108,6 @@ export const TimeEntryReportMobileView = ({
             </Fragment>
           )
         )}
-    </Fragment>
+    </div>
   );
 };
