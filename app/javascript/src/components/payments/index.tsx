@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import Logger from "js-logger";
 
 import payment from "apis/payments/payments";
+import withLayout from "common/Mobile/HOC/withLayout";
+import { useUserContext } from "context/UserContext";
 import { unmapPayment } from "mapper/mappedIndex";
 
 import Header from "./Header";
@@ -15,7 +17,7 @@ const Payments = () => {
   const [paymentList, setPaymentList] = useState<any>([]);
   const [invoiceList, setInvoiceList] = useState<any>([]);
   const [baseCurrency, setBaseCurrency] = useState<any>("");
-
+  const { isDesktop } = useUserContext();
   const fetchInvoiceList = async () => {
     try {
       const res = await payment.getInvoiceList();
@@ -50,7 +52,7 @@ const Payments = () => {
     checkInvoiceIdInUrl();
   }, []);
 
-  return (
+  const PaymentsLayout = () => (
     <div className="flex-col">
       <Header setShowManualEntryModal={setShowManualEntryModal} />
       <Table baseCurrency={baseCurrency} payments={paymentList} />
@@ -64,6 +66,10 @@ const Payments = () => {
       )}
     </div>
   );
+
+  const Main = withLayout(PaymentsLayout, !isDesktop, !isDesktop);
+
+  return <Main />;
 };
 
 export default Payments;

@@ -5,8 +5,10 @@ import { useSearchParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import invoicesApi from "apis/invoices";
+import withLayout from "common/Mobile/HOC/withLayout";
 import Pagination from "common/Pagination";
 import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./container";
@@ -18,7 +20,7 @@ import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
 import BulkDownloadInvoices from "../popups/BulkDownloadInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
 
-const Invoices = ({ isDesktop }) => {
+const Invoices = () => {
   const filterIntialValues = {
     dateRange: { label: "All", value: "all", from: "", to: "" },
     clients: [],
@@ -68,6 +70,8 @@ const Invoices = ({ isDesktop }) => {
   const isInvoiceSelected = selectedInvoiceCount > 0;
   const [selectedInvoiceCounter, setSelectedInvoiceCounter] =
     useState<number>(selectedInvoiceCount);
+
+  const { isDesktop } = useUserContext();
 
   useEffect(() => sendGAPageView(), []);
 
@@ -203,8 +207,8 @@ const Invoices = ({ isDesktop }) => {
     setFilterParams(filterIntialValues);
   };
 
-  return (
-    <Fragment>
+  const InvoicesLayout = () => (
+    <div className="p-4 lg:p-0">
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         filterParamsStr={filterParamsStr}
@@ -301,8 +305,12 @@ const Invoices = ({ isDesktop }) => {
           </div>
         )
       )}
-    </Fragment>
+    </div>
   );
+
+  const Main = withLayout(InvoicesLayout, !isDesktop, !isDesktop);
+
+  return <Main />;
 };
 
 export default Invoices;
