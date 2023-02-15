@@ -18,13 +18,6 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
     }
   }
 
-  def headers(auth_user, options = {})
-    {
-      "X-Auth-Token" => auth_user[:token],
-      "X-Auth-Email" => auth_user[:email]
-    }.merge(options)
-  end
-
   context "when sucessful creation" do
     before do
       create(:employment, company:, user:)
