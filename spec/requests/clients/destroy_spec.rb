@@ -7,13 +7,6 @@ RSpec.describe "Client#destroy", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, { id: 1, company: }) }
 
-  def headers(auth_user, options = {})
-    {
-      "X-Auth-Token" => auth_user[:token],
-      "X-Auth-Email" => auth_user[:email]
-    }.merge(options)
-  end
-
   context "when user is an admin" do
     before do
       create(:employment, company:, user:)
@@ -83,7 +76,7 @@ RSpec.describe "Client#destroy", type: :request do
       send_request(:delete, internal_api_v1_client_path(client.id))
       expect(response).to have_http_status(:unauthorized)
       expect(JSON.parse(response.body, { object_class: OpenStruct }).error)
-        .to eq("Invalid credentials")
+        .to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end
