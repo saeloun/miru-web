@@ -5,8 +5,8 @@ class CreateExpenseCategories < ActiveRecord::Migration[7.0]
     create_table :expense_categories do |t|
       t.string :name
       t.boolean :default, default: false
-
       t.references :company, foreign_key: true
+
       t.timestamps
     end
   end

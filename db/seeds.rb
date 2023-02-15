@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-Dir[File.join(Rails.root, "db", "seeds", "production", "*.rb")].sort.each do |seed|
-  load seed
-end
-
 company = Company.create!(
   {
     name: "Saeloun Inc",

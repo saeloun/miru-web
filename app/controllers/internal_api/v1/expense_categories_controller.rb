@@ -3,8 +3,11 @@
 class InternalApi::V1::ExpenseCategoriesController < ApplicationController
   def create
     authorize :create, policy_class: ExpenseCategoryPolicy
+
+    expense_category = current_company.expense_categories.create!(expense_category_params)
+
     render :create, locals: {
-      expense_category: current_company.expense_categories.create!(expense_category_params)
+      expense_category:
     }
   end
 
