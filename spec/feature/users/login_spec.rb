@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-describe "User Sign In", type: :feature do
+describe "User Sign In", type: :system do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id, password: "testing!") }
 

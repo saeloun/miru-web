@@ -20,7 +20,20 @@ require "capybara/rspec"
 Capybara.server = :puma
 
 if ENV["CI"].present?
-  Capybara.default_driver = :selenium_chrome_headless
+  Capybara.register_driver :chrome_headless do |app|
+    options = Selenium::WebDriver::Chrome::Options.new(args: %w[headless window-size=1400,1000])
+
+    if ENV["HUB_URL"]
+      Capybara::Selenium::Driver.new(
+        app,
+        browser: :remote,
+        url: ENV["HUB_URL"],
+        capabilities: options)
+    end
+  end
+
+  Capybara.default_driver = :chrome_headless
+  Capybara.javascript_driver = :chrome_headless
 else
   Capybara.default_driver = :selenium_chrome
 end
@@ -72,7 +85,7 @@ RSpec.configure do |config|
   end
 
   config.around do |example|
-    if example.metadata[:type] == :feature
+    if [:system, :feature].include?(example.metadata[:type])
       VCR.turn_off!
       WebMock.enable_net_connect!
     end
@@ -80,5 +93,13 @@ RSpec.configure do |config|
   ensure
     VCR.turn_on!
     WebMock.disable_net_connect!
+  end
+
+  config.before(:each, type: :system) do
+    driven_by :chrome_headless
+
+    Capybara.app_host = "http://#{IPSocket.getaddress(Socket.gethostname)}:3000"
+    Capybara.server_host = IPSocket.getaddress(Socket.gethostname)
+    Capybara.server_port = 3000
   end
 end

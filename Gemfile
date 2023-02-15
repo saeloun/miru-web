@@ -201,7 +201,8 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara", ">= 3.26"
   gem "selenium-webdriver", ">= 4.0.0"
-  gem "webdrivers"
+  # Ref: https://www.plymouthsoftware.com/articles/rails-on-docker-system-specs-in-containers-with-rspec-capybara-chrome-and-selenium/
+  # gem "webdrivers" # commenting webdrivers as as chrome isn't installed in the Dockerfile
 
   # Use Codecov for code coverage analysis
   gem "simplecov", require: false

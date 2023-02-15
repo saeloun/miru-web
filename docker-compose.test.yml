@@ -37,17 +37,20 @@ services:
       - REDIS_URL=redis://redis:6379/1
       - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
       - PIDFILE=/tmp/pids/server.pid
+      - RAILS_ENV=test
+      - HUB_URL=http://chrome:4444/wd/hub
     depends_on:
       - database
       - redis
       - elasticsearch
+      - chrome
     tmpfs:
       - /tmp/pids/
-    links:
-      - chrome-server
 
-  chrome-server:
-    image: selenium/standalone-chrome:96.0
+  chrome:
+    image: selenium/standalone-chrome
+    volumes:
+      - /dev/shm:/dev/shm
 
   webpack:
     build:

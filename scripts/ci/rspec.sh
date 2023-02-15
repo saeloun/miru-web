@@ -18,6 +18,7 @@ export SENDGRID_PASSWORD=pass
 export SMTP_DOMAIN=saeloun.com
 export SMTP_PORT=587
 export CI=true
+export HUB_URL=http://chrome:4444/wd/hub
 
 bundle install --with test
 bin/yarn install
