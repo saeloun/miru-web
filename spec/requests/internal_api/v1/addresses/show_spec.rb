@@ -25,7 +25,7 @@ RSpec.describe "Addresses#show", type: :request do
 
     context "when user wants to see address of his Company" do
       before do
-        send_request :get, internal_api_v1_company_address_path(company, company_address)
+        send_request :get, internal_api_v1_company_address_path(company, company_address), headers: headers(user)
       end
 
       it "is successful" do
@@ -42,7 +42,7 @@ RSpec.describe "Addresses#show", type: :request do
     context "when user wants to see address of an Employee of his company" do
       before do
         create(:employment, company:, user: employee)
-        send_request :get, internal_api_v1_user_address_path(employee, employee_address)
+        send_request :get, internal_api_v1_user_address_path(employee, employee_address), headers: headers(user)
       end
 
       it "is successful" do
@@ -58,7 +58,7 @@ RSpec.describe "Addresses#show", type: :request do
 
     context "when user wants to see address of a Company other than his workspace" do
       before do
-        send_request :get, internal_api_v1_company_address_path(company2, company2_address)
+        send_request :get, internal_api_v1_company_address_path(company2, company2_address), headers: headers(user)
       end
 
       it "is forbidden" do
@@ -68,7 +68,7 @@ RSpec.describe "Addresses#show", type: :request do
 
     context "when user wants to see address of an employee outside his workspace" do
       before do
-        send_request :get, internal_api_v1_company_address_path(employee2, employee2_address)
+        send_request :get, internal_api_v1_company_address_path(employee2, employee2_address), headers: headers(user)
       end
 
       it "is not found" do
@@ -78,7 +78,7 @@ RSpec.describe "Addresses#show", type: :request do
 
     context "when user wants to see address of an invalid Company address ID" do
       before do
-        send_request :get, internal_api_v1_company_address_path(company2, "abc")
+        send_request :get, internal_api_v1_company_address_path(company2, "abc"), headers: headers(user)
       end
 
       it "is not found" do
@@ -88,7 +88,7 @@ RSpec.describe "Addresses#show", type: :request do
 
     context "when user wants to see address of an invalid employee ID" do
       before do
-        send_request :get, internal_api_v1_company_address_path(employee2, "abc")
+        send_request :get, internal_api_v1_company_address_path(employee2, "abc"), headers: headers(user)
       end
 
       it "is not found" do
@@ -105,7 +105,7 @@ RSpec.describe "Addresses#show", type: :request do
 
     context "when user wants to see address of his Company" do
       before do
-        send_request :get, internal_api_v1_company_address_path(company, company_address)
+        send_request :get, internal_api_v1_company_address_path(company, company_address), headers: headers(user)
       end
 
       it "is successful" do
@@ -122,7 +122,7 @@ RSpec.describe "Addresses#show", type: :request do
     context "when user wants to see address of an Employee of his company" do
       before do
         create(:employment, company:, user: employee)
-        send_request :get, internal_api_v1_user_address_path(employee, employee_address)
+        send_request :get, internal_api_v1_user_address_path(employee, employee_address), headers: headers(user)
       end
 
       it "is successful" do
@@ -138,7 +138,7 @@ RSpec.describe "Addresses#show", type: :request do
 
     context "when user wants to see address of a Company other than his workspace" do
       before do
-        send_request :get, internal_api_v1_company_address_path(company2, company2_address)
+        send_request :get, internal_api_v1_company_address_path(company2, company2_address), headers: headers(user)
       end
 
       it "is forbidden" do
@@ -148,7 +148,7 @@ RSpec.describe "Addresses#show", type: :request do
 
     context "when user wants to see address of an employee outside his workspace" do
       before do
-        send_request :get, internal_api_v1_company_address_path(employee2, employee2_address)
+        send_request :get, internal_api_v1_company_address_path(employee2, employee2_address), headers: headers(user)
       end
 
       it "is not found" do
@@ -158,7 +158,7 @@ RSpec.describe "Addresses#show", type: :request do
 
     context "when user wants to see address of an invalid Company address ID" do
       before do
-        send_request :get, internal_api_v1_company_address_path(company2, "abc")
+        send_request :get, internal_api_v1_company_address_path(company2, "abc"), headers: headers(user)
       end
 
       it "is not found" do
@@ -168,7 +168,7 @@ RSpec.describe "Addresses#show", type: :request do
 
     context "when user wants to see address of an invalid employee ID" do
       before do
-        send_request :get, internal_api_v1_company_address_path(employee2, "abc")
+        send_request :get, internal_api_v1_company_address_path(employee2, "abc"), headers: headers(user)
       end
 
       it "is not found" do
@@ -185,7 +185,7 @@ RSpec.describe "Addresses#show", type: :request do
 
     context "when user wants to see his own Company's address detail" do
       before do
-        send_request :get, internal_api_v1_company_address_path(company, company_address)
+        send_request :get, internal_api_v1_company_address_path(company, company_address), headers: headers(employee)
       end
 
       it "is forbidden" do
@@ -195,7 +195,7 @@ RSpec.describe "Addresses#show", type: :request do
 
     context "when user wants to see his own address detail" do
       before do
-        send_request :get, internal_api_v1_user_address_path(employee, employee_address)
+        send_request :get, internal_api_v1_user_address_path(employee, employee_address), headers: headers(employee)
       end
 
       it "is successful" do
@@ -211,7 +211,7 @@ RSpec.describe "Addresses#show", type: :request do
 
     context "when user wants to see his someone else's address detail" do
      before do
-       send_request :get, internal_api_v1_user_address_path(employee2, employee2_address)
+       send_request :get, internal_api_v1_user_address_path(employee2, employee2_address), headers: headers(employee)
      end
 
      it "is forbidden" do
