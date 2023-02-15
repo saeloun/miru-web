@@ -18,7 +18,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       sign_in user
       create_list(:timesheet_entry, 5, user:, project: project_1)
       create_list(:timesheet_entry, 5, user:, project: project_2)
-      send_request :get, internal_api_v1_clients_path
+      send_request :get, internal_api_v1_clients_path, headers: headers(user)
     end
 
     context "when time_frame is week" do
@@ -54,7 +54,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
         create(:employment, company:, user:)
         user.add_role :admin, company
         sign_in user
-        send_request :get, internal_api_v1_clients_path, params: { q: client_1.name }
+        send_request :get, internal_api_v1_clients_path, params: { q: client_1.name }, headers: headers(user)
       end
 
       it "finds specific client by name" do
@@ -90,7 +90,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       create_list(:timesheet_entry, 5, user:, project: project_2)
       send_request :get, internal_api_v1_clients_path, params: {
         time_frame:
-      }
+      }, headers: headers(user)
     end
 
     context "when time_frame is week" do
@@ -122,7 +122,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       create_list(:timesheet_entry, 5, user:, project: project_2)
       send_request :get, internal_api_v1_clients_path, params: {
         time_frame:
-      }
+      }, headers: headers(user)
     end
 
     it "is not be permitted to access client" do
@@ -136,7 +136,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
         time_frame:
       }
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end
