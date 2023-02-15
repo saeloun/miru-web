@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-class ExpensePresenter
+class Expense::ShowPresenter
   attr_reader :expense
 
   def initialize(expense)
     @expense = expense
   end
 
-  def snippet
+  def process
     {
       id: expense.id,
       vendor_name: expense.vendor&.name,

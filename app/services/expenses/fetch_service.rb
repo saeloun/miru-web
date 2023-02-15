@@ -8,7 +8,7 @@ class Expenses::FetchService
     @params = params
     @current_company = current_company
     @expenses = search_expenses
-     end
+  end
 
   def process
     {

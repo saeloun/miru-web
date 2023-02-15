@@ -3,12 +3,17 @@
 class InternalApi::V1::ExpensesController < ApplicationController
   def index
     authorize Expense
-    render :index, locals: Expenses::FetchService.new(current_company, params).process
+
+    expenses = Expenses::FetchService.new(current_company, params).process
+
+    render :index, locals: expenses
   end
 
   def create
     authorize Expense
+
     expense = current_company.expenses.create!(expense_params)
+
     render :create, locals: {
       expense: ExpensePresenter.new(expense).snippet
     }
@@ -16,9 +21,10 @@ class InternalApi::V1::ExpensesController < ApplicationController
 
   def show
     authorize expense
-    render :show, locals: {
-      expense: ExpensePresenter.new(expense).snippet
-    }
+
+    formatted_expense = Expense::ShowPresenter.new(expense).process
+
+    render :show, locals: { expense: formatted_expense }
   end
 
   private
