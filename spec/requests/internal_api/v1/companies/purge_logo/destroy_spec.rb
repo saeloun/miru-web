@@ -11,7 +11,7 @@ RSpec.describe "InternalApi::V1::Companies::PurgeLogo#destroy", type: :request d
   context "when user is not an admin" do
     before do
       sign_in user2
-      send_request(:delete, "/internal_api/v1/companies/#{company.id}/purge_logo")
+      send_request(:delete, "/internal_api/v1/companies/#{company.id}/purge_logo", headers: headers(user2))
     end
 
     it "response should be forbidded" do
@@ -27,7 +27,7 @@ RSpec.describe "InternalApi::V1::Companies::PurgeLogo#destroy", type: :request d
     before do
       user1.add_role :admin, company
       sign_in user1
-      send_request(:delete, "/internal_api/v1/companies/#{company.id}/purge_logo")
+      send_request(:delete, "/internal_api/v1/companies/#{company.id}/purge_logo", headers: headers(user1))
     end
 
     it "successful status" do
