@@ -6,6 +6,12 @@ class InternalApi::V1::PasswordsController < Devise::PasswordsController
   private
 
     def respond_with(user, _opts = {})
+      if resource.errors.any?
+        user.errors.full_messages.each do |message|
+          return render json: { error: message }, status: :unprocessable_entity
+        end
+      end
+
       if resource.reset_password_token.nil?
         render json: {
           notice: "Password reset failed",
