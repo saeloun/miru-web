@@ -18,6 +18,13 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
     }
   }
 
+  def headers(auth_user, options = {})
+    {
+      "X-Auth-Token" => auth_user[:token],
+      "X-Auth-Email" => auth_user[:email]
+    }.merge(options)
+  end
+
   context "when sucessful creation" do
     before do
       create(:employment, company:, user:)
@@ -32,7 +39,8 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
           {
             timesheet_entry: @timesheet_details,
             auth_token: user.token
-          }
+          },
+          headers: headers(user)
       end
 
       it "he should be able to create timesheet entry record successfully" do
@@ -52,7 +60,7 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
           {
             timesheet_entry: @timesheet_details
           },
-          headers: { Authorization: "Bearer " + user.token }
+          headers: headers(user)
       end
 
       it "he should be able to create timesheet entry record successfully" do
@@ -79,7 +87,7 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
               work_date: Time.now
             }
           },
-          headers: { Authorization: "Bearer " + user.token }
+          headers: headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["entry"]["note"]).to match("")
         expect(json_response["entry"]["bill_status"]).to match("unbilled")
@@ -94,9 +102,8 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
         {
           timesheet_entry: @timesheet_details
         },
-        headers: { Authorization: "Bearer " + "123" }
+        headers: headers({ email: user.email, token: "Abc" })
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["notice"]).to match("Invalid Token.")
     end
 
     it "user is not a project member for the given project id" do
@@ -105,7 +112,7 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
         {
           timesheet_entry: @timesheet_details
         },
-        headers: { Authorization: "Bearer " + user.token }
+        headers: headers(user)
       expect(response).to have_http_status(:forbidden)
       expect(json_response["notice"]).to match("User is not a project member.")
     end

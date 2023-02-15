@@ -150,7 +150,7 @@ RSpec.describe CreateInvitedUserService do
 
       it "returns error when different user accepts invitation" do
         expect(@service.success).to be_falsey
-        expect(@service.error_message).to eq("You are already signed in.")
+        expect(@service.error_message).to eq(I18n.t("devise.failure.already_authenticated"))
       end
     end
 
