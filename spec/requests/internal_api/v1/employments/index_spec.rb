@@ -22,7 +22,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
       user1.add_role :admin, company1
       sign_in user1
       user4.discard
-      send_request :get, internal_api_v1_employments_path
+      send_request :get, internal_api_v1_employments_path, headers: headers(user1)
     end
 
     it "returns the success" do
@@ -47,7 +47,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
     before do
       user1.add_role :employee, company1
       sign_in user1
-      send_request :get, internal_api_v1_employments_path
+      send_request :get, internal_api_v1_employments_path, headers: headers(user1)
     end
 
     it "forbids the user to access the list of users of company" do
@@ -60,7 +60,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
     before do
       user1.add_role :book_keeper, company1
       sign_in user1
-      send_request :get, internal_api_v1_employments_path
+      send_request :get, internal_api_v1_employments_path, headers: headers(user1)
     end
 
     it "forbids the user to access the list of users of company" do
