@@ -43,11 +43,16 @@ services:
       - elasticsearch
     tmpfs:
       - /tmp/pids/
+    links:
+      - chrome-server
+
+  chrome-server:
+    image: selenium/standalone-chrome:96.0
 
   webpack:
     build:
       context: .
-      dockerfile: Dockerfile.local
+      dockerfile: Dockerfile.test
     command: bin/webpack-dev-server
     image: miru-web:latest
     ports:
@@ -59,24 +64,6 @@ services:
       - ELASTICSEARCH_URL=http://elastic:x2Sy5FK51zu@elasticsearch:9200
     depends_on:
       - database
-
-  sidekiq:
-    build:
-      context: .
-      dockerfile: Dockerfile.local
-    command: bundle exec sidekiq -C config/sidekiq.yml
-    volumes:
-      - .:/app
-      - gem_cache:/usr/local/bundle/gems
-      - node_modules:/app/node_modules
-    environment:
-      - DATABASE_URL=postgres://postgres:postgres@database:5432/
-      - DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL=true
-      - REDIS_URL=redis://redis:6379/1
-    depends_on:
-      - redis
-      - database
-      - app
 
   elasticsearch:
     image: elasticsearch:7.13.3
