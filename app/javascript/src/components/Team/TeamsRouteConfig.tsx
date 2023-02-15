@@ -6,9 +6,7 @@ import List from "./List";
 
 const TeamsRouteConfig = () => (
   <Routes>
-    <Route element={<List />} path="*">
-      {" "}
-    </Route>
+    <Route element={<List />} path="*" />
   </Routes>
 );
 

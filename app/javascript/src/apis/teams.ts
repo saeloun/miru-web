@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "./api";
 
 const get = async id => axios.get(`team/${id}/details`);
 
