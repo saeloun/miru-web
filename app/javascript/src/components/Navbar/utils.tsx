@@ -40,7 +40,7 @@ const navAdminOptions = [
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
     dataCy: "team-tab",
-    path: Paths.TEAM,
+    path: Paths.TEAMS,
   },
   {
     logo: <InvoicesIcon className="mr-0 md:mr-4" size={26} />,
