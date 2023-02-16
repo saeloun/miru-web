@@ -7,7 +7,6 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
   def index
     authorize Invoice
     data = Invoices::IndexService.new(params, current_company).process
-
     render :index, locals: {
       invoices: data[:invoices_query],
       pagination_details: data[:pagination_details],
@@ -18,8 +17,10 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
   def create
     authorize Invoice
+    invoice = current_company.invoices.create!(invoice_params)
+    refresh_index
     render :create, locals: {
-      invoice: current_company.invoices.create!(invoice_params),
+      invoice: invoice,
       client: @client
     }
   end
@@ -95,5 +96,11 @@ class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationControll
 
     def ensure_time_entries_billed
       invoice.update_timesheet_entry_status!
+    end
+
+    # Elasticsearch can take up to a second for a change to reflect in search.
+    # We can use the refresh method to have it show up immediately.
+    def refresh_index
+      Invoice.search_index.refresh
     end
 end
