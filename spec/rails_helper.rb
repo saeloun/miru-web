@@ -14,29 +14,6 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "devise"
 require "rspec/rails"
 require "support/database_cleaner"
-require "capybara/rails"
-require "capybara/rspec"
-
-Capybara.server = :puma
-
-if ENV["CI"].present?
-  Capybara.register_driver :chrome_headless do |app|
-    options = Selenium::WebDriver::Chrome::Options.new(args: %w[headless window-size=1400,1000])
-
-    if ENV["HUB_URL"]
-      Capybara::Selenium::Driver.new(
-        app,
-        browser: :remote,
-        url: ENV["HUB_URL"],
-        capabilities: options)
-    end
-  end
-
-  Capybara.default_driver = :chrome_headless
-  Capybara.javascript_driver = :chrome_headless
-else
-  Capybara.default_driver = :selenium_chrome
-end
 
 Dir[Rails.root.join("spec", "support", "**", "*.rb")].sort.each { |f| require f }
 
@@ -95,11 +72,13 @@ RSpec.configure do |config|
     WebMock.disable_net_connect!
   end
 
-  config.before(:each, type: :system) do
-    driven_by :chrome_headless
+  if ENV["CI"].present?
+    config.before(:each, type: :system) do
+      driven_by :chrome_headless
 
-    Capybara.app_host = "http://#{IPSocket.getaddress(Socket.gethostname)}:3000"
-    Capybara.server_host = IPSocket.getaddress(Socket.gethostname)
-    Capybara.server_port = 3000
+      Capybara.app_host = "http://#{IPSocket.getaddress(Socket.gethostname)}:3000"
+      Capybara.server_host = IPSocket.getaddress(Socket.gethostname)
+      Capybara.server_port = 3000
+    end
   end
 end

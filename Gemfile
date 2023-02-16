@@ -202,7 +202,9 @@ group :test do
   gem "capybara", ">= 3.26"
   gem "selenium-webdriver", ">= 4.0.0"
   # Ref: https://www.plymouthsoftware.com/articles/rails-on-docker-system-specs-in-containers-with-rspec-capybara-chrome-and-selenium/
-  # gem "webdrivers" # commenting webdrivers as as chrome isn't installed in the Dockerfile
+  unless ENV["CI"]
+    gem "webdrivers"
+  end
 
   # Use Codecov for code coverage analysis
   gem "simplecov", require: false
