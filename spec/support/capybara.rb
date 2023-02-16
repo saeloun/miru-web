@@ -14,7 +14,8 @@ if ENV["CI"].present?
         app,
         browser: :remote,
         url: ENV["HUB_URL"],
-        capabilities: options)
+        capabilities: options,
+        timeout: 120)
     end
   end
 
