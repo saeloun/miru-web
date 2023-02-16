@@ -204,6 +204,7 @@ const Invoices = () => {
 
   const handleReset = () => {
     window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
+    setIsFilterVisible(false);
     setFilterParams(filterIntialValues);
   };
 
