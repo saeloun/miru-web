@@ -514,6 +514,7 @@ RSpec/DescribeClass:
   Exclude:
     - "spec/requests/**/*"
     - "spec/feature/**/*"
+    - "spec/system/**/*"
 
 RSpec/DescribedClassModuleWrapping:
   Description: Avoid opening modules and defining specs within them.
