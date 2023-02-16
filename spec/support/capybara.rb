@@ -8,6 +8,9 @@ Capybara.server = :puma
 if ENV["CI"].present?
   Capybara.register_driver :chrome_headless do |app|
     options = Selenium::WebDriver::Chrome::Options.new(args: %w[headless window-size=1400,1000])
+    options.add_argument(
+      "--enable-features=NetworkService,NetworkServiceInProcess",
+    )
 
     if ENV["HUB_URL"]
       Capybara::Selenium::Driver.new(
@@ -15,7 +18,7 @@ if ENV["CI"].present?
         browser: :remote,
         url: ENV["HUB_URL"],
         capabilities: options,
-        timeout: 120)
+        timeout: 60)
     end
   end
 
