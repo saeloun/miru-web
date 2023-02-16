@@ -156,6 +156,7 @@ const EditInvoice = () => {
             clientList={invoiceDetails.companyClientList}
             clientVisible={false}
             currency={invoiceDetails.company.currency}
+            dateFormat={invoiceDetails.company.dateFormat}
             dueDate={dueDate || invoiceDetails.dueDate}
             invoiceNumber={invoiceNumber}
             issueDate={issueDate || invoiceDetails.issueDate}
