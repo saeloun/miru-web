@@ -14,12 +14,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg2 && 
     apt-get install -y --no-install-recommends nodejs yarn && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-
 RUN curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
     && apt-get update && apt-get install google-chrome-stable -y --no-install-recommends postgresql-client-13 && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-
 
 FROM base AS build-deps
 
@@ -48,5 +46,7 @@ COPY --from=gems /app /app
 COPY --from=gems /usr/local/bundle /usr/local/bundle
 COPY --from=node_modules /app/node_modules /app/node_modules
 COPY . ./
+
+RUN RAILS_ENV=$RAILS_ENV rails assets:precompile
 
 RUN ["chmod", "+x", "scripts/ci/rspec.sh"]
