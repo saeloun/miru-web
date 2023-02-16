@@ -14,6 +14,7 @@ const Payments = () => {
     useState<boolean>(false);
   const [paymentList, setPaymentList] = useState<any>([]);
   const [invoiceList, setInvoiceList] = useState<any>([]);
+  const [dateFormat, setDateFormat] = useState<any>("");
   const [baseCurrency, setBaseCurrency] = useState<any>("");
 
   const fetchInvoiceList = async () => {
@@ -21,6 +22,7 @@ const Payments = () => {
       const res = await payment.getInvoiceList();
       const sanitzed = await unmapPayment(res.data);
       setInvoiceList(sanitzed);
+      setDateFormat(res.data.company.dateFormat);
     } catch (err) {
       Logger.error(err);
     }
@@ -56,6 +58,7 @@ const Payments = () => {
       <Table baseCurrency={baseCurrency} payments={paymentList} />
       {showManualEntryModal && (
         <AddManualEntry
+          dateFormat={dateFormat}
           fetchInvoiceList={fetchInvoiceList}
           fetchPaymentList={fetchPaymentList}
           invoiceList={invoiceList}
