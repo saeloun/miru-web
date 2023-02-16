@@ -173,7 +173,7 @@ group :development, :test do
   gem "bullet"
 
   # To record response of outgoing API calls
-  gem "vcr", "~> 3.0.1"
+  gem "vcr", "~> 6.1"
   gem "webmock", "~> 3.14.0"
 end
 
