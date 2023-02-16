@@ -17,9 +17,11 @@ export SENDGRID_USERNAME=apikey
 export SENDGRID_PASSWORD=pass
 export SMTP_DOMAIN=saeloun.com
 export SMTP_PORT=587
+export CI=true
+export HUB_URL=http://chrome:4444/wd/hub
 
 bundle install --with test
 bin/yarn install
-rake db:create
-rake db:migrate
+bin/rails db:create
+bin/rails db:migrate
 bundle exec rspec --color spec
