@@ -25,7 +25,6 @@
 # Indexes
 #
 #  index_invoices_on_client_id          (client_id)
-#  index_invoices_on_due_date           (due_date)
 #  index_invoices_on_company_id         (company_id)
 #  index_invoices_on_discarded_at       (discarded_at)
 #  index_invoices_on_due_date           (due_date)
