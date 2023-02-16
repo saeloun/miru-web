@@ -11,3 +11,7 @@ json.invoices invoices do |invoice|
   json.amount invoice.amount
   json.status invoice.status
 end
+
+json.company do
+  json.date_format company.date_format
+end
