@@ -2,20 +2,22 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 
-const InvoiceInfo = ({ invoice }) => (
+const InvoiceInfo = ({
+  invoice: { company, invoiceNumber, reference, issueDate, dueDate, amount },
+}) => (
   <>
     <div className="group">
       <p className="text-xs font-normal text-miru-dark-purple-1000">
         Invoice Number
       </p>
       <p className="text-base font-normal text-miru-dark-purple-1000">
-        {invoice.invoiceNumber}
+        {invoiceNumber}
       </p>
       <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
         Reference
       </p>
       <p className="text-base font-normal text-miru-dark-purple-1000">
-        {invoice.reference}
+        {reference}
       </p>
     </div>
     <div className="group">
@@ -23,13 +25,13 @@ const InvoiceInfo = ({ invoice }) => (
         Date of Issue
       </p>
       <p className="text-base font-normal text-miru-dark-purple-1000">
-        {invoice.issueDate}
+        {issueDate}
       </p>
       <p className="mt-4 text-xs font-normal text-miru-dark-purple-1000">
         Due Date
       </p>
       <p className="text-base font-normal text-miru-dark-purple-1000">
-        {invoice.dueDate}
+        {dueDate}
       </p>
     </div>
     <div>
@@ -37,7 +39,7 @@ const InvoiceInfo = ({ invoice }) => (
         Amount
       </p>
       <p className="mt-6 text-4xl font-normal text-miru-dark-purple-1000">
-        {currencyFormat(invoice.company.currency, invoice.amount)}
+        {currencyFormat(company.currency, amount)}
       </p>
     </div>
   </>

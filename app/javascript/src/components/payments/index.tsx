@@ -21,10 +21,10 @@ const Payments = () => {
   const { isDesktop } = useUserContext();
   const fetchInvoiceList = async () => {
     try {
-      const res = await payment.getInvoiceList();
-      const sanitzed = await unmapPayment(res.data);
+      const { data } = await payment.getInvoiceList();
+      const sanitzed = await unmapPayment(data);
       setInvoiceList(sanitzed);
-      setDateFormat(res.data.company.dateFormat);
+      setDateFormat(data.company.dateFormat);
     } catch (err) {
       Logger.error(err);
     }
