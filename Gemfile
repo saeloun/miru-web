@@ -219,7 +219,7 @@ end
 
 group :test do
   # Ref: https://www.plymouthsoftware.com/articles/rails-on-docker-system-specs-in-containers-with-rspec-capybara-chrome-and-selenium/
-  # gem "webdrivers"
+  gem "webdrivers"
 end
 
 # https://github.com/ankane/strong_migrations
