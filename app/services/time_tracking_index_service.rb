@@ -56,13 +56,12 @@ class TimeTrackingIndexService
     end
 
     def set_clients
-      @clients = current_user.allowed_clients(current_company)
-        .includes(:projects)
+      @clients = ClientPolicy::Scope.new(current_user, current_company).resolve.includes(:projects)
     end
 
     def set_projects
       @projects = {}
-      user_projects = current_user.allowed_projects(current_company)
+      user_projects = ProjectPolicy::Scope.new(current_user, current_company).resolve
       clients.each { |client| @projects[client.name] = client.projects.kept & user_projects }
     end
 end

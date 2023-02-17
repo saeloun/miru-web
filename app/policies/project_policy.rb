@@ -1,6 +1,27 @@
 # frozen_string_literal: true
 
 class ProjectPolicy < ApplicationPolicy
+  class Scope
+    def initialize(user, company)
+      @user = user
+      @scope = company
+    end
+
+    def resolve
+      if user.has_admin_access(scope)
+        scope.projects.kept.order(:name)
+      else
+        user.projects.kept
+          .merge(user.project_members.kept)
+          .joins(:client)
+          .where(clients: { company_id: scope.id })
+      end
+    end
+
+    private
+
+      attr_reader :user, :scope
+  end
   attr_reader :error_message_key
 
   def index?
