@@ -175,6 +175,10 @@ cd cypress
 yarn run cy:open:staging
 ```
 
+## Configure Sentry:
+
+To configure Sentry set the project's [sentry dsn](https://docs.sentry.io/product/sentry-basics/dsn-explainer/#where-to-find-your-dsn) as value to `SENTRY_DNS` environment variable.
+
 ## Community Support
 
 - Feel free to join our [Discord](https://discord.gg/UABXyQQ82c) channel for
