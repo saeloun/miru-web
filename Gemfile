@@ -8,9 +8,6 @@ ruby "3.2.0"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.4"
 
-# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-# gem "sprockets-rails", ">= 3.4.1"
-
 # Use postgresql as the database for Active Record
 gem "pg"
 
@@ -140,7 +137,7 @@ gem "ruby_audit", require: false
 
 gem "rubyzip"
 
-group :development, :test do
+group :development, :test, :ci do
   # See https://edgeguides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", ">= 1.0.0", platforms: %i[mri mingw x64_mingw]
 
@@ -197,14 +194,9 @@ group :production do
   gem "elastic-apm"
 end
 
-group :test do
-  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+group :test, :ci do
   gem "capybara", ">= 3.26"
   gem "selenium-webdriver", ">= 4.0.0"
-  # Ref: https://www.plymouthsoftware.com/articles/rails-on-docker-system-specs-in-containers-with-rspec-capybara-chrome-and-selenium/
-  unless ENV["CI"]
-    gem "webdrivers"
-  end
 
   # Use Codecov for code coverage analysis
   gem "simplecov", require: false
@@ -220,6 +212,9 @@ group :test do
   # BuildKite Test Collector
   # gem "buildkite-test_collector", git: "https://github.com/buildkite/test-collector-ruby.git", branch: "main"
 end
+
+# Ref: https://www.plymouthsoftware.com/articles/rails-on-docker-system-specs-in-containers-with-rspec-capybara-chrome-and-selenium/
+gem "webdrivers", group: :test
 
 # https://github.com/ankane/strong_migrations
 gem "strong_migrations"
