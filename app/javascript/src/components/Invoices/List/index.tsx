@@ -209,7 +209,7 @@ const Invoices = () => {
   };
 
   const InvoicesLayout = () => (
-    <div className="p-4 lg:p-0">
+    <div className="h-full p-4 lg:p-0">
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         filterParamsStr={filterParamsStr}
