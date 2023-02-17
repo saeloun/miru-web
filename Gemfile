@@ -8,9 +8,6 @@ ruby "3.2.0"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.4"
 
-# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-# gem "sprockets-rails", ">= 3.4.1"
-
 # Use postgresql as the database for Active Record
 gem "pg"
 
@@ -198,7 +195,6 @@ group :production do
 end
 
 group :test, :ci do
-  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara", ">= 3.26"
   gem "selenium-webdriver", ">= 4.0.0"
 
@@ -217,10 +213,8 @@ group :test, :ci do
   # gem "buildkite-test_collector", git: "https://github.com/buildkite/test-collector-ruby.git", branch: "main"
 end
 
-group :test do
-  # Ref: https://www.plymouthsoftware.com/articles/rails-on-docker-system-specs-in-containers-with-rspec-capybara-chrome-and-selenium/
-  gem "webdrivers"
-end
+# Ref: https://www.plymouthsoftware.com/articles/rails-on-docker-system-specs-in-containers-with-rspec-capybara-chrome-and-selenium/
+gem "webdrivers", group: :test
 
 # https://github.com/ankane/strong_migrations
 gem "strong_migrations"
