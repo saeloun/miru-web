@@ -39,13 +39,9 @@ RSpec.configure do |config|
   config.verbose_retry = true
   config.display_try_failure_messages = true
 
-  # config.around do |example|
-  #   if example.metadata[:type] == :feature
-  #     example.run_with_retry retry: 1
-  #   else
-  #     example.run
-  #   end
-  # end
+  config.around do |example|
+    example.run_with_retry retry: 3
+  end
 
   # config.retry_callback = proc do |ex|
   #   # run some additional clean up task - can be filtered by example metadata
