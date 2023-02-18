@@ -32,7 +32,7 @@ class InvoiceLineItem < ApplicationRecord
 
   validates :name, :date, :rate, :quantity, presence: true
   validates :rate, numericality: { greater_than_or_equal_to: 0 }
-  validates :quantity, numericality: { greater_than: 0 }
+  validates :quantity, numericality: { greater_than_or_equal_to: 0 }
 
   def self.total_cost
     (self.sum("quantity * rate") / 60).round(3)

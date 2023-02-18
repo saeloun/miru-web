@@ -14,7 +14,7 @@ RSpec.describe InvoiceLineItem, type: :model do
     end
 
     describe "validate numericality of" do
-      it { is_expected.to validate_numericality_of(:quantity).is_greater_than(0) }
+      it { is_expected.to validate_numericality_of(:quantity).is_greater_than_or_equal_to(0) }
       it { is_expected.to validate_numericality_of(:rate).is_greater_than_or_equal_to(0) }
     end
   end
@@ -42,8 +42,8 @@ RSpec.describe InvoiceLineItem, type: :model do
                           invoice_line_item_2.id,
                           invoice_line_item_3.id
                         ]
-                    ).total_cost
-        ).to eq(total_cost)
+                    ).total_cost.to_s
+        ).to eq(total_cost.to_s)
       end
     end
   end
