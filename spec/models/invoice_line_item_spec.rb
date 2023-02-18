@@ -27,7 +27,7 @@ RSpec.describe InvoiceLineItem, type: :model do
   end
 
   describe "Class Methods" do
-    describe ".total_cost" do
+    describe ".total_cost_of_all_line_items" do
       let(:invoice_line_item_1) { create :invoice_line_item }
       let(:invoice_line_item_2) { create :invoice_line_item }
       let(:invoice_line_item_3) { create :invoice_line_item }
@@ -42,7 +42,7 @@ RSpec.describe InvoiceLineItem, type: :model do
                           invoice_line_item_2.id,
                           invoice_line_item_3.id
                         ]
-                    ).total_cost.to_s
+                    ).total_cost_of_all_line_items.to_s
         ).to eq(total_cost.to_s)
       end
     end
