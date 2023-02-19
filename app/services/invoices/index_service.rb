@@ -32,7 +32,7 @@ module Invoices
           order: { created_at: :desc },
           page: filters.page,
           per_page: filters.per_page,
-          includes: [:client]
+          includes: [:client, :company]
         )
       end
 
