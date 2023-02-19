@@ -7,10 +7,11 @@ class Expenses::FetchService
   def initialize(current_company, params)
     @params = params
     @current_company = current_company
-    @expenses = search_expenses
   end
 
   def process
+    @expenses = search_expenses
+
     {
       expenses:,
       pagination_details:,

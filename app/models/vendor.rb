@@ -26,7 +26,9 @@ class Vendor < ApplicationRecord
 
   after_commit :reindex_expenses
 
-  def reindex_expenses
-    expenses.reindex
-  end
+  private
+
+    def reindex_expenses
+      expenses.reindex
+    end
 end

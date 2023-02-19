@@ -34,6 +34,14 @@ class Expense < ApplicationRecord
       :business
   ]
 
+  has_many_attached :receipts
+  belongs_to :company
+  belongs_to :expense_category
+  belongs_to :vendor, optional: true
+
+  validates :date, presence: true
+  validates :amount, numericality: { greater_than: 0 }
+
   searchkick filterable: [ :amount, :date, :expense_type, :category_id, :vendor_id, :company_id],
     word_start: [ :category_name, :vendor_name, :description]
 
@@ -52,14 +60,6 @@ class Expense < ApplicationRecord
       created_at:
     }
   end
-
-  has_many_attached :receipts
-  belongs_to :company
-  belongs_to :expense_category
-  belongs_to :vendor, optional: true
-
-  validates :date, presence: true
-  validates :amount, numericality: { greater_than: 0 }
 
   def formatted_date
     CompanyDateFormattingService.new(date, company:).process
