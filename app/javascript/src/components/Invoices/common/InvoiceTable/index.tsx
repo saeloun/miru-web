@@ -174,6 +174,7 @@ const InvoiceTable = ({
                 !item._destroy && (
                   <NewLineItemRow
                     currency={currency}
+                    dateFormat={dateFormat}
                     item={item}
                     key={index}
                     selectedOption={manualEntryArr}
@@ -187,6 +188,7 @@ const InvoiceTable = ({
                 !item._destroy && (
                   <NewLineItemRow
                     currency={currency}
+                    dateFormat={dateFormat}
                     item={item}
                     key={index}
                     selectedOption={selectedLineItems}
@@ -199,6 +201,7 @@ const InvoiceTable = ({
       <div>
         {multiLineItemModal && (
           <MultipleEntriesModal
+            dateFormat={dateFormat}
             selectedClient={selectedClient}
             selectedOption={selectedLineItems}
             setMultiLineItemModal={setMultiLineItemModal}
