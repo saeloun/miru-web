@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::ExpensesController < ApplicationController
+  before_action :set_expense, only: :show
   def index
     authorize Expense
 
@@ -20,20 +21,20 @@ class InternalApi::V1::ExpensesController < ApplicationController
   end
 
   def show
-    authorize expense
+    authorize @expense
 
-    render :show, locals: { expense: Expense::ShowPresenter.new(expense).process }
+    render :show, locals: { expense: Expense::ShowPresenter.new(@expense).process }
   end
 
   private
-
-    def expense
-      @_expense ||= Expense.find(params[:id])
-    end
 
     def expense_params
       params.require(:expense).permit(
         :amount, :date, :description, :expense_type, :expense_category_id, :vendor_id, :receipts
       )
+    end
+
+    def set_expense
+      @expense = Expense.find(params[:id])
     end
 end
