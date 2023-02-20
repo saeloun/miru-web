@@ -36,7 +36,7 @@ RSpec.describe "InternalApi::V1::Payments#index", type: :request do
 
     describe "when tries to fetch payments list" do
       it "returns the list of payments" do
-        get internal_api_v1_payments_path
+        get internal_api_v1_payments_path, headers: headers(user)
         expect(response).to have_http_status(:ok)
 
         expect(json_response["payments"]).to eq(JSON.parse(expected_api_response.to_json))
@@ -53,7 +53,7 @@ RSpec.describe "InternalApi::V1::Payments#index", type: :request do
 
     describe "when tries to fetch payments list" do
       it "returns the list of payments" do
-        get internal_api_v1_payments_path
+        get internal_api_v1_payments_path, headers: headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["payments"]).to eq(JSON.parse(expected_api_response.to_json))
       end
@@ -69,7 +69,7 @@ RSpec.describe "InternalApi::V1::Payments#index", type: :request do
 
     describe "when tries to fetch payments list" do
       it "returns forbidden" do
-        get internal_api_v1_payments_path
+        get internal_api_v1_payments_path, headers: headers(user)
         expect(response).to have_http_status(:forbidden)
       end
     end
