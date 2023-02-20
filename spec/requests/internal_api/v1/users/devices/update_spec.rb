@@ -28,7 +28,7 @@ RSpec.describe "Devices#update", type: :request do
           id: device_of_user.id,
           params: {
             device: updated_device_details
-          })
+          }), headers: headers(user)
       end
 
       it "is successful" do
@@ -48,7 +48,7 @@ RSpec.describe "Devices#update", type: :request do
           id: device_of_employee.id,
           params: {
             device: updated_device_details
-          })
+          }), headers: headers(user)
       end
 
       it "is successful" do
@@ -68,7 +68,7 @@ RSpec.describe "Devices#update", type: :request do
           id: device_of_employee.id,
           params: {
             device: updated_device_details
-          })
+          }), headers: headers(user)
       end
 
       it "is forbidden" do
@@ -84,7 +84,7 @@ RSpec.describe "Devices#update", type: :request do
           id: device_of_employee.id,
           params: {
             device: updated_device_details
-          })
+          }), headers: headers(user)
       end
 
       it "is not found" do
@@ -107,7 +107,7 @@ RSpec.describe "Devices#update", type: :request do
           id: device_of_user.id,
           params: {
             device: updated_device_details
-          })
+          }), headers: headers(user)
       end
 
       it "is successful" do
@@ -127,7 +127,7 @@ RSpec.describe "Devices#update", type: :request do
           id: device_of_employee.id,
           params: {
             device: updated_device_details
-          })
+          }), headers: headers(user)
       end
 
       it "is successful" do
@@ -147,7 +147,7 @@ RSpec.describe "Devices#update", type: :request do
           id: device_of_employee.id,
           params: {
             device: updated_device_details
-          })
+          }), headers: headers(user)
       end
 
       it "is forbidden" do
@@ -163,7 +163,7 @@ RSpec.describe "Devices#update", type: :request do
           id: device_of_employee.id,
           params: {
             device: updated_device_details
-          })
+          }), headers: headers(user)
       end
 
       it "is not found" do
@@ -186,7 +186,7 @@ RSpec.describe "Devices#update", type: :request do
           id: device_of_user.id,
           params: {
             device: updated_device_details
-          })
+          }), headers: headers(user)
       end
 
       it "is successful" do
@@ -206,7 +206,7 @@ RSpec.describe "Devices#update", type: :request do
           id: device_of_employee.id,
           params: {
             device: updated_device_details
-          })
+          }), headers: headers(user)
       end
 
       it "is forbidden" do
@@ -223,7 +223,7 @@ RSpec.describe "Devices#update", type: :request do
           id: device_of_employee.id,
           params: {
             device: updated_device_details
-          })
+          }), headers: headers(user)
       end
 
       it "is forbidden" do
@@ -239,7 +239,7 @@ RSpec.describe "Devices#update", type: :request do
           id: device_of_employee.id,
           params: {
             device: updated_device_details
-          })
+          }), headers: headers(user)
       end
 
       it "is not found" do
