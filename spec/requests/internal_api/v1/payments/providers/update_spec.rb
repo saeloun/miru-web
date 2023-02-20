@@ -23,7 +23,7 @@ RSpec.describe "InternalApi::V1::Payments::Providers#update", type: :request do
               enabled: true
             }
           }
-        )
+        ), headers: headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["enabled"]).to eq(true)
       end
@@ -38,7 +38,7 @@ RSpec.describe "InternalApi::V1::Payments::Providers#update", type: :request do
                   name: "foo"
                 }
               }
-            )
+            ), headers: headers(user)
             expect(response).to have_http_status(:unprocessable_entity)
           end
         end
@@ -62,7 +62,7 @@ RSpec.describe "InternalApi::V1::Payments::Providers#update", type: :request do
               enabled: true
             }
           }
-        )
+        ), headers: headers(user)
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -83,7 +83,7 @@ RSpec.describe "InternalApi::V1::Payments::Providers#update", type: :request do
                 enabled: true
               }
             }
-          )
+          ), headers: headers(user)
           expect(response).to have_http_status(:forbidden)
         end
       end
