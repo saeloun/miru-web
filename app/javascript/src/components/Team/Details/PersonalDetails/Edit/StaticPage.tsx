@@ -8,8 +8,8 @@ import {
   MapPinIcon,
   InfoIcon,
 } from "miruIcons";
-import IntlTelInput from "react-intl-tel-input";
-import "react-intl-tel-input/dist/main.css";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 import { CustomAsyncSelect } from "common/CustomAsyncSelect";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -163,17 +163,18 @@ const StaticPage = ({
       <div className="w-9/12">
         <div className="flex flex-row">
           <div className="flex w-1/2 flex-col px-2">
-            <div className="outline relative h-12">
-              <IntlTelInput
-                containerClassName="intl-tel-input w-full"
-                defaultCountry={personalDetails.addresses.country}
-                inputClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 border-miru-gray-1000"
+            <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4">
+              <PhoneInput
+                className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
+                defaultCountry="US"
+                initialValueFormat="national"
+                inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 p-4 text-base h-12 border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full"
                 value={
                   personalDetails.phone_number
                     ? personalDetails.phone_number
                     : ""
                 }
-                onPhoneNumberChange={handlePhoneNumberChange}
+                onChange={handlePhoneNumberChange}
               />
               <label
                 className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300"
