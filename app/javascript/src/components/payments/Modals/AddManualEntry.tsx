@@ -13,6 +13,7 @@ import { mapPayment } from "mapper/mappedIndex";
 const AddManualEntry = ({
   setShowManualEntryModal,
   invoiceList,
+  dateFormat,
   fetchPaymentList,
   fetchInvoiceList,
 }) => {
@@ -128,7 +129,7 @@ const AddManualEntry = ({
   };
 
   const CustomOption = props => {
-    const { innerProps, innerRef } = props;
+    const { innerProps, innerRef, data } = props;
 
     return (
       <div
@@ -138,23 +139,23 @@ const AddManualEntry = ({
       >
         <div className="py-2.5 pr-6 pl-0 text-left">
           <h1 className="text-base font-bold leading-5 text-miru-dark-purple-1000">
-            {props.data.label}
+            {data.label}
           </h1>
           <h3 className="pt-1 text-sm font-normal leading-5 text-miru-dark-purple-400">
-            {props.data.invoiceNumber}
+            {data.invoiceNumber}
           </h3>
         </div>
         <div className="px-6 py-2.5 text-left">
           <h1 className="text-base font-bold leading-5 text-miru-dark-purple-1000">
-            {props.data.amount}
+            {data.amount}
           </h1>
           <h3 className="pt-1 text-sm font-normal leading-5 text-miru-dark-purple-400">
-            {props.data.invoiceDate}
+            {dayjs(data.invoiceDate).format(dateFormat)}
           </h3>
         </div>
         <div className="py-2.5 pl-6 pr-0 text-right text-sm font-semibold leading-4 tracking-wider">
           <span className="rounded-lg bg-miru-alert-green-400 px-1 text-miru-alert-green-800">
-            {props.data.status}
+            {data.status}
           </span>
         </div>
       </div>
@@ -224,11 +225,11 @@ const AddManualEntry = ({
                   <input
                     disabled
                     className="focus:outline-none block h-8 w-full appearance-none rounded border-0 bg-miru-gray-100 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
-                    placeholder="DD.MM.YYYY"
+                    placeholder={dateFormat}
                     type="text"
                     value={
                       transactionDate &&
-                      dayjs(transactionDate).format("DD.MM.YYYY")
+                      dayjs(transactionDate).format(dateFormat)
                     }
                   />
                   <CalendarIcon
