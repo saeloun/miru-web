@@ -159,12 +159,9 @@ conference_category = company.expense_categories.create!({ name: "Conference" })
 
 puts "Expense Categories created"
 
-freshdesk_vendor = company.vendors.create!({ name: "Freshdesk" })
 ca_vendor = company.vendors.create!({ name: "CA firm" })
 insurance_vendor = company.vendors.create!({ name: "Insurance" })
 booking_vendor = company.vendors.create!({ name: "Booking" })
-pepperfry_vendor = company.vendors.create!({ name: "Pepperfry" })
-zomato_vendor = company.vendors.create!({ name: "Zomato" })
 apple_repair_vendor = company.vendors.create!({ name: "Apple maintenance" })
 
 puts "Venors created"
@@ -173,7 +170,7 @@ expenses = [
   {
     amount: 300000,
     date: Faker::Date.backward(days: 60),
-    description: "Salary of x,y,z",
+    description: "Salary of x,y,z employee",
     expense_category_id: 1,
     expense_type: :business
   },
@@ -197,13 +194,13 @@ expenses = [
     date: Faker::Date.backward(days: 60),
     description: "Dinner party",
     expense_category_id: 4,
-    vendor_id: zomato_vendor.id,
+    vendor_id: booking_vendor.id,
     expense_type: :personal
   },
   {
     amount: 67000,
     date: Faker::Date.backward(days: 60),
-    description: "Vipul US - India flight",
+    description: "Vipul flight",
     expense_category_id: 5,
     vendor_id: booking_vendor.id,
     expense_type: :business
@@ -229,7 +226,7 @@ expenses = [
     date: Faker::Date.backward(days: 60),
     description: "Office new chair",
     expense_category_id: 7,
-    vendor_id: pepperfry_vendor.id,
+    vendor_id: booking_vendor.id,
     expense_type: :business
   },
   {
@@ -251,7 +248,7 @@ expenses = [
   {
     amount: 12300,
     date: Faker::Date.backward(days: 60),
-    description: "Goa vacation",
+    description: "Team vacation",
     expense_category_id: outing_category.id,
     vendor_id: booking_vendor.id,
     expense_type: :business
@@ -259,7 +256,7 @@ expenses = [
   {
     amount: 5400,
     date: Faker::Date.backward(days: 60),
-    description: "Ruby conf ticket to employee x",
+    description: "Rails conf ticket to employee x",
     expense_category_id: conference_category.id,
     vendor_id: booking_vendor.id,
     expense_type: :business
@@ -267,7 +264,7 @@ expenses = [
 ]
 
 expenses.each do |expense|
-  company.expenses.create(expense)
+  company.expenses.create!(expense)
 end
 
 puts "Expenses Created"

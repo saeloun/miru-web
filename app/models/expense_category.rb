@@ -37,7 +37,7 @@ class ExpenseCategory < ApplicationRecord
   has_many :expenses
   belongs_to :company, optional: true
 
-  scope :defaults, -> { where(default: true) }
+  scope :default_categories, -> { where(default: true) }
 
   after_commit :reindex_expenses
 

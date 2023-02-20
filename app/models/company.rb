@@ -78,6 +78,6 @@ class Company < ApplicationRecord
   end
 
   def all_expense_categories
-    ExpenseCategory.defaults.order(:created_at) + expense_categories.order(:created_at)
+    ExpenseCategory.default_categories.order(:created_at) + expense_categories.order(:created_at)
   end
 end
