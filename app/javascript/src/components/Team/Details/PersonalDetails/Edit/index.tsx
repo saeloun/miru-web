@@ -246,7 +246,7 @@ const EmploymentDetails = () => {
     });
   };
 
-  const handlePhoneNumberChange = (status, phoneNumber, country) => {
+  const handlePhoneNumberChange = phoneNumber => {
     updateBasicDetails(phoneNumber, "phone_number", false);
   };
 
