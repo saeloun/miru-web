@@ -66,7 +66,7 @@ RSpec.describe "Invitations::Accept#create", type: :request do
     end
 
     it "return success flash message" do
-      expect(flash[:error]).to eq("You are already signed in.")
+      expect(flash[:error]).to eq("You are already authenticated.")
     end
   end
 end
