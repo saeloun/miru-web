@@ -25,7 +25,7 @@ RSpec.describe "Devices#create", type: :request do
         send_request :post, internal_api_v1_user_devices_path(
           user_id: user.id,
           device: device_details
-        )
+        ), headers: headers(user)
       end
 
       it "is successful" do
@@ -42,7 +42,7 @@ RSpec.describe "Devices#create", type: :request do
         send_request :post, internal_api_v1_user_devices_path(
           user_id: employee.id,
           device: device_details
-        )
+        ), headers: headers(user)
       end
 
       it "is successful" do
@@ -59,7 +59,7 @@ RSpec.describe "Devices#create", type: :request do
         send_request :post, internal_api_v1_user_devices_path(
           user_id: user2.id,
           device: device_details
-        )
+        ), headers: headers(user)
       end
 
       it "is forbidden" do
@@ -73,7 +73,7 @@ RSpec.describe "Devices#create", type: :request do
         send_request :post, internal_api_v1_user_devices_path(
           user_id: "abc",
           device: device_details
-        )
+        ), headers: headers(user)
       end
 
       it "is not found" do
@@ -93,7 +93,7 @@ RSpec.describe "Devices#create", type: :request do
         send_request :post, internal_api_v1_user_devices_path(
           user_id: user.id,
           device: device_details
-        )
+        ), headers: headers(user)
       end
 
       it "is successful" do
@@ -110,7 +110,7 @@ RSpec.describe "Devices#create", type: :request do
         send_request :post, internal_api_v1_user_devices_path(
           user_id: employee.id,
           device: device_details
-        )
+        ), headers: headers(user)
       end
 
       it "is successful" do
@@ -133,7 +133,7 @@ RSpec.describe "Devices#create", type: :request do
         send_request :post, internal_api_v1_user_devices_path(
           user_id: user.id,
           device: device_details
-        )
+        ), headers: headers(user)
       end
 
       it "is successful" do
@@ -150,7 +150,7 @@ RSpec.describe "Devices#create", type: :request do
         send_request :post, internal_api_v1_user_devices_path(
           user_id: employee.id,
           device: device_details
-        )
+        ), headers: headers(user)
       end
 
       it "is forbidden" do
