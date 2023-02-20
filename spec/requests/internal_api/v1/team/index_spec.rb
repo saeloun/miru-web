@@ -15,7 +15,7 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
   context "when user is admin" do
     before do
       sign_in user
-      send_request :get, internal_api_v1_team_index_path
+      send_request :get, internal_api_v1_team_index_path, headers: headers(user)
     end
 
     it "returns http success" do
@@ -56,7 +56,7 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
       create(:employment, company:, user: user3)
       user3.add_role :employee, company
       sign_in user3
-      send_request :get, internal_api_v1_team_index_path
+      send_request :get, internal_api_v1_team_index_path, headers: headers(user3)
     end
 
     it "is permitted to access Team#index page" do
