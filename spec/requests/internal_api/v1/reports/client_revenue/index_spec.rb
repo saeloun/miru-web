@@ -29,7 +29,8 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
 
         @client2_paid_amount = 0
         @client2_unpaid_amount = client2_overdue_invoice1.amount
-        get internal_api_v1_reports_client_revenues_path, params: { from_date: 1.month.ago, to_date: Date.today }
+        get internal_api_v1_reports_client_revenues_path, params: { from_date: 1.month.ago, to_date: Date.today },
+          headers: headers(user)
       end
 
       it "returns the 200 http response" do
@@ -76,7 +77,8 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
                                  client1_sent_invoice2.amount
 
         get internal_api_v1_reports_client_revenues_path,
-          params: { client_ids: [client1.id].to_json, from_date: 1.month.ago, to_date: Date.today }
+          params: { client_ids: [client1.id].to_json, from_date: 1.month.ago, to_date: Date.today },
+          headers: headers(user)
       end
 
       it "returns the 200 http response" do
@@ -116,7 +118,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_reports_client_revenues_path
+      send_request :get, internal_api_v1_reports_client_revenues_path, headers: headers(user)
     end
 
     it "is not permitted to view client revenue report" do
@@ -129,7 +131,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :get, internal_api_v1_reports_client_revenues_path
+      send_request :get, internal_api_v1_reports_client_revenues_path, headers: headers(user)
     end
 
     it "is not permitted to view client revenue report" do
