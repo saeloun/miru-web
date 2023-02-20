@@ -143,6 +143,7 @@ const GenerateInvoices = () => {
           amount={amount}
           amountDue={amountDue}
           amountPaid={amountPaid}
+          dateFormat={invoiceDetails.companyDetails.date_format}
           discount={discount}
           dueDate={dueDate}
           invoiceDetails={invoiceDetails}
