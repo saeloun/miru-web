@@ -22,7 +22,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
             project: {
               description: "test for update"
             }
-          })
+          }), headers: headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["description"]).to eq("test for update")
       end
@@ -34,7 +34,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
               client_id: 100000,
               description: "test for update"
             }
-          })
+          }), headers: headers(user)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(json_response["errors"]).to eq("Client must exist")
       end
@@ -46,7 +46,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :patch, internal_api_v1_project_path(id: project.id)
+      send_request :patch, internal_api_v1_project_path(id: project.id), headers: headers(user)
     end
 
     it "is not be permitted to update an project" do
@@ -59,7 +59,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :patch, internal_api_v1_project_path(id: project.id)
+      send_request :patch, internal_api_v1_project_path(id: project.id), headers: headers(user)
     end
 
     it "is not be permitted to update an project" do
