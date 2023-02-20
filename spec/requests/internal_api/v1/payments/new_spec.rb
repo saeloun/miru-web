@@ -21,7 +21,7 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
     end
 
     it "returns the unpaid invoices" do
-      send_request :get, new_internal_api_v1_payment_path
+      send_request :get, new_internal_api_v1_payment_path, headers: headers(user)
       expect(response).to have_http_status(:ok)
       expect(json_response["invoices"].pluck("id")).to eq(
         [client1_sent_invoice1.id, client1_sent_invoice2.id,
@@ -46,7 +46,7 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
 
     describe "when tries to create manual payment entry" do
       it "returns forbidden" do
-        send_request :post, internal_api_v1_payments_path(payment: @payment)
+        send_request :post, internal_api_v1_payments_path(payment: @payment), headers: headers(user)
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -68,7 +68,7 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
 
     describe "when tries to create manual payment entry" do
       it "returns forbidden" do
-        send_request :post, internal_api_v1_payments_path(payment: @payment)
+        send_request :post, internal_api_v1_payments_path(payment: @payment), headers: headers(user)
         expect(response).to have_http_status(:forbidden)
       end
     end
