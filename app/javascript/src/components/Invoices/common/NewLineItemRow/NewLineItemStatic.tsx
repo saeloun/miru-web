@@ -13,6 +13,7 @@ const NewLineItemStatic = ({
   handleDelete,
   setSelectedOption,
   selectedOption,
+  dateFormat,
 }) => {
   const strName = item.name || `${item.first_name} ${item.last_name}`;
   const [name, setName] = useState<string>(strName);
@@ -95,7 +96,7 @@ const NewLineItemStatic = ({
             <input
               placeholder="Select Date"
               type="text"
-              value={lineItemDate && dayjs(lineItemDate).format("DD.MM.YYYY")}
+              value={lineItemDate && dayjs(lineItemDate).format(dateFormat)}
               className={`focus:outline-none w-full cursor-pointer appearance-none rounded border-0 border-transparent bg-transparent p-1 pl-2 text-right text-sm font-medium text-miru-dark-purple-1000 focus:bg-white focus:bg-white focus:ring-1 focus:ring-miru-gray-1000 ${
                 showCalendarIcon ? "pr-9" : "pr-1"
               }`}

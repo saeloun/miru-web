@@ -204,11 +204,12 @@ const Invoices = () => {
 
   const handleReset = () => {
     window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
+    setIsFilterVisible(false);
     setFilterParams(filterIntialValues);
   };
 
   const InvoicesLayout = () => (
-    <div className="p-4 lg:p-0">
+    <div className="h-full p-4 lg:p-0">
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
         filterParamsStr={filterParamsStr}
