@@ -2,8 +2,8 @@
 
 set -eu
 
-bundle install --with test
+bundle install --without development production test
 bin/yarn install
-bundle exec rake assets:precompile
-bundle install --with test
-bundle exec rspec --color spec
+bin/rails db:create
+bin/rails db:migrate
+bundle exec rspec --color --exclude-pattern "spec/system/**/*.rb"

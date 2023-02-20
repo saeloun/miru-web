@@ -108,36 +108,34 @@ const OutstandingInvoiceReport = () => {
   };
 
   return (
-    <div className="absolute inset-0 z-50 bg-white lg:relative">
-      <EntryContext.Provider
-        value={{
-          ...contextValues,
-        }}
-      >
-        <Header
-          handleDownload={handleDownload}
-          isFilterVisible={isFilterVisible}
+    <EntryContext.Provider
+      value={{
+        ...contextValues,
+      }}
+    >
+      <Header
+        handleDownload={handleDownload}
+        isFilterVisible={isFilterVisible}
+        resetFilter={resetFilter}
+        setIsFilterVisible={setIsFilterVisible}
+        showExportButon={false}
+        showFilterIcon={false}
+        showNavFilters={showNavFilters}
+        type="Invoices Report"
+      />
+      <Container />
+      {false && (
+        <Filters
+          dateRange={dateRange}
+          handleApplyFilter={handleApplyFilter}
+          handleSelectDate={handleSelectDate}
           resetFilter={resetFilter}
+          selectedInput={selectedInput}
           setIsFilterVisible={setIsFilterVisible}
-          showExportButon={false}
-          showFilterIcon={false}
-          showNavFilters={showNavFilters}
-          type="Invoices Report"
+          onClickInput={onClickInput}
         />
-        <Container />
-        {false && (
-          <Filters
-            dateRange={dateRange}
-            handleApplyFilter={handleApplyFilter}
-            handleSelectDate={handleSelectDate}
-            resetFilter={resetFilter}
-            selectedInput={selectedInput}
-            setIsFilterVisible={setIsFilterVisible}
-            onClickInput={onClickInput}
-          />
-        )}
-      </EntryContext.Provider>
-    </div>
+      )}
+    </EntryContext.Provider>
   );
 };
 

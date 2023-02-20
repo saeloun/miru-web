@@ -9,7 +9,8 @@ class InternalApi::V1::PaymentsController < ApplicationController
     render :new, locals: {
       invoices: current_company.invoices.includes(:client)
         .with_statuses(["sent", "viewed", "overdue"])
-        .order(created_at: :asc)
+        .order(created_at: :asc),
+      company: current_company
     }
   end
 
