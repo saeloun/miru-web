@@ -6,7 +6,18 @@ import { GlobeIcon, InfoIcon, MapPinIcon, PhoneIcon } from "miruIcons";
 import { Divider } from "common/Divider";
 import { InfoDescription } from "common/Mobile/InfoDescription";
 
-const MobilePersonalDetails = ({ personalDetails }) => (
+const MobilePersonalDetails = ({
+  personalDetails: {
+    first_name,
+    last_name,
+    date_of_birth,
+    phone_number,
+    email_id,
+    addresses,
+    linkedin,
+    github,
+  },
+}) => (
   <div className="mt-12 px-4 py-2">
     <div className="py-4">
       <span className="flex flex-row items-center px-1 text-sm font-medium text-miru-dark-purple-1000">
@@ -15,7 +26,7 @@ const MobilePersonalDetails = ({ personalDetails }) => (
       <div className="mt-2 flex w-full flex-row">
         <div className="w-1/2 px-1">
           <InfoDescription
-            description={`${personalDetails.first_name} ${personalDetails.last_name}`}
+            description={`${first_name} ${last_name}`}
             title="Name"
           />
         </div>
@@ -23,10 +34,8 @@ const MobilePersonalDetails = ({ personalDetails }) => (
           <InfoDescription
             title="Date of Birth"
             description={`${
-              personalDetails.date_of_birth &&
-              dayjs(personalDetails.date_of_birth, "YYYY-MM-DD").format(
-                "MM.DD.YYYY"
-              )
+              date_of_birth &&
+              dayjs(date_of_birth, "YYYY-MM-DD").format("MM.DD.YYYY")
             }`}
           />
         </div>
@@ -40,16 +49,10 @@ const MobilePersonalDetails = ({ personalDetails }) => (
       </span>
       <div className="mt-2 flex w-full flex-row">
         <div className="w-1/2 px-1">
-          <InfoDescription
-            description={personalDetails.phone_number}
-            title="Phone Number"
-          />
+          <InfoDescription description={phone_number} title="Phone Number" />
         </div>
         <div className="w-1/2 px-1">
-          <InfoDescription
-            description={personalDetails.email_id}
-            title="Email ID (Personal)"
-          />
+          <InfoDescription description={email_id} title="Email ID (Personal)" />
         </div>
       </div>
     </div>
@@ -60,15 +63,15 @@ const MobilePersonalDetails = ({ personalDetails }) => (
       </span>
       <div className="mt-2 flex w-full flex-row">
         <div className="px-1">
-          {personalDetails.addresses && (
+          {addresses && (
             <InfoDescription
               title="Address"
-              description={`${personalDetails.addresses.address_line_1},
-                  ${personalDetails.addresses.address_line_2}
-                  ${personalDetails.addresses.city},
-                  ${personalDetails.addresses.state},
-                  ${personalDetails.addresses.country} -
-                  ${personalDetails.addresses.pin}`}
+              description={`${addresses.address_line_1},
+                  ${addresses.address_line_2}
+                  ${addresses.city},
+                  ${addresses.state},
+                  ${addresses.country} -
+                  ${addresses.pin}`}
             />
           )}
         </div>
@@ -82,16 +85,10 @@ const MobilePersonalDetails = ({ personalDetails }) => (
       </span>
       <div className="mt-2 flex w-full flex-row">
         <div className="w-1/2 px-1">
-          <InfoDescription
-            description={personalDetails.linkedin}
-            title="LinkedIn"
-          />
+          <InfoDescription description={linkedin} title="LinkedIn" />
         </div>
         <div className="w-1/2 px-2">
-          <InfoDescription
-            description={personalDetails.github}
-            title="Github"
-          />
+          <InfoDescription description={github} title="Github" />
         </div>
       </div>
     </div>
