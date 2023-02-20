@@ -34,7 +34,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
       }
 
       it "creates invoice successfully" do
-        send_request :post, internal_api_v1_invoices_path(invoice:)
+        send_request :post, internal_api_v1_invoices_path(invoice:), headers: headers(user)
         expect(response).to have_http_status(:ok)
         expected_attrs = ["amount", "amountDue", "amountPaid",
                           "client", "discount", "dueDate", "id",
@@ -52,7 +52,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
               reference: "bar",
               issue_date: "2022-01-01",
               due_date: "2022-01-31"
-            })
+            }), headers: headers(user)
           expect(response).to have_http_status(:not_found)
         end
       end
@@ -78,7 +78,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
             quantity: 34.54
           }
         )
-      )
+      ), headers: headers(user)
     end
 
     it "is not be permitted to generate an invoice" do
@@ -105,7 +105,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
             quantity: 34.54
           }
         )
-      )
+      ), headers: headers(user)
     end
 
     it "is not be permitted to generate an invoice" do
