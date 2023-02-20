@@ -17,7 +17,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
-      send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
+      send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry), headers: headers(user)
     end
 
     it "they should be able to destroy the record successfully" do
@@ -34,7 +34,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
+      send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry), headers: headers(user)
     end
 
     it "they should be able to destroy the record successfully" do
@@ -51,7 +51,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
       create(:employment, company:, user:)
       user2.add_role :employee, company
       sign_in user2
-      send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
+      send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry), headers: headers(user2)
     end
 
     it "they should not be able to delete the record" do
