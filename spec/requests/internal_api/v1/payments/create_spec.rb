@@ -34,7 +34,7 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
           amount: 100,
           note: "This is transaction ID - 123"
         }
-        send_request :post, internal_api_v1_payments_path(payment: @payment)
+        send_request :post, internal_api_v1_payments_path(payment: @payment), headers: headers(user)
       end
 
       it "return the success" do
@@ -87,7 +87,7 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
           amount: 80,
           note: "This is transaction ID - 123"
         }
-        send_request :post, internal_api_v1_payments_path(payment: @payment)
+        send_request :post, internal_api_v1_payments_path(payment: @payment), headers: headers(user)
       end
 
       it "sets the payment status as partial" do
@@ -131,7 +131,7 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
 
     describe "when tries to create manual payment entry" do
       it "returns forbidden" do
-        send_request :post, internal_api_v1_payments_path(payment: @payment)
+        send_request :post, internal_api_v1_payments_path(payment: @payment), headers: headers(user)
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -165,7 +165,7 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
 
     describe "when tries to create manual payment entry" do
       it "returns forbidden" do
-        send_request :post, internal_api_v1_payments_path(payment: @payment)
+        send_request :post, internal_api_v1_payments_path(payment: @payment), headers: headers(user)
         expect(response).to have_http_status(:forbidden)
       end
     end
