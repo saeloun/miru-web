@@ -14,7 +14,7 @@ RSpec.describe "InternalApi::V1::PaymentSettings#index", type: :request do
     end
 
     it "returns connected providers" do
-      send_request :get, internal_api_v1_payments_settings_path
+      send_request :get, internal_api_v1_payments_settings_path, headers: headers(user)
       expect(response).to have_http_status(:ok)
       expect(json_response["providers"]).to have_key("stripe")
       expect(json_response["providers"]).to have_key("paypal")
@@ -33,7 +33,7 @@ RSpec.describe "InternalApi::V1::PaymentSettings#index", type: :request do
     end
 
     it "is not be permitted to view payment settings" do
-      send_request :get, internal_api_v1_payments_settings_path
+      send_request :get, internal_api_v1_payments_settings_path, headers: headers(user)
       expect(response).to have_http_status(:forbidden)
     end
   end
@@ -46,7 +46,7 @@ RSpec.describe "InternalApi::V1::PaymentSettings#index", type: :request do
     end
 
     it "is not be permitted to view payment settings" do
-      send_request :get, internal_api_v1_payments_settings_path
+      send_request :get, internal_api_v1_payments_settings_path, headers: headers(user)
       expect(response).to have_http_status(:forbidden)
     end
   end
