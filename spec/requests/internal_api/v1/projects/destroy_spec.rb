@@ -17,7 +17,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
 
     describe "#destroy" do
       it "updates project successfully" do
-        send_request :delete, internal_api_v1_project_path(id: project.id)
+        send_request :delete, internal_api_v1_project_path(id: project.id), headers: headers(user)
         expect(response).to be_successful
       end
     end
@@ -28,7 +28,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :delete, internal_api_v1_project_path(id: project.id)
+      send_request :delete, internal_api_v1_project_path(id: project.id), headers: headers(user)
     end
 
     it "is not be permitted to destroy an project" do
@@ -41,7 +41,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :delete, internal_api_v1_project_path(id: project.id)
+      send_request :delete, internal_api_v1_project_path(id: project.id), headers: headers(user)
     end
 
     it "is not be permitted to destroy an project" do
