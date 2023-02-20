@@ -10,8 +10,10 @@ import { ToastContainer } from "react-toastify";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
+import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";
 import { TOASTER_DURATION } from "constants/index";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import AddEntry from "./AddEntry";
@@ -57,7 +59,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   );
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
   const [updateView, setUpdateView] = useState(true);
-
+  const { isDesktop } = useUserContext();
   const employeeOptions = employees.map(e => ({
     value: `${e["id"]}`,
     label: `${e["first_name"]} ${e["last_name"]}`,
@@ -305,7 +307,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     setCurrentYear(dayjs(date).year());
   };
 
-  return (
+  const TimeTrackingLayout = () => (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="mt-6">
@@ -517,6 +519,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       </div>
     </>
   );
+
+  const Main = withLayout(TimeTrackingLayout, !isDesktop, !isDesktop);
+
+  return <Main />;
 };
 
 interface Iprops {

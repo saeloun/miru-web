@@ -39,7 +39,7 @@ const RootElement = ({ role }) => {
 };
 
 const Main: React.FC<Iprops> = props => (
-  <div className="h-full overflow-x-scroll p-4 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
+  <div className="h-full overflow-x-scroll p-0 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
     <Routes>
       <Route element={<RootElement role={props.companyRole} />} path="/" />
       {ROUTES.map(parentRoute => (
@@ -70,6 +70,7 @@ interface Iprops {
   companyRole: Roles;
   company: object;
   isDesktop: boolean;
+  isAdminUser: boolean;
 }
 
 export default Main;

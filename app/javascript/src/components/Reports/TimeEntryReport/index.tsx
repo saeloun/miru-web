@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 import reportsApi from "apis/reports";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
+import { TimeEntryReportMobileView } from "./TimeEntryReportMobileView";
 import { TIME_ENTRY_REPORT_PAGE } from "./utils";
 
 import { applyFilter, getQueryParams } from "../api/applyFilter";
@@ -24,6 +26,7 @@ const TimeEntryReport = () => {
     status: [],
     groupBy: { label: "Client", value: "client" },
   };
+  const { isDesktop } = useUserContext();
 
   const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
   const [filterOptions, setFilterOptions] = useState({
@@ -152,10 +155,14 @@ const TimeEntryReport = () => {
           isFilterVisible={isFilterVisible}
           resetFilter={resetFilter}
           setIsFilterVisible={setIsFilterVisible}
-          showNavFilters={showNavFilters}
+          showNavFilters={isDesktop && showNavFilters}
           type={TIME_ENTRY_REPORT_PAGE}
         />
-        <Container selectedFilter={selectedFilter} />
+        {isDesktop ? (
+          <Container selectedFilter={selectedFilter} />
+        ) : (
+          <TimeEntryReportMobileView />
+        )}
         {isFilterVisible && (
           <Filters
             customDateRange={dateRange}

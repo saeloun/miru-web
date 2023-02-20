@@ -59,29 +59,27 @@ const AccountsAgingReport = () => {
   };
 
   return (
-    <div className="absolute inset-0 z-50 bg-white lg:relative">
-      <EntryContext.Provider value={{ ...contextValues }}>
-        <Header
-          handleDownload
-          isFilterVisible={isFilterVisible}
+    <EntryContext.Provider value={{ ...contextValues }}>
+      <Header
+        handleDownload
+        isFilterVisible={isFilterVisible}
+        resetFilter={resetFilter}
+        setIsFilterVisible={setIsFilterVisible}
+        showExportButon={false}
+        showNavFilters={showNavFilters}
+        type="Accounts Aging Report"
+      />
+      <Container />
+      {isFilterVisible && (
+        <FilterSideBar
           resetFilter={resetFilter}
+          selectedFilter={selectedFilter}
+          setFilterCounter={setFilterCounter}
           setIsFilterVisible={setIsFilterVisible}
-          showExportButon={false}
-          showNavFilters={showNavFilters}
-          type="Accounts Aging Report"
+          setSelectedFilter={setSelectedFilter}
         />
-        <Container />
-        {isFilterVisible && (
-          <FilterSideBar
-            resetFilter={resetFilter}
-            selectedFilter={selectedFilter}
-            setFilterCounter={setFilterCounter}
-            setIsFilterVisible={setIsFilterVisible}
-            setSelectedFilter={setSelectedFilter}
-          />
-        )}
-      </EntryContext.Provider>
-    </div>
+      )}
+    </EntryContext.Provider>
   );
 };
 

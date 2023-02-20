@@ -7,3 +7,4 @@ json.phone_number company.business_phone
 json.address company.address
 json.country company.country
 json.currency company.base_currency
+json.date_format company.date_format

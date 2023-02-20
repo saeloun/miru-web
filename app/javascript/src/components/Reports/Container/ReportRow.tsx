@@ -1,6 +1,5 @@
 import React from "react";
 
-import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
 import { ClientsIcon } from "miruIcons";
 
@@ -42,7 +41,7 @@ const ReportRow = ({
           {teamMember}
         </p>
         <p className="font-manrope text-sm font-medium text-miru-dark-purple-400">
-          {dayjs(workDate).format("MM.DD.YYYY")}
+          {workDate}
         </p>
       </div>
     </div>
