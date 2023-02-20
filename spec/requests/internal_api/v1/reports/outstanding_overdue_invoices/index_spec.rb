@@ -83,7 +83,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
                         }
                       ]
            }]
-        get internal_api_v1_reports_outstanding_overdue_invoices_path
+        get internal_api_v1_reports_outstanding_overdue_invoices_path, headers: headers(user)
       end
 
       it "returns the 200 http response" do
@@ -136,7 +136,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path
+      send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path, headers: headers(user)
     end
 
     it "is not permitted to view outstanding and overdue invoices report" do
@@ -149,7 +149,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path
+      send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path, headers: headers(user)
     end
 
     it "is not permitted to view outstanding and overdue invoices report" do
