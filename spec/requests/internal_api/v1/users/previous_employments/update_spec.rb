@@ -23,7 +23,7 @@ RSpec.describe "PreviousEmployments#update", type: :request do
         params: {
           previous_employment: updated_previous_employment_details
         }
-      )
+      ), headers: headers(user)
     end
 
     it "is successful" do
@@ -46,7 +46,7 @@ RSpec.describe "PreviousEmployments#update", type: :request do
         params: {
           previous_employment: updated_previous_employment_details
         }
-      )
+      ), headers: headers(user)
     end
 
     it "is successful" do
@@ -67,7 +67,7 @@ RSpec.describe "PreviousEmployments#update", type: :request do
         params: {
           previous_employment: updated_previous_employment_details
         }
-      )
+      ), headers: headers(user)
     end
 
     it "is forbidden" do
