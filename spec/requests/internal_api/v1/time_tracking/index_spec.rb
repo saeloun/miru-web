@@ -24,7 +24,7 @@ RSpec.describe "InternalApi::V1::TimeTracking#index", type: :request do
       create(:employment, company: company1, user:)
       user.add_role :admin, company1
       sign_in user
-      send_request :get, internal_api_v1_time_tracking_index_path
+      send_request :get, internal_api_v1_time_tracking_index_path, headers: headers(user)
     end
 
     it "returns success" do
@@ -40,9 +40,9 @@ RSpec.describe "InternalApi::V1::TimeTracking#index", type: :request do
         client1.name => [project1.id, project2.id],
         client2.name => [project3.id]
       }
-      actual_response = json_response["projects"].transform_values { |projects|
-  projects.pluck("id")
-}
+      actual_response = json_response["projects"].transform_values {
+        |projects| projects.pluck("id")
+      }
       expect(actual_response).to eq(expected_response)
     end
   end
@@ -52,7 +52,7 @@ RSpec.describe "InternalApi::V1::TimeTracking#index", type: :request do
       create(:employment, company: company1, user:)
       user.add_role :employee, company1
       sign_in user
-      send_request :get, internal_api_v1_time_tracking_index_path
+      send_request :get, internal_api_v1_time_tracking_index_path, headers: headers(user)
     end
 
     it "returns success" do
