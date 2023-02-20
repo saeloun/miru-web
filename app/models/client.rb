@@ -36,8 +36,8 @@ class Client < ApplicationRecord
   has_one_attached :logo
   belongs_to :company
 
-  validates :name, :email, presence: true
-  validates :email, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
+  validates :name, presence: true, length: { maximum: 50 }
+  validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
   after_discard :discard_projects
   after_commit :reindex_projects
 
@@ -126,6 +126,7 @@ class Client < ApplicationRecord
     outstanding_overdue_statuses = ["overdue", "sent", "viewed"]
     filtered_invoices = invoices
       .order(updated_at: :desc)
+      .includes(:company)
       .select { |invoice| outstanding_overdue_statuses.include?(invoice.status) }
     status_and_amount = invoices.group(:status).sum(:amount)
     status_and_amount.default = 0
