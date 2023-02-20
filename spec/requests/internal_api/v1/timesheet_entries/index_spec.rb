@@ -27,7 +27,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#index", type: :request do
       send_request :get, internal_api_v1_timesheet_entry_index_path, params: {
         from: Time.now - 35.days,
         to: Time.now - 20.days
-      }
+      }, headers: headers(user)
     end
 
     it "they should be able to access records successfully" do
@@ -53,7 +53,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#index", type: :request do
       send_request :get, internal_api_v1_timesheet_entry_index_path, params: {
         from: Time.now - 35.days,
         to: Time.now - 20.days
-      }
+      }, headers: headers(user)
     end
 
     it "they should be able to access records successfully" do
