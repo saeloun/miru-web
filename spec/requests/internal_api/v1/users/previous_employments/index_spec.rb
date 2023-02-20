@@ -21,7 +21,7 @@ RSpec.describe "PreviousEmployments#index", type: :request do
         before do
           user.add_role :owner, company
           sign_in user
-          send_request :get, internal_api_v1_user_previous_employments_path(user)
+          send_request :get, internal_api_v1_user_previous_employments_path(user), headers: headers(user)
         end
 
         it "is successful" do
@@ -39,7 +39,7 @@ RSpec.describe "PreviousEmployments#index", type: :request do
             create(:employment, company:, user: employee)
             user.add_role :owner, company
             sign_in user
-            send_request :get, internal_api_v1_user_previous_employments_path(employee)
+            send_request :get, internal_api_v1_user_previous_employments_path(employee), headers: headers(user)
           end
 
           it "is successful" do
@@ -56,7 +56,7 @@ RSpec.describe "PreviousEmployments#index", type: :request do
             create(:employment, company: company2, user: employee2)
             user.add_role :owner, company
             sign_in user
-            send_request :get, internal_api_v1_user_previous_employments_path(employee2)
+            send_request :get, internal_api_v1_user_previous_employments_path(employee2), headers: headers(user)
           end
 
           it "is forbidden" do
@@ -68,7 +68,7 @@ RSpec.describe "PreviousEmployments#index", type: :request do
           before do
             user.add_role :owner, company
             sign_in user
-            send_request :get, internal_api_v1_user_previous_employments_path("abc")
+            send_request :get, internal_api_v1_user_previous_employments_path("abc"), headers: headers(user)
           end
 
           it "is forbidden" do
@@ -83,7 +83,7 @@ RSpec.describe "PreviousEmployments#index", type: :request do
         before do
           user.add_role :owner, company
           sign_in user
-          send_request :get, internal_api_v1_user_previous_employments_path(user)
+          send_request :get, internal_api_v1_user_previous_employments_path(user), headers: headers(user)
         end
 
         it "is successful" do
@@ -102,7 +102,7 @@ RSpec.describe "PreviousEmployments#index", type: :request do
             create(:employment, company:, user:)
             user.add_role :admin, company
             sign_in user
-            send_request :get, internal_api_v1_user_previous_employments_path(employee)
+            send_request :get, internal_api_v1_user_previous_employments_path(employee), headers: headers(user)
           end
 
           it "is successful" do
@@ -118,7 +118,7 @@ RSpec.describe "PreviousEmployments#index", type: :request do
           before do
             user.add_role :admin, company
             sign_in user
-            send_request :get, internal_api_v1_user_previous_employments_path("abc")
+            send_request :get, internal_api_v1_user_previous_employments_path("abc"), headers: headers(user)
           end
 
           it "is forbidden" do
@@ -135,7 +135,7 @@ RSpec.describe "PreviousEmployments#index", type: :request do
         create(:employment, company:, user:)
         user.add_role :employee, company
         sign_in user
-        send_request :get, internal_api_v1_user_previous_employments_path(user)
+        send_request :get, internal_api_v1_user_previous_employments_path(user), headers: headers(user)
       end
 
       it "is successful" do
@@ -153,7 +153,7 @@ RSpec.describe "PreviousEmployments#index", type: :request do
         create(:employment, company:, user: employee)
         user.add_role :employee, company
         sign_in user
-        send_request :get, internal_api_v1_user_previous_employments_path(employee)
+        send_request :get, internal_api_v1_user_previous_employments_path(employee), headers: headers(user)
       end
 
       it "is forbidden" do
