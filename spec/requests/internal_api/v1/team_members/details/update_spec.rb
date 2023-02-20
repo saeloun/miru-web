@@ -32,7 +32,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
         team_id: employment.id,
         params: {
           user: @user_details
-        })
+        }), headers: headers(user)
     end
 
     it "is successful" do
@@ -54,7 +54,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
         team_id: employment.id,
         params: {
           user: @user_details
-        })
+        }), headers: headers(user)
     end
 
     it "is successful" do
@@ -76,7 +76,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
         team_id: employment.id,
         params: {
           user: @user_details
-        })
+        }), headers: headers(user)
     end
 
     it "is successful" do
@@ -100,7 +100,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
         team_id: employment2.id,
         params: {
           user: @user_details
-        })
+        }), headers: headers(user)
     end
 
     it "is unsuccessful" do
@@ -119,7 +119,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
         team_id: employment2.id,
         params: {
           user: @user_details
-        })
+        }), headers: headers(user)
     end
 
     it "is unsuccessful" do
@@ -138,7 +138,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
         team_id: employment2.id,
         params: {
           user: @user_details
-        })
+        }), headers: headers(user)
     end
 
     it "is unsuccessful" do
@@ -157,7 +157,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
         team_id: employment2.id,
         params: {
           user: @user_details
-        })
+        }), headers: headers(user)
     end
 
     it "is unsuccessful" do
