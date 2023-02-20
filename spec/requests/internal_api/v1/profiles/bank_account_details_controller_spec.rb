@@ -13,7 +13,7 @@ RSpec.describe "InternalApi::V1::Profiles::BankAccountDetailsController", type: 
   end
 
   describe "GET index" do
-    subject { send_request :get, internal_api_v1_profiles_bank_account_details_path }
+    subject { send_request :get, internal_api_v1_profiles_bank_account_details_path, headers: headers(user) }
 
     context "when wise account is present" do
       let(:wise_account) { create(:wise_account, user:, company:) }
@@ -50,7 +50,7 @@ RSpec.describe "InternalApi::V1::Profiles::BankAccountDetailsController", type: 
   end
 
   describe "POST create" do
-    subject { send_request :post, internal_api_v1_profiles_bank_account_details_path(params:) }
+    subject { send_request :post, internal_api_v1_profiles_bank_account_details_path(params:), headers: headers(user) }
 
     let(:params) do
       {
@@ -97,7 +97,9 @@ RSpec.describe "InternalApi::V1::Profiles::BankAccountDetailsController", type: 
   end
 
   describe "PUT update" do
-    subject { send_request :put, internal_api_v1_profiles_bank_account_detail_path(account_id:, params:) }
+    subject {
+  send_request :put, internal_api_v1_profiles_bank_account_detail_path(account_id:, params:), headers: headers(user)
+}
 
     let(:wise_account) { create(:wise_account, user:, company:) }
     let(:account_id) { wise_account.id }
