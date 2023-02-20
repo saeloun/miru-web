@@ -22,7 +22,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
           bill_status: :unbilled
         },
         user_id: user.id
-      }
+      }, headers: headers(user)
     end
 
     it "they should be able to create the record successfully" do
@@ -49,7 +49,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
           bill_status: :unbilled
         },
         user_id: user.id
-      }
+      }, headers: headers(user)
     end
 
     it "they should be able to create the record successfully" do
@@ -76,7 +76,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#create", type: :request do
           bill_status: :unbilled
         },
         user_id: user.id
-      }
+      }, headers: headers(user)
     end
 
     it "is not be permitted to generate an timehseet entry" do
