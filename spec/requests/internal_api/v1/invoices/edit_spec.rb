@@ -17,13 +17,12 @@ RSpec.describe "InternalApi::V1::InvoicesController", type: :request do
   end
 
   describe "GET edit" do
-    subject { send_request :get, edit_internal_api_v1_invoice_path(invoice) }
-
     context "when user is an admin" do
       before { sign_in admin }
 
       it "returns 200 successfull response with data" do
-        expect(subject).to eq 200
+        send_request :get, edit_internal_api_v1_invoice_path(invoice), headers: headers(admin)
+        expect(response).to have_http_status(:ok)
         expect(json_response["id"]).to eq invoice.id
         expect(json_response["company"]["id"]).to eq invoice.company.id
       end
@@ -33,7 +32,8 @@ RSpec.describe "InternalApi::V1::InvoicesController", type: :request do
       before { sign_in employee }
 
       it "returns 403 status with an error message" do
-        expect(subject).to eq 403
+        send_request :get, edit_internal_api_v1_invoice_path(invoice), headers: headers(employee)
+        expect(response).to have_http_status(:forbidden)
         expect(json_response["errors"]).to eq "You are not authorized to perform this action."
       end
     end
@@ -42,7 +42,8 @@ RSpec.describe "InternalApi::V1::InvoicesController", type: :request do
       before { sign_in book_keeper }
 
       it "returns 403 status with an error message" do
-        expect(subject).to eq 403
+        send_request :get, edit_internal_api_v1_invoice_path(invoice), headers: headers(book_keeper)
+        expect(response).to have_http_status(:forbidden)
         expect(json_response["errors"]).to eq "You are not authorized to perform this action."
       end
     end
