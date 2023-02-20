@@ -11,8 +11,8 @@ import AccountsAgingReportContext from "../context/AccountsAgingReportContext";
 import EntryContext from "../context/EntryContext";
 import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
-import Filters from "../Filters";
 import { getMonth } from "../Filters/filterOptions";
+import FilterSideBar from "../Filters/FilterSideBar";
 import Header from "../Header";
 import { ITimeEntry } from "../interface";
 
@@ -23,6 +23,10 @@ const TimeEntryReport = () => {
     teamMember: [],
     status: [],
     groupBy: { label: "Client", value: "client" },
+    customDateFilter: {
+      from: "",
+      to: "",
+    },
   };
 
   const [timeEntries, setTimeEntries] = useState<Array<ITimeEntry>>([]);
@@ -35,7 +39,6 @@ const TimeEntryReport = () => {
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
   const [selectedInput, setSelectedInput] = useState<string>("from-input");
-  const [dateRange, setDateRange] = useState({ from: "", to: "" });
 
   useEffect(() => {
     sendGAPageView();
@@ -69,17 +72,23 @@ const TimeEntryReport = () => {
     );
   }, [selectedFilter]);
 
-  const onClickInput = e => {
-    setSelectedInput(e.target.name);
-  };
+  useEffect(() => {
+    const close = e => {
+      if (e.keyCode === 27) {
+        setIsFilterVisible(false);
+      }
+    };
+    window.addEventListener("keydown", close);
 
-  const handleApplyFilter = async filters => {
+    return () => window.removeEventListener("keydown", close);
+  }, []);
+
+  const handleApplyFilter = filters => {
     setSelectedFilter(filters);
   };
 
   const resetFilter = () => {
     setSelectedFilter(filterIntialValues);
-    setIsFilterVisible(false);
     setShowNavFilters(false);
   };
 
@@ -157,15 +166,14 @@ const TimeEntryReport = () => {
         />
         <Container selectedFilter={selectedFilter} />
         {isFilterVisible && (
-          <Filters
-            customDateRange={dateRange}
+          <FilterSideBar
             handleApplyFilter={handleApplyFilter}
             resetFilter={resetFilter}
+            selectedFilter={selectedFilter}
             selectedInput={selectedInput}
-            setCustomDateRange={setDateRange}
+            setFilterCounter={setFilterCounter}
             setIsFilterVisible={setIsFilterVisible}
             setSelectedInput={setSelectedInput}
-            onClickInput={onClickInput}
           />
         )}
       </EntryContext.Provider>
