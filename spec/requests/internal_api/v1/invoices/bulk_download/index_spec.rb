@@ -9,13 +9,15 @@ RSpec.describe "InternalApi::V1::Invoices::BulkDownbload#index", type: :request 
   let!(:invoice) { create(:invoice, client:, status: "sent") }
   let(:download_id) { Faker::Alphanumeric.unique.alpha(number: 10) }
 
-  subject { send_request :get, internal_api_v1_invoices_bulk_download_index_path, params: {
-    bulk_invoices: {
-      invoice_ids: [invoice.id],
-      download_id:
-    }
+  subject {
+    send_request :get, internal_api_v1_invoices_bulk_download_index_path, params:
+    {
+      bulk_invoices: {
+        invoice_ids: [invoice.id],
+        download_id:
+      }
+    }, headers: headers(user)
   }
-}
 
   context "when authenticated" do
     before do
@@ -62,8 +64,14 @@ RSpec.describe "InternalApi::V1::Invoices::BulkDownbload#index", type: :request 
 
   context "when unauthenticated" do
     context "when request is made to download the Invoice" do
-      it "returns 403 status" do
-        subject
+      it "returns 401 status" do
+        send_request :get, internal_api_v1_invoices_bulk_download_index_path, params:
+        {
+          bulk_invoices: {
+            invoice_ids: [invoice.id],
+            download_id:
+          }
+        }
         expect(response).to have_http_status(:unauthorized)
         expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
       end
