@@ -22,8 +22,11 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       end
 
       it "returns success json response with team member" do
-        expect { send_request :delete, internal_api_v1_team_path(@team_company_user.user) }
-          .to change(company.employments.kept, :count).by(-1)
+        expect {
+          send_request :delete,
+            internal_api_v1_team_path(@team_company_user.user),
+            headers: headers(admin_user)
+        }.to change(company.employments.kept, :count).by(-1)
 
         expect(response).to be_successful
         expect(json_response["notice"]).to eq(I18n.t("team.delete.success.message"))
@@ -31,14 +34,14 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       end
 
       it "Discards the employments" do
-        send_request :delete, internal_api_v1_team_path(@team_company_user.user)
+        send_request :delete, internal_api_v1_team_path(@team_company_user.user), headers: headers(admin_user)
 
         expect(@team_company_user.reload.discarded?).to be_truthy
         expect(team_user.reload.employments.discarded.count).to eq(1)
       end
 
       it "changes role of only discarded employee" do
-        send_request :delete, internal_api_v1_team_path(@team_company_user.user)
+        send_request :delete, internal_api_v1_team_path(@team_company_user.user), headers: headers(admin_user)
 
         expect(team_user.roles.where(resource: company)).to eq([])
         expect(team_user_2.roles.where(resource: company).first.name).to eq("employee")
@@ -56,14 +59,14 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       end
 
       it "returns unsuccessful response with not_found status" do
-        send_request :delete, internal_api_v1_team_path(@non_team_company_user.user)
+        send_request :delete, internal_api_v1_team_path(@non_team_company_user.user), headers: headers(admin_user)
 
         expect(response).to have_http_status(:not_found)
         expect(response).not_to be_successful
       end
 
       it "does not discard the employments" do
-        send_request :delete, internal_api_v1_team_path(@non_team_company_user.user)
+        send_request :delete, internal_api_v1_team_path(@non_team_company_user.user), headers: headers(admin_user)
 
         expect(team_user.reload.employments.discarded.count).to eq(0)
       end
@@ -82,7 +85,7 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       end
 
       it "returns unsuccessful response with internal_server_error status" do
-        send_request :delete, internal_api_v1_team_path(invalid_user)
+        send_request :delete, internal_api_v1_team_path(invalid_user), headers: headers(admin_user)
 
         expect(response).not_to be_successful
         expect(response).to have_http_status(:internal_server_error)
@@ -90,7 +93,7 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       end
 
       it "does not discard the team member" do
-        send_request :delete, internal_api_v1_team_path(invalid_user)
+        send_request :delete, internal_api_v1_team_path(invalid_user), headers: headers(admin_user)
 
         expect(invalid_user.reload.employments.discarded.count).to eq(0)
       end
@@ -116,7 +119,7 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       end
 
       it "discard team member from only current company" do
-        expect { send_request :delete, internal_api_v1_team_path(team_user) }
+        expect { send_request :delete, internal_api_v1_team_path(team_user), headers: headers(admin_user) }
           .to change(team_user.employments.kept, :count).from(3).to(2)
           .and change(team_user.employments.discarded, :count).from(0).to(1)
 
@@ -126,12 +129,12 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       end
 
       it "updates the current_workspace_id of the user" do
-        send_request :delete, internal_api_v1_team_path(team_user)
+        send_request :delete, internal_api_v1_team_path(team_user), headers: headers(admin_user)
         expect(team_user.reload.current_workspace_id).not_to eq(company.id)
       end
 
       it "updates the role only in current company company" do
-        send_request :delete, internal_api_v1_team_path(team_user)
+        send_request :delete, internal_api_v1_team_path(team_user), headers: headers(admin_user)
         expect(team_user.roles.where(resource: company)).to eq([])
         expect(team_user.roles.where(resource: other_company_1).first.name).to eq("employee")
         expect(team_user.roles.where(resource: other_company_2).first.name).to eq("employee")
@@ -148,7 +151,7 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       create(:employment, company:, user: employee_user)
       employee_user.add_role :employee, company
       sign_in employee_user
-      send_request :delete, internal_api_v1_team_path(team_user)
+      send_request :delete, internal_api_v1_team_path(team_user), headers: headers(employee_user)
     end
 
     it "returns forbidden response with error" do
@@ -171,7 +174,7 @@ RSpec.describe "InternalApi::V1::Team#destroy", type: :request do
       create(:employment, company:, user: employee_user)
       employee_user.add_role :book_keeper, company
       sign_in employee_user
-      send_request :delete, internal_api_v1_team_path(team_user)
+      send_request :delete, internal_api_v1_team_path(team_user), headers: headers(employee_user)
     end
 
     it "returns forbidden response with error" do
