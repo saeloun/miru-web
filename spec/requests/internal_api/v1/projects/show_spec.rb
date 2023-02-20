@@ -14,7 +14,7 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
-      send_request :get, internal_api_v1_project_path(project)
+      send_request :get, internal_api_v1_project_path(project), headers: headers(user)
     end
 
     context "when time_frame is a week" do
@@ -44,11 +44,11 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_project_path(project)
+      send_request :get, internal_api_v1_project_path(project), headers: headers(user)
     end
 
     it "is not permitted to view project details" do
-      send_request :get, internal_api_v1_project_path(project)
+      send_request :get, internal_api_v1_project_path(project), headers: headers(user)
       expect(response).to have_http_status(:forbidden)
       expect(json_response["errors"]).to eq I18n.t("pundit.project_policy.show?")
     end
@@ -63,7 +63,7 @@ RSpec.describe "InternalApi::V1::Projects#show", type: :request do
     end
 
     it "is not permitted to view project details" do
-      send_request :get, internal_api_v1_project_path(project)
+      send_request :get, internal_api_v1_project_path(project), headers: headers(user)
       expect(response).to have_http_status(:forbidden)
       expect(json_response["errors"]).to eq I18n.t("pundit.project_policy.show?")
     end
