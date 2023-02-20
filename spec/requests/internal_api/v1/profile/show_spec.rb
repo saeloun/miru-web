@@ -10,7 +10,7 @@ RSpec.describe "InternalApi::V1::Profile#show", type: :request do
     before do
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_profile_path
+      send_request :get, internal_api_v1_profile_path, headers: headers(user)
     end
 
     it "fetches user details & avatar" do
