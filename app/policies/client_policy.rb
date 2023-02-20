@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class ClientPolicy < ApplicationPolicy
-  class Scope
+  class Scope < ApplicationPolicy
     def initialize(user, company)
       @user = user
       @scope = company
     end
 
     def resolve
-      if user.has_admin_access(scope)
+      if user_owner_role? || user_admin_role?
         scope.clients.kept.order(:name)
       else
         user.clients.kept

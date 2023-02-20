@@ -108,10 +108,6 @@ class User < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
-  def has_admin_access(company)
-    @_has_admin_access ||= self.has_role?(:owner, company) || self.has_role?(:admin, company)
-  end
-
   # Do user authentication if
   # 1. user is not soft deleted
   # AND
