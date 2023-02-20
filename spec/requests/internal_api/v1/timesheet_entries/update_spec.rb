@@ -33,7 +33,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
           note: "Updated Note",
           bill_status: :billed
         }
-      }
+      }, headers: headers(user)
     end
 
     it "they should be able to update the record successfully" do
@@ -60,7 +60,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
           timesheet_entry: {
             bill_status: :unbilled
           }
-        }
+        }, headers: headers(user)
 
         expect(response).to be_successful
         expect(json_response["entry"]["bill_status"]).to match("unbilled")
@@ -81,7 +81,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
           note: "Updated Note",
           bill_status: :billed
         }
-      }
+      }, headers: headers(user)
     end
 
     it "they should be able to update the record successfully" do
@@ -108,7 +108,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
           timesheet_entry: {
             bill_status: :unbilled
           }
-        }
+        }, headers: headers(user)
 
         expect(response).to have_http_status(:forbidden)
         expect(json_response["errors"]).to include("You are not authorized to perform this action.")
@@ -129,7 +129,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#update", type: :request do
           note: "Updated Note",
           bill_status: :billed
         }
-      }
+      }, headers: headers(user2)
     end
 
     it "they should not be able to update the record" do
