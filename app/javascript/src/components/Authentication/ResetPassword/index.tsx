@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
+import Logger from "js-logger";
 import { MiruLogoSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
@@ -34,7 +35,14 @@ const ResetPassword = () => {
       password,
       password_confirmation: confirm_password,
     };
-    await authenticationApi.resetPassword(payload);
+    try {
+      const res = await authenticationApi.resetPassword(payload);
+      if (res.status == 200) {
+        window.location.assign(`${window.location.origin}`);
+      }
+    } catch (err) {
+      Logger.error(err);
+    }
   };
 
   return (
