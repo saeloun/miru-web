@@ -18,7 +18,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry::BulkActionController#update", t
       user.add_role :admin, company
       sign_in user
       params = { ids: [timesheet_entry1.id, timesheet_entry2.id], project_id: project2.id }
-      send_request :patch, internal_api_v1_bulk_action_path, params:
+      send_request :patch, internal_api_v1_bulk_action_path, params:, headers: headers(user)
     end
 
     it "updates the timesheet entry projects for passed ids" do
