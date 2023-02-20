@@ -23,7 +23,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
             invoice: {
               reference: "foo"
             }
-          })
+          }), headers: headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["reference"]).to eq("foo")
       end
@@ -36,7 +36,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
                 client_id: 100000,
                 reference: "foo"
               }
-            })
+            }), headers: headers(user)
           expect(response).to have_http_status(:not_found)
         end
       end
@@ -53,7 +53,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
           invoice: {
             reference: "foo"
           }
-        })
+        }), headers: headers(user)
     end
 
     it "is not be permitted to update an invoice" do
@@ -71,7 +71,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
           invoice: {
             reference: "foo"
           }
-        })
+        }), headers: headers(user)
     end
 
     it "is not be permitted to update an invoice" do
