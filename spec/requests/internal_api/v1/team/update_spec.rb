@@ -16,7 +16,8 @@ RSpec.describe "InternalApi::V1::Team#update", type: :request do
     end
 
     it "returns success json response with team member" do
-      send_request :put, internal_api_v1_team_path(employee_company_user.user), params: { role: "admin" }
+      send_request :put, internal_api_v1_team_path(employee_company_user.user), params: { role: "admin" },
+        headers: headers(admin_user)
 
       expect(response).to have_http_status(:ok)
       expect(response).to be_successful
@@ -25,8 +26,12 @@ RSpec.describe "InternalApi::V1::Team#update", type: :request do
     end
 
     it "updates the company user" do
-      expect { send_request :put, internal_api_v1_team_path(employee_company_user.user), params: { role: "admin" } }
-        .to change { employee_user.primary_role(company) }.from("employee").to("admin")
+      expect {
+          send_request :put,
+            internal_api_v1_team_path(employee_company_user.user),
+            params: { role: "admin" },
+            headers: headers(admin_user)
+        }.to change { employee_user.primary_role(company) }.from("employee").to("admin")
     end
 
     context "when team member is present in multiple company" do
@@ -41,8 +46,12 @@ RSpec.describe "InternalApi::V1::Team#update", type: :request do
       end
 
       it "update team member from only current company" do
-        expect { send_request :put, internal_api_v1_team_path(@team_company_user.user), params: { role: "admin" } }
-          .to change { team_user.primary_role(company) }.from("employee").to("admin")
+        expect {
+          send_request :put,
+            internal_api_v1_team_path(@team_company_user.user),
+            params: { role: "admin" },
+            headers: headers(admin_user)
+        }.to change { team_user.primary_role(company) }.from("employee").to("admin")
 
         expect(team_user.primary_role(other_company_1)).to eq("employee")
       end
@@ -56,7 +65,10 @@ RSpec.describe "InternalApi::V1::Team#update", type: :request do
     end
 
     it "returns unsuccessful response with forbidden status" do
-      send_request :put, internal_api_v1_team_path(employee_company_user.user), params: { role: "admin" }
+      send_request :put,
+        internal_api_v1_team_path(employee_company_user.user),
+        params: { role: "admin" },
+        headers: headers(employee_user)
 
       expect(response).to have_http_status(:forbidden)
       expect(response).not_to be_successful
