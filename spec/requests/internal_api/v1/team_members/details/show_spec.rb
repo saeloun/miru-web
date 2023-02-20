@@ -13,7 +13,7 @@ RSpec.describe "Details#show", type: :request do
     before do
       user.add_role :owner, company
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment)
+      send_request :get, internal_api_v1_team_details_path(employment), headers: headers(user)
     end
 
     it "is successful" do
@@ -31,7 +31,7 @@ RSpec.describe "Details#show", type: :request do
     before do
       user.add_role :admin, company
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment)
+      send_request :get, internal_api_v1_team_details_path(employment), headers: headers(user)
     end
 
     it "is successful" do
@@ -49,7 +49,7 @@ RSpec.describe "Details#show", type: :request do
     before do
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment)
+      send_request :get, internal_api_v1_team_details_path(employment), headers: headers(user)
     end
 
     it "is successful" do
@@ -69,7 +69,7 @@ RSpec.describe "Details#show", type: :request do
       user.add_role :owner, company
       user2.add_role :employee, company2
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment2)
+      send_request :get, internal_api_v1_team_details_path(employment2), headers: headers(user)
     end
 
     it "is unsuccessful" do
@@ -84,7 +84,7 @@ RSpec.describe "Details#show", type: :request do
       user.add_role :admin, company
       user2.add_role :employee, company2
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment2)
+      send_request :get, internal_api_v1_team_details_path(employment2), headers: headers(user)
     end
 
     it "is unsuccessful" do
@@ -99,7 +99,7 @@ RSpec.describe "Details#show", type: :request do
       user.add_role :employee, company
       user2.add_role :employee, company2
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment2)
+      send_request :get, internal_api_v1_team_details_path(employment2), headers: headers(user)
     end
 
     it "is unsuccessful" do
@@ -115,7 +115,7 @@ RSpec.describe "Details#show", type: :request do
       user.add_role :employee, company
       user2.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_team_details_path(employment2)
+      send_request :get, internal_api_v1_team_details_path(employment2), headers: headers(user)
     end
 
     it "is unsuccessful" do
