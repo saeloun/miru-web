@@ -17,7 +17,7 @@ RSpec.describe "InternalApi::V1::Invoices#show", type: :request do
     end
 
     it "returns the invoice" do
-      send_request :get, internal_api_v1_invoice_path(company.invoices.first.id)
+      send_request :get, internal_api_v1_invoice_path(company.invoices.first.id), headers: headers(user)
       expect(response).to have_http_status(:ok)
     end
   end
@@ -30,7 +30,7 @@ RSpec.describe "InternalApi::V1::Invoices#show", type: :request do
     end
 
     it "is not permitted to view time entry report" do
-      send_request :get, internal_api_v1_invoice_path(company.invoices.first.id)
+      send_request :get, internal_api_v1_invoice_path(company.invoices.first.id), headers: headers(user)
       expect(response).to have_http_status(:forbidden)
     end
   end
@@ -43,7 +43,7 @@ RSpec.describe "InternalApi::V1::Invoices#show", type: :request do
     end
 
     it "is not permitted to view time entry report" do
-      send_request :get, internal_api_v1_invoice_path(company.invoices.first.id)
+      send_request :get, internal_api_v1_invoice_path(company.invoices.first.id), headers: headers(user)
       expect(response).to have_http_status(:forbidden)
     end
   end
