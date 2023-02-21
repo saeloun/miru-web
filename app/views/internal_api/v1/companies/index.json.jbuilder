@@ -6,12 +6,12 @@ json.company_details do
   json.name current_company.name
   json.business_phone current_company.business_phone
   json.address do
-    json.address_line_1 address.address_line_1
-    json.address_line_2 address.address_line_2
-    json.city address.city
-    json.state address.state
-    json.country address.country
-    json.pin address.pin
+    json.address_line_1 address&.address_line_1
+    json.address_line_2 address&.address_line_2
+    json.city address&.city
+    json.state address&.state
+    json.country address&.country
+    json.pin address&.pin
   end
   json.country current_company.country
   json.currency current_company.base_currency

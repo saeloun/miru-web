@@ -5,7 +5,7 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
 
   def index
     authorize current_company
-    render :index, locals: { current_company:, client_list: current_company.client_list, address: current_company.addresses.last }, status: :ok
+    render :index, locals: { current_company:, client_list: current_company.client_list, address: current_company.addresses&.last }, status: :ok
   end
 
   def create
