@@ -2,12 +2,13 @@ import React, { createContext, useReducer } from "react";
 
 import PropTypes from "prop-types";
 
-import authReducer from "../reducers/auth";
 import { getFromLocalStorage } from "utils/storage";
 
+import authReducer from "../reducers/auth";
+
 // @ts-ignore
-const AuthStateContext = createContext(); // @ts-ignore
-const AuthDispatchContext = createContext();
+const AuthStateContext = createContext({});
+const AuthDispatchContext = createContext({});
 
 const token = getFromLocalStorage("authToken");
 const email = getFromLocalStorage("authEmail");

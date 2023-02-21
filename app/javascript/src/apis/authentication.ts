@@ -29,7 +29,7 @@ const authenticationApi = {
   resetPassword,
   googleAuth,
   logout,
-  sendEmailConfirmation
+  sendEmailConfirmation,
 };
 
 export default authenticationApi;

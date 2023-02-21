@@ -101,8 +101,8 @@ export const AUTH_ROUTES = [
   },
   {
     path: "/password/new",
-    component: ForgotPassword
-  }
+    component: ForgotPassword,
+  },
 ];
 
 export const ROUTES = [

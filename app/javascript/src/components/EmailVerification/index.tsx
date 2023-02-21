@@ -1,20 +1,19 @@
 import React, { useEffect, useCallback } from "react";
 
+import Logger from "js-logger";
 import { MiruLogoSVG } from "miruIcons";
 
-import { useUserContext } from "context/UserContext";
 import authenticationApi from "apis/authentication";
-import Logger from "js-logger";
-
+import { useUserContext } from "context/UserContext";
 
 const EmailVerification = () => {
   const { user } = useUserContext();
   // @ts-ignore
-  const { email } = user
+  const { email } = user;
 
   useEffect(() => {
-    handleEmailConfirmation()
-  }, [])
+    handleEmailConfirmation();
+  }, []);
 
   const handleKeyPress = useCallback(event => {
     if (event.key === "Escape") {
@@ -22,14 +21,14 @@ const EmailVerification = () => {
     }
   }, []);
 
-  const handleEmailConfirmation = async() => {
+  const handleEmailConfirmation = async () => {
     try {
       // @ts-ignore
-      await authenticationApi.sendEmailConfirmation(`&email=${email}`)
+      await authenticationApi.sendEmailConfirmation(`&email=${email}`);
     } catch (err) {
-      Logger.error(err)
+      Logger.error(err);
     }
-  }
+  };
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyPress);
@@ -47,7 +46,7 @@ const EmailVerification = () => {
           <h6 className="modal__title ">Email Verification</h6>
           <div className="modal__form flex-col">
             <h3 className="font-sm my-6 text-center font-normal leading-4 text-miru-dark-purple-1000">
-              Please verify your email ID to continue. <br/>
+              Please verify your email ID to continue. <br />
               Verification link has been sent to your email ID:
               <br />
               <h3 className="font-sm text-center font-bold leading-4 text-miru-dark-purple-1000">
