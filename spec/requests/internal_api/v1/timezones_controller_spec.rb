@@ -27,10 +27,10 @@ RSpec.describe InternalApi::V1::TimezonesController, type: :request do
   end
 
   describe "GET index" do
-    subject { send_request :get, internal_api_v1_timezones_path }
-
     context "when user is an admin" do
       before { sign_in admin }
+
+      subject { send_request :get, internal_api_v1_timezones_path, headers: headers(admin) }
 
       it_behaves_like "InternalApi::V1::TimezonesController index"
     end
@@ -38,11 +38,15 @@ RSpec.describe InternalApi::V1::TimezonesController, type: :request do
     context "when user is an employee" do
       before { sign_in employee }
 
+      subject { send_request :get, internal_api_v1_timezones_path, headers: headers(employee) }
+
       it_behaves_like "InternalApi::V1::TimezonesController index"
     end
 
     context "when user is a book_keeper" do
       before { sign_in book_keeper }
+
+      subject { send_request :get, internal_api_v1_timezones_path, headers: headers(book_keeper) }
 
       it_behaves_like "InternalApi::V1::TimezonesController index"
     end
