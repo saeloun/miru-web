@@ -10,7 +10,6 @@ RSpec.describe PaymentProviders::CreateStripeProviderService do
       it "payment provide is created" do
         stripe_connected_account = StripeConnectedAccount.new
         allow(stripe_connected_account).to receive(:details_submitted).and_return(true)
-
         allow_any_instance_of(Company).to receive(:stripe_connected_account).and_return(stripe_connected_account)
         allow_any_instance_of(StripeConnectedAccount).to receive(:details_submitted).and_return(true)
 
