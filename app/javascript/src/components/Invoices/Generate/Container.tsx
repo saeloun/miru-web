@@ -32,6 +32,7 @@ const Container = ({
   setSelectedOption,
   manualEntryArr,
   setManualEntryArr,
+  dateFormat,
 }) => (
   <div className="relative m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
     <CompanyInfo company={invoiceDetails.companyDetails} />
@@ -40,6 +41,7 @@ const Container = ({
       clientList={invoiceDetails.clientList}
       clientVisible={false}
       currency={invoiceDetails.companyDetails.currency}
+      dateFormat={dateFormat}
       dueDate={dueDate}
       invoiceNumber={invoiceNumber}
       issueDate={issueDate}

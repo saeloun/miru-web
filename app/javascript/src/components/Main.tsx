@@ -76,6 +76,7 @@ interface Iprops {
   company: object;
   isDesktop: boolean;
   confirmedUser: boolean
+  isAdminUser: boolean;
 }
 
 export default Main;

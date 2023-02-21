@@ -15,6 +15,7 @@ const App = props => {
   const { user, companyRole, confirmedUser } = props;
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
+  const [selectedTab, setSelectedTab] = useState(null);
   useEffect(() => {
     setAuthHeaders();
     registerIntercepts();
@@ -24,7 +25,8 @@ const App = props => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ isAdminUser, user, companyRole, isDesktop, confirmedUser }}>
+    <UserContext.Provider value={{ isAdminUser, user, companyRole, isDesktop, selectedTab,
+        setSelectedTab, confirmedUser }}>
       <AuthProvider>
         <BrowserRouter>
           <ToastContainer autoClose={TOASTER_DURATION} />

@@ -59,29 +59,8 @@ RSpec.describe "InternalApi::V1::Team#index", type: :request do
       send_request :get, internal_api_v1_team_index_path, headers: headers(user3)
     end
 
-    it "is permitted to access Team#index page" do
-      expect(response).to have_http_status(:ok)
-    end
-
-    it "checks if correct team members data is returned" do
-      actual_members_data = json_response["team"].map do |member|
-                              member.slice("name", "email", "role", "status")
-                            end
-      actual_invited_user_data = json_response["invitation"].map do |member|
-                                      member.slice("name", "email", "role", "status")
-                                    end
-
-      expected_members_data = [{
-        "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => nil
-      }, {
-        "name" => user3.full_name, "email" => user3.email, "role" => "employee", "status" => nil
-      }]
-
-      expected_invited_user_data = [{
-        "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => nil
-      }]
-      expect(actual_members_data).to eq(expected_members_data)
-      expect(actual_invited_user_data).to eq(expected_invited_user_data)
+    it "is not permitted to access Team#index page" do
+      expect(response).to have_http_status(:forbidden)
     end
   end
 

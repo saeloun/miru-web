@@ -25,6 +25,7 @@ const Table = ({
   handleItemSelection,
   handleSelectAll,
   allCheckboxSelected,
+  dateFormat,
 }) => (
   <table className="table__width">
     <thead>
@@ -49,7 +50,7 @@ const Table = ({
     <tbody className="overflow-y-scroll">
       {lineItems.map((item, index) => {
         const hoursLogged = minToHHMM(item.quantity);
-        const date = dayjs(item.date).format("DD.MM.YYYY");
+        const date = dayjs(item.date).format(dateFormat);
 
         return (
           <tr key={index}>

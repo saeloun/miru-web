@@ -14,6 +14,7 @@ import {
   AccountsAgingHoverIcon,
 } from "miruIcons";
 
+import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 
 import ReportCard from "./reportCard";
@@ -66,8 +67,8 @@ const listDetails = [
 const List = () => {
   const { isDesktop } = useUserContext();
 
-  return (
-    <div className="pb-14">
+  const ReportsLayout = () => (
+    <div className="p-4">
       {isDesktop && <div className="mt-4 text-3xl font-bold">Reports</div>}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-4">
         {listDetails.map(
@@ -87,6 +88,10 @@ const List = () => {
       </div>
     </div>
   );
+
+  const Main = withLayout(ReportsLayout, !isDesktop, !isDesktop);
+
+  return <Main />;
 };
 
 export default List;
