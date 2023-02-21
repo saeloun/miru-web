@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 
+import Home from "./Home";
+
 import Navbar from "../Navbar";
 import Header from "../Navbar/Mobile/Header";
 import Navigation from "../Navbar/Mobile/Navigation";
-import Home from "./Home";
 
 const Dashboard = props => {
   const { isAdminUser, user, isDesktop, setIsDesktop } = props;

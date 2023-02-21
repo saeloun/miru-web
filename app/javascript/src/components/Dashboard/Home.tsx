@@ -38,9 +38,8 @@ const RootElement = ({ role }) => {
   return <Navigate to={url} />;
 };
 
-const Home = (props: Iprops) => {
-  return (
-    <div className="overflow-x-scroll px-4 py-12 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
+const Home = (props: Iprops) => (
+  <div className="overflow-x-scroll px-4 py-12 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
     <Routes>
       <Route element={<RootElement role={props.companyRole} />} path="/" />
       {ROUTES.map(parentRoute => (
@@ -64,8 +63,7 @@ const Home = (props: Iprops) => {
       <Route element={<ErrorPage />} path="*" />
     </Routes>
   </div>
-  )
-}
+);
 
 interface Iprops {
   user: object;

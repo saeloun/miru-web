@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
+import Logger from "js-logger";
 import { GoogleSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
 import { Paths, TOASTER_DURATION } from "constants/index";
-
 import { useAuthDispatch } from "context/auth";
 
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
 
 import FooterLinks from "../FooterLinks";
-import Logger from "js-logger";
 
 interface SignInFormValues {
   email: string;
@@ -28,8 +27,14 @@ const SignInForm = () => {
     try {
       const res = await authenticationApi.signin(values);
       // @ts-ignore
-      authDispatch({ type: "LOGIN", payload: { token: res?.data?.user?.token, email: res?.data?.user?.email } });
-      setTimeout(() => window.location.href ="/", 500)
+      authDispatch({
+        type: "LOGIN",
+        payload: {
+          token: res?.data?.user?.token,
+          email: res?.data?.user?.email,
+        },
+      });
+      setTimeout(() => (window.location.href = "/"), 500);
     } catch (error) {
       Logger.error(error);
     }

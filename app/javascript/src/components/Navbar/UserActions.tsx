@@ -2,16 +2,14 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import { useOutsideClick } from "helpers";
+import Logger from "js-logger";
 import { SettingIcon, SignOutIcon, Switcher } from "miruIcons";
 import { NavLink } from "react-router-dom";
-import Logger from "js-logger";
-
 import { Avatar, Tooltip } from "StyledComponents";
 
+import authenticationApi from "apis/authentication";
 import companiesApi from "apis/companies";
 import WorkspaceApi from "apis/workspaces";
-import authenticationApi from "apis/authentication";
-
 import { LocalStorageKeys, Paths } from "constants/index";
 import { useAuthDispatch } from "context/auth";
 
