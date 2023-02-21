@@ -54,16 +54,13 @@ RSpec.describe "Forgot password", type: :system do
   end
 
   context "when user enters an email that is not registered" do
-    before do
+    it "displays an error message" do
       visit new_user_password_path
 
       within("#new_user") do
         fill_in "user_email", with: "unknown_email@example.com"
       end
       click_on "SEND PASSWORD RESET LINK"
-    end
-
-    it "displays an error message" do
       expect(ActionMailer::Base.deliveries.count).to eq(0)
       expect(page).to have_content("Email not found")
     end
