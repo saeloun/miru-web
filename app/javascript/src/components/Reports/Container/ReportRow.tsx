@@ -17,7 +17,7 @@ const ReportRow = ({
 }: ITimeEntry) => (
   <div className="grid grid-cols-5 gap-2  border-b" key={id}>
     <div>
-      <div className="flex items-center whitespace-nowrap py-2.5 pr-6 text-left">
+      <div className="flex items-center py-2.5 text-left">
         <div className="mr-6 md:h-10 md:w-10">
           <ClientsIcon className="m-0 object-contain" size={40} />
         </div>
