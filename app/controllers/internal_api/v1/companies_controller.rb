@@ -5,12 +5,14 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
 
   def index
     authorize current_company
-    render :index, locals: { current_company:, client_list: current_company.client_list }, status: :ok
+    render :index, locals: { current_company:, client_list: current_company.client_list, address: current_company.addresses.last }, status: :ok
   end
 
   def create
     authorize Company
-    if CreateCompanyService.new(current_user, params: company_params).process
+    company = CreateCompanyService.new(current_user, params: company_params).process
+    if company
+      company.addresses.create!(address_params)
       render json: { notice: I18n.t("companies.create.success") }
     end
   end
@@ -25,9 +27,14 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
   private
 
     def company_params
-      params.require(:company).permit(
-        :name, :address, :business_phone, :country, :timezone, :base_currency,
-        :standard_price, :fiscal_year_end, :date_format, :logo
+      params.except(:address).require(:company).permit(
+        :name, :business_phone, :country, :timezone, :base_currency,
+        :standard_price, :fiscal_year_end, :date_format, :logo)
+    end
+
+    def address_params
+      params.require(:address).permit(
+        :address_type, :address_line_1, :address_line_2, :city, :state, :country, :pin
       )
     end
 end
