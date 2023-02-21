@@ -3,7 +3,6 @@ import React, { Fragment, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import invoicesApi from "apis/invoices";
 import Toastr from "common/Toastr";
 import { unmapLineItems } from "mapper/mappedIndex";
@@ -47,18 +46,18 @@ const EditInvoice = () => {
 
   const fetchInvoice = async () => {
     try {
-      const res = await invoicesApi.editInvoice(params.id);
-      setInvoiceDetails(res.data);
-      setReference(res.data.reference);
-      setIssueDate(Date.parse(res.data.issueDate));
-      setDueDate(Date.parse(res.data.dueDate));
-      setSelectedLineItems(unmapLineItems(res.data.invoiceLineItems));
-      setAmount(res.data.amount);
-      setInvoiceNumber(res.data.invoiceNumber);
-      setDiscount(res.data.discount);
-      setSelectedClient(res.data.client);
-      setAmountDue(res.data.amountDue);
-      setAmountPaid(res.data.amountPaid);
+      const { data } = await invoicesApi.editInvoice(params.id);
+      setInvoiceDetails(data);
+      setReference(data.reference);
+      setIssueDate(Date.parse(data.issueDate));
+      setDueDate(Date.parse(data.dueDate));
+      setSelectedLineItems(unmapLineItems(data.invoiceLineItems));
+      setAmount(data.amount);
+      setInvoiceNumber(data.invoiceNumber);
+      setDiscount(data.discount);
+      setSelectedClient(data.client);
+      setAmountDue(data.amountDue);
+      setAmountPaid(data.amountPaid);
     } catch {
       navigate("/invoices/error");
     }
@@ -66,8 +65,6 @@ const EditInvoice = () => {
 
   useEffect(() => {
     sendGAPageView();
-    setAuthHeaders();
-    registerIntercepts();
     fetchInvoice();
   }, []);
 
@@ -159,6 +156,7 @@ const EditInvoice = () => {
             clientList={invoiceDetails.companyClientList}
             clientVisible={false}
             currency={invoiceDetails.company.currency}
+            dateFormat={invoiceDetails.company.dateFormat}
             dueDate={dueDate || invoiceDetails.dueDate}
             invoiceNumber={invoiceNumber}
             issueDate={issueDate || invoiceDetails.issueDate}
@@ -173,6 +171,7 @@ const EditInvoice = () => {
           <div className="py-5 pl-10">
             <InvoiceTable
               currency={invoiceDetails.company.currency}
+              dateFormat={invoiceDetails.company.dateFormat}
               lineItems={lineItems}
               manualEntryArr={manualEntryArr}
               selectedClient={selectedClient || invoiceDetails.client}
@@ -193,8 +192,6 @@ const EditInvoice = () => {
             setAmountDue={setAmountDue}
             setDiscount={setDiscount}
             setTax={setTax}
-            showDiscountInput={!!invoiceDetails.discount}
-            showTax={!!invoiceDetails.tax}
             tax={tax || invoiceDetails.tax}
           />
         </div>

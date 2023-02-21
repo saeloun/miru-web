@@ -22,6 +22,7 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
     employee.add_role :employee, company
 
     Invoice.search_index.refresh
+    Invoice.reindex # added reindex here to make the test pass in CI
   end
 
   context "when user is a book keeper" do
@@ -242,6 +243,30 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         send_request :get, internal_api_v1_invoices_path()
         expected_ids = Invoice.kept.order("updated_at desc").limit(10).pluck(:id)
         expect(json_response["recentlyUpdatedInvoices"].pluck("id")).to eq(expected_ids)
+      end
+    end
+
+    describe "summary of invoices" do
+      before do
+        Invoice.overdue.first&.discard!
+        Invoice.sent.first&.discard!
+        Invoice.draft.first&.discard!
+        status_and_amount = Invoice.all.kept.group(:status).sum(:amount)
+        status_and_amount.default = 0
+        @outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
+        @draft_amount = status_and_amount["draft"]
+        @overdue_amount = status_and_amount["overdue"]
+      end
+
+      it "returns correct summary" do
+        send_request :get, internal_api_v1_invoices_path()
+        expected_data = {
+          overdueAmount: @overdue_amount,
+          outstandingAmount: @outstanding_amount,
+          draftAmount: @draft_amount,
+          currency: company.base_currency
+        }
+        expect(json_response["summary"]).to eq(JSON.parse(expected_data.to_json))
       end
     end
   end
