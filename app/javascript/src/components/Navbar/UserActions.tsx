@@ -66,7 +66,7 @@ const UserActions = () => {
     try {
       await authenticationApi.logout();
       window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
-      // @ts-ignore
+      //@ts-expect-error for authDispatch object
       authDispatch({ type: "LOGOUT" });
       window.location.href = Paths.LOGIN;
     } catch (error) {

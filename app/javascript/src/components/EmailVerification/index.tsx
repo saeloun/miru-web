@@ -8,7 +8,7 @@ import { useUserContext } from "context/UserContext";
 
 const EmailVerification = () => {
   const { user } = useUserContext();
-  // @ts-ignore
+  //@ts-expect-error for email on user object
   const { email } = user;
 
   useEffect(() => {
@@ -23,7 +23,6 @@ const EmailVerification = () => {
 
   const handleEmailConfirmation = async () => {
     try {
-      // @ts-ignore
       await authenticationApi.sendEmailConfirmation(`&email=${email}`);
     } catch (err) {
       Logger.error(err);

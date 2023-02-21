@@ -26,7 +26,7 @@ const SignInForm = () => {
   const handleSignInFormSubmit = async (values: any) => {
     try {
       const res = await authenticationApi.signin(values);
-      // @ts-ignore
+      //@ts-expect-error for authDispatch initial values
       authDispatch({
         type: "LOGIN",
         payload: {
