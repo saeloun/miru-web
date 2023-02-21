@@ -6,13 +6,13 @@ import { useDebounce, useOutsideClick } from "helpers";
 import { XIcon, FilterIcon } from "miruIcons";
 import { SidePanel, Button } from "StyledComponents";
 
-import { dateRangeOptions } from "components/Invoices/List/FilterSideBar/filterOptions";
 import { useEntry } from "components/Reports/context/EntryContext";
 import { useUserContext } from "context/UserContext";
 
 import ClientFilter from "./ClientFilter";
 import DateRangeFilter from "./DateRangeFilter";
 import { statusOption } from "./filterOptions";
+import { dateRangeOptions } from "./FilterSidebarOptions";
 import GroupByFilter from "./GroupByFilter";
 import StatusFilter from "./StatusFilter";
 import TeamMembersFilter from "./TeamMembersFilter";
@@ -199,7 +199,7 @@ const FilterSidebar = ({
 
   const handleSelectFilter = (selectedValue, field) => {
     if (selectedValue.value !== "custom") {
-      dateRangeOptions[5].label = "Custom";
+      dateRangeOptions[4].label = "Custom";
       setDefaultDateRange();
       hideCustomFilter();
       setDateRange({ from: "", to: "" });
@@ -243,7 +243,7 @@ const FilterSidebar = ({
     if (dateRange.from && dateRange.to) {
       const fromDate = dayjs(dateRange.from).format("Do MMM");
       const toDate = dayjs(dateRange.to).format("Do MMM");
-      dateRangeOptions[5].label = `Custom (${fromDate} - ${toDate})`;
+      dateRangeOptions[4].label = `Custom (${fromDate} - ${toDate})`;
       setFilters({
         ...filters,
         ["dateRange"]: {
