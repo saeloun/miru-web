@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   include DeviseWhitelist
   include PunditConcern
   include ErrorHandler
-  # include Authenticable
   include CurrentCompanyConcern
   include Pagy::Backend
   include SetCurrentDetails
