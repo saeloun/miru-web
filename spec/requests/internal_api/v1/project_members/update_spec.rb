@@ -96,7 +96,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
         }
       end
 
-      it "associated with project" do
+      it "create, update and delete operations on the project_members associated with project" do
         send_request(
           :put, internal_api_v1_project_member_path(project.id), params: @update_member_params,
           headers: headers(user1))
