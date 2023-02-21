@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
 import Logger from "js-logger";
-import { GoogleSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
+import { PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
@@ -276,7 +276,7 @@ const SignUpForm = () => {
               <div className="flex-grow border-t border-miru-gray-1000" />
             </div>
             {/* Sign Up with Google */}
-            <div className="mb-3">
+            {/* <div className="mb-3">
               <button
                 className="form__button whitespace-nowrap"
                 data-cy="sign-up-button"
@@ -285,7 +285,7 @@ const SignUpForm = () => {
                 <img alt="" className="mr-2" src={GoogleSVG} />
                 Sign Up with Google
               </button>
-            </div>
+            </div> */}
             {/* Sign Up with Apple */}
             {/* <div className="mb-3">
               <button
