@@ -89,7 +89,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
         create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: 20)
       end
 
-      update_member_params = {
+      let(:update_member_params) {
         members: {
           added_members: [{ id: user3.id, hourly_rate: 30 }],
           updated_members: [{ id: user2.id, hourly_rate: 100 }],
