@@ -74,9 +74,10 @@ RSpec.describe Invoice, type: :model do
   end
 
   describe "Scopes" do
-    let(:company) do
-      create(:company_with_invoices)
-    end
+    let(:company) { create(:company_with_invoices) }
+    let(:draft_invoices) { company.invoices.with_statuses([:draft]).size }
+    let(:paid_invoices) { company.invoices.with_statuses([:paid]).size }
+    let(:overdue_invoices) { company.invoices.with_statuses([:overdue]).size }
 
     describe ".with_statuses" do
       it "returns all invoices if statuses are not specified" do
@@ -84,11 +85,14 @@ RSpec.describe Invoice, type: :model do
       end
 
       it "returns draft and paid invoices" do
-        expect(company.invoices.with_statuses([:draft, :paid]).size).to eq(5)
+        expect(company.invoices.with_statuses([:draft, :paid]).size).to eq(draft_invoices + paid_invoices)
       end
 
       it "returns draft, overdue and paid invoices" do
-        expect(company.invoices.with_statuses([:draft, :overdue, :paid]).size).to eq(5)
+        expect(
+          company.invoices.with_statuses(
+            [:draft, :overdue,
+             :paid]).size).to eq(draft_invoices + paid_invoices + overdue_invoices)
       end
     end
 
