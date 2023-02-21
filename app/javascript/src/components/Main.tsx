@@ -16,7 +16,7 @@ import EmailVerification from "./EmailVerification";
 import OrganizationSetup from "./OrganizationSetup";
 
 const Main = (props: Iprops) => {
-  // @ts-ignore
+  //@ts-expect-error is used to allow authToken value on empty object
   const { authToken } = useAuthState();
   const authDispatch = useAuthDispatch();
 
@@ -34,12 +34,12 @@ const Main = (props: Iprops) => {
       hasDeviseUserSessionExpired && previousLoginAuthEmail;
 
     if (sessionExpiredButLocalStorageCredsExist) clearLocalStorageCredentials();
-    //@ts-ignore
+    //@ts-expect-error for email on user object
   }, [props?.user?.email]);
 
   if (isLoggedIn) {
     if (props?.confirmedUser) {
-      //@ts-ignore
+      //@ts-expect-error for current_workspace_id on user object
       if (Boolean(props?.user?.current_workspace_id) == false) {
         return (
           <Routes>

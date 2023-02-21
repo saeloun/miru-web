@@ -6,9 +6,10 @@ import { getFromLocalStorage } from "utils/storage";
 
 import authReducer from "../reducers/auth";
 
-// @ts-ignore
-const AuthStateContext = createContext({});
-const AuthDispatchContext = createContext({});
+//@ts-expect-error for empty createContext
+const AuthStateContext = createContext();
+//@ts-expect-error for empty createContext
+const AuthDispatchContext = createContext();
 
 const token = getFromLocalStorage("authToken");
 const email = getFromLocalStorage("authEmail");
