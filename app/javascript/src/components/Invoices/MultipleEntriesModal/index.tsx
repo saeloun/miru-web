@@ -11,6 +11,7 @@ const MultipleEntriesModal = ({
   selectedOption,
   setSelectedOption,
   setMultiLineItemModal,
+  dateFormat,
 }) => {
   const filterIntialValues = {
     teamMembers: [],
@@ -146,6 +147,7 @@ const MultipleEntriesModal = ({
             {lineItems.length > 0 ? (
               <Table
                 allCheckboxSelected={allCheckboxSelected}
+                dateFormat={dateFormat}
                 handleItemSelection={handleItemSelection}
                 handleSelectAll={handleSelectAll}
                 lineItems={lineItems}

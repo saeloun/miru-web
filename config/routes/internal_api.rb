@@ -106,5 +106,8 @@ namespace :internal_api, defaults: { format: "json" } do
     resource :email_confirmation, only: :show do
       get :resend
     end
+    
+    resources :vendors, only: [:create]
+    resources :expense_categories, only: [:create]
   end
 end

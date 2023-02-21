@@ -37,7 +37,7 @@ module Reports::TimeEntries
           where: where_clause,
           order: { work_date: :desc },
           body_options: group_by_clause,
-          includes: [:user, { project: :client }, :client ]
+          includes: [:user, { project: :client }, :client, :company ]
           )
 
         Reports::TimeEntries::Result.process(search_result, params["group_by"])

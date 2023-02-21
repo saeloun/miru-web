@@ -36,6 +36,7 @@ VCR.configure do |config|
   config.hook_into :webmock
   config.ignore_localhost = true
   config.configure_rspec_metadata!
+  config.allow_http_connections_when_no_cassette = true
   config.ignore_hosts "127.0.0.1", "localhost", "elasticsearch", "analytics-api.buildkite.com"
 end
 
@@ -54,16 +55,31 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers
   config.include RequestHelper, type: :request
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Capybara::DSL
+  config.include Warden::Test::Helpers
   config.before do
     Faker::UniqueGenerator.clear
     OmniAuth.config.test_mode = true
   end
 
   config.around do |example|
-    if example.metadata[:feature]
-      VCR.turned_off { example.run }
-    else
-      example.run
+    if [:system, :feature].include?(example.metadata[:type])
+      VCR.turn_off!
+      WebMock.enable_net_connect!
+    end
+    example.run
+  ensure
+    VCR.turn_on!
+    WebMock.disable_net_connect!
+  end
+
+  if ENV["CI"].present?
+    config.before(:each, type: :system) do
+      driven_by :chrome_headless
+
+      Capybara.app_host = "http://#{IPSocket.getaddress(Socket.gethostname)}:3000"
+      Capybara.server_host = IPSocket.getaddress(Socket.gethostname)
+      Capybara.server_port = 3000
     end
   end
 

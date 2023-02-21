@@ -8,8 +8,10 @@ import { Avatar, Tooltip } from "StyledComponents";
 import clientApi from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
+import withLayout from "common/Mobile/HOC/withLayout";
 import Table from "common/Table";
 import { TOASTER_DURATION } from "constants/index";
+import { useUserContext } from "context/UserContext";
 import { unmapClientList } from "mapper/mappedIndex";
 import { sendGAPageView } from "utils/googleAnalytics";
 
@@ -68,7 +70,7 @@ const Clients = ({ isAdminUser }) => {
   const [loading, setLoading] = useState(true);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
-
+  const { isDesktop } = useUserContext();
   const navigate = useNavigate();
   const toolTipRef = useRef(null);
 
@@ -172,7 +174,7 @@ const Clients = ({ isAdminUser }) => {
     );
   }
 
-  return (
+  const ClientsLayout = () => (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
@@ -265,6 +267,10 @@ const Clients = ({ isAdminUser }) => {
       )}
     </>
   );
+
+  const Main = withLayout(ClientsLayout, !isDesktop, !isDesktop);
+
+  return <Main />;
 };
 
 export default Clients;

@@ -37,16 +37,16 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
                         {
                           clientName: client2.name,
                           invoiceNo: client2_overdue_invoice1.invoice_number,
-                          issueDate: client2_overdue_invoice1.issue_date,
-                          dueDate: client2_overdue_invoice1.due_date,
+                          issueDate: client2_overdue_invoice1.formatted_issue_date,
+                          dueDate: client2_overdue_invoice1.formatted_due_date,
                           amount: client2_overdue_invoice1.amount,
                           status: client2_overdue_invoice1.status
                         },
                         {
                           clientName: client2.name,
                           invoiceNo: client2_sent_invoice1.invoice_number,
-                          issueDate: client2_sent_invoice1.issue_date,
-                          dueDate: client2_sent_invoice1.due_date,
+                          issueDate: client2_sent_invoice1.formatted_issue_date,
+                          dueDate: client2_sent_invoice1.formatted_due_date,
                           amount: client2_sent_invoice1.amount,
                           status: client2_sent_invoice1.status
                         }
@@ -60,24 +60,24 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
                         {
                           clientName: client1.name,
                           invoiceNo: client1_viewed_invoice1.invoice_number,
-                          issueDate: client1_viewed_invoice1.issue_date,
-                          dueDate: client1_viewed_invoice1.due_date,
+                          issueDate: client1_viewed_invoice1.formatted_issue_date,
+                          dueDate: client1_viewed_invoice1.formatted_due_date,
                           amount: client1_viewed_invoice1.amount,
                           status: client1_viewed_invoice1.status
                         },
                         {
                           clientName: client1.name,
                           invoiceNo: client1_sent_invoice2.invoice_number,
-                          issueDate: client1_sent_invoice2.issue_date,
-                          dueDate: client1_sent_invoice2.due_date,
+                          issueDate: client1_sent_invoice2.formatted_issue_date,
+                          dueDate: client1_sent_invoice2.formatted_due_date,
                           amount: client1_sent_invoice2.amount,
                           status: client1_sent_invoice2.status
                         },
                         {
                           clientName: client1.name,
                           invoiceNo: client1_sent_invoice1.invoice_number,
-                          issueDate: client1_sent_invoice1.issue_date,
-                          dueDate: client1_sent_invoice1.due_date,
+                          issueDate: client1_sent_invoice1.formatted_issue_date,
+                          dueDate: client1_sent_invoice1.formatted_due_date,
                           amount: client1_sent_invoice1.amount,
                           status: client1_sent_invoice1.status
                         }
