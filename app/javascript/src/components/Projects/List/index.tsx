@@ -3,9 +3,10 @@ import React from "react";
 import Logger from "js-logger";
 import { ToastContainer } from "react-toastify";
 
-import { setAuthHeaders, registerIntercepts } from "apis/axios";
 import projectApi from "apis/projects";
+import withLayout from "common/Mobile/HOC/withLayout";
 import { TOASTER_DURATION } from "constants/index";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Header from "./Header";
@@ -15,7 +16,7 @@ import { IProject } from "../interface";
 import AddEditProject from "../Modals/AddEditProject";
 import DeleteProject from "../Modals/DeleteProject";
 
-export const ProjectList = ({ isAdminUser }) => {
+const ProjectList = ({ isAdminUser }) => {
   const [showProjectModal, setShowProjectModal] =
     React.useState<boolean>(false);
 
@@ -24,6 +25,7 @@ export const ProjectList = ({ isAdminUser }) => {
   const [editProjectData, setEditProjectData] = React.useState<any>({});
   const [deleteProjectData, setDeleteProjectData] = React.useState({});
   const [projects, setProjects] = React.useState<IProject[]>([]);
+  const { isDesktop } = useUserContext();
 
   const fetchProjects = async () => {
     try {
@@ -36,12 +38,10 @@ export const ProjectList = ({ isAdminUser }) => {
 
   React.useEffect(() => {
     sendGAPageView();
-    setAuthHeaders();
-    registerIntercepts();
     fetchProjects();
   }, []);
 
-  return (
+  const ProjectsLayout = () => (
     <React.Fragment>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <Header
@@ -100,6 +100,10 @@ export const ProjectList = ({ isAdminUser }) => {
       )}
     </React.Fragment>
   );
+
+  const Main = withLayout(ProjectsLayout, !isDesktop, !isDesktop);
+
+  return <Main />;
 };
 
 export default ProjectList;

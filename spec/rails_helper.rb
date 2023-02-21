@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# This file is copied to spec/ when you run 'rails generate rspec:install'
 require "spec_helper"
 require "vcr"
 
@@ -16,23 +15,8 @@ require "devise"
 require "rspec/rails"
 require "support/database_cleaner"
 
-# Requires supporting ruby files with custom matchers and macros, etc, in
-# spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
-# run as spec files by default. This means that files in spec/support that end
-# in _spec.rb will both be required and run as specs, causing the specs to be
-# run twice. It is recommended that you do not name files matching this glob to
-# end with _spec.rb. You can configure this pattern with the --pattern
-# option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
-#
-# The following line is provided for convenience purposes. It has the downside
-# of increasing the boot-up time by auto-requiring all files in the support
-# directory. Alternatively, in the individual `*_spec.rb` files, manually
-# require only the support files necessary.
-#
 Dir[Rails.root.join("spec", "support", "**", "*.rb")].sort.each { |f| require f }
 
-# Checks for pending migrations and applies them before tests are run.
-# If you are not using ActiveRecord, you can remove these lines.
 begin
   ActiveRecord::Migration.maintain_test_schema!
 rescue ActiveRecord::PendingMigrationError => e
@@ -52,50 +36,50 @@ VCR.configure do |config|
   config.hook_into :webmock
   config.ignore_localhost = true
   config.configure_rspec_metadata!
+  config.allow_http_connections_when_no_cassette = true
   config.ignore_hosts "127.0.0.1", "localhost", "elasticsearch", "analytics-api.buildkite.com"
 end
 
 RSpec.configure do |config|
-  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   config.include Warden::Test::Helpers
   config.include Devise::Test::IntegrationHelpers, type: :request
 
-  # If you're not using ActiveRecord, or you'd prefer not to run each of your
-  # examples within a transaction, remove the following line or assign false
-  # instead of true.
   config.use_transactional_fixtures = false
 
-  # You can uncomment this line to turn off ActiveRecord support entirely.
-  # config.use_active_record = false
-
-  # RSpec Rails can automatically mix in different behaviours to your tests
-  # based on their file location, for example enabling you to call `get` and
-  # `post` in specs under `spec/controllers`.
-  #
-  # You can disable this behaviour by removing the line below, and instead
-  # explicitly tag your specs with their type, e.g.:
-  #
-  #     RSpec.describe UsersController, type: :controller do
-  #       # ...
-  #     end
-  #
-  # The different available types are documented in the features, such as in
-  # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
 
-  # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
-  # arbitrary gems may also be filtered via:
-  # config.filter_gems_from_backtrace("gem name")
-
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Warden::Test::Helpers
   config.include RequestHelper, type: :request
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Capybara::DSL
+  config.include Warden::Test::Helpers
   config.before do
     Faker::UniqueGenerator.clear
     OmniAuth.config.test_mode = true
+  end
+
+  config.around do |example|
+    if [:system, :feature].include?(example.metadata[:type])
+      VCR.turn_off!
+      WebMock.enable_net_connect!
+    end
+    example.run
+  ensure
+    VCR.turn_on!
+    WebMock.disable_net_connect!
+  end
+
+  if ENV["CI"].present?
+    config.before(:each, type: :system) do
+      driven_by :chrome_headless
+
+      Capybara.app_host = "http://#{IPSocket.getaddress(Socket.gethostname)}:3000"
+      Capybara.server_host = IPSocket.getaddress(Socket.gethostname)
+      Capybara.server_port = 3000
+    end
   end
 end

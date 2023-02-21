@@ -26,7 +26,7 @@ const SidePanel = ({
     <div
       ref={wrapperRef}
       className={classnames(
-        "sidebar__container flex w-full flex-col lg:w-1/5",
+        "sidebar__container flex w-full flex-col lg:w-1/4",
         WrapperClassname
       )}
     >

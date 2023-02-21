@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_14_122149) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -115,6 +115,31 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.index ["company_id"], name: "index_employments_on_company_id"
     t.index ["discarded_at"], name: "index_employments_on_discarded_at"
     t.index ["user_id"], name: "index_employments_on_user_id"
+  end
+
+  create_table "expense_categories", force: :cascade do |t|
+    t.string "name"
+    t.boolean "default", default: false
+    t.bigint "company_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_expense_categories_on_company_id"
+  end
+
+  create_table "expenses", force: :cascade do |t|
+    t.date "date", null: false
+    t.decimal "amount", precision: 20, scale: 2, default: "0.0", null: false
+    t.integer "expense_type"
+    t.text "description"
+    t.bigint "company_id", null: false
+    t.bigint "expense_category_id", null: false
+    t.bigint "vendor_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_expenses_on_company_id"
+    t.index ["expense_category_id"], name: "index_expenses_on_expense_category_id"
+    t.index ["expense_type"], name: "index_expenses_on_expense_type"
+    t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
   end
 
   create_table "identities", force: :cascade do |t|
@@ -327,6 +352,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  create_table "vendors", force: :cascade do |t|
+    t.string "name"
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_vendors_on_company_id"
+  end
+
   create_table "wise_accounts", force: :cascade do |t|
     t.string "profile_id"
     t.string "recipient_id"
@@ -348,6 +381,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
   add_foreign_key "devices", "users"
   add_foreign_key "employments", "companies"
   add_foreign_key "employments", "users"
+  add_foreign_key "expense_categories", "companies"
+  add_foreign_key "expenses", "companies"
+  add_foreign_key "expenses", "expense_categories"
+  add_foreign_key "expenses", "vendors"
   add_foreign_key "identities", "users"
   add_foreign_key "invitations", "companies"
   add_foreign_key "invitations", "users", column: "sender_id"
@@ -365,6 +402,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_153456) do
   add_foreign_key "timesheet_entries", "projects"
   add_foreign_key "timesheet_entries", "users"
   add_foreign_key "users", "companies", column: "current_workspace_id"
+  add_foreign_key "vendors", "companies"
   add_foreign_key "wise_accounts", "companies"
   add_foreign_key "wise_accounts", "users"
 end

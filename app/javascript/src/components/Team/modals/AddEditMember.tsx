@@ -9,8 +9,12 @@ import { TeamModalType } from "constants/index";
 import { useList } from "context/TeamContext";
 
 const TeamMemberSchema = Yup.object().shape({
-  firstName: Yup.string().required("First Name cannot be blank"),
-  lastName: Yup.string().required("Last Name cannot be blank"),
+  firstName: Yup.string()
+    .matches(/^[a-zA-Z]+$/, "First Name must contain only letters")
+    .required("First Name cannot be blank"),
+  lastName: Yup.string()
+    .matches(/^[a-zA-Z]+$/, "Last Name must contain only letters")
+    .required("Last Name cannot be blank"),
   email: Yup.string()
     .email("Invalid email ID")
     .required("Email ID cannot be blank"),
@@ -235,9 +239,6 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         </div>
                       </div>
                     </div>
-                    <p className="mt-7 block text-xs tracking-wider text-red-600">
-                      {apiError}
-                    </p>
                     <div className="actions mt-4">
                       <button
                         data-cy="send-invite-button"
