@@ -89,14 +89,15 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
         create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: 20)
       end
 
-      it "CUD operations on the project_members associated with project" do
-        update_member_params = {
-          members: {
-            added_members: [{ id: user3.id, hourly_rate: 30 }],
-            updated_members: [{ id: user2.id, hourly_rate: 100 }],
-            removed_member_ids: [user1.id]
-          }
+      update_member_params = {
+        members: {
+          added_members: [{ id: user3.id, hourly_rate: 30 }],
+          updated_members: [{ id: user2.id, hourly_rate: 100 }],
+          removed_member_ids: [user1.id]
         }
+      }
+
+      it "associated with project" do
         send_request(
           :put, internal_api_v1_project_member_path(project.id), params: update_member_params,
           headers: headers(user1))
