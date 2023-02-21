@@ -87,19 +87,18 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
       before do
         create(:project_member, project_id: project.id, user_id: user1.id, hourly_rate: 10)
         create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: 20)
-      end
-
-      let(:update_member_params) {
-        members: {
-          added_members: [{ id: user3.id, hourly_rate: 30 }],
-          updated_members: [{ id: user2.id, hourly_rate: 100 }],
-          removed_member_ids: [user1.id]
+        @update_member_params = {
+          members: {
+            added_members: [{ id: user3.id, hourly_rate: 30 }],
+            updated_members: [{ id: user2.id, hourly_rate: 100 }],
+            removed_member_ids: [user1.id]
+          }
         }
-      }
+      end
 
       it "associated with project" do
         send_request(
-          :put, internal_api_v1_project_member_path(project.id), params: update_member_params,
+          :put, internal_api_v1_project_member_path(project.id), params: @update_member_params,
           headers: headers(user1))
 
         expect(response).to have_http_status(:ok)
