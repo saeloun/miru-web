@@ -13,6 +13,7 @@ RSpec.describe "Forgot password", type: :system do
   context "when user submits their email address" do
     before do
       visit new_user_password_path
+
       within("#new_user") do
         fill_in "user_email", with: user.email
       end
@@ -61,6 +62,7 @@ RSpec.describe "Forgot password", type: :system do
         fill_in "user_email", with: "unknown_email@example.com"
       end
       click_on "SEND PASSWORD RESET LINK"
+
       expect(ActionMailer::Base.deliveries.count).to eq(0)
       expect(page).to have_content("Email not found")
     end
