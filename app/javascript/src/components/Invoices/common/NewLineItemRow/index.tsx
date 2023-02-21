@@ -8,6 +8,7 @@ const NewLineItemRow = ({
   setSelectedOption,
   selectedOption,
   removeElement = false,
+  dateFormat,
 }) => {
   const handleDelete = item => {
     const deleteItem = {
@@ -33,6 +34,7 @@ const NewLineItemRow = ({
   return (
     <NewLineItemStatic
       currency={currency}
+      dateFormat={dateFormat}
       handleDelete={handleDelete}
       item={item}
       selectedOption={selectedOption}

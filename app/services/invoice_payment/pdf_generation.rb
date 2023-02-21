@@ -38,7 +38,7 @@ module InvoicePayment
     private
 
       def build_invoice
-        sub_total = @invoice_line_items.total_cost
+        sub_total = @invoice_line_items.total_cost_of_all_line_items
 
         rows = @invoice_line_items.map do |invoice_line_item|
           InvoiceLineItemPresenter.new(invoice_line_item).pdf_row(@base_currency)

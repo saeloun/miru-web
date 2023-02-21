@@ -2,7 +2,7 @@ import React from "react";
 
 import LineItem from "./LineItem";
 
-const InvoiceLineItems = ({ currency, items, showHeader }) => {
+const InvoiceLineItems = ({ currency, items, showHeader, dateFormat }) => {
   const getHeader = () => (
     <thead className="my-2 mb-10">
       <tr>
@@ -35,7 +35,12 @@ const InvoiceLineItems = ({ currency, items, showHeader }) => {
             items.map(
               item =>
                 !item._destroy && (
-                  <LineItem currency={currency} item={item} key={item.id} />
+                  <LineItem
+                    currency={currency}
+                    dateFormat={dateFormat}
+                    item={item}
+                    key={item.id}
+                  />
                 )
             )}
         </tbody>

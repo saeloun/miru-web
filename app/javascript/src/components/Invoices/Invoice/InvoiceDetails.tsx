@@ -17,6 +17,7 @@ const InvoiceDetails = ({ invoice }) => (
     <InvoiceLineItems
       showHeader
       currency={invoice.company.currency}
+      dateFormat={invoice.company.dateFormat}
       items={invoice.invoiceLineItems}
     />
     <InvoiceTotalSummary invoice={invoice} />

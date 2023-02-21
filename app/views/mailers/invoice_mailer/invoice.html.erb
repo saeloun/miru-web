@@ -9,8 +9,8 @@
         <div
           style="padding: 30px 40px; background:white ;border-bottom: 2px solid #E1E6EC; text-align: center"
         >
-          <div style="padding: 10px; display: inline-block; text-align: center">
-            <%= image_tag @company_logo, height: 80 ,width: 80 %>
+          <div style="padding: 10px; display: inline-block; text-align: center;">
+            <%= image_tag @company_logo, height: 80 ,width: 80, :style => "border-radius: 80px" %>
           </div>
           <div>
             <span style='font-weight:bold'><%= @invoice.company.name %></span>

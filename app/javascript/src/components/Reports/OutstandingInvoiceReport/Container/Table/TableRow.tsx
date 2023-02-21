@@ -1,6 +1,5 @@
 import React from "react";
 
-import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 import { Avatar, Badge } from "StyledComponents";
 
@@ -19,8 +18,6 @@ const TableRow = ({ currency, reportData }) => {
     issueDate,
   }: OutstandingOverdueInvoice = reportData;
 
-  const formattedDate = date => dayjs(date).format("DD.MM.YYYY");
-
   return (
     <tr className="flex items-center hover:bg-miru-gray-100" key={id}>
       <td className="w-1/2 whitespace-nowrap pt-3 pb-4 text-left lg:w-4/12 lg:py-2.5">
@@ -37,17 +34,16 @@ const TableRow = ({ currency, reportData }) => {
         </span>
         <dl className="text-left text-xs leading-5 lg:hidden">
           <dt className="mt-3 font-medium text-miru-dark-purple-400">
-            issued on{" "}
-            <span className="font-bold">{formattedDate(issueDate)}</span>
+            issued on <span className="font-bold">{issueDate}</span>
           </dt>
         </dl>
       </td>
       <td className="hidden w-3/12 whitespace-pre-wrap pt-3 pb-4 text-left text-base font-normal lg:table-cell lg:py-2.5">
         <h1 className="font-semibold text-miru-dark-purple-1000">
-          {formattedDate(issueDate)}
+          {issueDate}
         </h1>
         <h3 className="text-sm font-normal text-miru-dark-purple-400">
-          Due on {formattedDate(dueDate)}
+          Due on {dueDate}
         </h3>
       </td>
       <td className="hidden w-2/12 pt-3 pb-4 text-right text-xl font-bold tracking-wider text-miru-dark-purple-1000 lg:table-cell lg:py-4">
