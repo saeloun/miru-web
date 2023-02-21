@@ -62,7 +62,6 @@ class TimeTrackingIndexService
     def set_projects
       @projects = {}
       user_projects = ProjectPolicy::Scope.new(current_user, current_company).resolve
-      alive_client_projects = client.projects.kept
-      clients.each { |client| @projects[client.name] = alive_client_projects & user_projects }
+      clients.each { |client| @projects[client.name] = client.projects.kept & user_projects }
     end
 end
