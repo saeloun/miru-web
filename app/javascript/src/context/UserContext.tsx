@@ -5,7 +5,7 @@ const UserContext = createContext({
   user: {},
   companyRole: "", //current company user role
   isDesktop: false,
-  confirmedUser: ""
+  confirmedUser: "",
   selectedTab: null,
   setSelectedTab: value => {}, //eslint-disable-line
 });
