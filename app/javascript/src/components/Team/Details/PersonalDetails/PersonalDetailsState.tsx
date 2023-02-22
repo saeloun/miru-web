@@ -16,4 +16,5 @@ export const PersonalDetailsState = {
   },
   linkedin: "",
   github: "",
+  date_format: "",
 };

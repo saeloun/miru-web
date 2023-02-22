@@ -128,7 +128,9 @@ const StaticPage = ({
               type="text"
               value={
                 personalDetails.date_of_birth &&
-                dayjs(personalDetails.date_of_birth).format("DD.MM.YYYY")
+                dayjs(personalDetails.date_of_birth).format(
+                  personalDetails.date_format
+                )
               }
               onChange={e => {
                 updateBasicDetails(e.target.value, "date_of_birth", false);
