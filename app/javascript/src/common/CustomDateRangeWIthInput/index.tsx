@@ -27,6 +27,9 @@ const CustomDateRangeWithInput = ({
   setIsDisableDoneBtn = (isDisableDoneBtn: boolean) => {}, // eslint-disable-line
   submitCustomDatePicker,
   wrapperRef,
+  showCustomCalendar,
+  handleOpenDateCalendar,
+  setShowCustomCalendar,
 }) => {
   const fromInput = "from-input";
   const toInput = "to-input";
@@ -205,7 +208,7 @@ const CustomDateRangeWithInput = ({
   return (
     <div ref={wrapperRef}>
       <div className="mt-1 ml-12 flex lg:flex-col xl:flex-row">
-        <div className="ml-1">
+        <div className="ml-1" onClick={handleOpenDateCalendar}>
           <input
             id={fromInput}
             name={fromInput}
@@ -231,7 +234,7 @@ const CustomDateRangeWithInput = ({
             </div>
           )}
         </div>
-        <div>
+        <div onClick={handleOpenDateCalendar}>
           <input
             id={toInput}
             name={toInput}
@@ -257,82 +260,86 @@ const CustomDateRangeWithInput = ({
         </div>
       </div>
       <div className="absolute z-20 mt-1 flex flex-col  overflow-y-auto rounded-lg bg-miru-white-1000 shadow-c1 lg:ml-2 xl:ml-10">
-        <DatePicker
-          inline
-          calendarClassName="miru-calendar-date-range"
-          wrapperClassName="datePicker absolute"
-          maxDate={
-            selectedInput === fromInput && dateRange.to
-              ? new Date(dateRange.to)
-              : null
-          }
-          minDate={
-            selectedInput === toInput && dateRange.from
-              ? new Date(dateRange.from)
-              : null
-          }
-          renderCustomHeader={({
-            date,
-            changeYear,
-            changeMonth,
-            decreaseMonth,
-            increaseMonth,
-            prevMonthButtonDisabled,
-            nextMonthButtonDisabled,
-          }) => (
-            <div className="bg-miru-white-1000 ">
-              <div className="headerWrapper mt-4">
-                <button
-                  disabled={prevMonthButtonDisabled}
-                  onClick={decreaseMonth}
-                >
-                  <CaretCircleLeftIcon color="#5b34ea" size={16} />
-                </button>
-                <div>
-                  <select
-                    value={months[getMonth(date)]}
-                    onChange={({ target: { value } }) =>
-                      changeMonth(months.indexOf(value))
-                    }
-                  >
-                    {months.map(option => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    value={getYear(date)}
-                    onChange={({ target: { value } }) => changeYear(value)}
-                  >
-                    {years.map(option => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <button
-                  disabled={nextMonthButtonDisabled}
-                  onClick={increaseMonth}
-                >
-                  <CaretCircleRightIcon color="#5b34ea" size={16} />
-                </button>
-              </div>
-            </div>
-          )}
-          onChange={date => {
-            const fieldName =
-              selectedInput == fromInput ? "fromInput" : "toInput";
-            handleSelectDate(date);
-            validateDateInput(date, fieldName);
-            if (selectedInput == fromInput && !dateRange.to) {
-              toInputRef.current.focus();
-              toInputRef.current.click(onClickInput);
-              resetErrors("toInput");
+        {showCustomCalendar && (
+          <DatePicker
+            inline
+            calendarClassName="miru-calendar-date-range"
+            wrapperClassName="datePicker absolute"
+            maxDate={
+              selectedInput === fromInput && dateRange.to
+                ? new Date(dateRange.to)
+                : null
             }
-          }}
-        />
+            minDate={
+              selectedInput === toInput && dateRange.from
+                ? new Date(dateRange.from)
+                : null
+            }
+            renderCustomHeader={({
+              date,
+              changeYear,
+              changeMonth,
+              decreaseMonth,
+              increaseMonth,
+              prevMonthButtonDisabled,
+              nextMonthButtonDisabled,
+            }) => (
+              <div className="bg-miru-white-1000 ">
+                <div className="headerWrapper mt-4">
+                  <button
+                    disabled={prevMonthButtonDisabled}
+                    onClick={decreaseMonth}
+                  >
+                    <CaretCircleLeftIcon color="#5b34ea" size={16} />
+                  </button>
+                  <div>
+                    <select
+                      value={months[getMonth(date)]}
+                      onChange={({ target: { value } }) =>
+                        changeMonth(months.indexOf(value))
+                      }
+                    >
+                      {months.map(option => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={getYear(date)}
+                      onChange={({ target: { value } }) => changeYear(value)}
+                    >
+                      {years.map(option => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <button
+                    disabled={nextMonthButtonDisabled}
+                    onClick={increaseMonth}
+                  >
+                    <CaretCircleRightIcon color="#5b34ea" size={16} />
+                  </button>
+                </div>
+              </div>
+            )}
+            onChange={date => {
+              const fieldName =
+                selectedInput == fromInput ? "fromInput" : "toInput";
+              handleSelectDate(date);
+              validateDateInput(date, fieldName);
+              if (selectedInput == fromInput && !dateRange.to) {
+                toInputRef.current.focus();
+                toInputRef.current.click(onClickInput);
+                resetErrors("toInput");
+              } else {
+                setShowCustomCalendar(false);
+              }
+            }}
+          />
+        )}
       </div>
     </div>
   );
