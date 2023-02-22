@@ -16,6 +16,7 @@ const MobilePersonalDetails = ({
     addresses,
     linkedin,
     github,
+    date_format,
   },
 }) => (
   <div className="mt-12 px-4 py-2">
@@ -34,8 +35,7 @@ const MobilePersonalDetails = ({
           <InfoDescription
             title="Date of Birth"
             description={`${
-              date_of_birth &&
-              dayjs(date_of_birth, "YYYY-MM-DD").format("MM.DD.YYYY")
+              date_of_birth && dayjs(date_of_birth).format(date_format)
             }`}
           />
         </div>
