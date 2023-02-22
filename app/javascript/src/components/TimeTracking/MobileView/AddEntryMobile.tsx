@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import dayjs from "dayjs";
-import { minFromHHMM, minToHHMM } from "helpers";
+import { minFromHHMM, minToHHMM, useDebounce } from "helpers";
 import {
   SearchIcon,
   XIcon,
@@ -44,12 +44,47 @@ const AddEntryMobile = ({
   handleDeleteEntry,
 }) => {
   const [showClientList, setShowClientList] = useState<boolean>(false);
+  const [clientList, setClientList] = useState<any>(clients);
+  const [projectList, setProjectList] = useState<any>(projects[client]);
   const [showProjectList, setShowProjectList] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [projectSearchQuery, setProjectSearchQuery] = useState<string>("");
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const datePickerRef = useRef(null);
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const debouncedProjectSearchQuery = useDebounce(projectSearchQuery, 500);
   const disableApplyBtn = client && project && note && selectedDate && duration;
+
+  useEffect(() => {
+    if (debouncedSearchQuery && clientList.length > 0) {
+      const newList = clientList.filter(client =>
+        client.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      );
+
+      newList.length > 0 ? setClientList(newList) : setClientList([]);
+    } else {
+      setClientList(clients);
+    }
+  }, [debouncedSearchQuery]);
+
+  useEffect(() => {
+    if (debouncedProjectSearchQuery && projectList.length > 0) {
+      const newList = projectList.filter(project =>
+        project.name
+          .toLowerCase()
+          .includes(debouncedProjectSearchQuery.toLowerCase())
+      );
+
+      newList.length > 0 ? setProjectList(newList) : setProjectList([]);
+    } else {
+      setProjectList(projects[client]);
+    }
+  }, [debouncedProjectSearchQuery]);
+
+  useEffect(() => {
+    setProjectList(projects[client]);
+  }, [client]);
 
   const handleDatePicker = date => {
     setShowDatePicker(false);
@@ -63,7 +98,7 @@ const AddEntryMobile = ({
     const hour = times[0];
     const min = times[1];
     const hhmm = ((parseInt(hour) * 60 + parseInt(min) + 30) / 60).toFixed(2);
-    const addition = hhmm.toString().replace(".", ":").replace("50", "30");
+    const addition = minToHHMM(minFromHHMM(hhmm));
     setDuration(addition);
   };
 
@@ -75,10 +110,7 @@ const AddEntryMobile = ({
       const hour = times[0];
       const min = times[1];
       const hhmm = ((parseInt(hour) * 60 + parseInt(min) - 30) / 60).toFixed(2);
-      const substraction = hhmm
-        .toString()
-        .replace(".", ":")
-        .replace("50", "30");
+      const substraction = minToHHMM(minFromHHMM(hhmm));
       setDuration(substraction);
     }
   };
@@ -141,7 +173,7 @@ const AddEntryMobile = ({
                   />
                   {searchQuery ? (
                     <XIcon
-                      className="absolute right-8"
+                      className="absolute right-2"
                       color="#1D1A31"
                       size={16}
                       onClick={() => setSearchQuery("")}
@@ -154,16 +186,18 @@ const AddEntryMobile = ({
                     />
                   )}
                 </div>
-                {clients.map((client, index) => (
+                {clientList.map((eachClient, index) => (
                   <li
-                    className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
                     key={index}
+                    className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
+                      eachClient.name == client ? "font-bold" : "font-normal"
+                    }`}
                     onClick={() => {
-                      setClient(client.name);
+                      setClient(eachClient.name);
                       setShowClientList(false);
                     }}
                   >
-                    {client.name}
+                    {eachClient.name}
                   </li>
                 ))}
               </MobileMoreOptions>
@@ -189,19 +223,19 @@ const AddEntryMobile = ({
                   <input
                     placeholder="Search"
                     type="text"
-                    value={searchQuery}
+                    value={projectSearchQuery}
                     className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
             text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
                     onChange={e => {
-                      setSearchQuery(e.target.value);
+                      setProjectSearchQuery(e.target.value);
                     }}
                   />
-                  {searchQuery ? (
+                  {projectSearchQuery ? (
                     <XIcon
-                      className="absolute right-8"
+                      className="absolute right-2"
                       color="#1D1A31"
                       size={16}
-                      onClick={() => setSearchQuery("")}
+                      onClick={() => setProjectSearchQuery("")}
                     />
                   ) : (
                     <SearchIcon
@@ -211,19 +245,26 @@ const AddEntryMobile = ({
                     />
                   )}
                 </div>
-                {client &&
-                  projects[client].map((project, index) => (
+                {client ? (
+                  projectList.map((eachProject, index) => (
                     <li
-                      className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
                       key={index}
+                      className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
+                        eachProject.name == project
+                          ? "font-bold"
+                          : "font-normal"
+                      }`}
                       onClick={() => {
-                        setProject(project.name);
+                        setProject(eachProject.name);
                         setShowProjectList(false);
                       }}
                     >
-                      {project.name}
+                      {eachProject.name}
                     </li>
-                  ))}
+                  ))
+                ) : (
+                  <div className="mt-5">Please select client.</div>
+                )}
               </MobileMoreOptions>
             )}
           </div>
