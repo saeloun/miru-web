@@ -354,7 +354,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           >
             TODAY
           </button>
-          <div className="flex">
+          <div className="relative flex">
             <button
               className="flex flex-col items-center justify-center"
               onClick={handlePreDay}
@@ -362,7 +362,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               <CaretCircleLeftIcon size={20} />
             </button>
             {!!dayInfo.length && (
-              <div className="relative" ref={datePickerRef}>
+              <>
                 <label
                   className="mx-3 text-center text-sm font-medium leading-5"
                   htmlFor="Os_calendar"
@@ -374,18 +374,20 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                   {dayInfo[selectDate].month}
                   {dayInfo[selectDate]["year"]}
                 </label>
-                {openOsCalendar && (
-                  <CustomDatePicker
-                    date={dayjs(selectedFullDate).toDate()}
-                    setVisibility={setOpenOsCalendar}
-                    wrapperRef={datePickerRef}
-                    handleChange={date => {
-                      setOpenOsCalendar(false);
-                      handleAddEntryDateChange(date);
-                    }}
-                  />
-                )}
-              </div>
+                <div className="absolute right-50 top-8" ref={datePickerRef}>
+                  {openOsCalendar && (
+                    <CustomDatePicker
+                      date={dayjs(selectedFullDate).toDate()}
+                      setVisibility={setOpenOsCalendar}
+                      wrapperRef={datePickerRef}
+                      handleChange={date => {
+                        setOpenOsCalendar(false);
+                        handleAddEntryDateChange(date);
+                      }}
+                    />
+                  )}
+                </div>
+              </>
             )}
             <button
               className="flex flex-col items-center justify-center"
