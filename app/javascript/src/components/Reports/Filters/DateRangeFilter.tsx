@@ -20,6 +20,9 @@ const DateRangeFilter = ({
   submitCustomDatePicker,
   handleSelectFilter,
   wrapperRef,
+  showCustomCalendar,
+  handleOpenDateCalendar,
+  setShowCustomCalendar,
 }) => (
   <div className="relative cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000">
     <div
@@ -61,8 +64,11 @@ const DateRangeFilter = ({
     {isDateRangeOpen && showCustomFilter && (
       <CustomDateRangeWithInput
         dateRange={dateRange}
+        handleOpenDateCalendar={handleOpenDateCalendar}
         handleSelectDate={handleSelectDate}
         selectedInput={selectedInput}
+        setShowCustomCalendar={setShowCustomCalendar}
+        showCustomCalendar={showCustomCalendar}
         submitCustomDatePicker={submitCustomDatePicker}
         wrapperRef={wrapperRef}
         onClickInput={onClickInput}
