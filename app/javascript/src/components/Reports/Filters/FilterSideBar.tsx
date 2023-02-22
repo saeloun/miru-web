@@ -42,6 +42,7 @@ const FilterSidebar = ({
   const [showCustomFilter, setShowCustomFilter] = useState<boolean>(
     filters.dateRange.value === "custom"
   );
+  const [showCustomCalendar, setShowCustomCalendar] = useState<boolean>(true);
   const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
   const [isTeamMemberOpen, setIsTeamMemberOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -61,13 +62,23 @@ const FilterSidebar = ({
   const [disableApplyBtn, setDisableApplyBtn] = useState(false);
   const wrapperRef = useRef(null);
 
-  useOutsideClick(wrapperRef, () => setShowCustomFilter(false), selectedInput);
+  useOutsideClick(
+    wrapperRef,
+    () => setShowCustomCalendar(false),
+    selectedInput
+  );
 
   const handleSelectGroupByFilter = SelectedGroup => {
     setFilters({
       ...filters,
       groupBy: SelectedGroup,
     });
+  };
+
+  const handleOpenDateCalendar = () => {
+    if (!showCustomCalendar) {
+      setShowCustomCalendar(true);
+    }
   };
 
   useEffect(() => {
@@ -83,7 +94,6 @@ const FilterSidebar = ({
 
   useEffect(() => {
     if (filteredClientList.length) {
-      // client.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
       const sortedClients = filteredClientList.sort((a, b) =>
         a.label.localeCompare(b.label)
       );
@@ -309,6 +319,7 @@ const FilterSidebar = ({
             dateRange={dateRange}
             dateRangeList={dateRangeOptions}
             filters={filters}
+            handleOpenDateCalendar={handleOpenDateCalendar}
             handleSelectDate={handleSelectDate}
             handleSelectFilter={handleSelectFilter}
             isDateRangeOpen={isDateRangeOpen}
@@ -316,6 +327,8 @@ const FilterSidebar = ({
             setIsClientOpen={setIsClientOpen}
             setIsDateRangeOpen={setIsDateRangeOpen}
             setIsStatusOpen={setIsStatusOpen}
+            setShowCustomCalendar={setShowCustomCalendar}
+            showCustomCalendar={showCustomCalendar}
             showCustomFilter={showCustomFilter}
             submitCustomDatePicker={submitCustomDatePicker}
             wrapperRef={wrapperRef}
