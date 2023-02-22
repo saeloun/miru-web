@@ -50,7 +50,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
                           amount: client2_sent_invoice1.amount,
                           status: client2_sent_invoice1.status
                         }
-                      ]
+                      ].sort_by { |k| Date.strptime(k[:issueDate], "%m.%d.%Y") }.reverse
           },
            {
              name: client1.name,
@@ -81,7 +81,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
                           amount: client1_sent_invoice1.amount,
                           status: client1_sent_invoice1.status
                         }
-                      ]
+                      ].sort_by { |k| Date.strptime(k[:issueDate], "%m.%d.%Y") }.reverse
            }]
         get internal_api_v1_reports_outstanding_overdue_invoices_path
       end
