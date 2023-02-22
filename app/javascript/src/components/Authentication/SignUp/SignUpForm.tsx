@@ -74,7 +74,6 @@ const SignUpForm = () => {
                 return (
                   <Form>
                     <div className="mb-3 flex justify-between">
-                      {/* First Name */}
                       <div className="field lg:w-168 relative mr-6 w-1/2">
                         <div className="outline relative">
                           <Field
@@ -100,7 +99,6 @@ const SignUpForm = () => {
                           )}
                         </div>
                       </div>
-                      {/* Last Name */}
                       <div className="field lg:w-168 relative w-1/2">
                         <div className="outline relative">
                           <Field
@@ -127,7 +125,6 @@ const SignUpForm = () => {
                         </div>
                       </div>
                     </div>
-                    {/* Email */}
                     <div className="field relative">
                       <div className="outline relative">
                         <Field
@@ -153,7 +150,6 @@ const SignUpForm = () => {
                         )}
                       </div>
                     </div>
-                    {/* Password */}
                     <div className="field">
                       <div className="outline relative">
                         <Field
@@ -199,11 +195,9 @@ const SignUpForm = () => {
                         )}
                       </div>
                     </div>
-                    {/* Confirm Password */}
                     <div className="field">
                       <div className="outline relative">
                         <Field
-                          // data-cy={dataCyName}
                           name="confirm_password"
                           placeholder=" "
                           type={showConfirmPassword ? "text" : "password"}
@@ -249,7 +243,6 @@ const SignUpForm = () => {
                           )}
                       </div>
                     </div>
-                    {/* Sign Up Button */}
                     <div className="mb-3">
                       <button
                         data-cy="sign-up-button"
@@ -263,7 +256,6 @@ const SignUpForm = () => {
                         Sign Up
                       </button>
                     </div>
-                    {/* OR seperator */}
                   </Form>
                 );
               }}
@@ -275,7 +267,6 @@ const SignUpForm = () => {
               </span>
               <div className="flex-grow border-t border-miru-gray-1000" />
             </div>
-            {/* Sign Up with Google */}
             <div className="mb-3">
               <button
                 className="form__button whitespace-nowrap"
@@ -286,15 +277,6 @@ const SignUpForm = () => {
                 Sign Up with Google
               </button>
             </div>
-            {/* Sign Up with Apple */}
-            {/* <div className="mb-3">
-              <button
-                className="form__button whitespace-nowrap"
-                data-cy="sign-up-button"
-              >
-                Sign Up with Apple
-              </button>
-            </div> */}
             <p className="text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
               Already have an account?&nbsp;
               <span

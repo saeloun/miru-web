@@ -15,10 +15,6 @@ export const signUpFormValidationSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email ID")
     .required("Email ID cannot be blank"),
-  // isAgreedTermsOfServices: Yup.boolean().oneOf(
-  //   [true],
-  //   "You have to accept the Terms of Service and Privacy Policy"
-  // ),
   password: Yup.string()
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/, // eslint-disable-line

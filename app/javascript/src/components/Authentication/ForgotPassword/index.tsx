@@ -69,7 +69,6 @@ const ForgotPassword = () => {
 
                 return (
                   <Form>
-                    {/* Email */}
                     <div className="field relative">
                       <div className="outline relative">
                         <Field
@@ -94,7 +93,6 @@ const ForgotPassword = () => {
                         )}
                       </div>
                     </div>
-                    {/* Send password reset link button */}
                     <div>
                       <button
                         className="form__button whitespace-nowrap"
@@ -104,7 +102,6 @@ const ForgotPassword = () => {
                         Send password reset link
                       </button>
                     </div>
-                    {/* Back to Login */}
                     <p className="mb-3 mt-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
                       <span
                         className="form__link inline cursor-pointer"

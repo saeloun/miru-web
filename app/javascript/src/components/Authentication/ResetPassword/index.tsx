@@ -74,7 +74,6 @@ const ResetPassword = () => {
 
                 return (
                   <Form>
-                    {/* Password */}
                     <div className="field">
                       <div className="outline relative">
                         <Field
@@ -120,11 +119,9 @@ const ResetPassword = () => {
                         )}
                       </div>
                     </div>
-                    {/* Confirm Password */}
                     <div className="field">
                       <div className="outline relative">
                         <Field
-                          // data-cy={dataCyName}
                           name="confirm_password"
                           placeholder=" "
                           type={showPassword ? "text" : "password"}
@@ -168,7 +165,6 @@ const ResetPassword = () => {
                           )}
                       </div>
                     </div>
-                    {/* Send password reset link button */}
                     <div>
                       <button
                         className="form__button whitespace-nowrap"
@@ -178,7 +174,6 @@ const ResetPassword = () => {
                         Reset password
                       </button>
                     </div>
-                    {/* Back to Login */}
                     <p className="mb-3 mt-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
                       <span
                         className="form__link inline cursor-pointer"

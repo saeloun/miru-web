@@ -5,14 +5,6 @@ const FOOTER_LINKS = [
     text: "Support",
     link: MIRU_APP_SUPPORT_EMAIL_ID,
   },
-  // {
-  //   text: "Terms & Conditions",
-  //   link: "#",
-  // },
-  // {
-  //   text: "Privacy Policy",
-  //   link: "#",
-  // },
   {
     text: "miru.so",
     link: MIRU_APP_URL,

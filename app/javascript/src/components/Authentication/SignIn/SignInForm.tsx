@@ -52,11 +52,9 @@ const SignInForm = () => {
 
                 return (
                   <Form>
-                    {/* Email */}
                     <div className="field relative">
                       <div className="outline relative">
                         <Field
-                          // data-cy={dataCyName}
                           autoFocus
                           name="email"
                           placeholder=" "
@@ -79,11 +77,9 @@ const SignInForm = () => {
                         )}
                       </div>
                     </div>
-                    {/* Password */}
                     <div className="field">
                       <div className="outline relative">
                         <Field
-                          // data-cy={dataCyName}
                           name="password"
                           placeholder=" "
                           type={showPassword ? "text" : "password"}
