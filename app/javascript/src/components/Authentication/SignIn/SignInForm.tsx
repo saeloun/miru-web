@@ -123,7 +123,6 @@ const SignInForm = () => {
                         <div>{errors.password}</div>
                       )}
                     </div>
-                    {/* Sign In Button */}
                     <div>
                       <button
                         data-cy="sign-up-button"
@@ -137,7 +136,6 @@ const SignInForm = () => {
                         Sign In
                       </button>
                     </div>
-                    {/* OR seperator */}
                     <div className="relative flex items-center py-7">
                       <div className="flex-grow border-t border-miru-gray-1000" />
                       <span className="mx-4 flex-shrink text-xs text-miru-dark-purple-1000">
@@ -149,7 +147,6 @@ const SignInForm = () => {
                 );
               }}
             </Formik>
-            {/* Sign In with Google */}
             <div className="mb-3">
               <button
                 className="form__button whitespace-nowrap"
@@ -160,16 +157,6 @@ const SignInForm = () => {
                 Sign In with Google
               </button>
             </div>
-            {/* Sign In with Apple */}
-            {/* <div className="mb-3">
-              <button
-                className="form__button whitespace-nowrap"
-                data-cy="sign-up-button"
-              >
-                Sign In with Apple
-              </button>
-            </div> */}
-            {/* Forgot Password */}
             <p className="mb-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
               <span
                 className="form__link inline cursor-pointer"
@@ -180,7 +167,6 @@ const SignInForm = () => {
                 </a>
               </span>
             </p>
-            {/* Don't have an account? */}
             <p className="text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
               Don't have an account?&nbsp;
               <span
