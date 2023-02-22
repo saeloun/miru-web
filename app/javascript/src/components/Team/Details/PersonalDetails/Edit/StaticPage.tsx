@@ -12,7 +12,7 @@ import {
 import { CustomAsyncSelect } from "common/CustomAsyncSelect";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
-import { CustomReactSelect } from "common/CustomReactSelect";
+import CustomReactSelect from "common/CustomReactSelect";
 
 const StaticPage = ({
   addressOptions,

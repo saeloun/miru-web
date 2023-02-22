@@ -22,6 +22,7 @@ export const CustomInputText = ({
       disabled={disabled}
       id={id}
       name={name}
+      placeholder=" "
       type={type}
       value={value}
       onChange={onChange}
@@ -37,7 +38,7 @@ CustomInputText.defaultProps = {
     "form__input block w-full appearance-none bg-white p-4 text-base h-12 border-miru-gray-1000",
   type: "text",
   labelClassName:
-    "absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300",
+    "absolute duration-300 top-3 -z-1 origin-0 text-gray-500 bg-white px-3 text-base font-medium text-miru-dark-purple-200",
   wrapperClassName: "outline relative h-12",
   disabled: false,
 };
