@@ -16,7 +16,7 @@ class Expense::ShowPresenter
       date: expense.formatted_date,
       description: expense.description,
       type: expense.expense_type,
-      receipts: expense.attached_receipts
+      receipts: expense.attached_receipts_urls
     }
   end
 end

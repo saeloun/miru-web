@@ -168,9 +168,9 @@ puts "Custom expense Categories created"
 ca_vendor = company.vendors.create!({ name: "CA firm" })
 insurance_vendor = company.vendors.create!({ name: "Insurance" })
 booking_vendor = company.vendors.create!({ name: "Booking" })
-apple_repair_vendor = company.vendors.create!({ name: "Apple maintenance" })
+apple_repair_vendor = company.vendors.create!({ name: "Apple Maintenance" })
 
-puts "Venors created"
+puts "Vendors created"
 
 expenses = [
   {
@@ -183,7 +183,7 @@ expenses = [
   {
     amount: 5500,
     date: Faker::Date.backward(days: 60),
-    description: "Supriya Laptop's servicing",
+    description: "Laptop's servicing Employee 1",
     expense_category_id: 2,
     vendor_id: apple_repair_vendor.id,
     expense_type: :business
@@ -206,7 +206,7 @@ expenses = [
   {
     amount: 67000,
     date: Faker::Date.backward(days: 60),
-    description: "Vipul flight",
+    description: "Flight to NY",
     expense_category_id: 5,
     vendor_id: booking_vendor.id,
     expense_type: :business
@@ -214,7 +214,7 @@ expenses = [
   {
     amount: 47000,
     date: Faker::Date.backward(days: 60),
-    description: "Employee x client visit",
+    description: "Employee x Client visit",
     expense_category_id: 5,
     vendor_id: booking_vendor.id,
     expense_type: :business
@@ -222,7 +222,7 @@ expenses = [
   {
     amount: 56703,
     date: Faker::Date.backward(days: 60),
-    description: "Govt tax",
+    description: "Govt Tax",
     expense_category_id: 6,
     vendor_id: ca_vendor.id,
     expense_type: :business
@@ -254,7 +254,7 @@ expenses = [
   {
     amount: 12300,
     date: Faker::Date.backward(days: 60),
-    description: "Team vacation",
+    description: "Team Vacation",
     expense_category_id: outing_category.id,
     vendor_id: booking_vendor.id,
     expense_type: :business
@@ -262,7 +262,7 @@ expenses = [
   {
     amount: 5400,
     date: Faker::Date.backward(days: 60),
-    description: "Rails conf ticket to employee x",
+    description: "Rails Conf ticket",
     expense_category_id: conference_category.id,
     vendor_id: booking_vendor.id,
     expense_type: :business

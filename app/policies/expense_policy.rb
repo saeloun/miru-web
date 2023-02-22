@@ -15,10 +15,6 @@ class ExpensePolicy < ApplicationPolicy
     authorize_current_user
   end
 
-  def admin_access?
-    user_owner_role? || user_admin_role?
-  end
-
   def authorize_current_user
     unless user.current_workspace_id == record.company_id
       @error_message_key = :different_workspace
@@ -27,4 +23,10 @@ class ExpensePolicy < ApplicationPolicy
 
     admin_access?
   end
+
+  private
+
+    def admin_access?
+      user_owner_role? || user_admin_role?
+    end
 end

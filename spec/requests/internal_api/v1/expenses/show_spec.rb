@@ -46,7 +46,7 @@ RSpec.describe "InternalApi::V1::Expense#show", type: :request do
           "vendorName": vendor.name,
           "categoryName": expense_category.name,
           "description": expense[:description],
-          "receipts": expense.attached_receipts
+          "receipts": expense.attached_receipts_urls
         }
         expect(json_response.slice("amount", "type", "vendorName", "categoryName", "description", "receipts"))
           .to eq(JSON.parse(expected_response.to_json))

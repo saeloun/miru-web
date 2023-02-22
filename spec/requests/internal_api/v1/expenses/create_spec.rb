@@ -8,7 +8,6 @@ RSpec.describe "InternalApi::V1::Expense#create", type: :request do
   let(:project) { create(:project, client: client_1) }
   let(:expense_category) { create(:expense_category, company:) }
   let(:vendor) { create(:vendor, company:) }
-
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
@@ -32,6 +31,7 @@ RSpec.describe "InternalApi::V1::Expense#create", type: :request do
     describe "#create" do
       before do
         @expense = attributes_for(:expense).merge(expense_category_id: expense_category.id, vendor_id: vendor.id)
+
         send_request :post, internal_api_v1_expenses_path(expense: @expense)
       end
 
@@ -61,6 +61,7 @@ RSpec.describe "InternalApi::V1::Expense#create", type: :request do
   context "when the user is an employee" do
     before do
       sign_in employee
+
       send_request :post, internal_api_v1_expenses_path(expense: {})
     end
 
@@ -72,6 +73,7 @@ RSpec.describe "InternalApi::V1::Expense#create", type: :request do
   context "when the user is an book keeper" do
     before do
       sign_in book_keeper
+
       send_request :post, internal_api_v1_expenses_path(expense: {})
     end
 
@@ -83,6 +85,7 @@ RSpec.describe "InternalApi::V1::Expense#create", type: :request do
   context "when unauthenticated" do
     it "is not be permitted to create a expense" do
       send_request :post, internal_api_v1_expenses_path(expense: {})
+
       expect(response).to have_http_status(:unauthorized)
       expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
     end

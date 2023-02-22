@@ -14,7 +14,7 @@ RSpec.describe Expense::ShowPresenter do
     end
 
     it "returns required data of expense" do
-      expect(@data).to have_key(:id)
+      expect(@data[:id]).to eq(expense.id)
       expect(@data).to have_key(:vendor_name)
       expect(@data).to have_key(:category_name)
       expect(@data).to have_key(:amount)

@@ -2,6 +2,7 @@
 
 class InternalApi::V1::ExpensesController < ApplicationController
   before_action :set_expense, only: :show
+
   def index
     authorize Expense
 

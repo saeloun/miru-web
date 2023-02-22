@@ -65,7 +65,7 @@ class Expense < ApplicationRecord
     CompanyDateFormattingService.new(date, company:).process
   end
 
-  def attached_receipts
+  def attached_receipts_urls
     return [] if !receipts.attached?
 
     receipts.includes(:blob).references(:blob).order(:filename).map do |image|
