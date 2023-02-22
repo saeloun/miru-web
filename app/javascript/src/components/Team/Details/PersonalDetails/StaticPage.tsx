@@ -29,8 +29,8 @@ const StaticPage = ({ personalDetails }) => (
             </span>
             <p className="text-miru-dark-purple-1000">
               {personalDetails.date_of_birth &&
-                dayjs(personalDetails.date_of_birth, "YYYY-MM-DD").format(
-                  "MM.DD.YYYY"
+                dayjs(personalDetails.date_of_birth).format(
+                  personalDetails.date_format
                 )}
             </p>
           </div>
