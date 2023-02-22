@@ -11,22 +11,11 @@ RSpec.describe ProjectPolicy, type: :policy do
   let(:employee) { create(:user, current_workspace_id: company.id) }
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
 
-  let(:another_company) { create(:company) }
-  let(:another_admin) { create(:user, current_workspace_id: another_company.id) }
-  let(:another_employee) { create(:user, current_workspace_id: another_company.id) }
-  let(:another_owner) { create(:user, current_workspace_id: another_company.id) }
-  let(:another_book_keeper) { create(:user, current_workspace_id: another_company.id) }
-
   before do
     admin.add_role :admin, company
     owner.add_role :owner, company
     employee.add_role :employee, company
     book_keeper.add_role :book_keeper, company
-
-    another_owner.add_role :owner, another_company
-    another_admin.add_role :admin, another_company
-    another_employee.add_role :employee, another_company
-    another_book_keeper.add_role :book_keeper, another_company
   end
 
   subject { described_class }
@@ -79,11 +68,54 @@ RSpec.describe ProjectPolicy, type: :policy do
     end
 
     context "when user is from another company" do
+      let(:another_company) { create(:company) }
+      let(:another_admin) { create(:user, current_workspace_id: another_company.id) }
+      let(:another_employee) { create(:user, current_workspace_id: another_company.id) }
+      let(:another_owner) { create(:user, current_workspace_id: another_company.id) }
+      let(:another_book_keeper) { create(:user, current_workspace_id: another_company.id) }
+
+      before do
+        another_owner.add_role :owner, another_company
+        another_admin.add_role :admin, another_company
+        another_employee.add_role :employee, another_company
+        another_book_keeper.add_role :book_keeper, another_company
+      end
+
       it "does not grants permission" do
         expect(described_class).not_to permit(another_admin, project)
         expect(described_class).not_to permit(another_owner, project)
         expect(described_class).not_to permit(another_employee, project)
         expect(described_class).not_to permit(another_book_keeper, project)
+      end
+    end
+  end
+
+  describe "policy_scope" do
+    let(:another_company) { create(:company) }
+    let(:client_2) { create(:client, company: another_company) }
+    let(:project_2) { create(:project, client:) }
+    let(:project_3) { create(:project, client:) }
+    let(:project_4) { create(:project, client: client_2) }
+
+    before do
+      create(:project_member, project:, user: employee)
+      project_membership = create(:project_member, project: project_2, user: employee)
+      create(:project_member, project: project_4, user: employee)
+      project_3.discard!
+      project_membership.discard!
+    end
+
+    context "when user is an admin/owner" do
+      it "returns the list of allowed projects" do
+        result = ProjectPolicy::Scope.new(admin, company).resolve
+        expect(result.pluck(:id)).to eq([project.id, project_2.id])
+      end
+    end
+
+    context "when user is employee" do
+      it "returns only allowed projects" do
+        result = ProjectPolicy::Scope.new(employee, company).resolve
+        expect(result.pluck(:id)).to eq([project.id])
       end
     end
   end

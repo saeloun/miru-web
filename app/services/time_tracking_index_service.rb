@@ -56,19 +56,12 @@ class TimeTrackingIndexService
     end
 
     def set_clients
-      if is_admin
-        @clients = current_company.clients.kept.order(name: :asc).includes(:projects)
-      else
-        @clients = current_user.clients.kept
-          .where(company_id: current_company.id)
-          .order(name: :asc)
-          .includes(:projects).distinct
-      end
+      @clients = ClientPolicy::Scope.new(current_user, current_company).resolve.includes(:projects)
     end
 
     def set_projects
-      @projects = Client::IndexPresenter
-        .new(clients, current_company, current_user)
-        .projects_grouped_by_client_name
+      @projects = {}
+      user_projects = ProjectPolicy::Scope.new(current_user, current_company).resolve
+      clients.each { |client| @projects[client.name] = client.projects.kept & user_projects }
     end
 end
