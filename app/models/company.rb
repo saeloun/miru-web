@@ -39,6 +39,8 @@ class Company < ApplicationRecord
   has_many :vendors, dependent: :destroy
   resourcify
 
+  accepts_nested_attributes_for :addresses
+
   # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
