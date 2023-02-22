@@ -154,10 +154,16 @@ invoice_2.payments.create!(payment_2)
 
 puts "Payments Created"
 
+ExpenseCategory::DEFAULT_CATEGORIES.each do |category|
+  ExpenseCategory.find_or_create_by!(category)
+end
+
+puts "Default expense categories created"
+
 outing_category = company.expense_categories.create!({ name: "Outing" })
 conference_category = company.expense_categories.create!({ name: "Conference" })
 
-puts "Expense Categories created"
+puts "Custom expense Categories created"
 
 ca_vendor = company.vendors.create!({ name: "CA firm" })
 insurance_vendor = company.vendors.create!({ name: "Insurance" })
