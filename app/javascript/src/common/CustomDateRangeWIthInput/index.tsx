@@ -259,7 +259,7 @@ const CustomDateRangeWithInput = ({
           )}
         </div>
       </div>
-      <div className="absolute z-20 mt-1 flex flex-col  overflow-y-auto rounded-lg bg-miru-white-1000 shadow-c1 lg:ml-2 xl:ml-10">
+      <div className="absolute z-20 mt-1 ml-10 flex flex-col  overflow-y-auto rounded-lg bg-miru-white-1000 shadow-c1 lg:ml-2 xl:ml-10">
         {showCustomCalendar && (
           <DatePicker
             inline
