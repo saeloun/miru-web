@@ -24,6 +24,6 @@ class InternalApi::V1::PaymentSettingsController < InternalApi::V1::ApplicationC
     end
 
     def save_stripe_settings
-      PaymentProvides::CreateStripeProviderService.process(current_company)
+      PaymentProviders::CreateStripeProviderService.process(current_company)
     end
 end
