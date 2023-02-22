@@ -98,12 +98,10 @@ const FilterSidebar = ({
         a.label.localeCompare(b.label)
       );
       if (debouncedSearchQuery && filteredClientList.length > 0) {
-        const newClientList = sortedClients.filter(
-          client =>
-            client.label
-              .toLowerCase()
-              .includes(debouncedSearchQuery.toLowerCase())
-          // client.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+        const newClientList = sortedClients.filter(client =>
+          client.label
+            .toLowerCase()
+            .includes(debouncedSearchQuery.toLowerCase())
         );
 
         newClientList.length > 0

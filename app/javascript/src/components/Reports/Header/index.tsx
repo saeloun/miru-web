@@ -138,9 +138,6 @@ const Header = ({
                   <span className="ml-3 text-sm">Export as PDF</span>
                 </button>
               </li>
-              {/* <li className="flex items-center p-2 text-miru-dark-purple-400">
-                <PaperPlaneTiltIcon className="mr-4" size={16} /> Share
-              </li> */}
             </MobileMoreOptions>
           )}
         </div>

@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { getMonth, getYear } from "date-fns";
 import dayjs from "dayjs";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
+import PropTypes from "prop-types";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -343,6 +344,20 @@ const CustomDateRangeWithInput = ({
       </div>
     </div>
   );
+};
+
+CustomDateRangeWithInput.propTypes = {
+  handleSelectDate: PropTypes.func,
+  onClickInput: PropTypes.func,
+  selectedInput: PropTypes.string,
+  dateRange: PropTypes.any,
+  setSelectedInput: PropTypes.func,
+  setIsDisableDoneBtn: PropTypes.func,
+  submitCustomDatePicker: PropTypes.func,
+  wrapperRef: PropTypes.any,
+  showCustomCalendar: PropTypes.bool,
+  handleOpenDateCalendar: PropTypes.any,
+  setShowCustomCalendar: PropTypes.any,
 };
 
 export default CustomDateRangeWithInput;
