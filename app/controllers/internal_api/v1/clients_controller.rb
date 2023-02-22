@@ -13,9 +13,11 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
   def create
     authorize Client
-    render :create, locals: {
-      client: Client.create!(client_params)
-    }
+
+    client = Client.create!(client_params)
+    if client
+      render :create, locals: { client: client, address: client.addresses&.last }
+    end
   end
 
   def show
@@ -60,11 +62,11 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     end
 
     def client_params
-      params.require(:client).permit(
-        policy(Client).permitted_attributes
-      ).tap do |client_params|
-        client_params[:company_id] = current_company.id
-      end
+      params.require(:client).permit(:name, :email, :phone, :logo,
+                                     addresses_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin]
+                                    ).tap do |client_params|
+                                      client_params[:company_id] = current_company.id
+                                    end
     end
 
     def update_client_params
