@@ -24,11 +24,10 @@ const showToastr = message => {
 };
 
 const isError = e => e && e.stack && e.message;
+const isString = e => typeof e === "string" || e instanceof String;
+const isArray = e => Array.isArray(e);
 
 const showErrorToastr = error => {
-  const arrayOfErrorMsgs = Array.isArray(error);
-  const errorMessage = isError(error) ? error.message : error;
-
   const toastMsg = err =>
     toast.error(<ToastrComponent message={err} />, {
       toastId: customId,
@@ -41,11 +40,23 @@ const showErrorToastr = error => {
       hideProgressBar: true,
     });
 
-  arrayOfErrorMsgs
-    ? error.forEach(err => {
-        toastMsg(err);
-      })
-    : toastMsg(errorMessage);
+  if (isError(error)) {
+    toastMsg(error);
+  } else if (isString(error)) {
+    toastMsg(error);
+  } else if (isArray(error)) {
+    error.forEach(err => {
+      toastMsg(err);
+    });
+  } else {
+    Object.keys(error).forEach(key => {
+      isArray(error[key])
+        ? error[key].forEach(newErr => {
+            toastMsg(newErr);
+          })
+        : toastMsg(error[key]);
+    });
+  }
 };
 
 const showWarningToastr = warning => {
