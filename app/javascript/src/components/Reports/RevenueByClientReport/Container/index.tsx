@@ -52,11 +52,11 @@ const Container = () => {
   return (
     <Fragment>
       <TotalHeader
-        firstTitle="TOTAL UNPAID AMOUNT"
+        firstTitle="TOTAL OUTSTANDING AMOUNT"
         secondTitle="TOTAL PAID AMOUNT"
         thirdTitle="TOTAL REVENUE"
         firstAmount={`${currencySymb}${cashFormatter(
-          revenueByClientReport.summary.totalUnpaidAmount
+          revenueByClientReport.summary.totalOutstandingAmount
         )}`}
         secondAmount={`${currencySymb}${cashFormatter(
           revenueByClientReport.summary.totalPaidAmount

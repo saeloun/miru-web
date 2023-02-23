@@ -46,14 +46,14 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
           [{
             name: client1.name,
             paidAmount: @client1_paid_amount,
-            unpaidAmount: @client1_unpaid_amount,
+            outstandingAmount: @client1_unpaid_amount,
             totalAmount: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
             overdueAmount: @client1_overdue_amount
           },
            {
              name: client2.name,
              paidAmount: @client2_paid_amount,
-             unpaidAmount: @client2_unpaid_amount,
+             outstandingAmount: @client2_unpaid_amount,
              totalAmount: @client2_paid_amount + @client2_unpaid_amount + @client2_overdue_amount,
              overdueAmount: @client2_overdue_amount
            }]
@@ -67,7 +67,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       it "returns the summary of all clients" do
         expected_summary = {
           totalPaidAmount: @client1_paid_amount + @client2_paid_amount,
-          totalUnpaidAmount: @client1_unpaid_amount + @client2_unpaid_amount,
+          totalOutstandingAmount: @client1_unpaid_amount + @client2_unpaid_amount,
           totalRevenue: @client1_paid_amount + @client2_paid_amount + @client1_unpaid_amount + @client2_unpaid_amount
         }
         expect(json_response["summary"]).to eq(JSON.parse(expected_summary.to_json))
@@ -95,7 +95,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
             {
               name: client1.name,
               paidAmount: @client1_paid_amount,
-              unpaidAmount: @client1_unpaid_amount,
+              outstandingAmount: @client1_unpaid_amount,
               totalAmount: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
               overdueAmount: @client1_overdue_amount
             }
@@ -110,7 +110,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       it "returns the summary of first client" do
         expected_summary = {
           totalPaidAmount: @client1_paid_amount,
-          totalUnpaidAmount: @client1_unpaid_amount,
+          totalOutstandingAmount: @client1_unpaid_amount,
           totalRevenue: @client1_paid_amount + @client1_unpaid_amount
         }
         expect(json_response["summary"]).to eq(JSON.parse(expected_summary.to_json))
