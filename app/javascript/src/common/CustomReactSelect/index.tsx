@@ -4,7 +4,8 @@ import React from "react";
 
 import Select from "react-select";
 
-import { customErrStyles, customStyles } from "./CustomStyle";
+import { customErrStyles } from "./CustomErrStyle";
+import { customStyles } from "./CustomStyle";
 import { CustomValueContainer } from "./CustomValueContainer";
 
 export const CustomReactSelect = ({
