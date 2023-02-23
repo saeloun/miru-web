@@ -28,6 +28,10 @@ export enum Roles {
 }
 
 export enum Paths {
+  FORGOT_PASSWORD = "/password/new",
+  RESET_PASSWORD = "/password/edit",
+  SIGNUP = "/signup",
+  LOGIN = "/login",
   SIGN_IN = "/user/sign_in",
   CLIENTS = "/clients",
   INVOICES = "/invoices",
@@ -94,3 +98,6 @@ export enum TeamModalType {
 export enum LocalStorageKeys {
   INVOICE_FILTERS = "invoiceFilters",
 }
+
+export const MIRU_APP_URL = "https://miru.so/";
+export const MIRU_APP_SUPPORT_EMAIL_ID = "mailto:mirusupport@saeloun.com";
