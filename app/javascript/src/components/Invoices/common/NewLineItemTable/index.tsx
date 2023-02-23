@@ -15,8 +15,10 @@ const NewLineItemTable = ({
   setMultiLineItemModal,
   loading,
   setLoading,
+  setLineItem,
 }) => {
   const selectRowId = items => {
+    setLineItem({});
     const option = {
       ...items,
       lineTotal: lineTotalCalc(items.quantity, items.rate),
@@ -32,7 +34,7 @@ const NewLineItemTable = ({
   }, []);
 
   return (
-    <div>
+    <>
       <NewLineItemTableHeader setShowMultilineModal={setMultiLineItemModal} />
       {loading && (
         <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
@@ -75,7 +77,7 @@ const NewLineItemTable = ({
           </p>
         )
       )}
-    </div>
+    </>
   );
 };
 
