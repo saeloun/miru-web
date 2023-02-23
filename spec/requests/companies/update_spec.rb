@@ -19,7 +19,6 @@ RSpec.describe "Companies#create", type: :request do
           :put, company_path, params: {
             company: {
               name: "Updated Company",
-              address: "updated address",
               business_phone: "1234556"
             }
           })
@@ -28,7 +27,6 @@ RSpec.describe "Companies#create", type: :request do
       it "updates the company" do
         company.reload
         expect(company.name).to eq("Updated Company")
-        expect(company.address).to eq("updated address")
       end
 
       it "redirects to root_path" do
@@ -67,7 +65,6 @@ RSpec.describe "Companies#create", type: :request do
           :put, company_path, params: {
             company: {
               name: "Updated Company",
-              address: "updated address",
               business_phone: "1234556"
             }
           })
@@ -88,7 +85,6 @@ RSpec.describe "Companies#create", type: :request do
           :put, company_path, params: {
             company: {
               name: "",
-              address: "",
               business_phone: ""
             }
           })
@@ -117,7 +113,6 @@ RSpec.describe "Companies#create", type: :request do
           :put, company_path, params: {
             company: {
               name: "Updated Company",
-              address: "updated address",
               business_phone: "1234556"
             }
           })
@@ -138,7 +133,6 @@ RSpec.describe "Companies#create", type: :request do
           :put, company_path, params: {
             company: {
               name: "",
-              address: "",
               business_phone: ""
             }
           })
@@ -160,7 +154,6 @@ RSpec.describe "Companies#create", type: :request do
         :put, company_path, params: {
           company: {
             name: "Updated Company",
-            address: "updated address",
             business_phone: "1234556"
           }
         })
