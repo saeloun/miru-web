@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Expenses::FiltersService < ApplicationService
+  CUSTOM_PARAM_LIST = %i[]
+
   attr_reader :current_company, :where_clause, :params
 
   def initialize(current_company, params)
@@ -11,6 +13,7 @@ class Expenses::FiltersService < ApplicationService
 
   def process
     process_page_params
+    add_custom_filters
     add_default_filters
   end
 
@@ -33,6 +36,14 @@ class Expenses::FiltersService < ApplicationService
     def process_page_params
       params[:page] = params[:page].to_i
       params[:expenses_per_page] = params[:expenses_per_page].to_i
+    end
+
+    def add_custom_filters
+      CUSTOM_PARAM_LIST.each do |key|
+        if params[key].present?
+          @where_clause.merge! send("#{key}_filter")
+        end
+      end
     end
 
     def add_default_filters
