@@ -1,6 +1,10 @@
 import axios from "axios";
 
 import Toastr from "common/Toastr";
+import {
+  clearCredentialsFromLocalStorage,
+  getValueFromLocalStorage,
+} from "utils/storage";
 
 class ApiHandler {
   axios: any;
@@ -28,6 +32,12 @@ class ApiHandler {
         return response;
       },
       (error: any) => {
+        if (error.response?.status === 401) {
+          clearCredentialsFromLocalStorage();
+          Toastr.error(error.response?.data?.error);
+          setTimeout(() => (window.location.href = "/"), 500);
+        }
+
         Toastr.error(
           error.response?.data?.errors ||
             error.response?.data?.error ||
@@ -37,7 +47,7 @@ class ApiHandler {
             "Something went wrong!"
         );
         if (error.response?.status === 423) {
-          window.location.href = "/";
+          setTimeout(() => (window.location.href = "/"), 500);
         }
 
         return Promise.reject(error);
@@ -46,14 +56,12 @@ class ApiHandler {
 
     this.axios.interceptors.request.use(
       async (config: any) => {
-        // add token headers in below header constant.
-        // example
-        // const headers = {
-        //  "X-Auth-Email": "vipul@example.com",
-        //  "X-Auth-Token": "nyDMsho2Pr2Zgk7dXyf6XEXsf3QLAsrhTUQW1aybMxymSJVACo",
-        // };
-
-        const headers = {};
+        const token = getValueFromLocalStorage("authToken");
+        const email = getValueFromLocalStorage("authEmail");
+        const headers = {
+          "X-Auth-Email": email,
+          "X-Auth-Token": token,
+        };
 
         const newConfig = {
           ...config,
