@@ -230,6 +230,10 @@ GEM
       raabro (~> 1.4)
     globalid (1.1.0)
       activesupport (>= 5.0)
+    graphiql-rails (1.8.0)
+      railties
+      sprockets-rails
+    graphql (2.0.17)
     grover (1.1.4)
       combine_pdf (~> 1.0)
       nokogiri (~> 1.0)
@@ -582,6 +586,8 @@ DEPENDENCIES
   factory_bot_rails
   faker
   foreman
+  graphiql-rails
+  graphql
   grover
   hash_dot
   image_processing (>= 1.2)
