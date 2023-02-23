@@ -1,21 +1,34 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
+import { Outlet, useParams, useNavigate } from "react-router-dom";
+
+import teamsApi from "apis/teams";
+import Loader from "common/Loader/index";
 import { useTeamDetails } from "context/TeamDetailsContext";
+import { teamsMapper } from "mapper/teams.mapper";
 
 import StaticPage from "./StaticPage";
-// import { useNavigate } from "react-router-dom";
 
 const PersonalDetails = () => {
-  const { updateDetails } = useTeamDetails();
-  // const navigate = useNavigate();
+  const { memberId } = useParams();
+  const {
+    updateDetails,
+    details: { personalDetails },
+  } = useTeamDetails();
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const getDetails = async () => {
+    const res: any = await teamsApi.get(memberId);
+    const addRes = await teamsApi.getAddress(memberId);
+    const teamsObj = teamsMapper(res.data, addRes.data.addresses[0]);
+    updateDetails("personal", teamsObj);
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    updateDetails("personal", {
-      name: "Jane Cooper",
-      dob: "04. 05. 1989",
-      phone: "+123345234",
-      email: "jane.cooper@gmail.com",
-    });
+    setIsLoading(true);
+    getDetails();
   }, []);
 
   return (
@@ -23,14 +36,21 @@ const PersonalDetails = () => {
       <div className="flex items-center justify-between bg-miru-han-purple-1000 px-10 py-4">
         <h1 className="text-2xl font-bold text-white">Personal Details</h1>
         <button
-          className="mx-1 cursor-auto rounded-md border bg-white px-3 text-miru-han-purple-1000"
+          className="cursor-pointer rounded-md border border-white bg-miru-han-purple-1000 px-6 py-2 font-bold text-white"
           data-cy="update-profile"
-          // onClick={() => navigate("/team/")}
+          onClick={() => navigate(`/team/${memberId}/edit`, { replace: true })}
         >
           Edit
         </button>
       </div>
-      <StaticPage />
+      {isLoading ? (
+        <div className="flex min-h-70v items-center justify-center">
+          <Loader />
+        </div>
+      ) : (
+        <StaticPage personalDetails={personalDetails} />
+      )}
+      <Outlet />
     </Fragment>
   );
 };
