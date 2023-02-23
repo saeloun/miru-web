@@ -17,7 +17,6 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
   end
 
   def update
-    authorize Company
     authorize current_company
     if current_company.update!(company_params)
       render json: { notice: I18n.t("companies.update.success") }
