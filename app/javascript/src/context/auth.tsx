@@ -2,15 +2,15 @@ import React, { createContext, useReducer } from "react";
 
 import PropTypes from "prop-types";
 
-import { getFromLocalStorage } from "utils/storage";
+import { getValueFromLocalStorage } from "utils/storage";
 
 import authReducer from "../reducers/auth";
 
 const AuthStateContext = createContext({});
 const AuthDispatchContext = createContext({});
 
-const token = getFromLocalStorage("authToken");
-const email = getFromLocalStorage("authEmail");
+const token = getValueFromLocalStorage("authToken");
+const email = getValueFromLocalStorage("authEmail");
 
 const initialState = {
   isLoggedIn: !!token,

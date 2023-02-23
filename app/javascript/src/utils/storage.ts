@@ -6,7 +6,7 @@ const setToLocalStorage = (key, value) => {
   } else localStorage.removeItem(key);
 };
 
-const getFromLocalStorage = key => {
+const getValueFromLocalStorage = key => {
   let response = "";
   try {
     const value = localStorage.getItem(key);
@@ -19,9 +19,13 @@ const getFromLocalStorage = key => {
   return response;
 };
 
-const clearLocalStorageCredentials = () => {
+const clearCredentialsFromLocalStorage = () => {
   setToLocalStorage("authEmail", null);
   setToLocalStorage("authToken", null);
 };
 
-export { setToLocalStorage, getFromLocalStorage, clearLocalStorageCredentials };
+export {
+  setToLocalStorage,
+  getValueFromLocalStorage,
+  clearCredentialsFromLocalStorage,
+};
