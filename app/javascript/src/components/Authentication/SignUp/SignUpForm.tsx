@@ -74,7 +74,7 @@ const SignUpForm = () => {
                 return (
                   <Form>
                     <div className="mb-3 flex justify-between">
-                      <div className="field lg:w-168 relative mr-6 w-1/2">
+                      <div className="field relative mr-6 w-1/2 lg:w-168">
                         <div className="outline relative">
                           <Field
                             autoFocus
@@ -99,7 +99,7 @@ const SignUpForm = () => {
                           )}
                         </div>
                       </div>
-                      <div className="field lg:w-168 relative w-1/2">
+                      <div className="field relative w-1/2 lg:w-168">
                         <div className="outline relative">
                           <Field
                             data-cy="sign-up-lastName"
