@@ -6,6 +6,7 @@ module.exports = {
       center: true,
     },
     fontSize: {
+      xsm: ".5625em",
       xxs: "0.625rem",//10px
       xs: ".75rem",
       sm: ".875rem",
@@ -24,7 +25,7 @@ module.exports = {
     },
     letterSpacing: {
       widest: "0.125em",
-      semiWidest : "0.09375",//1.5px
+      semiWidest: "0.09375",//1.5px
       wider: ".05em",
       normal: "0em",
     },
@@ -79,6 +80,7 @@ module.exports = {
         "80v": "80vh",
         "90v": "90vh",
         "100v": "100vh",
+        24: "24px",
       },
       maxHeight: {
         "10v": "10vh",
@@ -200,6 +202,7 @@ module.exports = {
       },
       zIndex: {
         1: "-1",
+        1: "1",
         15: "15",
       },
       transformOrigin: {
