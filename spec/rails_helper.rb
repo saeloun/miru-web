@@ -83,7 +83,7 @@ RSpec.configure do |config|
     end
   end
 
-  def headers(auth_user, options = {})
+  def auth_headers(auth_user, options = {})
     {
       "X-Auth-Token" => auth_user[:token],
       "X-Auth-Email" => auth_user[:email]
