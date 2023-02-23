@@ -18,7 +18,7 @@ import CustomDatePicker from "common/CustomDatePicker";
 import Toastr from "common/Toastr";
 import { useUserContext } from "context/UserContext";
 
-import AddEntryMobile from "./MobileView/AddEntryMobile";
+import MobileEntryForm from "./MobileView/MobileEntryForm";
 
 const AddEntry: React.FC<Iprops> = ({
   selectedEmployeeId,
@@ -320,7 +320,7 @@ const AddEntry: React.FC<Iprops> = ({
       </div>
     </div>
   ) : (
-    <AddEntryMobile
+    <MobileEntryForm
       billable={billable}
       client={client}
       clients={clients}

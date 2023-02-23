@@ -18,9 +18,9 @@ import { TOASTER_DURATION } from "constants/index";
 import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import AddEntry from "./AddEntry";
 import DatesInWeek from "./DatesInWeek";
 import EntryCard from "./EntryCard";
+import EntryForm from "./EntryForm";
 import MonthCalender from "./MonthCalender";
 import WeeklyEntries from "./WeeklyEntries";
 
@@ -506,7 +506,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             )
           )}
           {!editEntryId && newEntryView && view !== "week" && (
-            <AddEntry
+            <EntryForm
               clients={clients}
               editEntryId={editEntryId}
               entryList={entryList}
@@ -571,7 +571,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           entryList[selectedFullDate] &&
           entryList[selectedFullDate].map((entry, weekCounter) =>
             editEntryId === entry.id ? (
-              <AddEntry
+              <EntryForm
                 clients={clients}
                 editEntryId={editEntryId}
                 entryList={entryList}

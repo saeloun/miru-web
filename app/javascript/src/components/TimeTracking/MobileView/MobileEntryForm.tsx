@@ -18,8 +18,9 @@ import CustomCheckbox from "common/CustomCheckbox";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
+import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 
-import DeleteEntry from "./DeleteEntry";
+import DeleteEntryModal from "./DeleteEntryModal";
 
 const AddEntryMobile = ({
   project,
@@ -97,7 +98,7 @@ const AddEntryMobile = ({
     const times = formattedHHMM.split(":");
     const hour = times[0];
     const min = times[1];
-    const hhmm = ((parseInt(hour) * 60 + parseInt(min) + 30) / 60).toFixed(2);
+    const hhmm = ((parseInt(hour) * 60 + parseInt(min) + 15) / 60).toFixed(2);
     const addition = minToHHMM(minFromHHMM(hhmm));
     setDuration(addition);
   };
@@ -109,7 +110,7 @@ const AddEntryMobile = ({
       const times = formattedHHMM.split(":");
       const hour = times[0];
       const min = times[1];
-      const hhmm = ((parseInt(hour) * 60 + parseInt(min) - 30) / 60).toFixed(2);
+      const hhmm = ((parseInt(hour) * 60 + parseInt(min) - 15) / 60).toFixed(2);
       const substraction = minToHHMM(minFromHHMM(hhmm));
       setDuration(substraction);
     }
@@ -269,14 +270,13 @@ const AddEntryMobile = ({
             )}
           </div>
           <div className="py-3">
-            <CustomInputText
-              dataCy="description"
+            <CustomTextareaAutosize
               id="Description (optional)"
               label="Description (optional)"
               name="Description (optional)"
-              type="text"
+              rows={5}
               value={note}
-              onChange={e => setNote(e.target.value)}
+              onChange={e => setNote(e.target["value"])}
             />
           </div>
           <div className="flex w-full flex-col py-3">
@@ -300,6 +300,7 @@ const AddEntryMobile = ({
                 className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
                 color="#5B34EA"
                 size={20}
+                weight="bold"
               />
             </div>
             {showDatePicker && (
@@ -324,8 +325,12 @@ const AddEntryMobile = ({
             />
           </div>
           <div className="flex items-center justify-between rounded border border-miru-gray-1000">
-            <Button onClick={handleIncreaseTime}>
-              <PlusIcon className="m-4 text-miru-dark-purple-1000" size={20} />
+            <Button onClick={handleDecreaseTime}>
+              <MinusIcon
+                className="m-4 text-miru-dark-purple-1000"
+                size={20}
+                weight="bold"
+              />
             </Button>
             {duration ? (
               <span className="text-center text-xl font-bold text-miru-dark-purple-1000 ">
@@ -336,15 +341,19 @@ const AddEntryMobile = ({
                 00:00
               </span>
             )}
-            <Button onClick={handleDecreaseTime}>
-              <MinusIcon className="m-4 text-miru-dark-purple-1000" size={20} />
+            <Button onClick={handleIncreaseTime}>
+              <PlusIcon
+                className="m-4 text-miru-dark-purple-1000"
+                size={20}
+                weight="bold"
+              />
             </Button>
           </div>
         </div>
         {editEntryId ? (
-          <div className="flex items-center justify-between">
+          <div className="flex w-full items-center justify-between">
             <Button
-              className="flex items-center py-2 px-6"
+              className="mr-1 flex w-1/2 items-center justify-center py-2 px-10/100"
               style="secondary"
               onClick={handleDuplicate}
             >
@@ -352,7 +361,7 @@ const AddEntryMobile = ({
               <span className="font-bold">Duplicate</span>
             </Button>
             <Button
-              className="flex items-center rounded border border-miru-red-400 py-2 px-10 text-miru-red-400"
+              className="ml-1 flex w-1/2 items-center justify-center rounded border border-miru-red-400 py-2 px-10/100 text-miru-red-400"
               onClick={() => {
                 setShowDeleteDialog(true);
               }}
@@ -363,7 +372,7 @@ const AddEntryMobile = ({
           </div>
         ) : null}
         {showDeleteDialog ? (
-          <DeleteEntry
+          <DeleteEntryModal
             handleDeleteEntry={handleDeleteEntry}
             id={editEntryId}
             setEditEntryId={setEditEntryId}

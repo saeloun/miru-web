@@ -1,13 +1,5 @@
 import React from "react";
 
-interface IProps {
-  id: any;
-  setShowDeleteDialog: any;
-  handleDeleteEntry: any;
-  setNewEntryView: any;
-  setEditEntryId: any;
-}
-
 const DeleteEntry = ({
   id,
   setShowDeleteDialog,
@@ -31,26 +23,34 @@ const DeleteEntry = ({
         </div>
         <div className="flex justify-between">
           <button
-            className="button__bg_transparent w-auto px-8"
+            className="button__bg_transparent mr-1 w-1/2 px-10/100 text-center"
             onClick={() => {
               setShowDeleteDialog(false);
             }}
           >
-            CANCEL
+            Cancel
           </button>
           <button
-            className="button__bg_purple w-auto px-8"
+            className="button__bg_purple ml-1 w-1/2 px-10/100 text-center"
             onClick={() => {
               handleDeleteEntry(id);
               setNewEntryView(false);
               setEditEntryId(0);
             }}
           >
-            DELETE
+            Delete
           </button>
         </div>
       </div>
     </div>
   </div>
 );
+interface IProps {
+  id: any;
+  setShowDeleteDialog: any;
+  handleDeleteEntry: any;
+  setNewEntryView: any;
+  setEditEntryId: any;
+}
+
 export default DeleteEntry;
