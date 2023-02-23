@@ -47,11 +47,14 @@ module.exports = {
       width: {
         fit: "fit-content",
         30: "7.5rem", //120px
-        128: "32rem", // 512px
         34: "8.6rem",
-        352: "22rem", //352px
-        228: "14.25rem", //228px
+        128: "32rem", // 512px
+        168: "10.5rem", // 168px
         180: "11.25rem", //180px
+        228: "14.25rem", //228px
+        300: "18.75rem", //300px
+        352: "22rem", //352px
+        480: "30rem", //480px
       },
       minWidth: {
         12: "12px",
