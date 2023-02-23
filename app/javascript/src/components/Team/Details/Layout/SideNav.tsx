@@ -19,26 +19,6 @@ const getTeamUrls = memberId => [
     url: `/team/${memberId}`,
     text: "PERSONAL DETAILS",
   },
-  // {
-  //   url: `/team/${memberId}/employment`,
-  //   text: "EMPLOYEMENT DETAILS", // TODO: fix spelling employment
-  // },
-  // {
-  //   url: `/team/${memberId}/devices`,
-  //   text: "ALLOCATED DEVICES",
-  // },
-  // {
-  //   url: `/team/${memberId}/compensation`,
-  //   text: "COMPENSATION",
-  // },
-  // {
-  //   url: `/team/${memberId}/documents`,
-  //   text: "DOCUMENTS",
-  // },
-  // {
-  //   url: `/team/${memberId}/reimburstment`, // TODO: fix spelling reimbursement
-  //   text: "REIMBURSEMENTS",
-  // },
 ];
 
 const UserInformation = () => {
@@ -66,9 +46,7 @@ const UserInformation = () => {
               </span>
             </div>
           </Tooltip>
-          <span className="text-xs leading-4 tracking-wider text-miru-dark-purple-1000">
-            {/* SENIOR SOFTWARE DEVELOPER */}
-          </span>
+          <span className="text-xs leading-4 tracking-wider text-miru-dark-purple-1000" />
         </div>
       </div>
     </div>
