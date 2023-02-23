@@ -222,3 +222,7 @@ gem "strong_migrations"
 # Error tracking: https://docs.sentry.io/platforms/ruby/guides/rails/
 gem "sentry-rails"
 gem "sentry-ruby"
+
+# https://graphql-ruby.org/
+gem "graphiql-rails", group: :development
+gem "graphql"
