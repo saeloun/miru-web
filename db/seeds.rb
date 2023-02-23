@@ -153,3 +153,124 @@ invoice_1.payments.create!(payment_1)
 invoice_2.payments.create!(payment_2)
 
 puts "Payments Created"
+
+ExpenseCategory::DEFAULT_CATEGORIES.each do |category|
+  ExpenseCategory.find_or_create_by!(category)
+end
+
+puts "Default expense categories created"
+
+outing_category = company.expense_categories.create!({ name: "Outing" })
+conference_category = company.expense_categories.create!({ name: "Conference" })
+
+puts "Custom expense Categories created"
+
+ca_vendor = company.vendors.create!({ name: "CA firm" })
+insurance_vendor = company.vendors.create!({ name: "Insurance" })
+booking_vendor = company.vendors.create!({ name: "Booking" })
+apple_repair_vendor = company.vendors.create!({ name: "Apple Maintenance" })
+
+puts "Vendors created"
+
+expenses = [
+  {
+    amount: 300000,
+    date: Faker::Date.backward(days: 60),
+    description: "Salary of x,y,z employee",
+    expense_category_id: 1,
+    expense_type: :business
+  },
+  {
+    amount: 5500,
+    date: Faker::Date.backward(days: 60),
+    description: "Laptop's servicing Employee 1",
+    expense_category_id: 2,
+    vendor_id: apple_repair_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 10000,
+    date: Faker::Date.backward(days: 60),
+    description: "Monthly rent",
+    expense_category_id: 3,
+    expense_type: :business
+  },
+  {
+    amount: 2000,
+    date: Faker::Date.backward(days: 60),
+    description: "Dinner party",
+    expense_category_id: 4,
+    vendor_id: booking_vendor.id,
+    expense_type: :personal
+  },
+  {
+    amount: 67000,
+    date: Faker::Date.backward(days: 60),
+    description: "Flight to NY",
+    expense_category_id: 5,
+    vendor_id: booking_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 47000,
+    date: Faker::Date.backward(days: 60),
+    description: "Employee x Client visit",
+    expense_category_id: 5,
+    vendor_id: booking_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 56703,
+    date: Faker::Date.backward(days: 60),
+    description: "Govt Tax",
+    expense_category_id: 6,
+    vendor_id: ca_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 4350,
+    date: Faker::Date.backward(days: 60),
+    description: "Office new chair",
+    expense_category_id: 7,
+    vendor_id: booking_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 20000,
+    date: Faker::Date.backward(days: 60),
+    description: "x,y,z employee health insurance",
+    expense_category_id: 8,
+    vendor_id: insurance_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 6300,
+    date: Faker::Date.backward(days: 60),
+    description: "Some xyz expense",
+    expense_category_id: 9,
+    vendor_id: booking_vendor.id,
+    expense_type: :personal
+  },
+  {
+    amount: 12300,
+    date: Faker::Date.backward(days: 60),
+    description: "Team Vacation",
+    expense_category_id: outing_category.id,
+    vendor_id: booking_vendor.id,
+    expense_type: :business
+  },
+  {
+    amount: 5400,
+    date: Faker::Date.backward(days: 60),
+    description: "Rails Conf ticket",
+    expense_category_id: conference_category.id,
+    vendor_id: booking_vendor.id,
+    expense_type: :business
+  }
+]
+
+expenses.each do |expense|
+  company.expenses.create!(expense)
+end
+
+puts "Expenses Created"
