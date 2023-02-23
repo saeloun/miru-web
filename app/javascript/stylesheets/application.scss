@@ -565,3 +565,9 @@ body {
   background-color: #1D1A31;
   text-color: #FFF
 }
+
+.input-phone-number input:focus{
+  outline: none !important;
+  border:none !important;
+  box-shadow: none !important;
+}
