@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Companies::index", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, addresses_attributes: [attributes_for(:address)]) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
@@ -23,7 +23,7 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
 
     it "returns success json response" do
       expect(json_response["company_details"]["name"]).to eq(company.name)
-      expect(json_response["company_details"]["address"]).to eq(company.address)
+      expect(json_response["company_details"]["address"]["address_line_1"]).to eq(company.addresses&.last&.address_line_1)
     end
   end
 
@@ -40,7 +40,7 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
 
     it "returns success json response" do
       expect(json_response["company_details"]["name"]).to eq(company.name)
-      expect(json_response["company_details"]["address"]).to eq(company.address)
+      expect(json_response["company_details"]["address"]["address_line_1"]).to eq(company.addresses&.last&.address_line_1)
     end
   end
 
@@ -57,7 +57,7 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
 
    it "returns success json response" do
      expect(json_response["company_details"]["name"]).to eq(company.name)
-     expect(json_response["company_details"]["address"]).to eq(company.address)
+     expect(json_response["company_details"]["address"]["address_line_1"]).to eq(company.addresses&.last&.address_line_1)
    end
  end
 end
