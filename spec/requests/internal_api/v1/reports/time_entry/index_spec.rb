@@ -11,7 +11,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
   let(:project2) { create(:project, client_id: client2.id, name: "B class project") }
   let(:client3) { create(:client, company_id: company.id, name: "Indian_Client") }
   let(:project3) { create(:project, client_id: client3.id, name: "C class project") }
-  let(:last_month_start_date) { 1.month.ago.beginning_of_month }
+  let(:last_month_start_date) { 1.month.ago.beginning_of_month + 1.days }
 
   def generate_label(date)
     "#{date.beginning_of_week.strftime("%d %b %Y")} - #{date.end_of_week.strftime("%d %b %Y")}"
@@ -46,7 +46,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
 
     context "when reports page's request is made with date range filter" do
       before do
-        @this_week_start_date = 0.weeks.ago.beginning_of_week
+        @this_week_start_date = 0.weeks.ago.beginning_of_week + 1.days
         @this_week_end_date = 0.weeks.ago.end_of_week
         @timesheet_entry1 = create(:timesheet_entry, project:, work_date: last_month_start_date)
         @timesheet_entry2 = create(:timesheet_entry, project:, work_date: @this_week_start_date)
@@ -176,7 +176,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       before do
         @user1 = create(:user, first_name: "John", last_name: "Doe")
         @user2 = create(:user, first_name: "Kelly", last_name: "Doe")
-        @last_month_end_date = 1.month.ago.end_of_month
+        @last_month_end_date = 1.month.ago.end_of_month - 1.days
         @timesheet_entry1 = create(
           :timesheet_entry,
           work_date: last_month_start_date,
@@ -237,10 +237,10 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         @user2 = create(:user, first_name: "Corner", last_name: "Stone")
         @timesheet_entry1 = create(
           :timesheet_entry, user: @user1, project:,
-          work_date: Date.new(Time.now.year, Time.now.month, 1))
+          work_date: Date.new(Time.now.year, Time.now.month, 2))
         @timesheet_entry2 = create(
           :timesheet_entry, user: @user1, project:,
-          work_date: Date.new(Time.now.year, Time.now.month, 2))
+          work_date: Date.new(Time.now.year, Time.now.month, 3))
         @timesheet_entry3 = create(
           :timesheet_entry, user: @user2, project:,
           work_date: Date.new(Time.now.year, Time.now.month, 3))
@@ -311,7 +311,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       before do
         @current_year = Time.now.year
         @current_month = Time.now.month
-        @date1 = Date.new(@current_year, @current_month, 1)
+        @date1 = Date.new(@current_year, @current_month, 2)
         @date2 = Date.new(@current_year, @current_month, 8)
         @timesheet_entry1 = create(:timesheet_entry, work_date: @date1, project:)
         @timesheet_entry2 = create(:timesheet_entry, work_date: @date1, project:)
@@ -408,8 +408,8 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       before do
         @last_month = if Time.now.month - 1 == 0 then 12 else Time.now.month - 1 end
         @year = if @last_month == 12 then Time.now.year - 1 else Time.now.year end
-        @date1 = Date.new(@year, @last_month, 1)
-        @date2 = Date.new(@year, @last_month, 8)
+        @date1 = Date.new(@year, @last_month, 3)
+        @date2 = Date.new(@year, @last_month, 9)
         @timesheet_entry1 = create(:timesheet_entry, work_date: @date1, project:)
         @timesheet_entry2 = create(:timesheet_entry, work_date: @date1, project:)
         @timesheet_entry3 = create(:timesheet_entry, work_date: @date2, project:)
