@@ -179,7 +179,7 @@ const EmploymentDetails = () => {
     setShowDatePicker({ visibility: !showDatePicker.visibility });
     updateDetails("personal", {
       ...personalDetails,
-      ...{ date_of_birth: dayjs(date).format("MM.DD.YYYY") },
+      ...{ date_of_birth: dayjs(date).format(personalDetails.date_format) },
     });
   };
 
