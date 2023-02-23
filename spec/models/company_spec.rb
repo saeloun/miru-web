@@ -11,8 +11,8 @@ RSpec.describe Company, type: :model do
     it { is_expected.to have_many(:clients).dependent(:destroy) }
     it { is_expected.to have_many(:projects).through(:clients).dependent(:destroy) }
     it { is_expected.to have_one_attached(:logo) }
+    it { is_expected.to have_one(:address).dependent(:destroy) }
     it { is_expected.to have_many(:current_workspace_users).dependent(:nullify) }
-    it { is_expected.to have_many(:addresses).dependent(:destroy) }
     it { is_expected.to have_many(:devices).dependent(:destroy) }
     it { is_expected.to have_many(:expenses).dependent(:destroy) }
     it { is_expected.to have_many(:expense_categories).dependent(:destroy) }

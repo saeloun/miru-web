@@ -30,8 +30,8 @@ class Company < ApplicationRecord
   has_many :invoices
   has_many :payments, through: :invoices
   has_one :stripe_connected_account, dependent: :destroy
+  has_one :address, as: :addressable, dependent: :destroy
   has_many :payments_providers, dependent: :destroy
-  has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_many :invitations, dependent: :destroy
   has_many :expenses, dependent: :destroy
@@ -39,7 +39,7 @@ class Company < ApplicationRecord
   has_many :vendors, dependent: :destroy
   resourcify
 
-  accepts_nested_attributes_for :addresses
+  accepts_nested_attributes_for :address
 
   # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true

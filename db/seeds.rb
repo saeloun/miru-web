@@ -93,7 +93,7 @@ invoice_2 = company.invoices.create!(
 Invoice.reindex
 puts "Invoice Created"
 
-company.addresses.create!(
+company.address.create!(
   address_type: "permanent",
   address_line_1: "Saeloun Inc",
   address_line_2: "475 Clermont Ave",

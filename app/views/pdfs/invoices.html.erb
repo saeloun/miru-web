@@ -24,8 +24,7 @@ html {
       </div>
     </div>
     <div class="mt-2 font-normal text-base text-right text-miru-dark-purple-1000 w-40">
-      <p><%=invoice.company.addresses&.last%></p>
-      <p><%=invoice.company.country%></p>
+      <p><%=invoice.company.address&.formatted_address%></p>
     </div>
   </div>
 

@@ -5,7 +5,7 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
 
   def index
     authorize current_company
-    render :index, locals: { current_company:, client_list: current_company.client_list, address: current_company.addresses&.last }, status: :ok
+    render :index, locals: { current_company:, client_list: current_company.client_list, address: current_company.address }, status: :ok
   end
 
   def create
@@ -29,6 +29,6 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
       params.require(:company).permit(
         :name, :business_phone, :country, :timezone, :base_currency,
         :standard_price, :fiscal_year_end, :date_format, :logo,
-        addresses_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin])
+        address_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin])
     end
 end
