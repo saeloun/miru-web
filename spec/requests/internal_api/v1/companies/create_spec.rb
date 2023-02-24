@@ -22,13 +22,7 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
             standard_price: 1000,
             fiscal_year_end: "Jan-Dec",
             date_format: "DD-MM-YYYY",
-            address_attributes: {
-              address_line_1: "Somewhere on Earth",
-              city: "Brooklyn",
-              state: "NY",
-              country: "US",
-              pin: "12238"
-            }
+            address_attributes: attributes_for(:address)
           }
         }, headers: auth_headers(user)
       end
@@ -83,13 +77,7 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
               standard_price: 1000,
               fiscal_year_end: "Jan-Dec",
               date_format: "DD-MM-YYYY",
-              address_attributes: {
-                address_line_1: "Somewhere on Earth",
-                city: "Brooklyn",
-                state: "NY",
-                country: "US",
-                pin: "12238"
-              }
+              address_attributes: attributes_for(:address)
             }
           }, headers: auth_headers(user)
         end
