@@ -84,6 +84,6 @@ class Company < ApplicationRecord
   end
 
   def attributes_blank?(attributes)
-    attributes.except('id, address_line_2').values.all?(&:blank?)
+    attributes.except("id, address_line_2").values.all?(&:blank?)
   end
 end
