@@ -169,7 +169,7 @@ const AddEntry: React.FC<Iprops> = ({
   return isDesktop ? (
     <div
       className={`
-       min-h-24 hidden justify-between rounded-lg p-4 shadow-2xl lg:flex ${
+       hidden min-h-24 justify-between rounded-lg p-4 shadow-2xl lg:flex ${
          editEntryId ? "mt-10" : ""
        }`}
     >
