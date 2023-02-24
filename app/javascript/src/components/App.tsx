@@ -7,7 +7,7 @@ import { Roles, TOASTER_DURATION, Paths } from "constants/index";
 import { miruApp } from "constants/miruApp";
 import UserContext from "context/UserContext";
 
-import DisplayView from "./DisplayView";
+import Main from "./Main";
 
 const App = props => {
   const { user, companyRole } = props;
@@ -34,7 +34,7 @@ const App = props => {
     >
       <BrowserRouter>
         <ToastContainer autoClose={TOASTER_DURATION} />
-        <DisplayView
+        <Main
           {...props}
           isAdminUser={isAdminUser}
           isDesktop={isDesktop}
