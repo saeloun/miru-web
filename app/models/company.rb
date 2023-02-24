@@ -9,7 +9,7 @@
 #  date_format     :string
 #  fiscal_year_end :string
 #  name            :string           not null
-#  old_address     :text             not null
+#  old_address     :text
 #  standard_price  :decimal(, )      default(0.0), not null
 #  timezone        :string
 #  created_at      :datetime         not null
@@ -40,7 +40,7 @@ class Company < ApplicationRecord
   has_many :vendors, dependent: :destroy
   resourcify
 
-  accepts_nested_attributes_for :address
+  accepts_nested_attributes_for :address, reject_if: :attributes_blank?, allow_destroy: true
 
   # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
@@ -81,5 +81,9 @@ class Company < ApplicationRecord
 
   def all_expense_categories
     ExpenseCategory.default_categories.order(:created_at) + expense_categories.order(:created_at)
+  end
+
+  def attributes_blank?(attributes)
+    attributes.except('id, address_line_2').values.all?(&:blank?)
   end
 end

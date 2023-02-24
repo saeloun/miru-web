@@ -3,7 +3,7 @@
 company = Company.create!(
   {
     name: "Saeloun Inc",
-    address: "475 Clermont Ave, Brooklyn, NY-12238",
+    old_address: "475 Clermont Ave, Brooklyn, NY-12238",
     business_phone: "+1 9296207865",
     base_currency: "USD",
     standard_price: 1000,
@@ -93,7 +93,7 @@ invoice_2 = company.invoices.create!(
 Invoice.reindex
 puts "Invoice Created"
 
-company.address.create!(
+company.create_address!(
   address_type: "permanent",
   address_line_1: "Saeloun Inc",
   address_line_2: "475 Clermont Ave",
