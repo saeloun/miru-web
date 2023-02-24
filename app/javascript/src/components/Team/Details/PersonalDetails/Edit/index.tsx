@@ -3,6 +3,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 
 import { Country, State, City } from "country-state-city";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { useOutsideClick } from "helpers";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
@@ -17,6 +18,8 @@ import { teamsMapper } from "mapper/teams.mapper";
 import MobileEditPage from "./MobileEditPage";
 import StaticPage from "./StaticPage";
 import { userSchema } from "./validationSchema";
+
+dayjs.extend(utc);
 
 const addressOptions = [
   { label: "Current", value: "current" },
@@ -205,7 +208,9 @@ const EmploymentDetails = () => {
         user: {
           first_name: personalDetails.first_name,
           last_name: personalDetails.last_name,
-          date_of_birth: dayjs(personalDetails.date_of_birth),
+          date_of_birth: dayjs
+            .utc(personalDetails.date_of_birth, personalDetails.date_format)
+            .toISOString(),
           phone: personalDetails.phone_number,
           personal_email_id: personalDetails.email_id,
           social_accounts: {
