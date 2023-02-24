@@ -9,6 +9,7 @@
 #  date_format     :string
 #  fiscal_year_end :string
 #  name            :string           not null
+#  old_address     :text             not null
 #  standard_price  :decimal(, )      default(0.0), not null
 #  timezone        :string
 #  created_at      :datetime         not null
