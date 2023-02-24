@@ -25,6 +25,10 @@ export const customErrStyles = isDesktopView => ({
     backgroundColor: "#FFFFFF",
     color: "#E04646",
   }),
+  dropdownIndicator: base => ({
+    ...base,
+    color: "#5B34EA", // Custom colour
+  }),
   singleValue: base => ({
     ...base,
     fontWeight: 500,
