@@ -77,8 +77,7 @@ RSpec.describe "InternalApi::V1::Reports::AccountsAgingController::#index", type
       end
 
       it "returns only clients having billable projects" do
-        expect(json_response["report"]["clients"][1]["id"]).to eq(client1.id)
-        expect(json_response["report"]["clients"][0]["id"]).to eq(client2.id)
+        expect(json_response["report"]["clients"].pluck("id")).to eq(client1.id, client2.id)
       end
 
       it "does not return clients having no billable projects" do
