@@ -1,6 +1,6 @@
 import React from "react";
 
-import { X } from "phosphor-react";
+import { XIcon } from "miruIcons";
 import { Link } from "react-router-dom";
 
 export const MobileDetailsHeader = ({
@@ -12,7 +12,7 @@ export const MobileDetailsHeader = ({
     <span>{title}</span>
     <div className="absolute right-0 items-center pr-3 font-bold text-white">
       <Link to={href}>
-        <X className="" color="#FFFFFF" size={16} weight="bold" />
+        <XIcon className="" color="#FFFFFF" size={16} weight="bold" />
       </Link>
     </div>
   </div>
