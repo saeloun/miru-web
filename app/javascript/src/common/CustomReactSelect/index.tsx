@@ -51,7 +51,7 @@ export const CustomReactSelect = ({
 };
 
 CustomReactSelect.defaultProps = {
-  classNamePrefix: "react-select-filter text-black",
+  classNamePrefix: "react-select-filter",
   label: "Select",
   placeholder: "Please select...",
   handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
