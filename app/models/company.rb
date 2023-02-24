@@ -40,7 +40,7 @@ class Company < ApplicationRecord
   has_many :vendors, dependent: :destroy
   resourcify
 
-  accepts_nested_attributes_for :address, reject_if: :attributes_blank?, allow_destroy: true
+  accepts_nested_attributes_for :address, reject_if: :address_attributes_blank?, allow_destroy: true
 
   # Validations
   validates :name, :business_phone, :standard_price, :country, :base_currency, presence: true
@@ -83,7 +83,7 @@ class Company < ApplicationRecord
     ExpenseCategory.default_categories.order(:created_at) + expense_categories.order(:created_at)
   end
 
-  def attributes_blank?(attributes)
+  def address_attributes_blank?(attributes)
     attributes.except("id, address_line_2").values.all?(&:blank?)
   end
 end
