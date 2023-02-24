@@ -5,6 +5,7 @@ FactoryBot.define do
     company
     name { Faker::Name.name }
     email { Faker::Internet.unique.safe_email }
+    old_address { Faker::Address.street_address }
     phone { Faker::PhoneNumber.phone_number_with_country_code }
     factory :client_with_invoices do
       transient do
