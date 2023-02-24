@@ -11,7 +11,7 @@ def copy_address_into_address_table
     address_record = company.address
     unless address_record.present?
       address = company.build_address(address_line_1: company&.old_address, city: "", state: "", country: "", pin: "")
-      address.save(validate: false)
+      address.save!(validate: false)
     end
   end
 end
