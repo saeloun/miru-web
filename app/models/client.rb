@@ -7,6 +7,7 @@
 #  discarded_at :datetime
 #  email        :string
 #  name         :string           not null
+#  old_address  :string
 #  phone        :string
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
