@@ -39,7 +39,7 @@ const RootElement = ({ role }) => {
 };
 
 const Home = (props: Iprops) => (
-  <div className="overflow-x-scroll px-4 py-12 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
+  <div className="h-full overflow-x-scroll p-0 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
     <Routes>
       <Route element={<RootElement role={props.companyRole} />} path="/" />
       {ROUTES.map(parentRoute => (
