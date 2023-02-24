@@ -7,6 +7,7 @@
 # We have few records of the company i.e 140 because of that using each.
 def copy_address_into_address_table
   Company.find_each do |company|
+    puts " * * * * * * * * * Company* * * * * * * * Id: #{company.id}, Name: #{company.name}"
     address_record = company.address
     unless address_record.present?
       address = company.build_address(address_line_1: company&.old_address, city: "", state: "", country: "", pin: "")
