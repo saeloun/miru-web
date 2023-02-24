@@ -4,9 +4,11 @@ import React from "react";
 
 import Select from "react-select";
 
-import { customErrStyles } from "./CustomErrStyle";
-import { customStyles } from "./CustomStyle";
-import { CustomValueContainer } from "./CustomValueContainer";
+import {
+  customErrStyles,
+  customStyles,
+  CustomValueContainer,
+} from "common/CustomReactSelectStyle";
 
 export const CustomReactSelect = ({
   classNamePrefix,
