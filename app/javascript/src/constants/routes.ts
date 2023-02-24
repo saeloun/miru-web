@@ -1,4 +1,7 @@
 import ErrorPage from "common/Error";
+import ForgotPassword from "components/Authentication/ForgotPassword";
+import SignIn from "components/Authentication/SignIn";
+import SignUp from "components/Authentication/SignUp";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
 import { Roles, Paths } from "constants/index";
@@ -73,7 +76,26 @@ const ProfileRoutes = [{ path: "*", Component: ProfileLayout }];
 
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE } = Roles;
 
-const ROUTES = [
+export const AUTH_ROUTES = [
+  {
+    path: "/",
+    component: SignIn,
+  },
+  {
+    path: "/signup",
+    component: SignUp,
+  },
+  {
+    path: "/login",
+    component: SignIn,
+  },
+  {
+    path: "/password/new",
+    component: ForgotPassword,
+  },
+];
+
+export const ROUTES = [
   {
     path: Paths.CLIENTS,
     subRoutes: ClientsRoutes,
@@ -125,5 +147,3 @@ const ROUTES = [
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
   },
 ];
-
-export default ROUTES;

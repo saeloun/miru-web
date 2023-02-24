@@ -49,6 +49,7 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-multi-select-component": "^4.3.4",
     "react-phone-number-input": "^3.2.19",
+    "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.2.2",
     "react-select": "^5.2.2",
     "react-table": "^7.7.0",

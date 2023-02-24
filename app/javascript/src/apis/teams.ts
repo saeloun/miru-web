@@ -2,13 +2,13 @@ import axios from "./api";
 
 const get = async id => axios.get(`team/${id}/details`);
 
-const updateUser = (user_id, payload) =>
-  axios.put(`team/${user_id}/details`, payload);
+const updateUser = (userId, payload) =>
+  axios.put(`team/${userId}/details`, payload);
 
-const getAddress = async user_id => axios.get(`users/${user_id}/addresses`);
+const getAddress = async userId => axios.get(`users/${userId}/addresses`);
 
-const updateAddress = (user_id, addr_id, payload) =>
-  axios.put(`users/${user_id}/addresses/${addr_id}`, payload);
+const updateAddress = (userId, addrId, payload) =>
+  axios.put(`users/${userId}/addresses/${addrId}`, payload);
 
 const teamsApi = { get, getAddress, updateUser, updateAddress };
 

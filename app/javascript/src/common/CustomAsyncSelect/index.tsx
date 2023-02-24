@@ -4,10 +4,8 @@ import React from "react";
 
 import AsyncSelect from "react-select/async";
 
-import {
-  customErrStyles,
-  customStyles,
-} from "common/CustomReactSelect/CustomStyle";
+import { customErrStyles } from "common/CustomReactSelect/CustomErrStyle";
+import { customStyles } from "common/CustomReactSelect/CustomStyle";
 import { CustomValueContainer } from "common/CustomReactSelect/CustomValueContainer";
 
 export const CustomAsyncSelect = ({

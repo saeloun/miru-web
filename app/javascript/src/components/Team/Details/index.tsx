@@ -47,4 +47,5 @@ const TeamDetails = () => {
     </TeamDetailsContext.Provider>
   );
 };
+
 export default TeamDetails;

@@ -19,31 +19,13 @@ const getTeamUrls = memberId => [
     url: `/team/${memberId}`,
     text: "PERSONAL DETAILS",
   },
-  // {
-  //   url: `/team/${memberId}/employment`,
-  //   text: "EMPLOYEMENT DETAILS", // TODO: fix spelling employment
-  // },
-  // {
-  //   url: `/team/${memberId}/devices`,
-  //   text: "ALLOCATED DEVICES",
-  // },
-  // {
-  //   url: `/team/${memberId}/compensation`,
-  //   text: "COMPENSATION",
-  // },
-  // {
-  //   url: `/team/${memberId}/documents`,
-  //   text: "DOCUMENTS",
-  // },
-  // {
-  //   url: `/team/${memberId}/reimburstment`, // TODO: fix spelling reimbursement
-  //   text: "REIMBURSEMENTS",
-  // },
 ];
 
 const UserInformation = () => {
   const {
-    details: { personalDetails },
+    details: {
+      personalDetails: { first_name, last_name },
+    },
   } = useTeamDetails();
 
   return (
@@ -57,18 +39,16 @@ const UserInformation = () => {
         </div>
         <div className="mt-3 flex flex-col items-center justify-center border-b-8 border-miru-gray-200 pb-8">
           <Tooltip
-            content={`${personalDetails.first_name} ${personalDetails.last_name}`}
+            content={`${first_name} ${last_name}`}
             wrapperClassName="relative block max-w-full "
           >
             <div className="mb-1 max-w-full overflow-hidden truncate whitespace-nowrap px-4">
               <span className=" text-xl font-bold text-miru-han-purple-1000">
-                {`${personalDetails.first_name} ${personalDetails.last_name}`}
+                {`${first_name} ${last_name}`}
               </span>
             </div>
           </Tooltip>
-          <span className="text-xs leading-4 tracking-wider text-miru-dark-purple-1000">
-            {/* SENIOR SOFTWARE DEVELOPER */}
-          </span>
+          <span className="text-xs leading-4 tracking-wider text-miru-dark-purple-1000" />
         </div>
       </div>
     </div>
