@@ -5,7 +5,6 @@ import { MiruLogoSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
-import { registerIntercepts, setAuthHeaders } from "apis/axios";
 import { Paths, TOASTER_DURATION } from "constants/index";
 
 import PasswordResetLinkSentMsg from "./PasswordResetLinkSentMsg";
@@ -23,8 +22,6 @@ const ForgotPassword = () => {
     useState<string>("");
 
   useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
     setEmailToSendResetPasswordLink("");
   }, []);
 
