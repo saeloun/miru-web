@@ -14,26 +14,6 @@ const getTeamUrls = memberId => [
     url: `/team/${memberId}/details`,
     text: "PERSONAL DETAILS",
   },
-  // {
-  //   url: `/team/${memberId}/employment`,
-  //   text: "EMPLOYEMENT DETAILS", // TODO: fix spelling employment
-  // },
-  // {
-  //   url: `/team/${memberId}/devices`,
-  //   text: "ALLOCATED DEVICES",
-  // },
-  // {
-  //   url: `/team/${memberId}/compensation`,
-  //   text: "COMPENSATION",
-  // },
-  // {
-  //   url: `/team/${memberId}/documents`,
-  //   text: "DOCUMENTS",
-  // },
-  // {
-  //   url: `/team/${memberId}/reimburstment`, // TODO: fix spelling reimbursement
-  //   text: "REIMBURSEMENTS",
-  // },
 ];
 
 const MobileNav = () => {
