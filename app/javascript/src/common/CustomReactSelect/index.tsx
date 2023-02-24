@@ -19,7 +19,7 @@ export const CustomReactSelect = ({
   value,
   isErr,
   isDesktopView,
-  menuIsOpen = true,
+  menuIsOpen,
 }) => {
   const getStyle = () => {
     if (isErr) {
@@ -58,7 +58,7 @@ CustomReactSelect.defaultProps = {
   handleonFocus: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   isErr: false,
   isDesktopView: true,
-  menuIsOpen: true,
+  menuIsOpen: false,
 };
 
 export default CustomReactSelect;
