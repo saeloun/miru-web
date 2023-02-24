@@ -1,9 +1,10 @@
 import React from "react";
 
-import Main from "./Main";
-import Navbar from "./Navbar";
+import Home from "./Home";
 
-const DisplayView = props => {
+import Navbar from "../Navbar";
+
+const Dashboard = props => {
   const { isAdminUser, user, isDesktop, setIsDesktop } = props;
 
   window.addEventListener("resize", () =>
@@ -18,16 +19,16 @@ const DisplayView = props => {
     return (
       <div className="absolute inset-0 flex h-full w-full">
         <Navbar isAdminUser={isAdminUser} user={user} />
-        <Main {...props} isAdminUser={isAdminUser} isDesktop={isDesktop} />
+        <Home {...props} isAdminUser={isAdminUser} isDesktop={isDesktop} />
       </div>
     );
   }
 
   return (
     <div className="flex h-screen w-full flex-col">
-      <Main {...props} isAdminUser={isAdminUser} isDesktop={isDesktop} />
+      <Home {...props} isAdminUser={isAdminUser} isDesktop={isDesktop} />
     </div>
   );
 };
 
-export default DisplayView;
+export default Dashboard;
