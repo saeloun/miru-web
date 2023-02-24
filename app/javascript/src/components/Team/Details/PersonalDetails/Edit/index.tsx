@@ -3,17 +3,23 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 
 import { Country, State, City } from "country-state-city";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { useOutsideClick } from "helpers";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 
 import teamsApi from "apis/teams";
 import Loader from "common/Loader/index";
+import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import { useTeamDetails } from "context/TeamDetailsContext";
+import { useUserContext } from "context/UserContext";
 import { teamsMapper } from "mapper/teams.mapper";
 
+import MobileEditPage from "./MobileEditPage";
 import StaticPage from "./StaticPage";
 import { userSchema } from "./validationSchema";
+
+dayjs.extend(utc);
 
 const addressOptions = [
   { label: "Current", value: "current" },
@@ -45,6 +51,7 @@ const EmploymentDetails = () => {
     details: { personalDetails },
   } = useTeamDetails();
   const navigate = useNavigate();
+  const { isDesktop } = useUserContext();
 
   const wrapperRef = useRef(null);
 
@@ -201,7 +208,9 @@ const EmploymentDetails = () => {
         user: {
           first_name: personalDetails.first_name,
           last_name: personalDetails.last_name,
-          date_of_birth: dayjs(personalDetails.date_of_birth),
+          date_of_birth: dayjs
+            .utc(personalDetails.date_of_birth, personalDetails.date_format)
+            .toISOString(),
           phone: personalDetails.phone_number,
           personal_email_id: personalDetails.email_id,
           social_accounts: {
@@ -253,52 +262,93 @@ const EmploymentDetails = () => {
 
   return (
     <Fragment>
-      <div className="flex items-center justify-between bg-miru-han-purple-1000 px-10 py-4">
-        <h1 className="text-2xl font-bold text-white">Personal Details</h1>
-        <div>
-          <button
-            className="mx-1 cursor-pointer rounded-md border border-white bg-miru-han-purple-1000 px-3 py-2 font-bold text-white	"
-            data-cy="update-profile"
-            onClick={handleCancelDetails} // eslint-disable-line  @typescript-eslint/no-empty-function
-          >
-            Cancel
-          </button>
-          <button
-            className="mx-1 cursor-pointer rounded-md border bg-white px-3 py-2 font-bold text-miru-han-purple-1000"
-            data-cy="update-profile"
-            onClick={handleUpdateDetails}
-          >
-            Update
-          </button>
-        </div>
-      </div>
-      {isLoading ? (
-        <div className="flex min-h-70v items-center justify-center">
-          <Loader />
-        </div>
-      ) : (
-        <StaticPage
-          addrType={addrType}
-          addressOptions={addressOptions}
-          countries={countries}
-          currentCountryDetails={currentCountryDetails}
-          errDetails={errDetails}
-          handleDatePicker={handleDatePicker}
-          handleOnChangeAddrType={handleOnChangeAddrType}
-          handleOnChangeCity={handleOnChangeCity}
-          handleOnChangeCountry={handleOnChangeCountry}
-          handleOnChangeState={handleOnChangeState}
-          handlePhoneNumberChange={handlePhoneNumberChange}
-          personalDetails={personalDetails}
-          promiseOptions={promiseOptions}
-          setShowDatePicker={setShowDatePicker}
-          showDatePicker={showDatePicker}
-          updateBasicDetails={updateBasicDetails}
-          updatedStates={updatedStates}
-          wrapperRef={wrapperRef}
-        />
+      {isDesktop && (
+        <Fragment>
+          <div className="flex items-center justify-between bg-miru-han-purple-1000 px-10 py-4">
+            <h1 className="text-2xl font-bold text-white">Personal Details</h1>
+            <div>
+              <button
+                className="mx-1 cursor-pointer rounded-md border border-white bg-miru-han-purple-1000 px-3 py-2 font-bold text-white	"
+                data-cy="update-profile"
+                onClick={handleCancelDetails} // eslint-disable-line  @typescript-eslint/no-empty-function
+              >
+                Cancel
+              </button>
+              <button
+                className="mx-1 cursor-pointer rounded-md border bg-white px-3 py-2 font-bold text-miru-han-purple-1000"
+                data-cy="update-profile"
+                onClick={handleUpdateDetails}
+              >
+                Update
+              </button>
+            </div>
+          </div>
+          {isLoading ? (
+            <div className="flex min-h-70v items-center justify-center">
+              <Loader />
+            </div>
+          ) : (
+            <StaticPage
+              addrType={addrType}
+              addressOptions={addressOptions}
+              countries={countries}
+              currentCountryDetails={currentCountryDetails}
+              errDetails={errDetails}
+              handleDatePicker={handleDatePicker}
+              handleOnChangeAddrType={handleOnChangeAddrType}
+              handleOnChangeCity={handleOnChangeCity}
+              handleOnChangeCountry={handleOnChangeCountry}
+              handleOnChangeState={handleOnChangeState}
+              handlePhoneNumberChange={handlePhoneNumberChange}
+              personalDetails={personalDetails}
+              promiseOptions={promiseOptions}
+              setShowDatePicker={setShowDatePicker}
+              showDatePicker={showDatePicker}
+              updateBasicDetails={updateBasicDetails}
+              updatedStates={updatedStates}
+              wrapperRef={wrapperRef}
+            />
+          )}
+        </Fragment>
+      )}
+      {!isDesktop && (
+        <Fragment>
+          <MobileDetailsHeader
+            href={`/team/${memberId}/details`}
+            title="Personal Details"
+          />
+          {isLoading ? (
+            <div className="flex min-h-70v items-center justify-center">
+              <Loader />
+            </div>
+          ) : (
+            <MobileEditPage
+              addrType={addrType}
+              addressOptions={addressOptions}
+              countries={countries}
+              currentCountryDetails={currentCountryDetails}
+              errDetails={errDetails}
+              handleCancelDetails={handleCancelDetails}
+              handleDatePicker={handleDatePicker}
+              handleOnChangeAddrType={handleOnChangeAddrType}
+              handleOnChangeCity={handleOnChangeCity}
+              handleOnChangeCountry={handleOnChangeCountry}
+              handleOnChangeState={handleOnChangeState}
+              handlePhoneNumberChange={handlePhoneNumberChange}
+              handleUpdateDetails={handleUpdateDetails}
+              personalDetails={personalDetails}
+              promiseOptions={promiseOptions}
+              setShowDatePicker={setShowDatePicker}
+              showDatePicker={showDatePicker}
+              updateBasicDetails={updateBasicDetails}
+              updatedStates={updatedStates}
+              wrapperRef={wrapperRef}
+            />
+          )}
+        </Fragment>
       )}
     </Fragment>
   );
 };
+
 export default EmploymentDetails;
