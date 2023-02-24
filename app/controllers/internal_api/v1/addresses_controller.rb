@@ -5,17 +5,17 @@ class InternalApi::V1::AddressesController < InternalApi::V1::ApplicationControl
 
   def index
     authorize @addressable, policy_class: AddressPolicy
-    addresses =  params[:company_id] ?  [@addressable.address] : @addressable.addresses
+    addresses = params[:company_id] ? [@addressable.address] : @addressable.addresses
     render :index, locals: { addresses: }, status: :ok
  end
 
   def create
     authorize @addressable, policy_class: AddressPolicy
     address = if params[:company_id]
-                @addressable.create_address!(address_params)
-              elsif params[:user_id]
-                @addressable.addresses.create!(address_params)
-             end
+      @addressable.create_address!(address_params)
+    elsif params[:user_id]
+      @addressable.addresses.create!(address_params)
+    end
     render :create, locals: { address: }, status: :ok
  end
 

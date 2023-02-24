@@ -9,8 +9,8 @@ def copy_address_into_address_table
   Company.find_each do |company|
     address_record = company.address
     unless address_record.present?
-        address = company.build_address(address_line_1: company&.old_address, city: "", state: "", country: "", pin: "")
-        address.save(validate: false)
+      address = company.build_address(address_line_1: company&.old_address, city: "", state: "", country: "", pin: "")
+      address.save(validate: false)
     end
   end
 end
