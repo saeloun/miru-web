@@ -14,6 +14,7 @@ const App = props => {
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
   const [selectedTab, setSelectedTab] = useState(null);
+
   useEffect(() => {
     if (document.location.pathname == Paths.AUTHORIZATION) {
       document.location.assign(miruApp.url);
