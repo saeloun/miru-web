@@ -1,11 +1,15 @@
+/* eslint-disable import/exports-last */
 import React from "react";
 
 import Select from "react-select";
 
-import { customErrStyles, customStyles } from "./CustomStyle";
-import { CustomValueContainer } from "./CustomValueContainer";
+import {
+  customErrStyles,
+  customStyles,
+  CustomValueContainer,
+} from "common/CustomReactSelectStyle";
 
-const CustomReactSelect = ({
+export const CustomReactSelect = ({
   classNamePrefix,
   options,
   label,
