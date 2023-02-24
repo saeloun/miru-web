@@ -19,7 +19,7 @@ RSpec.describe "Companies#create", type: :request do
           :post, company_path, params: {
             company: {
               name: "Test Company",
-              address: "test address",
+              old_address: "test address",
               business_phone: "Test phone",
               country: "India",
               timezone: "IN",
@@ -86,7 +86,7 @@ RSpec.describe "Companies#create", type: :request do
           :post, company_path, params: {
             company: {
               name: "Test Company",
-              address: "test address",
+              old_address: "test address",
               business_phone: "Test phone",
               country: "India",
               timezone: "IN",
@@ -124,7 +124,7 @@ RSpec.describe "Companies#create", type: :request do
             :post, company_path, params: {
               company: {
                 name: "Test Company",
-                address: "test address",
+                old_address: "test address",
                 business_phone: "Test phone",
                 country: "India",
                 timezone: "IN",
@@ -185,7 +185,7 @@ RSpec.describe "Companies#create", type: :request do
         :post, company_path, params: {
           company: {
             name: "Test Company",
-            address: "test address",
+            old_address: "test address",
             business_phone: "Test phone",
             country: "India",
             timezone: "IN",
