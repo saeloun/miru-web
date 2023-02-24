@@ -34,11 +34,42 @@ class Expense < ApplicationRecord
       :business
   ]
 
-  has_many_attached :receipt
+  has_many_attached :receipts
   belongs_to :company
   belongs_to :expense_category
   belongs_to :vendor, optional: true
 
   validates :date, presence: true
   validates :amount, numericality: { greater_than: 0 }
+
+  searchkick filterable: [ :amount, :date, :expense_type, :category_id, :vendor_id, :company_id],
+    word_start: [ :category_name, :vendor_name, :description]
+
+  def search_data
+    {
+      id: id.to_i,
+      amount:,
+      date: date.to_time,
+      description:,
+      expense_type:,
+      category_name: expense_category.name,
+      category_id: expense_category_id,
+      vendor_name: vendor&.name,
+      vendor_id:,
+      company_id: company.id,
+      created_at:
+    }
+  end
+
+  def formatted_date
+    CompanyDateFormattingService.new(date, company:).process
+  end
+
+  def attached_receipts_urls
+    return [] if !receipts.attached?
+
+    receipts.includes(:blob).references(:blob).order(:filename).map do |image|
+      Rails.application.routes.url_helpers.polymorphic_url(image, only_path: true)
+    end
+  end
 end

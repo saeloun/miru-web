@@ -29,9 +29,13 @@ const TeamDetails = () => {
       }}
     >
       <Header />
-      <div className="mt-6 mb-10 flex">
-        <SideNav />
-        <OutletWrapper />
+      <div className="mt-6 mb-10 grid grid-cols-12 gap-11">
+        <div className="col-span-3">
+          <SideNav />
+        </div>
+        <div className="col-span-9">
+          <OutletWrapper />
+        </div>
       </div>
     </TeamDetailsContext.Provider>
   );
