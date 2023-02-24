@@ -117,7 +117,7 @@ class Client < ApplicationRecord
     {
       name:,
       paid_amount: status_and_amount["paid"],
-      unpaid_amount: status_and_amount["sent"] + status_and_amount["viewed"],
+      outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
       overdue_amount: status_and_amount["overdue"]
     }
   end
