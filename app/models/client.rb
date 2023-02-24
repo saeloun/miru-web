@@ -33,7 +33,7 @@ class Client < ApplicationRecord
   has_many :projects
   has_many :timesheet_entries, through: :projects
   has_many :invoices, dependent: :destroy
-  has_one  :address, as: :addressable, dependent: :destroy
+  has_one :address, as: :addressable, dependent: :destroy
   has_one_attached :logo
   belongs_to :company
 
@@ -72,7 +72,7 @@ class Client < ApplicationRecord
       name:,
       email:,
       phone:,
-      address: address,
+      address:,
       logo: logo_url,
       minutes_spent: total_hours_logged(time_frame)
     }
@@ -143,7 +143,7 @@ class Client < ApplicationRecord
   end
 
   def attributes_blank?(attributes)
-    attributes.except('id, address_line_2').values.all?(&:blank?)
+    attributes.except("id, address_line_2").values.all?(&:blank?)
   end
 
   private

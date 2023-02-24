@@ -36,7 +36,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
             email: "test@client.com",
             description: "Rspec Test",
             phone: "7777777777",
-            address_attributes:  {
+            address_attributes: {
               address_line_1: "Somewhere on Earth",
               city: "Brooklyn",
               state: "NY",
@@ -55,7 +55,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
             email: "test@client.com",
             description: "Rspec Test",
             phone: "7777777777",
-            address_attributes:  {
+            address_attributes: {
               city: "Brooklyn",
               state: "NY",
               country: "US",

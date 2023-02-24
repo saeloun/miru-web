@@ -17,7 +17,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     client = Client.create!(client_params)
 
     if client
-      render :create, locals: { client: client, address: client.address }
+      render :create, locals: { client:, address: client.address }
     end
   end
 
@@ -63,7 +63,8 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     end
 
     def client_params
-      params.require(:client).permit(:name, :email, :phone, :logo,
+      params.require(:client).permit(
+        :name, :email, :phone, :logo,
         address_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin]
       ).tap do |client_params|
         client_params[:company_id] = current_company.id
