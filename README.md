@@ -41,7 +41,7 @@ git clone https://github.com/saeloun/miru-web.git
 rvm install $(cat .ruby-version)
 ```
 
-4. Install Node 16.4.2(can be skipped if you followed the tip mentioned in (2)
+4. Install Node 18.14.2(can be skipped if you followed the tip mentioned in (2)
    above)
 
 ```
