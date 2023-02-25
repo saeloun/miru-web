@@ -1,4 +1,4 @@
-export const customErrStyles = {
+export const customErrStyles = isDesktopView => ({
   control: provided => ({
     ...provided,
     backgroundColor: "#FFFFFF",
@@ -29,4 +29,9 @@ export const customErrStyles = {
     ...base,
     color: "#5B34EA", // Custom colour
   }),
-};
+  singleValue: base => ({
+    ...base,
+    fontWeight: 500,
+    fontSize: isDesktopView ? 16 : 14,
+  }),
+});
