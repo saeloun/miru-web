@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class MiruWebSchema < GraphQL::Schema
-  mutation(Types::MutationType)
   query(Types::QueryType)
 
   # For batch-loading (see https://graphql-ruby.org/dataloader/overview.html)
