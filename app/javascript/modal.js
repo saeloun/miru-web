@@ -1,7 +1,7 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   const all_modals = ["main-modal", "another-modal"];
   all_modals.forEach(modal => {
-    const modalSelected = document.querySelector("." + modal);
+    const modalSelected = document.querySelector(`.${modal}`);
     if (modalSelected === undefined || modalSelected === null) return;
 
     modalSelected.classList.remove("fadeIn");
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   const modalClose = modal => {
-    const modalToClose = document.querySelector("." + modal);
+    const modalToClose = document.querySelector(`.${modal}`);
     modalToClose.classList.remove("fadeIn");
     modalToClose.classList.add("fadeOut");
     setTimeout(() => {
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   const openModal = modal => {
-    const modalToOpen = document.querySelector("." + modal);
+    const modalToOpen = document.querySelector(`.${modal}`);
     modalToOpen.classList.remove("fadeOut");
     modalToOpen.classList.add("fadeIn");
     modalToOpen.style.display = "flex";
@@ -34,30 +34,42 @@ document.addEventListener("DOMContentLoaded", function () {
   const newUserBtn = document.querySelector(
     'a[data-team-element="new-user-btn"]'
   );
+
   const inviteModalClose = document.querySelector(
     'div[data-team-element="invite-modal-close"]'
   );
+
   const inviteModalCloseBtn = document.querySelector(
     'button[data-team-element="invite-modal-close-btn"]'
   );
+
   const teamModalClose = document.querySelector(
     'div[data-team-element="modal-close"]'
   );
+
   const editMembers = document.querySelectorAll(
     'img[data-team-element="edit-member"]'
   );
+
   const editInvitations = document.querySelectorAll(
     'img[data-invitation-element="edit-invitation"]'
   );
 
-  if (newUserBtn)
+  if (newUserBtn) {
     newUserBtn.addEventListener("click", () => openModal("main-modal"));
-  if (inviteModalClose)
+  }
+
+  if (inviteModalClose) {
     inviteModalClose.addEventListener("click", () => modalClose("main-modal"));
-  if (inviteModalCloseBtn)
+  }
+
+  if (inviteModalCloseBtn) {
     inviteModalCloseBtn.addEventListener("click", () => ClearFields());
-  if (teamModalClose)
+  }
+
+  if (teamModalClose) {
     teamModalClose.addEventListener("click", () => modalClose("another-modal"));
+  }
 
   editMembers.forEach(editMember => {
     editMember.addEventListener("click", () => openModal("another-modal"));
