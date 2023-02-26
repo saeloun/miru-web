@@ -223,6 +223,9 @@ gem "strong_migrations"
 gem "sentry-rails"
 gem "sentry-ruby"
 
+# https://github.com/grosser/parallel_tests
+gem "parallel_tests", group: [:development, :test]
+
 # https://graphql-ruby.org/
 gem "graphiql-rails", group: :development
 gem "graphql"
