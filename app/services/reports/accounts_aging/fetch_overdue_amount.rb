@@ -47,7 +47,9 @@ module Reports::AccountsAging
       end
 
       def clients
-        @_clients ||= current_company.clients.kept.order(name: :asc).uniq
+        @_clients ||= current_company.clients.joins(:projects).where(
+          projects: { billable: true }
+        ).kept.order(name: :asc).uniq
       end
   end
 end
