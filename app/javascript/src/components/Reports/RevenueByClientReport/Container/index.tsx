@@ -20,7 +20,13 @@ const TableHeader = () => (
         className="w-2/5 px-0 py-5 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        UNPAID AMOUNT
+        OVERDUE AMOUNT
+      </th>
+      <th
+        className="w-2/5 px-0 py-5 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
+        scope="col"
+      >
+        OUTSTANDING AMOUNT
       </th>
       <th
         className="w-1/5 px-6 py-5 text-left text-xs font-normal tracking-widest text-miru-dark-purple-600"
@@ -32,7 +38,7 @@ const TableHeader = () => (
         className="w-1/5 py-5 pl-6 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600"
         scope="col"
       >
-        TOTAL AMOUNT
+        TOTAL REVENUE
       </th>
     </tr>
   </thead>
@@ -46,11 +52,11 @@ const Container = () => {
   return (
     <Fragment>
       <TotalHeader
-        firstTitle="TOTAL UNPAID AMOUNT"
+        firstTitle="TOTAL OUTSTANDING AMOUNT"
         secondTitle="TOTAL PAID AMOUNT"
         thirdTitle="TOTAL REVENUE"
         firstAmount={`${currencySymb}${cashFormatter(
-          revenueByClientReport.summary.totalUnpaidAmount
+          revenueByClientReport.summary.totalOutstandingAmount
         )}`}
         secondAmount={`${currencySymb}${cashFormatter(
           revenueByClientReport.summary.totalPaidAmount

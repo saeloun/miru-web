@@ -26,11 +26,11 @@ module Reports::ClientRevenues
 
       def summary
         total_paid_amount = clients.pluck(:paid_amount).sum
-        total_unpaid_amount = clients.pluck(:unpaid_amount).sum
+        total_outstanding_amount = clients.pluck(:outstanding_amount).sum
         {
           total_paid_amount:,
-          total_unpaid_amount:,
-          total_revenue: total_paid_amount + total_unpaid_amount
+          total_outstanding_amount:,
+          total_revenue: total_paid_amount + total_outstanding_amount
         }
       end
 
