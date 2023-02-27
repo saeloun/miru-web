@@ -7,10 +7,13 @@ RSpec.describe "InternalApi::V1::Reports::AccountsAgingController::#index", type
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client1) { create(:client, company:, name: "bob") }
   let!(:client2) { create(:client, company:, name: "ana") }
+  let!(:client3) { create(:client, company:, name: "john") }
 
   context "when user is an admin or owner" do
     before do
       create(:employment, company:, user:)
+      create(:project, billable: true, client: client1)
+      create(:project, billable: true, client: client2)
       user.add_role :admin, company
       sign_in user
       # invoice for client 1 due between 0-30 days
@@ -71,6 +74,26 @@ RSpec.describe "InternalApi::V1::Reports::AccountsAgingController::#index", type
         expect(json_response["report"]["total_amount_overdue"]["sixty_one_to_ninety_days"]).to eq("300.0")
         expect(json_response["report"]["total_amount_overdue"]["ninety_plus_days"]).to eq("400.0")
         expect(json_response["report"]["total_amount_overdue"]["total"]).to eq("1500.0")
+      end
+
+      it "returns only clients having billable projects" do
+        expect(json_response["report"]["clients"].pluck("id")).to include(client1.id, client2.id)
+      end
+
+      it "does not return clients having no billable projects" do
+        resp = {
+          "amount_overdue" =>
+          {
+            "ninety_plus_days" => "0",
+            "sixty_one_to_ninety_days" => "0",
+            "thirty_one_to_sixty_days" => 0,
+            "total" => "0",
+            "zero_to_thirty_days" => 0
+          },
+          "id" => client3.id,
+          "name" => client3.name
+        }
+        expect(json_response["report"]["clients"]).not_to include(resp)
       end
     end
   end
