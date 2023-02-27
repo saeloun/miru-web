@@ -24,7 +24,7 @@ RSpec.describe "InternalApi::V1::TimeTracking#index", type: :request do
       create(:employment, company: company1, user:)
       user.add_role :admin, company1
       sign_in user
-      send_request :get, internal_api_v1_time_tracking_index_path
+      send_request :get, internal_api_v1_time_tracking_index_path, headers: auth_headers(user)
     end
 
     it "returns success" do
@@ -52,7 +52,7 @@ RSpec.describe "InternalApi::V1::TimeTracking#index", type: :request do
       create(:employment, company: company1, user:)
       user.add_role :employee, company1
       sign_in user
-      send_request :get, internal_api_v1_time_tracking_index_path
+      send_request :get, internal_api_v1_time_tracking_index_path, headers: auth_headers(user)
     end
 
     it "returns success" do
