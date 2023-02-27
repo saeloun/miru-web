@@ -17,7 +17,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
 
     describe "#destroy" do
       it "updates project successfully" do
-        send_request :delete, internal_api_v1_project_path(id: project.id)
+        send_request :delete, internal_api_v1_project_path(id: project.id), headers: auth_headers(user)
         expect(response).to be_successful
       end
     end
@@ -28,7 +28,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :delete, internal_api_v1_project_path(id: project.id)
+      send_request :delete, internal_api_v1_project_path(id: project.id), headers: auth_headers(user)
     end
 
     it "is not be permitted to destroy an project" do
@@ -41,7 +41,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :delete, internal_api_v1_project_path(id: project.id)
+      send_request :delete, internal_api_v1_project_path(id: project.id), headers: auth_headers(user)
     end
 
     it "is not be permitted to destroy an project" do
@@ -53,7 +53,7 @@ RSpec.describe "InternalApi::V1::Project#update", type: :request do
     it "is not be permitted to update an project" do
       send_request :delete, internal_api_v1_project_path(id: project.id)
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end
