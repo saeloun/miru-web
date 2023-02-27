@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 import dayjs from "dayjs";
 import { lineTotalCalc, minToHHMM } from "helpers";
+import { EmptyStateInvoices } from "miruIcons";
 
 import NewLineItemTableHeader from "./Header";
 
@@ -34,11 +35,13 @@ const NewLineItemTable = ({
   }, []);
 
   return (
-    <>
-      <NewLineItemTableHeader
-        setLineItem={setLineItem}
-        setShowMultilineModal={setMultiLineItemModal}
-      />
+    <div>
+      {filteredLineItems.length > 0 && (
+        <NewLineItemTableHeader
+          setLineItem={setLineItem}
+          setShowMultilineModal={setMultiLineItemModal}
+        />
+      )}
       {loading && (
         <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
           Loading..
@@ -75,12 +78,18 @@ const NewLineItemTable = ({
         </div>
       ) : (
         !loading && (
-          <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
-            No Data Found
-          </p>
+          <div className="mx-auto w-full">
+            <img
+              className="mx-auto mt-10 w-320 object-contain"
+              src={EmptyStateInvoices}
+            />
+            <p className="my-10 text-center font-manrope text-sm font-semibold not-italic leading-5 text-miru-dark-purple-200">
+              There are no unbilled time entries for this client
+            </p>
+          </div>
         )
       )}
-    </>
+    </div>
   );
 };
 
