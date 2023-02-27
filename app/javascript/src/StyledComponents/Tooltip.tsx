@@ -8,6 +8,7 @@ type TooltipProps = {
   show?: boolean;
   delay?: number;
   className?: string;
+  wrapperClassName?: string;
   children?: object;
 };
 
@@ -17,6 +18,7 @@ const Tooltip = ({
   delay = 400,
   className,
   show = true,
+  wrapperClassName = "relative block min-w-0",
   ...restprops
 }: TooltipProps) => {
   let timeout;
@@ -39,7 +41,7 @@ const Tooltip = ({
 
   return (
     <div
-      className={classnames("relative block min-w-0")}
+      className={classnames(wrapperClassName)}
       onMouseEnter={showTip}
       onMouseLeave={hideTip}
     >

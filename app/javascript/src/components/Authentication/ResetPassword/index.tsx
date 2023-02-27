@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
 import Logger from "js-logger";
@@ -6,7 +6,6 @@ import { MiruLogoSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
-import { registerIntercepts, setAuthHeaders } from "apis/axios";
 import { Paths, TOASTER_DURATION } from "constants/index";
 
 import {
@@ -22,11 +21,6 @@ interface ResetPasswordFormValues {
 const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const searchParams = new URLSearchParams(document.location.search);
-
-  useEffect(() => {
-    setAuthHeaders();
-    registerIntercepts();
-  }, []);
 
   const handleResetPasswordFormSubmit = async values => {
     const { password, confirm_password } = values;

@@ -25,7 +25,7 @@ const FeaturePreviews = () => (
         {carouselItems?.map((feature, i) => (
           <div key={i}>
             <img
-              className="h-300 w-480 mb-4 object-contain"
+              className="h-300 mb-4 w-480 object-contain"
               src={feature.image}
               style={{ boxShadow: "0px 0px 32px rgba(0, 0, 0, 0.1)" }}
             />

@@ -113,6 +113,28 @@ add `EMAIL_DELIVERY_METHOD='letter_opener_web'` to `.env`)
 2. Run `bin/rails db:migrate RAILS_ENV=test`
 3. Run `bundle exec rspec`
 
+### Running Tests in Parallel
+
+Change `database.yml` to embed `TEST_ENV_NUMBER`
+
+```yaml
+test:
+  database: miru_web_test_<%= ENV['TEST_ENV_NUMBER'] %>
+```
+
+```ruby
+# Setup parallel specs
+bundle exec rake parallel:create
+
+# Copy Schema for new changes on branches
+bundle exec rake parallel:prepare
+
+# Run migrations if needed 
+bundle exec rake parallel:migrate
+
+# Run all specs in parallel
+RAILS_ENV=test bundle exec rake parallel:spec
+```
 #### Coverage
 
 1. Run `COVERAGE=true bundle exec rspec`
