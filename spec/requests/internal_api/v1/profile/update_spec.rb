@@ -14,7 +14,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
 
     it "updates user data without password" do
       params = { user: { first_name: "Sam", last_name: "Smith" } }
-      send_request(:put, internal_api_v1_profile_path, params:)
+      send_request(:put, internal_api_v1_profile_path, params:, headers: auth_headers(user))
       expect(response).to have_http_status(:ok)
       expect(user.first_name).to eq("Sam")
       expect(user.last_name).to eq("Smith")
@@ -28,7 +28,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
           password_confirmation: "123456"
         }
       }
-      send_request(:put, internal_api_v1_profile_path, params:)
+      send_request(:put, internal_api_v1_profile_path, params:, headers: auth_headers(user))
       expect(response).to have_http_status(:ok)
       expect(user.first_name).to eq("Example")
       expect(user.last_name).to eq("User")
@@ -41,7 +41,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
           first_name: "", last_name: "User"
         }
       }
-      send_request(:put, internal_api_v1_profile_path, params:)
+      send_request(:put, internal_api_v1_profile_path, params:, headers: auth_headers(user))
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json_response["errors"]).to eq(
         ["First name can't be blank",
@@ -54,7 +54,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
           first_name: "Example", last_name: ""
         }
       }
-      send_request(:put, internal_api_v1_profile_path, params:)
+      send_request(:put, internal_api_v1_profile_path, params:, headers: auth_headers(user))
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json_response["errors"]).to eq(
         ["Last name can't be blank",
@@ -67,7 +67,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
           first_name: "@#", last_name: "@"
         }
       }
-      send_request(:put, internal_api_v1_profile_path, params:)
+      send_request(:put, internal_api_v1_profile_path, params:, headers: auth_headers(user))
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json_response["errors"]).to eq(
         ["First name must only contain letters or spaces", "Last name must only contain letters or spaces"])
@@ -80,7 +80,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
           password_confirmation: "123456"
         }
       }
-      send_request(:put, internal_api_v1_profile_path, params:)
+      send_request(:put, internal_api_v1_profile_path, params:, headers: auth_headers(user))
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json_response["errors"]).to eq(["Current password is invalid"])
     end
@@ -92,7 +92,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
           password_confirmation: "123098"
         }
       }
-      send_request(:put, internal_api_v1_profile_path, params:)
+      send_request(:put, internal_api_v1_profile_path, params:, headers: auth_headers(user))
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json_response["errors"]).to eq(["Password confirmation doesn't match with new password"])
     end
@@ -104,7 +104,7 @@ RSpec.describe "InternalApi::V1::Profile#update", type: :request do
           password_confirmation: "12345"
         }
       }
-      send_request(:put, internal_api_v1_profile_path, params:)
+      send_request(:put, internal_api_v1_profile_path, params:, headers: auth_headers(user))
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json_response["errors"]).to eq(["Password must be at least 6 characters long"])
     end
