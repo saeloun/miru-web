@@ -4,13 +4,14 @@ json.key_format! camelize: :lower
 json.deep_format_keys!
 json.reports reports do |grouped_report|
   json.label grouped_report[:label]
+  json.client_logo grouped_report[:entries].first.client.logo_url
+
   json.entries grouped_report[:entries] do |report|
     json.id report.id
     json.note report.note
     json.project report.project_name
     json.project_id report.project_id
     json.client report.client_name
-    json.client_logo report.client.logo_url
     json.duration report.duration
     json.work_date report.formatted_work_date
     json.bill_status report.bill_status

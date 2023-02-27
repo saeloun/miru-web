@@ -51,6 +51,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
   };
 
   const getTableLogo = (groupedBy: string | null, client_logo: string) => {
+    console.log("Group_by", client_logo)
     const logo = {
       client: <Avatar classNameImg="mr-2 lg:mr-6" url={client_logo} />,
       project: <ClientsIcon className="m-0 object-contain" size={40} />,
@@ -87,9 +88,10 @@ const Container = ({ selectedFilter }: ContainerProps) => {
               {report.label !== "" && (
                 <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-5">
                   <div className="flex items-center">
+                    {console.log(report)}
                     {getTableLogo(
                       selectedFilter?.groupBy?.value || null,
-                      report.client_logo
+                      report.clientLogo
                     )}
                     <h1 className="font-manrope text-xl font-bold text-miru-han-purple-1000">
                       {report.label}

@@ -36,7 +36,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(reports["label"]).to eq("")
         expect(reports["entries"].size).to eq(1)
         expect(reports["entries"].first["id"]).to eq(@timesheet_entry1.id)
-        expect(reports["entries"].first["clientLogo"]).to eq(@timesheet_entry1.client.logo_url)
+        expect(reports["clientLogo"]).to eq(@timesheet_entry1.client.logo_url)
 
         filter_options = {
           clients: [{ "label": client.name, "value": client.id }],
