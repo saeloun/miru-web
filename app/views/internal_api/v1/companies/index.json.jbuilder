@@ -13,7 +13,7 @@ json.company_details do
   json.date_format current_company.date_format
   json.logo_url
   json.address do
-    json.partial! "internal_api/v1/partial/address", locals: { address: address }
+    json.partial! "internal_api/v1/partial/address", locals: { address: }
   end
 end
 
