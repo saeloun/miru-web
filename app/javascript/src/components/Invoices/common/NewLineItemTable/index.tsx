@@ -35,7 +35,10 @@ const NewLineItemTable = ({
 
   return (
     <>
-      <NewLineItemTableHeader setShowMultilineModal={setMultiLineItemModal} />
+      <NewLineItemTableHeader
+        setLineItem={setLineItem}
+        setShowMultilineModal={setMultiLineItemModal}
+      />
       {loading && (
         <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000 md:h-50">
           Loading..
