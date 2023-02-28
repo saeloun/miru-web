@@ -17,7 +17,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry::BulkActionController#destroy", 
       user.add_role :admin, company
       sign_in user
       params = { source: { ids: [timesheet_entry1.id, timesheet_entry2.id] } }
-      send_request :delete, internal_api_v1_bulk_action_path, params:
+      send_request :delete, internal_api_v1_bulk_action_path, params:, headers: auth_headers(user)
     end
 
     it "deletes the timesheet entries for the selected ids" do

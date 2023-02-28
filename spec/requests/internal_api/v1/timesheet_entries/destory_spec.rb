@@ -17,7 +17,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
-      send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
+      send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user)
     end
 
     it "they should be able to destroy the record successfully" do
@@ -34,7 +34,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
+      send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user)
     end
 
     it "they should be able to destroy the record successfully" do
@@ -51,7 +51,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
       create(:employment, company:, user:)
       user2.add_role :employee, company
       sign_in user2
-      send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
+      send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user2)
     end
 
     it "they should not be able to delete the record" do
@@ -67,7 +67,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#destroy", type: :request do
     it "user will be redirected to sign in path" do
       send_request :delete, internal_api_v1_timesheet_entry_path(timesheet_entry)
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to match("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to match(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end

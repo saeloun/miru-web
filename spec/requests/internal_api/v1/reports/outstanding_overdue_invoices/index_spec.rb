@@ -83,7 +83,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
                         }
                       ].sort_by { |k| Date.strptime(k[:issueDate], "%m.%d.%Y") }.reverse
            }]
-        get internal_api_v1_reports_outstanding_overdue_invoices_path
+        get internal_api_v1_reports_outstanding_overdue_invoices_path, headers: auth_headers(user)
       end
 
       it "returns the 200 http response" do
@@ -136,7 +136,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path
+      send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path, headers: auth_headers(user)
     end
 
     it "is not permitted to view outstanding and overdue invoices report" do
@@ -149,7 +149,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path
+      send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path, headers: auth_headers(user)
     end
 
     it "is not permitted to view outstanding and overdue invoices report" do
@@ -161,7 +161,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
     it "is not permitted to view outstanding and overdue invoices report" do
       send_request :get, internal_api_v1_reports_outstanding_overdue_invoices_path
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end

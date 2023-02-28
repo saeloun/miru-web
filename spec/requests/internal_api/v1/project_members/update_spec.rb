@@ -30,7 +30,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
                             { id: user2.id, hourly_rate: 20 }]
           }
         }
-        send_request(:put, internal_api_v1_project_member_path(project.id), params:)
+        send_request(:put, internal_api_v1_project_member_path(project.id), params:, headers: auth_headers(user1))
         expect(response).to have_http_status(:ok)
         db_added_users = ProjectMember
           .kept
@@ -50,7 +50,9 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
 
       it "updates the hourly rate of the project member" do
         edit_member_params = { members: { updated_members: [{ id: user1.id, hourly_rate: 100 }] } }
-        send_request(:put, internal_api_v1_project_member_path(project.id), params: edit_member_params)
+        send_request(
+          :put, internal_api_v1_project_member_path(project.id), params: edit_member_params,
+          headers: auth_headers(user1))
 
         expect(response).to have_http_status(:ok)
 
@@ -72,7 +74,9 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
 
       it "discard the respective project_members" do
         remove_member_params = { members: { removed_member_ids: [user1.id] } }
-        send_request(:put, internal_api_v1_project_member_path(project.id), params: remove_member_params)
+        send_request(
+          :put, internal_api_v1_project_member_path(project.id), params: remove_member_params,
+          headers: auth_headers(user1))
 
         expect(response).to have_http_status(:ok)
         expect(ProjectMember.where(project_id: project.id, user_id: user1.id).first.discarded_at).to be_present
@@ -83,17 +87,19 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
       before do
         create(:project_member, project_id: project.id, user_id: user1.id, hourly_rate: 10)
         create(:project_member, project_id: project.id, user_id: user2.id, hourly_rate: 20)
-      end
-
-      it "creates, updates and destroyes the respective project_members associated wih the project" do
-        update_member_params = {
+        @update_member_params = {
           members: {
             added_members: [{ id: user3.id, hourly_rate: 30 }],
             updated_members: [{ id: user2.id, hourly_rate: 100 }],
             removed_member_ids: [user1.id]
           }
         }
-        send_request(:put, internal_api_v1_project_member_path(project.id), params: update_member_params)
+      end
+
+      it "creates, updates and destroyes the respective project_members associated wih the project" do
+        send_request(
+          :put, internal_api_v1_project_member_path(project.id), params: @update_member_params,
+          headers: auth_headers(user1))
 
         expect(response).to have_http_status(:ok)
 
@@ -127,7 +133,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
             removed_member_ids: [user1.id]
           }
         }
-        send_request(:put, internal_api_v1_project_member_path(project.id), params:)
+        send_request(:put, internal_api_v1_project_member_path(project.id), params:, headers: auth_headers(user1))
 
         expect(response).to have_http_status(:forbidden)
         expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
@@ -155,7 +161,7 @@ RSpec.describe "InternalApi::V1::Employments#index", type: :request do
             removed_member_ids: [user1.id]
           }
         }
-        send_request(:put, internal_api_v1_project_member_path(project.id), params:)
+        send_request(:put, internal_api_v1_project_member_path(project.id), params:, headers: auth_headers(user1))
 
         expect(response).to have_http_status(:forbidden)
         expect(json_response["errors"]).to eq("You are not authorized to perform this action.")

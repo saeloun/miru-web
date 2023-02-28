@@ -27,7 +27,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#index", type: :request do
       send_request :get, internal_api_v1_timesheet_entry_index_path, params: {
         from: Time.now - 35.days,
         to: Time.now - 20.days
-      }
+      }, headers: auth_headers(user)
     end
 
     it "they should be able to access records successfully" do
@@ -53,7 +53,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#index", type: :request do
       send_request :get, internal_api_v1_timesheet_entry_index_path, params: {
         from: Time.now - 35.days,
         to: Time.now - 20.days
-      }
+      }, headers: auth_headers(user)
     end
 
     it "they should be able to access records successfully" do
@@ -75,7 +75,7 @@ RSpec.describe "InternalApi::V1::TimesheetEntry#index", type: :request do
     it "user will be redirected to sign in path" do
       send_request :get, internal_api_v1_timesheet_entry_index_path
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end
