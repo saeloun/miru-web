@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import dayjs from "dayjs";
 import { lineTotalCalc, minToHHMM } from "helpers";
-import { EmptyStateInvoices } from "miruIcons";
+import { EmptyState } from "miruIcons";
 
 import NewLineItemTableHeader from "./Header";
 
@@ -76,7 +76,7 @@ const NewLineItemTable = ({
           <div className="mx-auto w-full">
             <img
               className="mx-auto mt-10 w-320 object-contain"
-              src={EmptyStateInvoices}
+              src={EmptyState}
             />
             <p className="my-10 text-center font-manrope text-sm font-semibold not-italic leading-5 text-miru-dark-purple-200">
               There are no unbilled time entries for this client
