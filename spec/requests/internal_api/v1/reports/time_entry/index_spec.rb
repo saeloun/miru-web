@@ -27,7 +27,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       before do
         @timesheet_entry1 = create(:timesheet_entry, project:)
         TimesheetEntry.search_index.refresh
-        get internal_api_v1_reports_time_entries_path
+        get internal_api_v1_reports_time_entries_path, headers: auth_headers(user)
       end
 
       it "returns the time entry report" do
@@ -57,7 +57,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       it "returns the time entry reports in given date range in descending order" do
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           date_range: "this_week"
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
@@ -79,7 +79,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       it "returns the time entry reports with given single status value" do
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           status: ["unbilled"]
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
@@ -91,7 +91,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       it "returns the time entry reports with given multiple status values" do
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           status: ["unbilled", "non_billable"]
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
@@ -113,7 +113,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       it "returns the time entry reports with given single client value" do
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           client: [client.id]
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
@@ -125,7 +125,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       it "returns the time entry reports with given multiple client values" do
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           client: [client.id, client2.id]
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
@@ -150,7 +150,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       it "returns the time entry reports with given single team member value" do
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           team_member: [@user1.id]
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
@@ -162,7 +162,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       it "returns the time entry reports with given multiple team members values" do
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           team_member: [@user1.id, @user2.id]
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
@@ -221,7 +221,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
           status: ["unbilled"],
           team_member: [@user1.id],
           client: [client.id]
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
@@ -253,7 +253,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       it "returns the time entry reports grouped by team members" do
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           group_by: "team_member"
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
         expect(reports.first["label"]).to eq(@user1.full_name)
@@ -275,7 +275,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       it "returns the time entry reports grouped by clients" do
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           group_by: "client"
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
         expect(reports.first["label"]).to eq(client.name)
@@ -297,7 +297,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       it "returns the time entry reports grouped by projects" do
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           group_by: "project"
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
         expect(reports.first["label"]).to eq(project.name)
@@ -323,7 +323,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       it "returns the time entry reports grouped by week" do
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           group_by: "week"
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
         expect(reports.first["label"]).to eq(generate_label(@date1))
@@ -348,7 +348,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           group_by: "team_member",
           team_member: [@user1.id, @user2.id]
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
         expect(reports.first["label"]).to eq(@user1.full_name)
@@ -372,7 +372,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           group_by: "client",
           client: [client.id, client2.id]
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
         expect(reports.first["label"]).to eq(client.name)
@@ -394,7 +394,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           group_by: "project",
           client: [client.id, client2.id]
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
         expect(reports.first["label"]).to eq(project.name)
@@ -422,7 +422,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         send_request :get, internal_api_v1_reports_time_entries_path, params: {
           group_by: "week",
           date_range: "last_month"
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
         expect(reports.first["label"]).to eq(generate_label(@date1))
@@ -436,7 +436,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_reports_time_entries_path
+      send_request :get, internal_api_v1_reports_time_entries_path, headers: auth_headers(user)
     end
 
     it "is not permitted to view time entry report" do
@@ -449,7 +449,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :get, internal_api_v1_reports_time_entries_path
+      send_request :get, internal_api_v1_reports_time_entries_path, headers: auth_headers(user)
     end
 
     it "is not permitted to view time entry report" do
@@ -461,7 +461,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
     it "is not permitted to view time entry report" do
       send_request :get, internal_api_v1_reports_time_entries_path
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end
