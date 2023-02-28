@@ -2,6 +2,10 @@
 
 namespace :internal_api, defaults: { format: "json" } do
   namespace :v1 do
+    devise_scope :user do
+      post "signup", to: "registrations#create", as: "signup"
+    end
+
     resources :clients, only: [:index, :update, :destroy, :show, :create]
     resources :project, only: [:index]
     resources :timesheet_entry do
