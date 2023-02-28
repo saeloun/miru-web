@@ -2,12 +2,15 @@
 
 namespace :internal_api, defaults: { format: "json" } do
   namespace :v1 do
-    devise_scope :user do
-      post "login", to: "sessions#create", as: "login"
-      delete "logout", to: "sessions#destroy", as: "logout"
-      post "signup", to: "registrations#create", as: "signup"
-      post "forgot_password", to: "passwords#create", as: "forgot_password"
-      put "reset_password", to: "passwords#update", as: "reset_password"
+    namespace :users do
+      devise_scope :user do
+        post "login", to: "sessions#create", as: "login"
+        delete "logout", to: "sessions#destroy", as: "logout"
+        post "signup", to: "registrations#create", as: "signup"
+        post "forgot_password", to: "passwords#create", as: "forgot_password"
+        put "reset_password", to: "passwords#update", as: "reset_password"
+      end
+      post "resend", to: "email_confirmations#resend", as: "resend_email_confirmations"
     end
 
     resources :clients, only: [:index, :update, :destroy, :show, :create]
@@ -101,10 +104,6 @@ namespace :internal_api, defaults: { format: "json" } do
 
     resource :profile, only: [:update, :show], controller: "profile" do
       delete "/remove_avatar", to: "profile#remove_avatar"
-    end
-
-    resource :email_confirmation, only: :show do
-      post :resend
     end
 
     resources :vendors, only: [:create]

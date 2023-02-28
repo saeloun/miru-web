@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "EmailConfirmationsController", type: :request do
+RSpec.describe "EmailConfirmations#resend", type: :request do
   let(:user) { create(:user) }
 
   describe "POST #resend" do
@@ -12,7 +12,7 @@ RSpec.describe "EmailConfirmationsController", type: :request do
       end
 
       it "sent confirmation instructions" do
-        post resend_internal_api_v1_email_confirmation_path(email: user.email)
+        post internal_api_v1_users_resend_email_confirmations_path(email: user.email)
         expect(JSON.parse(response.body)).to include("notice" => "A confirmation email has been sent to #{user.email}.")
       end
     end
@@ -23,7 +23,7 @@ RSpec.describe "EmailConfirmationsController", type: :request do
       end
 
       it "redirects to root_path" do
-        post resend_internal_api_v1_email_confirmation_path(email: user.email)
+        post internal_api_v1_users_resend_email_confirmations_path(email: user.email)
 
         expect(response).to redirect_to root_path
       end

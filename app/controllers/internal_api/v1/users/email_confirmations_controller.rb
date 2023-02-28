@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::EmailConfirmationsController < InternalApi::V1::ApplicationController
+class InternalApi::V1::Users::EmailConfirmationsController < InternalApi::V1::ApplicationController
   skip_before_action :authenticate_user_using_x_auth_token
   skip_before_action :authenticate_user!
   skip_after_action :verify_authorized

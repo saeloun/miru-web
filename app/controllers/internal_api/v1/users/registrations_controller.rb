@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::RegistrationsController < Devise::RegistrationsController
+class InternalApi::V1::Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
   def respond_with(user, _opts = {})

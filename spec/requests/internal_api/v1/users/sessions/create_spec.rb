@@ -2,13 +2,13 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Sessions#create", type: :request do
+RSpec.describe "Sessions#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id, password: "welcome") }
 
   context "when logged in with valid email and password" do
     it "logs the user successfully" do
-      send_request :post, internal_api_v1_login_path, params: {
+      send_request :post, internal_api_v1_users_login_path, params: {
         user: {
           email: user.email,
           password: user.password
@@ -21,7 +21,7 @@ RSpec.describe "InternalApi::V1::Sessions#create", type: :request do
 
   context "when logged in with wrong combination of email and password" do
     it "not able to log in" do
-      send_request :post, internal_api_v1_login_path, params: {
+      send_request :post, internal_api_v1_users_login_path, params: {
         user: {
           email: user.email,
           password: user.password + "abc"

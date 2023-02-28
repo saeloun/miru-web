@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Registrations#create", type: :request do
+RSpec.describe "Registrations#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id, password: "welcome") }
 
@@ -19,7 +19,7 @@ RSpec.describe "InternalApi::V1::Registrations#create", type: :request do
     }
 
     it "creates user successfully" do
-      send_request :post, internal_api_v1_signup_path, params: {
+      send_request :post, internal_api_v1_users_signup_path, params: {
         user: valid_user_json
       }
       expect(response).to have_http_status(:ok)
@@ -41,7 +41,7 @@ RSpec.describe "InternalApi::V1::Registrations#create", type: :request do
 }
 
     it "wont create user if email already exists" do
-      send_request :post, internal_api_v1_signup_path, params: {
+      send_request :post, internal_api_v1_users_signup_path, params: {
         user: valid_user_json
       }
       expect(response).to have_http_status(:unprocessable_entity)
@@ -51,7 +51,7 @@ RSpec.describe "InternalApi::V1::Registrations#create", type: :request do
     it "wont create user if password is not matching" do
       valid_user_json["email"] = valid_email
       valid_user_json["password_confirmation"] = "welcome123"
-      send_request :post, internal_api_v1_signup_path, params: {
+      send_request :post, internal_api_v1_users_signup_path, params: {
         user: valid_user_json
       }
       expect(response).to have_http_status(:unprocessable_entity)

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Passwords#update", type: :request do
+RSpec.describe "Passwords#update", type: :request do
   let(:user) { create(:user) }
 
   describe "PUT #update" do
@@ -10,7 +10,7 @@ RSpec.describe "InternalApi::V1::Passwords#update", type: :request do
       it "updates user password" do
         user.send_reset_password_instructions
         token = user.send(:set_reset_password_token)
-        send_request :put, internal_api_v1_reset_password_path, params: {
+        send_request :put, internal_api_v1_users_reset_password_path, params: {
           user: {
             reset_password_token: token, password: "newpassword",
             password_confirmation: "newpassword"
@@ -23,7 +23,7 @@ RSpec.describe "InternalApi::V1::Passwords#update", type: :request do
 
     context "with invalid token" do
       it "responds with error message" do
-        send_request :put, internal_api_v1_reset_password_path, params: {
+        send_request :put, internal_api_v1_users_reset_password_path, params: {
           user: {
             reset_password_token: "invalidtoken", password: "newpassword",
             password_confirmation: "newpassword"
@@ -38,7 +38,7 @@ RSpec.describe "InternalApi::V1::Passwords#update", type: :request do
       it "responds with error message" do
         user.send_reset_password_instructions
         token = user.send(:set_reset_password_token)
-        send_request :put, internal_api_v1_reset_password_path, params: {
+        send_request :put, internal_api_v1_users_reset_password_path, params: {
           user: {
             reset_password_token: token, password: "newpassword",
             password_confirmation: "differentpassword"

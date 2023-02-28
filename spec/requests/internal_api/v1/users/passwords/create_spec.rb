@@ -2,13 +2,13 @@
 
 require "rails_helper"
 
-RSpec.describe "InternalApi::V1::Passwords#create", type: :request do
+RSpec.describe "Passwords#create", type: :request do
   let(:user) { create(:user) }
 
   describe "POST #create" do
     context "with valid email" do
       it "sends password reset instructions" do
-        send_request :post, internal_api_v1_forgot_password_path, params: { user: { email: user.email } }
+        send_request :post, internal_api_v1_users_forgot_password_path, params: { user: { email: user.email } }
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to include(
           "notice" => "Instructions for resetting your password have been sent to your email."
@@ -18,7 +18,8 @@ RSpec.describe "InternalApi::V1::Passwords#create", type: :request do
 
     context "with invalid email" do
       it "responds with error message" do
-        send_request :post, internal_api_v1_forgot_password_path, params: { user: { email: "invalid@example.com" } }
+        send_request :post, internal_api_v1_users_forgot_password_path,
+          params: { user: { email: "invalid@example.com" } }
         expect(response).to have_http_status(:unprocessable_entity)
         expect(JSON.parse(response.body)).to include("error" => "Email not found")
       end
