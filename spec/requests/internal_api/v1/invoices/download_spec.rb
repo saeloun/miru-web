@@ -8,7 +8,7 @@ RSpec.describe "InternalApi::V1::Invoices#download", type: :request do
   let!(:client) { create(:client, company:) }
   let!(:invoice) { create(:invoice, client:, company:, status: "sent") }
 
-  subject { send_request :get, download_internal_api_v1_invoice_path(id: invoice.id) }
+  subject { send_request :get, download_internal_api_v1_invoice_path(id: invoice.id), headers: auth_headers(user) }
 
   context "when authenticated" do
     before do
@@ -47,10 +47,10 @@ RSpec.describe "InternalApi::V1::Invoices#download", type: :request do
 
   context "when unauthenticated" do
     context "when request is made to download the Invoice" do
-      it "returns 403 status" do
+      it "returns 401 status" do
         send_request :get, download_internal_api_v1_invoice_path(id: invoice.id)
         expect(response).to have_http_status(:unauthorized)
-        expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+        expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
       end
     end
   end

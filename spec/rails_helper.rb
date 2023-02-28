@@ -82,4 +82,11 @@ RSpec.configure do |config|
       Capybara.server_port = 3000
     end
   end
+
+  def auth_headers(auth_user, options = {})
+    {
+      "X-Auth-Token" => auth_user[:token],
+      "X-Auth-Email" => auth_user[:email]
+    }.merge(options)
+  end
 end

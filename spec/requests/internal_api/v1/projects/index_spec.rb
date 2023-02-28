@@ -43,7 +43,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when no filters are applied" do
       it "returns list of all projects" do
         user_id, client_id, billable, search = nil
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -53,7 +55,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when Search with project name" do
       it "returns projects with project_names matching search" do
         user_id, client_id, billable = nil, search = project_1.name
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -63,7 +67,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when Search with client name" do
       it "returns projects with client_name matching search" do
         user_id, client_id, billable = nil, search = client_1.name
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -73,7 +79,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when billable filter is applied" do
       it "returns projects which are non billable" do
         client_id, search, user_id = nil, billable = false
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -83,7 +91,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when team member filter is applied" do
       it "returns projects which have user_1 as it's team member" do
         client_id, search, billable = nil, user_id = [user_1.id]
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -93,7 +103,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when client filter is applied" do
       it "returns projects which belongs to client_1" do
         search, billable, user_id = nil, client_id = [client_1.id]
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -103,7 +115,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when all filters and search both are applied" do
       it "returns projects as per filters and search" do
         search = project_2.name, billable = false, user_id = [user_1.id], client_id = [client_2.id]
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -130,7 +144,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when no filters are applied" do
       it "returns list of all projects" do
         user_id, client_id, billable, search = nil
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -140,7 +156,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when Search with project name" do
       it "returns projects with project_names matching search" do
         user_id, client_id, billable = nil, search = project_1.name
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -150,7 +168,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when Search with client name" do
       it "returns projects with client_name matching search" do
         user_id, client_id, billable = nil, search = client_1.name
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -160,7 +180,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when billable filter is applied" do
       it "returns projects which are non billable" do
         client_id, search, user_id = nil, billable = false
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -170,7 +192,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when team member filter is applied" do
       it "returns projects which have user_1 as it's team member" do
         client_id, search, billable = nil, user_id = [user_1.id]
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -180,7 +204,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when client filter is applied" do
       it "returns projects which belongs to client_1" do
         search, billable, user_id = nil, client_id = [client_1.id]
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -190,7 +216,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when all filters and search both are applied" do
       it "returns projects as per filters and search" do
         search = project_2.name, billable = false, user_id = [user_1.id], client_id = [client_2.id]
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:ok)
         project_list = project_list_service(client_id, user_id, billable, search)
         expect(json_response["projects"]).to eq(project_list)
@@ -217,7 +245,9 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     context "when no filters are applied" do
       it "returns list of all projects" do
         user_id, client_id, billable, search = nil
-        send_request :get, internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: })
+        send_request :get,
+          internal_api_v1_projects_path(params: { client_id:, user_id:, billable:, search: }),
+          headers: auth_headers(user_1)
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -227,7 +257,7 @@ RSpec.describe "InternalApi::V1::Projects#index", type: :request do
     it "is not permitted to view project" do
       send_request :get, internal_api_v1_projects_path
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end

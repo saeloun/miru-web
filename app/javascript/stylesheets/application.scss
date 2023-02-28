@@ -2,12 +2,14 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 @import "react-toastify/dist/ReactToastify.min.css";
+@import "react-responsive-carousel/lib/styles/carousel.min.css";
 @import "toastr/toastr";
 @import "team";
 @import "time-tracking";
 @import "react-calendar";
 @import "toast";
 @import "pto";
+@import "authentication";
 @import "rc-steps";
 
 @layer base {
@@ -562,4 +564,10 @@ body {
 .tooltip{
   background-color: #1D1A31;
   text-color: #FFF
+}
+
+.input-phone-number input:focus{
+  outline: none !important;
+  border:none !important;
+  box-shadow: none !important;
 }

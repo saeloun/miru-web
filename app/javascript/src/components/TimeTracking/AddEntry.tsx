@@ -164,7 +164,7 @@ const AddEntry: React.FC<Iprops> = ({
   return (
     <div
       className={`
-        min-h-24 flex justify-between rounded-lg p-4 shadow-2xl ${
+        flex min-h-24 justify-between rounded-lg p-4 shadow-2xl ${
           editEntryId ? "mt-10" : ""
         }`}
     >

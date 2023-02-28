@@ -112,19 +112,20 @@ class Client < ApplicationRecord
   end
 
   def payment_summary(duration)
-    status_and_amount = invoices.during(duration).group(:status).sum(:amount)
+    status_and_amount = invoices.kept.during(duration).group(:status).sum(:amount)
     status_and_amount.default = 0
     {
       name:,
       paid_amount: status_and_amount["paid"],
-      unpaid_amount: status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
+      outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
+      overdue_amount: status_and_amount["overdue"]
     }
   end
 
   def outstanding_and_overdue_invoices
     outstanding_overdue_statuses = ["overdue", "sent", "viewed"]
     filtered_invoices = invoices
-      .order(updated_at: :desc)
+      .order(issue_date: :desc)
       .includes(:company)
       .select { |invoice| outstanding_overdue_statuses.include?(invoice.status) }
     status_and_amount = invoices.group(:status).sum(:amount)
