@@ -8,10 +8,10 @@ Rails.application.initialize!
 
 # Sendgrid config
 ActionMailer::Base.smtp_settings = {
-  address: "email-smtp.us-east-1.amazonaws.com",
-  port: 587,
+  address: ENV["SMPT_ADDRESS"],
+  port: ENV["SMTP_PORT"],
   authentication: :login,
-  user_name: ENV["SES_SMTP_USERNAME"],
-  password: ENV["SES_SMTP_PASSWORD"],
+  user_name: ENV["SMTP_USERNAME"],
+  password: ENV["SMTP_PASSWORD"],
   enable_starttls_auto: true
 }
