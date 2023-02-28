@@ -103,6 +103,10 @@ namespace :internal_api, defaults: { format: "json" } do
       delete "/remove_avatar", to: "profile#remove_avatar"
     end
 
+    resource :email_confirmation, only: :show do
+      post :resend
+    end
+
     resources :vendors, only: [:create]
     resources :expense_categories, only: [:create]
     resources :expenses, only: [:create, :index, :show]
