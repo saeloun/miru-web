@@ -23,7 +23,7 @@ const AddEditProject = ({
 
   const isEdit = !!projectId;
   const isFormFilled = client && projectName && projectType;
-  const showModal = isEdit && editProjectData.members;
+  const showEditModal = isEdit && editProjectData.members;
 
   const getClientList = async () => {
     try {
@@ -105,7 +105,7 @@ const AddEditProject = ({
     handleProjectData();
   }, [editProjectData, clientList]);
 
-  return !isEdit || showModal ? (
+  return !isEdit || showEditModal ? (
     <div
       className="modal__modal main-modal"
       style={{ background: "rgba(29, 26, 49,0.6)" }}
