@@ -21,7 +21,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
           send_request :post, internal_api_v1_user_previous_employments_path(
             user_id: user.id,
             previous_employment: previous_employment_details
-          )
+          ), headers: auth_headers(user)
         end
 
         it "is successful" do
@@ -39,7 +39,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
           send_request :post, internal_api_v1_user_previous_employments_path(
             user_id: employee.id,
             previous_employment: previous_employment_details
-          )
+          ), headers: auth_headers(user)
         end
 
         it "is successful" do
@@ -56,7 +56,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
             send_request :post, internal_api_v1_user_previous_employments_path(
               user_id: "abc",
               previous_employment: previous_employment_details
-            )
+            ), headers: auth_headers(user)
           end
 
           it "is not found" do
@@ -73,7 +73,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
           send_request :post, internal_api_v1_user_previous_employments_path(
             user_id: user.id,
             previous_employment: previous_employment_details
-          )
+          ), headers: auth_headers(user)
         end
 
         it "is successful" do
@@ -91,7 +91,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
           send_request :post, internal_api_v1_user_previous_employments_path(
             user_id: employee.id,
             previous_employment: previous_employment_details
-          )
+          ), headers: auth_headers(user)
         end
 
         it "is successful" do
@@ -108,7 +108,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
             send_request :post, internal_api_v1_user_previous_employments_path(
               user_id: "abc",
               previous_employment: previous_employment_details
-            )
+            ), headers: auth_headers(user)
           end
 
           it "is not found" do
@@ -127,7 +127,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
         send_request :post, internal_api_v1_user_previous_employments_path(
           user_id: user.id,
           previous_employment: previous_employment_details
-        )
+        ), headers: auth_headers(user)
       end
 
       it "is successful" do
@@ -146,7 +146,7 @@ RSpec.describe "PreviousEmployments#create", type: :request do
         send_request :post, internal_api_v1_user_previous_employments_path(
           user_id: employee.id,
           previous_employment: previous_employment_details
-        )
+        ), headers: auth_headers(user)
       end
 
       it "is forbidden" do
