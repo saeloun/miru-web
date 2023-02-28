@@ -14,8 +14,10 @@ RSpec.describe "Create client", type: :system do
     end
 
     it "creates the client successfully" do
-      visit "time-tracking"
-      expect(page).to have_content "MONTH"
+      with_forgery_protection do
+        visit "time-tracking"
+        expect(page).to have_content "MONTH"
+      end
     end
   end
 end
