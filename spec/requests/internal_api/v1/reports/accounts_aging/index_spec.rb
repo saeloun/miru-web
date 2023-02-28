@@ -40,7 +40,7 @@ RSpec.describe "InternalApi::V1::Reports::AccountsAgingController::#index", type
 
     context "when reports page's request is made" do
       before do
-        get internal_api_v1_reports_accounts_aging_index_path
+        get internal_api_v1_reports_accounts_aging_index_path, headers: auth_headers(user)
       end
 
       it "returns the 200 http response" do
@@ -103,7 +103,7 @@ RSpec.describe "InternalApi::V1::Reports::AccountsAgingController::#index", type
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_reports_accounts_aging_index_path
+      send_request :get, internal_api_v1_reports_accounts_aging_index_path, headers: auth_headers(user)
     end
 
     it "is not permitted to view client revenue report" do
@@ -116,7 +116,7 @@ RSpec.describe "InternalApi::V1::Reports::AccountsAgingController::#index", type
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :get, internal_api_v1_reports_accounts_aging_index_path
+      send_request :get, internal_api_v1_reports_accounts_aging_index_path, headers: auth_headers(user)
     end
 
     it "is not permitted to view client revenue report" do
@@ -128,7 +128,7 @@ RSpec.describe "InternalApi::V1::Reports::AccountsAgingController::#index", type
     it "is not permitted to view client revenue report" do
       send_request :get, internal_api_v1_reports_accounts_aging_index_path
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end

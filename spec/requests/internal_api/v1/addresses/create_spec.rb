@@ -27,7 +27,7 @@ RSpec.describe "Addresses#create", type: :request do
           user_id: employee.id,
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is successful" do
@@ -47,7 +47,7 @@ RSpec.describe "Addresses#create", type: :request do
           company_id: company.id,
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is successful" do
@@ -68,7 +68,7 @@ RSpec.describe "Addresses#create", type: :request do
           user_id: employee2.id,
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is forbidden" do
@@ -82,7 +82,7 @@ RSpec.describe "Addresses#create", type: :request do
           company_id: company2.id,
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is forbidden" do
@@ -96,7 +96,7 @@ RSpec.describe "Addresses#create", type: :request do
           user_id: "abc",
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is not found" do
@@ -110,7 +110,7 @@ RSpec.describe "Addresses#create", type: :request do
           company_id: "abc",
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is not found" do
@@ -132,7 +132,7 @@ RSpec.describe "Addresses#create", type: :request do
           user_id: employee.id,
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is successful" do
@@ -152,7 +152,7 @@ RSpec.describe "Addresses#create", type: :request do
           company_id: company.id,
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is successful" do
@@ -173,7 +173,7 @@ RSpec.describe "Addresses#create", type: :request do
           user_id: employee2.id,
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is forbidden" do
@@ -187,7 +187,7 @@ RSpec.describe "Addresses#create", type: :request do
           company_id: company2.id,
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is forbidden" do
@@ -201,7 +201,7 @@ RSpec.describe "Addresses#create", type: :request do
           user_id: "abc",
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is not found" do
@@ -215,7 +215,7 @@ RSpec.describe "Addresses#create", type: :request do
           company_id: "abc",
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(user)
       end
 
       it "is not found" do
@@ -237,7 +237,7 @@ RSpec.describe "Addresses#create", type: :request do
           user_id: employee.id,
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(employee)
       end
 
       it "is successful" do
@@ -258,7 +258,7 @@ RSpec.describe "Addresses#create", type: :request do
           user_id: employee2.id,
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(employee)
       end
 
       it "is forbidden" do
@@ -272,7 +272,7 @@ RSpec.describe "Addresses#create", type: :request do
           company_id: company.id,
           params: {
             address: address_details
-          })
+          }), headers: auth_headers(employee)
       end
 
       it "is forbidden" do
