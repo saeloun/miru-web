@@ -28,7 +28,7 @@ RSpec.describe "Companies#create", type: :request do
               fiscal_year_end: "April",
               date_format: "DD/MM/YYYY"
             }
-          })
+          }, headers: auth_headers(user))
       end
 
       it "creates a new company" do
@@ -95,7 +95,7 @@ RSpec.describe "Companies#create", type: :request do
               fiscal_year_end: "April",
               date_format: "DD/MM/YYYY"
             }
-          })
+          }, headers: auth_headers(user))
       end
 
       it "will be created" do
@@ -133,7 +133,7 @@ RSpec.describe "Companies#create", type: :request do
                 fiscal_year_end: "April",
                 date_format: "DD/MM/YYYY"
               }
-            })
+            }, headers: auth_headers(user))
         end
 
         it "will be created" do
@@ -162,7 +162,7 @@ RSpec.describe "Companies#create", type: :request do
               fiscal_year_end: "",
               date_format: ""
             }
-          })
+          }, headers: auth_headers(user))
       end
 
       it "will not be created" do
@@ -196,7 +196,7 @@ RSpec.describe "Companies#create", type: :request do
           }
         })
       expect(response).to redirect_to(user_session_path)
-      expect(flash[:alert]).to eq("You need to sign in or sign up before continuing.")
+      expect(flash[:alert]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end

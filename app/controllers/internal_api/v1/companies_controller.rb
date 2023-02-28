@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationController
+  skip_before_action :authenticate_user_using_x_auth_token, only: :create
+
   def index
     authorize current_company
     render :index, locals: { current_company:, client_list: current_company.client_list }, status: :ok
