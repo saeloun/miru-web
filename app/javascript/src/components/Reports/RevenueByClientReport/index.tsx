@@ -130,7 +130,7 @@ const RevenueByClientReport = () => {
   };
 
   return (
-    <div>
+    <div className="h-full">
       <EntryContext.Provider
         value={{
           ...contextValues,
