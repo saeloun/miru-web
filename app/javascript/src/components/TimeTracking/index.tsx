@@ -370,9 +370,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                     setOpenOsCalendar(!openOsCalendar);
                   }}
                 >
-                  {parseInt(dayInfo[selectDate]["date"], 10)}{" "}
-                  {dayInfo[selectDate].month}
-                  {dayInfo[selectDate]["year"]}
+                  <span>{parseInt(dayInfo[selectDate]["date"], 10)}</span>
+                  <span className="mx-1">{dayInfo[selectDate].month}</span>
+                  <span>{dayInfo[selectDate]["year"]}</span>
                 </label>
                 <div className="absolute right-50 top-8" ref={datePickerRef}>
                   {openOsCalendar && (
