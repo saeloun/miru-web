@@ -13,6 +13,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # Add additional requires below this line. Rails is not loaded until this point!
 require "devise"
 require "rspec/rails"
+require "support/session_helpers"
 require "support/database_cleaner"
 
 Dir[Rails.root.join("spec", "support", "**", "*.rb")].sort.each { |f| require f }
@@ -57,6 +58,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Capybara::DSL
   config.include Warden::Test::Helpers
+  config.include SessionHelpers, type: :system
   config.before do
     Faker::UniqueGenerator.clear
     OmniAuth.config.test_mode = true

@@ -10,7 +10,7 @@ RSpec.describe "Create client", type: :system do
     before do
       create(:employment, company:, user:)
       user.add_role :admin, company
-      login_as(user)
+      sign_in(user)
     end
 
     it "creates the client successfully" do
