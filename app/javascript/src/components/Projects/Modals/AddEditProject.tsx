@@ -23,6 +23,7 @@ const AddEditProject = ({
 
   const isEdit = !!projectId;
   const isFormFilled = client && projectName && projectType;
+  const showEditModal = isEdit && editProjectData.members;
 
   const getClientList = async () => {
     try {
@@ -34,11 +35,13 @@ const AddEditProject = ({
   };
 
   const getProject = async () => {
-    try {
-      const { data } = await projectApi.show(projectId);
-      setEditProjectData(data.project_details);
-    } catch (error) {
-      Logger.error(error);
+    if (!editProjectData.members) {
+      try {
+        const { data } = await projectApi.show(projectId);
+        setEditProjectData(data.project_details);
+      } catch (error) {
+        Logger.error(error);
+      }
     }
   };
 
@@ -102,7 +105,7 @@ const AddEditProject = ({
     handleProjectData();
   }, [editProjectData, clientList]);
 
-  return (
+  return !isEdit || showEditModal ? (
     <div
       className="modal__modal main-modal"
       style={{ background: "rgba(29, 26, 49,0.6)" }}
@@ -243,7 +246,7 @@ const AddEditProject = ({
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 AddEditProject.defaultProps = {
