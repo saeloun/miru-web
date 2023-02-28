@@ -16,7 +16,7 @@ RSpec.describe "InternalApi::V1::Vendors#create", type: :request do
     context "when creates the vendor" do
       before do
         @vendor = attributes_for(:vendor, company:)
-        send_request :post, internal_api_v1_vendors_path(vendor: @vendor)
+        send_request :post, internal_api_v1_vendors_path(vendor: @vendor), headers: auth_headers(user)
       end
 
       it "return the success" do
@@ -44,7 +44,7 @@ RSpec.describe "InternalApi::V1::Vendors#create", type: :request do
 
     describe "when creates the vendor" do
       it "returns forbidden" do
-        send_request :post, internal_api_v1_vendors_path(vendor: {})
+        send_request :post, internal_api_v1_vendors_path(vendor: {}), headers: auth_headers(user)
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe "InternalApi::V1::Vendors#create", type: :request do
 
     describe "when creates the vendor" do
       it "returns forbidden" do
-        send_request :post, internal_api_v1_vendors_path(vendor: {})
+        send_request :post, internal_api_v1_vendors_path(vendor: {}), headers: auth_headers(user)
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -70,7 +70,7 @@ RSpec.describe "InternalApi::V1::Vendors#create", type: :request do
       it "returns unauthorized" do
         send_request :post, internal_api_v1_vendors_path(vendor: {})
         expect(response).to have_http_status(:unauthorized)
-        expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+        expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
       end
     end
   end

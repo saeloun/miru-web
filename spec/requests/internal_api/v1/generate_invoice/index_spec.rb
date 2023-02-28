@@ -51,7 +51,8 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
 
     context "when no params are passed" do
       it "returns all line_item_entries" do
-        send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id)
+        send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id),
+          headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
         expect(json_response["new_line_item_entries"]).to eq(JSON.parse(expected_invoice_line_items.to_json))
@@ -62,7 +63,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
       it "returns no entries" do
         send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id), params: {
           selected_entries: [timesheet_entry.id]
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
         expect(json_response["new_line_item_entries"]).to eq([])
@@ -75,11 +76,9 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
           date_range: "custom",
           from: 1.weeks.ago.beginning_of_week,
           to: 1.weeks.ago.end_of_week
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
-        # to be fixed
-        # expect(json_response["new_line_item_entries"].first["first_name"]).to eq(user.first_name)
       end
     end
 
@@ -87,29 +86,28 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
       it "returns new line with team member filter" do
         send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id), params: {
           team_member: user.id
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
         expect(json_response["new_line_item_entries"].first["first_name"]).to eq(user.first_name)
       end
     end
 
-    # context "when user search with search term" do
-    #   it "returns new line with search term having first name" do
-    #     send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id), params: {
-    #       search_term: timesheet_entry.note
-    #     }
-    #     expect(response).to have_http_status(:ok)
-    #     expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
-    #     expect(json_response["new_line_item_entries"].first["first_name"]).to eq(user.first_name)
-    #   end
-    # end
+    context "when user search with search term" do
+      it "returns new line with search term having first name" do
+        send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id), params: {
+          search_term: timesheet_entry.note
+        }, headers: auth_headers(user)
+        expect(response).to have_http_status(:ok)
+        expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
+      end
+    end
 
     context "when user search with empty search term" do
       it "returns all entries" do
         send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id), params: {
           search_term: " "
-        }
+        }, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
         expect(json_response["new_line_item_entries"]).to eq(JSON.parse(expected_invoice_line_items.to_json))
@@ -120,7 +118,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
      it "returns all expected entries" do
        send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id), params: {
          params: @search_params
-       }
+       }, headers: auth_headers(user)
        expect(response).to have_http_status(:ok)
        expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
        expect(json_response["new_line_item_entries"]).to eq(JSON.parse(expected_invoice_line_items.to_json))
@@ -132,7 +130,7 @@ RSpec.describe "InternalApi::V1::GeneratInvoice#index", type: :request do
        create(:invoice_line_item, timesheet_entry_id: timesheet_entry.id)
        send_request :get, internal_api_v1_generate_invoice_index_path(client_id: client.id), params: {
          params: @search_params
-       }
+       }, headers: auth_headers(user)
        expect(response).to have_http_status(:ok)
        expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
        expect(json_response["new_line_item_entries"]).to be_empty

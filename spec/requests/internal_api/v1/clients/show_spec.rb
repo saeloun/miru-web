@@ -15,7 +15,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
       user.add_role :admin, company
       sign_in user
       create_list(:timesheet_entry, 5, user:, project: project_1)
-      send_request :get, internal_api_v1_client_path(client_1)
+      send_request :get, internal_api_v1_client_path(client_1), headers: auth_headers(user)
     end
 
     context "when time_frame is week" do
@@ -43,7 +43,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_client_path(client_1)
+      send_request :get, internal_api_v1_client_path(client_1), headers: auth_headers(user)
     end
 
     it "is not permitted to view client details" do
@@ -56,7 +56,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :get, internal_api_v1_client_path(client_1)
+      send_request :get, internal_api_v1_client_path(client_1), headers: auth_headers(user)
     end
 
     it "is not permitted to view client details" do
@@ -68,7 +68,7 @@ RSpec.describe "InternalApi::V1::Clients#show", type: :request do
     it "is not permitted to view client details" do
       send_request :get, internal_api_v1_client_path(client_1)
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end

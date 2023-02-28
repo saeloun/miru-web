@@ -28,7 +28,7 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
               fiscal_year_end: "April",
               date_format: "DD/MM/YYYY"
             }
-          })
+          }, headers: auth_headers(user))
       end
 
       it "response should be successful" do
@@ -52,7 +52,7 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
               fiscal_year_end: "",
               date_format: ""
             }
-          })
+          }, headers: auth_headers(user))
       end
 
       it "will fail" do
@@ -87,7 +87,7 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
               fiscal_year_end: "April",
               date_format: "DD/MM/YYYY"
             }
-          })
+          }, headers: auth_headers(user))
       end
 
       it "is not be permitted to update a company" do

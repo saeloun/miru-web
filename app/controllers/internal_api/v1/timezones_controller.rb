@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::TimezonesController < InternalApi::V1::ApplicationController
+  skip_before_action :authenticate_user_using_x_auth_token
+
   def index
     authorize :index, policy_class: TimezonePolicy
 
