@@ -42,7 +42,11 @@ class Reports::TimeEntries::PageService < ApplicationService
   end
 
   def client_filter
-    {}
+    pagy_data, clients = pagy(clients_query, items: PER_PAGE[:clients], page:)
+    {
+      pagy_data:,
+      es_filter: { client_id: clients.pluck(:id) }
+    }
   end
 
   def pagination_details(pagy_data)
@@ -61,6 +65,13 @@ class Reports::TimeEntries::PageService < ApplicationService
       current_company.users
         .with_ids(params[:team_member])
         .order(:first_name)
+        .select(:id)
+    end
+
+    def clients_query
+      current_company.clients
+        .with_ids(params[:client])
+        .order(:name)
         .select(:id)
     end
 end

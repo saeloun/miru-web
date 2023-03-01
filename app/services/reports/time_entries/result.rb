@@ -28,12 +28,19 @@ module Reports::TimeEntries
       end
     end
 
-    def group_label(timesheet_entry, bucket_name)
+    def group_by_client
+      grouped_data = es_response.group_by(&:client_id)
+      grouped_data.map do | client_id, entries |
+        { label: group_label(entries.first), entries: }
+      end
+    end
+
+    def group_label(timesheet_entry, bucket_name = nil)
       case group_by
       when "team_member"
         timesheet_entry.user_name
       when "client"
-        timesheet_entry.project.client.name
+        timesheet_entry.client_name
       when "project"
         timesheet_entry.project.name
       when "week"

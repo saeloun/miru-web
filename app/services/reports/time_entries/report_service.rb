@@ -20,6 +20,7 @@ module Reports::TimeEntries
         entries: reports.map { |e| e[:entries] }.flatten,
         filter_options:,
         pagination_details:
+
       }
     end
 
