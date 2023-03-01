@@ -44,6 +44,8 @@ class Client < ApplicationRecord
   after_discard :discard_projects
   after_commit :reindex_projects
 
+  delegate :formatted_address, to: :address
+
   def reindex_projects
     projects.reindex
   end
