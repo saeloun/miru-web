@@ -14,7 +14,7 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
     before do
       user.add_role :admin, company
       sign_in user
-      send_request :get, internal_api_v1_companies_path
+      send_request :get, internal_api_v1_companies_path, headers: auth_headers(user)
     end
 
     it "response should be successful" do
@@ -31,7 +31,7 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
     before do
       user.add_role :owner, company
       sign_in user
-      send_request :get, internal_api_v1_companies_path
+      send_request :get, internal_api_v1_companies_path, headers: auth_headers(user)
     end
 
     it "response should be successful" do
@@ -48,7 +48,7 @@ RSpec.describe "InternalApi::V1::Companies::index", type: :request do
    before do
      user.add_role :book_keeper, company
      sign_in user
-     send_request :get, internal_api_v1_companies_path
+     send_request :get, internal_api_v1_companies_path, headers: auth_headers(user)
    end
 
    it "response should be successful" do

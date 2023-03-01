@@ -3,8 +3,6 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Reports::TimeEntryController#download", type: :request do
-  subject { get "/internal_api/v1/reports/time_entries/download.#{type}" }
-
   let(:company) { create(:company) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
@@ -39,7 +37,8 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController#download", type: :
       end
 
       it "returns CSV data in response" do
-        expect(subject).to eq 200
+        send_request :get, "/internal_api/v1/reports/time_entries/download.#{type}", headers: auth_headers(admin)
+        expect(response).to have_http_status(:ok)
         expect(response.body).to include(csv_headers)
         expect(response.body).to include(csv_data)
       end
@@ -49,7 +48,8 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController#download", type: :
       let(:type) { "pdf" }
 
       it "generates PDF and send in response" do
-        expect(subject).to eq 200
+        send_request :get, "/internal_api/v1/reports/time_entries/download.#{type}", headers: auth_headers(admin)
+        expect(response).to have_http_status(:ok)
         expect(response.body).to include("PDF")
       end
     end
@@ -59,7 +59,8 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController#download", type: :
     before { sign_in employee }
 
     it "returns 403 status" do
-      expect(subject).to eq 403
+      send_request :get, "/internal_api/v1/reports/time_entries/download.#{type}", headers: auth_headers(employee)
+      expect(response).to have_http_status(:forbidden)
       expect(json_response["errors"]).to eq "You are not authorized to perform this action."
     end
   end
@@ -68,7 +69,8 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController#download", type: :
     before { sign_in book_keeper }
 
     it "returns 403 status" do
-      expect(subject).to eq 403
+      send_request :get, "/internal_api/v1/reports/time_entries/download.#{type}", headers: auth_headers(book_keeper)
+      expect(response).to have_http_status(:forbidden)
       expect(json_response["errors"]).to eq "You are not authorized to perform this action."
     end
   end

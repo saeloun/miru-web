@@ -5,9 +5,10 @@ import { ToastContainer } from "react-toastify";
 
 import { Roles, TOASTER_DURATION, Paths } from "constants/index";
 import { miruApp } from "constants/miruApp";
+import { AuthProvider } from "context/auth";
 import UserContext from "context/UserContext";
 
-import DisplayView from "./DisplayView";
+import Main from "./Main";
 
 const App = props => {
   const { user, companyRole } = props;
@@ -32,16 +33,18 @@ const App = props => {
         setSelectedTab,
       }}
     >
-      <BrowserRouter>
-        <ToastContainer autoClose={TOASTER_DURATION} />
-        <DisplayView
-          {...props}
-          isAdminUser={isAdminUser}
-          isDesktop={isDesktop}
-          setIsDesktop={setIsDesktop}
-          user={user}
-        />
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <ToastContainer autoClose={TOASTER_DURATION} />
+          <Main
+            {...props}
+            isAdminUser={isAdminUser}
+            isDesktop={isDesktop}
+            setIsDesktop={setIsDesktop}
+            user={user}
+          />
+        </BrowserRouter>
+      </AuthProvider>
     </UserContext.Provider>
   );
 };

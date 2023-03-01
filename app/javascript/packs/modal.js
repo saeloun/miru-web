@@ -32,22 +32,22 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   const newUserBtn = document.querySelector(
-    "a[data-team-element=\"new-user-btn\"]"
+    'a[data-team-element="new-user-btn"]'
   );
   const inviteModalClose = document.querySelector(
-    "div[data-team-element=\"invite-modal-close\"]"
+    'div[data-team-element="invite-modal-close"]'
   );
   const inviteModalCloseBtn = document.querySelector(
-    "button[data-team-element=\"invite-modal-close-btn\"]"
+    'button[data-team-element="invite-modal-close-btn"]'
   );
   const teamModalClose = document.querySelector(
-    "div[data-team-element=\"modal-close\"]"
+    'div[data-team-element="modal-close"]'
   );
   const editMembers = document.querySelectorAll(
-    "img[data-team-element=\"edit-member\"]"
+    'img[data-team-element="edit-member"]'
   );
   const editInvitations = document.querySelectorAll(
-    "img[data-invitation-element=\"edit-invitation\"]"
+    'img[data-invitation-element="edit-invitation"]'
   );
 
   if (newUserBtn)

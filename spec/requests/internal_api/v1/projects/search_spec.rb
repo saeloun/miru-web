@@ -23,7 +23,8 @@ RSpec.describe "InternalApi::V1::Projects::Search#index", type: :request do
 
     describe "when user search with project name" do
       it "returns list of projects matching the search term" do
-        send_request :get, "/internal_api/v1/projects/search?search_term=#{project.name.first}"
+        send_request :get, "/internal_api/v1/projects/search?search_term=#{project.name.first}",
+          headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
       end
     end
@@ -39,7 +40,7 @@ RSpec.describe "InternalApi::V1::Projects::Search#index", type: :request do
 
     describe "when user search with an invalid search term" do
       it "returns list of projects matching the search term" do
-        send_request :get, "/internal_api/v1/projects/search?search_term=invalid"
+        send_request :get, "/internal_api/v1/projects/search?search_term=invalid", headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
       end
     end
