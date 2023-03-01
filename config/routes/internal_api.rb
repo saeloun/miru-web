@@ -9,8 +9,8 @@ namespace :internal_api, defaults: { format: "json" } do
         post "signup", to: "registrations#create", as: "signup"
         post "forgot_password", to: "passwords#create", as: "forgot_password"
         put "reset_password", to: "passwords#update", as: "reset_password"
+        post "resend_confirmation_email", to: "confirmations#create", as: "resend_confirmation_email"
       end
-      post "resend", to: "email_confirmations#resend", as: "resend_email_confirmations"
     end
 
     resources :clients, only: [:index, :update, :destroy, :show, :create]
