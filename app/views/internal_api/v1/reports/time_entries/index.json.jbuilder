@@ -26,3 +26,5 @@ json.filter_options do
    json.value team_member.id
  end
 end
+
+json.pagy pagination_details

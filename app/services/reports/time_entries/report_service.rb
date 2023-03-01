@@ -3,18 +3,23 @@
 module Reports::TimeEntries
   class ReportService
     attr_reader :params, :is_download_request, :current_company
+    attr_accessor :reports, :pagination_details
 
     def initialize(params, current_company, download: false)
       @params = params
       @current_company = current_company
       @is_download_request = is_download_request
+      @reports = nil
+      @pagination_details = nil
     end
 
     def process
+      process_reports
       {
         reports:,
         entries: reports.map { |e| e[:entries] }.flatten,
-        filter_options:
+        filter_options:,
+        pagination_details:
       }
     end
 
@@ -29,18 +34,37 @@ module Reports::TimeEntries
         end
        end
 
-      def reports
+      def process_reports
         default_filter = current_company_filter.merge(this_month_filter)
         where_clause = default_filter.merge(TimeEntries::Filters.process(params))
-        group_by_clause = Reports::TimeEntries::GroupBy.process(params["group_by"])
+        if params["group_by"].present?
+          reports_with_group_by(where_clause)
+        else
+          reports_without_group_by(where_clause)
+        end
+      end
+
+      def reports_with_group_by(where_clause)
+        @pagination_details, es_filter_for_pagination = Reports::TimeEntries::PageService.process(
+          params,
+          current_company)
+
+        search_result = TimesheetEntry.search(
+          where: where_clause.merge(es_filter_for_pagination),
+          order: { work_date: :desc },
+          includes: [:user, { project: :client }, :client, :company ],
+          )
+
+        @reports = Reports::TimeEntries::Result.process(search_result, params["group_by"])
+      end
+
+      def reports_without_group_by(where_clause)
         search_result = TimesheetEntry.search(
           where: where_clause,
           order: { work_date: :desc },
-          body_options: group_by_clause,
-          includes: [:user, { project: :client }, :client, :company ]
+          includes: [:user, { project: :client }, :client, :company ],
           )
-
-        Reports::TimeEntries::Result.process(search_result, params["group_by"])
+        @reports = Reports::TimeEntries::Result.process(search_result, params["group_by"])
       end
 
       def current_company_filter
