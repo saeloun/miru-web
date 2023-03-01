@@ -34,16 +34,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
 
         @client2_paid_amount = 0
         @client2_unpaid_amount = client2_sent_invoice2.amount + client2_viewed_invoice1.amount
-        get internal_api_v1_reports_client_revenues_path, params: { from_date: 1.month.ago, to_date: Date.today },
-          headers: auth_headers(user)
-      end
-
-      it "returns the 200 http response" do
-        expect(response).to have_http_status(:ok)
-      end
-
-      it "returns the clients data in alaphabetical order with amount details" do
-        expected_clients =
+        @expected_clients =
           [{
             logo: client1.logo_url,
             name: client1.name,
@@ -60,7 +51,17 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
              totalAmount: @client2_paid_amount + @client2_unpaid_amount + @client2_overdue_amount,
              overdueAmount: @client2_overdue_amount
            }]
-        expect(json_response["clients"]).to eq(JSON.parse(expected_clients.to_json))
+        get internal_api_v1_reports_client_revenues_path,
+          params: { from_date: 1.month.ago, to_date: Date.today },
+          headers: auth_headers(user)
+      end
+
+      it "returns the 200 http response" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns the clients data in alaphabetical order with amount details" do
+        expect(json_response["clients"]).to eq(JSON.parse(@expected_clients.to_json))
       end
 
       it "returns the base currency" do
