@@ -52,7 +52,7 @@ module Reports::TimeEntries
         search_result = TimesheetEntry.search(
           where: where_clause.merge(es_filter_for_pagination),
           order: { work_date: :desc },
-          includes: [:user, { project: :client }, :client, :company ],
+          load: false
           )
 
         @reports = Reports::TimeEntries::Result.process(search_result, params["group_by"])
@@ -62,7 +62,7 @@ module Reports::TimeEntries
         search_result = TimesheetEntry.search(
           where: where_clause,
           order: { work_date: :desc },
-          includes: [:user, { project: :client }, :client, :company ],
+          load: false
           )
         @reports = Reports::TimeEntries::Result.process(search_result, params["group_by"])
       end

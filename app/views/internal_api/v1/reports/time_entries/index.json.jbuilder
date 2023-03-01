@@ -11,9 +11,12 @@ json.reports reports do |grouped_report|
     json.project_id report.project_id
     json.client report.client_name
     json.duration report.duration
-    json.work_date report.formatted_work_date
+    json.work_date CompanyDateFormattingService.new(report.work_date,
+                                                    company: current_company,
+                                                    is_es_date: true)
+                                                .process
     json.bill_status report.bill_status
-    json.team_member report.user_full_name
+    json.team_member report.user_name
   end
 end
 json.filter_options do
