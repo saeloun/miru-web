@@ -18,7 +18,7 @@ const TableRow = ({ currency, report }) => {
   return (
     <tr className="table-cell items-center py-4 lg:flex" key={id}>
       <td className="flex w-full cursor-pointer items-center pt-2.5 lg:w-2/12 lg:pr-8 ">
-        <Avatar classNameImg="mr-2 lg:mr-6" url={logo}/>
+        <Avatar classNameImg="mr-2 lg:mr-6" url={logo} />
         <Tooltip content={name} show={showToolTip}>
           <p
             className="overflow-hidden text-ellipsis whitespace-normal pr-2 text-sm font-medium text-miru-dark-purple-1000 lg:whitespace-nowrap lg:text-base"

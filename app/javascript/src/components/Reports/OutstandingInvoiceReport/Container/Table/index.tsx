@@ -26,8 +26,8 @@ const Table = ({ outstandingOverdueInvoice }) => (
                       <TableRow
                         currency={outstandingOverdueInvoice.currency}
                         key="index"
-                        reportData={invoice}
                         logo={report.logo}
+                        reportData={invoice}
                       />
                     </Fragment>
                   ))}

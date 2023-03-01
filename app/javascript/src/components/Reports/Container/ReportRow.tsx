@@ -18,7 +18,7 @@ const ReportRow = ({
   <div className="grid grid-cols-5 gap-2  border-b" key={id}>
     <div>
       <div className="flex items-center py-2.5 text-left">
-        <Avatar classNameImg="mr-2 lg:mr-6" url={client_logo}/>
+        <Avatar classNameImg="mr-2 lg:mr-6" url={client_logo} />
         <div>
           <p className="mb-1 whitespace-normal text-base font-semibold text-miru-dark-purple-1000">
             {project}

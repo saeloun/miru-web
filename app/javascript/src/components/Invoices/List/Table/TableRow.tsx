@@ -78,7 +78,7 @@ const TableRow = ({
       </td>
       <Tooltip content={invoice.client.name} show={showToolTip}>
         <td className="flex w-40 cursor-pointer items-center py-5 pr-2 text-left font-medium tracking-normal sm:w-80 md:w-96 lg:w-full">
-          <Avatar url={invoice.client.logo}/>
+          <Avatar url={invoice.client.logo} />
           <div
             className="ml-2 overflow-hidden truncate whitespace-nowrap lg:ml-4"
             ref={toolTipRef}
