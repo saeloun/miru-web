@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Companies#create", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, address_attributes: attributes_for(:address)) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   context "when user is an admin" do
@@ -20,7 +20,10 @@ RSpec.describe "Companies#create", type: :request do
             company: {
               name: "Updated Company",
               business_phone: "1234556",
-              old_address: "updated address"
+              address_attributes: {
+                id: company.address.id,
+                address_line_1: "updated address"
+              }
             }
           })
       end
@@ -28,7 +31,7 @@ RSpec.describe "Companies#create", type: :request do
       it "updates the company" do
         company.reload
         expect(company.name).to eq("Updated Company")
-        expect(company.old_address).to eq("updated address")
+        expect(company.address.address_line_1).to eq("updated address")
       end
 
       it "redirects to root_path" do
