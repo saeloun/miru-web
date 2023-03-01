@@ -50,6 +50,8 @@ class Company < ApplicationRecord
   scope :with_kept_employments, -> { merge(Employment.kept) }
   scope :valid_invitations, -> { where(company: self).valid_invitations }
 
+  delegate :formatted_address, to: :address
+
   def client_list
     clients.kept.map do |client|
       { id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.address }
