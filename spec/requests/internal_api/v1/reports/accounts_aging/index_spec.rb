@@ -5,8 +5,8 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Reports::AccountsAgingController::#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let!(:client1) { create(:client, company:, name: "bob") }
-  let!(:client2) { create(:client, company:, name: "ana") }
+  let!(:client1) { create(:client, :with_logo, company:, name: "bob") }
+  let!(:client2) { create(:client, :with_logo, company:, name: "ana") }
   let!(:client3) { create(:client, company:, name: "john") }
 
   context "when user is an admin or owner" do
@@ -49,7 +49,9 @@ RSpec.describe "InternalApi::V1::Reports::AccountsAgingController::#index", type
 
       it "returns the clients data in alaphabetical order with amount details" do
         expect(json_response["report"]["clients"][0]["id"]).to eq(client2.id)
+        expect(json_response["report"]["clients"][0]["logo"]).to eq(client2.logo_url)
         expect(json_response["report"]["clients"][1]["id"]).to eq(client1.id)
+        expect(json_response["report"]["clients"][1]["logo"]).to eq(client1.logo_url)
       end
 
       it "returns amount overdue for client2 in response" do

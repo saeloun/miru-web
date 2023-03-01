@@ -5,8 +5,8 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let!(:client1) { create(:client, company:, name: "Alpha") }
-  let!(:client2) { create(:client, company:, name: "Delta") }
+  let!(:client1) { create(:client, :with_logo, company:, name: "Alpha") }
+  let!(:client2) { create(:client, :with_logo, company:, name: "Delta") }
   let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent") }
   let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent") }
   let!(:client1_viewed_invoice1) { create(:invoice, client: client1, status: "viewed") }
@@ -45,6 +45,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       it "returns the clients data in alaphabetical order with amount details" do
         expected_clients =
           [{
+            logo: client1.logo_url,
             name: client1.name,
             paidAmount: @client1_paid_amount,
             outstandingAmount: @client1_unpaid_amount,
@@ -52,6 +53,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
             overdueAmount: @client1_overdue_amount
           },
            {
+             logo: client2.logo_url,
              name: client2.name,
              paidAmount: @client2_paid_amount,
              outstandingAmount: @client2_unpaid_amount,
@@ -96,6 +98,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
           [
             {
               name: client1.name,
+              logo: client1.logo_url,
               paidAmount: @client1_paid_amount,
               outstandingAmount: @client1_unpaid_amount,
               totalAmount: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,

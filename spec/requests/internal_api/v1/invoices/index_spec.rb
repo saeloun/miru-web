@@ -90,6 +90,11 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         ).to match_array(
           expected_invoices.map { |invoice| invoice["id"] }
         )
+        expect(
+          json_response["invoices"].map { |invoice| invoice["client"]["logo"] }
+        ).to match_array(
+          expected_invoices.map { |invoice| invoice["client"]["logo"] }
+        )
       end
 
       describe "recently_updated_invoices return value" do
