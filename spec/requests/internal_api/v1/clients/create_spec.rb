@@ -15,11 +15,19 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
 
     describe "#create" do
       it "creates the client successfully" do
-        client = attributes_for(:client, address_attributes: attributes_for(:address))
+        address_details = attributes_for(:address)
+        client = attributes_for(:client, address_attributes: address_details)
         send_request :post, internal_api_v1_clients_path(client:), headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         expected_attrs = [ "address", "email", "id", "logo", "name", "phone" ]
         expect(json_response["client"].keys.sort).to match(expected_attrs)
+
+        expect(json_response["client"]["address"]["address_line_1"]).to eq(address_details[:address_line_1])
+        expect(json_response["client"]["address"]["address_line_2"]).to eq(address_details[:address_line_2])
+        expect(json_response["client"]["address"]["city"]).to eq(address_details[:city])
+        expect(json_response["client"]["address"]["state"]).to eq(address_details[:state])
+        expect(json_response["client"]["address"]["country"]).to eq(address_details[:country])
+        expect(json_response["client"]["address"]["pin"]).to eq(address_details[:pin])
       end
 
       it "throws 422 if the name doesn't exist" do
