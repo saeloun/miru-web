@@ -23,7 +23,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
             invoice: {
               reference: "foo"
             }
-          })
+          }), headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["reference"]).to eq("foo")
       end
@@ -36,7 +36,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
                 client_id: 100000,
                 reference: "foo"
               }
-            })
+            }), headers: auth_headers(user)
           expect(response).to have_http_status(:not_found)
         end
       end
@@ -53,7 +53,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
           invoice: {
             reference: "foo"
           }
-        })
+        }), headers: auth_headers(user)
     end
 
     it "is not be permitted to update an invoice" do
@@ -71,7 +71,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
           invoice: {
             reference: "foo"
           }
-        })
+        }), headers: auth_headers(user)
     end
 
     it "is not be permitted to update an invoice" do
@@ -88,7 +88,7 @@ RSpec.describe "InternalApi::V1::Invoices#update", type: :request do
           }
         })
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end

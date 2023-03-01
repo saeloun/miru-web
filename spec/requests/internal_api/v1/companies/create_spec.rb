@@ -3,11 +3,11 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Companies::create", type: :request do
-  let(:user1) { create(:user) }
+  let(:user) { create(:user) }
 
   context "when user is an admin" do
     before do
-      sign_in user1
+      sign_in user
     end
 
     context "when company is valid" do
@@ -24,7 +24,7 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
             fiscal_year_end: "Jan-Dec",
             date_format: "DD-MM-YYYY"
           }
-        }
+        }, headers: auth_headers(user)
       end
 
       it "response should be successful" do
@@ -47,7 +47,7 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
             fiscal_year_end: "",
             date_format: ""
           }
-        }
+        }, headers: auth_headers(user)
       end
 
       it "will fail" do
@@ -61,8 +61,8 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
 
     context "when the user is a book keeper" do
       before do
-        user1.add_role :book_keeper
-        sign_in user1
+        user.add_role :book_keeper
+        sign_in user
       end
 
       context "when company is valid" do
@@ -79,7 +79,7 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
               fiscal_year_end: "Jan-Dec",
               date_format: "DD-MM-YYYY"
             }
-          }
+          }, headers: auth_headers(user)
         end
 
         it "response should be successful" do
@@ -102,7 +102,7 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
               fiscal_year_end: "",
               date_format: ""
             }
-          }
+          }, headers: auth_headers(user)
         end
 
         it "will fail" do

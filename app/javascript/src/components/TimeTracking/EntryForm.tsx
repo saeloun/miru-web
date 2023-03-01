@@ -16,6 +16,9 @@ import { TimeInput } from "StyledComponents";
 import timesheetEntryApi from "apis/timesheet-entry";
 import CustomDatePicker from "common/CustomDatePicker";
 import Toastr from "common/Toastr";
+import { useUserContext } from "context/UserContext";
+
+import MobileEntryForm from "./MobileView/MobileEntryForm";
 
 const AddEntry: React.FC<Iprops> = ({
   selectedEmployeeId,
@@ -32,6 +35,7 @@ const AddEntry: React.FC<Iprops> = ({
   handleRelocateEntry,
   setSelectedFullDate,
   setUpdateView,
+  handleDeleteEntry,
 }) => {
   const [note, setNote] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
@@ -44,6 +48,7 @@ const AddEntry: React.FC<Iprops> = ({
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
 
   const datePickerRef: MutableRefObject<any> = useRef();
+  const { isDesktop } = useUserContext();
 
   useOutsideClick(datePickerRef, () => {
     setDisplayDatePicker(false);
@@ -161,12 +166,12 @@ const AddEntry: React.FC<Iprops> = ({
     handleFillData();
   }, []);
 
-  return (
+  return isDesktop ? (
     <div
       className={`
-        flex min-h-24 justify-between rounded-lg p-4 shadow-2xl ${
-          editEntryId ? "mt-10" : ""
-        }`}
+       hidden min-h-24 justify-between rounded-lg p-4 shadow-2xl lg:flex ${
+         editEntryId ? "mt-10" : ""
+       }`}
     >
       <div className="w-1/2">
         <div className="mb-2 flex w-129 justify-between">
@@ -314,6 +319,29 @@ const AddEntry: React.FC<Iprops> = ({
         </button>
       </div>
     </div>
+  ) : (
+    <MobileEntryForm
+      billable={billable}
+      client={client}
+      clients={clients}
+      duration={duration}
+      editEntryId={editEntryId}
+      handleDeleteEntry={handleDeleteEntry}
+      handleEdit={handleEdit}
+      handleSave={handleSave}
+      note={note}
+      project={project}
+      projects={projects}
+      selectedDate={selectedDate}
+      setBillable={setBillable}
+      setClient={setClient}
+      setDuration={setDuration}
+      setEditEntryId={setEditEntryId}
+      setNewEntryView={setNewEntryView}
+      setNote={setNote}
+      setProject={setProject}
+      setSelectedDate={setSelectedDate}
+    />
   );
 };
 
@@ -332,6 +360,7 @@ interface Iprops {
   handleRelocateEntry: (date: string, entry: object) => void; // eslint-disable-line
   setSelectedFullDate: any;
   setUpdateView: any;
+  handleDeleteEntry: any;
 }
 
 export default AddEntry;

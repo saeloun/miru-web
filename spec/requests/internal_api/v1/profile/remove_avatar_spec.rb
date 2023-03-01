@@ -10,7 +10,7 @@ RSpec.describe "InternalApi::V1::Profile#remove_avatar", type: :request do
     before do
       user.add_role :employee, company
       sign_in user
-      send_request :delete, remove_avatar_internal_api_v1_profile_path
+      send_request :delete, remove_avatar_internal_api_v1_profile_path, headers: auth_headers(user)
     end
 
     it "removes user's avatar" do
