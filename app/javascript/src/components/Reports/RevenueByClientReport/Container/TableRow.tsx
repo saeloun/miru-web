@@ -20,7 +20,7 @@ const TableRow = ({ currency, report }) => {
     <tr className="flex flex-row items-center" key={id}>
       <td className="w-3/5 whitespace-nowrap py-4 pr-6 text-left">
         <span className="flex items-center">
-          <Avatar classNameImg="mr-2 lg:mr-6" url={logo}/>
+          <Avatar classNameImg="mr-2 lg:mr-6" url={logo} />
           <p className="whitespace-normal text-base font-normal text-miru-dark-purple-1000">
             {name}
           </p>

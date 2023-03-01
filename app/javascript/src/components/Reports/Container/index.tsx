@@ -52,7 +52,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
 
   const getTableLogo = (groupedBy: string | null, client_logo: string) => {
     const logo = {
-      client: <Avatar classNameImg="mr-2 lg:mr-6" url={client_logo} />,
+      client:  <Avatar classNameImg="mr-2 lg:mr-6" url={client_logo} />,
       project: <ClientsIcon className="m-0 object-contain" size={40} />,
       team_member: <Avatar />,
     };
