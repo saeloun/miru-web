@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-class InternalApi::V1::Users::SessionsController < InternalApi::V1::ApplicationController
-  skip_before_action :authenticate_user_using_x_auth_token
-  skip_before_action :authenticate_user!
-  skip_after_action :verify_authorized
+class InternalApi::V1::Users::SessionsController < Devise::SessionsController
+  respond_to :json
 
   def create
     user = User.find_for_database_authentication(email: user_params[:email])
