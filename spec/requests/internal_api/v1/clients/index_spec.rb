@@ -29,7 +29,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
             "name" => client.name,
             "email" => client.email,
             "phone" => client.phone,
-            "address" => client.addresses&.last,
+            "address" => client.address,
             "minutes_spent" => client.total_hours_logged(time_frame)
           )
         end
@@ -59,7 +59,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
 
       it "finds specific client by name" do
         client_details = [{
-          id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone, address: client_1.addresses&.last,
+          id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone, address: client_1.address,
           minutes_spent: client_1.total_hours_logged(time_frame), logo: ""
         }]
         expect(response).to have_http_status(:ok)
@@ -69,9 +69,9 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
 
     it "returns all the clients when query params are empty" do
       client_details = [{
-        id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone, address: client_1.addresses&.last,
+        id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone, address: client_1.address,
         minutes_spent: client_1.total_hours_logged(time_frame), logo: ""
-      }, id: client_2.id, name: client_2.name, email: client_2.email, phone: client_2.phone, address: client_2.addresses&.last,
+      }, id: client_2.id, name: client_2.name, email: client_2.email, phone: client_2.phone, address: client_2.address,
          minutes_spent: client_2.total_hours_logged(time_frame), logo: "" ]
 
       expect(response).to have_http_status(:ok)
@@ -97,7 +97,7 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       it "returns the total hours logged for a Company in the last_week" do
         client_details = user.current_workspace.clients.kept.map do |client|
           {
-            id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.addresses&.last,
+            id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.address,
             minutes_spent: client.total_hours_logged(time_frame), logo: ""
           }
         end

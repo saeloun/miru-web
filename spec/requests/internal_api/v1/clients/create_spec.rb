@@ -15,7 +15,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
 
     describe "#create" do
       it "creates the client successfully" do
-        client = attributes_for(:client, addresses_attributes: [attributes_for(:address)])
+        client = attributes_for(:client, address_attributes: attributes_for(:address))
         send_request :post, internal_api_v1_clients_path(client:), headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         expected_attrs = [ "address", "email", "id", "logo", "name", "phone" ]
@@ -28,13 +28,13 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
             email: "test@client.com",
             description: "Rspec Test",
             phone: "7777777777",
-            addresses_attributes:  [{
+            address_attributes:  {
               address_line_1: "Somewhere on Earth",
               city: "Brooklyn",
               state: "NY",
               country: "US",
               pin: "12238"
-            }]
+            }
           }), headers: auth_headers(user)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(json_response["errors"]).to eq("Name can't be blank")
@@ -47,15 +47,15 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
             email: "test@client.com",
             description: "Rspec Test",
             phone: "7777777777",
-            addresses_attributes:  [{
+            address_attributes:  {
               city: "Brooklyn",
               state: "NY",
               country: "US",
               pin: "12238"
-            }]
-          })
+            }
+          }), headers: auth_headers(user)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(json_response["errors"]).to eq("Addresses address line 1 can't be blank")
+        expect(json_response["errors"]).to eq("Address address line 1 can't be blank")
       end
     end
   end

@@ -32,11 +32,11 @@ class Client < ApplicationRecord
   has_many :projects
   has_many :timesheet_entries, through: :projects
   has_many :invoices, dependent: :destroy
-  has_many :addresses, as: :addressable, dependent: :destroy
+  has_one  :address, as: :addressable, dependent: :destroy
   has_one_attached :logo
   belongs_to :company
 
-  accepts_nested_attributes_for :addresses, reject_if: :attributes_blank?, allow_destroy: true
+  accepts_nested_attributes_for :address, reject_if: :attributes_blank?, allow_destroy: true
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
@@ -71,7 +71,7 @@ class Client < ApplicationRecord
       name:,
       email:,
       phone:,
-      address: addresses&.last,
+      address: address,
       logo: logo_url,
       minutes_spent: total_hours_logged(time_frame)
     }
