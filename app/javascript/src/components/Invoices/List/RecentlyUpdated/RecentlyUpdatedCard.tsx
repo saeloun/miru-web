@@ -6,7 +6,10 @@ import { Avatar, Badge } from "StyledComponents";
 
 import getStatusCssClass from "utils/getBadgeStatus";
 
-const RecentlyUpdatedCard = ({ invoice: { client, company, id, invoiceNumber, amount, status }, index }) => {
+const RecentlyUpdatedCard = ({
+  invoice: { client, company, id, invoiceNumber, amount, status },
+  index,
+}) => {
   const navigate = useNavigate();
 
   return (

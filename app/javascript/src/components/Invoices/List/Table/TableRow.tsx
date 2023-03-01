@@ -39,7 +39,7 @@ const TableRow = ({
     id,
     invoiceNumber,
     issueDate,
-    status
+    status,
   } = invoice;
 
   const handleCheckboxChange = () => {

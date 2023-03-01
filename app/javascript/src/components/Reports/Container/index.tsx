@@ -64,9 +64,12 @@ const Container = ({ selectedFilter }: ContainerProps) => {
 
   const getEntryList = (entries, clientLogo: string) =>
     entries.map((timeEntry, index) => (
-      <ReportRow key={`${timeEntry.client}-${index}`} timeEntry = {timeEntry} clientLogo={clientLogo}/>
-    )
-    );
+      <ReportRow
+        clientLogo={clientLogo}
+        key={`${timeEntry.client}-${index}`}
+        timeEntry={timeEntry}
+      />
+    ));
 
   const getAlphabaticallySortedReportList = (reports: any[] | null = []) =>
     reports?.sort((a, b) => {
@@ -106,7 +109,8 @@ const Container = ({ selectedFilter }: ContainerProps) => {
               )}
               <ReportHeader />
               <div className="mb-6">
-                {report.entries.length > 0 && getEntryList(report.entries, report.clientLogo)}
+                {report.entries.length > 0 &&
+                  getEntryList(report.entries, report.clientLogo)}
               </div>
             </Fragment>
           )
