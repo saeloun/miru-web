@@ -17,7 +17,7 @@ RSpec.describe "Passwords#update", type: :request do
           }
         }
         expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)).to include("notice" => "Your password has been updated.")
+        expect(JSON.parse(response.body)).to include("notice" => I18n.t("password.update.success"))
       end
     end
 

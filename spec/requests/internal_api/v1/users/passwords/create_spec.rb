@@ -11,7 +11,7 @@ RSpec.describe "Passwords#create", type: :request do
         send_request :post, internal_api_v1_users_forgot_password_path, params: { user: { email: user.email } }
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to include(
-          "notice" => "Instructions for resetting your password have been sent to your email."
+          "notice" => I18n.t("password.create.success")
         )
       end
     end

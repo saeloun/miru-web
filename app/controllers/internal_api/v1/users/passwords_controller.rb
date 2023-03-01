@@ -6,7 +6,7 @@ class InternalApi::V1::Users::PasswordsController < Devise::PasswordsController
   def create
     self.resource = resource_class.send_reset_password_instructions(resource_params)
     if successfully_sent?(resource)
-      render json: { notice: "Instructions for resetting your password have been sent to your email." }, status: :ok
+      render json: { notice: I18n.t("password.create.success") }, status: :ok
     else
       respond_with_error(resource)
     end
@@ -15,7 +15,7 @@ class InternalApi::V1::Users::PasswordsController < Devise::PasswordsController
   def update
     user = User.reset_password_by_token(password_params)
     if user.errors.empty?
-      render json: { notice: "Your password has been updated." }, status: :ok
+      render json: { notice: I18n.t("password.update.success") }, status: :ok
     else
       respond_with_error(user)
     end

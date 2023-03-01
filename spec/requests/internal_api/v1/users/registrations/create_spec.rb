@@ -23,7 +23,7 @@ RSpec.describe "Registrations#create", type: :request do
         user: valid_user_json
       }
       expect(response).to have_http_status(:ok)
-      expect(json_response["notice"]).to eq("Signed up successfully")
+      expect(json_response["notice"]).to eq(I18n.t("devise.registrations.signed_up"))
     end
   end
 

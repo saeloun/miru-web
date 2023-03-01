@@ -15,7 +15,7 @@ RSpec.describe "Sessions#create", type: :request do
         }
       }
       expect(response).to have_http_status(:ok)
-      expect(json_response["notice"]).to eq("Signed in successfully")
+      expect(json_response["notice"]).to eq(I18n.t("devise.sessions.signed_in"))
     end
   end
 
@@ -28,7 +28,7 @@ RSpec.describe "Sessions#create", type: :request do
         }
       }
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json_response["error"]).to eq("Invalid email or password")
+      expect(json_response["error"]).to eq(I18n.t("sessions.failure.invalid"))
     end
   end
 end
