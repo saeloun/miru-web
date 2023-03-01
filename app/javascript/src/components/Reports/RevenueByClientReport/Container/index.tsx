@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 
 import { cashFormatter, currencySymbol } from "helpers"; // TODO: Formatter
 
+import EmptyStates from "common/EmptyStates";
 import TotalHeader from "common/TotalHeader";
 import { useEntry } from "components/Reports/context/EntryContext";
 
@@ -49,7 +50,7 @@ const Container = () => {
 
   const currencySymb = currencySymbol(revenueByClientReport.currency);
 
-  return (
+  return revenueByClientReport.clientList.length ? (
     <Fragment>
       <TotalHeader
         firstTitle="TOTAL OUTSTANDING AMOUNT"
@@ -83,6 +84,15 @@ const Container = () => {
         </tbody>
       </table>
     </Fragment>
+  ) : (
+    <EmptyStates
+      showNoSearchResultState={revenueByClientReport.filterCounter > 0}
+      Message={
+        revenueByClientReport.filterCounter > 0
+          ? "No results match current filters. Try removing some filters."
+          : "There are no clients added yet. Please go to Clients to add your first client "
+      }
+    />
   );
 };
 
