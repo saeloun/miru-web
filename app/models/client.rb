@@ -116,6 +116,7 @@ class Client < ApplicationRecord
     status_and_amount.default = 0
     {
       name:,
+      logo: logo_url,
       paid_amount: status_and_amount["paid"],
       outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
       overdue_amount: status_and_amount["overdue"]
@@ -133,6 +134,7 @@ class Client < ApplicationRecord
 
     {
       name:,
+      logo: logo_url,
       invoices: filtered_invoices,
       total_outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
       total_overdue_amount: status_and_amount["overdue"]

@@ -10,6 +10,7 @@ json.reports reports do |grouped_report|
     json.project report.project_name
     json.project_id report.project_id
     json.client report.client_name
+    json.client_logo report.client.logo_url
     json.duration report.duration
     json.work_date report.formatted_work_date
     json.bill_status report.bill_status

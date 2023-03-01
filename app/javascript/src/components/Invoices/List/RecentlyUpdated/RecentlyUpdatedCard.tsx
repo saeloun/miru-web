@@ -20,7 +20,7 @@ const RecentlyUpdatedCard = ({ invoice, index }) => {
         {invoice.invoiceNumber}
       </h3>
       <div className="my-1 flex justify-center lg:my-3">
-        <Avatar />
+        <Avatar url={invoice.client.logo}/>
       </div>
       <div className="my-2 flex h-9 items-center justify-center text-center text-sm font-semibold capitalize leading-5 text-miru-dark-purple-1000 lg:mt-1 lg:mb-2.5 lg:h-11 lg:text-base">
         <p className="truncateOverflowText">{invoice.client.name}</p>

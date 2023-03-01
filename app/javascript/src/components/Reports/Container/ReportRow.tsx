@@ -1,7 +1,7 @@
 import React from "react";
 
 import { minToHHMM } from "helpers";
-import { ClientsIcon } from "miruIcons";
+import { Avatar } from "StyledComponents";
 
 import { ITimeEntry } from "../interface";
 
@@ -9,6 +9,7 @@ const ReportRow = ({
   id,
   project,
   client,
+  client_logo,
   note,
   teamMember,
   workDate,
@@ -17,9 +18,7 @@ const ReportRow = ({
   <div className="grid grid-cols-5 gap-2  border-b" key={id}>
     <div>
       <div className="flex items-center py-2.5 text-left">
-        <div className="mr-6 md:h-10 md:w-10">
-          <ClientsIcon className="m-0 object-contain" size={40} />
-        </div>
+        <Avatar classNameImg="mr-2 lg:mr-6" url={client_logo}/>
         <div>
           <p className="mb-1 whitespace-normal text-base font-semibold text-miru-dark-purple-1000">
             {project}

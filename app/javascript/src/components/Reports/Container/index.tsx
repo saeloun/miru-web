@@ -50,9 +50,9 @@ const Container = ({ selectedFilter }: ContainerProps) => {
     return minToHHMM(totalHours || 0);
   };
 
-  const getTableLogo = (groupedBy: string | null) => {
+  const getTableLogo = (groupedBy: string | null, client_logo: string) => {
     const logo = {
-      client: <ClientsIcon className="m-0 object-contain" size={40} />,
+      client:  <Avatar classNameImg="mr-2 lg:mr-6" url={client_logo}/>,
       project: <ClientsIcon className="m-0 object-contain" size={40} />,
       team_member: <Avatar />,
     };
@@ -87,7 +87,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
               {report.label !== "" && (
                 <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-5">
                   <div className="flex items-center">
-                    {getTableLogo(selectedFilter?.groupBy?.value || null)}
+                    {getTableLogo(selectedFilter?.groupBy?.value || null, report.client_logo)}
                     <h1 className="font-manrope text-xl font-bold text-miru-han-purple-1000">
                       {report.label}
                     </h1>
