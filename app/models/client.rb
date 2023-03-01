@@ -36,7 +36,7 @@ class Client < ApplicationRecord
   has_one_attached :logo
   belongs_to :company
 
-  accepts_nested_attributes_for :addresses
+  accepts_nested_attributes_for :addresses, reject_if: :attributes_blank?, allow_destroy: true
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
@@ -139,6 +139,10 @@ class Client < ApplicationRecord
       total_outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
       total_overdue_amount: status_and_amount["overdue"]
     }
+  end
+
+  def attributes_blank?(attributes)
+    attributes.except('id, address_line_2').values.all?(&:blank?)
   end
 
   private

@@ -63,10 +63,10 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
     def client_params
       params.require(:client).permit(:name, :email, :phone, :logo,
-                                     addresses_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin]
-                                    ).tap do |client_params|
-                                      client_params[:company_id] = current_company.id
-                                    end
+        addresses_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin]
+      ).tap do |client_params|
+        client_params[:company_id] = current_company.id
+      end
     end
 
     def update_client_params
