@@ -41,6 +41,8 @@ import {
   MapPin,
   Info,
   Globe,
+  Image,
+  Money,
 } from "phosphor-react";
 
 const accountsAgingIcon = require("./svgIcons/accountsAging.svg");
@@ -164,6 +166,9 @@ export const PhoneIcon = Phone;
 export const MapPinIcon = MapPin;
 export const InfoIcon = Info;
 export const GlobeIcon = Globe;
+export const ImageIcon = Image;
+export const MoneyIcon = Money;
+
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
 export const WarningCloseIconSVG = warningCloseIcon;
