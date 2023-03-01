@@ -27,6 +27,19 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
         }, headers: auth_headers(user)
       end
 
+      it "creates a new compamy & address" do
+        company = Company.last
+        change(Company, :count).by(1)
+        change(Address, :count).by(1)
+        expect(company.name).to eq("zero labs llc")
+        expect(company.business_phone).to eq("+01 123123")
+        expect(company.timezone).to eq("+5:30 Chennai")
+        expect(company.base_currency).to eq("INR")
+        expect(company.standard_price).to eq(1000)
+        expect(company.fiscal_year_end).to eq("Jan-Dec")
+        expect(company.date_format).to eq("DD-MM-YYYY")
+      end
+
       it "response should be successful" do
         expect(response).to be_successful
       end
