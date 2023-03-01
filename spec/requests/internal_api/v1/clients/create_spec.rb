@@ -5,6 +5,7 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Client#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:invalid_address_attributes) { { city: "Brooklyn", state: "NY", country: "US", pin: "12238" } }
 
   context "when user is an admin" do
     before do
@@ -18,10 +19,10 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
         address_details = attributes_for(:address)
         client = attributes_for(:client, address_attributes: address_details)
         send_request :post, internal_api_v1_clients_path(client:), headers: auth_headers(user)
+
         expect(response).to have_http_status(:ok)
         expected_attrs = [ "address", "email", "id", "logo", "name", "phone" ]
         expect(json_response["client"].keys.sort).to match(expected_attrs)
-
         expect(json_response["client"]["address"]["address_line_1"]).to eq(address_details[:address_line_1])
         expect(json_response["client"]["address"]["address_line_2"]).to eq(address_details[:address_line_2])
         expect(json_response["client"]["address"]["city"]).to eq(address_details[:city])
@@ -36,13 +37,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
             email: "test@client.com",
             description: "Rspec Test",
             phone: "7777777777",
-            address_attributes: {
-              address_line_1: "Somewhere on Earth",
-              city: "Brooklyn",
-              state: "NY",
-              country: "US",
-              pin: "12238"
-            }
+            address_attributes: attributes_for(:address)
           }), headers: auth_headers(user)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(json_response["errors"]).to eq("Name can't be blank")
@@ -55,12 +50,7 @@ RSpec.describe "InternalApi::V1::Client#create", type: :request do
             email: "test@client.com",
             description: "Rspec Test",
             phone: "7777777777",
-            address_attributes: {
-              city: "Brooklyn",
-              state: "NY",
-              country: "US",
-              pin: "12238"
-            }
+            address_attributes: invalid_address_attributes
           }), headers: auth_headers(user)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(json_response["errors"]).to eq("Address address line 1 can't be blank")
