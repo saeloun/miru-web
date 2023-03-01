@@ -67,7 +67,7 @@ class Invoice < ApplicationRecord
   store_accessor :payment_infos, :stripe_payment_intent
 
   before_validation :set_external_view_key, on: :create
-  after_commit :reindex_invoices
+  after_commit :reindex_invoice
 
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }
@@ -159,8 +159,8 @@ class Invoice < ApplicationRecord
     CompanyDateFormattingService.new(issue_date, company:).process
   end
 
-  def reindex_invoices
-    Invoice.reindex
+  def reindex_invoice
+    Invoice.search_index.refresh
   end
 
   private
