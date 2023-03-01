@@ -20,7 +20,7 @@ module Reports::ClientRevenues
 
       def clients
         current_clients.order("name asc").includes(:invoices).map do |client|
-          client.payment_summary(duration_params)
+          client.payment_summary(duration_params).merge({ logo: client.logo_url })
         end
       end
 

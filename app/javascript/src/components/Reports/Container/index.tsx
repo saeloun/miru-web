@@ -50,9 +50,9 @@ const Container = ({ selectedFilter }: ContainerProps) => {
     return minToHHMM(totalHours || 0);
   };
 
-  const getTableLogo = (groupedBy: string | null, client_logo: string) => {
+  const getTableLogo = (groupedBy: string | null, clientLogo: string) => {
     const logo = {
-      client: <Avatar classNameImg="mr-2 lg:mr-6" url={client_logo} />,
+      client: <Avatar classNameImg="mr-2 lg:mr-6" url={clientLogo} />,
       project: <ClientsIcon className="m-0 object-contain" size={40} />,
       team_member: <Avatar />,
     };
@@ -62,10 +62,11 @@ const Container = ({ selectedFilter }: ContainerProps) => {
     ) : null;
   };
 
-  const getEntryList = entries =>
+  const getEntryList = (entries, clientLogo: string) =>
     entries.map((timeEntry, index) => (
-      <ReportRow key={`${timeEntry.client}-${index}`} {...timeEntry} />
-    ));
+      <ReportRow key={`${timeEntry.client}-${index}`} timeEntry = {timeEntry} clientLogo={clientLogo}/>
+    )
+    );
 
   const getAlphabaticallySortedReportList = (reports: any[] | null = []) =>
     reports?.sort((a, b) => {
@@ -105,7 +106,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
               )}
               <ReportHeader />
               <div className="mb-6">
-                {report.entries.length > 0 && getEntryList(report.entries)}
+                {report.entries.length > 0 && getEntryList(report.entries, report.clientLogo)}
               </div>
             </Fragment>
           )

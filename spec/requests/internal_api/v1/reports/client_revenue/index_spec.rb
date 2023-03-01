@@ -60,7 +60,6 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
              totalAmount: @client2_paid_amount + @client2_unpaid_amount + @client2_overdue_amount,
              overdueAmount: @client2_overdue_amount
            }]
-
         expect(json_response["clients"]).to eq(JSON.parse(expected_clients.to_json))
       end
 
