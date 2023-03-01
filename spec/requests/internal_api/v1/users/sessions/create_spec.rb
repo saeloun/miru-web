@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Sessions#create", type: :request do
+RSpec.describe "InternalApi::V1::Users::Sessions#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id, password: "welcome") }
 

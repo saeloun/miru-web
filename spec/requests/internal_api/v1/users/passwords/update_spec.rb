@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Passwords#update", type: :request do
+RSpec.describe "InternalApi::V1::Users::Passwords#update", type: :request do
   let(:user) { create(:user) }
 
   describe "PUT #update" do

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Passwords#create", type: :request do
+RSpec.describe "InternalApi::V1::Users::Passwords#create", type: :request do
   let(:user) { create(:user) }
 
   describe "POST #create" do

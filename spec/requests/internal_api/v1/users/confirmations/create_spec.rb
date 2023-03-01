@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Confirmations#create", type: :request do
+RSpec.describe "InternalApi::V1::Users::Confirmations#create", type: :request do
   let(:user) { create(:user) }
 
   describe "POST #create" do
