@@ -5,7 +5,9 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Clients#update", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:client) { create(:client, company:, name: "Client", email: "client@example.com", address_attributes: attributes_for(:address)) }
+  let(:client) {
+    create(:client, company:, name: "Client", email: "client@example.com", address_attributes: attributes_for(:address))
+  }
 
   context "when user is an admin" do
     before do
