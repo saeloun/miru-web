@@ -5,6 +5,12 @@ require "rails_helper"
 RSpec.describe "Companies#create", type: :request do
   let(:company) { create(:company, address_attributes: attributes_for(:address)) }
   let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:address) {
+                  {
+                    address_line_1: "Saeloun Inc", address_line_2: "475 Clermont Ave",
+                    state: "NY", city: "Brooklyn", country: "US", pin: "12238"
+                  }
+                }
 
   context "when user is an admin" do
     before do
@@ -26,13 +32,24 @@ RSpec.describe "Companies#create", type: :request do
               standard_price: "1000",
               fiscal_year_end: "April",
               date_format: "DD/MM/YYYY",
-              address_attributes: attributes_for(:address)
+              address_attributes: address
             }
           }, headers: auth_headers(user))
       end
 
       it "creates a new company" do
+        company = Company.last
+        company_address = company.address
         change(Company, :count).by(1)
+        change(Address, :count).by(1)
+        expect(company.name).to eq("Test Company")
+        expect(company.standard_price).to eq(1000)
+        expect(company.fiscal_year_end).to eq("April")
+        expect(company.date_format).to eq("DD/MM/YYYY")
+        expect(company_address.address_line_1).to eq("Saeloun Inc")
+        expect(company_address.city).to eq("Brooklyn")
+        expect(company_address.country).to eq("US")
+        expect(company_address.pin).to eq("12238")
       end
 
       it "sets the current_workspace_id to current_user" do
@@ -86,20 +103,29 @@ RSpec.describe "Companies#create", type: :request do
           :post, company_path, params: {
             company: {
               name: "Test Company",
-              old_address: "test address",
               business_phone: "Test phone",
               country: "India",
               timezone: "IN",
               base_currency: "Rs",
               standard_price: "1000",
               fiscal_year_end: "April",
-              date_format: "DD/MM/YYYY"
+              date_format: "DD/MM/YYYY",
+              address_attributes: attributes_for(:address)
             }
           }, headers: auth_headers(user))
       end
 
       it "will be created" do
+        company = Company.last
         change(Company, :count).by(1)
+        change(Address, :count).by(1)
+        expect(company.name).to eq("Test Company")
+        expect(company.business_phone).to eq("Test phone")
+        expect(company.base_currency).to eq("Rs")
+        expect(company.timezone).to eq("IN")
+        expect(company.standard_price).to eq(1000)
+        expect(company.fiscal_year_end).to eq("April")
+        expect(company.date_format).to eq("DD/MM/YYYY")
       end
 
       it "sets the current_workspace_id to current_user" do
@@ -124,20 +150,27 @@ RSpec.describe "Companies#create", type: :request do
             :post, company_path, params: {
               company: {
                 name: "Test Company",
-                old_address: "test address",
                 business_phone: "Test phone",
                 country: "India",
                 timezone: "IN",
                 base_currency: "Rs",
                 standard_price: "1000",
                 fiscal_year_end: "April",
-                date_format: "DD/MM/YYYY"
+                date_format: "DD/MM/YYYY",
+                address_attributes: attributes_for(:address)
               }
             }, headers: auth_headers(user))
         end
 
         it "will be created" do
+          company = Company.last
           change(Company, :count).by(1)
+          expect(company.name).to eq("Test Company")
+          expect(company.business_phone).to eq("Test phone")
+          expect(company.timezone).to eq("IN")
+          expect(company.standard_price).to eq(1000)
+          expect(company.fiscal_year_end).to eq("April")
+          expect(company.date_format).to eq("DD/MM/YYYY")
         end
 
         it "sets the current_workspace_id to current_user" do
@@ -185,14 +218,14 @@ RSpec.describe "Companies#create", type: :request do
         :post, company_path, params: {
           company: {
             name: "Test Company",
-            old_address: "test address",
             business_phone: "Test phone",
             country: "India",
             timezone: "IN",
             base_currency: "Rs",
             standard_price: "1000",
             fiscal_year_end: "April",
-            date_format: "DD/MM/YYYY"
+            date_format: "DD/MM/YYYY",
+            address_attributes: attributes_for(:address)
           }
         })
       expect(response).to redirect_to(user_session_path)
