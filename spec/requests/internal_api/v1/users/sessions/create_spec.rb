@@ -31,4 +31,17 @@ RSpec.describe "InternalApi::V1::Users::Sessions#create", type: :request do
       expect(json_response["error"]).to eq(I18n.t("sessions.failure.invalid"))
     end
   end
+
+  context "when logged in with invalid email of a user who does not exist" do
+    it "not able to log in" do
+      send_request :post, internal_api_v1_users_login_path, params: {
+        user: {
+          email: "miru@example.com",
+          password: user.password
+        }
+      }
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json_response["error"]).to eq(I18n.t("sessions.failure.invalid"))
+    end
+  end
 end
