@@ -3,7 +3,6 @@
 company = Company.create!(
   {
     name: "Saeloun Inc",
-    old_address: "475 Clermont Ave, Brooklyn, NY-12238",
     business_phone: "+1 9296207865",
     base_currency: "USD",
     standard_price: 1000,

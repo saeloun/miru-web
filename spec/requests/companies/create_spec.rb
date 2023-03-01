@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Companies#create", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, address_attributes: attributes_for(:address)) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   context "when user is an admin" do
@@ -19,14 +19,14 @@ RSpec.describe "Companies#create", type: :request do
           :post, company_path, params: {
             company: {
               name: "Test Company",
-              old_address: "test address",
               business_phone: "Test phone",
               country: "India",
               timezone: "IN",
               base_currency: "Rs",
               standard_price: "1000",
               fiscal_year_end: "April",
-              date_format: "DD/MM/YYYY"
+              date_format: "DD/MM/YYYY",
+              address_attributes: attributes_for(:address)
             }
           }, headers: auth_headers(user))
       end
