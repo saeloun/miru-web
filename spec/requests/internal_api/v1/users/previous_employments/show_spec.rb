@@ -22,7 +22,8 @@ RSpec.describe "PreviousEmployments#show", type: :request do
         before do
           user.add_role :owner, company
           sign_in user
-          send_request :get, internal_api_v1_user_previous_employment_path(user, previous_employment_of_user)
+          send_request :get, internal_api_v1_user_previous_employment_path(user, previous_employment_of_user),
+            headers: auth_headers(user)
         end
 
         it "is successful" do
@@ -38,7 +39,8 @@ RSpec.describe "PreviousEmployments#show", type: :request do
           create(:employment, company:, user: employee)
           user.add_role :owner, company
           sign_in user
-          send_request :get, internal_api_v1_user_previous_employment_path(employee, previous_employment_of_employee)
+          send_request :get, internal_api_v1_user_previous_employment_path(employee, previous_employment_of_employee),
+            headers: auth_headers(user)
         end
 
         it "is successful" do
@@ -53,7 +55,8 @@ RSpec.describe "PreviousEmployments#show", type: :request do
           create(:employment, company:, user:)
           user.add_role :owner, company
           sign_in user
-          send_request :get, internal_api_v1_user_previous_employment_path("abc", previous_employment_of_employee)
+          send_request :get, internal_api_v1_user_previous_employment_path("abc", previous_employment_of_employee),
+            headers: auth_headers(user)
         end
 
         it "is not found" do
@@ -66,7 +69,8 @@ RSpec.describe "PreviousEmployments#show", type: :request do
           create(:employment, company:, user:)
           user.add_role :owner, company
           sign_in user
-          send_request :get, internal_api_v1_user_previous_employment_path(user, previous_employment_of_employee)
+          send_request :get, internal_api_v1_user_previous_employment_path(user, previous_employment_of_employee),
+            headers: auth_headers(user)
         end
 
         it "is not found" do
@@ -82,7 +86,8 @@ RSpec.describe "PreviousEmployments#show", type: :request do
           create(:employment, company:, user: employee)
           user.add_role :admin, company
           sign_in user
-          send_request :get, internal_api_v1_user_previous_employment_path(employee, previous_employment_of_employee)
+          send_request :get, internal_api_v1_user_previous_employment_path(employee, previous_employment_of_employee),
+            headers: auth_headers(user)
         end
 
         it "is successful" do
@@ -100,7 +105,8 @@ RSpec.describe "PreviousEmployments#show", type: :request do
           create(:employment, company:, user:)
           user.add_role :employee, company
           sign_in user
-          send_request :get, internal_api_v1_user_previous_employment_path(user, previous_employment_of_user)
+          send_request :get, internal_api_v1_user_previous_employment_path(user, previous_employment_of_user),
+            headers: auth_headers(user)
         end
 
         it "is successful" do
@@ -118,7 +124,8 @@ RSpec.describe "PreviousEmployments#show", type: :request do
           user.add_role :employee, company
           employee.add_role :employee, company
           sign_in user
-          send_request :get, internal_api_v1_user_previous_employment_path(user, previous_employment_of_employee)
+          send_request :get, internal_api_v1_user_previous_employment_path(user, previous_employment_of_employee),
+            headers: auth_headers(user)
         end
 
         it "is not found" do
@@ -135,7 +142,8 @@ RSpec.describe "PreviousEmployments#show", type: :request do
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
-      send_request :get, internal_api_v1_user_previous_employment_path(user, previous_employment_of_employee2)
+      send_request :get, internal_api_v1_user_previous_employment_path(user, previous_employment_of_employee2),
+        headers: auth_headers(user)
     end
 
     it "is not found" do

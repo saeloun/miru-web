@@ -180,7 +180,7 @@ const ManualEntry = ({
         <tr>
           <td className="relative w-full" colSpan={5}>
             <div
-              className="box-shadow absolute m-0 w-full rounded bg-white text-sm font-medium text-miru-dark-purple-1000"
+              className="box-shadow absolute z-40 m-0 w-full rounded bg-white text-sm font-medium text-miru-dark-purple-1000"
               ref={wrapperRef}
             >
               {getNewLineItemDropdown()}
@@ -192,7 +192,7 @@ const ManualEntry = ({
         <td className="w-full p-1" colSpan={2}>
           <TextareaAutosize
             className="focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-            placeholder="Description"
+            placeholder="Enter Description"
             value={description}
             onChange={e => setDescription(e.target["value"])}
             onKeyDown={handleEnter}

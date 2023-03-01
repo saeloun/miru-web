@@ -18,7 +18,7 @@ RSpec.describe "InternalApi::V1::Payments::Providers#index", type: :request do
 
     describe "GET /internal_api/v1/payments/providers" do
       it "returns providers" do
-        send_request :get, internal_api_v1_payments_providers_path
+        send_request :get, internal_api_v1_payments_providers_path, headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         expect(json_response["paymentsProviders"].size).to eq(3)
       end
@@ -34,7 +34,7 @@ RSpec.describe "InternalApi::V1::Payments::Providers#index", type: :request do
 
     describe "GET /internal_api/v1/payments/providers" do
       it "returns forbidden" do
-        send_request :get, internal_api_v1_payments_providers_path
+        send_request :get, internal_api_v1_payments_providers_path, headers: auth_headers(user)
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -48,7 +48,7 @@ RSpec.describe "InternalApi::V1::Payments::Providers#index", type: :request do
 
       describe "GET /internal_api/v1/payments/providers" do
         it "returns forbidden" do
-          send_request :get, internal_api_v1_payments_providers_path
+          send_request :get, internal_api_v1_payments_providers_path, headers: auth_headers(user)
           expect(response).to have_http_status(:forbidden)
         end
       end
@@ -60,7 +60,7 @@ RSpec.describe "InternalApi::V1::Payments::Providers#index", type: :request do
       it "returns unauthorized" do
         send_request :get, internal_api_v1_payments_providers_path
         expect(response).to have_http_status(:unauthorized)
-        expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+        expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
       end
     end
   end

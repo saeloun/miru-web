@@ -16,7 +16,7 @@ RSpec.describe "Client#destroy", type: :request do
 
     context "when client exists" do
       before do
-        send_request(:delete, internal_api_v1_client_path(client.id))
+        send_request(:delete, internal_api_v1_client_path(client.id), headers: auth_headers(user))
       end
 
       it "deletes the client" do
@@ -30,7 +30,7 @@ RSpec.describe "Client#destroy", type: :request do
       client_id = rand(2...1000)
 
       before do
-        send_request(:delete, internal_api_v1_client_path(client_id))
+        send_request(:delete, internal_api_v1_client_path(client_id), headers: auth_headers(user))
       end
 
       it "responds with client not found error" do
@@ -46,7 +46,7 @@ RSpec.describe "Client#destroy", type: :request do
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request(:delete, internal_api_v1_client_path(client.id))
+      send_request(:delete, internal_api_v1_client_path(client.id), headers: auth_headers(user))
     end
 
     it "is not permitted to delete client" do
@@ -60,7 +60,7 @@ RSpec.describe "Client#destroy", type: :request do
         create(:employment, company:, user:)
         user.add_role :book_keeper, company
         sign_in user
-        send_request(:delete, internal_api_v1_client_path(client.id))
+        send_request(:delete, internal_api_v1_client_path(client.id), headers: auth_headers(user))
       end
 
       it "is not permitted to delete client" do
@@ -76,7 +76,7 @@ RSpec.describe "Client#destroy", type: :request do
       send_request(:delete, internal_api_v1_client_path(client.id))
       expect(response).to have_http_status(:unauthorized)
       expect(JSON.parse(response.body, { object_class: OpenStruct }).error)
-        .to eq("You need to sign in or sign up before continuing.")
+        .to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end
