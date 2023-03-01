@@ -11,9 +11,9 @@ const TableRow = ({ currency, report }) => {
     logo,
     name,
     outstandingAmount,
+    overdueAmount,
     paidAmount,
     totalAmount,
-    overdueAmount,
   }: RevenueByClients = report;
 
   return (
