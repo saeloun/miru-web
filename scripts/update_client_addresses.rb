@@ -10,7 +10,8 @@ def copy_address_into_address_table
     puts " * * * * * * * * * Client * * * * * * Id: #{client.id} * * * * * * Name: #{client.name}"
     address_record = client.address
     unless address_record.present?
-      address = client.build_address(address_line_1: (client.old_address || ""), city: "", state: "", country: "", pin: "")
+      old_address = client.old_address || ""
+      address = client.build_address(address_line_1: old_address, city: "", state: "", country: "", pin: "")
       address.save!(validate: false)
     end
   end
