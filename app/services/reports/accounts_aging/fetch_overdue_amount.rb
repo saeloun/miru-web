@@ -23,6 +23,7 @@ module Reports::AccountsAging
           {
             id: client.id,
             name: client.name,
+            logo: client.logo_url,
             amount_overdue: amount_overdue_by_date_range(client.invoices)
           }
         end
