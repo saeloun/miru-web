@@ -86,6 +86,7 @@ class Invoice < ApplicationRecord
 
   delegate :name, to: :client, prefix: :client
   delegate :email, to: :client, prefix: :client
+  delegate :logo_url, to: :client, prefix: :client
 
   searchkick filterable: [:issue_date, :created_at, :updated_at, :client_name, :status, :invoice_number ],
     word_middle: [:invoice_number, :client_name]
