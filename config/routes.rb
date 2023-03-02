@@ -10,8 +10,6 @@ end
 
 Rails.application.routes.draw do
   devise_for :users, controllers: {
-    registrations: "users/registrations",
-    sessions: "users/sessions",
     passwords: "users/passwords",
     omniauth_callbacks: "users/omniauth_callbacks"
   }
@@ -33,7 +31,6 @@ Rails.application.routes.draw do
   end
   mount Sidekiq::Web, at: "/sidekiq"
 
-  root to: "root#index"
   draw(:internal_api)
   draw(:api)
   resources :dashboard, only: [:index]
@@ -79,6 +76,8 @@ Rails.application.routes.draw do
   namespace :webhooks do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
   end
+
+  root "home#index"
 
   match "*path", via: :all, to: "home#index", constraints: lambda { |req|
     req.path.exclude? "rails/active_storage"
