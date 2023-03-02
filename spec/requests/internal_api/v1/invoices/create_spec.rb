@@ -42,6 +42,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
                           "invoiceLineItems", "invoiceNumber", "issueDate",
                           "outstandingAmount", "reference", "status", "tax"]
         expect(json_response.keys.sort).to match(expected_attrs)
+        Invoice.reindex
         assert_equal ["SAI-C1-03"], Invoice.search("SAI-C1-03").map(&:invoice_number)
       end
 
