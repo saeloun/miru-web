@@ -35,6 +35,13 @@ module Reports::TimeEntries
       end
     end
 
+    def group_by_project
+      grouped_data = es_response.group_by(&:project_id)
+      grouped_data.map do | project_id, entries |
+        { label: group_label(entries.first), entries: }
+      end
+    end
+
     def group_label(timesheet_entry, bucket_name = nil)
       case group_by
       when "team_member"
@@ -42,7 +49,7 @@ module Reports::TimeEntries
       when "client"
         timesheet_entry.client_name
       when "project"
-        timesheet_entry.project.name
+        timesheet_entry.project_name
       when "week"
         start_date = DateTime.parse(bucket_name)
         end_date = start_date + 6.days

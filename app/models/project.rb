@@ -40,6 +40,8 @@ class Project < ApplicationRecord
   after_discard :discard_project_members
   delegate :name, to: :client, prefix: true, allow_nil: true
 
+  scope :with_ids, -> (project_ids) { where(id: project_ids) if project_ids.present? }
+
   searchkick text_middle: [:name, :client_name]
 
   # Concerns

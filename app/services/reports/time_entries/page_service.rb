@@ -8,7 +8,8 @@ class Reports::TimeEntries::PageService < ApplicationService
   POSSIBLE_GROUP_BY_INPUTS = ["team_member", "client", "project", "week"].freeze
   PER_PAGE = {
     users: 5,
-    clients: 3
+    clients: 3,
+    projects: 3
   }
 
   def initialize(params, current_company)
@@ -49,6 +50,14 @@ class Reports::TimeEntries::PageService < ApplicationService
     }
   end
 
+  def project_filter
+    pagy_data, projects = pagy(projects_query, items: PER_PAGE[:projects], page:)
+    {
+      pagy_data:,
+      es_filter: { project_id: projects.pluck(:id) }
+    }
+  end
+
   def pagination_details(pagy_data)
     {
       pages: pagy_data.pages,
@@ -71,6 +80,13 @@ class Reports::TimeEntries::PageService < ApplicationService
     def clients_query
       current_company.clients
         .with_ids(params[:client])
+        .order(:name)
+        .select(:id)
+    end
+
+    def projects_query
+      current_company.projects
+        .with_ids(params[:project])
         .order(:name)
         .select(:id)
     end
