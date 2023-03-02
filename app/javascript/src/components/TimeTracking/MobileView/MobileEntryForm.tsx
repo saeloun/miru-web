@@ -286,12 +286,12 @@ const AddEntryMobile = ({
             >
               <CustomInputText
                 disabled
-                dataCy="date_of_birth"
-                id="date_of_birth"
-                label="Date of Birth"
-                name="date_of_birth"
+                dataCy="date"
+                id="date"
+                label="Date"
+                name="date"
                 type="text"
-                value={selectedDate}
+                value={dayjs(selectedDate).format("MM.DD.YYYY")}
                 onChange={e => {
                   setSelectedDate(e.target.value);
                 }}
@@ -332,15 +332,12 @@ const AddEntryMobile = ({
                 weight="bold"
               />
             </Button>
-            {duration ? (
-              <span className="text-center text-xl font-bold text-miru-dark-purple-1000 ">
-                {duration}
-              </span>
-            ) : (
-              <span className="text-center text-xl font-bold text-miru-dark-purple-200 ">
-                00:00
-              </span>
-            )}
+            <input
+              className="laceholder:text-miru-dark-purple-200 focus:outline-none cursor-pointer rounded text-center text-xl font-bold text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+              placeholder="00:00"
+              value={duration}
+              onChange={e => setDuration(e.target.value)}
+            />
             <Button onClick={handleIncreaseTime}>
               <PlusIcon
                 className="m-4 text-miru-dark-purple-1000"

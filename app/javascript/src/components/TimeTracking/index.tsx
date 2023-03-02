@@ -1,17 +1,15 @@
 /* eslint-disable no-unexpected-multiline */
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 
 import * as dayjs from "dayjs";
 import * as updateLocale from "dayjs/plugin/updateLocale";
 import * as weekday from "dayjs/plugin/weekday";
 import { minToHHMM } from "helpers";
 import Logger from "js-logger";
-import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import timesheetEntryApi from "apis/timesheet-entry";
 import timeTrackingApi from "apis/timeTracking";
-import CustomDatePicker from "common/CustomDatePicker";
 import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";
 import { TOASTER_DURATION } from "constants/index";
@@ -21,6 +19,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import DatesInWeek from "./DatesInWeek";
 import EntryCard from "./EntryCard";
 import EntryForm from "./EntryForm";
+import Header from "./MobileView/Header";
 import MonthCalender from "./MonthCalender";
 import WeeklyEntries from "./WeeklyEntries";
 
@@ -61,15 +60,12 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   );
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
   const [updateView, setUpdateView] = useState(true);
-  const [openOsCalendar, setOpenOsCalendar] = useState(false);
   const { isDesktop } = useUserContext();
   const employeeOptions = employees.map(e => ({
     value: `${e["id"]}`,
     label: `${e["first_name"]} ${e["last_name"]}`,
   }));
   //setEmployees(employeeOptions);
-
-  const datePickerRef = useRef(null);
 
   useEffect(() => {
     sendGAPageView();
@@ -344,65 +340,24 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     <div className="pb-14">
       <ToastContainer autoClose={TOASTER_DURATION} />
       {!isDesktop && (
-        <div className="flex w-full items-center justify-between bg-miru-han-purple-1000 px-3 py-3 text-white">
-          <button
-            className="items-center justify-center rounded border px-6 py-1 text-center text-xs font-bold leading-4"
-            onClick={() => {
-              setWeekDay(0);
-              setSelectDate(dayjs().weekday());
-            }}
-          >
-            TODAY
-          </button>
-          <div className="relative flex">
-            <button
-              className="flex flex-col items-center justify-center"
-              onClick={handlePreDay}
-            >
-              <CaretCircleLeftIcon size={20} />
-            </button>
-            {!!dayInfo.length && (
-              <>
-                <label
-                  className="mx-3 text-center text-sm font-medium leading-5"
-                  htmlFor="Os_calendar"
-                  onClick={() => {
-                    setOpenOsCalendar(!openOsCalendar);
-                  }}
-                >
-                  <span>{parseInt(dayInfo[selectDate]["date"], 10)}</span>
-                  <span className="mx-1">{dayInfo[selectDate].month}</span>
-                  <span>{dayInfo[selectDate]["year"]}</span>
-                </label>
-                <div className="absolute right-50 top-8" ref={datePickerRef}>
-                  {openOsCalendar && (
-                    <CustomDatePicker
-                      date={dayjs(selectedFullDate).toDate()}
-                      setVisibility={setOpenOsCalendar}
-                      wrapperRef={datePickerRef}
-                      handleChange={date => {
-                        setOpenOsCalendar(false);
-                        handleAddEntryDateChange(date);
-                      }}
-                    />
-                  )}
-                </div>
-              </>
-            )}
-            <button
-              className="flex flex-col items-center justify-center"
-              onClick={handleNextDay}
-            >
-              <CaretCircleRightIcon size={20} />
-            </button>
-          </div>
-          <div className="flex items-center">
-            <p className="mr-2 text-xs font-normal leading-4">Total</p>
-            <p className="text-right text-base font-extrabold leading-5">
-              {view === "week" ? weeklyTotalHours : dailyTotalHours[selectDate]}
-            </p>
-          </div>
-        </div>
+        <Header
+          currentMonthNumber={currentMonthNumber}
+          currentYear={currentYear}
+          dailyTotalHours={dailyTotalHours}
+          dayInfo={dayInfo}
+          handleAddEntryDateChange={handleAddEntryDateChange}
+          handleNextDay={handleNextDay}
+          handleNextWeek={handleNextWeek}
+          handlePreDay={handlePreDay}
+          handlePrevWeek={handlePrevWeek}
+          monthsAbbr={monthsAbbr}
+          selectDate={selectDate}
+          selectedFullDate={selectedFullDate}
+          setSelectDate={setSelectDate}
+          setWeekDay={setWeekDay}
+          view={view}
+          weeklyTotalHours={weeklyTotalHours}
+        />
       )}
       <div className="mt-0 h-full p-4 lg:mt-6 lg:p-0">
         <div className="mb-6 flex items-center justify-between">
@@ -441,6 +396,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             <MonthCalender
               currentMonthNumber={currentMonthNumber}
               currentYear={currentYear}
+              dayInfo={dayInfo}
               entryList={entryList}
               fetchEntries={fetchEntries}
               handleWeekTodayButton={handleWeekTodayButton}
@@ -456,46 +412,24 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           ) : (
             isDesktop && (
               <div className="mb-6">
-                <div className="flex h-10 w-full items-center justify-between bg-miru-han-purple-1000">
-                  <button
-                    className="ml-4 flex h-6 w-20 items-center justify-center rounded border-2 text-xs font-bold tracking-widest text-white"
-                    onClick={() => {
-                      setWeekDay(0);
-                      setSelectDate(dayjs().weekday());
-                    }}
-                  >
-                    TODAY
-                  </button>
-                  <div className="flex">
-                    <button
-                      className="flex h-6 w-6 flex-col items-center justify-center rounded-xl border-2 text-white"
-                      onClick={handlePrevWeek}
-                    >
-                      &lt;
-                    </button>
-                    {!!dayInfo.length && (
-                      <p className="mx-6 w-40 text-white">
-                        {parseInt(dayInfo[0]["date"], 10)} {dayInfo[0].month} -{" "}
-                        {parseInt(dayInfo[6]["date"], 10)} {dayInfo[6]["month"]}{" "}
-                        {dayInfo[6]["year"]}
-                      </p>
-                    )}
-                    <button
-                      className="flex h-6 w-6 flex-col items-center justify-center rounded-xl border-2 text-white"
-                      onClick={handleNextWeek}
-                    >
-                      &gt;
-                    </button>
-                  </div>
-                  <div className="mr-12 flex">
-                    <p className="mr-2 text-white">Total</p>
-                    <p className="font-extrabold text-white">
-                      {view === "week"
-                        ? weeklyTotalHours
-                        : dailyTotalHours[selectDate]}
-                    </p>
-                  </div>
-                </div>
+                <Header
+                  currentMonthNumber={currentMonthNumber}
+                  currentYear={currentYear}
+                  dailyTotalHours={dailyTotalHours}
+                  dayInfo={dayInfo}
+                  handleAddEntryDateChange={handleAddEntryDateChange}
+                  handleNextDay={handleNextDay}
+                  handleNextWeek={handleNextWeek}
+                  handlePreDay={handlePreDay}
+                  handlePrevWeek={handlePrevWeek}
+                  monthsAbbr={monthsAbbr}
+                  selectDate={selectDate}
+                  selectedFullDate={selectedFullDate}
+                  setSelectDate={setSelectDate}
+                  setWeekDay={setWeekDay}
+                  view={view}
+                  weeklyTotalHours={weeklyTotalHours}
+                />
                 <DatesInWeek
                   dayInfo={dayInfo}
                   selectDate={selectDate}
@@ -601,7 +535,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             )
           )}
         {/* entry cards for week */}
-        {view === "week" && isDesktop && (
+        {view === "week" && (
           <div>
             {weeklyData.map((entry, weekCounter) => (
               <WeeklyEntries
