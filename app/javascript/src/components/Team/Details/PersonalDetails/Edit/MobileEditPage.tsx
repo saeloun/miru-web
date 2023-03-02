@@ -165,7 +165,7 @@ const MobileEditDetails = ({
       </span>
       <div className="mt-2 flex w-full flex-row">
         <div className="w-1/2 px-1">
-          <div className="outline px-2text-sm relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white pb-4 pt-2">
+          <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white px-2 pb-4 pt-2 text-sm">
             <PhoneInput
               className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
               flags={flags}
