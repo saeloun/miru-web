@@ -13,11 +13,17 @@ class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::Applica
 
     respond_to do |format|
       format.csv { send_data Reports::TimeEntries::GenerateCsv
-        .new(Reports::TimeEntries::ReportService.new(params, current_company, download: true).process[:entries])
+        .new(
+          Reports::TimeEntries::ReportService.new(params, current_company, download: true).process[:entries],
+          current_company
+        )
         .process
       }
       format.pdf { send_data Reports::TimeEntries::GeneratePdf
-        .new(Reports::TimeEntries::ReportService.new(params, current_company, download: true).process[:reports])
+        .new(
+          Reports::TimeEntries::ReportService.new(params, current_company, download: true).process[:reports],
+          current_company
+        )
         .process
 }
     end

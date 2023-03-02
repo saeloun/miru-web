@@ -4,10 +4,11 @@ require "csv"
 
 module Reports::TimeEntries
   class GenerateCsv
-    attr_reader :entries
+    attr_reader :entries, :current_company
 
-    def initialize(entries)
+    def initialize(entries, current_company)
       @entries = entries
+      @current_company = current_company
     end
 
     def process
@@ -18,12 +19,18 @@ module Reports::TimeEntries
             "#{entry.project_name}",
             "#{entry.client_name}",
             "#{entry.note}",
-            "#{entry.user_full_name}",
-            "#{entry.work_date.strftime('%Y-%m-%d')}",
-            "#{entry.formatted_duration}"
+            "#{entry.user_name}",
+            "#{format_date(entry.work_date)}",
+            "#{DurationFormatter.new(entry.duration).process}"
           ]
         end
       end
     end
+
+    private
+
+      def format_date(date)
+        CompanyDateFormattingService.new(date, company: current_company, is_es_date: true).process
+      end
   end
 end
