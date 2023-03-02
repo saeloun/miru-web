@@ -45,7 +45,7 @@ const PaymentSettings = () => {
   }, [isStripeConnected]);
 
   return (
-    <div className="flex w-4/5 flex-col">
+    <div className="flex w-full flex-col">
       <Header
         showButtons={false}
         subTitle="Connect payment gateways"
