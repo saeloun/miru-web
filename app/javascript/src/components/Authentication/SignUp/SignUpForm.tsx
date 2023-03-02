@@ -37,7 +37,7 @@ const SignUpForm = () => {
     };
     try {
       const res = await authenticationApi.signup(payload);
-      window.location.href = `/email_confirmation?email=${res.data.email}`;
+      window.location.assign(`/email_confirmation?email=${res.data.email}`);
     } catch (error) {
       Logger.error(error);
     }

@@ -9,7 +9,7 @@ import { useUserContext } from "context/UserContext";
 const EmailVerification = () => {
   const { user } = useUserContext();
   //@ts-expect-error for email on user object
-  const { email } = user;
+  const email = user?.email;
   const emailId = new URLSearchParams(window.location.search).get("email");
 
   const handleKeyPress = useCallback(event => {
