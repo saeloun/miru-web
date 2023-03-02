@@ -20,6 +20,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
       let(:invoice) {
         attributes_for(
           :invoice,
+          invoice_number: "SAI-C1-03",
           client: company.clients.first,
           client_id: company.clients.first.id,
           status: :draft,
@@ -33,7 +34,7 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
         )
       }
 
-      it "creates invoice successfully" do
+      it "creates invoice successfully & reindex it" do
         send_request :post, internal_api_v1_invoices_path(invoice:), headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         expected_attrs = ["amount", "amountDue", "amountPaid",
@@ -41,6 +42,8 @@ RSpec.describe "InternalApi::V1::Invoices#create", type: :request do
                           "invoiceLineItems", "invoiceNumber", "issueDate",
                           "outstandingAmount", "reference", "status", "tax"]
         expect(json_response.keys.sort).to match(expected_attrs)
+        Invoice.reindex
+        assert_equal ["SAI-C1-03"], Invoice.search("SAI-C1-03").map(&:invoice_number)
       end
 
       context "when client doesn't exist" do
