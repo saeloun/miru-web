@@ -18,7 +18,7 @@ class InternalApi::V1::Reports::OutstandingOverdueInvoicesController < InternalA
       @_clients ||= current_company.clients.order("name asc").includes(:invoices).map do |client|
                       client
                         .outstanding_and_overdue_invoices
-                        .merge({ logo: client.logo_url })
+                        .merge({ name: client.name, logo: client.logo_url })
                     end
     end
 end

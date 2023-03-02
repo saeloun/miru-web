@@ -36,7 +36,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(reports["label"]).to eq("")
         expect(reports["entries"].size).to eq(1)
         expect(reports["entries"].first["id"]).to eq(@timesheet_entry1.id)
-        expect(reports["clientLogo"]).to eq(@timesheet_entry1.client.logo_url)
+        expect(reports["clientLogo"]).to eq("")
 
         filter_options = {
           clients: [{ "label": client.name, "value": client.id }],
@@ -63,6 +63,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
+        expect(reports["clientLogo"]).to eq("")
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(2)
         expect(timesheet_ids_in_response).to eq([@timesheet_entry3.id, @timesheet_entry2.id])
@@ -85,6 +86,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
+        expect(reports["clientLogo"]).to eq("")
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(1)
         expect(timesheet_ids_in_response).to include(@timesheet_entry2.id)
@@ -97,6 +99,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
+        expect(reports["clientLogo"]).to eq("")
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(3)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id, @timesheet_entry3.id)
@@ -119,6 +122,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
+        expect(reports["clientLogo"]).to eq("")
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(2)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id)
