@@ -25,7 +25,10 @@ const resolveOptions = {
       ".gif",
       ".jpeg",
       ".jpg",
-    ]
+      ".woff",
+      ".woff2",
+      ".ico",
+    ],
   },
 };
 
