@@ -10,6 +10,7 @@ export interface OutstandingOverdueInvoice {
 
 export interface ClientList {
   name: string;
+  logo: string;
   totalOutstandingAmount: number;
   totalOverdueAmount: number;
   invoices: OutstandingOverdueInvoice[];
