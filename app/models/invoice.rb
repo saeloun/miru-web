@@ -67,6 +67,7 @@ class Invoice < ApplicationRecord
   store_accessor :payment_infos, :stripe_payment_intent
 
   before_validation :set_external_view_key, on: :create
+  after_commit :refresh_invoice_index
 
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }
@@ -156,6 +157,10 @@ class Invoice < ApplicationRecord
 
   def formatted_issue_date
     CompanyDateFormattingService.new(issue_date, company:).process
+  end
+
+  def refresh_invoice_index
+    Invoice.search_index.refresh
   end
 
   private
