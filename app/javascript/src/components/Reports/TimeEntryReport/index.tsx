@@ -152,7 +152,7 @@ const TimeEntryReport = () => {
   };
 
   return (
-    <div>
+    <div className="h-full">
       <EntryContext.Provider
         value={{
           ...contextValues,

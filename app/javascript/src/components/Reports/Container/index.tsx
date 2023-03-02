@@ -4,6 +4,8 @@ import { minToHHMM } from "helpers";
 import { ClientsIcon } from "miruIcons";
 import { Avatar } from "StyledComponents";
 
+import EmptyStates from "common/EmptyStates";
+
 import ReportRow from "./ReportRow";
 
 import { useEntry } from "../context/EntryContext";
@@ -84,7 +86,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
 
   return (
     <Fragment>
-      {timeEntryReport.reports?.length > 0 &&
+      {timeEntryReport.reports?.length > 0 ? (
         getAlphabaticallySortedReportList(timeEntryReport.reports)?.map(
           (report, index) => (
             <Fragment key={index}>
@@ -114,7 +116,17 @@ const Container = ({ selectedFilter }: ContainerProps) => {
               </div>
             </Fragment>
           )
-        )}
+        )
+      ) : (
+        <EmptyStates
+          showNoSearchResultState={timeEntryReport.filterCounter > 0}
+          Message={
+            timeEntryReport.filterCounter > 0
+              ? "No results match current filters. Try removing some filters."
+              : "There are no time entries added yet. You’ll see a summary of time entries added by your team."
+          }
+        />
+      )}
     </Fragment>
   );
 };

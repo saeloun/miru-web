@@ -41,6 +41,8 @@ import {
   MapPin,
   Info,
   Globe,
+  Image,
+  Money,
   Copy,
 } from "phosphor-react";
 
@@ -49,9 +51,10 @@ const accountsAgingHoverIcon = require("./svgIcons/accountsAgingHover.svg");
 const blurredMiruLogo = require("./svgIcons/blurred-miru-logo.svg");
 const reportcalendarIcon = require("./svgIcons/Calendar.svg");
 const calendarHoverIcon = require("./svgIcons/CalendarHover.svg");
-const emptyStateInvoices = require("./svgIcons/emptyStateInvoices.svg");
+const emptyState = require("./svgIcons/emptyState.svg");
 const hoursIcon = require("./svgIcons/Hours.svg");
 const hoursHoverIcon = require("./svgIcons/HoursHover.svg");
+const noSearchResultsState = require("./svgIcons/NoSearchResultsState.svg");
 const overdueOutstandingIcon = require("./svgIcons/OverdueOutstanding.svg");
 const overdueOutstandingHoverIcon = require("./svgIcons/OverdueOutstandingHover.svg");
 const revenueIcon = require("./svgIcons/Revenue.svg");
@@ -165,7 +168,10 @@ export const PhoneIcon = Phone;
 export const MapPinIcon = MapPin;
 export const InfoIcon = Info;
 export const GlobeIcon = Globe;
+export const ImageIcon = Image;
+export const MoneyIcon = Money;
 export const CopyIcon = Copy;
+
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
 export const WarningCloseIconSVG = warningCloseIcon;
@@ -235,7 +241,8 @@ export const RevenueHoverIcon = revenueHoverIcon;
 export const AccountsAgingIcon = accountsAgingIcon;
 export const AccountsAgingHoverIcon = accountsAgingHoverIcon;
 export const Switcher = switcher;
-export const EmptyStateInvoices = emptyStateInvoices;
+export const EmptyState = emptyState;
+export const NoSearchResultsState = noSearchResultsState;
 export const BlurredMiruLogo = blurredMiruLogo;
 export const TransparentMiruLogo = transparentMiruLogo;
 export const MiruTimeTrackingScreen = miruTimeTrackingScreen;

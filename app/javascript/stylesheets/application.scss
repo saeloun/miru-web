@@ -571,3 +571,15 @@ body {
   border:none !important;
   box-shadow: none !important;
 }
+
+.profile-setting-image:hover img{
+  opacity: 0.3;
+}
+
+.profile-setting-image .hover-button{
+  visibility: hidden;
+}
+
+.profile-setting-image:hover .hover-button{
+  visibility: visible;
+}
