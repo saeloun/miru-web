@@ -73,7 +73,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
       />
     ));
 
-  const getAlphabaticallySortedReportList = (reports: any[] | null = []) =>
+  const getAlphabeticallySortedReportList = (reports: any[] | null = []) =>
     reports?.sort((a, b) => {
       const firstLabel = a.label.toLowerCase();
       const secondLabel = b.label.toLowerCase();
@@ -87,32 +87,31 @@ const Container = ({ selectedFilter }: ContainerProps) => {
   return (
     <Fragment>
       {timeEntryReport.reports?.length > 0 ? (
-        getAlphabaticallySortedReportList(timeEntryReport.reports)?.map(
-          (report, index) => (
+        getAlphabeticallySortedReportList(timeEntryReport.reports)?.map(
+          ({ label, clientLogo, entries }, index) => (
             <Fragment key={index}>
-              {report.label !== "" && (
+              {label !== "" && (
                 <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-5">
                   <div className="flex items-center">
                     {getTableLogo(
                       selectedFilter?.groupBy?.value || null,
-                      report.clientLogo
+                      clientLogo
                     )}
                     <h1 className="font-manrope text-xl font-bold text-miru-han-purple-1000">
-                      {report.label}
+                      {label}
                     </h1>
                   </div>
-                  {report.entries?.length > 0 && (
+                  {entries?.length > 0 && (
                     <p className="text-right font-manrope text-base font-medium text-miru-dark-purple-1000">
-                      Total Hours for {report.label} : &nbsp;
-                      {getTotalHoursLogged(report.entries)}
+                      Total Hours for {label} : &nbsp;
+                      {getTotalHoursLogged(entries)}
                     </p>
                   )}
                 </div>
               )}
               <ReportHeader />
               <div className="mb-6">
-                {report.entries.length > 0 &&
-                  getEntryList(report.entries, report.clientLogo)}
+                {entries.length > 0 && getEntryList(entries, clientLogo)}
               </div>
             </Fragment>
           )
