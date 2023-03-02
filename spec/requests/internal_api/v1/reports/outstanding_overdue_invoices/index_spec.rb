@@ -5,8 +5,8 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let!(:client1) { create(:client, company:, name: "bob") }
-  let!(:client2) { create(:client, company:, name: "alpha") }
+  let!(:client1) { create(:client, :with_logo, company:, name: "bob") }
+  let!(:client2) { create(:client, :with_logo, company:, name: "alpha") }
   let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent") }
   let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent") }
   let!(:client1_viewed_invoice1) { create(:invoice, client: client1, status: "viewed") }
@@ -31,6 +31,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
         @expected_clients =
           [{
             name: client2.name,
+            logo: client2.logo_url,
             totalOutstandingAmount: @client2_outstanding_amount,
             totalOverdueAmount: @client2_overdue_amount,
             invoices: [
@@ -54,6 +55,7 @@ RSpec.describe "InternalApi::V1::Reports::OutstandingOverdueInvoicesController::
           },
            {
              name: client1.name,
+             logo: client1.logo_url,
              totalOutstandingAmount: @client1_outstanding_amount,
              totalOverdueAmount: @client1_overdue_amount,
              invoices: [
