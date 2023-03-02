@@ -31,11 +31,25 @@ const TableRow = ({
   const navigate = useNavigate();
   const toolTipRef = useRef(null);
 
+  const {
+    amount,
+    client,
+    company,
+    dueDate,
+    id,
+    invoiceNumber,
+    issueDate,
+    status,
+  } = invoice;
+
+  const { baseCurrency, dateFormat } = company;
+  const { name, logo } = client;
+
   const handleCheckboxChange = () => {
     if (isSelected) {
-      deselectInvoices([invoice.id]);
+      deselectInvoices([id]);
     } else {
-      selectInvoices([invoice.id]);
+      selectInvoices([id]);
     }
   };
 
@@ -51,7 +65,7 @@ const TableRow = ({
     }
   };
 
-  const formattedDate = date => dayjs(date).format(invoice.company.dateFormat);
+  const formattedDate = date => dayjs(date).format(dateFormat);
 
   return (
     <tr
@@ -60,7 +74,7 @@ const TableRow = ({
       key={index}
       onClick={() => {
         if (isDesktop) {
-          navigate(`/invoices/${invoice.id}`);
+          navigate(`/invoices/${id}`);
         }
       }}
     >
@@ -70,25 +84,25 @@ const TableRow = ({
           checkboxValue={isSelected}
           handleCheck={handleCheckboxChange}
           hanldeOnClick={hanldeOnClick}
-          id={invoice.id}
+          id={id}
           isChecked={isSelected}
           text=""
           wrapperClassName="h-8 w-8 m-auto rounded-3xl p-2 hover:bg-miru-gray-1000"
         />
       </td>
-      <Tooltip content={invoice.client.name} show={showToolTip}>
+      <Tooltip content={name} show={showToolTip}>
         <td className="flex w-40 cursor-pointer items-center py-5 pr-2 text-left font-medium tracking-normal sm:w-80 md:w-96 lg:w-full">
-          <Avatar />
+          <Avatar url={logo} />
           <div
             className="ml-2 overflow-hidden truncate whitespace-nowrap lg:ml-4"
             ref={toolTipRef}
             onMouseEnter={handleTooltip}
           >
             <span className="text-sm font-semibold capitalize leading-4 text-miru-dark-purple-1000 lg:text-base lg:leading-5">
-              {invoice.client.name}
+              {name}
             </span>
             <h3 className="text-xs font-medium leading-4 text-miru-dark-purple-400 lg:text-sm lg:leading-5">
-              {invoice.invoiceNumber}
+              {invoiceNumber}
             </h3>
           </div>
         </td>
@@ -96,15 +110,15 @@ const TableRow = ({
       {isDesktop && (
         <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:px-6">
           <h1 className="text-xs font-normal text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
-            {formattedDate(invoice.issueDate)}
+            {formattedDate(issueDate)}
           </h1>
           <h3 className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
-            Due on {formattedDate(invoice.dueDate)}
+            Due on {formattedDate(dueDate)}
           </h3>
         </td>
       )}
       <td className="hidden px-2 text-right text-sm font-bold tracking-normal text-miru-dark-purple-1000 lg:table-cell lg:w-1/6 lg:px-6 lg:pt-2 lg:pb-7 lg:text-xl">
-        {currencyFormat(invoice.company.baseCurrency, invoice.amount)}
+        {currencyFormat(baseCurrency, amount)}
       </td>
       <td
         className="relative px-2 text-right font-medium lg:px-6 lg:pb-10"
@@ -124,13 +138,11 @@ const TableRow = ({
           />
         )}
         <Badge
-          className={`${getStatusCssClass(invoice.status)} uppercase`}
-          text={invoice.status}
+          className={`${getStatusCssClass(status)} uppercase`}
+          text={status}
         />
         <dl className="text-right text-sm font-medium leading-5 lg:hidden">
-          <dt className="mt-1">
-            {currencyFormat(invoice.company.baseCurrency, invoice.amount)}
-          </dt>
+          <dt className="mt-1">{currencyFormat(baseCurrency, amount)}</dt>
         </dl>
       </td>
       {!isDesktop && (
