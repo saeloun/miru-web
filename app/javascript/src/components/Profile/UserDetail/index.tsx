@@ -209,7 +209,7 @@ const UserDetails = () => {
   const getErr = errMsg => <p className="text-sm text-red-600">{errMsg}</p>;
 
   return (
-    <div className="flex w-4/5 flex-col">
+    <div className="flex w-full flex-col">
       <Header
         showButtons
         cancelAction={handleCancelAction}
