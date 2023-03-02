@@ -2,10 +2,12 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import { useOutsideClick } from "helpers";
+import Logger from "js-logger";
 import { SettingIcon, SignOutIcon, Switcher } from "miruIcons";
 import { NavLink } from "react-router-dom";
 import { Avatar, Tooltip } from "StyledComponents";
 
+import authenticationApi from "apis/authentication";
 import companiesApi from "apis/companies";
 import WorkspaceApi from "apis/workspaces";
 import { LocalStorageKeys } from "constants/index";
@@ -61,10 +63,15 @@ const UserActions = () => {
     setTimeout(() => window.location.reload(), 600);
   };
 
-  const handleLogout = () => {
-    window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
-    //@ts-expect-error for authDispatch object
-    authDispatch({ type: "LOGOUT" });
+  const handleLogout = async () => {
+    try {
+      await authenticationApi.logout();
+      window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
+      //@ts-expect-error for authDispatch object
+      authDispatch({ type: "LOGOUT" });
+    } catch (error) {
+      Logger.error(error);
+    }
   };
 
   const WorkspaceList = () => (

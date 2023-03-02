@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
 import { Paths, TOASTER_DURATION } from "constants/index";
+import { useAuthDispatch } from "context/auth";
 
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
 
@@ -19,11 +20,20 @@ interface SignInFormValues {
 
 const SignInForm = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const authDispatch = useAuthDispatch();
 
   const handleSignInFormSubmit = async (values: any) => {
     try {
-      await authenticationApi.signin(values);
-      setTimeout(() => (window.location.href = "/"), 500);
+      const res = await authenticationApi.signin(values);
+      //@ts-expect-error for authDispatch initial values
+      authDispatch({
+        type: "LOGIN",
+        payload: {
+          token: res.data.user.token,
+          email: res?.data?.user.email,
+        },
+      });
+      window.location.href = "/";
     } catch (error) {
       Logger.error(error);
     }
