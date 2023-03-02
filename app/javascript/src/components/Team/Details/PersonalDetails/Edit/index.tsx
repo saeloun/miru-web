@@ -208,9 +208,11 @@ const EmploymentDetails = () => {
         user: {
           first_name: personalDetails.first_name,
           last_name: personalDetails.last_name,
-          date_of_birth: dayjs
-            .utc(personalDetails.date_of_birth, personalDetails.date_format)
-            .toISOString(),
+          date_of_birth: personalDetails.date_of_birth
+            ? dayjs
+                .utc(personalDetails.date_of_birth, personalDetails.date_format)
+                .toISOString()
+            : null,
           phone: personalDetails.phone_number,
           personal_email_id: personalDetails.email_id,
           social_accounts: {
@@ -228,14 +230,16 @@ const EmploymentDetails = () => {
     } catch (err) {
       setIsLoading(false);
       const errObj = initialErrState;
-      err.inner.map(item => {
-        if (item.path.includes("addresses")) {
-          errObj[`${item.path.split(".").pop()}_err`] = item.message;
-        } else {
-          errObj[`${item.path}_err`] = item.message;
-        }
-      });
-      setErrDetails(errObj);
+      if (err.inner) {
+        err.inner.map(item => {
+          if (item.path.includes("addresses")) {
+            errObj[`${item.path.split(".").pop()}_err`] = item.message;
+          } else {
+            errObj[`${item.path}_err`] = item.message;
+          }
+        });
+        setErrDetails(errObj);
+      }
     }
   };
 
