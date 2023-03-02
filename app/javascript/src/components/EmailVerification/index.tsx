@@ -1,13 +1,32 @@
 import React, { useEffect, useCallback } from "react";
 
+import Logger from "js-logger";
 import { MiruLogoSVG } from "miruIcons";
 
-const EmailVerification = ({ userEmail, resendUrl }) => {
+import authenticationApi from "apis/authentication";
+import { useUserContext } from "context/UserContext";
+
+const EmailVerification = () => {
+  const { user } = useUserContext();
+  //@ts-expect-error for email on user object
+  const { email } = user;
+  const emailId = new URLSearchParams(window.location.search).get("email");
+
   const handleKeyPress = useCallback(event => {
     if (event.key === "Escape") {
-      window.location.assign(`${window.location.origin}/users/sign_in`);
+      window.location.assign(`${window.location.origin}`);
     }
   }, []);
+
+  const handleEmailConfirmation = async () => {
+    try {
+      await authenticationApi.sendEmailConfirmation({
+        email: email || emailId,
+      });
+    } catch (err) {
+      Logger.error(err);
+    }
+  };
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyPress);
@@ -24,21 +43,23 @@ const EmailVerification = ({ userEmail, resendUrl }) => {
         <div className="modal__content text-center">
           <h6 className="modal__title ">Email Verification</h6>
           <div className="modal__form flex-col">
-            <h3 className="font-sm my-6 text-center font-normal leading-4 text-miru-dark-purple-1000">
+            <p className="font-sm mt-6 mb-2 text-center font-normal leading-4 text-miru-dark-purple-1000">
+              Please verify your email ID to continue.
+            </p>
+            <p className="font-sm my-2 text-center font-normal leading-4 text-miru-dark-purple-1000">
               Verification link has been sent to your email ID:
-              <br />
-              <h3 className="font-sm text-center font-bold leading-4 text-miru-dark-purple-1000">
-                {userEmail}
-              </h3>
+            </p>
+            <h3 className="font-sm text-center font-bold leading-4 text-miru-dark-purple-1000">
+              {email || emailId}
             </h3>
-            <h3 className="font-xs text-center font-normal leading-4 text-miru-dark-purple-1000">
+            <h3 className="font-xs mt-4 text-center font-normal leading-4 text-miru-dark-purple-1000">
               Didn’t recieve verification link?{" "}
-              <a
+              <button
                 className="cursor-pointer font-bold text-miru-han-purple-1000 underline"
-                href={resendUrl}
+                onClick={handleEmailConfirmation}
               >
                 Resend
-              </a>
+              </button>
             </h3>
           </div>
         </div>
