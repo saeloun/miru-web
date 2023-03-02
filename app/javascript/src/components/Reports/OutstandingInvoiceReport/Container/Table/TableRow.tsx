@@ -7,7 +7,7 @@ import getStatusCssClass from "utils/getBadgeStatus";
 
 import { OutstandingOverdueInvoice } from "../../interface";
 
-const TableRow = ({ currency, reportData }) => {
+const TableRow = ({ currency, reportData, logo }) => {
   const {
     id,
     clientName,
@@ -22,7 +22,7 @@ const TableRow = ({ currency, reportData }) => {
     <tr className="flex items-center hover:bg-miru-gray-100" key={id}>
       <td className="w-1/2 whitespace-nowrap pt-3 pb-4 text-left lg:w-4/12 lg:py-2.5">
         <span className="flex items-center">
-          <Avatar classNameImg="mr-2 lg:mr-6" />
+          <Avatar classNameImg="mr-2 lg:mr-6" url={logo} />
           <span>
             <p className="whitespace-normal text-sm font-medium text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
               {clientName}
