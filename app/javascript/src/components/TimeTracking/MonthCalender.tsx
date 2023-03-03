@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
 import Logger from "js-logger";
 
-import Header from "./MobileView/Header";
+import Header from "./Header";
 
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;

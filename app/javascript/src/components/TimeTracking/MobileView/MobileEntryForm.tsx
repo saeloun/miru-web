@@ -143,12 +143,12 @@ const AddEntryMobile = ({
           />
         </Button>
       </SidePanel.Header>
-      <SidePanel.Body className="sidebar__filters flex max-h-80v min-h-80v flex-col justify-between overflow-y-auto px-4">
+      <SidePanel.Body className="sidebar__filters flex h-full flex-col justify-between overflow-y-auto px-4">
         <div>
           <div className="py-3">
             <CustomReactSelect
+              isDisabled={showClientList}
               label="Client"
-              menuIsOpen={false}
               name="client_select"
               options={projects[client]}
               value={client && { label: client }}
@@ -206,8 +206,8 @@ const AddEntryMobile = ({
           </div>
           <div className="py-3">
             <CustomReactSelect
+              isDisabled={showProjectList}
               label="Project"
-              menuIsOpen={false}
               name="project_select"
               options={projects[client]}
               value={project && { label: project }}
@@ -273,6 +273,7 @@ const AddEntryMobile = ({
             <CustomTextareaAutosize
               id="Description (optional)"
               label="Description (optional)"
+              maxRows={12}
               name="Description (optional)"
               rows={5}
               value={note}
@@ -317,6 +318,7 @@ const AddEntryMobile = ({
               checkboxValue={1}
               id={1}
               isChecked={billable}
+              labelClassName="text-miru-dark-purple-1000 text-sm font-medium"
               text="Billable"
               wrapperClassName="flex items-center m-auto p-2"
               handleCheck={() => {
@@ -377,28 +379,28 @@ const AddEntryMobile = ({
             setShowDeleteDialog={setShowDeleteDialog}
           />
         ) : null}
+        <SidePanel.Footer className="sidebar__footer h-auto w-full justify-around px-4">
+          {editEntryId ? (
+            <Button
+              className="w-full p-2 text-center text-base font-bold"
+              disabled={!disableApplyBtn}
+              style="primary"
+              onClick={handleEdit}
+            >
+              Save Changes
+            </Button>
+          ) : (
+            <Button
+              className="w-full p-2 text-center text-base font-bold"
+              disabled={!disableApplyBtn}
+              style="primary"
+              onClick={handleSave}
+            >
+              Add Entry
+            </Button>
+          )}
+        </SidePanel.Footer>
       </SidePanel.Body>
-      <SidePanel.Footer className="sidebar__footer h-auto w-full justify-around px-4">
-        {editEntryId ? (
-          <Button
-            className="w-full p-2 text-center text-base font-bold"
-            disabled={!disableApplyBtn}
-            style="primary"
-            onClick={handleEdit}
-          >
-            Save Changes
-          </Button>
-        ) : (
-          <Button
-            className="w-full p-2 text-center text-base font-bold"
-            disabled={!disableApplyBtn}
-            style="primary"
-            onClick={handleSave}
-          >
-            Add Entry
-          </Button>
-        )}
-      </SidePanel.Footer>
     </SidePanel>
   );
 };
