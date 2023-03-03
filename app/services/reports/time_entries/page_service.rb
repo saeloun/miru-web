@@ -5,7 +5,6 @@ class Reports::TimeEntries::PageService < ApplicationService
 
   attr_reader :params, :page, :group_by, :current_company
 
-  POSSIBLE_GROUP_BY_INPUTS = ["team_member", "client", "project", "week"].freeze
   PER_PAGE = {
     users: 5,
     clients: 3,
@@ -24,12 +23,8 @@ class Reports::TimeEntries::PageService < ApplicationService
     [pagination_details(data[:pagy_data]), data[:es_filter]]
   end
 
-  def is_valid_group_by
-    !group_by.blank? && POSSIBLE_GROUP_BY_INPUTS.include?(group_by)
-  end
-
   def es_filter_for_pagination
-    return {} if !is_valid_group_by
+    return {} if !Reports::TimeEntries::GroupBy.new(group_by).is_valid_group_by
 
     public_send("#{group_by}_filter")
   end

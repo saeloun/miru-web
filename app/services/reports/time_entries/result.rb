@@ -21,11 +21,11 @@ class Reports::TimeEntries::Result < ApplicationService
   end
 
   def process
-    if group_by.blank?
+    if Reports::TimeEntries::GroupBy.new(group_by).is_valid_group_by
+      process_response_by_group_by
+    else
       # client_logo = fetch_client_logo(es_response.first)
       [{ label: "", entries: es_response }]
-    else
-      process_response_by_group_by
     end
   end
 
