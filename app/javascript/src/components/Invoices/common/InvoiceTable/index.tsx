@@ -81,6 +81,7 @@ const InvoiceTable = ({
           selectedLineItems={selectedLineItems}
           setAddNew={setAddNew}
           setFilteredLineItems={setFilteredLineItems}
+          setLineItem={setLineItem}
           setLoading={setLoading}
           setMultiLineItemModal={setMultiLineItemModal}
           setSelectedLineItems={setSelectedLineItems}

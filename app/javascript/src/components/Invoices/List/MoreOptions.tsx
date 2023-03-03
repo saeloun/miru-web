@@ -24,6 +24,8 @@ const MoreOptions = ({
   isSending,
   isDesktop,
   setShowMoreOptions,
+  showPrint,
+  showSendLink,
 }) => {
   const wrapperRef = useRef(null);
 
@@ -106,14 +108,16 @@ const MoreOptions = ({
             className="mt-1 rounded-lg border-miru-gray-200 bg-white shadow-c1 lg:py-3 xl:py-4"
             onClick={e => e.stopPropagation()}
           >
-            <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
-              <PrinterIcon
-                className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
-                size={16}
-                weight="bold"
-              />
-              Print
-            </li>
+            {showPrint && (
+              <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
+                <PrinterIcon
+                  className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
+                  size={16}
+                  weight="bold"
+                />
+                Print
+              </li>
+            )}
             <li
               className="flex cursor-pointer items-center px-5 text-sm text-miru-red-400 hover:bg-miru-gray-100 lg:py-1 xl:py-2"
               onClick={() => {
@@ -128,14 +132,16 @@ const MoreOptions = ({
               />
               Delete
             </li>
-            <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
-              <PaperPlaneTiltIcon
-                className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
-                size={16}
-                weight="bold"
-              />
-              Send link
-            </li>
+            {showSendLink && (
+              <li className="flex cursor-pointer items-center px-5 text-sm text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:py-1 xl:py-2">
+                <PaperPlaneTiltIcon
+                  className="text-miru-han-purple-1000 lg:mr-2 xl:mr-4"
+                  size={16}
+                  weight="bold"
+                />
+                Send link
+              </li>
+            )}
           </ul>
         </div>
       )}
@@ -178,14 +184,18 @@ const MoreOptions = ({
             <PenIcon className="mr-4" size={16} /> Edit Invoice
           </Link>
         </li>
-        <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
-          <PrinterIcon className="mr-4" size={16} />
-          Print
-        </li>
-        <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
-          <PaperPlaneTiltIcon className="mr-4" size={16} />
-          Send link
-        </li>
+        {showPrint && (
+          <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
+            <PrinterIcon className="mr-4" size={16} />
+            Print
+          </li>
+        )}
+        {showSendLink && (
+          <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
+            <PaperPlaneTiltIcon className="mr-4" size={16} />
+            Send link
+          </li>
+        )}
         <li
           className="flex cursor-pointer items-center py-2 text-miru-red-400"
           onClick={() => {

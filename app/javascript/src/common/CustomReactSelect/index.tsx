@@ -1,5 +1,4 @@
 /* eslint-disable import/exports-last */
-
 import React from "react";
 
 import Select from "react-select";
@@ -15,10 +14,12 @@ export const CustomReactSelect = ({
   options,
   label,
   handleOnChange,
+  handleonFocus,
   name,
   value,
   isErr,
   isDesktopView,
+  menuIsOpen,
 }) => {
   const getStyle = () => {
     if (isErr) {
@@ -32,6 +33,7 @@ export const CustomReactSelect = ({
     <div className="outline relative">
       <Select
         classNamePrefix={classNamePrefix}
+        menuIsOpen={menuIsOpen}
         name={name}
         options={options}
         placeholder={label}
@@ -42,6 +44,7 @@ export const CustomReactSelect = ({
           IndicatorSeparator: () => null,
         }}
         onChange={handleOnChange}
+        onFocus={handleonFocus}
       />
     </div>
   );
@@ -52,6 +55,10 @@ CustomReactSelect.defaultProps = {
   label: "Select",
   placeholder: "Please select...",
   handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
+  handleonFocus: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   isErr: false,
   isDesktopView: true,
+  menuIsOpen: false,
 };
+
+export default CustomReactSelect;

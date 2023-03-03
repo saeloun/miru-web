@@ -9,6 +9,7 @@ import {
   InfoIcon,
 } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
+import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
 
 import { CustomAsyncSelect } from "common/CustomAsyncSelect";
@@ -165,12 +166,11 @@ const StaticPage = ({
       <div className="w-9/12">
         <div className="flex flex-row">
           <div className="flex w-1/2 flex-col px-2">
-            <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4">
+            <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4 pt-2">
               <PhoneInput
                 className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
-                defaultCountry="US"
-                initialValueFormat="national"
-                inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 p-4 text-base h-12 border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full"
+                flags={flags}
+                inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 p-4 text-base h-12 border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
                 value={
                   personalDetails.phone_number
                     ? personalDetails.phone_number

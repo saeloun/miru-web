@@ -11,6 +11,7 @@ module Reports::TimeEntries
 
     def process
       if group_by.blank?
+        # client_logo = fetch_client_logo(es_response.first)
         [{ label: "", entries: es_response }]
       else
         process_response_by_group_by
@@ -21,6 +22,7 @@ module Reports::TimeEntries
       public_send("group_by_#{group_by}")
     end
 
+    # TODO: Add client logo in each entry
     def group_by_team_member
       grouped_data = es_response.group_by(&:user_id)
       grouped_data.map do | user_id, entries |
@@ -56,6 +58,10 @@ module Reports::TimeEntries
         date_format = "%d %b %Y"
         "#{start_date.strftime(date_format)} - #{end_date.strftime(date_format)}"
       end
+    end
+
+    def fetch_client_logo(timesheet_entry)
+      timesheet_entry.project.client.logo_url
     end
   end
 end

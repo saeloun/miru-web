@@ -1,25 +1,30 @@
 import React from "react";
 
 import { currencyFormat } from "helpers";
+import { Avatar } from "StyledComponents";
 
 import { RevenueByClients } from "../interface";
 
 const TableRow = ({ currency, report }) => {
   const {
     id,
+    logo,
     name,
     outstandingAmount,
+    overdueAmount,
     paidAmount,
     totalAmount,
-    overdueAmount,
   }: RevenueByClients = report;
 
   return (
     <tr className="flex flex-row items-center" key={id}>
       <td className="w-3/5 whitespace-nowrap py-4 pr-6 text-left">
-        <p className="whitespace-normal text-base font-normal text-miru-dark-purple-1000">
-          {name}
-        </p>
+        <span className="flex items-center">
+          <Avatar classNameImg="mr-2 lg:mr-6" url={logo} />
+          <p className="whitespace-normal text-base font-normal text-miru-dark-purple-1000">
+            {name}
+          </p>
+        </span>
       </td>
       <td className="w-2/5 whitespace-pre-wrap px-6 py-4 text-left text-base font-normal text-miru-dark-purple-1000">
         {currencyFormat(currency, overdueAmount)}
