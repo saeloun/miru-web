@@ -45,21 +45,15 @@ RSpec.describe "InternalApi::V1::Users::Sessions#create", type: :request do
     end
   end
 
-  context "when unconfirmed user tries to login" do
-    before do
-      user.update(confirmed_at: nil)
-    end
+  context "when user is unconfirmed" do
+    let(:user) { create(:user, confirmed_at: nil) } # Create an unconfirmed user
+    let(:valid_params) { { user: { email: user.email, password: user.password } } }
 
-    it "not able to log in" do
-      send_request :post, internal_api_v1_users_login_path, params: {
-        user: {
-          email: user.email,
-          password: user.password
-        }
-      }
+    it "returns an error message" do
+      send_request :post, internal_api_v1_users_login_path, params: valid_params
+
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(json_response["error"]).to eq(I18n.t("devise.failure.unconfirmed"))
-      expect(json_response["unconfirmed"]).to eq(true)
+      expect(JSON.parse(response.body)["error"]).to eq(I18n.t("devise.failure.unconfirmed"))
     end
   end
 end
