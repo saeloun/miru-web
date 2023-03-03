@@ -63,9 +63,21 @@ module Reports::TimeEntries
         search_result = TimesheetEntry.search(
           where: where_clause,
           order: { work_date: :desc },
+          page: params[:page],
           load: false
           )
         @reports = Reports::TimeEntries::Result.process(search_result, params["group_by"])
+        @pagination_details = pagination_details_for_es_query(search_result)
+      end
+
+      def pagination_details_for_es_query(search_result)
+        {
+          pages: search_result.total_pages,
+          first: search_result.first_page?,
+          prev: search_result.prev_page,
+          next: search_result.next_page,
+          last: search_result.last_page?
+        }
       end
 
       def current_company_filter
