@@ -17,8 +17,9 @@ module Reports::TimeEntries
       process_reports
       {
         reports:,
+        pagination_details:,
         filter_options:,
-        pagination_details:
+        client_logos:
       }
     end
 
@@ -27,7 +28,7 @@ module Reports::TimeEntries
       def filter_options
         if get_filters
           @_filter_options ||= {
-            clients: current_company.clients.order(:name),
+            clients: current_company.clients.includes([:logo_attachment]).order(:name),
             team_members: current_company.users.order(:first_name)
           }
         end
@@ -76,6 +77,14 @@ module Reports::TimeEntries
           next: search_result.next_page,
           last: search_result.last_page?
         }
+      end
+
+      def client_logos
+        if filter_options
+          filter_options[:clients].map do | client |
+            [client.id, client.logo_url]
+          end.to_h
+        end
       end
 
       def current_company_filter
