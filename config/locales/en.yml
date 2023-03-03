@@ -268,7 +268,8 @@ en:
       success:
         Instructions for resetting your password have been sent to your email.
     update:
-      success: Your password has been updated.
+      success:
+        Your password has been changed successfully. You are now signed in.
   sessions:
     failure:
       invalid: Invalid email or password

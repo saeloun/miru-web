@@ -27,30 +27,37 @@ RSpec.describe "Forgot password", type: :system do
     end
 
     it "allows user to reset password" do
-      visit edit_user_password_path(reset_password_token: @reset_password_token)
+      with_forgery_protection do
+        visit edit_user_password_path(reset_password_token: @reset_password_token)
 
-      expect(page).to have_selector("h2", text: "Reset Password")
-      within("#new_user") do
-        fill_in "New Password", with: "new_password"
-        fill_in "Confirm Password", with: "new_password"
+        expect(page).to have_selector("h1", text: "Reset Password")
+
+        fill_in "password", with: "Welcome@123"
+        fill_in "confirm_password", with: "Welcome@123"
+
+        click_on "Reset password"
+
+        expect(page).to have_selector("h1", text: "Welcome back!")
       end
-      click_on "SET PASSWORD"
-
-      expect(page).to have_content("Your password has been changed successfully. You are now signed in.")
     end
 
     it "sends an email after password reset" do
       visit edit_user_password_path(reset_password_token: @reset_password_token)
 
-      within("#new_user") do
-        fill_in "New Password", with: "new_password"
-        fill_in "Confirm Password", with: "new_password"
-      end
-      click_on "SET PASSWORD"
+      with_forgery_protection do
+        visit edit_user_password_path(reset_password_token: @reset_password_token)
 
-      expect(ActionMailer::Base.deliveries.count).to eq(2)
-      expect(ActionMailer::Base.deliveries.last.subject).to eq("Miru Password Reset Successfully!")
-      expect(ActionMailer::Base.deliveries.last.to.first).to eq(user.email)
+        expect(page).to have_selector("h1", text: "Reset Password")
+
+        fill_in "password", with: "Welcome@123"
+        fill_in "confirm_password", with: "Welcome@123"
+
+        click_on "Reset password"
+
+        expect(ActionMailer::Base.deliveries.count).to eq(2)
+        expect(ActionMailer::Base.deliveries.last.subject).to eq("Miru Password Reset Successfully!")
+        expect(ActionMailer::Base.deliveries.last.to.first).to eq(user.email)
+      end
     end
   end
 
