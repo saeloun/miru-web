@@ -90,6 +90,7 @@ const ClientSelection = ({
             classNamePrefix="m-0 font-medium text-sm text-miru-dark-purple-1000 bg-white"
             components={{ DropdownIndicator, IndicatorSeparator: () => null }}
             defaultValue={null}
+            id="client-list"
             options={clientList}
             placeholder="Search"
             styles={reactSelectStyles.InvoiceDetails}
