@@ -2,13 +2,13 @@
 
 module Reports::TimeEntries
   class ReportService
-    attr_reader :params, :is_download_request, :current_company
+    attr_reader :params, :current_company, :get_filters
     attr_accessor :reports, :pagination_details
 
-    def initialize(params, current_company, download: false)
+    def initialize(params, current_company, get_filters: false)
       @params = params
       @current_company = current_company
-      @is_download_request = is_download_request
+      @get_filters = get_filters
       @reports = nil
       @pagination_details = nil
     end
@@ -17,17 +17,15 @@ module Reports::TimeEntries
       process_reports
       {
         reports:,
-        entries: reports.map { |e| e[:entries] }.flatten,
         filter_options:,
         pagination_details:
-
       }
     end
 
     private
 
       def filter_options
-        if !is_download_request
+        if get_filters
           @_filter_options ||= {
             clients: current_company.clients.order(:name),
             team_members: current_company.users.order(:first_name)
