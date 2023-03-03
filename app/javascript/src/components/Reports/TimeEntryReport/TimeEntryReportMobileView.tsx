@@ -51,9 +51,9 @@ export const TimeEntryReportMobileView = ({
     return minToHHMM(totalHours || 0);
   };
 
-  const getTableLogo = (groupedBy: string | null) => {
+  const getTableLogo = (groupedBy: string | null, clientLogo: string) => {
     const logo = {
-      client: <ClientsIcon className="m-0 object-contain" size={40} />,
+      client: <Avatar classNameImg="mr-2 lg:mr-6" url={clientLogo} />,
       project: <ClientsIcon className="m-0 object-contain" size={40} />,
       team_member: <Avatar />,
     };
@@ -63,10 +63,14 @@ export const TimeEntryReportMobileView = ({
     ) : null;
   };
 
-  const getEntryList = entries => (
+  const getEntryList = (entries, clientLogo: string) => (
     <div className="flex flex-col border-b">
       {entries.map((timeEntry, index) => (
-        <ReportMobileRow key={`${timeEntry.client}-${index}`} {...timeEntry} />
+        <ReportMobileRow
+          clientLogo={clientLogo}
+          key={`${timeEntry.client}-${index}`}
+          timeEntry={timeEntry}
+        />
       ))}
     </div>
   );
@@ -91,7 +95,10 @@ export const TimeEntryReportMobileView = ({
               {report.label !== "" && (
                 <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-2">
                   <div className="flex items-center">
-                    {getTableLogo(selectedFilter?.groupBy?.value || null)}
+                    {getTableLogo(
+                      selectedFilter?.groupBy?.value || null,
+                      report.clientLogo
+                    )}
                     <h1 className="font-manrope text-xl font-bold text-miru-han-purple-1000">
                       {report.label}
                     </h1>
@@ -105,7 +112,8 @@ export const TimeEntryReportMobileView = ({
               )}
               <ReportHeader />
               <div className="mb-6">
-                {report.entries.length > 0 && getEntryList(report.entries)}
+                {report.entries.length > 0 &&
+                  getEntryList(report.entries, report.clientLogo)}
               </div>
             </Fragment>
           )
