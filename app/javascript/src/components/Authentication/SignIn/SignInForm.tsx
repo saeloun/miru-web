@@ -35,6 +35,11 @@ const SignInForm = () => {
       });
       window.location.href = "/";
     } catch (error) {
+      if (error.response.data.unconfirmed) {
+        return window.location.assign(
+          `/email_confirmation?email=${values.email}`
+        );
+      }
       Logger.error(error);
     }
   };
