@@ -33,7 +33,6 @@ const SignInForm = () => {
           email: res?.data?.user.email,
         },
       });
-      Toastr.info(res.data.notice);
       window.location.href = "/";
     } catch (error) {
       if (error.response.data.unconfirmed) {
