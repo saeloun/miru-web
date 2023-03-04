@@ -115,7 +115,6 @@ class Client < ApplicationRecord
     status_and_amount = invoices.kept.during(duration).group(:status).sum(:amount)
     status_and_amount.default = 0
     {
-      name:,
       paid_amount: status_and_amount["paid"],
       outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
       overdue_amount: status_and_amount["overdue"]
@@ -132,7 +131,6 @@ class Client < ApplicationRecord
     status_and_amount.default = 0
 
     {
-      name:,
       invoices: filtered_invoices,
       total_outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
       total_overdue_amount: status_and_amount["overdue"]
