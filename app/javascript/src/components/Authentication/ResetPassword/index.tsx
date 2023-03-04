@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
-import Logger from "js-logger";
 import { MiruLogoSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
+import Toastr from "common/Toastr";
 import { Paths, TOASTER_DURATION } from "constants/index";
 
 import {
@@ -34,8 +34,8 @@ const ResetPassword = () => {
       if (res.status == 200) {
         window.location.assign(`${window.location.origin}`);
       }
-    } catch (err) {
-      Logger.error(err);
+    } catch (error) {
+      Toastr.error(error);
     }
   };
 

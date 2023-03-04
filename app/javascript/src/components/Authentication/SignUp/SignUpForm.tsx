@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
-import Logger from "js-logger";
 import { GoogleSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
+import Toastr from "common/Toastr";
 import { Paths, TOASTER_DURATION } from "constants/index";
 
 import { signUpFormInitialValues, signUpFormValidationSchema } from "./utils";
@@ -39,7 +39,7 @@ const SignUpForm = () => {
       const res = await authenticationApi.signup(payload);
       window.location.assign(`/email_confirmation?email=${res.data.email}`);
     } catch (error) {
-      Logger.error(error);
+      Toastr.error(error);
     }
   };
 

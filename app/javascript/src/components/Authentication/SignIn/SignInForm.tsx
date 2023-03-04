@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
-import Logger from "js-logger";
 import { GoogleSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
+import Toastr from "common/Toastr";
 import { Paths, TOASTER_DURATION } from "constants/index";
 import { useAuthDispatch } from "context/auth";
 
@@ -33,6 +33,7 @@ const SignInForm = () => {
           email: res?.data?.user.email,
         },
       });
+      Toastr.info(res.data.notice);
       window.location.href = "/";
     } catch (error) {
       if (error.response.data.unconfirmed) {
@@ -40,7 +41,7 @@ const SignInForm = () => {
           `/email_confirmation?email=${values.email}`
         );
       }
-      Logger.error(error);
+      Toastr.error(error);
     }
   };
 
