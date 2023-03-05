@@ -33,7 +33,7 @@ const SignInForm = () => {
           email: res?.data?.user.email,
         },
       });
-      Toastr.info(values);
+      Toastr.info(res);
       setTimeout(() => {
         window.location.assign(`${window.location.origin}`);
       }, 500);

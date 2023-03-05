@@ -37,7 +37,10 @@ const SignUpForm = () => {
     };
     try {
       const res = await authenticationApi.signup(payload);
-      window.location.assign(`/email_confirmation?email=${res.data.email}`);
+      Toastr.info(res);
+      setTimeout(() => {
+        window.location.assign(`/email_confirmation?email=${res.data.email}`);
+      }, 500);
     } catch (error) {
       Toastr.error(error);
     }

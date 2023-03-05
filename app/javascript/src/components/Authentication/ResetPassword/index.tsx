@@ -32,7 +32,7 @@ const ResetPassword = () => {
     try {
       const res = await authenticationApi.resetPassword(payload);
       if (res.status == 200) {
-        Toastr.info(values);
+        Toastr.info(res);
         setTimeout(() => {
           window.location.assign(`${window.location.origin}`);
         }, 500);
