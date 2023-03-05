@@ -36,12 +36,14 @@ const SignInForm = () => {
       Toastr.error(values);
       setTimeout(() => (window.location.href = "/"), 500);
     } catch (error) {
+      Toastr.error(error);
       if (error.response.data.unconfirmed) {
-        return window.location.assign(
-          `/email_confirmation?email=${values.email}`
+        setTimeout(
+          () =>
+            (window.location.href = `/email_confirmation?email=${values.email}`),
+          500
         );
       }
-      Toastr.error(error);
     }
   };
 
