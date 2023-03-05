@@ -33,7 +33,8 @@ const SignInForm = () => {
           email: res?.data?.user.email,
         },
       });
-      window.location.href = "/";
+      Toastr.error(values);
+      setTimeout(() => (window.location.href = "/"), 500);
     } catch (error) {
       if (error.response.data.unconfirmed) {
         return window.location.assign(
