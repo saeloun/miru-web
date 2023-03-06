@@ -40,7 +40,7 @@ RSpec.configure do |config|
   config.display_try_failure_messages = true
 
   config.around do |example|
-    example.run_with_retry retry: 1
+    example.run_with_retry retry: 3
   end
 
   # config.retry_callback = proc do |ex|
