@@ -301,7 +301,7 @@ const FilterSideBar = ({
                 <div className="lg:mt-7">
                   {dateRangeList.map(dateRange => (
                     <CustomRadioButton
-                      classNameWrapper="px-5 py-2.5"
+                      classNameWrapper="px-5 py-3"
                       defaultCheck={dateRange.value == filters.dateRange.value}
                       groupName="dateRange"
                       id={dateRange.value}
