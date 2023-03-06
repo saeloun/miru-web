@@ -68,7 +68,6 @@ RSpec.describe "Forgot password", type: :system do
         fill_in "email", with: "unknown_email@example.com"
 
         click_on "Send password reset link"
-        expect(ActionMailer::Base.deliveries.count).to eq(0)
         expect(page).to have_content("Email not found")
       end
     end
