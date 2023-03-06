@@ -135,6 +135,8 @@ const TableRow = ({
             setIsSending={setIsSending}
             setShowDeleteDialog={setShowDeleteDialog}
             setShowMoreOptions={setShowMoreOptions}
+            showPrint={false}
+            showSendLink={false}
           />
         )}
         <Badge
@@ -167,6 +169,8 @@ const TableRow = ({
           setIsSending={setIsSending}
           setShowDeleteDialog={setShowDeleteDialog}
           setShowMoreOptions={setShowMoreOptions}
+          showPrint={false}
+          showSendLink={false}
         />
       )}
       {isSending && (
