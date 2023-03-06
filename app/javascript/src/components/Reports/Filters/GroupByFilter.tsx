@@ -36,11 +36,11 @@ const GroupByFilter = ({
       </div>
     </div>
     {isGroupByOpen && (
-      <div className="lg:mt-7">
+      <div className="mt-4 lg:mt-7">
         {groupBy.length &&
           groupBy.map(status => (
             <CustomRadioButton
-              classNameWrapper="px-5 py-2.5"
+              classNameWrapper="px-5 py-3"
               defaultCheck={status.value == filters.groupBy.value}
               groupName="groupBy"
               id={status.label}
