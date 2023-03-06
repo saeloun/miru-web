@@ -30,8 +30,11 @@ const FilterSidebar = ({
     timeEntryReport: { selectedFilter: selectedContextFilter, filterOptions },
   } = useEntry();
 
-  const { clients: clientList, teamMember: teamMemberList } =
-    selectedContextFilter;
+  const {
+    clients: clientList,
+    teamMember: teamMemberList,
+    status: statusList,
+  } = selectedContextFilter;
 
   const { clients: selctedClientList, teamMembers: teamMembersList } =
     filterOptions;
@@ -49,6 +52,8 @@ const FilterSidebar = ({
   const [TeamMembersearchQuery, setTeamMemberSearchQuery] = useState("");
   const [selectedClients, setSelectedClients] = useState<any[]>(clientList);
   const [selectedTeams, setSelectedTeams] = useState<any[]>(teamMemberList);
+  const [selectedStatus, setSelectedStatus] = useState<any[]>(statusList);
+
   const [filteredClientList, setFilteredClientList] =
     useState<any[]>(selctedClientList);
 
@@ -200,6 +205,27 @@ const FilterSidebar = ({
     }
   };
 
+  const handleSelectStatus = selectedFilter => {
+    if (filters.status.find(filter => filter.value === selectedFilter.value)) {
+      const newarr = selectedStatus.filter(
+        status => status.value != selectedFilter.value
+      );
+
+      setFilters({
+        ...filters,
+        status: newarr,
+      });
+
+      setSelectedStatus(newarr);
+    } else {
+      setFilters({
+        ...filters,
+        status: [...filters.status, selectedFilter],
+      });
+      setSelectedStatus([...selectedStatus, selectedFilter]);
+    }
+  };
+
   const setDefaultDateRange = () => ({
     ...filters,
     ["dateRange"]: { value: "all", label: "All", from: "", to: "" },
@@ -295,7 +321,7 @@ const FilterSidebar = ({
       setFilterVisibilty={setIsFilterVisible}
     >
       <div>
-        <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
+        <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-miru-han-purple-1000 px-2 text-white lg:h-auto lg:bg-white lg:px-5 lg:py-5 lg:font-bold lg:text-miru-dark-purple-1000">
           {isDesktop ? (
             <h4 className="flex items-center text-base">
               <FilterIcon className="mr-2.5" size={16} /> <span>Filters</span>
@@ -312,7 +338,7 @@ const FilterSidebar = ({
             />
           </Button>
         </SidePanel.Header>
-        <SidePanel.Body className="sidebar__filters max-h-80v min-h-80v overflow-y-auto">
+        <SidePanel.Body className="sidebar__filters max-h-70v min-h-70v overflow-y-auto lg:max-h-80v lg:min-h-80v">
           <DateRangeFilter
             dateRange={dateRange}
             dateRangeList={dateRangeOptions}
@@ -352,7 +378,7 @@ const FilterSidebar = ({
           />
           <StatusFilter
             filters={filters}
-            handleSelectFilter={handleSelectFilter}
+            handleSelectStatus={handleSelectStatus}
             isStatusOpen={isStatusOpen}
             setIsClientOpen={setIsClientOpen}
             setIsDateRangeOpen={setIsDateRangeOpen}
@@ -370,7 +396,7 @@ const FilterSidebar = ({
           />
         </SidePanel.Body>
       </div>
-      <SidePanel.Footer className="sidebar__footer justify-between">
+      <SidePanel.Footer className="sidebar__footer justify-between pt-1">
         <Button
           className="mr-4 flex items-center justify-between"
           size="medium"
