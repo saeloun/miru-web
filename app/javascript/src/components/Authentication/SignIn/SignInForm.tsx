@@ -5,7 +5,6 @@ import { GoogleSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
-import Toastr from "common/Toastr";
 import { Paths, TOASTER_DURATION } from "constants/index";
 import { useAuthDispatch } from "context/auth";
 
@@ -33,17 +32,16 @@ const SignInForm = () => {
           email: res?.data?.user.email,
         },
       });
-      Toastr.info(res);
+
       setTimeout(() => {
         window.location.assign(`${window.location.origin}`);
-      }, 500);
+      }, 3000);
     } catch (error) {
-      Toastr.error(error);
       if (error.response.data.unconfirmed) {
         setTimeout(
           () =>
             (window.location.href = `/email_confirmation?email=${values.email}`),
-          500
+          3000
         );
       }
     }
