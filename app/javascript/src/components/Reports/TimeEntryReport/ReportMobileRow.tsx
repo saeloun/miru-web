@@ -49,7 +49,7 @@ const ReportMobileRow = ({ timeEntry, clientLogo }) => {
       </div>
       <div className="flex flex-row pb-4">
         <div className="col-span-4 overflow-hidden pt-3">
-          <div className="h-full items-center whitespace-pre-wrap break-words font-manrope text-xs font-normal text-miru-dark-purple-1000">
+          <div className="h-full items-center whitespace-pre-wrap break-words font-manrope text-xs font-normal text-miru-dark-purple-400">
             {note?.trim()}
           </div>
         </div>

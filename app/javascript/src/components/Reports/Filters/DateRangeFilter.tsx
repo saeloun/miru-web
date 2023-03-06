@@ -47,7 +47,7 @@ const DateRangeFilter = ({
       <div className="mt-4 pt-0.5 lg:mt-7 lg:pt-0">
         {dateRangeList.map(dateRange => (
           <CustomRadioButton
-            classNameWrapper="px-5 py-2.5"
+            classNameWrapper="px-5 py-3"
             defaultCheck={dateRange.value == filters.dateRange.value}
             groupName="dateRange"
             id={dateRange.value}
