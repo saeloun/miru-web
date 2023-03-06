@@ -198,6 +198,7 @@ const ProjectDetails = () => {
           <div className="relative h-8">
             <button
               className={`menuButton__button ${menuBackground}`}
+              id="kebabMenu"
               onClick={handleMenuVisibility}
             >
               <DotsThreeVerticalIcon color="#000000" size={20} />
