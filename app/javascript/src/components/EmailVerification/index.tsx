@@ -3,12 +3,8 @@ import React, { useEffect, useCallback } from "react";
 import { MiruLogoSVG } from "miruIcons";
 
 import authenticationApi from "apis/authentication";
-import { useUserContext } from "context/UserContext";
 
 const EmailVerification = () => {
-  const { user } = useUserContext();
-  //@ts-expect-error for email on user object
-  const email = user?.email;
   const emailId = new URLSearchParams(window.location.search).get("email");
 
   const handleKeyPress = useCallback(event => {
@@ -19,7 +15,7 @@ const EmailVerification = () => {
 
   const handleEmailConfirmation = async () => {
     await authenticationApi.sendEmailConfirmation({
-      email: email || emailId,
+      email: emailId,
     });
   };
 
@@ -45,7 +41,7 @@ const EmailVerification = () => {
               Verification link has been sent to your email ID:
             </p>
             <h3 className="font-sm text-center font-bold leading-4 text-miru-dark-purple-1000">
-              {email || emailId}
+              {emailId}
             </h3>
             <h3 className="font-xs mt-4 text-center font-normal leading-4 text-miru-dark-purple-1000">
               Didn’t recieve verification link?{" "}
