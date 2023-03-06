@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback } from "react";
 
-import Logger from "js-logger";
 import { MiruLogoSVG } from "miruIcons";
 
 import authenticationApi from "apis/authentication";
@@ -19,13 +18,9 @@ const EmailVerification = () => {
   }, []);
 
   const handleEmailConfirmation = async () => {
-    try {
-      await authenticationApi.sendEmailConfirmation({
-        email: email || emailId,
-      });
-    } catch (err) {
-      Logger.error(err);
-    }
+    await authenticationApi.sendEmailConfirmation({
+      email: email || emailId,
+    });
   };
 
   useEffect(() => {
