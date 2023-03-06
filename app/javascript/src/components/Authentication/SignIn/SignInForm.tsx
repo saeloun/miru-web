@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
 import { GoogleSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
@@ -20,6 +21,7 @@ interface SignInFormValues {
 const SignInForm = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const authDispatch = useAuthDispatch();
+  const navigate = useNavigate();
 
   const handleSignInFormSubmit = async (values: any) => {
     try {
@@ -33,14 +35,14 @@ const SignInForm = () => {
         },
       });
 
-      setTimeout(() => {
-        window.location.assign(`${window.location.origin}`);
-      }, 3000);
+      setTimeout(
+        () => (window.location.href = `${window.location.origin}`),
+        3000
+      );
     } catch (error) {
       if (error.response.data.unconfirmed) {
         setTimeout(
-          () =>
-            (window.location.href = `/email_confirmation?email=${values.email}`),
+          () => navigate(`/email_confirmation?email=${values.email}`),
           3000
         );
       }
