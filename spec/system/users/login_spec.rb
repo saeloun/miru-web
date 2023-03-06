@@ -13,29 +13,29 @@ RSpec.describe "User Sign In", type: :system do
 
     context "when using valid credentials" do
       it "logs user in" do
-        visit "/users/sign_in"
+        with_forgery_protection do
+          visit "/login"
 
-        within("#new_user") do
-          fill_in "Email", with: user.email
-          fill_in "Password", with: "testing!"
+          fill_in "email", with: user.email
+          fill_in "password", with: "testing!"
+
+          click_on "Sign In"
+          expect(page).to have_content(I18n.t("devise.sessions.signed_in"))
         end
-        click_button "SIGN IN"
-
-        expect(page).to have_content "Signed in successfully."
       end
     end
 
     context "when using invalid credentials" do
       it "throws an error" do
-        visit "/users/sign_in"
+        with_forgery_protection do
+          visit "/login"
 
-        within("#new_user") do
-          fill_in "Email", with: user.email
-          fill_in "Password", with: "testing123"
+          fill_in "email", with: user.email
+          fill_in "password", with: "testing123"
+
+          click_on "Sign In"
+          expect(page).to have_content(I18n.t("sessions.failure.invalid"))
         end
-        click_button "SIGN IN"
-
-        expect(page).to have_content "Invalid Email or password."
       end
     end
   end
