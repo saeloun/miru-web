@@ -140,6 +140,7 @@ const AddEditProject = ({
                   <select
                     className="focus:outline-none block h-8 w-full rounded border-0 bg-miru-gray-100 px-2 py-1 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
                     defaultValue={client}
+                    id="select-client"
                     onChange={event => setClient(Number(event.target.value))}
                   >
                     <option value="0">Select Client</option>
@@ -168,6 +169,7 @@ const AddEditProject = ({
                   <input
                     className="focus:outline-none block h-8 w-full appearance-none rounded border-0 bg-miru-gray-100 px-3 py-2 text-sm font-medium text-miru-dark-purple-1000 sm:text-base"
                     data-cy="project-name"
+                    id="project-name"
                     placeholder=" Enter Project Name"
                     type="text"
                     value={projectName}
