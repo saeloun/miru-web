@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { Formik, Form, Field, FormikProps } from "formik";
 import { GoogleSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
@@ -21,6 +22,7 @@ interface SignUpFormValues {
 }
 
 const SignUpForm = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
@@ -36,7 +38,7 @@ const SignUpForm = () => {
     };
     const res = await authenticationApi.signup(payload);
     setTimeout(() => {
-      window.location.assign(`/email_confirmation?email=${res.data.email}`);
+      navigate(`/email_confirmation?email=${res.data.email}`);
     }, 3000);
   };
 
