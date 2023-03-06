@@ -5,13 +5,12 @@ require "rails_helper"
 RSpec.describe "Edit client", type: :system do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:client) { build(:client_with_phone_number_without_country_code, company:) }
+  let!(:client) { create(:client_with_phone_number_without_country_code, company:) }
 
   before do
     create(:employment, company:, user:)
     user.add_role :admin, company
     login_as(user)
-    create(:client_with_phone_number_without_country_code, company:)
   end
 
   context "when editing a client" do
@@ -22,14 +21,18 @@ RSpec.describe "Edit client", type: :system do
         find(:xpath, '//tr[@class=" hoverIcon"]').hover.click()
         find("[data-cy='three-dots']").click()
         click_button "Edit"
-        fill_in "name", with: client.name
-        fill_in "email", with: client.email
-        fill_in "phone", with: client.phone
-        fill_in "address", with: client.address
+        fill_in "name", with: "test client"
+        fill_in "email", with: "client@test.com"
+        fill_in "phone", with: "9123456789"
+        fill_in "address", with: "New York"
         click_button "SAVE CHANGES"
 
-        expect(Client.last.email).to eq(client.email)
-        expect(page).to have_content(client.name)
+        expect(page).to have_content("test client")
+
+        client.reload
+
+        expect(client.name).to eq("test client")
+        expect(client.email).to eq("client@test.com")
       end
     end
   end

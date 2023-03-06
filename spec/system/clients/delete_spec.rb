@@ -4,14 +4,13 @@ require "rails_helper"
 
 RSpec.describe "Delete client", type: :system do
   let(:company) { create(:company) }
-  let(:client) { create(:client_with_phone_number_without_country_code, company:) }
+  let!(:client) { create(:client_with_phone_number_without_country_code, company:) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
     create(:employment, company:, user:)
     user.add_role :admin, company
     login_as(user)
-    client.save!
   end
 
   context "when deleting a client" do
