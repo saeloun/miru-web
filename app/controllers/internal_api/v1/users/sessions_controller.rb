@@ -20,7 +20,7 @@ class InternalApi::V1::Users::SessionsController < Devise::SessionsController
   def destroy
     sign_out(@user)
     reset_session
-    render json: { notice: I18n.t("devise.sessions.signed_out") }, status: :ok
+    render json: { notice: I18n.t("devise.sessions.signed_out"), reset_session: true }, status: :ok
   end
 
   private

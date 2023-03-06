@@ -24,8 +24,9 @@ class ApiHandler {
       (response: any) => {
         if (response) {
           response.success = response.status === 200;
-          if (response?.data?.notice) {
-            Toastr.success(response.data.notice);
+          const data = response.data;
+          if (data && !data.reset_session && data.notice) {
+            Toastr.success(data.notice);
           }
         }
 

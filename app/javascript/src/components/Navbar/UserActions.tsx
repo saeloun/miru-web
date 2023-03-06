@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { useOutsideClick } from "helpers";
 import { SettingIcon, SignOutIcon, Switcher } from "miruIcons";
-import { NavLink, redirect } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Avatar, Tooltip } from "StyledComponents";
 
 import authenticationApi from "apis/authentication";
@@ -67,7 +67,6 @@ const UserActions = () => {
     window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
     //@ts-expect-error for authDispatch object
     authDispatch({ type: "LOGOUT" });
-    setTimeout(() => redirect("/"), 3000);
   };
 
   const WorkspaceList = () => (
