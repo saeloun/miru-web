@@ -12,13 +12,14 @@ RSpec.describe "Forgot password", type: :system do
 
   context "when user submits their email address" do
     before do
-      visit new_user_password_path
+      with_forgery_protection do
+        visit "/password/new"
 
-      within("#new_user") do
-        fill_in "user_email", with: user.email
+        fill_in "email", with: user.email
+
+        click_on "Send password reset link"
+        @reset_password_token = ActionMailer::Base.deliveries.first.body.to_s.match(/reset_password_token=([\w-]+)/)[1]
       end
-      click_on "SEND PASSWORD RESET LINK"
-      @reset_password_token = ActionMailer::Base.deliveries.first.body.to_s.match(/reset_password_token=([\w-]+)/)[1]
     end
 
     it "sends a password reset email" do
@@ -36,14 +37,12 @@ RSpec.describe "Forgot password", type: :system do
         fill_in "confirm_password", with: "Welcome@123"
 
         click_on "Reset password"
-
-        expect(page).to have_selector("h1", text: "Welcome back!")
+        expect(page).to have_content("Your password has been changed successfully. You are now signed in.")
+        expect(page).to have_text("Welcome back!", wait: 10)
       end
     end
 
     it "sends an email after password reset" do
-      visit edit_user_password_path(reset_password_token: @reset_password_token)
-
       with_forgery_protection do
         visit edit_user_password_path(reset_password_token: @reset_password_token)
 
@@ -63,15 +62,15 @@ RSpec.describe "Forgot password", type: :system do
 
   context "when user enters an email that is not registered" do
     it "displays an error message" do
-      visit new_user_password_path
+      with_forgery_protection do
+        visit "/password/new"
 
-      within("#new_user") do
-        fill_in "user_email", with: "unknown_email@example.com"
+        fill_in "email", with: "unknown_email@example.com"
+
+        click_on "Send password reset link"
+        expect(ActionMailer::Base.deliveries.count).to eq(0)
+        expect(page).to have_content("Email not found")
       end
-      click_on "SEND PASSWORD RESET LINK"
-
-      expect(ActionMailer::Base.deliveries.count).to eq(0)
-      expect(page).to have_content("Email not found")
     end
   end
 end
