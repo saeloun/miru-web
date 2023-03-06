@@ -1,15 +1,17 @@
 import React, { useEffect, useCallback } from "react";
 
 import { MiruLogoSVG } from "miruIcons";
+import { useNavigate } from "react-router-dom";
 
 import authenticationApi from "apis/authentication";
 
 const EmailVerification = () => {
   const emailId = new URLSearchParams(window.location.search).get("email");
+  const navigate = useNavigate();
 
   const handleKeyPress = useCallback(event => {
     if (event.key === "Escape") {
-      window.location.assign(`${window.location.origin}`);
+      navigate(`${window.location.origin}`);
     }
   }, []);
 
