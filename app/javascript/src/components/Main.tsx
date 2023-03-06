@@ -15,11 +15,7 @@ import OrganizationSetup from "./OrganizationSetup";
 
 const Main = (props: Iprops) => {
   //@ts-expect-error is used to allow authToken value on empty object
-  const { authToken, authEmail } = useAuthState();
-
-  const isLoggedIn = authToken && authEmail;
-
-  const { confirmedUser, companyRole } = props;
+  const { isLoggedIn } = useAuthState();
 
   useEffect(() => {
     const previousLoginAuthEmail = getValueFromLocalStorage("authEmail");
@@ -33,8 +29,10 @@ const Main = (props: Iprops) => {
   }, [props?.user]);
 
   if (isLoggedIn) {
+    const current_workspace_id = props?.user?.current_workspace_id;
+    const confirmedUser = props?.confirmedUser;
     if (confirmedUser) {
-      if (!companyRole) {
+      if (!current_workspace_id) {
         return (
           <Routes>
             <Route element={<OrganizationSetup />} path="/" />
@@ -61,7 +59,9 @@ const Main = (props: Iprops) => {
   );
 };
 interface Iprops {
-  user: object;
+  user: {
+    current_workspace_id: string;
+  };
   companyRole: Roles;
   company: object;
   confirmedUser: boolean;
