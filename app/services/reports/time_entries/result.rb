@@ -3,12 +3,6 @@
 class Reports::TimeEntries::Result < ApplicationService
   attr_reader :es_response, :group_by
 
-  GROUP_BY_INPUT_TO_ES_FIELD = {
-    "team_member" => :user_id,
-    "client" => :client_id,
-    "project" => :project_id
-  }
-
   GROUP_BY_INPUT_TO_GROUP_LABEL_FIELD = {
     "team_member" => :user_name,
     "client" => :client_name,
@@ -32,9 +26,9 @@ class Reports::TimeEntries::Result < ApplicationService
   private
 
     def process_response_by_group_by
-      grouped_data = es_response.group_by(&GROUP_BY_INPUT_TO_ES_FIELD[group_by])
-      grouped_data.map do | user_id, entries |
-        { label: entries.first[GROUP_BY_INPUT_TO_GROUP_LABEL_FIELD[group_by]], entries: }
+      grouped_data = es_response.group_by(&GROUP_BY_INPUT_TO_GROUP_LABEL_FIELD[group_by]).sort
+      grouped_data.map do | label, entries |
+        { label:, entries: }
       end
     end
 
