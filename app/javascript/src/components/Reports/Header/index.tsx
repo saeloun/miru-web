@@ -9,7 +9,7 @@ import {
   ShareIcon,
   XIcon,
   ArrowLeftIcon,
-  DotsThreeVerticalIcon,
+  MoreOptionIcon,
 } from "miruIcons";
 import { Link } from "react-router-dom";
 import { MobileMoreOptions } from "StyledComponents";
@@ -99,7 +99,7 @@ const Header = ({
                   )}
                 </>
               ) : (
-                <DotsThreeVerticalIcon />
+                <img className="h-4 w-4" src={MoreOptionIcon} />
               )}
             </button>
           )}
