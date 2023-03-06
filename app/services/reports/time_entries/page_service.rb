@@ -3,7 +3,7 @@
 class Reports::TimeEntries::PageService < ApplicationService
   include Pagy::Backend
 
-  attr_reader :params, :page, :group_by, :current_company
+  attr_reader :params, :page, :group_by, :current_company, :pagy_data, :es_filter
 
   PER_PAGE = {
     users: 5,
@@ -16,44 +16,16 @@ class Reports::TimeEntries::PageService < ApplicationService
     @page = params["page"]
     @group_by = params["group_by"]
     @current_company = current_company
+    @pagy_data = nil
+
+    @es_filter = nil
   end
 
   def process
-    data = es_filter_for_pagination
-    [pagination_details(data[:pagy_data]), data[:es_filter]]
+    es_filter_for_pagination
   end
 
-  def es_filter_for_pagination
-    return {} if !Reports::TimeEntries::GroupBy.new(group_by).is_valid_group_by
-
-    public_send("#{group_by}_filter")
-  end
-
-  def team_member_filter
-    pagy_data, users = pagy(users_query, items: PER_PAGE[:users], page:)
-    {
-      pagy_data:,
-      es_filter: { user_id: users.pluck(:id) }
-    }
-  end
-
-  def client_filter
-    pagy_data, clients = pagy(clients_query, items: PER_PAGE[:clients], page:)
-    {
-      pagy_data:,
-      es_filter: { client_id: clients.pluck(:id) }
-    }
-  end
-
-  def project_filter
-    pagy_data, projects = pagy(projects_query, items: PER_PAGE[:projects], page:)
-    {
-      pagy_data:,
-      es_filter: { project_id: projects.pluck(:id) }
-    }
-  end
-
-  def pagination_details(pagy_data)
+  def pagination_details
     {
       pages: pagy_data.pages,
       first: pagy_data.page == 1,
@@ -64,6 +36,29 @@ class Reports::TimeEntries::PageService < ApplicationService
   end
 
   private
+
+    def es_filter_for_pagination
+      if !Reports::TimeEntries::GroupBy.new(group_by).is_valid_group_by
+        @es_filter = {}
+      else
+        send("#{group_by}_filter")
+      end
+    end
+
+    def team_member_filter
+      @pagy_data, users = pagy(users_query, items: PER_PAGE[:users], page:)
+      @es_filter = { user_id: users.pluck(:id) }
+    end
+
+    def client_filter
+      @pagy_data, clients = pagy(clients_query, items: PER_PAGE[:clients], page:)
+      @es_filter = { client_id: clients.pluck(:id) }
+    end
+
+    def project_filter
+      @pagy_data, projects = pagy(projects_query, items: PER_PAGE[:projects], page:)
+      @es_filter = { project_id: projects.pluck(:id) }
+    end
 
     def users_query
       current_company.users
