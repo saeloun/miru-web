@@ -5,7 +5,6 @@ import { MiruLogoSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
-import Toastr from "common/Toastr";
 import { Paths, TOASTER_DURATION } from "constants/index";
 
 import {
@@ -29,16 +28,11 @@ const ResetPassword = () => {
       password,
       password_confirmation: confirm_password,
     };
-    try {
-      const res = await authenticationApi.resetPassword(payload);
-      if (res.status == 200) {
-        Toastr.info(res);
-        setTimeout(() => {
-          window.location.assign(`${window.location.origin}`);
-        }, 500);
-      }
-    } catch (error) {
-      Toastr.error(error);
+    const res = await authenticationApi.resetPassword(payload);
+    if (res.status == 200) {
+      setTimeout(() => {
+        window.location.assign(`${window.location.origin}`);
+      }, 3000);
     }
   };
 
