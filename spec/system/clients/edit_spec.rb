@@ -19,7 +19,7 @@ RSpec.describe "Edit client", type: :system do
         visit "/clients"
 
         find(:xpath, '//tr[@class=" hoverIcon"]').hover.click()
-        find("[data-cy='three-dots']").click()
+        find("#kebabMenu").click()
         click_button "Edit"
         fill_in "name", with: "test client"
         fill_in "email", with: "client@test.com"

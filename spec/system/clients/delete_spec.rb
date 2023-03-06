@@ -21,7 +21,7 @@ RSpec.describe "Delete client", type: :system do
         expect(page).to have_content(client.name)
 
         find(:xpath, '//tr[@class=" hoverIcon"]').hover.click()
-        find("[data-cy='three-dots']").click()
+        find("#kebabMenu").click()
         click_button "Delete"
         click_button "DELETE"
 
