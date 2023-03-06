@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 
 import {
   CaretDownIcon,
@@ -114,30 +114,34 @@ const Header = ({
                 <FilterIcon className="mr-4" color="#7C5DEE" size={16} />{" "}
                 Filters
               </li>
-              <li>
-                <button
-                  className="menuButton__list-item pl-2"
-                  onClick={() => {
-                    setShowExportOptions(false);
-                    handleDownload("csv");
-                  }}
-                >
-                  <FileCsvIcon color="#5B34EA" size={16} weight="bold" />
-                  <span className="ml-3 text-sm">Export as CSV</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  className="menuButton__list-item pl-2"
-                  onClick={() => {
-                    setShowExportOptions(false);
-                    handleDownload("pdf");
-                  }}
-                >
-                  <FilePdfIcon color="#5B34EA" size={16} weight="bold" />
-                  <span className="ml-3 text-sm">Export as PDF</span>
-                </button>
-              </li>
+              {showExportButon && (
+                <Fragment>
+                  <li>
+                    <button
+                      className="menuButton__list-item pl-2"
+                      onClick={() => {
+                        setShowExportOptions(false);
+                        handleDownload("csv");
+                      }}
+                    >
+                      <FileCsvIcon color="#5B34EA" size={16} weight="bold" />
+                      <span className="ml-3 text-sm">Export as CSV</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="menuButton__list-item pl-2"
+                      onClick={() => {
+                        setShowExportOptions(false);
+                        handleDownload("pdf");
+                      }}
+                    >
+                      <FilePdfIcon color="#5B34EA" size={16} weight="bold" />
+                      <span className="ml-3 text-sm">Export as PDF</span>
+                    </button>
+                  </li>
+                </Fragment>
+              )}
             </MobileMoreOptions>
           )}
         </div>
