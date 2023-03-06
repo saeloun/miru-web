@@ -15,6 +15,16 @@ RSpec.describe "Time Tracking", type: :system do
       sign_in(@user)
     end
 
+    it "can view the time sheet entry" do
+      time_entry = create(:timesheet_entry, user: @user, project: @project)
+
+      with_forgery_protection do
+        visit "time-tracking"
+
+        expect(page).to have_content(time_entry.note)
+      end
+    end
+
     it "can add time entry" do
       with_forgery_protection do
         visit "time-tracking"
@@ -79,6 +89,16 @@ RSpec.describe "Time Tracking", type: :system do
       @project_member = create(:project_member, user: @user, project: @project)
       @user.add_role :employee, @company
       sign_in(@user)
+    end
+
+    it "can view the time sheet entry" do
+      time_entry = create(:timesheet_entry, user: @user, project: @project)
+
+      with_forgery_protection do
+        visit "time-tracking"
+
+        expect(page).to have_content(time_entry.note)
+      end
     end
 
     it "can add time entry" do
