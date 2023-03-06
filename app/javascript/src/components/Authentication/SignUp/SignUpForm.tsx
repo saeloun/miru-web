@@ -5,7 +5,6 @@ import { GoogleSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
-import Toastr from "common/Toastr";
 import { Paths, TOASTER_DURATION } from "constants/index";
 
 import { signUpFormInitialValues, signUpFormValidationSchema } from "./utils";
@@ -35,15 +34,10 @@ const SignUpForm = () => {
       password,
       password_confirmation: confirm_password,
     };
-    try {
-      const res = await authenticationApi.signup(payload);
-      Toastr.info(res);
-      setTimeout(() => {
-        window.location.assign(`/email_confirmation?email=${res.data.email}`);
-      }, 500);
-    } catch (error) {
-      Toastr.error(error);
-    }
+    const res = await authenticationApi.signup(payload);
+    setTimeout(() => {
+      window.location.assign(`/email_confirmation?email=${res.data.email}`);
+    }, 3000);
   };
 
   const isBtnDisabled = (values: SignUpFormValues) =>
