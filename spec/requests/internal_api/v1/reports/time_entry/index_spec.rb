@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :request do
   let(:company) { create(:company, name: "company_one") }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:client) { create(:client, company:, name: "American_Client") }
+  let(:client) { create(:client, :with_logo, company:, name: "American_Client") }
   let(:project) { create(:project, client:, name: "A class project") }
   let(:client2) { create(:client, company_id: company.id, name: "European_Client") }
   let(:project2) { create(:project, client_id: client2.id, name: "B class project") }
@@ -36,6 +36,8 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(reports["label"]).to eq("")
         expect(reports["entries"].size).to eq(1)
         expect(reports["entries"].first["id"]).to eq(@timesheet_entry1.id)
+        expect(reports["clientLogo"]).to eq(@timesheet_entry1.project.client.logo_url)
+
         filter_options = {
           clients: [{ "label": client.name, "value": client.id }],
           teamMembers: [{ "label": user.full_name, "value": user.id }]
@@ -61,6 +63,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
+        expect(reports["clientLogo"]).to eq(@timesheet_entry1.project.client.logo_url)
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(2)
         expect(timesheet_ids_in_response).to eq([@timesheet_entry3.id, @timesheet_entry2.id])
@@ -83,6 +86,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
+        expect(reports["clientLogo"]).to eq(@timesheet_entry1.project.client.logo_url)
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(1)
         expect(timesheet_ids_in_response).to include(@timesheet_entry2.id)
@@ -95,6 +99,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
+        expect(reports["clientLogo"]).to eq(@timesheet_entry1.project.client.logo_url)
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(3)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id, @timesheet_entry3.id)
@@ -117,6 +122,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
+        expect(reports["clientLogo"]).to eq(@timesheet_entry1.project.client.logo_url)
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(2)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id)
@@ -129,6 +135,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
+        expect(reports["clientLogo"]).to eq(@timesheet_entry1.project.client.logo_url)
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(3)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id, @timesheet_entry3.id)
@@ -154,6 +161,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
+        expect(reports["clientLogo"]).to eq(@timesheet_entry1.project.client.logo_url)
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(2)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id)
@@ -166,6 +174,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
+        expect(reports["clientLogo"]).to eq(@timesheet_entry1.project.client.logo_url)
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(3)
         expect(timesheet_ids_in_response).to include(@timesheet_entry1.id, @timesheet_entry2.id, @timesheet_entry3.id)
@@ -225,6 +234,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"].first
         expect(reports["label"]).to eq("")
+        expect(reports["clientLogo"]).to eq(@timesheet_entry1.project.client.logo_url)
         timesheet_ids_in_response = reports["entries"].pluck("id")
         expect(reports["entries"].size).to eq(2)
         expect(timesheet_ids_in_response).to include(@timesheet_entry2.id)
@@ -279,6 +289,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
         expect(response).to have_http_status(:ok)
         reports = json_response["reports"]
         expect(reports.first["label"]).to eq(client.name)
+        expect(reports.first["clientLogo"]).to eq(client.logo_url)
         expect(reports.first["entries"].pluck("id")).to include(@timesheet_entry1.id, @timesheet_entry2.id)
         expect(reports.second["label"]).to eq(client2.name)
         expect(reports.second["entries"].pluck("id")).to include(@timesheet_entry3.id, @timesheet_entry4.id)

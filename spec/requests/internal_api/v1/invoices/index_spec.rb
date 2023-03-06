@@ -90,13 +90,24 @@ RSpec.describe "InternalApi::V1::Invoices#index", type: :request do
         ).to match_array(
           expected_invoices.map { |invoice| invoice["id"] }
         )
+        expect(
+          json_response["invoices"].map { |invoice| invoice["client"]["logo"] }
+        ).to match_array(
+          expected_invoices.map { |invoice| invoice.client.logo }
+        )
       end
 
       describe "recently_updated_invoices return value" do
         it "returns top 10 recently updated invoices" do
           send_request :get, internal_api_v1_invoices_path(), headers: auth_headers(book_keeper)
-          expected_ids = Invoice.order("updated_at desc").limit(10).pluck(:id)
+          expected_invoices = Invoice.order("updated_at desc").limit(10)
+          expected_ids = expected_invoices.pluck(:id)
           expect(json_response["recentlyUpdatedInvoices"].pluck("id")).to eq(expected_ids)
+          expect(
+            json_response["recentlyUpdatedInvoices"].map { |invoice| invoice["client"]["logo"] }
+          ).to match_array(
+            expected_invoices.map { |invoice| invoice.client.logo_url }
+          )
         end
       end
     end
