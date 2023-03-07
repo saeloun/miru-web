@@ -37,14 +37,11 @@ const SignInForm = () => {
 
       setTimeout(
         () => (window.location.href = `${window.location.origin}`),
-        3000
+        500
       );
     } catch (error) {
       if (error.response.data.unconfirmed) {
-        setTimeout(
-          () => navigate(`/email_confirmation?email=${values.email}`),
-          3000
-        );
+        navigate(`/email_confirmation?email=${values.email}`);
       }
     }
   };
