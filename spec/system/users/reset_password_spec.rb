@@ -19,7 +19,7 @@ RSpec.describe "Reset Password", type: :system do
     end
 
     it "allows user to reset password" do
-      expect(page).to have_content("Your password has been changed successfully. You are now signed in.")
+      expect(page).to have_content(I18n.t("password.update.success"))
       expect(ActionMailer::Base.deliveries.last.subject).to eq("Miru Password Reset Successfully!")
       expect(ActionMailer::Base.deliveries.last.to.first).to eq(user.email)
     end
