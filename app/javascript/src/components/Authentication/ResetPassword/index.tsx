@@ -32,7 +32,7 @@ const ResetPassword = () => {
     if (res.status == 200) {
       setTimeout(() => {
         window.location.assign(`${window.location.origin}`);
-      }, 3000);
+      }, 500);
     }
   };
 
