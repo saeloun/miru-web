@@ -14,7 +14,6 @@ RSpec.describe "Send Invoice", type: :system do
 
   context "when logged-in user is Admin" do
       before do
-        create(:employment, company:, user:)
         user.add_role :admin, company
         sign_in user
         page.windows[0].maximize
@@ -27,7 +26,6 @@ RSpec.describe "Send Invoice", type: :system do
           expect(page).to have_xpath "//h1[text()='All Invoices']"
 
           # Verify the page must have the new invoice
-
           within_table("invoices-list-table") do
             tr = find(:xpath, "//*[@id='invoices-list-table-row'][1]")
             expect(tr).to have_xpath "//h3[text()='#{invoice.invoice_number}']"
@@ -54,7 +52,6 @@ RSpec.describe "Send Invoice", type: :system do
 
   context "when logged-in user is Owner" do
     before do
-      create(:employment, company:, user:)
       user.add_role :owner, company
       sign_in user
       page.windows[0].maximize
@@ -67,7 +64,6 @@ RSpec.describe "Send Invoice", type: :system do
         expect(page).to have_xpath "//h1[text()='All Invoices']"
 
         # Verify the page must have the new invoice
-
         within_table("invoices-list-table") do
           tr = find(:xpath, "//*[@id='invoices-list-table-row'][1]")
           expect(tr).to have_xpath "//h3[text()='#{invoice.invoice_number}']"
@@ -94,7 +90,6 @@ RSpec.describe "Send Invoice", type: :system do
 
   context "when logged-in user is Employee" do
       before do
-        create(:employment, company:, user:)
         user.add_role :employee, company
         sign_in user
       end
