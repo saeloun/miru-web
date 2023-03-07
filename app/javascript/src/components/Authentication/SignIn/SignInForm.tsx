@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
-import { InputField } from "common/FormikFields";
+import { InputErrors, InputField } from "common/FormikFields";
 import { Paths, TOASTER_DURATION } from "constants/index";
 import { useAuthDispatch } from "context/auth";
 
@@ -74,11 +74,10 @@ const SignInForm = () => {
                   <Form>
                     <div className="field relative">
                       <InputField id="email" label="Email" name="email" />
-                      <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                        {errors.email && touched.email && (
-                          <div>{errors.email}</div>
-                        )}
-                      </div>
+                      <InputErrors
+                        fieldErrors={errors.email}
+                        fieldTouched={touched.email}
+                      />
                     </div>
                     <div className="field">
                       <InputField
@@ -87,11 +86,10 @@ const SignInForm = () => {
                         name="password"
                         type="password"
                       />
-                    </div>
-                    <div className="mb-6 block text-xs tracking-wider text-red-600">
-                      {errors.password && touched.password && (
-                        <div>{errors.password}</div>
-                      )}
+                      <InputErrors
+                        fieldErrors={errors.password}
+                        fieldTouched={touched.password}
+                      />
                     </div>
                     <div>
                       <button
