@@ -182,6 +182,7 @@ const MonthCalender = ({
       <div className="flex h-10 w-full items-center justify-between bg-miru-han-purple-1000">
         <button
           className="ml-4 flex h-6 w-20 items-center justify-center rounded border-2 text-xs font-bold tracking-widest text-white"
+          id="prevMonth"
           onClick={handleMonthTodayButton}
         >
           TODAY
@@ -198,6 +199,7 @@ const MonthCalender = ({
           </p>
           <button
             className="flex h-6 w-6 flex-col items-center justify-center rounded-xl border-2 text-white"
+            id="nextMonth"
             onClick={handleNextMonth}
           >
             &gt;

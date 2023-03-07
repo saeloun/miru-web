@@ -51,7 +51,7 @@ const WeeklyEntriesCard = ({
   const handleDurationClick = (num: number) => {
     if (dataChanged) return;
 
-    if (isWeeklyEditing) return;
+    // if (isWeeklyEditing) return;
     setSelectedInputBox(num);
     setShowNote(true);
     setNote(currentEntries[num] ? currentEntries[num]["note"] : "");
@@ -63,7 +63,7 @@ const WeeklyEntriesCard = ({
     ["unbilled", "billed"].includes(currentEntries[num]["bill_status"])
       ? setBillable(true)
       : setBillable(false);
-    setIsWeeklyEditing(true);
+    // setIsWeeklyEditing(true);
   };
 
   const handleSaveEntry = async () => {
@@ -184,6 +184,7 @@ const WeeklyEntriesCard = ({
               />
             ) : (
               <div
+                id={`inputClick_${num}`}
                 key={num}
                 className={`bold h-15 w-18 content-center rounded border-2 border-transparent bg-miru-gray-100 px-1 py-4 text-xl ${
                   currentEntries[num]

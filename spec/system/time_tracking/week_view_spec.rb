@@ -17,6 +17,19 @@ RSpec.describe "Time Tracking - week view" do
       sign_in(admin)
     end
 
+    it "can view the time sheet entry" do
+      time_entry = create(:timesheet_entry, user: admin, project:)
+
+      with_forgery_protection do
+        visit "time-tracking"
+        click_button "WEEK"
+
+        click_button "<"
+        click_button ">"
+        expect(page).to have_content("08:00")
+      end
+    end
+
     it "can add time entry" do
       with_forgery_protection do
         visit "time-tracking"
@@ -47,6 +60,44 @@ RSpec.describe "Time Tracking - week view" do
         end
 
         expect(page).to have_content("08:00")
+      end
+    end
+  end
+
+  context "when user is employee" do
+    before do
+      employee.add_role :employee, company
+      create(:employment, company:, user: employee)
+      create(:project_member, user: employee, project:)
+      sign_in(employee)
+    end
+
+    it "can view the time sheet entry" do
+      time_entry = create(:timesheet_entry, user: employee, project:)
+
+      with_forgery_protection do
+        visit "time-tracking"
+        click_button "WEEK"
+
+        click_button "<"
+        click_button ">"
+        expect(page).to have_content("08:00")
+      end
+    end
+
+    it "can add time entry" do
+      with_forgery_protection do
+        visit "time-tracking"
+
+        click_button "WEEK"
+        click_button "NEW ROW"
+        select client.name, from: "client"
+        click_button "SAVE"
+        find(:css, "#inputClick_0").click
+        find(:css, "#selectedInput").set("8")
+        fill_in placeholder: "Note", with: "Weekly note!"
+        click_button "SAVE"
+        expect(page).to have_content("Timesheet created", wait: 3)
       end
     end
   end
