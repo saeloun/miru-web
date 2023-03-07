@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Users::PasswordsController < Devise::PasswordsController
-  skip_before_action :require_no_authentication, only: [:edit]
-
   def create
     super do |resource|
       set_flash_error(resource)
