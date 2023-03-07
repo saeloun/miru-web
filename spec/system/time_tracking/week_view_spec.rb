@@ -32,5 +32,22 @@ RSpec.describe "Time Tracking - week view" do
         expect(page).to have_content("Timesheet created", wait: 3)
       end
     end
+
+    it "can view other users entry" do
+      user_two = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user: user_two)
+      create(:project_member, user: user_two, project:)
+      time_entry = create(:timesheet_entry, user: user_two, project:)
+      with_forgery_protection do
+        visit "time-tracking"
+
+        click_button "WEEK"
+        within(".css-6j8wv5-Input") do
+          find("input#react-select-9-input").set(" ").set(user_two.full_name).send_keys(:tab)
+        end
+
+        expect(page).to have_content("08:00")
+      end
+    end
   end
 end
