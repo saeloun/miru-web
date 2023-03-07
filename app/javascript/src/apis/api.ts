@@ -37,7 +37,7 @@ class ApiHandler {
         if (error.response?.status === 401) {
           clearCredentialsFromLocalStorage();
           Toastr.error(error.response?.data?.error);
-          setTimeout(() => (window.location.href = "/"), 3000);
+          setTimeout(() => (window.location.href = "/"), 500);
         }
 
         Toastr.error(
@@ -49,7 +49,7 @@ class ApiHandler {
             "Something went wrong!"
         );
         if (error.response?.status === 423) {
-          setTimeout(() => (window.location.href = "/"), 3000);
+          setTimeout(() => (window.location.href = "/"), 500);
         }
 
         return Promise.reject(error);
