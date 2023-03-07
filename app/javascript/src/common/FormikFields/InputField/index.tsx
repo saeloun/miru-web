@@ -77,4 +77,4 @@ InputField.defaultProps = {
   autoFocus: false,
 };
 
-export default React.memo(InputField);
+export default InputField;
