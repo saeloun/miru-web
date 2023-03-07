@@ -35,9 +35,7 @@ const SignUpForm = () => {
       password_confirmation: confirm_password,
     };
     const res = await authenticationApi.signup(payload);
-    setTimeout(() => {
-      navigate(`/email_confirmation?email=${res.data.email}`);
-    }, 3000);
+    navigate(`/email_confirmation?email=${res.data.email}`);
   };
 
   const isBtnDisabled = (values: SignUpFormValues) =>
