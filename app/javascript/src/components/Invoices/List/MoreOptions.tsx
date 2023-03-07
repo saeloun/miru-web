@@ -42,6 +42,7 @@ const MoreOptions = ({
         <Tooltip content="Send To">
           <button
             className="p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
+            id="send-invoice-button"
             onClick={() => {
               setIsSending(!isSending);
             }}
@@ -74,6 +75,7 @@ const MoreOptions = ({
           <Link
             className="p-2 text-miru-han-purple-1000 hover:bg-miru-gray-1000"
             data-cy="edit-invoice"
+            id="edit-invoice-button"
             to={`/invoices/${invoice.id}/edit`}
             type="button"
             onClick={e => e.stopPropagation()}
