@@ -12,11 +12,12 @@ json.array! invoices do |invoice|
     json.client do
       json.name invoice.client_name
       json.email invoice.client_email
+      json.logo invoice.client_logo_url
     end
     json.company do
       json.name current_company.name
       json.base_currency current_company.base_currency
-      json.date_format current_company.date_format || "YYYY-MM-DD"
+      json.date_format current_company.date_format
     end
     json.status invoice.status
   end

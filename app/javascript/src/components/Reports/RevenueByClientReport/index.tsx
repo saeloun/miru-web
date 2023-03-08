@@ -31,7 +31,7 @@ const RevenueByClientReport = () => {
   const [currency, setCurrency] = useState("");
   const [summary, setSummary] = useState({
     totalPaidAmount: 0,
-    totalUnpaidAmount: 0,
+    totalOutstandingAmount: 0,
     totalRevenue: 0,
   });
 
@@ -130,7 +130,7 @@ const RevenueByClientReport = () => {
   };
 
   return (
-    <div>
+    <div className="h-full">
       <EntryContext.Provider
         value={{
           ...contextValues,

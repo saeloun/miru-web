@@ -23,4 +23,12 @@ class Vendor < ApplicationRecord
 
   has_many :expenses
   belongs_to :company
+
+  after_commit :reindex_expenses
+
+  private
+
+    def reindex_expenses
+      expenses.reindex
+    end
 end

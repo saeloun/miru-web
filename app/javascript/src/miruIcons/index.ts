@@ -41,15 +41,20 @@ import {
   MapPin,
   Info,
   Globe,
+  Image,
+  Money,
+  Copy,
 } from "phosphor-react";
 
 const accountsAgingIcon = require("./svgIcons/accountsAging.svg");
 const accountsAgingHoverIcon = require("./svgIcons/accountsAgingHover.svg");
+const blurredMiruLogo = require("./svgIcons/blurred-miru-logo.svg");
 const reportcalendarIcon = require("./svgIcons/Calendar.svg");
 const calendarHoverIcon = require("./svgIcons/CalendarHover.svg");
-const emptyStateInvoices = require("./svgIcons/emptyStateInvoices.svg");
+const emptyState = require("./svgIcons/emptyState.svg");
 const hoursIcon = require("./svgIcons/Hours.svg");
 const hoursHoverIcon = require("./svgIcons/HoursHover.svg");
+const noSearchResultsState = require("./svgIcons/NoSearchResultsState.svg");
 const overdueOutstandingIcon = require("./svgIcons/OverdueOutstanding.svg");
 const overdueOutstandingHoverIcon = require("./svgIcons/OverdueOutstandingHover.svg");
 const revenueIcon = require("./svgIcons/Revenue.svg");
@@ -85,9 +90,16 @@ const logo = require("../../../assets/images/logo.jpg");
 const logout_icon = require("../../../assets/images/logout_icon.svg");
 const masterCard = require("../../../assets/images/masterCard.svg");
 const miruLogo = require("../../../assets/images/miru-logo.svg");
+const miruManagingClientsScreen = require("../../../assets/images/miru-managing-clients-screen.png");
+const miruManagingEmployeesScreen = require("../../../assets/images/miru-managing-employees-screen.svg");
+const miruManagingProjectsScreen = require("../../../assets/images/miru-managing-projects-screen.svg");
+const miruPaymentAndInvoicesScreen = require("../../../assets/images/miru-payment-and-invoices-screen.svg");
+const miruReportAndAnalysisScreen = require("../../../assets/images/miru-report-and-analysis-screen.svg");
+const miruTimeTrackingScreen = require("../../../assets/images/miru-time-tracking-screen.svg");
 const miruLogoWithText = require("../../../assets/images/miruLogoWithText.svg");
 const MiruWhiteLogoWithText = require("../../../assets/images/MiruWhiteLogowithText.svg");
 const mobile = require("../../../assets/images/mobile-menu.svg");
+const moreOption = require("../../../assets/images/moreOption.svg");
 const NavAvatar = require("../../../assets/images/NavAvatar.svg");
 const notification = require("../../../assets/images/notification.svg");
 const password_icon = require("../../../assets/images/password_icon.svg");
@@ -108,6 +120,7 @@ const StripeDropdown = require("../../../assets/images/StripeDropdown.svg");
 const clickSuccess = require("../../../assets/images/success-check-circle.svg");
 const success = require("../../../assets/images/success-close-icon.svg");
 const switcher = require("../../../assets/images/switcher.svg");
+const transparentMiruLogo = require("../../../assets/images/transparent-miru-logo.svg");
 const Twitter = require("../../../assets/images/Twitter.svg");
 const userAvatar = require("../../../assets/images/user_avatar.svg");
 const visa = require("../../../assets/images/visa.svg");
@@ -156,6 +169,10 @@ export const PhoneIcon = Phone;
 export const MapPinIcon = MapPin;
 export const InfoIcon = Info;
 export const GlobeIcon = Globe;
+export const ImageIcon = Image;
+export const MoneyIcon = Money;
+export const CopyIcon = Copy;
+
 // custom svg icons
 export const WarningTriangleSVG = warningTriangle;
 export const WarningCloseIconSVG = warningCloseIcon;
@@ -225,4 +242,14 @@ export const RevenueHoverIcon = revenueHoverIcon;
 export const AccountsAgingIcon = accountsAgingIcon;
 export const AccountsAgingHoverIcon = accountsAgingHoverIcon;
 export const Switcher = switcher;
-export const EmptyStateInvoices = emptyStateInvoices;
+export const EmptyState = emptyState;
+export const NoSearchResultsState = noSearchResultsState;
+export const BlurredMiruLogo = blurredMiruLogo;
+export const TransparentMiruLogo = transparentMiruLogo;
+export const MiruTimeTrackingScreen = miruTimeTrackingScreen;
+export const MiruReportAndAnalysisScreen = miruReportAndAnalysisScreen;
+export const MiruPaymentAndInvoicesScreen = miruPaymentAndInvoicesScreen;
+export const MiruManagingProjectsScreen = miruManagingProjectsScreen;
+export const MiruManagingClientsScreen = miruManagingClientsScreen;
+export const MiruManagingEmployeesScreen = miruManagingEmployeesScreen;
+export const MoreOptionIcon = moreOption;

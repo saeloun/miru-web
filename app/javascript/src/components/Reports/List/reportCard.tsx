@@ -19,7 +19,7 @@ const ReportCard = ({ icon, iconHover, title, description, url }) => (
         <div className="h-[27px] max-w-xs text-base font-semibold text-miru-dark-purple-1000	group-hover:text-miru-han-purple-1000 lg:text-xl">
           {title}
         </div>
-        <div className="h-[78px] max-w-xs pt-2 text-xs font-medium	text-miru-dark-purple-400 lg:text-sm lg:font-normal">
+        <div className="h-[78px] max-w-xs pt-1 text-xs font-medium	text-miru-dark-purple-400 lg:text-sm lg:font-normal">
           {description}
         </div>
       </div>
