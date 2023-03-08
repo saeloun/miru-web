@@ -2,40 +2,50 @@
 
 require "rails_helper"
 
-RSpec.describe "User Sign In", type: :system do
+RSpec.describe "Sign-in", type: :system do
   let(:company) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id, password: "testing!") }
+  let(:user) { create(:user, current_workspace_id: company.id) }
 
   context "when user is an admin, owner, employee" do
     before do
       create(:employment, company:, user:)
+      user.add_role :admin, company
     end
 
-    context "when using valid credentials" do
-      it "logs user in" do
-        with_forgery_protection do
-          visit "/login"
+    it "allows a user to sign in with valid credentials" do
+      with_forgery_protection do
+        visit "/login"
+        fill_in "email", with: user.email
+        fill_in "password", with: user.password
+        click_on "Sign In"
 
-          fill_in "email", with: user.email
-          fill_in "password", with: "testing!"
-
-          click_on "Sign In"
-          expect(page).to have_content(I18n.t("devise.sessions.signed_in"))
-        end
+        expect(page).to have_current_path("/time-tracking")
       end
     end
 
-    context "when using invalid credentials" do
-      it "throws an error" do
-        with_forgery_protection do
-          visit "/login"
+    it "displays an error message with invalid credentials" do
+      with_forgery_protection do
+        visit "/login"
+        fill_in "email", with: "invalid@example.com"
+        fill_in "password", with: "password"
+        click_on "Sign In"
 
-          fill_in "email", with: user.email
-          fill_in "password", with: "testing123"
+        expect(page).to have_current_path("/login")
+        expect(page).to have_text("Invalid email or password")
+      end
+    end
 
-          click_on "Sign In"
-          expect(page).to have_content(I18n.t("sessions.failure.invalid"))
-        end
+    it "displays an error message if the user's account is unconfirmed" do
+      user = create(:user, confirmed_at: nil)
+
+      with_forgery_protection do
+        visit "/login"
+        fill_in "email", with: user.email
+        fill_in "password", with: user.password
+        click_on "Sign In"
+
+        expect(page).to have_current_path("/email_confirmation?email=#{user.email}")
+        expect(page).to have_text("You have to confirm your email address before continuing.")
       end
     end
   end
