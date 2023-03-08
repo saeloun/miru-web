@@ -23,6 +23,7 @@ module Reports::AccountsAging
           {
             id: client.id,
             name: client.name,
+            logo: client.logo_url,
             amount_overdue: amount_overdue_by_date_range(client.invoices)
           }
         end
@@ -47,7 +48,9 @@ module Reports::AccountsAging
       end
 
       def clients
-        @_clients ||= current_company.clients.kept.order(name: :asc).uniq
+        @_clients ||= current_company.clients.joins(:projects).where(
+          projects: { billable: true }
+        ).kept.order(name: :asc).uniq
       end
   end
 end

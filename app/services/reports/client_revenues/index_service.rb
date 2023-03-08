@@ -20,17 +20,17 @@ module Reports::ClientRevenues
 
       def clients
         current_clients.order("name asc").includes(:invoices).map do |client|
-          client.payment_summary(duration_params)
+          client.payment_summary(duration_params).merge({ name: client.name, logo: client.logo_url })
         end
       end
 
       def summary
         total_paid_amount = clients.pluck(:paid_amount).sum
-        total_unpaid_amount = clients.pluck(:unpaid_amount).sum
+        total_outstanding_amount = clients.pluck(:outstanding_amount).sum
         {
           total_paid_amount:,
-          total_unpaid_amount:,
-          total_revenue: total_paid_amount + total_unpaid_amount
+          total_outstanding_amount:,
+          total_revenue: total_paid_amount + total_outstanding_amount
         }
       end
 

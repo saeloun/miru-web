@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 
 import {
   CaretDownIcon,
@@ -9,7 +9,7 @@ import {
   ShareIcon,
   XIcon,
   ArrowLeftIcon,
-  DotsThreeVerticalIcon,
+  MoreOptionIcon,
 } from "miruIcons";
 import { Link } from "react-router-dom";
 import { MobileMoreOptions } from "StyledComponents";
@@ -99,14 +99,14 @@ const Header = ({
                   )}
                 </>
               ) : (
-                <DotsThreeVerticalIcon />
+                <img className="h-4 w-4" src={MoreOptionIcon} />
               )}
             </button>
           )}
           {showMoreOptions && (
             <MobileMoreOptions setVisibilty={setShowMoreOptions}>
               <li
-                className="flex items-center p-2 text-miru-han-purple-1000"
+                className="flex items-center p-2 text-sm text-miru-han-purple-1000"
                 onClick={() => {
                   setIsFilterVisible(!isFilterVisible);
                 }}
@@ -114,9 +114,34 @@ const Header = ({
                 <FilterIcon className="mr-4" color="#7C5DEE" size={16} />{" "}
                 Filters
               </li>
-              {/* <li className="flex items-center p-2 text-miru-dark-purple-400">
-                <PaperPlaneTiltIcon className="mr-4" size={16} /> Share
-              </li> */}
+              {showExportButon && (
+                <Fragment>
+                  <li>
+                    <button
+                      className="menuButton__list-item pl-2"
+                      onClick={() => {
+                        setShowExportOptions(false);
+                        handleDownload("csv");
+                      }}
+                    >
+                      <FileCsvIcon color="#5B34EA" size={16} weight="bold" />
+                      <span className="ml-3 text-sm">Export as CSV</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="menuButton__list-item pl-2"
+                      onClick={() => {
+                        setShowExportOptions(false);
+                        handleDownload("pdf");
+                      }}
+                    >
+                      <FilePdfIcon color="#5B34EA" size={16} weight="bold" />
+                      <span className="ml-3 text-sm">Export as PDF</span>
+                    </button>
+                  </li>
+                </Fragment>
+              )}
             </MobileMoreOptions>
           )}
         </div>

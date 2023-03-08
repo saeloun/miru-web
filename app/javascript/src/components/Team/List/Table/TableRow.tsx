@@ -8,7 +8,7 @@ import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
 
 const TableRow = ({ item }) => {
-  const { isAdminUser } = useUserContext();
+  const { isAdminUser, isDesktop } = useUserContext();
   const { setModalState } = useList();
   const navigate = useNavigate();
 
@@ -22,10 +22,18 @@ const TableRow = ({ item }) => {
 
   return (
     <tr
-      className="hoverIcon border-b border-miru-gray-200 last:border-0"
       data-cy="team-table-row"
+      className={`hoverIcon ${
+        isAdminUser && "cursor-pointer"
+      } border-b border-miru-gray-200 last:border-0`}
       onClick={() => {
-        navigate("1");
+        if (isDesktop) {
+          isAdminUser ? navigate(`/team/${item.id}`, { replace: true }) : null;
+        } else {
+          isAdminUser
+            ? navigate(`/team/${item.id}/options`, { replace: true })
+            : null;
+        }
       }}
     >
       <td className="table__data p-6 capitalize">{item.name}</td>

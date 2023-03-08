@@ -69,7 +69,7 @@ const WeeklyEntriesCard = ({
   const handleSaveEntry = async () => {
     try {
       const payload = getPayload();
-      const message = validateTimesheetEntry(payload);
+      const message = validateTimesheetEntry(payload, client, currentProjectId);
       if (message) {
         Toastr.error(message);
 
@@ -106,7 +106,7 @@ const WeeklyEntriesCard = ({
     try {
       const timesheetEntryId = currentEntries[selectedInputBox]["id"];
       const payload = getPayload();
-      const message = validateTimesheetEntry(payload);
+      const message = validateTimesheetEntry(payload, client, currentProjectId);
       if (message) {
         Toastr.error(message);
 

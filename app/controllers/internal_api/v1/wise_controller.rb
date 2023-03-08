@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class InternalApi::V1::WiseController < InternalApi::V1::ApplicationController
+  skip_before_action :authenticate_user_using_x_auth_token
+
   def fetch_bank_requirements
     authorize current_company, policy_class: WisePolicy
 

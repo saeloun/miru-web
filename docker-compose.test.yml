@@ -44,7 +44,7 @@ services:
       - WISE_ACCESS_TOKEN=access-token-12345
       - WISE_PROFILE_ID=123456
       - EMAIL_DELIVERY_METHOD=letter_opener
-      - MAILER_SENDER=info@miru.saeloun.com
+      - DEFAULT_MAILER_SENDER=info@miru.so
       - REPLY_TO_EMAIL=no-reply@getmiru.com
       - STRIPE_PUBLISHABLE_KEY=stripe_publishable_key
       - STRIPE_SECRET_KEY=stripe_secret_key

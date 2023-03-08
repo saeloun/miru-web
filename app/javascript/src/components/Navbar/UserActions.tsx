@@ -9,6 +9,7 @@ import { Avatar, Tooltip } from "StyledComponents";
 import companiesApi from "apis/companies";
 import WorkspaceApi from "apis/workspaces";
 import { LocalStorageKeys } from "constants/index";
+import { useAuthDispatch } from "context/auth";
 
 import { activeClassName } from "./utils";
 
@@ -22,6 +23,8 @@ const UserActions = () => {
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
   const wrapperRef = useRef(null);
   const toolTipRef = useRef(null);
+
+  const authDispatch = useAuthDispatch();
 
   useEffect(() => {
     fetchWorkspaces();
@@ -60,6 +63,8 @@ const UserActions = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
+    //@ts-expect-error for authDispatch object
+    authDispatch({ type: "LOGOUT" });
   };
 
   const WorkspaceList = () => (

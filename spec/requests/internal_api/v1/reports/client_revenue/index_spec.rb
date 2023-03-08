@@ -5,14 +5,17 @@ require "rails_helper"
 RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let!(:client1) { create(:client, company:, name: "Alpha") }
-  let!(:client2) { create(:client, company:, name: "Delta") }
+  let!(:client1) { create(:client, :with_logo, company:, name: "Alpha") }
+  let!(:client2) { create(:client, :with_logo, company:, name: "Delta") }
   let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent") }
   let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent") }
   let!(:client1_viewed_invoice1) { create(:invoice, client: client1, status: "viewed") }
   let!(:client1_paid_invoice1) { create(:invoice, client: client1, status: "paid") }
   let!(:client1_paid_invoice2) { create(:invoice, client: client1, status: "paid") }
   let!(:client2_overdue_invoice1) { create(:invoice, client: client2, status: "overdue") }
+  let!(:client1_overdue_invoice1) { create(:invoice, client: client1, status: "overdue") }
+  let!(:client2_sent_invoice2) { create(:invoice, client: client2, status: "sent") }
+  let!(:client2_viewed_invoice1) { create(:invoice, client: client2, status: "viewed") }
 
   context "when user is an admin" do
     before do
@@ -26,10 +29,31 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
         @client1_paid_amount = client1_paid_invoice1.amount + client1_paid_invoice2.amount
         @client1_unpaid_amount = client1_viewed_invoice1.amount + client1_sent_invoice1.amount +
                                  client1_sent_invoice2.amount
+        @client1_overdue_amount = client1_overdue_invoice1.amount
+        @client2_overdue_amount = client2_overdue_invoice1.amount
 
         @client2_paid_amount = 0
-        @client2_unpaid_amount = client2_overdue_invoice1.amount
-        get internal_api_v1_reports_client_revenues_path, params: { from_date: 1.month.ago, to_date: Date.today }
+        @client2_unpaid_amount = client2_sent_invoice2.amount + client2_viewed_invoice1.amount
+        @expected_clients =
+          [{
+            logo: client1.logo_url,
+            name: client1.name,
+            paidAmount: @client1_paid_amount,
+            outstandingAmount: @client1_unpaid_amount,
+            totalAmount: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
+            overdueAmount: @client1_overdue_amount
+          },
+           {
+             logo: client2.logo_url,
+             name: client2.name,
+             paidAmount: @client2_paid_amount,
+             outstandingAmount: @client2_unpaid_amount,
+             totalAmount: @client2_paid_amount + @client2_unpaid_amount + @client2_overdue_amount,
+             overdueAmount: @client2_overdue_amount
+           }]
+        get internal_api_v1_reports_client_revenues_path,
+          params: { from_date: 1.month.ago, to_date: Date.today },
+          headers: auth_headers(user)
       end
 
       it "returns the 200 http response" do
@@ -37,22 +61,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       end
 
       it "returns the clients data in alaphabetical order with amount details" do
-        expected_clients =
-          [
-            {
-              name: client1.name,
-              paidAmount: @client1_paid_amount,
-              unpaidAmount: @client1_unpaid_amount,
-              totalAmount: @client1_paid_amount + @client1_unpaid_amount
-            },
-            {
-              name: client2.name,
-              paidAmount: @client2_paid_amount,
-              unpaidAmount: @client2_unpaid_amount,
-              totalAmount: @client2_paid_amount + @client2_unpaid_amount
-            }
-          ]
-        expect(json_response["clients"]).to eq(JSON.parse(expected_clients.to_json))
+        expect(json_response["clients"]).to eq(JSON.parse(@expected_clients.to_json))
       end
 
       it "returns the base currency" do
@@ -62,7 +71,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       it "returns the summary of all clients" do
         expected_summary = {
           totalPaidAmount: @client1_paid_amount + @client2_paid_amount,
-          totalUnpaidAmount: @client1_unpaid_amount + @client2_unpaid_amount,
+          totalOutstandingAmount: @client1_unpaid_amount + @client2_unpaid_amount,
           totalRevenue: @client1_paid_amount + @client2_paid_amount + @client1_unpaid_amount + @client2_unpaid_amount
         }
         expect(json_response["summary"]).to eq(JSON.parse(expected_summary.to_json))
@@ -74,9 +83,11 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
         @client1_paid_amount = client1_paid_invoice1.amount + client1_paid_invoice2.amount
         @client1_unpaid_amount = client1_viewed_invoice1.amount + client1_sent_invoice1.amount +
                                  client1_sent_invoice2.amount
+        @client1_overdue_amount = client1_overdue_invoice1.amount
 
         get internal_api_v1_reports_client_revenues_path,
-          params: { client_ids: [client1.id].to_json, from_date: 1.month.ago, to_date: Date.today }
+          params: { client_ids: [client1.id].to_json, from_date: 1.month.ago, to_date: Date.today },
+          headers: auth_headers(user)
       end
 
       it "returns the 200 http response" do
@@ -88,9 +99,11 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
           [
             {
               name: client1.name,
+              logo: client1.logo_url,
               paidAmount: @client1_paid_amount,
-              unpaidAmount: @client1_unpaid_amount,
-              totalAmount: @client1_paid_amount + @client1_unpaid_amount
+              outstandingAmount: @client1_unpaid_amount,
+              totalAmount: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
+              overdueAmount: @client1_overdue_amount
             }
           ]
         expect(json_response["clients"]).to eq(JSON.parse(expected_clients.to_json))
@@ -103,7 +116,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       it "returns the summary of first client" do
         expected_summary = {
           totalPaidAmount: @client1_paid_amount,
-          totalUnpaidAmount: @client1_unpaid_amount,
+          totalOutstandingAmount: @client1_unpaid_amount,
           totalRevenue: @client1_paid_amount + @client1_unpaid_amount
         }
         expect(json_response["summary"]).to eq(JSON.parse(expected_summary.to_json))
@@ -116,7 +129,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :get, internal_api_v1_reports_client_revenues_path
+      send_request :get, internal_api_v1_reports_client_revenues_path, headers: auth_headers(user)
     end
 
     it "is not permitted to view client revenue report" do
@@ -129,7 +142,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :get, internal_api_v1_reports_client_revenues_path
+      send_request :get, internal_api_v1_reports_client_revenues_path, headers: auth_headers(user)
     end
 
     it "is not permitted to view client revenue report" do
@@ -141,7 +154,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
     it "is not permitted to view client revenue report" do
       send_request :get, internal_api_v1_reports_client_revenues_path
       expect(response).to have_http_status(:unauthorized)
-      expect(json_response["error"]).to eq("You need to sign in or sign up before continuing.")
+      expect(json_response["error"]).to eq(I18n.t("devise.failure.unauthenticated"))
     end
   end
 end

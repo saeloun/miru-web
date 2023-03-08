@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.2.0"
+ruby "3.2.1"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.4"
@@ -222,3 +222,6 @@ gem "strong_migrations"
 # Error tracking: https://docs.sentry.io/platforms/ruby/guides/rails/
 gem "sentry-rails"
 gem "sentry-ruby"
+
+# https://github.com/grosser/parallel_tests
+gem "parallel_tests", group: [:development, :test]

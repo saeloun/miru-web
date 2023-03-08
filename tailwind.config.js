@@ -6,6 +6,7 @@ module.exports = {
       center: true,
     },
     fontSize: {
+      xsm: ".5625em",
       xxs: "0.625rem",//10px
       xs: ".75rem",
       sm: ".875rem",
@@ -21,10 +22,11 @@ module.exports = {
       "5xl": "3rem",
       "6xl": "4rem",
       "7xl": "5rem",
+      32: "2rem",
     },
     letterSpacing: {
       widest: "0.125em",
-      semiWidest : "0.09375",//1.5px
+      semiWidest: "0.09375",//1.5px
       wider: ".05em",
       normal: "0em",
     },
@@ -46,11 +48,18 @@ module.exports = {
       width: {
         fit: "fit-content",
         30: "7.5rem", //120px
-        128: "32rem", // 512px
         34: "8.6rem",
-        352: "22rem", //352px
-        228: "14.25rem", //228px
+        13: "13.5px",
+        128: "32rem", // 512px
+        168: "10.5rem", // 168px
         180: "11.25rem", //180px
+        228: "14.25rem", //228px
+        300: "18.75rem", //300px
+        320: "20rem", // 320px
+        352: "22rem", //352px
+        480: "30rem", //480px
+        18: "18%",
+        72: "72%"
       },
       minWidth: {
         12: "12px",
@@ -65,7 +74,8 @@ module.exports = {
         512: "32rem",
         304: "19rem",
         87: "5.4rem",
-        "1/12" :"8.333%",
+        88: "5.5rem",
+        "1/12": "8.333%",
         "1/15": "6.666%"
       },
       minHeight: {
@@ -79,6 +89,7 @@ module.exports = {
         "80v": "80vh",
         "90v": "90vh",
         "100v": "100vh",
+        24: "24px",
       },
       maxHeight: {
         "10v": "10vh",
@@ -200,6 +211,7 @@ module.exports = {
       },
       zIndex: {
         1: "-1",
+        1: "1",
         15: "15",
       },
       transformOrigin: {

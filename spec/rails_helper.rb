@@ -13,6 +13,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # Add additional requires below this line. Rails is not loaded until this point!
 require "devise"
 require "rspec/rails"
+require "support/session_helpers"
 require "support/database_cleaner"
 
 Dir[Rails.root.join("spec", "support", "**", "*.rb")].sort.each { |f| require f }
@@ -57,6 +58,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Capybara::DSL
   config.include Warden::Test::Helpers
+  config.include SessionHelpers, type: :system
   config.before do
     Faker::UniqueGenerator.clear
     OmniAuth.config.test_mode = true
@@ -80,6 +82,23 @@ RSpec.configure do |config|
       Capybara.app_host = "http://#{IPSocket.getaddress(Socket.gethostname)}:3000"
       Capybara.server_host = IPSocket.getaddress(Socket.gethostname)
       Capybara.server_port = 3000
+    end
+  end
+
+  def auth_headers(auth_user, options = {})
+    {
+      "X-Auth-Token" => auth_user[:token],
+      "X-Auth-Email" => auth_user[:email]
+    }.merge(options)
+  end
+
+  def with_forgery_protection
+    orig = ActionController::Base.allow_forgery_protection
+    begin
+      ActionController::Base.allow_forgery_protection = true
+      yield if block_given?
+    ensure
+      ActionController::Base.allow_forgery_protection = orig
     end
   end
 end

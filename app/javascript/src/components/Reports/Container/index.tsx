@@ -4,6 +4,8 @@ import { minToHHMM } from "helpers";
 import { ClientsIcon } from "miruIcons";
 import { Avatar } from "StyledComponents";
 
+import EmptyStates from "common/EmptyStates";
+
 import ReportRow from "./ReportRow";
 
 import { useEntry } from "../context/EntryContext";
@@ -50,9 +52,9 @@ const Container = ({ selectedFilter }: ContainerProps) => {
     return minToHHMM(totalHours || 0);
   };
 
-  const getTableLogo = (groupedBy: string | null) => {
+  const getTableLogo = (groupedBy: string | null, clientLogo: string) => {
     const logo = {
-      client: <ClientsIcon className="m-0 object-contain" size={40} />,
+      client: <Avatar classNameImg="mr-2 lg:mr-6" url={clientLogo} />,
       project: <ClientsIcon className="m-0 object-contain" size={40} />,
       team_member: <Avatar />,
     };
@@ -62,12 +64,16 @@ const Container = ({ selectedFilter }: ContainerProps) => {
     ) : null;
   };
 
-  const getEntryList = entries =>
+  const getEntryList = (entries, clientLogo: string) =>
     entries.map((timeEntry, index) => (
-      <ReportRow key={`${timeEntry.client}-${index}`} {...timeEntry} />
+      <ReportRow
+        clientLogo={clientLogo}
+        key={`${timeEntry.client}-${index}`}
+        timeEntry={timeEntry}
+      />
     ));
 
-  const getAlphabaticallySortedReportList = (reports: any[] | null = []) =>
+  const getAlphabeticallySortedReportList = (reports: any[] | null = []) =>
     reports?.sort((a, b) => {
       const firstLabel = a.label.toLowerCase();
       const secondLabel = b.label.toLowerCase();
@@ -80,33 +86,46 @@ const Container = ({ selectedFilter }: ContainerProps) => {
 
   return (
     <Fragment>
-      {timeEntryReport.reports?.length > 0 &&
-        getAlphabaticallySortedReportList(timeEntryReport.reports)?.map(
-          (report, index) => (
+      {timeEntryReport.reports?.length > 0 ? (
+        getAlphabeticallySortedReportList(timeEntryReport.reports)?.map(
+          ({ label, clientLogo, entries }, index) => (
             <Fragment key={index}>
-              {report.label !== "" && (
+              {label !== "" && (
                 <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-5">
                   <div className="flex items-center">
-                    {getTableLogo(selectedFilter?.groupBy?.value || null)}
+                    {getTableLogo(
+                      selectedFilter?.groupBy?.value || null,
+                      clientLogo
+                    )}
                     <h1 className="font-manrope text-xl font-bold text-miru-han-purple-1000">
-                      {report.label}
+                      {label}
                     </h1>
                   </div>
-                  {report.entries?.length > 0 && (
+                  {entries?.length > 0 && (
                     <p className="text-right font-manrope text-base font-medium text-miru-dark-purple-1000">
-                      Total Hours for {report.label} : &nbsp;
-                      {getTotalHoursLogged(report.entries)}
+                      Total Hours for {label} : &nbsp;
+                      {getTotalHoursLogged(entries)}
                     </p>
                   )}
                 </div>
               )}
               <ReportHeader />
               <div className="mb-6">
-                {report.entries.length > 0 && getEntryList(report.entries)}
+                {entries.length > 0 && getEntryList(entries, clientLogo)}
               </div>
             </Fragment>
           )
-        )}
+        )
+      ) : (
+        <EmptyStates
+          showNoSearchResultState={timeEntryReport.filterCounter > 0}
+          Message={
+            timeEntryReport.filterCounter > 0
+              ? "No results match current filters. Try removing some filters."
+              : "There are no time entries added yet. You’ll see a summary of time entries added by your team."
+          }
+        />
+      )}
     </Fragment>
   );
 };

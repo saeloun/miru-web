@@ -19,7 +19,7 @@ RSpec.describe "InternalApi::V1::Invoices::BulkDeletionController", type: :reque
 
     describe "#destroy" do
       it "deletes invoices successfully" do
-        send_request :post, internal_api_v1_invoices_bulk_deletion_index_path(invoices)
+        send_request :post, internal_api_v1_invoices_bulk_deletion_index_path(invoices), headers: auth_headers(user)
         expect(response).to be_successful
       end
     end
