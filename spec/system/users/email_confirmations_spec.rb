@@ -56,4 +56,23 @@ RSpec.describe "Email confirmations", type: :system do
       expect(ActionMailer::Base.deliveries.last.to.first).to eq(user2.email)
     end
   end
+
+  context "when confirmed user visits email confirmation page" do
+    # let(:company) { create(:company) }
+    # let(:user) { create(:user, current_workspace_id: company.id) }
+    let(:user) { create(:user) }
+
+    it "throws error" do
+      with_forgery_protection do
+        visit "/email_confirmation?email=#{user.email}"
+
+        expect(page).to have_current_path("/email_confirmation?email=#{user.email}")
+        expect(page).to have_content("Email Verification")
+        expect(page).to have_content("Resend")
+
+        click_on "Resend"
+        expect(page).to have_text("Email was already confirmed, please try signing in")
+      end
+    end
+  end
 end
