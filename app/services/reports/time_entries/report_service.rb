@@ -13,9 +13,9 @@ class Reports::TimeEntries::ReportService
   end
 
   def process
-    process_reports
+    fetch_reports
     {
-      reports:,
+      reports: Reports::TimeEntries::Result.process(reports, params[:group_by]),
       pagination_details:,
       filter_options:,
       client_logos:
@@ -33,7 +33,7 @@ class Reports::TimeEntries::ReportService
       end
     end
 
-    def process_reports
+    def fetch_reports
       default_filter = current_company_filter.merge(this_month_filter)
       where_clause = default_filter.merge(TimeEntries::Filters.process(params))
       if params[:group_by].present?
@@ -46,25 +46,14 @@ class Reports::TimeEntries::ReportService
     def reports_with_group_by(where_clause)
       page_service = Reports::TimeEntries::PageService.new(params, current_company)
       page_service.process
-      search_result = TimesheetEntry.search(
-        where: where_clause.merge(page_service.es_filter),
-        order: { work_date: :desc },
-        load: false
-        )
 
-      @reports = Reports::TimeEntries::Result.process(search_result, params[:group_by])
+      @reports = search_timesheet_entries(where_clause.merge(page_service.es_filter))
       @pagination_details = page_service.pagination_details
    end
 
     def reports_without_group_by(where_clause)
-      search_result = TimesheetEntry.search(
-        where: where_clause,
-        order: { work_date: :desc },
-        page: params[:page],
-        load: false
-        )
-      @reports = Reports::TimeEntries::Result.process(search_result, params[:group_by])
-      @pagination_details = pagination_details_for_es_query(search_result)
+      @reports = search_timesheet_entries(where_clause, params[:page])
+      @pagination_details = pagination_details_for_es_query(reports)
    end
 
     def pagination_details_for_es_query(search_result)
@@ -75,7 +64,16 @@ class Reports::TimeEntries::ReportService
         next: search_result.next_page,
         last: search_result.last_page?
       }
-   end
+    end
+
+    def search_timesheet_entries(where_clause, page = nil)
+      TimesheetEntry.search(
+        where: where_clause,
+        order: { work_date: :desc },
+        page:,
+        load: false
+        )
+    end
 
     def client_logos
       if filter_options
@@ -83,7 +81,7 @@ class Reports::TimeEntries::ReportService
           [client.id, client.logo_url]
         end.to_h
       end
-   end
+    end
 
     def current_company_filter
       { project_id: current_company.project_ids }

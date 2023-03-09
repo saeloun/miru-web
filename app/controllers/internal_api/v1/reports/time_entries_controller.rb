@@ -3,8 +3,11 @@
 class InternalApi::V1::Reports::TimeEntriesController < InternalApi::V1::ApplicationController
   def index
     authorize :report
+
+    reports_data = Reports::TimeEntries::ReportService.new(params, current_company, get_filters: true).process
+
     render :index,
-      locals: Reports::TimeEntries::ReportService.new(params, current_company, get_filters: true).process,
+      locals: reports_data,
       status: :ok
   end
 
