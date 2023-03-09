@@ -29,6 +29,10 @@ FactoryBot.define do
       timezone { "Asia/Kolkata" }
     end
 
+    factory :company_with_address do
+      addresses { [ create(:address, :with_company) ] }
+    end
+
     trait :with_logo do
       after :build do |company|
         file_name = "test-image.png"

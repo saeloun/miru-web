@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Create client", type: :system do
-  let(:company) { create(:company) }
+  let(:company) { create(:company_with_address) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   context "when user is admin" do
