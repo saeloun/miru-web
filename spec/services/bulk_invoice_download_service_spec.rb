@@ -4,12 +4,12 @@ require "rails_helper"
 require "zip"
 
 RSpec.describe BulkInvoiceDownloadService do
-  let(:company) { create(:company) }
+  let(:company) { create(:company_with_address) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client) { create(:client, company:, name: "bob") }
-  let!(:invoice1) { create(:invoice, client:) }
-  let!(:invoice2) { create(:invoice, client:) }
-  let(:invoice3) { create(:invoice, client:) }
+  let!(:invoice1) { create(:invoice, client:, company:) }
+  let!(:invoice2) { create(:invoice, client:, company:) }
+  let(:invoice3) { create(:invoice, client:, company:) }
 
   describe "#process" do
     before do

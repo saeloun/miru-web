@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Invoices#download", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company_with_address) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client) { create(:client, company:) }
   let!(:invoice) { create(:invoice, client:, company:, status: "sent") }
