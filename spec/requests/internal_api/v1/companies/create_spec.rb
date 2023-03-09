@@ -15,16 +15,35 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
         send_request :post, internal_api_v1_companies_path, params: {
           company: {
             name: "zero labs llc",
-            address: "remote",
             business_phone: "+01 123123",
             country: "india",
             timezone: "+5:30 Chennai",
             base_currency: "INR",
             standard_price: 1000,
             fiscal_year_end: "Jan-Dec",
-            date_format: "DD-MM-YYYY"
+            date_format: "DD-MM-YYYY",
+            addresses_attributes: [{
+              address_line_1: "Somewhere on Earth",
+              city: "Brooklyn",
+              state: "NY",
+              country: "US",
+              pin: "12238"
+            }]
           }
         }, headers: auth_headers(user)
+      end
+
+      it "creates a new compamy & address" do
+        company = Company.last
+        change(Company, :count).by(1)
+        change(Address, :count).by(1)
+        expect(company.name).to eq("zero labs llc")
+        expect(company.business_phone).to eq("+01 123123")
+        expect(company.timezone).to eq("+5:30 Chennai")
+        expect(company.base_currency).to eq("INR")
+        expect(company.standard_price).to eq(1000)
+        expect(company.fiscal_year_end).to eq("Jan-Dec")
+        expect(company.date_format).to eq("DD-MM-YYYY")
       end
 
       it "response should be successful" do
@@ -70,14 +89,22 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
           send_request :post, internal_api_v1_companies_path, params: {
             company: {
               name: "zero labs llc",
-              address: "remote",
               business_phone: "+01 123123",
               country: "india",
               timezone: "+5:30 Chennai",
               base_currency: "INR",
               standard_price: 1000,
               fiscal_year_end: "Jan-Dec",
-              date_format: "DD-MM-YYYY"
+              date_format: "DD-MM-YYYY",
+              addresses_attributes: [
+                {
+                  address_line_1: "Somewhere on Earth",
+                  city: "Brooklyn",
+                  state: "NY",
+                  country: "US",
+                  pin: "12238"
+                }
+              ]
             }
           }, headers: auth_headers(user)
         end

@@ -3,7 +3,6 @@
 FactoryBot.define do
   factory :company do
     name { "Saeloun" }
-    address { Faker::Address.full_address }
     business_phone { Faker::PhoneNumber.cell_phone_in_e164 }
     base_currency { Faker::Currency.code }
     standard_price { Faker::Number.decimal(l_digits: 3, r_digits: 2) }
@@ -27,6 +26,10 @@ FactoryBot.define do
       date_format { "DD-MM-YYYY" }
       country { "IN" }
       timezone { "Asia/Kolkata" }
+    end
+
+    factory :company_with_address do
+      addresses { [ create(:address, :with_company) ] }
     end
 
     trait :with_logo do

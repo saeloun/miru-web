@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Companies#create", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company_with_address) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   context "when user is an admin" do
@@ -19,16 +19,20 @@ RSpec.describe "Companies#create", type: :request do
           :put, company_path, params: {
             company: {
               name: "Updated Company",
-              address: "updated address",
-              business_phone: "1234556"
+              business_phone: "1234556",
+              addresses_attributes: [{
+                id: company.addresses.last.id,
+                address_line_1: "updated address"
+              }]
             }
           })
       end
 
       it "updates the company" do
         company.reload
+        address = company.current_address
         expect(company.name).to eq("Updated Company")
-        expect(company.address).to eq("updated address")
+        expect(address.address_line_1).to eq("updated address")
       end
 
       it "redirects to root_path" do
@@ -42,7 +46,6 @@ RSpec.describe "Companies#create", type: :request do
           :put, company_path, params: {
             company: {
               name: "",
-              address: "",
               business_phone: ""
             }
           })
@@ -67,7 +70,6 @@ RSpec.describe "Companies#create", type: :request do
           :put, company_path, params: {
             company: {
               name: "Updated Company",
-              address: "updated address",
               business_phone: "1234556"
             }
           })
@@ -88,7 +90,6 @@ RSpec.describe "Companies#create", type: :request do
           :put, company_path, params: {
             company: {
               name: "",
-              address: "",
               business_phone: ""
             }
           })
@@ -117,7 +118,6 @@ RSpec.describe "Companies#create", type: :request do
           :put, company_path, params: {
             company: {
               name: "Updated Company",
-              address: "updated address",
               business_phone: "1234556"
             }
           })
@@ -138,7 +138,6 @@ RSpec.describe "Companies#create", type: :request do
           :put, company_path, params: {
             company: {
               name: "",
-              address: "",
               business_phone: ""
             }
           })
@@ -160,7 +159,6 @@ RSpec.describe "Companies#create", type: :request do
         :put, company_path, params: {
           company: {
             name: "Updated Company",
-            address: "updated address",
             business_phone: "1234556"
           }
         })
