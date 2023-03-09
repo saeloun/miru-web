@@ -8,6 +8,7 @@ import {
   customStyles,
   CustomValueContainer,
 } from "common/CustomReactSelectStyle";
+import { useUserContext } from "context/UserContext";
 
 export const CustomReactSelect = ({
   classNamePrefix,
@@ -18,22 +19,23 @@ export const CustomReactSelect = ({
   name,
   value,
   isErr,
-  isDesktopView,
-  menuIsOpen,
+  isDisabled,
 }) => {
+  const { isDesktop } = useUserContext();
+
   const getStyle = () => {
     if (isErr) {
-      return customErrStyles(isDesktopView);
+      return customErrStyles(isDesktop);
     }
 
-    return customStyles(isDesktopView);
+    return customStyles(isDesktop);
   };
 
   return (
     <div className="outline relative">
       <Select
         classNamePrefix={classNamePrefix}
-        menuIsOpen={menuIsOpen}
+        isDisabled={isDisabled}
         name={name}
         options={options}
         placeholder={label}
@@ -57,8 +59,7 @@ CustomReactSelect.defaultProps = {
   handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   handleonFocus: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   isErr: false,
-  isDesktopView: true,
-  menuIsOpen: false,
+  isDisabled: false,
 };
 
 export default CustomReactSelect;
