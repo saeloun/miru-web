@@ -224,7 +224,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       work_date: entry.work_date,
       duration: entry.duration,
       note: entry.note,
-      bill_status: entry.bill_status,
+      bill_status:
+        entry.bill_status == "billed" ? "unbilled" : entry.bill_status,
     };
 
     const res = await timesheetEntryApi.create(
