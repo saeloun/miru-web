@@ -46,8 +46,12 @@ users.each { |user| company.employments.create!(user:) }
 puts "Employment Created"
 
 microsoft_client = company.clients.create!(
-  name: "Microsoft", email: "support@example.com", phone: "+1 9999999991",
-  address: "California, USA")
+  name: "Microsoft",
+  email: "support@example.com",
+  phone: "+1 9999999991"
+  addresses_attributes: [{
+    address_line_1: "475 Clermont Ave", city: "Brooklyn", state: "NY", pin: "12238", country: "USA"
+  }])
 
 puts "Clients Created"
 

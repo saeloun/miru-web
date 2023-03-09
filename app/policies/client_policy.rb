@@ -46,10 +46,6 @@ class ClientPolicy < ApplicationPolicy
     authorize_current_user
   end
 
-  def permitted_attributes
-    [:name, :email, :phone, :address, :logo]
-  end
-
   def authorize_current_user
     unless user.current_workspace_id == record.company_id
       @error_message_key = :different_workspace

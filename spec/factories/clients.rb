@@ -6,7 +6,6 @@ FactoryBot.define do
     name { Faker::Name.name }
     email { Faker::Internet.unique.safe_email }
     phone { Faker::PhoneNumber.phone_number_with_country_code }
-    address { Faker::Address.street_address }
     factory :client_with_invoices do
       transient do
         length { 5 }
@@ -15,6 +14,10 @@ FactoryBot.define do
     end
     factory :client_with_phone_number_without_country_code do
       phone { Faker::PhoneNumber.cell_phone_in_e164 }
+    end
+
+    factory :client_with_address do
+      addresses { [ create(:address, :with_client) ] }
     end
 
     trait :with_logo do

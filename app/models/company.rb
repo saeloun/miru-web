@@ -3,7 +3,7 @@
 # Table name: companies
 #
 #  id              :bigint           not null, primary key
-#  address         :text             not null
+#  address         :text
 #  base_currency   :string           default("USD"), not null
 #  business_phone  :string
 #  country         :string           not null
