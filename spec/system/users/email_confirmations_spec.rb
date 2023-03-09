@@ -58,8 +58,6 @@ RSpec.describe "Email confirmations", type: :system do
   end
 
   context "when confirmed user visits email confirmation page" do
-    # let(:company) { create(:company) }
-    # let(:user) { create(:user, current_workspace_id: company.id) }
     let(:user) { create(:user) }
 
     it "throws error" do
