@@ -37,9 +37,7 @@ Rails.application.routes.draw do
   resources :dashboard, only: [:index]
 
   # get "*path", to: "home#index", via: :all
-  resource :company, only: [:new, :show, :create, :update], controller: :companies do
-    resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
-  end
+  resource :company, only: [:new, :show, :create, :update], controller: :companies
 
   resources :workspaces, only: [:update]
 
