@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
 import Logger from "js-logger";
 
+import Header from "./Header";
+
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
 
@@ -23,6 +25,7 @@ const MonthCalender = ({
   setCurrentMonthNumber,
   currentYear,
   setCurrentYear,
+  dayInfo,
 }: Iprops) => {
   const [firstDay, setFirstDay] = useState<number>(
     dayjs().startOf("month").weekday()
@@ -179,39 +182,17 @@ const MonthCalender = ({
 
   return (
     <div className="mb-6">
-      <div className="flex h-10 w-full items-center justify-between bg-miru-han-purple-1000">
-        <button
-          className="ml-4 flex h-6 w-20 items-center justify-center rounded border-2 text-xs font-bold tracking-widest text-white"
-          id="prevMonth"
-          onClick={handleMonthTodayButton}
-        >
-          TODAY
-        </button>
-        <div className="flex">
-          <button
-            className="flex h-6 w-6 flex-col items-center justify-center rounded-xl border-2 text-white"
-            onClick={handlePrevMonth}
-          >
-            &lt;
-          </button>
-          <p className="mx-6 w-auto text-white">
-            {monthsAbbr[Math.abs(currentMonthNumber)]} {currentYear}
-          </p>
-          <button
-            className="flex h-6 w-6 flex-col items-center justify-center rounded-xl border-2 text-white"
-            id="nextMonth"
-            onClick={handleNextMonth}
-          >
-            &gt;
-          </button>
-        </div>
-        <div className="mr-12 flex">
-          <p className="mr-2 text-white">Total</p>
-          <p className="font-extrabold text-white">
-            {minToHHMM(totalMonthDuration)}
-          </p>
-        </div>
-      </div>
+      <Header
+        currentMonthNumber={currentMonthNumber}
+        currentYear={currentYear}
+        dayInfo={dayInfo}
+        handleMonthTodayButton={handleMonthTodayButton}
+        handleNextMonth={handleNextMonth}
+        handlePrevMonth={handlePrevMonth}
+        monthsAbbr={monthsAbbr}
+        totalMonthDuration={totalMonthDuration}
+        view="month"
+      />
       <div className="bg-miru-gray-100 p-4">
         <div className="mb-4 flex justify-between bg-miru-gray-100">
           {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d, index) => (
@@ -312,6 +293,7 @@ interface Iprops {
   setCurrentMonthNumber: any;
   currentYear: any;
   setCurrentYear: any;
+  dayInfo: any[];
 }
 
 export default MonthCalender;
