@@ -25,6 +25,7 @@ RSpec.describe "Forgot Password", type: :system do
     it "does not send a password reset email when given an invalid email address" do
       with_forgery_protection do
         visit "/password/new"
+
         fill_in "email", with: "invalid-email@example.com"
 
         click_on "Send password reset link"

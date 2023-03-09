@@ -15,6 +15,7 @@ RSpec.describe "Sign-in", type: :system do
     it "allows a user to sign in with valid credentials" do
       with_forgery_protection do
         visit "/login"
+
         fill_in "email", with: user.email
         fill_in "password", with: user.password
         click_on "Sign In"
@@ -26,6 +27,7 @@ RSpec.describe "Sign-in", type: :system do
     it "displays an error message with invalid credentials" do
       with_forgery_protection do
         visit "/login"
+
         fill_in "email", with: "invalid@example.com"
         fill_in "password", with: "password"
         click_on "Sign In"
@@ -40,6 +42,7 @@ RSpec.describe "Sign-in", type: :system do
 
       with_forgery_protection do
         visit "/login"
+
         fill_in "email", with: user.email
         fill_in "password", with: user.password
         click_on "Sign In"
