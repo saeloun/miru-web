@@ -76,7 +76,7 @@ const EntryCard: React.FC<props> = ({
       onClick={handleCardClick}
     >
       <div className="w-7/12 flex-auto">
-        <div className="flex ">
+        <div className="text-miu-dark-Purple-1000 flex">
           <p className="text-base font-normal lg:text-lg">{client}</p>
           <p className="mx-2 text-lg">•</p>
           <p className="text-base font-normal lg:text-lg">{project}</p>
@@ -109,7 +109,7 @@ const EntryCard: React.FC<props> = ({
           {note}
         </p>
       </div>
-      <p className="flex self-start text-2xl lg:hidden">
+      <p className="text-miu-dark-Purple-1000 flex self-start text-2xl lg:hidden">
         {minToHHMM(duration)}
       </p>
       <div className="hidden w-5/12 items-center justify-between lg:flex">
