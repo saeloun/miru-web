@@ -65,7 +65,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     value: `${e["id"]}`,
     label: `${e["first_name"]} ${e["last_name"]}`,
   }));
-  //setEmployees(employeeOptions);
 
   useEffect(() => {
     sendGAPageView();
@@ -216,6 +215,28 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     const res = await timesheetEntryApi.destroy(id);
     if (!(res.status === 200)) return;
     await handleFilterEntry(selectedFullDate, id);
+  };
+
+  const handleDuplicate = async id => {
+    if (!id) return;
+    const entry = entryList[selectedFullDate].find(entry => entry.id === id);
+    const data = {
+      work_date: entry.work_date,
+      duration: entry.duration,
+      note: entry.note,
+      bill_status: entry.bill_status,
+    };
+
+    const res = await timesheetEntryApi.create(
+      {
+        project_id: entry.project_id,
+        timesheet_entry: data,
+      },
+      selectedEmployeeId
+    );
+    if (res.status === 200) {
+      await fetchEntries(selectedFullDate, selectedFullDate);
+    }
   };
 
   const calculateTotalHours = () => {
@@ -527,6 +548,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               <EntryCard
                 currentUserRole={entryList["currentUserRole"]}
                 handleDeleteEntry={handleDeleteEntry}
+                handleDuplicate={handleDuplicate}
                 key={weekCounter}
                 setEditEntryId={setEditEntryId}
                 setNewEntryView={setNewEntryView}
