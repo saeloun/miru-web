@@ -70,7 +70,12 @@ const SignInForm = () => {
                 return (
                   <Form>
                     <div className="field relative">
-                      <InputField id="email" label="Email" name="email" />
+                      <InputField
+                        autoFocus
+                        id="email"
+                        label="Email"
+                        name="email"
+                      />
                       <InputErrors
                         fieldErrors={errors.email}
                         fieldTouched={touched.email}
