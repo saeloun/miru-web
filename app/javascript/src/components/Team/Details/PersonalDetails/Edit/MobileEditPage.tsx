@@ -223,7 +223,6 @@ const MobileEditDetails = ({
         <div className="px-1 py-1">
           <CustomReactSelect
             handleOnChange={handleOnChangeAddrType}
-            isDesktopView={false}
             label="Address type"
             name="address_select"
             options={addressOptions}
@@ -284,7 +283,6 @@ const MobileEditDetails = ({
           <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomReactSelect
               handleOnChange={value => handleOnChangeCountry(value)}
-              isDesktopView={false}
               isErr={!!errDetails.country_err}
               label="Country"
               name="current_country_select"
@@ -304,7 +302,6 @@ const MobileEditDetails = ({
           <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomReactSelect
               handleOnChange={state => handleOnChangeState(state)}
-              isDesktopView={false}
               isErr={!!errDetails.state_err}
               label="State"
               name="state_select"
@@ -332,7 +329,6 @@ const MobileEditDetails = ({
           <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomAsyncSelect
               handleOnChange={city => handleOnChangeCity(city)}
-              isDesktopView={false}
               isErr={!!errDetails.city_err}
               label="City"
               loadOptions={promiseOptions}

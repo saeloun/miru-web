@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, useRef } from "react";
 
+import TextareaAutosize from "react-autosize-textarea";
+
 import { useOutsideClick } from "../helpers/outsideClick";
 
 export const CustomTextareaAutosize = ({
@@ -13,13 +15,14 @@ export const CustomTextareaAutosize = ({
   label,
   wrapperClassName,
   rows,
+  maxRows,
 }) => {
   const inputRef = useRef(null);
   const [focused, setFocused] = useState<boolean>(false);
   const labelClassName =
     focused || value
       ? "absolute duration-300 -top-2 -z-1 left-4 origin-0 bg-white text-xs font-normal text-miru-dark-purple-400"
-      : "absolute duration-300 -z-1 origin-0 top-3 left-4 text-miru-dark-purple-200 bg-white text-base font-medium";
+      : "absolute duration-300 -z-1 origin-0 top-3 left-4 text-miru-dark-purple-200 bg-white text-sm lg:text-base font-medium";
 
   useEffect(() => {
     focused
@@ -35,9 +38,11 @@ export const CustomTextareaAutosize = ({
       ref={inputRef}
       onClick={() => setFocused(true)}
     >
-      <textarea
+      <TextareaAutosize
         className={inputBoxClassName}
+        cols={60}
         id={id}
+        maxRows={maxRows}
         name={name}
         placeholder=" "
         rows={rows}
