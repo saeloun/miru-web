@@ -36,7 +36,7 @@ class Reports::TimeEntries::ReportService
     def process_reports
       default_filter = current_company_filter.merge(this_month_filter)
       where_clause = default_filter.merge(TimeEntries::Filters.process(params))
-      if params["group_by"].present?
+      if params[:group_by].present?
         reports_with_group_by(where_clause)
       else
         reports_without_group_by(where_clause)
@@ -52,7 +52,7 @@ class Reports::TimeEntries::ReportService
         load: false
         )
 
-      @reports = Reports::TimeEntries::Result.process(search_result, params["group_by"])
+      @reports = Reports::TimeEntries::Result.process(search_result, params[:group_by])
       @pagination_details = page_service.pagination_details
    end
 
@@ -63,7 +63,7 @@ class Reports::TimeEntries::ReportService
         page: params[:page],
         load: false
         )
-      @reports = Reports::TimeEntries::Result.process(search_result, params["group_by"])
+      @reports = Reports::TimeEntries::Result.process(search_result, params[:group_by])
       @pagination_details = pagination_details_for_es_query(search_result)
    end
 

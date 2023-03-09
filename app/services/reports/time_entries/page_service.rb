@@ -14,7 +14,7 @@ class Reports::TimeEntries::PageService < ApplicationService
   def initialize(params, current_company)
     @params = params
     @page = params["page"]
-    @group_by = params["group_by"]
+    @group_by = params[:group_by]
     @current_company = current_company
     @pagy_data = nil
 
