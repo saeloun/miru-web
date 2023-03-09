@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 class Reports::TimeEntries::DownloadService
-  attr_reader :params, :current_company, :reports, :pagination_details
+  attr_reader :params, :current_company, :reports
 
   def initialize(params, current_company)
     @params = params
     @current_company = current_company
 
     @reports = []
-    @pagination_details = nil
   end
 
   def process
