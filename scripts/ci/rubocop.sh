@@ -2,5 +2,5 @@
 
 set -eu
 
-bundle install --with test
+bundle install --without development production test
 bundle exec rubocop

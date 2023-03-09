@@ -2,7 +2,7 @@
 
 set -eu
 
-bundle install --with test
+bundle install --without development production test
 
 yarn install
 
