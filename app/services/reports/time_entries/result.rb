@@ -30,8 +30,4 @@ class Reports::TimeEntries::Result < ApplicationService
         { label:, entries: }
       end
     end
-
-    def fetch_client_logo(timesheet_entry)
-      timesheet_entry.project.client.logo_url
-    end
 end
