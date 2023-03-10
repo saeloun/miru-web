@@ -86,6 +86,6 @@ class Company < ApplicationRecord
       .joins(:projects)
       .where(
         projects: { billable: true }
-      ).kept.order(name: :asc).uniq
+      ).kept.order(name: :asc)
   end
 end
