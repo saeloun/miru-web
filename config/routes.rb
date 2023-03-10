@@ -10,8 +10,7 @@ end
 
 Rails.application.routes.draw do
   devise_for :users, controllers: {
-    registrations: "users/registrations",
-    sessions: "users/sessions",
+    confirmations: "users/confirmations",
     passwords: "users/passwords",
     omniauth_callbacks: "users/omniauth_callbacks"
   }
@@ -33,15 +32,12 @@ Rails.application.routes.draw do
   end
   mount Sidekiq::Web, at: "/sidekiq"
 
-  root to: "root#index"
   draw(:internal_api)
   draw(:api)
   resources :dashboard, only: [:index]
 
   # get "*path", to: "home#index", via: :all
-  resource :company, only: [:new, :show, :create, :update], controller: :companies do
-    resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
-  end
+  resource :company, only: [:new, :show, :create, :update], controller: :companies
 
   resources :workspaces, only: [:update]
 
@@ -67,10 +63,6 @@ Rails.application.routes.draw do
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"
 
-  resource :email_confirmation, only: :show do
-    get :resend
-  end
-
   devise_scope :user do
     # TODO: verify if this is path is in use otherwise remove it.
     delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
@@ -79,6 +71,8 @@ Rails.application.routes.draw do
   namespace :webhooks do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
   end
+
+  root "home#index"
 
   match "*path", via: :all, to: "home#index", constraints: lambda { |req|
     req.path.exclude? "rails/active_storage"

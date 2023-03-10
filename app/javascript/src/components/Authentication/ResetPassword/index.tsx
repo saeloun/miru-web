@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 
-import { Formik, Form, Field, FormikProps } from "formik";
-import Logger from "js-logger";
-import { MiruLogoSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
+import { Formik, Form, FormikProps } from "formik";
+import { MiruLogoSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
+import { InputErrors, InputField } from "common/FormikFields";
 import { Paths, TOASTER_DURATION } from "constants/index";
 
 import {
@@ -19,7 +19,6 @@ interface ResetPasswordFormValues {
 }
 
 const ResetPassword = () => {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   const searchParams = new URLSearchParams(document.location.search);
 
   const handleResetPasswordFormSubmit = async values => {
@@ -29,13 +28,11 @@ const ResetPassword = () => {
       password,
       password_confirmation: confirm_password,
     };
-    try {
-      const res = await authenticationApi.resetPassword(payload);
-      if (res.status == 200) {
+    const res = await authenticationApi.resetPassword(payload);
+    if (res.status == 200) {
+      setTimeout(() => {
         window.location.assign(`${window.location.origin}`);
-      }
-    } catch (err) {
-      Logger.error(err);
+      }, 500);
     }
   };
 
@@ -69,95 +66,28 @@ const ResetPassword = () => {
                 return (
                   <Form>
                     <div className="field">
-                      <div className="outline relative">
-                        <Field
-                          name="password"
-                          placeholder=" "
-                          type={showPassword ? "text" : "password"}
-                          className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                            errors.password &&
-                            touched.password &&
-                            "border-red-600 focus:border-red-600 focus:ring-red-600"
-                          } `}
-                        />
-                        <label
-                          className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
-                          htmlFor="Name"
-                        >
-                          Password
-                        </label>
-                        <span
-                          className="absolute right-2 top-1/3 z-10 cursor-pointer"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {!showPassword ? (
-                            <img
-                              alt="pass_icon"
-                              height="12"
-                              src={PasswordIconSVG}
-                              width="12"
-                            />
-                          ) : (
-                            <img
-                              alt="pass_icon_text"
-                              height="12"
-                              src={PasswordIconTextSVG}
-                              width="12"
-                            />
-                          )}
-                        </span>
-                      </div>
-                      <div className="mb-6 block text-xs tracking-wider text-red-600">
-                        {errors.password && touched.password && (
-                          <div>{errors.password}</div>
-                        )}
-                      </div>
+                      <InputField
+                        id="password"
+                        label="Password"
+                        name="password"
+                        type="password"
+                      />
+                      <InputErrors
+                        fieldErrors={errors.password}
+                        fieldTouched={touched.password}
+                      />
                     </div>
                     <div className="field">
-                      <div className="outline relative">
-                        <Field
-                          name="confirm_password"
-                          placeholder=" "
-                          type={showPassword ? "text" : "password"}
-                          className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                            errors.confirm_password &&
-                            touched.confirm_password &&
-                            "border-red-600 focus:border-red-600 focus:ring-red-600"
-                          } `}
-                        />
-                        <label
-                          className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
-                          htmlFor="Name"
-                        >
-                          Confirm Password
-                        </label>
-                        <span
-                          className="absolute right-2 top-1/3 z-10 cursor-pointer"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {!showPassword ? (
-                            <img
-                              alt="pass_icon"
-                              height="12"
-                              src={PasswordIconSVG}
-                              width="12"
-                            />
-                          ) : (
-                            <img
-                              alt="pass_icon_text"
-                              height="12"
-                              src={PasswordIconTextSVG}
-                              width="12"
-                            />
-                          )}
-                        </span>
-                      </div>
-                      <div className="mb-6 block text-xs tracking-wider text-red-600">
-                        {errors.confirm_password &&
-                          touched.confirm_password && (
-                            <div>{errors.confirm_password}</div>
-                          )}
-                      </div>
+                      <InputField
+                        id="confirm_password"
+                        label="Confirm Password"
+                        name="confirm_password"
+                        type="password"
+                      />
+                      <InputErrors
+                        fieldErrors={errors.confirm_password}
+                        fieldTouched={touched.confirm_password}
+                      />
                     </div>
                     <div>
                       <button
