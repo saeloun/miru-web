@@ -11,26 +11,26 @@ shared_examples_for "Time tracking" do |obj|
       admin.add_role :admin, company
       create(:employment, company:, user: admin)
       create(:project_member, user: admin, project:)
+      create(:timesheet_entry, user: admin, project:)
       login_as(admin)
     else
       employee.add_role :employee, company
       create(:employment, company:, user: employee)
+      create(:timesheet_entry, user: employee, project:)
       create(:project_member, user: employee, project:)
       login_as(employee)
     end
   end
 
   it "can view the time sheet entry" do
-    if obj[:is_admin] == true
-      time_entry = create(:timesheet_entry, user: admin, project:)
-    else
-      time_entry = create(:timesheet_entry, user: employee, project:)
-    end
-
     with_forgery_protection do
       visit "time-tracking"
 
-      expect(page).to have_content(time_entry.note)
+      if obj[:is_admin] == true
+        expect(page).to have_content(admin.timesheet_entries.first.note)
+      else
+        expect(page).to have_content(employee.timesheet_entries.first.note)
+      end
     end
   end
 
@@ -54,12 +54,6 @@ shared_examples_for "Time tracking" do |obj|
   end
 
   it "can edit time entry" do
-    if obj[:is_admin] == true
-      create(:timesheet_entry, user: admin, project:)
-    else
-      create(:timesheet_entry, user: employee, project:)
-    end
-
     with_forgery_protection do
       visit "time-tracking"
 
@@ -74,12 +68,6 @@ shared_examples_for "Time tracking" do |obj|
   end
 
   it "can delete time entry" do
-    if obj[:is_admin] == true
-      create(:timesheet_entry, user: admin, project:)
-    else
-      create(:timesheet_entry, user: employee, project:)
-    end
-
     with_forgery_protection do
       visit "time-tracking"
 
@@ -91,6 +79,26 @@ shared_examples_for "Time tracking" do |obj|
         expect(admin.timesheet_entries.size).to eq(0)
       else
         expect(employee.timesheet_entries.size).to eq(0)
+      end
+    end
+  end
+
+  it "editing the date moves it to the date set" do
+    with_forgery_protection do
+      visit "time-tracking"
+
+      find(:css, "#editIcon", visible: false).hover.click
+      find(:css, "#formattedDate", wait: 3).click
+      find(:css, ".react-datepicker__day.react-datepicker__day--009").click
+      find(:css, "#formattedDate", wait: 3).click
+      find(:css, ".react-datepicker__day.react-datepicker__day--009").click
+      click_button "UPDATE"
+
+      expect(page).to have_content("Timesheet updated", wait: 3)
+      if obj[:is_admin] == true
+        expect(admin.timesheet_entries.first.work_date).to eq(Date.today - 1)
+      else
+        expect(employee.timesheet_entries.first.work_date).to eq(Date.today - 1)
       end
     end
   end
