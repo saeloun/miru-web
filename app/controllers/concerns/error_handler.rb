@@ -30,8 +30,6 @@ module ErrorHandler
 
       message = I18n.t("#{policy_name}.#{error_key}", scope: "pundit", default: :default)
       case policy.try(:error_message_key)
-      when :company_not_present
-        redirect_path = new_company_path
       when :different_workspace
         message = I18n.t("client.update.failure.unauthorized")
       end

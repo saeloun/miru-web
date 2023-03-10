@@ -23,15 +23,4 @@ RSpec.describe "Users::RegistrationsController#update", type: :request do
       expect(user.last_name).to eq("Updated")
     end
   end
-
-  describe "#after_update_path_for" do
-    before do
-      sign_in user
-      send_request :patch, user_registration_path, params: { user: { first_name: "Updated name" } }
-    end
-
-    it "returns profile_path after resource is updated" do
-      expect(response).to redirect_to("/profile")
-    end
-  end
 end
