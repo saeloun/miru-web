@@ -2,7 +2,7 @@
 import React from "react";
 
 import { minToHHMM } from "helpers";
-import { DeleteIcon, EditIcon } from "miruIcons";
+import { DeleteIcon, EditIcon, CopyIcon } from "miruIcons";
 import { Badge } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
@@ -20,6 +20,7 @@ interface props {
   bill_status: string;
   currentUserRole: string;
   setNewEntryView: any;
+  handleDuplicate: any;
 }
 
 const canEditTimeEntry = (billStatus, role) =>
@@ -57,6 +58,18 @@ const showDeleteAction = (billStatus, role, id, handleDeleteEntry) => {
   return <div className="mr-10 h-4 w-4" />;
 };
 
+const showDuplicateAction = (billStatus, role, id, handleDuplicate) => {
+  if (canEditTimeEntry(billStatus, role)) {
+    return (
+      <button className="icon-hover " onClick={() => handleDuplicate(id)}>
+        <CopyIcon className="text-miru-han-purple-1000" size={20} />
+      </button>
+    );
+  }
+
+  return <div className="mr-10 h-4 w-4" />;
+};
+
 const EntryCard: React.FC<props> = ({
   id,
   client,
@@ -68,6 +81,7 @@ const EntryCard: React.FC<props> = ({
   bill_status,
   currentUserRole,
   setNewEntryView,
+  handleDuplicate,
 }) => {
   const { isDesktop } = useUserContext();
 
@@ -149,6 +163,12 @@ const EntryCard: React.FC<props> = ({
           <p className="mx-auto text-4xl">{minToHHMM(duration)}</p>
         </div>
         <div className="flex w-5/12 items-center justify-evenly">
+          {showDuplicateAction(
+            bill_status,
+            currentUserRole,
+            id,
+            handleDuplicate
+          )}
           {showUpdateAction(bill_status, currentUserRole, id, setEditEntryId)}
           {showDeleteAction(
             bill_status,

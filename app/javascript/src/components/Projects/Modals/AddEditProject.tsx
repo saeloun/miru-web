@@ -23,7 +23,7 @@ const AddEditProject = ({
 
   const isEdit = !!projectId;
   const isFormFilled = client && projectName && projectType;
-  const showEditModal = isEdit && editProjectData.members;
+  const showEditModal = isEdit && editProjectData?.members;
 
   const getClientList = async () => {
     try {
