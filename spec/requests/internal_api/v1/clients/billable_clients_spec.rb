@@ -8,12 +8,12 @@ RSpec.describe "InternalApi::V1::Clients#billable_clients", type: :request do
   let(:client_1) { create(:client, company:) }
   let(:client_2) { create(:client, company:) }
   let(:client_3) { create(:client, company:, name: "john") }
-  let(:project_1) { create(:project, billable: true, client: client_1) }
-  let(:project_2) { create(:project, billable: true, client: client_2) }
 
   context "when user is an admin" do
     before do
       create(:employment, company:, user:)
+      create(:project, billable: true, client: client_1)
+      create(:project, billable: true, client: client_2)
       user.add_role :admin, company
       sign_in user
       send_request :get, internal_api_v1_clients_path, headers: auth_headers(user)
