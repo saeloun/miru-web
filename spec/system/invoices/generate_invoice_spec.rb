@@ -4,14 +4,23 @@ require "rails_helper"
 
 RSpec.describe "Generate Invoice", type: :system do
   let(:company) { create(:company, base_currency: "USD") }
-  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:admin) { create(:user, current_workspace_id: company.id) }
+  let(:owner) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
 
   before do
-    # Ensure 'Employee' is a project member & has a Timesheet entry
+    create(:employment, company:, user: admin)
+    admin.add_role :admin, company
+
+    create(:employment, company:, user: owner)
+    owner.add_role :owner, company
+
     create(:employment, company:, user: employee)
+    employee.add_role :employee, company
+
+    # Ensure 'Employee' is a project member & has a Timesheet entry
     create(:project_member, project:, user: employee, hourly_rate: 200)
     create(
       :timesheet_entry,
@@ -26,14 +35,13 @@ RSpec.describe "Generate Invoice", type: :system do
 
   context "when logged-in user is Admin" do
     before do
-      create(:employment, company:, user:)
-      user.add_role :admin, company
-      sign_in user
+      login_as admin
     end
 
     it "is able to view generate invoice page elements" do
       with_forgery_protection do
        visit "invoices"
+
        expect(page).to have_text "Invoices"
        click_button("Create New Invoice")
 
@@ -47,6 +55,7 @@ RSpec.describe "Generate Invoice", type: :system do
     it "is able to generates Invoice successfully for an employee of his organisation" do
       with_forgery_protection do
         visit "invoices"
+
         expect(page).to have_text "Invoices"
         click_button("Create New Invoice")
 
@@ -73,14 +82,13 @@ RSpec.describe "Generate Invoice", type: :system do
 
   context "when logged-in user is an Owner" do
     before do
-      create(:employment, company:, user:)
-      user.add_role :owner, company
-      sign_in user
+      login_as owner
     end
 
     it "is able to generates Invoice successfully for an employee of his organisation" do
       with_forgery_protection do
         visit "invoices"
+
         expect(page).to have_text "Invoices"
         click_button("Create New Invoice")
         expect(page).to have_current_path("/invoices/generate")
@@ -108,9 +116,7 @@ RSpec.describe "Generate Invoice", type: :system do
 
   context "when logged-in user is an Employee" do
     before do
-      create(:employment, company:, user: employee)
-      employee.add_role :employee, company
-      sign_in employee
+      login_as employee
     end
 
     it "is not able to see invoices option" do

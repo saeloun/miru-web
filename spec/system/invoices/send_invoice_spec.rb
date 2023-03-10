@@ -6,22 +6,30 @@ RSpec.describe "Send Invoice", type: :system do
   let(:invoice) { create :invoice_with_invoice_line_items, status: :draft }
   let(:client) { invoice.client }
   let(:company) { invoice.company }
-  let(:user) { create :user, current_workspace_id: company.id }
+  let(:admin) { create(:user, current_workspace_id: company.id) }
+  let(:owner) { create(:user, current_workspace_id: company.id) }
+  let(:employee) { create(:user, current_workspace_id: company.id) }
 
   before do
-    create(:employment, company:, user:)
+    create(:employment, company:, user: admin)
+    admin.add_role :admin, company
+
+    create(:employment, company:, user: owner)
+    owner.add_role :owner, company
+
+    create(:employment, company:, user: employee)
+    employee.add_role :employee, company
   end
 
   context "when logged-in user is Admin" do
       before do
-        user.add_role :admin, company
-        sign_in user
-        page.windows[0].maximize
+        login_as admin
       end
 
       it "is able to send invoice from Invoices List page" do
         with_forgery_protection do
           visit "invoices"
+
           expect(page).to have_text "Invoices"
           expect(page).to have_xpath "//h1[text()='All Invoices']"
 
@@ -42,6 +50,7 @@ RSpec.describe "Send Invoice", type: :system do
       it "is able to send invoice from Edit Invoice page" do
         with_forgery_protection do
           visit "invoices/#{invoice.id}/edit"
+
           find_by_id("send-invoice-button").click()
           click_button("Send Invoice")
           expect(page).to have_content(/PROCESSING.../, wait: 3)
@@ -52,14 +61,13 @@ RSpec.describe "Send Invoice", type: :system do
 
   context "when logged-in user is Owner" do
     before do
-      user.add_role :owner, company
-      sign_in user
-      page.windows[0].maximize
+      login_as owner
     end
 
     it "is able to send invoice from Invoices List page" do
       with_forgery_protection do
         visit "invoices"
+
         expect(page).to have_text "Invoices"
         expect(page).to have_xpath "//h1[text()='All Invoices']"
 
@@ -80,6 +88,7 @@ RSpec.describe "Send Invoice", type: :system do
     it "is able to send invoice from Edit Invoice page" do
       with_forgery_protection do
         visit "invoices/#{invoice.id}/edit"
+
         find_by_id("send-invoice-button").click()
         click_button("Send Invoice")
         expect(page).to have_content(/PROCESSING.../, wait: 3)
@@ -90,8 +99,7 @@ RSpec.describe "Send Invoice", type: :system do
 
   context "when logged-in user is Employee" do
       before do
-        user.add_role :employee, company
-        sign_in user
+        login_as employee
       end
 
       it "is not able to see invoices option" do

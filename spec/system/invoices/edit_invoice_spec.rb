@@ -6,22 +6,30 @@ RSpec.describe "Edit Invoice", type: :system do
   let(:invoice) { create :invoice_with_invoice_line_items, status: :draft }
   let(:client) { invoice.client }
   let(:company) { invoice.company }
-  let(:user) { create :user, current_workspace_id: company.id }
+  let(:admin) { create(:user, current_workspace_id: company.id) }
+  let(:owner) { create(:user, current_workspace_id: company.id) }
+  let(:employee) { create(:user, current_workspace_id: company.id) }
 
   before do
-    create(:employment, company:, user:)
+    create(:employment, company:, user: admin)
+    admin.add_role :admin, company
+
+    create(:employment, company:, user: owner)
+    owner.add_role :owner, company
+
+    create(:employment, company:, user: employee)
+    employee.add_role :employee, company
   end
 
   context "when logged-in user is Admin" do
       before do
-        user.add_role :admin, company
-        sign_in user
-        page.windows[0].maximize
+        login_as admin
       end
 
       it "is able to Edit from Invoices list page" do
           with_forgery_protection do
               visit "invoices"
+
               expect(page).to have_content "Invoices"
               expect(page).to have_xpath "//h1[text()='All Invoices']"
 
@@ -95,6 +103,9 @@ RSpec.describe "Edit Invoice", type: :system do
           with_forgery_protection do
             visit "invoices/#{invoice.id}/edit"
 
+            # Update invoice number
+            find(:field, placeholder: "Enter invoice number").set("test-invoice-1-updated")
+
             # Verify Save Button
             find_by_id("save-invoice-button").click()
 
@@ -102,20 +113,23 @@ RSpec.describe "Edit Invoice", type: :system do
             expect(page).to have_current_path("/invoices/#{invoice.id}")
             expect(page).to have_no_content "CANCEL"
             expect(page).to have_no_content "+ NEW LINE ITEM"
+
+            # Should have the updated invoice number
+            expect(page).to have_content "test-invoice-1-updated"
+            expect(page).to have_content "Invoice ##{invoice.invoice_number}"
           end
         end
     end
 
   context "when logged-in user is Owner" do
     before do
-      user.add_role :owner, company
-      sign_in user
-      page.windows[0].maximize
+      login_as owner
     end
 
     it "is able to Edit from Invoices List page" do
         with_forgery_protection do
             visit "invoices"
+
             expect(page).to have_content "Invoices"
             expect(page).to have_xpath "//h1[text()='All Invoices']"
 
@@ -189,6 +203,9 @@ RSpec.describe "Edit Invoice", type: :system do
         with_forgery_protection do
           visit "invoices/#{invoice.id}/edit"
 
+          # Update invoice number
+          find(:field, placeholder: "Enter invoice number").set("test-invoice-1-updated")
+
           # Verify Save Button
           find_by_id("save-invoice-button").click()
 
@@ -196,15 +213,17 @@ RSpec.describe "Edit Invoice", type: :system do
           expect(page).to have_current_path("/invoices/#{invoice.id}")
           expect(page).to have_no_content "CANCEL"
           expect(page).to have_no_content "+ NEW LINE ITEM"
+
+          # Should have the updated invoice number
+          expect(page).to have_content "test-invoice-1-updated"
+          expect(page).to have_content "Invoice ##{invoice.invoice_number}"
         end
       end
   end
 
   context "when logged-in user is Employee" do
       before do
-        create(:employment, company:, user:)
-        user.add_role :employee, company
-        sign_in user
+        login_as employee
       end
 
       it "is not able to see invoices option" do
