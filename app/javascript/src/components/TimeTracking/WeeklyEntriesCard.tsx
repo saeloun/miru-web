@@ -63,7 +63,6 @@ const WeeklyEntriesCard = ({
     ["unbilled", "billed"].includes(currentEntries[num]["bill_status"])
       ? setBillable(true)
       : setBillable(false);
-    setIsWeeklyEditing(true);
   };
 
   const handleSaveEntry = async () => {
@@ -207,7 +206,6 @@ const WeeklyEntriesCard = ({
             src={EditSVG}
             onClick={() => {
               if (!isWeeklyEditing) setProjectSelected(false);
-              setIsWeeklyEditing(true);
             }}
           />
         </div>
@@ -276,8 +274,9 @@ const WeeklyEntriesCard = ({
                 </button>
               ) : (
                 <button
+                  disabled={!(dataChanged && duration && note)}
                   className={`m-2 mb-1 inline-block h-6 w-30 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-                    dataChanged && duration
+                    dataChanged && duration && note
                       ? "bg-miru-han-purple-1000 hover:border-transparent"
                       : "bg-miru-gray-1000"
                   }`}

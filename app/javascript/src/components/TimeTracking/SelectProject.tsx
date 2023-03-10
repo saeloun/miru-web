@@ -53,7 +53,7 @@ const SelectProject = ({
         onChange={handleClientChange}
       >
         {!client && (
-          <option disabled selected className="text-miru-gray-100">
+          <option disabled className="text-miru-gray-100">
             Client
           </option>
         )}
@@ -66,14 +66,14 @@ const SelectProject = ({
         className="h-8 w-80 rounded-sm bg-miru-gray-100"
         id="project"
         name="project"
-        value={project}
+        value={project || "Project"}
         onChange={e => {
           setProject(e.target.value);
           setProjectId();
         }}
       >
         {!project && (
-          <option disabled selected className="text-miru-gray-100">
+          <option disabled className="text-miru-gray-100">
             Project
           </option>
         )}
