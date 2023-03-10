@@ -115,6 +115,10 @@ const FilterSidebar = ({
       } else {
         setFilteredClientList(filterOptions?.clients);
       }
+    } else {
+      if (!debouncedSearchQuery) {
+        setFilteredClientList(selctedClientList);
+      }
     }
   }, [debouncedSearchQuery]);
 
@@ -155,6 +159,10 @@ const FilterSidebar = ({
           : setFilteredTeamsList([]);
       } else {
         setFilteredTeamsList(filterOptions?.teamMembers);
+      }
+    } else {
+      if (!debouncedTeamsSearchQuery) {
+        setFilteredTeamsList(teamMembersList);
       }
     }
   }, [debouncedTeamsSearchQuery]);
@@ -315,6 +323,46 @@ const FilterSidebar = ({
     setIsFilterVisible(false);
   };
 
+  const handleDateRangeToggle = () => {
+    setIsStatusOpen(false);
+    setIsClientOpen(false);
+    setIsTeamMemberOpen(false);
+    setIsGroupByOpen(false);
+    setIsDateRangeOpen(!isDateRangeOpen);
+  };
+
+  const handleClientFilterToggle = () => {
+    setIsClientOpen(!isClientOpen);
+    setIsStatusOpen(false);
+    setIsTeamMemberOpen(false);
+    setIsGroupByOpen(false);
+    setIsDateRangeOpen(false);
+  };
+
+  const handleTeamMembersFilterToggle = () => {
+    setIsTeamMemberOpen(!isTeamMemberOpen);
+    setIsClientOpen(false);
+    setIsStatusOpen(false);
+    setIsGroupByOpen(false);
+    setIsDateRangeOpen(false);
+  };
+
+  const handleStatusFilterToggle = () => {
+    setIsDateRangeOpen(false);
+    setIsClientOpen(false);
+    setIsStatusOpen(!isStatusOpen);
+    setIsTeamMemberOpen(false);
+    setIsGroupByOpen(false);
+  };
+
+  const handleGroupByFilterToggle = () => {
+    setIsDateRangeOpen(false);
+    setIsClientOpen(false);
+    setIsStatusOpen(false);
+    setIsGroupByOpen(!isGroupByOpen);
+    setIsTeamMemberOpen(false);
+  };
+
   return (
     <SidePanel
       WrapperClassname="z-50 justify-content-between"
@@ -343,14 +391,12 @@ const FilterSidebar = ({
             dateRange={dateRange}
             dateRangeList={dateRangeOptions}
             filters={filters}
+            handleDateRangeToggle={handleDateRangeToggle}
             handleOpenDateCalendar={handleOpenDateCalendar}
             handleSelectDate={handleSelectDate}
             handleSelectFilter={handleSelectFilter}
             isDateRangeOpen={isDateRangeOpen}
             selectedInput={selectedInput}
-            setIsClientOpen={setIsClientOpen}
-            setIsDateRangeOpen={setIsDateRangeOpen}
-            setIsStatusOpen={setIsStatusOpen}
             setShowCustomCalendar={setShowCustomCalendar}
             showCustomCalendar={showCustomCalendar}
             showCustomFilter={showCustomFilter}
@@ -360,39 +406,34 @@ const FilterSidebar = ({
           />
           <ClientFilter
             filteredClientList={filteredClientList}
+            handleClientFilterToggle={handleClientFilterToggle}
             handleSelectClient={handleSelectClient}
             isClientOpen={isClientOpen}
             searchQuery={searchQuery}
             selectedClients={filters.clients}
-            setIsClientOpen={setIsClientOpen}
             setSearchQuery={setSearchQuery}
           />
           <TeamMembersFilter
             filteredTeamsList={filteredTeamsList}
             handleSelectTeamMember={handleSelectTeamMember}
+            handleTeamMembersFilterToggle={handleTeamMembersFilterToggle}
             isTeamMemberOpen={isTeamMemberOpen}
             searchQuery={TeamMembersearchQuery}
             selectedTeams={selectedTeams}
-            setIsTeamMemberOpen={setIsTeamMemberOpen}
             setSearchQuery={setTeamMemberSearchQuery}
           />
           <StatusFilter
             filters={filters}
             handleSelectStatus={handleSelectStatus}
+            handleStatusFilterToggle={handleStatusFilterToggle}
             isStatusOpen={isStatusOpen}
-            setIsClientOpen={setIsClientOpen}
-            setIsDateRangeOpen={setIsDateRangeOpen}
-            setIsStatusOpen={setIsStatusOpen}
             statusOptions={statusOption}
           />
           <GroupByFilter
             filters={filters}
+            handleGroupByFilterToggle={handleGroupByFilterToggle}
             handleSelectFilter={handleSelectGroupByFilter}
             isGroupByOpen={isGroupByOpen}
-            setIsClientOpen={setIsClientOpen}
-            setIsDateRangeOpen={setIsDateRangeOpen}
-            setIsGroupByOpen={setIsGroupByOpen}
-            setIsStatusOpen={setIsStatusOpen}
           />
         </SidePanel.Body>
       </div>
