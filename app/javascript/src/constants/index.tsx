@@ -46,7 +46,7 @@ export enum Paths {
   AUTHORIZATION = "/authorization",
 }
 
-export const TOASTER_DURATION = 3000;
+export const TOASTER_DURATION = 2000;
 
 export const GetToasterIcon = ({ type }) => {
   switch (type) {

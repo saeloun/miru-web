@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class CompaniesController < ApplicationController
-  skip_before_action :validate_company!, only: [:create, :new]
-
   def new
     @company = Company.new
     authorize @company
