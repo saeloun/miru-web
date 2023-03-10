@@ -11,12 +11,12 @@ shared_examples_for "admin and employee views and add time entries" do |obj|
       admin.add_role :admin, company
       create(:employment, company:, user: admin)
       create(:project_member, user: admin, project:)
-      sign_in(admin)
+      login_as(admin)
     else
       employee.add_role :employee, company
       create(:employment, company:, user: employee)
       create(:project_member, user: employee, project:)
-      sign_in(employee)
+      login_as(employee)
     end
   end
 
@@ -29,10 +29,11 @@ shared_examples_for "admin and employee views and add time entries" do |obj|
 
     with_forgery_protection do
       visit "time-tracking"
-      click_button "WEEK"
 
+      click_button "WEEK"
       find_by_id("prevMonth").click
       find_by_id("nextMonth").click
+
       expect(page).to have_content("08:00")
     end
   end
@@ -49,6 +50,7 @@ shared_examples_for "admin and employee views and add time entries" do |obj|
       find(:css, "#selectedInput").set("8")
       fill_in placeholder: "Note", with: "Weekly note!"
       click_button "SAVE"
+
       expect(page).to have_content("Timesheet created", wait: 3)
     end
   end

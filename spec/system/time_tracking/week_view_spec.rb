@@ -8,7 +8,6 @@ RSpec.describe "Time Tracking - week view" do
   let!(:client) { create(:client, company:) }
   let!(:project) { create(:project, client:) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
-  let(:employee) { create(:user, current_workspace_id: company.id) }
 
   context "when user is admin" do
     it_behaves_like "admin and employee views and add time entries", is_admin: true
@@ -17,7 +16,7 @@ RSpec.describe "Time Tracking - week view" do
       admin.add_role :admin, company
       create(:employment, company:, user: admin)
       create(:project_member, user: admin, project:)
-      sign_in(admin)
+      login_as(admin)
 
       user_two = create(:user, current_workspace_id: company.id)
       create(:employment, company:, user: user_two)
