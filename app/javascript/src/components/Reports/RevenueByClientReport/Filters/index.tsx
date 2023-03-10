@@ -48,7 +48,7 @@ const FilterSideBar = ({
 
   const fetchAndSetClients = async () => {
     try {
-      const { data } = await clientApi.get("");
+      const { data } = await clientApi.billableClients();
       setClientList(
         data.client_details.map(client => ({
           value: client.id,

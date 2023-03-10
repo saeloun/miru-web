@@ -7,6 +7,8 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client_1) { create(:client, company:) }
   let(:client_2) { create(:client, company:) }
+  let(:client_3) { create(:client, company:, name: "john") }
+
   let(:project_1) { create(:project, client: client_1) }
   let(:project_2) { create(:project, client: client_2) }
   let(:time_frame) { "week" }
@@ -14,6 +16,8 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   context "when user is an admin" do
     before do
       create(:employment, company:, user:)
+      create(:project, billable: true, client: client_1)
+      create(:project, billable: true, client: client_2)
       user.add_role :admin, company
       sign_in user
       create_list(:timesheet_entry, 5, user:, project: project_1)
@@ -76,6 +80,18 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
+    end
+
+    it "returns only clients having billable projects" do
+      expect(json_response["client_details"].pluck("id")).to include(client_1.id, client_2.id)
+    end
+
+    it "does not return clients having no billable projects" do
+      resp = {
+        "id" => client_3.id,
+        "name" => client_3.name
+      }
+      expect(json_response["client_details"]).not_to include(resp)
     end
   end
 

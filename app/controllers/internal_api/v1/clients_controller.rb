@@ -53,6 +53,13 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
     end
   end
 
+  def billable_clients
+    authorize Client, :index?
+
+    clients = current_company.billable_clients
+    render :billable_clients, locals: { clients: }
+  end
+
   private
 
     def client

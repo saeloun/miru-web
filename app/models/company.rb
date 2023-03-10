@@ -80,4 +80,12 @@ class Company < ApplicationRecord
   def all_expense_categories
     ExpenseCategory.default_categories.order(:created_at) + expense_categories.order(:created_at)
   end
+
+  def billable_clients
+    clients
+      .joins(:projects)
+      .where(
+        projects: { billable: true }
+      ).kept.order(name: :asc).uniq
+  end
 end

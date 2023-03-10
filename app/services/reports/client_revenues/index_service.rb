@@ -19,7 +19,7 @@ module Reports::ClientRevenues
     private
 
       def clients
-        current_clients.order("name asc").includes(:invoices).map do |client|
+        current_clients.order("clients.name asc").includes(:invoices).map do |client|
           client.payment_summary(duration_params).merge({ name: client.name, logo: client.logo_url })
         end
       end
@@ -36,7 +36,7 @@ module Reports::ClientRevenues
 
       def current_clients
         @_current_clients ||= client_ids_params.blank? ?
-        current_company.clients : current_company.clients.where(id: client_ids_params)
+        billable_clients : billable_clients.where(id: client_ids_params)
       end
 
       def client_ids_params
@@ -47,6 +47,10 @@ module Reports::ClientRevenues
         if params[:duration_from].present? && params[:duration_to].present?
           params[:duration_from].to_date..params[:duration_to].to_date
         end
+      end
+
+      def billable_clients
+        current_company.billable_clients
       end
   end
 end
