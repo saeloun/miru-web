@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Viewing hours logged by time frame" do
+RSpec.describe "Viewing hours logged by time frame", type: :system do
   let(:company) { create(:company) }
   let!(:client1) { create(:client, name: "Acme Corp", company:) }
   let!(:client2) { create(:client, name: "Globex", company:) }
@@ -15,31 +15,60 @@ RSpec.describe "Viewing hours logged by time frame" do
     create(:employment, company:, user:)
     user.add_role :admin, company
     login_as(user)
-    create(:timesheet_entry, user:, project: project1, duration: 954231, work_date: DateTime.now - 1.days)
-    create(:timesheet_entry, user:, project: project1, duration: 3432, work_date: 2.weeks.ago)
-    create(:timesheet_entry, user:, project: project2, duration: 4332, work_date: DateTime.now - 3.days)
-    create(:timesheet_entry, user:, project: project3, duration: 12244, work_date: DateTime.now - 2.days)
-    client1_total_minutes = client1.timesheet_entries.sum(:duration)
-    client2_total_minutes = client2.timesheet_entries.sum(:duration)
   end
 
-  context "when viewing hours logged for last week" do
+  context "when viewing hours logged for current week" do
+    before do
+      create(:timesheet_entry, user:, project: project1, duration: 120, work_date: Date.today.at_beginning_of_week)
+      create(:timesheet_entry, user:, project: project1, duration: 45, work_date: Date.today.at_beginning_of_week)
+      create(:timesheet_entry, user:, project: project2, duration: 200, work_date: Date.today.at_beginning_of_week)
+      create(:timesheet_entry, user:, project: project3, duration: 78, work_date: Date.today.at_beginning_of_week)
+    end
+
     it "displays the correct totals for each client" do
       with_forgery_protection do
         visit "/clients"
 
-        client1_hours = sprintf(
-          "%02d:%02d", client1.project_details("week").sum { |project|
-  project[:minutes_spent]
-} / 60, client1.project_details("week").sum { |project|
-  project[:minutes_spent]
-} % 60)
+        expect(page).to have_selector(id: "#{client1.id}", text: "06:05")
+        expect(page).to have_selector(id: "#{client2.id}", text: "01:18")
+      end
+    end
+  end
 
-        client1_total = find("div.total-hours", id: "#{client1.id}").text
-        client2_total = find("div.total-hours", id: "#{client2.id}").text
+  context "when viewing hours logged for current month" do
+    before do
+      create(:timesheet_entry, user:, project: project1, duration: 70, work_date: Date.today.at_beginning_of_month)
+      create(:timesheet_entry, user:, project: project1, duration: 90, work_date: Date.today.at_beginning_of_month)
+      create(:timesheet_entry, user:, project: project2, duration: 120, work_date: Date.today.at_beginning_of_month)
+      create(:timesheet_entry, user:, project: project3, duration: 48, work_date: Date.today.at_beginning_of_month)
+    end
 
-        expect(client1_total).to eq(client1_hours)
-        expect(client2_total).to eq(client2_hours)
+    it "displays the correct totals for each client" do
+      with_forgery_protection do
+        visit "/clients"
+
+        select "THIS MONTH", from: "timeFrame"
+        expect(page).to have_selector(id: "#{client1.id}", text: "04:40")
+        expect(page).to have_selector(id: "#{client2.id}", text: "00:48")
+      end
+    end
+  end
+
+  context "when viewing hours logged for current year" do
+    before do
+      create(:timesheet_entry, user:, project: project1, duration: 170, work_date: Date.today.beginning_of_year)
+      create(:timesheet_entry, user:, project: project1, duration: 290, work_date: Date.today.beginning_of_year)
+      create(:timesheet_entry, user:, project: project2, duration: 146, work_date: Date.today.beginning_of_year)
+      create(:timesheet_entry, user:, project: project3, duration: 158, work_date: Date.today.beginning_of_year)
+    end
+
+    it "displays the correct totals for each client" do
+      with_forgery_protection do
+        visit "/clients"
+
+        select "THIS YEAR", from: "timeFrame"
+        expect(page).to have_selector(id: "#{client1.id}", text: "10:06")
+        expect(page).to have_selector(id: "#{client2.id}", text: "02:38")
       end
     end
   end
