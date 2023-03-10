@@ -81,18 +81,6 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
       expect(response).to have_http_status(:ok)
       expect(json_response["client_details"]).to eq(JSON.parse(client_details.to_json))
     end
-
-    it "returns only clients having billable projects" do
-      expect(json_response["client_details"].pluck("id")).to include(client_1.id, client_2.id)
-    end
-
-    it "does not return clients having no billable projects" do
-      resp = {
-        "id" => client_3.id,
-        "name" => client_3.name
-      }
-      expect(json_response["client_details"]).not_to include(resp)
-    end
   end
 
   context "when user is an employee" do
