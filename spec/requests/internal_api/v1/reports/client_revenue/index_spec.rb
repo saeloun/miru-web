@@ -16,12 +16,12 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
   let!(:client1_overdue_invoice1) { create(:invoice, client: client1, status: "overdue") }
   let!(:client2_sent_invoice2) { create(:invoice, client: client2, status: "sent") }
   let!(:client2_viewed_invoice1) { create(:invoice, client: client2, status: "viewed") }
-  let!(:project1) { create(:project, billable: true, client: client1) }
-  let!(:project2) { create(:project, billable: true, client: client2) }
 
   context "when user is an admin" do
     before do
       create(:employment, company:, user:)
+      create(:project, billable: true, client: client1)
+      create(:project, billable: true, client: client2)
       user.add_role :admin, company
       sign_in user
     end
