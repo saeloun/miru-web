@@ -35,9 +35,9 @@ const getMonth = isCurrentMonth => {
   const monthStr = month[monthCount.month()];
   const totalDaysOfCurrentMonth = dayjs(monthCount).daysInMonth();
   const lastdayOfMonth =
-    totalDaysOfCurrentMonth === 30
-      ? `${totalDaysOfCurrentMonth}th`
-      : `${totalDaysOfCurrentMonth}st`;
+    totalDaysOfCurrentMonth === 31
+      ? `${totalDaysOfCurrentMonth}st`
+      : `${totalDaysOfCurrentMonth}th`;
 
   return {
     from_date: `1st ${monthStr}`,
