@@ -19,7 +19,7 @@ module Reports::ClientRevenues
     private
 
       def clients
-        current_clients.order("clients.name asc").includes(:invoices).map do |client|
+        current_clients.includes(:invoices).map do |client|
           client.payment_summary(duration_params).merge({ name: client.name, logo: client.logo_url })
         end
       end

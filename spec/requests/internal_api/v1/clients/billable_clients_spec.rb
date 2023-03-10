@@ -16,8 +16,6 @@ RSpec.describe "InternalApi::V1::Clients#billable_clients", type: :request do
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
-      create_list(:timesheet_entry, 5, user:, project: project_1)
-      create_list(:timesheet_entry, 5, user:, project: project_2)
       send_request :get, internal_api_v1_clients_path, headers: auth_headers(user)
     end
 
