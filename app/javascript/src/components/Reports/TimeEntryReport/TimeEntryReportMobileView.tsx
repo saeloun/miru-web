@@ -15,7 +15,7 @@ interface ContainerProps {
 }
 
 const ReportHeader = () => (
-  <div className="grid grid-cols-10 items-center gap-2 border-b py-2">
+  <div className="grid grid-cols-10 items-center gap-2 border-b py-4">
     <div className="col-span-4 text-left text-xs font-medium uppercase leading-4 tracking-widest text-miru-dark-purple-600">
       PROJECT/
       <br />
@@ -99,12 +99,12 @@ export const TimeEntryReportMobileView = ({
                       selectedFilter?.groupBy?.value || null,
                       report.clientLogo
                     )}
-                    <h1 className="font-manrope text-xl font-bold text-miru-han-purple-1000">
+                    <span className="font-manrope text-lg font-bold text-miru-han-purple-1000">
                       {report.label}
-                    </h1>
+                    </span>
                   </div>
                   {report.entries?.length > 0 && (
-                    <p className="text-right font-manrope text-base font-medium text-miru-dark-purple-1000">
+                    <p className="text-right font-manrope text-sm font-medium text-miru-dark-purple-1000">
                       Total Hours :{` ${getTotalHoursLogged(report.entries)}`}
                     </p>
                   )}
