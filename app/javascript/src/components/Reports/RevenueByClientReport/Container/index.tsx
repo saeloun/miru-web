@@ -88,7 +88,7 @@ const Container = () => {
         </table>
       ) : (
         <div className="my-6 mx-4">
-          {revenueByClientReport.clientList.length &&
+          {revenueByClientReport.clientList.length > 0 &&
             revenueByClientReport.currency &&
             revenueByClientReport.clientList.map((client, index) => (
               <Fragment key={index}>
