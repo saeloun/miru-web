@@ -157,7 +157,10 @@ const MoreOptions = ({
         <li>
           <button
             className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000"
-            onClick={() => setIsSending(!isSending)}
+            onClick={() => {
+              setIsSending(!isSending);
+              setShowMoreOptions(false);
+            }}
           >
             <PaperPlaneTiltIcon className="mr-4" size={16} /> Send Invoice
           </button>

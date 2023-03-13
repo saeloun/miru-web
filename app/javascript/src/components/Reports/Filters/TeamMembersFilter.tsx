@@ -5,20 +5,18 @@ import { MinusIcon, PlusIcon, SearchIcon, XIcon } from "miruIcons";
 import ClickableCheckboxText from "common/ClickableCheckboxText";
 
 const TeamMembersFilter = ({
-  setIsTeamMemberOpen,
   isTeamMemberOpen,
   searchQuery,
   setSearchQuery,
   filteredTeamsList,
   selectedTeams,
   handleSelectTeamMember,
+  handleTeamMembersFilterToggle,
 }) => (
   <div className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
     <div
       className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
-      onClick={() => {
-        setIsTeamMemberOpen(!isTeamMemberOpen);
-      }}
+      onClick={handleTeamMembersFilterToggle}
     >
       <h5 className="text-xs font-bold leading-4 tracking-wider">
         TEAM MEMBERS

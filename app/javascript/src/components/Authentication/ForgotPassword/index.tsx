@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { Field, Form, Formik, FormikProps } from "formik";
+import { Form, Formik, FormikProps } from "formik";
 import { MiruLogoSVG } from "miruIcons";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
+import { InputErrors, InputField } from "common/FormikFields";
 import { Paths, TOASTER_DURATION } from "constants/index";
 
 import PasswordResetLinkSentMsg from "./PasswordResetLinkSentMsg";
@@ -67,28 +68,15 @@ const ForgotPassword = () => {
                 return (
                   <Form>
                     <div className="field relative">
-                      <div className="outline relative">
-                        <Field
-                          name="email"
-                          placeholder=" "
-                          className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                            errors.email &&
-                            touched.email &&
-                            "border-red-600 focus:border-red-600 focus:ring-red-600"
-                          } `}
-                        />
-                        <label
-                          className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
-                          htmlFor="Name"
-                        >
-                          Enter your registered email ID
-                        </label>
-                      </div>
-                      <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                        {errors.email && touched.email && (
-                          <div>{errors.email}</div>
-                        )}
-                      </div>
+                      <InputField
+                        id="email"
+                        label="Enter your registered email ID"
+                        name="email"
+                      />
+                      <InputErrors
+                        fieldErrors={errors.email}
+                        fieldTouched={touched.email}
+                      />
                     </div>
                     <div>
                       <button

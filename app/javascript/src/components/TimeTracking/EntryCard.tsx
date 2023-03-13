@@ -2,7 +2,7 @@
 import React from "react";
 
 import { minToHHMM } from "helpers";
-import { DeleteIcon, EditIcon } from "miruIcons";
+import { DeleteIcon, EditIcon, CopyIcon } from "miruIcons";
 import { Badge } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
@@ -20,6 +20,7 @@ interface props {
   bill_status: string;
   currentUserRole: string;
   setNewEntryView: any;
+  handleDuplicate: any;
 }
 
 const canEditTimeEntry = (billStatus, role) =>
@@ -49,6 +50,18 @@ const showDeleteAction = (billStatus, role, id, handleDeleteEntry) => {
   return <div className="mr-10 h-4 w-4" />;
 };
 
+const showDuplicateAction = (billStatus, role, id, handleDuplicate) => {
+  if (canEditTimeEntry(billStatus, role)) {
+    return (
+      <button className="icon-hover " onClick={() => handleDuplicate(id)}>
+        <CopyIcon className="text-miru-han-purple-1000" size={20} />
+      </button>
+    );
+  }
+
+  return <div className="mr-10 h-4 w-4" />;
+};
+
 const EntryCard: React.FC<props> = ({
   id,
   client,
@@ -60,6 +73,7 @@ const EntryCard: React.FC<props> = ({
   bill_status,
   currentUserRole,
   setNewEntryView,
+  handleDuplicate,
 }) => {
   const { isDesktop } = useUserContext();
 
@@ -76,7 +90,7 @@ const EntryCard: React.FC<props> = ({
       onClick={handleCardClick}
     >
       <div className="w-7/12 flex-auto">
-        <div className="flex ">
+        <div className="text-miu-dark-Purple-1000 flex">
           <p className="text-base font-normal lg:text-lg">{client}</p>
           <p className="mx-2 text-lg">•</p>
           <p className="text-base font-normal lg:text-lg">{project}</p>
@@ -109,7 +123,7 @@ const EntryCard: React.FC<props> = ({
           {note}
         </p>
       </div>
-      <p className="flex self-start text-2xl lg:hidden">
+      <p className="text-miu-dark-Purple-1000 flex self-start text-2xl lg:hidden">
         {minToHHMM(duration)}
       </p>
       <div className="hidden w-5/12 items-center justify-between lg:flex">
@@ -141,6 +155,12 @@ const EntryCard: React.FC<props> = ({
           <p className="mx-auto text-4xl">{minToHHMM(duration)}</p>
         </div>
         <div className="flex w-5/12 items-center justify-evenly">
+          {showDuplicateAction(
+            bill_status,
+            currentUserRole,
+            id,
+            handleDuplicate
+          )}
           {showUpdateAction(bill_status, currentUserRole, id, setEditEntryId)}
           {showDeleteAction(
             bill_status,
