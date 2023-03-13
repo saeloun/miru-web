@@ -103,4 +103,28 @@ shared_examples_for "Time tracking" do |obj|
       end
     end
   end
+
+  it "shows correct total hours logged" do
+    with_forgery_protection do
+      visit "time-tracking"
+
+      # NOTE: Signing again because devise routes and views haven't been removed yet.
+      obj[:is_admin] == true ? sign_in(admin) : sign_in(employee)
+      visit "time-tracking"
+
+      hours = (employee.timesheet_entries.first.duration / 60).to_i
+      minutes = (employee.timesheet_entries.first.duration % 60).to_i
+
+      if hours >= 10 && minutes >= 10
+        expected_duration = "#{hours}:#{minutes}"
+      elsif hours < 10 && minutes >= 10
+        expected_duration = "0#{hours}:#{minutes}"
+      elsif hours < 10 && minutes < 10
+        expected_duration = "0#{hours}:0#{minutes}"
+      end
+      total_hours = find_by_id(employee.timesheet_entries.first.duration.to_i).text
+
+      expect(total_hours).to eq(expected_duration)
+    end
+  end
 end
