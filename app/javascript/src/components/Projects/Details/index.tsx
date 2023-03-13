@@ -140,13 +140,16 @@ const ProjectDetails = () => {
     },
   ];
 
-  const handleMenuVisibility = () => {
-    setIsHeaderMenuVisible(!isHeaderMenuVisible);
+  const handleMenuVisibility = (e?: any, isMenuVisible?: boolean) => {
+    e?.stopPropagation();
+    const tempIsMenuVisible = isMenuVisible ?? !isHeaderMenuVisible;
+    setIsHeaderMenuVisible(tempIsMenuVisible);
   };
 
-  const handleAddRemoveMembers = () => {
-    handleMenuVisibility();
+  const handleAddRemoveMembers = e => {
+    e?.stopPropagation();
     setShowAddMemberDialog(true);
+    handleMenuVisibility(e);
   };
 
   const closeAddRemoveMembers = () => {
@@ -195,7 +198,11 @@ const ProjectDetails = () => {
               />
             )}
           </div>
-          <div className="relative h-8">
+          <div
+            className="relative h-8"
+            onBlur={e => handleMenuVisibility(e, false)}
+            onMouseDown={e => handleMenuVisibility(e, false)}
+          >
             <button
               className={`menuButton__button ${menuBackground}`}
               id="kebabMenu"
@@ -208,7 +215,7 @@ const ProjectDetails = () => {
                 <li>
                   <button
                     className="menuButton__list-item"
-                    onClick={handleGenerateInvoice}
+                    onMouseDown={handleGenerateInvoice}
                   >
                     <InvoicesIcon color="#5B34EA" size={16} weight="bold" />
                     <span className="ml-3">Generate Invoice</span>
@@ -217,7 +224,8 @@ const ProjectDetails = () => {
                 <li>
                   <button
                     className="menuButton__list-item"
-                    onClick={() => {
+                    onMouseDown={e => {
+                      e?.stopPropagation();
                       handleEditProject();
                       setIsHeaderMenuVisible(false);
                     }}
@@ -229,7 +237,7 @@ const ProjectDetails = () => {
                 <li>
                   <button
                     className="menuButton__list-item"
-                    onClick={handleAddRemoveMembers}
+                    onMouseDown={handleAddRemoveMembers}
                   >
                     <TeamsIcon color="#5b34ea" size={16} weight="bold" />
                     <span className="ml-3">Add/Remove Team Members</span>
@@ -238,7 +246,7 @@ const ProjectDetails = () => {
                 <li>
                   <button
                     className="menuButton__list-item text-miru-red-400"
-                    onClick={() => setShowDeleteDialog(true)}
+                    onMouseDown={() => setShowDeleteDialog(true)}
                   >
                     <DeleteIcon color="#E04646" size={16} weight="bold" />
                     <span className="ml-3">Delete Project</span>
