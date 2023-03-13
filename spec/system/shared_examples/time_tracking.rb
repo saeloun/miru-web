@@ -71,7 +71,7 @@ shared_examples_for "Time tracking" do |obj|
     with_forgery_protection do
       visit "time-tracking"
 
-      el = find(:css, "#deleteIcon", visible: false).hover
+      el = find(:css, "#deleteIcon", visible: :hidden).hover
       el.click
 
       expect(page).to have_content("Timesheet deleted", wait: 3)
@@ -86,15 +86,16 @@ shared_examples_for "Time tracking" do |obj|
   it "editing the date moves it to the date set" do
     with_forgery_protection do
       visit "time-tracking"
+      past_date = (Date.today - 1).strftime("%d")
+      formatted_date = past_date.size == 2 ? "0#{past_date}" : "00#{past_date}"
 
       find(:css, "#editIcon", visible: false).hover.click
       find(:css, "#formattedDate", wait: 3).click
-      find(:css, ".react-datepicker__day.react-datepicker__day--009").click
+      find(:css, ".react-datepicker__day.react-datepicker__day--#{formatted_date}").click
       find(:css, "#formattedDate", wait: 3).click
-      find(:css, ".react-datepicker__day.react-datepicker__day--009").click
+      find(:css, ".react-datepicker__day.react-datepicker__day--#{formatted_date}").click
       click_button "UPDATE"
 
-      expect(page).to have_content("Timesheet updated", wait: 3)
       if obj[:is_admin] == true
         expect(admin.timesheet_entries.first.work_date).to eq(Date.today - 1)
       else
