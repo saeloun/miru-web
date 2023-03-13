@@ -11,22 +11,18 @@ shared_examples_for "admin and employee views and add time entries" do |obj|
       admin.add_role :admin, company
       create(:employment, company:, user: admin)
       create(:project_member, user: admin, project:)
+      create(:timesheet_entry, user: admin, project:)
       login_as(admin)
     else
       employee.add_role :employee, company
       create(:employment, company:, user: employee)
       create(:project_member, user: employee, project:)
+      create(:timesheet_entry, user: employee, project:)
       login_as(employee)
     end
   end
 
   it "can view the time sheet entry" do
-    time_entry = if obj[:is_admin] == true
-      create(:timesheet_entry, user: admin, project:)
-    else
-      create(:timesheet_entry, user: employee, project:)
-    end
-
     with_forgery_protection do
       visit "time-tracking"
 
@@ -52,6 +48,26 @@ shared_examples_for "admin and employee views and add time entries" do |obj|
       click_button "SAVE"
 
       expect(page).to have_content("Timesheet created", wait: 3)
+    end
+  end
+
+  it "can edit time entry" do
+    with_forgery_protection do
+      visit "time-tracking"
+      sign_in(admin)
+      visit "time-tracking"
+
+      click_button "WEEK"
+      find_by_id("prevMonth").click
+      find_by_id("nextMonth").click
+      find(:css, "#inputClick_0").click
+      find(:css, "#selectedInput").set("10")
+      fill_in placeholder: "Note", with: "Weekly note!"
+      click_button "UPDATE"
+
+      expect(page).to have_content("Timesheet updated")
+      expect(admin.timesheet_entries.first.duration).to eq(600.0)
+      expect(admin.timesheet_entries.first.note).to eq("Weekly note!")
     end
   end
 end
