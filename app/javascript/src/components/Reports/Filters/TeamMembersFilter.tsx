@@ -2,23 +2,21 @@ import React from "react";
 
 import { MinusIcon, PlusIcon, SearchIcon, XIcon } from "miruIcons";
 
-import CustomCheckbox from "common/CustomCheckbox";
+import ClickableCheckboxText from "common/ClickableCheckboxText";
 
 const TeamMembersFilter = ({
-  setIsTeamMemberOpen,
   isTeamMemberOpen,
   searchQuery,
   setSearchQuery,
   filteredTeamsList,
   selectedTeams,
   handleSelectTeamMember,
+  handleTeamMembersFilterToggle,
 }) => (
   <div className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
     <div
       className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
-      onClick={() => {
-        setIsTeamMemberOpen(!isTeamMemberOpen);
-      }}
+      onClick={handleTeamMembersFilterToggle}
     >
       <h5 className="text-xs font-bold leading-4 tracking-wider">
         TEAM MEMBERS
@@ -63,7 +61,7 @@ const TeamMembersFilter = ({
         <div className="max-h-50v overflow-y-auto md:mt-7">
           {filteredTeamsList.length > 0 ? (
             filteredTeamsList.map(team => (
-              <CustomCheckbox
+              <ClickableCheckboxText
                 checkboxValue={team.value}
                 handleCheck={() => handleSelectTeamMember(team)}
                 id={team.value}
@@ -71,7 +69,7 @@ const TeamMembersFilter = ({
                 labelClassName="ml-4"
                 name="clients"
                 text={team.label}
-                wrapperClassName="py-3 px-5 flex items-center hover:bg-miru-gray-100 text-miru-dark-purple-1000"
+                wrapperClassName="py-3 px-5 flex items-center lg:hover:bg-miru-gray-100 text-miru-dark-purple-1000"
                 isChecked={
                   !!selectedTeams.find(
                     selectedTeam => selectedTeam.value === team.value
