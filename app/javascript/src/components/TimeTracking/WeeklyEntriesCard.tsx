@@ -51,7 +51,7 @@ const WeeklyEntriesCard = ({
   const handleDurationClick = (num: number) => {
     if (dataChanged) return;
 
-    // if (isWeeklyEditing) return;
+    if (isWeeklyEditing) return;
     setSelectedInputBox(num);
     setShowNote(true);
     setNote(currentEntries[num] ? currentEntries[num]["note"] : "");
