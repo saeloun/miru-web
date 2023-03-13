@@ -6,6 +6,7 @@ const UserContext = createContext({
   isAdminUser: false,
   user: {},
   companyRole: "", //current company user role
+  confirmedUser: "",
   isDesktop: false,
   selectedTab: null,
   setSelectedTab: value => {}, //eslint-disable-line

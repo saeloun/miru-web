@@ -3,7 +3,6 @@
 @import "tailwindcss/utilities";
 @import "react-toastify/dist/ReactToastify.min.css";
 @import "react-responsive-carousel/lib/styles/carousel.min.css";
-@import "toastr/toastr";
 @import "team";
 @import "time-tracking";
 @import "react-calendar";
@@ -34,6 +33,13 @@
   .sidebar {
     &__container {
       box-shadow: -2px 6px 11px grey;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
       @apply fixed right-0 bottom-0 top-0 w-80 bg-white;
     }
     &__footer {

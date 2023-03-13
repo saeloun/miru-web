@@ -3,7 +3,7 @@
 class CompanyPolicy < ApplicationPolicy
   attr_reader :error_message_key
   def index?
-    true
+    user_owner_role? || user_admin_role?
   end
 
   def new?

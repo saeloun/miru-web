@@ -2,6 +2,7 @@ import ErrorPage from "common/Error";
 import ForgotPassword from "components/Authentication/ForgotPassword";
 import SignIn from "components/Authentication/SignIn";
 import SignUp from "components/Authentication/SignUp";
+import EmailVerification from "components/EmailVerification";
 import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
 import { Roles, Paths } from "constants/index";
@@ -92,6 +93,10 @@ export const AUTH_ROUTES = [
   {
     path: "/password/new",
     component: ForgotPassword,
+  },
+  {
+    path: "/email_confirmation",
+    component: EmailVerification,
   },
 ];
 
