@@ -3,8 +3,8 @@
 module SessionHelpers
   def sign_in(user)
     within(".pt-20") do
-      fill_in "email", with: employee.email
-      fill_in "password", with: employee.password
+      fill_in "email", with: user.email
+      fill_in "password", with: user.password
     end
     click_button "Sign In"
   end
