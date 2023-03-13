@@ -7,7 +7,7 @@ class InternalApi::V1::Users::RegistrationsController < Devise::RegistrationsCon
     if user.errors.present?
       render json: { error: user.errors }, status: :unprocessable_entity
     else
-      render json: { notice: I18n.t("devise.registrations.signed_up") }, status: :ok
+      render json: { notice: I18n.t("devise.registrations.signed_up"), email: user.email }, status: :ok
     end
   end
 end

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { Formik, Form, Field, FormikProps } from "formik";
+import { Formik, Form, FormikProps } from "formik";
 import { DeleteImageButtonSVG, EditImageButtonSVG } from "miruIcons";
 import Select, { components } from "react-select";
 
 import companyProfileApi from "apis/companyProfile";
+import { InputErrors, InputField } from "common/FormikFields";
 
 import { CompanyDetailsFormProps, CompanyDetailsFormValues } from "./interface";
 import {
@@ -196,81 +197,35 @@ const CompanyDetailsForm = ({
                   </>
                 )}
               </div>
-              {/* Company Name */}
               <div className="field relative">
-                <div className="outline relative">
-                  <Field
-                    autoFocus
-                    name="company_name"
-                    placeholder=" "
-                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                      errors.company_name &&
-                      touched.company_name &&
-                      "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
-                  />
-                  <label
-                    className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
-                    htmlFor="name"
-                  >
-                    Company Name
-                  </label>
-                </div>
-                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.company_name && touched.company_name && (
-                    <div>{errors.company_name}</div>
-                  )}
-                </div>
+                <InputField
+                  autoFocus
+                  id="company_name"
+                  label="Company Name"
+                  name="company_name"
+                />
+                <InputErrors
+                  fieldErrors={errors.company_name}
+                  fieldTouched={touched.company_name}
+                />
               </div>
-              {/* Business Phone */}
               <div className="field relative">
-                <div className="outline relative">
-                  <Field
-                    name="business_phone"
-                    placeholder=" "
-                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                      errors.business_phone &&
-                      touched.business_phone &&
-                      "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
-                  />
-                  <label
-                    className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
-                    htmlFor="business_phone"
-                  >
-                    Business Phone
-                  </label>
-                </div>
-                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.business_phone && touched.business_phone && (
-                    <div>{errors.business_phone}</div>
-                  )}
-                </div>
+                <InputField
+                  id="business_phone"
+                  label="Business Phone"
+                  name="business_phone"
+                />
+                <InputErrors
+                  fieldErrors={errors.business_phone}
+                  fieldTouched={touched.business_phone}
+                />
               </div>
-              {/* Address */}
               <div className="field relative">
-                <div className="outline relative">
-                  <Field
-                    name="address"
-                    placeholder=" "
-                    className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                      errors.address &&
-                      touched.address &&
-                      "border-red-600 focus:border-red-600 focus:ring-red-600"
-                    } `}
-                  />
-                  <label
-                    className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
-                    htmlFor="address"
-                  >
-                    Address
-                  </label>
-                </div>
-                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.address && touched.address && (
-                    <div>{errors.address}</div>
-                  )}
-                </div>
+                <InputField id="address" label="Address" name="address" />
+                <InputErrors
+                  fieldErrors={errors.address}
+                  fieldTouched={touched.address}
+                />
               </div>
               {/* Country */}
               <div className="field relative">

@@ -9,10 +9,9 @@ RSpec.describe "Root#index", type: :request do
   # Now conditional routing is handled from fromtend.
 
   context "when unauthenticated" do
-    it "user will be redirects to sign in path" do
+    it "wont throw any error as it acts a root controller" do
       send_request :get, root_path
-      expect(response).to redirect_to(user_session_path)
-      expect(flash[:alert]).to eq("You need to sign in or sign up before continuing.")
+      expect(response).to be_successful
     end
   end
 end

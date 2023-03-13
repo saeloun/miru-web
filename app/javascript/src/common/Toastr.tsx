@@ -13,7 +13,7 @@ const ToastrComponent = ({ message }) => (
 const showToastr = message => {
   toast.success(<ToastrComponent message={message} />, {
     toastId: customId,
-    position: toast.POSITION.BOTTOM_CENTER,
+    position: toast.POSITION.TOP_CENTER,
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="success" />,
@@ -31,7 +31,7 @@ const showErrorToastr = error => {
   const toastMsg = err =>
     toast.error(<ToastrComponent message={err} />, {
       toastId: customId,
-      position: toast.POSITION.BOTTOM_CENTER,
+      position: toast.POSITION.TOP_CENTER,
       transition: Slide,
       theme: "colored",
       icon: <GetToasterIcon type="error" />,
@@ -62,7 +62,7 @@ const showErrorToastr = error => {
 const showWarningToastr = warning => {
   toast.warn(<ToastrComponent message={warning} />, {
     toastId: customId,
-    position: toast.POSITION.BOTTOM_CENTER,
+    position: toast.POSITION.TOP_CENTER,
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="warning" />,
@@ -75,7 +75,7 @@ const showWarningToastr = warning => {
 const showInfoToastr = info => {
   toast.info(<ToastrComponent message={info} />, {
     toastId: customId,
-    position: toast.POSITION.BOTTOM_CENTER,
+    position: toast.POSITION.TOP_CENTER,
     transition: Slide,
     theme: "colored",
     icon: <GetToasterIcon type="info" />,
