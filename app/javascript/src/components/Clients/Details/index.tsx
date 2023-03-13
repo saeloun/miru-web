@@ -61,6 +61,7 @@ const ClientList = ({ isAdminUser }) => {
   const handleEditClick = id => {
     setShowEditDialog(true);
     const editSelection = projectDetails.find(project => project.id === id);
+    setEditProjectData(editSelection);
     setSelectedProject(editSelection);
   };
 
