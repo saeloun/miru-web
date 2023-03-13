@@ -7,23 +7,15 @@ import CustomRadioButton from "common/CustomRadio";
 import { groupBy } from "./filterOptions";
 
 const GroupByFilter = ({
-  setIsClientOpen,
-  setIsStatusOpen,
-  setIsDateRangeOpen,
   isGroupByOpen,
   filters,
   handleSelectFilter,
-  setIsGroupByOpen,
+  handleGroupByFilterToggle,
 }) => (
   <div className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
     <div
       className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
-      onClick={() => {
-        setIsDateRangeOpen(false);
-        setIsClientOpen(false);
-        setIsStatusOpen(false);
-        setIsGroupByOpen(!isGroupByOpen);
-      }}
+      onClick={handleGroupByFilterToggle}
     >
       <h5 className="text-xs font-bold leading-4 tracking-wider">GROUP BY</h5>
       <div className="flex items-center">
