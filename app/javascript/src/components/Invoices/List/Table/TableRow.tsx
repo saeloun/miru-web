@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 
-import dayjs from "dayjs";
 import { currencyFormat, useDebounce } from "helpers";
 import { DotsThreeVerticalIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
@@ -42,7 +41,7 @@ const TableRow = ({
     status,
   } = invoice;
 
-  const { baseCurrency, dateFormat } = company;
+  const { baseCurrency } = company;
   const { name, logo } = client;
 
   const handleCheckboxChange = () => {
@@ -64,8 +63,6 @@ const TableRow = ({
       setShowToolTip(false);
     }
   };
-
-  const formattedDate = date => dayjs(date).format(dateFormat);
 
   return (
     <tr
@@ -112,10 +109,10 @@ const TableRow = ({
       {isDesktop && (
         <td className="w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:px-6">
           <h1 className="text-xs font-normal text-miru-dark-purple-1000 lg:text-base lg:font-semibold">
-            {formattedDate(issueDate)}
+            {issueDate}
           </h1>
           <h3 className="text-xs font-medium text-miru-dark-purple-400 lg:text-sm">
-            Due on {formattedDate(dueDate)}
+            Due on {dueDate}
           </h3>
         </td>
       )}
