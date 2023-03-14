@@ -6,6 +6,8 @@ import Select from "react-select";
 import * as Yup from "yup";
 
 import clientApi from "apis/clients";
+import clientRevenueApi from "apis/reports/clientRevenue";
+
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 
 import { dateRangeOptions } from "./filterOptions";
@@ -48,7 +50,7 @@ const FilterSideBar = ({
 
   const fetchAndSetClients = async () => {
     try {
-      const { data } = await clientApi.billableClients();
+      const { data } = await clientRevenueApi.newReport();
       setClientList(
         data.client_details.map(client => ({
           value: client.id,

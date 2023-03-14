@@ -83,9 +83,10 @@ class Company < ApplicationRecord
 
   def billable_clients
     clients
+      .distinct
       .joins(:projects)
-      .where(
-        projects: { billable: true }
-      ).kept.order(name: :asc)
+      .where(projects: { billable: true })
+      .kept
+      .order(name: :asc)
   end
 end

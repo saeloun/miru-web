@@ -13,11 +13,8 @@ namespace :internal_api, defaults: { format: "json" } do
       end
     end
 
-    resources :clients, only: [:index, :update, :destroy, :show, :create] do
-      collection do
-        get "billable", to: "clients#billable_clients"
-      end
-    end
+    resources :clients, only: [:index, :update, :destroy, :show, :create]
+
     resources :project, only: [:index]
     resources :timesheet_entry do
       collection do
@@ -32,7 +29,7 @@ namespace :internal_api, defaults: { format: "json" } do
     resources :timesheet_entry, only: [:index, :create, :update, :destroy]
 
     namespace :reports do
-      resources :client_revenues, only: [:index]
+      resources :client_revenues, only: [:index, :new]
       resources :time_entries, only: [:index] do
         collection do
           get :download
