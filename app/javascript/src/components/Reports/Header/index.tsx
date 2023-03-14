@@ -81,7 +81,7 @@ const Header = ({
           <Link to="/reports" type="button">
             <ArrowLeftIcon />
           </Link>
-          <span className="w-full py-1 px-3 text-left text-base font-medium leading-5 text-miru-dark-purple-1000 lg:ml-5 lg:truncate lg:px-0 lg:text-center lg:text-2xl lg:font-bold  lg:leading-10">
+          <span className="w-full py-1 px-3 text-left text-base font-medium leading-5 text-miru-dark-purple-1000 lg:ml-5 lg:truncate lg:px-0 lg:text-center lg:text-3.5xl lg:font-bold  lg:leading-10">
             {type}
           </span>
           {showFilterIcon && (
@@ -212,7 +212,7 @@ const Header = ({
       </div>
       <div>
         {showNavFilters && (
-          <ul className="flex flex-wrap">
+          <ul className="flex flex-wrap px-4 lg:px-0">
             <NavigationFilter />
             {showClearAllFilterBtn(selectedReport.filterCounter, type) && (
               <li className="mr-4 flex px-2 py-1" key="clear_all">
