@@ -48,14 +48,14 @@ const Header = ({
             type="button"
           >
             <XIcon size={12} />
-            <span className="ml-2 inline-block" id="cancel-edit-invoice-button">
+            <span className="ml-2 inline-block" id="cancelEditInvoiceButton">
               CANCEL
             </span>
           </Link>
           <button
             className="header__button my-1 bg-miru-han-purple-1000 p-0 text-white hover:text-white md:my-0 md:w-1/3"
             data-cy="save-invoice"
-            id="save-invoice-button"
+            id="saveInvoiceButton"
             type="button"
             onClick={handleSaveInvoice}
           >
@@ -71,7 +71,7 @@ const Header = ({
             <span
               className="ml-2 inline-block"
               data-cy="send-invoice"
-              id="send-invoice-button"
+              id="sendInvoiceButton"
             >
               SEND TO
             </span>

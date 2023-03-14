@@ -11,15 +11,15 @@ shared_examples "Edit Invoice" do
             expect(page).to have_xpath "//h1[text()='All Invoices']"
 
             # Verify the page must have the invoice
-            within_table("invoices-list-table") do
-              tr = find(:xpath, "//*[@id='invoices-list-table-row'][1]")
+            within_table("invoicesListTable") do
+              tr = find(:xpath, "//*[@id='invoicesListTable-row'][1]")
               expect(tr).to have_xpath "//h3[text()='#{invoice.invoice_number}']"
               expect(tr).to have_xpath "//span[text()='#{company.name}']"
               tr.hover
             end
 
             # Edit invoice
-            find_by_id("edit-invoice-button", visible: false).click()
+            find_by_id("editInvoiceButton", visible: false).click()
             expect(page).to have_css("h2", text: "Edit Invoice ##{invoice.invoice_number}")
           end
       end
@@ -32,12 +32,12 @@ shared_examples "Edit Invoice" do
        expect(page).to have_content "Edit Invoice ##{invoice.invoice_number}"
 
        # Remove all line Items
-       page.all(:id, "delete-line-item-button").each do |el|
+       page.all(:id, "deleteLineItemButton").each do |el|
          el.click()
        end
 
        # Verify Save Button
-       find_by_id("save-invoice-button").click()
+       find_by_id("saveInvoiceButton").click()
 
        # Should display invoice in view mode
        expect(page).to have_current_path("/invoices/#{invoice.id}")
@@ -81,7 +81,7 @@ shared_examples "Edit Invoice" do
       visit "invoices/#{invoice.id}/edit"
 
       # Verify Cancel Button
-      find_by_id("cancel-edit-invoice-button").click()
+      find_by_id("cancelEditInvoiceButton").click()
 
       # Should display invoice in view mode
       expect(page).to have_current_path("/invoices/#{invoice.id}")
@@ -98,7 +98,7 @@ shared_examples "Edit Invoice" do
         find(:field, placeholder: "Enter invoice number").set("test-invoice-1-updated")
 
         # Verify Save Button
-        find_by_id("save-invoice-button").click()
+        find_by_id("saveInvoiceButton").click()
 
         # Should display invoice in view mode
         expect(page).to have_current_path("/invoices/#{invoice.id}")

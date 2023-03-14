@@ -149,7 +149,7 @@ const NewLineItemStatic = ({
         <td className="w-10">
           <button
             className="flex w-full items-center rounded p-2.5 text-center hover:bg-miru-gray-200"
-            id="delete-line-item-button"
+            id="deleteLineItemButton"
             onClick={() => {
               handleDelete(item);
             }}

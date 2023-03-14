@@ -26,7 +26,7 @@ RSpec.shared_examples "Generate Invoice" do
 
       # Add client
       click_button("+ ADD CLIENT")
-      find(:xpath, '//*[@id="client-list"]/div[2]/div').click()
+      find(:xpath, '//*[@id="clientList"]/div[2]/div').click()
 
       # Add invoice number
       find(:field, placeholder: "Enter invoice number").set("test-invoice-1")
@@ -34,7 +34,7 @@ RSpec.shared_examples "Generate Invoice" do
       # Add user from line items
       click_button("+ NEW LINE ITEM")
       find(:field, placeholder: "Name").click()
-      find(:xpath, "//*[@id='entries-list']/span[contains(text(), '#{employee.first_name}')]").click()
+      find(:xpath, "//*[@id='entriesList']/span[contains(text(), '#{employee.first_name}')]").click()
       click_button("SAVE")
 
       # Verify closing edit window and loading invoice lists page with the same invoice number
