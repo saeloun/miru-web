@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-shared_examples_for "admin and employee views and add time entries" do |obj|
+shared_examples_for "Time tracking - week view" do |obj|
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
 
@@ -12,13 +12,13 @@ shared_examples_for "admin and employee views and add time entries" do |obj|
       create(:employment, company:, user: admin)
       create(:project_member, user: admin, project:)
       create(:timesheet_entry, user: admin, project:)
-      login_as(admin)
+      sign_in(admin)
     else
       employee.add_role :employee, company
       create(:employment, company:, user: employee)
       create(:project_member, user: employee, project:)
       create(:timesheet_entry, user: employee, project:)
-      login_as(employee)
+      sign_in(employee)
     end
   end
 
@@ -37,12 +37,13 @@ shared_examples_for "admin and employee views and add time entries" do |obj|
   it "can add time entry" do
     with_forgery_protection do
       visit "time-tracking"
+      sleep 4 if obj[:is_admin] == false
 
       click_button "WEEK"
       click_button "NEW ROW"
       select client.name, from: "client"
       click_button "SAVE"
-      find(:css, "#inputClick_0").click
+      first(:css, "#inputClick_0", match: :first).click
       find(:css, "#selectedInput").set("8")
       fill_in placeholder: "Note", with: "Weekly note!"
       click_button "SAVE"
@@ -54,20 +55,19 @@ shared_examples_for "admin and employee views and add time entries" do |obj|
   it "can edit time entry" do
     with_forgery_protection do
       visit "time-tracking"
-      sign_in(admin)
-      visit "time-tracking"
+      user = obj[:is_admin] == true ? admin : employee
 
       click_button "WEEK"
       find_by_id("prevMonth").click
       find_by_id("nextMonth").click
-      find(:css, "#inputClick_0").click
+      find(:css, "#inputClick_1", match: :first).click
       find(:css, "#selectedInput").set("10")
       fill_in placeholder: "Note", with: "Weekly note!"
       click_button "UPDATE"
 
       expect(page).to have_content("Timesheet updated")
-      expect(admin.timesheet_entries.first.duration).to eq(600.0)
-      expect(admin.timesheet_entries.first.note).to eq("Weekly note!")
+      expect(user.timesheet_entries.first.duration).to eq(600.0)
+      expect(user.timesheet_entries.first.note).to eq("Weekly note!")
     end
   end
 end

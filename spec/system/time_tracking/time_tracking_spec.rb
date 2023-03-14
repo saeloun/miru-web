@@ -16,14 +16,14 @@ RSpec.describe "Time Tracking", type: :system do
       admin.add_role :admin, company
       create(:employment, company:, user: admin)
       create(:project_member, user: admin, project:)
-      login_as(admin)
-
       user_two = create(:user, current_workspace_id: company.id)
       create(:employment, company:, user: user_two)
       create(:project_member, user: user_two, project:)
       time_entry = create(:timesheet_entry, user: user_two, project:)
+
       with_forgery_protection do
         visit "time-tracking"
+        sign_in(admin)
 
         within(".css-6j8wv5-Input") do
           find("input#react-select-8-input").set(" ").set(user_two.full_name).send_keys(:tab)
@@ -41,7 +41,6 @@ RSpec.describe "Time Tracking", type: :system do
       employee.add_role :employee, company
       create(:employment, company:, user: employee)
       create(:project_member, user: employee, project:)
-      login_as(employee)
 
       user_two = create(:user, current_workspace_id: company.id)
       client_two = create(:client, company:)
@@ -50,6 +49,7 @@ RSpec.describe "Time Tracking", type: :system do
 
       with_forgery_protection do
         visit "time-tracking"
+        sign_in(employee)
 
         click_button "NEW ENTRY"
         select = find(:css, "#client")
@@ -61,7 +61,6 @@ RSpec.describe "Time Tracking", type: :system do
       employee.add_role :employee, company
       create(:employment, company:, user: employee)
       create(:project_member, user: employee, project:)
-      login_as(employee)
 
       project_two = create(:project, client:, name: "Project Two", billable: true)
       create(:project_member, user: employee, project: project_two)
@@ -70,6 +69,7 @@ RSpec.describe "Time Tracking", type: :system do
 
       with_forgery_protection do
         visit "time-tracking"
+        sign_in(employee)
 
         expect(page).not_to have_selector("#editIcon")
         expect(page).not_to have_selector("#deleteIcon")

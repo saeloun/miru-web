@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "rails_helper"
-# require "./shared_examples/week_view"
 
 RSpec.describe "Time Tracking - week view" do
   let!(:company) { create(:company) }
@@ -10,13 +9,13 @@ RSpec.describe "Time Tracking - week view" do
   let(:admin) { create(:user, current_workspace_id: company.id) }
 
   context "when user is admin" do
-    it_behaves_like "admin and employee views and add time entries", is_admin: true
+    it_behaves_like "Time tracking - week view", is_admin: true
 
     it "can view other users entry" do
       admin.add_role :admin, company
       create(:employment, company:, user: admin)
       create(:project_member, user: admin, project:)
-      login_as(admin)
+      sign_in(admin)
 
       user_two = create(:user, current_workspace_id: company.id)
       create(:employment, company:, user: user_two)
@@ -36,6 +35,6 @@ RSpec.describe "Time Tracking - week view" do
   end
 
   context "when user is employee" do
-    it_behaves_like "admin and employee views and add time entries", is_admin: false
+    it_behaves_like "Time tracking - week view", is_admin: false
   end
 end

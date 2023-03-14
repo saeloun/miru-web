@@ -2,10 +2,15 @@
 
 module SessionHelpers
   def sign_in(user)
-    within(".pt-20") do
-      fill_in "email", with: user.email
-      fill_in "password", with: user.password
+    with_forgery_protection do
+      visit "/login"
+
+      within(".pt-20") do
+        fill_in "email", with: user.email
+        fill_in "password", with: user.password
+      end
+      click_button "Sign In"
+      sleep 2
     end
-    click_button "Sign In"
   end
 end

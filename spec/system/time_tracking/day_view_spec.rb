@@ -38,6 +38,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
         fill_in "notes", with: "Testing note!"
         fill_in "timeInput", with: "8"
         click_button "SAVE"
+
         expect(page).to have_content("Timesheet created", wait: 3)
         expect(page).to have_content(admin.timesheet_entries.first.note)
       end
@@ -45,6 +46,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
 
     it "can edit time entry" do
       create(:timesheet_entry, user: admin, project:)
+
       with_forgery_protection do
         visit "time-tracking"
 
@@ -53,6 +55,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
         el.click
         fill_in "notes", with: "Testing note!"
         click_button "UPDATE"
+
         expect(page).to have_content("Timesheet updated", wait: 3)
         expect(page).to have_content("Testing note!")
       end
@@ -60,12 +63,14 @@ RSpec.describe "Time Tracking - day view", type: :system do
 
     it "can delete time entry" do
       create(:timesheet_entry, user: admin, project:)
+
       with_forgery_protection do
         visit "time-tracking"
 
         click_button "DAY"
         el = find(:css, "#deleteIcon", visible: false).hover
         el.click
+
         expect(page).to have_content("Timesheet deleted", wait: 3)
         expect(admin.timesheet_entries.size).to eq(0)
       end
@@ -99,9 +104,9 @@ RSpec.describe "Time Tracking - day view", type: :system do
 
     it "can view the time sheet entry" do
       time_entry = create(:timesheet_entry, user: employee, project:)
-
       with_forgery_protection do
         visit "time-tracking"
+
         click_button "DAY"
 
         expect(page).to have_content(time_entry.note)
@@ -118,6 +123,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
         fill_in "notes", with: "Testing note!"
         fill_in "timeInput", with: "8"
         click_button "SAVE"
+
         expect(page).to have_content("Timesheet created", wait: 3)
         expect(page).to have_content(employee.timesheet_entries.first.note)
       end
@@ -133,6 +139,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
         el.click
         fill_in "notes", with: "Testing note!"
         click_button "UPDATE"
+
         expect(page).to have_content("Timesheet updated", wait: 3)
         expect(page).to have_content("Testing note!")
       end
@@ -146,6 +153,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
         click_button "DAY"
         el = find(:css, "#deleteIcon", visible: false).hover
         el.click
+
         expect(page).to have_content("Timesheet deleted", wait: 3)
         expect(employee.timesheet_entries.size).to eq(0)
       end

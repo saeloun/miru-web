@@ -12,13 +12,13 @@ shared_examples_for "Time tracking" do |obj|
       create(:employment, company:, user: admin)
       create(:project_member, user: admin, project:)
       create(:timesheet_entry, user: admin, project:)
-      login_as(admin)
+      sign_in(admin)
     else
       employee.add_role :employee, company
       create(:employment, company:, user: employee)
-      create(:timesheet_entry, user: employee, project:)
       create(:project_member, user: employee, project:)
-      login_as(employee)
+      create(:timesheet_entry, user: employee, project:)
+      sign_in(employee)
     end
   end
 
@@ -37,6 +37,7 @@ shared_examples_for "Time tracking" do |obj|
   it "can add time entry" do
     with_forgery_protection do
       visit "time-tracking"
+      sleep 4 if obj[:is_admin] == false
 
       click_button "NEW ENTRY"
       select client.name, from: "client"
@@ -56,6 +57,7 @@ shared_examples_for "Time tracking" do |obj|
   it "can edit time entry" do
     with_forgery_protection do
       visit "time-tracking"
+      sleep 4 if obj[:is_admin] == false
 
       el = find(:css, "#editIcon", visible: false).hover
       el.click
@@ -70,6 +72,7 @@ shared_examples_for "Time tracking" do |obj|
   it "can delete time entry" do
     with_forgery_protection do
       visit "time-tracking"
+      sleep 4 if obj[:is_admin] == false
 
       el = find(:css, "#deleteIcon", visible: :hidden).hover
       el.click
@@ -86,6 +89,8 @@ shared_examples_for "Time tracking" do |obj|
   it "editing the date moves it to the date set" do
     with_forgery_protection do
       visit "time-tracking"
+      sleep 4 if obj[:is_admin] == false
+
       past_date = (Date.today - 1).strftime("%d")
       formatted_date = past_date.size == 2 ? "0#{past_date}" : "00#{past_date}"
 
@@ -96,24 +101,19 @@ shared_examples_for "Time tracking" do |obj|
       find(:css, ".react-datepicker__day.react-datepicker__day--#{formatted_date}").click
       click_button "UPDATE"
 
-      if obj[:is_admin] == true
-        expect(admin.timesheet_entries.first.work_date).to eq(Date.today - 1)
-      else
-        expect(employee.timesheet_entries.first.work_date).to eq(Date.today - 1)
-      end
+      user = obj[:is_admin] == true ? admin : employee
+      expect(page).to have_content("Timesheet updated", wait: 3)
+      expect(user.timesheet_entries.first.work_date).to eq(Date.today - 1)
     end
   end
 
   it "shows correct total hours logged" do
     with_forgery_protection do
       visit "time-tracking"
+      user = obj[:is_admin] == true ? admin : employee
 
-      # NOTE: Signing again because devise routes and views haven't been removed yet.
-      obj[:is_admin] == true ? sign_in(admin) : sign_in(employee)
-      visit "time-tracking"
-
-      hours = (employee.timesheet_entries.first.duration / 60).to_i
-      minutes = (employee.timesheet_entries.first.duration % 60).to_i
+      hours = (user.timesheet_entries.first.duration / 60).to_i
+      minutes = (user.timesheet_entries.first.duration % 60).to_i
 
       if hours >= 10 && minutes >= 10
         expected_duration = "#{hours}:#{minutes}"
@@ -122,7 +122,7 @@ shared_examples_for "Time tracking" do |obj|
       elsif hours < 10 && minutes < 10
         expected_duration = "0#{hours}:0#{minutes}"
       end
-      total_hours = find_by_id(employee.timesheet_entries.first.duration.to_i).text
+      total_hours = find_by_id(user.timesheet_entries.first.duration.to_i).text
 
       expect(total_hours).to eq(expected_duration)
     end
