@@ -5,12 +5,7 @@ require "rails_helper"
 RSpec.describe "Companies#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:address) {
-                  {
-                    address_line_1: "Saeloun Inc", address_line_2: "475 Clermont Ave",
-                    state: "NY", city: "Brooklyn", country: "US", pin: "12238"
-                  }
-                }
+  let(:address) { attributes_for(:address) }
 
   context "when user is an admin" do
     before do
@@ -45,10 +40,10 @@ RSpec.describe "Companies#create", type: :request do
         expect(company.standard_price).to eq(1000)
         expect(company.fiscal_year_end).to eq("April")
         expect(company.date_format).to eq("DD/MM/YYYY")
-        expect(company_address.address_line_1).to eq("Saeloun Inc")
-        expect(company_address.city).to eq("Brooklyn")
-        expect(company_address.country).to eq("US")
-        expect(company_address.pin).to eq("12238")
+        expect(company_address.address_line_1).to eq(address[:address_line_1])
+        expect(company_address.city).to eq(address[:city])
+        expect(company_address.country).to eq(address[:country])
+        expect(company_address.pin).to eq(address[:pin])
       end
 
       it "sets the current_workspace_id to current_user" do
@@ -85,6 +80,7 @@ RSpec.describe "Companies#create", type: :request do
   end
   end
 
+  # TODO: Need to remove this code when we change create company policy.
   context "when user is an employee" do
     before do
       create(:employment, company:, user:)

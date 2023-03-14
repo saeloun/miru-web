@@ -3,8 +3,9 @@
 require "rails_helper"
 
 RSpec.describe "Companies#create", type: :request do
-  let(:company) { create(:company_with_address) }
+  let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:address) { attributes_for(:address) }
 
   context "when user is an admin" do
     before do
@@ -20,19 +21,19 @@ RSpec.describe "Companies#create", type: :request do
             company: {
               name: "Updated Company",
               business_phone: "1234556",
-              addresses_attributes: [{
-                id: company.addresses.last.id,
-                address_line_1: "updated address"
-              }]
+              addresses_attributes: [ address.merge({ id: company.addresses.last.id }) ]
             }
           })
       end
 
-      it "updates the company" do
+      it "updates the company and address" do
         company.reload
-        address = company.current_address
+        current_address = company.current_address
         expect(company.name).to eq("Updated Company")
-        expect(address.address_line_1).to eq("updated address")
+        expect(current_address.address_line_1).to eq(address[:address_line_1])
+        expect(current_address.address_line_2).to eq(address[:address_line_2])
+        expect(current_address.city).to eq(address[:city])
+        expect(current_address.pin).to eq(address[:pin])
       end
 
       it "redirects to root_path" do

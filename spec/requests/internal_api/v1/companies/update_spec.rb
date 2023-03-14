@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Companies::update", type: :request do
-  let(:company) { create(:company_with_address) }
+  let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   context "when user is an admin" do
@@ -48,7 +48,6 @@ RSpec.describe "InternalApi::V1::Companies::update", type: :request do
         expect(company.name).to eq("Test Company")
         expect(company.business_phone).to eq("Test phone")
         expect(company.standard_price).to eq(1000)
-        expect(company.fiscal_year_end).to eq("April")
         expect(company.fiscal_year_end).to eq("April")
         expect(company.base_currency).to eq("Rs")
         expect(company.current_address.address_line_1).to eq("updated address")
