@@ -10,7 +10,7 @@ RSpec.describe "Edit client", type: :system do
   before do
     create(:employment, company:, user:)
     user.add_role :admin, company
-    login_as(user)
+    sign_in(user)
   end
 
   context "when editing a client" do

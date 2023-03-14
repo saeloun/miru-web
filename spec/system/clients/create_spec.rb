@@ -12,7 +12,7 @@ RSpec.describe "Create client", type: :system do
     before do
       create(:employment, company:, user:)
       user.add_role :admin, company
-      login_as(user)
+      sign_in(user)
     end
 
     context "when creating clients with valid values" do
@@ -75,9 +75,8 @@ RSpec.describe "Create client", type: :system do
             'form input[type="file"]',
             visible: false).set(Rails.root.join("spec", "support", "fixtures", "pdf-file.pdf"))
 
-          expect(page).to have_content(
-            "Incorrect file format.
-            Please upload an image of type PNG or JPG. Max size (30kb)")
+          expect(page).to have_content("Incorrect file format. Please upload an image of type PNG or JPG.")
+          expect(page).to have_content("Max size (30kb)")
         end
       end
 
@@ -100,7 +99,7 @@ RSpec.describe "Create client", type: :system do
     before do
       create(:employment, company:, user:)
       user.add_role :employee, company
-      login_as(user)
+      sign_in(user)
     end
 
     it "add new client button should not be visible" do

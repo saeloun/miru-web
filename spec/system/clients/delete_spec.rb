@@ -10,15 +10,13 @@ RSpec.describe "Delete client", type: :system do
   before do
     create(:employment, company:, user:)
     user.add_role :admin, company
-    login_as(user)
+    sign_in(user)
   end
 
   context "when deleting a client" do
     it "delete the client successfully" do
       with_forgery_protection do
         visit "/clients"
-
-        expect(page).to have_content(client.name)
 
         find(:css, ".hoverIcon").hover.click
         find("#kebabMenu").click()

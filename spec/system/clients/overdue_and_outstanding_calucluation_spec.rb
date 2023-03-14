@@ -13,7 +13,7 @@ describe "Client overdue and outstanding calculation", type: :system do
   before do
     create(:employment, company:, user:)
     user.add_role :admin, company
-    login_as(user)
+    sign_in(user)
   end
 
   it "calculates overdue and outstanding amounts correctly" do

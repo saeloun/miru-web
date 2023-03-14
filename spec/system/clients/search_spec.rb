@@ -11,7 +11,7 @@ RSpec.describe "Search clients", type: :system do
   before do
     create(:employment, company:, user:)
     user.add_role :admin, company
-    login_as(user)
+    sign_in(user)
   end
 
   context "when searching for a client" do

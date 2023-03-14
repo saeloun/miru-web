@@ -14,7 +14,7 @@ RSpec.describe "Viewing hours logged by time frame", type: :system do
   before do
     create(:employment, company:, user:)
     user.add_role :admin, company
-    login_as(user)
+    sign_in(user)
   end
 
   context "when viewing hours logged for current week" do
