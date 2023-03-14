@@ -37,7 +37,6 @@ shared_examples_for "Time tracking" do |obj|
   it "can add time entry" do
     with_forgery_protection do
       visit "time-tracking"
-      sleep 4 if obj[:is_admin] == false
 
       click_button "NEW ENTRY"
       select client.name, from: "client"
@@ -54,7 +53,6 @@ shared_examples_for "Time tracking" do |obj|
   it "can edit time entry" do
     with_forgery_protection do
       visit "time-tracking"
-      sleep 4 if obj[:is_admin] == false
 
       el = find(:css, "#editIcon", visible: false).hover
       el.click
@@ -69,7 +67,6 @@ shared_examples_for "Time tracking" do |obj|
   it "can delete time entry" do
     with_forgery_protection do
       visit "time-tracking"
-      sleep 4 if obj[:is_admin] == false
 
       el = find(:css, "#deleteIcon", visible: :hidden).hover
       el.click
@@ -83,7 +80,6 @@ shared_examples_for "Time tracking" do |obj|
   it "editing the date moves it to the date set" do
     with_forgery_protection do
       visit "time-tracking"
-      sleep 4 if obj[:is_admin] == false
 
       past_date = (Date.today - 1).strftime("%d")
       formatted_date = past_date.size == 2 ? "0#{past_date}" : "00#{past_date}"

@@ -37,7 +37,6 @@ shared_examples_for "Time tracking - week view" do |obj|
   it "can add time entry" do
     with_forgery_protection do
       visit "time-tracking"
-      sleep 4 if obj[:is_admin] == false
 
       click_button "WEEK"
       click_button "NEW ROW"

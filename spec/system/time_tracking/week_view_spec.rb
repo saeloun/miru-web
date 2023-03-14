@@ -26,7 +26,7 @@ RSpec.describe "Time Tracking - week view" do
 
         click_button "WEEK"
         within(".css-6j8wv5-Input") do
-          find("input#react-select-9-input").set(" ").set(user_two.full_name).send_keys(:tab)
+          find("input#react-select-2-input").set(" ").set(user_two.full_name).send_keys(:tab)
         end
 
         expect(page).to have_content("08:00")
