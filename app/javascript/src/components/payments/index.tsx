@@ -60,6 +60,7 @@ const Payments = () => {
       <Table baseCurrency={baseCurrency} payments={paymentList} />
       {showManualEntryModal && (
         <AddManualEntry
+          baseCurrency={baseCurrency}
           dateFormat={dateFormat}
           fetchInvoiceList={fetchInvoiceList}
           fetchPaymentList={fetchPaymentList}
