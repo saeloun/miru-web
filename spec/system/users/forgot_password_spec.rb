@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Forgot Password", type: :system do
-  let(:company) { create(:company_with_address) }
+  let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id, password: "testing!") }
 
   context "when visits forgot password page" do

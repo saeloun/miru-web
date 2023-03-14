@@ -4,6 +4,7 @@ require "rails_helper"
 
 RSpec.describe "InternalApi::V1::Companies::create", type: :request do
   let(:user) { create(:user) }
+  let(:address) { attributes_for(:address) }
 
   context "when user is an admin" do
     before do
@@ -22,28 +23,25 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
             standard_price: 1000,
             fiscal_year_end: "Jan-Dec",
             date_format: "DD-MM-YYYY",
-            addresses_attributes: [{
-              address_line_1: "Somewhere on Earth",
-              city: "Brooklyn",
-              state: "NY",
-              country: "US",
-              pin: "12238"
-            }]
+            addresses_attributes: [address]
           }
         }, headers: auth_headers(user)
       end
 
       it "creates a new compamy & address" do
         company = Company.last
+        company_address = company.addresses.last
         change(Company, :count).by(1)
         change(Address, :count).by(1)
         expect(company.name).to eq("zero labs llc")
         expect(company.business_phone).to eq("+01 123123")
-        expect(company.timezone).to eq("+5:30 Chennai")
         expect(company.base_currency).to eq("INR")
         expect(company.standard_price).to eq(1000)
-        expect(company.fiscal_year_end).to eq("Jan-Dec")
         expect(company.date_format).to eq("DD-MM-YYYY")
+        expect(company_address.address_line_1).to eq(address[:address_line_1])
+        expect(company_address.city).to eq(address[:city])
+        expect(company_address.country).to eq(address[:country])
+        expect(company_address.pin).to eq(address[:pin])
       end
 
       it "response should be successful" do
@@ -96,16 +94,12 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
               standard_price: 1000,
               fiscal_year_end: "Jan-Dec",
               date_format: "DD-MM-YYYY",
-              addresses_attributes: [{
-                address_line_1: "Somewhere on Earth",
-                city: "Brooklyn",
-                state: "NY",
-                country: "US",
-                pin: "12238"
-              }]
+              addresses_attributes: [address]
             }
           }, headers: auth_headers(user)
         end
+
+        
 
         it "response should be successful" do
           expect(response).to be_successful

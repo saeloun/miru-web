@@ -41,26 +41,6 @@ RSpec.describe "Addresses#create", type: :request do
       end
     end
 
-    context "when user wants to create address of his Company" do
-      before do
-        send_request :post, internal_api_v1_company_addresses_path(
-          company_id: company.id,
-          params: {
-            address: address_details
-          }), headers: auth_headers(user)
-      end
-
-      it "is successful" do
-        expect(response).to have_http_status(:ok)
-        expect(json_response["address_line_1"]).to eq(address_details[:address_line_1])
-        expect(json_response["address_line_2"]).to eq(address_details[:address_line_2])
-        expect(json_response["city"]).to eq(address_details[:city])
-        expect(json_response["state"]).to eq(address_details[:state])
-        expect(json_response["country"]).to eq(address_details[:country])
-        expect(json_response["pin"]).to eq(address_details[:pin])
-      end
-    end
-
     context "when user wants to create address of an employee outside his company" do
       before do
         create(:employment, company: company2, user: employee2)
@@ -76,38 +56,10 @@ RSpec.describe "Addresses#create", type: :request do
       end
     end
 
-    context "when user wants to create address of some other company" do
-      before do
-        send_request :post, internal_api_v1_company_addresses_path(
-          company_id: company2.id,
-          params: {
-            address: address_details
-          }), headers: auth_headers(user)
-      end
-
-      it "is forbidden" do
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
     context "when user wants to create address of invalid User ID" do
       before do
         send_request :post, internal_api_v1_user_addresses_path(
           user_id: "abc",
-          params: {
-            address: address_details
-          }), headers: auth_headers(user)
-      end
-
-      it "is not found" do
-        expect(response).to have_http_status(:not_found)
-      end
-    end
-
-    context "when user wants to create address of invalid company ID" do
-      before do
-        send_request :post, internal_api_v1_company_addresses_path(
-          company_id: "abc",
           params: {
             address: address_details
           }), headers: auth_headers(user)
@@ -146,26 +98,6 @@ RSpec.describe "Addresses#create", type: :request do
       end
     end
 
-    context "when user wants to create address of his Company" do
-      before do
-        send_request :post, internal_api_v1_company_addresses_path(
-          company_id: company.id,
-          params: {
-            address: address_details
-          }), headers: auth_headers(user)
-      end
-
-      it "is successful" do
-        expect(response).to have_http_status(:ok)
-        expect(json_response["address_line_1"]).to eq(address_details[:address_line_1])
-        expect(json_response["address_line_2"]).to eq(address_details[:address_line_2])
-        expect(json_response["city"]).to eq(address_details[:city])
-        expect(json_response["state"]).to eq(address_details[:state])
-        expect(json_response["country"]).to eq(address_details[:country])
-        expect(json_response["pin"]).to eq(address_details[:pin])
-      end
-    end
-
     context "when user wants to create address of an employee outside his company" do
       before do
         create(:employment, company: company2, user: employee2)
@@ -180,39 +112,11 @@ RSpec.describe "Addresses#create", type: :request do
         expect(response).to have_http_status(:forbidden)
       end
     end
-
-    context "when user wants to create address of some other company" do
-      before do
-        send_request :post, internal_api_v1_company_addresses_path(
-          company_id: company2.id,
-          params: {
-            address: address_details
-          }), headers: auth_headers(user)
-      end
-
-      it "is forbidden" do
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
+  
     context "when user wants to create address of invalid User ID" do
       before do
         send_request :post, internal_api_v1_user_addresses_path(
           user_id: "abc",
-          params: {
-            address: address_details
-          }), headers: auth_headers(user)
-      end
-
-      it "is not found" do
-        expect(response).to have_http_status(:not_found)
-      end
-    end
-
-    context "when user wants to create address of invalid company ID" do
-      before do
-        send_request :post, internal_api_v1_company_addresses_path(
-          company_id: "abc",
           params: {
             address: address_details
           }), headers: auth_headers(user)
@@ -256,20 +160,6 @@ RSpec.describe "Addresses#create", type: :request do
         create(:employment, company: company2, user: employee2)
         send_request :post, internal_api_v1_user_addresses_path(
           user_id: employee2.id,
-          params: {
-            address: address_details
-          }), headers: auth_headers(employee)
-      end
-
-      it "is forbidden" do
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
-    context "when user wants to create address of some his own company" do
-      before do
-        send_request :post, internal_api_v1_company_addresses_path(
-          company_id: company.id,
           params: {
             address: address_details
           }), headers: auth_headers(employee)

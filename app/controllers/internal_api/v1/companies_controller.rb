@@ -5,14 +5,19 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
 
   def index
     authorize current_company
+
     render :index, locals: {
-      current_company:, client_list: current_company.client_list, address: current_company.current_address
+      current_company:,
+      client_list: current_company.client_list,
+      address: current_company.current_address
     }, status: :ok
   end
 
   def create
     authorize Company
+
     company = CreateCompanyService.new(current_user, params: company_params).process
+
     if company
       render json: { notice: I18n.t("companies.create.success"), company: }
     end
@@ -20,6 +25,7 @@ class InternalApi::V1::CompaniesController < InternalApi::V1::ApplicationControl
 
   def update
     authorize current_company
+
     if current_company.update!(company_params)
       render json: { notice: I18n.t("companies.update.success") }
     end
