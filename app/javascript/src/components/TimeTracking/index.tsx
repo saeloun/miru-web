@@ -586,8 +586,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const Main = withLayout(TimeTrackingLayout, !isDesktop, !isDesktop);
 
   return isDesktop ? TimeTrackingLayout() : <Main />;
-
-  // return <Main />;
 };
 
 interface Iprops {
