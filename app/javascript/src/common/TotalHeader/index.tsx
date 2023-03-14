@@ -8,29 +8,29 @@ const TotalHeader = ({
   thirdTitle,
   thirdAmount,
 }) => (
-  <div className="mt-3 bg-miru-gray-100 px-10 pb-10 pt-8">
-    <ul className="page-display__wrap mt-0 border-t-0">
-      <li className="page-display__box">
-        <p className="text-sm font-normal uppercase tracking-widest">
+  <div className="mt-7 px-4 lg:px-0">
+    <ul className="page-display__wrap mt-1 flex flex-wrap rounded-2xl bg-miru-han-purple-1000 py-4 text-white md:flex-nowrap lg:overflow-x-auto lg:py-10">
+      <li className="page-display__box cursor-pointer pr-2 pt-4 xsm:flex-1 xsm:pr-6 md:w-full">
+        <p className="text-xxs font-semibold uppercase tracking-semiWidest lg:text-sm lg:tracking-widest">
           {firstTitle}
         </p>
-        <p className="mt-3 text-5xl font-normal tracking-widest">
+        <p className="mt-3 text-2xl font-medium lg:text-4.5xl lg:font-semibold lg:tracking-widest">
           {firstAmount}
         </p>
       </li>
-      <li className="page-display__box">
-        <p className="text-sm font-normal uppercase tracking-widest">
+      <li className="page-display__box cursor-pointerpr-2 pt-4 xsm:flex-1 xsm:pr-6 md:w-full">
+        <p className="text-xxs font-semibold uppercase tracking-semiWidest lg:text-sm lg:tracking-widest">
           {secondTitle}
         </p>
-        <p className="mt-3 text-5xl font-normal tracking-widest">
+        <p className="mt-3 text-2xl font-medium md:text-4.5xl lg:font-semibold lg:tracking-widest">
           {secondAmount}
         </p>
       </li>
-      <li className="page-display__box">
-        <p className="text-sm font-normal uppercase tracking-widest">
+      <li className="page-display__box cursor-pointer pr-2 pt-4 xsm:flex-1 xsm:pr-6 md:w-full">
+        <p className="text-xxs font-semibold uppercase tracking-semiWidest lg:text-sm lg:tracking-widest">
           {thirdTitle}
         </p>
-        <p className="mt-3 text-5xl font-normal tracking-widest">
+        <p className="mt-3 text-2xl font-medium md:text-4.5xl lg:font-semibold lg:tracking-widest">
           {thirdAmount}
         </p>
       </li>
