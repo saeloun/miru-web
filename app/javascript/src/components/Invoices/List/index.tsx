@@ -311,7 +311,7 @@ const Invoices = () => {
 
   const Main = withLayout(InvoicesLayout, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return isDesktop ? InvoicesLayout() : <Main />;
 };
 
 export default Invoices;
