@@ -45,12 +45,9 @@ shared_examples_for "Time tracking" do |obj|
       fill_in "timeInput", with: "8"
       click_button "SAVE"
 
+      user = obj[:is_admin] == true ? admin : employee
       expect(page).to have_content("Timesheet created", wait: 3)
-      if obj[:is_admin] == true
-        expect(page).to have_content(admin.timesheet_entries.first.note)
-      else
-        expect(page).to have_content(employee.timesheet_entries.first.note)
-      end
+      expect(page).to have_content(user.timesheet_entries.first.note)
     end
   end
 
@@ -77,12 +74,9 @@ shared_examples_for "Time tracking" do |obj|
       el = find(:css, "#deleteIcon", visible: :hidden).hover
       el.click
 
+      user = obj[:is_admin] == true ? admin : employee
       expect(page).to have_content("Timesheet deleted", wait: 3)
-      if obj[:is_admin] == true
-        expect(admin.timesheet_entries.size).to eq(0)
-      else
-        expect(employee.timesheet_entries.size).to eq(0)
-      end
+      expect(user.timesheet_entries.size).to eq(0)
     end
   end
 
