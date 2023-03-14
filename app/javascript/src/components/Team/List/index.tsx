@@ -67,7 +67,7 @@ const TeamList = () => {
 
   const Main = withLayout(TeamLayout, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return isDesktop ? TeamLayout() : <Main />;
 };
 
 export default TeamList;
