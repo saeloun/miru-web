@@ -29,7 +29,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
       user.add_role :owner, company
       sign_in user
       send_request :patch, internal_api_v1_team_details_path(
-        team_id: employment.id,
+        team_id: employment.user_id,
         params: {
           user: @user_details
         }), headers: auth_headers(user)
@@ -51,7 +51,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
       user.add_role :admin, company
       sign_in user
       send_request :patch, internal_api_v1_team_details_path(
-        team_id: employment.id,
+        team_id: employment.user_id,
         params: {
           user: @user_details
         }), headers: auth_headers(user)
@@ -73,7 +73,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
       user.add_role :employee, company
       sign_in user
       send_request :patch, internal_api_v1_team_details_path(
-        team_id: employment.id,
+        team_id: employment.user_id,
         params: {
           user: @user_details
         }), headers: auth_headers(user)
@@ -97,7 +97,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
       user2.add_role :employee, company2
       sign_in user
       send_request :patch, internal_api_v1_team_details_path(
-        team_id: employment2.id,
+        team_id: employment2.user_id,
         params: {
           user: @user_details
         }), headers: auth_headers(user)
@@ -116,7 +116,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
       user2.add_role :employee, company
       sign_in user
       send_request :patch, internal_api_v1_team_details_path(
-        team_id: employment2.id,
+        team_id: employment2.user_id,
         params: {
           user: @user_details
         }), headers: auth_headers(user)
@@ -135,7 +135,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
       user2.add_role :employee, company2
       sign_in user
       send_request :patch, internal_api_v1_team_details_path(
-        team_id: employment2.id,
+        team_id: employment2.user_id,
         params: {
           user: @user_details
         }), headers: auth_headers(user)
@@ -154,7 +154,7 @@ RSpec.describe "InternalApi::V1::TeamMembers::DetailsController::#update", type:
       user2.add_role :employee, company2
       sign_in user
       send_request :patch, internal_api_v1_team_details_path(
-        team_id: employment2.id,
+        team_id: employment2.user_id,
         params: {
           user: @user_details
         }), headers: auth_headers(user)
