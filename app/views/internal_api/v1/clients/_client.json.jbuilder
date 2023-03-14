@@ -3,6 +3,6 @@
 json.client do
   json.extract! client, :id, :name, :email, :phone, :logo
   json.address do
-    json.extract! address, :address_line_1, :address_line_2, :city, :state, :country, :pin
+    json.partial! "internal_api/v1/partial/address", locals: { address: }
   end
 end

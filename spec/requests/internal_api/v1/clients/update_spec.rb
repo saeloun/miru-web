@@ -9,8 +9,7 @@ RSpec.describe "InternalApi::V1::Clients#update", type: :request do
     create(
       :client,
       company:,
-      name: "Client", email: "client@example.com",
-      addresses_attributes: [attributes_for(:address)]
+      name: "Client", email: "client@example.com"
     )
   }
 

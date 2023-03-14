@@ -49,11 +49,17 @@ microsoft_client = company.clients.create!(
   name: "Microsoft",
   email: "support@example.com",
   phone: "+1 9999999991"
-  addresses_attributes: [{
-    address_line_1: "475 Clermont Ave", city: "Brooklyn", state: "NY", pin: "12238", country: "USA"
-  }])
+)
 
 puts "Clients Created"
+
+microsoft_client.addresses.create!(
+  address_line_1: "475 Clermont Ave",
+  city: "Brooklyn",
+  state: "NY",
+  pin: "12238",
+  country: "USA"
+)
 
 project_office_com = microsoft_client.projects.create!(name: "Office.com", description: "Office 365", billable: true)
 project_azure_com = microsoft_client.projects.create!(name: "Azure.com", description: "Cloud Computing", billable: true)

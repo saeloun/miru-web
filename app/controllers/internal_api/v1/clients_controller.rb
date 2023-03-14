@@ -13,7 +13,9 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
   def create
     authorize Client
+
     client = Client.create!(client_params)
+
     if client
       render :create, locals: { client:, address: client.current_address }
     end
@@ -62,8 +64,7 @@ class InternalApi::V1::ClientsController < InternalApi::V1::ApplicationControlle
 
     def client_params
       params.require(:client).permit(
-        :name, :email, :phone, :logo,
-        addresses_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin]
+        policy(Client).permitted_attributes
       ).tap do |client_params|
         client_params[:company_id] = current_company.id
       end

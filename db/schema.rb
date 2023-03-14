@@ -75,7 +75,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_090124) do
 
   create_table "companies", force: :cascade do |t|
     t.string "name", null: false
-    t.text "address"
+    t.text "address", null: false
     t.string "business_phone"
     t.string "base_currency", default: "USD", null: false
     t.decimal "standard_price", default: "0.0", null: false
