@@ -19,10 +19,10 @@ class Invitations::AcceptController < ApplicationController
       flash[:error] = service.error_message
     end
 
-    redirect_to user_session_path
+    redirect_to root_path
   end
 
   def show
-    redirect_to user_session_path, notice: t(".success")
+    redirect_to root_path, notice: t(".success")
   end
 end
