@@ -249,6 +249,7 @@ const AddManualEntry = ({
                             className="m-0 mt-2 w-full border-0 font-medium text-miru-dark-purple-1000"
                             classNamePrefix="border-0 font-medium text-miru-dark-purple-1000"
                             defaultValue={invoice}
+                            options={invoiceList.invoiceList}
                             placeholder="Search by client name or invoice ID"
                             styles={customStyles}
                             components={{
@@ -256,32 +257,6 @@ const AddManualEntry = ({
                               DropdownIndicator,
                               IndicatorSeparator: () => null,
                             }}
-                            options={[
-                              {
-                                value: 1,
-                                label: "Microsoft",
-                                invoiceNumber: "SAI-C1-02",
-                                invoiceDate: "2023-03-06",
-                                amount: "5000.0",
-                                status: "sent",
-                              },
-                              {
-                                value: 1,
-                                label: "Test Test long text",
-                                invoiceNumber: "SAI-C1-02",
-                                invoiceDate: "2023-03-06",
-                                amount: "5000.0",
-                                status: "sent",
-                              },
-                              {
-                                value: 1,
-                                label: "test",
-                                invoiceNumber: "SAI-C1-02",
-                                invoiceDate: "2023-03-06",
-                                amount: "5000.0",
-                                status: "sent",
-                              },
-                            ]}
                             onChange={handleInvoiceSelect}
                           />
                         </div>
