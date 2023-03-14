@@ -19,4 +19,3 @@ shared_examples "InternalApi::V1::Companies::index success response" do
     expect(json_response["company_details"]["address"]["pin"]).to eq(address.pin)
   end
 end
-  

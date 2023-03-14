@@ -112,7 +112,7 @@ RSpec.describe "Addresses#create", type: :request do
         expect(response).to have_http_status(:forbidden)
       end
     end
-  
+
     context "when user wants to create address of invalid User ID" do
       before do
         send_request :post, internal_api_v1_user_addresses_path(

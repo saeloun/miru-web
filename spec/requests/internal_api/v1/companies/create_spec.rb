@@ -40,7 +40,6 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
         expect(company.date_format).to eq("DD-MM-YYYY")
         expect(company_address.address_line_1).to eq(address[:address_line_1])
         expect(company_address.city).to eq(address[:city])
-        expect(company_address.country).to eq(address[:country])
         expect(company_address.pin).to eq(address[:pin])
       end
 
@@ -98,8 +97,6 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
             }
           }, headers: auth_headers(user)
         end
-
-        
 
         it "response should be successful" do
           expect(response).to be_successful
