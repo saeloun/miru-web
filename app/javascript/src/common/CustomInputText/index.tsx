@@ -2,6 +2,29 @@
 
 import React from "react";
 
+import classNames from "classnames";
+
+const defaultInputBoxClassName =
+  "form__input block w-full appearance-none bg-white p-4 text-base h-12 border-miru-gray-1000";
+const defaultWrapperClassName = "outline relative h-12";
+const defaultLabelClassname =
+  "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-sm lg:text-base font-medium text-miru-dark-purple-200 duration-300";
+
+type customInputTextProps = {
+  id?: string;
+  inputBoxClassName?: string;
+  dataCy?: string;
+  disabled?: boolean;
+  name?: string;
+  type?: string;
+  value: any;
+  onChange: any;
+  labelClassName?: string;
+  label?: string;
+  wrapperClassName?: string;
+  readOnly?: boolean;
+};
+
 export const CustomInputText = ({
   id,
   inputBoxClassName,
@@ -14,21 +37,26 @@ export const CustomInputText = ({
   labelClassName,
   label,
   wrapperClassName,
-}) => (
+  readOnly,
+}: customInputTextProps) => (
   <div className="field relative">
-    <div className={wrapperClassName}>
+    <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
       <input
-        className={inputBoxClassName}
+        className={classNames(defaultInputBoxClassName, inputBoxClassName)}
         data-cy={dataCy}
         disabled={disabled}
         id={id}
         name={name}
         placeholder=" "
+        readOnly={readOnly}
         type={type}
         value={value}
         onChange={onChange}
       />
-      <label className={labelClassName} htmlFor={name}>
+      <label
+        className={classNames(defaultLabelClassname, labelClassName)}
+        htmlFor={name}
+      >
         {label}
       </label>
     </div>
@@ -36,11 +64,7 @@ export const CustomInputText = ({
 );
 
 CustomInputText.defaultProps = {
-  inputBoxClassName:
-    "form__input block w-full appearance-none bg-white p-4 text-base h-12 border-miru-gray-1000",
   type: "text",
-  labelClassName:
-    "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-sm lg:text-base font-medium text-miru-dark-purple-200 duration-300",
-  wrapperClassName: "outline relative h-12",
   disabled: false,
+  readOnly: false,
 };
