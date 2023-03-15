@@ -19,8 +19,8 @@ const EditMembersListForm = ({
     {}
   );
 
-  const removeMemberHandler = idx => {
-    setMembers(members => members.filter((_, i) => i != idx));
+  const removeMemberHandler = memberIndex => {
+    setMembers(members => members.filter((_, i) => i != memberIndex));
   };
 
   const addNewMemberRowHandler = () => {
@@ -30,7 +30,7 @@ const EditMembersListForm = ({
     ]);
   };
 
-  const getMember = (member, idx) => {
+  const getMember = (member, memberIndex) => {
     if (member.isExisting) {
       return (
         <CustomInputText
@@ -81,40 +81,44 @@ const EditMembersListForm = ({
         handleOnChange={selectedMember => {
           member.isExisting
             ? null
-            : updateMemberState(idx, "id", parseInt(selectedMember.value));
+            : updateMemberState(
+                memberIndex,
+                "id",
+                parseInt(selectedMember.value)
+              );
         }}
       />
     );
   };
 
-  const handleHourlyRateInput = (e, idx) => {
+  const handleHourlyRateInput = (e, memberIndex) => {
     const hourlyRate = e.target.value;
 
     if (hourlyRate < 0 || isNaN(Number(hourlyRate))) {
       const errorMessage = "Please enter a valid rate";
-      errorForInvalidHourlyRate[idx] = errorMessage;
+      errorForInvalidHourlyRate[memberIndex] = errorMessage;
       setErrorForInvalidHourlyRate({ ...errorForInvalidHourlyRate });
     } else {
-      delete errorForInvalidHourlyRate[idx];
+      delete errorForInvalidHourlyRate[memberIndex];
     }
-    updateMemberState(idx, "hourlyRate", hourlyRate);
+    updateMemberState(memberIndex, "hourlyRate", hourlyRate);
     setErrorForInvalidHourlyRate({ ...errorForInvalidHourlyRate });
   };
 
-  const isInvalidRateInputBox = idx =>
-    (idx || idx == 0) && errorForInvalidHourlyRate[idx];
+  const isInvalidRateInputBox = memberIndex =>
+    (memberIndex || memberIndex == 0) && errorForInvalidHourlyRate[memberIndex];
 
   return (
     <form className="mt-7" onSubmit={handleSubmit}>
-      {members.map((member, idx) => (
-        <div className="mb-4" key={idx}>
+      {members.map((member, memberIndex) => (
+        <div className="mb-4" key={memberIndex}>
           <div className="mb-1 flex">
-            <div className="mr-4 w-56">{getMember(member, idx)}</div>
+            <div className="mr-4 w-56">{getMember(member, memberIndex)}</div>
             <div className="relative mr-2 w-24 rounded-md shadow-sm">
-              {focusedRateInputBoxId == idx || member.hourlyRate ? (
+              {focusedRateInputBoxId == memberIndex || member.hourlyRate ? (
                 <div
                   className="pointer-events-none absolute inset-y-0 right-1 z-20 flex items-center px-1"
-                  key={idx}
+                  key={memberIndex}
                 >
                   <span className="top-0 text-miru-dark-purple-1000 sm:text-sm md:text-base">
                     {currencySymbol}
@@ -123,28 +127,28 @@ const EditMembersListForm = ({
               ) : null}
               <CustomInputText
                 id={member.hourlyRate}
-                key={idx}
+                key={memberIndex}
                 label="Rate"
                 name={member.hourlyRate}
                 inputBoxClassName={`form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 text-right ${
-                  isInvalidRateInputBox(idx)
+                  isInvalidRateInputBox(memberIndex)
                     ? "border-red-600"
                     : "border-miru-gray-1000"
                 }`}
                 labelClassName={`absolute top-0.5 right-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 ${
-                  isInvalidRateInputBox(idx)
+                  isInvalidRateInputBox(memberIndex)
                     ? "text-red-600"
                     : "text-miru-dark-purple-200"
                 }`}
                 value={
-                  member.hourlyRate || focusedRateInputBoxId == idx
+                  member.hourlyRate || focusedRateInputBoxId == memberIndex
                     ? member.hourlyRate
                     : ""
                 }
-                onChange={e => handleHourlyRateInput(e, idx)}
-                onFocus={() => setFocusedRateInputBoxId(idx)}
+                onChange={e => handleHourlyRateInput(e, memberIndex)}
+                onFocus={() => setFocusedRateInputBoxId(memberIndex)}
                 onBlur={() => {
-                  if (focusedRateInputBoxId == idx) {
+                  if (focusedRateInputBoxId == memberIndex) {
                     setFocusedRateInputBoxId("");
                   }
                 }}
@@ -154,17 +158,17 @@ const EditMembersListForm = ({
               <button
                 className="menuButton__button"
                 type="button"
-                onClick={() => removeMemberHandler(idx)}
+                onClick={() => removeMemberHandler(memberIndex)}
               >
                 <DeleteIcon color="#5B34EA" fill="#5B34EA" size={12} />
               </button>
             </div>
           </div>
-          {isInvalidRateInputBox(idx) ? (
+          {isInvalidRateInputBox(memberIndex) ? (
             <div className="flex flex-row-reverse">
               <ErrorSpan
                 className="block w-1/3 text-xs text-red-600"
-                message={errorForInvalidHourlyRate[idx]}
+                message={errorForInvalidHourlyRate[memberIndex]}
               />
             </div>
           ) : null}

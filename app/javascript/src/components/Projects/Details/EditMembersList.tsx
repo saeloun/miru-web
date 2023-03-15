@@ -56,11 +56,11 @@ const EditMembersList = ({
     setAllMemberList(markAddedMembers(allMemberList));
   }, [members]);
 
-  const updateMemberState = (idx, key, val) => {
+  const updateMemberState = (memberIndex, key, val) => {
     const modalMembers = [...members];
-    const memberToEdit = { ...members[idx] };
+    const memberToEdit = { ...members[memberIndex] };
     memberToEdit[key] = val;
-    modalMembers[idx] = memberToEdit;
+    modalMembers[memberIndex] = memberToEdit;
     setMembers(modalMembers);
   };
 
