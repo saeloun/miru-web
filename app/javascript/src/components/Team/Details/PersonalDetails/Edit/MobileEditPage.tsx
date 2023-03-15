@@ -9,6 +9,7 @@ import {
   PhoneIcon,
 } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
+import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
 
 import { CustomAsyncSelect } from "common/CustomAsyncSelect";
@@ -164,12 +165,11 @@ const MobileEditDetails = ({
       </span>
       <div className="mt-2 flex w-full flex-row">
         <div className="w-1/2 px-1">
-          <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4 text-sm">
+          <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white px-2 pb-4 pt-2 text-sm">
             <PhoneInput
               className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
-              defaultCountry="US"
-              initialValueFormat="national"
-              inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 p-4 text-sm h-12 border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full"
+              flags={flags}
+              inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 p-0 text-sm border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
               value={
                 personalDetails.phone_number ? personalDetails.phone_number : ""
               }
@@ -223,7 +223,6 @@ const MobileEditDetails = ({
         <div className="px-1 py-1">
           <CustomReactSelect
             handleOnChange={handleOnChangeAddrType}
-            isDesktopView={false}
             label="Address type"
             name="address_select"
             options={addressOptions}
@@ -284,7 +283,6 @@ const MobileEditDetails = ({
           <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomReactSelect
               handleOnChange={value => handleOnChangeCountry(value)}
-              isDesktopView={false}
               isErr={!!errDetails.country_err}
               label="Country"
               name="current_country_select"
@@ -304,7 +302,6 @@ const MobileEditDetails = ({
           <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomReactSelect
               handleOnChange={state => handleOnChangeState(state)}
-              isDesktopView={false}
               isErr={!!errDetails.state_err}
               label="State"
               name="state_select"
@@ -332,7 +329,6 @@ const MobileEditDetails = ({
           <div className="flex w-1/2 flex-col px-2 py-3">
             <CustomAsyncSelect
               handleOnChange={city => handleOnChangeCity(city)}
-              isDesktopView={false}
               isErr={!!errDetails.city_err}
               label="City"
               loadOptions={promiseOptions}

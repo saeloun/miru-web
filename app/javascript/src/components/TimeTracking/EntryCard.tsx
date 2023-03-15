@@ -2,8 +2,10 @@
 import React from "react";
 
 import { minToHHMM } from "helpers";
-import { DeleteIconSVG, EditSVG } from "miruIcons";
+import { DeleteIcon, EditIcon, CopyIcon } from "miruIcons";
 import { Badge } from "StyledComponents";
+
+import { useUserContext } from "context/UserContext";
 
 import { Roles } from "../../constants";
 
@@ -17,6 +19,8 @@ interface props {
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   bill_status: string;
   currentUserRole: string;
+  setNewEntryView: any;
+  handleDuplicate: any;
 }
 
 const canEditTimeEntry = (billStatus, role) =>
@@ -25,12 +29,8 @@ const canEditTimeEntry = (billStatus, role) =>
 const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
   if (canEditTimeEntry(billStatus, role)) {
     return (
-      <button className="mx-10" onClick={() => setEditEntryId(id)}>
-        <img
-          alt="edit"
-          className="icon-hover h-4 w-4 text-miru-han-purple-600 hover:text-miru-han-purple-1000"
-          src={EditSVG}
-        />
+      <button className="icon-hover" onClick={() => setEditEntryId(id)}>
+        <EditIcon className="text-miru-han-purple-1000" size={20} />
       </button>
     );
   }
@@ -41,12 +41,20 @@ const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
 const showDeleteAction = (billStatus, role, id, handleDeleteEntry) => {
   if (canEditTimeEntry(billStatus, role)) {
     return (
-      <button className="mr-10" onClick={() => handleDeleteEntry(id)}>
-        <img
-          alt="delete"
-          className="icon-hover fill-blue h-4 w-4 text-miru-han-purple-1000 hover:text-miru-han-purple-1000"
-          src={DeleteIconSVG}
-        />
+      <button className="icon-hover " onClick={() => handleDeleteEntry(id)}>
+        <DeleteIcon className="text-miru-han-purple-1000" size={20} />
+      </button>
+    );
+  }
+
+  return <div className="mr-10 h-4 w-4" />;
+};
+
+const showDuplicateAction = (billStatus, role, id, handleDuplicate) => {
+  if (canEditTimeEntry(billStatus, role)) {
+    return (
+      <button className="icon-hover " onClick={() => handleDuplicate(id)}>
+        <CopyIcon className="text-miru-han-purple-1000" size={20} />
       </button>
     );
   }
@@ -64,46 +72,106 @@ const EntryCard: React.FC<props> = ({
   setEditEntryId,
   bill_status,
   currentUserRole,
-}) => (
-  <div className="week-card mt-10 flex w-full items-center justify-between rounded-lg p-4 shadow-2xl">
-    <div className="flex-auto">
-      <div className="flex">
-        <p className="text-lg">{client}</p>
-        <p className="mx-2 text-lg">•</p>
-        <p className="text-lg">{project}</p>
+  setNewEntryView,
+  handleDuplicate,
+}) => {
+  const { isDesktop } = useUserContext();
+
+  const handleCardClick = () => {
+    if (!isDesktop) {
+      setEditEntryId(id);
+      setNewEntryView(true);
+    }
+  };
+
+  return (
+    <div
+      className="week-card flex w-full items-center justify-between border-b border-miru-gray-200 py-4 lg:mt-10 lg:rounded-lg lg:border-b-0 lg:p-6 lg:shadow-2xl"
+      onClick={handleCardClick}
+    >
+      <div className="w-7/12 flex-auto">
+        <div className="text-miu-dark-Purple-1000 flex">
+          <p className="text-base font-normal lg:text-lg">{client}</p>
+          <p className="mx-2 text-lg">•</p>
+          <p className="text-base font-normal lg:text-lg">{project}</p>
+        </div>
+        <div className="flex py-2 lg:hidden">
+          {bill_status === "unbilled" ? (
+            <Badge
+              bgColor="bg-miru-alert-yellow-400"
+              className="uppercase"
+              color="text-miru-alert-green-1000"
+              text="unbilled"
+            />
+          ) : bill_status === "non_billable" ? (
+            <Badge
+              bgColor="bg-miru-dark-purple-100"
+              className="uppercase"
+              color="text-miru-dark-purple-600"
+              text="non billable"
+            />
+          ) : (
+            <Badge
+              bgColor="bg-miru-alert-green-400"
+              className="uppercase"
+              color="text-miru-alert-green-800"
+              text="billed"
+            />
+          )}
+        </div>
+        <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-sm text-miru-dark-purple-200 lg:w-160">
+          {note}
+        </p>
       </div>
-      <p className="max-h-32 w-160 overflow-auto whitespace-pre-wrap break-words text-sm text-miru-dark-purple-400">
-        {note}
+      <p className="text-miu-dark-Purple-1000 flex self-start text-2xl lg:hidden">
+        {minToHHMM(duration)}
       </p>
+      <div className="hidden w-5/12 items-center justify-between lg:flex">
+        <div className="flex w-7/12 items-center justify-between">
+          <div>
+            {bill_status === "unbilled" ? (
+              <Badge
+                bgColor="bg-miru-alert-yellow-400"
+                className="uppercase"
+                color="text-miru-alert-green-1000"
+                text="unbilled"
+              />
+            ) : bill_status === "non_billable" ? (
+              <Badge
+                bgColor="bg-miru-dark-purple-100"
+                className="uppercase"
+                color="text-miru-dark-purple-600"
+                text="non billable"
+              />
+            ) : (
+              <Badge
+                bgColor="bg-miru-alert-green-400"
+                className="uppercase"
+                color="text-miru-alert-green-800"
+                text="billed"
+              />
+            )}
+          </div>
+          <p className="mx-auto text-4xl">{minToHHMM(duration)}</p>
+        </div>
+        <div className="flex w-5/12 items-center justify-evenly">
+          {showDuplicateAction(
+            bill_status,
+            currentUserRole,
+            id,
+            handleDuplicate
+          )}
+          {showUpdateAction(bill_status, currentUserRole, id, setEditEntryId)}
+          {showDeleteAction(
+            bill_status,
+            currentUserRole,
+            id,
+            handleDeleteEntry
+          )}
+        </div>
+      </div>
     </div>
-    <div className="flex items-center">
-      {bill_status === "unbilled" ? (
-        <Badge
-          bgColor="bg-miru-alert-yellow-400"
-          className="uppercase"
-          color="text-miru-alert-green-1000"
-          text="unbilled"
-        />
-      ) : bill_status === "non_billable" ? (
-        <Badge
-          bgColor="bg-miru-dark-purple-100"
-          className="uppercase"
-          color="text-miru-dark-purple-600"
-          text="non billable"
-        />
-      ) : (
-        <Badge
-          bgColor="bg-miru-alert-green-400"
-          className="uppercase"
-          color="text-miru-alert-green-800"
-          text="billed"
-        />
-      )}
-      <p className="ml-6 text-4xl">{minToHHMM(duration)}</p>
-      {showUpdateAction(bill_status, currentUserRole, id, setEditEntryId)}
-      {showDeleteAction(bill_status, currentUserRole, id, handleDeleteEntry)}
-    </div>
-  </div>
-);
+  );
+};
 
 export default EntryCard;
