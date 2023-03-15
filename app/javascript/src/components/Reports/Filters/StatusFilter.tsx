@@ -5,22 +5,16 @@ import { MinusIcon, PlusIcon } from "miruIcons";
 import ClickableCheckboxText from "common/ClickableCheckboxText";
 
 const StatusFilter = ({
-  setIsClientOpen,
-  setIsStatusOpen,
-  setIsDateRangeOpen,
   isStatusOpen,
   filters,
   statusOptions,
   handleSelectStatus,
+  handleStatusFilterToggle,
 }) => (
   <div className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
     <div
       className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
-      onClick={() => {
-        setIsDateRangeOpen(false);
-        setIsClientOpen(false);
-        setIsStatusOpen(!isStatusOpen);
-      }}
+      onClick={handleStatusFilterToggle}
     >
       <h5 className="text-xs font-bold leading-4 tracking-wider">STATUS</h5>
       <div className="flex items-center">

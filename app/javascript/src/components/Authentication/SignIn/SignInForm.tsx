@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 
-import { Formik, Form, Field, FormikProps } from "formik";
-import Logger from "js-logger";
-import { GoogleSVG, PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
+import { Formik, Form, FormikProps } from "formik";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
+import { InputErrors, InputField } from "common/FormikFields";
 import { Paths, TOASTER_DURATION } from "constants/index";
+import { useAuthDispatch } from "context/auth";
 
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
 
@@ -18,14 +19,29 @@ interface SignInFormValues {
 }
 
 const SignInForm = () => {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const authDispatch = useAuthDispatch();
+  const navigate = useNavigate();
 
   const handleSignInFormSubmit = async (values: any) => {
     try {
-      await authenticationApi.signin(values);
-      setTimeout(() => (window.location.href = "/"), 500);
+      const res = await authenticationApi.signin(values);
+      //@ts-expect-error for authDispatch initial values
+      authDispatch({
+        type: "LOGIN",
+        payload: {
+          token: res.data.user.token,
+          email: res?.data?.user.email,
+        },
+      });
+
+      setTimeout(
+        () => (window.location.href = `${window.location.origin}`),
+        500
+      );
     } catch (error) {
-      Logger.error(error);
+      if (error.response.data.unconfirmed) {
+        navigate(`/email_confirmation?email=${values.email}`);
+      }
     }
   };
 
@@ -53,75 +69,28 @@ const SignInForm = () => {
                 return (
                   <Form>
                     <div className="field relative">
-                      <div className="outline relative">
-                        <Field
-                          autoFocus
-                          name="email"
-                          placeholder=" "
-                          className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                            errors.email &&
-                            touched.email &&
-                            "border-red-600 focus:border-red-600 focus:ring-red-600"
-                          } `}
-                        />
-                        <label
-                          className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-miru-dark-purple-200 duration-300"
-                          htmlFor="Name"
-                        >
-                          Email
-                        </label>
-                      </div>
-                      <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                        {errors.email && touched.email && (
-                          <div>{errors.email}</div>
-                        )}
-                      </div>
+                      <InputField
+                        autoFocus
+                        id="email"
+                        label="Email"
+                        name="email"
+                      />
+                      <InputErrors
+                        fieldErrors={errors.email}
+                        fieldTouched={touched.email}
+                      />
                     </div>
                     <div className="field">
-                      <div className="outline relative">
-                        <Field
-                          name="password"
-                          placeholder=" "
-                          type={showPassword ? "text" : "password"}
-                          className={`form__input block h-12 w-full appearance-none bg-transparent p-4 text-base focus-within:border-miru-han-purple-1000 ${
-                            errors.password &&
-                            touched.password &&
-                            "border-red-600 focus:border-red-600 focus:ring-red-600"
-                          } `}
-                        />
-                        <label
-                          htmlFor="Name"
-                          className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium
-                          text-miru-dark-purple-200 duration-300"
-                        >
-                          Password
-                        </label>
-                        <span
-                          className="absolute right-2 top-1/3 z-10 cursor-pointer"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          {!showPassword ? (
-                            <img
-                              alt="pass_icon"
-                              height="12"
-                              src={PasswordIconSVG}
-                              width="12"
-                            />
-                          ) : (
-                            <img
-                              alt="pass_icon_text"
-                              height="12"
-                              src={PasswordIconTextSVG}
-                              width="12"
-                            />
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mb-6 block text-xs tracking-wider text-red-600">
-                      {errors.password && touched.password && (
-                        <div>{errors.password}</div>
-                      )}
+                      <InputField
+                        id="password"
+                        label="Password"
+                        name="password"
+                        type="password"
+                      />
+                      <InputErrors
+                        fieldErrors={errors.password}
+                        fieldTouched={touched.password}
+                      />
                     </div>
                     <div>
                       <button
@@ -147,7 +116,7 @@ const SignInForm = () => {
                 );
               }}
             </Formik>
-            <div className="mb-3">
+            {/* <div className="mb-3">
               <button
                 className="form__button whitespace-nowrap"
                 data-cy="sign-up-button"
@@ -156,7 +125,7 @@ const SignInForm = () => {
                 <img alt="" className="mr-2" src={GoogleSVG} />
                 Sign In with Google
               </button>
-            </div>
+            </div> */}
             <p className="mb-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
               <span
                 className="form__link inline cursor-pointer"

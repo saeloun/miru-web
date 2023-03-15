@@ -103,7 +103,7 @@ const ProjectList = ({ isAdminUser }) => {
 
   const Main = withLayout(ProjectsLayout, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return isDesktop ? ProjectsLayout() : <Main />;
 };
 
 export default ProjectList;

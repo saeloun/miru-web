@@ -270,7 +270,7 @@ const Clients = ({ isAdminUser }) => {
 
   const Main = withLayout(ClientsLayout, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return isDesktop ? ClientsLayout() : <Main />;
 };
 
 export default Clients;

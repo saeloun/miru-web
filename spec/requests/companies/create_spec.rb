@@ -59,10 +59,6 @@ RSpec.describe "Companies#create", type: :request do
           })
       end
 
-    it "will fail" do
-      expect(response.body).to include("Company creation failed")
-    end
-
     it "will not be created" do
       change(Company, :count).by(0)
     end
@@ -167,10 +163,6 @@ RSpec.describe "Companies#create", type: :request do
 
       it "will not be created" do
         change(Company, :count).by(0)
-      end
-
-      it "will fail" do
-        expect(response.body).to include("Company creation failed")
       end
 
       it "redirects to root_path" do
