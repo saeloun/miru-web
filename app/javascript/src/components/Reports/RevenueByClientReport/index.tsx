@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
+import { LocalStorageKeys } from "constants/index";
+import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
@@ -21,10 +23,18 @@ const RevenueByClientReport = () => {
     clients: [{ label: "All Clients", value: "" }],
   };
 
+  const LS_INVOICE_FILTERS = window.localStorage.getItem(
+    LocalStorageKeys.INVOICE_FILTERS
+  );
+
+  const [filterParams, setFilterParams] = useState<any>(
+    JSON.parse(LS_INVOICE_FILTERS) || filterIntialValues
+  );
   const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [dateRange, setDateRange] = useState({ from: "", to: "" });
   const [selectedInput, setSelectedInput] = useState("from-input");
   const [clientList, setClientList] = useState<Array<RevenueByClients>>([]);
@@ -34,14 +44,15 @@ const RevenueByClientReport = () => {
     totalOutstandingAmount: 0,
     totalRevenue: 0,
   });
+  const { isDesktop } = useUserContext();
 
   useEffect(() => {
     sendGAPageView();
   }, []);
 
-  const onClickInput = e => {
-    setSelectedInput(e.target.name);
-  };
+  // const onClickInput = e => {
+  //   setSelectedInput(e.target.name);
+  // };
 
   const updateFilterCounter = async () => {
     let counter = 0;
@@ -109,8 +120,14 @@ const RevenueByClientReport = () => {
     currentReport: "RevenueByClientReport",
   };
 
-  const handleApplyFilter = filters => {
-    setSelectedFilter(filters);
+  // const handleApplyFilter = filters => {
+  //   setSelectedFilter(filters);
+  // };
+
+  const handleReset = () => {
+    window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
+    setIsFilterVisible(false);
+    setFilterParams(filterIntialValues);
   };
 
   const resetFilter = () => {
@@ -121,13 +138,13 @@ const RevenueByClientReport = () => {
 
   const handleDownload = () => {}; //eslint-disable-line
 
-  const handleSelectDate = date => {
-    if (selectedInput === "from-input") {
-      setDateRange({ ...dateRange, ...{ from: date } });
-    } else {
-      setDateRange({ ...dateRange, ...{ to: date } });
-    }
-  };
+  // const handleSelectDate = date => {
+  //   if (selectedInput === "from-input") {
+  //     setDateRange({ ...dateRange, ...{ from: date } });
+  //   } else {
+  //     setDateRange({ ...dateRange, ...{ to: date } });
+  //   }
+  // };
 
   return (
     <div className="h-full">
@@ -148,14 +165,13 @@ const RevenueByClientReport = () => {
         <Container />
         {isFilterVisible && (
           <Filters
-            dateRange={dateRange}
-            handleApplyFilter={handleApplyFilter}
-            handleSelectDate={handleSelectDate}
-            resetFilter={resetFilter}
-            selectedFilter={selectedFilter}
+            filterParams={filterParams}
+            handleReset={handleReset}
+            isDesktop={isDesktop}
             selectedInput={selectedInput}
+            setFilterParams={setFilterParams}
             setIsFilterVisible={setIsFilterVisible}
-            onClickInput={onClickInput}
+            setSelectedInput={setSelectedInput}
           />
         )}
       </EntryContext.Provider>
