@@ -9,7 +9,7 @@ RSpec.describe "Addresses#index", type: :request do
   let(:employee) { create(:user, current_workspace_id: company.id) }
   let(:employee2) { create(:user, current_workspace_id: company2.id) }
   let!(:employee_address) { create(:address, addressable_type: "User", addressable_id: employee.id) }
-  let!(:company_address) { company.addresses.last }
+  let!(:company_address) { company.current_address }
 
   before do
     create(:employment, company:, user:)

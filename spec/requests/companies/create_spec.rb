@@ -34,7 +34,7 @@ RSpec.describe "Companies#create", type: :request do
 
       it "creates a new company" do
         company = Company.last
-        company_address = company.addresses.last
+        company_address = company.current_address
         change(Company, :count).by(1)
         expect(company.name).to eq("Test Company")
         expect(company.standard_price).to eq(1000)
