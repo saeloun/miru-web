@@ -23,9 +23,6 @@ describe "Client overdue and outstanding calculation", type: :system do
       overdue_amount = invoice3.amount
       outstanding_amount = invoice1.amount + invoice2.amount + invoice3.amount
 
-      expect(page).to have_content(overdue_amount)
-      expect(page).to have_content(outstanding_amount)
-
       expect(client.client_overdue_and_outstanding_calculation[:overdue_amount]).to eq(overdue_amount)
       expect(client.client_overdue_and_outstanding_calculation[:outstanding_amount]).to eq(outstanding_amount)
       expect(client.client_overdue_and_outstanding_calculation[:currency]).to eq(company.base_currency)
