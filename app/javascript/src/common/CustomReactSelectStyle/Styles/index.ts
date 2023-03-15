@@ -1,7 +1,11 @@
 let focusedState = false;
 let isDisabled = false;
 
-export const customStyles = (isDesktopView, ignoreDisabledFontColor = false, hideDropdownIndicator = false) => ({
+export const customStyles = (
+  isDesktopView,
+  ignoreDisabledFontColor = false,
+  hideDropdownIndicator = false
+) => ({
   control: (provided, state) => {
     focusedState = state.isFocused;
     isDisabled = !!state.isDisabled;

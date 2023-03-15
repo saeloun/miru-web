@@ -14,12 +14,6 @@ const EditMembersListForm = ({
   handleSubmit,
   currencySymbol,
 }) => {
-  const inputClass =
-    "form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 text-right";
-
-  const labelClass =
-    "absolute top-0.5 right-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300";
-
   const [focusedRateInputBoxId, setFocusedRateInputBoxId] = useState("");
   const [errorForInvalidHourlyRate, setErrorForInvalidHourlyRate] = useState(
     {}
@@ -132,12 +126,12 @@ const EditMembersListForm = ({
                 key={idx}
                 label="Rate"
                 name={member.hourlyRate}
-                inputBoxClassName={`${inputClass} ${
+                inputBoxClassName={`form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 text-right ${
                   isInvalidRateInputBox(idx)
                     ? "border-red-600"
                     : "border-miru-gray-1000"
                 }`}
-                labelClassName={`${labelClass} ${
+                labelClassName={`absolute top-0.5 right-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 ${
                   isInvalidRateInputBox(idx)
                     ? "text-red-600"
                     : "text-miru-dark-purple-200"

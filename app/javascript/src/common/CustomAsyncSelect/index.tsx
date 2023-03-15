@@ -57,4 +57,5 @@ CustomAsyncSelect.defaultProps = {
   handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   isDesktopView: false,
   ignoreDisabledFontColor: false,
+  hideDropdownIndicator: false,
 };
