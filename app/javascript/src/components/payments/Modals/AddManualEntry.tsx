@@ -230,7 +230,7 @@ const AddManualEntry = ({
                         defaultValue={invoice}
                         handleOnChange={handleInvoiceSelect}
                         label="Invoice"
-                        name="invoice-search"
+                        name="invoiceSearch"
                         options={invoiceList.invoiceList}
                         value={invoice}
                         components={{
@@ -275,10 +275,10 @@ const AddManualEntry = ({
               >
                 <CustomInputText
                   disabled
-                  dataCy="transaction_date"
-                  id="transaction_date"
+                  dataCy="transactionDate"
+                  id="transactionDate"
                   label="Transaction Date"
-                  name="transaction_date"
+                  name="transactionDate"
                   type="text"
                   value={
                     transactionDate && dayjs(transactionDate).format(dateFormat)
@@ -303,7 +303,7 @@ const AddManualEntry = ({
                 isSearchable
                 handleOnChange={e => setTransactionType(e.value)}
                 label="Transaction Type"
-                name="transaction-type"
+                name="transactionType"
                 options={transactionTypes}
                 value={transactionTypes.find(
                   type => type.value == transactionType
@@ -313,12 +313,12 @@ const AddManualEntry = ({
             <div className="mt-4">
               <CustomInputText
                 disabled
-                dataCy="payment-amount"
-                id="payment_amount"
+                dataCy="paymentAmount"
+                id="paymentAmount"
                 inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000"
                 label="Payment amount"
                 labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-miru-dark-purple-200"
-                name="payment_amount"
+                name="paymentAmount"
                 type="text"
                 value={
                   amount && baseCurrency && currencyFormat(baseCurrency, amount)
@@ -328,10 +328,10 @@ const AddManualEntry = ({
             </div>
             <div className="mt-4">
               <CustomTextareaAutosize
-                id="Notes-optional"
+                id="NotesOptional"
                 label="Notes (optional)"
                 maxRows={12}
-                name="Notes-optional"
+                name="NotesOptional"
                 rows={5}
                 value={note}
                 onChange={e => setNote(e.target.value)}
