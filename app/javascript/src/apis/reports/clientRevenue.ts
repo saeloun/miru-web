@@ -7,7 +7,7 @@ const get = (from, to, clientIds) =>
     `${path}?duration_from=${from}&duration_to=${to}&client_ids=[${clientIds}]`
   );
 
-const newReport = async() => axios.get(`${path}new`);
+const newReport = async () => axios.get(`${path}new`);
 
 const clientRevenueApi = { get, newReport };
 

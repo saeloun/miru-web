@@ -5,9 +5,7 @@ import { XIcon } from "miruIcons";
 import Select from "react-select";
 import * as Yup from "yup";
 
-import clientApi from "apis/clients";
 import clientRevenueApi from "apis/reports/clientRevenue";
-
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 
 import { dateRangeOptions } from "./filterOptions";
