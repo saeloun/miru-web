@@ -7,6 +7,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:client1) { create(:client, :with_logo, company:, name: "Alpha") }
   let!(:client2) { create(:client, :with_logo, company:, name: "Delta") }
+  let(:client_3) { create(:client, company:, name: "john") }
   let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent") }
   let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent") }
   let!(:client1_viewed_invoice1) { create(:invoice, client: client1, status: "viewed") }
@@ -62,7 +63,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns the clients data in alaphabetical order with amount details" do
+      it "returns the billable clients data in alaphabetical order with amount details" do
         expect(json_response["clients"]).to eq(JSON.parse(@expected_clients.to_json))
       end
 

@@ -16,8 +16,6 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   context "when user is an admin" do
     before do
       create(:employment, company:, user:)
-      create(:project, billable: true, client: client_1)
-      create(:project, billable: true, client: client_2)
       user.add_role :admin, company
       sign_in user
       create_list(:timesheet_entry, 5, user:, project: project_1)
