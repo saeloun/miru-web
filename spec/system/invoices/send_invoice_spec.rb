@@ -23,7 +23,7 @@ RSpec.describe "Send Invoice", type: :system do
 
   context "when logged-in user is Admin" do
       before do
-        login_as admin
+        sign_in admin
       end
 
       include_examples "Send Invoice"
@@ -31,7 +31,7 @@ RSpec.describe "Send Invoice", type: :system do
 
   context "when logged-in user is Owner" do
     before do
-      login_as owner
+      sign_in owner
     end
 
     include_examples "Send Invoice"
@@ -39,7 +39,7 @@ RSpec.describe "Send Invoice", type: :system do
 
   context "when logged-in user is Employee" do
       before do
-        login_as employee
+        sign_in employee
       end
 
       it "is not able to see invoices option" do
