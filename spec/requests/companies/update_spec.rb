@@ -21,7 +21,7 @@ RSpec.describe "Companies#create", type: :request do
             company: {
               name: "Updated Company",
               business_phone: "1234556",
-              addresses_attributes: [ address.merge({ id: company.addresses.last.id }) ]
+              addresses_attributes: [ address.merge({ id: company.current_address.id }) ]
             }
           })
       end

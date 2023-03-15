@@ -30,7 +30,7 @@ RSpec.describe "InternalApi::V1::Companies::create", type: :request do
 
       it "creates a new compamy & address" do
         company = Company.last
-        company_address = company.addresses.last
+        company_address = company.current_address
         change(Company, :count).by(1)
         change(Address, :count).by(1)
         expect(company.name).to eq("zero labs llc")
