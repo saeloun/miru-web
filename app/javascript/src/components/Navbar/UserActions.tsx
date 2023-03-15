@@ -6,10 +6,11 @@ import { SettingIcon, SignOutIcon, Switcher } from "miruIcons";
 import { NavLink } from "react-router-dom";
 import { Avatar, Tooltip } from "StyledComponents";
 
-import companiesApi from "apis/companies";
+import authenticationApi from "apis/authentication";
 import WorkspaceApi from "apis/workspaces";
 import { LocalStorageKeys } from "constants/index";
 import { useAuthDispatch } from "context/auth";
+import { useUserContext } from "context/UserContext";
 
 import { activeClassName } from "./utils";
 
@@ -25,10 +26,10 @@ const UserActions = () => {
   const toolTipRef = useRef(null);
 
   const authDispatch = useAuthDispatch();
+  const { user } = useUserContext();
 
   useEffect(() => {
     fetchWorkspaces();
-    fetchCurrentComapny();
   }, []);
 
   const handleTooltip = () => {
@@ -45,14 +46,15 @@ const UserActions = () => {
     showWorkSpaceList
   );
 
-  const fetchCurrentComapny = async () => {
-    const res = await companiesApi.index();
-    setCurrentWorkspace(res.data.company_details);
-  };
-
   const fetchWorkspaces = async () => {
     const res = await WorkspaceApi.get();
-    setWorkSpaceList(res.data.workspaces);
+    const { workspaces } = res.data;
+    setWorkSpaceList(workspaces);
+    workspaces.find(wrk => {
+      if (wrk.id == user.current_workspace_id) {
+        setCurrentWorkspace(wrk);
+      }
+    });
   };
 
   const handleSwitch = async id => {
@@ -61,7 +63,8 @@ const UserActions = () => {
     setTimeout(() => window.location.reload(), 600);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await authenticationApi.logout();
     window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
     //@ts-expect-error for authDispatch object
     authDispatch({ type: "LOGOUT" });
