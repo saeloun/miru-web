@@ -1,7 +1,7 @@
 let focusedState = false;
 let isDisabled = false;
 
-export const customStyles = (isDesktopView, ignoreDisabledFontColor) => ({
+export const customStyles = (isDesktopView, ignoreDisabledFontColor = false, hideDropdownIndicator = false) => ({
   control: (provided, state) => {
     focusedState = state.isFocused;
     isDisabled = !!state.isDisabled;
@@ -34,7 +34,7 @@ export const customStyles = (isDesktopView, ignoreDisabledFontColor) => ({
       state.selectProps.inputValue ||
       (state.selectProps.value && state.selectProps.value?.value !== "")
         ? "-40%"
-        : "20%",
+        : "15%",
     transition: "top 0.5s",
     fontSize:
       focusedState ||
@@ -55,6 +55,7 @@ export const customStyles = (isDesktopView, ignoreDisabledFontColor) => ({
   dropdownIndicator: base => ({
     ...base,
     color: "#5B34EA", // Custom colour
+    display: hideDropdownIndicator ? "none" : "block",
   }),
   input: base => ({
     ...base,

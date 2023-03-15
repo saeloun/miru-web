@@ -23,6 +23,8 @@ type customInputTextProps = {
   label?: string;
   wrapperClassName?: string;
   readOnly?: boolean;
+  onFocus?: (e?: any) => void;
+  onBlur?: (e?: any) => void;
 };
 
 export const CustomInputText = ({
@@ -34,6 +36,8 @@ export const CustomInputText = ({
   type,
   value,
   onChange,
+  onFocus,
+  onBlur,
   labelClassName,
   label,
   wrapperClassName,
@@ -51,7 +55,9 @@ export const CustomInputText = ({
         readOnly={readOnly}
         type={type}
         value={value}
+        onBlur={onBlur}
         onChange={onChange}
+        onFocus={onFocus}
       />
       <label
         className={classNames(defaultLabelClassname, labelClassName)}
@@ -64,7 +70,11 @@ export const CustomInputText = ({
 );
 
 CustomInputText.defaultProps = {
+  dataCy: "",
   type: "text",
   disabled: false,
   readOnly: false,
+  onChange: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+  onFocus: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+  onBlur: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
 };
