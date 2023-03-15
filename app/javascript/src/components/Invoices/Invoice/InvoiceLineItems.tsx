@@ -4,21 +4,21 @@ import LineItem from "./LineItem";
 
 const InvoiceLineItems = ({ currency, items, showHeader, dateFormat }) => {
   const getHeader = () => (
-    <thead className="my-2 mb-10">
+    <thead className="border-b border-miru-gray-400">
       <tr>
-        <th className="text-left text-xs font-normal tracking-widest text-miru-dark-purple-600 sm:w-1/2">
+        <th className="py-5 text-left text-xs font-medium tracking-widest text-miru-dark-purple-600 sm:w-1/2">
           NAME
         </th>
-        <th className=" px-3 text-right text-xs font-normal tracking-widest text-miru-dark-purple-600 sm:w-1/5">
+        <th className="px-3 py-5 text-right text-xs font-medium tracking-widest text-miru-dark-purple-600 sm:w-1/5">
           DATE
         </th>
-        <th className="text-right text-xs font-normal tracking-widest text-miru-dark-purple-600">
+        <th className="py-5 text-right text-xs font-medium tracking-widest text-miru-dark-purple-600">
           RATE
         </th>
-        <th className="text-right text-xs font-normal tracking-widest text-miru-dark-purple-600">
+        <th className="py-5 text-right text-xs font-medium tracking-widest text-miru-dark-purple-600">
           QTY
         </th>
-        <th className="text-right text-xs font-normal tracking-widest text-miru-dark-purple-600">
+        <th className="py-5 text-right text-xs font-medium tracking-widest text-miru-dark-purple-600">
           LINE TOTAL
         </th>
       </tr>
@@ -27,10 +27,9 @@ const InvoiceLineItems = ({ currency, items, showHeader, dateFormat }) => {
 
   return (
     <div className="px-10 py-5">
-      <table className="w-full table-fixed">
+      <table className="w-full table-fixed border-collapse">
         {showHeader ? getHeader() : null}
         <tbody className="w-full">
-          <tr className="h-4 md:h-7" />
           {items.length > 0 &&
             items.map(
               item =>
