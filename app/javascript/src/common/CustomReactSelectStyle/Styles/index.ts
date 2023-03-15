@@ -1,11 +1,15 @@
 let focusedState = false;
 let isDisabled = false;
 
+<<<<<<< HEAD
 export const customStyles = (
   isDesktopView,
   ignoreDisabledFontColor = false,
   hideDropdownIndicator = false
 ) => ({
+=======
+export const customStyles = (isDesktopView, hideDropdownIndicator = false) => ({
+>>>>>>> 24797d5f (Add default value for hideDropdownIndicator and fix minor UI issues)
   control: (provided, state) => {
     focusedState = state.isFocused;
     isDisabled = !!state.isDisabled;

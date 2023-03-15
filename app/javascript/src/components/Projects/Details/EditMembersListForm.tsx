@@ -109,7 +109,7 @@ const EditMembersListForm = ({
     (memberIndex || memberIndex == 0) && errorForInvalidHourlyRate[memberIndex];
 
   return (
-    <form className="mt-7" onSubmit={handleSubmit}>
+    <form className="mt-7 mr-6" onSubmit={handleSubmit}>
       {members.map((member, memberIndex) => (
         <div className="mb-4" key={memberIndex}>
           <div className="mb-1 flex">
@@ -154,7 +154,7 @@ const EditMembersListForm = ({
                 }}
               />
             </div>
-            <div className="w-3 text-right ">
+            <div className="my-auto text-right ">
               <button
                 className="menuButton__button"
                 type="button"

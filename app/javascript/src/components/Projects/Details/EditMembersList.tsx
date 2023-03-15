@@ -126,8 +126,8 @@ const EditMembersList = ({
       }}
     >
       <div className="relative h-full w-full px-4 md:flex md:items-center md:justify-center">
-        <div className="min-w-1/2 relative top-1/3 mx-auto transform rounded-lg bg-white px-6 pt-6 pb-6 shadow-xl transition-all sm:max-w-md sm:align-middle md:top-0 md:min-w-400">
-          <div className=" flex items-center justify-between">
+        <div className="min-w-1/2 relative top-1/3 mx-auto transform rounded-lg bg-white py-6 pl-6 shadow-xl transition-all sm:max-w-md sm:align-middle md:top-0 md:min-w-400">
+          <div className=" mr-6 flex items-center justify-between">
             <h6 className="text-base font-extrabold capitalize">
               Add Team Members
             </h6>

@@ -20,7 +20,6 @@ export const CustomAsyncSelect = ({
   isErr,
   isDesktopView,
   ignoreDisabledFontColor,
-  hideDropdownIndicator,
 }) => {
   const getStyle = () => {
     if (isErr) {
@@ -58,5 +57,4 @@ CustomAsyncSelect.defaultProps = {
   handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   isDesktopView: false,
   ignoreDisabledFontColor: false,
-  hideDropdownIndicator: false,
 };
