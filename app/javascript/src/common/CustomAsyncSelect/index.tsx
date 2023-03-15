@@ -20,6 +20,7 @@ export const CustomAsyncSelect = ({
   isErr,
   isDesktopView,
   ignoreDisabledFontColor,
+  hideDropdownIndicator,
 }) => {
   const getStyle = () => {
     if (isErr) {
