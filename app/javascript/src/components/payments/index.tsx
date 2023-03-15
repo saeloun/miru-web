@@ -77,7 +77,7 @@ const Payments = () => {
 
   const Main = withLayout(PaymentsLayout, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return isDesktop ? PaymentsLayout() : <Main />;
 };
 
 export default Payments;
