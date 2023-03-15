@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useRef, useState } from "react";
 
 import {
   CaretDownIcon,
@@ -39,6 +39,20 @@ const Header = ({
     outstandingOverdueInvoice,
     accountsAgingReport,
   } = useEntry();
+
+  const menuRef = useRef(null);
+
+  const closeExportOptions = e => {
+    if (
+      menuRef.current &&
+      showExportOptions &&
+      !menuRef.current.contains(e.target)
+    ) {
+      setShowExportOptions(false);
+    }
+  };
+
+  document.addEventListener("mousedown", closeExportOptions);
 
   const selectedReport = getReports({
     currentReport,
@@ -146,10 +160,7 @@ const Header = ({
           )}
         </div>
         {showExportButon && isDesktop && (
-          <div
-            className="mt-10 inline-flex lg:mt-0"
-            onBlur={() => setShowExportOptions(false)}
-          >
+          <div className="mt-10 inline-flex lg:mt-0" ref={menuRef}>
             <div className="relative px-3">
               <button
                 className="menuButton__button inline-flex justify-center rounded-md border border-miru-han-purple-1000 bg-white p-2 text-miru-han-purple-1000 hover:bg-gray-50"
