@@ -91,7 +91,7 @@ const List = () => {
 
   const Main = withLayout(ReportsLayout, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return isDesktop ? ReportsLayout() : <Main />;
 };
 
 export default List;
