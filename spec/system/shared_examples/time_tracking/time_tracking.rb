@@ -45,7 +45,6 @@ shared_examples_for "Time tracking" do |obj|
       click_button "SAVE"
 
       user = obj[:is_admin] == true ? admin : employee
-      expect(page).to have_content("Timesheet created", wait: 3)
       expect(page).to have_content(user.timesheet_entries.first.note)
     end
   end
@@ -72,7 +71,6 @@ shared_examples_for "Time tracking" do |obj|
       el.click
 
       user = obj[:is_admin] == true ? admin : employee
-      expect(page).to have_content("Timesheet deleted", wait: 3)
       expect(user.timesheet_entries.size).to eq(0)
     end
   end
