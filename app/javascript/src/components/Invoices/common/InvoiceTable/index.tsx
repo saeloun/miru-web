@@ -75,6 +75,7 @@ const InvoiceTable = ({
     if (selectedClient && lineItems && showNewLineItemTable) {
       return (
         <NewLineItemTable
+          dateFormat={dateFormat}
           filteredLineItems={filteredLineItems}
           loadMoreItems={loadNewLineItems}
           loading={loading}

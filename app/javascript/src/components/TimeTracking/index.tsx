@@ -400,7 +400,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               ))}
             </nav>
           )}
-          {!isDesktop && (
+          {!isDesktop && isAdminUser && (
             <label className="text-sm font-normal leading-5 text-miru-dark-purple-1000">
               Time entries for
             </label>
@@ -585,7 +585,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const Main = withLayout(TimeTrackingLayout, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return isDesktop ? TimeTrackingLayout() : <Main />;
 };
 
 interface Iprops {

@@ -44,7 +44,10 @@ const getTableData = (clients, handleTooltip, showTooltip, toolTipRef) => {
         </div>
       ),
       col3: (
-        <div className="text-right text-xl font-bold text-miru-dark-purple-1000">
+        <div
+          className="total-hours text-right text-xl font-bold text-miru-dark-purple-1000"
+          id={`${client.id}`}
+        >
           {minToHHMM(client.minutes)}
         </div>
       ),
@@ -190,6 +193,7 @@ const Clients = ({ isAdminUser }) => {
           >
             <div className="flex justify-end">
               <select
+                id="timeFrame"
                 className="focus:outline-none
                 m-0
                 border-none
@@ -270,7 +274,7 @@ const Clients = ({ isAdminUser }) => {
 
   const Main = withLayout(ClientsLayout, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return isDesktop ? ClientsLayout() : <Main />;
 };
 
 export default Clients;
