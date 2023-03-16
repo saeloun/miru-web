@@ -11,6 +11,8 @@ import {
 import { useUserContext } from "context/UserContext";
 
 export const CustomReactSelect = ({
+  id,
+  isSearchable,
   classNamePrefix,
   options,
   label,
@@ -20,6 +22,11 @@ export const CustomReactSelect = ({
   value,
   isErr,
   isDisabled,
+  styles,
+  components,
+  onMenuClose,
+  onMenuOpen,
+  ignoreDisabledFontColor,
 }) => {
   const { isDesktop } = useUserContext();
 
@@ -28,25 +35,31 @@ export const CustomReactSelect = ({
       return customErrStyles(isDesktop);
     }
 
-    return customStyles(isDesktop);
+    return customStyles(isDesktop, ignoreDisabledFontColor);
   };
 
   return (
     <div className="outline relative">
       <Select
         classNamePrefix={classNamePrefix}
+        id={id || name}
         isDisabled={isDisabled}
+        isSearchable={isSearchable}
         name={name}
         options={options}
         placeholder={label}
-        styles={getStyle()}
+        styles={styles || getStyle()}
         value={value}
-        components={{
-          ValueContainer: CustomValueContainer,
-          IndicatorSeparator: () => null,
-        }}
+        components={
+          components || {
+            ValueContainer: CustomValueContainer,
+            IndicatorSeparator: () => null,
+          }
+        }
         onChange={handleOnChange}
         onFocus={handleonFocus}
+        onMenuClose={onMenuClose}
+        onMenuOpen={onMenuOpen}
       />
     </div>
   );
@@ -60,6 +73,14 @@ CustomReactSelect.defaultProps = {
   handleonFocus: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   isErr: false,
   isDisabled: false,
+  defaultValue: null,
+  onMenuClose: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
+  onMenuOpen: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
+  styles: null,
+  isSearchable: true,
+  components: null,
+  ignoreDisabledFontColor: false,
+  id: "",
 };
 
 export default CustomReactSelect;
