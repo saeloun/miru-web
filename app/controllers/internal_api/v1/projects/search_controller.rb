@@ -25,7 +25,7 @@ class InternalApi::V1::Projects::SearchController < InternalApi::V1::Application
         search_term,
         fields: [:client_name, :name],
         match: :text_middle,
-        where: { client_id: client_list },
+        where: { client_id: client_list, discarded_at: nil },
         includes: [:client]
       )
     end
