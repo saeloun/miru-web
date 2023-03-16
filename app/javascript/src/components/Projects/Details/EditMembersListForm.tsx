@@ -129,13 +129,14 @@ const EditMembersListForm = ({
                 id={member.hourlyRate}
                 key={memberIndex}
                 label="Rate"
+                moveLabelToRightClassName="right-1"
                 name={member.hourlyRate}
-                inputBoxClassName={`form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 text-right ${
+                inputBoxClassName={` text-right ${
                   isInvalidRateInputBox(memberIndex)
                     ? "border-red-600"
                     : "border-miru-gray-1000"
                 }`}
-                labelClassName={`absolute top-0.5 right-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 ${
+                labelClassName={`${
                   isInvalidRateInputBox(memberIndex)
                     ? "text-red-600"
                     : "text-miru-dark-purple-200"

@@ -8,7 +8,7 @@ const defaultInputBoxClassName =
   "form__input block w-full appearance-none bg-white p-4 text-base h-12 border-miru-gray-1000";
 const defaultWrapperClassName = "outline relative h-12";
 const defaultLabelClassname =
-  "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-sm lg:text-base font-medium text-miru-dark-purple-200 duration-300";
+  "absolute top-0.5 h-6 z-1 origin-0 bg-white p-2 text-sm lg:text-base font-medium text-miru-dark-purple-200 duration-300";
 
 type customInputTextProps = {
   id?: string;
@@ -22,9 +22,11 @@ type customInputTextProps = {
   labelClassName?: string;
   label?: string;
   wrapperClassName?: string;
+  moveLabelToRightClassName?: string;
+  moveLabelToLeftClassName?: string;
   readOnly?: boolean;
-  onFocus?: (e?: any) => void;
-  onBlur?: (e?: any) => void;
+  onFocus?: (e?: any) => void; // eslint-disable-line
+  onBlur?: (e?: any) => void; // eslint-disable-line
 };
 
 export const CustomInputText = ({
@@ -41,6 +43,8 @@ export const CustomInputText = ({
   labelClassName,
   label,
   wrapperClassName,
+  moveLabelToRightClassName,
+  moveLabelToLeftClassName,
   readOnly,
 }: customInputTextProps) => (
   <div className="field relative">
@@ -60,8 +64,14 @@ export const CustomInputText = ({
         onFocus={onFocus}
       />
       <label
-        className={classNames(defaultLabelClassname, labelClassName)}
         htmlFor={name}
+        className={classNames([
+          defaultLabelClassname,
+          labelClassName,
+          moveLabelToRightClassName?.trim()
+            ? moveLabelToRightClassName
+            : moveLabelToLeftClassName,
+        ])}
       >
         {label}
       </label>
@@ -74,6 +84,8 @@ CustomInputText.defaultProps = {
   type: "text",
   disabled: false,
   readOnly: false,
+  moveLabelToLeftClassName: "left-1",
+  moveLabelToRightClassName: "",
   onChange: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
   onFocus: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
   onBlur: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
