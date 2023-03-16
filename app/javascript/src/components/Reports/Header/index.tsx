@@ -119,7 +119,7 @@ const Header = ({
                   <li>
                     <button
                       className="menuButton__list-item pl-2"
-                      onClick={() => {
+                      onMouseDown={() => {
                         setShowExportOptions(false);
                         handleDownload("csv");
                       }}
@@ -131,7 +131,7 @@ const Header = ({
                   <li>
                     <button
                       className="menuButton__list-item pl-2"
-                      onClick={() => {
+                      onMouseDown={() => {
                         setShowExportOptions(false);
                         handleDownload("pdf");
                       }}
@@ -166,7 +166,7 @@ const Header = ({
                   <li>
                     <button
                       className="menuButton__list-item"
-                      onClick={() => {
+                      onMouseDown={() => {
                         setShowExportOptions(false);
                         handleDownload("csv");
                       }}
@@ -178,7 +178,7 @@ const Header = ({
                   <li>
                     <button
                       className="menuButton__list-item"
-                      onClick={() => {
+                      onMouseDown={() => {
                         setShowExportOptions(false);
                         handleDownload("pdf");
                       }}
