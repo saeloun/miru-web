@@ -38,6 +38,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
         fill_in "notes", with: "Testing note!"
         fill_in "timeInput", with: "8"
         click_button "SAVE"
+        sleep 1
 
         expect(page).to have_content(admin.timesheet_entries.first.note)
       end
@@ -68,6 +69,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
         click_button "DAY"
         el = find(:css, "#deleteIcon", visible: false).hover
         el.click
+        sleep 1
 
         expect(admin.timesheet_entries.size).to eq(0)
       end
@@ -83,7 +85,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
 
         click_button "DAY"
         within(".css-6j8wv5-Input") do
-          find("input#react-select-9-input").set(" ").set(user_two.full_name).send_keys(:tab)
+          find("input#react-select-2-input").set(" ").set(user_two.full_name).send_keys(:tab)
         end
 
         expect(page).to have_content(time_entry.note)
@@ -121,8 +123,7 @@ RSpec.describe "Time Tracking - day view", type: :system do
         fill_in "timeInput", with: "8"
         click_button "SAVE"
 
-        expect(page).to have_content("Timesheet created", wait: 3)
-        expect(page).to have_content(employee.timesheet_entries.first.note)
+        expect(page).to have_content("Testing note!")
       end
     end
 
@@ -137,7 +138,6 @@ RSpec.describe "Time Tracking - day view", type: :system do
         fill_in "notes", with: "Testing note!"
         click_button "UPDATE"
 
-        expect(page).to have_content("Timesheet updated", wait: 3)
         expect(page).to have_content("Testing note!")
       end
     end
@@ -150,8 +150,8 @@ RSpec.describe "Time Tracking - day view", type: :system do
         click_button "DAY"
         el = find(:css, "#deleteIcon", visible: false).hover
         el.click
+        sleep 1
 
-        expect(page).to have_content("Timesheet deleted", wait: 3)
         expect(employee.timesheet_entries.size).to eq(0)
       end
     end

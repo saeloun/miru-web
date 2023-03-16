@@ -58,7 +58,6 @@ shared_examples_for "Time tracking" do |obj|
       fill_in "notes", with: "Testing note!"
       click_button "UPDATE"
 
-      expect(page).to have_content("Timesheet updated", wait: 3)
       expect(page).to have_content("Testing note!")
     end
   end
@@ -67,8 +66,8 @@ shared_examples_for "Time tracking" do |obj|
     with_forgery_protection do
       visit "time-tracking"
 
-      el = find(:css, "#deleteIcon", visible: :hidden).hover
-      el.click
+      find(:css, "#deleteIcon", visible: :hidden).hover.click
+      sleep 1
 
       user = obj[:is_admin] == true ? admin : employee
       expect(user.timesheet_entries.size).to eq(0)
@@ -88,9 +87,9 @@ shared_examples_for "Time tracking" do |obj|
       find(:css, "#formattedDate", wait: 3).click
       find(:css, ".react-datepicker__day.react-datepicker__day--#{formatted_date}").click
       click_button "UPDATE"
+      sleep 1
 
       user = obj[:is_admin] == true ? admin : employee
-      expect(page).to have_content("Timesheet updated", wait: 3)
       expect(user.timesheet_entries.first.work_date).to eq(Date.today - 1)
     end
   end

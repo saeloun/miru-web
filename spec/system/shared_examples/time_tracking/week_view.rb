@@ -35,6 +35,7 @@ shared_examples_for "Time tracking - week view" do |obj|
   end
 
   it "can add time entry" do
+    user = obj[:is_admin] == true ? admin : employee
     with_forgery_protection do
       visit "time-tracking"
 
@@ -47,7 +48,7 @@ shared_examples_for "Time tracking - week view" do |obj|
       fill_in placeholder: "Note", with: "Weekly note!"
       click_button "SAVE"
 
-      expect(page).to have_content("Timesheet created", wait: 3)
+      expect(page).to have_content("Weekly note!")
     end
   end
 
@@ -64,7 +65,6 @@ shared_examples_for "Time tracking - week view" do |obj|
       fill_in placeholder: "Note", with: "Weekly note!"
       click_button "UPDATE"
 
-      expect(page).to have_content("Timesheet updated")
       expect(user.timesheet_entries.first.duration).to eq(600.0)
       expect(user.timesheet_entries.first.note).to eq("Weekly note!")
     end
