@@ -19,13 +19,14 @@ export const CustomAsyncSelect = ({
   value,
   isErr,
   isDesktopView,
+  ignoreDisabledFontColor,
 }) => {
   const getStyle = () => {
     if (isErr) {
       return customErrStyles(isDesktopView);
     }
 
-    return customStyles(isDesktopView);
+    return customStyles(isDesktopView, ignoreDisabledFontColor);
   };
 
   return (
@@ -55,4 +56,5 @@ CustomAsyncSelect.defaultProps = {
   placeholder: "Date Format",
   handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   isDesktopView: false,
+  ignoreDisabledFontColor: false,
 };
