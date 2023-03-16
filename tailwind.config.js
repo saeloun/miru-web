@@ -91,6 +91,7 @@ module.exports = {
         "90v": "90vh",
         "100v": "100vh",
         24: "24px",
+        80: "80px",
       },
       maxHeight: {
         "10v": "10vh",
