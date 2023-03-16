@@ -26,7 +26,7 @@ const EditMembersListForm = ({
   const addNewMemberRowHandler = () => {
     setMembers(oldMembers => [
       ...oldMembers,
-      { hourlyRate: 0, isExisting: false },
+      { hourlyRate: "00.00", isExisting: false },
     ]);
   };
 
@@ -35,11 +35,11 @@ const EditMembersListForm = ({
       return (
         <CustomInputText
           disabled
-          id={member?.name || ""}
+          id={member?.name}
           label="Team member"
-          name={member?.name || ""}
+          name={member?.name}
           type="text"
-          value={member?.name || ""}
+          value={member?.name}
         />
       );
     }
@@ -108,6 +108,11 @@ const EditMembersListForm = ({
   const isInvalidRateInputBox = memberIndex =>
     (memberIndex || memberIndex == 0) && errorForInvalidHourlyRate[memberIndex];
 
+  const isSubmitBtnActive = members =>
+    members?.every(
+      member => member.id && member.hourlyRate >= 0 && member.hourlyRate != ""
+    );
+
   return (
     <form className="mt-7 mr-6" onSubmit={handleSubmit}>
       {members.map((member, memberIndex) => (
@@ -115,22 +120,20 @@ const EditMembersListForm = ({
           <div className="mb-1 flex">
             <div className="mr-4 w-56">{getMember(member, memberIndex)}</div>
             <div className="relative mr-2 w-24 rounded-md shadow-sm">
-              {focusedRateInputBoxId == memberIndex || member.hourlyRate ? (
-                <div
-                  className="pointer-events-none absolute inset-y-0 right-1 z-20 flex items-center px-1"
-                  key={memberIndex}
-                >
+              {member.hourlyRate == "" &&
+              focusedRateInputBoxId != memberIndex ? null : (
+                <div className="pointer-events-none absolute inset-y-0 right-1 z-20 flex items-center px-1">
                   <span className="top-0 text-miru-dark-purple-1000 sm:text-sm md:text-base">
                     {currencySymbol}
                   </span>
                 </div>
-              ) : null}
+              )}
               <CustomInputText
                 id={member.hourlyRate}
-                key={memberIndex}
                 label="Rate"
                 moveLabelToRightClassName="right-1"
                 name={member.hourlyRate}
+                value={member.hourlyRate}
                 inputBoxClassName={` text-right ${
                   isInvalidRateInputBox(memberIndex)
                     ? "border-red-600"
@@ -141,11 +144,6 @@ const EditMembersListForm = ({
                     ? "text-red-600"
                     : "text-miru-dark-purple-200"
                 }`}
-                value={
-                  member.hourlyRate || focusedRateInputBoxId == memberIndex
-                    ? member.hourlyRate
-                    : ""
-                }
                 onChange={e => handleHourlyRateInput(e, memberIndex)}
                 onFocus={() => setFocusedRateInputBoxId(memberIndex)}
                 onBlur={() => {
@@ -188,11 +186,12 @@ const EditMembersListForm = ({
       </div>
       <div className="actions mt-4">
         <input
+          disabled={!isSubmitBtnActive(members)}
           name="commit"
           type="submit"
           value="Add team members to project"
           className={`form__button whitespace-nowrap text-tiny md:text-base ${
-            members?.every(member => member.id && member.hourlyRate >= 0)
+            isSubmitBtnActive(members)
               ? "cursor-pointer"
               : "cursor-not-allowed border-transparent bg-miru-gray-1000 hover:border-transparent"
           }`}
