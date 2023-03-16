@@ -74,7 +74,7 @@ RSpec.describe "Workspaces#update", type: :request do
   context "when unauthenticated" do
     it "user will be redirects to sign in path" do
       send_request :patch, workspace_path(company)
-      expect(response).to redirect_to(user_session_path)
+      expect(response).to redirect_to(root_path)
       expect(flash[:alert]).to eq("You need to sign in or sign up before continuing.")
     end
   end

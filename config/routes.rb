@@ -11,7 +11,6 @@ end
 Rails.application.routes.draw do
   devise_for :users, skip: [:sessions, :registrations], controllers: {
     confirmations: "users/confirmations",
-    passwords: "users/passwords",
     omniauth_callbacks: "users/omniauth_callbacks"
   }
 
