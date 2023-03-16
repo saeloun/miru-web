@@ -10,7 +10,10 @@ const SearchDropdown = ({ list = [], loading, SearchedDataRow }: Iprops) => {
   }
 
   return (
-    <section className="absolute top-9 w-full rounded-lg bg-miru-white-1000 shadow drop-shadow-md">
+    <section
+      className="absolute top-9 w-full rounded-lg bg-miru-white-1000 shadow drop-shadow-md"
+      id="searchResult"
+    >
       {list?.map((item, index) => (
         <SearchedDataRow item={item} key={index} />
       ))}
