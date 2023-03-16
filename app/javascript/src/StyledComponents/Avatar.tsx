@@ -43,6 +43,7 @@ const Avatar = ({
       <img
         alt="profile_pic"
         className={classnames(DEFAULT_STYLE_IMAGE, classNameImg)}
+        id="logo"
         src={url}
       />
     );
