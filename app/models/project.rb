@@ -52,7 +52,8 @@ class Project < ApplicationRecord
       description:,
       billable:,
       client_id:,
-      client_name:
+      client_name:,
+      discarded_at:
     }
   end
 
