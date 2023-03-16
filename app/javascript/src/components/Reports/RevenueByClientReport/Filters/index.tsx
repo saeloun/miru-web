@@ -1,61 +1,55 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import dayjs from "dayjs";
 import { useDebounce, useOutsideClick } from "helpers";
-import { XIcon, FilterIcon, MinusIcon, PlusIcon, SearchIcon } from "miruIcons";
+import Logger from "js-logger";
+import { FilterIcon, MinusIcon, PlusIcon, SearchIcon, XIcon } from "miruIcons";
 import { Button, SidePanel } from "StyledComponents";
-// import * as Yup from "yup";
+import * as Yup from "yup";
 
+import clientApi from "apis/clients";
 import companiesApi from "apis/companies";
 import CustomCheckbox from "common/CustomCheckbox";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";
 import { LocalStorageKeys } from "constants/index";
+import { useUserContext } from "context/UserContext";
 
 import { dateRangeOptions } from "./filterOptions";
 
-// import { useEntry } from "../../context/EntryContext";
-
-// const dateSchema = Yup.object().shape({
-//   fromDate: Yup.string().required("Must include From date"),
-//   toDate: Yup.string().required("Must include To date"),
-// });
+const dateSchema = Yup.object().shape({
+  fromDate: Yup.string().required("Must include From date"),
+  toDate: Yup.string().required("Must include To date"),
+});
 
 const FilterSideBar = ({
-  // selectedFilter,
+  dateRange,
+  setDateRange,
   setIsFilterVisible,
-  filterParams,
+  resetFilter,
   setFilterParams,
-  // resetFilter,
-  // handleApplyFilter,
-  selectedInput,
   setSelectedInput,
-  isDesktop,
-  handleReset,
+  selectedInput,
+  filterParams,
+  setSelectedFilter,
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
-  // const { revenueByClientReport } = useEntry();
-  const [filters, setFilters] = useState<any>(filterParams);
   const [clientList, setClientList] = useState<null | any[]>([]);
+  const [filters, setFilters] = useState(filterParams);
+  const [showCustomFilter, setShowCustomFilter] = useState(false);
   const [filteredClientList, setFilteredClientList] = useState<null | any[]>(
     clientList
   );
-  const [showCustomFilter, setShowCustomFilter] = useState(false);
-  const [dateRange, setDateRange] = useState<any>({ from: "", to: "" });
   const [customDate, setCustomDate] = useState<boolean>(false);
   const [disableDateBtn, setDisableDateBtn] = useState<boolean>(true);
   const [isDateRangeOpen, setIsDateRangeOpen] = useState<boolean>(false);
-  const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
   const [dateRangeList, setDateRangeList] = useState<any>(dateRangeOptions);
+  const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [disableApplyBtn, setDisableApplyBtn] = useState(false);
-  // const [errorMessage, setErrorMessage] = useState({
-  //   fromDateErr: "",
-  //   toDateErr: "",
-  // });
+
+  const { isDesktop } = useUserContext();
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const wrapperRef = useRef(null);
-
   useOutsideClick(wrapperRef, () => setShowCustomFilter(false), selectedInput);
 
   useEffect(() => {
@@ -66,7 +60,7 @@ const FilterSideBar = ({
       setDateRangeList(dateRangeOptions);
       setDisableDateBtn(false);
     } else {
-      dateRangeOptions[5].label = "Custom";
+      dateRangeOptions[4].label = "Custom";
     }
     fetchCompanyDetails();
   }, []);
@@ -86,40 +80,6 @@ const FilterSideBar = ({
       setDisableDateBtn(false);
     }
   }, [filters.dateRange.value, dateRange.from, dateRange.to]);
-
-  const defaultDateRange = () => {
-    const { value } = filters.dateRange;
-    if (value == "all") {
-      return true;
-    } else if (value == "custom" && !customDate) {
-      return true;
-    }
-
-    return false;
-  };
-
-  const setDefaultDateRange = () => ({
-    ...filters,
-    ["dateRange"]: { value: "all", label: "All", from: "", to: "" },
-  });
-
-  const resetCustomDatePicker = () => {
-    defaultDateRange() && setFilters(setDefaultDateRange());
-    hideCustomFilter();
-  };
-
-  useEffect(() => {
-    if (
-      filters.dateRange.value == "custom" &&
-      !filters.dateRange.from &&
-      !filters.dateRange.to &&
-      disableDateBtn
-    ) {
-      setDisableApplyBtn(true);
-    } else {
-      setDisableApplyBtn(false);
-    }
-  }, [filters, disableDateBtn]);
 
   const sortClients = (a, b) => {
     if (a.label.toLowerCase() < b.label.toLowerCase()) {
@@ -144,72 +104,31 @@ const FilterSideBar = ({
       setFilteredClientList(clientArr.sort(sortClients));
       setLoading(false);
     } catch {
-      handleReset();
+      resetFilter();
     }
-  };
-
-  const handleApply = () => {
-    if (disableApplyBtn) {
-      return;
-    }
-
-    defaultDateRange()
-      ? setFilterParams(setDefaultDateRange())
-      : setFilterParams(filters);
-
-    window.localStorage.setItem(
-      LocalStorageKeys.INVOICE_FILTERS,
-      JSON.stringify(filters)
-    );
-    setIsFilterVisible(false);
   };
 
   useEffect(() => {
-    if (debouncedSearchQuery && filteredClientList.length > 0) {
-      const newClientList = filteredClientList.filter(client =>
-        client.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+    fetchAndSetClients();
+  }, []);
+
+  const fetchAndSetClients = async () => {
+    try {
+      const { data } = await clientApi.get("");
+      setClientList(
+        data.client_details.map(client => ({
+          value: client.id,
+          label: client.name,
+        }))
       );
-
-      newClientList.length > 0
-        ? setFilteredClientList(newClientList)
-        : setFilteredClientList([]);
-    } else {
-      setFilteredClientList(clientList);
+    } catch {
+      Logger.error("Error fetching clients");
     }
-  }, [debouncedSearchQuery]);
-
-  if (loading) {
-    return <div>Loading....</div>;
-  }
-
-  // const handleSelectClientFilter = selectedValue => {
-  //   if (Array.isArray(selectedValue) && selectedValue.length > 0) {
-  //     setFilters({
-  //       ...filters,
-  //       clients: selectedValue,
-  //     });
-  //   } else {
-  //     setFilters({
-  //       ...filters,
-  //       clients: [{ label: "All Clients", value: "" }],
-  //     });
-  //   }
-  // };
-
-  // const handleSelectDateFilter = selectedValue => {
-  //   if (selectedValue.value === "custom") {
-  //     setShowCustomFilter(true);
-  //   }
-
-  //   setFilters({
-  //     ...filters,
-  //     dateRange: selectedValue,
-  //   });
-  // };
+  };
 
   const handleSelectFilter = (selectedValue, field) => {
     if (selectedValue.value !== "custom") {
-      dateRangeOptions[5].label = "Custom";
+      dateRangeOptions[4].label = "Custom";
       setDefaultDateRange();
     }
 
@@ -254,9 +173,6 @@ const FilterSideBar = ({
       setDateRange({ ...dateRange, ...{ to: date } });
     }
   };
-  // const submitApplyFilter = () => {
-  //   handleApplyFilter(filters);
-  // };
 
   const hideCustomFilter = () => {
     setShowCustomFilter(false);
@@ -267,23 +183,93 @@ const FilterSideBar = ({
   };
 
   const submitCustomDatePicker = async () => {
-    if (dateRange.from && dateRange.to) {
-      const fromDate = dayjs(dateRange.from).format("Do MMM");
-      const toDate = dayjs(dateRange.to).format("Do MMM");
-      dateRangeOptions[5].label = `Custom (${fromDate} - ${toDate})`;
+    try {
+      await dateSchema.validate(
+        { fromDate: dateRange.from, toDate: dateRange.to },
+        { abortEarly: false }
+      );
+      await hideCustomFilter();
+    } catch (err) {
+      const errObj = {
+        fromDateErr: "",
+        toDateErr: "",
+      };
 
-      setFilters({
-        ...filters,
-        ["dateRange"]: {
-          value: "custom",
-          label: `Custom (${fromDate} - ${toDate})`,
-          ...dateRange,
-        },
+      err.inner.map(item => {
+        errObj[`${item.path}Err`] = item.message;
       });
-      setCustomDate(true);
+      hideCustomFilter();
     }
+  };
+
+  const defaultDateRange = () => {
+    const { value } = filters.dateRange;
+    if (value == "all") {
+      return true;
+    } else if (value == "custom" && !customDate) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const setDefaultDateRange = () => ({
+    ...filters,
+    ["dateRange"]: { value: "all", label: "All", from: "", to: "" },
+  });
+
+  const resetCustomDatePicker = () => {
+    defaultDateRange() && setFilters(setDefaultDateRange());
     hideCustomFilter();
   };
+
+  useEffect(() => {
+    if (
+      filters.dateRange.value == "custom" &&
+      !filters.dateRange.from &&
+      !filters.dateRange.to &&
+      disableDateBtn
+    ) {
+      setDisableApplyBtn(true);
+    } else {
+      setDisableApplyBtn(false);
+    }
+  }, [filters, disableDateBtn]);
+
+  const handleApply = () => {
+    setSelectedFilter(filters);
+    if (disableApplyBtn) {
+      return;
+    }
+
+    defaultDateRange()
+      ? setFilterParams(setDefaultDateRange())
+      : setFilterParams(filters);
+
+    window.localStorage.setItem(
+      LocalStorageKeys.INVOICE_FILTERS,
+      JSON.stringify(filters)
+    );
+    setIsFilterVisible(false);
+  };
+
+  useEffect(() => {
+    if (debouncedSearchQuery && filteredClientList.length > 0) {
+      const newClientList = filteredClientList.filter(client =>
+        client.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      );
+
+      newClientList.length > 0
+        ? setFilteredClientList(newClientList)
+        : setFilteredClientList([]);
+    } else {
+      setFilteredClientList(clientList);
+    }
+  }, [debouncedSearchQuery]);
+
+  if (loading) {
+    return <div>Loading....</div>;
+  }
 
   return (
     <SidePanel
@@ -293,11 +279,11 @@ const FilterSideBar = ({
       <div>
         <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-miru-han-purple-1000 px-2 text-white lg:h-auto lg:bg-white lg:px-5 lg:py-5 lg:font-bold lg:text-miru-dark-purple-1000">
           {isDesktop ? (
-            <h4 className="flex items-center text-base">
+            <h4 className="flex items-center text-base font-extrabold">
               <FilterIcon className="mr-2.5" size={16} /> <span>Filters</span>
             </h4>
           ) : (
-            <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
+            <span className="flex w-full items-center justify-center pl-6 text-base font-extrabold leading-5">
               Filters
             </span>
           )}
@@ -318,7 +304,7 @@ const FilterSideBar = ({
                   setIsDateRangeOpen(!isDateRangeOpen);
                 }}
               >
-                <h5 className="text-xs font-bold leading-4 tracking-wider">
+                <h5 className="text-xs font-bold leading-4 tracking-widest">
                   DATE RANGE
                 </h5>
                 <div className="flex items-center">
@@ -394,7 +380,7 @@ const FilterSideBar = ({
                   setIsClientOpen(!isClientOpen);
                 }}
               >
-                <h5 className="text-xs font-bold leading-4 tracking-wider">
+                <h5 className="text-xs font-bold leading-4 tracking-widest">
                   CLIENTS
                 </h5>
                 <div className="flex items-center">
@@ -471,7 +457,7 @@ const FilterSideBar = ({
         <Button
           className="mr-2 flex items-center justify-between px-10 py-2.5 text-base font-bold leading-5"
           style="secondary"
-          onClick={handleReset}
+          onClick={resetFilter}
         >
           RESET
         </Button>
