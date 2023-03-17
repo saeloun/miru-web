@@ -24,7 +24,8 @@ interface SignUpFormValues {
 const SignUpForm = () => {
   const navigate = useNavigate();
 
-  const handleSignUpFormSubmit = async (values: any) => {
+  const handleSignUpFormSubmit = async (values: any, formikHelpers) => {
+    formikHelpers.validate();
     const { firstName, lastName, email, password, confirm_password } = values;
     const payload = {
       first_name: firstName,
@@ -59,20 +60,39 @@ const SignUpForm = () => {
             <Formik
               initialValues={signUpFormInitialValues}
               validateOnBlur={false}
+              validateOnChange={false}
               validationSchema={signUpFormValidationSchema}
               onSubmit={handleSignUpFormSubmit}
             >
               {(props: FormikProps<SignUpFormValues>) => {
-                const { touched, errors, values } = props;
+                const {
+                  touched,
+                  errors,
+                  values,
+                  setFieldValue,
+                  setFieldError,
+                } = props;
 
                 return (
                   <Form>
-                    <div className="mb-3 flex justify-between">
+                    <div className="flex justify-between">
                       <div className="field relative mr-6 w-1/2 lg:w-168">
                         <InputField
                           id="firstName"
                           label="First Name"
+                          labelClassName="p-0"
                           name="firstName"
+                          inputBoxClassName={`p-3.75 ${
+                            errors.firstName && touched.firstName
+                              ? "error-input border-miru-red-400"
+                              : ""
+                          }`}
+                          onChange={e => {
+                            if (errors.firstName && touched.firstName) {
+                              setFieldError("firstName", "");
+                            }
+                            setFieldValue("firstName", e.target.value);
+                          }}
                         />
                         <InputErrors
                           fieldErrors={errors.firstName}
@@ -83,7 +103,19 @@ const SignUpForm = () => {
                         <InputField
                           id="lastName"
                           label="Last Name"
+                          labelClassName="p-0"
                           name="lastName"
+                          inputBoxClassName={`p-3.75 ${
+                            errors.lastName && touched.lastName
+                              ? "error-input border-miru-red-400"
+                              : ""
+                          }`}
+                          onChange={e => {
+                            if (errors.lastName && touched.lastName) {
+                              setFieldError("lastName", "");
+                            }
+                            setFieldValue("lastName", e.target.value);
+                          }}
                         />
                         <InputErrors
                           fieldErrors={errors.lastName}
@@ -92,7 +124,23 @@ const SignUpForm = () => {
                       </div>
                     </div>
                     <div className="field relative">
-                      <InputField id="email" label="Email" name="email" />
+                      <InputField
+                        id="email"
+                        label="Email"
+                        labelClassName="p-0"
+                        name="email"
+                        inputBoxClassName={`p-3.75 ${
+                          errors.email && touched.email
+                            ? "error-input border-miru-red-400"
+                            : ""
+                        }`}
+                        onChange={e => {
+                          if (errors.email && touched.email) {
+                            setFieldError("email", "");
+                          }
+                          setFieldValue("email", e.target.value);
+                        }}
+                      />
                       <InputErrors
                         fieldErrors={errors.email}
                         fieldTouched={touched.email}
@@ -102,8 +150,20 @@ const SignUpForm = () => {
                       <InputField
                         id="password"
                         label="Password"
+                        labelClassName="p-0"
                         name="password"
                         type="password"
+                        inputBoxClassName={`p-3.75 ${
+                          errors.password && touched.password
+                            ? "error-input border-miru-red-400"
+                            : ""
+                        }`}
+                        onChange={e => {
+                          if (errors.password && touched.password) {
+                            setFieldError("password", "");
+                          }
+                          setFieldValue("password", e.target.value);
+                        }}
                       />
                       <InputErrors
                         fieldErrors={errors.password}
@@ -114,8 +174,23 @@ const SignUpForm = () => {
                       <InputField
                         id="confirm_password"
                         label="Confirm Password"
+                        labelClassName="p-0"
                         name="confirm_password"
                         type="password"
+                        inputBoxClassName={`p-3.75 ${
+                          errors.confirm_password && touched.confirm_password
+                            ? "error-input border-miru-red-400"
+                            : ""
+                        }`}
+                        onChange={e => {
+                          if (
+                            errors.confirm_password &&
+                            touched.confirm_password
+                          ) {
+                            setFieldError("confirm_password", "");
+                          }
+                          setFieldValue("confirm_password", e.target.value);
+                        }}
                       />
                       <InputErrors
                         fieldErrors={errors.confirm_password}
@@ -139,14 +214,14 @@ const SignUpForm = () => {
                 );
               }}
             </Formik>
-            <div className="relative mb-3 flex items-center py-5">
+            {/* <div className="relative mb-3 flex items-center py-5">
               <div className="flex-grow border-t border-miru-gray-1000" />
               <span className="mx-4 flex-shrink text-xs text-miru-dark-purple-1000">
                 or
               </span>
               <div className="flex-grow border-t border-miru-gray-1000" />
             </div>
-            {/* <div className="mb-3">
+             <div className="mb-3">
               <button
                 className="form__button whitespace-nowrap"
                 data-cy="sign-up-button"
@@ -156,7 +231,7 @@ const SignUpForm = () => {
                 Sign Up with Google
               </button>
             </div> */}
-            <p className="text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+            <p className="pt-5 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
               Already have an account?&nbsp;
               <span
                 className="form__link inline cursor-pointer"

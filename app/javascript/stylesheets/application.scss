@@ -562,6 +562,7 @@ body {
   @apply top-2 z-0 ml-3 -translate-y-4 scale-75 transform px-1 py-0 text-xs text-miru-dark-purple-400;
 }
 
+.outline input:focus-within ~ label.p-0,
 .outline input:not(:placeholder-shown) ~ label.p-0 {
   padding: 0 !important;
 }
