@@ -47,6 +47,7 @@ shared_examples_for "Time tracking - week view" do |obj|
       find(:css, "#selectedInput").set("8")
       fill_in placeholder: "Note", with: "Weekly note!"
       click_button "SAVE"
+      sleep 1
 
       expect(page).to have_content("Weekly note!")
     end
