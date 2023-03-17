@@ -136,13 +136,8 @@ const EditMembersListForm = ({
                 value={member.hourlyRate}
                 inputBoxClassName={` text-right ${
                   isInvalidRateInputBox(memberIndex)
-                    ? "border-red-600"
+                    ? "border-miru-red-400 error-input"
                     : "border-miru-gray-1000"
-                }`}
-                labelClassName={`${
-                  isInvalidRateInputBox(memberIndex)
-                    ? "text-red-600"
-                    : "text-miru-dark-purple-200"
                 }`}
                 onChange={e => handleHourlyRateInput(e, memberIndex)}
                 onFocus={() => setFocusedRateInputBoxId(memberIndex)}
@@ -166,7 +161,7 @@ const EditMembersListForm = ({
           {isInvalidRateInputBox(memberIndex) ? (
             <div className="flex flex-row-reverse">
               <ErrorSpan
-                className="block w-1/3 text-xs text-red-600"
+                className="relative right-2 block w-1/3 text-xs text-miru-red-400"
                 message={errorForInvalidHourlyRate[memberIndex]}
               />
             </div>
