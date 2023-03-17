@@ -23,6 +23,8 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
       create(:employment, company:, user:)
       create(:project, billable: true, client: client1)
       create(:project, billable: true, client: client2)
+      create(:project, client: client1)
+      create(:project, client: client3)
       user.add_role :admin, company
       sign_in user
     end
@@ -65,6 +67,10 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
 
       it "returns the billable clients data in alaphabetical order with amount details" do
         expect(json_response["clients"]).to eq(JSON.parse(@expected_clients.to_json))
+      end
+
+      it "should not return non billable clients data" do
+        expect(json_response["clients"].pluck("name")).not_to include(client3.name)
       end
 
       it "returns the base currency" do
