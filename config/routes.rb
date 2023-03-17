@@ -59,11 +59,6 @@ Rails.application.routes.draw do
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"
 
-  devise_scope :user do
-    # TODO: verify if this is path is in use otherwise remove it.
-    delete "profile/purge_avatar", to: "users/registrations#purge_avatar"
-  end
-
   namespace :webhooks do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
   end
