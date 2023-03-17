@@ -82,7 +82,7 @@
 
   .header {
     &__title {
-      @apply text-xl lg:text-3xl font-extrabold leading-7 text-gray-900;
+      @apply text-xl font-extrabold leading-7 text-gray-900 lg:text-3xl;
     }
     &__searchWrap {
       @apply flex items-center;
@@ -95,15 +95,15 @@
         padding: 7px 6px;
       }
       @media screen and (min-width: 500px) {
-        input{
-        width: 324px;
-        padding: 7px 6px;
+        input {
+          width: 324px;
+          padding: 7px 6px;
         }
       }
       @media screen and (min-width: 1200px) {
-        input{
-        width: 424px;
-        padding: 7px 6px;
+        input {
+          width: 424px;
+          padding: 7px 6px;
         }
       }
     }
@@ -111,16 +111,16 @@
       @apply focus:outline-none block h-8 w-24 appearance-none rounded border border-gray-100 bg-miru-gray-100 px-3  py-2 text-xs font-semibold tracking-wider text-miru-dark-purple-1000 shadow-sm focus:border-miru-gray-1000 focus:ring-miru-gray-1000 sm:w-40 sm:text-sm md:w-64 lg:w-96;
     }
     &__button {
-      @apply ml-2 tracking-widest inline-flex items-center h-10 flex justify-center sm:px-1 lg:py-1 lg:px-4 px-3 py-3 lg:border-2 border border-miru-han-purple-1000 shadow-sm bg-transparent hover:border-miru-han-purple-600 focus:outline-none rounded text-xs lg:text-base font-sans font-medium text-miru-han-purple-1000 bg-transparent hover:text-miru-han-purple-600 cursor-pointer
+      @apply focus:outline-none ml-2 flex inline-flex h-10 cursor-pointer items-center justify-center rounded border border-miru-han-purple-1000 bg-transparent bg-transparent px-3 py-3 font-sans text-xs font-medium tracking-widest text-miru-han-purple-1000 shadow-sm hover:border-miru-han-purple-600 hover:text-miru-han-purple-600 sm:px-1 lg:border-2 lg:py-1 lg:px-4 lg:text-base;
     }
   }
 
   .page-display {
     &__wrap {
-      @apply pt-5 w-full flex items-stretch sm:flex-row text-miru-dark-purple-1000 border-t border-miru-gray-1000;
+      @apply flex w-full items-stretch border-t border-miru-gray-1000 pt-5 text-miru-dark-purple-1000 sm:flex-row;
     }
     &__box {
-      @apply flex flex-col justify-start items-start pl-2 pr-6 md:px-10 border-r border-miru-han-purple-600;
+      @apply flex flex-col items-start justify-start border-r border-miru-han-purple-600 pl-2 pr-6 md:px-10;
     }
     &__box:last-child {
       @apply border-r-0 border-b-0 pb-0;
@@ -128,7 +128,6 @@
     &__box:nth-last-child(2) {
       @apply border-b-0 pb-0;
     }
-
   }
 
   .align-page {
@@ -351,7 +350,7 @@
   }
   &__placeholder {
     font-size: 14px;
-    color: #A5A3AD;
+    color: #a5a3ad;
   }
   &__dropdown-indicator {
     padding: 4px !important;
@@ -563,31 +562,39 @@ body {
   @apply top-2 z-0 ml-3 -translate-y-4 scale-75 transform px-1 py-0 text-xs text-miru-dark-purple-400;
 }
 
+.outline input:not(:placeholder-shown) ~ label.p-0 {
+  padding: 0 !important;
+}
+
+.outline input.error-input ~ label {
+  color: #e04646 !important;
+}
+
 .focusPadding:focus {
   padding-left: 8px;
   padding-right: 4px;
 }
 
-.tooltip{
-  background-color: #1D1A31;
-  text-color: #FFF
+.tooltip {
+  background-color: #1d1a31;
+  color: #fff;
 }
 
-.input-phone-number input:focus{
+.input-phone-number input:focus {
   outline: none !important;
-  border:none !important;
+  border: none !important;
   box-shadow: none !important;
 }
 
-.profile-setting-image:hover img{
+.profile-setting-image:hover img {
   opacity: 0.3;
 }
 
-.profile-setting-image .hover-button{
+.profile-setting-image .hover-button {
   visibility: hidden;
 }
 
-.profile-setting-image:hover .hover-button{
+.profile-setting-image:hover .hover-button {
   visibility: visible;
 }
 

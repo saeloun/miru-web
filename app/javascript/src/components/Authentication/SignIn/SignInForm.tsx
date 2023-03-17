@@ -22,8 +22,9 @@ const SignInForm = () => {
   const authDispatch = useAuthDispatch();
   const navigate = useNavigate();
 
-  const handleSignInFormSubmit = async (values: any) => {
+  const handleSignInFormSubmit = async (values: any, formikHelpers) => {
     try {
+      formikHelpers.validate();
       const res = await authenticationApi.signin(values);
       //@ts-expect-error for authDispatch initial values
       authDispatch({
@@ -60,11 +61,18 @@ const SignInForm = () => {
             <Formik
               initialValues={signInFormInitialValues}
               validateOnBlur={false}
+              validateOnChange={false}
               validationSchema={signInFormValidationSchema}
               onSubmit={handleSignInFormSubmit}
             >
               {(props: FormikProps<SignInFormValues>) => {
-                const { touched, errors, values } = props;
+                const {
+                  touched,
+                  errors,
+                  values,
+                  setFieldError,
+                  setFieldValue,
+                } = props;
 
                 return (
                   <Form>
@@ -73,7 +81,19 @@ const SignInForm = () => {
                         autoFocus
                         id="email"
                         label="Email"
+                        labelClassName="p-0"
                         name="email"
+                        inputBoxClassName={`p-3.75 ${
+                          errors.email && touched.email
+                            ? "error-input border-miru-red-400"
+                            : ""
+                        }`}
+                        onChange={e => {
+                          if (errors.email && touched.email) {
+                            setFieldError("email", "");
+                          }
+                          setFieldValue("email", e.target.value);
+                        }}
                       />
                       <InputErrors
                         fieldErrors={errors.email}
@@ -84,8 +104,20 @@ const SignInForm = () => {
                       <InputField
                         id="password"
                         label="Password"
+                        labelClassName="p-0"
                         name="password"
                         type="password"
+                        inputBoxClassName={`p-3.75 ${
+                          errors.password && touched.password
+                            ? "error-input border-miru-red-400"
+                            : ""
+                        }`}
+                        onChange={e => {
+                          if (errors.password && touched.password) {
+                            setFieldError("password", "");
+                          }
+                          setFieldValue("password", e.target.value);
+                        }}
                       />
                       <InputErrors
                         fieldErrors={errors.password}
@@ -105,13 +137,13 @@ const SignInForm = () => {
                         Sign In
                       </button>
                     </div>
-                    <div className="relative flex items-center py-7">
+                    {/* <div className="relative flex items-center py-7">
                       <div className="flex-grow border-t border-miru-gray-1000" />
                       <span className="mx-4 flex-shrink text-xs text-miru-dark-purple-1000">
                         or
                       </span>
                       <div className="flex-grow border-t border-miru-gray-1000" />
-                    </div>
+                    </div> */}
                   </Form>
                 );
               }}
@@ -126,7 +158,7 @@ const SignInForm = () => {
                 Sign In with Google
               </button>
             </div> */}
-            <p className="mb-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+            <p className="mb-3 pt-7 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
               <span
                 className="form__link inline cursor-pointer"
                 data-cy="sign-in-link"
