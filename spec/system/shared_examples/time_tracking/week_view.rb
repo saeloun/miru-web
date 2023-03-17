@@ -36,6 +36,8 @@ shared_examples_for "Time tracking - week view" do |obj|
 
   it "can add time entry" do
     user = obj[:is_admin] == true ? admin : employee
+    weekday_number = Time.current.wday - 1
+
     with_forgery_protection do
       visit "time-tracking"
 
@@ -43,28 +45,31 @@ shared_examples_for "Time tracking - week view" do |obj|
       click_button "NEW ROW"
       select client.name, from: "client"
       click_button "SAVE"
-      first(:css, "#inputClick_0", match: :first).click
+      first(:css, "#inputClick_#{weekday_number}", match: :first).click
       find(:css, "#selectedInput").set("8")
       fill_in placeholder: "Note", with: "Weekly note!"
       click_button "SAVE"
       sleep 1
 
-      expect(page).to have_content("Weekly note!")
+      expect(user.timesheet_entries.size).to eq(2)
     end
   end
 
   it "can edit time entry" do
+    user = obj[:is_admin] == true ? admin : employee
+    weekday_number = Time.current.wday - 1 # Adding minus one because on frontend the numbering starts from 0
+
     with_forgery_protection do
       visit "time-tracking"
-      user = obj[:is_admin] == true ? admin : employee
 
       click_button "WEEK"
       find_by_id("prevMonth").click
       find_by_id("nextMonth").click
-      find(:css, "#inputClick_1", match: :first).click
+      find(:css, "#inputClick_#{weekday_number}", match: :first).click
       find(:css, "#selectedInput").set("10")
       fill_in placeholder: "Note", with: "Weekly note!"
       click_button "UPDATE"
+      sleep 2
 
       expect(user.timesheet_entries.first.duration).to eq(600.0)
       expect(user.timesheet_entries.first.note).to eq("Weekly note!")

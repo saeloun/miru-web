@@ -25,9 +25,7 @@ RSpec.describe "Time Tracking", type: :system do
         visit "time-tracking"
         sign_in(admin)
 
-        within(".css-6j8wv5-Input") do
-          find("input#react-select-2-input").set(" ").set(user_two.full_name).send_keys(:tab)
-        end
+        find("input#react-select-2-input").set(" ").set(user_two.full_name).send_keys(:tab)
 
         expect(page).to have_content(time_entry.note)
       end
