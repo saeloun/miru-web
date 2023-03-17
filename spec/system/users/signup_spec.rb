@@ -19,7 +19,8 @@ RSpec.describe "User Signup", type: :system do
 
         click_on "Sign Up"
 
-        expect(page).to have_content(I18n.t("devise.registrations.signed_up"))
+        expect(page).to have_content("Email Verification")
+        expect(page).to have_content(user.email)
       end
     end
 
@@ -35,7 +36,8 @@ RSpec.describe "User Signup", type: :system do
 
         click_on "Sign Up"
 
-        expect(page).to have_content(I18n.t("devise.registrations.signed_up"))
+        expect(page).to have_content("Email Verification")
+        expect(page).to have_content(user.email)
 
         email_body = ActionMailer::Base.deliveries.first.body.to_s
         confirmation_token = email_body.match(/confirmation_token=([\w-]+)/)[1]

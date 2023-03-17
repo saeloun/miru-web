@@ -36,7 +36,7 @@ RSpec.describe "Users::OmniauthCallbacks#google_oauth2", type: :request do
 
     it "redirects to sign in page" do
       expect(response).to have_http_status(:redirect)
-      expect(response).to redirect_to(new_user_session_path)
+      expect(response).to redirect_to(root_path)
     end
 
     it "returns a failed authentication flash message" do
@@ -57,7 +57,7 @@ RSpec.describe "Users::OmniauthCallbacks#google_oauth2", type: :request do
 
     it "redirects to sign up page" do
       expect(response).to have_http_status(:redirect)
-      expect(response).to redirect_to(new_user_registration_url)
+      expect(response).to redirect_to(root_path)
     end
 
     it "returns a failed authentication flash message" do

@@ -1,8 +1,14 @@
 let focusedState = false;
+let isDisabled = false;
 
-export const customStyles = isDesktopView => ({
+export const customStyles = (
+  isDesktopView,
+  ignoreDisabledFontColor = false,
+  hideDropdownIndicator = false
+) => ({
   control: (provided, state) => {
     focusedState = state.isFocused;
+    isDisabled = !!state.isDisabled;
 
     return {
       ...provided,
@@ -18,6 +24,7 @@ export const customStyles = isDesktopView => ({
     ...provided,
     fontSize: "12px",
     letterSpacing: "2px",
+    zIndex: 2,
   }),
   valueContainer: provided => ({
     ...provided,
@@ -31,7 +38,7 @@ export const customStyles = isDesktopView => ({
       state.selectProps.inputValue ||
       (state.selectProps.value && state.selectProps.value?.value !== "")
         ? "-40%"
-        : "20%",
+        : "15%",
     transition: "top 0.5s",
     fontSize:
       focusedState ||
@@ -42,10 +49,17 @@ export const customStyles = isDesktopView => ({
         ? 16
         : 14,
     backgroundColor: "#FFFFFF",
+    color:
+      focusedState ||
+      state.selectProps.inputValue ||
+      (state.selectProps.value && state.selectProps.value?.value !== "")
+        ? "#777683"
+        : "#A5A3AD",
   }),
   dropdownIndicator: base => ({
     ...base,
     color: "#5B34EA", // Custom colour
+    display: hideDropdownIndicator ? "none" : "block",
   }),
   input: base => ({
     ...base,
@@ -57,5 +71,6 @@ export const customStyles = isDesktopView => ({
     ...base,
     fontWeight: 500,
     fontSize: isDesktopView ? 16 : 14,
+    color: isDisabled && !ignoreDisabledFontColor ? "#A5A3AD" : "#1D1A31",
   }),
 });
