@@ -24,8 +24,7 @@ interface SignUpFormValues {
 const SignUpForm = () => {
   const navigate = useNavigate();
 
-  const handleSignUpFormSubmit = async (values: any, formikHelpers) => {
-    formikHelpers.validate();
+  const handleSignUpFormSubmit = async (values: any) => {
     const { firstName, lastName, email, password, confirm_password } = values;
     const payload = {
       first_name: firstName,
@@ -53,7 +52,7 @@ const SignUpForm = () => {
       <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="w-full px-8 pt-16 pb-4 md:px-0 md:pt-36 lg:w-1/2">
         <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
-          <h1 className="text-center font-manrope text-4xl font-extrabold text-miru-han-purple-1000">
+          <h1 className="text-center font-manrope text-4.5xl font-extrabold text-miru-han-purple-1000">
             Signup for Miru
           </h1>
           <div className="pt-20">

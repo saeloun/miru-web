@@ -30,6 +30,7 @@ const InputField = ({
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  const optionalFieldProps = onChange ? { onChange } : {};
 
   return (
     <div className="field relative">
@@ -44,7 +45,7 @@ const InputField = ({
           type={
             type === "password" ? (showPassword ? "text" : "password") : type
           }
-          onChange={onChange}
+          {...optionalFieldProps}
         />
         <label
           className={classNames(defaultLabelClassname, labelClassName)}
@@ -88,7 +89,7 @@ InputField.defaultProps = {
   wrapperClassName: "outline relative h-12",
   disabled: false,
   autoFocus: false,
-  onChange: () => {}, //eslint-disable-line @typescript-eslint/no-empty-function
+  onChange: undefined,
 };
 
 export default InputField;

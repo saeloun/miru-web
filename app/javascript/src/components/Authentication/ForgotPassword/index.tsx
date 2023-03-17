@@ -52,18 +52,19 @@ const ForgotPassword = () => {
               width="64"
             />
           </div>
-          <h1 className="text-center font-manrope text-4xl font-extrabold text-miru-han-purple-1000">
+          <h1 className="text-center font-manrope text-4.5xl font-extrabold text-miru-han-purple-1000">
             Forgot Password
           </h1>
           <div className="pt-20">
             <Formik
               initialValues={forgotPasswordFormInitialValues}
               validateOnBlur={false}
+              validateOnChange={false}
               validationSchema={forgotPasswordFormValidationSchema}
               onSubmit={handlePasswordFormSubmit}
             >
               {(props: FormikProps<ForgotPasswordFormValues>) => {
-                const { touched, errors } = props;
+                const { touched, errors, setFieldValue, setFieldError } = props;
 
                 return (
                   <Form>
@@ -71,7 +72,19 @@ const ForgotPassword = () => {
                       <InputField
                         id="email"
                         label="Enter your registered email ID"
+                        labelClassName="p-0"
                         name="email"
+                        inputBoxClassName={`p-3.75 ${
+                          errors.email && touched.email
+                            ? "error-input border-miru-red-400"
+                            : ""
+                        }`}
+                        onChange={e => {
+                          if (errors.email && touched.email) {
+                            setFieldError("email", "");
+                          }
+                          setFieldValue("email", e.target.value);
+                        }}
                       />
                       <InputErrors
                         fieldErrors={errors.email}
@@ -93,7 +106,7 @@ const ForgotPassword = () => {
                         data-cy="sign-in-link"
                       >
                         <a href={Paths.LOGIN}>
-                          <span className="mr-2 inline-block">
+                          <span className="mr-2 inline-block font-bold">
                             Back to Login
                           </span>
                         </a>

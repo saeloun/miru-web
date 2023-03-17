@@ -50,13 +50,14 @@ const ResetPassword = () => {
               width="64"
             />
           </div>
-          <h1 className="text-center font-manrope text-4xl font-extrabold text-miru-han-purple-1000">
+          <h1 className="text-center font-manrope text-4.5xl font-extrabold text-miru-han-purple-1000">
             Reset Password
           </h1>
           <div className="pt-20">
             <Formik
               initialValues={resetPasswordFormInitialValues}
               validateOnBlur={false}
+              validateOnChange={false}
               validationSchema={resetPasswordFormValidationSchema}
               onSubmit={handleResetPasswordFormSubmit}
             >

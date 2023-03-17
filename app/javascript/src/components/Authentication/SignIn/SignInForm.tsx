@@ -22,9 +22,8 @@ const SignInForm = () => {
   const authDispatch = useAuthDispatch();
   const navigate = useNavigate();
 
-  const handleSignInFormSubmit = async (values: any, formikHelpers) => {
+  const handleSignInFormSubmit = async (values: any) => {
     try {
-      formikHelpers.validate();
       const res = await authenticationApi.signin(values);
       //@ts-expect-error for authDispatch initial values
       authDispatch({
@@ -40,7 +39,7 @@ const SignInForm = () => {
         500
       );
     } catch (error) {
-      if (error.response.data.unconfirmed) {
+      if (error?.response?.data?.unconfirmed) {
         navigate(`/email_confirmation?email=${values.email}`);
       }
     }
@@ -54,7 +53,7 @@ const SignInForm = () => {
       <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="relative w-full px-8 pt-16 pb-4 md:px-0 md:pt-36 lg:w-1/2">
         <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
-          <h1 className="text-center font-manrope text-4xl font-extrabold text-miru-han-purple-1000">
+          <h1 className="text-center font-manrope text-4.5xl font-extrabold text-miru-han-purple-1000">
             Welcome back!
           </h1>
           <div className="pt-20">

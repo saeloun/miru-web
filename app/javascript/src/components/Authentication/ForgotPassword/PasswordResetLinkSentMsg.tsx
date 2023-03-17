@@ -17,10 +17,10 @@ const PasswordResetLinkSentMsg = ({ email }: Props) => (
           width="64"
         />
       </div>
-      <h1 className="text-center font-manrope text-4xl font-extrabold text-miru-han-purple-1000">
+      <h1 className="text-center font-manrope text-4.5xl font-extrabold text-miru-han-purple-1000">
         Password reset link sent
       </h1>
-      <div className="pt-20">
+      <div className="pt-10">
         <p className="text-center font-manrope text-sm text-miru-dark-purple-1000 ">
           A password reset link has been sent to your email ID:
           <span className="font-manrope font-bold">{email}</span>
