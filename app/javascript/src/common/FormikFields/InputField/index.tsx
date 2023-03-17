@@ -2,10 +2,20 @@
 
 import React, { useState } from "react";
 
+import classNames from "classnames";
 import { Field } from "formik";
 import { PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 
+const defaultInputBoxClassName =
+  "form__input block w-full appearance-none bg-white p-4 text-sm lg:text-base h-12 border-miru-gray-1000";
+const defaultWrapperClassName = "outline relative h-12";
+const defaultLabelClassname =
+  "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-sm lg:text-base font-medium text-miru-dark-purple-200 duration-300";
+
 const InputField = ({
+  value,
+  onChange,
+  readOnly,
   label,
   id,
   name,
@@ -24,19 +34,25 @@ const InputField = ({
 
   return (
     <div className="field relative">
-      <div className={wrapperClassName}>
+      <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
         <Field
           autoFocus={autoFocus}
-          className={inputBoxClassName}
+          className={classNames(defaultInputBoxClassName, inputBoxClassName)}
           disabled={disabled}
           id={id}
           name={name}
           placeholder=" "
+          readOnly={readOnly}
+          value={value}
           type={
             type === "password" ? (showPassword ? "text" : "password") : type
           }
+          onChange={onChange}
         />
-        <label className={labelClassName} htmlFor={name}>
+        <label
+          className={classNames(defaultLabelClassname, labelClassName)}
+          htmlFor={name}
+        >
           {label}
         </label>
         {type == "password" && (
@@ -75,6 +91,10 @@ InputField.defaultProps = {
   wrapperClassName: "outline relative h-12",
   disabled: false,
   autoFocus: false,
+  value: "",
+  readOnly: false,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onChange: () => {},
 };
 
 export default InputField;

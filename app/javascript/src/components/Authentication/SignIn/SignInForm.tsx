@@ -64,7 +64,7 @@ const SignInForm = () => {
               onSubmit={handleSignInFormSubmit}
             >
               {(props: FormikProps<SignInFormValues>) => {
-                const { touched, errors, values } = props;
+                const { touched, errors, values, setFieldValue } = props;
 
                 return (
                   <Form>
@@ -74,6 +74,8 @@ const SignInForm = () => {
                         id="email"
                         label="Email"
                         name="email"
+                        value={values.email}
+                        onChange={e => setFieldValue("email", e.target.value)}
                       />
                       <InputErrors
                         fieldErrors={errors.email}
@@ -86,6 +88,10 @@ const SignInForm = () => {
                         label="Password"
                         name="password"
                         type="password"
+                        value={values.password}
+                        onChange={e =>
+                          setFieldValue("password", e.target.value)
+                        }
                       />
                       <InputErrors
                         fieldErrors={errors.password}

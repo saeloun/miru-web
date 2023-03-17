@@ -27,7 +27,11 @@ const Container = ({
         setOpenDropdown(!openDropdown);
       }}
     >
-      <span className="text-base font-bold leading-5 text-miru-dark-purple-1000">
+      <span
+        className={`text-base leading-5 text-miru-dark-purple-1000 ${
+          openDropdown ? "font-bold" : "font-medium"
+        }`}
+      >
         {title}
       </span>
       <div className="flex items-center">
