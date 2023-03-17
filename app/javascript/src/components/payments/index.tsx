@@ -65,6 +65,7 @@ const Payments = () => {
       )}
       {showManualEntryModal && (
         <AddManualEntry
+          baseCurrency={baseCurrency}
           dateFormat={dateFormat}
           fetchInvoiceList={fetchInvoiceList}
           fetchPaymentList={fetchPaymentList}
