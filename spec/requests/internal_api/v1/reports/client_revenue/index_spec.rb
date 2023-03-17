@@ -69,7 +69,7 @@ RSpec.describe "InternalApi::V1::Reports::ClientRevenuesController::#index", typ
         expect(json_response["clients"]).to eq(JSON.parse(@expected_clients.to_json))
       end
 
-      it "should not return non billable clients data" do
+      it "does not return non billable clients data" do
         expect(json_response["clients"].pluck("name")).not_to include(client3.name)
       end
 
