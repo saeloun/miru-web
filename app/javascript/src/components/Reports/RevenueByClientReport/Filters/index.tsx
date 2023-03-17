@@ -149,6 +149,10 @@ const FilterSideBar = ({
 
     if (field.name != "dateRange") {
       if (field.checked) {
+        if (filters[field.name][0].label === "All Clients") {
+          filters[field.name].splice(0, 1);
+        }
+
         setFilters({
           ...filters,
           [field.name]: filters[field.name].concat(selectedValue),
