@@ -5,6 +5,7 @@ import { NavLink, useParams } from "react-router-dom";
 import { Tooltip } from "StyledComponents";
 
 import { useTeamDetails } from "context/TeamDetailsContext";
+import teamApi from "apis/team";
 
 const getActiveClassName = isActive => {
   if (isActive) {
@@ -21,7 +22,7 @@ const getTeamUrls = memberId => [
   },
 ];
 
-const UserInformation = () => {
+const UserInformation = ({memberId}) => {
   const {
     details: {
       personalDetails: { first_name, last_name },
@@ -41,11 +42,16 @@ const UserInformation = () => {
     } else {
       setImageUrl(URL.createObjectURL(imageFile));
       setErrorMessage("");
+      const formD = new FormData();
+      formD.append("user[avatar]", imageFile);
+      teamApi.updateTeamMemberAvatar(memberId, formD);
+
     }
   };
 
   const handleDeleteProfileImage = () => {
     setImageUrl(null);
+    teamApi.destroyTeamMemberAvatar(memberId);
   };
 
   return (
@@ -139,7 +145,7 @@ const SideNav = () => {
 
   return (
     <div>
-      <UserInformation />
+      <UserInformation memberId={memberId}/>
       <TeamUrl urlList={urlList} />
     </div>
   );
