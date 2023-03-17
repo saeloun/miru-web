@@ -27,6 +27,7 @@ export const CustomReactSelect = ({
   onMenuClose,
   onMenuOpen,
   ignoreDisabledFontColor,
+  hideDropdownIndicator,
 }) => {
   const { isDesktop } = useUserContext();
 
@@ -35,7 +36,11 @@ export const CustomReactSelect = ({
       return customErrStyles(isDesktop);
     }
 
-    return customStyles(isDesktop, ignoreDisabledFontColor);
+    return customStyles(
+      isDesktop,
+      ignoreDisabledFontColor,
+      hideDropdownIndicator
+    );
   };
 
   return (
@@ -66,21 +71,22 @@ export const CustomReactSelect = ({
 };
 
 CustomReactSelect.defaultProps = {
+  id: "",
+  styles: null,
+  components: null,
   classNamePrefix: "react-select-filter",
   label: "Select",
   placeholder: "Please select...",
+  isErr: false,
+  isSearchable: true,
+  isDisabled: false,
+  ignoreDisabledFontColor: false,
+  hideDropdownIndicator: false,
   handleOnChange: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   handleonFocus: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
-  isErr: false,
-  isDisabled: false,
   defaultValue: null,
   onMenuClose: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
   onMenuOpen: () => {}, // eslint-disable-line  @typescript-eslint/no-empty-function
-  styles: null,
-  isSearchable: true,
-  components: null,
-  ignoreDisabledFontColor: false,
-  id: "",
 };
 
 export default CustomReactSelect;
