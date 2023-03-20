@@ -78,17 +78,14 @@ const ForgotPassword = () => {
                   <Form>
                     <div className="field relative">
                       <InputField
+                        resetErrorOnChange
                         hasError={errors.email && touched.email}
                         id="email"
                         label="Enter your registered email ID"
                         labelClassName="p-0"
                         name="email"
-                        onChange={e => {
-                          if (errors.email && touched.email) {
-                            setFieldError("email", "");
-                          }
-                          setFieldValue("email", e.target.value);
-                        }}
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
                       />
                       <InputErrors
                         fieldErrors={errors.email}

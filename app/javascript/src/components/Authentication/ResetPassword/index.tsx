@@ -79,18 +79,15 @@ const ResetPassword = () => {
                   <Form>
                     <div className="field">
                       <InputField
+                        resetErrorOnChange
                         hasError={errors.password && touched.password}
                         id="password"
                         label="Password"
                         labelClassName="p-0"
                         name="password"
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
                         type="password"
-                        onChange={e => {
-                          if (errors.password && touched.password) {
-                            setFieldError("password", "");
-                          }
-                          setFieldValue("password", e.target.value);
-                        }}
                       />
                       <InputErrors
                         fieldErrors={errors.password}
@@ -99,23 +96,17 @@ const ResetPassword = () => {
                     </div>
                     <div className="field">
                       <InputField
+                        resetErrorOnChange
                         id="confirm_password"
                         label="Confirm Password"
                         labelClassName="p-0"
                         name="confirm_password"
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
                         type="password"
                         hasError={
                           errors.confirm_password && touched.confirm_password
                         }
-                        onChange={e => {
-                          if (
-                            errors.confirm_password &&
-                            touched.confirm_password
-                          ) {
-                            setFieldError("confirm_password", "");
-                          }
-                          setFieldValue("confirm_password", e.target.value);
-                        }}
                       />
                       <InputErrors
                         fieldErrors={errors.confirm_password}

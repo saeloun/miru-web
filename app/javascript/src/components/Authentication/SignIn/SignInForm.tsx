@@ -90,17 +90,14 @@ const SignInForm = () => {
                     <div className="field relative">
                       <InputField
                         autoFocus
+                        resetErrorOnChange
                         hasError={errors.email && touched.email}
                         id="email"
                         label="Email"
                         labelClassName="p-0"
                         name="email"
-                        onChange={e => {
-                          if (errors.email && touched.email) {
-                            setFieldError("email", "");
-                          }
-                          setFieldValue("email", e.target.value);
-                        }}
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
                       />
                       <InputErrors
                         fieldErrors={errors.email}
@@ -109,18 +106,15 @@ const SignInForm = () => {
                     </div>
                     <div className="field">
                       <InputField
+                        resetErrorOnChange
                         hasError={errors.password && touched.password}
                         id="password"
                         label="Password"
                         labelClassName="p-0"
                         name="password"
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
                         type="password"
-                        onChange={e => {
-                          if (errors.password && touched.password) {
-                            setFieldError("password", "");
-                          }
-                          setFieldValue("password", e.target.value);
-                        }}
                       />
                       <InputErrors
                         fieldErrors={errors.password}

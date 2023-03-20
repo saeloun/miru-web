@@ -88,17 +88,14 @@ const SignUpForm = () => {
                     <div className="flex justify-between">
                       <div className="field relative mr-6 w-1/2 lg:w-168">
                         <InputField
+                          resetErrorOnChange
                           hasError={errors.firstName && touched.firstName}
                           id="firstName"
                           label="First Name"
                           labelClassName="p-0"
                           name="firstName"
-                          onChange={e => {
-                            if (errors.firstName && touched.firstName) {
-                              setFieldError("firstName", "");
-                            }
-                            setFieldValue("firstName", e.target.value);
-                          }}
+                          setFieldError={setFieldError}
+                          setFieldValue={setFieldValue}
                         />
                         <InputErrors
                           fieldErrors={errors.firstName}
@@ -107,17 +104,14 @@ const SignUpForm = () => {
                       </div>
                       <div className="field relative w-1/2 lg:w-168">
                         <InputField
+                          resetErrorOnChange
                           hasError={errors.lastName && touched.lastName}
                           id="lastName"
                           label="Last Name"
                           labelClassName="p-0"
                           name="lastName"
-                          onChange={e => {
-                            if (errors.lastName && touched.lastName) {
-                              setFieldError("lastName", "");
-                            }
-                            setFieldValue("lastName", e.target.value);
-                          }}
+                          setFieldError={setFieldError}
+                          setFieldValue={setFieldValue}
                         />
                         <InputErrors
                           fieldErrors={errors.lastName}
@@ -127,17 +121,14 @@ const SignUpForm = () => {
                     </div>
                     <div className="field relative">
                       <InputField
+                        resetErrorOnChange
                         hasError={errors.email && touched.email}
                         id="email"
                         label="Email"
                         labelClassName="p-0"
                         name="email"
-                        onChange={e => {
-                          if (errors.email && touched.email) {
-                            setFieldError("email", "");
-                          }
-                          setFieldValue("email", e.target.value);
-                        }}
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
                       />
                       <InputErrors
                         fieldErrors={errors.email}
@@ -146,18 +137,15 @@ const SignUpForm = () => {
                     </div>
                     <div className="field">
                       <InputField
+                        resetErrorOnChange
                         hasError={errors.password && touched.password}
                         id="password"
                         label="Password"
                         labelClassName="p-0"
                         name="password"
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
                         type="password"
-                        onChange={e => {
-                          if (errors.password && touched.password) {
-                            setFieldError("password", "");
-                          }
-                          setFieldValue("password", e.target.value);
-                        }}
                       />
                       <InputErrors
                         fieldErrors={errors.password}
@@ -166,23 +154,17 @@ const SignUpForm = () => {
                     </div>
                     <div className="field">
                       <InputField
+                        resetErrorOnChange
                         id="confirm_password"
                         label="Confirm Password"
                         labelClassName="p-0"
                         name="confirm_password"
+                        setFieldError={setFieldError}
+                        setFieldValue={setFieldValue}
                         type="password"
                         hasError={
                           errors.confirm_password && touched.confirm_password
                         }
-                        onChange={e => {
-                          if (
-                            errors.confirm_password &&
-                            touched.confirm_password
-                          ) {
-                            setFieldError("confirm_password", "");
-                          }
-                          setFieldValue("confirm_password", e.target.value);
-                        }}
                       />
                       <InputErrors
                         fieldErrors={errors.confirm_password}

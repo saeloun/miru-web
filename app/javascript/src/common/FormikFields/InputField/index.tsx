@@ -25,13 +25,40 @@ const InputField = ({
   wrapperClassName,
   onChange,
   hasError,
+  resetErrorOnChange,
+  setFieldError,
+  setFieldValue,
 }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  const optionalFieldProps = onChange ? { onChange } : {};
+
+  const clearErrorOnChange = (name, setFieldError) => {
+    if (setFieldError && name) {
+      setFieldError(name, "");
+    }
+  };
+
+  const handleChange = e => {
+    if (resetErrorOnChange) {
+      if (hasError) {
+        clearErrorOnChange(name, setFieldError);
+      }
+
+      if (setFieldValue && name) {
+        setFieldValue(name, e.target.value);
+      }
+    }
+
+    if (onChange) {
+      onChange(e);
+    }
+  };
+
+  const optionalFieldProps =
+    resetErrorOnChange || onChange ? { onChange: e => handleChange(e) } : {};
 
   return (
     <div className="field relative">
@@ -94,6 +121,9 @@ InputField.defaultProps = {
   autoFocus: false,
   onChange: undefined,
   hasError: false,
+  resetErrorOnChange: false,
+  setFieldError: null,
+  setFieldValue: null,
 };
 
 export default InputField;
