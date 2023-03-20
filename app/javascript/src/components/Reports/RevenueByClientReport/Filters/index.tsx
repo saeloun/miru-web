@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { useDebounce, useOutsideClick } from "helpers";
 import Logger from "js-logger";
-import { FilterIcon, MinusIcon, PlusIcon, SearchIcon, XIcon } from "miruIcons";
+import { FilterIcon, MinusIcon, PlusIcon, XIcon } from "miruIcons";
 import { Button, SidePanel } from "StyledComponents";
 import * as Yup from "yup";
 
 import clientApi from "apis/clients";
 import companiesApi from "apis/companies";
-import CustomCheckbox from "common/CustomCheckbox";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";
+import ClientFilter from "components/Reports/Filters/ClientFilter";
 import { LocalStorageKeys } from "constants/index";
 import { useUserContext } from "context/UserContext";
 
@@ -275,6 +275,29 @@ const FilterSideBar = ({
     return <div>Loading....</div>;
   }
 
+  const handleClientFilterToggle = () => {
+    setIsClientOpen(!isClientOpen);
+    setIsDateRangeOpen(false);
+  };
+
+  const handleSelectClient = selectedClient => {
+    if (filters.clients.includes(selectedClient)) {
+      const newarr = filters.clients.filter(
+        client => client.value != selectedClient.value
+      );
+
+      setFilters({
+        ...filters,
+        clients: newarr,
+      });
+    } else {
+      setFilters({
+        ...filters,
+        clients: [...filters.clients, selectedClient],
+      });
+    }
+  };
+
   return (
     <SidePanel
       WrapperClassname="z-50 justify-between"
@@ -376,84 +399,15 @@ const FilterSideBar = ({
                 </div>
               )}
             </li>
-            <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
-              <div
-                className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
-                onClick={() => {
-                  setIsDateRangeOpen(false);
-                  setIsClientOpen(!isClientOpen);
-                }}
-              >
-                <h5 className="text-xs font-bold leading-4 tracking-widest">
-                  CLIENTS
-                </h5>
-                <div className="flex items-center">
-                  {filters.clients.length > 0 && (
-                    <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
-                      {filters.clients.length}
-                    </span>
-                  )}
-                  {isClientOpen ? (
-                    <MinusIcon size={16} />
-                  ) : (
-                    <PlusIcon size={16} />
-                  )}
-                </div>
-              </div>
-              {isClientOpen && (
-                <div className="lg:mt-7">
-                  <div className="relative mt-2 flex w-full items-center px-5">
-                    <input
-                      placeholder="Search"
-                      type="text"
-                      value={searchQuery}
-                      className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
-                      onChange={e => {
-                        setSearchQuery(e.target.value);
-                      }}
-                    />
-                    {searchQuery ? (
-                      <XIcon
-                        className="absolute right-8"
-                        color="#1D1A31"
-                        size={16}
-                        onClick={() => setSearchQuery("")}
-                      />
-                    ) : (
-                      <SearchIcon
-                        className="absolute right-8"
-                        color="#1D1A31"
-                        size={16}
-                      />
-                    )}
-                  </div>
-                  <div className="max-h-50v overflow-y-auto lg:mt-7">
-                    {filteredClientList.length > 0 ? (
-                      filteredClientList.map(client => (
-                        <CustomCheckbox
-                          checkboxValue={client.value}
-                          id={client.value}
-                          key={client.value}
-                          labelClassName="ml-4"
-                          name="clients"
-                          text={client.label}
-                          wrapperClassName="py-3 px-5 flex items-center hover:bg-miru-gray-100 text-miru-dark-purple-1000"
-                          handleCheck={event =>
-                            handleSelectFilter(client, event.target)
-                          }
-                          isChecked={filters.clients.some(
-                            e => e.value === client.value
-                          )}
-                        />
-                      ))
-                    ) : (
-                      <div className="m-5">No results found</div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </li>
+            <ClientFilter
+              filteredClientList={filteredClientList}
+              handleClientFilterToggle={handleClientFilterToggle}
+              handleSelectClient={handleSelectClient}
+              isClientOpen={isClientOpen}
+              searchQuery={searchQuery}
+              selectedClients={filters.clients}
+              setSearchQuery={setSearchQuery}
+            />
           </ul>
         </SidePanel.Body>
       </div>
