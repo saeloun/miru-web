@@ -57,6 +57,7 @@ module.exports = {
         228: "14.25rem", //228px
         300: "18.75rem", //300px
         320: "20rem", // 320px
+        336: "21rem", // 336px
         352: "22rem", //352px
         480: "30rem", //480px
         18: "18%",
@@ -65,6 +66,7 @@ module.exports = {
       minWidth: {
         12: "12px",
         24: "24px",
+        400: "25rem", // 400px
       },
       maxWidth: {
         400: "25rem", //400px
