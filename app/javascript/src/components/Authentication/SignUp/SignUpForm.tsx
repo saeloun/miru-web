@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Formik, Form, FormikProps } from "formik";
+import { GoogleSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -146,7 +147,7 @@ const SignUpForm = () => {
               </span>
               <div className="flex-grow border-t border-miru-gray-1000" />
             </div>
-            {/* <div className="mb-3">
+            <div className="mb-3">
               <button
                 className="form__button whitespace-nowrap"
                 data-cy="sign-up-button"
@@ -155,7 +156,7 @@ const SignUpForm = () => {
                 <img alt="" className="mr-2" src={GoogleSVG} />
                 Sign Up with Google
               </button>
-            </div> */}
+            </div>
             <p className="text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
               Already have an account?&nbsp;
               <span
