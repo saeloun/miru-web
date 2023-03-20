@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { DeleteIcon, EditIcon, ImageIcon, UserAvatarSVG } from "miruIcons";
 import { NavLink, useParams } from "react-router-dom";
 import { Tooltip } from "StyledComponents";
 
-import { useTeamDetails } from "context/TeamDetailsContext";
 import teamApi from "apis/team";
+import teamsApi from "apis/teams";
+import Toastr from "common/Toastr";
+import { useTeamDetails } from "context/TeamDetailsContext";
 
 const getActiveClassName = isActive => {
   if (isActive) {
@@ -22,7 +24,7 @@ const getTeamUrls = memberId => [
   },
 ];
 
-const UserInformation = ({memberId}) => {
+const UserInformation = ({ memberId }) => {
   const {
     details: {
       personalDetails: { first_name, last_name },
@@ -33,25 +35,48 @@ const UserInformation = ({memberId}) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
 
-  const handleProfileImageChange = e => {
-    setShowProfileOptions(false);
-    const imageFile = e.target.files[0];
-    const size = imageFile.size / 1024;
-    if (size > 100) {
-      setErrorMessage("Image size too big");
-    } else {
-      setImageUrl(URL.createObjectURL(imageFile));
-      setErrorMessage("");
-      const formD = new FormData();
-      formD.append("user[avatar]", imageFile);
-      teamApi.updateTeamMemberAvatar(memberId, formD);
-
+  const getAvatar = async () => {
+    try {
+      const responseData = await teamsApi.get(memberId);
+      setImageUrl(responseData.data.avatar_url);
+    } catch {
+      Toastr.error("Error in getting Profile Image");
     }
   };
 
-  const handleDeleteProfileImage = () => {
-    setImageUrl(null);
-    teamApi.destroyTeamMemberAvatar(memberId);
+  useEffect(() => {
+    getAvatar();
+  }, []);
+
+  const handleProfileImageChange = async e => {
+    try {
+      setShowProfileOptions(false);
+      const imageFile = e.target.files[0];
+      const size = imageFile.size / 1024;
+      if (size > 100) {
+        setErrorMessage("Image size too big");
+      } else {
+        setImageUrl(URL.createObjectURL(imageFile));
+        setErrorMessage("");
+        const formD = new FormData();
+        formD.append("user[avatar]", imageFile);
+        await teamApi.updateTeamMemberAvatar(memberId, formD);
+        Toastr.success("Image Uploaded successfully");
+      }
+    } catch {
+      Toastr.error("Error in uploading Profile Image");
+    }
+  };
+
+  const handleDeleteProfileImage = async () => {
+    try {
+      setShowProfileOptions(false);
+      await teamApi.destroyTeamMemberAvatar(memberId);
+      setImageUrl(null);
+      Toastr.success("Image deleted successfully");
+    } catch {
+      Toastr.success("Error in deleting Profile Image");
+    }
   };
 
   return (
@@ -145,7 +170,7 @@ const SideNav = () => {
 
   return (
     <div>
-      <UserInformation memberId={memberId}/>
+      <UserInformation memberId={memberId} />
       <TeamUrl urlList={urlList} />
     </div>
   );
