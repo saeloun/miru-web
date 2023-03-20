@@ -36,6 +36,9 @@ const ResetPassword = () => {
     }
   };
 
+  const isSubmitBtnDisable = values =>
+    !(values?.password?.trim() && values?.confirm_password?.trim());
+
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
@@ -62,7 +65,13 @@ const ResetPassword = () => {
               onSubmit={handleResetPasswordFormSubmit}
             >
               {(props: FormikProps<ResetPasswordFormValues>) => {
-                const { touched, errors, setFieldError, setFieldValue } = props;
+                const {
+                  values,
+                  touched,
+                  errors,
+                  setFieldError,
+                  setFieldValue,
+                } = props;
 
                 return (
                   <Form>
@@ -119,9 +128,13 @@ const ResetPassword = () => {
                     </div>
                     <div>
                       <button
-                        className="form__button whitespace-nowrap"
-                        data-cy="sign-up-button"
+                        data-cy="reset-password-button"
                         type="submit"
+                        className={`form__button whitespace-nowrap ${
+                          isSubmitBtnDisable(values)
+                            ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                            : "cursor-pointer"
+                        }`}
                       >
                         Reset password
                       </button>

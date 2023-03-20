@@ -64,7 +64,13 @@ const ForgotPassword = () => {
               onSubmit={handlePasswordFormSubmit}
             >
               {(props: FormikProps<ForgotPasswordFormValues>) => {
-                const { touched, errors, setFieldValue, setFieldError } = props;
+                const {
+                  values,
+                  touched,
+                  errors,
+                  setFieldValue,
+                  setFieldError,
+                } = props;
 
                 return (
                   <Form>
@@ -93,9 +99,13 @@ const ForgotPassword = () => {
                     </div>
                     <div>
                       <button
-                        className="form__button whitespace-nowrap"
-                        data-cy="sign-up-button"
+                        data-cy="send-password-reset-link-button"
                         type="submit"
+                        className={`form__button whitespace-nowrap ${
+                          !values?.email?.trim()
+                            ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                            : "cursor-pointer"
+                        }`}
                       >
                         Send password reset link
                       </button>
