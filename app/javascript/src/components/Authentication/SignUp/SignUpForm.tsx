@@ -88,15 +88,11 @@ const SignUpForm = () => {
                     <div className="flex justify-between">
                       <div className="field relative mr-6 w-1/2 lg:w-168">
                         <InputField
+                          hasError={errors.firstName && touched.firstName}
                           id="firstName"
                           label="First Name"
                           labelClassName="p-0"
                           name="firstName"
-                          inputBoxClassName={`p-3.75 ${
-                            errors.firstName && touched.firstName
-                              ? "error-input border-miru-red-400"
-                              : ""
-                          }`}
                           onChange={e => {
                             if (errors.firstName && touched.firstName) {
                               setFieldError("firstName", "");
@@ -111,15 +107,11 @@ const SignUpForm = () => {
                       </div>
                       <div className="field relative w-1/2 lg:w-168">
                         <InputField
+                          hasError={errors.lastName && touched.lastName}
                           id="lastName"
                           label="Last Name"
                           labelClassName="p-0"
                           name="lastName"
-                          inputBoxClassName={`p-3.75 ${
-                            errors.lastName && touched.lastName
-                              ? "error-input border-miru-red-400"
-                              : ""
-                          }`}
                           onChange={e => {
                             if (errors.lastName && touched.lastName) {
                               setFieldError("lastName", "");
@@ -135,15 +127,11 @@ const SignUpForm = () => {
                     </div>
                     <div className="field relative">
                       <InputField
+                        hasError={errors.email && touched.email}
                         id="email"
                         label="Email"
                         labelClassName="p-0"
                         name="email"
-                        inputBoxClassName={`p-3.75 ${
-                          errors.email && touched.email
-                            ? "error-input border-miru-red-400"
-                            : ""
-                        }`}
                         onChange={e => {
                           if (errors.email && touched.email) {
                             setFieldError("email", "");
@@ -158,16 +146,12 @@ const SignUpForm = () => {
                     </div>
                     <div className="field">
                       <InputField
+                        hasError={errors.password && touched.password}
                         id="password"
                         label="Password"
                         labelClassName="p-0"
                         name="password"
                         type="password"
-                        inputBoxClassName={`p-3.75 ${
-                          errors.password && touched.password
-                            ? "error-input border-miru-red-400"
-                            : ""
-                        }`}
                         onChange={e => {
                           if (errors.password && touched.password) {
                             setFieldError("password", "");
@@ -187,11 +171,9 @@ const SignUpForm = () => {
                         labelClassName="p-0"
                         name="confirm_password"
                         type="password"
-                        inputBoxClassName={`p-3.75 ${
+                        hasError={
                           errors.confirm_password && touched.confirm_password
-                            ? "error-input border-miru-red-400"
-                            : ""
-                        }`}
+                        }
                         onChange={e => {
                           if (
                             errors.confirm_password &&

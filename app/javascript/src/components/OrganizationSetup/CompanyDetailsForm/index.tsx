@@ -200,6 +200,7 @@ const CompanyDetailsForm = ({
               <div className="field relative">
                 <InputField
                   autoFocus
+                  hasError={errors.company_name && touched.company_name}
                   id="company_name"
                   label="Company Name"
                   name="company_name"
@@ -211,6 +212,7 @@ const CompanyDetailsForm = ({
               </div>
               <div className="field relative">
                 <InputField
+                  hasError={errors.business_phone && touched.business_phone}
                   id="business_phone"
                   label="Business Phone"
                   name="business_phone"
@@ -221,7 +223,12 @@ const CompanyDetailsForm = ({
                 />
               </div>
               <div className="field relative">
-                <InputField id="address" label="Address" name="address" />
+                <InputField
+                  hasError={errors.address && touched.address}
+                  id="address"
+                  label="Address"
+                  name="address"
+                />
                 <InputErrors
                   fieldErrors={errors.address}
                   fieldTouched={touched.address}

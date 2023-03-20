@@ -79,16 +79,12 @@ const ResetPassword = () => {
                   <Form>
                     <div className="field">
                       <InputField
+                        hasError={errors.password && touched.password}
                         id="password"
                         label="Password"
                         labelClassName="p-0"
                         name="password"
                         type="password"
-                        inputBoxClassName={`p-3.75 ${
-                          errors.password && touched.password
-                            ? "error-input border-miru-red-400"
-                            : ""
-                        }`}
                         onChange={e => {
                           if (errors.password && touched.password) {
                             setFieldError("password", "");
@@ -108,11 +104,9 @@ const ResetPassword = () => {
                         labelClassName="p-0"
                         name="confirm_password"
                         type="password"
-                        inputBoxClassName={`p-3.75 ${
+                        hasError={
                           errors.confirm_password && touched.confirm_password
-                            ? "error-input border-miru-red-400"
-                            : ""
-                        }`}
+                        }
                         onChange={e => {
                           if (
                             errors.confirm_password &&

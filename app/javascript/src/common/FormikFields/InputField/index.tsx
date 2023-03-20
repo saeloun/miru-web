@@ -7,7 +7,7 @@ import { Field } from "formik";
 import { PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
 
 const defaultInputBoxClassName =
-  "form__input block w-full appearance-none bg-white p-4 text-base h-12 border-miru-gray-1000";
+  "form__input block w-full appearance-none bg-white p-3.75 text-base h-12 border-miru-gray-1000";
 
 const defaultLabelClassname =
   "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium text-miru-dark-purple-200 duration-300";
@@ -24,6 +24,7 @@ const InputField = ({
   labelClassName,
   wrapperClassName,
   onChange,
+  hasError,
 }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -37,11 +38,13 @@ const InputField = ({
       <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
         <Field
           autoFocus={autoFocus}
-          className={classNames(defaultInputBoxClassName, inputBoxClassName)}
           disabled={disabled}
           id={id}
           name={name}
           placeholder=" "
+          className={classNames(defaultInputBoxClassName, inputBoxClassName, {
+            "error-input border-miru-red-400": hasError,
+          })}
           type={
             type === "password" ? (showPassword ? "text" : "password") : type
           }
@@ -90,6 +93,7 @@ InputField.defaultProps = {
   disabled: false,
   autoFocus: false,
   onChange: undefined,
+  hasError: false,
 };
 
 export default InputField;
