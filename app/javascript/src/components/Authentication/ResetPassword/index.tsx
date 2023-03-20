@@ -62,7 +62,7 @@ const ResetPassword = () => {
               onSubmit={handleResetPasswordFormSubmit}
             >
               {(props: FormikProps<ResetPasswordFormValues>) => {
-                const { touched, errors } = props;
+                const { touched, errors, setFieldError, setFieldValue } = props;
 
                 return (
                   <Form>
@@ -70,8 +70,20 @@ const ResetPassword = () => {
                       <InputField
                         id="password"
                         label="Password"
+                        labelClassName="p-0"
                         name="password"
                         type="password"
+                        inputBoxClassName={`p-3.75 ${
+                          errors.password && touched.password
+                            ? "error-input border-miru-red-400"
+                            : ""
+                        }`}
+                        onChange={e => {
+                          if (errors.password && touched.password) {
+                            setFieldError("password", "");
+                          }
+                          setFieldValue("password", e.target.value);
+                        }}
                       />
                       <InputErrors
                         fieldErrors={errors.password}
@@ -82,8 +94,23 @@ const ResetPassword = () => {
                       <InputField
                         id="confirm_password"
                         label="Confirm Password"
+                        labelClassName="p-0"
                         name="confirm_password"
                         type="password"
+                        inputBoxClassName={`p-3.75 ${
+                          errors.confirm_password && touched.confirm_password
+                            ? "error-input border-miru-red-400"
+                            : ""
+                        }`}
+                        onChange={e => {
+                          if (
+                            errors.confirm_password &&
+                            touched.confirm_password
+                          ) {
+                            setFieldError("confirm_password", "");
+                          }
+                          setFieldValue("confirm_password", e.target.value);
+                        }}
                       />
                       <InputErrors
                         fieldErrors={errors.confirm_password}

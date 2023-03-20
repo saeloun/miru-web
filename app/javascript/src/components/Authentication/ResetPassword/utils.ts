@@ -14,5 +14,5 @@ export const resetPasswordFormValidationSchema = Yup.object().shape({
     .required("Password can not be blank"),
   confirm_password: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Password can not be blank"),
+    .required("Confirm Password can not be blank"),
 });
