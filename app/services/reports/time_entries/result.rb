@@ -15,7 +15,7 @@ class Reports::TimeEntries::Result < ApplicationService
   end
 
   def process
-    if Reports::TimeEntries::GroupBy.new(group_by).is_valid_group_by
+    if Reports::TimeEntries::GroupBy.new(group_by).valid_group_by?
       process_response_by_group_by
     else
       [{ label: "", entries: es_response }]

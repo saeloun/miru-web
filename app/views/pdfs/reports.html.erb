@@ -45,7 +45,7 @@
               </td>
               <td class="text-xs w-1/5 p-2 border border-b-1">
                 <p class="text-miru-dark-purple-1000"><%= entry.user_full_name %></p>
-                <p class="text-miru-dark-purple-400"><%= CompanyDateFormattingService.new(entry.work_date, company: current_company, is_es_date: true).process %></p>
+                <p class="text-miru-dark-purple-400"><%= CompanyDateFormattingService.new(entry.work_date, company: current_company, es_date_presence: true).process %></p>
               </td>
               <td class="text-right w-1/5 p-2 pl-3 border border-b-1">
                 <%= DurationFormatter.new(entry.duration).process %>

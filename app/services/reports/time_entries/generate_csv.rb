@@ -30,7 +30,7 @@ module Reports::TimeEntries
     private
 
       def format_date(date)
-        CompanyDateFormattingService.new(date, company: current_company, is_es_date: true).process
+        CompanyDateFormattingService.new(date, company: current_company, es_date_presence: true).process
       end
   end
 end

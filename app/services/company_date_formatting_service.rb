@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 class CompanyDateFormattingService < ApplicationService
-  attr_reader :date, :company, :is_es_date
+  attr_reader :date, :company, :es_date_presence
 
-  def initialize(date, company: nil, is_es_date: false)
+  def initialize(date, company: nil, es_date_presence: false)
     @date = date
     @company = company
-    @is_es_date = is_es_date
+    @es_date_presence = es_date_presence
   end
 
   def process
     return if !company
 
-    @date = date.to_date if is_es_date
+    @date = date.to_date if es_date_presence
     date.strftime(company_date_format)
   end
 

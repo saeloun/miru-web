@@ -15,7 +15,7 @@ json.reports reports do |grouped_report|
     json.work_date CompanyDateFormattingService.new(
       report.work_date,
       company: current_company,
-      is_es_date: true)
+      es_date_presence: true)
       .process
     json.bill_status report.bill_status
     json.team_member report.user_name

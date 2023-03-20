@@ -38,7 +38,7 @@ class Reports::TimeEntries::PageService < ApplicationService
   private
 
     def es_filter_for_pagination
-      if !Reports::TimeEntries::GroupBy.new(group_by).is_valid_group_by
+      if !Reports::TimeEntries::GroupBy.new(group_by).valid_group_by?
         @es_filter = {}
       else
         send("#{group_by}_filter")
@@ -62,21 +62,21 @@ class Reports::TimeEntries::PageService < ApplicationService
 
     def users_query
       current_company.users
-        .with_ids(params[:team_member])
+        .with_specific_ids(params[:team_member])
         .order(:first_name)
         .select(:id)
     end
 
     def clients_query
       current_company.clients
-        .with_ids(params[:client])
+        .with_specific_ids(params[:client])
         .order(:name)
         .select(:id)
     end
 
     def projects_query
       current_company.projects
-        .with_ids(params[:project])
+        .with_specific_ids(params[:project])
         .order(:name)
         .select(:id)
     end
