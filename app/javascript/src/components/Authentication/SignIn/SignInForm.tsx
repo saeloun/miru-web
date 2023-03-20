@@ -1,12 +1,13 @@
 import React from "react";
 
 import { Formik, Form, FormikProps } from "formik";
+import { MiruLogoSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
 import { InputErrors, InputField } from "common/FormikFields";
-import { Paths, TOASTER_DURATION } from "constants/index";
+import { MIRU_APP_URL, Paths, TOASTER_DURATION } from "constants/index";
 import { useAuthDispatch } from "context/auth";
 
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
@@ -52,6 +53,17 @@ const SignInForm = () => {
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
       <div className="relative w-full px-8 pt-16 pb-4 md:px-0 md:pt-36 lg:w-1/2">
+        <div className="d-block lg:hidden">
+          <a href={MIRU_APP_URL} rel="noreferrer noopener">
+            <img
+              alt="miru-logo"
+              className="d-block mx-auto mb-20 lg:hidden"
+              height="64"
+              src={MiruLogoSVG}
+              width="64"
+            />
+          </a>
+        </div>
         <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
           <h1 className="text-center font-manrope text-4.5xl font-extrabold text-miru-han-purple-1000">
             Welcome back!
