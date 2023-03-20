@@ -375,7 +375,7 @@
 
 .filter {
   &__counter {
-    @apply absolute right-0 block rounded-lg bg-miru-han-purple-600 text-white;
+    @apply absolute right-0 block rounded-lg bg-miru-han-purple-1000 text-white;
     top: 4px;
     padding: 7px 5px;
   }
@@ -561,6 +561,10 @@ body {
 .outline input:focus-within ~ label,
 .outline input:not(:placeholder-shown) ~ label {
   @apply top-2 z-0 ml-3 -translate-y-4 scale-75 transform px-1 py-0 text-xs text-miru-dark-purple-400;
+}
+
+.outline input.error-input ~ label {
+  color: #e04646 !important;
 }
 
 .focusPadding:focus {

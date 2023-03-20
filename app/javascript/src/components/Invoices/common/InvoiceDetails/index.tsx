@@ -2,9 +2,10 @@ import React, { useState, useRef } from "react";
 
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
-import { EditIcon } from "miruIcons";
+import { CalendarIcon } from "miruIcons";
 
 import CustomDatePicker from "common/CustomDatePicker";
+import { CustomInputText } from "common/CustomInputText";
 
 import ClientSelection from "./ClientSelection";
 
@@ -47,14 +48,8 @@ const InvoiceDetails = ({
     setShowDueDatePicker(false);
   };
 
-  const handleEnter = (e, id) => {
-    if (e.key == "Enter") {
-      document.getElementById(id).blur();
-    }
-  };
-
   return (
-    <div className="flex w-full flex-col justify-between border-b-2 border-miru-gray-400 px-5 py-5 md:h-36 md:flex-row md:px-10">
+    <div className="flex w-full flex-col justify-between border-b border-miru-gray-400 px-5 py-5 md:h-40 md:flex-row md:px-10">
       <ClientSelection
         clientList={clientList}
         clientVisible={clientVisible}
@@ -62,75 +57,51 @@ const InvoiceDetails = ({
         selectedClient={selectedClient}
         setSelectedClient={setSelectedClient}
       />
-      <div className="w-3/12">
-        <div className="hoverPencil flex w-fit cursor-pointer flex-col">
-          <label className="flex cursor-pointer" htmlFor="invoiceNumber">
-            <span className="text-xs font-normal text-miru-dark-purple-1000">
-              Invoice Number
-            </span>
-            <button
-              className="invisible ml-2"
-              onClick={() => {
-                document.getElementById("invoiceNumber").focus();
-              }}
-            >
-              <EditIcon color="#7C5DEE" size={13} />
-            </button>
-          </label>
-          <input
-            autoComplete="off"
-            className="focusPadding focus:bg-text-base focus:outline-none cursor-pointer rounded bg-transparent text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
-            data-cy="invoice-number"
-            id="invoiceNumber"
-            placeholder="Enter invoice number"
-            type="text"
-            value={invoiceNumber}
-            onChange={e => setInvoiceNumber(e.target.value)}
-            onKeyDown={e => handleEnter(e, "invoiceNumber")}
-          />
-        </div>
-        <div className="hoverPencil flex w-fit cursor-pointer flex-col">
-          <label className="mt-4 flex cursor-pointer" htmlFor="referenceNumber">
-            <span className="text-xs font-normal text-miru-dark-purple-1000">
-              Reference
-            </span>
-            <button
-              className="invisible ml-2"
-              onClick={() => {
-                document.getElementById("referenceNumber").focus();
-              }}
-            >
-              <EditIcon color="#7C5DEE" size={13} />
-            </button>
-          </label>
-          <input
-            autoComplete="off"
-            className="focusPadding focus:bg-text-base focus:outline-none cursor-pointer rounded bg-transparent text-miru-dark-purple-1000 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
-            data-cy="invoice-reference"
-            id="referenceNumber"
-            placeholder="Enter reference"
-            type="text"
-            value={reference}
-            onChange={e => setReference(e.target.value)}
-            onKeyDown={e => handleEnter(e, "referenceNumber")}
-          />
-        </div>
+      <div className="mr-2 flex w-2/12 flex-col justify-between">
+        <CustomInputText
+          dataCy="Invoice Number"
+          id="Invoice Number"
+          inputBoxClassName="border focus:border-miru-han-purple-1000"
+          label="Invoice Number"
+          name="Invoice Number"
+          type="text"
+          value={invoiceNumber}
+          onChange={e => setInvoiceNumber(e.target.value)}
+        />
+        <CustomInputText
+          dataCy="Reference"
+          id="Reference"
+          inputBoxClassName="focus:border-miru-han-purple-1000"
+          label="Reference"
+          name="Reference"
+          type="text"
+          value={reference}
+          onChange={e => setReference(e.target.value)}
+        />
       </div>
-      <div className="group w-3/12">
+      <div className="ml-2 flex w-2/12 flex-col justify-between">
         <div
-          className="hoverPencil relative w-fit cursor-pointer pr-4"
+          className="relative w-fit cursor-pointer"
           ref={DateOfIssueWrapper}
           onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}
         >
-          <p className="flex text-xs font-normal text-miru-dark-purple-1000">
-            <span>Date of Issue</span>
-            <button className="invisible ml-2">
-              <EditIcon color="#7C5DEE" size={13} />
-            </button>
-          </p>
-          <p className="text-base font-normal text-miru-dark-purple-1000">
-            {getIssuedDate}
-          </p>
+          <CustomInputText
+            readOnly
+            dataCy="Date of Issue"
+            id="Date of Issue"
+            inputBoxClassName="focus:border-miru-han-purple-1000"
+            label="Date of Issue"
+            name="Date of Issue"
+            type="text"
+            value={getIssuedDate}
+            onChange={handleDatePickerChange}
+          />
+          <CalendarIcon
+            className="absolute top-4 right-4"
+            color="#5B34EA"
+            size={20}
+            weight="bold"
+          />
           {showDateOfIssuePicker && (
             <CustomDatePicker
               date={issueDate}
@@ -141,19 +112,27 @@ const InvoiceDetails = ({
           )}
         </div>
         <div
-          className="hoverPencil w-fit cursor-pointer pr-4"
+          className="relative w-fit cursor-pointer"
           ref={DueDateWrapper}
           onClick={() => setShowDueDatePicker(!showDueDatePicker)}
         >
-          <p className="mt-4 flex text-xs font-normal text-miru-dark-purple-1000">
-            <span>Due Date</span>
-            <button className="invisible ml-2">
-              <EditIcon color="#7C5DEE" size={13} />
-            </button>
-          </p>
-          <p className="text-base font-normal text-miru-dark-purple-1000">
-            {getDueDate}
-          </p>
+          <CustomInputText
+            readOnly
+            dataCy="Due Date"
+            id="Due Date"
+            inputBoxClassName="focus:border-miru-han-purple-1000"
+            label="Due Date"
+            name="Due Date"
+            type="text"
+            value={getDueDate}
+            onChange={handleDueDatePicker}
+          />
+          <CalendarIcon
+            className="absolute top-4 right-4"
+            color="#5B34EA"
+            size={20}
+            weight="bold"
+          />
           {showDueDatePicker && (
             <CustomDatePicker
               date={dueDate}
@@ -164,12 +143,12 @@ const InvoiceDetails = ({
           )}
         </div>
       </div>
-      <div className="w-2/12">
+      <div className="w-4/12 pl-4">
         <p className="text-right text-xs font-normal text-miru-dark-purple-1000 md:text-right">
           Amount
         </p>
         <p className="mt-6 text-right text-4xl font-normal text-miru-dark-purple-1000">
-          {amount ? currencyFormat(currency, amount) : 0}
+          {currencyFormat(currency, amount)}
         </p>
       </div>
     </div>

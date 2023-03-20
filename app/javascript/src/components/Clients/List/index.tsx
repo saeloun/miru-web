@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import { cashFormatter, currencySymbol, minToHHMM } from "helpers";
+import { PlusIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Avatar, Tooltip } from "StyledComponents";
@@ -8,6 +9,7 @@ import { Avatar, Tooltip } from "StyledComponents";
 import clientApi from "apis/clients";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
+import EmptyStates from "common/EmptyStates";
 import withLayout from "common/Mobile/HOC/withLayout";
 import Table from "common/Table";
 import { TOASTER_DURATION } from "constants/index";
@@ -44,7 +46,10 @@ const getTableData = (clients, handleTooltip, showTooltip, toolTipRef) => {
         </div>
       ),
       col3: (
-        <div className="text-right text-xl font-bold text-miru-dark-purple-1000">
+        <div
+          className="total-hours text-right text-xl font-bold text-miru-dark-purple-1000"
+          id={`${client.id}`}
+        >
           {minToHHMM(client.minutes)}
         </div>
       ),
@@ -190,6 +195,7 @@ const Clients = ({ isAdminUser }) => {
           >
             <div className="flex justify-end">
               <select
+                id="timeFrame"
                 className="focus:outline-none
                 m-0
                 border-none
@@ -224,7 +230,7 @@ const Clients = ({ isAdminUser }) => {
           <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden">
-                {clientData && (
+                {clientData && clientData.length > 0 ? (
                   <Table
                     handleDeleteClick={handleDeleteClick}
                     handleEditClick={handleEditClick}
@@ -235,6 +241,27 @@ const Clients = ({ isAdminUser }) => {
                       isAdminUser ? tableHeader : employeeTableHeader
                     }
                   />
+                ) : (
+                  <EmptyStates
+                    Message="Looks like there aren’t any clients added yet."
+                    messageClassName="w-full lg:mt-5"
+                    showNoSearchResultState={false}
+                    wrapperClassName="mt-5"
+                  >
+                    <button
+                      className="mt-4 mb-10 flex h-10 flex-row items-center justify-center rounded bg-miru-han-purple-1000 px-25 font-bold text-white"
+                      type="button"
+                      onClick={() => {
+                        setShowDialog(true);
+                        setClient(true);
+                      }}
+                    >
+                      <PlusIcon size={20} weight="bold" />
+                      <span className="ml-2 inline-block text-xl">
+                        Add Clients
+                      </span>
+                    </button>
+                  </EmptyStates>
                 )}
               </div>
             </div>
@@ -270,7 +297,7 @@ const Clients = ({ isAdminUser }) => {
 
   const Main = withLayout(ClientsLayout, !isDesktop, !isDesktop);
 
-  return <Main />;
+  return isDesktop ? ClientsLayout() : <Main />;
 };
 
 export default Clients;
