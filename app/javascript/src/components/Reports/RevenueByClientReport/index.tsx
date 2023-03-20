@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useEffect } from "react";
 
+import { LocalStorageKeys } from "constants/index";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./Container";
@@ -17,11 +18,17 @@ import Header from "../Header";
 const RevenueByClientReport = () => {
   const filterIntialValues = {
     // TODO: fix typo filterInitialValues
-    dateRange: { label: "All", value: "" },
+    dateRange: { label: "All", value: "all", from: "", to: "" },
     clients: [{ label: "All Clients", value: "" }],
   };
 
-  const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
+  const LS_INVOICE_FILTERS = window.localStorage.getItem(
+    LocalStorageKeys.INVOICE_FILTERS
+  );
+
+  const [selectedFilter, setSelectedFilter] = useState<any>(
+    JSON.parse(LS_INVOICE_FILTERS) || filterIntialValues
+  );
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
@@ -38,10 +45,6 @@ const RevenueByClientReport = () => {
   useEffect(() => {
     sendGAPageView();
   }, []);
-
-  const onClickInput = e => {
-    setSelectedInput(e.target.name);
-  };
 
   const updateFilterCounter = async () => {
     let counter = 0;
@@ -109,25 +112,14 @@ const RevenueByClientReport = () => {
     currentReport: "RevenueByClientReport",
   };
 
-  const handleApplyFilter = filters => {
-    setSelectedFilter(filters);
-  };
-
   const resetFilter = () => {
     setSelectedFilter(filterIntialValues);
     setIsFilterVisible(false);
     setShowNavFilters(false);
+    setSelectedFilter(filterIntialValues);
   };
 
   const handleDownload = () => {}; //eslint-disable-line
-
-  const handleSelectDate = date => {
-    if (selectedInput === "from-input") {
-      setDateRange({ ...dateRange, ...{ from: date } });
-    } else {
-      setDateRange({ ...dateRange, ...{ to: date } });
-    }
-  };
 
   return (
     <div className="h-full">
@@ -149,13 +141,14 @@ const RevenueByClientReport = () => {
         {isFilterVisible && (
           <Filters
             dateRange={dateRange}
-            handleApplyFilter={handleApplyFilter}
-            handleSelectDate={handleSelectDate}
+            filterParams={selectedFilter}
             resetFilter={resetFilter}
-            selectedFilter={selectedFilter}
             selectedInput={selectedInput}
+            setDateRange={setDateRange}
+            setFilterParams={setSelectedFilter}
             setIsFilterVisible={setIsFilterVisible}
-            onClickInput={onClickInput}
+            setSelectedFilter={setSelectedFilter}
+            setSelectedInput={setSelectedInput}
           />
         )}
       </EntryContext.Provider>
