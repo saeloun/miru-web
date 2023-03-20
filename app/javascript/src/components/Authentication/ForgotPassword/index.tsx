@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
 import { InputErrors, InputField } from "common/FormikFields";
-import { Paths, TOASTER_DURATION } from "constants/index";
+import { MIRU_APP_URL, Paths, TOASTER_DURATION } from "constants/index";
 
 import PasswordResetLinkSentMsg from "./PasswordResetLinkSentMsg";
 import {
@@ -44,13 +44,15 @@ const ForgotPassword = () => {
       <div className="w-full px-8 pt-16 pb-4 md:px-0 md:pt-36">
         <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
           <div>
-            <img
-              alt="miru-logo"
-              className="d-block mx-auto mb-20"
-              height="64"
-              src={MiruLogoSVG}
-              width="64"
-            />
+            <a href={MIRU_APP_URL} rel="noreferrer noopener">
+              <img
+                alt="miru-logo"
+                className="d-block mx-auto mb-20"
+                height="64"
+                src={MiruLogoSVG}
+                width="64"
+              />
+            </a>
           </div>
           <h1 className="text-center font-manrope text-4.5xl font-extrabold text-miru-han-purple-1000">
             Forgot Password
