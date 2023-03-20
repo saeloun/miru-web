@@ -22,7 +22,13 @@ const RevenueByClientReport = () => {
     clients: [{ label: "All Clients", value: "" }],
   };
 
-  const [selectedFilter, setSelectedFilter] = useState(filterIntialValues);
+  const LS_INVOICE_FILTERS = window.localStorage.getItem(
+    LocalStorageKeys.INVOICE_FILTERS
+  );
+
+  const [selectedFilter, setSelectedFilter] = useState<any>(
+    JSON.parse(LS_INVOICE_FILTERS) || filterIntialValues
+  );
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
   const [filterCounter, setFilterCounter] = useState(0);
@@ -35,14 +41,6 @@ const RevenueByClientReport = () => {
     totalOutstandingAmount: 0,
     totalRevenue: 0,
   });
-
-  const LS_INVOICE_FILTERS = window.localStorage.getItem(
-    LocalStorageKeys.INVOICE_FILTERS
-  );
-
-  const [filterParams, setFilterParams] = useState<any>(
-    JSON.parse(LS_INVOICE_FILTERS) || filterIntialValues
-  );
 
   useEffect(() => {
     sendGAPageView();
@@ -118,7 +116,7 @@ const RevenueByClientReport = () => {
     setSelectedFilter(filterIntialValues);
     setIsFilterVisible(false);
     setShowNavFilters(false);
-    setFilterParams(filterIntialValues);
+    setSelectedFilter(filterIntialValues);
   };
 
   const handleDownload = () => {}; //eslint-disable-line
@@ -143,11 +141,11 @@ const RevenueByClientReport = () => {
         {isFilterVisible && (
           <Filters
             dateRange={dateRange}
-            filterParams={filterParams}
+            filterParams={selectedFilter}
             resetFilter={resetFilter}
             selectedInput={selectedInput}
             setDateRange={setDateRange}
-            setFilterParams={setFilterParams}
+            setFilterParams={setSelectedFilter}
             setIsFilterVisible={setIsFilterVisible}
             setSelectedFilter={setSelectedFilter}
             setSelectedInput={setSelectedInput}
