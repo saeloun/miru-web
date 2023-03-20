@@ -5,7 +5,7 @@ class InternalApi::V1::TeamMembers::AvatarController < InternalApi::V1::Applicat
     authorize user, policy_class: TeamMembers::AvatarPolicy
 
     if user.update(user_params)
-      render json: { avtar_url: url_for(user.avatar), notice: "Avatar updated successfully" }, status: :ok
+      render json: { avtar_url: user.avatar_url, notice: "Avatar updated successfully" }, status: :ok
     else
       render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
     end
