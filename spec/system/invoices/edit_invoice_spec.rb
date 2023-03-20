@@ -3,9 +3,9 @@
 require "rails_helper"
 
 RSpec.describe "Edit Invoice", type: :system do
-  let(:invoice) { create :invoice_with_invoice_line_items, status: :draft }
+  let!(:invoice) { create :invoice_with_invoice_line_items, status: :draft }
   let(:client) { invoice.client }
-  let(:company) { invoice.company }
+  let!(:company) { invoice.company }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:owner) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
@@ -22,14 +22,14 @@ RSpec.describe "Edit Invoice", type: :system do
   end
 
   context "when logged-in user is Admin" do
-      before do
-        sign_in admin
-      end
-
-      include_examples "Edit Invoice"
+    before do
+      sign_in admin
     end
 
-  context "when logged-in user is Owner" do
+    include_examples "Edit Invoice"
+  end
+
+  context "when logged-in 2user is Owner" do
     before do
       sign_in owner
     end
@@ -38,15 +38,15 @@ RSpec.describe "Edit Invoice", type: :system do
   end
 
   context "when logged-in user is Employee" do
-      before do
-        sign_in employee
-      end
-
-      it "is not able to see invoices option" do
-         with_forgery_protection do
-            visit "time-tracking"
-            expect(page).to have_no_link("invoices")
-          end
-       end
+    before do
+      sign_in employee
     end
+
+    it "is not able to see invoices option" do
+      with_forgery_protection do
+        visit "time-tracking"
+        expect(page).to have_no_link("invoices")
+      end
+    end
+  end
 end

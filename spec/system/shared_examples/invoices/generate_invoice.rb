@@ -2,36 +2,32 @@
 
 require "rails_helper"
 
-RSpec.shared_examples "Generate Invoice" do
+RSpec.shared_examples "Generate Invoice", type: :system do
   it "is able to view generate invoice page elements" do
-      with_forgery_protection do
-       visit "invoices"
+    with_forgery_protection do
+      visit "invoices"
 
-       expect(page).to have_text "Invoices"
-       click_button("Create New Invoice")
+      expect(page).to have_text "Invoices"
 
-       # Check labels
-       expect(page).to have_text "Generate Invoice"
-       expect(page).to have_text company.name
-       expect(page).to have_text company.business_phone
-     end
+      click_button("Create New Invoice")
+
+      expect(page).to have_text "Generate Invoice"
+      expect(page).to have_text company.name
+      expect(page).to have_text company.business_phone
     end
+  end
 
   it "is able to generates Invoice successfully for an employee of his organisation" do
     with_forgery_protection do
       visit "invoices"
 
       expect(page).to have_text "Invoices"
+
       click_button("Create New Invoice")
+      find("#BilledTo").click
+      find("div#react-select-2-option-0").click
 
-      # Add client
-      click_button("+ ADD CLIENT")
-      find(:xpath, '//*[@id="clientList"]/div[2]/div').click()
-
-      # Add invoice number
-      find(:field, placeholder: "Enter invoice number").set("test-invoice-1")
-
-      # Add user from line items
+      find(:field, id: "invoiceNumber").set("test-invoice-1")
       click_button("+ NEW LINE ITEM")
       find(:field, placeholder: "Name").click()
       find(:xpath, "//*[@id='entriesList']/span[contains(text(), '#{employee.first_name}')]").click()

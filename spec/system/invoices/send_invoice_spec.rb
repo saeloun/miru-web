@@ -38,15 +38,15 @@ RSpec.describe "Send Invoice", type: :system do
   end
 
   context "when logged-in user is Employee" do
-      before do
-        sign_in employee
-      end
-
-      it "is not able to see invoices option" do
-         with_forgery_protection do
-            visit "time-tracking"
-            expect(page).to have_no_link("invoices")
-          end
-       end
+    before do
+      sign_in employee
     end
+
+    it "is not able to see invoices option" do
+      with_forgery_protection do
+        visit "time-tracking"
+        expect(page).to have_no_link("invoices")
+      end
+    end
+  end
 end
