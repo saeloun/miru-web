@@ -4,16 +4,18 @@ class TeamMembers::DetailPolicy < ApplicationPolicy
   def show?
     return false unless record.present?
 
-    user.has_any_role?(
-      { name: :admin, resource: record.company },
-      { name: :owner, resource: record.company }) || user == record.user
+    user_is_admin_or_owner?
   end
 
   def update?
     return false unless record.present?
 
-    user.has_any_role?(
-      { name: :admin, resource: record.company },
-      { name: :owner, resource: record.company }) || user == record.user
+    user_is_admin_or_owner?
   end
+
+  private
+
+    def user_is_admin_or_owner?
+      user_owner_role? || user_admin_role?
+    end
 end
