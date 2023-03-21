@@ -304,7 +304,7 @@ const CompanyDetailsForm = ({
                   <CustomReactSelect
                     isErr={!!errors.country}
                     label="Country"
-                    name="current_country_select"
+                    name="country"
                     options={countries}
                     value={values.country.value ? values.country : null}
                     handleOnChange={e => {
@@ -316,9 +316,9 @@ const CompanyDetailsForm = ({
                 </div>
                 <div className="flex w-1/2 flex-col pl-2">
                   <CustomReactSelect
-                    isErr={!!errors.state}
+                    isErr={!!errors.state && touched.state}
                     label="State"
-                    name="state_select"
+                    name="state"
                     value={values.state.value ? values.state : null}
                     handleOnChange={state => {
                       setFieldValue("state", state);
@@ -343,10 +343,10 @@ const CompanyDetailsForm = ({
               <div className="flex flex-row">
                 <div className="flex w-1/2 flex-col pr-2">
                   <CustomAsyncSelect
-                    isErr={!!errors.city}
+                    isErr={!!errors.city && touched.city}
                     label="City"
                     loadOptions={promiseOptions}
-                    name="country_select"
+                    name="city"
                     value={values.city.value ? values.city : null}
                     handleOnChange={city => {
                       setFieldValue("city", city);
