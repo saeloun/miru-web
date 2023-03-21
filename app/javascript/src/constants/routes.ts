@@ -114,7 +114,7 @@ export const ROUTES = [
   {
     path: Paths.REPORTS,
     subRoutes: ReportsRoutes,
-    authorisedRoles: [ADMIN, OWNER],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
   },
   {
     path: Paths.PROJECTS,
@@ -134,7 +134,7 @@ export const ROUTES = [
   {
     path: Paths.TIME_TRACKING,
     subRoutes: TimeTrackingRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
   },
   {
     path: Paths.TEAMS,

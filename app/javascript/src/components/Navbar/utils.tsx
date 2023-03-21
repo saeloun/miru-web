@@ -62,6 +62,21 @@ const navAdminOptions = [
   },
 ];
 
+const navBookKeeperOptions = [
+  {
+    logo: <ReportsIcon className="mr-0 md:mr-4" size={26} />,
+    label: "Reports",
+    dataCy: "reports-tab",
+    path: Paths.REPORTS,
+  },
+  {
+    logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
+    label: "Payments",
+    dataCy: "payments-tab",
+    path: Paths.PAYMENTS,
+  },
+];
+
 const navAdminMobileOptions = [
   {
     logo: <TimeTrackingIcon className="mr-0 md:mr-4" size={26} />,
@@ -173,6 +188,11 @@ const getAdminOptions = () =>
     <ListOption index={index} key={index} option={option} />
   ));
 
+const getBookKeeperOptions = () =>
+  navBookKeeperOptions.map((option, index) => (
+    <ListOption index={index} key={index} option={option} />
+  ));
+
 const MobileMenuOptions = ({
   isAdminUser,
   setSelectedTab,
@@ -224,4 +244,5 @@ export {
   MobileMenuOptions,
   getAdminOptions,
   getEmployeeOptions,
+  getBookKeeperOptions,
 };

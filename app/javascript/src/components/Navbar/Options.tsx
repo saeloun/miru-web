@@ -1,10 +1,18 @@
 import React from "react";
 
-import { getAdminOptions, getEmployeeOptions } from "./utils";
+import {
+  getAdminOptions,
+  getBookKeeperOptions,
+  getEmployeeOptions,
+} from "./utils";
 
-const Options = ({ isAdminUser }) => (
+const Options = ({ isAdminUser, isBookKeeper }) => (
   <ul className="mt-8">
-    {isAdminUser ? getAdminOptions() : getEmployeeOptions()}
+    {isAdminUser
+      ? getAdminOptions()
+      : isBookKeeper
+      ? getBookKeeperOptions()
+      : getEmployeeOptions()}
   </ul>
 );
 export default Options;

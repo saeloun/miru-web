@@ -5,7 +5,7 @@ import Home from "./Home";
 import Navbar from "../Navbar";
 
 const Dashboard = props => {
-  const { isAdminUser, user, isDesktop, setIsDesktop } = props;
+  const { isAdminUser, user, isDesktop, setIsDesktop, companyRole } = props;
 
   window.addEventListener("resize", () =>
     setIsDesktop(window.innerWidth > 1023)
@@ -18,7 +18,11 @@ const Dashboard = props => {
   if (isDesktop) {
     return (
       <div className="absolute inset-0 flex h-full w-full">
-        <Navbar isAdminUser={isAdminUser} user={user} />
+        <Navbar
+          isAdminUser={isAdminUser}
+          isBookKeeper={companyRole === "book_keeper"}
+          user={user}
+        />
         <Home {...props} isAdminUser={isAdminUser} isDesktop={isDesktop} />
       </div>
     );
