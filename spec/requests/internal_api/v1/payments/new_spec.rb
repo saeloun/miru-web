@@ -52,6 +52,28 @@ RSpec.describe "InternalApi::V1::Payments#create", type: :request do
     end
   end
 
+  context "when user is a book keeper" do
+    before do
+      create(:employment, company:, user:)
+      @payment = {
+        invoice_id: client1_sent_invoice1.id,
+        transaction_date: Date.current,
+        transaction_type: "visa",
+        amount: 80,
+        note: "This is transaction ID - 123"
+      }
+      user.add_role :book_keeper, company
+      sign_in user
+    end
+
+    describe "when tries to create manual payment entry" do
+      it "returns success" do
+        send_request :post, internal_api_v1_payments_path(payment: @payment), headers: auth_headers(user)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
   context "when unauthenticated" do
     describe "when tries to create manual payment entry" do
       it "returns unauthorized" do
