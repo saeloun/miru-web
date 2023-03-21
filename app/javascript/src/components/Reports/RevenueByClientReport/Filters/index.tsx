@@ -251,7 +251,7 @@ const FilterSideBar = ({
       : setFilterParams(filters);
 
     window.localStorage.setItem(
-      LocalStorageKeys.INVOICE_FILTERS,
+      LocalStorageKeys.REVENUE_FILTERS,
       JSON.stringify(filters)
     );
     setIsFilterVisible(false);
@@ -386,11 +386,12 @@ const FilterSideBar = ({
                     </button>
                     <button
                       disabled={disableDateBtn}
-                      className={`sidebar__apply ${
-                        disableDateBtn
-                          ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
-                          : "cursor-pointer"
-                      }`}
+                      className={`sidebar__apply
+                          ${
+                            disableDateBtn
+                              ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                              : "cursor-pointer"
+                          }`}
                       onClick={submitCustomDatePicker}
                     >
                       Done
