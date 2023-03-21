@@ -78,7 +78,6 @@ const ForgotPassword = () => {
                   <Form>
                     <div className="field relative">
                       <InputField
-                        resetErrorOnChange
                         hasError={errors.email && touched.email}
                         id="email"
                         label="Enter your registered email ID"

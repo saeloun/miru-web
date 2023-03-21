@@ -88,7 +88,6 @@ const SignUpForm = () => {
                     <div className="flex justify-between">
                       <div className="field relative mr-6 w-1/2 lg:w-168">
                         <InputField
-                          resetErrorOnChange
                           hasError={errors.firstName && touched.firstName}
                           id="firstName"
                           label="First Name"
@@ -104,7 +103,6 @@ const SignUpForm = () => {
                       </div>
                       <div className="field relative w-1/2 lg:w-168">
                         <InputField
-                          resetErrorOnChange
                           hasError={errors.lastName && touched.lastName}
                           id="lastName"
                           label="Last Name"
@@ -121,7 +119,6 @@ const SignUpForm = () => {
                     </div>
                     <div className="field relative">
                       <InputField
-                        resetErrorOnChange
                         hasError={errors.email && touched.email}
                         id="email"
                         label="Email"
@@ -137,7 +134,6 @@ const SignUpForm = () => {
                     </div>
                     <div className="field">
                       <InputField
-                        resetErrorOnChange
                         hasError={errors.password && touched.password}
                         id="password"
                         label="Password"
@@ -154,7 +150,6 @@ const SignUpForm = () => {
                     </div>
                     <div className="field">
                       <InputField
-                        resetErrorOnChange
                         id="confirm_password"
                         label="Confirm Password"
                         labelClassName="p-0"

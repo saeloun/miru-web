@@ -121,7 +121,7 @@ InputField.defaultProps = {
   autoFocus: false,
   onChange: undefined,
   hasError: false,
-  resetErrorOnChange: false,
+  resetErrorOnChange: true,
   setFieldError: null,
   setFieldValue: null,
 };

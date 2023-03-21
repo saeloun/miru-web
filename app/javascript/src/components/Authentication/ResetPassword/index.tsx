@@ -79,7 +79,6 @@ const ResetPassword = () => {
                   <Form>
                     <div className="field">
                       <InputField
-                        resetErrorOnChange
                         hasError={errors.password && touched.password}
                         id="password"
                         label="Password"
@@ -96,7 +95,6 @@ const ResetPassword = () => {
                     </div>
                     <div className="field">
                       <InputField
-                        resetErrorOnChange
                         id="confirm_password"
                         label="Confirm Password"
                         labelClassName="p-0"
