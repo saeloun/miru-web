@@ -22,12 +22,12 @@ const RevenueByClientReport = () => {
     clients: [{ label: "All Clients", value: "" }],
   };
 
-  const LS_INVOICE_FILTERS = window.localStorage.getItem(
-    LocalStorageKeys.INVOICE_FILTERS
+  const LS_REVENUE_FILTERS = window.localStorage.getItem(
+    LocalStorageKeys.REVENUE_FILTERS
   );
 
   const [selectedFilter, setSelectedFilter] = useState<any>(
-    JSON.parse(LS_INVOICE_FILTERS) || filterIntialValues
+    JSON.parse(LS_REVENUE_FILTERS) || filterIntialValues
   );
   const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
   const [showNavFilters, setShowNavFilters] = useState<boolean>(false);
