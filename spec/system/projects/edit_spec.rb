@@ -6,20 +6,21 @@ RSpec.describe "Edit Project", type: :system do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
+  let(:project) { create(:project, client:) }
 
   context "when user is an admin" do
     before do
       create(:employment, company:, user:)
       user.add_role :admin, company
-      login_as(user)
+      sign_in(user)
     end
 
     it "updates the project successfully" do
       with_forgery_protection do
         visit "/projects"
 
-        find("tbody").hover.click()
-        find("#kebabMenu").click()
+        find("tbody").hover.click
+        find("#kebabMenu").click
         click_button "Edit Project Details"
         fill_in "project-name", with: "Updated Project"
         choose "Non-billable"

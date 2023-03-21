@@ -11,7 +11,7 @@ RSpec.describe "Creating Project", type: :system do
     before do
       create(:employment, company:, user:)
       user.add_role :admin, company
-      login_as(user)
+      sign_in(user)
     end
 
     context "when creating a billable project" do
@@ -20,12 +20,15 @@ RSpec.describe "Creating Project", type: :system do
           visit "/projects"
 
           click_button "NEW PROJECT"
+          expect(page).to have_select("select-client")
+
+          sleep 1
           select client.name, from: "select-client"
           fill_in "project-name", with: "Test Project"
           choose "Billable"
           click_button "ADD PROJECT"
 
-          expect(page).to have_content("Test Project", wait: 3)
+          expect(page).to have_content("Test Project", wait: 5)
           expect(page).to have_content(client.name)
           expect(page).to have_content("Billable")
         end
@@ -38,12 +41,14 @@ RSpec.describe "Creating Project", type: :system do
           visit "/projects"
 
           click_button "NEW PROJECT"
+          expect(page).to have_select("select-client")
+          sleep 1
           select client.name, from: "select-client"
           fill_in "project-name", with: "Non Billable Project"
           choose "Non-billable"
           click_button "ADD PROJECT"
 
-          expect(page).to have_content("Non Billable Project", wait: 3)
+          expect(page).to have_content("Non Billable Project", wait: 5)
           expect(page).to have_content(client.name)
         end
       end
@@ -55,9 +60,14 @@ RSpec.describe "Creating Project", type: :system do
           visit "/projects"
 
           click_button "NEW PROJECT"
+
+          expect(page).to have_select("select-client")
+
+          sleep 1
           select client.name, from: "select-client"
           fill_in "project-name", with: ""
           choose "Non-billable"
+
           expect(page).to have_button("ADD PROJECT", disabled: true)
         end
       end
@@ -68,7 +78,7 @@ RSpec.describe "Creating Project", type: :system do
     before do
       create(:employment, company:, user:)
       user.add_role :employee, company
-      login_as(user)
+      sign_in(user)
     end
 
     it "new project button should not be visible for employees" do
