@@ -46,6 +46,7 @@ const AddEntry: React.FC<Iprops> = ({
   const [projectBillable, setProjectBillable] = useState<boolean>(true);
   const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const datePickerRef: MutableRefObject<any> = useRef();
   const { isDesktop } = useUserContext();
@@ -155,7 +156,7 @@ const AddEntry: React.FC<Iprops> = ({
   const handleDisableBtn = () => {
     const tse = getPayload();
     const message = validateTimesheetEntry(tse, client, projectId);
-    if (message) {
+    if (message || submitting) {
       return true;
     }
 
@@ -291,7 +292,10 @@ const AddEntry: React.FC<Iprops> = ({
                 ? "cursor-not-allowed bg-miru-gray-1000"
                 : "bg-miru-han-purple-1000 hover:border-transparent"
             }`}
-            onClick={handleSave}
+            onClick={() => {
+              setSubmitting(true);
+              handleSave();
+            }}
           >
             SAVE
           </button>
