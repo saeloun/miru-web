@@ -4,8 +4,8 @@ import cn from "classnames";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 
 const Pagination = ({ pagy, params, setParams, isDesktop }) => (
-  <div className="bg-grey-400 flex w-full items-center py-10 md:pl-36">
-    <div className="w-full">
+  <div className="bg-grey-400 relative flex w-full items-center px-0 pt-5 pb-20 md:pb-28 lg:py-10 lg:pl-36">
+    <div className="mx-auto w-full">
       {pagy?.pages > 1 && (
         <div className="flex items-center justify-center">
           <button
