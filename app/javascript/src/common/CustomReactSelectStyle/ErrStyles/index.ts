@@ -11,6 +11,7 @@ export const customErrStyles = isDesktopView => ({
     ...provided,
     fontSize: "12px",
     letterSpacing: "2px",
+    zIndex: 2,
   }),
   valueContainer: provided => ({
     ...provided,
