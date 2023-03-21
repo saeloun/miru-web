@@ -7,6 +7,8 @@ RSpec.describe "InternalApi::V1::Clients#index", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client_1) { create(:client, company:) }
   let(:client_2) { create(:client, company:) }
+  let(:client_3) { create(:client, company:, name: "john") }
+
   let(:project_1) { create(:project, client: client_1) }
   let(:project_2) { create(:project, client: client_2) }
   let(:time_frame) { "week" }
