@@ -6,9 +6,8 @@ import { FilterIcon, MinusIcon, PlusIcon, XIcon } from "miruIcons";
 import { Button, SidePanel } from "StyledComponents";
 import * as Yup from "yup";
 
-import clientApi from "apis/clients";
-import clientRevenueApi from "apis/reports/clientRevenue";
 import companiesApi from "apis/companies";
+import clientRevenueApi from "apis/reports/clientRevenue";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";
 import ClientFilter from "components/Reports/Filters/ClientFilter";
