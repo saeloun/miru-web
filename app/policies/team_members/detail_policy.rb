@@ -12,10 +12,4 @@ class TeamMembers::DetailPolicy < ApplicationPolicy
       { name: :admin, resource: record.company },
       { name: :owner, resource: record.company }) || user == record.user
   end
-
-  def delete?
-    user.has_any_role?(
-      { name: :admin, resource: record.company },
-      { name: :owner, resource: record.company }) || user == record.user
-  end
 end

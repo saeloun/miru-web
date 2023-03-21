@@ -2,29 +2,28 @@
 
 class InternalApi::V1::TeamMembers::AvatarController < InternalApi::V1::ApplicationController
   def update
-    authorize user, policy_class: TeamMembers::AvatarPolicy
+    authorize employment, policy_class: TeamMembers::AvatarPolicy
 
-    if user.update(user_params)
-      render json: { avtar_url: user.avatar_url, notice: "Avatar updated successfully" }, status: :ok
-    else
-      render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
-    end
+    user = employment.user
+    user.update!(avatar_params)
+    render json: { avtar_url: user.avatar_url, notice: "Avatar updated successfully" }, status: :ok
   end
 
   def destroy
-    authorize user, policy_class: TeamMembers::AvatarPolicy
+    authorize employment, policy_class: TeamMembers::AvatarPolicy
 
-    user.avatar.destroy
+    user = employment.user
+    user.avatar.destroy!
     render json: { notice: "Avatar deleted successfully" }, status: :ok
   end
 
   private
 
-    def user
-      @_user ||= User.find(params[:team_id])
+    def employment
+      @_employment ||= Employment.find_by(user_id: params[:team_id], company_id: current_company.id)
     end
 
-    def user_params
-      params.require(:user).permit(:avatar, :team_id)
+    def avatar_params
+      params.require(:user).permit(:avatar)
     end
 end
