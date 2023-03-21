@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
 
+import { City, Country, State } from "country-state-city";
 import { Formik, Form, FormikProps } from "formik";
 import { DeleteImageButtonSVG, EditImageButtonSVG } from "miruIcons";
+import PhoneInput from "react-phone-number-input";
+import flags from "react-phone-number-input/flags";
+import "react-phone-number-input/style.css";
 import Select, { components } from "react-select";
 
 import companyProfileApi from "apis/companyProfile";
+import { CustomAsyncSelect } from "common/CustomAsyncSelect";
+import CustomReactSelect from "common/CustomReactSelect";
 import { InputErrors, InputField } from "common/FormikFields";
 
 import { CompanyDetailsFormProps, CompanyDetailsFormValues } from "./interface";
 import {
   companyDetailsFormInitialValues,
   companyDetailsFormValidationSchema,
-  groupedCountryListOptions,
 } from "./utils";
 
 const { ValueContainer, Placeholder } = components;
@@ -42,18 +47,6 @@ const customStyles = {
   }),
 };
 
-const groupStyles = {
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-};
-
-const formatGroupLabel = (data: any) => (
-  <div style={groupStyles}>
-    <span>{data.label}</span>
-  </div>
-);
-
 const CustomValueContainer = props => {
   const { children } = props;
 
@@ -77,16 +70,61 @@ const CompanyDetailsForm = ({
     []
   );
 
+  const initialSelectValue = {
+    label: "",
+    value: "",
+    code: "",
+  };
+  const [countries, setCountries] = useState([]);
+  const [currentCountryDetails, setCurrentCountryDetails] =
+    useState(initialSelectValue);
+  const [currentCityList, setCurrentCityList] = useState([]);
+
+  const assignCountries = async allCountries => {
+    const countryData = await allCountries.map(country => ({
+      value: country.name,
+      label: country.name,
+      code: country.isoCode,
+    }));
+    setCountries(countryData);
+  };
+
   useEffect(() => {
     getAllTimezones();
+    const allCountries = Country.getAllCountries();
+    assignCountries(allCountries);
   }, []);
+
+  const updatedStates = countryCode =>
+    State.getStatesOfCountry(countryCode).map(state => ({
+      label: state.name,
+      value: state.name,
+      code: state.isoCode,
+      ...state,
+    }));
+
+  const filterCities = (inputValue: string) => {
+    const city = currentCityList.filter(i =>
+      i.label.toLowerCase().includes(inputValue.toLowerCase())
+    );
+
+    return city.length ? city : [{ label: inputValue, value: inputValue }];
+  };
+
+  const promiseOptions = (inputValue: string) =>
+    new Promise(resolve => {
+      setTimeout(() => {
+        resolve(filterCities(inputValue));
+      }, 1000);
+    });
 
   useEffect(() => {
     if (Object.keys(allTimezones || {})?.length) {
       const selectedCountryCode = isFormAlreadySubmitted
         ? previousSubmittedValues.country?.value
-        : companyDetailsFormInitialValues?.country?.value || "US";
+        : companyDetailsFormInitialValues?.country?.code || "US";
       getTimezonesOfCurrentCountry(selectedCountryCode);
+      updatedStates(selectedCountryCode);
     }
   }, [allTimezones]); // eslint-disable-line
 
@@ -120,9 +158,12 @@ const CompanyDetailsForm = ({
   const isBtnDisabled = (values: CompanyDetailsFormValues) =>
     !(
       values.country?.value?.trim() &&
+      values.state?.value?.trim() &&
+      values.city?.value?.trim() &&
       values.timezone?.value?.trim() &&
-      values.address?.trim() &&
-      values.business_phone?.trim()
+      values.address_line_1?.trim() &&
+      values.business_phone?.trim() &&
+      values.zipcode?.trim()
     );
 
   return (
@@ -210,48 +251,114 @@ const CompanyDetailsForm = ({
                 />
               </div>
               <div className="field relative">
-                <InputField
-                  id="business_phone"
-                  label="Business Phone"
-                  name="business_phone"
-                />
+                <div className="flex flex-col">
+                  <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4 pt-2">
+                    <PhoneInput
+                      className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
+                      flags={flags}
+                      id="business_phone"
+                      inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
+                      name="business_phone"
+                      onChange={phone => {
+                        setFieldValue("business_phone", phone);
+                      }}
+                    />
+                    <label
+                      className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300"
+                      htmlFor="business_phone"
+                    >
+                      Business Phone
+                    </label>
+                  </div>
+                </div>
                 <InputErrors
                   fieldErrors={errors.business_phone}
                   fieldTouched={touched.business_phone}
                 />
               </div>
               <div className="field relative">
-                <InputField id="address" label="Address" name="address" />
+                <InputField
+                  id="address_line_1"
+                  label="Address line 1"
+                  name="address_line_1"
+                />
                 <InputErrors
-                  fieldErrors={errors.address}
-                  fieldTouched={touched.address}
+                  fieldErrors={errors.address_line_1}
+                  fieldTouched={touched.address_line_1}
+                />
+              </div>
+              <div className="field relative">
+                <InputField
+                  id="address_line_2"
+                  label="Address line 2 (optional)"
+                  name="address_line_2"
+                />
+                <InputErrors
+                  fieldErrors={errors.address_line_2}
+                  fieldTouched={touched.address_line_2}
                 />
               </div>
               {/* Country */}
-              <div className="field relative">
-                <div className="outline relative">
-                  <Select
-                    className=""
-                    classNamePrefix="react-select-filter"
-                    formatGroupLabel={formatGroupLabel}
-                    name="country"
-                    options={groupedCountryListOptions}
-                    placeholder="Country"
-                    styles={customStyles}
-                    value={values.country}
-                    components={{
-                      ValueContainer: CustomValueContainer,
-                    }}
-                    onChange={e => {
-                      getTimezonesOfCurrentCountry(e.value, setFieldValue);
+              <div className="mb-5 flex flex-row">
+                <div className="flex w-1/2 flex-col py-0 pr-2">
+                  <CustomReactSelect
+                    isErr={!!errors.country}
+                    label="Country"
+                    name="current_country_select"
+                    options={countries}
+                    value={values.country.value ? values.country : null}
+                    handleOnChange={e => {
+                      setCurrentCountryDetails(e);
+                      getTimezonesOfCurrentCountry(e.code, setFieldValue);
                       setFieldValue("country", e);
                     }}
                   />
                 </div>
-                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.country && touched.country && (
-                    <div>{errors.country}</div>
-                  )}
+                <div className="flex w-1/2 flex-col pl-2">
+                  <CustomReactSelect
+                    isErr={!!errors.state}
+                    label="State"
+                    name="state_select"
+                    value={values.state.value ? values.state : null}
+                    handleOnChange={state => {
+                      setFieldValue("state", state);
+                      const cities = City.getCitiesOfState(
+                        currentCountryDetails.code,
+                        state.code
+                      ).map(city => ({
+                        label: city.name,
+                        value: city.name,
+                        ...city,
+                      }));
+                      setCurrentCityList(cities);
+                    }}
+                    options={updatedStates(
+                      currentCountryDetails.code
+                        ? currentCountryDetails.code
+                        : "US"
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-row">
+                <div className="flex w-1/2 flex-col pr-2">
+                  <CustomAsyncSelect
+                    isErr={!!errors.city}
+                    label="City"
+                    loadOptions={promiseOptions}
+                    name="country_select"
+                    value={values.city.value ? values.city : null}
+                    handleOnChange={city => {
+                      setFieldValue("city", city);
+                    }}
+                  />
+                </div>
+                <div className="flex w-1/2 flex-col pl-2">
+                  <InputField id="zipcode" label="zipcode" name="zipcode" />
+                  <InputErrors
+                    fieldErrors={errors.zipcode}
+                    fieldTouched={touched.zipcode}
+                  />
                 </div>
               </div>
               {/* Timezone */}
@@ -264,10 +371,14 @@ const CompanyDetailsForm = ({
                     options={timezonesOfSelectedCountry}
                     placeholder="Timezone"
                     styles={customStyles}
-                    value={values.timezone}
                     components={{
                       ValueContainer: CustomValueContainer,
                     }}
+                    value={
+                      values.timezone.value
+                        ? values.timezone
+                        : timezonesOfSelectedCountry[0]
+                    }
                     onChange={e => setFieldValue("timezone", e)}
                   />
                 </div>
