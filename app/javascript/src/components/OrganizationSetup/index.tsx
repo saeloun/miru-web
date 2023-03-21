@@ -40,9 +40,13 @@ const OrganizationSetup = () => {
   ) => {
     const formD = new FormData();
     formD.append("company[name]", companyDetails.company_name);
-    formD.append("company[address]", companyDetails.address);
+    formD.append("company[address_line_1]", companyDetails.address_line_1);
+    formD.append("company[address_line_2]", companyDetails.address_line_2);
     formD.append("company[business_phone]", companyDetails.business_phone);
     formD.append("company[country]", companyDetails.country?.value);
+    formD.append("company[state]", companyDetails.state?.value);
+    formD.append("company[city]", companyDetails.city?.value);
+    formD.append("company[zipcode]", companyDetails.zipcode);
     formD.append(
       "company[base_currency]",
       financialDetails.base_currency?.value || ""
