@@ -57,8 +57,7 @@ RSpec.describe "InternalApi::V1::Profile#remove_avatar", type: :request do
     end
 
     it "is unsuccessful" do
-      expect(response).to have_http_status(:forbidden)
-      expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
+      expect(response).to have_http_status(:not_found)
     end
   end
 
@@ -74,8 +73,7 @@ RSpec.describe "InternalApi::V1::Profile#remove_avatar", type: :request do
     end
 
     it "is unsuccessful" do
-      expect(response).to have_http_status(:forbidden)
-      expect(json_response["errors"]).to eq("You are not authorized to perform this action.")
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

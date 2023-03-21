@@ -6,7 +6,7 @@ class InternalApi::V1::TeamMembers::AvatarController < InternalApi::V1::Applicat
 
     user = employment.user
     user.update!(avatar_params)
-    render json: { avtar_url: user.avatar_url, notice: "Avatar updated successfully" }, status: :ok
+    render json: { avtar_url: user_avatar(user), notice: "Avatar updated successfully" }, status: :ok
   end
 
   def destroy
@@ -20,7 +20,7 @@ class InternalApi::V1::TeamMembers::AvatarController < InternalApi::V1::Applicat
   private
 
     def employment
-      @_employment ||= Employment.find_by(user_id: params[:team_id], company_id: current_company.id)
+      @_employment ||= Employment.find_by!(user_id: params[:team_id], company_id: current_company.id)
     end
 
     def avatar_params
