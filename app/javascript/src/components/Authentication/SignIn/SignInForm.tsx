@@ -1,5 +1,6 @@
 import React from "react";
 
+import axios from "axios";
 import { Formik, Form, FormikProps } from "formik";
 import { GoogleSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
@@ -44,6 +45,19 @@ const SignInForm = () => {
         navigate(`/email_confirmation?email=${values.email}`);
       }
     }
+  };
+
+  const handleGoogleAuth = async () => {
+    const res = await axios.get("users/auth/google_oauth2");
+    //@ts-expect-error for authDispatch initial values
+    authDispatch({
+      type: "LOGIN",
+      payload: {
+        token: res.data.user.token,
+        email: res?.data?.user.email,
+      },
+    });
+    setTimeout(() => (window.location.href = `${window.location.origin}`), 500);
   };
 
   const isBtnDisabled = (values: SignInFormValues) =>
@@ -121,7 +135,7 @@ const SignInForm = () => {
               <button
                 className="form__button whitespace-nowrap"
                 data-cy="sign-up-button"
-                onClick={authenticationApi.googleAuth}
+                onClick={handleGoogleAuth}
               >
                 <img alt="" className="mr-2" src={GoogleSVG} />
                 Sign In with Google
