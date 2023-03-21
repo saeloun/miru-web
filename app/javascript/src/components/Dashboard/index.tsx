@@ -18,11 +18,7 @@ const Dashboard = props => {
   if (isDesktop) {
     return (
       <div className="absolute inset-0 flex h-full w-full">
-        <Navbar
-          isAdminUser={isAdminUser}
-          isBookKeeper={companyRole === "book_keeper"}
-          user={user}
-        />
+        <Navbar companyRole={companyRole} user={user} />
         <Home {...props} isAdminUser={isAdminUser} isDesktop={isDesktop} />
       </div>
     );

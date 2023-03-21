@@ -1,18 +1,8 @@
 import React from "react";
 
-import {
-  getAdminOptions,
-  getBookKeeperOptions,
-  getEmployeeOptions,
-} from "./utils";
+import { getNavOptions } from "./utils";
 
-const Options = ({ isAdminUser, isBookKeeper }) => (
-  <ul className="mt-8">
-    {isAdminUser
-      ? getAdminOptions()
-      : isBookKeeper
-      ? getBookKeeperOptions()
-      : getEmployeeOptions()}
-  </ul>
+const Options = ({ companyRole }) => (
+  <ul className="mt-8">{getNavOptions(companyRole)}</ul>
 );
 export default Options;

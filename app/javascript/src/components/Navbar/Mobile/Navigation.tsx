@@ -4,20 +4,26 @@ import { DotsThreeVerticalIcon } from "miruIcons";
 
 import MoreOptions from "./MoreOptions";
 
-import { mobileActiveClassName, MobileMenuOptions } from "../utils";
+import { mobileActiveClassName, MobileMenuOptions, navOptions } from "../utils";
 
-const Navigation = ({ isAdminUser, setSelectedTab }) => {
+const Navigation = ({ setSelectedTab, companyRole }) => {
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(false);
 
   return (
     <Fragment>
       <ul className="fixed bottom-0 left-0 right-0 z-40 flex h-1/12 justify-between bg-white px-3 shadow-c1">
         <MobileMenuOptions
+          companyRole={companyRole}
           from={0}
-          isAdminUser={isAdminUser}
           setSelectedTab={setSelectedTab}
           showMoreOptions={showMoreOptions}
-          to={4}
+          to={
+            navOptions.filter(option =>
+              option.allowedRoles.includes(companyRole)
+            ).length < 4
+              ? navOptions.length
+              : 4
+          }
         />
         <li
           className={`flex items-center p-2 ${

@@ -13,67 +13,55 @@ import { NavLink } from "react-router-dom";
 
 import { Paths } from "constants/index";
 
-const navEmployeeOptions = [
+const navOptions = [
   {
     logo: <TimeTrackingIcon className="mr-0 md:mr-4" size={26} />,
     label: "Time Tracking",
     dataCy: "time-tracking-tab",
     path: Paths.TIME_TRACKING,
+    allowedRoles: ["admin", "employee", "owner"],
   },
   {
     logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Clients",
     dataCy: "clients-tab",
     path: Paths.CLIENTS,
+    allowedRoles: ["admin", "employee", "owner"],
   },
   {
     logo: <ProjectsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Projects",
     dataCy: "projects-tab",
     path: Paths.PROJECTS,
+    allowedRoles: ["admin", "employee", "owner"],
   },
-];
-
-const navAdminOptions = [
-  ...navEmployeeOptions,
   {
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
     dataCy: "team-tab",
     path: Paths.TEAMS,
+    allowedRoles: ["admin", "owner"],
   },
   {
     logo: <InvoicesIcon className="mr-0 md:mr-4" size={26} />,
     label: "Invoices",
     dataCy: "invoices-tab",
     path: Paths.INVOICES,
+    allowedRoles: ["admin", "owner"],
   },
   {
     logo: <ReportsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Reports",
     dataCy: "reports-tab",
     path: Paths.REPORTS,
+    allowedRoles: ["admin", "owner", "book_keeper"],
   },
   {
     logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Payments",
     dataCy: "payments-tab",
     path: Paths.PAYMENTS,
-  },
-];
-
-const navBookKeeperOptions = [
-  {
-    logo: <ReportsIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Reports",
-    dataCy: "reports-tab",
-    path: Paths.REPORTS,
-  },
-  {
-    logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Payments",
-    dataCy: "payments-tab",
-    path: Paths.PAYMENTS,
+    allowedRoles: ["admin", "owner", "book_keeper"],
   },
 ];
 
@@ -178,71 +166,46 @@ const MobileListOption = ({
   </li>
 );
 
-const getEmployeeOptions = () =>
-  navEmployeeOptions.map((option, index) => (
-    <ListOption index={index} key={index} option={option} />
-  ));
-
-const getAdminOptions = () =>
-  navAdminOptions.map((option, index) => (
-    <ListOption index={index} key={index} option={option} />
-  ));
-
-const getBookKeeperOptions = () =>
-  navBookKeeperOptions.map((option, index) => (
-    <ListOption index={index} key={index} option={option} />
-  ));
+const getNavOptions = companyRole =>
+  navOptions.map((option, index) => {
+    if (option.allowedRoles.includes(companyRole)) {
+      return <ListOption index={index} key={index} option={option} />;
+    }
+  });
 
 const MobileMenuOptions = ({
-  isAdminUser,
+  companyRole,
   setSelectedTab,
   from,
   to,
   showMoreOptions,
-}) => {
-  if (isAdminUser) {
-    return (
-      <>
-        {navAdminMobileOptions.slice(from, to).map((option, index) => (
-          <MobileListOption
-            from={from}
-            index={index}
-            key={index}
-            option={option}
-            setSelectedTab={setSelectedTab}
-            showMoreOptions={showMoreOptions}
-          />
-        ))}
-      </>
-    );
-  }
-
-  return (
-    <>
-      {navEmployeeOptions.slice(from, to).map((option, index) => (
-        <MobileListOption
-          from={from}
-          index={index}
-          key={index}
-          option={option}
-          setSelectedTab={setSelectedTab}
-          showMoreOptions={showMoreOptions}
-        />
-      ))}
-    </>
-  );
-};
+}) => (
+  <>
+    {navOptions
+      .slice(from, to)
+      .map(
+        (option, index) =>
+          option.allowedRoles.includes(companyRole) && (
+            <MobileListOption
+              from={from}
+              index={index}
+              key={index}
+              option={option}
+              setSelectedTab={setSelectedTab}
+              showMoreOptions={showMoreOptions}
+            />
+          )
+      )}
+  </>
+);
 
 export {
-  navEmployeeOptions,
-  navAdminOptions,
   navAdminMobileOptions,
   activeClassName,
   mobileActiveClassName,
   ListOption,
   MobileListOption,
   MobileMenuOptions,
-  getAdminOptions,
-  getEmployeeOptions,
-  getBookKeeperOptions,
+  getNavOptions,
+  navOptions,
 };

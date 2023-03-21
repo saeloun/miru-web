@@ -6,14 +6,10 @@ import { useUserContext } from "context/UserContext";
 
 import UserActions from "../UserActions";
 import UserInfo from "../UserInfo";
-import {
-  navAdminOptions,
-  navEmployeeOptions,
-  MobileMenuOptions,
-} from "../utils";
+import { MobileMenuOptions, navOptions } from "../utils";
 
 const MoreOptions = ({ setVisiblity, setSelectedTab, showMoreOptions }) => {
-  const { user, isAdminUser } = useUserContext();
+  const { user, isAdminUser, companyRole } = useUserContext();
 
   return (
     <SidePanel WrapperClassname="pt-13 pb-16" setFilterVisibilty={setVisiblity}>
@@ -26,12 +22,14 @@ const MoreOptions = ({ setVisiblity, setSelectedTab, showMoreOptions }) => {
           <UserInfo user={user} />
           <ul className="w-full px-4" onClick={() => setVisiblity(false)}>
             <MobileMenuOptions
+              companyRole={companyRole}
               from={4}
-              isAdminUser={isAdminUser}
               setSelectedTab={setSelectedTab}
               showMoreOptions={showMoreOptions}
               to={
-                isAdminUser ? navAdminOptions.length : navEmployeeOptions.length
+                navOptions.filter(option =>
+                  option.allowedRoles.includes(companyRole)
+                ).length
               }
             />
           </ul>
