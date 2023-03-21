@@ -455,7 +455,7 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController::#index", type: :r
     end
 
     it "is permitted to view time entry report" do
-      expect(response).to have_http_status(:forbidden)
+      expect(response).to have_http_status(:ok)
     end
   end
 
