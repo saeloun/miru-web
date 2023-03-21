@@ -31,6 +31,7 @@ const FilterSideBar = ({
   selectedInput,
   filterParams,
   setSelectedFilter,
+  setFilterCounter,
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [clientList, setClientList] = useState<null | any[]>([]);
@@ -255,6 +256,8 @@ const FilterSideBar = ({
       JSON.stringify(filters)
     );
     setIsFilterVisible(false);
+    const count = filters.dateRange.value != "all" ? 1 : 0;
+    setFilterCounter(filters.clients.length + count);
   };
 
   useEffect(() => {
@@ -291,6 +294,10 @@ const FilterSideBar = ({
         clients: newarr,
       });
     } else {
+      if (filters.clients[0].label === "All Clients") {
+        filters.clients.splice(0, 1);
+      }
+
       setFilters({
         ...filters,
         clients: [...filters.clients, selectedClient],
