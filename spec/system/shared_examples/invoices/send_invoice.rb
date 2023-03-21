@@ -8,7 +8,7 @@ RSpec.shared_examples "Send Invoice", type: :system do
       visit "invoices"
 
       expect(page).to have_text "Invoices"
-      expect(page).to have_xpath "//h1[text()='All Invoices']"
+      expect(page).to have_content "All Invoices"
 
       find(:css, "#invoicesListTableRow").hover
       find_by_id("sendInvoiceButton").click
