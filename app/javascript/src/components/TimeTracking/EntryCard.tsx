@@ -29,7 +29,11 @@ const canEditTimeEntry = (billStatus, role) =>
 const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
   if (canEditTimeEntry(billStatus, role)) {
     return (
-      <button className="icon-hover" onClick={() => setEditEntryId(id)}>
+      <button
+        className="icon-hover"
+        id="editIcon"
+        onClick={() => setEditEntryId(id)}
+      >
         <EditIcon className="text-miru-han-purple-1000" size={20} />
       </button>
     );
@@ -41,7 +45,11 @@ const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
 const showDeleteAction = (billStatus, role, id, handleDeleteEntry) => {
   if (canEditTimeEntry(billStatus, role)) {
     return (
-      <button className="icon-hover " onClick={() => handleDeleteEntry(id)}>
+      <button
+        className="icon-hover "
+        id="deleteIcon"
+        onClick={() => handleDeleteEntry(id)}
+      >
         <DeleteIcon className="text-miru-han-purple-1000" size={20} />
       </button>
     );
