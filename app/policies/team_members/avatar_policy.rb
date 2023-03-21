@@ -15,7 +15,7 @@ class TeamMembers::AvatarPolicy < ApplicationPolicy
 
   private
 
-  def user_is_admin_or_owner?
-    user_owner_role? || user_admin_role?
-  end
+    def user_is_admin_or_owner?
+      user_owner_role? || user_admin_role?
+    end
 end

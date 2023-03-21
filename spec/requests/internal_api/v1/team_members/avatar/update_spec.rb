@@ -12,19 +12,19 @@ RSpec.describe "InternalApi::V1::TeamMembers::AvatarController::#update", type: 
 
   context "when Owner wants to update avatar of employee of his company" do
     before do
-      create(:employment, user: admin, company: company)
-      create(:employment, user: user, company: company)
+      create(:employment, user: admin, company:)
+      create(:employment, user:, company:)
 
       owner.add_role :owner, company
       user.add_role :employee, company
       sign_in owner
 
-      file = Rack::Test::UploadedFile.new(Rails.root.join('spec/support/fixtures/files/test-image.png'), 'image/png')
+      file = Rack::Test::UploadedFile.new(Rails.root.join("spec/support/fixtures/files/test-image.png"), "image/png")
       send_request :put, internal_api_v1_team_avatar_path(
         team_id: user.id,
         user: {
           # avatar: fixture_file_upload(Rails.root.join('spec', 'support', 'fixtures', 'test-image.png'), 'image/png')
-          avatar: fixture_file_upload(Rails.root.join('spec', 'support', 'fixtures', 'test-image.png'), 'image/png')
+          avatar: fixture_file_upload(Rails.root.join("spec", "support", "fixtures", "test-image.png"), "image/png")
           # avatar: file,
         }), headers: auth_headers(owner)
     end

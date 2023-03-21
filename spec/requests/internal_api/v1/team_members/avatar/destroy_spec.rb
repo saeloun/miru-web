@@ -12,8 +12,8 @@ RSpec.describe "InternalApi::V1::Profile#remove_avatar", type: :request do
 
   context "when admin wants to remove avatar of employee of his company" do
     before do
-      create(:employment, user: admin, company: company)
-      create(:employment, user: user, company: company)
+      create(:employment, user: admin, company:)
+      create(:employment, user:, company:)
 
       admin.add_role :admin, company
       user.add_role :employee, company
@@ -30,8 +30,8 @@ RSpec.describe "InternalApi::V1::Profile#remove_avatar", type: :request do
 
   context "when owner wants to remove avatar of employee of his company" do
     before do
-      create(:employment, user: owner, company: company)
-      create(:employment, user: user, company: company)
+      create(:employment, user: owner, company:)
+      create(:employment, user:, company:)
 
       owner.add_role :owner, company
       user.add_role :employee, company
@@ -47,7 +47,7 @@ RSpec.describe "InternalApi::V1::Profile#remove_avatar", type: :request do
 
   context "when logged in admin wants to remove avatar of employee from a different company" do
     before do
-      create(:employment, user: admin, company: company)
+      create(:employment, user: admin, company:)
       create(:employment, user: user2, company: company2)
 
       admin.add_role :admin, company
@@ -64,7 +64,7 @@ RSpec.describe "InternalApi::V1::Profile#remove_avatar", type: :request do
 
   context "when logged in owner wants to remove avatar of employee from a different company" do
     before do
-      create(:employment, user: owner, company: company)
+      create(:employment, user: owner, company:)
       create(:employment, user: user2, company: company2)
 
       owner.add_role :owner, company
