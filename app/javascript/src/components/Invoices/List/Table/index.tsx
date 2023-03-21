@@ -13,7 +13,10 @@ const Table = ({
   fetchInvoices,
   isDesktop,
 }) => (
-  <table className="min-w-full divide-y divide-gray-200 overflow-x-scroll lg:mt-4">
+  <table
+    className="min-w-full divide-y divide-gray-200 overflow-x-scroll lg:mt-4"
+    id="invoicesListTable"
+  >
     <thead>
       <TableHeader
         deselectInvoices={deselectInvoices}
