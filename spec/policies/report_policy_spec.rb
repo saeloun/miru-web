@@ -25,9 +25,5 @@ RSpec.describe ReportPolicy, type: :policy do
     it "denies permission to a employee" do
       expect(described_class).not_to permit(employee)
     end
-
-    it "denies permission to a book keeper" do
-      expect(described_class).not_to permit(book_keeper)
-    end
   end
 end

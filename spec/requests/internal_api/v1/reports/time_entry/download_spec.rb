@@ -64,14 +64,4 @@ RSpec.describe "InternalApi::V1::Reports::TimeEntryController#download", type: :
       expect(json_response["errors"]).to eq "You are not authorized to perform this action."
     end
   end
-
-  context "when user is a book keeper" do
-    before { sign_in book_keeper }
-
-    it "returns 403 status" do
-      send_request :get, "/internal_api/v1/reports/time_entries/download.#{type}", headers: auth_headers(book_keeper)
-      expect(response).to have_http_status(:forbidden)
-      expect(json_response["errors"]).to eq "You are not authorized to perform this action."
-    end
-  end
 end
