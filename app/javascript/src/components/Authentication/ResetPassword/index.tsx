@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 
 import authenticationApi from "apis/authentication";
 import { InputErrors, InputField } from "common/FormikFields";
+import MiruLogoWatermark from "common/MiruLogoWatermark";
 import { MIRU_APP_URL, Paths, TOASTER_DURATION } from "constants/index";
 
 import {
@@ -42,7 +43,7 @@ const ResetPassword = () => {
   return (
     <>
       <ToastContainer autoClose={TOASTER_DURATION} />
-      <div className="w-full px-8 pt-16 pb-4 md:px-0 md:pt-36">
+      <div className="relative min-h-screen w-full px-8 pt-16 pb-4 md:px-0 md:pt-36">
         <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
           <div>
             <a href={MIRU_APP_URL} rel="noreferrer noopener">
@@ -142,6 +143,7 @@ const ResetPassword = () => {
             </Formik>
           </div>
         </div>
+        <MiruLogoWatermark />
       </div>
     </>
   );

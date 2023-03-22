@@ -61,7 +61,7 @@ const SignInForm = () => {
           />
         </a>
       </div>
-      <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
+      <div className="mx-auto md:w-1/2 lg:w-352">
         <h1 className="text-center font-manrope text-4.5xl font-extrabold text-miru-han-purple-1000">
           Welcome back!
         </h1>
