@@ -135,6 +135,7 @@ const Header = ({
         <button
           className="flex flex-col items-center justify-center"
           onClick={getLeftArrowAction}
+          id="prevMonth"
         >
           <CaretCircleLeftIcon size={20} />
         </button>
@@ -167,6 +168,7 @@ const Header = ({
         <button
           className="flex flex-col items-center justify-center"
           onClick={getRightArrowAction}
+          id="nextMonth"
         >
           <CaretCircleRightIcon size={20} />
         </button>

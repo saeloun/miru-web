@@ -6,8 +6,8 @@ import { FilterIcon, MinusIcon, PlusIcon, XIcon } from "miruIcons";
 import { Button, SidePanel } from "StyledComponents";
 import * as Yup from "yup";
 
-import clientApi from "apis/clients";
 import companiesApi from "apis/companies";
+import clientRevenueApi from "apis/reports/clientRevenue";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";
 import ClientFilter from "components/Reports/Filters/ClientFilter";
@@ -114,7 +114,7 @@ const FilterSideBar = ({
 
   const fetchAndSetClients = async () => {
     try {
-      const { data } = await clientApi.get("");
+      const { data } = await clientRevenueApi.newReport();
       setClientList(
         data.client_details.map(client => ({
           value: client.id,
@@ -251,7 +251,7 @@ const FilterSideBar = ({
       : setFilterParams(filters);
 
     window.localStorage.setItem(
-      LocalStorageKeys.INVOICE_FILTERS,
+      LocalStorageKeys.REVENUE_FILTERS,
       JSON.stringify(filters)
     );
     setIsFilterVisible(false);
@@ -386,11 +386,12 @@ const FilterSideBar = ({
                     </button>
                     <button
                       disabled={disableDateBtn}
-                      className={`sidebar__apply ${
-                        disableDateBtn
-                          ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
-                          : "cursor-pointer"
-                      }`}
+                      className={`sidebar__apply
+                          ${
+                            disableDateBtn
+                              ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                              : "cursor-pointer"
+                          }`}
                       onClick={submitCustomDatePicker}
                     >
                       Done
