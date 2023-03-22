@@ -17,6 +17,7 @@ import { useUserContext } from "context/UserContext";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import DatesInWeek from "./DatesInWeek";
+import { EmptyStatesMobileView } from "./EmptyStatesMobileView";
 import EntryCard from "./EntryCard";
 import EntryForm from "./EntryForm";
 import Header from "./Header";
@@ -400,7 +401,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               ))}
             </nav>
           )}
-          {!isDesktop && (
+          {!isDesktop && isAdminUser && (
             <label className="text-sm font-normal leading-5 text-miru-dark-purple-1000">
               Time entries for
             </label>
@@ -480,7 +481,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               setUpdateView={setUpdateView}
             />
           )}
-          {view !== "week" && !newEntryView && (
+          {view !== "week" && !newEntryView && isDesktop && (
             <button
               className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
               onClick={() => {
@@ -491,6 +492,21 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               + NEW ENTRY
             </button>
           )}
+          {/* --- On mobile view we don't need New Entry button for Empty States --- */}
+          {view !== "week" &&
+            !newEntryView &&
+            !isDesktop &&
+            entryList[selectedFullDate] && (
+              <button
+                className="flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+                onClick={() => {
+                  setNewEntryView(true);
+                  setEditEntryId(0);
+                }}
+              >
+                + NEW ENTRY
+              </button>
+            )}
           {/* --- weekly view --- */}
           {view === "week" && !newRowView && (
             <button
@@ -557,6 +573,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               />
             )
           )}
+        {/* mobile view Empty state condition */}
+        {view !== "week" && !entryList[selectedFullDate] && !isDesktop && (
+          <EmptyStatesMobileView
+            setEditEntryId={setEditEntryId}
+            setNewEntryView={setNewEntryView}
+          />
+        )}
         {/* entry cards for week */}
         {view === "week" && (
           <div>

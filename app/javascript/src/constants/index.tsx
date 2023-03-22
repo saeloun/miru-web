@@ -98,6 +98,7 @@ export enum TeamModalType {
 
 export enum LocalStorageKeys {
   INVOICE_FILTERS = "invoiceFilters",
+  REVENUE_FILTERS = "REVENUEFiters",
 }
 
 export const MIRU_APP_URL = "https://miru.so/";

@@ -11,8 +11,7 @@ module Reports::TimeEntries
 
     def process
       if group_by.blank?
-        client_logo = fetch_client_logo(es_response.first)
-        [{ label: "", logo: client_logo, entries: es_response }]
+        [{ label: "", entries: es_response }]
       else
         process_aggregated_es_response
       end
@@ -37,10 +36,8 @@ module Reports::TimeEntries
             nil
           else
             timesheet_entry = timesheet_entries.first
-            client_logo = fetch_client_logo(timesheet_entry)
             {
               label: group_label(timesheet_entry, bucket["key_as_string"]),
-              logo: client_logo,
               entries: timesheet_entries
             }
           end
@@ -71,10 +68,6 @@ module Reports::TimeEntries
           date_format = "%d %b %Y"
           "#{start_date.strftime(date_format)} - #{end_date.strftime(date_format)}"
         end
-      end
-
-      def fetch_client_logo(timesheet_entry)
-        timesheet_entry.project.client.logo_url
       end
   end
 end

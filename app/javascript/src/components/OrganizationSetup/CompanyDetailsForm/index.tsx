@@ -203,6 +203,7 @@ const CompanyDetailsForm = ({
                   id="company_name"
                   label="Company Name"
                   name="company_name"
+                  resetErrorOnChange={false}
                 />
                 <InputErrors
                   fieldErrors={errors.company_name}
@@ -214,6 +215,7 @@ const CompanyDetailsForm = ({
                   id="business_phone"
                   label="Business Phone"
                   name="business_phone"
+                  resetErrorOnChange={false}
                 />
                 <InputErrors
                   fieldErrors={errors.business_phone}
@@ -221,7 +223,12 @@ const CompanyDetailsForm = ({
                 />
               </div>
               <div className="field relative">
-                <InputField id="address" label="Address" name="address" />
+                <InputField
+                  id="address"
+                  label="Address"
+                  name="address"
+                  resetErrorOnChange={false}
+                />
                 <InputErrors
                   fieldErrors={errors.address}
                   fieldTouched={touched.address}

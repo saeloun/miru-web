@@ -64,10 +64,10 @@ const Container = ({ selectedFilter }: ContainerProps) => {
     ) : null;
   };
 
-  const getEntryList = (entries, clientLogo: string) =>
+  const getEntryList = entries =>
     entries.map((timeEntry, index) => (
       <ReportRow
-        clientLogo={clientLogo}
+        clientLogo={timeEntry.clientLogo}
         key={`${timeEntry.client}-${index}`}
         timeEntry={timeEntry}
       />
@@ -111,7 +111,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
               )}
               <ReportHeader />
               <div className="mb-6">
-                {entries.length > 0 && getEntryList(entries, clientLogo)}
+                {entries.length > 0 && getEntryList(entries)}
               </div>
             </Fragment>
           )

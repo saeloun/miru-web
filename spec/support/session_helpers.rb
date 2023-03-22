@@ -2,11 +2,12 @@
 
 module SessionHelpers
   def sign_in(user)
-    visit new_user_session_path
-    within("#new_user") do
-      fill_in "Email", with: user.email
-      fill_in "Password", with: user.password
+    with_forgery_protection do
+      visit "/login"
+      fill_in "email", with: user.email
+      fill_in "password", with: user.password
+      click_button "Sign In"
+      sleep 2
     end
-    click_button "SIGN IN"
   end
 end
