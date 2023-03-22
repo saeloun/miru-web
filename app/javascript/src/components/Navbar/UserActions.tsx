@@ -108,6 +108,7 @@ const UserActions = () => {
       </li>
       <li
         className="flex cursor-pointer items-start  justify-start border-b border-miru-gray-100 px-6 last:border-b-0 hover:bg-miru-gray-100 md:border-b-0"
+        id="logoutBtn"
         onClick={handleLogout}
       >
         <SignOutIcon className="mr-4" size={26} />
