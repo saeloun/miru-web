@@ -41,6 +41,23 @@ RSpec.describe "User Signup", type: :system do
       end
     end
 
+    it "allows a user to sign up with a password containing blank spaces in between" do
+      with_forgery_protection do
+        visit "/signup"
+
+        fill_in "firstName", with: user.first_name
+        fill_in "lastName", with: user.last_name
+        fill_in "email", with: user.email
+        fill_in "password", with: "My password with spaces@2023"
+        fill_in "confirm_password", with: "My password with spaces@2023"
+
+        click_on "Sign Up"
+
+        expect(page).to have_content("Email Verification")
+        expect(page).to have_content(user.email)
+      end
+    end
+
     it "allows to verify their email" do
       with_forgery_protection do
         visit "/signup"
@@ -178,6 +195,38 @@ RSpec.describe "User Signup", type: :system do
         click_on "Sign Up"
 
         expect(page).to have_content "Must Contain at least 8 Characters, One Uppercase, One Lowercase, One Number and One Special Character"
+      end
+    end
+
+    it "throws an error when using a password that starts with blank space" do
+      with_forgery_protection do
+        visit "/signup"
+
+        fill_in "firstName", with: user.first_name
+        fill_in "lastName", with: user.last_name
+        fill_in "email", with: existing_user.email
+        fill_in "password", with: " Password@2023"
+        fill_in "confirm_password", with: " Password@2023"
+
+        click_on "Sign Up"
+
+        expect(page).to have_content "Password can not start or end with a blank space"
+      end
+    end
+
+    it "throws an error when using a password that ends with blank space" do
+      with_forgery_protection do
+        visit "/signup"
+
+        fill_in "firstName", with: user.first_name
+        fill_in "lastName", with: user.last_name
+        fill_in "email", with: existing_user.email
+        fill_in "password", with: "Password@2023 "
+        fill_in "confirm_password", with: "Password@2023 "
+
+        click_on "Sign Up"
+
+        expect(page).to have_content "Password can not start or end with a blank space"
       end
     end
 

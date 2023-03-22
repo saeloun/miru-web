@@ -7,8 +7,9 @@ export const resetPasswordFormInitialValues = {
 
 export const resetPasswordFormValidationSchema = Yup.object().shape({
   password: Yup.string()
+    .matches(/^\S.*\S$/, "Password can not start or end with a blank space")
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s\x00-\x1F\x7F])[^\s\x00-\x1F\x7F]{8,}$/, // eslint-disable-line
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s\x00-\x1F\x7F])[\S\s]{8,}$/, // eslint-disable-line
       "Must Contain at least 8 Characters, One Uppercase, One Lowercase, One Number and One Special Character"
     )
     .required("Password can not be blank"),
