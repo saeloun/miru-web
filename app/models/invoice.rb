@@ -107,6 +107,8 @@ class Invoice < ApplicationRecord
     }
   end
 
+  has_paper_trail
+
   def update_timesheet_entry_status!
     timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
     TimesheetEntry.where(id: timesheet_entry_ids).update!(bill_status: :billed)

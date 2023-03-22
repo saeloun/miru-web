@@ -225,3 +225,5 @@ gem "sentry-ruby"
 
 # https://github.com/grosser/parallel_tests
 gem "parallel_tests", group: [:development, :test]
+
+gem "paper_trail"

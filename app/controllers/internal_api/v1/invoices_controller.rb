@@ -2,6 +2,7 @@
 
 class InternalApi::V1::InvoicesController < InternalApi::V1::ApplicationController
   before_action :load_client, only: [:create, :update]
+  before_action :set_paper_trail_whodunnit
   after_action :ensure_time_entries_billed, only: [:send_invoice]
 
   def index
