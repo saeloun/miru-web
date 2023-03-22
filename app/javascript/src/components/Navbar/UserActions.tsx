@@ -68,6 +68,7 @@ const UserActions = () => {
     window.localStorage.removeItem(LocalStorageKeys.INVOICE_FILTERS);
     //@ts-expect-error for authDispatch object
     authDispatch({ type: "LOGOUT" });
+    window.location.href = "/";
   };
 
   const WorkspaceList = () => (
