@@ -38,10 +38,10 @@ class Reports::TimeEntries::PageService < ApplicationService
   private
 
     def es_filter_for_pagination
-      if !Reports::TimeEntries::GroupBy.new(group_by).valid_group_by?
-        @es_filter = {}
-      else
+      if Reports::TimeEntries::GroupBy.new(group_by).valid_group_by?
         send("#{group_by}_filter")
+      else
+        @es_filter = {}
       end
     end
 
