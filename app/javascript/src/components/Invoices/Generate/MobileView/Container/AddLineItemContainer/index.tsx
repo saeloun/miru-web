@@ -277,8 +277,8 @@ const AddLineItemContainer = ({
                       label="Name"
                       name="Name"
                       readOnly={false}
+                      setFieldValue={name}
                       type="text"
-                      value={name}
                       onChange={e => setName(e.target.value)}
                     />
                     <InputErrors
@@ -330,8 +330,8 @@ const AddLineItemContainer = ({
                       inputBoxClassName="border focus:border-miru-han-purple-1000"
                       label="Date"
                       name="Date"
+                      setFieldValue={getDate}
                       type="text"
-                      value={getDate}
                       onChange={e => setDate(e.target.value)}
                     />
                     <InputErrors
@@ -371,8 +371,8 @@ const AddLineItemContainer = ({
                     label="Rate"
                     name="Rate"
                     readOnly={false}
+                    setFieldValue={rate}
                     type="text"
-                    value={rate}
                     onChange={handleSetRate}
                   />
                   <InputErrors
@@ -387,8 +387,8 @@ const AddLineItemContainer = ({
                     label="Quantity"
                     name="Quantity"
                     readOnly={false}
+                    setFieldValue={qtyInHHrMin}
                     type="text"
-                    value={qtyInHHrMin}
                     onChange={handleSetQuantity}
                   />
                   <InputErrors

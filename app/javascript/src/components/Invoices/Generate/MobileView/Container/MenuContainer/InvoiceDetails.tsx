@@ -156,8 +156,8 @@ const InvoiceDetails = ({
                     inputBoxClassName="focus:border-miru-han-purple-1000"
                     label="Date of Issue"
                     name="Date of Issue"
+                    setFieldValue={getIssuedDate}
                     type="text"
-                    value={getIssuedDate}
                     wrapperClassName="mr-2"
                     onChange={handleDatePickerChange}
                   />
@@ -199,8 +199,8 @@ const InvoiceDetails = ({
                     inputBoxClassName="focus:border-miru-han-purple-1000"
                     label="Due Date"
                     name="Due Date"
+                    setFieldValue={getDueDate}
                     type="text"
-                    value={getDueDate}
                     wrapperClassName="ml-2"
                     onChange={handleDueDatePicker}
                   />
@@ -242,8 +242,8 @@ const InvoiceDetails = ({
                 label="Invoice Number"
                 name="Invoice Number"
                 readOnly={false}
+                setFieldValue={invoiceNumber}
                 type="text"
-                value={invoiceNumber}
                 wrapperClassName="mr-2"
                 onChange={e => setInvoiceNumber(e.target.value)}
               />
@@ -257,8 +257,8 @@ const InvoiceDetails = ({
                 label="Reference"
                 name="Reference"
                 readOnly={false}
+                setFieldValue={reference}
                 type="text"
-                value={reference}
                 wrapperClassName="ml-2"
                 onChange={e => setReference(e.target.value)}
               />
