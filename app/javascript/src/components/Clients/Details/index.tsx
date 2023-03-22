@@ -57,6 +57,7 @@ const ClientList = ({ isAdminUser }) => {
   const [clientDetails, setClientDetails] = useState<any>({});
   const [editProjectData, setEditProjectData] = useState<any>(null);
   const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
 
@@ -86,6 +87,7 @@ const ClientList = ({ isAdminUser }) => {
     setClientDetails(sanitized.clientDetails);
     setTotalMinutes(sanitized.totalMinutes);
     setOverdueOutstandingAmount(sanitized.overdueOutstandingAmount);
+    setLoading(false);
   };
 
   const fetchProjectList = async () => {
@@ -96,6 +98,7 @@ const ClientList = ({ isAdminUser }) => {
       setProjectDetails(sanitized.projectDetails);
       setTotalMinutes(sanitized.totalMinutes);
       setOverdueOutstandingAmount(sanitized.overdueOutstandingAmount);
+      setLoading(false);
     } catch (e) {
       Logger.error(e);
       navigate("/clients");
@@ -146,6 +149,14 @@ const ClientList = ({ isAdminUser }) => {
   const handleAddProject = () => {
     setShowProjectModal(true);
   };
+
+  if (loading) {
+    return (
+      <p className="tracking-wide flex min-h-screen items-center justify-center text-base font-medium text-miru-han-purple-1000">
+        Loading...
+      </p>
+    );
+  }
 
   return (
     <>
