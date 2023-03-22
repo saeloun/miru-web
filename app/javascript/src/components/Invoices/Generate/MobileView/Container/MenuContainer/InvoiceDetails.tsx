@@ -144,38 +144,43 @@ const InvoiceDetails = ({
               </div>
             )}
             <div className="flex justify-between py-3">
-              <div
-                className="relative w-fit cursor-pointer"
-                ref={DateOfIssueWrapper}
-                onClick={() => setShowDateOfIssuePicker(!showDateOfIssuePicker)}
-              >
-                <InputField
-                  readOnly
-                  id="Date of Issue"
-                  inputBoxClassName="focus:border-miru-han-purple-1000"
-                  label="Date of Issue"
-                  name="Date of Issue"
-                  type="text"
-                  value={getIssuedDate}
-                  wrapperClassName="mr-2"
-                  onChange={handleDatePickerChange}
-                />
-                <InputErrors
-                  fieldErrors={errors.issueDate}
-                  fieldTouched={touched.issueDate}
-                />
-                <CalendarIcon
-                  className="absolute top-4 right-4"
-                  color="#5B34EA"
-                  size={20}
-                  weight="bold"
-                />
+              <div className="relative w-fit cursor-pointer">
+                <div
+                  onClick={() =>
+                    setShowDateOfIssuePicker(!showDateOfIssuePicker)
+                  }
+                >
+                  <InputField
+                    readOnly
+                    id="Date of Issue"
+                    inputBoxClassName="focus:border-miru-han-purple-1000"
+                    label="Date of Issue"
+                    name="Date of Issue"
+                    type="text"
+                    value={getIssuedDate}
+                    wrapperClassName="mr-2"
+                    onChange={handleDatePickerChange}
+                  />
+                  <InputErrors
+                    fieldErrors={errors.issueDate}
+                    fieldTouched={touched.issueDate}
+                  />
+                  <CalendarIcon
+                    className="absolute top-4 right-4"
+                    color="#5B34EA"
+                    size={20}
+                    weight="bold"
+                  />
+                </div>
                 {showDateOfIssuePicker && (
                   <div
                     className="modal__modal main-modal "
                     style={{ background: "rgba(29, 26, 49,0.6)" }}
                   >
-                    <div className="absolute inset-0 m-auto h-72 w-3/4">
+                    <div
+                      className="absolute inset-0 m-auto h-72 w-3/4"
+                      ref={DateOfIssueWrapper}
+                    >
                       <CustomDatePicker
                         date={issueDate}
                         handleChange={handleDatePickerChange}
@@ -186,38 +191,39 @@ const InvoiceDetails = ({
                   </div>
                 )}
               </div>
-              <div
-                className="relative w-fit cursor-pointer"
-                ref={DueDateWrapper}
-                onClick={() => setShowDueDatePicker(!showDueDatePicker)}
-              >
-                <InputField
-                  readOnly
-                  id="Due Date"
-                  inputBoxClassName="focus:border-miru-han-purple-1000"
-                  label="Due Date"
-                  name="Due Date"
-                  type="text"
-                  value={getDueDate}
-                  wrapperClassName="ml-2"
-                  onChange={handleDueDatePicker}
-                />
-                <InputErrors
-                  fieldErrors={errors.dueDate}
-                  fieldTouched={touched.dueDate}
-                />
-                <CalendarIcon
-                  className="absolute top-4 right-4"
-                  color="#5B34EA"
-                  size={20}
-                  weight="bold"
-                />
+              <div className="relative w-fit cursor-pointer">
+                <div onClick={() => setShowDueDatePicker(!showDueDatePicker)}>
+                  <InputField
+                    readOnly
+                    id="Due Date"
+                    inputBoxClassName="focus:border-miru-han-purple-1000"
+                    label="Due Date"
+                    name="Due Date"
+                    type="text"
+                    value={getDueDate}
+                    wrapperClassName="ml-2"
+                    onChange={handleDueDatePicker}
+                  />
+                  <InputErrors
+                    fieldErrors={errors.dueDate}
+                    fieldTouched={touched.dueDate}
+                  />
+                  <CalendarIcon
+                    className="absolute top-4 right-4"
+                    color="#5B34EA"
+                    size={20}
+                    weight="bold"
+                  />
+                </div>
                 {showDueDatePicker && (
                   <div
                     className="modal__modal main-modal "
                     style={{ background: "rgba(29, 26, 49,0.6)" }}
                   >
-                    <div className="absolute inset-0 m-auto h-72 w-3/4">
+                    <div
+                      className="absolute inset-0 m-auto h-72 w-3/4"
+                      ref={DueDateWrapper}
+                    >
                       <CustomDatePicker
                         date={dueDate}
                         handleChange={handleDueDatePicker}

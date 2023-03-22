@@ -202,13 +202,19 @@ const GenerateInvoices = () => {
         invoiceDetails={invoiceDetails}
         invoiceNumber={invoiceNumber}
         issueDate={issueDate}
+        lineItems={lineItems}
+        manualEntryArr={manualEntryArr}
         reference={reference}
         selectedClient={selectedClient}
+        selectedLineItems={selectedOption}
         setDueDate={setDueDate}
         setInvoiceNumber={setInvoiceNumber}
         setIssueDate={setIssueDate}
+        setLineItems={setLineItems}
+        setManualEntryArr={setManualEntryArr}
         setReference={setReference}
         setSelectedClient={setSelectedClient}
+        setSelectedLineItems={setSelectedOption}
       />
     );
   }

@@ -25,6 +25,7 @@ const InputField = ({
   inputBoxClassName,
   labelClassName,
   wrapperClassName,
+  autoComplete,
 }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -36,6 +37,7 @@ const InputField = ({
     <div className="field relative">
       <div className={classNames(defaultWrapperClassName, wrapperClassName)}>
         <Field
+          autoComplete={autoComplete}
           autoFocus={autoFocus}
           className={classNames(defaultInputBoxClassName, inputBoxClassName)}
           disabled={disabled}
@@ -95,6 +97,7 @@ InputField.defaultProps = {
   readOnly: false,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onChange: () => {},
+  autoComplete: "on",
 };
 
 export default InputField;
