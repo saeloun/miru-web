@@ -184,6 +184,7 @@ module.exports = {
         manrope: "'Manrope', serif",
       },
       spacing: {
+        3.75: "0.9375rem",
         13: "3.125rem",
         15: "3.75rem",
         18: "4.5rem",
