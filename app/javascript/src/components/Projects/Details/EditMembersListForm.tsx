@@ -39,7 +39,7 @@ const EditMembersListForm = ({
       <select
         className="h-8 w-full rounded bg-miru-gray-100 px-3 py-1 text-sm font-medium"
         disabled={member.isExisting}
-        id={member.id}
+        id="select-user"
         name={member.id}
         value={member.id}
         onChange={e => {
