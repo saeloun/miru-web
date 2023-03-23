@@ -18,7 +18,7 @@ namespace :fly do
   #  - failures here result in VM being stated, shutdown, and rolled back
   #    to last successful deploy (if any).
   task :server => :swapfile do
-    sh 'bin/rails server'
+    sh 'bin/rails server -b [::] -p 8080'
   end
 
   # optional SWAPFILE task:
