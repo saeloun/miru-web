@@ -13,10 +13,13 @@ import { CalendarIcon, DeleteIcon, FloppyDiskIcon } from "miruIcons";
 import { Button } from "StyledComponents";
 
 import CustomDatePicker from "common/CustomDatePicker";
+import { CustomInputText } from "common/CustomInputText";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { InputErrors, InputField } from "common/FormikFields";
 import NewLineItemTable from "components/Invoices/common/NewLineItemTable";
 import { fetchNewLineItems } from "components/Invoices/common/utils";
+
+import { addEditFormInitialValues, addEditFormSchema } from "./utils";
 
 import { sections } from "../../utils";
 
@@ -36,7 +39,7 @@ const AddLineItemContainer = ({
   setEditItem,
 }) => {
   const [name, setName] = useState<string>("");
-  const [date, setDate] = useState<string>("");
+  const [date, setDate] = useState<Date>();
   const [description, setDescription] = useState<string>("");
   const [rate, setRate] = useState<number>();
   const [quantity, setQuantity] = useState<any>();
@@ -53,48 +56,14 @@ const AddLineItemContainer = ({
   const [loading, setLoading] = useState<boolean>(false);
   const DateWrapper = useRef(null);
   const newLineTableRef = useRef(null);
-  const getDate = date ? dayjs(date).format(dateFormat) : null;
-  const disableBtn = name && description && date && rate && quantity;
+  const getDate = date ? dayjs(date).format(dateFormat) : "";
   const debouncedSearchName = useDebounce(name, 500);
-
-  useEffect(() => {
-    setLineItem({
-      ...lineItem,
-      id: manualEntryArr.length + 1,
-      name,
-      date,
-      description,
-      rate,
-      quantity,
-      lineTotal,
-    });
-  }, [name, date, description, rate, quantity, lineTotal]);
-
-  useEffect(() => {
-    if (editItem.id || editItem.timesheet_entry_id) {
-      setLineItem({ id: editItem.id, ...lineItem });
-      setName(editItem.name || editItem.first_name);
-      setDate(editItem.date);
-      setDescription(editItem.description);
-      setRate(editItem.rate);
-      const quantityInMin = Number(minFromHHMM(editItem.quantity.toString()));
-      setQuantity(quantityInMin);
-      setQtyInHHrMin(editItem.quantity);
-    }
-  }, [editItem]);
-
-  useEffect(() => {
-    if (rate && quantity) setLineTotal(lineTotalCalc(quantity, rate));
-  }, [rate, quantity]);
+  const disableBtn = values =>
+    values.name && description && date && values.rate && values.quantity;
 
   const handleDatePicker = selectedDate => {
     setDate(selectedDate);
     setShowDatePicker(false);
-  };
-
-  const handleAddLineItem = () => {
-    setManualEntryArr([...manualEntryArr, lineItem]);
-    setActiveSection(sections.generateInvoice);
   };
 
   const handleSetRate = e => {
@@ -113,17 +82,13 @@ const AddLineItemContainer = ({
     fetchNewLineItems(selectedClient, setLineItems, selectedLineItems);
   };
 
-  useEffect(() => {
-    loadNewLineItems();
-  }, []);
-
-  useOutsideClick(
-    newLineTableRef,
-    () => {
-      setShowNewLineItemTable(false);
-    },
-    showNewLineItemTable
-  );
+  const handleAddLineItem = (values: any) => {
+    values.date = date;
+    values.description = description;
+    const lineItem = { id: manualEntryArr.length + 1, ...values, lineTotal };
+    setManualEntryArr([...manualEntryArr, lineItem]);
+    setActiveSection(sections.generateInvoice);
+  };
 
   const handleDelete = item => {
     const deleteItem = {
@@ -168,9 +133,13 @@ const AddLineItemContainer = ({
         (option.timesheet_entry_id &&
           option.timesheet_entry_id === editItem.timesheet_entry_id)
       ) {
+        const first_name = name.split(" ")[0];
+        const last_name = name.split(" ")[1];
+
         return {
           ...option,
-          first_name: name,
+          first_name,
+          last_name,
           date,
           description,
           rate,
@@ -188,9 +157,13 @@ const AddLineItemContainer = ({
         (option.timesheet_entry_id &&
           option.timesheet_entry_id === editItem.timesheet_entry_id)
       ) {
+        const first_name = name.split(" ")[0];
+        const last_name = name.split(" ")[1];
+
         return {
           ...option,
-          first_name: name,
+          first_name,
+          last_name,
           date,
           description,
           rate,
@@ -207,13 +180,41 @@ const AddLineItemContainer = ({
     setActiveSection(sections.generateInvoice);
   };
 
-  interface AddLineItemFormValues {
-    name: string;
-    notes: string;
-    date: string;
-    rate: number;
-    quantity: number;
-  }
+  const handleSubmitForm = (values: any) => {
+    editItem.id || editItem.timesheet_entry_id
+      ? handleEdit()
+      : handleAddLineItem(values);
+  };
+
+  useOutsideClick(
+    newLineTableRef,
+    () => {
+      setShowNewLineItemTable(false);
+    },
+    showNewLineItemTable
+  );
+
+  useEffect(() => {
+    if (rate && quantity) setLineTotal(lineTotalCalc(quantity, rate));
+  }, [rate, quantity]);
+
+  useEffect(() => {
+    if (editItem.id || editItem.timesheet_entry_id) {
+      setLineItem({ id: editItem.id, ...lineItem });
+      setName(editItem.name || editItem.first_name);
+      const date = new Date(editItem.date);
+      setDate(date);
+      setDescription(editItem.description);
+      setRate(editItem.rate);
+      const quantityInMin = Number(minFromHHMM(editItem.quantity.toString()));
+      setQuantity(quantityInMin);
+      setQtyInHHrMin(editItem.quantity);
+    }
+  }, [editItem]);
+
+  useEffect(() => {
+    loadNewLineItems();
+  }, []);
 
   useEffect(() => {
     if (debouncedSearchName) {
@@ -243,22 +244,25 @@ const AddLineItemContainer = ({
     }
   }, [showMenu]);
 
+  interface AddLineItemFormValues {
+    name: string;
+    description: string;
+    date: Date;
+    rate: number;
+    quantity: number;
+  }
+
   return (
     <div className="h-full p-4">
       <Formik
-        initialValues={{
-          name: "",
-          notes: "",
-          date: "",
-          rate,
-          quantity,
-        }}
-        onSubmit={() => {}} // eslint-disable-line
+        initialValues={addEditFormInitialValues(editItem)}
         validateOnBlur={false}
-        validationSchema=""
+        validationSchema={addEditFormSchema}
+        onSubmit={handleSubmitForm}
       >
         {(props: FormikProps<AddLineItemFormValues>) => {
-          const { touched, errors } = props;
+          const { touched, errors, values, setFieldValue, setFieldError } =
+            props;
 
           return (
             <Form className="flex h-full flex-col justify-between">
@@ -272,12 +276,13 @@ const AddLineItemContainer = ({
                   >
                     <InputField
                       autoComplete="off"
-                      id="Name"
+                      id="name"
                       inputBoxClassName="border focus:border-miru-han-purple-1000"
                       label="Name"
-                      name="Name"
+                      name="name"
                       readOnly={false}
-                      setFieldValue={name}
+                      setFieldError={setFieldError}
+                      setFieldValue={setFieldValue}
                       type="text"
                       onChange={e => setName(e.target.value)}
                     />
@@ -306,17 +311,17 @@ const AddLineItemContainer = ({
                 </div>
                 <div className="py-2">
                   <CustomTextareaAutosize
-                    id="Note"
+                    id="description"
                     label="Note"
                     maxRows={12}
-                    name="Note"
+                    name="description"
                     rows={5}
                     value={description}
                     onChange={e => setDescription(e.target.value)}
                   />
                   <InputErrors
-                    fieldErrors={errors.notes}
-                    fieldTouched={touched.notes}
+                    fieldErrors={errors.description}
+                    fieldTouched={touched.description}
                   />
                 </div>
                 <div className="py-2">
@@ -324,15 +329,15 @@ const AddLineItemContainer = ({
                     className="relative"
                     onClick={() => setShowDatePicker(!showDatePicker)}
                   >
-                    <InputField
+                    <CustomInputText
                       readOnly
-                      id="Date"
+                      id="date"
                       inputBoxClassName="border focus:border-miru-han-purple-1000"
                       label="Date"
-                      name="Date"
-                      setFieldValue={getDate}
+                      name="date"
                       type="text"
-                      onChange={e => setDate(e.target.value)}
+                      value={getDate}
+                      onChange={handleDatePicker}
                     />
                     <InputErrors
                       fieldErrors={errors.date}
@@ -366,12 +371,13 @@ const AddLineItemContainer = ({
                 </div>
                 <div className="py-2">
                   <InputField
-                    id="Rate"
+                    id="rate"
                     inputBoxClassName="border focus:border-miru-han-purple-1000"
                     label="Rate"
-                    name="Rate"
+                    name="rate"
                     readOnly={false}
-                    setFieldValue={rate}
+                    setFieldError={setFieldError}
+                    setFieldValue={setFieldValue}
                     type="text"
                     onChange={handleSetRate}
                   />
@@ -382,12 +388,13 @@ const AddLineItemContainer = ({
                 </div>
                 <div className="py-2">
                   <InputField
-                    id="Quantity"
+                    id="quantity"
                     inputBoxClassName="border focus:border-miru-han-purple-1000"
                     label="Quantity"
-                    name="Quantity"
+                    name="quantity"
                     readOnly={false}
-                    setFieldValue={qtyInHHrMin}
+                    setFieldError={setFieldError}
+                    setFieldValue={setFieldValue}
                     type="text"
                     onChange={handleSetQuantity}
                   />
@@ -415,7 +422,6 @@ const AddLineItemContainer = ({
                   <Button
                     className="ml-2 flex w-1/2 items-center justify-center px-4 py-2"
                     style="primary"
-                    onClick={handleEdit}
                   >
                     <FloppyDiskIcon
                       className="text-white"
@@ -430,9 +436,8 @@ const AddLineItemContainer = ({
               ) : (
                 <Button
                   className="w-full p-2 text-center text-base font-bold"
-                  disabled={!disableBtn}
+                  disabled={!disableBtn(values)}
                   style="primary"
-                  onClick={handleAddLineItem}
                 >
                   Add Line Item
                 </Button>

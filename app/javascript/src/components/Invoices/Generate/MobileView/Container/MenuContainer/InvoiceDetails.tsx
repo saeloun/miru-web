@@ -8,8 +8,11 @@ import Select, { components, DropdownIndicatorProps } from "react-select";
 
 import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 import CustomDatePicker from "common/CustomDatePicker";
+import { CustomInputText } from "common/CustomInputText";
 import { InputErrors, InputField } from "common/FormikFields";
 import { reactSelectStyles } from "components/Invoices/common/InvoiceDetails/Styles";
+
+import { invoiceDetailsFormInitialValues, invoiceDetailsSchema } from "./utils";
 
 const InvoiceDetails = ({
   dueDate,
@@ -71,19 +74,13 @@ const InvoiceDetails = ({
 
   return (
     <Formik
-      initialValues={{
-        billedTo: "",
-        issueDate: "",
-        dueDate: "",
-        invoiceNumber: "",
-        referenceNumber: "",
-      }}
+      initialValues={invoiceDetailsFormInitialValues}
       onSubmit={() => {}} // eslint-disable-line
       validateOnBlur={false}
-      validationSchema=""
+      validationSchema={invoiceDetailsSchema}
     >
       {(props: FormikProps<SignInFormValues>) => {
-        const { touched, errors } = props;
+        const { touched, errors, setFieldValue, setFieldError } = props;
 
         return (
           <Form>
@@ -150,14 +147,13 @@ const InvoiceDetails = ({
                     setShowDateOfIssuePicker(!showDateOfIssuePicker)
                   }
                 >
-                  <InputField
+                  <CustomInputText
                     readOnly
                     id="Date of Issue"
                     inputBoxClassName="focus:border-miru-han-purple-1000"
                     label="Date of Issue"
                     name="Date of Issue"
-                    setFieldValue={getIssuedDate}
-                    type="text"
+                    value={getIssuedDate}
                     wrapperClassName="mr-2"
                     onChange={handleDatePickerChange}
                   />
@@ -193,14 +189,13 @@ const InvoiceDetails = ({
               </div>
               <div className="relative w-fit cursor-pointer">
                 <div onClick={() => setShowDueDatePicker(!showDueDatePicker)}>
-                  <InputField
+                  <CustomInputText
                     readOnly
                     id="Due Date"
                     inputBoxClassName="focus:border-miru-han-purple-1000"
                     label="Due Date"
                     name="Due Date"
-                    setFieldValue={getDueDate}
-                    type="text"
+                    value={getDueDate}
                     wrapperClassName="ml-2"
                     onChange={handleDueDatePicker}
                   />
@@ -237,12 +232,13 @@ const InvoiceDetails = ({
             </div>
             <div className="flex justify-between py-3">
               <InputField
-                id="Invoice Number"
+                id="invoiceNumber"
                 inputBoxClassName="border focus:border-miru-han-purple-1000"
                 label="Invoice Number"
-                name="Invoice Number"
+                name="invoiceNumber"
                 readOnly={false}
-                setFieldValue={invoiceNumber}
+                setFieldError={setFieldError}
+                setFieldValue={setFieldValue || invoiceNumber}
                 type="text"
                 wrapperClassName="mr-2"
                 onChange={e => setInvoiceNumber(e.target.value)}
@@ -252,12 +248,13 @@ const InvoiceDetails = ({
                 fieldTouched={touched.invoiceNumber}
               />
               <InputField
-                id="Reference"
+                id="referenceNumber"
                 inputBoxClassName="focus:border-miru-han-purple-1000"
                 label="Reference"
-                name="Reference"
+                name="referenceNumber"
                 readOnly={false}
-                setFieldValue={reference}
+                setFieldError={setFieldError}
+                setFieldValue={setFieldValue || reference}
                 type="text"
                 wrapperClassName="ml-2"
                 onChange={e => setReference(e.target.value)}
