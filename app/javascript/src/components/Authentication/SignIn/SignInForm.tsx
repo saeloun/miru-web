@@ -49,12 +49,12 @@ const SignInForm = () => {
     !(values.email?.trim() && values?.password?.trim());
 
   return (
-    <div className="relative w-full px-8 pt-16 pb-4 md:px-0 md:pt-36 lg:w-1/2">
+    <div className="relative w-full px-8 pt-10 pb-4 md:px-0 md:pt-36 lg:w-1/2">
       <div className="d-block lg:hidden">
         <a href={MIRU_APP_URL} rel="noreferrer noopener">
           <img
             alt="miru-logo"
-            className="d-block mx-auto mb-20 lg:hidden"
+            className="d-block mx-auto mb-10 md:mb-20 lg:hidden"
             height="64"
             src={MiruLogoSVG}
             width="64"

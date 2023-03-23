@@ -39,13 +39,13 @@ const ForgotPassword = () => {
   }
 
   return (
-    <div className="relative min-h-screen w-full px-8 pt-16 pb-4 md:px-0 md:pt-36">
+    <div className="relative min-h-screen w-full px-8 pt-10 pb-4 md:px-0 md:pt-36">
       <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
         <div>
           <a href={MIRU_APP_URL} rel="noreferrer noopener">
             <img
               alt="miru-logo"
-              className="d-block mx-auto mb-20"
+              className="d-block mx-auto mb-10 md:mb-20"
               height="64"
               src={MiruLogoSVG}
               width="64"
