@@ -33,7 +33,6 @@ const FilterSideBar = ({
   setSelectedFilter,
   setFilterCounter,
 }) => {
-  const [loading, setLoading] = useState<boolean>(true);
   const [clientList, setClientList] = useState<null | any[]>([]);
   const [filters, setFilters] = useState(filterParams);
   const [showCustomFilter, setShowCustomFilter] = useState(false);
@@ -103,7 +102,6 @@ const FilterSideBar = ({
       }));
       setClientList(clientArr.sort(sortClients));
       setFilteredClientList(clientArr.sort(sortClients));
-      setLoading(false);
     } catch {
       resetFilter();
     }
@@ -273,10 +271,6 @@ const FilterSideBar = ({
       setFilteredClientList(clientList);
     }
   }, [debouncedSearchQuery]);
-
-  if (loading) {
-    return <div>Loading....</div>;
-  }
 
   const handleClientFilterToggle = () => {
     setIsClientOpen(!isClientOpen);
